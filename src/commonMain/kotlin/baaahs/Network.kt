@@ -22,6 +22,7 @@ interface Network {
     }
 }
 
+
 class FakeNetwork(private val networkDelay: Long = 1L) : Network {
     private val listeners: MutableMap<Network.Address, Network.Listener> = hashMapOf()
     private var nextAddress = 0xb00f

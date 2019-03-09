@@ -1,6 +1,7 @@
 package baaahs
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 interface Controller {
 
@@ -16,9 +17,8 @@ public class SimController(val network: Network): Controller, Network.Listener {
         link.broadcast(HelloMessage().toBytes())
     }
 
-    fun start(): Controller {
+    fun start() {
         GlobalScope.launch { run() }
-        return this
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {

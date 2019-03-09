@@ -1,25 +1,28 @@
 package baaahs
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     Main().start()
 }
 
 class Main {
     var network = FakeNetwork()
+
     val central = Central(network)
-    val controllers: MutableSet<Controller> = HashSet()
 
     fun start() {
         central.start()
 
-        for (i in 0..100) {
-            controllers.add(SimController(network).start())
+        val panelCount = 1000
+
+        for (i in 0..panelCount) {
+            val controller = SimController(network)
+            controller.start()
         }
 
         doRunBlocking {
-            delay(2000L)
+            delay(200000L)
         }
 
     }
