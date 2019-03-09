@@ -2,19 +2,25 @@ package baaahs
 
 import kotlinx.coroutines.delay
 
+lateinit var main: Main
+
 fun main(args: Array<String>) {
-    Main().start()
+    main = Main()
+    main.start()
 }
 
 class Main {
     var network = FakeNetwork()
 
+    var sheepModel = SheepModel()
     val central = Central(network)
 
     fun start() {
+        sheepModel.load()
+
         central.start()
 
-        val panelCount = 1000
+        val panelCount = 3
 
         for (i in 0..panelCount) {
             val controller = SimController(network)
@@ -28,4 +34,8 @@ class Main {
     }
 }
 
+fun getSheepModel(): SheepModel = main.sheepModel
+
 expect fun doRunBlocking(block: suspend () -> Unit)
+
+expect fun getResource(name: String): String
