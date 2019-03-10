@@ -9,7 +9,6 @@ class SheepModel {
         val panels: MutableList<Panel> = mutableListOf()
         var currentPanel = Panel("initial")
 
-        println("About to process sheep model...")
         getResource("newsheep_processed.obj")
             .split("\n")
             .map { it.trim() }
@@ -58,7 +57,7 @@ class SheepModel {
                 }
             }
 
-        println("Found ${panels.size} panels (and ${vertices.size} vertices)!")
+        println("Sheep model has ${panels.size} panels (and ${vertices.size} vertices)!")
         this.vertices = vertices
         this.panels = panels
     }

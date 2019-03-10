@@ -10,26 +10,103 @@
       margin: 0;
       overflow: hidden;
     }
+
+    #sheepView {
+      position: absolute;
+      width: 80%;
+      height: 100%;
+    }
+
+    #simulatorView {
+      position: absolute;
+      color: black;
+      background-color: white;
+      top: 5px;
+      bottom: 5px;
+      left: 80%;
+      right: 5px;
+      height: 100%;
+      padding: .25em;
+      font: 10pt Helvetica;
+    }
+
     #panelSelect {
       position: absolute;
       bottom: 0;
       left: 0;
     }
+
     #info {
       position: absolute;
       color: white;
       top: 0;
       left: 0;
     }
+
     #info2 {
       position: absolute;
       color: white;
       bottom: 0;
       right: 0;
     }
+
+    #controllersView, #mapperControllersView {
+      background-color: black;
+    }
+
+    #controllersView > div, #mapperControllersView > div {
+      display: inline-block;
+      width: 2px;
+      height: 2px;
+      margin: 1px;
+    }
+
+    .simulatorSection {
+      display: block;
+      border: 1px dashed gray;
+      margin-bottom: 2px;
+      padding: 2px;
+    }
+
+    .controller-offline {
+      background-color: darkgrey;
+    }
+
+    .controller-link {
+      background-color: orange;
+    }
   </style>
 </head>
 <body>
+<div id="sheepView"></div>
+
+<div id="simulatorView">
+  BAAAHS Simulator FUCK YEAH
+
+  <div id="networkView" class="simulatorSection">
+    <b>Network</b>
+    <br/>Packets sent: <span id="networkPacketsSent"></span>
+    <br/>Packets dropped: <span id="networkPacketsDropped"></span>
+  </div>
+
+  <div id="centralView" class="simulatorSection"></div>
+
+  <div class="simulatorSection">
+    <b>Controllers:</b>
+    <div id="controllersView"></div>
+  </div>
+
+  <div class="simulatorSection">
+    <b>Mapper:</b>
+    <div id="mapperView"></div>
+
+    <div>
+      <div>Controllers:</div>
+      <div id="mapperControllersView"></div>
+    </div>
+  </div>
+</div>
+
 <select id="panelSelect"></select>
 <div id="info"></div>
 <div id="info2"></div>

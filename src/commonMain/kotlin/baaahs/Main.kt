@@ -10,20 +10,23 @@ fun main(args: Array<String>) {
 }
 
 class Main {
-    var network = FakeNetwork()
+    var display = getDisplay()
+    var network = FakeNetwork(display = display.forNetwork())
 
     var sheepModel = SheepModel()
-    val central = Central(network)
+
+    val central = Central(network, display.forCentral())
+    val mapper = Mapper(network, display.forMapper())
 
     fun start() {
         sheepModel.load()
 
         central.start()
 
-        val panelCount = 3
+        val panelCount = sheepModel.panels.size
 
         for (i in 0..panelCount) {
-            val controller = SimController(network)
+            val controller = SimController(network, display.forController())
             controller.start()
         }
 

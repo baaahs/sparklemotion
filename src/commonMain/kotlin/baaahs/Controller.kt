@@ -1,24 +1,43 @@
 package baaahs
 
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 interface Controller {
 
 }
 
-public class SimController(val network: Network): Controller, Network.Listener {
+class SimController(private val network: Network, private val display: ControllerDisplay) : Controller,
+    Network.Listener {
     private lateinit var link: Network.Link
-
-    fun run() {
-        link = network.link(this)
-        println("hi, i'm ${link.myAddress}!")
-
-        link.broadcast(HelloMessage().toBytes())
-    }
+    private var receivingInstructions: Boolean = false
 
     fun start() {
-        GlobalScope.launch { run() }
+        GlobalScope.launch {
+            val timeMillis = Random.nextInt() % 1000
+            delay(timeMillis.toLong())
+            run()
+        }
+    }
+
+    suspend fun run() {
+        link = network.link()
+        link.listen(Ports.CONTROLLER, this)
+        display.haveLink(link)
+
+        sendHello()
+    }
+
+    private suspend fun sendHello() {
+        while (true) {
+            if (!receivingInstructions) {
+                link.broadcast(Ports.CENTRAL, ControllerHelloMessage().toBytes())
+            }
+
+            delay(60000)
+        }
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {

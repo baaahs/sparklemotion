@@ -1,13 +1,11 @@
-
-
-
-
-let container, controls, camera, scene, renderer, geom, object, pointMaterial, faceMaterial, lineMaterial, panelMaterial, raycaster, mouse, sphere;
+let controls, camera, scene, renderer, geom, object, pointMaterial, faceMaterial, lineMaterial, panelMaterial,
+    raycaster, mouse, sphere;
 
 let panels = [];
 
 let select = document.getElementById('panelSelect');
 let info2 = document.getElementById('info2');
+let sheepView = document.getElementById('sheepView');
 
 select.onchange = onSelectChange;
 
@@ -38,35 +36,33 @@ function onSelectChange(event) {
 
 function onMouseMove(event) {
   event.preventDefault();
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  mouse.x = (event.clientX / sheepView.offsetWidth) * 2 - 1;
+  mouse.y = -(event.clientY / sheepView.offsetHeight) * 2 + 1;
 }
 
 
 function initThreeJs(sheepModel) {
-  container = document.createElement('div');
-  container.addEventListener('mousemove', onMouseMove, false);
-  document.body.appendChild(container);
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+  sheepView.addEventListener('mousemove', onMouseMove, false);
+  camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
-  controls = new THREE.OrbitControls(camera, container);
+  controls = new THREE.OrbitControls(camera, sheepView);
   scene = new THREE.Scene();
-  pointMaterial = new THREE.PointsMaterial({ color: 0xffffff });
-  lineMaterial = new THREE.LineBasicMaterial({ color: 0x444444 });
-  panelMaterial = new THREE.LineBasicMaterial({ color: 0xff4444 });
-  faceMaterial = new THREE.MeshBasicMaterial({ color: 0xaa0000, });
+  pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
+  lineMaterial = new THREE.LineBasicMaterial({color: 0x444444});
+  panelMaterial = new THREE.LineBasicMaterial({color: 0xff4444});
+  faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
   faceMaterial.side = THREE.DoubleSide;
   faceMaterial.transparent = true;
   faceMaterial.opacity = 0.3;
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  container.appendChild(renderer.domElement);
+  renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight);
+  sheepView.appendChild(renderer.domElement);
   geom = new THREE.Geometry();
   raycaster = new THREE.Raycaster();
   raycaster.params.Points.threshold = 1;
-  sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+  sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 32, 32), new THREE.MeshBasicMaterial({color: 0xff0000}));
   scene.add(sphere);
 
   // convert from SheepModel to THREE
@@ -83,13 +79,11 @@ function initThreeJs(sheepModel) {
       return lineGeo;
     });
 
-    var panel = { name: p.name, faces: faces, lines: lines };
+    var panel = {name: p.name, faces: faces, lines: lines};
     panels.push(panel);
 
     select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
-
-    console.log(panel.name, panel);
-  })
+  });
 
   panels.forEach((panel) => {
     panel.faces = new THREE.Mesh(panel.faces, faceMaterial);
@@ -107,8 +101,6 @@ function initThreeJs(sheepModel) {
   camera.lookAt(geom.boundingSphere.center);
 
   render();
-
-  return;
 }
 
 var REFRESH_DELAY = 100; // ms
@@ -126,7 +118,7 @@ function render() {
     sphere.position.copy(nearest);
     sphere.visible = true;
     let index = object.geometry.vertices.indexOf(nearest);
-    document.getElementById('info').innerText = (index+1).toString();
+    document.getElementById('info').innerText = (index + 1).toString();
   } else {
     sphere.visible = false;
     document.getElementById('info').innerText = '';

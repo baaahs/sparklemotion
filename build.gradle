@@ -65,28 +65,28 @@ kotlin {
     }
 }
 
-task assembleWeb(type: Sync) {
-    configurations.each { Configuration c ->
-        println(c)
-        if (c.isCanBeResolved()) {
-            c.each { File file ->
-                println "file = $file"
-                from(zipTree(file.absolutePath), {
-                    includeEmptyDirs = false
-                    include { fileTreeElement ->
-                        println "fileTreeElement = $fileTreeElement"
-                        def path = fileTreeElement.path
-                        path.endsWith(".js") && (path.startsWith("META-INF/resources/") ||
-                                !path.startsWith("META-INF/"))
-                    }
-                })
-            }
-        }
-    }
-    from compileKotlin2Js.destinationDir
-    into "${projectDir}/web"
-
-    dependsOn classes
-}
-
-assemble.dependsOn assembleWeb
+//task assembleWeb(type: Sync) {
+//    configurations.each { Configuration c ->
+//        println(c)
+//        if (c.isCanBeResolved()) {
+//            c.each { File file ->
+//                println "file = $file"
+//                from(zipTree(file.absolutePath), {
+//                    includeEmptyDirs = false
+//                    include { fileTreeElement ->
+//                        println "fileTreeElement = $fileTreeElement"
+//                        def path = fileTreeElement.path
+//                        path.endsWith(".js") && (path.startsWith("META-INF/resources/") ||
+//                                !path.startsWith("META-INF/"))
+//                    }
+//                })
+//            }
+//        }
+//    }
+//    from compileKotlin2Js.destinationDir
+//    into "${projectDir}/web"
+//
+//    dependsOn classes
+//}
+//
+//assemble.dependsOn assembleWeb
