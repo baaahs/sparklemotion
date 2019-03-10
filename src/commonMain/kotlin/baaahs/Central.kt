@@ -24,14 +24,19 @@ class Central(val network: Network, val display: CentralDisplay) : Network.Liste
             }
 
             is MapperHelloMessage -> {
-                link.send(
-                    fromAddress,
-                    Ports.MAPPER,
-                    CentralPongMessage(controllers.values.map { it.fromAddress.toString() }).toBytes()
-                )
+                sendMapperPong(fromAddress)
             }
         }
 
+    }
+
+    @Synchronized
+    private fun sendMapperPong(fromAddress: Network.Address) {
+        link.send(
+            fromAddress,
+            Ports.MAPPER,
+            CentralPongMessage(controllers.values.map { it.fromAddress.toString() }).toBytes()
+        )
     }
 
     @Synchronized

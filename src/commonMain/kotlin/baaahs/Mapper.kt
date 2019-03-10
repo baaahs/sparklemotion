@@ -10,7 +10,7 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
 
     fun start() {
         GlobalScope.launch {
-            val timeMillis = Random.nextInt() % 1000
+            val timeMillis = 2000 + Random.nextInt() % 1000
             delay(timeMillis.toLong())
             run()
         }
@@ -27,7 +27,9 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         val message = parse(bytes)
         when (message) {
             is CentralPongMessage -> {
+                println("Mapper: pong from central: ${message.controllerIds}")
                 message.controllerIds.forEach { id ->
+                    println("id = ${id}")
 //                    display.
                 }
             }

@@ -21,6 +21,7 @@ class Main {
     fun start() {
         sheepModel.load()
 
+        mapper.start()
         central.start()
 
         val panelCount = sheepModel.panels.size
