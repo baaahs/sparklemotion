@@ -7,7 +7,7 @@ pluginManagement {
         }
     }
 }
-rootProject.name = 'ktplay'
+rootProject.name = 'play'
 
 
 enableFeaturePreview('GRADLE_METADATA')
