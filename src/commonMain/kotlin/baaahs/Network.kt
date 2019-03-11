@@ -63,8 +63,8 @@ class FakeNetwork(
         GlobalScope.launch {
             delay(networkDelay)
             if (Random.nextInt() % 10 != 1) {
+                display.receivedPacket()
                 listener.receive(fromAddress, bytes)
-                display.sentPacket()
             } else {
                 display.droppedPacket()
             }

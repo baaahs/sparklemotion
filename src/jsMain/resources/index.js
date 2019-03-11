@@ -40,8 +40,14 @@ function onMouseMove(event) {
   mouse.y = -(event.clientY / sheepView.offsetHeight) * 2 + 1;
 }
 
+function selectPanel(panel, isSelected) {
+  panel.faces.visible = isSelected;
+  for (let line of panel.lines) {
+    line.material = isSelected ? panelMaterial : lineMaterial;
+  }
+}
 
-function initThreeJs(sheepModel) {
+function initThreeJs(sheepModel, threeJsPanelBin) {
   sheepView.addEventListener('mousemove', onMouseMove, false);
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
@@ -69,31 +75,36 @@ function initThreeJs(sheepModel) {
   sheepModel.vertices.toArray().forEach(v => {
     geom.vertices.push(new THREE.Vector3(v.x, v.y, v.z));
   });
+}
 
-  sheepModel.panels.toArray().forEach(p => {
-    var faces = new THREE.Geometry();
-    faces.faces = p.faces.faces.toArray().map(face => new THREE.Face3(...face.localVerts.toArray()));
-    var lines = p.lines.toArray().map(line => {
-      let lineGeo = new THREE.Geometry();
-      lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
-      return lineGeo;
-    });
+function addPanel(p) {
+  var faces = new THREE.Geometry();
+  faces.faces = p.faces.faces.toArray().map(face =>
 
-    var panel = {name: p.name, faces: faces, lines: lines};
-    panels.push(panel);
-
-    select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
+      new THREE.Face3(...face.localVerts.toArray())
+  );
+  var lines = p.lines.toArray().map(line => {
+    let lineGeo = new THREE.Geometry();
+    lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
+    return lineGeo;
   });
 
-  panels.forEach((panel) => {
-    panel.faces = new THREE.Mesh(panel.faces, faceMaterial);
-    panel.faces.visible = false;
-    scene.add(panel.faces);
-    panel.lines = panel.lines.map(line => new THREE.Line(line, lineMaterial));
-    panel.lines.forEach((line) => {
-      scene.add(line);
-    });
+  var panel = {name: p.name, faces: faces, lines: lines};
+  panels.push(panel);
+
+  select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
+
+  panel.faces = new THREE.Mesh(panel.faces, faceMaterial);
+  panel.faces.visible = false;
+  scene.add(panel.faces);
+  panel.lines = panel.lines.map(line => new THREE.Line(line, lineMaterial));
+  panel.lines.forEach((line) => {
+    scene.add(line);
   });
+  return panel;
+}
+
+function startRender() {
   geom.computeBoundingSphere();
   object = new THREE.Points(geom, pointMaterial);
   scene.add(object);

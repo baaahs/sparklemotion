@@ -10,7 +10,7 @@ interface Display {
 }
 
 interface NetworkDisplay {
-    fun sentPacket()
+    fun receivedPacket()
     fun droppedPacket()
 }
 

@@ -43,15 +43,15 @@ class JsDisplay : Display {
 }
 
 class JsNetworkDisplay(document: Document) : NetworkDisplay {
-    private val packetsSentSpan = document.getElementById("networkPacketsSent")!!
+    private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
     private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
 
-    private var packetsSent = 0
+    private var packetsReceived = 0
     private var packetsDropped = 0
 
-    override fun sentPacket() {
-        packetsSentSpan.clear()
-        packetsSentSpan.appendText(packetsSent++.toString())
+    override fun receivedPacket() {
+        packetsReceivedSpan.clear()
+        packetsReceivedSpan.appendText(packetsReceived++.toString())
     }
 
     override fun droppedPacket() {

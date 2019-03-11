@@ -9,7 +9,11 @@ interface Controller {
 
 }
 
-class SimController(private val network: Network, private val display: ControllerDisplay) : Controller,
+class SimController(
+    private val network: Network,
+    private val display: ControllerDisplay,
+    private val jsPanel: JsPanel
+) : Controller,
     Network.Listener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
@@ -26,6 +30,7 @@ class SimController(private val network: Network, private val display: Controlle
         link = network.link()
         link.listen(Ports.CONTROLLER, this)
         display.haveLink(link)
+        jsPanel.select()
 
         sendHello()
     }
