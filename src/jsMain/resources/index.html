@@ -50,11 +50,11 @@
       right: 0;
     }
 
-    #controllersView, #mapperControllersView {
+    #brainsView, #mapperBrainsView {
       background-color: black;
     }
 
-    #controllersView > div, #mapperControllersView > div {
+    #brainsView > div, #mapperBrainsView > div {
       display: inline-block;
       width: 2px;
       height: 2px;
@@ -68,11 +68,11 @@
       padding: 2px;
     }
 
-    .controller-offline {
+    .brain-offline {
       background-color: darkgrey;
     }
 
-    .controller-link {
+    .brain-link {
       background-color: orange;
     }
   </style>
@@ -89,11 +89,11 @@
     <br/>Packets dropped: <span id="networkPacketsDropped"></span>
   </div>
 
-  <div id="centralView" class="simulatorSection"></div>
+  <div id="pinkyView" class="simulatorSection"></div>
 
   <div class="simulatorSection">
-    <b>Controllers:</b>
-    <div id="controllersView"></div>
+    <b>Brains:</b>
+    <div id="brainsView"></div>
   </div>
 
   <div class="simulatorSection">
@@ -101,8 +101,8 @@
     <div id="mapperView"></div>
 
     <div>
-      <div>Controllers:</div>
-      <div id="mapperControllersView"></div>
+      <div>Brains:</div>
+      <div id="mapperBrainsView"></div>
     </div>
   </div>
 </div>

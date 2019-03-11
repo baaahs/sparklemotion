@@ -20,15 +20,15 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         link = network.link()
         link.listen(Ports.MAPPER, this)
 //        display.haveLink(link)
-        link.broadcast(Ports.CENTRAL, MapperHelloMessage().toBytes())
+        link.broadcast(Ports.PINKY, MapperHelloMessage().toBytes())
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
-            is CentralPongMessage -> {
-                println("Mapper: pong from central: ${message.controllerIds}")
-                message.controllerIds.forEach { id ->
+            is PinkyPongMessage -> {
+                println("Mapper: pong from pinky: ${message.brainIds}")
+                message.brainIds.forEach { id ->
                     println("id = ${id}")
 //                    display.
                 }

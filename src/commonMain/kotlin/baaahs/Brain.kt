@@ -5,15 +5,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-interface Controller {
+interface Brain {
 
 }
 
-class SimController(
+class SimBrain(
     private val network: Network,
-    private val display: ControllerDisplay,
+    private val display: BrainDisplay,
     private val jsPanel: JsPanel
-) : Controller, Network.Listener {
+) : Brain, Network.Listener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
 
@@ -27,7 +27,7 @@ class SimController(
 
     suspend fun run() {
         link = network.link()
-        link.listen(Ports.CONTROLLER, this)
+        link.listen(Ports.BRAIN, this)
         display.haveLink(link)
         jsPanel.select()
 
@@ -37,7 +37,7 @@ class SimController(
     private suspend fun sendHello() {
         while (true) {
             if (!receivingInstructions) {
-                link.broadcast(Ports.CENTRAL, ControllerHelloMessage().toBytes())
+                link.broadcast(Ports.PINKY, BrainHelloMessage().toBytes())
             }
 
             delay(60000)

@@ -32,11 +32,11 @@ actual fun getDisplay(): Display = JsDisplay()
 class JsDisplay : Display {
     override fun forNetwork(): NetworkDisplay = JsNetworkDisplay(document)
 
-    override fun forCentral(): CentralDisplay =
-        JsCentralDisplay(document.getElementById("centralView")!!)
+    override fun forPinky(): PinkyDisplay =
+        JsPinkyDisplay(document.getElementById("pinkyView")!!)
 
-    override fun forController(): ControllerDisplay =
-        JsControllerDisplay(document.getElementById("controllersView")!!)
+    override fun forBrain(): BrainDisplay =
+        JsBrainDisplay(document.getElementById("brainsView")!!)
 
     override fun forMapper(): MapperDisplay =
         JsMapperDisplay(document.getElementById("mapperView")!!)
@@ -60,38 +60,38 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
     }
 }
 
-class JsCentralDisplay(element: Element) : CentralDisplay {
+class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val consoleDiv: Element
-    private var controllerCountDiv: Element
+    private var brainCountDiv: Element
 
     init {
         element.appendElement("div") {
-            appendText("Central")
+            appendText("Pinky")
         }
 
-        element.appendText("Controllers online: ")
-        controllerCountDiv = element.appendElement("span") {}
+        element.appendText("Brains online: ")
+        brainCountDiv = element.appendElement("span") {}
         consoleDiv = element.appendElement("div") {}
     }
 
-    override var controllerCount: Int = 0
+    override var brainCount: Int = 0
         set(value) {
-            controllerCountDiv.clear()
-            controllerCountDiv.appendText(value.toString())
+            brainCountDiv.clear()
+            brainCountDiv.appendText(value.toString())
             field = value
         }
 }
 
-class JsControllerDisplay(element: Element) : ControllerDisplay {
+class JsBrainDisplay(element: Element) : BrainDisplay {
     private var myDiv: Element
 
     init {
-        myDiv = element.appendElement("div") { addClass("controller-offline") }
+        myDiv = element.appendElement("div") { addClass("brain-offline") }
     }
 
     override fun haveLink(link: Network.Link) {
         clearClasses()
-        myDiv.classList.add("controller-link")
+        myDiv.classList.add("brain-link")
     }
 
     private fun clearClasses() {

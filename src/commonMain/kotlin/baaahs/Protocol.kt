@@ -3,46 +3,46 @@ package baaahs
 interface Ports {
     companion object {
         val MAPPER = 8001
-        val CENTRAL = 8002
-        val CONTROLLER = 8003
+        val PINKY = 8002
+        val BRAIN = 8003
     }
 }
 
 enum class Type {
-    CONTROLLER_HELLO,
+    BRAIN_HELLO,
     MAPPER_HELLO,
-    CENTRAL_PONG
+    PINKY_PONG
 }
 
 fun parse(bytes: ByteArray): Message {
     val reader = ByteArrayReader(bytes)
     return when (Type.values()[reader.readByte().toInt()]) {
-        Type.CONTROLLER_HELLO -> ControllerHelloMessage()
+        Type.BRAIN_HELLO -> BrainHelloMessage()
         Type.MAPPER_HELLO -> MapperHelloMessage()
-        Type.CENTRAL_PONG -> CentralPongMessage.parse(bytes)
+        Type.PINKY_PONG -> PinkyPongMessage.parse(bytes)
     }
 }
 
-class ControllerHelloMessage : Message(Type.CONTROLLER_HELLO)
+class BrainHelloMessage : Message(Type.BRAIN_HELLO)
 class MapperHelloMessage : Message(Type.MAPPER_HELLO)
-class CentralPongMessage(val controllerIds: List<String>) : Message(Type.CENTRAL_PONG) {
+class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
     companion object {
-        fun parse(bytes: ByteArray): CentralPongMessage {
+        fun parse(bytes: ByteArray): PinkyPongMessage {
             val reader = ByteArrayReader(bytes, 1)
-            val controllerCount = reader.readInt();
-            val controllerIds = mutableListOf<String>()
-            for (i in 0..controllerCount) {
-                controllerIds.add(reader.readString())
+            val brainCount = reader.readInt();
+            val brainIds = mutableListOf<String>()
+            for (i in 0..brainCount) {
+                brainIds.add(reader.readString())
             }
-            return CentralPongMessage(controllerIds)
+            return PinkyPongMessage(brainIds)
         }
     }
 
     override fun toBytes(): ByteArray {
         val writer = ByteArrayWriter()
         writer.writeByte(type.ordinal.toByte())
-        writer.writeInt(controllerIds.size)
-        controllerIds.forEach { writer.writeString(it) }
+        writer.writeInt(brainIds.size)
+        brainIds.forEach { writer.writeString(it) }
         return writer.toBytes()
     }
 }

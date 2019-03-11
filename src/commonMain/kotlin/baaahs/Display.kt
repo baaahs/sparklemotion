@@ -4,8 +4,8 @@ expect fun getDisplay(): Display
 
 interface Display {
     fun forNetwork(): NetworkDisplay
-    fun forCentral(): CentralDisplay
-    fun forController(): ControllerDisplay
+    fun forPinky(): PinkyDisplay
+    fun forBrain(): BrainDisplay
     fun forMapper(): MapperDisplay
 }
 
@@ -14,11 +14,11 @@ interface NetworkDisplay {
     fun droppedPacket()
 }
 
-interface CentralDisplay {
-    var controllerCount: Int
+interface PinkyDisplay {
+    var brainCount: Int
 }
 
-interface ControllerDisplay {
+interface BrainDisplay {
     fun haveLink(link: Network.Link)
 }
 

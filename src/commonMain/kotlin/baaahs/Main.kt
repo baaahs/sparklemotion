@@ -14,19 +14,19 @@ class Main {
     var network = FakeNetwork(display = display.forNetwork())
 
     var sheepModel = SheepModel()
-    val central = Central(network, display.forCentral())
+    val pinky = Pinky(network, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
 
     fun start() {
         sheepModel.load()
 
         mapper.start()
-        central.start()
+        pinky.start()
 
         initThreeJs(sheepModel)
         sheepModel.panels.forEach { panel ->
             val jsPanelObj = addPanel(panel)
-            SimController(network, display.forController(), JsPanel(jsPanelObj)).start()
+            SimBrain(network, display.forBrain(), JsPanel(jsPanelObj)).start()
         }
         startRender()
 
