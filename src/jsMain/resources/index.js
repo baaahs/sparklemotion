@@ -78,29 +78,44 @@ function initThreeJs(sheepModel, threeJsPanelBin) {
 }
 
 function addPanel(p) {
-  var faces = new THREE.Geometry();
-  faces.faces = p.faces.faces.toArray().map(face =>
-
-      new THREE.Face3(...face.localVerts.toArray())
-  );
+  let faces = new THREE.Geometry();
+  let panelVertices = [];
+  faces.faces = p.faces.faces.toArray().map(face => {
+    let localVerts = [];
+    face.vertexIds.toArray().forEach(vi => {
+      let v = geom.vertices[vi];
+      let lvi = panelVertices.indexOf(v);
+      if (lvi === -1) {
+        lvi = panelVertices.length;
+        panelVertices.push(v);
+      }
+      localVerts.push(lvi)
+    });
+    return new THREE.Face3(...localVerts);
+  });
+  faces.vertices = panelVertices;
   var lines = p.lines.toArray().map(line => {
     let lineGeo = new THREE.Geometry();
     lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
     return lineGeo;
   });
 
-  var panel = {name: p.name, faces: faces, lines: lines};
+  var panel = {
+    name: p.name,
+    faces: new THREE.Mesh(faces, faceMaterial),
+    lines: lines.map(line => new THREE.Line(line, lineMaterial))
+  };
+
+  panel.faces.visible = false;
+  scene.add(panel.faces);
+  panel.lines.forEach((line) => {
+    scene.add(line);
+  });
+
   panels.push(panel);
 
   select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
 
-  panel.faces = new THREE.Mesh(panel.faces, faceMaterial);
-  panel.faces.visible = false;
-  scene.add(panel.faces);
-  panel.lines = panel.lines.map(line => new THREE.Line(line, lineMaterial));
-  panel.lines.forEach((line) => {
-    scene.add(line);
-  });
   return panel;
 }
 
@@ -114,7 +129,7 @@ function startRender() {
   render();
 }
 
-var REFRESH_DELAY = 100; // ms
+var REFRESH_DELAY = 50; // ms
 
 function render() {
   setTimeout(() => {

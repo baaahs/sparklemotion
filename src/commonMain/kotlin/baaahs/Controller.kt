@@ -13,8 +13,7 @@ class SimController(
     private val network: Network,
     private val display: ControllerDisplay,
     private val jsPanel: JsPanel
-) : Controller,
-    Network.Listener {
+) : Controller, Network.Listener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
 

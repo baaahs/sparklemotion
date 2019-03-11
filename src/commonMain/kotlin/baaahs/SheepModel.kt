@@ -33,17 +33,7 @@ class SheepModel {
                     }
                     "f" -> {
                         val verts = args.map { it.toInt() - 1 }
-                        val localVerts = mutableListOf<Int>()
-                        for (vi in verts) {
-                            val v = vertices[vi]
-                            var lvi = currentPanel.faces.vertices.indexOf(v)
-                            if (lvi == -1) {
-                                lvi = currentPanel.faces.vertices.size
-                                currentPanel.faces.vertices.add(v)
-                            }
-                            localVerts.add(lvi)
-                        }
-                        currentPanel.faces.faces.add(Face(localVerts))
+                        currentPanel.faces.faces.add(Face(verts))
                     }
                     "l" -> {
                         val verts = args.map { it.toInt() - 1 }
@@ -65,7 +55,7 @@ class SheepModel {
     data class Point(val x: Float, val y: Float, val z: Float)
     data class Line(val points: List<Point>)
 
-    class Face(val localVerts: List<Int>)
+    class Face(val vertexIds: List<Int>)
 
     class Faces {
         val vertices: MutableList<Point> = mutableListOf()
