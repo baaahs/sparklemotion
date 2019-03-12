@@ -20,6 +20,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
+  var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
   var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
@@ -62,6 +63,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   BrainShaderMessage.prototype.constructor = BrainShaderMessage;
   MapperHelloMessage.prototype = Object.create(Message.prototype);
   MapperHelloMessage.prototype.constructor = MapperHelloMessage;
+  BrainIdRequest.prototype = Object.create(Message.prototype);
+  BrainIdRequest.prototype.constructor = BrainIdRequest;
+  BrainIdResponse.prototype = Object.create(Message.prototype);
+  BrainIdResponse.prototype.constructor = BrainIdResponse;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
   PinkyPongMessage.prototype.constructor = PinkyPongMessage;
   function Brain() {
@@ -264,6 +269,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainShaderMessage))
       this.jsPanel_0.color = message.color;
+    else if (Kotlin.isType(message, BrainIdRequest))
+      this.link_0.send_bkw8fl$(fromAddress, message.port, new BrainIdResponse(''));
   };
   SimBrain.$metadata$ = {
     kind: Kind_CLASS,
@@ -556,6 +563,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     };
   }
   Mapper.prototype.start = function () {
+    this.link_0 = this.network.link();
+    this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this);
     this.display.onStart = Mapper$start$lambda(this);
     this.display.onStop = Mapper$start$lambda_0(this);
   };
@@ -576,28 +585,43 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.link_0 = this.$this.network.link();
-            this.$this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this.$this);
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             this.state_0 = 2;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
-            if (!this.$this.isRunning_0) {
-              this.state_0 = 4;
-              continue;
-            }
-
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().BLACK));
             this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             this.state_0 = 3;
-            this.result_0 = delay(L10000, this);
+            this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 3:
-            this.state_0 = 2;
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().BLACK));
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainIdRequest(Ports$Companion_getInstance().MAPPER));
+            this.state_0 = 4;
             continue;
           case 4:
+            if (!this.$this.isRunning_0) {
+              this.state_0 = 6;
+              continue;
+            }
+
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.state_0 = 5;
+            this.result_0 = delay(L10000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
+            this.state_0 = 4;
+            continue;
+          case 6:
             this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             return;
           default:this.state_0 = 1;
@@ -625,7 +649,11 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   Mapper.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
     var message = parse(bytes);
-    if (Kotlin.isType(message, PinkyPongMessage)) {
+    if (Kotlin.isType(message, BrainIdResponse)) {
+      println('Mapper: heard from Brain at ' + fromAddress + ': ' + message.name);
+      this.link_0.send_bkw8fl$(fromAddress, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().WHITE));
+    }
+     else if (Kotlin.isType(message, PinkyPongMessage)) {
       println('Mapper: pong from pinky: ' + message.brainIds);
       var tmp$;
       tmp$ = message.brainIds.iterator();
@@ -1179,7 +1207,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     Type$BRAIN_HELLO_instance = new Type('BRAIN_HELLO', 0);
     Type$BRAIN_PANEL_SHADE_instance = new Type('BRAIN_PANEL_SHADE', 1);
     Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 2);
-    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 3);
+    Type$BRAIN_ID_REQUEST_instance = new Type('BRAIN_ID_REQUEST', 3);
+    Type$BRAIN_ID_RESPONSE_instance = new Type('BRAIN_ID_RESPONSE', 4);
+    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 5);
   }
   var Type$BRAIN_HELLO_instance;
   function Type$BRAIN_HELLO_getInstance() {
@@ -1196,6 +1226,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     Type_initFields();
     return Type$MAPPER_HELLO_instance;
   }
+  var Type$BRAIN_ID_REQUEST_instance;
+  function Type$BRAIN_ID_REQUEST_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_ID_REQUEST_instance;
+  }
+  var Type$BRAIN_ID_RESPONSE_instance;
+  function Type$BRAIN_ID_RESPONSE_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_ID_RESPONSE_instance;
+  }
   var Type$PINKY_PONG_instance;
   function Type$PINKY_PONG_getInstance() {
     Type_initFields();
@@ -1207,7 +1247,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: [Enum]
   };
   function Type$values() {
-    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$PINKY_PONG_getInstance()];
+    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_ID_RESPONSE_getInstance(), Type$PINKY_PONG_getInstance()];
   }
   Type.values = Type$values;
   function Type$valueOf(name) {
@@ -1218,6 +1258,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         return Type$BRAIN_PANEL_SHADE_getInstance();
       case 'MAPPER_HELLO':
         return Type$MAPPER_HELLO_getInstance();
+      case 'BRAIN_ID_REQUEST':
+        return Type$BRAIN_ID_REQUEST_getInstance();
+      case 'BRAIN_ID_RESPONSE':
+        return Type$BRAIN_ID_RESPONSE_getInstance();
       case 'PINKY_PONG':
         return Type$PINKY_PONG_getInstance();
       default:throwISE('No enum constant baaahs.Type.' + name);
@@ -1236,6 +1280,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         break;
       case 'MAPPER_HELLO':
         tmp$ = MapperHelloMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        break;
+      case 'BRAIN_ID_REQUEST':
+        tmp$ = BrainIdRequest$Companion_getInstance().parse_c4pr8w$(reader);
+        break;
+      case 'BRAIN_ID_RESPONSE':
+        tmp$ = BrainIdResponse$Companion_getInstance().parse_c4pr8w$(reader);
         break;
       case 'PINKY_PONG':
         tmp$ = PinkyPongMessage$Companion_getInstance().parse_c4pr8w$(reader);
@@ -1313,6 +1363,68 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   MapperHelloMessage.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'MapperHelloMessage',
+    interfaces: [Message]
+  };
+  function BrainIdRequest(port) {
+    BrainIdRequest$Companion_getInstance();
+    Message.call(this, Type$BRAIN_ID_REQUEST_getInstance());
+    this.port = port;
+  }
+  function BrainIdRequest$Companion() {
+    BrainIdRequest$Companion_instance = this;
+  }
+  BrainIdRequest$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    return new BrainIdRequest(reader.readInt());
+  };
+  BrainIdRequest$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainIdRequest$Companion_instance = null;
+  function BrainIdRequest$Companion_getInstance() {
+    if (BrainIdRequest$Companion_instance === null) {
+      new BrainIdRequest$Companion();
+    }
+    return BrainIdRequest$Companion_instance;
+  }
+  BrainIdRequest.prototype.serialize_ep8mow$ = function (writer) {
+    writer.writeInt_za3lpa$(this.port);
+  };
+  BrainIdRequest.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainIdRequest',
+    interfaces: [Message]
+  };
+  function BrainIdResponse(name) {
+    BrainIdResponse$Companion_getInstance();
+    Message.call(this, Type$BRAIN_ID_RESPONSE_getInstance());
+    this.name = name;
+  }
+  function BrainIdResponse$Companion() {
+    BrainIdResponse$Companion_instance = this;
+  }
+  BrainIdResponse$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    return new BrainIdResponse(reader.readString());
+  };
+  BrainIdResponse$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainIdResponse$Companion_instance = null;
+  function BrainIdResponse$Companion_getInstance() {
+    if (BrainIdResponse$Companion_instance === null) {
+      new BrainIdResponse$Companion();
+    }
+    return BrainIdResponse$Companion_instance;
+  }
+  BrainIdResponse.prototype.serialize_ep8mow$ = function (writer) {
+    writer.writeString_61zpoe$(this.name);
+  };
+  BrainIdResponse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainIdResponse',
     interfaces: [Message]
   };
   function PinkyPongMessage(brainIds) {
@@ -1597,7 +1709,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function Color$Companion() {
     Color$Companion_instance = this;
     this.BLACK = new Color(0, 0, 0);
-    this.WHITE = new Color(-128, -128, -128);
+    this.WHITE = new Color(255, 255, 255);
   }
   Color$Companion.prototype.random = function () {
     return new Color(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
@@ -2101,6 +2213,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Object.defineProperty(Type, 'MAPPER_HELLO', {
     get: Type$MAPPER_HELLO_getInstance
   });
+  Object.defineProperty(Type, 'BRAIN_ID_REQUEST', {
+    get: Type$BRAIN_ID_REQUEST_getInstance
+  });
+  Object.defineProperty(Type, 'BRAIN_ID_RESPONSE', {
+    get: Type$BRAIN_ID_RESPONSE_getInstance
+  });
   Object.defineProperty(Type, 'PINKY_PONG', {
     get: Type$PINKY_PONG_getInstance
   });
@@ -2115,6 +2233,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     get: MapperHelloMessage$Companion_getInstance
   });
   package$baaahs.MapperHelloMessage = MapperHelloMessage;
+  Object.defineProperty(BrainIdRequest, 'Companion', {
+    get: BrainIdRequest$Companion_getInstance
+  });
+  package$baaahs.BrainIdRequest = BrainIdRequest;
+  Object.defineProperty(BrainIdResponse, 'Companion', {
+    get: BrainIdResponse$Companion_getInstance
+  });
+  package$baaahs.BrainIdResponse = BrainIdResponse;
   Object.defineProperty(PinkyPongMessage, 'Companion', {
     get: PinkyPongMessage$Companion_getInstance
   });
