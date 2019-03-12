@@ -61,8 +61,8 @@ function initThreeJs(sheepModel, threeJsPanelBin) {
   controls = new THREE.OrbitControls(camera, sheepView);
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
-  lineMaterial = new THREE.LineBasicMaterial({color: 0x444444});
-  panelMaterial = new THREE.LineBasicMaterial({color: 0xff4444});
+  lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
+  panelMaterial = new THREE.LineBasicMaterial({color: 0x2222222});
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
