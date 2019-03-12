@@ -23,4 +23,7 @@ interface BrainDisplay {
     fun haveLink(link: Network.Link)
 }
 
-interface MapperDisplay
+interface MapperDisplay {
+    var onStart: (() -> Unit)?
+    var onStop: (() -> Unit)?
+}

@@ -71,10 +71,6 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val brainCountDiv: Element
 
     init {
-        element.appendElement("div") {
-            appendText("Pinky")
-        }
-
         element.appendText("Brains online: ")
         brainCountDiv = element.appendElement("span") {}
         val beatsDiv = element.appendElement("div") {
@@ -107,11 +103,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 }
 
 class JsBrainDisplay(element: Element) : BrainDisplay {
-    private var myDiv: Element
-
-    init {
-        myDiv = element.appendElement("div") { addClass("brain-offline") }
-    }
+    private var myDiv = element.appendElement("div") { addClass("brain-offline") }
 
     override fun haveLink(link: Network.Link) {
         clearClasses()
@@ -124,7 +116,40 @@ class JsBrainDisplay(element: Element) : BrainDisplay {
 
 }
 
-class JsMapperDisplay(val element: Element) : MapperDisplay
+class JsMapperDisplay(val element: Element) : MapperDisplay {
+    private var startButton = element.ownerDocument!!.getElementById("mapperStartButton")!!
+    private var stopButton = element.ownerDocument!!.getElementById("mapperStopButton")!!
+
+    override var onStart: (() -> Unit)? = null
+    override var onStop: (() -> Unit)? = null
+
+    init {
+        updateButtons(false)
+        startButton.addEventListener("click", {
+            updateButtons(true)
+            onStart?.invoke()
+        })
+        stopButton.addEventListener("click", {
+            updateButtons(false)
+            onStop?.invoke()
+        })
+    }
+
+    private fun updateButtons(isRunning: Boolean) {
+        startButton.disabled = isRunning
+        stopButton.disabled = !isRunning
+    }
+}
+
+private var Element.disabled: Boolean
+    get() = getAttribute("disabled") == "disabled"
+    set(value) {
+        if (value) {
+            setAttribute("disabled", "disabled")
+        } else {
+            removeAttribute("disabled")
+        }
+    }
 
 private fun DOMTokenList.clear() {
     while (length > 0) {

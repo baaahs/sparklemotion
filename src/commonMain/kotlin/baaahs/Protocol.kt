@@ -12,6 +12,8 @@ enum class Type {
     BRAIN_HELLO,
     BRAIN_PANEL_SHADE,
     MAPPER_HELLO,
+    BRAIN_ID_REQUEST,
+    BRAIN_ID_RESPONSE,
     PINKY_PONG
 }
 
@@ -20,7 +22,9 @@ fun parse(bytes: ByteArray): Message {
     return when (Type.values()[reader.readByte().toInt()]) {
         Type.BRAIN_HELLO -> BrainHelloMessage()
         Type.BRAIN_PANEL_SHADE -> BrainShaderMessage.parse(reader)
-        Type.MAPPER_HELLO -> MapperHelloMessage()
+        Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
+        Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
+        Type.BRAIN_ID_RESPONSE -> BrainIdResponse.parse(reader)
         Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
     }
 }
@@ -31,12 +35,43 @@ class BrainShaderMessage(val color: Color) : Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
         fun parse(reader: ByteArrayReader) = BrainShaderMessage(Color.parse(reader))
     }
+
     override fun serialize(writer: ByteArrayWriter) {
         color.serialize(writer)
     }
 }
 
-class MapperHelloMessage : Message(Type.MAPPER_HELLO)
+class MapperHelloMessage(val isRunning: Boolean) : Message(Type.MAPPER_HELLO) {
+    companion object {
+        fun parse(reader: ByteArrayReader): MapperHelloMessage {
+            return MapperHelloMessage(reader.readBoolean())
+        }
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeBoolean(isRunning)
+    }
+}
+
+class BrainIdRequest(val port: Int) : Message(Type.BRAIN_ID_REQUEST) {
+    companion object {
+        fun parse(reader: ByteArrayReader) = BrainIdRequest(reader.readInt())
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeInt(port)
+    }
+}
+
+class BrainIdResponse(val name: String) : Message(Type.BRAIN_ID_RESPONSE) {
+    companion object {
+        fun parse(reader: ByteArrayReader) = BrainIdResponse(reader.readString())
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeString(name)
+    }
+}
 
 class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
     companion object {

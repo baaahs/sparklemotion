@@ -3,29 +3,60 @@ package baaahs
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class Mapper(val network: Network, val display: MapperDisplay) : Network.Listener {
     private lateinit var link: Network.Link
+    private var isRunning: Boolean = false
 
     fun start() {
-        GlobalScope.launch {
-            val timeMillis = 2000 + Random.nextInt() % 1000
-            delay(timeMillis.toLong())
-            run()
-        }
-    }
-
-    fun run() {
         link = network.link()
         link.listen(Ports.MAPPER, this)
-//        display.haveLink(link)
-        link.broadcast(Ports.PINKY, MapperHelloMessage())
+
+        display.onStart = {
+            if (!isRunning) {
+                isRunning = true
+
+                GlobalScope.launch {
+                    run()
+                }
+            }
+        }
+
+        display.onStop = {
+            if (isRunning) {
+                isRunning = false
+            }
+        }
+
+    }
+
+    suspend fun run() {
+        // shut down Pinky, advertise for Brains...
+        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+        delay(1000L)
+        link.broadcast(Ports.BRAIN, BrainShaderMessage(Color.BLACK))
+        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+        delay(1000L)
+        link.broadcast(Ports.BRAIN, BrainShaderMessage(Color.BLACK))
+        link.broadcast(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
+
+        while (isRunning) {
+            link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+
+            delay(10000L)
+        }
+
+        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
+            is BrainIdResponse -> {
+                println("Mapper: heard from Brain at ${fromAddress}: ${message.name}")
+                link.send(fromAddress, Ports.BRAIN, BrainShaderMessage(Color.WHITE))
+            }
+
             is PinkyPongMessage -> {
                 println("Mapper: pong from pinky: ${message.brainIds}")
                 message.brainIds.forEach { id ->

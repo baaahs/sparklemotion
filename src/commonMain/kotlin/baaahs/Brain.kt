@@ -50,6 +50,9 @@ class SimBrain(
             is BrainShaderMessage -> {
                 jsPanel.color = message.color
             }
+            is BrainIdRequest -> {
+                link.send(fromAddress, message.port, BrainIdResponse(""))
+            }
         }
     }
 }

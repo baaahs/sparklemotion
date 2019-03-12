@@ -16,7 +16,7 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
 
     companion object {
         val BLACK = Color(0, 0, 0)
-        val WHITE = Color(-128, -128, -128)
+        val WHITE = Color(255, 255, 255)
 
         fun random() = Color(
             Random.nextInt() and 0xff,

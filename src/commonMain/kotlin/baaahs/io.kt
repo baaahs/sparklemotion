@@ -1,9 +1,12 @@
 package baaahs
 
-class ByteArrayWriter(bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
+class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
     constructor(size: Int) : this(ByteArray(size))
 
-    private var bytes = bytes
+    fun writeBoolean(b: Boolean) {
+        growIfNecessary(1)
+        bytes[offset++] = if (b) 1 else 0
+    }
 
     fun writeByte(b: Byte) {
         growIfNecessary(1)
@@ -46,6 +49,8 @@ class ByteArrayWriter(bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
 }
 
 class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
+    fun readBoolean(): Boolean = bytes[offset] != 0.toByte()
+
     fun readByte(): Byte = bytes[offset++]
 
     fun readShort(): Short =

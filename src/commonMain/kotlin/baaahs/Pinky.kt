@@ -10,6 +10,7 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private val show = SomeDumbShow()
+    private var mapperIsRunning = false
 
     fun run() {
         link = network.link()
@@ -27,32 +28,26 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
 
         GlobalScope.launch {
             while (true) {
-                show.nextFrame(brains, link)
+                if (!mapperIsRunning) {
+                    show.nextFrame(brains, link)
+                }
                 delay(50)
             }
         }
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
-        when (parse(bytes)) {
+        val message = parse(bytes)
+        when (message) {
             is BrainHelloMessage -> {
                 foundBrain(RemoteBrain(fromAddress))
             }
 
             is MapperHelloMessage -> {
-                sendMapperPong(fromAddress)
+                mapperIsRunning = message.isRunning
             }
         }
 
-    }
-
-    @Synchronized
-    private fun sendMapperPong(fromAddress: Network.Address) {
-        link.send(
-            fromAddress,
-            Ports.MAPPER,
-            PinkyPongMessage(brains.values.map { it.address.toString() })
-        )
     }
 
     @Synchronized
