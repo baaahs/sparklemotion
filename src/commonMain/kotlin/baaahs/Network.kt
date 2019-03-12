@@ -15,6 +15,14 @@ interface Network {
         fun listen(port: Int, listener: Listener)
         fun send(toAddress: Address, port: Int, bytes: ByteArray)
         fun broadcast(port: Int, bytes: ByteArray)
+
+        fun send(toAddress: Address, port: Int, message: Message) {
+            send(toAddress, port, message.toBytes())
+        }
+
+        fun broadcast(port: Int, message: Message) {
+            broadcast(port, message.toBytes())
+        }
     }
 
     interface Address

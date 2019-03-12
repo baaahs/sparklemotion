@@ -20,7 +20,7 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         link = network.link()
         link.listen(Ports.MAPPER, this)
 //        display.haveLink(link)
-        link.broadcast(Ports.PINKY, MapperHelloMessage().toBytes())
+        link.broadcast(Ports.PINKY, MapperHelloMessage())
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {

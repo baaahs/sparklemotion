@@ -37,7 +37,7 @@ class SimBrain(
     private suspend fun sendHello() {
         while (true) {
             if (!receivingInstructions) {
-                link.broadcast(Ports.PINKY, BrainHelloMessage().toBytes())
+                link.broadcast(Ports.PINKY, BrainHelloMessage())
             }
 
             delay(60000)
@@ -45,6 +45,11 @@ class SimBrain(
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
-
+        val message = parse(bytes)
+        when (message) {
+            is BrainShaderMessage -> {
+                jsPanel.color = message.color
+            }
+        }
     }
 }

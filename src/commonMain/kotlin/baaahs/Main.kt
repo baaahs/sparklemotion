@@ -37,6 +37,12 @@ class Main {
 }
 
 class JsPanel(private val jsPanelObj: Any) {
+    var color: Color = Color.BLACK
+        set(value) {
+            setPanelColor(jsPanelObj, value)
+            field = color
+        }
+
     fun select() {
         selectPanel(jsPanelObj, true)
     }
@@ -46,8 +52,9 @@ external fun initThreeJs(sheepModel: SheepModel)
 external fun addPanel(panel: SheepModel.Panel): Any
 external fun startRender()
 external fun selectPanel(panel: Any, isSelected: Boolean)
+external fun setPanelColor(panel: Any, color: Color)
 
-expect fun getTimeMillis() : Long
+expect fun getTimeMillis(): Long
 expect fun doRunBlocking(block: suspend () -> Unit)
 
 expect fun getResource(name: String): String

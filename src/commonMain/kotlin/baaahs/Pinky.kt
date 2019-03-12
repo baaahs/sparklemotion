@@ -9,6 +9,7 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
     private lateinit var link: Network.Link
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
+    private val show = SomeDumbShow()
 
     fun run() {
         link = network.link()
@@ -22,6 +23,13 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
 
         GlobalScope.launch {
             beatProvider.run()
+        }
+
+        GlobalScope.launch {
+            while (true) {
+                show.nextFrame(brains, link)
+                delay(50)
+            }
         }
     }
 
@@ -43,13 +51,13 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
         link.send(
             fromAddress,
             Ports.MAPPER,
-            PinkyPongMessage(brains.values.map { it.fromAddress.toString() }).toBytes()
+            PinkyPongMessage(brains.values.map { it.address.toString() })
         )
     }
 
     @Synchronized
     private fun foundBrain(remoteBrain: RemoteBrain) {
-        brains.put(remoteBrain.fromAddress, remoteBrain)
+        brains.put(remoteBrain.address, remoteBrain)
         display.brainCount = brains.size
     }
 
@@ -74,5 +82,19 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
     }
 }
 
-class RemoteBrain(val fromAddress: Network.Address) {
+class RemoteBrain(val address: Network.Address)
+
+class SomeDumbShow {
+    var priorBrain: RemoteBrain? = null
+
+    fun nextFrame(brains: MutableMap<Network.Address, RemoteBrain>, link: Network.Link) {
+        if (priorBrain != null) {
+            link.send(priorBrain!!.address, Ports.BRAIN, BrainShaderMessage(Color.BLACK))
+        }
+        if (!brains.isEmpty()) {
+            val highlightBrain = brains.values.random()
+            link.send(highlightBrain.address, Ports.BRAIN, BrainShaderMessage(Color.random()))
+        }
+    }
+
 }
