@@ -62,27 +62,47 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
+    override var color: Color? = null
+
     private val consoleDiv: Element
     private val beat1: Element
     private val beat2: Element
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
+    private val colorButtons: List<ColorButton>
     private val brainCountDiv: Element
 
     init {
         element.appendText("Brains online: ")
         brainCountDiv = element.appendElement("span") {}
+
         val beatsDiv = element.appendElement("div") {
             id = "beatsDiv"
-            appendElement("b") { appendText("Beats") }
-            appendText(" ")
+            appendElement("b") { appendText("Beats: ") }
         }
         beat1 = beatsDiv.appendElement("span") { appendText("1") }
         beat2 = beatsDiv.appendElement("span") { appendText("2") }
         beat3 = beatsDiv.appendElement("span") { appendText("3") }
         beat4 = beatsDiv.appendElement("span") { appendText("4") }
         beats = listOf(beat1, beat2, beat3, beat4)
+
+        val colorsDiv = element.appendElement("div") {
+            id = "colorsDiv"
+            appendElement("b") { appendText("Colors: ") }
+        }
+        colorButtons = listOf(
+            ColorButton(Color.WHITE, colorsDiv.appendElement("span") { }),
+            ColorButton(Color.RED, colorsDiv.appendElement("span") {}),
+            ColorButton(Color.ORANGE, colorsDiv.appendElement("span") {}),
+            ColorButton(Color.YELLOW, colorsDiv.appendElement("span") {}),
+            ColorButton(Color.GREEN, colorsDiv.appendElement("span") {}),
+            ColorButton(Color.BLUE, colorsDiv.appendElement("span") {}),
+            ColorButton(Color.PURPLE, colorsDiv.appendElement("span") {})
+        )
+        colorButtons.forEach {it.allButtons = colorButtons; it.onSelect = { this.color = it } }
+        colorButtons[0].select()
+
         consoleDiv = element.appendElement("div") {}
     }
 
@@ -100,6 +120,22 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
             field = value
         }
+
+    private class ColorButton(val color: Color, val button: Element) {
+        lateinit var allButtons: List<ColorButton>
+        var onSelect: ((Color) -> Unit)? = null
+
+        init {
+            button.setAttribute("style", "background-color: #${color.toHexString()}")
+            button.addEventListener("click", { select() })
+        }
+
+        fun select() {
+            allButtons.forEach { it.button.classList.clear() }
+            button.classList.add("selected")
+            onSelect?.invoke(color)
+        }
+    }
 }
 
 class JsBrainDisplay(element: Element) : BrainDisplay {

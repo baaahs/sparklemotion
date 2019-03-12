@@ -4,6 +4,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.Synchronized
+import kotlin.math.abs
+import kotlin.math.sin
+import kotlin.random.Random
 
 class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener {
     private lateinit var link: Network.Link
@@ -29,7 +32,7 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
         GlobalScope.launch {
             while (true) {
                 if (!mapperIsRunning) {
-                    show.nextFrame(brains, link)
+                    show.nextFrame(display.color, beatProvider.beat, brains, link)
                 }
                 delay(50)
             }
@@ -80,16 +83,13 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
 class RemoteBrain(val address: Network.Address)
 
 class SomeDumbShow {
-    var priorBrain: RemoteBrain? = null
-
-    fun nextFrame(brains: MutableMap<Network.Address, RemoteBrain>, link: Network.Link) {
-        if (priorBrain != null) {
-            link.send(priorBrain!!.address, Ports.BRAIN, BrainShaderMessage(Color.BLACK))
-        }
-        if (!brains.isEmpty()) {
-            val highlightBrain = brains.values.random()
-            link.send(highlightBrain.address, Ports.BRAIN, BrainShaderMessage(Color.random()))
+    fun nextFrame(color: Color?, beat: Int, brains: MutableMap<Network.Address, RemoteBrain>, link: Network.Link) {
+        brains.values.forEach { brain ->
+            val brainSeed = brain.address.toString().hashCode()
+            val saturation = Random(brainSeed).nextFloat() *
+                    abs(sin(brainSeed + getTimeMillis() / 1000.toDouble())).toFloat()
+            val desaturatedColor = color!!.withSaturation(saturation)
+            link.send(brain.address, Ports.BRAIN, BrainShaderMessage(desaturatedColor))
         }
     }
-
 }
