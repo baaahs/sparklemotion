@@ -20,6 +20,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
+  var L10000 = Kotlin.Long.fromInt(10000);
   var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
@@ -36,6 +37,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var toShort = Kotlin.toShort;
+  var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -472,6 +474,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.network = network;
     this.display = display;
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
+    this.isRunning_0 = false;
   }
   Object.defineProperty(Mapper.prototype, 'link_0', {
     get: function () {
@@ -483,34 +486,33 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.link_tktc8n$_0 = link;
     }
   });
-  function Coroutine$Mapper$start$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$Mapper$start$lambda$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
     this.exceptionState_0 = 1;
     this.local$this$Mapper = this$Mapper_0;
   }
-  Coroutine$Mapper$start$lambda.$metadata$ = {
+  Coroutine$Mapper$start$lambda$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$Mapper$start$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Mapper$start$lambda.prototype.constructor = Coroutine$Mapper$start$lambda;
-  Coroutine$Mapper$start$lambda.prototype.doResume = function () {
+  Coroutine$Mapper$start$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$start$lambda$lambda.prototype.constructor = Coroutine$Mapper$start$lambda$lambda;
+  Coroutine$Mapper$start$lambda$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
-            var timeMillis = 2000 + Random.Default.nextInt() % 1000 | 0;
             this.state_0 = 2;
-            this.result_0 = delay(Kotlin.Long.fromInt(timeMillis), this);
+            this.result_0 = this.local$this$Mapper.run(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
-            return this.local$this$Mapper.run(), Unit;
+            return this.result_0;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -527,22 +529,99 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       }
      while (true);
   };
-  function Mapper$start$lambda(this$Mapper_0) {
+  function Mapper$start$lambda$lambda(this$Mapper_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$Mapper$start$lambda(this$Mapper_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$Mapper$start$lambda$lambda(this$Mapper_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
+  function Mapper$start$lambda(this$Mapper) {
+    return function () {
+      if (!this$Mapper.isRunning_0) {
+        this$Mapper.isRunning_0 = true;
+        launch(coroutines.GlobalScope, void 0, void 0, Mapper$start$lambda$lambda(this$Mapper));
+      }
+      return Unit;
+    };
+  }
+  function Mapper$start$lambda_0(this$Mapper) {
+    return function () {
+      if (this$Mapper.isRunning_0) {
+        this$Mapper.isRunning_0 = false;
+      }
+      return Unit;
+    };
+  }
   Mapper.prototype.start = function () {
-    launch(coroutines.GlobalScope, void 0, void 0, Mapper$start$lambda(this));
+    this.display.onStart = Mapper$start$lambda(this);
+    this.display.onStop = Mapper$start$lambda_0(this);
   };
-  Mapper.prototype.run = function () {
-    this.link_0 = this.network.link();
-    this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this);
-    this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage());
+  function Coroutine$run_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$run_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$run_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$run_0.prototype.constructor = Coroutine$run_0;
+  Coroutine$run_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.link_0 = this.$this.network.link();
+            this.$this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this.$this);
+            this.state_0 = 2;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (!this.$this.isRunning_0) {
+              this.state_0 = 4;
+              continue;
+            }
+
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.state_0 = 3;
+            this.result_0 = delay(L10000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 2;
+            continue;
+          case 4:
+            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper.prototype.run = function (continuation_0, suspended) {
+    var instance = new Coroutine$run_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
   };
   Mapper.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
     var message = parse(bytes);
@@ -771,6 +850,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.brains_0 = LinkedHashMap_init();
     this.beatProvider_0 = new Pinky$BeatProvider(this, 120.0);
     this.show_0 = new SomeDumbShow();
+    this.mapperIsRunning_0 = false;
   }
   Object.defineProperty(Pinky.prototype, 'link_0', {
     get: function () {
@@ -907,7 +987,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           case 1:
             throw this.exception_0;
           case 2:
-            this.local$this$Pinky.show_0.nextFrame_n2m8bc$(this.local$this$Pinky.brains_0, this.local$this$Pinky.link_0);
+            if (!this.local$this$Pinky.mapperIsRunning_0) {
+              this.local$this$Pinky.show_0.nextFrame_n2m8bc$(this.local$this$Pinky.brains_0, this.local$this$Pinky.link_0);
+            }
+
             this.state_0 = 3;
             this.result_0 = delay(L50, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -947,27 +1030,11 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     launch(coroutines.GlobalScope, void 0, void 0, Pinky$start$lambda_1(this));
   };
   Pinky.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
-    var tmp$;
-    tmp$ = parse(bytes);
-    if (Kotlin.isType(tmp$, BrainHelloMessage))
+    var message = parse(bytes);
+    if (Kotlin.isType(message, BrainHelloMessage))
       this.foundBrain_0(new RemoteBrain(fromAddress));
-    else if (Kotlin.isType(tmp$, MapperHelloMessage))
-      this.sendMapperPong_0(fromAddress);
-  };
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  Pinky.prototype.sendMapperPong_0 = function (fromAddress) {
-    var tmp$ = this.link_0;
-    var tmp$_0 = Ports$Companion_getInstance().MAPPER;
-    var $receiver = this.brains_0.values;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$_1;
-    tmp$_1 = $receiver.iterator();
-    while (tmp$_1.hasNext()) {
-      var item = tmp$_1.next();
-      destination.add_11rb$(item.address.toString());
-    }
-    tmp$.send_bkw8fl$(fromAddress, tmp$_0, new PinkyPongMessage(destination));
+    else if (Kotlin.isType(message, MapperHelloMessage))
+      this.mapperIsRunning_0 = message.isRunning;
   };
   Pinky.prototype.foundBrain_0 = function (remoteBrain) {
     this.brains_0.put_xwzc9p$(remoteBrain.address, remoteBrain);
@@ -980,19 +1047,19 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.beat = 0;
     this.beatsPerMeasure = 4;
   }
-  function Coroutine$run_0($this, continuation_0) {
+  function Coroutine$run_1($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
   }
-  Coroutine$run_0.$metadata$ = {
+  Coroutine$run_1.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$run_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$run_0.prototype.constructor = Coroutine$run_0;
-  Coroutine$run_0.prototype.doResume = function () {
+  Coroutine$run_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$run_1.prototype.constructor = Coroutine$run_1;
+  Coroutine$run_1.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
@@ -1033,7 +1100,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
      while (true);
   };
   Pinky$BeatProvider.prototype.run = function (continuation_0, suspended) {
-    var instance = new Coroutine$run_0(this, continuation_0);
+    var instance = new Coroutine$run_1(this, continuation_0);
     if (suspended)
       return instance;
     else
@@ -1168,7 +1235,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         tmp$ = BrainShaderMessage$Companion_getInstance().parse_c4pr8w$(reader);
         break;
       case 'MAPPER_HELLO':
-        tmp$ = new MapperHelloMessage();
+        tmp$ = MapperHelloMessage$Companion_getInstance().parse_c4pr8w$(reader);
         break;
       case 'PINKY_PONG':
         tmp$ = PinkyPongMessage$Companion_getInstance().parse_c4pr8w$(reader);
@@ -1217,9 +1284,32 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'BrainShaderMessage',
     interfaces: [Message]
   };
-  function MapperHelloMessage() {
+  function MapperHelloMessage(isRunning) {
+    MapperHelloMessage$Companion_getInstance();
     Message.call(this, Type$MAPPER_HELLO_getInstance());
+    this.isRunning = isRunning;
   }
+  function MapperHelloMessage$Companion() {
+    MapperHelloMessage$Companion_instance = this;
+  }
+  MapperHelloMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    return new MapperHelloMessage(reader.readBoolean());
+  };
+  MapperHelloMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MapperHelloMessage$Companion_instance = null;
+  function MapperHelloMessage$Companion_getInstance() {
+    if (MapperHelloMessage$Companion_instance === null) {
+      new MapperHelloMessage$Companion();
+    }
+    return MapperHelloMessage$Companion_instance;
+  }
+  MapperHelloMessage.prototype.serialize_ep8mow$ = function (writer) {
+    writer.writeBoolean_6taknv$(this.isRunning);
+  };
   MapperHelloMessage.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'MapperHelloMessage',
@@ -1236,7 +1326,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
     var brainCount = reader.readInt();
     var brainIds = ArrayList_init();
-    for (var i = 0; i <= brainCount; i++) {
+    for (var i = 0; i < brainCount; i++) {
       brainIds.add_11rb$(reader.readString());
     }
     return new PinkyPongMessage(brainIds);
@@ -1313,6 +1403,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
     var vertices = ArrayList_init();
     var panels = ArrayList_init();
@@ -1560,9 +1652,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       bytes = new Int8Array(128);
     if (offset === void 0)
       offset = 0;
-    this.offset = offset;
     this.bytes_0 = bytes;
+    this.offset = offset;
   }
+  ByteArrayWriter.prototype.writeBoolean_6taknv$ = function (b) {
+    var tmp$;
+    this.growIfNecessary_0(1);
+    this.bytes_0[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] = b ? 1 : 0;
+  };
   ByteArrayWriter.prototype.writeByte_s8j3t7$ = function (b) {
     var tmp$;
     this.growIfNecessary_0(1);
@@ -1586,11 +1683,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.bytes_0[tmp$_2 = this.offset, this.offset = tmp$_2 + 1 | 0, tmp$_2] = toByte(l & 255);
   };
   ByteArrayWriter.prototype.writeString_61zpoe$ = function (s) {
-    var tmp$;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     this.growIfNecessary_0(4 + (2 * s.length | 0) | 0);
     this.writeInt_za3lpa$(s.length);
-    tmp$ = s.length;
-    for (var i = 0; i <= tmp$; i++) {
+    tmp$ = get_indices(s);
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
       this.writeChar_s8itvh$(s.charCodeAt(i));
     }
   };
@@ -1598,8 +1698,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return copyOf(this.bytes_0, this.offset);
   };
   ByteArrayWriter.prototype.growIfNecessary_0 = function (by) {
-    if ((this.bytes_0.length - this.offset | 0) > by) {
-      copyOf(this.bytes_0, this.bytes_0.length * 2 | 0);
+    if ((this.offset + by | 0) >= this.bytes_0.length) {
+      this.bytes_0 = copyOf(this.bytes_0, this.bytes_0.length * 2 | 0);
     }
   };
   ByteArrayWriter.$metadata$ = {
@@ -1618,6 +1718,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.bytes = bytes;
     this.offset = offset;
   }
+  ByteArrayReader.prototype.readBoolean = function () {
+    return this.bytes[this.offset] !== toByte(0);
+  };
   ByteArrayReader.prototype.readByte = function () {
     var tmp$;
     return this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$];
@@ -1636,7 +1739,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   ByteArrayReader.prototype.readString = function () {
     var length = this.readInt();
     var buf = StringBuilder_init(length);
-    for (var i = 0; i <= length; i++) {
+    for (var i = 0; i < length; i++) {
       buf.append_s8itvh$(unboxChar(this.readChar()));
     }
     return buf.toString();
@@ -1764,16 +1867,15 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.beat4_0 = null;
     this.beats_0 = null;
     this.brainCountDiv_0 = null;
-    appendElement(element, 'div', JsPinkyDisplay_init$lambda);
     appendText(element, 'Brains online: ');
-    this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_0);
-    var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_1);
-    this.beat1_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_2);
-    this.beat2_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
-    this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
-    this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_5);
+    this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
+    var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_0);
+    this.beat1_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_1);
+    this.beat2_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_2);
+    this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
+    this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
     this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_6);
+    this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_5);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
   }
@@ -1798,39 +1900,35 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     }
   });
   function JsPinkyDisplay_init$lambda($receiver) {
-    appendText($receiver, 'Pinky');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_0($receiver) {
     return Unit;
   }
   function JsPinkyDisplay_init$lambda$lambda($receiver) {
     appendText($receiver, 'Beats');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_1($receiver) {
+  function JsPinkyDisplay_init$lambda_0($receiver) {
     $receiver.id = 'beatsDiv';
     appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda);
     appendText($receiver, ' ');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_2($receiver) {
+  function JsPinkyDisplay_init$lambda_1($receiver) {
     appendText($receiver, '1');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_3($receiver) {
+  function JsPinkyDisplay_init$lambda_2($receiver) {
     appendText($receiver, '2');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_4($receiver) {
+  function JsPinkyDisplay_init$lambda_3($receiver) {
     appendText($receiver, '3');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_5($receiver) {
+  function JsPinkyDisplay_init$lambda_4($receiver) {
     appendText($receiver, '4');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_6($receiver) {
+  function JsPinkyDisplay_init$lambda_5($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -1839,8 +1937,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: [PinkyDisplay]
   };
   function JsBrainDisplay(element) {
-    this.myDiv_0 = null;
-    this.myDiv_0 = appendElement(element, 'div', JsBrainDisplay_init$lambda);
+    this.myDiv_0 = appendElement(element, 'div', JsBrainDisplay$myDiv$lambda);
   }
   JsBrainDisplay.prototype.haveLink_6qu7we$ = function (link) {
     this.clearClasses_0();
@@ -1849,7 +1946,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   JsBrainDisplay.prototype.clearClasses_0 = function () {
     clear_0(this.myDiv_0.classList);
   };
-  function JsBrainDisplay_init$lambda($receiver) {
+  function JsBrainDisplay$myDiv$lambda($receiver) {
     addClass($receiver, ['brain-offline']);
     return Unit;
   }
@@ -1860,12 +1957,66 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   function JsMapperDisplay(element) {
     this.element = element;
+    this.startButton_0 = ensureNotNull(ensureNotNull(this.element.ownerDocument).getElementById('mapperStartButton'));
+    this.stopButton_0 = ensureNotNull(ensureNotNull(this.element.ownerDocument).getElementById('mapperStopButton'));
+    this.onStart_4s3d1r$_0 = null;
+    this.onStop_dwgv5t$_0 = null;
+    this.updateButtons_0(false);
+    this.startButton_0.addEventListener('click', JsMapperDisplay_init$lambda(this));
+    this.stopButton_0.addEventListener('click', JsMapperDisplay_init$lambda_0(this));
+  }
+  Object.defineProperty(JsMapperDisplay.prototype, 'onStart', {
+    get: function () {
+      return this.onStart_4s3d1r$_0;
+    },
+    set: function (onStart) {
+      this.onStart_4s3d1r$_0 = onStart;
+    }
+  });
+  Object.defineProperty(JsMapperDisplay.prototype, 'onStop', {
+    get: function () {
+      return this.onStop_dwgv5t$_0;
+    },
+    set: function (onStop) {
+      this.onStop_dwgv5t$_0 = onStop;
+    }
+  });
+  JsMapperDisplay.prototype.updateButtons_0 = function (isRunning) {
+    set_disabled(this.startButton_0, isRunning);
+    set_disabled(this.stopButton_0, !isRunning);
+  };
+  function JsMapperDisplay_init$lambda(this$JsMapperDisplay) {
+    return function (it) {
+      var tmp$;
+      this$JsMapperDisplay.updateButtons_0(true);
+      (tmp$ = this$JsMapperDisplay.onStart) != null ? tmp$() : null;
+      return Unit;
+    };
+  }
+  function JsMapperDisplay_init$lambda_0(this$JsMapperDisplay) {
+    return function (it) {
+      var tmp$;
+      this$JsMapperDisplay.updateButtons_0(false);
+      (tmp$ = this$JsMapperDisplay.onStop) != null ? tmp$() : null;
+      return Unit;
+    };
   }
   JsMapperDisplay.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'JsMapperDisplay',
     interfaces: [MapperDisplay]
   };
+  function get_disabled($receiver) {
+    return equals($receiver.getAttribute('disabled'), 'disabled');
+  }
+  function set_disabled($receiver, value) {
+    if (value) {
+      $receiver.setAttribute('disabled', 'disabled');
+    }
+     else {
+      $receiver.removeAttribute('disabled');
+    }
+  }
   function clear_0($receiver) {
     while ($receiver.length > 0) {
       $receiver.remove(ensureNotNull($receiver.item(0)));
@@ -1874,7 +2025,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function forEach($receiver, action) {
     var tmp$;
     tmp$ = $receiver.length;
-    for (var i = 0; i <= tmp$; i++) {
+    for (var i = 0; i < tmp$; i++) {
       action(ensureNotNull($receiver.item(i)));
     }
   }
@@ -1960,6 +2111,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     get: BrainShaderMessage$Companion_getInstance
   });
   package$baaahs.BrainShaderMessage = BrainShaderMessage;
+  Object.defineProperty(MapperHelloMessage, 'Companion', {
+    get: MapperHelloMessage$Companion_getInstance
+  });
   package$baaahs.MapperHelloMessage = MapperHelloMessage;
   Object.defineProperty(PinkyPongMessage, 'Companion', {
     get: PinkyPongMessage$Companion_getInstance
