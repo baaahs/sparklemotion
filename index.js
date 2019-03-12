@@ -47,6 +47,13 @@ function selectPanel(panel, isSelected) {
   }
 }
 
+function setPanelColor(panel, color) {
+  panel.faces.visible = true;
+  panel.faceMaterial.color.r = color.red / 256.0;
+  panel.faceMaterial.color.g = color.green / 256.0;
+  panel.faceMaterial.color.b = color.blue / 256.0;
+}
+
 function initThreeJs(sheepModel, threeJsPanelBin) {
   sheepView.addEventListener('mousemove', onMouseMove, false);
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
@@ -56,10 +63,6 @@ function initThreeJs(sheepModel, threeJsPanelBin) {
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
   lineMaterial = new THREE.LineBasicMaterial({color: 0x444444});
   panelMaterial = new THREE.LineBasicMaterial({color: 0xff4444});
-  faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
-  faceMaterial.side = THREE.DoubleSide;
-  faceMaterial.transparent = true;
-  faceMaterial.opacity = 0.3;
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -94,14 +97,20 @@ function addPanel(p) {
     return new THREE.Face3(...localVerts);
   });
   faces.vertices = panelVertices;
-  var lines = p.lines.toArray().map(line => {
+  let lines = p.lines.toArray().map(line => {
     let lineGeo = new THREE.Geometry();
     lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
     return lineGeo;
   });
 
+  let faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
+  faceMaterial.side = THREE.DoubleSide;
+  faceMaterial.transparent = true;
+  faceMaterial.opacity = 0.75;
+
   var panel = {
     name: p.name,
+    faceMaterial: faceMaterial,
     faces: new THREE.Mesh(faces, faceMaterial),
     lines: lines.map(line => new THREE.Line(line, lineMaterial))
   };
@@ -135,6 +144,14 @@ function render() {
   setTimeout(() => {
     requestAnimationFrame(render);
   }, REFRESH_DELAY);
+
+  var rotSpeed = .01;
+  var x = camera.position.x;
+  var z = camera.position.z;
+  camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+  camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
+  camera.lookAt(scene.position);
+
   controls.update();
   raycaster.setFromCamera(mouse, camera);
   let intersections = raycaster.intersectObject(object);

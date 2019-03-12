@@ -17,12 +17,15 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var L60000 = Kotlin.Long.fromInt(60000);
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var L200000 = Kotlin.Long.fromInt(200000);
+  var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var L200000 = Kotlin.Long.fromInt(200000);
   var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
+  var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
+  var ensureNotNull = Kotlin.ensureNotNull;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
@@ -31,7 +34,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var toShort = Kotlin.toShort;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
@@ -46,10 +48,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  Cat.prototype = Object.create(Animal.prototype);
+  Cat.prototype.constructor = Cat;
+  Dog.prototype = Object.create(Animal.prototype);
+  Dog.prototype.constructor = Dog;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
   BrainHelloMessage.prototype.constructor = BrainHelloMessage;
+  BrainShaderMessage.prototype = Object.create(Message.prototype);
+  BrainShaderMessage.prototype.constructor = BrainShaderMessage;
   MapperHelloMessage.prototype = Object.create(Message.prototype);
   MapperHelloMessage.prototype.constructor = MapperHelloMessage;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
@@ -216,7 +224,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             throw this.exception_0;
           case 2:
             if (!this.$this.receivingInstructions_0) {
-              this.$this.link_0.broadcast_3fbn1q$(Ports$Companion_getInstance().PINKY, (new BrainHelloMessage()).toBytes());
+              this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new BrainHelloMessage());
             }
 
             this.state_0 = 3;
@@ -251,6 +259,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       return instance.doResume(null);
   };
   SimBrain.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
+    var message = parse(bytes);
+    if (Kotlin.isType(message, BrainShaderMessage))
+      this.jsPanel_0.color = message.color;
   };
   SimBrain.$metadata$ = {
     kind: Kind_CLASS,
@@ -292,6 +303,66 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'MapperDisplay',
     interfaces: []
   };
+  function ThingWithMass() {
+  }
+  ThingWithMass.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ThingWithMass',
+    interfaces: []
+  };
+  function Animal(age) {
+    this.age = age;
+  }
+  Animal.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Animal',
+    interfaces: []
+  };
+  function Cat(age) {
+    Animal.call(this, age);
+  }
+  Cat.prototype.weightInKilograms = function () {
+    return 2.0 * this.age;
+  };
+  Cat.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Cat',
+    interfaces: [ThingWithMass, Animal]
+  };
+  function Dog(age) {
+    Animal.call(this, age);
+  }
+  Dog.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Dog',
+    interfaces: [Animal]
+  };
+  function Glass(height, diameter, fullness) {
+    this.height = height;
+    this.diameter = diameter;
+    this.fullness = fullness;
+  }
+  Glass.prototype.weightInKilograms = function () {
+    return this.computeVolume() / 1000;
+  };
+  Glass.prototype.computeVolume = function () {
+    return this.diameter / 2 * (this.diameter / 2) * math.PI * this.height;
+  };
+  Glass.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Glass',
+    interfaces: [ThingWithMass]
+  };
+  function kevmoMain() {
+    new Cat(3);
+    var kitty = new Cat(5);
+    var myGlass = new Glass(3.5, 4.0, 0.3);
+    println('volume of the glass is ' + myGlass.computeVolume());
+    var yourglass = new Glass(6.0, 12.0, 0.7);
+    println('your glass contains ' + yourglass.computeVolume() + ' milliliters');
+    var totalWeight = kitty.weightInKilograms() + myGlass.weightInKilograms() + yourglass.weightInKilograms();
+    println('The weightInKilograms of our cats and glasses is: ' + totalWeight);
+  }
   var main;
   function get_main() {
     if (main == null)
@@ -378,7 +449,17 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   function JsPanel(jsPanelObj) {
     this.jsPanelObj_0 = jsPanelObj;
+    this.color_1o5p8y$_0 = Color$Companion_getInstance().BLACK;
   }
+  Object.defineProperty(JsPanel.prototype, 'color', {
+    get: function () {
+      return this.color_1o5p8y$_0;
+    },
+    set: function (value) {
+      setPanelColor(this.jsPanelObj_0, value);
+      this.color_1o5p8y$_0 = this.color;
+    }
+  });
   JsPanel.prototype.select = function () {
     selectPanel(this.jsPanelObj_0, true);
   };
@@ -461,7 +542,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Mapper.prototype.run = function () {
     this.link_0 = this.network.link();
     this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this);
-    this.link_0.broadcast_3fbn1q$(Ports$Companion_getInstance().PINKY, (new MapperHelloMessage()).toBytes());
+    this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage());
   };
   Mapper.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
     var message = parse(bytes);
@@ -484,6 +565,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   function Network$Link() {
   }
+  Network$Link.prototype.send_bkw8fl$ = function (toAddress, port, message) {
+    this.send_z62edq$(toAddress, port, message.toBytes());
+  };
+  Network$Link.prototype.broadcast_ecsl0t$ = function (port, message) {
+    this.broadcast_3fbn1q$(port, message.toBytes());
+  };
   Network$Link.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Link',
@@ -683,6 +770,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.link_e4s3v3$_0 = this.link_e4s3v3$_0;
     this.brains_0 = LinkedHashMap_init();
     this.beatProvider_0 = new Pinky$BeatProvider(this, 120.0);
+    this.show_0 = new SomeDumbShow();
   }
   Object.defineProperty(Pinky.prototype, 'link_0', {
     get: function () {
@@ -796,9 +884,67 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         return instance.doResume(null);
     };
   }
+  function Coroutine$Pinky$start$lambda_1(this$Pinky_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$Pinky = this$Pinky_0;
+  }
+  Coroutine$Pinky$start$lambda_1.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Pinky$start$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Pinky$start$lambda_1.prototype.constructor = Coroutine$Pinky$start$lambda_1;
+  Coroutine$Pinky$start$lambda_1.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.local$this$Pinky.show_0.nextFrame_n2m8bc$(this.local$this$Pinky.brains_0, this.local$this$Pinky.link_0);
+            this.state_0 = 3;
+            this.result_0 = delay(L50, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 2;
+            continue;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Pinky$start$lambda_1(this$Pinky_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$Pinky$start$lambda_1(this$Pinky_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
   Pinky.prototype.start = function () {
     launch(coroutines.GlobalScope, void 0, void 0, Pinky$start$lambda(this));
     launch(coroutines.GlobalScope, void 0, void 0, Pinky$start$lambda_0(this));
+    launch(coroutines.GlobalScope, void 0, void 0, Pinky$start$lambda_1(this));
   };
   Pinky.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
     var tmp$;
@@ -819,12 +965,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     tmp$_1 = $receiver.iterator();
     while (tmp$_1.hasNext()) {
       var item = tmp$_1.next();
-      destination.add_11rb$(item.fromAddress.toString());
+      destination.add_11rb$(item.address.toString());
     }
-    tmp$.send_z62edq$(fromAddress, tmp$_0, (new PinkyPongMessage(destination)).toBytes());
+    tmp$.send_bkw8fl$(fromAddress, tmp$_0, new PinkyPongMessage(destination));
   };
   Pinky.prototype.foundBrain_0 = function (remoteBrain) {
-    this.brains_0.put_xwzc9p$(remoteBrain.fromAddress, remoteBrain);
+    this.brains_0.put_xwzc9p$(remoteBrain.address, remoteBrain);
     this.display.brainCount = this.brains_0.size;
   };
   function Pinky$BeatProvider($outer, bpm) {
@@ -903,12 +1049,30 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Pinky',
     interfaces: [Network$Listener]
   };
-  function RemoteBrain(fromAddress) {
-    this.fromAddress = fromAddress;
+  function RemoteBrain(address) {
+    this.address = address;
   }
   RemoteBrain.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RemoteBrain',
+    interfaces: []
+  };
+  function SomeDumbShow() {
+    this.priorBrain = null;
+  }
+  var random = Kotlin.kotlin.collections.random_iscd7z$;
+  SomeDumbShow.prototype.nextFrame_n2m8bc$ = function (brains, link) {
+    if (this.priorBrain != null) {
+      link.send_bkw8fl$(ensureNotNull(this.priorBrain).address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().BLACK));
+    }
+    if (!brains.isEmpty()) {
+      var highlightBrain = random(brains.values, Random.Default);
+      link.send_bkw8fl$(highlightBrain.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().random()));
+    }
+  };
+  SomeDumbShow.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SomeDumbShow',
     interfaces: []
   };
   function Ports() {
@@ -946,13 +1110,19 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     Type_initFields = function () {
     };
     Type$BRAIN_HELLO_instance = new Type('BRAIN_HELLO', 0);
-    Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 1);
-    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 2);
+    Type$BRAIN_PANEL_SHADE_instance = new Type('BRAIN_PANEL_SHADE', 1);
+    Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 2);
+    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 3);
   }
   var Type$BRAIN_HELLO_instance;
   function Type$BRAIN_HELLO_getInstance() {
     Type_initFields();
     return Type$BRAIN_HELLO_instance;
+  }
+  var Type$BRAIN_PANEL_SHADE_instance;
+  function Type$BRAIN_PANEL_SHADE_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_PANEL_SHADE_instance;
   }
   var Type$MAPPER_HELLO_instance;
   function Type$MAPPER_HELLO_getInstance() {
@@ -970,13 +1140,15 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: [Enum]
   };
   function Type$values() {
-    return [Type$BRAIN_HELLO_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$PINKY_PONG_getInstance()];
+    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$PINKY_PONG_getInstance()];
   }
   Type.values = Type$values;
   function Type$valueOf(name) {
     switch (name) {
       case 'BRAIN_HELLO':
         return Type$BRAIN_HELLO_getInstance();
+      case 'BRAIN_PANEL_SHADE':
+        return Type$BRAIN_PANEL_SHADE_getInstance();
       case 'MAPPER_HELLO':
         return Type$MAPPER_HELLO_getInstance();
       case 'PINKY_PONG':
@@ -992,11 +1164,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       case 'BRAIN_HELLO':
         tmp$ = new BrainHelloMessage();
         break;
+      case 'BRAIN_PANEL_SHADE':
+        tmp$ = BrainShaderMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        break;
       case 'MAPPER_HELLO':
         tmp$ = new MapperHelloMessage();
         break;
       case 'PINKY_PONG':
-        tmp$ = PinkyPongMessage$Companion_getInstance().parse_fqrh44$(bytes);
+        tmp$ = PinkyPongMessage$Companion_getInstance().parse_c4pr8w$(reader);
         break;
       default:tmp$ = Kotlin.noWhenBranchMatched();
         break;
@@ -1009,6 +1184,37 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   BrainHelloMessage.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrainHelloMessage',
+    interfaces: [Message]
+  };
+  function BrainShaderMessage(color) {
+    BrainShaderMessage$Companion_getInstance();
+    Message.call(this, Type$BRAIN_PANEL_SHADE_getInstance());
+    this.color = color;
+  }
+  function BrainShaderMessage$Companion() {
+    BrainShaderMessage$Companion_instance = this;
+  }
+  BrainShaderMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    return new BrainShaderMessage(Color$Companion_getInstance().parse_c4pr8w$(reader));
+  };
+  BrainShaderMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainShaderMessage$Companion_instance = null;
+  function BrainShaderMessage$Companion_getInstance() {
+    if (BrainShaderMessage$Companion_instance === null) {
+      new BrainShaderMessage$Companion();
+    }
+    return BrainShaderMessage$Companion_instance;
+  }
+  BrainShaderMessage.prototype.serialize_ep8mow$ = function (writer) {
+    this.color.serialize_ep8mow$(writer);
+  };
+  BrainShaderMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainShaderMessage',
     interfaces: [Message]
   };
   function MapperHelloMessage() {
@@ -1027,8 +1233,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function PinkyPongMessage$Companion() {
     PinkyPongMessage$Companion_instance = this;
   }
-  PinkyPongMessage$Companion.prototype.parse_fqrh44$ = function (bytes) {
-    var reader = new ByteArrayReader(bytes, 1);
+  PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
     var brainCount = reader.readInt();
     var brainIds = ArrayList_init();
     for (var i = 0; i <= brainCount; i++) {
@@ -1048,9 +1253,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     }
     return PinkyPongMessage$Companion_instance;
   }
-  PinkyPongMessage.prototype.toBytes = function () {
-    var writer = new ByteArrayWriter();
-    writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
+  PinkyPongMessage.prototype.serialize_ep8mow$ = function (writer) {
     writer.writeInt_za3lpa$(this.brainIds.size);
     var tmp$;
     tmp$ = this.brainIds.iterator();
@@ -1058,7 +1261,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var element = tmp$.next();
       writer.writeString_61zpoe$(element);
     }
-    return writer.toBytes();
   };
   PinkyPongMessage.$metadata$ = {
     kind: Kind_CLASS,
@@ -1069,12 +1271,15 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.type = type;
   }
   Message.prototype.toBytes = function () {
-    var byteArray = new Int8Array(1 + this.size_dh4e42$_0() | 0);
-    byteArray[0] = toByte(this.type.ordinal);
-    return byteArray;
+    var writer = ByteArrayWriter_init(1 + this.size() | 0);
+    writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
+    this.serialize_ep8mow$(writer);
+    return writer.toBytes();
   };
-  Message.prototype.size_dh4e42$_0 = function () {
-    return 0;
+  Message.prototype.serialize_ep8mow$ = function (writer) {
+  };
+  Message.prototype.size = function () {
+    return 127;
   };
   Message.$metadata$ = {
     kind: Kind_CLASS,
@@ -1282,6 +1487,73 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     kind: Kind_CLASS,
     simpleName: 'SheepModel',
     interfaces: []
+  };
+  function Color(red, green, blue) {
+    Color$Companion_getInstance();
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+  }
+  Color.prototype.serialize_ep8mow$ = function (writer) {
+    writer.writeByte_s8j3t7$(toByte(this.red & 255));
+    writer.writeByte_s8j3t7$(toByte(this.green & 255));
+    writer.writeByte_s8j3t7$(toByte(this.blue & 255));
+  };
+  Color.prototype.toInt = function () {
+    return this.red << 16 & 16711680 | this.green << 8 & 65280 | this.blue & 255;
+  };
+  function Color$Companion() {
+    Color$Companion_instance = this;
+    this.BLACK = new Color(0, 0, 0);
+    this.WHITE = new Color(-128, -128, -128);
+  }
+  Color$Companion.prototype.random = function () {
+    return new Color(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
+  };
+  Color$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    return new Color(reader.readByte() & 255, reader.readByte() & 255, reader.readByte() & 255);
+  };
+  Color$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Color$Companion_instance = null;
+  function Color$Companion_getInstance() {
+    if (Color$Companion_instance === null) {
+      new Color$Companion();
+    }
+    return Color$Companion_instance;
+  }
+  Color.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Color',
+    interfaces: []
+  };
+  Color.prototype.component1 = function () {
+    return this.red;
+  };
+  Color.prototype.component2 = function () {
+    return this.green;
+  };
+  Color.prototype.component3 = function () {
+    return this.blue;
+  };
+  Color.prototype.copy_qt1dr2$ = function (red, green, blue) {
+    return new Color(red === void 0 ? this.red : red, green === void 0 ? this.green : green, blue === void 0 ? this.blue : blue);
+  };
+  Color.prototype.toString = function () {
+    return 'Color(red=' + Kotlin.toString(this.red) + (', green=' + Kotlin.toString(this.green)) + (', blue=' + Kotlin.toString(this.blue)) + ')';
+  };
+  Color.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.red) | 0;
+    result = result * 31 + Kotlin.hashCode(this.green) | 0;
+    result = result * 31 + Kotlin.hashCode(this.blue) | 0;
+    return result;
+  };
+  Color.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.red, other.red) && Kotlin.equals(this.green, other.green) && Kotlin.equals(this.blue, other.blue)))));
   };
   function ByteArrayWriter(bytes, offset) {
     if (bytes === void 0)
@@ -1643,6 +1915,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   package$baaahs.MapperDisplay = MapperDisplay;
+  _.ThingWithMass = ThingWithMass;
+  _.Animal = Animal;
+  _.Cat = Cat;
+  _.Dog = Dog;
+  _.Glass = Glass;
+  _.kevmoMain = kevmoMain;
   Object.defineProperty(package$baaahs, 'main', {
     get: get_main,
     set: set_main
@@ -1658,12 +1936,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Pinky.BeatProvider = Pinky$BeatProvider;
   package$baaahs.Pinky = Pinky;
   package$baaahs.RemoteBrain = RemoteBrain;
+  package$baaahs.SomeDumbShow = SomeDumbShow;
   Object.defineProperty(Ports, 'Companion', {
     get: Ports$Companion_getInstance
   });
   package$baaahs.Ports = Ports;
   Object.defineProperty(Type, 'BRAIN_HELLO', {
     get: Type$BRAIN_HELLO_getInstance
+  });
+  Object.defineProperty(Type, 'BRAIN_PANEL_SHADE', {
+    get: Type$BRAIN_PANEL_SHADE_getInstance
   });
   Object.defineProperty(Type, 'MAPPER_HELLO', {
     get: Type$MAPPER_HELLO_getInstance
@@ -1674,6 +1956,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.Type = Type;
   package$baaahs.parse_fqrh44$ = parse;
   package$baaahs.BrainHelloMessage = BrainHelloMessage;
+  Object.defineProperty(BrainShaderMessage, 'Companion', {
+    get: BrainShaderMessage$Companion_getInstance
+  });
+  package$baaahs.BrainShaderMessage = BrainShaderMessage;
   package$baaahs.MapperHelloMessage = MapperHelloMessage;
   Object.defineProperty(PinkyPongMessage, 'Companion', {
     get: PinkyPongMessage$Companion_getInstance
@@ -1686,6 +1972,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepModel.Faces = SheepModel$Faces;
   SheepModel.Panel = SheepModel$Panel;
   package$baaahs.SheepModel = SheepModel;
+  Object.defineProperty(Color, 'Companion', {
+    get: Color$Companion_getInstance
+  });
+  package$baaahs.Color = Color;
   package$baaahs.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$baaahs.ByteArrayWriter = ByteArrayWriter;
   package$baaahs.ByteArrayReader = ByteArrayReader;
@@ -1705,6 +1995,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Object.defineProperty(package$sample, 'Platform', {
     get: Platform_getInstance
   });
+  FakeNetwork$FakeLink.prototype.send_bkw8fl$ = Network$Link.prototype.send_bkw8fl$;
+  FakeNetwork$FakeLink.prototype.broadcast_ecsl0t$ = Network$Link.prototype.broadcast_ecsl0t$;
   Kotlin.defineModule('play', _);
   return _;
 }(typeof play === 'undefined' ? {} : play, kotlin, this['kotlinx-coroutines-core']);
