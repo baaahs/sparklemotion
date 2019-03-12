@@ -27,6 +27,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
+  var hashCode = Kotlin.hashCode;
+  var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var Enum = Kotlin.kotlin.Enum;
@@ -37,6 +39,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var numberToInt = Kotlin.numberToInt;
   var toShort = Kotlin.toShort;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
@@ -1016,7 +1019,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             throw this.exception_0;
           case 2:
             if (!this.local$this$Pinky.mapperIsRunning_0) {
-              this.local$this$Pinky.show_0.nextFrame_n2m8bc$(this.local$this$Pinky.brains_0, this.local$this$Pinky.link_0);
+              this.local$this$Pinky.show_0.nextFrame_lfotay$(this.local$this$Pinky.display.color, this.local$this$Pinky.beatProvider_0.beat, this.local$this$Pinky.brains_0, this.local$this$Pinky.link_0);
             }
 
             this.state_0 = 3;
@@ -1153,16 +1156,20 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: []
   };
   function SomeDumbShow() {
-    this.priorBrain = null;
   }
-  var random = Kotlin.kotlin.collections.random_iscd7z$;
-  SomeDumbShow.prototype.nextFrame_n2m8bc$ = function (brains, link) {
-    if (this.priorBrain != null) {
-      link.send_bkw8fl$(ensureNotNull(this.priorBrain).address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().BLACK));
-    }
-    if (!brains.isEmpty()) {
-      var highlightBrain = random(brains.values, Random.Default);
-      link.send_bkw8fl$(highlightBrain.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(Color$Companion_getInstance().random()));
+  var Math_0 = Math;
+  SomeDumbShow.prototype.nextFrame_lfotay$ = function (color, beat, brains, link) {
+    var tmp$;
+    tmp$ = brains.values.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var brainSeed = hashCode(element.address.toString());
+      var tmp$_0 = Random_0(brainSeed).nextFloat();
+      var x = brainSeed + getTimeMillis().toNumber() / 1000;
+      var x_0 = Math_0.sin(x);
+      var saturation = tmp$_0 * Math_0.abs(x_0);
+      var desaturatedColor = ensureNotNull(color).withSaturation_mx4ult$(saturation);
+      link.send_bkw8fl$(element.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(desaturatedColor));
     }
   };
   SomeDumbShow.$metadata$ = {
@@ -1706,10 +1713,39 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Color.prototype.toInt = function () {
     return this.red << 16 & 16711680 | this.green << 8 & 65280 | this.blue & 255;
   };
+  Color.prototype.toHexString = function () {
+    return this.toHexString_s8ev3n$(this.red) + this.toHexString_s8ev3n$(this.green) + this.toHexString_s8ev3n$(this.blue);
+  };
+  Color.prototype.toHexString_s8ev3n$ = function ($receiver) {
+    if ($receiver < 0) {
+      throw Exception_init("can't toHexString() negative ints");
+    }
+    if ($receiver < 16) {
+      return '0' + toString($receiver, 16);
+    }
+     else {
+      return toString($receiver, 16);
+    }
+  };
+  Color.prototype.withSaturation_mx4ult$ = function (saturation) {
+    var desaturation = 1 - saturation;
+    var b = this.red + numberToInt((255 - this.red | 0) * desaturation) | 0;
+    var tmp$ = Math_0.min(255, b);
+    var b_0 = this.green + numberToInt((255 - this.green | 0) * desaturation) | 0;
+    var tmp$_0 = Math_0.min(255, b_0);
+    var b_1 = this.blue + numberToInt((255 - this.blue | 0) * desaturation) | 0;
+    return new Color(tmp$, tmp$_0, Math_0.min(255, b_1));
+  };
   function Color$Companion() {
     Color$Companion_instance = this;
     this.BLACK = new Color(0, 0, 0);
     this.WHITE = new Color(255, 255, 255);
+    this.RED = new Color(255, 0, 0);
+    this.ORANGE = new Color(255, 127, 0);
+    this.YELLOW = new Color(255, 255, 0);
+    this.GREEN = new Color(0, 255, 0);
+    this.BLUE = new Color(0, 0, 255);
+    this.PURPLE = new Color(255, 0, 255);
   }
   Color$Companion.prototype.random = function () {
     return new Color(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
@@ -1972,12 +2008,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: [NetworkDisplay]
   };
   function JsPinkyDisplay(element) {
+    this.color_y02qw7$_0 = null;
     this.consoleDiv_0 = null;
     this.beat1_0 = null;
     this.beat2_0 = null;
     this.beat3_0 = null;
     this.beat4_0 = null;
     this.beats_0 = null;
+    this.colorButtons_0 = null;
     this.brainCountDiv_0 = null;
     appendText(element, 'Brains online: ');
     this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
@@ -1987,10 +2025,28 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
     this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
     this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_5);
+    var colorsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_5);
+    this.colorButtons_0 = listOf([new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().WHITE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_6)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().RED, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_7)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().ORANGE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_8)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().YELLOW, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_9)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().GREEN, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_10)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().BLUE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_11)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().PURPLE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_12))]);
+    var tmp$;
+    tmp$ = this.colorButtons_0.iterator();
+    while (tmp$.hasNext()) {
+      var element_0 = tmp$.next();
+      element_0.allButtons = this.colorButtons_0;
+      element_0.onSelect = JsPinkyDisplay_init$lambda$lambda_1(this);
+    }
+    this.colorButtons_0.get_za3lpa$(0).select();
+    this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_13);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
   }
+  Object.defineProperty(JsPinkyDisplay.prototype, 'color', {
+    get: function () {
+      return this.color_y02qw7$_0;
+    },
+    set: function (color) {
+      this.color_y02qw7$_0 = color;
+    }
+  });
   Object.defineProperty(JsPinkyDisplay.prototype, 'brainCount', {
     get: function () {
       return this.brainCount_tt9c5b$_0;
@@ -2011,17 +2067,56 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.beat_o13evy$_0 = value;
     }
   });
+  function JsPinkyDisplay$ColorButton(color, button) {
+    this.color = color;
+    this.button = button;
+    this.allButtons_nmnvz3$_0 = this.allButtons_nmnvz3$_0;
+    this.onSelect = null;
+    this.button.setAttribute('style', 'background-color: #' + this.color.toHexString());
+    this.button.addEventListener('click', JsPinkyDisplay$JsPinkyDisplay$ColorButton_init$lambda(this));
+  }
+  Object.defineProperty(JsPinkyDisplay$ColorButton.prototype, 'allButtons', {
+    get: function () {
+      if (this.allButtons_nmnvz3$_0 == null)
+        return throwUPAE('allButtons');
+      return this.allButtons_nmnvz3$_0;
+    },
+    set: function (allButtons) {
+      this.allButtons_nmnvz3$_0 = allButtons;
+    }
+  });
+  JsPinkyDisplay$ColorButton.prototype.select = function () {
+    var tmp$;
+    var tmp$_0;
+    tmp$_0 = this.allButtons.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      clear_0(element.button.classList);
+    }
+    this.button.classList.add('selected');
+    (tmp$ = this.onSelect) != null ? tmp$(this.color) : null;
+  };
+  function JsPinkyDisplay$JsPinkyDisplay$ColorButton_init$lambda(this$ColorButton) {
+    return function (it) {
+      this$ColorButton.select();
+      return Unit;
+    };
+  }
+  JsPinkyDisplay$ColorButton.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorButton',
+    interfaces: []
+  };
   function JsPinkyDisplay_init$lambda($receiver) {
     return Unit;
   }
   function JsPinkyDisplay_init$lambda$lambda($receiver) {
-    appendText($receiver, 'Beats');
+    appendText($receiver, 'Beats: ');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_0($receiver) {
     $receiver.id = 'beatsDiv';
     appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda);
-    appendText($receiver, ' ');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_1($receiver) {
@@ -2040,7 +2135,43 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     appendText($receiver, '4');
     return Unit;
   }
+  function JsPinkyDisplay_init$lambda$lambda_0($receiver) {
+    appendText($receiver, 'Colors: ');
+    return Unit;
+  }
   function JsPinkyDisplay_init$lambda_5($receiver) {
+    $receiver.id = 'colorsDiv';
+    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda_0);
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_6($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_7($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_8($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_9($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_10($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_11($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_12($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda$lambda_1(this$JsPinkyDisplay) {
+    return function (it) {
+      this$JsPinkyDisplay.color = it;
+      return Unit;
+    };
+  }
+  function JsPinkyDisplay_init$lambda_13($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
