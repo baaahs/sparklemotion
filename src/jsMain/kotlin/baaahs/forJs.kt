@@ -133,7 +133,7 @@ private fun DOMTokenList.clear() {
 }
 
 fun <T> ItemArrayLike<T>.forEach(action: (T) -> Unit) {
-    for (i in 0..length) {
+    for (i in 0 until length) {
         action(item(i)!!)
     }
 }

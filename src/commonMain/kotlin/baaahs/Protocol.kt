@@ -43,7 +43,7 @@ class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
         fun parse(reader: ByteArrayReader): PinkyPongMessage {
             val brainCount = reader.readInt();
             val brainIds = mutableListOf<String>()
-            for (i in 0..brainCount) {
+            for (i in 0 until brainCount) {
                 brainIds.add(reader.readString())
             }
             return PinkyPongMessage(brainIds)

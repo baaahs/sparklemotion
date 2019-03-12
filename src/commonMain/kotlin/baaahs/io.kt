@@ -29,7 +29,7 @@ class ByteArrayWriter(bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
     fun writeString(s: String) {
         growIfNecessary(4 + 2 * s.length)
         writeInt(s.length)
-        for (i in 0..s.length) {
+        for (i in s.indices) {
             writeChar(s[i])
         }
     }
@@ -39,8 +39,8 @@ class ByteArrayWriter(bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
     }
 
     private fun growIfNecessary(by: Int) {
-        if (bytes.size - offset > by) {
-            bytes.copyOf(bytes.size * 2)
+        if (offset + by >= bytes.size) {
+            bytes = bytes.copyOf(bytes.size * 2)
         }
     }
 }
@@ -63,7 +63,7 @@ class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
     fun readString(): String {
         var length = readInt()
         val buf = StringBuilder(length)
-        for (i in 0..length) {
+        for (i in 0 until length) {
             buf.append(readChar())
         }
         return buf.toString()
