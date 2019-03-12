@@ -11,3 +11,5 @@ actual fun getResource(name: String): String {
 actual fun getDisplay(): Display {
     throw UnsupportedOperationException("not implemented")
 }
+
+actual fun getTimeMillis(): Long = System.currentTimeMillis()

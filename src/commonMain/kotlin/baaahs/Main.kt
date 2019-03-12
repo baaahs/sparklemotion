@@ -47,6 +47,7 @@ external fun addPanel(panel: SheepModel.Panel): Any
 external fun startRender()
 external fun selectPanel(panel: Any, isSelected: Boolean)
 
+expect fun getTimeMillis() : Long
 expect fun doRunBlocking(block: suspend () -> Unit)
 
 expect fun getResource(name: String): String

@@ -12,6 +12,7 @@ import kotlin.dom.addClass
 import kotlin.dom.appendElement
 import kotlin.dom.appendText
 import kotlin.dom.clear
+import kotlin.js.Date
 
 actual fun doRunBlocking(block: suspend () -> Unit): dynamic = GlobalScope.promise { block() }
 
@@ -62,7 +63,12 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val consoleDiv: Element
-    private var brainCountDiv: Element
+    private val beat1: Element
+    private val beat2: Element
+    private val beat3: Element
+    private val beat4: Element
+    private val beats: List<Element>
+    private val brainCountDiv: Element
 
     init {
         element.appendElement("div") {
@@ -71,6 +77,16 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
         element.appendText("Brains online: ")
         brainCountDiv = element.appendElement("span") {}
+        val beatsDiv = element.appendElement("div") {
+            id = "beatsDiv"
+            appendElement("b") { appendText("Beats") }
+            appendText(" ")
+        }
+        beat1 = beatsDiv.appendElement("span") { appendText("1") }
+        beat2 = beatsDiv.appendElement("span") { appendText("2") }
+        beat3 = beatsDiv.appendElement("span") { appendText("3") }
+        beat4 = beatsDiv.appendElement("span") { appendText("4") }
+        beats = listOf(beat1, beat2, beat3, beat4)
         consoleDiv = element.appendElement("div") {}
     }
 
@@ -78,6 +94,14 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         set(value) {
             brainCountDiv.clear()
             brainCountDiv.appendText(value.toString())
+            field = value
+        }
+
+    override var beat: Int = 0
+        set (value) {
+            beats[field].classList.clear()
+            beats[value].classList.add("selected")
+
             field = value
         }
 }
@@ -113,3 +137,5 @@ fun <T> ItemArrayLike<T>.forEach(action: (T) -> Unit) {
         action(item(i)!!)
     }
 }
+
+actual fun getTimeMillis(): Long = Date().getTime().toLong()
