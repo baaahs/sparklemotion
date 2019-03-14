@@ -39,13 +39,21 @@ class BrainHelloMessage(val panelName: String) : Message(Type.BRAIN_HELLO) {
     }
 }
 
-class BrainShaderMessage(val color: Color) : Message(Type.BRAIN_PANEL_SHADE) {
+class BrainShaderMessage(val shaderBuffer: ShaderBuffer) : Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
-        fun parse(reader: ByteArrayReader) = BrainShaderMessage(Color.parse(reader))
+        fun parse(reader: ByteArrayReader): BrainShaderMessage {
+            val shaderType = ShaderType.values()[reader.readInt()]
+            val shaderBuffer: ShaderBuffer = when (shaderType) {
+                ShaderType.SOLID -> SolidShaderBuffer.parse(reader)
+                ShaderType.PIXEL -> PixelShaderBuffer.parse(reader)
+            }
+            return BrainShaderMessage(shaderBuffer)
+        }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        color.serialize(writer)
+        writer.writeInt(shaderBuffer.type.ordinal)
+        shaderBuffer.serialize(writer)
     }
 }
 

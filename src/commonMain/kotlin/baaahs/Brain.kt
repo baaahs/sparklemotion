@@ -48,7 +48,12 @@ class SimBrain(
         val message = parse(bytes)
         when (message) {
             is BrainShaderMessage -> {
-                jsPanel.color = message.color
+                when (message.shaderBuffer) {
+                    is SolidShaderBuffer ->
+                        jsPanel.setAllPixelsTo(message.shaderBuffer.color)
+                    is PixelShaderBuffer ->
+                        jsPanel.setPixelsTo(message.shaderBuffer.colors)
+                }
             }
             is BrainIdRequest -> {
                 link.send(fromAddress, message.port, BrainIdResponse(""))

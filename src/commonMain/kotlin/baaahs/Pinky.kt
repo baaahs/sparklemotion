@@ -29,13 +29,13 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
         }
 
         GlobalScope.launch {
-            var showContext = ShowContext(brains.values.toList())
+            var showContext = ShowRunner(brains.values.toList())
             var show = SomeDumbShow(sheepModel, showContext)
 
             while (true) {
                 if (!mapperIsRunning) {
                     if (brainsChanged) {
-                        showContext = ShowContext(brains.values.toList())
+                        showContext = ShowRunner(brains.values.toList())
                         show = SomeDumbShow(sheepModel, showContext)
                         brainsChanged = false
                     }
@@ -95,15 +95,21 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
     }
 }
 
-class ShowContext(val brains: List<RemoteBrain>) {
-    lateinit var brainBuffers : List<Pair<RemoteBrain?, SolidShaderBuffer>>
+class ShowRunner(val brains: List<RemoteBrain>) {
+    val brainBuffers : MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
 
-    fun getShaderBuffersFor(shaderType: ShaderType, panels: List<Panel>): List<SolidShaderBuffer> {
-        brainBuffers = panels.map { panel ->
-            val brain = brains.find { it.panelName == panel.name }
-            Pair(brain, SolidShaderBuffer())
-        }
-        return brainBuffers.map { it.second }
+    fun getSolidShaderBuffer(panel: Panel): SolidShaderBuffer {
+        val remoteBrain = brains.find { it.panelName == panel.name }
+        val buffer = SolidShaderBuffer()
+        brainBuffers.add(Pair(remoteBrain, buffer))
+        return buffer
+    }
+
+    fun getPixelShaderBuffer(panel: Panel): PixelShaderBuffer {
+        val remoteBrain = brains.find { it.panelName == panel.name }
+        val buffer = PixelShaderBuffer()
+        brainBuffers.add(Pair(remoteBrain, buffer))
+        return buffer
     }
 
     fun sendToBrains(link: Network.Link) {
@@ -112,7 +118,7 @@ class ShowContext(val brains: List<RemoteBrain>) {
             val shaderBuffer = brainBuffer.second
 //            println("sending color = ${shaderBuffer.color} to ${remoteBrain}")
             if (remoteBrain != null) {
-                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer.color))
+                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer))
             }
         }
     }
