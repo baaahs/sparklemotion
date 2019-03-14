@@ -2085,22 +2085,23 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   SomeDumbShow.prototype.nextFrame = function () {
-    var seed = {v: Random_0(0)};
+    var seed = Random_0(0);
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
+      var baseSaturation = seed.nextFloat();
+      var panelColor = seed.nextFloat() < 0.1 ? Color$Companion_getInstance().random() : this.colorPicker.color;
       var tmp$_0, tmp$_0_0;
       var index = 0;
       tmp$_0 = element.colors.iterator();
       while (tmp$_0.hasNext()) {
         var item = tmp$_0.next();
         var i = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
-        var tmp$_1 = seed.v.nextFloat();
-        var x = seed.v.nextDouble() + getTimeMillis().toNumber() / 1000;
+        var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
         var x_0 = Math_0.sin(x);
-        var saturation = tmp$_1 * Math_0.abs(x_0);
-        var desaturatedColor = this.colorPicker.color.withSaturation_mx4ult$(saturation);
+        var saturation = baseSaturation * Math_0.abs(x_0);
+        var desaturatedColor = panelColor.withSaturation_mx4ult$(saturation);
         element.colors.set_wxm5ur$(i, desaturatedColor);
       }
     }
