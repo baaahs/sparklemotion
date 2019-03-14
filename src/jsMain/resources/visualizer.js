@@ -141,13 +141,15 @@ function addPanel(p) {
     }
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
+    colorsBuffer.dynamic = true;
+    pixelsGeometry.addAttribute('color', colorsBuffer);
     const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
     const points = new THREE.Points(pixelsGeometry, material);
     scene.add(points);
 
     panel.pixelCount = pixelCount;
-    panel.pixelColors = colors;
+    panel.pixelColorsBuffer = colorsBuffer;
     panel.pixelsGeometry = pixelsGeometry;
   }
 
@@ -176,11 +178,11 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
     const count = Math.min(panel.pixelCount, pixelColorsA.length);
     for (let i = 0; i < count; i++) {
       const pColor = pixelColorsA[i];
-      panel.pixelColors[i * 3] = pColor.red / 256.0;
-      panel.pixelColors[i * 3 + 1] = pColor.green / 256.0;
-      panel.pixelColors[i * 3 + 2] = pColor.blue / 256.0;
+      panel.pixelColorsBuffer.array[i * 3] = pColor.red / 256.0;
+      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.green / 256.0;
+      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blue / 256.0;
     }
-    panel.pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(panel.pixelColors, 3));
+    panel.pixelColorsBuffer.needsUpdate = true;
   }
 }
 
