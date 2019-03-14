@@ -71,10 +71,13 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
         val seed = Random(0)
 
         pixelShaderBuffers.forEach { shaderBuffer ->
+            val baseSaturation = seed.nextFloat()
+            val panelColor = if (seed.nextFloat() < 0.1) Color.random() else colorPicker.color
+
             shaderBuffer.colors.forEachIndexed { i, pixel ->
-                val saturation = seed.nextFloat() *
+                val saturation = baseSaturation *
                         abs(sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())).toFloat()
-                val desaturatedColor = colorPicker.color.withSaturation(saturation)
+                val desaturatedColor = panelColor.withSaturation(saturation)
                 shaderBuffer.colors[i] = desaturatedColor
             }
         }
