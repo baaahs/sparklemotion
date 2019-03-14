@@ -34,10 +34,10 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         // shut down Pinky, advertise for Brains...
         link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
         delay(1000L)
-        link.broadcast(Ports.BRAIN, BrainShaderMessage(Color.BLACK))
+        link.broadcast(Ports.BRAIN, BrainShaderMessage(SolidShaderBuffer().also { it.color = Color.BLACK }))
         link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
         delay(1000L)
-        link.broadcast(Ports.BRAIN, BrainShaderMessage(Color.BLACK))
+        link.broadcast(Ports.BRAIN, BrainShaderMessage(SolidShaderBuffer().also { it.color = Color.BLACK }))
         link.broadcast(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
 
         while (isRunning) {
@@ -53,7 +53,7 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {
-                link.send(fromAddress, Ports.BRAIN, BrainShaderMessage(Color.WHITE))
+                link.send(fromAddress, Ports.BRAIN, BrainShaderMessage(SolidShaderBuffer().also { it.color = Color.WHITE }))
             }
 
             is PinkyPongMessage -> {

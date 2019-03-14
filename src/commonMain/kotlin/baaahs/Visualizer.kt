@@ -11,6 +11,14 @@ class Visualizer(private val sheepModel: SheepModel) {
 }
 
 class JsPanel(private val jsPanelObj: Any) {
+    fun setAllPixelsTo(color: Color) {
+        setPanelColor(jsPanelObj, Color.WHITE, (0..300).map { color })
+    }
+
+    fun setPixelsTo(colors: MutableList<Color>) {
+        setPanelColor(jsPanelObj, Color.WHITE, colors)
+    }
+
     var color: Color = Color.BLACK
         set(value) {
             setPanelColor(jsPanelObj, value, (0..300).map { value }.toList())

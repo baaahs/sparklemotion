@@ -158,13 +158,13 @@ function addPanel(p) {
   return panel;
 }
 
-function setPanelColor(panel, color, pixelColors) {
+function setPanelColor(panel, panelBgColor, pixelColors) {
   panel.faces.visible = true;
 
   if (!renderPixels) {
-    panel.faceMaterial.color.r = color.red / 256.0;
-    panel.faceMaterial.color.g = color.green / 256.0;
-    panel.faceMaterial.color.b = color.blue / 256.0;
+    panel.faceMaterial.color.r = panelBgColor.red / 256.0;
+    panel.faceMaterial.color.g = panelBgColor.green / 256.0;
+    panel.faceMaterial.color.b = panelBgColor.blue / 256.0;
   } else {
     panel.faceMaterial.color.r = .3;
     panel.faceMaterial.color.g = .3;
