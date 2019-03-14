@@ -12,7 +12,8 @@ interface Brain {
 class SimBrain(
     private val network: Network,
     private val display: BrainDisplay,
-    private val jsPanel: JsPanel
+    private val jsPanel: JsPanel,
+    private val illicitPanelHint: SheepModel.Panel
 ) : Brain, Network.Listener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
@@ -36,7 +37,7 @@ class SimBrain(
     private suspend fun sendHello() {
         while (true) {
             if (!receivingInstructions) {
-                link.broadcast(Ports.PINKY, BrainHelloMessage())
+                link.broadcast(Ports.PINKY, BrainHelloMessage(illicitPanelHint.name))
             }
 
             delay(60000)

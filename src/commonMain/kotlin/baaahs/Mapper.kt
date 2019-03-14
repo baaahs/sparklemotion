@@ -53,12 +53,10 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {
-                println("Mapper: heard from Brain at ${fromAddress}: ${message.name}")
                 link.send(fromAddress, Ports.BRAIN, BrainShaderMessage(Color.WHITE))
             }
 
             is PinkyPongMessage -> {
-                println("Mapper: pong from pinky: ${message.brainIds}")
                 message.brainIds.forEach { id ->
                     println("id = ${id}")
 //                    display.

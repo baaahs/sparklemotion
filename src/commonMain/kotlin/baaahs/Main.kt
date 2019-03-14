@@ -14,7 +14,7 @@ class Main {
     var network = FakeNetwork(display = display.forNetwork())
 
     var sheepModel = SheepModel()
-    val pinky = Pinky(network, display.forPinky())
+    val pinky = Pinky(sheepModel, network, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
     val visualizer = Visualizer(sheepModel)
 
@@ -28,7 +28,7 @@ class Main {
 
         sheepModel.panels.forEach { panel ->
             val jsPanel = visualizer.showPanel(panel)
-            SimBrain(network, display.forBrain(), jsPanel).start()
+            SimBrain(network, display.forBrain(), jsPanel, panel).start()
         }
         startRender()
 

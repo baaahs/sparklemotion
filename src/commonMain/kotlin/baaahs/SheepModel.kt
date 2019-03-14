@@ -4,6 +4,11 @@ class SheepModel {
     lateinit var vertices: List<Point>
     lateinit var panels: List<Panel>
 
+    val allPanels: List<Panel>
+        get() = panels
+    val partySide: List<Panel>
+        get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
+
     fun load() {
         val vertices: MutableList<Point> = mutableListOf()
         val panels: MutableList<Panel> = mutableListOf()
