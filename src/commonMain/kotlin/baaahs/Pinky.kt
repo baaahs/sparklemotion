@@ -29,13 +29,13 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
         }
 
         GlobalScope.launch {
-            var showContext = ShowRunner(brains.values.toList())
+            var showContext = ShowRunner(display, brains.values.toList())
             var show = SomeDumbShow(sheepModel, showContext)
 
             while (true) {
                 if (!mapperIsRunning) {
                     if (brainsChanged) {
-                        showContext = ShowRunner(brains.values.toList())
+                        showContext = ShowRunner(display, brains.values.toList())
                         show = SomeDumbShow(sheepModel, showContext)
                         brainsChanged = false
                     }
@@ -95,8 +95,10 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
     }
 }
 
-class ShowRunner(val brains: List<RemoteBrain>) {
-    val brainBuffers : MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
+class ShowRunner(private val pinkyDisplay: PinkyDisplay, private val brains: List<RemoteBrain>) {
+    val brainBuffers: MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
+
+    fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
     fun getSolidShaderBuffer(panel: Panel): SolidShaderBuffer {
         val remoteBrain = brains.find { it.panelName == panel.name }
@@ -122,6 +124,10 @@ class ShowRunner(val brains: List<RemoteBrain>) {
             }
         }
     }
+}
+
+class ColorPicker(private val pinkyDisplay: PinkyDisplay) {
+    val color: Color get() = pinkyDisplay.color ?: Color.WHITE
 }
 
 class RemoteBrain(val address: Network.Address, val panelName: String)
