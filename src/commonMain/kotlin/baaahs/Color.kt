@@ -47,7 +47,7 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         val YELLOW = Color(255, 255, 0)
         val GREEN = Color(0, 255, 0)
         val BLUE = Color(0, 0, 255)
-        val PURPLE = Color(255, 0, 255)
+        val PURPLE = Color(200, 0, 212)
 
         fun random() = Color(
             Random.nextInt() and 0xff,
