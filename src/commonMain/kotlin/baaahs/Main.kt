@@ -16,6 +16,7 @@ class Main {
     var sheepModel = SheepModel()
     val pinky = Pinky(network, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
+    val visualizer = Visualizer(sheepModel)
 
     fun start() {
         sheepModel.load()
@@ -23,10 +24,11 @@ class Main {
         mapper.start()
         pinky.start()
 
-        initThreeJs(sheepModel)
+        visualizer.start()
+
         sheepModel.panels.forEach { panel ->
-            val jsPanelObj = addPanel(panel)
-            SimBrain(network, display.forBrain(), JsPanel(jsPanelObj)).start()
+            val jsPanel = visualizer.showPanel(panel)
+            SimBrain(network, display.forBrain(), jsPanel).start()
         }
         startRender()
 
@@ -35,24 +37,6 @@ class Main {
         }
     }
 }
-
-class JsPanel(private val jsPanelObj: Any) {
-    var color: Color = Color.BLACK
-        set(value) {
-            setPanelColor(jsPanelObj, value, (0..300).map { value }.toList())
-            field = color
-        }
-
-    fun select() {
-        selectPanel(jsPanelObj, true)
-    }
-}
-
-external fun initThreeJs(sheepModel: SheepModel)
-external fun addPanel(panel: SheepModel.Panel): Any
-external fun startRender()
-external fun selectPanel(panel: Any, isSelected: Boolean)
-external fun setPanelColor(panel: Any, color: Color, pixelColors: List<Color>?)
 
 expect fun getTimeMillis(): Long
 expect fun doRunBlocking(block: suspend () -> Unit)
