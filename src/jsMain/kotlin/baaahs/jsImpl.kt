@@ -101,7 +101,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             ColorButton(Color.PURPLE, colorsDiv.appendElement("span") {})
         )
         colorButtons.forEach {it.allButtons = colorButtons; it.onSelect = { this.color = it } }
-        colorButtons[0].select()
+        colorButtons.random()!!.select()
 
         consoleDiv = element.appendElement("div") {}
     }
