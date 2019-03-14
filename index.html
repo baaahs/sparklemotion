@@ -3,109 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Sheep Map 2.0</title>
-  <style>
-    body {
-      color: #ffffff;
-      background-color: #000000;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    #sheepView {
-      position: absolute;
-      width: 80%;
-      height: 100%;
-    }
-
-    #simulatorView {
-      position: absolute;
-      color: black;
-      background-color: white;
-      top: 5px;
-      bottom: 5px;
-      left: 80%;
-      right: 5px;
-      height: 100%;
-      padding: .25em;
-      font: 10pt Helvetica;
-    }
-
-    #panelSelect {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    #info {
-      position: absolute;
-      color: white;
-      top: 0;
-      left: 0;
-    }
-
-    #info2 {
-      position: absolute;
-      color: white;
-      bottom: 0;
-      right: 0;
-    }
-
-    #brainsView, #mapperBrainsView {
-      background-color: black;
-    }
-
-    #brainsView > div, #mapperBrainsView > div {
-      display: inline-block;
-      width: 2px;
-      height: 2px;
-      margin: 1px;
-    }
-
-    #beatsDiv > span {
-      background-color: lightcyan;
-      display: inline-block;
-      border: 1px solid gray;
-      border-radius: 0.5em;
-      width: 1em;
-      padding: 0.2em;
-      margin-right: 2px;
-      text-align: center;
-    }
-
-    #beatsDiv > span.selected {
-      background-color: lightcoral;
-    }
-
-    #colorsDiv > span {
-      display: inline-block;
-      border: 1px solid gray;
-      border-radius: 0.5em;
-      width: .8em;
-      height: .8em;
-      padding: 0.2em;
-      margin-right: 2px;
-      margin-top: 2px;
-    }
-
-    #colorsDiv > span.selected {
-      border: 1px solid black;
-    }
-
-    .simulatorSection {
-      display: block;
-      border: 1px dashed gray;
-      margin-bottom: 2px;
-      padding: 2px;
-    }
-
-    .brain-offline {
-      background-color: darkgrey;
-    }
-
-    .brain-link {
-      background-color: orange;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 <div id="sheepView"></div>
@@ -147,11 +45,20 @@
 <div id="info2"></div>
 <script type="text/javascript" src="lib/kotlin.js"></script>
 <script type="text/javascript" src="lib/kotlinx-coroutines-core.js"></script>
-<script type="text/javascript" src="play.js"></script>
 
 <script type="text/javascript" src="lib/three.js"></script>
 <script type="text/javascript" src="lib/OrbitControls.js"></script>
-<script type="text/javascript" src="index.js"></script>
+
+<script type="text/javascript">
+  // cache busting
+  const cacheBustStr = new Date().getTime();
+  [
+    "play.js",
+    "visualizer.js",
+  ].forEach(function (value) {
+    document.write(`\x3Cscript type="text/javascript" src="${value}?ts=${cacheBustStr}">\x3C/script>\n`);
+  });
+</script>
 
 <script type="text/javascript">
   let main = new play.baaahs.Main();

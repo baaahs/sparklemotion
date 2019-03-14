@@ -47,14 +47,26 @@ function selectPanel(panel, isSelected) {
   }
 }
 
-function setPanelColor(panel, color) {
+function setPanelColor(panel, color, pixelColors) {
   panel.faces.visible = true;
-  panel.faceMaterial.color.r = color.red / 256.0;
-  panel.faceMaterial.color.g = color.green / 256.0;
-  panel.faceMaterial.color.b = color.blue / 256.0;
+  panel.faceMaterial.color.r = color.red / 256.0 / 2;
+  panel.faceMaterial.color.g = color.green / 256.0 / 2;
+  panel.faceMaterial.color.b = color.blue / 256.0 / 2;
+
+  if (panel.pixelCount && pixelColors) {
+    const pixelColorsA = pixelColors.toArray();
+    const count = Math.min(panel.pixelCount, pixelColorsA.length);
+    for (let i = 0; i < count; i++) {
+      const pColor = pixelColorsA[i];
+      panel.pixelColors[i * 3] = pColor.red / 256.0;
+      panel.pixelColors[i * 3 + 1] = pColor.green / 256.0;
+      panel.pixelColors[i * 3 + 2] = pColor.blue / 256.0;
+    }
+    panel.pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(panel.pixelColors, 3));
+  }
 }
 
-function initThreeJs(sheepModel, threeJsPanelBin) {
+function initThreeJs(sheepModel) {
   sheepView.addEventListener('mousemove', onMouseMove, false);
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
@@ -120,6 +132,41 @@ function addPanel(p) {
   panel.lines.forEach((line) => {
     scene.add(line);
   });
+
+  // try to draw pixel-ish things?
+  if (true) {
+    const pixelsGeometry = new THREE.BufferGeometry();
+    const positions = [];
+    const colors = [];
+
+    let pixelCount = 200;
+    for (var pixelI = 0; pixelI < pixelCount; pixelI++) {
+      var v = new THREE.Vector3().copy(panelVertices[0]);
+      for (var vi = 1; vi < panelVertices.length; vi++) {
+        v.addScaledVector(new THREE.Vector3().copy(panelVertices[vi]).sub(v), Math.random());
+      }
+
+      positions.push(v.x, v.y, v.z);
+      colors.push(0, 0, 0);
+
+      // pixelsGeometry.vertices.push(v);
+      // var starsMaterial = new THREE.PointsMaterial({color: 0x888888});
+      //
+      // var starField = new THREE.Points(pixelsGeometry, starsMaterial);
+      //
+      // scene.add(starField);
+    }
+
+    pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    const material = new THREE.PointsMaterial({size: 1, vertexColors: THREE.VertexColors});
+    const points = new THREE.Points(pixelsGeometry, material);
+    scene.add(points);
+
+    panel.pixelCount = pixelCount;
+    panel.pixelColors = colors;
+    panel.pixelsGeometry = pixelsGeometry;
+  }
 
   panels.push(panel);
 

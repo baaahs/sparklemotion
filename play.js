@@ -20,6 +20,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
   var Pair = Kotlin.kotlin.Pair;
@@ -463,12 +465,23 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.jsPanelObj_0 = jsPanelObj;
     this.color_1o5p8y$_0 = Color$Companion_getInstance().BLACK;
   }
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   Object.defineProperty(JsPanel.prototype, 'color', {
     get: function () {
       return this.color_1o5p8y$_0;
     },
     set: function (value) {
-      setPanelColor(this.jsPanelObj_0, value);
+      var tmp$ = this.jsPanelObj_0;
+      var $receiver = new IntRange(0, 300);
+      var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        destination.add_11rb$(value);
+      }
+      setPanelColor(tmp$, value, toList(destination));
       this.color_1o5p8y$_0 = this.color;
     }
   });
@@ -720,14 +733,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var address = new FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
   };
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   FakeNetwork.prototype.listen_0 = function (address, port, listener) {
     this.listeners_0.put_xwzc9p$(new Pair(address, port), listener);
     var $receiver = this.listenersByPort_0;
     var tmp$;
     var value = $receiver.get_11rb$(port);
     if (value == null) {
-      var answer = ArrayList_init();
+      var answer = ArrayList_init_0();
       $receiver.put_xwzc9p$(port, answer);
       tmp$ = answer;
     }
@@ -1444,7 +1457,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
     var brainCount = reader.readInt();
-    var brainIds = ArrayList_init();
+    var brainIds = ArrayList_init_0();
     for (var i = 0; i < brainCount; i++) {
       brainIds.add_11rb$(reader.readString());
     }
@@ -1522,14 +1535,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
-    var vertices = ArrayList_init();
-    var panels = ArrayList_init();
+    var vertices = ArrayList_init_0();
+    var panels = ArrayList_init_0();
     var currentPanel = {v: new SheepModel$Panel('initial')};
     var $receiver = split(getResource('newsheep_processed.obj'), ['\n']);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -1548,7 +1559,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         case 'v':
           if (args.size !== 3)
             throw Exception_init('invalid vertex line: ' + element);
-          var destination_0 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_0 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_3;
           tmp$_3 = args.iterator();
           while (tmp$_3.hasNext()) {
@@ -1570,7 +1581,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           panels.add_11rb$(currentPanel.v);
           break;
         case 'f':
-          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_1 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_4;
           tmp$_4 = args.iterator();
           while (tmp$_4.hasNext()) {
@@ -1582,7 +1593,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           currentPanel.v.faces.faces.add_11rb$(new SheepModel$Face(verts));
           break;
         case 'l':
-          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_2 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_5;
           tmp$_5 = args.iterator();
           while (tmp$_5.hasNext()) {
@@ -1591,7 +1602,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           }
 
           var verts_0 = destination_2;
-          var points = ArrayList_init();
+          var points = ArrayList_init_0();
           tmp$_2 = verts_0.iterator();
           while (tmp$_2.hasNext()) {
             var vi = tmp$_2.next();
@@ -1676,8 +1687,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: []
   };
   function SheepModel$Faces() {
-    this.vertices = ArrayList_init();
-    this.faces = ArrayList_init();
+    this.vertices = ArrayList_init_0();
+    this.faces = ArrayList_init_0();
   }
   SheepModel$Faces.$metadata$ = {
     kind: Kind_CLASS,
@@ -1687,7 +1698,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SheepModel$Panel(name) {
     this.name = name;
     this.faces = new SheepModel$Faces();
-    this.lines = ArrayList_init();
+    this.lines = ArrayList_init_0();
   }
   SheepModel$Panel.$metadata$ = {
     kind: Kind_CLASS,
