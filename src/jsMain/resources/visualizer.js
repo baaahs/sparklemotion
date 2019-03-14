@@ -1,3 +1,5 @@
+const renderPixels = true;
+
 let controls, camera, scene, renderer, geom, object, pointMaterial, faceMaterial, lineMaterial, panelMaterial,
     raycaster, mouse, sphere;
 
@@ -44,25 +46,6 @@ function selectPanel(panel, isSelected) {
   panel.faces.visible = isSelected;
   for (let line of panel.lines) {
     line.material = isSelected ? panelMaterial : lineMaterial;
-  }
-}
-
-function setPanelColor(panel, color, pixelColors) {
-  panel.faces.visible = true;
-  panel.faceMaterial.color.r = color.red / 256.0 / 2;
-  panel.faceMaterial.color.g = color.green / 256.0 / 2;
-  panel.faceMaterial.color.b = color.blue / 256.0 / 2;
-
-  if (panel.pixelCount && pixelColors) {
-    const pixelColorsA = pixelColors.toArray();
-    const count = Math.min(panel.pixelCount, pixelColorsA.length);
-    for (let i = 0; i < count; i++) {
-      const pColor = pixelColorsA[i];
-      panel.pixelColors[i * 3] = pColor.red / 256.0;
-      panel.pixelColors[i * 3 + 1] = pColor.green / 256.0;
-      panel.pixelColors[i * 3 + 2] = pColor.blue / 256.0;
-    }
-    panel.pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(panel.pixelColors, 3));
   }
 }
 
@@ -134,7 +117,7 @@ function addPanel(p) {
   });
 
   // try to draw pixel-ish things?
-  if (true) {
+  if (renderPixels) {
     const pixelsGeometry = new THREE.BufferGeometry();
     const positions = [];
     const colors = [];
@@ -159,7 +142,7 @@ function addPanel(p) {
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    const material = new THREE.PointsMaterial({size: 1, vertexColors: THREE.VertexColors});
+    const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
     const points = new THREE.Points(pixelsGeometry, material);
     scene.add(points);
 
@@ -173,6 +156,32 @@ function addPanel(p) {
   select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
 
   return panel;
+}
+
+function setPanelColor(panel, color, pixelColors) {
+  panel.faces.visible = true;
+
+  if (!renderPixels) {
+    panel.faceMaterial.color.r = color.red / 256.0;
+    panel.faceMaterial.color.g = color.green / 256.0;
+    panel.faceMaterial.color.b = color.blue / 256.0;
+  } else {
+    panel.faceMaterial.color.r = .3;
+    panel.faceMaterial.color.g = .3;
+    panel.faceMaterial.color.b = .3;
+  }
+
+  if (panel.pixelCount && pixelColors) {
+    const pixelColorsA = pixelColors.toArray();
+    const count = Math.min(panel.pixelCount, pixelColorsA.length);
+    for (let i = 0; i < count; i++) {
+      const pColor = pixelColorsA[i];
+      panel.pixelColors[i * 3] = pColor.red / 256.0;
+      panel.pixelColors[i * 3 + 1] = pColor.green / 256.0;
+      panel.pixelColors[i * 3 + 2] = pColor.blue / 256.0;
+    }
+    panel.pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(panel.pixelColors, 3));
+  }
 }
 
 function startRender() {
