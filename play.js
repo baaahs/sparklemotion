@@ -43,7 +43,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
-  var hashCode = Kotlin.hashCode;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var toShort = Kotlin.toShort;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
@@ -1119,7 +1118,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.local$showContext = new ShowRunner(toList(this.local$this$Pinky.brains_0.values));
+            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values));
             this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
             this.state_0 = 2;
             continue;
@@ -1128,7 +1127,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           case 2:
             if (!this.local$this$Pinky.mapperIsRunning_0) {
               if (this.local$this$Pinky.brainsChanged_0) {
-                this.local$showContext = new ShowRunner(toList(this.local$this$Pinky.brains_0.values));
+                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values));
                 this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
                 this.local$this$Pinky.brainsChanged_0 = false;
               }
@@ -1262,12 +1261,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Pinky',
     interfaces: [Network$Listener]
   };
-  function ShowRunner(brains) {
-    this.brains = brains;
+  function ShowRunner(pinkyDisplay, brains) {
+    this.pinkyDisplay_0 = pinkyDisplay;
+    this.brains_0 = brains;
     this.brainBuffers = ArrayList_init();
   }
+  ShowRunner.prototype.getColorPicker = function () {
+    return new ColorPicker(this.pinkyDisplay_0);
+  };
   ShowRunner.prototype.getSolidShaderBuffer_jfju1k$ = function (panel) {
-    var $receiver = this.brains;
+    var $receiver = this.brains_0;
     var firstOrNull$result;
     firstOrNull$break: do {
       var tmp$;
@@ -1288,7 +1291,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return buffer;
   };
   ShowRunner.prototype.getPixelShaderBuffer_jfju1k$ = function (panel) {
-    var $receiver = this.brains;
+    var $receiver = this.brains_0;
     var firstOrNull$result;
     firstOrNull$break: do {
       var tmp$;
@@ -1323,6 +1326,20 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShowRunner',
+    interfaces: []
+  };
+  function ColorPicker(pinkyDisplay) {
+    this.pinkyDisplay_0 = pinkyDisplay;
+  }
+  Object.defineProperty(ColorPicker.prototype, 'color', {
+    get: function () {
+      var tmp$;
+      return (tmp$ = this.pinkyDisplay_0.color) != null ? tmp$ : Color$Companion_getInstance().WHITE;
+    }
+  });
+  ColorPicker.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorPicker',
     interfaces: []
   };
   function RemoteBrain(address, panelName) {
@@ -2054,6 +2071,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: []
   };
   function SomeDumbShow(sheepModel, showRunner) {
+    this.colorPicker = showRunner.getColorPicker();
     var $receiver = sheepModel.allPanels;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
@@ -2067,6 +2085,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   SomeDumbShow.prototype.nextFrame = function () {
+    var seed = {v: Random_0(0)};
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
@@ -2076,26 +2095,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       tmp$_0 = element.colors.iterator();
       while (tmp$_0.hasNext()) {
         var item = tmp$_0.next();
-        element.colors.set_wxm5ur$(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)), Color$Companion_getInstance().random());
+        var i = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
+        var tmp$_1 = seed.v.nextFloat();
+        var x = seed.v.nextDouble() + getTimeMillis().toNumber() / 1000;
+        var x_0 = Math_0.sin(x);
+        var saturation = tmp$_1 * Math_0.abs(x_0);
+        var desaturatedColor = this.colorPicker.color.withSaturation_mx4ult$(saturation);
+        element.colors.set_wxm5ur$(i, desaturatedColor);
       }
-    }
-  };
-  SomeDumbShow.prototype.nextFrame_lfotay$ = function (color, beat, brains, link) {
-    var tmp$;
-    tmp$ = brains.values.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var brainSeed = hashCode(element.address.toString());
-      var tmp$_0 = Random_0(brainSeed).nextFloat();
-      var x = brainSeed + getTimeMillis().toNumber() / 1000;
-      var x_0 = Math_0.sin(x);
-      var saturation = tmp$_0 * Math_0.abs(x_0);
-      var desaturatedColor = ensureNotNull(color).withSaturation_mx4ult$(saturation);
-      var tmp$_1 = element.address;
-      var tmp$_2 = Ports$Companion_getInstance().BRAIN;
-      var $receiver = new SolidShaderBuffer();
-      $receiver.color = desaturatedColor;
-      link.send_bkw8fl$(tmp$_1, tmp$_2, new BrainShaderMessage($receiver));
     }
   };
   SomeDumbShow.$metadata$ = {
@@ -2669,6 +2676,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Pinky.BeatProvider = Pinky$BeatProvider;
   package$baaahs.Pinky = Pinky;
   package$baaahs.ShowRunner = ShowRunner;
+  package$baaahs.ColorPicker = ColorPicker;
   package$baaahs.RemoteBrain = RemoteBrain;
   Object.defineProperty(Ports, 'Companion', {
     get: Ports$Companion_getInstance
