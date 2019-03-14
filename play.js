@@ -22,11 +22,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var numberToInt = Kotlin.numberToInt;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var math = Kotlin.kotlin.math;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
@@ -57,10 +56,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
-  Cat.prototype = Object.create(Animal.prototype);
-  Cat.prototype.constructor = Cat;
-  Dog.prototype = Object.create(Animal.prototype);
-  Dog.prototype.constructor = Dog;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
@@ -342,7 +337,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.YELLOW = new Color(255, 255, 0);
     this.GREEN = new Color(0, 255, 0);
     this.BLUE = new Color(0, 0, 255);
-    this.PURPLE = new Color(255, 0, 255);
+    this.PURPLE = new Color(200, 0, 212);
   }
   Color$Companion.prototype.random = function () {
     return new Color(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
@@ -427,66 +422,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'MapperDisplay',
     interfaces: []
   };
-  function ThingWithMass() {
-  }
-  ThingWithMass.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ThingWithMass',
-    interfaces: []
-  };
-  function Animal(age) {
-    this.age = age;
-  }
-  Animal.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Animal',
-    interfaces: []
-  };
-  function Cat(age) {
-    Animal.call(this, age);
-  }
-  Cat.prototype.weightInKilograms = function () {
-    return 2.0 * this.age;
-  };
-  Cat.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Cat',
-    interfaces: [ThingWithMass, Animal]
-  };
-  function Dog(age) {
-    Animal.call(this, age);
-  }
-  Dog.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Dog',
-    interfaces: [Animal]
-  };
-  function Glass(height, diameter, fullness) {
-    this.height = height;
-    this.diameter = diameter;
-    this.fullness = fullness;
-  }
-  Glass.prototype.weightInKilograms = function () {
-    return this.computeVolume() / 1000;
-  };
-  Glass.prototype.computeVolume = function () {
-    return this.diameter / 2 * (this.diameter / 2) * math.PI * this.height;
-  };
-  Glass.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Glass',
-    interfaces: [ThingWithMass]
-  };
-  function kevmoMain() {
-    new Cat(3);
-    var kitty = new Cat(5);
-    var myGlass = new Glass(3.5, 4.0, 0.3);
-    println('volume of the glass is ' + myGlass.computeVolume());
-    var yourglass = new Glass(6.0, 12.0, 0.7);
-    println('your glass contains ' + yourglass.computeVolume() + ' milliliters');
-    var totalWeight = kitty.weightInKilograms() + myGlass.weightInKilograms() + yourglass.weightInKilograms();
-    println('The weightInKilograms of our cats and glasses is: ' + totalWeight);
-  }
   var main;
   function get_main() {
     if (main == null)
@@ -2270,6 +2205,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'ByteArrayReader',
     interfaces: []
   };
+  function random($receiver) {
+    return $receiver.size > 0 ? $receiver.get_za3lpa$(Random.Default.nextInt_za3lpa$($receiver.size)) : null;
+  }
+  function random_0($receiver, random) {
+    return $receiver.size > 0 ? $receiver.get_za3lpa$(random.nextInt_za3lpa$($receiver.size)) : null;
+  }
   function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -2404,7 +2345,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       element_0.allButtons = this.colorButtons_0;
       element_0.onSelect = JsPinkyDisplay_init$lambda$lambda_1(this);
     }
-    this.colorButtons_0.get_za3lpa$(0).select();
+    ensureNotNull(random(this.colorButtons_0)).select();
     this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_13);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
@@ -2657,12 +2598,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   package$baaahs.MapperDisplay = MapperDisplay;
-  _.ThingWithMass = ThingWithMass;
-  _.Animal = Animal;
-  _.Cat = Cat;
-  _.Dog = Dog;
-  _.Glass = Glass;
-  _.kevmoMain = kevmoMain;
   Object.defineProperty(package$baaahs, 'main', {
     get: get_main,
     set: set_main
@@ -2757,6 +2692,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$baaahs.ByteArrayWriter = ByteArrayWriter;
   package$baaahs.ByteArrayReader = ByteArrayReader;
+  package$baaahs.random_2p1efm$ = random;
+  package$baaahs.random_hhb8gh$ = random_0;
   package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getDisplay = getDisplay;
