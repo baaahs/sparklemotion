@@ -20,7 +20,7 @@ enum class Type {
 fun parse(bytes: ByteArray): Message {
     val reader = ByteArrayReader(bytes)
     return when (Type.values()[reader.readByte().toInt()]) {
-        Type.BRAIN_HELLO -> BrainHelloMessage()
+        Type.BRAIN_HELLO -> BrainHelloMessage.parse(reader)
         Type.BRAIN_PANEL_SHADE -> BrainShaderMessage.parse(reader)
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
@@ -29,7 +29,15 @@ fun parse(bytes: ByteArray): Message {
     }
 }
 
-class BrainHelloMessage : Message(Type.BRAIN_HELLO)
+class BrainHelloMessage(val panelName: String) : Message(Type.BRAIN_HELLO) {
+    companion object {
+        fun parse(reader: ByteArrayReader) = BrainHelloMessage(reader.readString())
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeString(panelName)
+    }
+}
 
 class BrainShaderMessage(val color: Color) : Message(Type.BRAIN_PANEL_SHADE) {
     companion object {

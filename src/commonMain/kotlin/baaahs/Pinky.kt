@@ -1,24 +1,23 @@
 package baaahs
 
+import baaahs.SheepModel.Panel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.Synchronized
-import kotlin.math.abs
-import kotlin.math.sin
-import kotlin.random.Random
 
-class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener {
+class Pinky(val sheepModel: SheepModel, val network: Network, val display: PinkyDisplay) : Network.Listener {
     private lateinit var link: Network.Link
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
-    private val show = SomeDumbShow()
     private var mapperIsRunning = false
 
     fun run() {
         link = network.link()
         link.listen(Ports.PINKY, this)
     }
+
+    private var brainsChanged: Boolean = true
 
     fun start() {
         GlobalScope.launch {
@@ -30,9 +29,23 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
         }
 
         GlobalScope.launch {
+            var showContext = ShowContext(brains.values.toList())
+            var show = SomeDumbShow(sheepModel, showContext)
+
             while (true) {
                 if (!mapperIsRunning) {
-                    show.nextFrame(display.color, beatProvider.beat, brains, link)
+                    if (brainsChanged) {
+                        showContext = ShowContext(brains.values.toList())
+                        show = SomeDumbShow(sheepModel, showContext)
+                        brainsChanged = false
+                    }
+
+                    show.nextFrame()
+
+                    // send shader buffers out to brains
+                    showContext.sendToBrains(link)
+
+//                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
                 }
                 delay(50)
             }
@@ -43,7 +56,7 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> {
-                foundBrain(RemoteBrain(fromAddress))
+                foundBrain(RemoteBrain(fromAddress, message.panelName))
             }
 
             is MapperHelloMessage -> {
@@ -57,6 +70,8 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
     private fun foundBrain(remoteBrain: RemoteBrain) {
         brains.put(remoteBrain.address, remoteBrain)
         display.brainCount = brains.size
+
+        brainsChanged = true
     }
 
     inner class BeatProvider(val bpm: Float) {
@@ -80,16 +95,27 @@ class Pinky(val network: Network, val display: PinkyDisplay) : Network.Listener 
     }
 }
 
-class RemoteBrain(val address: Network.Address)
+class ShowContext(val brains: List<RemoteBrain>) {
+    lateinit var brainBuffers : List<Pair<RemoteBrain?, SolidShaderBuffer>>
 
-class SomeDumbShow {
-    fun nextFrame(color: Color?, beat: Int, brains: MutableMap<Network.Address, RemoteBrain>, link: Network.Link) {
-        brains.values.forEach { brain ->
-            val brainSeed = brain.address.toString().hashCode()
-            val saturation = Random(brainSeed).nextFloat() *
-                    abs(sin(brainSeed + getTimeMillis() / 1000.toDouble())).toFloat()
-            val desaturatedColor = color!!.withSaturation(saturation)
-            link.send(brain.address, Ports.BRAIN, BrainShaderMessage(desaturatedColor))
+    fun getShaderBuffersFor(shaderType: ShaderType, panels: List<Panel>): List<SolidShaderBuffer> {
+        brainBuffers = panels.map { panel ->
+            val brain = brains.find { it.panelName == panel.name }
+            Pair(brain, SolidShaderBuffer())
+        }
+        return brainBuffers.map { it.second }
+    }
+
+    fun sendToBrains(link: Network.Link) {
+        brainBuffers.forEach { brainBuffer ->
+            val remoteBrain = brainBuffer.first
+            val shaderBuffer = brainBuffer.second
+//            println("sending color = ${shaderBuffer.color} to ${remoteBrain}")
+            if (remoteBrain != null) {
+                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer.color))
+            }
         }
     }
 }
+
+class RemoteBrain(val address: Network.Address, val panelName: String)
