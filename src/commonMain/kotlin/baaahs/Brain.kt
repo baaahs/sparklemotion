@@ -29,7 +29,6 @@ class SimBrain(
         link = network.link()
         link.listen(Ports.BRAIN, this)
         display.haveLink(link)
-        jsPanel.select()
 
         sendHello()
     }
