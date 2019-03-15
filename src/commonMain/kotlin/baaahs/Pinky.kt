@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.Synchronized
 
-class Pinky(val sheepModel: SheepModel, val network: Network, val display: PinkyDisplay) : Network.Listener {
+class Pinky(val sheepModel: SheepModel, val network: Network, val dmx: Dmx, val display: PinkyDisplay) : Network.Listener {
     private lateinit var link: Network.Link
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
@@ -29,13 +29,13 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
         }
 
         GlobalScope.launch {
-            var showContext = ShowRunner(display, brains.values.toList())
+            var showContext = ShowRunner(display, brains.values.toList(), dmx)
             var show = SomeDumbShow(sheepModel, showContext)
 
             while (true) {
                 if (!mapperIsRunning) {
                     if (brainsChanged) {
-                        showContext = ShowRunner(display, brains.values.toList())
+                        showContext = ShowRunner(display, brains.values.toList(), dmx)
                         show = SomeDumbShow(sheepModel, showContext)
                         brainsChanged = false
                     }
@@ -43,7 +43,7 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
                     show.nextFrame()
 
                     // send shader buffers out to brains
-                    showContext.sendToBrains(link)
+                    showContext.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
                 }
@@ -95,8 +95,13 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val display: Pinky
     }
 }
 
-class ShowRunner(private val pinkyDisplay: PinkyDisplay, private val brains: List<RemoteBrain>) {
-    val brainBuffers: MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
+class ShowRunner(
+    private val pinkyDisplay: PinkyDisplay,
+    private val brains: List<RemoteBrain>,
+    private val dmx: Dmx
+) {
+    private val brainBuffers: MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
+    private val dmxBuffers: MutableList<Pair<String, MovingHeadBuffer>> = mutableListOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
@@ -114,7 +119,14 @@ class ShowRunner(private val pinkyDisplay: PinkyDisplay, private val brains: Lis
         return buffer
     }
 
-    fun sendToBrains(link: Network.Link) {
+    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): MovingHeadBuffer {
+        val dmxAddresses = dmx.get(movingHead.name)
+        val buf = MovingHeadBuffer(ByteArray(dmxAddresses.size), Color.WHITE)
+        dmxBuffers.add(Pair(movingHead.name, buf))
+        return buf
+    }
+
+    fun send(link: Network.Link) {
         brainBuffers.forEach { brainBuffer ->
             val remoteBrain = brainBuffer.first
             val shaderBuffer = brainBuffer.second
@@ -122,6 +134,10 @@ class ShowRunner(private val pinkyDisplay: PinkyDisplay, private val brains: Lis
             if (remoteBrain != null) {
                 link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer))
             }
+        }
+
+        dmxBuffers.forEach { dmxBuffer ->
+            setMovingHeadColor(dmxBuffer.first, dmxBuffer.second.colorIllicitDontUse)
         }
     }
 }

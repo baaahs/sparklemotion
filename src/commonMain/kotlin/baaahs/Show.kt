@@ -61,6 +61,7 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     val colorPicker = showRunner.getColorPicker()
 //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShaderBuffer(it) }
     val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShaderBuffer(it) }
+    val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
     init {
         println("Creating new SomeDumbShow, we have ${pixelShaderBuffers.size} buffers")
@@ -75,11 +76,23 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
             val panelColor = if (seed.nextFloat() < 0.1) Color.random() else colorPicker.color
 
             shaderBuffer.colors.forEachIndexed { i, pixel ->
-                val saturation = baseSaturation *
-                        abs(sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())).toFloat()
-                val desaturatedColor = panelColor.withSaturation(saturation)
-                shaderBuffer.colors[i] = desaturatedColor
+                shaderBuffer.colors[i] = desaturateRandomishly(baseSaturation, seed, panelColor)
+            }
+
+            movingHeadBuffers.forEach { buf ->
+                buf.colorIllicitDontUse = colorPicker.color
             }
         }
+    }
+
+    private fun desaturateRandomishly(
+        baseSaturation: Float,
+        seed: Random,
+        panelColor: Color
+    ): Color {
+        val saturation = baseSaturation *
+                abs(sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())).toFloat()
+        val desaturatedColor = panelColor.withSaturation(saturation)
+        return desaturatedColor
     }
 }
