@@ -22,10 +22,13 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var numberToInt = Kotlin.numberToInt;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var until = Kotlin.kotlin.ranges.until_dqglrj$;
+  var ensureNotNull = Kotlin.ensureNotNull;
+  var math = Kotlin.kotlin.math;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
@@ -37,9 +40,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var until = Kotlin.kotlin.ranges.until_dqglrj$;
+  var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
@@ -56,6 +58,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  Cat.prototype = Object.create(Animal.prototype);
+  Cat.prototype.constructor = Cat;
+  Dog.prototype = Object.create(Animal.prototype);
+  Dog.prototype.constructor = Dog;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
@@ -422,6 +428,133 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'MapperDisplay',
     interfaces: []
   };
+  function Dmx() {
+  }
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  Dmx.prototype.allocate_bm4lxs$ = function (name, addressCount) {
+    var $receiver = until(0, addressCount);
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(this.allocate());
+    }
+    var dmxAddresses = destination;
+    this.allocated.put_xwzc9p$(name, dmxAddresses);
+    return dmxAddresses;
+  };
+  Dmx.prototype.get_61zpoe$ = function (name) {
+    return ensureNotNull(this.allocated.get_11rb$(name));
+  };
+  function Dmx$DmxAddress() {
+  }
+  Dmx$DmxAddress.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'DmxAddress',
+    interfaces: []
+  };
+  Dmx.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Dmx',
+    interfaces: []
+  };
+  function MovingHeadBuffer(byteArray, colorIllicitDontUse, rotAIllicitDontUse, rotBIllicitDontUse) {
+    this.byteArray_0 = byteArray;
+    this.colorIllicitDontUse = colorIllicitDontUse;
+    this.rotAIllicitDontUse = rotAIllicitDontUse;
+    this.rotBIllicitDontUse = rotBIllicitDontUse;
+  }
+  MovingHeadBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovingHeadBuffer',
+    interfaces: []
+  };
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  function FakeDmx() {
+    this.allocated_dctxqt$_0 = HashMap_init();
+  }
+  Object.defineProperty(FakeDmx.prototype, 'allocated', {
+    get: function () {
+      return this.allocated_dctxqt$_0;
+    }
+  });
+  FakeDmx.prototype.allocate = function () {
+    return new FakeDmx$FakeDmxAddress();
+  };
+  function FakeDmx$FakeDmxAddress() {
+  }
+  FakeDmx$FakeDmxAddress.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeDmxAddress',
+    interfaces: [Dmx$DmxAddress]
+  };
+  FakeDmx.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeDmx',
+    interfaces: [Dmx]
+  };
+  function ThingWithMass() {
+  }
+  ThingWithMass.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ThingWithMass',
+    interfaces: []
+  };
+  function Animal(age) {
+    this.age = age;
+  }
+  Animal.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Animal',
+    interfaces: []
+  };
+  function Cat(age) {
+    Animal.call(this, age);
+  }
+  Cat.prototype.weightInKilograms = function () {
+    return 2.0 * this.age;
+  };
+  Cat.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Cat',
+    interfaces: [ThingWithMass, Animal]
+  };
+  function Dog(age) {
+    Animal.call(this, age);
+  }
+  Dog.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Dog',
+    interfaces: [Animal]
+  };
+  function Glass(height, diameter, fullness) {
+    this.height = height;
+    this.diameter = diameter;
+    this.fullness = fullness;
+  }
+  Glass.prototype.weightInKilograms = function () {
+    return this.computeVolume() / 1000;
+  };
+  Glass.prototype.computeVolume = function () {
+    return this.diameter / 2 * (this.diameter / 2) * math.PI * this.height;
+  };
+  Glass.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Glass',
+    interfaces: [ThingWithMass]
+  };
+  function kevmoMain() {
+    new Cat(3);
+    var kitty = new Cat(5);
+    var myGlass = new Glass(3.5, 4.0, 0.3);
+    println('volume of the glass is ' + myGlass.computeVolume());
+    var yourglass = new Glass(6.0, 12.0, 0.7);
+    println('your glass contains ' + yourglass.computeVolume() + ' milliliters');
+    var totalWeight = kitty.weightInKilograms() + myGlass.weightInKilograms() + yourglass.weightInKilograms();
+    println('The weightInKilograms of our cats and glasses is: ' + totalWeight);
+  }
   var main;
   function get_main() {
     if (main == null)
@@ -434,8 +567,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function Main() {
     this.display = getDisplay();
     this.network = new FakeNetwork(void 0, this.display.forNetwork());
+    this.dmx = new FakeDmx();
     this.sheepModel = new SheepModel();
-    this.pinky = new Pinky(this.sheepModel, this.network, this.display.forPinky());
+    this.pinky = new Pinky(this.sheepModel, this.network, this.dmx, this.display.forPinky());
     this.mapper = new Mapper(this.network, this.display.forMapper());
     this.visualizer = new Visualizer(this.sheepModel);
   }
@@ -499,7 +633,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var jsPanel = this.visualizer.showPanel_jfju1k$(element);
       (new SimBrain(this.network, this.display.forBrain(), jsPanel, element)).start();
     }
-    startRender();
+    var tmp$_0;
+    tmp$_0 = this.sheepModel.eyes.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      this.visualizer.addEye_vxd903$(element_0, this.dmx);
+    }
     doRunBlocking(Main$start$lambda);
   };
   Main.$metadata$ = {
@@ -742,7 +881,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Network',
     interfaces: []
   };
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   function FakeNetwork(networkDelay, display) {
     if (networkDelay === void 0)
       networkDelay = L1;
@@ -757,14 +895,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var address = new FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
   };
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   FakeNetwork.prototype.listen_0 = function (address, port, listener) {
     this.listeners_0.put_xwzc9p$(new Pair(address, port), listener);
     var $receiver = this.listenersByPort_0;
     var tmp$;
     var value = $receiver.get_11rb$(port);
     if (value == null) {
-      var answer = ArrayList_init();
+      var answer = ArrayList_init_0();
       $receiver.put_xwzc9p$(port, answer);
       tmp$ = answer;
     }
@@ -911,9 +1049,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
-  function Pinky(sheepModel, network, display) {
+  function Pinky(sheepModel, network, dmx, display) {
     this.sheepModel = sheepModel;
     this.network = network;
+    this.dmx = dmx;
     this.display = display;
     this.link_e4s3v3$_0 = this.link_e4s3v3$_0;
     this.brains_0 = LinkedHashMap_init();
@@ -1053,7 +1192,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values));
+            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmx);
             this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
             this.state_0 = 2;
             continue;
@@ -1062,12 +1201,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           case 2:
             if (!this.local$this$Pinky.mapperIsRunning_0) {
               if (this.local$this$Pinky.brainsChanged_0) {
-                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values));
+                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmx);
                 this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
                 this.local$this$Pinky.brainsChanged_0 = false;
               }
               this.local$show.nextFrame();
-              this.local$showContext.sendToBrains_6qu7we$(this.local$this$Pinky.link_0);
+              this.local$showContext.send_6qu7we$(this.local$this$Pinky.link_0);
             }
 
             this.state_0 = 3;
@@ -1196,10 +1335,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Pinky',
     interfaces: [Network$Listener]
   };
-  function ShowRunner(pinkyDisplay, brains) {
+  function ShowRunner(pinkyDisplay, brains, dmx) {
     this.pinkyDisplay_0 = pinkyDisplay;
     this.brains_0 = brains;
-    this.brainBuffers = ArrayList_init();
+    this.dmx_0 = dmx;
+    this.brainBuffers_0 = ArrayList_init_0();
+    this.dmxBuffers_0 = ArrayList_init_0();
   }
   ShowRunner.prototype.getColorPicker = function () {
     return new ColorPicker(this.pinkyDisplay_0);
@@ -1222,7 +1363,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
      while (false);
     var remoteBrain = firstOrNull$result;
     var buffer = new SolidShaderBuffer();
-    this.brainBuffers.add_11rb$(new Pair(remoteBrain, buffer));
+    this.brainBuffers_0.add_11rb$(new Pair(remoteBrain, buffer));
     return buffer;
   };
   ShowRunner.prototype.getPixelShaderBuffer_jfju1k$ = function (panel) {
@@ -1243,12 +1384,18 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
      while (false);
     var remoteBrain = firstOrNull$result;
     var buffer = new PixelShaderBuffer();
-    this.brainBuffers.add_11rb$(new Pair(remoteBrain, buffer));
+    this.brainBuffers_0.add_11rb$(new Pair(remoteBrain, buffer));
     return buffer;
   };
-  ShowRunner.prototype.sendToBrains_6qu7we$ = function (link) {
+  ShowRunner.prototype.getMovingHeadBuffer_1hma8m$ = function (movingHead) {
+    var dmxAddresses = this.dmx_0.get_61zpoe$(movingHead.name);
+    var buf = new MovingHeadBuffer(new Int8Array(dmxAddresses.size), Color$Companion_getInstance().WHITE, 0.0, 0.0);
+    this.dmxBuffers_0.add_11rb$(new Pair(movingHead.name, buf));
+    return buf;
+  };
+  ShowRunner.prototype.send_6qu7we$ = function (link) {
     var tmp$;
-    tmp$ = this.brainBuffers.iterator();
+    tmp$ = this.brainBuffers_0.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       var remoteBrain = element.first;
@@ -1256,6 +1403,13 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       if (remoteBrain != null) {
         link.send_bkw8fl$(remoteBrain.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shaderBuffer));
       }
+    }
+    var tmp$_0;
+    tmp$_0 = this.dmxBuffers_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      var movingHeadBuffer = element_0.second;
+      setMovingHeadData(element_0.first, movingHeadBuffer.colorIllicitDontUse, movingHeadBuffer.rotAIllicitDontUse, movingHeadBuffer.rotBIllicitDontUse);
     }
   };
   ShowRunner.$metadata$ = {
@@ -1590,7 +1744,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
     var brainCount = reader.readInt();
-    var brainIds = ArrayList_init();
+    var brainIds = ArrayList_init_0();
     for (var i = 0; i < brainCount; i++) {
       brainIds.add_11rb$(reader.readString());
     }
@@ -1644,6 +1798,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SheepModel() {
     this.vertices_mqvov9$_0 = this.vertices_mqvov9$_0;
     this.panels_kixrwx$_0 = this.panels_kixrwx$_0;
+    this.eyes_j3l09w$_0 = this.eyes_j3l09w$_0;
   }
   Object.defineProperty(SheepModel.prototype, 'vertices', {
     get: function () {
@@ -1665,6 +1820,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.panels_kixrwx$_0 = panels;
     }
   });
+  Object.defineProperty(SheepModel.prototype, 'eyes', {
+    get: function () {
+      if (this.eyes_j3l09w$_0 == null)
+        return throwUPAE('eyes');
+      return this.eyes_j3l09w$_0;
+    },
+    set: function (eyes) {
+      this.eyes_j3l09w$_0 = eyes;
+    }
+  });
   Object.defineProperty(SheepModel.prototype, 'allPanels', {
     get: function () {
       return this.panels;
@@ -1673,7 +1838,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Object.defineProperty(SheepModel.prototype, 'partySide', {
     get: function () {
       var $receiver = this.panels;
-      var destination = ArrayList_init();
+      var destination = ArrayList_init_0();
       var tmp$;
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
@@ -1687,14 +1852,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
-    var vertices = ArrayList_init();
-    var panels = ArrayList_init();
+    var vertices = ArrayList_init_0();
+    var panels = ArrayList_init_0();
     var currentPanel = {v: new SheepModel$Panel('initial')};
     var $receiver = split(getResource('newsheep_processed.obj'), ['\n']);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -1713,7 +1876,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         case 'v':
           if (args.size !== 3)
             throw Exception_init('invalid vertex line: ' + element);
-          var destination_0 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_0 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_3;
           tmp$_3 = args.iterator();
           while (tmp$_3.hasNext()) {
@@ -1735,7 +1898,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           panels.add_11rb$(currentPanel.v);
           break;
         case 'f':
-          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_1 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_4;
           tmp$_4 = args.iterator();
           while (tmp$_4.hasNext()) {
@@ -1747,7 +1910,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           currentPanel.v.faces.faces.add_11rb$(new SheepModel$Face(verts));
           break;
         case 'l':
-          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var destination_2 = ArrayList_init(collectionSizeOrDefault(args, 10));
           var tmp$_5;
           tmp$_5 = args.iterator();
           while (tmp$_5.hasNext()) {
@@ -1756,7 +1919,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           }
 
           var verts_0 = destination_2;
-          var points = ArrayList_init();
+          var points = ArrayList_init_0();
           tmp$_2 = verts_0.iterator();
           while (tmp$_2.hasNext()) {
             var vi = tmp$_2.next();
@@ -1771,6 +1934,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     println('Sheep model has ' + panels.size + ' panels (and ' + vertices.size + ' vertices)!');
     this.vertices = vertices;
     this.panels = panels;
+    this.eyes = arrayListOf([new SheepModel$MovingHead('leftEye', new SheepModel$Point(-163.738, 204.361, 439.302)), new SheepModel$MovingHead('rightEye', new SheepModel$Point(-103.738, 204.361, 439.302))]);
   };
   function SheepModel$Point(x, y, z) {
     this.x = x;
@@ -1841,8 +2005,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: []
   };
   function SheepModel$Faces() {
-    this.vertices = ArrayList_init();
-    this.faces = ArrayList_init();
+    this.vertices = ArrayList_init_0();
+    this.faces = ArrayList_init_0();
   }
   SheepModel$Faces.$metadata$ = {
     kind: Kind_CLASS,
@@ -1852,11 +2016,20 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SheepModel$Panel(name) {
     this.name = name;
     this.faces = new SheepModel$Faces();
-    this.lines = ArrayList_init();
+    this.lines = ArrayList_init_0();
   }
   SheepModel$Panel.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Panel',
+    interfaces: []
+  };
+  function SheepModel$MovingHead(name, origin) {
+    this.name = name;
+    this.origin = origin;
+  }
+  SheepModel$MovingHead.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovingHead',
     interfaces: []
   };
   SheepModel.$metadata$ = {
@@ -1950,7 +2123,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     ShaderBuffer.call(this, ShaderType$PIXEL_getInstance());
     this.fakeyTerribleHardCodedNumberOfPixels = 1337;
     var $receiver = new IntRange(0, this.fakeyTerribleHardCodedNumberOfPixels);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -2008,7 +2181,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SomeDumbShow(sheepModel, showRunner) {
     this.colorPicker = showRunner.getColorPicker();
     var $receiver = sheepModel.allPanels;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -2016,6 +2189,15 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       destination.add_11rb$(showRunner.getPixelShaderBuffer_jfju1k$(item));
     }
     this.pixelShaderBuffers = destination;
+    var $receiver_0 = sheepModel.eyes;
+    var destination_0 = ArrayList_init(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var item_0 = tmp$_0.next();
+      destination_0.add_11rb$(showRunner.getMovingHeadBuffer_1hma8m$(item_0));
+    }
+    this.movingHeadBuffers = destination_0;
     println('Creating new SomeDumbShow, we have ' + this.pixelShaderBuffers.size + ' buffers');
   }
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
@@ -2032,14 +2214,27 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       tmp$_0 = element.colors.iterator();
       while (tmp$_0.hasNext()) {
         var item = tmp$_0.next();
-        var i = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
-        var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
-        var x_0 = Math_0.sin(x);
-        var saturation = baseSaturation * Math_0.abs(x_0);
-        var desaturatedColor = panelColor.withSaturation_mx4ult$(saturation);
-        element.colors.set_wxm5ur$(i, desaturatedColor);
+        element.colors.set_wxm5ur$(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)), this.desaturateRandomishly_0(baseSaturation, seed, panelColor));
+      }
+      var tmp$_1;
+      tmp$_1 = this.movingHeadBuffers.iterator();
+      while (tmp$_1.hasNext()) {
+        var element_0 = tmp$_1.next();
+        element_0.colorIllicitDontUse = this.colorPicker.color;
+        element_0.rotAIllicitDontUse = element_0.rotAIllicitDontUse + (this.nextRandomFloat_0(seed) - 0.5) / 1000;
+        element_0.rotBIllicitDontUse = element_0.rotBIllicitDontUse + (this.nextRandomFloat_0(seed) - 0.5) / 1000;
       }
     }
+  };
+  SomeDumbShow.prototype.desaturateRandomishly_0 = function (baseSaturation, seed, panelColor) {
+    var x = this.nextRandomFloat_0(seed);
+    var saturation = baseSaturation * Math_0.abs(x);
+    var desaturatedColor = panelColor.withSaturation_mx4ult$(saturation);
+    return desaturatedColor;
+  };
+  SomeDumbShow.prototype.nextRandomFloat_0 = function (seed) {
+    var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
+    return Math_0.sin(x);
   };
   SomeDumbShow.$metadata$ = {
     kind: Kind_CLASS,
@@ -2055,6 +2250,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Visualizer.prototype.showPanel_jfju1k$ = function (panel) {
     return new JsPanel(addPanel(panel));
   };
+  Visualizer.prototype.addEye_vxd903$ = function (eye, dmx) {
+    new MovingHeadView(eye, dmx);
+  };
   Visualizer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Visualizer',
@@ -2068,7 +2266,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var tmp$ = this.jsPanelObj_0;
     var tmp$_0 = Color$Companion_getInstance().WHITE;
     var $receiver = new IntRange(0, 300);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$_1;
     tmp$_1 = $receiver.iterator();
     while (tmp$_1.hasNext()) {
@@ -2087,7 +2285,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     set: function (value) {
       var tmp$ = this.jsPanelObj_0;
       var $receiver = new IntRange(0, 300);
-      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
       var tmp$_0;
       tmp$_0 = $receiver.iterator();
       while (tmp$_0.hasNext()) {
@@ -2101,6 +2299,18 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   JsPanel.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'JsPanel',
+    interfaces: []
+  };
+  function MovingHeadView(movingHead, dmx) {
+    this.dmxAddress = dmx.allocate_bm4lxs$(movingHead.name, 16);
+    this.movingHeadJs = addMovingHead(movingHead);
+  }
+  MovingHeadView.prototype.setColor_rny0jj$ = function (color) {
+    setMovingHeadData(Unit, color, 0.0, 0.0);
+  };
+  MovingHeadView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovingHeadView',
     interfaces: []
   };
   function ByteArrayWriter(bytes, offset) {
@@ -2598,6 +2808,17 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   package$baaahs.MapperDisplay = MapperDisplay;
+  Dmx.DmxAddress = Dmx$DmxAddress;
+  package$baaahs.Dmx = Dmx;
+  package$baaahs.MovingHeadBuffer = MovingHeadBuffer;
+  FakeDmx.FakeDmxAddress = FakeDmx$FakeDmxAddress;
+  package$baaahs.FakeDmx = FakeDmx;
+  _.ThingWithMass = ThingWithMass;
+  _.Animal = Animal;
+  _.Cat = Cat;
+  _.Dog = Dog;
+  _.Glass = Glass;
+  _.kevmoMain = kevmoMain;
   Object.defineProperty(package$baaahs, 'main', {
     get: get_main,
     set: set_main
@@ -2668,6 +2889,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepModel.Face = SheepModel$Face;
   SheepModel.Faces = SheepModel$Faces;
   SheepModel.Panel = SheepModel$Panel;
+  SheepModel.MovingHead = SheepModel$MovingHead;
   package$baaahs.SheepModel = SheepModel;
   Object.defineProperty(ShaderType, 'SOLID', {
     get: ShaderType$SOLID_getInstance
@@ -2689,6 +2911,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.SomeDumbShow = SomeDumbShow;
   package$baaahs.Visualizer = Visualizer;
   package$baaahs.JsPanel = JsPanel;
+  package$baaahs.MovingHeadView = MovingHeadView;
   package$baaahs.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$baaahs.ByteArrayWriter = ByteArrayWriter;
   package$baaahs.ByteArrayReader = ByteArrayReader;
@@ -2704,6 +2927,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.getTimeMillis = getTimeMillis;
+  FakeDmx.prototype.allocate_bm4lxs$ = Dmx.prototype.allocate_bm4lxs$;
+  FakeDmx.prototype.get_61zpoe$ = Dmx.prototype.get_61zpoe$;
   FakeNetwork$FakeLink.prototype.send_bkw8fl$ = Network$Link.prototype.send_bkw8fl$;
   FakeNetwork$FakeLink.prototype.broadcast_ecsl0t$ = Network$Link.prototype.broadcast_ecsl0t$;
   Kotlin.defineModule('play', _);

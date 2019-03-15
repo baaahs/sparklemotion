@@ -73,6 +73,8 @@ function initThreeJs(sheepModel) {
   sheepModel.vertices.toArray().forEach(v => {
     geom.vertices.push(new THREE.Vector3(v.x, v.y, v.z));
   });
+
+  startRender();
 }
 
 function addPanel(p) {
@@ -131,23 +133,18 @@ function addPanel(p) {
 
       positions.push(v.x, v.y, v.z);
       colors.push(0, 0, 0);
-
-      // pixelsGeometry.vertices.push(v);
-      // var starsMaterial = new THREE.PointsMaterial({color: 0x888888});
-      //
-      // var starField = new THREE.Points(pixelsGeometry, starsMaterial);
-      //
-      // scene.add(starField);
     }
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
+    colorsBuffer.dynamic = true;
+    pixelsGeometry.addAttribute('color', colorsBuffer);
     const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
     const points = new THREE.Points(pixelsGeometry, material);
     scene.add(points);
 
     panel.pixelCount = pixelCount;
-    panel.pixelColors = colors;
+    panel.pixelColorsBuffer = colorsBuffer;
     panel.pixelsGeometry = pixelsGeometry;
   }
 
@@ -176,12 +173,41 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
     const count = Math.min(panel.pixelCount, pixelColorsA.length);
     for (let i = 0; i < count; i++) {
       const pColor = pixelColorsA[i];
-      panel.pixelColors[i * 3] = pColor.red / 256.0;
-      panel.pixelColors[i * 3 + 1] = pColor.green / 256.0;
-      panel.pixelColors[i * 3 + 2] = pColor.blue / 256.0;
+      panel.pixelColorsBuffer.array[i * 3] = pColor.red / 256.0;
+      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.green / 256.0;
+      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blue / 256.0;
     }
-    panel.pixelsGeometry.addAttribute('color', new THREE.Float32BufferAttribute(panel.pixelColors, 3));
+    panel.pixelColorsBuffer.needsUpdate = true;
   }
+}
+
+document.movingHeads = {};
+
+function addMovingHead(movingHead) {
+  let geometry = new THREE.ConeBufferGeometry(50, 1000);
+  geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -500, 0));
+  let material = new THREE.MeshBasicMaterial({color: 0xffff00});
+  material.transparent = true;
+  material.opacity = .75;
+  let cone = new THREE.Mesh(geometry, material);
+  cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z);
+  cone.rotation.x = -Math.PI / 2;
+
+  scene.add(cone);
+  document.movingHeads[movingHead.name] = {
+    cone: cone,
+    material: cone.material,
+  };
+}
+
+function setMovingHeadData(name, color, rotA, rotB) {
+  let movingHeadJs = document.movingHeads[name];
+  movingHeadJs.material.color.r = color.red;
+  movingHeadJs.material.color.g = color.green;
+  movingHeadJs.material.color.b = color.blue;
+
+  movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
+  movingHeadJs.cone.rotation.z = rotB;
 }
 
 function startRender() {
@@ -194,7 +220,7 @@ function startRender() {
   render();
 }
 
-var REFRESH_DELAY = 50; // ms
+const REFRESH_DELAY = 50; // ms
 
 function render() {
   setTimeout(() => {
