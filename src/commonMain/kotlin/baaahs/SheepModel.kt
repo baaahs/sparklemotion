@@ -4,6 +4,8 @@ class SheepModel {
     lateinit var vertices: List<Point>
     lateinit var panels: List<Panel>
 
+    lateinit var eyes: List<MovingHead>
+
     val allPanels: List<Panel>
         get() = panels
     val partySide: List<Panel>
@@ -55,6 +57,12 @@ class SheepModel {
         println("Sheep model has ${panels.size} panels (and ${vertices.size} vertices)!")
         this.vertices = vertices
         this.panels = panels
+
+
+        eyes = arrayListOf(
+            MovingHead("leftEye", Point(-163.738f, 204.361f, 439.302f)),
+            MovingHead("rightEye", Point(-103.738f, 204.361f, 439.302f))
+        )
     }
 
     data class Point(val x: Float, val y: Float, val z: Float)
@@ -72,5 +80,8 @@ class SheepModel {
         val lines = mutableListOf<Line>()
     }
 
+    class MovingHead(val name: String, val origin: Point/*, val heading: Point*/) {
+
+    }
 }
 

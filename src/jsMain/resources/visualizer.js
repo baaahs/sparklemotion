@@ -73,6 +73,8 @@ function initThreeJs(sheepModel) {
   sheepModel.vertices.toArray().forEach(v => {
     geom.vertices.push(new THREE.Vector3(v.x, v.y, v.z));
   });
+
+  startRender();
 }
 
 function addPanel(p) {
@@ -131,13 +133,6 @@ function addPanel(p) {
 
       positions.push(v.x, v.y, v.z);
       colors.push(0, 0, 0);
-
-      // pixelsGeometry.vertices.push(v);
-      // var starsMaterial = new THREE.PointsMaterial({color: 0x888888});
-      //
-      // var starField = new THREE.Points(pixelsGeometry, starsMaterial);
-      //
-      // scene.add(starField);
     }
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -186,6 +181,31 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
   }
 }
 
+document.movingHeads = {};
+
+function addMovingHead(movingHead) {
+  let geometry = new THREE.ConeBufferGeometry(10, 1000);
+  let material = new THREE.MeshBasicMaterial({color: 0xffff00});
+  material.transparent = true;
+  material.opacity = .75;
+  let cone = new THREE.Mesh(geometry, material);
+  cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z + 500);
+  cone.rotation.x = -Math.PI / 2;
+
+  scene.add(cone);
+  document.movingHeads[movingHead.name] = {
+    cone: cone,
+    material: cone.material,
+  };
+}
+
+function setMovingHeadColor(name, color) {
+  let movingHeadJs = document.movingHeads[name];
+  movingHeadJs.material.color.r = color.red;
+  movingHeadJs.material.color.g = color.green;
+  movingHeadJs.material.color.b = color.blue;
+}
+
 function startRender() {
   geom.computeBoundingSphere();
   object = new THREE.Points(geom, pointMaterial);
@@ -196,7 +216,7 @@ function startRender() {
   render();
 }
 
-var REFRESH_DELAY = 50; // ms
+const REFRESH_DELAY = 50; // ms
 
 function render() {
   setTimeout(() => {

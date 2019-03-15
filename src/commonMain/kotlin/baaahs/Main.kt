@@ -13,8 +13,9 @@ class Main {
     var display = getDisplay()
     var network = FakeNetwork(display = display.forNetwork())
 
+    var dmx = FakeDmx()
     var sheepModel = SheepModel()
-    val pinky = Pinky(sheepModel, network, display.forPinky())
+    val pinky = Pinky(sheepModel, network, dmx, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
     val visualizer = Visualizer(sheepModel)
 
@@ -30,7 +31,10 @@ class Main {
             val jsPanel = visualizer.showPanel(panel)
             SimBrain(network, display.forBrain(), jsPanel, panel).start()
         }
-        startRender()
+
+        sheepModel.eyes.forEach { eye ->
+            visualizer.addEye(eye, dmx)
+        }
 
         doRunBlocking {
             delay(200000L)
