@@ -35,7 +35,7 @@ class MovingHeadView(movingHead: SheepModel.MovingHead, dmx: Dmx) {
     val movingHeadJs = addMovingHead(movingHead)
 
     fun setColor(color: Color) {
-        setMovingHeadColor(movingHeadJs, color)
+        setMovingHeadData(movingHeadJs, color, 0f, 0f)
     }
 }
 
@@ -45,4 +45,4 @@ external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: List<Color>?)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead)
-external fun setMovingHeadColor(movingHeadJs: Any, color: Color)
+external fun setMovingHeadData(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)

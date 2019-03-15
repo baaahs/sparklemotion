@@ -16,8 +16,10 @@ interface Dmx {
     interface DmxAddress
 }
 
-class MovingHeadBuffer(private val byteArray: ByteArray, var colorIllicitDontUse: Color) {
-}
+class MovingHeadBuffer(private val byteArray: ByteArray,
+                       var colorIllicitDontUse: Color,
+                       var rotAIllicitDontUse: Float,
+                       var rotBIllicitDontUse: Float)
 
 class FakeDmx : Dmx {
     override val allocated: MutableMap<String, List<Dmx.DmxAddress>> = hashMapOf()

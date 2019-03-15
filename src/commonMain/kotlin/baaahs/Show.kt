@@ -81,6 +81,8 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
 
             movingHeadBuffers.forEach { buf ->
                 buf.colorIllicitDontUse = colorPicker.color
+                buf.rotAIllicitDontUse += (nextRandomFloat(seed) - .5).toFloat() / 1000
+                buf.rotBIllicitDontUse += (nextRandomFloat(seed) - .5).toFloat() / 1000
             }
         }
     }
@@ -90,9 +92,10 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
         seed: Random,
         panelColor: Color
     ): Color {
-        val saturation = baseSaturation *
-                abs(sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())).toFloat()
+        val saturation = baseSaturation * abs(nextRandomFloat(seed)).toFloat()
         val desaturatedColor = panelColor.withSaturation(saturation)
         return desaturatedColor
     }
+
+    private fun nextRandomFloat(seed: Random) = sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())
 }
