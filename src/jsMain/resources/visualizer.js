@@ -184,12 +184,13 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
 document.movingHeads = {};
 
 function addMovingHead(movingHead) {
-  let geometry = new THREE.ConeBufferGeometry(10, 1000);
+  let geometry = new THREE.ConeBufferGeometry(50, 1000);
+  geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -500, 0));
   let material = new THREE.MeshBasicMaterial({color: 0xffff00});
   material.transparent = true;
   material.opacity = .75;
   let cone = new THREE.Mesh(geometry, material);
-  cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z + 500);
+  cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z);
   cone.rotation.x = -Math.PI / 2;
 
   scene.add(cone);
@@ -199,11 +200,14 @@ function addMovingHead(movingHead) {
   };
 }
 
-function setMovingHeadColor(name, color) {
+function setMovingHeadData(name, color, rotA, rotB) {
   let movingHeadJs = document.movingHeads[name];
   movingHeadJs.material.color.r = color.red;
   movingHeadJs.material.color.g = color.green;
   movingHeadJs.material.color.b = color.blue;
+
+  movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
+  movingHeadJs.cone.rotation.z = rotB;
 }
 
 function startRender() {

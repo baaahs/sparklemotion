@@ -121,7 +121,7 @@ class ShowRunner(
 
     fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): MovingHeadBuffer {
         val dmxAddresses = dmx.get(movingHead.name)
-        val buf = MovingHeadBuffer(ByteArray(dmxAddresses.size), Color.WHITE)
+        val buf = MovingHeadBuffer(ByteArray(dmxAddresses.size), Color.WHITE, 0f, 0f)
         dmxBuffers.add(Pair(movingHead.name, buf))
         return buf
     }
@@ -137,7 +137,11 @@ class ShowRunner(
         }
 
         dmxBuffers.forEach { dmxBuffer ->
-            setMovingHeadColor(dmxBuffer.first, dmxBuffer.second.colorIllicitDontUse)
+            val movingHeadBuffer = dmxBuffer.second
+            setMovingHeadData(dmxBuffer.first,
+                movingHeadBuffer.colorIllicitDontUse,
+                movingHeadBuffer.rotAIllicitDontUse,
+                movingHeadBuffer.rotBIllicitDontUse)
         }
     }
 }
