@@ -200,10 +200,10 @@ function addMovingHead(movingHead) {
   };
 }
 
-function setMovingHeadData(movingHeadJs, color, rotA, rotB) {
-  movingHeadJs.material.color.r = color.red / 255;
-  movingHeadJs.material.color.g = color.green / 255;
-  movingHeadJs.material.color.b = color.blue / 255;
+function adjustMovingHead(movingHeadJs, color, rotA, rotB) {
+  movingHeadJs.material.color.r = color.redF;
+  movingHeadJs.material.color.g = color.greenF;
+  movingHeadJs.material.color.b = color.blueF;
 
   movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
   movingHeadJs.cone.rotation.z = rotB;

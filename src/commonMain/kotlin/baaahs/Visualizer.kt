@@ -32,19 +32,13 @@ class JsPanel(private val jsPanelObj: Any) {
 
 class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
     val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-    val device = Dmx.Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
+    val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
     val movingHeadJs = addMovingHead(movingHead)
 
     private fun receivedDmxFrame() {
         val colorWheelV = device.colorWheel
-        val wheelColor = Dmx.Shenzarpy.WheelColor.values()[colorWheelV.toInt()]
-        println("wheelColor = ${wheelColor} colorWheelV ${colorWheelV}")
-        setColor(wheelColor.color)
-    }
-
-    fun setColor(color: Color) {
-        println("color = ${color}")
-        setMovingHeadData(movingHeadJs, color, 0f, 0f)
+        val wheelColor = Shenzarpy.WheelColor.values()[colorWheelV.toInt()]
+        adjustMovingHead(movingHeadJs, wheelColor.color, device.pan, device.tilt)
     }
 }
 
@@ -54,4 +48,4 @@ external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: List<Color>?)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
-external fun setMovingHeadData(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)
+external fun adjustMovingHead(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)
