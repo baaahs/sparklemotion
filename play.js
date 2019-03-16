@@ -22,19 +22,19 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var numberToInt = Kotlin.numberToInt;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var until = Kotlin.kotlin.ranges.until_dqglrj$;
-  var ensureNotNull = Kotlin.ensureNotNull;
+  var Pair = Kotlin.kotlin.Pair;
+  var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L200000 = Kotlin.Long.fromInt(200000);
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
-  var Pair = Kotlin.kotlin.Pair;
   var L1 = Kotlin.Long.ONE;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
   var equals = Kotlin.equals;
+  var ensureNotNull = Kotlin.ensureNotNull;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
@@ -42,6 +42,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
+  var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
@@ -58,6 +59,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
+  FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   Cat.prototype = Object.create(Animal.prototype);
   Cat.prototype.constructor = Cat;
   Dog.prototype = Object.create(Animal.prototype);
@@ -76,6 +79,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   BrainIdResponse.prototype.constructor = BrainIdResponse;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
   PinkyPongMessage.prototype.constructor = PinkyPongMessage;
+  Shenzarpy$WheelColor.prototype = Object.create(Enum.prototype);
+  Shenzarpy$WheelColor.prototype.constructor = Shenzarpy$WheelColor;
+  Shenzarpy$Channel.prototype = Object.create(Enum.prototype);
+  Shenzarpy$Channel.prototype.constructor = Shenzarpy$Channel;
+  Shenzarpy.prototype = Object.create(Dmx$DeviceType.prototype);
+  Shenzarpy.prototype.constructor = Shenzarpy;
   ShaderType.prototype = Object.create(Enum.prototype);
   ShaderType.prototype.constructor = ShaderType;
   SolidShaderBuffer.prototype = Object.create(ShaderBuffer.prototype);
@@ -307,6 +316,21 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     writer.writeByte_s8j3t7$(toByte(this.green & 255));
     writer.writeByte_s8j3t7$(toByte(this.blue & 255));
   };
+  Object.defineProperty(Color.prototype, 'redF', {
+    get: function () {
+      return this.red / 255;
+    }
+  });
+  Object.defineProperty(Color.prototype, 'greenF', {
+    get: function () {
+      return this.green / 255;
+    }
+  });
+  Object.defineProperty(Color.prototype, 'blueF', {
+    get: function () {
+      return this.blue / 255;
+    }
+  });
   Color.prototype.toInt = function () {
     return this.red << 16 & 16711680 | this.green << 8 & 65280 | this.blue & 255;
   };
@@ -334,6 +358,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var b_1 = this.blue + numberToInt((255 - this.blue | 0) * desaturation) | 0;
     return new Color(tmp$, tmp$_0, Math_0.min(255, b_1));
   };
+  Color.prototype.distanceTo_rny0jj$ = function (other) {
+    var dist = this.square_0(other.redF - this.redF) + this.square_0(other.greenF - this.greenF) + this.square_0(other.blueF - this.blueF);
+    var x = dist / 3;
+    return Math_0.sqrt(x);
+  };
+  Color.prototype.square_0 = function (f) {
+    return f * f;
+  };
   function Color$Companion() {
     Color$Companion_instance = this;
     this.BLACK = new Color(0, 0, 0);
@@ -350,6 +382,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   Color$Companion.prototype.parse_c4pr8w$ = function (reader) {
     return new Color(reader.readByte() & 255, reader.readByte() & 255, reader.readByte() & 255);
+  };
+  Color$Companion.prototype.from_za3lpa$ = function (i) {
+    return new Color(i >> 16 & 255, i >> 8 & 255, i & 255);
   };
   Color$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -393,6 +428,39 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Color.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.red, other.red) && Kotlin.equals(this.green, other.green) && Kotlin.equals(this.blue, other.blue)))));
   };
+  function Config() {
+    Config$Companion_getInstance();
+  }
+  function Config$Companion() {
+    Config$Companion_instance = this;
+    this.DMX_DEVICES = mapOf([new Pair('leftEye', 1), new Pair('rightEye', 17)]);
+  }
+  Config$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Config$Companion_instance = null;
+  function Config$Companion_getInstance() {
+    if (Config$Companion_instance === null) {
+      new Config$Companion();
+    }
+    return Config$Companion_instance;
+  }
+  function Config$MovingHeadConfig(deviceType, baseChannel) {
+    this.deviceType = deviceType;
+    this.baseChannel = baseChannel;
+  }
+  Config$MovingHeadConfig.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovingHeadConfig',
+    interfaces: []
+  };
+  Config.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Config',
+    interfaces: []
+  };
   function Display() {
   }
   Display.$metadata$ = {
@@ -430,29 +498,43 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   function Dmx() {
   }
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  Dmx.prototype.allocate_bm4lxs$ = function (name, addressCount) {
-    var $receiver = until(0, addressCount);
-    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(this.allocate());
-    }
-    var dmxAddresses = destination;
-    this.allocated.put_xwzc9p$(name, dmxAddresses);
-    return dmxAddresses;
-  };
-  Dmx.prototype.get_61zpoe$ = function (name) {
-    return ensureNotNull(this.allocated.get_11rb$(name));
-  };
-  function Dmx$DmxAddress() {
+  function Dmx$Universe() {
+    this.channelsOut_z0wri6$_0 = new Int8Array(512);
   }
-  Dmx$DmxAddress.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'DmxAddress',
+  Dmx$Universe.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Universe',
+    interfaces: []
+  };
+  function Dmx$Buffer(channels, baseChannel, channelCount) {
+    this.channels_0 = channels;
+    this.baseChannel = baseChannel;
+    this.channelCount = channelCount;
+  }
+  Dmx$Buffer.prototype.get_za3lpa$ = function (index) {
+    this.boundsCheck_0(index);
+    return this.channels_0[this.baseChannel + index | 0];
+  };
+  Dmx$Buffer.prototype.set_6t1wet$ = function (index, value) {
+    this.boundsCheck_0(index);
+    this.channels_0[this.baseChannel + index | 0] = value;
+  };
+  Dmx$Buffer.prototype.boundsCheck_0 = function (index) {
+    if (index < 0 || index >= this.channelCount) {
+      throw Exception_init('index out of bounds: ' + index + ' >= ' + this.channelCount);
+    }
+  };
+  Dmx$Buffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Buffer',
+    interfaces: []
+  };
+  function Dmx$DeviceType(channelCount) {
+    this.channelCount = channelCount;
+  }
+  Dmx$DeviceType.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DeviceType',
     interfaces: []
   };
   Dmx.$metadata$ = {
@@ -460,40 +542,35 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Dmx',
     interfaces: []
   };
-  function MovingHeadBuffer(byteArray, colorIllicitDontUse, rotAIllicitDontUse, rotBIllicitDontUse) {
-    this.byteArray_0 = byteArray;
-    this.colorIllicitDontUse = colorIllicitDontUse;
-    this.rotAIllicitDontUse = rotAIllicitDontUse;
-    this.rotBIllicitDontUse = rotBIllicitDontUse;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  function FakeDmxUniverse() {
+    Dmx$Universe.call(this);
+    this.channelsOut_0 = new Int8Array(512);
+    this.channelsIn_0 = new Int8Array(512);
+    this.listeners_0 = ArrayList_init();
   }
-  MovingHeadBuffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'MovingHeadBuffer',
-    interfaces: []
+  FakeDmxUniverse.prototype.writer_vux9f0$ = function (baseChannel, channelCount) {
+    return new Dmx$Buffer(this.channelsOut_0, baseChannel, channelCount);
   };
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  function FakeDmx() {
-    this.allocated_dctxqt$_0 = HashMap_init();
-  }
-  Object.defineProperty(FakeDmx.prototype, 'allocated', {
-    get: function () {
-      return this.allocated_dctxqt$_0;
+  FakeDmxUniverse.prototype.reader_sxjeop$ = function (baseChannel, channelCount, listener) {
+    this.listeners_0.add_11rb$(listener);
+    return new Dmx$Buffer(this.channelsIn_0, baseChannel, channelCount);
+  };
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
+  FakeDmxUniverse.prototype.sendFrame = function () {
+    var $receiver = this.channelsOut_0;
+    arrayCopy($receiver, this.channelsIn_0, 0, 0, $receiver.length);
+    var tmp$;
+    tmp$ = this.listeners_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element();
     }
-  });
-  FakeDmx.prototype.allocate = function () {
-    return new FakeDmx$FakeDmxAddress();
   };
-  function FakeDmx$FakeDmxAddress() {
-  }
-  FakeDmx$FakeDmxAddress.$metadata$ = {
+  FakeDmxUniverse.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'FakeDmxAddress',
-    interfaces: [Dmx$DmxAddress]
-  };
-  FakeDmx.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeDmx',
-    interfaces: [Dmx]
+    simpleName: 'FakeDmxUniverse',
+    interfaces: [Dmx$Universe]
   };
   function ThingWithMass() {
   }
@@ -567,11 +644,11 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function Main() {
     this.display = getDisplay();
     this.network = new FakeNetwork(void 0, this.display.forNetwork());
-    this.dmx = new FakeDmx();
+    this.dmxUniverse = new FakeDmxUniverse();
     this.sheepModel = new SheepModel();
-    this.pinky = new Pinky(this.sheepModel, this.network, this.dmx, this.display.forPinky());
+    this.pinky = new Pinky(this.sheepModel, this.network, this.dmxUniverse, this.display.forPinky());
     this.mapper = new Mapper(this.network, this.display.forMapper());
-    this.visualizer = new Visualizer(this.sheepModel);
+    this.visualizer = new Visualizer(this.sheepModel, this.dmxUniverse);
   }
   function Coroutine$Main$start$lambda(continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -637,7 +714,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     tmp$_0 = this.sheepModel.eyes.iterator();
     while (tmp$_0.hasNext()) {
       var element_0 = tmp$_0.next();
-      this.visualizer.addEye_vxd903$(element_0, this.dmx);
+      this.visualizer.addEye_1hma8m$(element_0);
+      Config$Companion_getInstance().DMX_DEVICES.get_11rb$(element_0.name);
     }
     doRunBlocking(Main$start$lambda);
   };
@@ -881,6 +959,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Network',
     interfaces: []
   };
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   function FakeNetwork(networkDelay, display) {
     if (networkDelay === void 0)
       networkDelay = L1;
@@ -895,14 +974,13 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var address = new FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
   };
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   FakeNetwork.prototype.listen_0 = function (address, port, listener) {
     this.listeners_0.put_xwzc9p$(new Pair(address, port), listener);
     var $receiver = this.listenersByPort_0;
     var tmp$;
     var value = $receiver.get_11rb$(port);
     if (value == null) {
-      var answer = ArrayList_init_0();
+      var answer = ArrayList_init();
       $receiver.put_xwzc9p$(port, answer);
       tmp$ = answer;
     }
@@ -1049,10 +1127,10 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
-  function Pinky(sheepModel, network, dmx, display) {
+  function Pinky(sheepModel, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
     this.network = network;
-    this.dmx = dmx;
+    this.dmxUniverse = dmxUniverse;
     this.display = display;
     this.link_e4s3v3$_0 = this.link_e4s3v3$_0;
     this.brains_0 = LinkedHashMap_init();
@@ -1192,7 +1270,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmx);
+            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse);
             this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
             this.state_0 = 2;
             continue;
@@ -1201,7 +1279,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           case 2:
             if (!this.local$this$Pinky.mapperIsRunning_0) {
               if (this.local$this$Pinky.brainsChanged_0) {
-                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmx);
+                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse);
                 this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
                 this.local$this$Pinky.brainsChanged_0 = false;
               }
@@ -1335,12 +1413,11 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Pinky',
     interfaces: [Network$Listener]
   };
-  function ShowRunner(pinkyDisplay, brains, dmx) {
+  function ShowRunner(pinkyDisplay, brains, dmxUniverse) {
     this.pinkyDisplay_0 = pinkyDisplay;
     this.brains_0 = brains;
-    this.dmx_0 = dmx;
-    this.brainBuffers_0 = ArrayList_init_0();
-    this.dmxBuffers_0 = ArrayList_init_0();
+    this.dmxUniverse_0 = dmxUniverse;
+    this.brainBuffers_0 = ArrayList_init();
   }
   ShowRunner.prototype.getColorPicker = function () {
     return new ColorPicker(this.pinkyDisplay_0);
@@ -1387,11 +1464,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.brainBuffers_0.add_11rb$(new Pair(remoteBrain, buffer));
     return buffer;
   };
+  ShowRunner.prototype.getDmxBuffer_vux9f0$ = function (baseChannel, channelCount) {
+    return this.dmxUniverse_0.writer_vux9f0$(baseChannel, channelCount);
+  };
   ShowRunner.prototype.getMovingHeadBuffer_1hma8m$ = function (movingHead) {
-    var dmxAddresses = this.dmx_0.get_61zpoe$(movingHead.name);
-    var buf = new MovingHeadBuffer(new Int8Array(dmxAddresses.size), Color$Companion_getInstance().WHITE, 0.0, 0.0);
-    this.dmxBuffers_0.add_11rb$(new Pair(movingHead.name, buf));
-    return buf;
+    var baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
+    return new Shenzarpy(this.getDmxBuffer_vux9f0$(baseChannel, 16));
   };
   ShowRunner.prototype.send_6qu7we$ = function (link) {
     var tmp$;
@@ -1404,13 +1482,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         link.send_bkw8fl$(remoteBrain.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shaderBuffer));
       }
     }
-    var tmp$_0;
-    tmp$_0 = this.dmxBuffers_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      var movingHeadBuffer = element_0.second;
-      setMovingHeadData(element_0.first, movingHeadBuffer.colorIllicitDontUse, movingHeadBuffer.rotAIllicitDontUse, movingHeadBuffer.rotBIllicitDontUse);
-    }
+    this.dmxUniverse_0.sendFrame();
   };
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
@@ -1744,7 +1816,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
     var brainCount = reader.readInt();
-    var brainIds = ArrayList_init_0();
+    var brainIds = ArrayList_init();
     for (var i = 0; i < brainCount; i++) {
       brainIds.add_11rb$(reader.readString());
     }
@@ -1838,7 +1910,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Object.defineProperty(SheepModel.prototype, 'partySide', {
     get: function () {
       var $receiver = this.panels;
-      var destination = ArrayList_init_0();
+      var destination = ArrayList_init();
       var tmp$;
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
@@ -1852,12 +1924,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
-    var vertices = ArrayList_init_0();
-    var panels = ArrayList_init_0();
+    var vertices = ArrayList_init();
+    var panels = ArrayList_init();
     var currentPanel = {v: new SheepModel$Panel('initial')};
     var $receiver = split(getResource('newsheep_processed.obj'), ['\n']);
-    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -1876,7 +1950,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         case 'v':
           if (args.size !== 3)
             throw Exception_init('invalid vertex line: ' + element);
-          var destination_0 = ArrayList_init(collectionSizeOrDefault(args, 10));
+          var destination_0 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_3;
           tmp$_3 = args.iterator();
           while (tmp$_3.hasNext()) {
@@ -1898,7 +1972,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           panels.add_11rb$(currentPanel.v);
           break;
         case 'f':
-          var destination_1 = ArrayList_init(collectionSizeOrDefault(args, 10));
+          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_4;
           tmp$_4 = args.iterator();
           while (tmp$_4.hasNext()) {
@@ -1910,7 +1984,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           currentPanel.v.faces.faces.add_11rb$(new SheepModel$Face(verts));
           break;
         case 'l':
-          var destination_2 = ArrayList_init(collectionSizeOrDefault(args, 10));
+          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_5;
           tmp$_5 = args.iterator();
           while (tmp$_5.hasNext()) {
@@ -1919,7 +1993,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           }
 
           var verts_0 = destination_2;
-          var points = ArrayList_init_0();
+          var points = ArrayList_init();
           tmp$_2 = verts_0.iterator();
           while (tmp$_2.hasNext()) {
             var vi = tmp$_2.next();
@@ -2005,8 +2079,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: []
   };
   function SheepModel$Faces() {
-    this.vertices = ArrayList_init_0();
-    this.faces = ArrayList_init_0();
+    this.vertices = ArrayList_init();
+    this.faces = ArrayList_init();
   }
   SheepModel$Faces.$metadata$ = {
     kind: Kind_CLASS,
@@ -2016,7 +2090,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SheepModel$Panel(name) {
     this.name = name;
     this.faces = new SheepModel$Faces();
-    this.lines = ArrayList_init_0();
+    this.lines = ArrayList_init();
   }
   SheepModel$Panel.$metadata$ = {
     kind: Kind_CLASS,
@@ -2036,6 +2110,422 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     kind: Kind_CLASS,
     simpleName: 'SheepModel',
     interfaces: []
+  };
+  function Shenzarpy(buffer) {
+    Shenzarpy$Companion_getInstance();
+    Dmx$DeviceType.call(this, 16);
+    this.buffer_0 = buffer;
+  }
+  var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
+  function Shenzarpy$Companion() {
+    Shenzarpy$Companion_instance = this;
+    this.panRange = rangeTo(toRadians(0.0), toRadians(540.0));
+    this.tiltRange = rangeTo(toRadians(-110.0), toRadians(110.0));
+  }
+  Shenzarpy$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Shenzarpy$Companion_instance = null;
+  function Shenzarpy$Companion_getInstance() {
+    if (Shenzarpy$Companion_instance === null) {
+      new Shenzarpy$Companion();
+    }
+    return Shenzarpy$Companion_instance;
+  }
+  function Shenzarpy$WheelColor(name, ordinal, color) {
+    Enum.call(this);
+    this.color = color;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Shenzarpy$WheelColor_initFields() {
+    Shenzarpy$WheelColor_initFields = function () {
+    };
+    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().from_za3lpa$(12721698));
+    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().from_za3lpa$(15434294));
+    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().from_za3lpa$(8174724));
+    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().from_za3lpa$(1212719));
+    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().from_za3lpa$(10469695));
+    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().from_za3lpa$(9401515));
+    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().from_za3lpa$(15434114));
+    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().from_za3lpa$(16706356));
+    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().from_za3lpa$(14750594));
+    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().from_za3lpa$(1812456));
+    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().from_za3lpa$(16041553));
+    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().from_za3lpa$(16046218));
+    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().from_za3lpa$(9947064));
+    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().from_za3lpa$(545175));
+    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().from_za3lpa$(16777215));
+  }
+  var Shenzarpy$WheelColor$RED_instance;
+  function Shenzarpy$WheelColor$RED_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$RED_instance;
+  }
+  var Shenzarpy$WheelColor$ORANGE_instance;
+  function Shenzarpy$WheelColor$ORANGE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$ORANGE_instance;
+  }
+  var Shenzarpy$WheelColor$AQUAMARINE_instance;
+  function Shenzarpy$WheelColor$AQUAMARINE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$AQUAMARINE_instance;
+  }
+  var Shenzarpy$WheelColor$DEEP_GREEN_instance;
+  function Shenzarpy$WheelColor$DEEP_GREEN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$DEEP_GREEN_instance;
+  }
+  var Shenzarpy$WheelColor$LIGHT_GREEN_instance;
+  function Shenzarpy$WheelColor$LIGHT_GREEN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$LIGHT_GREEN_instance;
+  }
+  var Shenzarpy$WheelColor$LAVENDER_instance;
+  function Shenzarpy$WheelColor$LAVENDER_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$LAVENDER_instance;
+  }
+  var Shenzarpy$WheelColor$PINK_instance;
+  function Shenzarpy$WheelColor$PINK_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$PINK_instance;
+  }
+  var Shenzarpy$WheelColor$YELLOW_instance;
+  function Shenzarpy$WheelColor$YELLOW_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$YELLOW_instance;
+  }
+  var Shenzarpy$WheelColor$MAGENTA_instance;
+  function Shenzarpy$WheelColor$MAGENTA_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$MAGENTA_instance;
+  }
+  var Shenzarpy$WheelColor$CYAN_instance;
+  function Shenzarpy$WheelColor$CYAN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CYAN_instance;
+  }
+  var Shenzarpy$WheelColor$CTO2_instance;
+  function Shenzarpy$WheelColor$CTO2_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTO2_instance;
+  }
+  var Shenzarpy$WheelColor$CTO1_instance;
+  function Shenzarpy$WheelColor$CTO1_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTO1_instance;
+  }
+  var Shenzarpy$WheelColor$CTB_instance;
+  function Shenzarpy$WheelColor$CTB_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTB_instance;
+  }
+  var Shenzarpy$WheelColor$DARK_BLUE_instance;
+  function Shenzarpy$WheelColor$DARK_BLUE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$DARK_BLUE_instance;
+  }
+  var Shenzarpy$WheelColor$WHITE_instance;
+  function Shenzarpy$WheelColor$WHITE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$WHITE_instance;
+  }
+  Shenzarpy$WheelColor.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'WheelColor',
+    interfaces: [Enum]
+  };
+  function Shenzarpy$WheelColor$values() {
+    return [Shenzarpy$WheelColor$RED_getInstance(), Shenzarpy$WheelColor$ORANGE_getInstance(), Shenzarpy$WheelColor$AQUAMARINE_getInstance(), Shenzarpy$WheelColor$DEEP_GREEN_getInstance(), Shenzarpy$WheelColor$LIGHT_GREEN_getInstance(), Shenzarpy$WheelColor$LAVENDER_getInstance(), Shenzarpy$WheelColor$PINK_getInstance(), Shenzarpy$WheelColor$YELLOW_getInstance(), Shenzarpy$WheelColor$MAGENTA_getInstance(), Shenzarpy$WheelColor$CYAN_getInstance(), Shenzarpy$WheelColor$CTO2_getInstance(), Shenzarpy$WheelColor$CTO1_getInstance(), Shenzarpy$WheelColor$CTB_getInstance(), Shenzarpy$WheelColor$DARK_BLUE_getInstance(), Shenzarpy$WheelColor$WHITE_getInstance()];
+  }
+  Shenzarpy$WheelColor.values = Shenzarpy$WheelColor$values;
+  function Shenzarpy$WheelColor$valueOf(name) {
+    switch (name) {
+      case 'RED':
+        return Shenzarpy$WheelColor$RED_getInstance();
+      case 'ORANGE':
+        return Shenzarpy$WheelColor$ORANGE_getInstance();
+      case 'AQUAMARINE':
+        return Shenzarpy$WheelColor$AQUAMARINE_getInstance();
+      case 'DEEP_GREEN':
+        return Shenzarpy$WheelColor$DEEP_GREEN_getInstance();
+      case 'LIGHT_GREEN':
+        return Shenzarpy$WheelColor$LIGHT_GREEN_getInstance();
+      case 'LAVENDER':
+        return Shenzarpy$WheelColor$LAVENDER_getInstance();
+      case 'PINK':
+        return Shenzarpy$WheelColor$PINK_getInstance();
+      case 'YELLOW':
+        return Shenzarpy$WheelColor$YELLOW_getInstance();
+      case 'MAGENTA':
+        return Shenzarpy$WheelColor$MAGENTA_getInstance();
+      case 'CYAN':
+        return Shenzarpy$WheelColor$CYAN_getInstance();
+      case 'CTO2':
+        return Shenzarpy$WheelColor$CTO2_getInstance();
+      case 'CTO1':
+        return Shenzarpy$WheelColor$CTO1_getInstance();
+      case 'CTB':
+        return Shenzarpy$WheelColor$CTB_getInstance();
+      case 'DARK_BLUE':
+        return Shenzarpy$WheelColor$DARK_BLUE_getInstance();
+      case 'WHITE':
+        return Shenzarpy$WheelColor$WHITE_getInstance();
+      default:throwISE('No enum constant baaahs.Shenzarpy.WheelColor.' + name);
+    }
+  }
+  Shenzarpy$WheelColor.valueOf_61zpoe$ = Shenzarpy$WheelColor$valueOf;
+  function Shenzarpy$Channel(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Shenzarpy$Channel_initFields() {
+    Shenzarpy$Channel_initFields = function () {
+    };
+    Shenzarpy$Channel$COLOR_WHEEL_instance = new Shenzarpy$Channel('COLOR_WHEEL', 0);
+    Shenzarpy$Channel$SHUTTER_instance = new Shenzarpy$Channel('SHUTTER', 1);
+    Shenzarpy$Channel$DIMMER_instance = new Shenzarpy$Channel('DIMMER', 2);
+    Shenzarpy$Channel$GOBO_WHEEL_instance = new Shenzarpy$Channel('GOBO_WHEEL', 3);
+    Shenzarpy$Channel$PRISM_instance = new Shenzarpy$Channel('PRISM', 4);
+    Shenzarpy$Channel$PRISM_ROTATION_instance = new Shenzarpy$Channel('PRISM_ROTATION', 5);
+    Shenzarpy$Channel$MACRO_instance = new Shenzarpy$Channel('MACRO', 6);
+    Shenzarpy$Channel$FROST_instance = new Shenzarpy$Channel('FROST', 7);
+    Shenzarpy$Channel$FOCUS_instance = new Shenzarpy$Channel('FOCUS', 8);
+    Shenzarpy$Channel$PAN_instance = new Shenzarpy$Channel('PAN', 9);
+    Shenzarpy$Channel$PAN_FINE_instance = new Shenzarpy$Channel('PAN_FINE', 10);
+    Shenzarpy$Channel$TILT_instance = new Shenzarpy$Channel('TILT', 11);
+    Shenzarpy$Channel$TILT_FINE_instance = new Shenzarpy$Channel('TILT_FINE', 12);
+    Shenzarpy$Channel$PAN_TILT_SPEED_instance = new Shenzarpy$Channel('PAN_TILT_SPEED', 13);
+    Shenzarpy$Channel$RESET_instance = new Shenzarpy$Channel('RESET', 14);
+    Shenzarpy$Channel$LAMP_CONTROL_instance = new Shenzarpy$Channel('LAMP_CONTROL', 15);
+    Shenzarpy$Channel$BLANK_instance = new Shenzarpy$Channel('BLANK', 16);
+    Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance = new Shenzarpy$Channel('COLOR_WHEEL_SPEED', 17);
+    Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance = new Shenzarpy$Channel('DIM_PRISM_ATOM_SPEED', 18);
+    Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance = new Shenzarpy$Channel('GOBO_WHEEL_SPEED', 19);
+  }
+  var Shenzarpy$Channel$COLOR_WHEEL_instance;
+  function Shenzarpy$Channel$COLOR_WHEEL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$COLOR_WHEEL_instance;
+  }
+  var Shenzarpy$Channel$SHUTTER_instance;
+  function Shenzarpy$Channel$SHUTTER_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$SHUTTER_instance;
+  }
+  var Shenzarpy$Channel$DIMMER_instance;
+  function Shenzarpy$Channel$DIMMER_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$DIMMER_instance;
+  }
+  var Shenzarpy$Channel$GOBO_WHEEL_instance;
+  function Shenzarpy$Channel$GOBO_WHEEL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$GOBO_WHEEL_instance;
+  }
+  var Shenzarpy$Channel$PRISM_instance;
+  function Shenzarpy$Channel$PRISM_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PRISM_instance;
+  }
+  var Shenzarpy$Channel$PRISM_ROTATION_instance;
+  function Shenzarpy$Channel$PRISM_ROTATION_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PRISM_ROTATION_instance;
+  }
+  var Shenzarpy$Channel$MACRO_instance;
+  function Shenzarpy$Channel$MACRO_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$MACRO_instance;
+  }
+  var Shenzarpy$Channel$FROST_instance;
+  function Shenzarpy$Channel$FROST_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$FROST_instance;
+  }
+  var Shenzarpy$Channel$FOCUS_instance;
+  function Shenzarpy$Channel$FOCUS_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$FOCUS_instance;
+  }
+  var Shenzarpy$Channel$PAN_instance;
+  function Shenzarpy$Channel$PAN_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_instance;
+  }
+  var Shenzarpy$Channel$PAN_FINE_instance;
+  function Shenzarpy$Channel$PAN_FINE_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_FINE_instance;
+  }
+  var Shenzarpy$Channel$TILT_instance;
+  function Shenzarpy$Channel$TILT_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$TILT_instance;
+  }
+  var Shenzarpy$Channel$TILT_FINE_instance;
+  function Shenzarpy$Channel$TILT_FINE_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$TILT_FINE_instance;
+  }
+  var Shenzarpy$Channel$PAN_TILT_SPEED_instance;
+  function Shenzarpy$Channel$PAN_TILT_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_TILT_SPEED_instance;
+  }
+  var Shenzarpy$Channel$RESET_instance;
+  function Shenzarpy$Channel$RESET_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$RESET_instance;
+  }
+  var Shenzarpy$Channel$LAMP_CONTROL_instance;
+  function Shenzarpy$Channel$LAMP_CONTROL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$LAMP_CONTROL_instance;
+  }
+  var Shenzarpy$Channel$BLANK_instance;
+  function Shenzarpy$Channel$BLANK_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$BLANK_instance;
+  }
+  var Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
+  function Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
+  }
+  var Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
+  function Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
+  }
+  var Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
+  function Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
+  }
+  Shenzarpy$Channel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Channel',
+    interfaces: [Enum]
+  };
+  function Shenzarpy$Channel$values() {
+    return [Shenzarpy$Channel$COLOR_WHEEL_getInstance(), Shenzarpy$Channel$SHUTTER_getInstance(), Shenzarpy$Channel$DIMMER_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_getInstance(), Shenzarpy$Channel$PRISM_getInstance(), Shenzarpy$Channel$PRISM_ROTATION_getInstance(), Shenzarpy$Channel$MACRO_getInstance(), Shenzarpy$Channel$FROST_getInstance(), Shenzarpy$Channel$FOCUS_getInstance(), Shenzarpy$Channel$PAN_getInstance(), Shenzarpy$Channel$PAN_FINE_getInstance(), Shenzarpy$Channel$TILT_getInstance(), Shenzarpy$Channel$TILT_FINE_getInstance(), Shenzarpy$Channel$PAN_TILT_SPEED_getInstance(), Shenzarpy$Channel$RESET_getInstance(), Shenzarpy$Channel$LAMP_CONTROL_getInstance(), Shenzarpy$Channel$BLANK_getInstance(), Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance(), Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance()];
+  }
+  Shenzarpy$Channel.values = Shenzarpy$Channel$values;
+  function Shenzarpy$Channel$valueOf(name) {
+    switch (name) {
+      case 'COLOR_WHEEL':
+        return Shenzarpy$Channel$COLOR_WHEEL_getInstance();
+      case 'SHUTTER':
+        return Shenzarpy$Channel$SHUTTER_getInstance();
+      case 'DIMMER':
+        return Shenzarpy$Channel$DIMMER_getInstance();
+      case 'GOBO_WHEEL':
+        return Shenzarpy$Channel$GOBO_WHEEL_getInstance();
+      case 'PRISM':
+        return Shenzarpy$Channel$PRISM_getInstance();
+      case 'PRISM_ROTATION':
+        return Shenzarpy$Channel$PRISM_ROTATION_getInstance();
+      case 'MACRO':
+        return Shenzarpy$Channel$MACRO_getInstance();
+      case 'FROST':
+        return Shenzarpy$Channel$FROST_getInstance();
+      case 'FOCUS':
+        return Shenzarpy$Channel$FOCUS_getInstance();
+      case 'PAN':
+        return Shenzarpy$Channel$PAN_getInstance();
+      case 'PAN_FINE':
+        return Shenzarpy$Channel$PAN_FINE_getInstance();
+      case 'TILT':
+        return Shenzarpy$Channel$TILT_getInstance();
+      case 'TILT_FINE':
+        return Shenzarpy$Channel$TILT_FINE_getInstance();
+      case 'PAN_TILT_SPEED':
+        return Shenzarpy$Channel$PAN_TILT_SPEED_getInstance();
+      case 'RESET':
+        return Shenzarpy$Channel$RESET_getInstance();
+      case 'LAMP_CONTROL':
+        return Shenzarpy$Channel$LAMP_CONTROL_getInstance();
+      case 'BLANK':
+        return Shenzarpy$Channel$BLANK_getInstance();
+      case 'COLOR_WHEEL_SPEED':
+        return Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance();
+      case 'DIM_PRISM_ATOM_SPEED':
+        return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance();
+      case 'GOBO_WHEEL_SPEED':
+        return Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance();
+      default:throwISE('No enum constant baaahs.Shenzarpy.Channel.' + name);
+    }
+  }
+  Shenzarpy$Channel.valueOf_61zpoe$ = Shenzarpy$Channel$valueOf;
+  Shenzarpy.prototype.set_0 = function ($receiver, channel, value) {
+    this.buffer_0.set_6t1wet$(channel.ordinal, value);
+  };
+  Shenzarpy.prototype.get_0 = function ($receiver, channel) {
+    return this.buffer_0.get_za3lpa$(channel.ordinal);
+  };
+  Shenzarpy.prototype.closestColorFor_rny0jj$ = function (color) {
+    var bestMatch = {v: Shenzarpy$WheelColor$WHITE_getInstance()};
+    var bestDistance = {v: 1.0};
+    var $receiver = Shenzarpy$WheelColor$values();
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
+      var element = $receiver[tmp$];
+      var distance = element.color.distanceTo_rny0jj$(color);
+      if (distance < bestDistance.v) {
+        bestMatch.v = element;
+        bestDistance.v = distance;
+      }
+    }
+    return toByte(bestMatch.v.ordinal);
+  };
+  Object.defineProperty(Shenzarpy.prototype, 'colorWheel', {
+    get: function () {
+      return this.get_0(this.buffer_0, Shenzarpy$Channel$COLOR_WHEEL_getInstance());
+    },
+    set: function (value) {
+      this.set_0(this.buffer_0, Shenzarpy$Channel$COLOR_WHEEL_getInstance(), value);
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'pan', {
+    get: function () {
+      var firstByte = this.get_0(this.buffer_0, Shenzarpy$Channel$PAN_getInstance()) & 255;
+      var secondByte = this.get_0(this.buffer_0, Shenzarpy$Channel$PAN_FINE_getInstance()) & 255;
+      var scaled = (firstByte * 256 | 0) + secondByte | 0;
+      return scaled / 65535.0;
+    },
+    set: function (value) {
+      var x = value % Shenzarpy$Companion_getInstance().panRange.endInclusive;
+      var modVal = Math_0.abs(x);
+      var scaled = numberToInt(modVal * 65535);
+      this.set_0(this.buffer_0, Shenzarpy$Channel$PAN_getInstance(), toByte(scaled >> 8));
+      this.set_0(this.buffer_0, Shenzarpy$Channel$PAN_FINE_getInstance(), toByte(scaled & 255));
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'tilt', {
+    get: function () {
+      var firstByte = this.get_0(this.buffer_0, Shenzarpy$Channel$TILT_getInstance()) & 255;
+      var secondByte = this.get_0(this.buffer_0, Shenzarpy$Channel$TILT_FINE_getInstance()) & 255;
+      var scaled = (firstByte * 256 | 0) + secondByte | 0;
+      return scaled / 65535.0;
+    },
+    set: function (value) {
+      var x = value % Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
+      var modVal = Math_0.abs(x);
+      var scaled = numberToInt(modVal * 65535);
+      this.set_0(this.buffer_0, Shenzarpy$Channel$TILT_getInstance(), toByte(scaled >> 8));
+      this.set_0(this.buffer_0, Shenzarpy$Channel$TILT_FINE_getInstance(), toByte(scaled & 255));
+    }
+  });
+  Shenzarpy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Shenzarpy',
+    interfaces: [Dmx$DeviceType]
   };
   function ShaderType(name, ordinal) {
     Enum.call(this);
@@ -2123,7 +2613,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     ShaderBuffer.call(this, ShaderType$PIXEL_getInstance());
     this.fakeyTerribleHardCodedNumberOfPixels = 1337;
     var $receiver = new IntRange(0, this.fakeyTerribleHardCodedNumberOfPixels);
-    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -2181,7 +2671,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function SomeDumbShow(sheepModel, showRunner) {
     this.colorPicker = showRunner.getColorPicker();
     var $receiver = sheepModel.allPanels;
-    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -2190,7 +2680,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     }
     this.pixelShaderBuffers = destination;
     var $receiver_0 = sheepModel.eyes;
-    var destination_0 = ArrayList_init(collectionSizeOrDefault($receiver_0, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
@@ -2216,14 +2706,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         var item = tmp$_0.next();
         element.colors.set_wxm5ur$(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)), this.desaturateRandomishly_0(baseSaturation, seed, panelColor));
       }
-      var tmp$_1;
-      tmp$_1 = this.movingHeadBuffers.iterator();
-      while (tmp$_1.hasNext()) {
-        var element_0 = tmp$_1.next();
-        element_0.colorIllicitDontUse = this.colorPicker.color;
-        element_0.rotAIllicitDontUse = element_0.rotAIllicitDontUse + (this.nextRandomFloat_0(seed) - 0.5) / 1000;
-        element_0.rotBIllicitDontUse = element_0.rotBIllicitDontUse + (this.nextRandomFloat_0(seed) - 0.5) / 1000;
-      }
+    }
+    var tmp$_1;
+    tmp$_1 = this.movingHeadBuffers.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker.color);
+      element_0.pan = element_0.pan + (this.nextRandomFloat_0(seed) - 0.5) / 5;
+      element_0.tilt = element_0.tilt + (this.nextRandomFloat_0(seed) - 0.5) / 5;
     }
   };
   SomeDumbShow.prototype.desaturateRandomishly_0 = function (baseSaturation, seed, panelColor) {
@@ -2241,8 +2731,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'SomeDumbShow',
     interfaces: [Show]
   };
-  function Visualizer(sheepModel) {
+  function Visualizer(sheepModel, dmxUniverse) {
     this.sheepModel_0 = sheepModel;
+    this.dmxUniverse_0 = dmxUniverse;
   }
   Visualizer.prototype.start = function () {
     initThreeJs(this.sheepModel_0);
@@ -2250,8 +2741,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Visualizer.prototype.showPanel_jfju1k$ = function (panel) {
     return new JsPanel(addPanel(panel));
   };
-  Visualizer.prototype.addEye_vxd903$ = function (eye, dmx) {
-    new MovingHeadView(eye, dmx);
+  Visualizer.prototype.addEye_1hma8m$ = function (eye) {
+    new MovingHeadView(eye, this.dmxUniverse_0);
   };
   Visualizer.$metadata$ = {
     kind: Kind_CLASS,
@@ -2266,7 +2757,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var tmp$ = this.jsPanelObj_0;
     var tmp$_0 = Color$Companion_getInstance().WHITE;
     var $receiver = new IntRange(0, 300);
-    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$_1;
     tmp$_1 = $receiver.iterator();
     while (tmp$_1.hasNext()) {
@@ -2285,7 +2776,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     set: function (value) {
       var tmp$ = this.jsPanelObj_0;
       var $receiver = new IntRange(0, 300);
-      var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
       var tmp$_0;
       tmp$_0 = $receiver.iterator();
       while (tmp$_0.hasNext()) {
@@ -2301,13 +2792,23 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'JsPanel',
     interfaces: []
   };
-  function MovingHeadView(movingHead, dmx) {
-    this.dmxAddress = dmx.allocate_bm4lxs$(movingHead.name, 16);
-    this.movingHeadJs = addMovingHead(movingHead);
+  function MovingHeadView(movingHead, dmxUniverse) {
+    this.movingHead_0 = movingHead;
+    this.baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(this.movingHead_0.name));
+    this.device = new Shenzarpy(dmxUniverse.reader_sxjeop$(this.baseChannel, 16, MovingHeadView$device$lambda(this)));
+    this.movingHeadJs = addMovingHead(this.movingHead_0);
   }
-  MovingHeadView.prototype.setColor_rny0jj$ = function (color) {
-    setMovingHeadData(Unit, color, 0.0, 0.0);
+  MovingHeadView.prototype.receivedDmxFrame_0 = function () {
+    var colorWheelV = this.device.colorWheel;
+    var wheelColor = Shenzarpy$WheelColor$values()[colorWheelV];
+    adjustMovingHead(this.movingHeadJs, wheelColor.color, this.device.pan, this.device.tilt);
   };
+  function MovingHeadView$device$lambda(this$MovingHeadView) {
+    return function () {
+      this$MovingHeadView.receivedDmxFrame_0();
+      return Unit;
+    };
+  }
   MovingHeadView.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'MovingHeadView',
@@ -2420,6 +2921,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   function random_0($receiver, random) {
     return $receiver.size > 0 ? $receiver.get_za3lpa$(random.nextInt_za3lpa$($receiver.size)) : null;
+  }
+  function toRadians(degrees) {
+    return degrees * math.PI / 180;
   }
   function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -2803,16 +3307,21 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     get: Color$Companion_getInstance
   });
   package$baaahs.Color = Color;
+  Object.defineProperty(Config, 'Companion', {
+    get: Config$Companion_getInstance
+  });
+  Config.MovingHeadConfig = Config$MovingHeadConfig;
+  package$baaahs.Config = Config;
   package$baaahs.Display = Display;
   package$baaahs.NetworkDisplay = NetworkDisplay;
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   package$baaahs.MapperDisplay = MapperDisplay;
-  Dmx.DmxAddress = Dmx$DmxAddress;
+  Dmx.Universe = Dmx$Universe;
+  Dmx.Buffer = Dmx$Buffer;
+  Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
-  package$baaahs.MovingHeadBuffer = MovingHeadBuffer;
-  FakeDmx.FakeDmxAddress = FakeDmx$FakeDmxAddress;
-  package$baaahs.FakeDmx = FakeDmx;
+  package$baaahs.FakeDmxUniverse = FakeDmxUniverse;
   _.ThingWithMass = ThingWithMass;
   _.Animal = Animal;
   _.Cat = Cat;
@@ -2891,6 +3400,117 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepModel.Panel = SheepModel$Panel;
   SheepModel.MovingHead = SheepModel$MovingHead;
   package$baaahs.SheepModel = SheepModel;
+  Object.defineProperty(Shenzarpy, 'Companion', {
+    get: Shenzarpy$Companion_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'RED', {
+    get: Shenzarpy$WheelColor$RED_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'ORANGE', {
+    get: Shenzarpy$WheelColor$ORANGE_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'AQUAMARINE', {
+    get: Shenzarpy$WheelColor$AQUAMARINE_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'DEEP_GREEN', {
+    get: Shenzarpy$WheelColor$DEEP_GREEN_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'LIGHT_GREEN', {
+    get: Shenzarpy$WheelColor$LIGHT_GREEN_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'LAVENDER', {
+    get: Shenzarpy$WheelColor$LAVENDER_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'PINK', {
+    get: Shenzarpy$WheelColor$PINK_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'YELLOW', {
+    get: Shenzarpy$WheelColor$YELLOW_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'MAGENTA', {
+    get: Shenzarpy$WheelColor$MAGENTA_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'CYAN', {
+    get: Shenzarpy$WheelColor$CYAN_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'CTO2', {
+    get: Shenzarpy$WheelColor$CTO2_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'CTO1', {
+    get: Shenzarpy$WheelColor$CTO1_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'CTB', {
+    get: Shenzarpy$WheelColor$CTB_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'DARK_BLUE', {
+    get: Shenzarpy$WheelColor$DARK_BLUE_getInstance
+  });
+  Object.defineProperty(Shenzarpy$WheelColor, 'WHITE', {
+    get: Shenzarpy$WheelColor$WHITE_getInstance
+  });
+  Shenzarpy.WheelColor = Shenzarpy$WheelColor;
+  Object.defineProperty(Shenzarpy$Channel, 'COLOR_WHEEL', {
+    get: Shenzarpy$Channel$COLOR_WHEEL_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'SHUTTER', {
+    get: Shenzarpy$Channel$SHUTTER_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'DIMMER', {
+    get: Shenzarpy$Channel$DIMMER_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'GOBO_WHEEL', {
+    get: Shenzarpy$Channel$GOBO_WHEEL_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'PRISM', {
+    get: Shenzarpy$Channel$PRISM_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'PRISM_ROTATION', {
+    get: Shenzarpy$Channel$PRISM_ROTATION_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'MACRO', {
+    get: Shenzarpy$Channel$MACRO_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'FROST', {
+    get: Shenzarpy$Channel$FROST_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'FOCUS', {
+    get: Shenzarpy$Channel$FOCUS_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'PAN', {
+    get: Shenzarpy$Channel$PAN_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'PAN_FINE', {
+    get: Shenzarpy$Channel$PAN_FINE_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'TILT', {
+    get: Shenzarpy$Channel$TILT_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'TILT_FINE', {
+    get: Shenzarpy$Channel$TILT_FINE_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'PAN_TILT_SPEED', {
+    get: Shenzarpy$Channel$PAN_TILT_SPEED_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'RESET', {
+    get: Shenzarpy$Channel$RESET_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'LAMP_CONTROL', {
+    get: Shenzarpy$Channel$LAMP_CONTROL_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'BLANK', {
+    get: Shenzarpy$Channel$BLANK_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'COLOR_WHEEL_SPEED', {
+    get: Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'DIM_PRISM_ATOM_SPEED', {
+    get: Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance
+  });
+  Object.defineProperty(Shenzarpy$Channel, 'GOBO_WHEEL_SPEED', {
+    get: Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance
+  });
+  Shenzarpy.Channel = Shenzarpy$Channel;
+  package$baaahs.Shenzarpy = Shenzarpy;
   Object.defineProperty(ShaderType, 'SOLID', {
     get: ShaderType$SOLID_getInstance
   });
@@ -2917,6 +3537,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.ByteArrayReader = ByteArrayReader;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
+  package$baaahs.toRadians_mx4ult$ = toRadians;
   package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getDisplay = getDisplay;
@@ -2927,8 +3548,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.getTimeMillis = getTimeMillis;
-  FakeDmx.prototype.allocate_bm4lxs$ = Dmx.prototype.allocate_bm4lxs$;
-  FakeDmx.prototype.get_61zpoe$ = Dmx.prototype.get_61zpoe$;
   FakeNetwork$FakeLink.prototype.send_bkw8fl$ = Network$Link.prototype.send_bkw8fl$;
   FakeNetwork$FakeLink.prototype.broadcast_ecsl0t$ = Network$Link.prototype.broadcast_ecsl0t$;
   Kotlin.defineModule('play', _);

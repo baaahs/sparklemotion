@@ -194,17 +194,16 @@ function addMovingHead(movingHead) {
   cone.rotation.x = -Math.PI / 2;
 
   scene.add(cone);
-  document.movingHeads[movingHead.name] = {
+  return {
     cone: cone,
     material: cone.material,
   };
 }
 
-function setMovingHeadData(name, color, rotA, rotB) {
-  let movingHeadJs = document.movingHeads[name];
-  movingHeadJs.material.color.r = color.red;
-  movingHeadJs.material.color.g = color.green;
-  movingHeadJs.material.color.b = color.blue;
+function adjustMovingHead(movingHeadJs, color, rotA, rotB) {
+  movingHeadJs.material.color.r = color.redF;
+  movingHeadJs.material.color.g = color.greenF;
+  movingHeadJs.material.color.b = color.blueF;
 
   movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
   movingHeadJs.cone.rotation.z = rotB;
