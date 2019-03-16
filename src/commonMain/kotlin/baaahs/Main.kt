@@ -13,11 +13,11 @@ class Main {
     var display = getDisplay()
     var network = FakeNetwork(display = display.forNetwork())
 
-    var dmx = FakeDmx()
+    var dmxUniverse = FakeDmxUniverse()
     var sheepModel = SheepModel()
-    val pinky = Pinky(sheepModel, network, dmx, display.forPinky())
+    val pinky = Pinky(sheepModel, network, dmxUniverse, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
-    val visualizer = Visualizer(sheepModel)
+    val visualizer = Visualizer(sheepModel, dmxUniverse)
 
     fun start() {
         sheepModel.load()
@@ -33,7 +33,8 @@ class Main {
         }
 
         sheepModel.eyes.forEach { eye ->
-            visualizer.addEye(eye, dmx)
+            visualizer.addEye(eye)
+            Config.DMX_DEVICES[eye.name]
         }
 
         doRunBlocking {

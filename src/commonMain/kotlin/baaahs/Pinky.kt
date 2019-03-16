@@ -6,7 +6,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.jvm.Synchronized
 
-class Pinky(val sheepModel: SheepModel, val network: Network, val dmx: Dmx, val display: PinkyDisplay) : Network.Listener {
+class Pinky(
+    val sheepModel: SheepModel,
+    val network: Network,
+    val dmxUniverse: Dmx.Universe,
+    val display: PinkyDisplay
+) : Network.Listener {
     private lateinit var link: Network.Link
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
@@ -29,13 +34,13 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val dmx: Dmx, val 
         }
 
         GlobalScope.launch {
-            var showContext = ShowRunner(display, brains.values.toList(), dmx)
+            var showContext = ShowRunner(display, brains.values.toList(), dmxUniverse)
             var show = SomeDumbShow(sheepModel, showContext)
 
             while (true) {
                 if (!mapperIsRunning) {
                     if (brainsChanged) {
-                        showContext = ShowRunner(display, brains.values.toList(), dmx)
+                        showContext = ShowRunner(display, brains.values.toList(), dmxUniverse)
                         show = SomeDumbShow(sheepModel, showContext)
                         brainsChanged = false
                     }
@@ -98,10 +103,9 @@ class Pinky(val sheepModel: SheepModel, val network: Network, val dmx: Dmx, val 
 class ShowRunner(
     private val pinkyDisplay: PinkyDisplay,
     private val brains: List<RemoteBrain>,
-    private val dmx: Dmx
+    private val dmxUniverse: Dmx.Universe
 ) {
     private val brainBuffers: MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
-    private val dmxBuffers: MutableList<Pair<String, MovingHeadBuffer>> = mutableListOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
@@ -119,11 +123,12 @@ class ShowRunner(
         return buffer
     }
 
-    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): MovingHeadBuffer {
-        val dmxAddresses = dmx.get(movingHead.name)
-        val buf = MovingHeadBuffer(ByteArray(dmxAddresses.size), Color.WHITE, 0f, 0f)
-        dmxBuffers.add(Pair(movingHead.name, buf))
-        return buf
+    fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
+        dmxUniverse.writer(baseChannel, channelCount)
+
+    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): Dmx.Shenzarpy {
+        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+        return Dmx.Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
 
     fun send(link: Network.Link) {
@@ -136,13 +141,7 @@ class ShowRunner(
             }
         }
 
-        dmxBuffers.forEach { dmxBuffer ->
-            val movingHeadBuffer = dmxBuffer.second
-            setMovingHeadData(dmxBuffer.first,
-                movingHeadBuffer.colorIllicitDontUse,
-                movingHeadBuffer.rotAIllicitDontUse,
-                movingHeadBuffer.rotBIllicitDontUse)
-        }
+        dmxUniverse.sendFrame()
     }
 }
 
