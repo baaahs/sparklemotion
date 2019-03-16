@@ -1,6 +1,7 @@
 package baaahs
 
 import kotlin.math.min
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 data class Color(val red: Int, val green: Int, val blue: Int) {
@@ -9,6 +10,13 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         writer.writeByte((green and 0xff).toByte())
         writer.writeByte((blue and 0xff).toByte())
     }
+
+    val redF: Float
+        get() = red.toFloat() / 255
+    val greenF: Float
+        get() = green.toFloat() / 255
+    val blueF: Float
+        get() = blue.toFloat() / 255
 
     fun toInt(): Int =
         (red shl 16 and 0xff0000)
@@ -39,6 +47,13 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         )
     }
 
+    fun distanceTo(other: Color): Float {
+        val dist = square(other.redF - redF) + square(other.greenF - greenF) + square(other.blueF - blueF)
+        return sqrt(dist / 3)
+    }
+
+    private fun square(f: Float) = f * f
+
     companion object {
         val BLACK = Color(0, 0, 0)
         val WHITE = Color(255, 255, 255)
@@ -60,5 +75,12 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
             reader.readByte().toInt() and 0xff,
             reader.readByte().toInt() and 0xff
         )
+
+        fun from(i: Int) =
+            Color(
+                i shr 16 and 0xff,
+                i shr 8 and 0xff,
+                i and 0xff
+            )
     }
 }

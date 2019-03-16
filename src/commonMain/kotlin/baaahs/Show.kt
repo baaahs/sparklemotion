@@ -78,12 +78,12 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
             shaderBuffer.colors.forEachIndexed { i, pixel ->
                 shaderBuffer.colors[i] = desaturateRandomishly(baseSaturation, seed, panelColor)
             }
+        }
 
-            movingHeadBuffers.forEach { buf ->
-                buf.colorIllicitDontUse = colorPicker.color
-                buf.rotAIllicitDontUse += (nextRandomFloat(seed) - .5).toFloat() / 1000
-                buf.rotBIllicitDontUse += (nextRandomFloat(seed) - .5).toFloat() / 1000
-            }
+        movingHeadBuffers.forEach { buf ->
+            buf.colorWheel = buf.closestColorFor(colorPicker.color)
+            buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 1000
+            buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 1000
         }
     }
 

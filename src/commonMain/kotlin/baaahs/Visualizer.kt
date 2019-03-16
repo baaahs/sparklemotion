@@ -1,6 +1,6 @@
 package baaahs
 
-class Visualizer(private val sheepModel: SheepModel) {
+class Visualizer(private val sheepModel: SheepModel, private val dmxUniverse: FakeDmxUniverse) {
     fun start() {
         initThreeJs(sheepModel)
     }
@@ -9,8 +9,8 @@ class Visualizer(private val sheepModel: SheepModel) {
         return JsPanel(addPanel(panel))
     }
 
-    fun addEye(eye: SheepModel.MovingHead, dmx: Dmx) {
-        MovingHeadView(eye, dmx)
+    fun addEye(eye: SheepModel.MovingHead) {
+        MovingHeadView(eye, dmxUniverse)
     }
 }
 
@@ -30,11 +30,20 @@ class JsPanel(private val jsPanelObj: Any) {
         }
 }
 
-class MovingHeadView(movingHead: SheepModel.MovingHead, dmx: Dmx) {
-    val dmxAddress = dmx.allocate(movingHead.name, 16)
+class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
+    val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+    val device = Dmx.Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
     val movingHeadJs = addMovingHead(movingHead)
 
+    private fun receivedDmxFrame() {
+        val colorWheelV = device.colorWheel
+        val wheelColor = Dmx.Shenzarpy.WheelColor.values()[colorWheelV.toInt()]
+        println("wheelColor = ${wheelColor} colorWheelV ${colorWheelV}")
+        setColor(wheelColor.color)
+    }
+
     fun setColor(color: Color) {
+        println("color = ${color}")
         setMovingHeadData(movingHeadJs, color, 0f, 0f)
     }
 }
@@ -44,5 +53,5 @@ external fun initThreeJs(sheepModel: SheepModel)
 external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: List<Color>?)
 
-external fun addMovingHead(movingHead: SheepModel.MovingHead)
+external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
 external fun setMovingHeadData(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)
