@@ -126,9 +126,9 @@ class ShowRunner(
     fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): Dmx.Shenzarpy {
+    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): Shenzarpy {
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        return Dmx.Shenzarpy(getDmxBuffer(baseChannel, 16))
+        return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
 
     fun send(link: Network.Link) {

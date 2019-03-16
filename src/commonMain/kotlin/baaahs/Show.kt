@@ -82,8 +82,8 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
 
         movingHeadBuffers.forEach { buf ->
             buf.colorWheel = buf.closestColorFor(colorPicker.color)
-            buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 1000
-            buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 1000
+            buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 5
+            buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 5
         }
     }
 
