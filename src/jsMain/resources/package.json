@@ -1,5 +1,47 @@
 {
+  "name": "play",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "npm test",
+    "dev": "webpack-cli --config ./webpack.config.js --mode development --watch",
+    "start:dev": "webpack-dev-server --config ./webpack.config.js --mode development --color",
+    "build": "webpack-cli --config ./webpack.config.js --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baaahs/play.git"
+  },
+  "keywords": [
+    "baaahs"
+  ],
+  "author": "@baaahs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baaahs/play/issues"
+  },
+  "homepage": "https://github.com/baaahs/play#readme",
   "dependencies": {
-    "three": "^0.101.1"
-  }
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "prettier": "^1.16.4",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-hot-loader": "^4.8.0",
+    "style-loader": "^0.23.1",
+    "three": "^0.102.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "browserslist": "> 0.25%, not dead"
 }
