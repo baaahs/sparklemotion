@@ -45,21 +45,19 @@ class PixelShaderBuffer : ShaderBuffer(ShaderType.PIXEL) {
             return buf
         }
     }
+}
 
+abstract class ShowMeta(val name: String) {
+    abstract fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show
 }
 
 interface Show {
-
-    /*{
-        63: { shader: solid, data: { color: blue } }
-    }*/
-
     fun nextFrame()
 }
 
 class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     val colorPicker = showRunner.getColorPicker()
-//    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShaderBuffer(it) }
+    //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShaderBuffer(it) }
     val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShaderBuffer(it) }
     val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
@@ -98,4 +96,33 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     }
 
     private fun nextRandomFloat(seed: Random) = sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())
+
+    class Meta: ShowMeta("SomeDumbShow") {
+        override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) =
+            SomeDumbShow(sheepModel, showRunner)
+    }
+}
+
+class RandomShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
+    val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShaderBuffer(it) }
+    val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
+
+    override fun nextFrame() {
+        pixelShaderBuffers.forEach { shaderBuffer ->
+            shaderBuffer.colors.forEachIndexed { i, pixel ->
+                shaderBuffer.colors[i] = Color.random()
+            }
+        }
+
+        movingHeadBuffers.forEach { shenzarpy ->
+            shenzarpy.colorWheel = shenzarpy.closestColorFor(Color.random())
+            shenzarpy.pan = Random.nextFloat() * Shenzarpy.panRange.endInclusive
+            shenzarpy.tilt = Random.nextFloat() * Shenzarpy.tiltRange.endInclusive
+        }
+    }
+
+    class Meta: ShowMeta("RandomShow") {
+        override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) =
+            RandomShow(sheepModel, showRunner)
+    }
 }

@@ -63,15 +63,17 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
     override var color: Color? = null
+    override var selectedShow: ShowMeta? = null
 
-    private val consoleDiv: Element
+    private val brainCountDiv: Element
     private val beat1: Element
     private val beat2: Element
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
     private val colorButtons: List<ColorButton>
-    private val brainCountDiv: Element
+    private val showListDiv: Element
+    private val showButtons: MutableList<ShowButton>
 
     init {
         element.appendText("Brains online: ")
@@ -80,6 +82,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         val beatsDiv = element.appendElement("div") {
             id = "beatsDiv"
             appendElement("b") { appendText("Beats: ") }
+            appendElement("br") {}
         }
         beat1 = beatsDiv.appendElement("span") { appendText("1") }
         beat2 = beatsDiv.appendElement("span") { appendText("2") }
@@ -90,6 +93,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         val colorsDiv = element.appendElement("div") {
             id = "colorsDiv"
             appendElement("b") { appendText("Colors: ") }
+            appendElement("br") {}
         }
         colorButtons = listOf(
             ColorButton(Color.WHITE, colorsDiv.appendElement("span") { }),
@@ -100,10 +104,31 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             ColorButton(Color.BLUE, colorsDiv.appendElement("span") {}),
             ColorButton(Color.PURPLE, colorsDiv.appendElement("span") {})
         )
-        colorButtons.forEach {it.allButtons = colorButtons; it.onSelect = { this.color = it } }
+        colorButtons.forEach {
+            it.allButtons = colorButtons
+            it.element.setAttribute("style", "background-color: #${it.data.toHexString()}")
+            it.onSelect = { this.color = it }
+        }
         colorButtons.random()!!.select()
 
-        consoleDiv = element.appendElement("div") {}
+        showListDiv = element.appendElement("div") { id = "showsDiv" }
+        showButtons = mutableListOf()
+    }
+
+    override fun listShows(showMetas: List<ShowMeta>) {
+        showListDiv.clear()
+        showListDiv.appendElement("b") { appendText("Shows: ") }
+        showListDiv.appendElement("br") {}
+
+        showButtons.clear()
+        showMetas.forEach { showMeta ->
+            val element = showListDiv.appendElement("span") { appendText(showMeta.name) }
+            val showButton = ShowButton(showMeta, element)
+            showButton.onSelect = { this.selectedShow = it }
+            showButton.allButtons = showButtons
+            showButtons.add(showButton)
+        }
+//        showButtons[0].select()
     }
 
     override var brainCount: Int = 0
@@ -121,21 +146,23 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             field = value
         }
 
-    private class ColorButton(val color: Color, val button: Element) {
-        lateinit var allButtons: List<ColorButton>
-        var onSelect: ((Color) -> Unit)? = null
+    private open class Button<T>(val data: T, val element: Element) {
+        lateinit var allButtons: List<Button<T>>
+        var onSelect: ((T) -> Unit)? = null
 
         init {
-            button.setAttribute("style", "background-color: #${color.toHexString()}")
-            button.addEventListener("click", { select() })
+            element.addEventListener("click", { select() })
         }
 
         fun select() {
-            allButtons.forEach { it.button.classList.clear() }
-            button.classList.add("selected")
-            onSelect?.invoke(color)
+            allButtons.forEach { it.element.classList.clear() }
+            element.classList.add("selected")
+            onSelect?.invoke(data)
         }
     }
+
+    private class ColorButton(color: Color, element: Element) : Button<Color>(color, element)
+    private class ShowButton(showMeta: ShowMeta, element: Element) : Button<ShowMeta>(showMeta, element)
 }
 
 class JsBrainDisplay(element: Element) : BrainDisplay {

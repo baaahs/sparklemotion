@@ -2,20 +2,26 @@ package baaahs
 
 import kotlinx.coroutines.delay
 
-lateinit var main: Main
+lateinit var sheepSimulator: SheepSimulator
 
 //fun main(args: Array<String>) {
 //    main = Main()
 //    main.start()
 //}
 
-class Main {
+class SheepSimulator {
     var display = getDisplay()
     var network = FakeNetwork(display = display.forNetwork())
 
     var dmxUniverse = FakeDmxUniverse()
     var sheepModel = SheepModel()
-    val pinky = Pinky(sheepModel, network, dmxUniverse, display.forPinky())
+
+    val showMetas = listOf(
+        SomeDumbShow.Meta(),
+        RandomShow.Meta()
+    )
+
+    val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
     val visualizer = Visualizer(sheepModel, dmxUniverse)
 
