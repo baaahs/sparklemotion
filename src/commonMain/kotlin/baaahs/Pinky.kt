@@ -8,6 +8,7 @@ import kotlin.jvm.Synchronized
 
 class Pinky(
     val sheepModel: SheepModel,
+    val showMetas: List<ShowMeta>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
@@ -34,21 +35,27 @@ class Pinky(
         }
 
         GlobalScope.launch {
-            var showContext = ShowRunner(display, brains.values.toList(), dmxUniverse)
-            var show = SomeDumbShow(sheepModel, showContext)
+            display.listShows(showMetas)
+
+            var showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+            val prevSelectedShow = display.selectedShow
+            var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
+            val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
+            var show = buildShow()
 
             while (true) {
                 if (!mapperIsRunning) {
-                    if (brainsChanged) {
-                        showContext = ShowRunner(display, brains.values.toList(), dmxUniverse)
-                        show = SomeDumbShow(sheepModel, showContext)
+                    if (brainsChanged || display.selectedShow != currentShowMeta) {
+                        currentShowMeta = prevSelectedShow ?: showMetas.random()!!
+                        showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+                        show = buildShow()
                         brainsChanged = false
                     }
 
                     show.nextFrame()
 
                     // send shader buffers out to brains
-                    showContext.send(link)
+                    showRunner.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
                 }

@@ -15,9 +15,12 @@ interface NetworkDisplay {
 }
 
 interface PinkyDisplay {
+    fun listShows(showMetas: List<ShowMeta>)
+
     var brainCount: Int
     var beat: Int
     var color: Color?
+    var selectedShow: ShowMeta?
 }
 
 interface BrainDisplay {
