@@ -26,15 +26,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  var L200000 = Kotlin.Long.fromInt(200000);
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
   var L1 = Kotlin.Long.ONE;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
+  var ensureNotNull = Kotlin.ensureNotNull;
+  var equals = Kotlin.equals;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
-  var equals = Kotlin.equals;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
@@ -42,6 +41,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
+  var L200000 = Kotlin.Long.fromInt(200000);
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
@@ -57,7 +58,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
@@ -91,6 +91,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SolidShaderBuffer.prototype.constructor = SolidShaderBuffer;
   PixelShaderBuffer.prototype = Object.create(ShaderBuffer.prototype);
   PixelShaderBuffer.prototype.constructor = PixelShaderBuffer;
+  SomeDumbShow$Meta.prototype = Object.create(ShowMeta.prototype);
+  SomeDumbShow$Meta.prototype.constructor = SomeDumbShow$Meta;
+  RandomShow$Meta.prototype = Object.create(ShowMeta.prototype);
+  RandomShow$Meta.prototype.constructor = RandomShow$Meta;
+  JsPinkyDisplay$ColorButton.prototype = Object.create(JsPinkyDisplay$Button.prototype);
+  JsPinkyDisplay$ColorButton.prototype.constructor = JsPinkyDisplay$ColorButton;
+  JsPinkyDisplay$ShowButton.prototype = Object.create(JsPinkyDisplay$Button.prototype);
+  JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
   function Brain() {
   }
   Brain.$metadata$ = {
@@ -632,98 +640,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var totalWeight = kitty.weightInKilograms() + myGlass.weightInKilograms() + yourglass.weightInKilograms();
     println('The weightInKilograms of our cats and glasses is: ' + totalWeight);
   }
-  var main;
-  function get_main() {
-    if (main == null)
-      return throwUPAE('main');
-    return main;
-  }
-  function set_main(main_0) {
-    main = main_0;
-  }
-  function Main() {
-    this.display = getDisplay();
-    this.network = new FakeNetwork(void 0, this.display.forNetwork());
-    this.dmxUniverse = new FakeDmxUniverse();
-    this.sheepModel = new SheepModel();
-    this.pinky = new Pinky(this.sheepModel, this.network, this.dmxUniverse, this.display.forPinky());
-    this.mapper = new Mapper(this.network, this.display.forMapper());
-    this.visualizer = new Visualizer(this.sheepModel, this.dmxUniverse);
-  }
-  function Coroutine$Main$start$lambda(continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-  }
-  Coroutine$Main$start$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$Main$start$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Main$start$lambda.prototype.constructor = Coroutine$Main$start$lambda;
-  Coroutine$Main$start$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = delay(L200000, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.result_0;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function Main$start$lambda(continuation_0, suspended) {
-    var instance = new Coroutine$Main$start$lambda(continuation_0);
-    if (suspended)
-      return instance;
-    else
-      return instance.doResume(null);
-  }
-  Main.prototype.start = function () {
-    this.sheepModel.load();
-    this.mapper.start();
-    this.pinky.start();
-    this.visualizer.start();
-    var tmp$;
-    tmp$ = this.sheepModel.panels.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var jsPanel = this.visualizer.showPanel_jfju1k$(element);
-      (new SimBrain(this.network, this.display.forBrain(), jsPanel, element)).start();
-    }
-    var tmp$_0;
-    tmp$_0 = this.sheepModel.eyes.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      this.visualizer.addEye_1hma8m$(element_0);
-      Config$Companion_getInstance().DMX_DEVICES.get_11rb$(element_0.name);
-    }
-    doRunBlocking(Main$start$lambda);
-  };
-  Main.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Main',
-    interfaces: []
-  };
   function Mapper(network, display) {
     this.network = network;
     this.display = display;
@@ -1127,8 +1043,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
-  function Pinky(sheepModel, network, dmxUniverse, display) {
+  function Pinky(sheepModel, showMetas, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
+    this.showMetas = showMetas;
     this.network = network;
     this.dmxUniverse = dmxUniverse;
     this.display = display;
@@ -1250,12 +1167,20 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         return instance.doResume(null);
     };
   }
+  function Pinky$start$lambda$lambda(closure$currentShowMeta, this$Pinky, closure$showRunner) {
+    return function () {
+      return closure$currentShowMeta.v.createShow_h1b9op$(this$Pinky.sheepModel, closure$showRunner.v);
+    };
+  }
   function Coroutine$Pinky$start$lambda_1(this$Pinky_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
     this.exceptionState_0 = 1;
     this.local$this$Pinky = this$Pinky_0;
-    this.local$showContext = void 0;
+    this.local$showRunner = void 0;
+    this.local$prevSelectedShow = void 0;
+    this.local$currentShowMeta = void 0;
+    this.local$buildShow = void 0;
     this.local$show = void 0;
   }
   Coroutine$Pinky$start$lambda_1.$metadata$ = {
@@ -1270,21 +1195,26 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse);
-            this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
+            this.local$this$Pinky.display.listShows_5ucgt1$(this.local$this$Pinky.showMetas);
+            this.local$showRunner = {v: new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse)};
+            this.local$prevSelectedShow = this.local$this$Pinky.display.selectedShow;
+            this.local$currentShowMeta = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.local$this$Pinky.showMetas))};
+            this.local$buildShow = Pinky$start$lambda$lambda(this.local$currentShowMeta, this.local$this$Pinky, this.local$showRunner);
+            this.local$show = this.local$buildShow();
             this.state_0 = 2;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
             if (!this.local$this$Pinky.mapperIsRunning_0) {
-              if (this.local$this$Pinky.brainsChanged_0) {
-                this.local$showContext = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse);
-                this.local$show = new SomeDumbShow(this.local$this$Pinky.sheepModel, this.local$showContext);
+              if (this.local$this$Pinky.brainsChanged_0 || !equals(this.local$this$Pinky.display.selectedShow, this.local$currentShowMeta.v)) {
+                this.local$currentShowMeta.v = this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.local$this$Pinky.showMetas));
+                this.local$showRunner.v = new ShowRunner(this.local$this$Pinky.display, toList(this.local$this$Pinky.brains_0.values), this.local$this$Pinky.dmxUniverse);
+                this.local$show = this.local$buildShow();
                 this.local$this$Pinky.brainsChanged_0 = false;
               }
               this.local$show.nextFrame();
-              this.local$showContext.send_6qu7we$(this.local$this$Pinky.link_0);
+              this.local$showRunner.v.send_6qu7we$(this.local$this$Pinky.link_0);
             }
 
             this.state_0 = 3;
@@ -2111,6 +2041,99 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'SheepModel',
     interfaces: []
   };
+  var sheepSimulator;
+  function get_sheepSimulator() {
+    if (sheepSimulator == null)
+      return throwUPAE('sheepSimulator');
+    return sheepSimulator;
+  }
+  function set_sheepSimulator(sheepSimulator_0) {
+    sheepSimulator = sheepSimulator_0;
+  }
+  function SheepSimulator() {
+    this.display = getDisplay();
+    this.network = new FakeNetwork(void 0, this.display.forNetwork());
+    this.dmxUniverse = new FakeDmxUniverse();
+    this.sheepModel = new SheepModel();
+    this.showMetas = listOf([new SomeDumbShow$Meta(), new RandomShow$Meta()]);
+    this.pinky = new Pinky(this.sheepModel, this.showMetas, this.network, this.dmxUniverse, this.display.forPinky());
+    this.mapper = new Mapper(this.network, this.display.forMapper());
+    this.visualizer = new Visualizer(this.sheepModel, this.dmxUniverse);
+  }
+  function Coroutine$SheepSimulator$start$lambda(continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+  }
+  Coroutine$SheepSimulator$start$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$SheepSimulator$start$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$SheepSimulator$start$lambda.prototype.constructor = Coroutine$SheepSimulator$start$lambda;
+  Coroutine$SheepSimulator$start$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = delay(L200000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function SheepSimulator$start$lambda(continuation_0, suspended) {
+    var instance = new Coroutine$SheepSimulator$start$lambda(continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  }
+  SheepSimulator.prototype.start = function () {
+    this.sheepModel.load();
+    this.mapper.start();
+    this.pinky.start();
+    this.visualizer.start();
+    var tmp$;
+    tmp$ = this.sheepModel.panels.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var jsPanel = this.visualizer.showPanel_jfju1k$(element);
+      (new SimBrain(this.network, this.display.forBrain(), jsPanel, element)).start();
+    }
+    var tmp$_0;
+    tmp$_0 = this.sheepModel.eyes.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      this.visualizer.addEye_1hma8m$(element_0);
+      Config$Companion_getInstance().DMX_DEVICES.get_11rb$(element_0.name);
+    }
+    doRunBlocking(SheepSimulator$start$lambda);
+  };
+  SheepSimulator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SheepSimulator',
+    interfaces: []
+  };
   function Shenzarpy(buffer) {
     Shenzarpy$Companion_getInstance();
     Dmx$DeviceType.call(this, 16);
@@ -2661,6 +2684,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'PixelShaderBuffer',
     interfaces: [ShaderBuffer]
   };
+  function ShowMeta(name) {
+    this.name = name;
+  }
+  ShowMeta.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShowMeta',
+    interfaces: []
+  };
   function Show() {
   }
   Show.$metadata$ = {
@@ -2726,9 +2757,78 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
     return Math_0.sin(x);
   };
+  function SomeDumbShow$Meta() {
+    ShowMeta.call(this, 'SomeDumbShow');
+  }
+  SomeDumbShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new SomeDumbShow(sheepModel, showRunner);
+  };
+  SomeDumbShow$Meta.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Meta',
+    interfaces: [ShowMeta]
+  };
   SomeDumbShow.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SomeDumbShow',
+    interfaces: [Show]
+  };
+  function RandomShow(sheepModel, showRunner) {
+    var $receiver = sheepModel.allPanels;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(showRunner.getPixelShaderBuffer_jfju1k$(item));
+    }
+    this.pixelShaderBuffers = destination;
+    var $receiver_0 = sheepModel.eyes;
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var item_0 = tmp$_0.next();
+      destination_0.add_11rb$(showRunner.getMovingHeadBuffer_1hma8m$(item_0));
+    }
+    this.movingHeadBuffers = destination_0;
+  }
+  RandomShow.prototype.nextFrame = function () {
+    var tmp$;
+    tmp$ = this.pixelShaderBuffers.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0, tmp$_0_0;
+      var index = 0;
+      tmp$_0 = element.colors.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        element.colors.set_wxm5ur$(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)), Color$Companion_getInstance().random());
+      }
+    }
+    var tmp$_1;
+    tmp$_1 = this.movingHeadBuffers.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      element_0.colorWheel = element_0.closestColorFor_rny0jj$(Color$Companion_getInstance().random());
+      element_0.pan = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().panRange.endInclusive;
+      element_0.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
+    }
+  };
+  function RandomShow$Meta() {
+    ShowMeta.call(this, 'RandomShow');
+  }
+  RandomShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new RandomShow(sheepModel, showRunner);
+  };
+  RandomShow$Meta.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Meta',
+    interfaces: [ShowMeta]
+  };
+  RandomShow.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RandomShow',
     interfaces: [Show]
   };
   function Visualizer(sheepModel, dmxUniverse) {
@@ -3034,14 +3134,16 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   function JsPinkyDisplay(element) {
     this.color_y02qw7$_0 = null;
-    this.consoleDiv_0 = null;
+    this.selectedShow_l65oio$_0 = null;
+    this.brainCountDiv_0 = null;
     this.beat1_0 = null;
     this.beat2_0 = null;
     this.beat3_0 = null;
     this.beat4_0 = null;
     this.beats_0 = null;
     this.colorButtons_0 = null;
-    this.brainCountDiv_0 = null;
+    this.showListDiv_0 = null;
+    this.showButtons_0 = null;
     appendText(element, 'Brains online: ');
     this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
     var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_0);
@@ -3057,10 +3159,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     while (tmp$.hasNext()) {
       var element_0 = tmp$.next();
       element_0.allButtons = this.colorButtons_0;
-      element_0.onSelect = JsPinkyDisplay_init$lambda$lambda_1(this);
+      element_0.element.setAttribute('style', 'background-color: #' + element_0.data.toHexString());
+      element_0.onSelect = JsPinkyDisplay_init$lambda$lambda_3(this);
     }
     ensureNotNull(random(this.colorButtons_0)).select();
-    this.consoleDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_13);
+    this.showListDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_13);
+    this.showButtons_0 = ArrayList_init();
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
   }
@@ -3072,6 +3176,49 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.color_y02qw7$_0 = color;
     }
   });
+  Object.defineProperty(JsPinkyDisplay.prototype, 'selectedShow', {
+    get: function () {
+      return this.selectedShow_l65oio$_0;
+    },
+    set: function (selectedShow) {
+      this.selectedShow_l65oio$_0 = selectedShow;
+    }
+  });
+  function JsPinkyDisplay$listShows$lambda($receiver) {
+    appendText($receiver, 'Shows: ');
+    return Unit;
+  }
+  function JsPinkyDisplay$listShows$lambda_0($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay$listShows$lambda$lambda(closure$showMeta) {
+    return function ($receiver) {
+      appendText($receiver, closure$showMeta.name);
+      return Unit;
+    };
+  }
+  function JsPinkyDisplay$listShows$lambda$lambda_0(this$JsPinkyDisplay) {
+    return function (it) {
+      this$JsPinkyDisplay.selectedShow = it;
+      return Unit;
+    };
+  }
+  JsPinkyDisplay.prototype.listShows_5ucgt1$ = function (showMetas) {
+    clear(this.showListDiv_0);
+    appendElement(this.showListDiv_0, 'b', JsPinkyDisplay$listShows$lambda);
+    appendElement(this.showListDiv_0, 'br', JsPinkyDisplay$listShows$lambda_0);
+    this.showButtons_0.clear();
+    var tmp$;
+    tmp$ = showMetas.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var element_0 = appendElement(this.showListDiv_0, 'span', JsPinkyDisplay$listShows$lambda$lambda(element));
+      var showButton = new JsPinkyDisplay$ShowButton(element, element_0);
+      showButton.onSelect = JsPinkyDisplay$listShows$lambda$lambda_0(this);
+      showButton.allButtons = this.showButtons_0;
+      this.showButtons_0.add_11rb$(showButton);
+    }
+  };
   Object.defineProperty(JsPinkyDisplay.prototype, 'brainCount', {
     get: function () {
       return this.brainCount_tt9c5b$_0;
@@ -3092,45 +3239,60 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.beat_o13evy$_0 = value;
     }
   });
-  function JsPinkyDisplay$ColorButton(color, button) {
-    this.color = color;
-    this.button = button;
-    this.allButtons_nmnvz3$_0 = this.allButtons_nmnvz3$_0;
+  function JsPinkyDisplay$Button(data, element) {
+    this.data = data;
+    this.element = element;
+    this.allButtons_zidvs0$_0 = this.allButtons_zidvs0$_0;
     this.onSelect = null;
-    this.button.setAttribute('style', 'background-color: #' + this.color.toHexString());
-    this.button.addEventListener('click', JsPinkyDisplay$JsPinkyDisplay$ColorButton_init$lambda(this));
+    this.element.addEventListener('click', JsPinkyDisplay$JsPinkyDisplay$Button_init$lambda(this));
   }
-  Object.defineProperty(JsPinkyDisplay$ColorButton.prototype, 'allButtons', {
+  Object.defineProperty(JsPinkyDisplay$Button.prototype, 'allButtons', {
     get: function () {
-      if (this.allButtons_nmnvz3$_0 == null)
+      if (this.allButtons_zidvs0$_0 == null)
         return throwUPAE('allButtons');
-      return this.allButtons_nmnvz3$_0;
+      return this.allButtons_zidvs0$_0;
     },
     set: function (allButtons) {
-      this.allButtons_nmnvz3$_0 = allButtons;
+      this.allButtons_zidvs0$_0 = allButtons;
     }
   });
-  JsPinkyDisplay$ColorButton.prototype.select = function () {
+  JsPinkyDisplay$Button.prototype.select = function () {
     var tmp$;
     var tmp$_0;
     tmp$_0 = this.allButtons.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
-      clear_0(element.button.classList);
+      clear_0(element.element.classList);
     }
-    this.button.classList.add('selected');
-    (tmp$ = this.onSelect) != null ? tmp$(this.color) : null;
+    this.element.classList.add('selected');
+    (tmp$ = this.onSelect) != null ? tmp$(this.data) : null;
   };
-  function JsPinkyDisplay$JsPinkyDisplay$ColorButton_init$lambda(this$ColorButton) {
+  function JsPinkyDisplay$JsPinkyDisplay$Button_init$lambda(this$Button) {
     return function (it) {
-      this$ColorButton.select();
+      this$Button.select();
       return Unit;
     };
+  }
+  JsPinkyDisplay$Button.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Button',
+    interfaces: []
+  };
+  function JsPinkyDisplay$ColorButton(color, element) {
+    JsPinkyDisplay$Button.call(this, color, element);
   }
   JsPinkyDisplay$ColorButton.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ColorButton',
-    interfaces: []
+    interfaces: [JsPinkyDisplay$Button]
+  };
+  function JsPinkyDisplay$ShowButton(showMeta, element) {
+    JsPinkyDisplay$Button.call(this, showMeta, element);
+  }
+  JsPinkyDisplay$ShowButton.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShowButton',
+    interfaces: [JsPinkyDisplay$Button]
   };
   function JsPinkyDisplay_init$lambda($receiver) {
     return Unit;
@@ -3139,9 +3301,13 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     appendText($receiver, 'Beats: ');
     return Unit;
   }
+  function JsPinkyDisplay_init$lambda$lambda_0($receiver) {
+    return Unit;
+  }
   function JsPinkyDisplay_init$lambda_0($receiver) {
     $receiver.id = 'beatsDiv';
     appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda);
+    appendElement($receiver, 'br', JsPinkyDisplay_init$lambda$lambda_0);
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_1($receiver) {
@@ -3160,13 +3326,17 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     appendText($receiver, '4');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda$lambda_0($receiver) {
+  function JsPinkyDisplay_init$lambda$lambda_1($receiver) {
     appendText($receiver, 'Colors: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda$lambda_2($receiver) {
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_5($receiver) {
     $receiver.id = 'colorsDiv';
-    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda_0);
+    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda_1);
+    appendElement($receiver, 'br', JsPinkyDisplay_init$lambda$lambda_2);
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_6($receiver) {
@@ -3190,13 +3360,14 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function JsPinkyDisplay_init$lambda_12($receiver) {
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda$lambda_1(this$JsPinkyDisplay) {
+  function JsPinkyDisplay_init$lambda$lambda_3(this$JsPinkyDisplay) {
     return function (it) {
       this$JsPinkyDisplay.color = it;
       return Unit;
     };
   }
   function JsPinkyDisplay_init$lambda_13($receiver) {
+    $receiver.id = 'showsDiv';
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -3328,11 +3499,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   _.Dog = Dog;
   _.Glass = Glass;
   _.kevmoMain = kevmoMain;
-  Object.defineProperty(package$baaahs, 'main', {
-    get: get_main,
-    set: set_main
-  });
-  package$baaahs.Main = Main;
   package$baaahs.Mapper = Mapper;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
@@ -3400,6 +3566,11 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepModel.Panel = SheepModel$Panel;
   SheepModel.MovingHead = SheepModel$MovingHead;
   package$baaahs.SheepModel = SheepModel;
+  Object.defineProperty(package$baaahs, 'sheepSimulator', {
+    get: get_sheepSimulator,
+    set: set_sheepSimulator
+  });
+  package$baaahs.SheepSimulator = SheepSimulator;
   Object.defineProperty(Shenzarpy, 'Companion', {
     get: Shenzarpy$Companion_getInstance
   });
@@ -3527,8 +3698,12 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     get: PixelShaderBuffer$Companion_getInstance
   });
   package$baaahs.PixelShaderBuffer = PixelShaderBuffer;
+  package$baaahs.ShowMeta = ShowMeta;
   package$baaahs.Show = Show;
+  SomeDumbShow.Meta = SomeDumbShow$Meta;
   package$baaahs.SomeDumbShow = SomeDumbShow;
+  RandomShow.Meta = RandomShow$Meta;
+  package$baaahs.RandomShow = RandomShow;
   package$baaahs.Visualizer = Visualizer;
   package$baaahs.JsPanel = JsPanel;
   package$baaahs.MovingHeadView = MovingHeadView;
