@@ -2,8 +2,29 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:4.8.2
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
     steps:
       - checkout
-      - run: echo "hello world"
-      - run: ls -R
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "src/jsMain/resources/package.json" "build.gradle" }}
+            - v1-dependencies-
+
+      - run:
+          command: |
+            npm install
+            npm run build
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "src/jsMain/resources/package.json" "build.gradle" }}
+
+      # run tests!
+      - run: yarn test
