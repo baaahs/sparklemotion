@@ -24,10 +24,9 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
-  var math = Kotlin.kotlin.math;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L1 = Kotlin.Long.ONE;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var ensureNotNull = Kotlin.ensureNotNull;
@@ -54,6 +53,7 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toBoxedChar = Kotlin.toBoxedChar;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
+  var math = Kotlin.kotlin.math;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
@@ -61,10 +61,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
-  Cat.prototype = Object.create(Animal.prototype);
-  Cat.prototype.constructor = Cat;
-  Dog.prototype = Object.create(Animal.prototype);
-  Dog.prototype.constructor = Dog;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
@@ -580,66 +576,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'FakeDmxUniverse',
     interfaces: [Dmx$Universe]
   };
-  function ThingWithMass() {
-  }
-  ThingWithMass.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ThingWithMass',
-    interfaces: []
-  };
-  function Animal(age) {
-    this.age = age;
-  }
-  Animal.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Animal',
-    interfaces: []
-  };
-  function Cat(age) {
-    Animal.call(this, age);
-  }
-  Cat.prototype.weightInKilograms = function () {
-    return 2.0 * this.age;
-  };
-  Cat.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Cat',
-    interfaces: [ThingWithMass, Animal]
-  };
-  function Dog(age) {
-    Animal.call(this, age);
-  }
-  Dog.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Dog',
-    interfaces: [Animal]
-  };
-  function Glass(height, diameter, fullness) {
-    this.height = height;
-    this.diameter = diameter;
-    this.fullness = fullness;
-  }
-  Glass.prototype.weightInKilograms = function () {
-    return this.computeVolume() / 1000;
-  };
-  Glass.prototype.computeVolume = function () {
-    return this.diameter / 2 * (this.diameter / 2) * math.PI * this.height;
-  };
-  Glass.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Glass',
-    interfaces: [ThingWithMass]
-  };
-  function kevmoMain() {
-    new Cat(3);
-    var kitty = new Cat(5);
-    var myGlass = new Glass(3.5, 4.0, 0.3);
-    println('volume of the glass is ' + myGlass.computeVolume());
-    var yourglass = new Glass(6.0, 12.0, 0.7);
-    println('your glass contains ' + yourglass.computeVolume() + ' milliliters');
-    var totalWeight = kitty.weightInKilograms() + myGlass.weightInKilograms() + yourglass.weightInKilograms();
-    println('The weightInKilograms of our cats and glasses is: ' + totalWeight);
-  }
   function Mapper(network, display) {
     this.network = network;
     this.display = display;
@@ -3493,12 +3429,6 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
   package$baaahs.FakeDmxUniverse = FakeDmxUniverse;
-  _.ThingWithMass = ThingWithMass;
-  _.Animal = Animal;
-  _.Cat = Cat;
-  _.Dog = Dog;
-  _.Glass = Glass;
-  _.kevmoMain = kevmoMain;
   package$baaahs.Mapper = Mapper;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
