@@ -13,7 +13,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "src/jsMain/resources/package.json" "build.gradle" }}
+            - v1-dependencies-{{ checksum "src/jsMain/resources/package.json" }} # also "build.gradle"
             - v1-dependencies-
 
       - run:
@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "src/jsMain/resources/package.json" "build.gradle" }}
+          key: v1-dependencies-{{ checksum "src/jsMain/resources/package.json" }} # also "build.gradle"
 
       # run tests!
       - run: yarn test
