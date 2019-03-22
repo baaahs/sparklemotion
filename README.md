@@ -1,4 +1,4 @@
-# BAAAHS Simulator 2
+# Sparkle Motion
 
 ## Prerequisites
 
@@ -23,3 +23,7 @@
 brew install fswatch
 fswatch src --batch-marker=BOOM --exclude=___jb | grep --line-buffered BOOM | xargs -n1 -I{} ./gradlew -i jsJar
 ```
+
+## Deployment
+
+Go here: https://baaahs.github.io/sparklemotion
