@@ -1,10 +1,10 @@
 if (typeof kotlin === 'undefined') {
-  throw new Error("Error loading module 'play'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'play'.");
+  throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'sparklemotion'.");
 }
 if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
-  throw new Error("Error loading module 'play'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'play'.");
+  throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'sparklemotion'.");
 }
-var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
+var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   'use strict';
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var throwUPAE = Kotlin.throwUPAE;
@@ -3655,6 +3655,8 @@ var play = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.getTimeMillis = getTimeMillis;
   FakeNetwork$FakeLink.prototype.send_bkw8fl$ = Network$Link.prototype.send_bkw8fl$;
   FakeNetwork$FakeLink.prototype.broadcast_ecsl0t$ = Network$Link.prototype.broadcast_ecsl0t$;
-  Kotlin.defineModule('play', _);
+  Kotlin.defineModule('sparklemotion', _);
   return _;
-}(typeof play === 'undefined' ? {} : play, kotlin, this['kotlinx-coroutines-core']);
+}(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core']);
+
+//# sourceMappingURL=sparklemotion.js.map
