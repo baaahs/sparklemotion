@@ -17,13 +17,33 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: Prefetch Dependencies
           command: |
             npm install
-            npm run build
-            ./gradlew build
+            sudo npm install -g --silent gh-pages # ugh why sudo?
+            ./gradlew model
 
       - save_cache:
           paths:
             - ~/.gradle
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "build.gradle" }}
+
+      - run:
+          name: Build
+          command: |
+            npm run build
+            ./gradlew build
+
+      - add_ssh_keys:
+          fingerprints:
+            - "e6:55:46:24:0b:66:40:62:f9:72:10:00:de:41:37:e6"
+
+      - run:
+          name: Deploy to gh-pages
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git config --global user.email "ci-build@baaahs.org"
+              git config --global user.name "CI Builder"
+              gh-pages --dotfiles --message "Auto deploy" --dist build/processedResources/js/main
+            fi
