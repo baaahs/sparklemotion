@@ -4,7 +4,7 @@ jobs:
     docker:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/node:7.10
+      - image: circleci/openjdk:11-jdk-node
 
     working_directory: ~/repo
 
@@ -13,18 +13,17 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "src/jsMain/resources/package.json" }} # also "build.gradle"
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "build.gradle" }}
             - v1-dependencies-
 
       - run:
           command: |
             npm install
             npm run build
+            ./gradlew build
 
       - save_cache:
           paths:
+            - ~/.gradle
             - node_modules
-          key: v1-dependencies-{{ checksum "src/jsMain/resources/package.json" }} # also "build.gradle"
-
-      # run tests!
-      - run: yarn test
+          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "build.gradle" }}

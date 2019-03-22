@@ -4,9 +4,8 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
-group 'com.example'
+group 'org.baaahs'
 version '0.0.1'
 
 apply plugin: 'maven-publish'
@@ -64,6 +63,17 @@ kotlin {
 //        linuxTest {
 //        }
     }
+}
+
+compileKotlinJs {
+    kotlinOptions.sourceMap = true
+    kotlinOptions.sourceMapEmbedSources = "always"
+}
+
+jsProcessResources { t ->
+    println "this: ${t.class}"
+    t.from('build/webpack')
+    t.from('build/classes/kotlin/js/main')
 }
 
 //task assembleWeb(type: Sync) {

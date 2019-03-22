@@ -1,5 +1,5 @@
 {
-  "name": "play",
+  "name": "sparklemotion",
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baaahs/play.git"
+    "url": "git+https://github.com/baaahs/sparklemotion.git"
   },
   "keywords": [
     "baaahs"
@@ -22,9 +22,9 @@
   "author": "@baaahs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/baaahs/play/issues"
+    "url": "https://github.com/baaahs/sparklemotion/issues"
   },
-  "homepage": "https://github.com/baaahs/play#readme",
+  "homepage": "https://github.com/baaahs/sparklemotion#readme",
   "dependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
