@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div id="react-app"></div>
-  <script type="application/javascript" src="build/js/app.js"></script>
+<div id="react-app"></div>
+<script type="application/javascript" src="app.js"></script>
 <div id="sheepView"></div>
 
 <div id="simulatorView">
@@ -55,7 +55,7 @@
   // cache busting
   const cacheBustStr = 2 || new Date().getTime();
   [
-    "play.js",
+    "sparklemotion.js",
     "visualizer.js",
   ].forEach(function (value) {
     document.write(`\x3Cscript type="text/javascript" src="${value}?ts=${cacheBustStr}">\x3C/script>\n`);
@@ -63,7 +63,7 @@
 </script>
 
 <script type="text/javascript">
-  let sheepSimulator = new play.baaahs.SheepSimulator();
+  let sheepSimulator = new sparklemotion.baaahs.SheepSimulator();
   sheepSimulator.start();
 
 </script>
