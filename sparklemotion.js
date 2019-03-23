@@ -35,6 +35,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var L0 = Kotlin.Long.ZERO;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
+  var until = Kotlin.kotlin.ranges.until_dqglrj$;
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
@@ -42,9 +45,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var L200000 = Kotlin.Long.fromInt(200000);
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
-  var until = Kotlin.kotlin.ranges.until_dqglrj$;
-  var IntRange = Kotlin.kotlin.ranges.IntRange;
-  var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var toShort = Kotlin.toShort;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
@@ -75,18 +75,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   BrainIdResponse.prototype.constructor = BrainIdResponse;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
   PinkyPongMessage.prototype.constructor = PinkyPongMessage;
-  Shenzarpy$WheelColor.prototype = Object.create(Enum.prototype);
-  Shenzarpy$WheelColor.prototype.constructor = Shenzarpy$WheelColor;
-  Shenzarpy$Channel.prototype = Object.create(Enum.prototype);
-  Shenzarpy$Channel.prototype.constructor = Shenzarpy$Channel;
-  Shenzarpy.prototype = Object.create(Dmx$DeviceType.prototype);
-  Shenzarpy.prototype.constructor = Shenzarpy;
   ShaderType.prototype = Object.create(Enum.prototype);
   ShaderType.prototype.constructor = ShaderType;
   SolidShaderBuffer.prototype = Object.create(ShaderBuffer.prototype);
   SolidShaderBuffer.prototype.constructor = SolidShaderBuffer;
   PixelShaderBuffer.prototype = Object.create(ShaderBuffer.prototype);
   PixelShaderBuffer.prototype.constructor = PixelShaderBuffer;
+  Shenzarpy$WheelColor.prototype = Object.create(Enum.prototype);
+  Shenzarpy$WheelColor.prototype.constructor = Shenzarpy$WheelColor;
+  Shenzarpy$Channel.prototype = Object.create(Enum.prototype);
+  Shenzarpy$Channel.prototype.constructor = Shenzarpy$Channel;
+  Shenzarpy.prototype = Object.create(Dmx$DeviceType.prototype);
+  Shenzarpy.prototype.constructor = Shenzarpy;
   SomeDumbShow$Meta.prototype = Object.create(ShowMeta.prototype);
   SomeDumbShow$Meta.prototype.constructor = SomeDumbShow$Meta;
   RandomShow$Meta.prototype = Object.create(ShowMeta.prototype);
@@ -843,12 +843,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     portListeners.add_11rb$(listener);
   };
   FakeNetwork.prototype.send_0 = function (fromAddress, toAddress, port, bytes) {
+    if (!this.sendPacketSuccess_0()) {
+      this.display_0.droppedPacket();
+      return;
+    }
     var listener = this.listeners_0.get_11rb$(new Pair(toAddress, port));
     if (listener != null)
       this.transmit_0(fromAddress, listener, bytes);
   };
   FakeNetwork.prototype.broadcast_0 = function (fromAddress, port, bytes) {
     var tmp$;
+    if (!this.sendPacketSuccess_0()) {
+      this.display_0.droppedPacket();
+      return;
+    }
     if ((tmp$ = this.listenersByPort_0.get_11rb$(port)) != null) {
       var tmp$_0;
       tmp$_0 = tmp$.iterator();
@@ -887,12 +895,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           case 1:
             throw this.exception_0;
           case 2:
-            if (Random.Default.nextInt() % 10 !== 1) {
-              this.local$this$FakeNetwork.display_0.receivedPacket();
-              return this.local$closure$listener.receive_cm0rz4$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
+            if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
+              return this.local$this$FakeNetwork.display_0.droppedPacket(), Unit;
             }
              else {
-              return this.local$this$FakeNetwork.display_0.droppedPacket(), Unit;
+              this.local$this$FakeNetwork.display_0.receivedPacket();
+              return this.local$closure$listener.receive_cm0rz4$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
             }
 
           case 3:
@@ -924,6 +932,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   FakeNetwork.prototype.transmit_0 = function (fromAddress, listener, bytes) {
     launch(coroutines.GlobalScope, void 0, void 0, FakeNetwork$transmit$lambda(this, listener, fromAddress, bytes));
+  };
+  FakeNetwork.prototype.sendPacketSuccess_0 = function () {
+    return Random.Default.nextFloat() > this.display_0.packetLossRate / 2;
+  };
+  FakeNetwork.prototype.receivePacketSuccess_0 = function () {
+    return Random.Default.nextFloat() > this.display_0.packetLossRate / 2;
   };
   function FakeNetwork$FakeLink($outer, myAddress) {
     this.$outer = $outer;
@@ -1733,6 +1747,142 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Message',
     interfaces: []
   };
+  function ShaderType(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function ShaderType_initFields() {
+    ShaderType_initFields = function () {
+    };
+    ShaderType$SOLID_instance = new ShaderType('SOLID', 0);
+    ShaderType$PIXEL_instance = new ShaderType('PIXEL', 1);
+  }
+  var ShaderType$SOLID_instance;
+  function ShaderType$SOLID_getInstance() {
+    ShaderType_initFields();
+    return ShaderType$SOLID_instance;
+  }
+  var ShaderType$PIXEL_instance;
+  function ShaderType$PIXEL_getInstance() {
+    ShaderType_initFields();
+    return ShaderType$PIXEL_instance;
+  }
+  ShaderType.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderType',
+    interfaces: [Enum]
+  };
+  function ShaderType$values() {
+    return [ShaderType$SOLID_getInstance(), ShaderType$PIXEL_getInstance()];
+  }
+  ShaderType.values = ShaderType$values;
+  function ShaderType$valueOf(name) {
+    switch (name) {
+      case 'SOLID':
+        return ShaderType$SOLID_getInstance();
+      case 'PIXEL':
+        return ShaderType$PIXEL_getInstance();
+      default:throwISE('No enum constant baaahs.ShaderType.' + name);
+    }
+  }
+  ShaderType.valueOf_61zpoe$ = ShaderType$valueOf;
+  function ShaderBuffer(type) {
+    this.type = type;
+  }
+  ShaderBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderBuffer',
+    interfaces: []
+  };
+  function SolidShaderBuffer() {
+    SolidShaderBuffer$Companion_getInstance();
+    ShaderBuffer.call(this, ShaderType$SOLID_getInstance());
+    this.color = Color$Companion_getInstance().WHITE;
+  }
+  SolidShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
+    this.color.serialize_ep8mow$(writer);
+  };
+  function SolidShaderBuffer$Companion() {
+    SolidShaderBuffer$Companion_instance = this;
+  }
+  SolidShaderBuffer$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    var buf = new SolidShaderBuffer();
+    buf.color = Color$Companion_getInstance().parse_c4pr8w$(reader);
+    return buf;
+  };
+  SolidShaderBuffer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var SolidShaderBuffer$Companion_instance = null;
+  function SolidShaderBuffer$Companion_getInstance() {
+    if (SolidShaderBuffer$Companion_instance === null) {
+      new SolidShaderBuffer$Companion();
+    }
+    return SolidShaderBuffer$Companion_instance;
+  }
+  SolidShaderBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SolidShaderBuffer',
+    interfaces: [ShaderBuffer]
+  };
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  function PixelShaderBuffer() {
+    PixelShaderBuffer$Companion_getInstance();
+    ShaderBuffer.call(this, ShaderType$PIXEL_getInstance());
+    this.fakeyTerribleHardCodedNumberOfPixels = 1337;
+    var $receiver = new IntRange(0, this.fakeyTerribleHardCodedNumberOfPixels);
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(Color$Companion_getInstance().WHITE);
+    }
+    this.colors = toMutableList(destination);
+  }
+  PixelShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
+    writer.writeInt_za3lpa$(this.colors.size);
+    var tmp$;
+    tmp$ = this.colors.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.serialize_ep8mow$(writer);
+    }
+  };
+  function PixelShaderBuffer$Companion() {
+    PixelShaderBuffer$Companion_instance = this;
+  }
+  PixelShaderBuffer$Companion.prototype.parse_c4pr8w$ = function (reader) {
+    var buf = new PixelShaderBuffer();
+    var tmp$;
+    tmp$ = until(0, reader.readInt()).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      buf.colors.set_wxm5ur$(element, Color$Companion_getInstance().parse_c4pr8w$(reader));
+    }
+    return buf;
+  };
+  PixelShaderBuffer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PixelShaderBuffer$Companion_instance = null;
+  function PixelShaderBuffer$Companion_getInstance() {
+    if (PixelShaderBuffer$Companion_instance === null) {
+      new PixelShaderBuffer$Companion();
+    }
+    return PixelShaderBuffer$Companion_instance;
+  }
+  PixelShaderBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PixelShaderBuffer',
+    interfaces: [ShaderBuffer]
+  };
   function SheepModel() {
     this.vertices_mqvov9$_0 = this.vertices_mqvov9$_0;
     this.panels_kixrwx$_0 = this.panels_kixrwx$_0;
@@ -1790,8 +1940,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
     var vertices = ArrayList_init();
     var panels = ArrayList_init();
@@ -2486,140 +2634,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Shenzarpy',
     interfaces: [Dmx$DeviceType]
   };
-  function ShaderType(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function ShaderType_initFields() {
-    ShaderType_initFields = function () {
-    };
-    ShaderType$SOLID_instance = new ShaderType('SOLID', 0);
-    ShaderType$PIXEL_instance = new ShaderType('PIXEL', 1);
-  }
-  var ShaderType$SOLID_instance;
-  function ShaderType$SOLID_getInstance() {
-    ShaderType_initFields();
-    return ShaderType$SOLID_instance;
-  }
-  var ShaderType$PIXEL_instance;
-  function ShaderType$PIXEL_getInstance() {
-    ShaderType_initFields();
-    return ShaderType$PIXEL_instance;
-  }
-  ShaderType.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ShaderType',
-    interfaces: [Enum]
-  };
-  function ShaderType$values() {
-    return [ShaderType$SOLID_getInstance(), ShaderType$PIXEL_getInstance()];
-  }
-  ShaderType.values = ShaderType$values;
-  function ShaderType$valueOf(name) {
-    switch (name) {
-      case 'SOLID':
-        return ShaderType$SOLID_getInstance();
-      case 'PIXEL':
-        return ShaderType$PIXEL_getInstance();
-      default:throwISE('No enum constant baaahs.ShaderType.' + name);
-    }
-  }
-  ShaderType.valueOf_61zpoe$ = ShaderType$valueOf;
-  function ShaderBuffer(type) {
-    this.type = type;
-  }
-  ShaderBuffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ShaderBuffer',
-    interfaces: []
-  };
-  function SolidShaderBuffer() {
-    SolidShaderBuffer$Companion_getInstance();
-    ShaderBuffer.call(this, ShaderType$SOLID_getInstance());
-    this.color = Color$Companion_getInstance().WHITE;
-  }
-  SolidShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
-    this.color.serialize_ep8mow$(writer);
-  };
-  function SolidShaderBuffer$Companion() {
-    SolidShaderBuffer$Companion_instance = this;
-  }
-  SolidShaderBuffer$Companion.prototype.parse_c4pr8w$ = function (reader) {
-    var buf = new SolidShaderBuffer();
-    buf.color = Color$Companion_getInstance().parse_c4pr8w$(reader);
-    return buf;
-  };
-  SolidShaderBuffer$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var SolidShaderBuffer$Companion_instance = null;
-  function SolidShaderBuffer$Companion_getInstance() {
-    if (SolidShaderBuffer$Companion_instance === null) {
-      new SolidShaderBuffer$Companion();
-    }
-    return SolidShaderBuffer$Companion_instance;
-  }
-  SolidShaderBuffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SolidShaderBuffer',
-    interfaces: [ShaderBuffer]
-  };
-  function PixelShaderBuffer() {
-    PixelShaderBuffer$Companion_getInstance();
-    ShaderBuffer.call(this, ShaderType$PIXEL_getInstance());
-    this.fakeyTerribleHardCodedNumberOfPixels = 1337;
-    var $receiver = new IntRange(0, this.fakeyTerribleHardCodedNumberOfPixels);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(Color$Companion_getInstance().WHITE);
-    }
-    this.colors = toMutableList(destination);
-  }
-  PixelShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
-    writer.writeInt_za3lpa$(this.colors.size);
-    var tmp$;
-    tmp$ = this.colors.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.serialize_ep8mow$(writer);
-    }
-  };
-  function PixelShaderBuffer$Companion() {
-    PixelShaderBuffer$Companion_instance = this;
-  }
-  PixelShaderBuffer$Companion.prototype.parse_c4pr8w$ = function (reader) {
-    var buf = new PixelShaderBuffer();
-    var tmp$;
-    tmp$ = until(0, reader.readInt()).iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      buf.colors.set_wxm5ur$(element, Color$Companion_getInstance().parse_c4pr8w$(reader));
-    }
-    return buf;
-  };
-  PixelShaderBuffer$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var PixelShaderBuffer$Companion_instance = null;
-  function PixelShaderBuffer$Companion_getInstance() {
-    if (PixelShaderBuffer$Companion_instance === null) {
-      new PixelShaderBuffer$Companion();
-    }
-    return PixelShaderBuffer$Companion_instance;
-  }
-  PixelShaderBuffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PixelShaderBuffer',
-    interfaces: [ShaderBuffer]
-  };
   function ShowMeta(name) {
     this.name = name;
   }
@@ -3048,21 +3062,39 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     interfaces: [Display]
   };
   function JsNetworkDisplay(document) {
+    var $receiver = ensureNotNull(document.getElementById('networkPacketLossRate'));
+    $receiver.addEventListener('click', JsNetworkDisplay$packetLossRateSpan$lambda$lambda(this));
+    this.packetLossRateSpan_0 = $receiver;
+    this.packetLossRate_q9z6ua$_0 = 0.05;
+    this.packetLossRate = 0.05;
     this.packetsReceivedSpan_0 = ensureNotNull(document.getElementById('networkPacketsReceived'));
     this.packetsDroppedSpan_0 = ensureNotNull(document.getElementById('networkPacketsDropped'));
     this.packetsReceived_0 = 0;
     this.packetsDropped_0 = 0;
   }
+  Object.defineProperty(JsNetworkDisplay.prototype, 'packetLossRate', {
+    get: function () {
+      return this.packetLossRate_q9z6ua$_0;
+    },
+    set: function (value) {
+      this.packetLossRateSpan_0.textContent = numberToInt(value * 100).toString() + '%';
+      this.packetLossRate_q9z6ua$_0 = value;
+    }
+  });
   JsNetworkDisplay.prototype.receivedPacket = function () {
     var tmp$;
-    clear(this.packetsReceivedSpan_0);
-    appendText(this.packetsReceivedSpan_0, (tmp$ = this.packetsReceived_0, this.packetsReceived_0 = tmp$ + 1 | 0, tmp$).toString());
+    this.packetsReceivedSpan_0.textContent = (tmp$ = this.packetsReceived_0, this.packetsReceived_0 = tmp$ + 1 | 0, tmp$).toString();
   };
   JsNetworkDisplay.prototype.droppedPacket = function () {
     var tmp$;
-    clear(this.packetsDroppedSpan_0);
-    appendText(this.packetsDroppedSpan_0, (tmp$ = this.packetsDropped_0, this.packetsDropped_0 = tmp$ + 1 | 0, tmp$).toString());
+    this.packetsDroppedSpan_0.textContent = (tmp$ = this.packetsDropped_0, this.packetsDropped_0 = tmp$ + 1 | 0, tmp$).toString();
   };
+  function JsNetworkDisplay$packetLossRateSpan$lambda$lambda(this$JsNetworkDisplay) {
+    return function (it) {
+      this$JsNetworkDisplay.packetLossRate = toDouble(ensureNotNull(window.prompt('Packet loss rate (%):', numberToInt(this$JsNetworkDisplay.packetLossRate * 100).toString()))) / 100;
+      return Unit;
+    };
+  }
   JsNetworkDisplay.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'JsNetworkDisplay',
@@ -3489,6 +3521,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   });
   package$baaahs.PinkyPongMessage = PinkyPongMessage;
   package$baaahs.Message = Message;
+  Object.defineProperty(ShaderType, 'SOLID', {
+    get: ShaderType$SOLID_getInstance
+  });
+  Object.defineProperty(ShaderType, 'PIXEL', {
+    get: ShaderType$PIXEL_getInstance
+  });
+  package$baaahs.ShaderType = ShaderType;
+  package$baaahs.ShaderBuffer = ShaderBuffer;
+  Object.defineProperty(SolidShaderBuffer, 'Companion', {
+    get: SolidShaderBuffer$Companion_getInstance
+  });
+  package$baaahs.SolidShaderBuffer = SolidShaderBuffer;
+  Object.defineProperty(PixelShaderBuffer, 'Companion', {
+    get: PixelShaderBuffer$Companion_getInstance
+  });
+  package$baaahs.PixelShaderBuffer = PixelShaderBuffer;
   SheepModel.Point = SheepModel$Point;
   SheepModel.Line = SheepModel$Line;
   SheepModel.Face = SheepModel$Face;
@@ -3612,22 +3660,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   });
   Shenzarpy.Channel = Shenzarpy$Channel;
   package$baaahs.Shenzarpy = Shenzarpy;
-  Object.defineProperty(ShaderType, 'SOLID', {
-    get: ShaderType$SOLID_getInstance
-  });
-  Object.defineProperty(ShaderType, 'PIXEL', {
-    get: ShaderType$PIXEL_getInstance
-  });
-  package$baaahs.ShaderType = ShaderType;
-  package$baaahs.ShaderBuffer = ShaderBuffer;
-  Object.defineProperty(SolidShaderBuffer, 'Companion', {
-    get: SolidShaderBuffer$Companion_getInstance
-  });
-  package$baaahs.SolidShaderBuffer = SolidShaderBuffer;
-  Object.defineProperty(PixelShaderBuffer, 'Companion', {
-    get: PixelShaderBuffer$Companion_getInstance
-  });
-  package$baaahs.PixelShaderBuffer = PixelShaderBuffer;
   package$baaahs.ShowMeta = ShowMeta;
   package$baaahs.Show = Show;
   SomeDumbShow.Meta = SomeDumbShow$Meta;
