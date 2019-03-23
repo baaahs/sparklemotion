@@ -44,6 +44,23 @@ class JsDisplay : Display {
 }
 
 class JsNetworkDisplay(document: Document) : NetworkDisplay {
+    private val packetLossRateSpan = document.getElementById("networkPacketLossRate")!!.apply {
+        addEventListener("click", {
+            packetLossRate = kotlin.browser.window.prompt(
+                "Packet loss rate (%):", "${(packetLossRate * 100).toInt()}"
+            )!!.toFloat() / 100
+        })
+    }
+
+    override var packetLossRate: Float = 0.05f
+        set(value) {
+            packetLossRateSpan.textContent = "${(value * 100).toInt()}%"
+            field = value
+        }
+
+    init { packetLossRate = 0.05f }
+
+
     private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
     private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
 
@@ -51,13 +68,11 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
     private var packetsDropped = 0
 
     override fun receivedPacket() {
-        packetsReceivedSpan.clear()
-        packetsReceivedSpan.appendText(packetsReceived++.toString())
+        packetsReceivedSpan.textContent = packetsReceived++.toString()
     }
 
     override fun droppedPacket() {
-        packetsDroppedSpan.clear()
-        packetsDroppedSpan.appendText(packetsDropped++.toString())
+        packetsDroppedSpan.textContent = packetsDropped++.toString()
     }
 }
 

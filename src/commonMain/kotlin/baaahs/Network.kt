@@ -56,12 +56,22 @@ class FakeNetwork(
 
     @Synchronized
     private fun send(fromAddress: Network.Address, toAddress: Network.Address, port: Int, bytes: ByteArray) {
+        if (!sendPacketSuccess()) {
+            display.droppedPacket()
+            return
+        }
+
         val listener = listeners[Pair(toAddress, port)]
         if (listener != null) transmit(fromAddress, listener, bytes)
     }
 
     @Synchronized
     private fun broadcast(fromAddress: Network.Address, port: Int, bytes: ByteArray) {
+        if (!sendPacketSuccess()) {
+            display.droppedPacket()
+            return
+        }
+
         listenersByPort[port]?.forEach { listener ->
             transmit(fromAddress, listener, bytes)
         }
@@ -70,14 +80,17 @@ class FakeNetwork(
     private fun transmit(fromAddress: Network.Address, listener: Network.Listener, bytes: ByteArray) {
         GlobalScope.launch {
             delay(networkDelay)
-            if (Random.nextInt() % 10 != 1) {
+            if (!receivePacketSuccess()) {
+                display.droppedPacket()
+            } else {
                 display.receivedPacket()
                 listener.receive(fromAddress, bytes)
-            } else {
-                display.droppedPacket()
             }
         }
     }
+
+    private fun sendPacketSuccess() = Random.nextFloat() > display.packetLossRate / 2
+    private fun receivePacketSuccess() = Random.nextFloat() > display.packetLossRate / 2
 
     private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override fun listen(port: Int, listener: Network.Listener) {
