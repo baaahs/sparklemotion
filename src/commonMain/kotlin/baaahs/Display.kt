@@ -10,6 +10,7 @@ interface Display {
 }
 
 interface NetworkDisplay {
+    var packetLossRate: Float
     fun receivedPacket()
     fun droppedPacket()
 }
