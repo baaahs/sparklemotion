@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
     entry: [
         'react-hot-loader/patch',
-        './index.jsx'
+        './src/jsMain/js/index.jsx'
     ],
     module: {
         rules: [
@@ -23,7 +23,7 @@ module.exports = {
         extensions: ['*', '.js', '.jsx']
     },
     output: {
-        path: __dirname + '/build/js/',
+        path: __dirname + '/build/webpack/',
         publicPath: '/js/',
         filename: 'app.js'
     },
