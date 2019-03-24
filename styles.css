@@ -44,6 +44,13 @@ body {
     right: 0;
 }
 
+#networkPacketLossRate {
+    background: blanchedalmond;
+    display: inline-block;
+    border: 2px inset;
+    padding: 2px;
+}
+
 #brainsView, #mapperBrainsView {
     background-color: black;
 }
