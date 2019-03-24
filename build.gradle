@@ -71,11 +71,17 @@ compileKotlinJs {
 }
 
 jsProcessResources { t ->
-    println "this: ${t.class}"
     t.from('build/webpack')
     t.from('build/classes/kotlin/js/main')
 }
 
+//task serve << {
+//    SimpleHttpFileServerFactory factory = new SimpleHttpFileServerFactory()
+//    HttpFileServer server = factory.start(new File("build/processedResources/js/main"), 8001)
+//    println("Server Started on 8085 ctrc+c to kill it")
+//    java.lang.Thread.sleep(Long.MAX_VALUE);
+//}
+//
 //task assembleWeb(type: Sync) {
 //    configurations.each { Configuration c ->
 //        println(c)

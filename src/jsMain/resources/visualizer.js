@@ -249,3 +249,27 @@ function render() {
   }
   renderer.render(scene, camera);
 }
+
+
+const resizeDelay = 100;
+
+const doResize = evt => {
+  camera.aspect = sheepView.offsetWidth / sheepView.offsetHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight);
+};
+
+(() => {
+  let resizeTaskId = null;
+
+  window.addEventListener('resize', evt => {
+    if (resizeTaskId !== null) {
+      clearTimeout(resizeTaskId);
+    }
+
+    resizeTaskId = setTimeout(() => {
+      resizeTaskId = null;
+      doResize(evt);
+    }, resizeDelay);
+  });
+})();
