@@ -7,13 +7,13 @@ class Brain(
     private val display: BrainDisplay,
     private val pixels: Pixels,
     private val illicitPanelHint: SheepModel.Panel
-) : Network.Listener {
+) : Network.UdpListener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
 
     suspend fun run() {
         link = network.link()
-        link.listen(Ports.BRAIN, this)
+        link.listenUdp(Ports.BRAIN, this)
         display.haveLink(link)
 
         sendHello()
@@ -22,7 +22,7 @@ class Brain(
     private suspend fun sendHello() {
         while (true) {
             if (!receivingInstructions) {
-                link.broadcast(Ports.PINKY, BrainHelloMessage(illicitPanelHint.name))
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(illicitPanelHint.name))
             }
 
             delay(60000)
@@ -37,7 +37,7 @@ class Brain(
                 shaderImpl.draw()
             }
             is BrainIdRequest -> {
-                link.send(fromAddress, message.port, BrainIdResponse(""))
+                link.sendUdp(fromAddress, message.port, BrainIdResponse(""))
             }
         }
     }
