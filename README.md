@@ -21,11 +21,17 @@
   - `npm run build`
 * Open `src/jsMain/resources/index.html` using "Open in Browser -> Chrome" from IntelliJ context menu
 
-## Auto build
+## Local build
 
 ```sh
 brew install fswatch
 fswatch src --batch-marker=BOOM --exclude=___jb | grep --line-buffered BOOM | xargs -n1 -I{} ./gradlew -i jsJar
+```
+
+Run this and go to http://localhost:8001/index.html :
+
+```sh
+./gradlew serve
 ```
 
 ## CI & Deployment
