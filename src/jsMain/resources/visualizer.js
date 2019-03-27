@@ -118,21 +118,39 @@ function addPanel(p) {
     scene.add(line);
   });
 
-  // try to draw pixel-ish things?
+  function randomLocation(vertices) {
+    const v = new THREE.Vector3().copy(vertices[0]);
+    for (let vi = 1; vi < vertices.length; vi++) {
+      v.addScaledVector(new THREE.Vector3().copy(vertices[vi]).sub(v), Math.random());
+    }
+    return v;
+  }
+
+// try to draw pixel-ish things?
   if (renderPixels) {
     const pixelsGeometry = new THREE.BufferGeometry();
     const positions = [];
     const colors = [];
 
     let pixelCount = 200;
-    for (var pixelI = 0; pixelI < pixelCount; pixelI++) {
-      var v = new THREE.Vector3().copy(panelVertices[0]);
-      for (var vi = 1; vi < panelVertices.length; vi++) {
-        v.addScaledVector(new THREE.Vector3().copy(panelVertices[vi]).sub(v), Math.random());
-      }
+    let pixelSpacing = 4; // inches
+    let pos = randomLocation(panelVertices);
+    const nextPos = new THREE.Vector3();
+    positions.push(pos.x, pos.y, pos.z);
+    colors.push(0, 0, 0);
 
-      positions.push(v.x, v.y, v.z);
+    let angleRad = Math.random() * 2 * Math.PI;
+    let angleRadDelta = Math.random() * 0.5 - 0.5;
+    for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
+      nextPos.x = pos.x;
+      nextPos.y = pos.y + pixelSpacing * Math.sin(angleRad);
+      nextPos.z = pos.z + pixelSpacing * Math.cos(angleRad);
+      positions.push(nextPos.x, nextPos.y, nextPos.z);
       colors.push(0, 0, 0);
+
+      angleRad += angleRadDelta;
+      angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
+      pos.copy(nextPos);
     }
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
