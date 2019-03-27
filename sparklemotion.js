@@ -3437,7 +3437,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     }
   }
   function getTimeMillis() {
-    return Kotlin.Long.fromNumber((new Date()).getTime());
+    return Kotlin.Long.fromNumber(Date.now());
   }
   var package$baaahs = _.baaahs || (_.baaahs = {});
   package$baaahs.Brain = Brain;
