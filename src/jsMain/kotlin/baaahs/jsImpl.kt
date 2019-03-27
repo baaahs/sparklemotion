@@ -241,4 +241,4 @@ fun <T> ItemArrayLike<T>.forEach(action: (T) -> Unit) {
     }
 }
 
-actual fun getTimeMillis(): Long = Date().getTime().toLong()
+actual fun getTimeMillis(): Long = Date.now().toLong()
