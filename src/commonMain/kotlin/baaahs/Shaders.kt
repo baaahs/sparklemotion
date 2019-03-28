@@ -1,44 +1,67 @@
 package baaahs
 
-enum class ShaderType {
-    SOLID,
-    PIXEL
-}
+import baaahs.shaders.CompositorShader
+import baaahs.shaders.PixelShader
+import baaahs.shaders.SineWaveShader
+import baaahs.shaders.SolidShader
 
-abstract class ShaderBuffer(val type: ShaderType) {
-    abstract fun serialize(writer: ByteArrayWriter)
-}
-
-class SolidShaderBuffer : ShaderBuffer(ShaderType.SOLID) {
-    var color: Color = Color.WHITE
-
-    override fun serialize(writer: ByteArrayWriter) {
-        color.serialize(writer)
-    }
+enum class ShaderType(val parser: (reader: ByteArrayReader) -> Shader) {
+    SOLID({ reader -> SolidShader.parse(reader) }),
+    PIXEL({ reader -> PixelShader.parse(reader) }),
+    SINE_WAVE({ reader -> SineWaveShader.parse(reader) }),
+    COMPOSITOR({ reader -> CompositorShader.parse(reader) });
 
     companion object {
-        fun parse(reader: ByteArrayReader): SolidShaderBuffer {
-            val buf = SolidShaderBuffer()
-            buf.color = Color.parse(reader)
-            return buf
+        val values = values()
+        fun get(i: Byte): ShaderType {
+            if (i > values.size || i < 0) {
+                throw Throwable("bad index for ShaderType: ${i}")
+            }
+            return values[i.toInt()]
         }
     }
 }
 
-class PixelShaderBuffer : ShaderBuffer(ShaderType.PIXEL) {
-    var fakeyTerribleHardCodedNumberOfPixels: Int = 1337
-    var colors: MutableList<Color> = ((0..fakeyTerribleHardCodedNumberOfPixels).map { Color.WHITE }).toMutableList()
+abstract class Shader(val type: ShaderType) {
+    abstract val buffer: ShaderBuffer
 
-    override fun serialize(writer: ByteArrayWriter) {
-        writer.writeInt(colors.size)
-        colors.forEach { color -> color.serialize(writer) }
+    open fun serialize(writer: ByteArrayWriter) {
+        writer.writeByte(type.ordinal.toByte())
+    }
+
+    open fun serializeBuffer(writer: ByteArrayWriter) {
+        buffer.serialize(writer)
+    }
+
+    abstract fun createImpl(pixels: Pixels): ShaderImpl
+
+    open fun readBuffer(reader: ByteArrayReader) {
+        buffer.read(reader)
     }
 
     companion object {
-        fun parse(reader: ByteArrayReader): PixelShaderBuffer {
-            val buf = PixelShaderBuffer()
-            (0 until reader.readInt()).forEach { index -> buf.colors[index] = Color.parse(reader) }
-            return buf
+        fun parse(reader: ByteArrayReader): Shader {
+            val shaderTypeI = reader.readByte()
+            val shaderType = ShaderType.get(shaderTypeI)
+            return shaderType.parser(reader)
         }
     }
+}
+
+interface ShaderBuffer {
+    fun serialize(writer: ByteArrayWriter)
+
+    fun read(reader: ByteArrayReader)
+}
+
+interface ShaderImpl {
+    fun draw()
+}
+
+class Scene(val shader: Shader)
+
+interface Pixels {
+    val count: Int
+
+    fun set(colors: Array<Color>)
 }

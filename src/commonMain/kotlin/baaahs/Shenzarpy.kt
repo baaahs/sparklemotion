@@ -23,7 +23,12 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
         CTO1(Color.from(0xf4d88a)),
         CTB(Color.from(0x97c7b8)),
         DARK_BLUE(Color.from(0x085197)),
-        WHITE(Color.from(0xffffff))
+        WHITE(Color.from(0xffffff));
+
+        companion object {
+            val values = values()
+            fun get(i: Byte) = values[i.toInt()]
+        }
     }
 
     enum class Channel {
@@ -46,7 +51,13 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
         BLANK(),
         COLOR_WHEEL_SPEED(),
         DIM_PRISM_ATOM_SPEED(),
-        GOBO_WHEEL_SPEED()
+        GOBO_WHEEL_SPEED();
+
+
+        companion object {
+            val values = values()
+            fun get(i: Byte) = values[i.toInt()]
+        }
     }
 
     private operator fun Dmx.Buffer.set(channel: Channel, value: Byte) {
@@ -59,7 +70,7 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
         var bestMatch = WheelColor.WHITE
         var bestDistance = 1f
 
-        WheelColor.values().forEach { wheelColor ->
+        WheelColor.values.forEach { wheelColor ->
             val distance = wheelColor.color.distanceTo(color)
             if (distance < bestDistance) {
                 bestMatch = wheelColor

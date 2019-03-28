@@ -7,16 +7,16 @@ import kotlin.random.Random
 
 class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     val colorPicker = showRunner.getColorPicker()
-    //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShaderBuffer(it) }
-    val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShaderBuffer(it) }
-    val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
+    //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShader(it) }
+    val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShader(it).buffer }
+    val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
     init {
         println("Creating new SomeDumbShow, we have ${pixelShaderBuffers.size} buffers")
     }
 
     override fun nextFrame() {
-//        panelShaderBuffers.forEach { shaderBuffer -> shaderBuffer.color = Color.random() }
+//        panelShaderBuffers.forEach { shader -> shader.color = Color.random() }
         val seed = Random(0)
 
         pixelShaderBuffers.forEach { shaderBuffer ->
@@ -28,7 +28,7 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
             }
         }
 
-        movingHeadBuffers.forEach { buf ->
+        movingHeads.forEach { buf ->
             buf.colorWheel = buf.closestColorFor(colorPicker.color)
             buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 5
             buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 5

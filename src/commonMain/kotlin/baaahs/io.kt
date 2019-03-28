@@ -29,6 +29,10 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = l.and(0xff).toByte()
     }
 
+    fun writeFloat(f: Float) {
+        writeInt(f.toBits())
+    }
+
     fun writeString(s: String) {
         growIfNecessary(4 + 2 * s.length)
         writeInt(s.length)
@@ -64,6 +68,8 @@ class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
             .or(bytes[offset++].toInt() and 0xff shl 16)
             .or(bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff)
+
+    fun readFloat(): Float = Float.fromBits(readInt())
 
     fun readString(): String {
         var length = readInt()
