@@ -49,7 +49,7 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
         movingHeadBuffers.forEach { buf ->
             buf.colorWheel = buf.closestColorFor(colorPicker.color)
             buf.pan = PI.toFloat() / 2
-            buf.tilt = theta
+            buf.tilt = theta / 2
         }
     }
 

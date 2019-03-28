@@ -6,7 +6,8 @@ class Visualizer(private val sheepModel: SheepModel, private val dmxUniverse: Fa
     }
 
     fun showPanel(panel: SheepModel.Panel): JsPanel {
-        return JsPanel(addPanel(panel))
+        val pixelCount = 400
+        return JsPanel(addPanel(panel, pixelCount), pixelCount)
     }
 
     fun addEye(eye: SheepModel.MovingHead) {
@@ -14,9 +15,7 @@ class Visualizer(private val sheepModel: SheepModel, private val dmxUniverse: Fa
     }
 }
 
-class JsPanel(private val jsPanelObj: Any) {
-    val pixelCount = 300
-
+class JsPanel(private val jsPanelObj: Any, val pixelCount: Int) {
     fun setAllPixelsTo(color: Color) {
         setPanelColor(jsPanelObj, Color.WHITE, (0..pixelCount).map { color }.toTypedArray())
     }
@@ -32,7 +31,7 @@ class JsPanel(private val jsPanelObj: Any) {
         }
 }
 
-class JsPixels(private val jsPanel: JsPanel): Pixels {
+class JsPixels(private val jsPanel: JsPanel) : Pixels {
     override val count = jsPanel.pixelCount
 
     override fun set(colors: Array<Color>) {
@@ -54,7 +53,7 @@ class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse:
 
 external fun initThreeJs(sheepModel: SheepModel)
 
-external fun addPanel(panel: SheepModel.Panel): Any
+external fun addPanel(panel: SheepModel.Panel, pixelCount: Int): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
