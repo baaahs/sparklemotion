@@ -57,7 +57,7 @@ function initThreeJs(sheepModel) {
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
   lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
-  panelMaterial = new THREE.LineBasicMaterial({color: 0x2222222});
+  panelMaterial = new THREE.LineBasicMaterial({color: 0x111111, linewidth: 3});
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -78,9 +78,9 @@ function initThreeJs(sheepModel) {
 }
 
 function addPanel(p) {
-  let faces = new THREE.Geometry();
+  let panelGeometry = new THREE.Geometry();
   let panelVertices = [];
-  faces.faces = p.faces.faces.toArray().map(face => {
+  panelGeometry.faces = p.faces.faces.toArray().map(face => {
     let localVerts = [];
     face.vertexIds.toArray().forEach(vi => {
       let v = geom.vertices[vi];
@@ -93,7 +93,7 @@ function addPanel(p) {
     });
     return new THREE.Face3(...localVerts);
   });
-  faces.vertices = panelVertices;
+  panelGeometry.vertices = panelVertices;
   let lines = p.lines.toArray().map(line => {
     let lineGeo = new THREE.Geometry();
     lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
@@ -107,8 +107,9 @@ function addPanel(p) {
 
   var panel = {
     name: p.name,
+    geometry: panelGeometry,
     faceMaterial: faceMaterial,
-    faces: new THREE.Mesh(faces, faceMaterial),
+    faces: new THREE.Mesh(panelGeometry, faceMaterial),
     lines: lines.map(line => new THREE.Line(line, lineMaterial))
   };
 
@@ -118,34 +119,9 @@ function addPanel(p) {
     scene.add(line);
   });
 
-  // try to draw pixel-ish things?
+  // try to draw pixel-ish things...
   if (renderPixels) {
-    const pixelsGeometry = new THREE.BufferGeometry();
-    const positions = [];
-    const colors = [];
-
-    let pixelCount = 200;
-    for (var pixelI = 0; pixelI < pixelCount; pixelI++) {
-      var v = new THREE.Vector3().copy(panelVertices[0]);
-      for (var vi = 1; vi < panelVertices.length; vi++) {
-        v.addScaledVector(new THREE.Vector3().copy(panelVertices[vi]).sub(v), Math.random());
-      }
-
-      positions.push(v.x, v.y, v.z);
-      colors.push(0, 0, 0);
-    }
-
-    pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
-    colorsBuffer.dynamic = true;
-    pixelsGeometry.addAttribute('color', colorsBuffer);
-    const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
-    const points = new THREE.Points(pixelsGeometry, material);
-    scene.add(points);
-
-    panel.pixelCount = pixelCount;
-    panel.pixelColorsBuffer = colorsBuffer;
-    panel.pixelsGeometry = pixelsGeometry;
+    addPixels(panel);
   }
 
   panels.push(panel);
@@ -153,6 +129,107 @@ function addPanel(p) {
   select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
 
   return panel;
+}
+
+function randomLocation(vertices) {
+  const v = new THREE.Vector3().copy(vertices[0]);
+  for (let vi = 1; vi < vertices.length; vi++) {
+    v.addScaledVector(new THREE.Vector3().copy(vertices[vi]).sub(v), Math.random());
+  }
+  return v;
+}
+
+function isInside(point, vs) {
+  // ray-casting algorithm based on
+  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+  var x = point[0], y = point[1];
+
+  var inside = false;
+  for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+    var xi = vs[i][0], yi = vs[i][1];
+    var xj = vs[j][0], yj = vs[j][1];
+
+    var intersect = ((yi > y) != (yj > y))
+        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+}
+
+function xy(v) {
+  return [v.x, v.y];
+}
+
+function addPixels(panel) {
+  const geometry = panel.geometry;
+  const vertices = geometry.vertices;
+  geometry.computeFaceNormals();
+  const pixelsGeometry = new THREE.BufferGeometry();
+  const positions = [];
+  const colors = [];
+
+  let quaternion = new THREE.Quaternion();
+
+  const panelFaces = geometry.faces;
+  let curFace = panelFaces[0];
+  const originalNormal = curFace.normal.clone();
+  quaternion.setFromUnitVectors(curFace.normal, new THREE.Vector3(0, 0, 1));
+  let matrix = new THREE.Matrix4().makeRotationFromQuaternion(quaternion);
+  geometry.applyMatrix(matrix);
+  pixelsGeometry.applyMatrix(matrix);
+
+  let pixelCount = 400;
+  let pixelSpacing = 2; // inches
+  let pos = randomLocation(vertices);
+  const nextPos = new THREE.Vector3();
+  positions.push(pos.x, pos.y, pos.z);
+  colors.push(0, 0, 0);
+
+  let tries = 1000;
+  let angleRad = Math.random() * 2 * Math.PI;
+  let angleRadDelta = Math.random() * 0.5 - 0.5;
+  for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
+    nextPos.x = pos.x + pixelSpacing * Math.sin(angleRad);
+    nextPos.y = pos.y + pixelSpacing * Math.cos(angleRad);
+    nextPos.z = pos.z;
+
+    if (!isInside(xy(nextPos), [
+      xy(vertices[curFace.a]),
+      xy(vertices[curFace.b]),
+      xy(vertices[curFace.c])])) {
+      angleRad = Math.random() * 2 * Math.PI;
+      pixelI--;
+      if (tries-- < 0) break;
+      continue;
+    }
+
+    console.log(panel.name, tries);
+    positions.push(nextPos.x, nextPos.y, nextPos.z);
+    colors.push(0, 0, 0);
+
+    angleRad += angleRadDelta;
+    angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
+    pos.copy(nextPos);
+  }
+
+  pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+  quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), originalNormal);
+  geometry.applyMatrix(matrix.makeRotationFromQuaternion(quaternion));
+  pixelsGeometry.applyMatrix(matrix);
+
+  let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
+  colorsBuffer.dynamic = true;
+  pixelsGeometry.addAttribute('color', colorsBuffer);
+  const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
+  const points = new THREE.Points(pixelsGeometry, material);
+  scene.add(points);
+
+  panel.pixelCount = pixelCount;
+  panel.pixelColorsBuffer = colorsBuffer;
+  panel.pixelsGeometry = pixelsGeometry;
 }
 
 function setPanelColor(panel, panelBgColor, pixelColors) {
