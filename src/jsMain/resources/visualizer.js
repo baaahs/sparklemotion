@@ -78,9 +78,9 @@ function initThreeJs(sheepModel) {
 }
 
 function addPanel(p) {
-  let faces = new THREE.Geometry();
+  let panelGeometry = new THREE.Geometry();
   let panelVertices = [];
-  faces.faces = p.faces.faces.toArray().map(face => {
+  panelGeometry.faces = p.faces.faces.toArray().map(face => {
     let localVerts = [];
     face.vertexIds.toArray().forEach(vi => {
       let v = geom.vertices[vi];
@@ -93,7 +93,7 @@ function addPanel(p) {
     });
     return new THREE.Face3(...localVerts);
   });
-  faces.vertices = panelVertices;
+  panelGeometry.vertices = panelVertices;
   let lines = p.lines.toArray().map(line => {
     let lineGeo = new THREE.Geometry();
     lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
@@ -108,7 +108,7 @@ function addPanel(p) {
   var panel = {
     name: p.name,
     faceMaterial: faceMaterial,
-    faces: new THREE.Mesh(faces, faceMaterial),
+    faces: new THREE.Mesh(panelGeometry, faceMaterial),
     lines: lines.map(line => new THREE.Line(line, lineMaterial))
   };
 
@@ -126,25 +126,72 @@ function addPanel(p) {
     return v;
   }
 
+  function inside(point, vs) {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+    var x = point[0], y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      var xi = vs[i][0], yi = vs[i][1];
+      var xj = vs[j][0], yj = vs[j][1];
+
+      var intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  }
+
+  function xy(v) {
+    return [v.x, v.y];
+  }
+
 // try to draw pixel-ish things?
   if (renderPixels) {
+    panelGeometry.computeFaceNormals();
     const pixelsGeometry = new THREE.BufferGeometry();
     const positions = [];
     const colors = [];
 
-    let pixelCount = 200;
-    let pixelSpacing = 3; // inches
+    let quaternion = new THREE.Quaternion();
+
+    const panelFaces = panelGeometry.faces;
+    let curFace = panelFaces[0];
+    const originalNormal = curFace.normal.clone();
+    quaternion.setFromUnitVectors(curFace.normal, new THREE.Vector3(0, 0, 1));
+    let matrix = new THREE.Matrix4().makeRotationFromQuaternion(quaternion);
+    panelGeometry.applyMatrix(matrix);
+    pixelsGeometry.applyMatrix(matrix);
+
+    let pixelCount = 400;
+    let pixelSpacing = 2; // inches
     let pos = randomLocation(panelVertices);
     const nextPos = new THREE.Vector3();
     positions.push(pos.x, pos.y, pos.z);
     colors.push(0, 0, 0);
 
+    let tries = 1000;
     let angleRad = Math.random() * 2 * Math.PI;
     let angleRadDelta = Math.random() * 0.5 - 0.5;
     for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
-      nextPos.x = pos.x + 0.1;
-      nextPos.y = pos.y + pixelSpacing * Math.sin(angleRad);
-      nextPos.z = pos.z + pixelSpacing * Math.cos(angleRad);
+      nextPos.x = pos.x + pixelSpacing * Math.sin(angleRad);
+      nextPos.y = pos.y + pixelSpacing * Math.cos(angleRad);
+      nextPos.z = pos.z;
+
+      if (!inside(xy(nextPos), [
+              xy(panelVertices[curFace.a]),
+              xy(panelVertices[curFace.b]),
+              xy(panelVertices[curFace.c])])) {
+        angleRad = Math.random() * 2 * Math.PI;
+        pixelI--;
+        if (tries-- < 0) break;
+        continue;
+      }
+
+      console.log(panel.name, tries);
       positions.push(nextPos.x, nextPos.y, nextPos.z);
       colors.push(0, 0, 0);
 
@@ -158,6 +205,11 @@ function addPanel(p) {
     }
 
     pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+    quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), originalNormal);
+    panelGeometry.applyMatrix(matrix.makeRotationFromQuaternion(quaternion));
+    pixelsGeometry.applyMatrix(matrix);
+
     let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
     colorsBuffer.dynamic = true;
     pixelsGeometry.addAttribute('color', colorsBuffer);
