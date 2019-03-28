@@ -205,7 +205,6 @@ function addPixels(panel) {
       continue;
     }
 
-    console.log(panel.name, tries);
     positions.push(nextPos.x, nextPos.y, nextPos.z);
     colors.push(0, 0, 0);
 
@@ -246,10 +245,9 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
   }
 
   if (panel.pixelCount && pixelColors) {
-    const pixelColorsA = pixelColors.toArray();
-    const count = Math.min(panel.pixelCount, pixelColorsA.length);
+    const count = Math.min(panel.pixelCount, pixelColors.length);
     for (let i = 0; i < count; i++) {
-      const pColor = pixelColorsA[i];
+      const pColor = pixelColors[i];
       panel.pixelColorsBuffer.array[i * 3] = pColor.red / 256.0;
       panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.green / 256.0;
       panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blue / 256.0;
