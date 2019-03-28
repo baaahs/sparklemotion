@@ -7,14 +7,18 @@ import kotlin.math.sin
 class SineWaveShader : Shader(ShaderType.SINE_WAVE) {
     override val buffer = SineWaveShaderBuffer()
 
-    override fun createImpl(pixels: Pixels): ShaderImpl = SineWaveShaderImpl(buffer, pixels)
+    override fun createImpl(pixels: Pixels): ShaderImpl =
+        SineWaveShaderImpl(buffer, pixels)
 
     companion object {
         fun parse(reader: ByteArrayReader) = SineWaveShader()
     }
 }
 
-class SineWaveShaderImpl(val buffer: SineWaveShaderBuffer, val pixels: Pixels) : ShaderImpl {
+class SineWaveShaderImpl(
+    val buffer: SineWaveShaderBuffer,
+    val pixels: Pixels
+) : ShaderImpl {
     private val colors = Array(pixels.count) { Color.WHITE }
 
     override fun draw() {
@@ -23,14 +27,14 @@ class SineWaveShaderImpl(val buffer: SineWaveShaderBuffer, val pixels: Pixels) :
         val density = buffer.density
 
         for (i in colors.indices) {
-            val v = sin(theta + 2 * PI * (i / pixelCount / density)) / 2 + .5
+            val v = sin(theta + 2 * PI * (i / pixelCount * density)) / 2 + .5
             colors[i] = Color.BLACK.fade(buffer.color, v.toFloat())
         }
         pixels.set(colors)
     }
 }
 
-class SineWaveShaderBuffer: ShaderBuffer {
+class SineWaveShaderBuffer : ShaderBuffer {
     var color: Color = Color.WHITE
     var theta: Float = 0f
     var density: Float = 1f

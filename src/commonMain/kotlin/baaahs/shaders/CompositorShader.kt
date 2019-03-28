@@ -17,7 +17,8 @@ class CompositorShader(val aShader: Shader, val bShader: Shader) : Shader(Shader
         bShader.serializeBuffer(writer)
     }
 
-    override fun createImpl(pixels: Pixels): ShaderImpl = CompositorShaderImpl(aShader, bShader, buffer, pixels)
+    override fun createImpl(pixels: Pixels): ShaderImpl =
+        CompositorShaderImpl(aShader, bShader, buffer, pixels)
 
     override fun readBuffer(reader: ByteArrayReader) {
         super.readBuffer(reader)
