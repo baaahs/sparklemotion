@@ -296,17 +296,21 @@ function startRender() {
 
 const REFRESH_DELAY = 50; // ms
 
+const vizRotationEl = document.getElementById("vizRotation");
+
 function render() {
   setTimeout(() => {
     requestAnimationFrame(render);
   }, REFRESH_DELAY);
 
-  var rotSpeed = .01;
-  var x = camera.position.x;
-  var z = camera.position.z;
-  camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
-  camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
-  camera.lookAt(scene.position);
+  if (vizRotationEl.checked) {
+    const rotSpeed = .01;
+    const x = camera.position.x;
+    const z = camera.position.z;
+    camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+    camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
+    camera.lookAt(scene.position);
+  }
 
   controls.update();
   raycaster.setFromCamera(mouse, camera);

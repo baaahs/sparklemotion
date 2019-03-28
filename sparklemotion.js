@@ -3343,7 +3343,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     var density = this.buffer.density;
     tmp$ = this.colors_0;
     for (var i = 0; i !== tmp$.length; ++i) {
-      var x = theta + 2 * math.PI * (i / pixelCount / density);
+      var x = theta + 2 * math.PI * (i / pixelCount * density);
       var v = Math_0.sin(x) / 2 + 0.5;
       this.colors_0[i] = Color$Companion_getInstance().BLACK.fade_6zkv30$(this.buffer.color, v);
     }
@@ -3482,7 +3482,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var tmp$_0 = destination.add_11rb$;
       var solidShader = showRunner.getSolidShader_jfju1k$(item);
       var $receiver_0 = showRunner.getSineWaveShader_jfju1k$(item);
-      $receiver_0.buffer.density = Random.Default.nextFloat() * 10;
+      $receiver_0.buffer.density = Random.Default.nextFloat() * 20;
       var sineWaveShader = $receiver_0;
       var compositorShader = showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
       var $receiver_1 = compositorShader.buffer;
@@ -3503,30 +3503,27 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     println('Created new CompositeShow, we have ' + this.shaderBufs_0.size + ' buffers');
   }
   CompositeShow.prototype.nextFrame = function () {
-    var seed = Random_0(0);
-    var theta = getTimeMillis().toNumber() / 1000.0;
+    var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
+    var i = {v: 0};
     var tmp$;
     tmp$ = this.shaderBufs_0.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
+      var tmp$_0;
       element.solidShaderBuffer.color = this.colorPicker_0.color;
       element.sineWaveShaderBuffer.color = Color$Companion_getInstance().WHITE;
-      element.sineWaveShaderBuffer.theta = theta;
+      element.sineWaveShaderBuffer.theta = theta + (tmp$_0 = i.v, i.v = tmp$_0 + 1 | 0, tmp$_0);
       element.compositorShaderBuffer.mode = CompositingMode$ADD_getInstance();
       element.compositorShaderBuffer.fade = 1.0;
     }
-    var tmp$_0;
-    tmp$_0 = this.movingHeadBuffers_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
+    var tmp$_1;
+    tmp$_1 = this.movingHeadBuffers_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
       element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker_0.color);
       element_0.pan = math.PI / 2;
       element_0.tilt = theta;
     }
-  };
-  CompositeShow.prototype.nextRandomFloat_0 = function (seed) {
-    var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
-    return Math_0.sin(x);
   };
   function CompositeShow$Meta() {
     ShowMeta.call(this, 'CompositeShow');
