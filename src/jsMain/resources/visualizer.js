@@ -133,7 +133,7 @@ function addPanel(p) {
     const colors = [];
 
     let pixelCount = 200;
-    let pixelSpacing = 4; // inches
+    let pixelSpacing = 3; // inches
     let pos = randomLocation(panelVertices);
     const nextPos = new THREE.Vector3();
     positions.push(pos.x, pos.y, pos.z);
@@ -142,7 +142,7 @@ function addPanel(p) {
     let angleRad = Math.random() * 2 * Math.PI;
     let angleRadDelta = Math.random() * 0.5 - 0.5;
     for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
-      nextPos.x = pos.x;
+      nextPos.x = pos.x + 0.1;
       nextPos.y = pos.y + pixelSpacing * Math.sin(angleRad);
       nextPos.z = pos.z + pixelSpacing * Math.cos(angleRad);
       positions.push(nextPos.x, nextPos.y, nextPos.z);
@@ -150,6 +150,10 @@ function addPanel(p) {
 
       angleRad += angleRadDelta;
       angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
+      if (pixelI % 20 === 0) {
+        angleRad = Math.random() * 2 * Math.PI;
+        angleRadDelta = Math.random() * 0.5 - 0.5;
+      }
       pos.copy(nextPos);
     }
 
