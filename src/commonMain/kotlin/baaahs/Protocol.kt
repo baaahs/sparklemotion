@@ -14,12 +14,17 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_ID_RESPONSE,
-    PINKY_PONG
+    PINKY_PONG;
+
+    companion object {
+        val values = values()
+        fun get(i: Byte) = values[i.toInt()]
+    }
 }
 
 fun parse(bytes: ByteArray): Message {
     val reader = ByteArrayReader(bytes)
-    return when (Type.values()[reader.readByte().toInt()]) {
+    return when (Type.get(reader.readByte())) {
         Type.BRAIN_HELLO -> BrainHelloMessage.parse(reader)
         Type.BRAIN_PANEL_SHADE -> BrainShaderMessage.parse(reader)
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
@@ -39,21 +44,18 @@ class BrainHelloMessage(val panelName: String) : Message(Type.BRAIN_HELLO) {
     }
 }
 
-class BrainShaderMessage(val shaderBuffer: ShaderBuffer) : Message(Type.BRAIN_PANEL_SHADE) {
+class BrainShaderMessage(val shader: Shader) : Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainShaderMessage {
-            val shaderType = ShaderType.values()[reader.readInt()]
-            val shaderBuffer: ShaderBuffer = when (shaderType) {
-                ShaderType.SOLID -> SolidShaderBuffer.parse(reader)
-                ShaderType.PIXEL -> PixelShaderBuffer.parse(reader)
-            }
-            return BrainShaderMessage(shaderBuffer)
+            val shader = Shader.parse(reader)
+            shader.readBuffer(reader)
+            return BrainShaderMessage(shader)
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeInt(shaderBuffer.type.ordinal)
-        shaderBuffer.serialize(writer)
+        shader.serialize(writer)
+        shader.serializeBuffer(writer)
     }
 }
 

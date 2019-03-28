@@ -4,8 +4,8 @@ import baaahs.*
 import kotlin.random.Random
 
 class RandomShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
-    val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShaderBuffer(it) }
-    val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
+    val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShader(it).buffer }
+    val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
     override fun nextFrame() {
         pixelShaderBuffers.forEach { shaderBuffer ->

@@ -1,6 +1,10 @@
 package baaahs
 
 import baaahs.SheepModel.Panel
+import baaahs.shaders.CompositorShader
+import baaahs.shaders.PixelShader
+import baaahs.shaders.SineWaveShader
+import baaahs.shaders.SolidShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -101,39 +105,40 @@ class ShowRunner(
     private val brains: List<RemoteBrain>,
     private val dmxUniverse: Dmx.Universe
 ) {
-    private val brainBuffers: MutableList<Pair<RemoteBrain?, ShaderBuffer>> = mutableListOf()
+    private val shaders: MutableMap<Shader, MutableList<RemoteBrain>> = hashMapOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
-    fun getSolidShaderBuffer(panel: Panel): SolidShaderBuffer {
-        val remoteBrain = brains.find { it.panelName == panel.name }
-        val buffer = SolidShaderBuffer()
-        brainBuffers.add(Pair(remoteBrain, buffer))
-        return buffer
+    private fun recordShader(panel: Panel, shader: Shader) {
+        shaders[shader] = brains.filter { it.panelName == panel.name }.toMutableList()
     }
 
-    fun getPixelShaderBuffer(panel: Panel): PixelShaderBuffer {
-        val remoteBrain = brains.find { it.panelName == panel.name }
-        val buffer = PixelShaderBuffer()
-        brainBuffers.add(Pair(remoteBrain, buffer))
-        return buffer
+    fun getSolidShader(panel: Panel): SolidShader = SolidShader().also { recordShader(panel, it) }
+
+    fun getPixelShader(panel: Panel): PixelShader = PixelShader().also { recordShader(panel, it) }
+
+    fun getSineWaveShader(panel: Panel): SineWaveShader = SineWaveShader().also { recordShader(panel, it) }
+
+    fun getCompositorShader(panel: Panel, shaderA: Shader, shaderB: Shader): CompositorShader {
+        val shaderABrains = shaders[shaderA]!!
+        val shaderBBrains = shaders[shaderB]!!
+        shaders.remove(shaderA)
+        shaders.remove(shaderB)
+        return CompositorShader(shaderA, shaderB).also { recordShader(panel, it) }
     }
 
     fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHeadBuffer(movingHead: SheepModel.MovingHead): Shenzarpy {
+    fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
 
     fun send(link: Network.Link) {
-        brainBuffers.forEach { brainBuffer ->
-            val remoteBrain = brainBuffer.first
-            val shaderBuffer = brainBuffer.second
-//            println("sending color = ${shaderBuffer.color} to ${remoteBrain}")
-            if (remoteBrain != null) {
-                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer))
+        shaders.forEach { (shader, remoteBrains) ->
+            remoteBrains.forEach { remoteBrain ->
+                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shader))
             }
         }
 

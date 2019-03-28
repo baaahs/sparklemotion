@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.shows.CompositeShow
 import baaahs.shows.RandomShow
 import baaahs.shows.SomeDumbShow
 import kotlinx.coroutines.CoroutineScope
@@ -7,13 +8,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-
-lateinit var sheepSimulator: SheepSimulator
-
-//fun main(args: Array<String>) {
-//    main = Main()
-//    main.start()
-//}
 
 class SheepSimulator {
     var display = getDisplay()
@@ -24,7 +18,8 @@ class SheepSimulator {
 
     val showMetas = listOf(
         SomeDumbShow.Meta(),
-        RandomShow.Meta()
+        RandomShow.Meta(),
+        CompositeShow.Meta()
     )
 
     val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
@@ -41,7 +36,7 @@ class SheepSimulator {
 
         sheepModel.panels.forEach { panel ->
             val jsPanel = visualizer.showPanel(panel)
-            val brain = Brain(network, display.forBrain(), jsPanel, panel)
+            val brain = Brain(network, display.forBrain(), JsPixels(jsPanel), panel)
             BrainScope.launch { randomDelay(1000); brain.run() }
         }
 

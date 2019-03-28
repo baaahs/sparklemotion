@@ -5,7 +5,7 @@ import kotlinx.coroutines.delay
 class Brain(
     private val network: Network,
     private val display: BrainDisplay,
-    private val jsPanel: JsPanel,
+    private val pixels: Pixels,
     private val illicitPanelHint: SheepModel.Panel
 ) : Network.Listener {
     private lateinit var link: Network.Link
@@ -33,12 +33,8 @@ class Brain(
         val message = parse(bytes)
         when (message) {
             is BrainShaderMessage -> {
-                when (message.shaderBuffer) {
-                    is SolidShaderBuffer ->
-                        jsPanel.setAllPixelsTo(message.shaderBuffer.color)
-                    is PixelShaderBuffer ->
-                        jsPanel.setPixelsTo(message.shaderBuffer.colors)
-                }
+                val shaderImpl = message.shader.createImpl(pixels)
+                shaderImpl.draw()
             }
             is BrainIdRequest -> {
                 link.send(fromAddress, message.port, BrainIdResponse(""))

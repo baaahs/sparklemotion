@@ -15,19 +15,29 @@ class Visualizer(private val sheepModel: SheepModel, private val dmxUniverse: Fa
 }
 
 class JsPanel(private val jsPanelObj: Any) {
+    val pixelCount = 300
+
     fun setAllPixelsTo(color: Color) {
-        setPanelColor(jsPanelObj, Color.WHITE, (0..300).map { color })
+        setPanelColor(jsPanelObj, Color.WHITE, (0..pixelCount).map { color }.toTypedArray())
     }
 
-    fun setPixelsTo(colors: MutableList<Color>) {
+    fun setPixelsTo(colors: Array<Color>) {
         setPanelColor(jsPanelObj, Color.WHITE, colors)
     }
 
     var color: Color = Color.BLACK
         set(value) {
-            setPanelColor(jsPanelObj, value, (0..300).map { value }.toList())
+            setPanelColor(jsPanelObj, value, (0..pixelCount).map { value }.toTypedArray())
             field = color
         }
+}
+
+class JsPixels(private val jsPanel: JsPanel): Pixels {
+    override val count = jsPanel.pixelCount
+
+    override fun set(colors: Array<Color>) {
+        jsPanel.setPixelsTo(colors)
+    }
 }
 
 class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
@@ -37,7 +47,7 @@ class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse:
 
     private fun receivedDmxFrame() {
         val colorWheelV = device.colorWheel
-        val wheelColor = Shenzarpy.WheelColor.values()[colorWheelV.toInt()]
+        val wheelColor = Shenzarpy.WheelColor.get(colorWheelV)
         adjustMovingHead(movingHeadJs, wheelColor.color, device.pan, device.tilt)
     }
 }
@@ -45,7 +55,7 @@ class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse:
 external fun initThreeJs(sheepModel: SheepModel)
 
 external fun addPanel(panel: SheepModel.Panel): Any
-external fun setPanelColor(panel: Any, color: Color, pixelColors: List<Color>?)
+external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
 external fun adjustMovingHead(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)

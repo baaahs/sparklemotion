@@ -54,6 +54,21 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
 
     private fun square(f: Float) = f * f
 
+    fun plus(other: Color): Color =
+        Color(
+            min(red + other.red, 255),
+            min(green + other.green, 255),
+            min(blue + other.blue, 255))
+
+    fun fade(other: Color, amount: Float = 0.5f): Color {
+        val amountThis = 1 - amount
+
+        return Color(
+            min((red * amountThis + other.red * amount).toInt(), 255),
+            min((green * amountThis + other.green * amount).toInt(), 255),
+            min((blue * amountThis + other.blue * amount).toInt(), 255))
+    }
+
     companion object {
         val BLACK = Color(0, 0, 0)
         val WHITE = Color(255, 255, 255)
