@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.shows.RandomShow
+import baaahs.shows.SomeDumbShow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
