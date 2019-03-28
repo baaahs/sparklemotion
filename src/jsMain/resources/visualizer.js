@@ -57,7 +57,7 @@ function initThreeJs(sheepModel) {
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
   lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
-  panelMaterial = new THREE.LineBasicMaterial({color: 0x2222222});
+  panelMaterial = new THREE.LineBasicMaterial({color: 0x111111, linewidth: 3});
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -197,10 +197,6 @@ function addPanel(p) {
 
       angleRad += angleRadDelta;
       angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
-      if (pixelI % 20 === 0) {
-        angleRad = Math.random() * 2 * Math.PI;
-        angleRadDelta = Math.random() * 0.5 - 0.5;
-      }
       pos.copy(nextPos);
     }
 
