@@ -3504,7 +3504,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   CompositeShow.prototype.nextFrame = function () {
     var seed = Random_0(0);
-    var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
+    var theta = getTimeMillis().toNumber() / 1000.0;
     var tmp$;
     tmp$ = this.shaderBufs_0.iterator();
     while (tmp$.hasNext()) {
@@ -3520,8 +3520,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     while (tmp$_0.hasNext()) {
       var element_0 = tmp$_0.next();
       element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker_0.color);
-      element_0.pan = element_0.pan + (this.nextRandomFloat_0(seed) - 0.5) / 5;
-      element_0.tilt = element_0.tilt + (this.nextRandomFloat_0(seed) - 0.5) / 5;
+      element_0.pan = math.PI / 2;
+      element_0.tilt = theta;
     }
   };
   CompositeShow.prototype.nextRandomFloat_0 = function (seed) {
