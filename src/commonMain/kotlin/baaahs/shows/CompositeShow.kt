@@ -37,7 +37,7 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
 
     override fun nextFrame() {
         val seed = Random(0)
-        val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
+        val theta = getTimeMillis() / 1000f
 
         shaderBufs.forEach { shaderBuffer ->
             shaderBuffer.solidShaderBuffer.color = colorPicker.color
@@ -49,8 +49,8 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
 
         movingHeadBuffers.forEach { buf ->
             buf.colorWheel = buf.closestColorFor(colorPicker.color)
-            buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 5
-            buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 5
+            buf.pan = PI.toFloat() / 2
+            buf.tilt = theta
         }
     }
 
