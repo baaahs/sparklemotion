@@ -17,50 +17,39 @@ class Pinky(
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
-
-    fun run() {
-        link = network.link()
-        link.listen(Ports.PINKY, this)
-    }
-
     private var brainsChanged: Boolean = true
 
-    fun start() {
-        GlobalScope.launch {
-            run()
-        }
+    suspend fun run() {
+        GlobalScope.launch { beatProvider.run() }
 
-        GlobalScope.launch {
-            beatProvider.run()
-        }
+        link = network.link()
+        link.listen(Ports.PINKY, this)
 
-        GlobalScope.launch {
-            display.listShows(showMetas)
+        display.listShows(showMetas)
 
-            var showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
-            val prevSelectedShow = display.selectedShow
-            var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
-            val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
-            var show = buildShow()
+        var showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+        val prevSelectedShow = display.selectedShow
+        var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
+        val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
+        var show = buildShow()
 
-            while (true) {
-                if (!mapperIsRunning) {
-                    if (brainsChanged || display.selectedShow != currentShowMeta) {
-                        currentShowMeta = prevSelectedShow ?: showMetas.random()!!
-                        showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
-                        show = buildShow()
-                        brainsChanged = false
-                    }
+        while (true) {
+            if (!mapperIsRunning) {
+                if (brainsChanged || display.selectedShow != currentShowMeta) {
+                    currentShowMeta = prevSelectedShow ?: showMetas.random()!!
+                    showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+                    show = buildShow()
+                    brainsChanged = false
+                }
 
-                    show.nextFrame()
+                show.nextFrame()
 
-                    // send shader buffers out to brains
-                    showRunner.send(link)
+                // send shader buffers out to brains
+                showRunner.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
-                }
-                delay(50)
             }
+            delay(50)
         }
     }
 

@@ -1,6 +1,10 @@
 package baaahs
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 lateinit var sheepSimulator: SheepSimulator
 
@@ -29,13 +33,14 @@ class SheepSimulator {
         sheepModel.load()
 
         mapper.start()
-        pinky.start()
+        PinkyScope.launch { pinky.run() }
 
         visualizer.start()
 
         sheepModel.panels.forEach { panel ->
             val jsPanel = visualizer.showPanel(panel)
-            SimBrain(network, display.forBrain(), jsPanel, panel).start()
+            val brain = Brain(network, display.forBrain(), jsPanel, panel)
+            BrainScope.launch { randomDelay(1000); brain.run() }
         }
 
         sheepModel.eyes.forEach { eye ->
@@ -47,6 +52,16 @@ class SheepSimulator {
             delay(200000L)
         }
     }
+}
+
+object PinkyScope : CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
+}
+
+object BrainScope : CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
 }
 
 expect fun getTimeMillis(): Long

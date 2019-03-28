@@ -205,7 +205,6 @@ function addPixels(panel) {
       continue;
     }
 
-    console.log(panel.name, tries);
     positions.push(nextPos.x, nextPos.y, nextPos.z);
     colors.push(0, 0, 0);
 
