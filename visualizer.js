@@ -77,7 +77,7 @@ function initThreeJs(sheepModel) {
   startRender();
 }
 
-function addPanel(p) {
+function addPanel(p, pixelCount) {
   let panelGeometry = new THREE.Geometry();
   let panelVertices = [];
   panelGeometry.faces = p.faces.faces.toArray().map(face => {
@@ -121,7 +121,7 @@ function addPanel(p) {
 
   // try to draw pixel-ish things...
   if (renderPixels) {
-    addPixels(panel);
+    addPixels(panel, pixelCount);
   }
 
   panels.push(panel);
@@ -162,7 +162,7 @@ function xy(v) {
   return [v.x, v.y];
 }
 
-function addPixels(panel) {
+function addPixels(panel, pixelCount) {
   const geometry = panel.geometry;
   const vertices = geometry.vertices;
   geometry.computeFaceNormals();
@@ -180,7 +180,6 @@ function addPixels(panel) {
   geometry.applyMatrix(matrix);
   pixelsGeometry.applyMatrix(matrix);
 
-  let pixelCount = 400;
   let pixelSpacing = 2; // inches
   let pos = randomLocation(vertices);
   const nextPos = new THREE.Vector3();
@@ -210,6 +209,11 @@ function addPixels(panel) {
 
     angleRad += angleRadDelta;
     angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
+
+    // occasional disruption just in case we're in a tight loop...
+    if (pixelI % (pixelCount / 3) === 0) {
+      angleRadDelta = Math.random() * 0.5 - 0.5;
+    }
     pos.copy(nextPos);
   }
 

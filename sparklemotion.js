@@ -2778,7 +2778,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     initThreeJs(this.sheepModel_0);
   };
   Visualizer.prototype.showPanel_jfju1k$ = function (panel) {
-    return new JsPanel(addPanel(panel));
+    var pixelCount = 400;
+    return new JsPanel(addPanel(panel, pixelCount), pixelCount);
   };
   Visualizer.prototype.addEye_1hma8m$ = function (eye) {
     new MovingHeadView(eye, this.dmxUniverse_0);
@@ -2788,9 +2789,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Visualizer',
     interfaces: []
   };
-  function JsPanel(jsPanelObj) {
+  function JsPanel(jsPanelObj, pixelCount) {
     this.jsPanelObj_0 = jsPanelObj;
-    this.pixelCount = 300;
+    this.pixelCount = pixelCount;
     this.color_1o5p8y$_0 = Color$Companion_getInstance().BLACK;
   }
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
@@ -3522,7 +3523,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var element_0 = tmp$_1.next();
       element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker_0.color);
       element_0.pan = math.PI / 2;
-      element_0.tilt = theta;
+      element_0.tilt = theta / 2;
     }
   };
   function CompositeShow$Meta() {
