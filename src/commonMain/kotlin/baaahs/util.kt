@@ -13,3 +13,8 @@ fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
+
+expect fun getTimeMillis(): Long
+expect fun doRunBlocking(block: suspend () -> Unit)
+
+expect fun getResource(name: String): String
