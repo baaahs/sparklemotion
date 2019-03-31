@@ -42,9 +42,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var L200000 = Kotlin.Long.fromInt(200000);
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var toShort = Kotlin.toShort;
   var toBits = Kotlin.floatToBits;
@@ -2233,7 +2233,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepSimulator.prototype.start = function () {
     this.sheepModel.load();
     this.mapper.start();
-    launch(PinkyScope_getInstance(), void 0, void 0, SheepSimulator$start$lambda(this));
+    launch(SheepSimulator$PinkyScope_getInstance(), void 0, void 0, SheepSimulator$start$lambda(this));
     this.visualizer.start();
     var tmp$;
     tmp$ = this.sheepModel.panels.iterator();
@@ -2241,7 +2241,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var element = tmp$.next();
       var jsPanel = this.visualizer.showPanel_jfju1k$(element);
       var brain = new Brain(this.network, this.display.forBrain(), new JsPixels(jsPanel), element);
-      launch(BrainScope_getInstance(), void 0, void 0, SheepSimulator$start$lambda$lambda(brain));
+      launch(SheepSimulator$BrainScope_getInstance(), void 0, void 0, SheepSimulator$start$lambda$lambda(brain));
     }
     var tmp$_0;
     tmp$_0 = this.sheepModel.eyes.iterator();
@@ -2252,51 +2252,51 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     }
     doRunBlocking(SheepSimulator$start$lambda_0);
   };
+  function SheepSimulator$PinkyScope() {
+    SheepSimulator$PinkyScope_instance = this;
+  }
+  Object.defineProperty(SheepSimulator$PinkyScope.prototype, 'coroutineContext', {
+    get: function () {
+      return coroutines_0.EmptyCoroutineContext;
+    }
+  });
+  SheepSimulator$PinkyScope.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'PinkyScope',
+    interfaces: [CoroutineScope]
+  };
+  var SheepSimulator$PinkyScope_instance = null;
+  function SheepSimulator$PinkyScope_getInstance() {
+    if (SheepSimulator$PinkyScope_instance === null) {
+      new SheepSimulator$PinkyScope();
+    }
+    return SheepSimulator$PinkyScope_instance;
+  }
+  function SheepSimulator$BrainScope() {
+    SheepSimulator$BrainScope_instance = this;
+  }
+  Object.defineProperty(SheepSimulator$BrainScope.prototype, 'coroutineContext', {
+    get: function () {
+      return coroutines_0.EmptyCoroutineContext;
+    }
+  });
+  SheepSimulator$BrainScope.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'BrainScope',
+    interfaces: [CoroutineScope]
+  };
+  var SheepSimulator$BrainScope_instance = null;
+  function SheepSimulator$BrainScope_getInstance() {
+    if (SheepSimulator$BrainScope_instance === null) {
+      new SheepSimulator$BrainScope();
+    }
+    return SheepSimulator$BrainScope_instance;
+  }
   SheepSimulator.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SheepSimulator',
     interfaces: []
   };
-  function PinkyScope() {
-    PinkyScope_instance = this;
-  }
-  Object.defineProperty(PinkyScope.prototype, 'coroutineContext', {
-    get: function () {
-      return coroutines_0.EmptyCoroutineContext;
-    }
-  });
-  PinkyScope.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'PinkyScope',
-    interfaces: [CoroutineScope]
-  };
-  var PinkyScope_instance = null;
-  function PinkyScope_getInstance() {
-    if (PinkyScope_instance === null) {
-      new PinkyScope();
-    }
-    return PinkyScope_instance;
-  }
-  function BrainScope() {
-    BrainScope_instance = this;
-  }
-  Object.defineProperty(BrainScope.prototype, 'coroutineContext', {
-    get: function () {
-      return coroutines_0.EmptyCoroutineContext;
-    }
-  });
-  BrainScope.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'BrainScope',
-    interfaces: [CoroutineScope]
-  };
-  var BrainScope_instance = null;
-  function BrainScope_getInstance() {
-    if (BrainScope_instance === null) {
-      new BrainScope();
-    }
-    return BrainScope_instance;
-  }
   function Shenzarpy(buffer) {
     Shenzarpy$Companion_getInstance();
     Dmx$DeviceType.call(this, 16);
@@ -4320,13 +4320,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   SheepModel.Panel = SheepModel$Panel;
   SheepModel.MovingHead = SheepModel$MovingHead;
   package$baaahs.SheepModel = SheepModel;
+  Object.defineProperty(SheepSimulator, 'PinkyScope', {
+    get: SheepSimulator$PinkyScope_getInstance
+  });
+  Object.defineProperty(SheepSimulator, 'BrainScope', {
+    get: SheepSimulator$BrainScope_getInstance
+  });
   package$baaahs.SheepSimulator = SheepSimulator;
-  Object.defineProperty(package$baaahs, 'PinkyScope', {
-    get: PinkyScope_getInstance
-  });
-  Object.defineProperty(package$baaahs, 'BrainScope', {
-    get: BrainScope_getInstance
-  });
   Object.defineProperty(Shenzarpy, 'Companion', {
     get: Shenzarpy$Companion_getInstance
   });
