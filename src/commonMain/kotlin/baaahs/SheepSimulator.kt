@@ -49,19 +49,14 @@ class SheepSimulator {
             delay(200000L)
         }
     }
+
+    object PinkyScope : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = EmptyCoroutineContext
+    }
+
+    object BrainScope : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = EmptyCoroutineContext
+    }
 }
-
-object PinkyScope : CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = EmptyCoroutineContext
-}
-
-object BrainScope : CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = EmptyCoroutineContext
-}
-
-expect fun getTimeMillis(): Long
-expect fun doRunBlocking(block: suspend () -> Unit)
-
-expect fun getResource(name: String): String
