@@ -23,9 +23,9 @@ module.exports = {
         extensions: ['*', '.js', '.jsx']
     },
     output: {
-        path: __dirname + '/build/webpack/',
+        path: __dirname + '/build/processedResources/js/main/webpack/',
         publicPath: '/js/',
-        filename: 'app.js'
+        filename: 'react_app.js'
     },
     devtool: false,
     plugins: [
