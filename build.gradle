@@ -71,15 +71,21 @@ compileKotlinJs {
 }
 
 jsProcessResources { t ->
-    t.from('build/processedResources/js/main/webpack')
+    t.dependsOn(":buildReactUI")
+
+    t.from('build/webpack')
     t.from('build/classes/kotlin/js/main')
 }
 
-task serve << {
-    SimpleHttpFileServerFactory factory = new SimpleHttpFileServerFactory()
-    HttpFileServer server = factory.start(new File("build/processedResources/js/main"), 8001)
-    println("Server Started on http://localhost:${server.port}/index.html ctrc+c to kill it")
-    java.lang.Thread.sleep(Long.MAX_VALUE);
+task serve {
+    dependsOn(":jsJar")
+
+    doLast {
+        SimpleHttpFileServerFactory factory = new SimpleHttpFileServerFactory()
+        HttpFileServer server = factory.start(new File("build/processedResources/js/main"), 8001)
+        println("Server Started on http://localhost:${server.port}/index.html ctrc+c to kill it")
+        java.lang.Thread.sleep(Long.MAX_VALUE);
+    }
 }
 
 task installReactUImodules(type: Exec) {
@@ -90,35 +96,9 @@ task buildReactUI(type: Exec) {
     inputs.file("package-lock.json").withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file("webpack.config.js").withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir("src/jsMain/js").withPathSensitivity(PathSensitivity.RELATIVE)
-    
-    outputs.dir("$buildDir/processedResources/js/main/webpack")
+
+    outputs.dir("$buildDir/webpack")
     outputs.cacheIf { true }
-    
+
     commandLine "$projectDir/node_modules/.bin/webpack-cli", "--config", "$projectDir/webpack.config.js", "--mode", "production"
 }
-
-//task assembleWeb(type: Sync) {
-//    configurations.each { Configuration c ->
-//        println(c)
-//        if (c.isCanBeResolved()) {
-//            c.each { File file ->
-//                println "file = $file"
-//                from(zipTree(file.absolutePath), {
-//                    includeEmptyDirs = false
-//                    include { fileTreeElement ->
-//                        println "fileTreeElement = $fileTreeElement"
-//                        def path = fileTreeElement.path
-//                        path.endsWith(".js") && (path.startsWith("META-INF/resources/") ||
-//                                !path.startsWith("META-INF/"))
-//                    }
-//                })
-//            }
-//        }
-//    }
-//    from compileKotlin2Js.destinationDir
-//    into "${projectDir}/web"
-//
-//    dependsOn classes
-//}
-//
-//assemble.dependsOn assembleWeb
