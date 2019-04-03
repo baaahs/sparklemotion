@@ -100,5 +100,5 @@ task buildReactUI(type: Exec) {
     outputs.dir("$buildDir/webpack")
     outputs.cacheIf { true }
 
-    commandLine "$projectDir/node_modules/.bin/webpack-cli", "--config", "$projectDir/webpack.config.js", "--mode", "production"
+    commandLine "$projectDir/node_modules/.bin/webpack-cli", "--config", "$projectDir/webpack.config.js", "--mode", "development", "--color"
 }
