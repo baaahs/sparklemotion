@@ -23,7 +23,7 @@ module.exports = {
         extensions: ['*', '.js', '.jsx']
     },
     output: {
-        path: __dirname + '/build/processedResources/js/main/webpack/',
+        path: __dirname + '/build/webpack/',
         publicPath: '/js/',
         filename: 'react_app.js'
     },
