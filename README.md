@@ -23,12 +23,13 @@
 
 ## Local build
 
+Run this in one shell window:
+
 ```sh
-brew install fswatch
-fswatch src --batch-marker=BOOM --exclude=___jb | grep --line-buffered BOOM | xargs -n1 -I{} ./gradlew -i jsJar
+./gradlew -t jsJar
 ```
 
-Run this and go to http://localhost:8001/index.html :
+Run this in a second shell window and go to http://localhost:8001/index.html :
 
 ```sh
 ./gradlew serve
