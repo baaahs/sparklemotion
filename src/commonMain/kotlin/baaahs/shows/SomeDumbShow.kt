@@ -12,7 +12,7 @@ class SomeDumbShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
     init {
-        println("Creating new SomeDumbShow, we have ${pixelShaderBuffers.size} buffers")
+//        println("Creating new SomeDumbShow, we have ${pixelShaderBuffers.size} buffers")
     }
 
     override fun nextFrame() {

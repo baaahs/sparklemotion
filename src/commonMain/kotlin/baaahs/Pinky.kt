@@ -16,7 +16,7 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
 ) : Network.UdpListener {
-    private lateinit var link: Network.Link
+    private val link = network.link()
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
@@ -25,30 +25,29 @@ class Pinky(
 
     val address: Network.Address get() = link.myAddress
 
+    companion object {
+        val primaryColorTopic = PubSub.Topic("primaryColor", Color.serializer())
+    }
+
     suspend fun run() {
         GlobalScope.launch { beatProvider.run() }
 
-        link = network.link()
         link.listenUdp(Ports.PINKY, this)
-        link.listenTcp(Ports.PINKY_UI_TCP, object : Network.TcpListener {
-            override fun connected(tcpConnection: Network.TcpConnection) {
-            }
-
-            override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-                val message = parse(bytes)
-                when (message) {
-                    is UiClientHello -> tcpConnection.send(PinkyState(showRunner.getColorPicker().color))
-                }
-            }
-
-            override fun reset(tcpConnection: Network.TcpConnection) {
-                TODO("Pinky.reset not implemented")
-            }
-        })
 
         display.listShows(showMetas)
 
-            showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+        val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
+        val color = display.color
+        if (color != null) {
+            val primaryColorChannel = pubSub.publish(primaryColorTopic, color) {
+                display.color = it
+                println("display.color = $it")
+            }
+
+            display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
+        }
+
+        showRunner = ShowRunner (display, brains.values.toList(), dmxUniverse)
         val prevSelectedShow = display.selectedShow
         var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
         val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }

@@ -14,6 +14,15 @@ suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
 
+class logger {
+    companion object {
+        fun debug(message: String) {
+            println("DEBUG: $message")
+        }
+    }
+}
+
+
 expect fun getTimeMillis(): Long
 expect fun doRunBlocking(block: suspend () -> Unit)
 

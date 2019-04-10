@@ -1,9 +1,11 @@
 package baaahs
 
+import kotlinx.serialization.Serializable
 import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.random.Random
 
+@Serializable
 data class Color(val red: Int, val green: Int, val blue: Int) {
     fun serialize(writer: ByteArrayWriter) {
         writer.writeByte((red and 0xff).toByte())
@@ -58,7 +60,8 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         Color(
             min(red + other.red, 255),
             min(green + other.green, 255),
-            min(blue + other.blue, 255))
+            min(blue + other.blue, 255)
+        )
 
     fun fade(other: Color, amount: Float = 0.5f): Color {
         val amountThis = 1 - amount
@@ -66,7 +69,8 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         return Color(
             min((red * amountThis + other.red * amount).toInt(), 255),
             min((green * amountThis + other.green * amount).toInt(), 255),
-            min((blue * amountThis + other.blue * amount).toInt(), 255))
+            min((blue * amountThis + other.blue * amount).toInt(), 255)
+        )
     }
 
     companion object {

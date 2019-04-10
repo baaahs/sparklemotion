@@ -1,28 +1,23 @@
 package baaahs
 
-class Ui(val network: Network, val display: UiDisplay) {
+import kotlinx.serialization.serializer
+
+class Ui(val network: Network, val pinkyAddress: Network.Address, val display: UiDisplay) {
     val link = network.link()
 
-    private lateinit var tcpConnection: Network.TcpConnection
+    private lateinit var pubSub: PubSub
 
     fun connectTo(pinkyAddress: Network.Address) {
-        tcpConnection = link.connectTcp(pinkyAddress, Ports.PINKY_UI_TCP, object: Network.TcpListener {
-            override fun connected(tcpConnection: Network.TcpConnection) {
-                tcpConnection.send(Message(Type.UI_CLIENT_HELLO))
-            }
+        val showsTopic = PubSub.Topic("/shows", String.serializer())
+        val currentShowTopic = PubSub.Topic("/currentShow", String.serializer())
 
-            override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-                val message = parse(bytes)
-                when (message) {
-                    is PinkyState -> {
-                        println("UI: primary color is ${message.primaryColor}")
-                    }
-                }
-            }
+        val pubSub = PubSub.Client(link, pinkyAddress, Ports.PINKY_UI_TCP)
 
-            override fun reset(tcpConnection: Network.TcpConnection) {
-                TODO("Ui.reset not implemented")
-            }
-        })
+        val primaryColorChannel = pubSub.subscribe(Pinky.primaryColorTopic) { color: Color ->
+            display.color = color
+            println("UI: primary color is ${color}")
+        }
+
+        display.onColorChanged = { color -> primaryColorChannel.onChange(color) }
     }
 }
