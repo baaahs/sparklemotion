@@ -17,11 +17,7 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_ID_RESPONSE,
-    PINKY_PONG,
-
-    // TCP:
-    UI_CLIENT_HELLO,
-    PINKY_UI_STATE;
+    PINKY_PONG;
 
     companion object {
         val values = values()
@@ -38,10 +34,6 @@ fun parse(bytes: ByteArray): Message {
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_ID_RESPONSE -> BrainIdResponse.parse(reader)
         Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
-
-        // TCP:
-        Type.UI_CLIENT_HELLO -> UiClientHello.parse(reader)
-        Type.PINKY_UI_STATE -> PinkyState.parse(reader)
     }
 }
 
@@ -117,33 +109,6 @@ class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeInt(brainIds.size)
         brainIds.forEach { writer.writeString(it) }
-    }
-}
-
-class UiClientHello : Message(Type.UI_CLIENT_HELLO) {
-    companion object {
-        fun parse(reader: ByteArrayReader): Message = UiClientHello()
-    }
-}
-
-class PinkyState(val primaryColor: Color?) : Message(Type.PINKY_UI_STATE) {
-    companion object {
-        fun parse(reader: ByteArrayReader): Message {
-            if (reader.readByte() == 0.toByte()) {
-                return PinkyState(null)
-            } else {
-                return PinkyState(Color.parse(reader))
-            }
-        }
-    }
-
-    override fun serialize(writer: ByteArrayWriter) {
-        if (primaryColor == null) {
-            writer.writeByte(0)
-        } else {
-            writer.writeByte(1)
-            primaryColor.serialize(writer)
-        }
     }
 }
 

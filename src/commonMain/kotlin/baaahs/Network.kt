@@ -1,8 +1,10 @@
 package baaahs
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.random.Random
 
 interface Network {
@@ -23,7 +25,7 @@ interface Network {
             broadcastUdp(port, message.toBytes())
         }
 
-        fun listenTcp(port: Int, tcpListener: TcpListener)
+        fun listenTcp(port: Int, tcpServerSocketListener: TcpServerSocketListener)
         fun connectTcp(toAddress: Address, port: Int, tcpListener: TcpListener): TcpConnection
     }
 
@@ -50,18 +52,26 @@ interface Network {
         fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
         fun reset(tcpConnection: TcpConnection)
     }
+
+    interface TcpServerSocketListener {
+        fun incomingConnection(fromAddress: Network.TcpConnection) : TcpListener
+    }
 }
 
 
 class FakeNetwork(
-    private val networkDelay: Long = 1L,
-    private val display: NetworkDisplay
+    private val networkDelay: Int = 1,
+    private val display: NetworkDisplay? = null,
+    coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) : Network {
+    private val coroutineScope = object: CoroutineScope {
+        override val coroutineContext: CoroutineContext get() = coroutineContext
+    }
     private var nextAddress = 0xb00f
     private val udpListeners: MutableMap<Pair<Network.Address, Int>, Network.UdpListener> = hashMapOf()
     private val udpListenersByPort: MutableMap<Int, MutableList<Network.UdpListener>> = hashMapOf()
 
-    private val tcpServerSocketsByPort: MutableMap<Pair<Network.Address, Int>, Network.TcpListener> =
+    private val tcpServerSocketsByPort: MutableMap<Pair<Network.Address, Int>, Network.TcpServerSocketListener> =
         hashMapOf()
 
     override fun link(): Network.Link {
@@ -77,7 +87,7 @@ class FakeNetwork(
 
     private fun sendUdp(fromAddress: Network.Address, toAddress: Network.Address, port: Int, bytes: ByteArray) {
         if (!sendPacketSuccess()) {
-            display.droppedPacket()
+            display?.droppedPacket()
             return
         }
 
@@ -87,7 +97,7 @@ class FakeNetwork(
 
     private fun broadcastUdp(fromAddress: Network.Address, port: Int, bytes: ByteArray) {
         if (!sendPacketSuccess()) {
-            display.droppedPacket()
+            display?.droppedPacket()
             return
         }
 
@@ -97,19 +107,24 @@ class FakeNetwork(
     }
 
     private fun transmitUdp(fromAddress: Network.Address, udpListener: Network.UdpListener, bytes: ByteArray) {
-        GlobalScope.launch {
-            delay(networkDelay)
+        coroutineScope.launch {
+            networkDelay()
+
             if (!receivePacketSuccess()) {
-                display.droppedPacket()
+                display?.droppedPacket()
             } else {
-                display.receivedPacket()
+                display?.receivedPacket()
                 udpListener.receive(fromAddress, bytes)
             }
         }
     }
 
-    private fun listenTcp(myAddress: Network.Address, port: Int, tcpListener: Network.TcpListener) {
-        tcpServerSocketsByPort[Pair(myAddress, port)] = tcpListener
+    private fun listenTcp(
+        myAddress: Network.Address,
+        port: Int,
+        tcpServerSocketListener: Network.TcpServerSocketListener
+    ) {
+        tcpServerSocketsByPort[Pair(myAddress, port)] = tcpServerSocketListener
     }
 
     private fun connectTcp(
@@ -118,11 +133,11 @@ class FakeNetwork(
         serverPort: Int,
         clientListener: Network.TcpListener
     ): Network.TcpConnection {
-        val serverListener = tcpServerSocketsByPort[Pair(serverAddress, serverPort)]
-        if (serverListener == null) {
+        val serverSocketListener = tcpServerSocketsByPort[Pair(serverAddress, serverPort)]
+        if (serverSocketListener == null) {
             val connection = FakeTcpConnection(clientAddress, serverAddress, serverPort, null)
-            GlobalScope.launch {
-                delay(1);
+            coroutineScope.launch {
+                networkDelay()
                 clientListener.reset(connection);
             }
             return connection
@@ -133,24 +148,26 @@ class FakeNetwork(
             clientSideConnection
         }
 
+        val serverListener = serverSocketListener.incomingConnection(serverSideConnection)
+
         clientSideConnection = FakeTcpConnection(clientAddress, serverAddress, serverPort, serverListener) {
             serverSideConnection
         }
 
-        GlobalScope.launch {
-            delay(1);
+        coroutineScope.launch {
+            networkDelay();
             clientListener.connected(clientSideConnection)
         }
 
-        GlobalScope.launch {
-            delay(1);
+        coroutineScope.launch {
+            networkDelay();
             serverListener.connected(serverSideConnection)
         }
 
         return clientSideConnection
     }
 
-    class FakeTcpConnection(
+    inner class FakeTcpConnection(
         override val fromAddress: Network.Address,
         override val toAddress: Network.Address,
         override val port: Int,
@@ -158,12 +175,15 @@ class FakeNetwork(
         private val otherListener: (() -> Network.TcpConnection)? = null
     ) : Network.TcpConnection {
         override fun send(bytes: ByteArray) {
-            tcpListener?.receive(otherListener!!(), bytes)
+            coroutineScope.launch {
+                tcpListener?.receive(otherListener!!(), bytes)
+            }
         }
     }
 
-    private fun sendPacketSuccess() = Random.nextFloat() > display.packetLossRate / 2
-    private fun receivePacketSuccess() = Random.nextFloat() > display.packetLossRate / 2
+    private fun sendPacketSuccess() = Random.nextFloat() > packetLossRate() / 2
+    private fun receivePacketSuccess() = Random.nextFloat() > packetLossRate() / 2
+    private fun packetLossRate() = display?.packetLossRate ?: 0f
 
     private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
@@ -178,8 +198,8 @@ class FakeNetwork(
             this@FakeNetwork.broadcastUdp(myAddress, port, bytes)
         }
 
-        override fun listenTcp(port: Int, tcpListener: Network.TcpListener) {
-            this@FakeNetwork.listenTcp(myAddress, port, tcpListener)
+        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
+            this@FakeNetwork.listenTcp(myAddress, port, tcpServerSocketListener)
         }
 
         override fun connectTcp(
@@ -187,6 +207,10 @@ class FakeNetwork(
             port: Int,
             tcpListener: Network.TcpListener
         ): Network.TcpConnection = this@FakeNetwork.connectTcp(myAddress, toAddress, port, tcpListener)
+    }
+
+    private suspend fun networkDelay() {
+        if (networkDelay != 0) delay(networkDelay.toLong())
     }
 }
 

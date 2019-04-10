@@ -41,6 +41,14 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
+    fun writeBytes(data: ByteArray) {
+        growIfNecessary(4 + data.size)
+        writeInt(data.size)
+
+        data.copyInto(bytes, offset)
+        offset += data.size
+    }
+
     fun toBytes(): ByteArray {
         return bytes.copyOf(offset)
     }
@@ -78,5 +86,12 @@ class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
             buf.append(readChar())
         }
         return buf.toString()
+    }
+
+    fun readBytes(): ByteArray {
+        val count = readInt()
+        val bytes = bytes.copyOfRange(offset, offset + count)
+        offset += count
+        return bytes
     }
 }

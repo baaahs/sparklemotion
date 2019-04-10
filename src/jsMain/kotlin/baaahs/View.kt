@@ -33,17 +33,22 @@ open class Button<T>(val data: T, val element: Element) {
     var onSelect: ((T) -> Unit)? = null
 
     init {
-        element.addEventListener("click", { select() })
+        element.addEventListener("click", { onClick() })
     }
 
-    fun select() {
-        allButtons.forEach { it.element.classList.clear() }
-        element.classList.add("selected")
+    fun setSelected(isSelected: Boolean) {
+        element.classList.toggle("selected", isSelected)
+    }
+
+    fun onClick() {
+        setSelected(true)
+        allButtons.forEach { it.setSelected(false) }
         onSelect?.invoke(data)
     }
 }
 
 class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
+    val colors = listOf(Color.WHITE, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE)
     private val colorButtons: List<ColorButton>
 
     init {
@@ -52,22 +57,26 @@ class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
             appendElement("b") { appendText("Colors: ") }
             appendElement("br") {}
         }
-        colorButtons = listOf(
-            ColorButton(Color.WHITE, colorsDiv.appendElement("span") { }),
-            ColorButton(Color.RED, colorsDiv.appendElement("span") {}),
-            ColorButton(Color.ORANGE, colorsDiv.appendElement("span") {}),
-            ColorButton(Color.YELLOW, colorsDiv.appendElement("span") {}),
-            ColorButton(Color.GREEN, colorsDiv.appendElement("span") {}),
-            ColorButton(Color.BLUE, colorsDiv.appendElement("span") {}),
-            ColorButton(Color.PURPLE, colorsDiv.appendElement("span") {})
-        )
-        colorButtons.forEach {
-            it.allButtons = colorButtons
-            it.element.setAttribute("style", "background-color: #${it.data.toHexString()}")
-            it.onSelect = { onSelect(it) }
+
+
+        colorButtons = colors.map { color ->
+            ColorButton(color, colorsDiv.appendElement("span") { }).also { button ->
+                button.element.setAttribute("style", "background-color: #${button.data.toHexString()}")
+                button.onSelect = { onSelect(it) }
+            }
         }
-        colorButtons.random()!!.select()
+        colorButtons.forEach { it.allButtons = colorButtons }
     }
 
-    private class ColorButton(color: Color, element: Element) : Button<Color>(color, element)
+    fun pickRandom() {
+        colorButtons.random()!!.onClick()
+    }
+
+    fun setColor(color: Color?) {
+        for (colorButton in colorButtons) {
+            colorButton.setSelected(colorButton.color == color)
+        }
+    }
+
+    private class ColorButton(val color: Color, element: Element) : Button<Color>(color, element)
 }
