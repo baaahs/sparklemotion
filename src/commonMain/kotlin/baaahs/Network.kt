@@ -54,7 +54,7 @@ interface Network {
     }
 
     interface TcpServerSocketListener {
-        fun incomingConnection(fromAddress: Network.TcpConnection) : TcpListener
+        fun incomingConnection(fromAddress: Network.TcpConnection): TcpListener
     }
 }
 
@@ -64,7 +64,7 @@ class FakeNetwork(
     private val display: NetworkDisplay? = null,
     coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) : Network {
-    private val coroutineScope = object: CoroutineScope {
+    private val coroutineScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = coroutineContext
     }
     private var nextAddress = 0xb00f

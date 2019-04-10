@@ -21,19 +21,13 @@ class Interval<out T : TimeUnit>(value: Number, factory: () -> T) {
 
     val longValue = round(this.value).toLong()
 
-    val inDays: Interval<Day> get() = converted()
-    val inHours: Interval<Hour> get() = converted()
-    val inMinutes: Interval<Minute> get() = converted()
-    val inSeconds: Interval<Second> get() = converted()
-    val inMilliseconds: Interval<Millisecond> get() = converted()
-    val inMicroseconds: Interval<Microsecond> get() = converted()
-    val inNanoseconds: Interval<Nanosecond> get() = converted()
-
-
-    inline fun <reified OtherUnit : TimeUnit> converted(): Interval<OtherUnit> {
-        val otherInstance = OtherUnit::class.objectInstance
-        return Interval(value * unit.conversionRate(otherInstance!!)) { throw RuntimeException() }
-    }
+    val inDays: Interval<Day> get() = convertedTo(Day())
+    val inHours: Interval<Hour> get() = convertedTo(Hour())
+    val inMinutes: Interval<Minute> get() = convertedTo(Minute())
+    val inSeconds: Interval<Second> get() = convertedTo(Second())
+    val inMilliseconds: Interval<Millisecond> get() = convertedTo(Millisecond())
+    val inMicroseconds: Interval<Microsecond> get() = convertedTo(Microsecond())
+    val inNanoseconds: Interval<Nanosecond> get() = convertedTo(Nanosecond())
 
     fun <T : TimeUnit> convertedTo(timeUnit: T): Interval<T> {
         return Interval(value * unit.conversionRate(timeUnit)) { throw RuntimeException() }
