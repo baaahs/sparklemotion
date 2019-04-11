@@ -31,6 +31,7 @@ interface BrainDisplay {
 }
 
 interface MapperDisplay {
+    var isRunning: Boolean
     var onStart: (() -> Unit)?
     var onStop: (() -> Unit)?
 }
