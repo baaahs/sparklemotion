@@ -239,9 +239,9 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
   panel.faces.visible = true;
 
   if (!renderPixels) {
-    panel.faceMaterial.color.r = panelBgColor.redI / 256.0;
-    panel.faceMaterial.color.g = panelBgColor.greenI / 256.0;
-    panel.faceMaterial.color.b = panelBgColor.blueI / 256.0;
+    panel.faceMaterial.color.r = panelBgColor.redI / 255.0;
+    panel.faceMaterial.color.g = panelBgColor.greenI / 255.0;
+    panel.faceMaterial.color.b = panelBgColor.blueI / 255.0;
   } else {
     panel.faceMaterial.color.r = .3;
     panel.faceMaterial.color.g = .3;
@@ -252,9 +252,9 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
     const count = Math.min(panel.pixelCount, pixelColors.length);
     for (let i = 0; i < count; i++) {
       const pColor = pixelColors[i];
-      panel.pixelColorsBuffer.array[i * 3] = pColor.redI / 256.0;
-      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenI / 256.0;
-      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueI / 256.0;
+      panel.pixelColorsBuffer.array[i * 3] = pColor.redI / 255.0;
+      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenI / 255.0;
+      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueI / 255.0;
     }
     panel.pixelColorsBuffer.needsUpdate = true;
   }
@@ -279,13 +279,24 @@ function addMovingHead(movingHead) {
   };
 }
 
-function adjustMovingHead(movingHeadJs, color, rotA, rotB) {
+function adjustMovingHead(movingHeadJs, color, dimmer, rotA, rotB) {
   movingHeadJs.material.color.r = color.redF;
   movingHeadJs.material.color.g = color.greenF;
   movingHeadJs.material.color.b = color.blueF;
 
+  movingHeadJs.material.visible = dimmer > .1;
+
   movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
   movingHeadJs.cone.rotation.z = rotB;
+}
+
+function setMapperIsRunning(running) {
+  if (running) {
+    const vizRotationCheckbox = document.getElementById("vizRotation");
+    vizRotationCheckbox.removeAttribute("checked");
+  }
+
+  panels.forEach(panel => panel.faceMaterial.transparent = !running);
 }
 
 function startRender() {

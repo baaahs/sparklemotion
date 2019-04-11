@@ -25,7 +25,7 @@ class PixelShaderImpl(val buffer: PixelShaderBuffer, val pixels: Pixels) : Shade
 
 class PixelShaderBuffer : ShaderBuffer {
     private var fakeyTerribleHardCodedNumberOfPixels: Int = 1337
-    var colors: Array<Color> = ((0..fakeyTerribleHardCodedNumberOfPixels).map { Color.WHITE }).toTypedArray()
+    var colors: Array<Color> = Array(fakeyTerribleHardCodedNumberOfPixels) { Color.WHITE }
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeInt(colors.size)
@@ -35,5 +35,9 @@ class PixelShaderBuffer : ShaderBuffer {
     override fun read(reader: ByteArrayReader) {
         val incomingColorCount = reader.readInt()
         (0 until incomingColorCount).forEach { index -> colors[index] = Color.parse(reader) }
+    }
+
+    fun setAll(color: Color) {
+        for (i in colors.indices) { colors[i] = color }
     }
 }

@@ -47,7 +47,7 @@ class MovingHeadView(private val movingHead: SheepModel.MovingHead, dmxUniverse:
     private fun receivedDmxFrame() {
         val colorWheelV = device.colorWheel
         val wheelColor = Shenzarpy.WheelColor.get(colorWheelV)
-        adjustMovingHead(movingHeadJs, wheelColor.color, device.pan, device.tilt)
+        adjustMovingHead(movingHeadJs, wheelColor.color, device.dimmer, device.pan, device.tilt)
     }
 }
 
@@ -57,4 +57,6 @@ external fun addPanel(panel: SheepModel.Panel, pixelCount: Int): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
-external fun adjustMovingHead(movingHeadJs: Any, color: Color, rotA: Float, rotB: Float)
+external fun adjustMovingHead(movingHeadJs: Any, color: Color, dimmer: Float, rotA: Float, rotB: Float)
+
+external fun setMapperIsRunning(running: Boolean)

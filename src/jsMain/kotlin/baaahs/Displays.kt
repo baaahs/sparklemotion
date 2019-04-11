@@ -156,6 +156,9 @@ class JsMapperDisplay(val element: Element) : MapperDisplay {
     private var startButton = element.ownerDocument!!.getElementById("mapperStartButton")!!
     private var stopButton = element.ownerDocument!!.getElementById("mapperStopButton")!!
 
+    override var isRunning: Boolean = false
+        set(value) { field = value; setMapperIsRunning(value) }
+
     override var onStart: (() -> Unit)? = null
     override var onStop: (() -> Unit)? = null
 
