@@ -61,7 +61,7 @@ class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
 
         colorButtons = colors.map { color ->
             ColorButton(color, colorsDiv.appendElement("span") { }).also { button ->
-                button.element.setAttribute("style", "background-color: #${button.data.toHexString()}")
+                button.element.setAttribute("style", "background-color: ${button.data.toHexString()}")
                 button.onSelect = { onSelect(it) }
             }
         }

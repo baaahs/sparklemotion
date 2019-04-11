@@ -11,6 +11,12 @@ public class ColorTest {
     }
 
     @Test
+    fun testFromString() {
+        val white = Color.from("#fefdff")
+        assertEquals(listOf(254, 253, 255), listOf(white.red, white.green, white.blue))
+    }
+
+    @Test
     fun testDistanceTo() {
         assertEquals(1f, Color.WHITE.distanceTo(Color.BLACK))
         assertEquals(0f, Color.WHITE.distanceTo(Color.WHITE))

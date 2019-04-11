@@ -1,18 +1,26 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import classNames from 'classnames';
-import { ChromePicker } from 'react-color';
+import {SketchPicker} from 'react-color';
 
 import styles from './ColorPicker.scss';
 
 class ColorPicker extends Component {
-  state = {
-    chosenColor: '#ffffff',
-    displayColorPicker: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.onColorSelect = props.onColorSelect;
+
+    this.state = {
+      chosenColor: props.chosenColor,
+      displayColorPicker: true,
+    };
+  }
 
   handleColorChange = ({ hex }) => {
     this.setState({ chosenColor: hex });
+    if (this.onColorSelect) {
+      this.onColorSelect(hex);
+    }
   };
 
   toggleColorPicker = () => {
@@ -23,20 +31,23 @@ class ColorPicker extends Component {
     const { displayColorPicker, chosenColor } = this.state;
 
     return (
-      <div>
-        <button
-          className={styles['color-picker--button']}
-          onClick={this.toggleColorPicker}
-        >
-          <i
-            className={classNames(
-              'fas fa-palette fa-fw',
-              styles['color-picker--button--icon']
-            )}
-          />
-        </button>
+      <div className={styles['color-picker--pad']}>
+        <header>Primary Color</header>
+        {!displayColorPicker && (
+            <button
+                className={styles['color-picker--button']}
+                onClick={this.toggleColorPicker}
+            >
+              <i
+                  className={classNames(
+                      'fas fa-palette fa-fw',
+                      styles['color-picker--button--icon']
+                  )}
+              />
+            </button>
+        )}
         {displayColorPicker && (
-          <ChromePicker
+          <SketchPicker
             color={chosenColor}
             onChangeComplete={this.handleColorChange}
           />
