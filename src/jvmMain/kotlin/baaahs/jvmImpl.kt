@@ -13,3 +13,5 @@ actual fun getDisplay(): Display {
 }
 
 actual fun getTimeMillis(): Long = System.currentTimeMillis()
+
+actual fun createUiApp(elementId: String, uiContext: UiContext): Any = throw Throwable("not supported")

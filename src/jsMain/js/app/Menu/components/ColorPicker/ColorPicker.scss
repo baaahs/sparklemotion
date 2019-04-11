@@ -1,3 +1,12 @@
+.color-picker--pad {
+  border: 1px solid black;
+  border-radius: 0.5em;
+  color: black;
+  background-color: white;
+  padding: 0.5em;
+  display: inline-block;
+}
+
 .color-picker--button {
   width: 40px;
   height: 40px;

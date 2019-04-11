@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 
 import App from './app';
 
-ReactDOM.render(<App />, document.getElementById('react-app'));
+document.createUiApp = (elementId, uiContext) => {
+  let app = <App uiContext={uiContext}/>;
+  ReactDOM.render(app, document.getElementById('uiView1'));
+  return app;
+};
 
 module.hot.accept();

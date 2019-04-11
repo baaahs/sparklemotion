@@ -3,12 +3,14 @@ package baaahs
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import kotlin.js.JsName
 
 class PubSub(private val networkLink: Network.Link) {
 
     open class Origin
 
     interface Observer<T> {
+        @JsName("onChange")
         fun onChange(t: T)
     }
 
@@ -159,6 +161,7 @@ class PubSub(private val networkLink: Network.Link) {
             link.connectTcp(serverAddress, port, server)
         }
 
+        @JsName("subscribe")
         fun <T> subscribe(topic: Topic<T>, onUpdate: (T) -> Unit): Observer<T> {
             val subscriber = Origin()
 

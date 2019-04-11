@@ -25,10 +25,6 @@ class Pinky(
 
     val address: Network.Address get() = link.myAddress
 
-    companion object {
-        val primaryColorTopic = PubSub.Topic("primaryColor", Color.serializer())
-    }
-
     suspend fun run() {
         GlobalScope.launch { beatProvider.run() }
 
@@ -39,7 +35,7 @@ class Pinky(
         val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
         val color = display.color
         if (color != null) {
-            val primaryColorChannel = pubSub.publish(primaryColorTopic, color) {
+            val primaryColorChannel = pubSub.publish(Topics.primaryColor, color) {
                 display.color = it
                 println("display.color = $it")
             }

@@ -26,7 +26,6 @@ class SheepSimulator {
     val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
     val mapper = Mapper(network, display.forMapper())
     val visualizer = Visualizer(sheepModel, dmxUniverse)
-    val ui = Ui(network, pinky.address, display.forUi())
 
     fun start() {
         sheepModel.load()
@@ -48,7 +47,7 @@ class SheepSimulator {
         }
 
         GlobalScope.launch {
-            ui.connectTo(pinky.address)
+            Ui(network, pinky.address, display.forUi())
         }
 
         doRunBlocking {
