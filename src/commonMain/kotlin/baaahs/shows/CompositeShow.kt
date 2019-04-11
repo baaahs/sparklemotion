@@ -31,7 +31,7 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
     private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
     init {
-        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")
+//        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")
     }
 
     override fun nextFrame() {

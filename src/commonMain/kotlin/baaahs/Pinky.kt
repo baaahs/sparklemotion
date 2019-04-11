@@ -8,7 +8,6 @@ import baaahs.shaders.SolidShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.jvm.Synchronized
 
 class Pinky(
     val sheepModel: SheepModel,
@@ -16,22 +15,39 @@ class Pinky(
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
-) : Network.Listener {
-    private lateinit var link: Network.Link
+) : Network.UdpListener {
+    private val link = network.link()
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
+    private var showRunner: ShowRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+
+    val address: Network.Address get() = link.myAddress
+
+    companion object {
+        val primaryColorTopic = PubSub.Topic("primaryColor", Color.serializer())
+    }
 
     suspend fun run() {
         GlobalScope.launch { beatProvider.run() }
 
-        link = network.link()
-        link.listen(Ports.PINKY, this)
+        link.listenUdp(Ports.PINKY, this)
 
         display.listShows(showMetas)
 
-        var showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+        val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
+        val color = display.color
+        if (color != null) {
+            val primaryColorChannel = pubSub.publish(primaryColorTopic, color) {
+                display.color = it
+                println("display.color = $it")
+            }
+
+            display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
+        }
+
+        showRunner = ShowRunner (display, brains.values.toList(), dmxUniverse)
         val prevSelectedShow = display.selectedShow
         var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
         val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
@@ -71,7 +87,6 @@ class Pinky(
 
     }
 
-    @Synchronized
     private fun foundBrain(remoteBrain: RemoteBrain) {
         brains.put(remoteBrain.address, remoteBrain)
         display.brainCount = brains.size
@@ -138,7 +153,7 @@ class ShowRunner(
     fun send(link: Network.Link) {
         shaders.forEach { (shader, remoteBrains) ->
             remoteBrains.forEach { remoteBrain ->
-                link.send(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shader))
+                link.sendUdp(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shader))
             }
         }
 
