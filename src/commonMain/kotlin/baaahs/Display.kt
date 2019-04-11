@@ -7,6 +7,7 @@ interface Display {
     fun forPinky(): PinkyDisplay
     fun forBrain(): BrainDisplay
     fun forMapper(): MapperDisplay
+    fun forUi(): UiDisplay
 }
 
 interface NetworkDisplay {
@@ -21,6 +22,7 @@ interface PinkyDisplay {
     var brainCount: Int
     var beat: Int
     var color: Color?
+    var onPrimaryColorChange: (() -> Unit)?
     var selectedShow: ShowMeta?
 }
 
@@ -31,4 +33,9 @@ interface BrainDisplay {
 interface MapperDisplay {
     var onStart: (() -> Unit)?
     var onStop: (() -> Unit)?
+}
+
+interface UiDisplay {
+    var color: Color?
+    var onColorChanged: ((Color) -> Unit)?
 }
