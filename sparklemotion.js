@@ -18,22 +18,27 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var numberToInt = Kotlin.numberToInt;
   var Random = Kotlin.kotlin.random.Random;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var Unit = Kotlin.kotlin.Unit;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
+  var Unit = Kotlin.kotlin.Unit;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L1 = Kotlin.Long.ONE;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var equals = Kotlin.equals;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
+  var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
@@ -41,11 +46,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
+  var throwCCE = Kotlin.throwCCE;
+  var trim = Kotlin.kotlin.text.trim_gw00vp$;
+  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var L200000 = Kotlin.Long.fromInt(200000);
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var toShort = Kotlin.toShort;
   var toBits = Kotlin.floatToBits;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
@@ -54,6 +66,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toBoxedChar = Kotlin.toBoxedChar;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
+  var Array_0 = Array;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
@@ -290,7 +303,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       return toString($receiver, 16);
     }
   };
-  var Math_0 = Math;
   Color.prototype.withSaturation_mx4ult$ = function (saturation) {
     var desaturation = 1 - saturation;
     var b = this.red + numberToInt((255 - this.red | 0) * desaturation) | 0;
@@ -503,7 +515,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Dmx',
     interfaces: []
   };
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   function FakeDmxUniverse() {
     Dmx$Universe.call(this);
     this.channelsOut_0 = new Int8Array(512);
@@ -517,7 +528,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.listeners_0.add_11rb$(listener);
     return new Dmx$Buffer(this.channelsIn_0, baseChannel, channelCount);
   };
-  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   FakeDmxUniverse.prototype.sendFrame = function () {
     var $receiver = this.channelsOut_0;
     arrayCopy($receiver, this.channelsIn_0, 0, 0, $receiver.length);
@@ -768,7 +778,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Network',
     interfaces: []
   };
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   function FakeNetwork(networkDelay, display) {
     if (networkDelay === void 0)
       networkDelay = L1;
@@ -949,7 +958,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   FakeAddress.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
-  var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   function Pinky(sheepModel, showMetas, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
     this.showMetas = showMetas;
@@ -1872,11 +1880,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       return destination;
     }
   });
-  var throwCCE = Kotlin.throwCCE;
-  var trim = Kotlin.kotlin.text.trim_gw00vp$;
-  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   SheepModel.prototype.load = function () {
     var vertices = ArrayList_init();
     var panels = ArrayList_init();
@@ -2302,7 +2305,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     Dmx$DeviceType.call(this, 16);
     this.buffer_0 = buffer;
   }
-  var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   function Shenzarpy$Companion() {
     Shenzarpy$Companion_instance = this;
     this.panRange = rangeTo(toRadians(0.0), toRadians(540.0));
@@ -2794,7 +2796,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.pixelCount = pixelCount;
     this.color_1o5p8y$_0 = Color$Companion_getInstance().BLACK;
   }
-  var copyToArray = Kotlin.kotlin.collections.copyToArray;
   JsPanel.prototype.setAllPixelsTo_rny0jj$ = function (color) {
     var tmp$ = this.jsPanelObj_0;
     var tmp$_0 = Color$Companion_getInstance().WHITE;
@@ -3037,7 +3038,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'CompositorShader',
     interfaces: [Shader]
   };
-  var Array_0 = Array;
   function CompositorShaderImpl(aShader, bShader, buffer, pixels) {
     this.aShader = aShader;
     this.bShader = bShader;
