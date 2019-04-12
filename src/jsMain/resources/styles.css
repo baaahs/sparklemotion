@@ -129,11 +129,10 @@ body {
     border-radius: 1em;
     background-color: black;
     color: white;
-    top: 80%;
+    top: 50%;
     bottom: 5px;
     left: 5px;
     right: 21%;
     padding: .25em;
     font: 10pt Helvetica;
 }
-
