@@ -4,6 +4,7 @@ import baaahs.shows.CompositeShow
 import baaahs.shows.RandomShow
 import baaahs.shows.SomeDumbShow
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -43,6 +44,10 @@ class SheepSimulator {
         sheepModel.eyes.forEach { eye ->
             visualizer.addEye(eye)
             Config.DMX_DEVICES[eye.name]
+        }
+
+        GlobalScope.launch {
+            Ui(network, pinky.address, display.forUi())
         }
 
         doRunBlocking {

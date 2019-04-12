@@ -1,9 +1,13 @@
 package baaahs
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import kotlin.js.JsName
 import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.random.Random
 
+@Serializable
 data class Color(val red: Int, val green: Int, val blue: Int) {
     fun serialize(writer: ByteArrayWriter) {
         writer.writeByte((red and 0xff).toByte())
@@ -11,10 +15,13 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         writer.writeByte((blue and 0xff).toByte())
     }
 
+    @Transient
     val redF: Float
         get() = red.toFloat() / 255
+    @Transient
     val greenF: Float
         get() = green.toFloat() / 255
+    @Transient
     val blueF: Float
         get() = blue.toFloat() / 255
 
@@ -23,8 +30,9 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
             .or(green shl 8 and 0xff00)
             .or(blue and 0xff)
 
+    @JsName("toHexString")
     fun toHexString() =
-        red.toHexString() + green.toHexString() + blue.toHexString()
+        "#" + red.toHexString() + green.toHexString() + blue.toHexString()
 
     fun Int.toHexString(): String {
         if (this < 0) {
@@ -58,7 +66,8 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         Color(
             min(red + other.red, 255),
             min(green + other.green, 255),
-            min(blue + other.blue, 255))
+            min(blue + other.blue, 255)
+        )
 
     fun fade(other: Color, amount: Float = 0.5f): Color {
         val amountThis = 1 - amount
@@ -66,7 +75,8 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
         return Color(
             min((red * amountThis + other.red * amount).toInt(), 255),
             min((green * amountThis + other.green * amount).toInt(), 255),
-            min((blue * amountThis + other.blue * amount).toInt(), 255))
+            min((blue * amountThis + other.blue * amount).toInt(), 255)
+        )
     }
 
     companion object {
@@ -91,11 +101,25 @@ data class Color(val red: Int, val green: Int, val blue: Int) {
             reader.readByte().toInt() and 0xff
         )
 
+        @JsName("fromInts")
         fun from(i: Int) =
             Color(
                 i shr 16 and 0xff,
                 i shr 8 and 0xff,
                 i and 0xff
             )
+
+        @JsName("fromString")
+        fun from(hex: String): Color {
+            val hexDigits = hex.trimStart('#')
+            if (hexDigits.length == 6) {
+                return Color(
+                    hexDigits.substring(0, 2).toInt(16),
+                    hexDigits.substring(2, 4).toInt(16),
+                    hexDigits.substring(4, 6).toInt(16)
+                )
+            }
+            throw IllegalArgumentException("unknown color \"$hex\"")
+        }
     }
 }

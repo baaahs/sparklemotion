@@ -5,10 +5,13 @@ interface Ports {
         val MAPPER = 8001
         val PINKY = 8002
         val BRAIN = 8003
+
+        val PINKY_UI_TCP = 8004
     }
 }
 
 enum class Type {
+    // UDP:
     BRAIN_HELLO,
     BRAIN_PANEL_SHADE,
     MAPPER_HELLO,
@@ -110,6 +113,7 @@ class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
 }
 
 open class Message(val type: Type) {
+    // TODO: send message length as the first four bytes, plus maybe sequence/reassembly info for UDP
     fun toBytes(): ByteArray {
         val writer = ByteArrayWriter(1 + size())
         writer.writeByte(type.ordinal.toByte())
