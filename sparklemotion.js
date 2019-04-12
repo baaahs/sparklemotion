@@ -4,7 +4,10 @@ if (typeof kotlin === 'undefined') {
 if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
   throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'sparklemotion'.");
 }
-var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
+if (typeof this['kotlinx-serialization-runtime-js'] === 'undefined') {
+  throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-runtime-js' was not found. Please, check whether 'kotlinx-serialization-runtime-js' is loaded prior to 'sparklemotion'.");
+}
+var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_runtime_js) {
   'use strict';
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
@@ -17,7 +20,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var numberToInt = Kotlin.numberToInt;
   var Random = Kotlin.kotlin.random.Random;
+  var trimStart = Kotlin.kotlin.text.trimStart_wqw3xr$;
+  var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
+  var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var SerialClassDescImpl = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.internal.SerialClassDescImpl;
+  var UnknownFieldException = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.UnknownFieldException;
+  var internal = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.internal;
+  var GeneratedSerializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.internal.GeneratedSerializer;
+  var MissingFieldException = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.MissingFieldException;
   var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
@@ -30,10 +41,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var L1000 = Kotlin.Long.fromInt(1000);
   var L10000 = Kotlin.Long.fromInt(10000);
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  var L1 = Kotlin.Long.ONE;
+  var ensureNotNull = Kotlin.ensureNotNull;
+  var coroutines_0 = Kotlin.kotlin.coroutines;
+  var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var equals = Kotlin.equals;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
@@ -41,10 +53,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
+  var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
+  var serializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.serializer_6eet4j$;
+  var toString_0 = Kotlin.toString;
+  var Json = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.json.Json;
+  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
-  var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
@@ -52,8 +69,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var L200000 = Kotlin.Long.fromInt(200000);
-  var coroutines_0 = Kotlin.kotlin.coroutines;
-  var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
@@ -66,15 +81,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   var toBoxedChar = Kotlin.toBoxedChar;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
+  var copyOfRange = Kotlin.kotlin.collections.copyOfRange_ietg8x$;
   var Array_0 = Array;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
-  var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   Type.prototype = Object.create(Enum.prototype);
@@ -91,6 +107,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   BrainIdResponse.prototype.constructor = BrainIdResponse;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
   PinkyPongMessage.prototype.constructor = PinkyPongMessage;
+  PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
+  PubSub$Connection$receive$ObjectLiteral.prototype.constructor = PubSub$Connection$receive$ObjectLiteral;
+  PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
+  PubSub$Connection.prototype.constructor = PubSub$Connection;
+  PubSub$Server$publish$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
+  PubSub$Server$publish$ObjectLiteral.prototype.constructor = PubSub$Server$publish$ObjectLiteral;
+  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
+  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.constructor = PubSub$Client$subscribe$lambda$lambda$ObjectLiteral;
+  PubSub$Client$subscribe$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
+  PubSub$Client$subscribe$ObjectLiteral.prototype.constructor = PubSub$Client$subscribe$ObjectLiteral;
   ShaderType.prototype = Object.create(Enum.prototype);
   ShaderType.prototype.constructor = ShaderType;
   Shenzarpy$WheelColor.prototype = Object.create(Enum.prototype);
@@ -115,10 +141,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   RandomShow$Meta.prototype.constructor = RandomShow$Meta;
   SomeDumbShow$Meta.prototype = Object.create(ShowMeta.prototype);
   SomeDumbShow$Meta.prototype.constructor = SomeDumbShow$Meta;
-  JsPinkyDisplay$ColorButton.prototype = Object.create(JsPinkyDisplay$Button.prototype);
-  JsPinkyDisplay$ColorButton.prototype.constructor = JsPinkyDisplay$ColorButton;
-  JsPinkyDisplay$ShowButton.prototype = Object.create(JsPinkyDisplay$Button.prototype);
+  JsPinkyDisplay$ShowButton.prototype = Object.create(Button.prototype);
   JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
+  ColorPickerView$ColorButton.prototype = Object.create(Button.prototype);
+  ColorPickerView$ColorButton.prototype.constructor = ColorPickerView$ColorButton;
   function Brain(network, display, pixels, illicitPanelHint) {
     this.network_0 = network;
     this.display_0 = display;
@@ -155,7 +181,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         switch (this.state_0) {
           case 0:
             this.$this.link_0 = this.$this.network_0.link();
-            this.$this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().BRAIN, this.$this);
+            this.$this.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().BRAIN, this.$this);
             this.$this.display_0.haveLink_6qu7we$(this.$this.link_0);
             this.state_0 = 2;
             this.result_0 = this.$this.sendHello_0(this);
@@ -212,7 +238,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             throw this.exception_0;
           case 2:
             if (!this.$this.receivingInstructions_0) {
-              this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new BrainHelloMessage(this.$this.illicitPanelHint_0.name));
+              this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new BrainHelloMessage(this.$this.illicitPanelHint_0.name));
             }
 
             this.state_0 = 3;
@@ -253,12 +279,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       shaderImpl.draw();
     }
      else if (Kotlin.isType(message, BrainIdRequest))
-      this.link_0.send_bkw8fl$(fromAddress, message.port, new BrainIdResponse(''));
+      this.link_0.sendUdp_bkw8fl$(fromAddress, message.port, new BrainIdResponse(''));
   };
   Brain.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Brain',
-    interfaces: [Network$Listener]
+    interfaces: [Network$UdpListener]
   };
   function Color(red, green, blue) {
     Color$Companion_getInstance();
@@ -290,7 +316,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     return this.red << 16 & 16711680 | this.green << 8 & 65280 | this.blue & 255;
   };
   Color.prototype.toHexString = function () {
-    return this.toHexString_s8ev3n$(this.red) + this.toHexString_s8ev3n$(this.green) + this.toHexString_s8ev3n$(this.blue);
+    return '#' + this.toHexString_s8ev3n$(this.red) + this.toHexString_s8ev3n$(this.green) + this.toHexString_s8ev3n$(this.blue);
   };
   Color.prototype.toHexString_s8ev3n$ = function ($receiver) {
     if ($receiver < 0) {
@@ -356,8 +382,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Color$Companion.prototype.parse_c4pr8w$ = function (reader) {
     return new Color(reader.readByte() & 255, reader.readByte() & 255, reader.readByte() & 255);
   };
-  Color$Companion.prototype.from_za3lpa$ = function (i) {
+  Color$Companion.prototype.fromInts = function (i) {
     return new Color(i >> 16 & 255, i >> 8 & 255, i & 255);
+  };
+  Color$Companion.prototype.fromString = function (hex) {
+    var hexDigits = trimStart(hex, Kotlin.charArrayOf(35));
+    if (hexDigits.length === 6) {
+      return new Color(toInt(hexDigits.substring(0, 2), 16), toInt(hexDigits.substring(2, 4), 16), toInt(hexDigits.substring(4, 6), 16));
+    }
+    throw IllegalArgumentException_init('unknown color ' + '"' + hex + '"');
+  };
+  Color$Companion.prototype.serializer = function () {
+    return Color$$serializer_getInstance();
   };
   Color$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -370,6 +406,91 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       new Color$Companion();
     }
     return Color$Companion_instance;
+  }
+  function Color$$serializer() {
+    this.descriptor_h91vo$_0 = new SerialClassDescImpl('baaahs.Color', this);
+    this.descriptor.addElement_ivxn3r$('red', false);
+    this.descriptor.addElement_ivxn3r$('green', false);
+    this.descriptor.addElement_ivxn3r$('blue', false);
+    Color$$serializer_instance = this;
+  }
+  Object.defineProperty(Color$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_h91vo$_0;
+    }
+  });
+  Color$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeIntElement_4wpqag$(this.descriptor, 0, obj.red);
+    output.encodeIntElement_4wpqag$(this.descriptor, 1, obj.green);
+    output.encodeIntElement_4wpqag$(this.descriptor, 2, obj.blue);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Color$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeIntElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = input.decodeIntElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Color_init(bitMask0, local0, local1, local2, null);
+  };
+  Color$$serializer.prototype.childSerializers = function () {
+    return [internal.IntSerializer, internal.IntSerializer, internal.IntSerializer];
+  };
+  Color$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Color$$serializer_instance = null;
+  function Color$$serializer_getInstance() {
+    if (Color$$serializer_instance === null) {
+      new Color$$serializer();
+    }
+    return Color$$serializer_instance;
+  }
+  function Color_init(seen1, red, green, blue, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Color.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('red');
+    else
+      $this.red = red;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('green');
+    else
+      $this.green = green;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('blue');
+    else
+      $this.blue = blue;
+    return $this;
   }
   Color.$metadata$ = {
     kind: Kind_CLASS,
@@ -467,6 +588,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   MapperDisplay.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'MapperDisplay',
+    interfaces: []
+  };
+  function UiDisplay() {
+  }
+  UiDisplay.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'UiDisplay',
     interfaces: []
   };
   function Dmx() {
@@ -630,7 +758,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   }
   Mapper.prototype.start = function () {
     this.link_0 = this.network.link();
-    this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().MAPPER, this);
+    this.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().MAPPER, this);
     this.display.onStart = Mapper$start$lambda(this);
     this.display.onStop = Mapper$start$lambda_0(this);
   };
@@ -651,7 +779,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             this.state_0 = 2;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -664,8 +792,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             var tmp$_0 = Ports$Companion_getInstance().BRAIN;
             var $receiver = new SolidShader();
             $receiver.buffer.color = Color$Companion_getInstance().BLACK;
-            tmp$.broadcast_ecsl0t$(tmp$_0, new BrainShaderMessage($receiver));
-            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            tmp$.broadcastUdp_ecsl0t$(tmp$_0, new BrainShaderMessage($receiver));
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             this.state_0 = 3;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -676,8 +804,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             var tmp$_2 = Ports$Companion_getInstance().BRAIN;
             var $receiver_0 = new SolidShader();
             $receiver_0.buffer.color = Color$Companion_getInstance().BLACK;
-            tmp$_1.broadcast_ecsl0t$(tmp$_2, new BrainShaderMessage($receiver_0));
-            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainIdRequest(Ports$Companion_getInstance().MAPPER));
+            tmp$_1.broadcastUdp_ecsl0t$(tmp$_2, new BrainShaderMessage($receiver_0));
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainIdRequest(Ports$Companion_getInstance().MAPPER));
             this.state_0 = 4;
             continue;
           case 4:
@@ -686,7 +814,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
               continue;
             }
 
-            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             this.state_0 = 5;
             this.result_0 = delay(L10000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -696,7 +824,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             this.state_0 = 4;
             continue;
           case 6:
-            this.$this.link_0.broadcast_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             return;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
@@ -728,7 +856,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       var tmp$_0 = Ports$Companion_getInstance().BRAIN;
       var $receiver = new SolidShader();
       $receiver.buffer.color = Color$Companion_getInstance().WHITE;
-      tmp$.send_bkw8fl$(fromAddress, tmp$_0, new BrainShaderMessage($receiver));
+      tmp$.sendUdp_bkw8fl$(fromAddress, tmp$_0, new BrainShaderMessage($receiver));
     }
      else if (Kotlin.isType(message, PinkyPongMessage)) {
       var tmp$_1;
@@ -742,17 +870,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Mapper.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Mapper',
-    interfaces: [Network$Listener]
+    interfaces: [Network$UdpListener]
   };
   function Network() {
   }
   function Network$Link() {
   }
-  Network$Link.prototype.send_bkw8fl$ = function (toAddress, port, message) {
-    this.send_z62edq$(toAddress, port, message.toBytes());
+  Network$Link.prototype.sendUdp_bkw8fl$ = function (toAddress, port, message) {
+    this.sendUdp_z62edq$(toAddress, port, message.toBytes());
   };
-  Network$Link.prototype.broadcast_ecsl0t$ = function (port, message) {
-    this.broadcast_3fbn1q$(port, message.toBytes());
+  Network$Link.prototype.broadcastUdp_ecsl0t$ = function (port, message) {
+    this.broadcastUdp_3fbn1q$(port, message.toBytes());
   };
   Network$Link.$metadata$ = {
     kind: Kind_INTERFACE,
@@ -766,11 +894,35 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Address',
     interfaces: []
   };
-  function Network$Listener() {
+  function Network$UdpListener() {
   }
-  Network$Listener.$metadata$ = {
+  Network$UdpListener.$metadata$ = {
     kind: Kind_INTERFACE,
-    simpleName: 'Listener',
+    simpleName: 'UdpListener',
+    interfaces: []
+  };
+  function Network$TcpConnection() {
+  }
+  Network$TcpConnection.prototype.send_kq3aw3$ = function (message) {
+    this.send_fqrh44$(message.toBytes());
+  };
+  Network$TcpConnection.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpConnection',
+    interfaces: []
+  };
+  function Network$TcpListener() {
+  }
+  Network$TcpListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpListener',
+    interfaces: []
+  };
+  function Network$TcpServerSocketListener() {
+  }
+  Network$TcpServerSocketListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpServerSocketListener',
     interfaces: []
   };
   Network.$metadata$ = {
@@ -778,23 +930,29 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Network',
     interfaces: []
   };
-  function FakeNetwork(networkDelay, display) {
+  function FakeNetwork(networkDelay, display, coroutineContext) {
     if (networkDelay === void 0)
-      networkDelay = L1;
-    this.networkDelay_0 = networkDelay;
+      networkDelay = 1;
+    if (display === void 0)
+      display = null;
+    if (coroutineContext === void 0)
+      coroutineContext = coroutines_0.EmptyCoroutineContext;
+    this.networkDelay_1 = networkDelay;
     this.display_0 = display;
-    this.listeners_0 = HashMap_init();
-    this.listenersByPort_0 = HashMap_init();
+    this.coroutineScope_0 = new FakeNetwork$coroutineScope$ObjectLiteral(coroutineContext);
     this.nextAddress_0 = 45071;
+    this.udpListeners_0 = HashMap_init();
+    this.udpListenersByPort_0 = HashMap_init();
+    this.tcpServerSocketsByPort_0 = HashMap_init();
   }
   FakeNetwork.prototype.link = function () {
     var tmp$;
     var address = new FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
   };
-  FakeNetwork.prototype.listen_0 = function (address, port, listener) {
-    this.listeners_0.put_xwzc9p$(new Pair(address, port), listener);
-    var $receiver = this.listenersByPort_0;
+  FakeNetwork.prototype.listenUdp_0 = function (address, port, udpListener) {
+    this.udpListeners_0.put_xwzc9p$(new Pair(address, port), udpListener);
+    var $receiver = this.udpListenersByPort_0;
     var tmp$;
     var value = $receiver.get_11rb$(port);
     if (value == null) {
@@ -806,55 +964,57 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       tmp$ = value;
     }
     var portListeners = tmp$;
-    portListeners.add_11rb$(listener);
+    portListeners.add_11rb$(udpListener);
   };
-  FakeNetwork.prototype.send_0 = function (fromAddress, toAddress, port, bytes) {
-    if (!this.sendPacketSuccess_0()) {
-      this.display_0.droppedPacket();
-      return;
-    }
-    var listener = this.listeners_0.get_11rb$(new Pair(toAddress, port));
-    if (listener != null)
-      this.transmit_0(fromAddress, listener, bytes);
-  };
-  FakeNetwork.prototype.broadcast_0 = function (fromAddress, port, bytes) {
+  FakeNetwork.prototype.sendUdp_0 = function (fromAddress, toAddress, port, bytes) {
     var tmp$;
     if (!this.sendPacketSuccess_0()) {
-      this.display_0.droppedPacket();
+      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
       return;
     }
-    if ((tmp$ = this.listenersByPort_0.get_11rb$(port)) != null) {
-      var tmp$_0;
-      tmp$_0 = tmp$.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        this.transmit_0(fromAddress, element, bytes);
+    var listener = this.udpListeners_0.get_11rb$(new Pair(toAddress, port));
+    if (listener != null)
+      this.transmitUdp_0(fromAddress, listener, bytes);
+  };
+  FakeNetwork.prototype.broadcastUdp_0 = function (fromAddress, port, bytes) {
+    var tmp$, tmp$_0;
+    if (!this.sendPacketSuccess_0()) {
+      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+      return;
+    }
+    if ((tmp$_0 = this.udpListenersByPort_0.get_11rb$(port)) != null) {
+      var tmp$_1;
+      tmp$_1 = tmp$_0.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        this.transmitUdp_0(fromAddress, element, bytes);
       }
     }
   };
-  function Coroutine$FakeNetwork$transmit$lambda(this$FakeNetwork_0, closure$listener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
     this.exceptionState_0 = 1;
     this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$listener = closure$listener_0;
+    this.local$closure$udpListener = closure$udpListener_0;
     this.local$closure$fromAddress = closure$fromAddress_0;
     this.local$closure$bytes = closure$bytes_0;
   }
-  Coroutine$FakeNetwork$transmit$lambda.$metadata$ = {
+  Coroutine$FakeNetwork$transmitUdp$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$FakeNetwork$transmit$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$transmit$lambda.prototype.constructor = Coroutine$FakeNetwork$transmit$lambda;
-  Coroutine$FakeNetwork$transmit$lambda.prototype.doResume = function () {
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.constructor = Coroutine$FakeNetwork$transmitUdp$lambda;
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
+            var tmp$, tmp$_0;
             this.state_0 = 2;
-            this.result_0 = delay(this.local$this$FakeNetwork.networkDelay_0, this);
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -862,11 +1022,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             throw this.exception_0;
           case 2:
             if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
-              return this.local$this$FakeNetwork.display_0.droppedPacket(), Unit;
+              return (tmp$ = this.local$this$FakeNetwork.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
             }
              else {
-              this.local$this$FakeNetwork.display_0.receivedPacket();
-              return this.local$closure$listener.receive_cm0rz4$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
+              (tmp$_0 = this.local$this$FakeNetwork.display_0) != null ? (tmp$_0.receivedPacket(), Unit) : null;
+              return this.local$closure$udpListener.receive_cm0rz4$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
             }
 
           case 3:
@@ -887,23 +1047,302 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       }
      while (true);
   };
-  function FakeNetwork$transmit$lambda(this$FakeNetwork_0, closure$listener_0, closure$fromAddress_0, closure$bytes_0) {
+  function FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0) {
     return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$transmit$lambda(this$FakeNetwork_0, closure$listener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      var instance = new Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  FakeNetwork.prototype.transmit_0 = function (fromAddress, listener, bytes) {
-    launch(coroutines.GlobalScope, void 0, void 0, FakeNetwork$transmit$lambda(this, listener, fromAddress, bytes));
+  FakeNetwork.prototype.transmitUdp_0 = function (fromAddress, udpListener, bytes) {
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$transmitUdp$lambda(this, udpListener, fromAddress, bytes));
+  };
+  FakeNetwork.prototype.listenTcp_0 = function (myAddress, port, tcpServerSocketListener) {
+    var $receiver = this.tcpServerSocketsByPort_0;
+    var key = new Pair(myAddress, port);
+    $receiver.put_xwzc9p$(key, tcpServerSocketListener);
+  };
+  function Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$clientListener = closure$clientListener_0;
+    this.local$closure$connection = closure$connection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda;
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$clientListener.reset_t1snl1$(this.local$closure$connection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function FakeNetwork$connectTcp$lambda_0(closure$clientSideConnection) {
+    return function () {
+      return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
+    };
+  }
+  function FakeNetwork$connectTcp$lambda_1(closure$serverSideConnection) {
+    return function () {
+      return closure$serverSideConnection;
+    };
+  }
+  function Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$clientListener = closure$clientListener_0;
+    this.local$closure$clientSideConnection = closure$clientSideConnection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_0;
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$clientListener.connected_t1snl1$(this.local$closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : this.local$closure$clientSideConnection.v), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda_2(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$serverListener = closure$serverListener_0;
+    this.local$closure$serverSideConnection = closure$serverSideConnection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda_1.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_1;
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$serverListener.connected_t1snl1$(this.local$closure$serverSideConnection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork.prototype.connectTcp_0 = function (clientAddress, serverAddress, serverPort, clientListener) {
+    var serverSocketListener = this.tcpServerSocketsByPort_0.get_11rb$(new Pair(serverAddress, serverPort));
+    if (serverSocketListener == null) {
+      var connection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, null);
+      launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda(this, clientListener, connection));
+      return connection;
+    }
+    var clientSideConnection = {v: null};
+    var serverSideConnection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, clientListener, FakeNetwork$connectTcp$lambda_0(clientSideConnection));
+    var serverListener = serverSocketListener.incomingConnection_t1snl1$(serverSideConnection);
+    clientSideConnection.v = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, serverListener, FakeNetwork$connectTcp$lambda_1(serverSideConnection));
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_2(this, clientListener, clientSideConnection));
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_3(this, serverListener, serverSideConnection));
+    return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
+  };
+  function FakeNetwork$FakeTcpConnection($outer, fromAddress, toAddress, port, tcpListener, otherListener) {
+    this.$outer = $outer;
+    if (tcpListener === void 0)
+      tcpListener = null;
+    if (otherListener === void 0)
+      otherListener = null;
+    this.fromAddress_gytzal$_0 = fromAddress;
+    this.toAddress_ytzwi$_0 = toAddress;
+    this.port_8i3uvw$_0 = port;
+    this.tcpListener_0 = tcpListener;
+    this.otherListener_0 = otherListener;
+  }
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'fromAddress', {
+    get: function () {
+      return this.fromAddress_gytzal$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'toAddress', {
+    get: function () {
+      return this.toAddress_ytzwi$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'port', {
+    get: function () {
+      return this.port_8i3uvw$_0;
+    }
+  });
+  function Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeTcpConnection = this$FakeTcpConnection_0;
+    this.local$closure$bytes = closure$bytes_0;
+  }
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeTcpConnection$send$lambda;
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var tmp$;
+            return (tmp$ = this.local$this$FakeTcpConnection.tcpListener_0) != null ? (tmp$.receive_rg1vmd$(ensureNotNull(this.local$this$FakeTcpConnection.otherListener_0)(), this.local$closure$bytes), Unit) : null;
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork$FakeTcpConnection.prototype.send_fqrh44$ = function (bytes) {
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeTcpConnection$send$lambda(this, bytes));
+  };
+  FakeNetwork$FakeTcpConnection.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeTcpConnection',
+    interfaces: [Network$TcpConnection]
   };
   FakeNetwork.prototype.sendPacketSuccess_0 = function () {
-    return Random.Default.nextFloat() > this.display_0.packetLossRate / 2;
+    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
   };
   FakeNetwork.prototype.receivePacketSuccess_0 = function () {
-    return Random.Default.nextFloat() > this.display_0.packetLossRate / 2;
+    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
+  };
+  FakeNetwork.prototype.packetLossRate_0 = function () {
+    var tmp$, tmp$_0;
+    return (tmp$_0 = (tmp$ = this.display_0) != null ? tmp$.packetLossRate : null) != null ? tmp$_0 : 0.0;
   };
   function FakeNetwork$FakeLink($outer, myAddress) {
     this.$outer = $outer;
@@ -914,19 +1353,96 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       return this.myAddress_1ma6oo$_0;
     }
   });
-  FakeNetwork$FakeLink.prototype.listen_nmsgsy$ = function (port, listener) {
-    this.$outer.listen_0(this.myAddress, port, listener);
+  FakeNetwork$FakeLink.prototype.listenUdp_ury2hn$ = function (port, udpListener) {
+    this.$outer.listenUdp_0(this.myAddress, port, udpListener);
   };
-  FakeNetwork$FakeLink.prototype.send_z62edq$ = function (toAddress, port, bytes) {
-    this.$outer.send_0(this.myAddress, toAddress, port, bytes);
+  FakeNetwork$FakeLink.prototype.sendUdp_z62edq$ = function (toAddress, port, bytes) {
+    this.$outer.sendUdp_0(this.myAddress, toAddress, port, bytes);
   };
-  FakeNetwork$FakeLink.prototype.broadcast_3fbn1q$ = function (port, bytes) {
-    this.$outer.broadcast_0(this.myAddress, port, bytes);
+  FakeNetwork$FakeLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    this.$outer.broadcastUdp_0(this.myAddress, port, bytes);
+  };
+  FakeNetwork$FakeLink.prototype.listenTcp_5na2rz$ = function (port, tcpServerSocketListener) {
+    this.$outer.listenTcp_0(this.myAddress, port, tcpServerSocketListener);
+  };
+  FakeNetwork$FakeLink.prototype.connectTcp_cb4f41$ = function (toAddress, port, tcpListener) {
+    return this.$outer.connectTcp_0(this.myAddress, toAddress, port, tcpListener);
   };
   FakeNetwork$FakeLink.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'FakeLink',
     interfaces: [Network$Link]
+  };
+  function Coroutine$networkDelay_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$networkDelay_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$networkDelay_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$networkDelay_0.prototype.constructor = Coroutine$networkDelay_0;
+  Coroutine$networkDelay_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            if (this.$this.networkDelay_1 !== 0) {
+              this.state_0 = 2;
+              this.result_0 = delay(Kotlin.Long.fromInt(this.$this.networkDelay_1), this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            }
+             else {
+              this.state_0 = 3;
+              continue;
+            }
+
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.state_0 = 3;
+            continue;
+          case 3:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  FakeNetwork.prototype.networkDelay_0 = function (continuation_0, suspended) {
+    var instance = new Coroutine$networkDelay_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function FakeNetwork$coroutineScope$ObjectLiteral(closure$coroutineContext) {
+    this.closure$coroutineContext = closure$coroutineContext;
+  }
+  Object.defineProperty(FakeNetwork$coroutineScope$ObjectLiteral.prototype, 'coroutineContext', {
+    get: function () {
+      return this.closure$coroutineContext;
+    }
+  });
+  FakeNetwork$coroutineScope$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [CoroutineScope]
   };
   FakeNetwork.$metadata$ = {
     kind: Kind_CLASS,
@@ -964,20 +1480,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.network = network;
     this.dmxUniverse = dmxUniverse;
     this.display = display;
-    this.link_e4s3v3$_0 = this.link_e4s3v3$_0;
+    this.link_0 = this.network.link();
     this.brains_0 = LinkedHashMap_init();
     this.beatProvider_0 = new Pinky$BeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
     this.brainsChanged_0 = true;
+    this.showRunner_0 = new ShowRunner(this.display, toList(this.brains_0.values), this.dmxUniverse);
   }
-  Object.defineProperty(Pinky.prototype, 'link_0', {
+  Object.defineProperty(Pinky.prototype, 'address', {
     get: function () {
-      if (this.link_e4s3v3$_0 == null)
-        return throwUPAE('link');
-      return this.link_e4s3v3$_0;
-    },
-    set: function (link) {
-      this.link_e4s3v3$_0 = link;
+      return this.link_0.myAddress;
     }
   });
   function Coroutine$Pinky$run$lambda(this$Pinky_0, $receiver_0, controller, continuation_0) {
@@ -1032,16 +1544,28 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         return instance.doResume(null);
     };
   }
-  function Pinky$run$lambda_0(closure$currentShowMeta, this$Pinky, closure$showRunner) {
+  function Pinky$run$lambda_0(this$Pinky) {
+    return function (it) {
+      this$Pinky.display.color = it;
+      println('display.color = ' + it);
+      return Unit;
+    };
+  }
+  function Pinky$run$lambda_1(closure$primaryColorChannel, this$Pinky) {
     return function () {
-      return closure$currentShowMeta.v.createShow_h1b9op$(this$Pinky.sheepModel, closure$showRunner.v);
+      closure$primaryColorChannel.onChange(ensureNotNull(this$Pinky.display.color));
+      return Unit;
+    };
+  }
+  function Pinky$run$lambda_2(closure$currentShowMeta, this$Pinky) {
+    return function () {
+      return closure$currentShowMeta.v.createShow_h1b9op$(this$Pinky.sheepModel, this$Pinky.showRunner_0);
     };
   }
   function Coroutine$run_1($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
-    this.local$showRunner = void 0;
     this.local$prevSelectedShow = void 0;
     this.local$currentShowMeta = void 0;
     this.local$buildShow = void 0;
@@ -1060,13 +1584,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         switch (this.state_0) {
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
-            this.$this.link_0 = this.$this.network.link();
-            this.$this.link_0.listen_nmsgsy$(Ports$Companion_getInstance().PINKY, this.$this);
+            this.$this.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().PINKY, this.$this);
             this.$this.display.listShows_5ucgt1$(this.$this.showMetas);
-            this.local$showRunner = {v: new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse)};
+            var pubSub = new PubSub$Server(this.$this.link_0, Ports$Companion_getInstance().PINKY_UI_TCP);
+            var color = this.$this.display.color;
+            if (color != null) {
+              var primaryColorChannel = pubSub.publish_oiz02e$(Topics_getInstance().primaryColor, color, Pinky$run$lambda_0(this.$this));
+              this.$this.display.onPrimaryColorChange = Pinky$run$lambda_1(primaryColorChannel, this.$this);
+            }
+
+            this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse);
             this.local$prevSelectedShow = this.$this.display.selectedShow;
             this.local$currentShowMeta = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas))};
-            this.local$buildShow = Pinky$run$lambda_0(this.local$currentShowMeta, this.$this, this.local$showRunner);
+            this.local$buildShow = Pinky$run$lambda_2(this.local$currentShowMeta, this.$this);
             this.local$show = this.local$buildShow();
             this.state_0 = 2;
             continue;
@@ -1076,12 +1606,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
             if (!this.$this.mapperIsRunning_0) {
               if (this.$this.brainsChanged_0 || !equals(this.$this.display.selectedShow, this.local$currentShowMeta.v)) {
                 this.local$currentShowMeta.v = this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas));
-                this.local$showRunner.v = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse);
+                this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse);
                 this.local$show = this.local$buildShow();
                 this.$this.brainsChanged_0 = false;
               }
               this.local$show.nextFrame();
-              this.local$showRunner.v.send_6qu7we$(this.$this.link_0);
+              this.$this.showRunner_0.send_6qu7we$(this.$this.link_0);
             }
 
             this.state_0 = 3;
@@ -1201,7 +1731,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Pinky.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Pinky',
-    interfaces: [Network$Listener]
+    interfaces: [Network$UdpListener]
   };
   function ShowRunner(pinkyDisplay, brains, dmxUniverse) {
     this.pinkyDisplay_0 = pinkyDisplay;
@@ -1268,7 +1798,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       tmp$_0 = remoteBrains.iterator();
       while (tmp$_0.hasNext()) {
         var element_0 = tmp$_0.next();
-        link.send_bkw8fl$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
+        link.sendUdp_bkw8fl$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
       }
     }
     this.dmxUniverse_0.sendFrame();
@@ -1309,6 +1839,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.MAPPER = 8001;
     this.PINKY = 8002;
     this.BRAIN = 8003;
+    this.PINKY_UI_TCP = 8004;
   }
   Ports$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -1666,6 +2197,343 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Message',
     interfaces: []
   };
+  function PubSub(networkLink) {
+    PubSub$Companion_getInstance();
+    this.networkLink_0 = networkLink;
+  }
+  function PubSub$Origin() {
+  }
+  PubSub$Origin.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Origin',
+    interfaces: []
+  };
+  function PubSub$Observer() {
+  }
+  PubSub$Observer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Observer',
+    interfaces: []
+  };
+  function PubSub$Companion() {
+    PubSub$Companion_instance = this;
+  }
+  PubSub$Companion.prototype.listen_tx2csw$ = function (networkLink, port) {
+    return new PubSub$Server(networkLink, port);
+  };
+  PubSub$Companion.prototype.connect_mbxyi8$ = function (networkLink, address, port) {
+    return new PubSub$Client(networkLink, address, port);
+  };
+  PubSub$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PubSub$Companion_instance = null;
+  function PubSub$Companion_getInstance() {
+    if (PubSub$Companion_instance === null) {
+      new PubSub$Companion();
+    }
+    return PubSub$Companion_instance;
+  }
+  function PubSub$Topic(name, serializer) {
+    this.name = name;
+    this.serializer = serializer;
+  }
+  PubSub$Topic.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Topic',
+    interfaces: []
+  };
+  PubSub$Topic.prototype.component1 = function () {
+    return this.name;
+  };
+  PubSub$Topic.prototype.component2 = function () {
+    return this.serializer;
+  };
+  PubSub$Topic.prototype.copy_polik9$ = function (name, serializer) {
+    return new PubSub$Topic(name === void 0 ? this.name : name, serializer === void 0 ? this.serializer : serializer);
+  };
+  PubSub$Topic.prototype.toString = function () {
+    return 'Topic(name=' + Kotlin.toString(this.name) + (', serializer=' + Kotlin.toString(this.serializer)) + ')';
+  };
+  PubSub$Topic.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.serializer) | 0;
+    return result;
+  };
+  PubSub$Topic.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.serializer, other.serializer)))));
+  };
+  function PubSub$Listener(origin) {
+    this.origin_fg10in$_0 = origin;
+  }
+  PubSub$Listener.prototype.onUpdate_btyzc5$ = function (data, fromOrigin) {
+    if (this.origin_fg10in$_0 !== fromOrigin) {
+      this.onUpdate_61zpoe$(data);
+    }
+  };
+  PubSub$Listener.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Listener',
+    interfaces: []
+  };
+  function PubSub$TopicInfo(name, data) {
+    if (data === void 0)
+      data = null;
+    this.name = name;
+    this.data = data;
+    this.listeners = ArrayList_init();
+  }
+  PubSub$TopicInfo.prototype.notify_btyzc5$ = function (jsonData, origin) {
+    var tmp$;
+    tmp$ = this.listeners.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.onUpdate_btyzc5$(jsonData, origin);
+    }
+  };
+  PubSub$TopicInfo.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TopicInfo',
+    interfaces: []
+  };
+  function PubSub$Connection(name, topics) {
+    PubSub$Origin.call(this);
+    this.name_qs3czq$_0 = name;
+    this.topics_okivn7$_0 = topics;
+    this.connection = null;
+    this.toSend_p0j902$_0 = ArrayList_init();
+  }
+  PubSub$Connection.prototype.connected_t1snl1$ = function (tcpConnection) {
+    logger$Companion_getInstance().debug_61zpoe$('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] PubSub: new ' + this + ' connection');
+    this.connection = tcpConnection;
+    var tmp$;
+    tmp$ = this.toSend_p0j902$_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      tcpConnection.send_fqrh44$(element);
+    }
+    this.toSend_p0j902$_0.clear();
+  };
+  function PubSub$Connection$receive$ObjectLiteral(closure$topicName, this$Connection, origin) {
+    this.closure$topicName = closure$topicName;
+    this.this$Connection = this$Connection;
+    PubSub$Listener.call(this, origin);
+  }
+  PubSub$Connection$receive$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
+    this.this$Connection.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
+  };
+  PubSub$Connection$receive$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Listener]
+  };
+  PubSub$Connection.prototype.receive_rg1vmd$ = function (tcpConnection, bytes) {
+    var reader = new ByteArrayReader(bytes);
+    var command = reader.readString();
+    switch (command) {
+      case 'sub':
+        var topicName = reader.readString();
+        println('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] sub ' + topicName);
+        var $receiver = this.topics_okivn7$_0;
+        var tmp$;
+        var value = $receiver.get_11rb$(topicName);
+        if (value == null) {
+          var answer = new PubSub$TopicInfo(topicName);
+          $receiver.put_xwzc9p$(topicName, answer);
+          tmp$ = answer;
+        }
+         else {
+          tmp$ = value;
+        }
+
+        var topicInfo = tmp$;
+        var listener = new PubSub$Connection$receive$ObjectLiteral(topicName, this, this);
+        topicInfo.listeners.add_11rb$(listener);
+        var topicData = topicInfo.data;
+        if (topicData != null) {
+          listener.onUpdate_61zpoe$(topicData);
+        }
+
+        break;
+      case 'update':
+        var topicName_0 = reader.readString();
+        var topic = new PubSub$Topic(topicName_0, serializer(kotlin_js_internal_StringCompanionObject));
+        var data = reader.readString();
+        println('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] update ' + topicName_0 + ' ' + data);
+        var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topic.name);
+        topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
+        break;
+    }
+  };
+  PubSub$Connection.prototype.sendTopicUpdate_puj7f4$ = function (name, data) {
+    var tmp$;
+    var writer = new ByteArrayWriter();
+    println('-> update ' + name + ' ' + data + ' to ' + toString_0((tmp$ = this.connection) != null ? tmp$.toAddress : null));
+    writer.writeString_61zpoe$('update');
+    writer.writeString_61zpoe$(name);
+    writer.writeString_61zpoe$(data);
+    this.sendCommand_ma41of$(writer.toBytes());
+  };
+  PubSub$Connection.prototype.sendTopicSub_61zpoe$ = function (topicName) {
+    var writer = new ByteArrayWriter();
+    writer.writeString_61zpoe$('sub');
+    writer.writeString_61zpoe$(topicName);
+    this.sendCommand_ma41of$(writer.toBytes());
+  };
+  PubSub$Connection.prototype.reset_t1snl1$ = function (tcpConnection) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'PubSub.Connection.reset not implemented');
+  };
+  PubSub$Connection.prototype.sendCommand_ma41of$ = function (bytes) {
+    var tcpConnection = this.connection;
+    if (tcpConnection == null) {
+      this.toSend_p0j902$_0.add_11rb$(bytes);
+    }
+     else {
+      tcpConnection.send_fqrh44$(bytes);
+    }
+  };
+  PubSub$Connection.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Connection',
+    interfaces: [Network$TcpListener, PubSub$Origin]
+  };
+  function PubSub$Server(link, port) {
+    this.topics_0 = HashMap_init();
+    link.listenTcp_5na2rz$(port, this);
+  }
+  PubSub$Server.prototype.incomingConnection_t1snl1$ = function (fromAddress) {
+    return new PubSub$Connection('server', this.topics_0);
+  };
+  function PubSub$Server$publish$ObjectLiteral(closure$onUpdate, closure$topic, origin) {
+    this.closure$onUpdate = closure$onUpdate;
+    this.closure$topic = closure$topic;
+    PubSub$Listener.call(this, origin);
+  }
+  PubSub$Server$publish$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
+    this.closure$onUpdate(Json.Companion.parse_awif5v$(this.closure$topic.serializer, data));
+  };
+  PubSub$Server$publish$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Listener]
+  };
+  function PubSub$Server$publish$ObjectLiteral_0(closure$topicInfo, closure$topic, closure$publisher) {
+    this.closure$topicInfo = closure$topicInfo;
+    this.closure$topic = closure$topic;
+    this.closure$publisher = closure$publisher;
+  }
+  PubSub$Server$publish$ObjectLiteral_0.prototype.onChange = function (t) {
+    this.closure$topicInfo.notify_btyzc5$(Json.Companion.stringify_tf03ej$(this.closure$topic.serializer, t), this.closure$publisher);
+  };
+  PubSub$Server$publish$ObjectLiteral_0.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Observer]
+  };
+  PubSub$Server.prototype.publish_oiz02e$ = function (topic, data, onUpdate) {
+    var publisher = new PubSub$Origin();
+    var topicName = topic.name;
+    var jsonData = Json.Companion.stringify_tf03ej$(topic.serializer, data);
+    var $receiver = this.topics_0;
+    var tmp$;
+    var value = $receiver.get_11rb$(topicName);
+    if (value == null) {
+      var answer = new PubSub$TopicInfo(topicName);
+      $receiver.put_xwzc9p$(topicName, answer);
+      tmp$ = answer;
+    }
+     else {
+      tmp$ = value;
+    }
+    var topicInfo = tmp$;
+    topicInfo.data = jsonData;
+    topicInfo.listeners.add_11rb$(new PubSub$Server$publish$ObjectLiteral(onUpdate, topic, publisher));
+    topicInfo.notify_btyzc5$(jsonData, publisher);
+    return new PubSub$Server$publish$ObjectLiteral_0(topicInfo, topic, publisher);
+  };
+  PubSub$Server.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Server',
+    interfaces: [Network$TcpServerSocketListener]
+  };
+  function PubSub$Client(link, serverAddress, port) {
+    this.topics_0 = HashMap_init();
+    this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0);
+    link.connectTcp_cb4f41$(serverAddress, port, this.server_0);
+  }
+  function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin) {
+    this.this$Client = this$Client;
+    this.closure$topicName = closure$topicName;
+    PubSub$Listener.call(this, origin);
+  }
+  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
+    this.this$Client.server_0.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
+  };
+  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Listener]
+  };
+  function PubSub$Client$subscribe$ObjectLiteral(closure$onUpdate, closure$topic, origin) {
+    this.closure$onUpdate = closure$onUpdate;
+    this.closure$topic = closure$topic;
+    PubSub$Listener.call(this, origin);
+  }
+  PubSub$Client$subscribe$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
+    this.closure$onUpdate(Json.Companion.parse_awif5v$(this.closure$topic.serializer, data));
+  };
+  PubSub$Client$subscribe$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Listener]
+  };
+  function PubSub$Client$subscribe$ObjectLiteral_0(closure$topic, closure$topicInfo, closure$subscriber) {
+    this.closure$topic = closure$topic;
+    this.closure$topicInfo = closure$topicInfo;
+    this.closure$subscriber = closure$subscriber;
+  }
+  PubSub$Client$subscribe$ObjectLiteral_0.prototype.onChange = function (t) {
+    var jsonData = Json.Companion.stringify_tf03ej$(this.closure$topic.serializer, t);
+    this.closure$topicInfo.notify_btyzc5$(jsonData, this.closure$subscriber);
+  };
+  PubSub$Client$subscribe$ObjectLiteral_0.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Observer]
+  };
+  PubSub$Client.prototype.subscribe = function (topic, onUpdate) {
+    var subscriber = new PubSub$Origin();
+    var topicName = topic.name;
+    var $receiver = this.topics_0;
+    var tmp$;
+    var value = $receiver.get_11rb$(topicName);
+    if (value == null) {
+      var $receiver_0 = new PubSub$TopicInfo(topicName);
+      $receiver_0.listeners.add_11rb$(new PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this, topicName, this.server_0));
+      this.server_0.sendTopicSub_61zpoe$(topicName);
+      var answer = $receiver_0;
+      $receiver.put_xwzc9p$(topicName, answer);
+      tmp$ = answer;
+    }
+     else {
+      tmp$ = value;
+    }
+    var topicInfo = tmp$;
+    var listener = new PubSub$Client$subscribe$ObjectLiteral(onUpdate, topic, subscriber);
+    topicInfo.listeners.add_11rb$(listener);
+    var data = topicInfo.data;
+    if (data != null) {
+      listener.onUpdate_61zpoe$(data);
+    }
+    return new PubSub$Client$subscribe$ObjectLiteral_0(topic, topicInfo, subscriber);
+  };
+  PubSub$Client.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Client',
+    interfaces: []
+  };
+  PubSub.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PubSub',
+    interfaces: []
+  };
   function ShaderType(name, ordinal, parser) {
     Enum.call(this);
     this.parser = parser;
@@ -1931,7 +2799,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           tmp$_4 = args.iterator();
           while (tmp$_4.hasNext()) {
             var item_1 = tmp$_4.next();
-            destination_1.add_11rb$(toInt(item_1) - 1 | 0);
+            destination_1.add_11rb$(toInt_0(item_1) - 1 | 0);
           }
 
           var verts = destination_1;
@@ -1943,7 +2811,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
           tmp$_5 = args.iterator();
           while (tmp$_5.hasNext()) {
             var item_2 = tmp$_5.next();
-            destination_2.add_11rb$(toInt(item_2) - 1 | 0);
+            destination_2.add_11rb$(toInt_0(item_2) - 1 | 0);
           }
 
           var verts_0 = destination_2;
@@ -2185,9 +3053,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
         return instance.doResume(null);
     };
   }
-  function Coroutine$SheepSimulator$start$lambda_0(continuation_0) {
+  function Coroutine$SheepSimulator$start$lambda_0(this$SheepSimulator_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
     this.exceptionState_0 = 1;
+    this.local$this$SheepSimulator = this$SheepSimulator_0;
   }
   Coroutine$SheepSimulator$start$lambda_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -2197,6 +3067,50 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   Coroutine$SheepSimulator$start$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
   Coroutine$SheepSimulator$start$lambda_0.prototype.constructor = Coroutine$SheepSimulator$start$lambda_0;
   Coroutine$SheepSimulator$start$lambda_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            return new Ui(this.local$this$SheepSimulator.network, this.local$this$SheepSimulator.pinky.address, this.local$this$SheepSimulator.display.forUi());
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function SheepSimulator$start$lambda_0(this$SheepSimulator_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$SheepSimulator$start$lambda_0(this$SheepSimulator_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$SheepSimulator$start$lambda_1(continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+  }
+  Coroutine$SheepSimulator$start$lambda_1.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$SheepSimulator$start$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$SheepSimulator$start$lambda_1.prototype.constructor = Coroutine$SheepSimulator$start$lambda_1;
+  Coroutine$SheepSimulator$start$lambda_1.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
@@ -2226,8 +3140,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       }
      while (true);
   };
-  function SheepSimulator$start$lambda_0(continuation_0, suspended) {
-    var instance = new Coroutine$SheepSimulator$start$lambda_0(continuation_0);
+  function SheepSimulator$start$lambda_1(continuation_0, suspended) {
+    var instance = new Coroutine$SheepSimulator$start$lambda_1(continuation_0);
     if (suspended)
       return instance;
     else
@@ -2253,7 +3167,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.visualizer.addEye_1hma8m$(element_0);
       Config$Companion_getInstance().DMX_DEVICES.get_11rb$(element_0.name);
     }
-    doRunBlocking(SheepSimulator$start$lambda_0);
+    launch(coroutines.GlobalScope, void 0, void 0, SheepSimulator$start$lambda_0(this));
+    doRunBlocking(SheepSimulator$start$lambda_1);
   };
   function SheepSimulator$PinkyScope() {
     SheepSimulator$PinkyScope_instance = this;
@@ -2331,21 +3246,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   function Shenzarpy$WheelColor_initFields() {
     Shenzarpy$WheelColor_initFields = function () {
     };
-    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().from_za3lpa$(12721698));
-    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().from_za3lpa$(15434294));
-    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().from_za3lpa$(8174724));
-    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().from_za3lpa$(1212719));
-    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().from_za3lpa$(10469695));
-    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().from_za3lpa$(9401515));
-    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().from_za3lpa$(15434114));
-    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().from_za3lpa$(16706356));
-    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().from_za3lpa$(14750594));
-    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().from_za3lpa$(1812456));
-    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().from_za3lpa$(16041553));
-    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().from_za3lpa$(16046218));
-    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().from_za3lpa$(9947064));
-    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().from_za3lpa$(545175));
-    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().from_za3lpa$(16777215));
+    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().fromInts(12721698));
+    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().fromInts(15434294));
+    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().fromInts(8174724));
+    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().fromInts(1212719));
+    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().fromInts(10469695));
+    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().fromInts(9401515));
+    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().fromInts(15434114));
+    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().fromInts(16706356));
+    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().fromInts(14750594));
+    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().fromInts(1812456));
+    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().fromInts(16041553));
+    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().fromInts(16046218));
+    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().fromInts(9947064));
+    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().fromInts(545175));
+    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().fromInts(16777215));
     Shenzarpy$WheelColor$Companion_getInstance();
   }
   var Shenzarpy$WheelColor$RED_instance;
@@ -2772,6 +3687,76 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'Show',
     interfaces: []
   };
+  function Topics() {
+    Topics_instance = this;
+    this.primaryColor = new PubSub$Topic('primaryColor', Color$Companion_getInstance().serializer());
+  }
+  Topics.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Topics',
+    interfaces: []
+  };
+  var Topics_instance = null;
+  function Topics_getInstance() {
+    if (Topics_instance === null) {
+      new Topics();
+    }
+    return Topics_instance;
+  }
+  function Ui(network, pinkyAddress, display) {
+    this.network = network;
+    this.pinkyAddress = pinkyAddress;
+    this.display = display;
+    this.link = this.network.link();
+    this.pubSub_r2ifbz$_0 = this.pubSub_r2ifbz$_0;
+    this.connect();
+  }
+  Object.defineProperty(Ui.prototype, 'pubSub_0', {
+    get: function () {
+      if (this.pubSub_r2ifbz$_0 == null)
+        return throwUPAE('pubSub');
+      return this.pubSub_r2ifbz$_0;
+    },
+    set: function (pubSub) {
+      this.pubSub_r2ifbz$_0 = pubSub;
+    }
+  });
+  function Ui$connect$lambda(this$Ui) {
+    return function (color) {
+      this$Ui.display.color = color;
+      println('UI: primary color is ' + color);
+      return Unit;
+    };
+  }
+  function Ui$connect$lambda_0(closure$primaryColorChannel) {
+    return function (color) {
+      closure$primaryColorChannel.onChange(color);
+      return Unit;
+    };
+  }
+  Ui.prototype.connect = function () {
+    var showsTopic = new PubSub$Topic('/shows', serializer(kotlin_js_internal_StringCompanionObject));
+    var currentShowTopic = new PubSub$Topic('/currentShow', serializer(kotlin_js_internal_StringCompanionObject));
+    var pubSub = new PubSub$Client(this.link, this.pinkyAddress, Ports$Companion_getInstance().PINKY_UI_TCP);
+    var context = new UiContext(pubSub);
+    var uiApp = createUiApp('uiView1', context);
+    println('uiApp: ' + uiApp.toString());
+    var primaryColorChannel = pubSub.subscribe(Topics_getInstance().primaryColor, Ui$connect$lambda(this));
+    this.display.onColorChanged = Ui$connect$lambda_0(primaryColorChannel);
+  };
+  Ui.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Ui',
+    interfaces: []
+  };
+  function UiContext(pubSub) {
+    this.pubSub = pubSub;
+  }
+  UiContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UiContext',
+    interfaces: []
+  };
   function Visualizer(sheepModel, dmxUniverse) {
     this.sheepModel_0 = sheepModel;
     this.dmxUniverse_0 = dmxUniverse;
@@ -2924,6 +3909,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.writeChar_s8itvh$(s.charCodeAt(i));
     }
   };
+  ByteArrayWriter.prototype.writeBytes_fqrh44$ = function (data) {
+    this.growIfNecessary_0(4 + data.length | 0);
+    this.writeInt_za3lpa$(data.length);
+    arrayCopy(data, this.bytes_0, this.offset, 0, data.length);
+    this.offset = this.offset + data.length | 0;
+  };
   ByteArrayWriter.prototype.toBytes = function () {
     return copyOf(this.bytes_0, this.offset);
   };
@@ -2977,6 +3968,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       buf.append_s8itvh$(unboxChar(this.readChar()));
     }
     return buf.toString();
+  };
+  ByteArrayReader.prototype.readBytes = function () {
+    var count = this.readInt();
+    var bytes = copyOfRange(this.bytes, this.offset, this.offset + count | 0);
+    this.offset = this.offset + count | 0;
+    return bytes;
   };
   ByteArrayReader.$metadata$ = {
     kind: Kind_CLASS,
@@ -3501,7 +4498,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeadBuffers_0 = destination_0;
-    println('Created new CompositeShow, we have ' + this.shaderBufs_0.size + ' buffers');
   }
   CompositeShow.prototype.nextFrame = function () {
     var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
@@ -3630,7 +4626,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeads = destination_0;
-    println('Creating new SomeDumbShow, we have ' + this.pixelShaderBuffers.size + ' buffers');
   }
   SomeDumbShow.prototype.nextFrame = function () {
     var seed = Random_0(0);
@@ -3741,73 +4736,32 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     else
       return instance.doResume(null);
   }
-  function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$closure$block = closure$block_0;
+  function logger() {
+    logger$Companion_getInstance();
   }
-  Coroutine$doRunBlocking$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
+  function logger$Companion() {
+    logger$Companion_instance = this;
+  }
+  logger$Companion.prototype.debug_61zpoe$ = function (message) {
+    println('DEBUG: ' + message);
   };
-  Coroutine$doRunBlocking$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$doRunBlocking$lambda.prototype.constructor = Coroutine$doRunBlocking$lambda;
-  Coroutine$doRunBlocking$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$closure$block(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.result_0;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
+  logger$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
   };
-  function doRunBlocking$lambda(closure$block_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function doRunBlocking(block) {
-    return promise(coroutines.GlobalScope, void 0, void 0, doRunBlocking$lambda(block));
-  }
-  function getResource(name) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', name, false);
-    xhr.send();
-    if (equals(xhr.status, 200)) {
-      return xhr.responseText;
+  var logger$Companion_instance = null;
+  function logger$Companion_getInstance() {
+    if (logger$Companion_instance === null) {
+      new logger$Companion();
     }
-    throw Exception_init('failed to load resource ' + name + ': ' + xhr.status + ' ' + xhr.responseText);
+    return logger$Companion_instance;
   }
-  function getDisplay() {
-    return new JsDisplay();
-  }
+  logger.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'logger',
+    interfaces: []
+  };
   function JsDisplay() {
   }
   JsDisplay.prototype.forNetwork = function () {
@@ -3821,6 +4775,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   JsDisplay.prototype.forMapper = function () {
     return new JsMapperDisplay(ensureNotNull(document.getElementById('mapperView')));
+  };
+  JsDisplay.prototype.forUi = function () {
+    return new JsUiDisplay(ensureNotNull(document.getElementById('uiView1')));
   };
   JsDisplay.$metadata$ = {
     kind: Kind_CLASS,
@@ -3868,6 +4825,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   };
   function JsPinkyDisplay(element) {
     this.color_y02qw7$_0 = null;
+    this.onPrimaryColorChange_mf0bnc$_0 = null;
     this.selectedShow_l65oio$_0 = null;
     this.brainCountDiv_0 = null;
     this.beat1_0 = null;
@@ -3875,7 +4833,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.beat3_0 = null;
     this.beat4_0 = null;
     this.beats_0 = null;
-    this.colorButtons_0 = null;
+    this.colorPickerView_0 = null;
     this.showListDiv_0 = null;
     this.showButtons_0 = null;
     appendText(element, 'Brains online: ');
@@ -3886,18 +4844,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
     this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
     this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    var colorsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_5);
-    this.colorButtons_0 = listOf([new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().WHITE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_6)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().RED, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_7)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().ORANGE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_8)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().YELLOW, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_9)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().GREEN, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_10)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().BLUE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_11)), new JsPinkyDisplay$ColorButton(Color$Companion_getInstance().PURPLE, appendElement(colorsDiv, 'span', JsPinkyDisplay_init$lambda_12))]);
-    var tmp$;
-    tmp$ = this.colorButtons_0.iterator();
-    while (tmp$.hasNext()) {
-      var element_0 = tmp$.next();
-      element_0.allButtons = this.colorButtons_0;
-      element_0.element.setAttribute('style', 'background-color: #' + element_0.data.toHexString());
-      element_0.onSelect = JsPinkyDisplay_init$lambda$lambda_3(this);
-    }
-    ensureNotNull(random(this.colorButtons_0)).select();
-    this.showListDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_13);
+    this.colorPickerView_0 = new ColorPickerView(element, JsPinkyDisplay_init$lambda_5(this));
+    this.color = this.colorPickerView_0.colors.get_za3lpa$(0);
+    this.showListDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_6);
     this.showButtons_0 = ArrayList_init();
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
@@ -3906,8 +4855,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     get: function () {
       return this.color_y02qw7$_0;
     },
-    set: function (color) {
-      this.color_y02qw7$_0 = color;
+    set: function (value) {
+      this.colorPickerView_0.setColor_58xt5s$(value);
+      this.color_y02qw7$_0 = value;
+    }
+  });
+  Object.defineProperty(JsPinkyDisplay.prototype, 'onPrimaryColorChange', {
+    get: function () {
+      return this.onPrimaryColorChange_mf0bnc$_0;
+    },
+    set: function (onPrimaryColorChange) {
+      this.onPrimaryColorChange_mf0bnc$_0 = onPrimaryColorChange;
     }
   });
   Object.defineProperty(JsPinkyDisplay.prototype, 'selectedShow', {
@@ -3973,60 +4931,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       this.beat_o13evy$_0 = value;
     }
   });
-  function JsPinkyDisplay$Button(data, element) {
-    this.data = data;
-    this.element = element;
-    this.allButtons_zidvs0$_0 = this.allButtons_zidvs0$_0;
-    this.onSelect = null;
-    this.element.addEventListener('click', JsPinkyDisplay$JsPinkyDisplay$Button_init$lambda(this));
-  }
-  Object.defineProperty(JsPinkyDisplay$Button.prototype, 'allButtons', {
-    get: function () {
-      if (this.allButtons_zidvs0$_0 == null)
-        return throwUPAE('allButtons');
-      return this.allButtons_zidvs0$_0;
-    },
-    set: function (allButtons) {
-      this.allButtons_zidvs0$_0 = allButtons;
-    }
-  });
-  JsPinkyDisplay$Button.prototype.select = function () {
-    var tmp$;
-    var tmp$_0;
-    tmp$_0 = this.allButtons.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      clear_0(element.element.classList);
-    }
-    this.element.classList.add('selected');
-    (tmp$ = this.onSelect) != null ? tmp$(this.data) : null;
-  };
-  function JsPinkyDisplay$JsPinkyDisplay$Button_init$lambda(this$Button) {
-    return function (it) {
-      this$Button.select();
-      return Unit;
-    };
-  }
-  JsPinkyDisplay$Button.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Button',
-    interfaces: []
-  };
-  function JsPinkyDisplay$ColorButton(color, element) {
-    JsPinkyDisplay$Button.call(this, color, element);
-  }
-  JsPinkyDisplay$ColorButton.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ColorButton',
-    interfaces: [JsPinkyDisplay$Button]
-  };
   function JsPinkyDisplay$ShowButton(showMeta, element) {
-    JsPinkyDisplay$Button.call(this, showMeta, element);
+    Button.call(this, showMeta, element);
   }
   JsPinkyDisplay$ShowButton.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShowButton',
-    interfaces: [JsPinkyDisplay$Button]
+    interfaces: [Button]
   };
   function JsPinkyDisplay_init$lambda($receiver) {
     return Unit;
@@ -4060,48 +4971,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     appendText($receiver, '4');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda$lambda_1($receiver) {
-    appendText($receiver, 'Colors: ');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda$lambda_2($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_5($receiver) {
-    $receiver.id = 'colorsDiv';
-    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda_1);
-    appendElement($receiver, 'br', JsPinkyDisplay_init$lambda$lambda_2);
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_6($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_7($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_8($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_9($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_10($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_11($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_12($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda$lambda_3(this$JsPinkyDisplay) {
+  function JsPinkyDisplay_init$lambda_5(this$JsPinkyDisplay) {
     return function (it) {
+      var tmp$;
       this$JsPinkyDisplay.color = it;
+      (tmp$ = this$JsPinkyDisplay.onPrimaryColorChange) != null ? tmp$() : null;
       return Unit;
     };
   }
-  function JsPinkyDisplay_init$lambda_13($receiver) {
-    $receiver.id = 'showsDiv';
+  function JsPinkyDisplay_init$lambda_6($receiver) {
+    $receiver.className = 'showsDiv';
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -4179,6 +5058,42 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
     simpleName: 'JsMapperDisplay',
     interfaces: [MapperDisplay]
   };
+  function JsUiDisplay(element) {
+    this.element = element;
+    this.color_3zkcys$_0 = null;
+    this.colorPickerView_0 = new ColorPickerView(this.element, JsUiDisplay$colorPickerView$lambda(this));
+    this.onColorChanged_24xr19$_0 = null;
+  }
+  Object.defineProperty(JsUiDisplay.prototype, 'color', {
+    get: function () {
+      return this.color_3zkcys$_0;
+    },
+    set: function (value) {
+      this.colorPickerView_0.setColor_58xt5s$(value);
+      this.color_3zkcys$_0 = value;
+    }
+  });
+  Object.defineProperty(JsUiDisplay.prototype, 'onColorChanged', {
+    get: function () {
+      return this.onColorChanged_24xr19$_0;
+    },
+    set: function (onColorChanged) {
+      this.onColorChanged_24xr19$_0 = onColorChanged;
+    }
+  });
+  function JsUiDisplay$colorPickerView$lambda(this$JsUiDisplay) {
+    return function (it) {
+      var tmp$;
+      this$JsUiDisplay.color = it;
+      (tmp$ = this$JsUiDisplay.onColorChanged) != null ? tmp$(it) : null;
+      return Unit;
+    };
+  }
+  JsUiDisplay.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsUiDisplay',
+    interfaces: [UiDisplay]
+  };
   function get_disabled($receiver) {
     return equals($receiver.getAttribute('disabled'), 'disabled');
   }
@@ -4190,17 +5105,200 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
       $receiver.removeAttribute('disabled');
     }
   }
-  function clear_0($receiver) {
-    while ($receiver.length > 0) {
-      $receiver.remove(ensureNotNull($receiver.item(0)));
-    }
-  }
   function forEach($receiver, action) {
     var tmp$;
     tmp$ = $receiver.length;
     for (var i = 0; i < tmp$; i++) {
       action(ensureNotNull($receiver.item(i)));
     }
+  }
+  function clear_0($receiver) {
+    while ($receiver.length > 0) {
+      $receiver.remove(ensureNotNull($receiver.item(0)));
+    }
+  }
+  function Button(data, element) {
+    this.data = data;
+    this.element = element;
+    this.allButtons_pdnxqa$_0 = this.allButtons_pdnxqa$_0;
+    this.onSelect = null;
+    this.element.addEventListener('click', Button_init$lambda(this));
+  }
+  Object.defineProperty(Button.prototype, 'allButtons', {
+    get: function () {
+      if (this.allButtons_pdnxqa$_0 == null)
+        return throwUPAE('allButtons');
+      return this.allButtons_pdnxqa$_0;
+    },
+    set: function (allButtons) {
+      this.allButtons_pdnxqa$_0 = allButtons;
+    }
+  });
+  Button.prototype.setSelected_6taknv$ = function (isSelected) {
+    this.element.classList.toggle('selected', isSelected);
+  };
+  Button.prototype.onClick = function () {
+    var tmp$;
+    this.setSelected_6taknv$(true);
+    var tmp$_0;
+    tmp$_0 = this.allButtons.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      element.setSelected_6taknv$(false);
+    }
+    (tmp$ = this.onSelect) != null ? tmp$(this.data) : null;
+  };
+  function Button_init$lambda(this$Button) {
+    return function (it) {
+      this$Button.onClick();
+      return Unit;
+    };
+  }
+  Button.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Button',
+    interfaces: []
+  };
+  function ColorPickerView(element, onSelect) {
+    this.colors = listOf([Color$Companion_getInstance().WHITE, Color$Companion_getInstance().RED, Color$Companion_getInstance().ORANGE, Color$Companion_getInstance().YELLOW, Color$Companion_getInstance().GREEN, Color$Companion_getInstance().BLUE, Color$Companion_getInstance().PURPLE]);
+    this.colorButtons_0 = null;
+    var colorsDiv = appendElement(element, 'div', ColorPickerView_init$lambda);
+    var $receiver = this.colors;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0 = destination.add_11rb$;
+      var $receiver_0 = new ColorPickerView$ColorButton(item, appendElement(colorsDiv, 'span', ColorPickerView_init$lambda$lambda_1));
+      $receiver_0.element.setAttribute('style', 'background-color: ' + $receiver_0.data.toHexString());
+      $receiver_0.onSelect = ColorPickerView_init$lambda$lambda$lambda(onSelect);
+      tmp$_0.call(destination, $receiver_0);
+    }
+    this.colorButtons_0 = destination;
+    var tmp$_1;
+    tmp$_1 = this.colorButtons_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      element_0.allButtons = this.colorButtons_0;
+    }
+  }
+  ColorPickerView.prototype.pickRandom = function () {
+    ensureNotNull(random(this.colorButtons_0)).onClick();
+  };
+  ColorPickerView.prototype.setColor_58xt5s$ = function (color) {
+    var tmp$;
+    tmp$ = this.colorButtons_0.iterator();
+    while (tmp$.hasNext()) {
+      var colorButton = tmp$.next();
+      colorButton.setSelected_6taknv$(equals(colorButton.color, color));
+    }
+  };
+  function ColorPickerView$ColorButton(color, element) {
+    Button.call(this, color, element);
+    this.color = color;
+  }
+  ColorPickerView$ColorButton.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorButton',
+    interfaces: [Button]
+  };
+  function ColorPickerView_init$lambda$lambda($receiver) {
+    appendText($receiver, 'Colors: ');
+    return Unit;
+  }
+  function ColorPickerView_init$lambda$lambda_0($receiver) {
+    return Unit;
+  }
+  function ColorPickerView_init$lambda($receiver) {
+    $receiver.className = 'colorsDiv';
+    appendElement($receiver, 'b', ColorPickerView_init$lambda$lambda);
+    appendElement($receiver, 'br', ColorPickerView_init$lambda$lambda_0);
+    return Unit;
+  }
+  function ColorPickerView_init$lambda$lambda_1($receiver) {
+    return Unit;
+  }
+  function ColorPickerView_init$lambda$lambda$lambda(closure$onSelect) {
+    return function (it) {
+      closure$onSelect(it);
+      return Unit;
+    };
+  }
+  ColorPickerView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorPickerView',
+    interfaces: []
+  };
+  function createUiApp(elementId, uiContext) {
+    return document.createUiApp(elementId, uiContext);
+  }
+  function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$closure$block = closure$block_0;
+  }
+  Coroutine$doRunBlocking$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$doRunBlocking$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$doRunBlocking$lambda.prototype.constructor = Coroutine$doRunBlocking$lambda;
+  Coroutine$doRunBlocking$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$closure$block(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function doRunBlocking$lambda(closure$block_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function doRunBlocking(block) {
+    return promise(coroutines.GlobalScope, void 0, void 0, doRunBlocking$lambda(block));
+  }
+  function getResource(name) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', name, false);
+    xhr.send();
+    if (equals(xhr.status, 200)) {
+      return xhr.responseText;
+    }
+    throw Exception_init('failed to load resource ' + name + ': ' + xhr.status + ' ' + xhr.responseText);
+  }
+  function getDisplay() {
+    return new JsDisplay();
   }
   function getTimeMillis() {
     return Kotlin.Long.fromNumber(Date.now());
@@ -4209,6 +5307,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.Brain = Brain;
   Object.defineProperty(Color, 'Companion', {
     get: Color$Companion_getInstance
+  });
+  Object.defineProperty(Color, '$serializer', {
+    get: Color$$serializer_getInstance
   });
   package$baaahs.Color = Color;
   Object.defineProperty(Config, 'Companion', {
@@ -4221,6 +5322,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   package$baaahs.MapperDisplay = MapperDisplay;
+  package$baaahs.UiDisplay = UiDisplay;
   Dmx.Universe = Dmx$Universe;
   Dmx.Buffer = Dmx$Buffer;
   Dmx.DeviceType = Dmx$DeviceType;
@@ -4229,8 +5331,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.Mapper = Mapper;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
-  Network.Listener = Network$Listener;
+  Network.UdpListener = Network$UdpListener;
+  Network.TcpConnection = Network$TcpConnection;
+  Network.TcpListener = Network$TcpListener;
+  Network.TcpServerSocketListener = Network$TcpServerSocketListener;
   package$baaahs.Network = Network;
+  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
   package$baaahs.FakeNetwork = FakeNetwork;
   Pinky.BeatProvider = Pinky$BeatProvider;
   package$baaahs.Pinky = Pinky;
@@ -4289,6 +5395,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   });
   package$baaahs.PinkyPongMessage = PinkyPongMessage;
   package$baaahs.Message = Message;
+  PubSub.Origin = PubSub$Origin;
+  PubSub.Observer = PubSub$Observer;
+  Object.defineProperty(PubSub, 'Companion', {
+    get: PubSub$Companion_getInstance
+  });
+  PubSub.Topic = PubSub$Topic;
+  PubSub.Listener = PubSub$Listener;
+  PubSub.TopicInfo = PubSub$TopicInfo;
+  PubSub.Connection = PubSub$Connection;
+  PubSub.Server = PubSub$Server;
+  PubSub.Client = PubSub$Client;
+  package$baaahs.PubSub = PubSub;
   Object.defineProperty(ShaderType, 'SOLID', {
     get: ShaderType$SOLID_getInstance
   });
@@ -4446,6 +5564,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.Shenzarpy = Shenzarpy;
   package$baaahs.ShowMeta = ShowMeta;
   package$baaahs.Show = Show;
+  Object.defineProperty(package$baaahs, 'Topics', {
+    get: Topics_getInstance
+  });
+  package$baaahs.Ui = Ui;
+  package$baaahs.UiContext = UiContext;
   package$baaahs.Visualizer = Visualizer;
   package$baaahs.JsPanel = JsPanel;
   package$baaahs.JsPixels = JsPixels;
@@ -4503,20 +5626,33 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core) {
   package$baaahs.random_hhb8gh$ = random_0;
   package$baaahs.toRadians_mx4ult$ = toRadians;
   package$baaahs.randomDelay_za3lpa$ = randomDelay;
-  package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
-  package$baaahs.getResource_61zpoe$ = getResource;
-  package$baaahs.getDisplay = getDisplay;
+  Object.defineProperty(logger, 'Companion', {
+    get: logger$Companion_getInstance
+  });
+  package$baaahs.logger = logger;
   package$baaahs.JsDisplay = JsDisplay;
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
   package$baaahs.JsBrainDisplay = JsBrainDisplay;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
+  package$baaahs.JsUiDisplay = JsUiDisplay;
+  package$baaahs.get_disabled_ejp6nk$ = get_disabled;
+  package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
+  package$baaahs.clear_u75qir$ = clear_0;
+  package$baaahs.Button = Button;
+  package$baaahs.ColorPickerView = ColorPickerView;
+  package$baaahs.createUiApp_khyez$ = createUiApp;
+  package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
+  package$baaahs.getResource_61zpoe$ = getResource;
+  package$baaahs.getDisplay = getDisplay;
   package$baaahs.getTimeMillis = getTimeMillis;
-  FakeNetwork$FakeLink.prototype.send_bkw8fl$ = Network$Link.prototype.send_bkw8fl$;
-  FakeNetwork$FakeLink.prototype.broadcast_ecsl0t$ = Network$Link.prototype.broadcast_ecsl0t$;
+  Color$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  FakeNetwork$FakeTcpConnection.prototype.send_kq3aw3$ = Network$TcpConnection.prototype.send_kq3aw3$;
+  FakeNetwork$FakeLink.prototype.sendUdp_bkw8fl$ = Network$Link.prototype.sendUdp_bkw8fl$;
+  FakeNetwork$FakeLink.prototype.broadcastUdp_ecsl0t$ = Network$Link.prototype.broadcastUdp_ecsl0t$;
   Kotlin.defineModule('sparklemotion', _);
   return _;
-}(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core']);
+}(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-runtime-js']);
 
 //# sourceMappingURL=sparklemotion.js.map
