@@ -1,6 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {SketchPicker} from 'react-color';
+import { SketchPicker } from 'react-color';
 
 import styles from './ColorPicker.scss';
 
@@ -8,19 +9,13 @@ class ColorPicker extends Component {
   constructor(props) {
     super(props);
 
-    this.onColorSelect = props.onColorSelect;
-
     this.state = {
-      chosenColor: props.chosenColor,
-      displayColorPicker: true,
+      displayColorPicker: false,
     };
   }
 
   handleColorChange = ({ hex }) => {
-    this.setState({ chosenColor: hex });
-    if (this.onColorSelect) {
-      this.onColorSelect(hex);
-    }
+    this.props.onColorSelect(hex);
   };
 
   toggleColorPicker = () => {
@@ -28,27 +23,26 @@ class ColorPicker extends Component {
   };
 
   render() {
-    const { displayColorPicker, chosenColor } = this.state;
+    const { displayColorPicker } = this.state;
+    const { chosenColor } = this.props;
 
     return (
       <div className={styles['color-picker--pad']}>
         <header>Primary Color</header>
-        {!displayColorPicker && (
-            <button
-                className={styles['color-picker--button']}
-                onClick={this.toggleColorPicker}
-            >
-              <i
-                  className={classNames(
-                      'fas fa-palette fa-fw',
-                      styles['color-picker--button--icon']
-                  )}
-              />
-            </button>
-        )}
+        <button
+          className={styles['color-picker--button']}
+          onClick={this.toggleColorPicker}
+        >
+          <i
+            className={classNames(
+              'fas fa-palette fa-fw',
+              styles['color-picker--button--icon']
+            )}
+          />
+        </button>
         {displayColorPicker && (
           <SketchPicker
-            color={chosenColor}
+            color={this.props.chosenColor.toHexString()}
             onChangeComplete={this.handleColorChange}
           />
         )}
@@ -56,5 +50,17 @@ class ColorPicker extends Component {
     );
   }
 }
+
+ColorPicker.propTypes = {
+  chosenColor: PropTypes.shape({
+    red: PropTypes.number,
+    blue: PropTypes.number,
+    green: PropTypes.number,
+  }),
+};
+
+ColorPicker.defaultProps = {
+  chosenColor: { red: 255, blue: 255, green: 255 },
+};
 
 export default ColorPicker;
