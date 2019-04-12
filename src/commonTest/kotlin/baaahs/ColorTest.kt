@@ -5,15 +5,28 @@ import kotlin.test.assertEquals
 
 public class ColorTest {
     @Test
+    fun testBounds() {
+        Color.WHITE
+        assertEquals(Color(255, 255, 0, 255),
+            Color(266, 1024, -17, 350))
+
+        assertEquals(Color(255, 255, 0, 255),
+            Color(26.6f, 10.24f, -17f, 350f))
+
+        assertEquals(Color(1f, 1f, 0f, 1f),
+            Color(26.6f, 10.24f, -17f, 350f))
+    }
+
+    @Test
     fun testFromInt() {
         val white = Color.from(0xfefdff)
-        assertEquals(listOf(254, 253, 255), listOf(white.red, white.green, white.blue))
+        assertEquals(listOf(254, 253, 255), listOf(white.redI, white.greenI, white.blueI))
     }
 
     @Test
     fun testFromString() {
         val white = Color.from("#fefdff")
-        assertEquals(listOf(254, 253, 255), listOf(white.red, white.green, white.blue))
+        assertEquals(listOf(254, 253, 255), listOf(white.redI, white.greenI, white.blueI))
     }
 
     @Test
