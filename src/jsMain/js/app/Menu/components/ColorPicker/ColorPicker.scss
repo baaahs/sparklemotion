@@ -1,0 +1,21 @@
+.color-picker--pad {
+  border: 1px solid black;
+  border-radius: 0.5em;
+  color: black;
+  background-color: white;
+  padding: 0.5em;
+  display: inline-block;
+}
+
+.color-picker--button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-picker--button--icon {
+  font-size: 24px;
+}

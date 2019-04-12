@@ -5,13 +5,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class Mapper(val network: Network, val display: MapperDisplay) : Network.Listener {
+class Mapper(val network: Network, val display: MapperDisplay) : Network.UdpListener {
     private lateinit var link: Network.Link
     private var isRunning: Boolean = false
 
     fun start() {
         link = network.link()
-        link.listen(Ports.MAPPER, this)
+        link.listenUdp(Ports.MAPPER, this)
 
         display.onStart = {
             if (!isRunning) {
@@ -33,28 +33,28 @@ class Mapper(val network: Network, val display: MapperDisplay) : Network.Listene
 
     suspend fun run() {
         // shut down Pinky, advertise for Brains...
-        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+        link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
         delay(1000L)
-        link.broadcast(Ports.BRAIN, BrainShaderMessage(SolidShader().apply { buffer.color = Color.BLACK }))
-        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+        link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(SolidShader().apply { buffer.color = Color.BLACK }))
+        link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
         delay(1000L)
-        link.broadcast(Ports.BRAIN, BrainShaderMessage(SolidShader().apply { buffer.color = Color.BLACK }))
-        link.broadcast(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
+        link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(SolidShader().apply { buffer.color = Color.BLACK }))
+        link.broadcastUdp(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
 
         while (isRunning) {
-            link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+            link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
 
             delay(10000L)
         }
 
-        link.broadcast(Ports.PINKY, MapperHelloMessage(isRunning))
+        link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {
-                link.send(
+                link.sendUdp(
                     fromAddress,
                     Ports.BRAIN,
                     BrainShaderMessage(SolidShader().apply { buffer.color = Color.WHITE })
