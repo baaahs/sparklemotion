@@ -16,11 +16,7 @@ data class Color(val argb: Int) {
     /** Values are bounded at `0f..1f`. */
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 255) : this(asArgb(red, green, blue, alpha))
 
-    fun serialize(writer: ByteArrayWriter) {
-        writer.writeByte(redI.toByte())
-        writer.writeByte(greenI.toByte())
-        writer.writeByte(blueI.toByte())
-    }
+    fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
 
     @Transient val alphaI: Int get() = alphaI(argb)
     @Transient val redI: Int get() = redI(argb)
@@ -63,7 +59,8 @@ data class Color(val argb: Int) {
         return Color(
             redF + (1 - redF) * desaturation,
             greenF + (1 - greenF) * desaturation,
-            blueF + (1 - blueF) * desaturation
+            blueF + (1 - blueF) * desaturation,
+            alphaF
         )
     }
 
@@ -113,11 +110,7 @@ data class Color(val argb: Int) {
             Random.nextInt() and 0xff
         )
 
-        fun parse(reader: ByteArrayReader) = Color(
-            reader.readByte().toInt() and 0xff,
-            reader.readByte().toInt() and 0xff,
-            reader.readByte().toInt() and 0xff
-        )
+        fun parse(reader: ByteArrayReader) = Color(reader.readInt())
 
         @JsName("fromInts")
         fun from(i: Int) = Color(i)
