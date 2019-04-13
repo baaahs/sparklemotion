@@ -1,0 +1,4 @@
+#!/bin/bash
+
+$HOME/esp/llvm_build/bin/clang -target xtensa -fomit-frame-pointer $(. includes) -I ~/esp/hello_world/build/include -S helloworld.c -o helloworld.S
+$HOME/esp/xtensa-esp32-elf/bin/xtensa-esp32-elf-as helloworld.S -o helloworld.o

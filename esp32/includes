@@ -1,0 +1,50 @@
+echo \
+  -isystem ${IDF_PATH}/components/newlib/include \
+  -I${IDF_PATH}/components/esp32/include \
+  -I${IDF_PATH}/components/esp_common/include \
+  -I${IDF_PATH}/components/esp_rom/include \
+  -I${IDF_PATH}/components/heap/include \
+  -I${IDF_PATH}/components/soc/include \
+  -I${IDF_PATH}/components/xtensa/include \
+  -I${IDF_PATH}/components/xtensa/esp32/include \
+  -I${IDF_PATH}/components/newlib/include \
+  -I${IDF_PATH}/components/freertos/include \
+  -I${IDF_PATH}/components/nvs_flash/include \
+  -I${IDF_PATH}/components/driver/include \
+  -I${IDF_PATH}/components/log/include \
+  -I${IDF_PATH}/components/tcpip_adapter/include \
+  -I${IDF_PATH}/components/vfs/include \
+  -I${IDF_PATH}/components/spi_flash/include \
+  -I${IDF_PATH}/components/bt/include \
+  -I${IDF_PATH}/components/bt/bluedroid/bta/include \
+  -I${IDF_PATH}/components/bt/bluedroid/bta/sys/include \
+  -I${IDF_PATH}/components/bt/bluedroid/device/include \
+  -I${IDF_PATH}/components/bt/bluedroid/hci/include \
+  -I${IDF_PATH}/components/bt/bluedroid/osi/include \
+  -I${IDF_PATH}/components/bt/bluedroid/btc/profile/esp/blufi/include \
+  -I${IDF_PATH}/components/bt/bluedroid/btc/profile/esp/include \
+  -I${IDF_PATH}/components/bt/bluedroid/btc/profile/std/include \
+  -I${IDF_PATH}/components/bt/bluedroid/stack/include \
+  -I${IDF_PATH}/components/bt/bluedroid/stack/l2cap/include \
+  -I${IDF_PATH}/components/bt/bluedroid/stack/sdp/include \
+  -I${IDF_PATH}/components/bt/bluedroid/stack/smp/include \
+  -I${IDF_PATH}/components/bt/bluedroid/api/include \
+  -I${IDF_PATH}/components/bt/bluedroid/btc/include \
+  -I${IDF_PATH}/components/mdns/include \
+  -I${IDF_PATH}/components/soc/esp32/include \
+  -I${IDF_PATH}/components/aws_iot/include \
+  -I${IDF_PATH}/components/aws_iot/aws-iot-device-sdk-embedded-C/include \
+  -I${IDF_PATH}/components/fatfs/src \
+  -I${IDF_PATH}/components/wear_levelling/include \
+
+#  ${IDF_PATH}/components/lwip/include/lwip \
+#  ${IDF_PATH}/components/json/include \
+#  ${IDF_PATH}/components/mbedtls/include \
+#  ${IDF_PATH}/components/bt/bluedroid/btcore/include \
+#  ${IDF_PATH}/components/bt/bluedroid/gki/include \
+#  ${IDF_PATH}/components/bt/bluedroid/btc/profile/std/sdp/include \
+#  ${IDF_PATH}/components/bt/bluedroid/include \
+
+
+#  /opt/xtensa-esp32-elf/xtensa-esp32-elf/include/c++/5.2.0 \
+#  /opt/xtensa-esp32-elf/lib/gcc/xtensa-esp32-elf/5.2.0/include \

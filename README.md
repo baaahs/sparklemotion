@@ -44,3 +44,18 @@ Run this in a second shell window and go to http://localhost:8001/index.html :
 Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
 
 Passing builds are automatically deployed here: https://baaahs.github.io/sparklemotion
+
+## Building for esp32
+
+```bash
+homebrew install cmake
+homebrew install ninja
+```
+
+Follow directions [here](https://esp32.com/viewtopic.php?t=9226).
+
+Also [here](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/).
+
+pip
+Install [CP210x driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers).
+
