@@ -15,14 +15,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L60000 = Kotlin.Long.fromInt(60000);
   var delay = $module$kotlinx_coroutines_core.kotlinx.coroutines.delay_s8cxhz$;
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var toByte = Kotlin.toByte;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
-  var numberToInt = Kotlin.numberToInt;
   var Random = Kotlin.kotlin.random.Random;
   var trimStart = Kotlin.kotlin.text.trimStart_wqw3xr$;
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var numberToInt = Kotlin.numberToInt;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var SerialClassDescImpl = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.internal.SerialClassDescImpl;
   var UnknownFieldException = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.UnknownFieldException;
@@ -53,6 +52,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
+  var toByte = Kotlin.toByte;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.serializer_6eet4j$;
   var toString_0 = Kotlin.toString;
@@ -286,37 +286,73 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Brain',
     interfaces: [Network$UdpListener]
   };
-  function Color(red, green, blue) {
+  function Color(argb) {
     Color$Companion_getInstance();
-    this.red = red;
-    this.green = green;
-    this.blue = blue;
+    this.argb = argb;
   }
   Color.prototype.serialize_ep8mow$ = function (writer) {
-    writer.writeByte_s8j3t7$(toByte(this.red & 255));
-    writer.writeByte_s8j3t7$(toByte(this.green & 255));
-    writer.writeByte_s8j3t7$(toByte(this.blue & 255));
+    writer.writeInt_za3lpa$(this.argb);
   };
+  Object.defineProperty(Color.prototype, 'alphaI', {
+    get: function () {
+      return this.alphaI_za3lpa$(this.argb);
+    }
+  });
+  Object.defineProperty(Color.prototype, 'redI', {
+    get: function () {
+      return this.redI_za3lpa$(this.argb);
+    }
+  });
+  Object.defineProperty(Color.prototype, 'greenI', {
+    get: function () {
+      return this.greenI_za3lpa$(this.argb);
+    }
+  });
+  Object.defineProperty(Color.prototype, 'blueI', {
+    get: function () {
+      return this.blueI_za3lpa$(this.argb);
+    }
+  });
+  Object.defineProperty(Color.prototype, 'alphaF', {
+    get: function () {
+      return this.alphaI / 255;
+    }
+  });
   Object.defineProperty(Color.prototype, 'redF', {
     get: function () {
-      return this.red / 255;
+      return this.redI / 255;
     }
   });
   Object.defineProperty(Color.prototype, 'greenF', {
     get: function () {
-      return this.green / 255;
+      return this.greenI / 255;
     }
   });
   Object.defineProperty(Color.prototype, 'blueF', {
     get: function () {
-      return this.blue / 255;
+      return this.blueI / 255;
     }
   });
+  Color.prototype.alphaI_za3lpa$ = function (value) {
+    return value >> 24 & 255;
+  };
+  Color.prototype.redI_za3lpa$ = function (value) {
+    return value >> 16 & 255;
+  };
+  Color.prototype.greenI_za3lpa$ = function (value) {
+    return value >> 8 & 255;
+  };
+  Color.prototype.blueI_za3lpa$ = function (value) {
+    return value & 255;
+  };
   Color.prototype.toInt = function () {
-    return this.red << 16 & 16711680 | this.green << 8 & 65280 | this.blue & 255;
+    return this.argb;
   };
   Color.prototype.toHexString = function () {
-    return '#' + this.toHexString_s8ev3n$(this.red) + this.toHexString_s8ev3n$(this.green) + this.toHexString_s8ev3n$(this.blue);
+    return '#' + this.maybe_0(this.alphaI) + this.toHexString_s8ev3n$(this.redI) + this.toHexString_s8ev3n$(this.greenI) + this.toHexString_s8ev3n$(this.blueI);
+  };
+  Color.prototype.maybe_0 = function (alphaI) {
+    return alphaI === 255 ? '' : this.toHexString_s8ev3n$(alphaI);
   };
   Color.prototype.toHexString_s8ev3n$ = function ($receiver) {
     if ($receiver < 0) {
@@ -331,12 +367,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   Color.prototype.withSaturation_mx4ult$ = function (saturation) {
     var desaturation = 1 - saturation;
-    var b = this.red + numberToInt((255 - this.red | 0) * desaturation) | 0;
-    var tmp$ = Math_0.min(255, b);
-    var b_0 = this.green + numberToInt((255 - this.green | 0) * desaturation) | 0;
-    var tmp$_0 = Math_0.min(255, b_0);
-    var b_1 = this.blue + numberToInt((255 - this.blue | 0) * desaturation) | 0;
-    return new Color(tmp$, tmp$_0, Math_0.min(255, b_1));
+    return Color_init_0(this.redF + (1 - this.redF) * desaturation, this.greenF + (1 - this.greenF) * desaturation, this.blueF + (1 - this.blueF) * desaturation, this.alphaF);
   };
   Color.prototype.distanceTo_rny0jj$ = function (other) {
     var dist = this.square_0(other.redF - this.redF) + this.square_0(other.greenF - this.greenF) + this.square_0(other.blueF - this.blueF);
@@ -347,50 +378,72 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return f * f;
   };
   Color.prototype.plus_rny0jj$ = function (other) {
-    var a = this.red + other.red | 0;
-    var tmp$ = Math_0.min(a, 255);
-    var a_0 = this.green + other.green | 0;
-    var tmp$_0 = Math_0.min(a_0, 255);
-    var a_1 = this.blue + other.blue | 0;
-    return new Color(tmp$, tmp$_0, Math_0.min(a_1, 255));
+    var tmp$ = this.alphaI;
+    var b = this.redI + other.redI | 0;
+    var tmp$_0 = tmp$ | Math_0.min(255, b);
+    var b_0 = this.greenI + other.greenI | 0;
+    var tmp$_1 = tmp$_0 | Math_0.min(255, b_0);
+    var b_1 = this.blueI + other.blueI | 0;
+    return new Color(tmp$_1 | Math_0.min(255, b_1));
   };
   Color.prototype.fade_6zkv30$ = function (other, amount) {
     if (amount === void 0)
       amount = 0.5;
     var amountThis = 1 - amount;
-    var a = numberToInt(this.red * amountThis + other.red * amount);
-    var tmp$ = Math_0.min(a, 255);
-    var a_0 = numberToInt(this.green * amountThis + other.green * amount);
-    var tmp$_0 = Math_0.min(a_0, 255);
-    var a_1 = numberToInt(this.blue * amountThis + other.blue * amount);
-    return new Color(tmp$, tmp$_0, Math_0.min(a_1, 255));
+    return Color_init_0(this.redF * amountThis + other.redF * amount, this.greenF * amountThis + other.greenF * amount, this.blueF * amountThis + other.blueF * amount, this.alphaF * amountThis + other.alphaF * amount);
+  };
+  Color.prototype.toString = function () {
+    return 'Color(' + this.toHexString() + ')';
   };
   function Color$Companion() {
     Color$Companion_instance = this;
-    this.BLACK = new Color(0, 0, 0);
-    this.WHITE = new Color(255, 255, 255);
-    this.RED = new Color(255, 0, 0);
-    this.ORANGE = new Color(255, 127, 0);
-    this.YELLOW = new Color(255, 255, 0);
-    this.GREEN = new Color(0, 255, 0);
-    this.BLUE = new Color(0, 0, 255);
-    this.PURPLE = new Color(200, 0, 212);
+    this.BLACK = Color_init_1(0, 0, 0);
+    this.WHITE = Color_init_1(255, 255, 255);
+    this.RED = Color_init_1(255, 0, 0);
+    this.ORANGE = Color_init_1(255, 127, 0);
+    this.YELLOW = Color_init_1(255, 255, 0);
+    this.GREEN = Color_init_1(0, 255, 0);
+    this.BLUE = Color_init_1(0, 0, 255);
+    this.PURPLE = Color_init_1(200, 0, 212);
   }
   Color$Companion.prototype.random = function () {
-    return new Color(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
+    return Color_init_1(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
   };
   Color$Companion.prototype.parse_c4pr8w$ = function (reader) {
-    return new Color(reader.readByte() & 255, reader.readByte() & 255, reader.readByte() & 255);
+    return new Color(reader.readInt());
   };
   Color$Companion.prototype.fromInts = function (i) {
-    return new Color(i >> 16 & 255, i >> 8 & 255, i & 255);
+    return new Color(i);
   };
   Color$Companion.prototype.fromString = function (hex) {
     var hexDigits = trimStart(hex, Kotlin.charArrayOf(35));
     if (hexDigits.length === 6) {
-      return new Color(toInt(hexDigits.substring(0, 2), 16), toInt(hexDigits.substring(2, 4), 16), toInt(hexDigits.substring(4, 6), 16));
+      var l = -16777216;
+      return new Color(l | toInt(hexDigits, 16));
     }
     throw IllegalArgumentException_init('unknown color ' + '"' + hex + '"');
+  };
+  Color$Companion.prototype.asArgb_1 = function (red, green, blue, alpha) {
+    if (alpha === void 0)
+      alpha = 1.0;
+    var asArgb = this.asArgb_0(this.asInt_0(red), this.asInt_0(green), this.asInt_0(blue), this.asInt_0(alpha));
+    return asArgb;
+  };
+  Color$Companion.prototype.asArgb_0 = function (red, green, blue, alpha) {
+    if (alpha === void 0)
+      alpha = 255;
+    return this.bounded_0(alpha) << 24 | this.bounded_0(red) << 16 | this.bounded_0(green) << 8 | this.bounded_0(blue);
+  };
+  Color$Companion.prototype.bounded_0 = function (i) {
+    var b = Math_0.min(255, i);
+    return Math_0.max(0, b);
+  };
+  Color$Companion.prototype.bounded_1 = function (f) {
+    var b = Math_0.min(1.0, f);
+    return Math_0.max(0.0, b);
+  };
+  Color$Companion.prototype.asInt_0 = function (f) {
+    return numberToInt(this.bounded_1(f) * 255);
   };
   Color$Companion.prototype.serializer = function () {
     return Color$$serializer_getInstance();
@@ -409,9 +462,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function Color$$serializer() {
     this.descriptor_h91vo$_0 = new SerialClassDescImpl('baaahs.Color', this);
-    this.descriptor.addElement_ivxn3r$('red', false);
-    this.descriptor.addElement_ivxn3r$('green', false);
-    this.descriptor.addElement_ivxn3r$('blue', false);
+    this.descriptor.addElement_ivxn3r$('argb', false);
     Color$$serializer_instance = this;
   }
   Object.defineProperty(Color$$serializer.prototype, 'descriptor', {
@@ -421,17 +472,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   });
   Color$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
     var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
-    output.encodeIntElement_4wpqag$(this.descriptor, 0, obj.red);
-    output.encodeIntElement_4wpqag$(this.descriptor, 1, obj.green);
-    output.encodeIntElement_4wpqag$(this.descriptor, 2, obj.blue);
+    output.encodeIntElement_4wpqag$(this.descriptor, 0, obj.argb);
     output.endStructure_qatsm0$(this.descriptor);
   };
   Color$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
     var index, readAll = false;
     var bitMask0 = 0;
-    var local0
-    , local1
-    , local2;
+    var local0;
     var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
     loopLabel: while (true) {
       index = input.decodeElementIndex_qatsm0$(this.descriptor);
@@ -443,26 +490,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
           bitMask0 |= 1;
           if (!readAll)
             break;
-        case 1:
-          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
-          bitMask0 |= 2;
-          if (!readAll)
-            break;
-        case 2:
-          local2 = input.decodeIntElement_3zr2iy$(this.descriptor, 2);
-          bitMask0 |= 4;
-          if (!readAll)
-            break;
         case -1:
           break loopLabel;
         default:throw new UnknownFieldException(index);
       }
     }
     input.endStructure_qatsm0$(this.descriptor);
-    return Color_init(bitMask0, local0, local1, local2, null);
+    return Color_init(bitMask0, local0, null);
   };
   Color$$serializer.prototype.childSerializers = function () {
-    return [internal.IntSerializer, internal.IntSerializer, internal.IntSerializer];
+    return [internal.IntSerializer];
   };
   Color$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -476,20 +513,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return Color$$serializer_instance;
   }
-  function Color_init(seen1, red, green, blue, serializationConstructorMarker) {
+  function Color_init(seen1, argb, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(Color.prototype);
     if ((seen1 & 1) === 0)
-      throw new MissingFieldException('red');
+      throw new MissingFieldException('argb');
     else
-      $this.red = red;
-    if ((seen1 & 2) === 0)
-      throw new MissingFieldException('green');
-    else
-      $this.green = green;
-    if ((seen1 & 4) === 0)
-      throw new MissingFieldException('blue');
-    else
-      $this.blue = blue;
+      $this.argb = argb;
     return $this;
   }
   Color.$metadata$ = {
@@ -497,30 +526,33 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Color',
     interfaces: []
   };
+  function Color_init_0(red, green, blue, alpha, $this) {
+    if (alpha === void 0)
+      alpha = 1.0;
+    $this = $this || Object.create(Color.prototype);
+    Color.call($this, Color$Companion_getInstance().asArgb_1(red, green, blue, alpha));
+    return $this;
+  }
+  function Color_init_1(red, green, blue, alpha, $this) {
+    if (alpha === void 0)
+      alpha = 255;
+    $this = $this || Object.create(Color.prototype);
+    Color.call($this, Color$Companion_getInstance().asArgb_0(red, green, blue, alpha));
+    return $this;
+  }
   Color.prototype.component1 = function () {
-    return this.red;
+    return this.argb;
   };
-  Color.prototype.component2 = function () {
-    return this.green;
-  };
-  Color.prototype.component3 = function () {
-    return this.blue;
-  };
-  Color.prototype.copy_qt1dr2$ = function (red, green, blue) {
-    return new Color(red === void 0 ? this.red : red, green === void 0 ? this.green : green, blue === void 0 ? this.blue : blue);
-  };
-  Color.prototype.toString = function () {
-    return 'Color(red=' + Kotlin.toString(this.red) + (', green=' + Kotlin.toString(this.green)) + (', blue=' + Kotlin.toString(this.blue)) + ')';
+  Color.prototype.copy_za3lpa$ = function (argb) {
+    return new Color(argb === void 0 ? this.argb : argb);
   };
   Color.prototype.hashCode = function () {
     var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.red) | 0;
-    result = result * 31 + Kotlin.hashCode(this.green) | 0;
-    result = result * 31 + Kotlin.hashCode(this.blue) | 0;
+    result = result * 31 + Kotlin.hashCode(this.argb) | 0;
     return result;
   };
   Color.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.red, other.red) && Kotlin.equals(this.green, other.green) && Kotlin.equals(this.blue, other.blue)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.argb, other.argb))));
   };
   function Config() {
     Config$Companion_getInstance();
@@ -5311,6 +5343,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Object.defineProperty(Color, '$serializer', {
     get: Color$$serializer_getInstance
   });
+  package$baaahs.Color_init_7b5o5w$ = Color_init_0;
+  package$baaahs.Color_init_tjonv8$ = Color_init_1;
   package$baaahs.Color = Color;
   Object.defineProperty(Config, 'Companion', {
     get: Config$Companion_getInstance
