@@ -36,8 +36,8 @@ class CompositorShader(val aShader: Shader, val bShader: Shader) : Shader(Shader
 }
 
 class CompositorShaderImpl(
-    val aShader: Shader,
-    val bShader: Shader,
+    aShader: Shader,
+    bShader: Shader,
     val buffer: CompositorShaderBuffer,
     val pixels: Pixels
 ) : ShaderImpl {

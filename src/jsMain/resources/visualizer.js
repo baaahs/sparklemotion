@@ -239,9 +239,9 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
   panel.faces.visible = true;
 
   if (!renderPixels) {
-    panel.faceMaterial.color.r = panelBgColor.redI / 256.0;
-    panel.faceMaterial.color.g = panelBgColor.greenI / 256.0;
-    panel.faceMaterial.color.b = panelBgColor.blueI / 256.0;
+    panel.faceMaterial.color.r = panelBgColor.redF;
+    panel.faceMaterial.color.g = panelBgColor.greenF;
+    panel.faceMaterial.color.b = panelBgColor.blueF;
   } else {
     panel.faceMaterial.color.r = .3;
     panel.faceMaterial.color.g = .3;
@@ -252,9 +252,9 @@ function setPanelColor(panel, panelBgColor, pixelColors) {
     const count = Math.min(panel.pixelCount, pixelColors.length);
     for (let i = 0; i < count; i++) {
       const pColor = pixelColors[i];
-      panel.pixelColorsBuffer.array[i * 3] = pColor.redI / 256.0;
-      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenI / 256.0;
-      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueI / 256.0;
+      panel.pixelColorsBuffer.array[i * 3] = pColor.redF;
+      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenF;
+      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueF;
     }
     panel.pixelColorsBuffer.needsUpdate = true;
   }

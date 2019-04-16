@@ -48,6 +48,12 @@ public class ColorTest {
     }
 
     @Test
+    fun testPlus() {
+        assertEquals(Color.YELLOW, Color.RED.plus(Color.GREEN))
+        assertEquals(Color.WHITE, Color.YELLOW.plus(Color.BLUE))
+    }
+
+    @Test
     fun testFade() {
         assertEquals(Color.RED, Color.RED.fade(Color.GREEN, 0f))
         assertEquals(Color.GREEN, Color.RED.fade(Color.GREEN, 1f))
