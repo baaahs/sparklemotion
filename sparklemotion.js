@@ -378,13 +378,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return f * f;
   };
   Color.prototype.plus_rny0jj$ = function (other) {
-    var tmp$ = this.alphaI;
-    var b = this.redI + other.redI | 0;
-    var tmp$_0 = tmp$ | Math_0.min(255, b);
-    var b_0 = this.greenI + other.greenI | 0;
-    var tmp$_1 = tmp$_0 | Math_0.min(255, b_0);
-    var b_1 = this.blueI + other.blueI | 0;
-    return new Color(tmp$_1 | Math_0.min(255, b_1));
+    return Color_init_1(this.redI + other.redI | 0, this.greenI + other.greenI | 0, this.blueI + other.blueI | 0, this.alphaI);
   };
   Color.prototype.fade_6zkv30$ = function (other, amount) {
     if (amount === void 0)
@@ -4068,8 +4062,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [Shader]
   };
   function CompositorShaderImpl(aShader, bShader, buffer, pixels) {
-    this.aShader = aShader;
-    this.bShader = bShader;
     this.buffer = buffer;
     this.pixels = pixels;
     var array = Array_0(this.pixels.count);
@@ -4081,8 +4073,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.colors_0 = array;
     this.aPixels_0 = new PixelBuf(this.pixels.count);
     this.bPixels_0 = new PixelBuf(this.pixels.count);
-    this.shaderAImpl_0 = this.aShader.createImpl_bbfl1t$(this.aPixels_0);
-    this.shaderBImpl_0 = this.bShader.createImpl_bbfl1t$(this.bPixels_0);
+    this.shaderAImpl_0 = aShader.createImpl_bbfl1t$(this.aPixels_0);
+    this.shaderBImpl_0 = bShader.createImpl_bbfl1t$(this.bPixels_0);
   }
   function CompositorShaderImpl$draw$lambda(a, b) {
     return a.plus_rny0jj$(b);
