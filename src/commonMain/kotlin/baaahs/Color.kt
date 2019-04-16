@@ -72,12 +72,7 @@ data class Color(val argb: Int) {
     private fun square(f: Float) = f * f
 
     fun plus(other: Color): Color =
-        Color(
-            alphaI
-                    or min(255, redI + other.redI)
-                    or min(255, greenI + other.greenI)
-                    or min(255, blueI + other.blueI)
-        )
+        Color(redI + other.redI, greenI + other.greenI, blueI + other.blueI, alphaI)
 
     fun fade(other: Color, amount: Float = 0.5f): Color {
         val amountThis = 1 - amount
