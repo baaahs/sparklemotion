@@ -285,10 +285,12 @@ function addMovingHead(movingHead) {
   };
 }
 
-function adjustMovingHead(movingHeadJs, color, rotA, rotB) {
+function adjustMovingHead(movingHeadJs, color, dimmer, rotA, rotB) {
   movingHeadJs.material.color.r = color.redF;
   movingHeadJs.material.color.g = color.greenF;
   movingHeadJs.material.color.b = color.blueF;
+
+  movingHeadJs.material.visible = dimmer > .1;
 
   movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
   movingHeadJs.cone.rotation.z = rotB;
@@ -359,6 +361,8 @@ function initMapper(div) {
 
 function setMapperRunning(isRunning, jsMapperDisplay) {
   mapper.isRunning = isRunning;
+
+  panels.forEach(panel => panel.faceMaterial.transparent = !isRunning);
 
   if (mapper.isRunning) {
     vizRotationEl.checked = false;
