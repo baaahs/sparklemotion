@@ -17,6 +17,9 @@ actual class Visualizer actual constructor(sheepModel: SheepModel, dmxUniverse: 
         get() = TODO("JVM Visualizer.onStartMapper not implemented")
         set(value) {}
 
+    actual fun setMapperRunning(b: Boolean) {
+    }
+
 }
 
 actual class JsPixels actual constructor(jsPanel: JsPanel) : Pixels {
