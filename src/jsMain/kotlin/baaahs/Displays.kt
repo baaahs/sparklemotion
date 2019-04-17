@@ -17,9 +17,6 @@ class JsDisplay : Display {
     override fun forBrain(): BrainDisplay =
         JsBrainDisplay(document.getElementById("brainsView")!!)
 
-    override fun forMapper(): MapperDisplay =
-        JsMapperDisplay(document.getElementById("mapperView")!!)
-
     override fun forUi(): UiDisplay =
         JsUiDisplay(document.getElementById("uiView1")!!)
 }
@@ -150,31 +147,6 @@ class JsBrainDisplay(element: Element) : BrainDisplay {
         myDiv.classList.clear()
     }
 
-}
-
-class JsMapperDisplay(val element: Element) : MapperDisplay {
-    private var startButton = element.ownerDocument!!.getElementById("mapperStartButton")!!
-    private var stopButton = element.ownerDocument!!.getElementById("mapperStopButton")!!
-
-    override var onStart: (() -> Unit)? = null
-    override var onStop: (() -> Unit)? = null
-
-    init {
-        updateButtons(false)
-        startButton.addEventListener("click", {
-            updateButtons(true)
-            onStart?.invoke()
-        })
-        stopButton.addEventListener("click", {
-            updateButtons(false)
-            onStop?.invoke()
-        })
-    }
-
-    private fun updateButtons(isRunning: Boolean) {
-        startButton.disabled = isRunning
-        stopButton.disabled = !isRunning
-    }
 }
 
 class JsUiDisplay(val element: Element) : UiDisplay {

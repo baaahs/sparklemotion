@@ -23,14 +23,21 @@ class SheepSimulator {
         CompositeShow.Meta()
     )
 
+    val visualizer = Visualizer(sheepModel, dmxUniverse).also {
+        it.onStartMapper = {
+            it.setMapperRunning(true)
+            Mapper(network, sheepModel, it.mediaDevices).apply {
+                this.addCloseListener({ it.setMapperRunning(false) })
+                start()
+            }
+        }
+    }
+
     val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
-    val mapper = Mapper(network, display.forMapper())
-    val visualizer = Visualizer(sheepModel, dmxUniverse)
 
     fun start() {
         sheepModel.load()
 
-        mapper.start()
         PinkyScope.launch { pinky.run() }
 
         visualizer.start()

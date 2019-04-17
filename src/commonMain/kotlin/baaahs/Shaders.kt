@@ -58,8 +58,6 @@ interface ShaderImpl {
     fun draw()
 }
 
-class Scene(val shader: Shader)
-
 interface Pixels {
     val count: Int
 
