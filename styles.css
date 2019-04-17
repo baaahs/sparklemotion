@@ -122,6 +122,14 @@ body {
     background-color: orange;
 }
 
+.ipad-close-button {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    border-radius: 10px;
+    background-color: #600;
+    color: white;
+}
 
 #uiView1 {
     position: absolute;
@@ -135,4 +143,41 @@ body {
     right: 21%;
     padding: .25em;
     font: 10pt Helvetica;
+}
+
+
+.mapperUi {
+    position: absolute;
+    border: 1px solid white;
+    border-radius: 1em;
+    background-color: #222;
+    color: white;
+    top: 50%;
+    bottom: 5px;
+    left: 5px;
+    right: 21%;
+    padding: .25em;
+    font: 10pt Helvetica;
+}
+
+.mapperUi-screen {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: 1em;
+    background-color: black;
+    border: 1px inset #222222;
+}
+
+.mapperUi-controls {
+    position: absolute;
+    z-index: 1;
+}
+
+.mapperUi-2d {
+    position: absolute;
+}
+
+.mapperUi-3d {
+    position: absolute;
 }
