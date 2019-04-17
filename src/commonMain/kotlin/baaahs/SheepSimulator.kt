@@ -3,12 +3,7 @@ package baaahs
 import baaahs.shows.CompositeShow
 import baaahs.shows.RandomShow
 import baaahs.shows.SomeDumbShow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.*
 
 class SheepSimulator {
     var display = getDisplay()
@@ -26,26 +21,28 @@ class SheepSimulator {
     val visualizer = Visualizer(sheepModel, dmxUniverse).also {
         it.onStartMapper = {
             it.setMapperRunning(true)
-            Mapper(network, sheepModel, it.mediaDevices).apply {
-                this.addCloseListener({ it.setMapperRunning(false) })
-                start()
+            mapperScope.launch {
+                Mapper(network, sheepModel, it.mediaDevices).apply {
+                    this.addCloseListener({ it.setMapperRunning(false) })
+                    start()
+                }
             }
         }
     }
 
     val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
 
-    fun start() {
+    fun start() = doRunBlocking {
         sheepModel.load()
 
-        PinkyScope.launch { pinky.run() }
+        pinkyScope.launch { pinky.run() }
 
         visualizer.start()
 
         sheepModel.panels.forEach { panel ->
             val jsPanel = visualizer.showPanel(panel)
             val brain = Brain(network, display.forBrain(), JsPixels(jsPanel), panel)
-            BrainScope.launch { randomDelay(1000); brain.run() }
+            brainScope.launch { randomDelay(1000); brain.run() }
         }
 
         sheepModel.eyes.forEach { eye ->
@@ -62,13 +59,7 @@ class SheepSimulator {
         }
     }
 
-    object PinkyScope : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = EmptyCoroutineContext
-    }
-
-    object BrainScope : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = EmptyCoroutineContext
-    }
+    val pinkyScope = CoroutineScope(Dispatchers.Main)
+    val brainScope = CoroutineScope(Dispatchers.Main)
+    val mapperScope = CoroutineScope(Dispatchers.Main)
 }

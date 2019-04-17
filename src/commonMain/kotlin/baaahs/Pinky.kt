@@ -64,9 +64,15 @@ class Pinky(
                 showRunner.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
+            } else {
+                disableDmx()
             }
             delay(50)
         }
+    }
+
+    private fun disableDmx() {
+        dmxUniverse.allOff()
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
