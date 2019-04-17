@@ -4,7 +4,7 @@ import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-public class DmxTest {
+class DmxTest {
     @Test
     fun testShenzarpyPan() {
         val channels = ByteArray(16)

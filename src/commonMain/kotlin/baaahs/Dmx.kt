@@ -2,11 +2,9 @@ package baaahs
 
 interface Dmx {
     abstract class Universe {
-        private val channelsOut = ByteArray(512)
-
         abstract fun writer(baseChannel: Int, channelCount: Int): Buffer
-
         abstract fun sendFrame()
+        abstract fun allOff()
     }
 
     class Buffer(private val channels: ByteArray, val baseChannel: Int, val channelCount: Int) {
@@ -47,6 +45,11 @@ class FakeDmxUniverse : Dmx.Universe() {
 
     override fun sendFrame() {
         channelsOut.copyInto(channelsIn)
+        listeners.forEach { it() }
+    }
+
+    override fun allOff() {
+        for (i in 0..512) channelsIn[i] = 0
         listeners.forEach { it() }
     }
 }

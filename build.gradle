@@ -17,6 +17,7 @@ apply plugin: "kotlinx-serialization"
 repositories {
     jcenter()
     maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url 'https://jitpack.io' }
 }
 
 group 'org.baaahs'
@@ -69,6 +70,8 @@ kotlin {
                 implementation kotlin('stdlib-js')
                 implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.1.1'
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.10.0"
+                implementation 'org.jetbrains.kotlinx:kotlinx-html-js:0.6.12'
+                implementation 'com.github.markaren:three.kt:v0.88-ALPHA-7'
             }
         }
         jsTest {
