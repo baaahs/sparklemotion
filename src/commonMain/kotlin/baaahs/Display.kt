@@ -6,7 +6,6 @@ interface Display {
     fun forNetwork(): NetworkDisplay
     fun forPinky(): PinkyDisplay
     fun forBrain(): BrainDisplay
-    fun forMapper(): MapperDisplay
     fun forUi(): UiDisplay
 }
 
@@ -28,11 +27,6 @@ interface PinkyDisplay {
 
 interface BrainDisplay {
     fun haveLink(link: Network.Link)
-}
-
-interface MapperDisplay {
-    var onStart: (() -> Unit)?
-    var onStop: (() -> Unit)?
 }
 
 interface UiDisplay {

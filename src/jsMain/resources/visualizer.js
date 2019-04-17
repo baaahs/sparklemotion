@@ -2,6 +2,8 @@ const renderPixels = true;
 
 let controls, camera, scene, renderer, geom, object, pointMaterial, faceMaterial, lineMaterial, panelMaterial,
     raycaster, mouse, sphere;
+let frameListeners = [];
+let rendererListeners = [];
 
 let panels = [];
 
@@ -49,7 +51,9 @@ function selectPanel(panel, isSelected) {
   }
 }
 
-function initThreeJs(sheepModel) {
+function initThreeJs(sheepModel, frameListenersList) {
+  frameListeners = frameListenersList;
+
   sheepView.addEventListener('mousemove', onMouseMove, false);
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
@@ -91,8 +95,10 @@ function addPanel(p, pixelCount) {
       }
       localVerts.push(lvi)
     });
+
     return new THREE.Face3(...localVerts);
   });
+  geom.computeVertexNormals();
   panelGeometry.vertices = panelVertices;
   let lines = p.lines.toArray().map(line => {
     let lineGeo = new THREE.Geometry();
@@ -279,13 +285,94 @@ function addMovingHead(movingHead) {
   };
 }
 
-function adjustMovingHead(movingHeadJs, color, rotA, rotB) {
+function adjustMovingHead(movingHeadJs, color, dimmer, rotA, rotB) {
   movingHeadJs.material.color.r = color.redF;
   movingHeadJs.material.color.g = color.greenF;
   movingHeadJs.material.color.b = color.blueF;
 
+  movingHeadJs.material.visible = dimmer > .1;
+
   movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
   movingHeadJs.cone.rotation.z = rotB;
+}
+
+const vizRotationEl = document.getElementById("vizRotation");
+
+/////////////////////// Mapper ///////////////////////
+let mapper = {running: false};
+
+function initMapper(div) {
+  const width = mapper.width = 640;
+  const height = mapper.height = 300;
+
+  mapper.renderDiv = div;
+  mapper.renderDiv.addEventListener('mousemove', onMouseMove, false);
+
+  let mapperEl = div.parentElement;
+  mapper.camCanvas = mapperEl.getElementsByClassName("mapperUi-cam")[0];
+  mapper.camCanvas.width = width;
+  mapper.camCanvas.height = height;
+
+  // offscreen renderer for virtualized camera:
+  mapper.camRenderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
+  mapper.camRenderer.setSize(width, height);
+
+  // onscreen renderer for registration UI:
+  mapper.uiRenderer = new THREE.WebGLRenderer({alpha: true});
+  mapper.uiRenderer.setSize(width, height);
+  mapper.uiRenderer.setPixelRatio(window.devicePixelRatio);
+  mapper.renderDiv.appendChild(mapper.uiRenderer.domElement);
+
+  mapper.uiScene = new THREE.Scene();
+  mapper.uiCamera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+  mapper.uiCamera.position.z = 1000;
+  mapper.uiScene.add(mapper.uiCamera);
+
+  mapper.img = new Image();
+
+  // Add wireframe...
+  const wireframeLineMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
+  mapper.wireframe = new THREE.Object3D();
+  panels.forEach((panel) => {
+    panel.lines.forEach((line) => {
+      const mapperLine = new THREE.Line(line.geometry, wireframeLineMaterial);
+      mapper.wireframe.add(mapperLine);
+    });
+  });
+  mapper.uiScene.add(mapper.wireframe);
+
+  // Create sheep mesh to block out occluded wireframe lines...
+  mapper.shadowSheep = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+  mapper.uiScene.add(mapper.shadowSheep);
+
+  mapper.uiControls = new THREE.OrbitControls(mapper.uiCamera, mapper.renderDiv);
+  mapper.uiControls.target = geom.boundingSphere.center;
+  mapper.uiControls.update();
+
+  const upButton = mapperEl.getElementsByClassName("mapperUi-up")[0];
+  upButton.addEventListener('click', () => {
+    mapper.wireframe.position.y += 10;
+  });
+  const downButton = mapperEl.getElementsByClassName("mapperUi-down")[0];
+  downButton.addEventListener('click', () => {
+    mapper.wireframe.position.y -= 10;
+  });
+}
+
+function setMapperRunning(isRunning, jsMapperDisplay) {
+  mapper.isRunning = isRunning;
+
+  panels.forEach(panel => panel.faceMaterial.transparent = !isRunning);
+
+  if (mapper.isRunning) {
+    vizRotationEl.checked = false;
+    // rendererListeners.push(jsMapperDisplay);
+  } else {
+    // let i = rendererListeners.indexOf(jsMapperDisplay);
+    // if (i > -1) {
+    //   rendererListeners = rendererListeners.splice(i, 1);
+    // }
+  }
 }
 
 function startRender() {
@@ -300,39 +387,51 @@ function startRender() {
 
 const REFRESH_DELAY = 50; // ms
 
-const vizRotationEl = document.getElementById("vizRotation");
-
 function render() {
   setTimeout(() => {
     requestAnimationFrame(render);
   }, REFRESH_DELAY);
 
-  if (vizRotationEl.checked) {
-    const rotSpeed = .01;
-    const x = camera.position.x;
-    const z = camera.position.z;
-    camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
-    camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
-    camera.lookAt(scene.position);
+  if (!mapper.isRunning) {
+    if (vizRotationEl.checked) {
+      const rotSpeed = .01;
+      const x = camera.position.x;
+      const z = camera.position.z;
+      camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+      camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
+      camera.lookAt(scene.position);
+    }
+
+    controls.update();
+    raycaster.setFromCamera(mouse, camera);
+    let intersections = raycaster.intersectObject(object);
+    if (intersections.length) {
+      let sorted = object.geometry.vertices.slice().sort((a, b) => (new THREE.Vector3()).subVectors(a, intersections[0].point).length() - (new THREE.Vector3()).subVectors(b, intersections[0].point).length());
+      let nearest = sorted[0];
+      sphere.position.copy(nearest);
+      sphere.visible = true;
+      let index = object.geometry.vertices.indexOf(nearest);
+      document.getElementById('info').innerText = (index + 1).toString();
+    } else {
+      sphere.visible = false;
+      document.getElementById('info').innerText = '';
+    }
   }
 
-  controls.update();
-  raycaster.setFromCamera(mouse, camera);
-  let intersections = raycaster.intersectObject(object);
-  if (intersections.length) {
-    let sorted = object.geometry.vertices.slice().sort((a, b) => (new THREE.Vector3()).subVectors(a, intersections[0].point).length() - (new THREE.Vector3()).subVectors(b, intersections[0].point).length());
-    let nearest = sorted[0];
-    sphere.position.copy(nearest);
-    sphere.visible = true;
-    let index = object.geometry.vertices.indexOf(nearest);
-    document.getElementById('info').innerText = (index + 1).toString();
-  } else {
-    sphere.visible = false;
-    document.getElementById('info').innerText = '';
-  }
   renderer.render(scene, camera);
+
+  frameListeners.toArray().forEach(f => f.onFrameReady(scene, camera));
+  rendererListeners.forEach(value => value());
 }
 
+function drawMapperImage(image) {
+  const camCtx = mapper.camCanvas.getContext("2d");
+  camCtx.fillStyle = '#006600';
+  camCtx.fillRect(0, 0, mapper.width / 2, mapper.height / 2);
+  camCtx.putImageData(image.imageData, 0, 0);
+}
+
+// vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord
 
 const resizeDelay = 100;
 

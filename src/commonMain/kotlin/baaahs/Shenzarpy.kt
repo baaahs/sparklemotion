@@ -60,31 +60,16 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
         }
     }
 
-    private operator fun Dmx.Buffer.set(channel: Channel, value: Byte) {
-        buffer[channel.ordinal] = value
-    }
-
-    private operator fun Dmx.Buffer.get(channel: Channel): Byte = buffer[channel.ordinal]
-
-    fun closestColorFor(color: Color): Byte {
-        var bestMatch = WheelColor.WHITE
-        var bestDistance = 1f
-
-        WheelColor.values.forEach { wheelColor ->
-            val distance = wheelColor.color.distanceTo(color)
-            if (distance < bestDistance) {
-                bestMatch = wheelColor
-                bestDistance = distance
-            }
-        }
-
-        return bestMatch.ordinal.toByte()
-    }
-
     var colorWheel: Byte
         get() = buffer[Channel.COLOR_WHEEL]
         set(value) {
             buffer[Channel.COLOR_WHEEL] = value
+        }
+
+    var dimmer: Float
+        get() = (buffer[Channel.DIMMER].toInt() and 0xff) / 255F
+        set(value) {
+            buffer[Channel.DIMMER] = ((value * 255).toInt() and 0xff).toByte()
         }
 
     var pan: Float
@@ -114,4 +99,29 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
             buffer[Channel.TILT] = (scaled shr 8).toByte()
             buffer[Channel.TILT_FINE] = (scaled and 0xff).toByte()
         }
+
+    init {
+        dimmer = 1f
+    }
+
+    private operator fun Dmx.Buffer.set(channel: Channel, value: Byte) {
+        buffer[channel.ordinal] = value
+    }
+
+    private operator fun Dmx.Buffer.get(channel: Channel): Byte = buffer[channel.ordinal]
+
+    fun closestColorFor(color: Color): Byte {
+        var bestMatch = WheelColor.WHITE
+        var bestDistance = 1f
+
+        WheelColor.values.forEach { wheelColor ->
+            val distance = wheelColor.color.distanceTo(color)
+            if (distance < bestDistance) {
+                bestMatch = wheelColor
+                bestDistance = distance
+            }
+        }
+
+        return bestMatch.ordinal.toByte()
+    }
 }
