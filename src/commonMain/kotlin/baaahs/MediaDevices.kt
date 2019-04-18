@@ -9,7 +9,6 @@ interface MediaDevices {
         fun close()
     }
 
-    @ExperimentalUnsignedTypes
     interface Image {
         fun toMonoBitmap(): MonoBitmap
     }
