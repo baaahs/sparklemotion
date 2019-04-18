@@ -22,26 +22,22 @@ import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
 
-actual class MapperDisplay actual constructor(val sheepModel: SheepModel, val onExit: () -> Unit) {
+class JsMapperDisplay(container: DomContainer) : MapperDisplay {
+    override var onClose: () -> Unit = {}
+
     private val width = 640
     private val height = 300
 
-    private val domContainer = document.create.div("mapperUi") {
-        button(classes = "ipad-close-button") {
-            onClickFunction = { onExit.invoke() }
-            +"X"
+    private val screen = document.create.div("mapperUi-screen") {
+        div("mapperUi-controls") {
+            button(classes = "mapperUi-up") { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
+            button(classes = "mapperUi-down") { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
         }
-        div("mapperUi-screen") {
-            div("mapperUi-controls") {
-                button(classes = "mapperUi-up") { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
-                button(classes = "mapperUi-down") { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-            }
-            canvas(classes = "mapperUi-2d") {
-                width = this@MapperDisplay.width.toString()
-                height = this@MapperDisplay.height.toString()
-            }
-            div("mapperUi-3d") { }
+        canvas(classes = "mapperUi-2d") {
+            width = this@JsMapperDisplay.width.toString()
+            height = this@JsMapperDisplay.height.toString()
         }
+        div("mapperUi-3d") { }
     }
 
     var uiRenderer: WebGLRenderer
@@ -50,29 +46,32 @@ actual class MapperDisplay actual constructor(val sheepModel: SheepModel, val on
     var uiControls: OrbitControls
     val wireframe = Object3D()
 
-    val ui2dCanvas = domContainer.getElementsByClassName("mapperUi-2d")[0]!! as HTMLCanvasElement
+    val ui2dCanvas = screen.getElementsByClassName("mapperUi-2d")[0]!! as HTMLCanvasElement
     val ui2dCtx = ui2dCanvas.getContext("2d")!! as CanvasRenderingContext2D
 
     private var wireframeInitialized = false
     private var jsInitialized = false
 
     init {
-        document.body!!.appendChild(domContainer)
+        container.getFrame(
+            "Mapper",
+            screen,
+            onClose,
+            { width, height -> println("Resize to $width, $height") })
 
         // onscreen renderer for registration UI:
         uiRenderer = WebGLRenderer(js("{alpha: true}"))
         uiRenderer.setSize(width, height);
         uiRenderer.setPixelRatio(width.toFloat() / height);
-        domContainer.getElementsByClassName("mapperUi-3d")[0]!!.appendChild(uiRenderer.domElement);
+        screen.getElementsByClassName("mapperUi-3d")[0]!!.appendChild(uiRenderer.domElement);
 
         uiCamera.position.z = 1000.0
         uiScene.add(uiCamera)
 
         uiControls = OrbitControls(uiCamera, uiRenderer.domElement)
-        addWireframe()
     }
 
-    private fun addWireframe() {
+    override fun addWireframe(sheepModel: SheepModel) {
         val geom = Geometry()
         val lineMaterial = LineBasicMaterial()
         lineMaterial.color = Color(0f, 1f, 0f)
@@ -100,8 +99,7 @@ actual class MapperDisplay actual constructor(val sheepModel: SheepModel, val on
         uiControls.update()
     }
 
-    @ExperimentalUnsignedTypes
-    actual fun showCamImage(image: MediaDevices.Image) {
+    override fun showCamImage(image: MediaDevices.Image) {
         ui2dCtx.resetTransform()
         ui2dCtx.fillStyle = "#006600"
         ui2dCtx.fillRect(0.0, 0.0, width / 2.0, height / 2.0);
@@ -119,10 +117,14 @@ actual class MapperDisplay actual constructor(val sheepModel: SheepModel, val on
 
         uiRenderer.render(uiScene, uiCamera)
     }
+
+    override fun close() {
+        TODO("JsMapperDisplay.close not implemented")
+    }
 }
 
-@ExperimentalUnsignedTypes
 class ImageDataImage(val imageData: ImageData, val rowsReversed: Boolean = false) : MediaDevices.Image {
+    @ExperimentalUnsignedTypes
     override fun toMonoBitmap(): MediaDevices.MonoBitmap {
         val destBuf = UByteArray(imageData.width * imageData.height)
         val srcBuf = imageData.data
