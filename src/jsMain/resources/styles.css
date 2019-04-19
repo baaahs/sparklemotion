@@ -51,17 +51,6 @@ body {
     padding: 2px;
 }
 
-#brainsView, #mapperBrainsView {
-    background-color: black;
-}
-
-#brainsView > div, #mapperBrainsView > div {
-    display: inline-block;
-    width: 2px;
-    height: 2px;
-    margin: 1px;
-}
-
 #beatsDiv > span {
     background-color: lightcyan;
     display: inline-block;

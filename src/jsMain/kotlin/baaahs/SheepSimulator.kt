@@ -19,13 +19,19 @@ class SheepSimulator {
     )
 
     val visualizer = Visualizer(sheepModel, dmxUniverse).also {
-        it.onStartMapper = {
+        it.onNewMapper = {
             it.setMapperRunning(true)
             mapperScope.launch {
                 Mapper(network, sheepModel, JsMapperDisplay(FakeDomContainer()) , it.mediaDevices).apply {
                     this.addCloseListener { it.setMapperRunning(false) }
                     start()
                 }
+            }
+        }
+
+        it.onNewUi = {
+            GlobalScope.launch {
+                Ui(network, pinky.address, JsUiDisplay(FakeDomContainer()))
             }
         }
     }
@@ -48,10 +54,6 @@ class SheepSimulator {
         sheepModel.eyes.forEach { eye ->
             visualizer.addEye(eye)
             Config.DMX_DEVICES[eye.name]
-        }
-
-        GlobalScope.launch {
-            Ui(network, pinky.address, display.forUi())
         }
 
         doRunBlocking {

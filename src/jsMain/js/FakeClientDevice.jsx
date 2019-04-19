@@ -25,7 +25,7 @@ export default class FakeClientDevice extends Component {
       height: this.height + 'px',
     };
 
-    return <Draggable>
+    return <Draggable cancel={styles['FakeClientDevice--content']}>
       <div className={styles['FakeClientDevice--pad']} style={containerStyle}>
         <div className={styles['FakeClientDevice-controls']}>
           <i className="fas fa-search-minus" onClick={_ => this.onZoomOut()}/>

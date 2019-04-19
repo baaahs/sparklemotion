@@ -40,6 +40,12 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         div("mapperUi-3d") { }
     }
 
+    private val frame = container.getFrame(
+        "Mapper",
+        screen,
+        { this.onClose() },
+        { width, height -> println("Resize to $width, $height") })
+
     var uiRenderer: WebGLRenderer
     var uiScene = Scene()
     var uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000)
@@ -53,12 +59,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private var jsInitialized = false
 
     init {
-        container.getFrame(
-            "Mapper",
-            screen,
-            onClose,
-            { width, height -> println("Resize to $width, $height") })
-
         // onscreen renderer for registration UI:
         uiRenderer = WebGLRenderer(js("{alpha: true}"))
         uiRenderer.setSize(width, height);
@@ -119,7 +119,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     }
 
     override fun close() {
-        TODO("JsMapperDisplay.close not implemented")
+        frame.close()
     }
 }
 
