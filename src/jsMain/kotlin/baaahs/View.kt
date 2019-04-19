@@ -82,7 +82,20 @@ class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
 }
 
 interface DomContainer {
-    fun getFrame(name: String, element: Element, onClose: () -> Unit, onResize: (width: Int, height: Int) -> Unit)
+    fun getFrame(
+        name: String,
+        element: Element,
+        onClose: () -> Unit,
+        onResize: (width: Int, height: Int) -> Unit
+    ): Frame
+
+    interface Frame {
+        @JsName("containerNode")
+        val containerNode: Element
+
+        @JsName("close")
+        fun close()
+    }
 }
 
 class FakeDomContainer : DomContainer {
@@ -91,7 +104,5 @@ class FakeDomContainer : DomContainer {
         content: Element,
         onClose: () -> Unit,
         onResize: (width: Int, height: Int) -> Unit
-    ) {
-        js("document.createFakeClientDevice")(name, content, onClose, onResize)
-    }
+    ): DomContainer.Frame = js("document.createFakeClientDevice")(name, content, onClose, onResize)
 }

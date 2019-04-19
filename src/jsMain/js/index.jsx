@@ -5,9 +5,9 @@ import App from './app';
 import FakeClientDevice from './FakeClientDevice';
 import styles from "./FakeClientDevice.scss";
 
-document.createUiApp = (elementId, uiContext) => {
+document.createUiApp = (container, uiContext) => {
   let app = <App uiContext={uiContext}/>;
-  ReactDOM.render(app, document.getElementById('uiView1'));
+  ReactDOM.render(app, container);
   return app;
 };
 
@@ -16,14 +16,24 @@ document.createFakeClientDevice = (name, content, onClose, onResize) => {
   let containerDiv = document.createElement("div");
   document.body.appendChild(containerDiv);
 
+  let val = {
+    device: device,
+    close: () => {
+      document.body.removeChild(containerDiv);
+    },
+  };
+
   ReactDOM.render(device, containerDiv, () => {
     let contentHolder = containerDiv.getElementsByClassName(styles['FakeClientDevice--content'])[0];
-    contentHolder.appendChild(content);
-    content.style.width = contentHolder.offsetWidth;
-    content.style.height = contentHolder.offsetHeight;
+    val.contentNode = contentHolder;
+    if (content != null) {
+      contentHolder.appendChild(content);
+      content.style.width = contentHolder.offsetWidth;
+      content.style.height = contentHolder.offsetHeight;
+    }
   });
 
-  return device;
+  return val;
 };
 
 module.hot.accept();

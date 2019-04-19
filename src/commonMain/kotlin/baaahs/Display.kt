@@ -6,7 +6,6 @@ interface Display {
     fun forNetwork(): NetworkDisplay
     fun forPinky(): PinkyDisplay
     fun forBrain(): BrainDisplay
-    fun forUi(): UiDisplay
 }
 
 interface NetworkDisplay {
@@ -27,9 +26,4 @@ interface PinkyDisplay {
 
 interface BrainDisplay {
     fun haveLink(link: Network.Link)
-}
-
-interface UiDisplay {
-    var color: Color?
-    var onColorChanged: ((Color) -> Unit)?
 }

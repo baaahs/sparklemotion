@@ -12,6 +12,11 @@
 <div id="simulatorView">
   <h3>BAAAHS Simulator FUCK YEAH</h3>
 
+  <div class="simulatorSection">
+    <button id="newUiButton">New UI</button>
+    <button id="newMapperButton">New Mapper</button>
+  </div>
+
   <div id="networkView" class="simulatorSection">
     <b>Network</b>
     <br/>Packet loss rate: <span id="networkPacketLossRate"></span>
@@ -29,15 +34,6 @@
     <div id="brainsView"></div>
   </div>
 
-  <div class="simulatorSection">
-    <button id="openMapperButton">Open Mapper</button>
-
-    <div>
-      <div>Brains:</div>
-      <div id="mapperBrainsView"></div>
-    </div>
-  </div>
-
   <div class="visualizerSection">
     <b>Visualizer:</b>
     <input type="checkbox" id="vizRotation" checked/> <label for="vizRotation">Rotate</label>
@@ -48,7 +44,6 @@
 <div id="info"></div>
 <div id="info2"></div>
 
-<div id="uiView1"></div>
 <script type="application/javascript" src="react_app.js"></script>
 
 <script type="application/javascript" src="lib/kotlin.js"></script>
