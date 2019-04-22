@@ -13,6 +13,22 @@ export default class FakeClientDevice extends Component {
 
   onZoomOut = () => {};
   onZoomIn = () => {};
+  onDragStart = (e, draggableData) => {
+    const draggableNode = draggableData.node;
+    const contentNode = draggableNode.getElementsByClassName(styles['FakeClientDevice--content'])[0];
+    let eventNode = e.target;
+    while (eventNode != null) {
+      if (eventNode === contentNode) {
+        console.log("in content, false");
+        return false;
+      } else if (eventNode === draggableNode) {
+        console.log("in draggable, true");
+        return true;
+      } else {
+        eventNode = eventNode.parentNode;
+      }
+    }
+  };
 
   render() {
     const borderWidth = 10;
@@ -25,7 +41,7 @@ export default class FakeClientDevice extends Component {
       height: this.height + 'px',
     };
 
-    return <Draggable cancel={styles['FakeClientDevice--content']}>
+    return <Draggable onStart={(e, data) => { return this.onDragStart(e, data); }}>
       <div className={styles['FakeClientDevice--pad']} style={containerStyle}>
         <div className={styles['FakeClientDevice-controls']}>
           <i className="fas fa-search-minus" onClick={_ => this.onZoomOut()}/>
