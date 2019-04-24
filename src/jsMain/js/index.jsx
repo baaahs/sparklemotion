@@ -31,6 +31,10 @@ document.createFakeClientDevice = (name, content, onClose, onResize) => {
       content.style.width = contentHolder.offsetWidth;
       content.style.height = contentHolder.offsetHeight;
     }
+
+    setTimeout(() => {
+      onResize(contentHolder.offsetWidth, contentHolder.offsetHeight);
+    }, 0);
   });
 
   return val;
