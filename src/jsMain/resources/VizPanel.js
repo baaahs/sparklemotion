@@ -2,10 +2,13 @@ class VizPanel {
   constructor(panel) {
     this.panel = panel;
     this.name = panel.name;
-    let panelGeometry = new THREE.Geometry();
-    this.geometry = panelGeometry;
+    this.geometry = new THREE.Geometry();
+    const panelGeometry = this.geometry;
+    const panelVertices = panelGeometry.vertices;
 
-    let panelVertices = [];
+    let triangle = new THREE.Triangle(); // for computing area...
+    this.area = 0;
+
     panelGeometry.faces = panel.faces.faces.toArray().map(face => {
       let localVerts = [];
       face.vertexIds.toArray().forEach(vi => {
@@ -18,57 +21,76 @@ class VizPanel {
         localVerts.push(lvi)
       });
 
+      triangle.set(...localVerts.map(x => panelVertices[x]));
+      this.area += triangle.getArea();
+
       return new THREE.Face3(...localVerts);
     });
-    geom.computeVertexNormals();
-    panelGeometry.vertices = panelVertices;
+
+    this.isMultiFaced = panelGeometry.faces.length > 1;
+
+    this.edgeNeighbors = {};
+    panelGeometry.faces.forEach(face => {
+      [[face.a, face.b], [face.b, face.c], [face.c, face.a]].forEach(vs => {
+        vs = vs.sort().join("-");
+        let neighbors = this.edgeNeighbors[vs];
+        if (neighbors === undefined) {
+          neighbors = [];
+          this.edgeNeighbors[vs] = neighbors;
+        }
+        neighbors.push(face);
+      });
+    });
+
+    geom.computeVertexNormals(); // todo: why is this here?
+
     let lines = panel.lines.toArray().map(line => {
       let lineGeo = new THREE.Geometry();
       lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
       return lineGeo;
     });
 
-    let faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
-    faceMaterial.side = THREE.FrontSide;
-    faceMaterial.transparent = true;
-    faceMaterial.opacity = 0.75;
+    this.faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
+    this.faceMaterial.side = THREE.FrontSide;
+    this.faceMaterial.transparent = true;
+    this.faceMaterial.opacity = 0.75;
 
-    this.faceMaterial = faceMaterial;
-    this.faces = new THREE.Mesh(panelGeometry, faceMaterial);
+    this.mesh = new THREE.Mesh(panelGeometry, this.faceMaterial);
+    this.mesh.panel = this; // so we can get back to the VizPanel from a raycaster intersection...
+    this.mesh.visible = false;
+
     this.lines = lines.map(line => new THREE.Line(line, lineMaterial));
 
-    this.faces.panel = this;
-
-    this.faces.visible = false;
-    scene.add(this.faces);
+    scene.add(this.mesh);
     this.lines.forEach((line) => {
       scene.add(line);
     });
   }
 
   addPixels(pixelCount) {
-    const geometry = this.geometry;
-    const vertices = geometry.vertices;
-    geometry.computeFaceNormals();
-    const pixelsGeometry = new THREE.BufferGeometry();
-    const positions = [];
-    const colors = [];
+    const panelGeometry = this.geometry;
+    const vertices = panelGeometry.vertices;
+    panelGeometry.computeFaceNormals();
+    const pixelsGeometry = new THREE.Geometry();
 
     let quaternion = new THREE.Quaternion();
 
-    const panelFaces = geometry.faces;
+    const panelFaces = panelGeometry.faces;
     let curFace = panelFaces[0];
-    let originalNormal = curFace.normal.clone();
-    quaternion.setFromUnitVectors(curFace.normal, new THREE.Vector3(0, 0, 1));
+    let revertToNormal = curFace.normal.clone();
+    let straightOnNormal = new THREE.Vector3(0, 0, 1);
+    quaternion.setFromUnitVectors(curFace.normal, straightOnNormal);
     let matrix = new THREE.Matrix4();
     matrix.makeRotationFromQuaternion(quaternion);
-    geometry.applyMatrix(matrix);
+    panelGeometry.applyMatrix(matrix);
     pixelsGeometry.applyMatrix(matrix);
 
     let pixelSpacing = 2; // inches
     let pos = this.randomLocation(curFace, vertices);
     const nextPos = new THREE.Vector3();
-    positions.push(pos.x, pos.y, pos.z);
+
+    pixelsGeometry.vertices.push(pos.clone());
+    const colors = [];
     colors.push(0, 0, 0);
 
     let tries = 1000;
@@ -80,24 +102,37 @@ class VizPanel {
       nextPos.y = pos.y + pixelSpacing * Math.cos(angleRad);
       nextPos.z = pos.z;
 
-      const lastEdge = {};
-      if (!VizPanel.isInside(VizPanel.xy(nextPos), [
-        VizPanel.xy(vertices[curFace.a]),
-        VizPanel.xy(vertices[curFace.b]),
-        VizPanel.xy(vertices[curFace.c])], lastEdge)) {
-        let newFace = this.getOtherFace(panelFaces, curFace, lastEdge);
+      // console.log("cur face: ", this.faceVs(curFace, panelGeometry));
+
+      if (!this.isInsideFace(curFace, nextPos)) {
+        let newFace = this.getFaceForPoint(curFace, nextPos);
         if (newFace) {
-          quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), originalNormal);
+          // console.log("moving from", curFace, "to", newFace);
+          // console.log("prior face vs:", this.faceVs(curFace, panelGeometry));
+
+          quaternion.setFromUnitVectors(straightOnNormal, revertToNormal);
           matrix.makeRotationFromQuaternion(quaternion);
-          geometry.applyMatrix(matrix);
+          panelGeometry.applyMatrix(matrix);
           pixelsGeometry.applyMatrix(matrix);
+          nextPos.applyMatrix4(matrix);
 
           curFace = newFace;
-          originalNormal = curFace.normal.clone();
-          quaternion.setFromUnitVectors(curFace.normal, new THREE.Vector3(0, 0, 1));
+          revertToNormal = curFace.normal.clone();
+          quaternion.setFromUnitVectors(curFace.normal, straightOnNormal);
           matrix.makeRotationFromQuaternion(quaternion);
-          geometry.applyMatrix(matrix);
+          panelGeometry.applyMatrix(matrix);
           pixelsGeometry.applyMatrix(matrix);
+          // console.log("pos was", nextPos);
+          nextPos.applyMatrix4(matrix);
+          // console.log("pos is now", nextPos);
+          // console.log("new face vs:", this.faceVs(newFace, panelGeometry));
+          nextPos.z = panelGeometry.vertices[newFace.a].z;
+          if (!this.isInsideFace(curFace, nextPos)) {
+            // console.log(nextPos, "is not in", this.faceVs(curFace, panelGeometry));
+            nextPos.copy(this.randomLocation(curFace, vertices));
+          } else {
+            // console.log("AWESOME", nextPos, "is in", this.faceVs(curFace, panelGeometry))
+          }
         } else {
           angleRad = Math.random() * 2 * Math.PI;
           pixelI--;
@@ -107,7 +142,8 @@ class VizPanel {
         }
       }
 
-      positions.push(nextPos.x, nextPos.y, nextPos.z);
+      // console.log("pixel z = ", nextPos.z);
+      pixelsGeometry.vertices.push(nextPos.clone());
       colors.push(0, 0, 0);
 
       angleRad += angleRadDelta;
@@ -123,23 +159,33 @@ class VizPanel {
       pixelsSinceEdge++;
     }
 
-    pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-    quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), originalNormal);
+    quaternion.setFromUnitVectors(straightOnNormal, revertToNormal);
     matrix.makeRotationFromQuaternion(quaternion);
-    geometry.applyMatrix(matrix);
+    panelGeometry.applyMatrix(matrix);
     pixelsGeometry.applyMatrix(matrix);
+
+    const pixBufGeometry = new THREE.BufferGeometry();
+    pixBufGeometry.addAttribute('position',
+        new THREE.Float32BufferAttribute(pixelsGeometry.vertices.flatMap(v => [v.x, v.y, v.z]), 3));
 
     let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
     colorsBuffer.dynamic = true;
-    pixelsGeometry.addAttribute('color', colorsBuffer);
+    pixBufGeometry.addAttribute('color', colorsBuffer);
     const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
-    const points = new THREE.Points(pixelsGeometry, material);
+    const points = new THREE.Points(pixBufGeometry, material);
     scene.add(points);
 
     this.pixelCount = pixelCount;
     this.pixelColorsBuffer = colorsBuffer;
-    this.pixelsGeometry = pixelsGeometry;
+    this.pixelsGeometry = pixBufGeometry;
+  }
+
+  faceVs(face, geometry) {
+    return [face.a, face.b, face.c].map(f => geometry.vertices[f]);
+  }
+
+  faceZs(face, geometry) {
+    return [face.a, face.b, face.c].map(f => geometry.vertices[f].z);
   }
 
   randomLocation(face, vertices) {
@@ -149,14 +195,22 @@ class VizPanel {
     return v;
   }
 
-  static isInside(point, vs, lastEdge) {
+  isInsideFace(curFace, v) {
+    const vertices = this.geometry.vertices;
+
+    return VizPanel.isInside(VizPanel.xy(v), [
+      VizPanel.xy(vertices[curFace.a]),
+      VizPanel.xy(vertices[curFace.b]),
+      VizPanel.xy(vertices[curFace.c])]);
+  }
+
+  static isInside(point, vs) {
     // ray-casting algorithm based on
     // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 
     var x = point[0], y = point[1];
 
     var inside = false;
-    var lastIntersection = vs.length - 1;
     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
       var xi = vs[i][0], yi = vs[i][1];
       var xj = vs[j][0], yj = vs[j][1];
@@ -165,11 +219,9 @@ class VizPanel {
           && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
       if (intersect) {
         inside = !inside;
-        lastIntersection = i;
       }
     }
 
-    lastEdge.v0 = lastIntersection;
     return inside;
   }
 
@@ -177,30 +229,45 @@ class VizPanel {
     return [v.x, v.y];
   }
 
-  getOtherFace(panelFaces, curFace, lastEdge) {
-    if (panelFaces.length > 1) {
-      // console.log("crossed edge of ", panel.name);
-      const vs = [curFace.a, curFace.b, curFace.c, curFace.a];
-      const v0 = vs[lastEdge.v0];
-      const v1 = vs[lastEdge.v0 + 1];
+  // we've tried to add a pixel that's not inside curFace; figure out which face it corresponds to...
+  getFaceForPoint(curFace, v) {
+    if (this.isMultiFaced) {
+      const vertices = this.geometry.vertices;
 
-      for (let i = 0; i < panelFaces.length; i++) {
-        const f = panelFaces[i];
-        if (f === curFace) continue;
-
-        const pvs = [f.a, f.b, f.c];
-        if (pvs.includes(v0) && pvs.includes(v1)) {
-          // found the face we just crossed over into!
-          console.log("Crossed into face ", i, " of panel ", this.panel.name, f);
-          return f;
+      // find the edge closest to v...
+      let closestEdge = [-1, -1];
+      let bestDistance = Infinity;
+      [[curFace.a, curFace.b], [curFace.b, curFace.c], [curFace.c, curFace.a],].forEach(edgeVs => {
+        const closestPointOnEdge = new THREE.Vector3();
+        const v0 = edgeVs[0];
+        const v1 = edgeVs[1];
+        new THREE.Line3(vertices[v0], vertices[v1]).closestPointToPoint(v, true, closestPointOnEdge);
+        let thisDistance = closestPointOnEdge.distanceTo(v);
+        if (thisDistance < bestDistance) {
+          closestEdge = [v0, v1];
+          bestDistance = thisDistance;
         }
+      });
+
+      let edgeId = closestEdge.sort().join("-");
+      // console.log("Closest edge to", v, "is", edgeId, this.edgeNeighbors[edgeId]);
+
+      const neighbors = this.edgeNeighbors[edgeId];
+      const neighbor = neighbors.filter(f => f !== curFace);
+      if (neighbor.length === 0) {
+        return null;
+      } else if (neighbor.length > 1) {
+        console.log("WARN: Found multiple neighbors for ", this.panel.name, " edge ", edgeId, ": ", neighbors);
       }
+
+      // console.log("Face for ", v, "is", edgeId, neighbor[0]);
+      return neighbor[0];
     }
     return null;
   }
 
   setPanelColor(panelBgColor, pixelColors) {
-    this.faces.visible = true;
+    this.mesh.visible = true;
 
     if (!renderPixels) {
       this.faceMaterial.color.r = panelBgColor.redF;

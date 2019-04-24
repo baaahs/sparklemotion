@@ -15,8 +15,8 @@ actual class Visualizer actual constructor(private val sheepModel: SheepModel, p
     }
 
     actual fun showPanel(panel: SheepModel.Panel): JsPanel {
-        val pixelCount = 400
-        return JsPanel(addPanel(panel, pixelCount), pixelCount)
+        val maxPixelCount = 400
+        return JsPanel(addPanel(panel), maxPixelCount)
     }
 
     actual fun addEye(eye: SheepModel.MovingHead) {
@@ -82,7 +82,7 @@ class MovingHeadView(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniv
 
 external fun initThreeJs(sheepModel: SheepModel, frameListeners: List<FrameListener>)
 
-external fun addPanel(panel: SheepModel.Panel, pixelCount: Int): Any
+external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any

@@ -1,6 +1,7 @@
 package baaahs
 
 import info.laht.threekt.cameras.Camera
+import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Uint8Array
@@ -27,10 +28,14 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
         }
 
         private val camCtx = (camRenderer.domElement as HTMLCanvasElement).getContext("webgl")!!
+        private val altCamera = PerspectiveCamera(45, 1.0, 1, 1000)
         private val pixelBuffer = Uint8ClampedArray(width * height * 4)
         private val imageData = ImageData(pixelBuffer, width, height)
 
         override fun onFrameReady(scene: Scene, camera: Camera) {
+            altCamera.copy(camera, true)
+            altCamera.aspect = 1.0 // width.toDouble() / height
+            altCamera.updateProjectionMatrix()
             camRenderer.render(scene, camera)
 
             camCtx.asDynamic().readPixels(
