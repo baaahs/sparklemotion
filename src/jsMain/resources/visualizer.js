@@ -84,16 +84,33 @@ function initThreeJs(sheepModel, frameListenersList) {
   startRender();
 }
 
-function addPanel(p, pixelCount) {
-  if (p.name !== '21L') return;
+const pixelDensity = 0.2;
+
+const omitPanels = [
+    '60R', '60L', // ears
+    'Face',
+    'Tail'
+];
+
+let totalPixels = 0;
+
+function addPanel(p) {
+  // if (p.name !== '15R') return;
+  // if (omitPanels.includes(p.name)) return;
 
   let vizPanel = new VizPanel(p);
   panels.push(vizPanel);
+
+  let pixelCount = Math.floor(vizPanel.area * pixelDensity);
+  console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels");
 
   // try to draw pixel-ish things...
   if (renderPixels) {
     vizPanel.addPixels(pixelCount);
   }
+
+  totalPixels += pixelCount;
+  document.getElementById('visualizerPixelCount').innerText = totalPixels.toString();
 
   select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
 

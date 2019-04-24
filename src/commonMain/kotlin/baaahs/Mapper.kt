@@ -56,7 +56,7 @@ class Mapper(
 //        println("image: $image")
         mapperDisplay.showCamImage(image)
 
-        val toBitmap = image.toMonoBitmap()
+//        val toBitmap = image.toMonoBitmap()
 //        println("toMonoBitmap = ${toMonoBitmap}")
     }
 
