@@ -126,15 +126,25 @@ body {
 }
 
 
+.mapperUi-screen {
+    width: 100%;
+    height: 100%;
+}
+
 .mapperUi-controls {
     position: absolute;
     z-index: 1;
 }
 
-.mapperUi-2d {
+.mapperUi-2d-canvas {
+    width: 100%;
+    height: 100%;
     position: absolute;
 }
 
-.mapperUi-3d {
+.mapperUi-3d-div {
+    width: 100%;
+    height: 100%;
     position: absolute;
+    mix-blend-mode: lighten;
 }

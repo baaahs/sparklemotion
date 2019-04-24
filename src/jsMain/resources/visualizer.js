@@ -58,6 +58,9 @@ function initThreeJs(sheepModel, frameListenersList) {
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
   controls = new THREE.OrbitControls(camera, sheepView);
+  controls.minPolarAngle = Math.PI / 2 - .25; // radians
+  controls.maxPolarAngle = Math.PI / 2 + .25; // radians
+
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
   lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
@@ -384,8 +387,9 @@ function startRender() {
   geom.computeBoundingSphere();
   object = new THREE.Points(geom, pointMaterial);
   scene.add(object);
-  controls.target = geom.boundingSphere.center;
-  camera.lookAt(geom.boundingSphere.center);
+  let target = geom.boundingSphere.center.clone();
+  controls.target = target;
+  camera.lookAt(target);
 
   render();
 }
