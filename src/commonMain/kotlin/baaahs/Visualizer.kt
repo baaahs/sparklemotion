@@ -7,7 +7,8 @@ expect class Visualizer(sheepModel: SheepModel, dmxUniverse: FakeDmxUniverse) {
     fun setMapperRunning(b: Boolean)
 
     val mediaDevices: MediaDevices
-    var onStartMapper: () -> Unit
+    var onNewMapper: () -> Unit
+    var onNewUi: () -> Unit
 }
 
 expect class JsPixels(jsPanel: JsPanel) : Pixels

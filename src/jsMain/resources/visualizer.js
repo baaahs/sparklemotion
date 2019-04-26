@@ -58,6 +58,9 @@ function initThreeJs(sheepModel, frameListenersList) {
   camera = new THREE.PerspectiveCamera(45, sheepView.offsetWidth / sheepView.offsetHeight, 1, 10000);
   camera.position.z = 1000;
   controls = new THREE.OrbitControls(camera, sheepView);
+  controls.minPolarAngle = Math.PI / 2 - .25; // radians
+  controls.maxPolarAngle = Math.PI / 2 + .25; // radians
+
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
   lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
@@ -195,6 +198,7 @@ function addPixels(panel, pixelCount) {
   let tries = 1000;
   let angleRad = Math.random() * 2 * Math.PI;
   let angleRadDelta = Math.random() * 0.5 - 0.5;
+  let pixelsSinceEdge = 0;
   for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
     nextPos.x = pos.x + pixelSpacing * Math.sin(angleRad);
     nextPos.y = pos.y + pixelSpacing * Math.cos(angleRad);
@@ -207,6 +211,7 @@ function addPixels(panel, pixelCount) {
       angleRad = Math.random() * 2 * Math.PI;
       pixelI--;
       if (tries-- < 0) break;
+      pixelsSinceEdge = 0;
       continue;
     }
 
@@ -217,10 +222,13 @@ function addPixels(panel, pixelCount) {
     angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
 
     // occasional disruption just in case we're in a tight loop...
-    if (pixelI % (pixelCount / 3) === 0) {
+    if (pixelsSinceEdge > pixelCount / 10) {
+      angleRad = Math.random() * 2 * Math.PI;
       angleRadDelta = Math.random() * 0.5 - 0.5;
+      pixelsSinceEdge = 0;
     }
     pos.copy(nextPos);
+    pixelsSinceEdge++;
   }
 
   pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -379,8 +387,9 @@ function startRender() {
   geom.computeBoundingSphere();
   object = new THREE.Points(geom, pointMaterial);
   scene.add(object);
-  controls.target = geom.boundingSphere.center;
-  camera.lookAt(geom.boundingSphere.center);
+  let target = geom.boundingSphere.center.clone();
+  controls.target = target;
+  camera.lookAt(target);
 
   render();
 }

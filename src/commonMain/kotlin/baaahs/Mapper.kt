@@ -5,14 +5,15 @@ import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*
 
 class Mapper(
-    val network: Network,
-    val sheepModel: SheepModel,
+    private val network: Network,
+    private val sheepModel: SheepModel,
+    private val mapperDisplay: MapperDisplay,
     mediaDevices: MediaDevices
 ) : Network.UdpListener {
     val maxPixelsPerBrain = 512
     val width = 640
     val height = 300
-    val mapperDisplay = MapperDisplay(sheepModel, { onClose() })
+
     val camera = mediaDevices.getCamera(width, height).apply {
         onImage = this@Mapper::haveImage
     }
@@ -25,6 +26,11 @@ class Mapper(
 
     var scope = CoroutineScope(Dispatchers.Main)
     private val brainMappers: MutableMap<Network.Address, BrainMapper> = mutableMapOf()
+
+    init {
+        mapperDisplay.onClose = { onClose()}
+        mapperDisplay.addWireframe(sheepModel)
+    }
 
     fun start() = doRunBlocking {
         link = network.link()
@@ -42,6 +48,8 @@ class Mapper(
         link.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
 
         closeListeners.forEach { it.invoke() }
+
+        mapperDisplay.close()
     }
 
     private fun haveImage(image: MediaDevices.Image) {
@@ -146,6 +154,10 @@ class Mapper(
     }
 }
 
-expect class MapperDisplay(sheepModel: SheepModel, onExit: () -> Unit) {
+interface MapperDisplay {
+    var onClose: () -> Unit
+
+    fun addWireframe(sheepModel: SheepModel)
     fun showCamImage(image: MediaDevices.Image)
+    fun close()
 }

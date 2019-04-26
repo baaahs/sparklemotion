@@ -25,6 +25,10 @@ class App extends Component {
     );
   };
 
+  close = () => {
+    console.log("app closed!");
+  };
+
   render() {
     return (
       <div>
