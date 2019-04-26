@@ -7,10 +7,13 @@ if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
 if (typeof this['kotlinx-serialization-runtime-js'] === 'undefined') {
   throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-runtime-js' was not found. Please, check whether 'kotlinx-serialization-runtime-js' is loaded prior to 'sparklemotion'.");
 }
+if (typeof this['threejs-wrapper'] === 'undefined') {
+  throw new Error("Error loading module 'sparklemotion'. Its dependency 'threejs-wrapper' was not found. Please, check whether 'threejs-wrapper' is loaded prior to 'sparklemotion'.");
+}
 if (typeof this['kotlinx-html-js'] === 'undefined') {
   throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'sparklemotion'.");
 }
-var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_runtime_js, $module$kotlinx_html_js) {
+var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_runtime_js, $module$threejs_wrapper, $module$kotlinx_html_js) {
   'use strict';
   var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var throwUPAE = Kotlin.throwUPAE;
@@ -101,6 +104,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var WebGLRenderer_init = THREE.WebGLRenderer;
+  var PerspectiveCamera_init = THREE.PerspectiveCamera;
   var Geometry = THREE.Geometry;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var Color_init = THREE.Color;
@@ -109,14 +113,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Face3_init = THREE.Face3;
   var Mesh_init = THREE.Mesh;
   var BufferGeometry = THREE.BufferGeometry;
+  var plus = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
   var Line_init = THREE.Line;
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
+  var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var Scene = THREE.Scene;
-  var PerspectiveCamera_init = THREE.PerspectiveCamera;
   var Object3D = THREE.Object3D;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
   var set_onClickFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onClickFunction_pszlq2$;
   var button = $module$kotlinx_html_js.kotlinx.html.button_i4xb7r$;
+  var i = $module$kotlinx_html_js.kotlinx.html.i_5g1p9k$;
   var div = $module$kotlinx_html_js.kotlinx.html.div_ri36nr$;
   var canvas = $module$kotlinx_html_js.kotlinx.html.canvas_dwb9fz$;
   var div_0 = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
@@ -885,7 +891,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   Mapper.prototype.haveImage_0 = function (image) {
     this.mapperDisplay_0.showCamImage_u6jj7u$(image);
-    var toBitmap = image.toMonoBitmap();
   };
   function Coroutine$Mapper$run$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -5102,11 +5107,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.camRenderer = $receiver;
     var tmp$;
     this.camCtx_0 = ensureNotNull((Kotlin.isType(tmp$ = this.camRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).getContext('webgl'));
+    this.altCamera_0 = new PerspectiveCamera_init(45, 1.0, 1, 1000);
     this.pixelBuffer_0 = new Uint8ClampedArray(Kotlin.imul(this.width, this.height) * 4 | 0);
     this.imageData_0 = new ImageData(this.pixelBuffer_0, this.width, this.height);
     this.onImage_tirclm$_0 = FakeMediaDevices$FakeCamera$onImage$lambda;
   }
   FakeMediaDevices$FakeCamera.prototype.onFrameReady = function (scene, camera) {
+    this.altCamera_0.copy(camera, true);
+    this.altCamera_0.aspect = 1.0;
+    this.altCamera_0.updateProjectionMatrix();
     this.camRenderer.render(scene, camera);
     this.camCtx_0.readPixels(0, 0, this.width, this.height, this.camCtx_0.RGBA, this.camCtx_0.UNSIGNED_BYTE, new Uint8Array(this.pixelBuffer_0.buffer));
     this.onImage(new ImageDataImage(this.imageData_0, true));
@@ -5155,6 +5164,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.ui2dCtx = Kotlin.isType(tmp$_0 = ensureNotNull(this.ui2dCanvas.getContext('2d')), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
     this.ui3dDiv = Kotlin.isType(tmp$_1 = ensureNotNull(this.screen_0.getElementsByClassName('mapperUi-3d-div')[0]), HTMLDivElement) ? tmp$_1 : throwCCE();
     this.ui3dCanvas = Kotlin.isType(tmp$_2 = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$_2 : throwCCE();
+    this.panelInfos_0 = LinkedHashMap_init();
     this.wireframeInitialized_0 = false;
     this.jsInitialized_0 = false;
     this.ui3dDiv.appendChild(this.ui3dCanvas);
@@ -5177,6 +5187,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.width_0 = width;
     this.height_0 = height;
     this.uiCamera.aspect = width / height;
+    this.uiCamera.updateProjectionMatrix();
     this.uiRenderer.setSize(width, height);
     this.uiRenderer.setPixelRatio(width / height);
     (Kotlin.isType(tmp$ = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).width = width;
@@ -5201,18 +5212,26 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       destination.add_11rb$(new Vector3(item.x, item.y, item.z));
     }
     geom.vertices = copyToArray(destination);
-    var faces = ArrayList_init();
+    var allFaces = ArrayList_init();
     var tmp$_0;
     tmp$_0 = sheepModel.panels.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
+      var panelFaces = ArrayList_init();
+      var panelMeshes = ArrayList_init();
+      var faceNormal = {v: new Vector3()};
       var tmp$_1;
       tmp$_1 = element.faces.faces.iterator();
       while (tmp$_1.hasNext()) {
         var element_0 = tmp$_1.next();
         var face3 = new Face3_init(element_0.vertexIds.get_za3lpa$(0), element_0.vertexIds.get_za3lpa$(1), element_0.vertexIds.get_za3lpa$(2), new Vector3(0, 0, 0));
-        faces.add_11rb$(face3);
+        allFaces.add_11rb$(face3);
+        panelFaces.add_11rb$(face3);
+        geom.faces = [face3];
+        geom.computeFaceNormals();
+        faceNormal.v = ensureNotNull(face3.normal);
         var mesh = new Mesh_init(geom, panelMaterial);
+        panelMeshes.add_11rb$(mesh);
         this.uiScene.add(mesh);
       }
       var tmp$_2;
@@ -5226,13 +5245,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         tmp$_3 = $receiver_2.iterator();
         while (tmp$_3.hasNext()) {
           var item_0 = tmp$_3.next();
-          destination_0.add_11rb$(new Vector3(item_0.x, item_0.y, item_0.z));
+          destination_0.add_11rb$(plus(new Vector3(item_0.x, item_0.y, item_0.z), faceNormal.v));
         }
         lineGeom.setFromPoints(copyToArray(destination_0));
         this.wireframe.add(new Line_init(lineGeom, lineMaterial));
       }
+      var $receiver_3 = this.panelInfos_0;
+      var value = new PanelInfo(panelFaces, panelMeshes, geom);
+      $receiver_3.put_xwzc9p$(element, value);
     }
-    geom.faces = copyToArray(faces);
+    geom.faces = copyToArray(allFaces);
+    geom.computeFaceNormals();
     geom.computeVertexNormals();
     geom.computeBoundingSphere();
     this.uiScene.add(this.wireframe);
@@ -5296,6 +5319,32 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     window.createImageBitmap(imageData, options).then(JsMapperDisplay$showCamImage$lambda(this, imageData));
     this.uiRenderer.render(this.uiScene, this.uiCamera);
   };
+  JsMapperDisplay.prototype.go_0 = function () {
+    var visiblePanels = ArrayList_init();
+    var tmp$;
+    tmp$ = this.panelInfos_0.entries.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var panel = element.key;
+      var panelInfo = element.value;
+      var panelPosition = panelInfo.geom.vertices[panelInfo.faces.get_za3lpa$(0).a];
+      var dirToCamera = this.uiCamera.position.clone().sub(panelPosition);
+      dirToCamera.normalize();
+      var angle = ensureNotNull(panelInfo.faces.get_za3lpa$(0).normal).dot(dirToCamera);
+      println('Angle for ' + panel.name + ' is ' + angle);
+      if (angle > 0) {
+        visiblePanels.add_11rb$(panel);
+      }
+    }
+    var destination = ArrayList_init_0(collectionSizeOrDefault(visiblePanels, 10));
+    var tmp$_0;
+    tmp$_0 = visiblePanels.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination.add_11rb$(item.name);
+    }
+    println('Visible panels: ' + sorted(destination));
+  };
   JsMapperDisplay.prototype.close = function () {
     this.frame_0.close();
   };
@@ -5328,10 +5377,24 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
+  function JsMapperDisplay$screen$lambda$lambda$lambda$lambda_1(this$JsMapperDisplay) {
+    return function (it) {
+      this$JsMapperDisplay.go_0();
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay) {
+    return function ($receiver) {
+      i($receiver, 'fas fa-bullseye');
+      set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_1(this$JsMapperDisplay));
+      return Unit;
+    };
+  }
   function JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
       button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-up', JsMapperDisplay$screen$lambda$lambda$lambda(this$JsMapperDisplay));
       button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-down', JsMapperDisplay$screen$lambda$lambda$lambda_0(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-down', JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay));
       return Unit;
     };
   }
@@ -5400,6 +5463,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'ImageDataImage',
     interfaces: [MediaDevices$Image]
   };
+  function PanelInfo(faces, meshes, geom) {
+    this.faces = faces;
+    this.meshes = meshes;
+    this.geom = geom;
+  }
+  PanelInfo.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PanelInfo',
+    interfaces: []
+  };
   function JsUiDisplay(domContainer) {
     this.domContainer_0 = domContainer;
     this.div_0 = div_0(get_create(document), void 0, JsUiDisplay$div$lambda);
@@ -5464,8 +5537,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     ensureNotNull(document.getElementById('newUiButton')).addEventListener('click', Visualizer$start$lambda_0(this));
   };
   Visualizer.prototype.showPanel_jfju1k$ = function (panel) {
-    var pixelCount = 400;
-    return new JsPanel(addPanel(panel, pixelCount), pixelCount);
+    var maxPixelCount = 400;
+    return new JsPanel(addPanel(panel), maxPixelCount);
   };
   Visualizer.prototype.addEye_1hma8m$ = function (eye) {
     new MovingHeadView(eye, this.dmxUniverse_0);
@@ -6505,6 +6578,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.FakeMediaDevices = FakeMediaDevices;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.ImageDataImage = ImageDataImage;
+  package$baaahs.PanelInfo = PanelInfo;
   package$baaahs.JsUiDisplay = JsUiDisplay;
   package$baaahs.Visualizer = Visualizer;
   package$baaahs.FrameListener = FrameListener;
@@ -6532,6 +6606,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   FakeNetwork$FakeLink.prototype.broadcastUdp_ecsl0t$ = Network$Link.prototype.broadcastUdp_ecsl0t$;
   Kotlin.defineModule('sparklemotion', _);
   return _;
-}(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-runtime-js'], this['kotlinx-html-js']);
+}(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-runtime-js'], this['threejs-wrapper'], this['kotlinx-html-js']);
 
 //# sourceMappingURL=sparklemotion.js.map
