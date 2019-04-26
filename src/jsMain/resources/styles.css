@@ -51,17 +51,6 @@ body {
     padding: 2px;
 }
 
-#brainsView, #mapperBrainsView {
-    background-color: black;
-}
-
-#brainsView > div, #mapperBrainsView > div {
-    display: inline-block;
-    width: 2px;
-    height: 2px;
-    margin: 1px;
-}
-
 #beatsDiv > span {
     background-color: lightcyan;
     display: inline-block;
@@ -122,15 +111,6 @@ body {
     background-color: orange;
 }
 
-.ipad-close-button {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    border-radius: 10px;
-    background-color: #600;
-    color: white;
-}
-
 #uiView1 {
     position: absolute;
     border: 1px solid white;
@@ -146,27 +126,9 @@ body {
 }
 
 
-.mapperUi {
-    position: absolute;
-    border: 1px solid white;
-    border-radius: 1em;
-    background-color: #222;
-    color: white;
-    top: 50%;
-    bottom: 5px;
-    left: 5px;
-    right: 21%;
-    padding: .25em;
-    font: 10pt Helvetica;
-}
-
 .mapperUi-screen {
-    position: relative;
-    width: auto;
-    height: auto;
-    margin: 1em;
-    background-color: black;
-    border: 1px inset #222222;
+    width: 100%;
+    height: 100%;
 }
 
 .mapperUi-controls {
@@ -174,10 +136,15 @@ body {
     z-index: 1;
 }
 
-.mapperUi-2d {
+.mapperUi-2d-canvas {
+    width: 100%;
+    height: 100%;
     position: absolute;
 }
 
-.mapperUi-3d {
+.mapperUi-3d-div {
+    width: 100%;
+    height: 100%;
     position: absolute;
+    mix-blend-mode: lighten;
 }

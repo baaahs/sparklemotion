@@ -80,3 +80,29 @@ class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
 
     private class ColorButton(val color: Color, element: Element) : Button<Color>(color, element)
 }
+
+interface DomContainer {
+    fun getFrame(
+        name: String,
+        element: Element,
+        onClose: () -> Unit,
+        onResize: (width: Int, height: Int) -> Unit
+    ): Frame
+
+    interface Frame {
+        @JsName("containerNode")
+        val containerNode: Element
+
+        @JsName("close")
+        fun close()
+    }
+}
+
+class FakeDomContainer : DomContainer {
+    override fun getFrame(
+        name: String,
+        content: Element,
+        onClose: () -> Unit,
+        onResize: (width: Int, height: Int) -> Unit
+    ): DomContainer.Frame = js("document.createFakeClientDevice")(name, content, onClose, onResize)
+}

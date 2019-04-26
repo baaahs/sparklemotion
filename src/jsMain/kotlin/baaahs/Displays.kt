@@ -16,9 +16,6 @@ class JsDisplay : Display {
 
     override fun forBrain(): BrainDisplay =
         JsBrainDisplay(document.getElementById("brainsView")!!)
-
-    override fun forUi(): UiDisplay =
-        JsUiDisplay(document.getElementById("uiView1")!!)
 }
 
 class JsNetworkDisplay(document: Document) : NetworkDisplay {
@@ -147,17 +144,4 @@ class JsBrainDisplay(element: Element) : BrainDisplay {
         myDiv.classList.clear()
     }
 
-}
-
-class JsUiDisplay(val element: Element) : UiDisplay {
-    override var color: Color? = null
-        set(value) {
-            colorPickerView.setColor(value)
-            field = value
-        }
-    private val colorPickerView = ColorPickerView(element) {
-        color = it
-        onColorChanged?.invoke(it)
-    }
-    override var onColorChanged: ((Color) -> Unit)? = null
 }

@@ -13,12 +13,16 @@ actual class Visualizer actual constructor(sheepModel: SheepModel, dmxUniverse: 
 
     actual val mediaDevices: MediaDevices
         get() = TODO("JVM Visualizer.mediaDevices not implemented")
-    actual var onStartMapper: () -> Unit
-        get() = TODO("JVM Visualizer.onStartMapper not implemented")
+    actual var onNewMapper: () -> Unit
+        get() = TODO("JVM Visualizer.onNewMapper not implemented")
         set(value) {}
 
     actual fun setMapperRunning(b: Boolean) {
     }
+
+    actual var onNewUi: () -> Unit
+        get() = TODO("Visualizer.onNewUi not implemented")
+        set(value) {}
 
 }
 
