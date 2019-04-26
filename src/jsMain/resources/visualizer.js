@@ -84,194 +84,43 @@ function initThreeJs(sheepModel, frameListenersList) {
   startRender();
 }
 
-function addPanel(p, pixelCount) {
-  let panelGeometry = new THREE.Geometry();
-  let panelVertices = [];
-  panelGeometry.faces = p.faces.faces.toArray().map(face => {
-    let localVerts = [];
-    face.vertexIds.toArray().forEach(vi => {
-      let v = geom.vertices[vi];
-      let lvi = panelVertices.indexOf(v);
-      if (lvi === -1) {
-        lvi = panelVertices.length;
-        panelVertices.push(v);
-      }
-      localVerts.push(lvi)
-    });
+const pixelDensity = 0.2;
 
-    return new THREE.Face3(...localVerts);
-  });
-  geom.computeVertexNormals();
-  panelGeometry.vertices = panelVertices;
-  let lines = p.lines.toArray().map(line => {
-    let lineGeo = new THREE.Geometry();
-    lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
-    return lineGeo;
-  });
+const omitPanels = [
+    '60R', '60L', // ears
+    'Face',
+    'Tail'
+];
 
-  let faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
-  faceMaterial.side = THREE.DoubleSide;
-  faceMaterial.transparent = true;
-  faceMaterial.opacity = 0.75;
+let totalPixels = 0;
 
-  var panel = {
-    name: p.name,
-    geometry: panelGeometry,
-    faceMaterial: faceMaterial,
-    faces: new THREE.Mesh(panelGeometry, faceMaterial),
-    lines: lines.map(line => new THREE.Line(line, lineMaterial))
-  };
+function addPanel(p) {
+  // if (p.name !== '15R') return;
+  // if (omitPanels.includes(p.name)) return;
 
-  panel.faces.visible = false;
-  scene.add(panel.faces);
-  panel.lines.forEach((line) => {
-    scene.add(line);
-  });
+  let vizPanel = new VizPanel(p);
+  panels.push(vizPanel);
+
+  let pixelCount = Math.floor(vizPanel.area * pixelDensity);
+  console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels");
 
   // try to draw pixel-ish things...
   if (renderPixels) {
-    addPixels(panel, pixelCount);
+    vizPanel.addPixels(pixelCount);
   }
 
-  panels.push(panel);
+  totalPixels += pixelCount;
+  document.getElementById('visualizerPixelCount').innerText = totalPixels.toString();
 
   select.options[select.options.length] = new Option(p.name, (panels.length - 1).toString());
 
-  return panel;
+  return vizPanel;
 }
 
-function randomLocation(vertices) {
-  const v = new THREE.Vector3().copy(vertices[0]);
-  for (let vi = 1; vi < vertices.length; vi++) {
-    v.addScaledVector(new THREE.Vector3().copy(vertices[vi]).sub(v), Math.random());
-  }
-  return v;
-}
+function setPanelColor(vizPanel, panelBgColor, pixelColors) {
+  if (vizPanel == null) return;
 
-function isInside(point, vs) {
-  // ray-casting algorithm based on
-  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-  var x = point[0], y = point[1];
-
-  var inside = false;
-  for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-    var xi = vs[i][0], yi = vs[i][1];
-    var xj = vs[j][0], yj = vs[j][1];
-
-    var intersect = ((yi > y) != (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-
-  return inside;
-}
-
-function xy(v) {
-  return [v.x, v.y];
-}
-
-function addPixels(panel, pixelCount) {
-  const geometry = panel.geometry;
-  const vertices = geometry.vertices;
-  geometry.computeFaceNormals();
-  const pixelsGeometry = new THREE.BufferGeometry();
-  const positions = [];
-  const colors = [];
-
-  let quaternion = new THREE.Quaternion();
-
-  const panelFaces = geometry.faces;
-  let curFace = panelFaces[0];
-  const originalNormal = curFace.normal.clone();
-  quaternion.setFromUnitVectors(curFace.normal, new THREE.Vector3(0, 0, 1));
-  let matrix = new THREE.Matrix4().makeRotationFromQuaternion(quaternion);
-  geometry.applyMatrix(matrix);
-  pixelsGeometry.applyMatrix(matrix);
-
-  let pixelSpacing = 2; // inches
-  let pos = randomLocation(vertices);
-  const nextPos = new THREE.Vector3();
-  positions.push(pos.x, pos.y, pos.z);
-  colors.push(0, 0, 0);
-
-  let tries = 1000;
-  let angleRad = Math.random() * 2 * Math.PI;
-  let angleRadDelta = Math.random() * 0.5 - 0.5;
-  let pixelsSinceEdge = 0;
-  for (let pixelI = 1; pixelI < pixelCount; pixelI++) {
-    nextPos.x = pos.x + pixelSpacing * Math.sin(angleRad);
-    nextPos.y = pos.y + pixelSpacing * Math.cos(angleRad);
-    nextPos.z = pos.z;
-
-    if (!isInside(xy(nextPos), [
-      xy(vertices[curFace.a]),
-      xy(vertices[curFace.b]),
-      xy(vertices[curFace.c])])) {
-      angleRad = Math.random() * 2 * Math.PI;
-      pixelI--;
-      if (tries-- < 0) break;
-      pixelsSinceEdge = 0;
-      continue;
-    }
-
-    positions.push(nextPos.x, nextPos.y, nextPos.z);
-    colors.push(0, 0, 0);
-
-    angleRad += angleRadDelta;
-    angleRadDelta *= 1 - Math.random() * 0.2 + 0.1;
-
-    // occasional disruption just in case we're in a tight loop...
-    if (pixelsSinceEdge > pixelCount / 10) {
-      angleRad = Math.random() * 2 * Math.PI;
-      angleRadDelta = Math.random() * 0.5 - 0.5;
-      pixelsSinceEdge = 0;
-    }
-    pos.copy(nextPos);
-    pixelsSinceEdge++;
-  }
-
-  pixelsGeometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-  quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), originalNormal);
-  geometry.applyMatrix(matrix.makeRotationFromQuaternion(quaternion));
-  pixelsGeometry.applyMatrix(matrix);
-
-  let colorsBuffer = new THREE.Float32BufferAttribute(colors, 3);
-  colorsBuffer.dynamic = true;
-  pixelsGeometry.addAttribute('color', colorsBuffer);
-  const material = new THREE.PointsMaterial({size: 3, vertexColors: THREE.VertexColors});
-  const points = new THREE.Points(pixelsGeometry, material);
-  scene.add(points);
-
-  panel.pixelCount = pixelCount;
-  panel.pixelColorsBuffer = colorsBuffer;
-  panel.pixelsGeometry = pixelsGeometry;
-}
-
-function setPanelColor(panel, panelBgColor, pixelColors) {
-  panel.faces.visible = true;
-
-  if (!renderPixels) {
-    panel.faceMaterial.color.r = panelBgColor.redF;
-    panel.faceMaterial.color.g = panelBgColor.greenF;
-    panel.faceMaterial.color.b = panelBgColor.blueF;
-  } else {
-    panel.faceMaterial.color.r = .3;
-    panel.faceMaterial.color.g = .3;
-    panel.faceMaterial.color.b = .3;
-  }
-
-  if (panel.pixelCount && pixelColors) {
-    const count = Math.min(panel.pixelCount, pixelColors.length);
-    for (let i = 0; i < count; i++) {
-      const pColor = pixelColors[i];
-      panel.pixelColorsBuffer.array[i * 3] = pColor.redF;
-      panel.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenF;
-      panel.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueF;
-    }
-    panel.pixelColorsBuffer.needsUpdate = true;
-  }
+  vizPanel.setPanelColor(panelBgColor, pixelColors);
 }
 
 document.movingHeads = {};
@@ -308,64 +157,6 @@ const vizRotationEl = document.getElementById("vizRotation");
 
 /////////////////////// Mapper ///////////////////////
 let mapper = {running: false};
-
-function initMapper(div) {
-  const width = mapper.width = 640;
-  const height = mapper.height = 300;
-
-  mapper.renderDiv = div;
-  mapper.renderDiv.addEventListener('mousemove', onMouseMove, false);
-
-  let mapperEl = div.parentElement;
-  mapper.camCanvas = mapperEl.getElementsByClassName("mapperUi-cam")[0];
-  mapper.camCanvas.width = width;
-  mapper.camCanvas.height = height;
-
-  // offscreen renderer for virtualized camera:
-  mapper.camRenderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
-  mapper.camRenderer.setSize(width, height);
-
-  // onscreen renderer for registration UI:
-  mapper.uiRenderer = new THREE.WebGLRenderer({alpha: true});
-  mapper.uiRenderer.setSize(width, height);
-  mapper.uiRenderer.setPixelRatio(window.devicePixelRatio);
-  mapper.renderDiv.appendChild(mapper.uiRenderer.domElement);
-
-  mapper.uiScene = new THREE.Scene();
-  mapper.uiCamera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-  mapper.uiCamera.position.z = 1000;
-  mapper.uiScene.add(mapper.uiCamera);
-
-  mapper.img = new Image();
-
-  // Add wireframe...
-  const wireframeLineMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
-  mapper.wireframe = new THREE.Object3D();
-  panels.forEach((panel) => {
-    panel.lines.forEach((line) => {
-      const mapperLine = new THREE.Line(line.geometry, wireframeLineMaterial);
-      mapper.wireframe.add(mapperLine);
-    });
-  });
-  mapper.uiScene.add(mapper.wireframe);
-
-  // Create sheep mesh to block out occluded wireframe lines...
-  mapper.shadowSheep = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-  mapper.uiScene.add(mapper.shadowSheep);
-
-  mapper.uiControls = new THREE.OrbitControls(mapper.uiCamera, mapper.renderDiv);
-  mapper.uiControls.target = geom.boundingSphere.center;
-  mapper.uiControls.update();
-
-  const upButton = mapperEl.getElementsByClassName("mapperUi-up")[0];
-  upButton.addEventListener('click', () => {
-    mapper.wireframe.position.y += 10;
-  });
-  const downButton = mapperEl.getElementsByClassName("mapperUi-down")[0];
-  downButton.addEventListener('click', () => {
-    mapper.wireframe.position.y -= 10;
-  });
-}
 
 function setMapperRunning(isRunning, jsMapperDisplay) {
   mapper.isRunning = isRunning;
@@ -410,20 +201,16 @@ function render() {
       camera.position.z = z * Math.cos(rotSpeed * 2) - x * Math.sin(rotSpeed * 2);
       camera.lookAt(scene.position);
     }
+  }
 
-    controls.update();
-    raycaster.setFromCamera(mouse, camera);
-    let intersections = raycaster.intersectObject(object);
-    if (intersections.length) {
-      let sorted = object.geometry.vertices.slice().sort((a, b) => (new THREE.Vector3()).subVectors(a, intersections[0].point).length() - (new THREE.Vector3()).subVectors(b, intersections[0].point).length());
-      let nearest = sorted[0];
-      sphere.position.copy(nearest);
-      sphere.visible = true;
-      let index = object.geometry.vertices.indexOf(nearest);
-      document.getElementById('info').innerText = (index + 1).toString();
-    } else {
-      sphere.visible = false;
-      document.getElementById('info').innerText = '';
+  controls.update();
+
+  raycaster.setFromCamera(mouse, camera);
+  let intersections = raycaster.intersectObjects(scene.children);
+  if (intersections.length) {
+    const intersection = intersections[0];
+    if (intersection && intersection.object && intersection.object.panel) {
+      document.getElementById("selectionInfo").innerText = "Selected: " + intersections[0].object.panel.name;
     }
   }
 
