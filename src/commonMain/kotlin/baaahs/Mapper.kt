@@ -17,18 +17,20 @@ class Mapper(
     val camera = mediaDevices.getCamera(width, height).apply {
         onImage = this@Mapper::haveImage
     }
-    val baseBitmap = UByteArray(width * height * 4)
-    val displayBitmap = UByteArray(width * height * 4)
+    private var baseBitmap : MediaDevices.MonoBitmap? = null
+    private lateinit var deltaBitmap : MediaDevices.MonoBitmap
 
     private val closeListeners = mutableListOf<() -> Unit>()
     private lateinit var link: Network.Link
     private var isRunning: Boolean = true
+    private var captureBaseImage = false
 
     var scope = CoroutineScope(Dispatchers.Main)
     private val brainMappers: MutableMap<Network.Address, BrainMapper> = mutableMapOf()
 
     init {
-        mapperDisplay.onClose = { onClose()}
+        mapperDisplay.onStart = { onStart() }
+        mapperDisplay.onClose = { onClose() }
         mapperDisplay.addWireframe(sheepModel)
     }
 
@@ -38,6 +40,10 @@ class Mapper(
 
         scope = CoroutineScope(Dispatchers.Main)
         scope.launch { run() }
+    }
+
+    private fun onStart() {
+        captureBaseImage = true
     }
 
     private fun onClose() {
@@ -56,8 +62,18 @@ class Mapper(
 //        println("image: $image")
         mapperDisplay.showCamImage(image)
 
-//        val toBitmap = image.toMonoBitmap()
-//        println("toMonoBitmap = ${toMonoBitmap}")
+        val monoBitmap = image.toMonoBitmap()
+        if (captureBaseImage) {
+            baseBitmap = monoBitmap
+            deltaBitmap = MediaDevices.MonoBitmap(monoBitmap.width, monoBitmap.height)
+            captureBaseImage = false
+        } else if (baseBitmap != null) {
+            deltaBitmap.copyFrom(baseBitmap!!)
+            val changeRegion = deltaBitmap.subtract(monoBitmap)
+            println("changeRegion = $changeRegion")
+
+            mapperDisplay.showDiffImage(deltaBitmap, changeRegion)
+        }
     }
 
     private val retries = (0..1)
@@ -155,9 +171,11 @@ class Mapper(
 }
 
 interface MapperDisplay {
+    var onStart: () -> Unit
     var onClose: () -> Unit
 
     fun addWireframe(sheepModel: SheepModel)
     fun showCamImage(image: MediaDevices.Image)
+    fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region)
     fun close()
 }

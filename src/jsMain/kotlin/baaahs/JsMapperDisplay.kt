@@ -21,19 +21,20 @@ import kotlinx.html.div
 import kotlinx.html.dom.create
 import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
+import org.khronos.webgl.Uint8ClampedArray
 import org.khronos.webgl.get
 import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.math.PI
-import kotlin.math.min
-import kotlin.math.roundToInt
+import kotlin.math.max
 
 class JsMapperDisplay(container: DomContainer) : MapperDisplay {
+    override var onStart: () -> Unit = {}
     override var onClose: () -> Unit = {}
 
-    private var width = 640
-    private var height = 300
+    private var width = 512
+    private var height = 384
 
     // onscreen renderer for registration UI:
     val uiRenderer = WebGLRenderer(js("{alpha: true}"))
@@ -44,15 +45,20 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     private val screen = document.create.div("mapperUi-screen") {
         div("mapperUi-controls") {
-            button(classes = "mapperUi-up") { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
-            button(classes = "mapperUi-down") { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-            button(classes = "mapperUi-down") { i(classes="fas fa-bullseye"); onClickFunction = { go() } }
+            button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
+            button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
+//            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
+            button { i(classes="fas fa-bullseye"); onClickFunction = { go() } }
         }
         canvas(classes = "mapperUi-2d-canvas") {
             width = this@JsMapperDisplay.width.toString() + "px"
             height = this@JsMapperDisplay.height.toString() + "px"
         }
         div("mapperUi-3d-div") { }
+        canvas(classes = "mapperUi-diff-canvas") {
+            width = this@JsMapperDisplay.width.toString() + "px"
+            height = this@JsMapperDisplay.height.toString() + "px"
+        }
     }
 
     private val frame = container.getFrame(
@@ -65,6 +71,10 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     val ui2dCtx = ui2dCanvas.getContext("2d")!! as CanvasRenderingContext2D
     val ui3dDiv = screen.getElementsByClassName("mapperUi-3d-div")[0]!! as HTMLDivElement
     val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+
+    val diffCanvas = screen.getElementsByClassName("mapperUi-diff-canvas")[0]!! as HTMLCanvasElement
+    val diffCtx = diffCanvas.getContext("2d")!! as CanvasRenderingContext2D
+    private var changeRegion: MediaDevices.Region? = null
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -80,13 +90,15 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         ui2dCanvas.width = width
         ui2dCanvas.height = height
+
+        diffCanvas.width = width
+        diffCanvas.height = height
     }
 
     private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
-    private var wireframeInitialized = false
-    private var jsInitialized = false
 
     init {
+        js("document.md = this");
         ui3dDiv.appendChild(ui3dCanvas);
 
         uiCamera.position.z = 1000.0
@@ -139,8 +151,10 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         uiScene.add(wireframe)
         val boundingSphere: dynamic = geom.boundingSphere!!
-        uiControls.target = boundingSphere.center
+        val centerOfSheep = boundingSphere.center.clone()
+        uiControls.target = centerOfSheep
         uiControls.update()
+        uiCamera.lookAt(centerOfSheep)
     }
 
     override fun showCamImage(image: MediaDevices.Image) {
@@ -153,33 +167,43 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             options.imageOrientation = ImageOrientation.Companion.FLIPY
         }
         window.createImageBitmap(imageData, options).then { imageBitmap: ImageBitmap ->
-            val scale = min(
-                width.toDouble() / imageData.width,
-                height.toDouble() / imageData.height
+            val scale = max(
+                width.toDouble() / imageBitmap.width,
+                height.toDouble() / imageBitmap.height
             )
-            val imgWidth = (imageData.width * scale).roundToInt()
-            val imgHeight = (imageData.height * scale).roundToInt()
+            val imgWidth = imageBitmap.width * scale
+            val imgHeight = imageBitmap.height * scale
 
             val widthDiff = width - imgWidth
             val heightDiff = height - imgHeight
 
             ui2dCtx.drawImage(
                 imageBitmap, 0.0, 0.0, imageBitmap.width.toDouble(), imageBitmap.height.toDouble(),
-                widthDiff / 2.0, heightDiff / 2.0, width - widthDiff / 2.0, height - heightDiff / 2.0
+                widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight
             )
 
             // add a green line around the camera image:
             ui2dCtx.strokeStyle = "#006600"
-            ui2dCtx.strokeRect(
-                widthDiff / 2.0, heightDiff / 2.0,
-                width - widthDiff / 2.0, height - heightDiff / 2.0
-            );
+            ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight)
+
+            changeRegion?.apply {
+                ui2dCtx.strokeStyle = "#660000"
+                ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
+            }
         }
 
         uiRenderer.render(uiScene, uiCamera)
     }
 
+    override fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region) {
+        this.changeRegion = changeRegion
+//        diffCtx.drawImage(deltaBitmap)
+//        TODO("${CLASS_NAME}.showDiffImage not implemented")
+    }
+
     private fun go() {
+        onStart()
+
         val visiblePanels = mutableListOf<SheepModel.Panel>()
         panelInfos.forEach { (panel, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]

@@ -141,3 +141,8 @@ body {
     position: absolute;
     mix-blend-mode: lighten;
 }
+
+.mapperUi-diff-canvas {
+    position: absolute;
+    left: 600px;
+}
