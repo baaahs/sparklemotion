@@ -10,6 +10,7 @@ import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.math.Color
 import info.laht.threekt.math.Vector3
+import info.laht.threekt.math.plus
 import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
 import info.laht.threekt.renderers.WebGLRenderer
@@ -18,13 +19,13 @@ import kotlinx.html.button
 import kotlinx.html.canvas
 import kotlinx.html.div
 import kotlinx.html.dom.create
+import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
 import org.khronos.webgl.get
 import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.math.PI
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -45,6 +46,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         div("mapperUi-controls") {
             button(classes = "mapperUi-up") { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
             button(classes = "mapperUi-down") { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
+            button(classes = "mapperUi-down") { i(classes="fas fa-bullseye"); onClickFunction = { go() } }
         }
         canvas(classes = "mapperUi-2d-canvas") {
             width = this@JsMapperDisplay.width.toString() + "px"
@@ -69,6 +71,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         this.height = height
 
         uiCamera.aspect = width.toDouble() / height
+        uiCamera.updateProjectionMatrix()
 
         uiRenderer.setSize(width, height);
         uiRenderer.setPixelRatio(width.toFloat() / height);
@@ -79,7 +82,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         ui2dCanvas.height = height
     }
 
-
+    private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
     private var wireframeInitialized = false
     private var jsInitialized = false
 
@@ -100,22 +103,37 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
 
         geom.vertices = sheepModel.vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
-        val faces = mutableListOf<Face3>()
+        val allFaces = mutableListOf<Face3>()
         sheepModel.panels.forEach { panel ->
+            val panelFaces = mutableListOf<Face3>()
+            val panelMeshes = mutableListOf<Mesh>()
+            var faceNormal = Vector3()
             panel.faces.faces.forEach { face ->
                 val face3 = Face3(face.vertexIds[0], face.vertexIds[1], face.vertexIds[2], Vector3(0, 0, 0))
-                faces.add(face3)
+                allFaces.add(face3)
+                panelFaces.add(face3)
+
+                // just compute this face's normal
+                geom.faces = arrayOf(face3)
+                geom.computeFaceNormals()
+                faceNormal = face3.normal!!
+
                 val mesh = Mesh(geom, panelMaterial)
+                panelMeshes.add(mesh)
                 uiScene.add(mesh)
             }
 
+            // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
             panel.lines.forEach { line ->
                 val lineGeom = BufferGeometry()
-                lineGeom.setFromPoints(line.points.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray())
+                lineGeom.setFromPoints(line.points.map { pt -> Vector3(pt.x, pt.y, pt.z) + faceNormal }.toTypedArray())
                 wireframe.add(Line(lineGeom, lineMaterial))
             }
+
+            panelInfos[panel] = PanelInfo(panelFaces, panelMeshes, geom)
         }
-        geom.faces = faces.toTypedArray()
+        geom.faces = allFaces.toTypedArray()
+        geom.computeFaceNormals()
         geom.computeVertexNormals()
         geom.computeBoundingSphere()
 
@@ -161,6 +179,22 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         uiRenderer.render(uiScene, uiCamera)
     }
 
+    private fun go() {
+        val visiblePanels = mutableListOf<SheepModel.Panel>()
+        panelInfos.forEach { (panel, panelInfo) ->
+            val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
+            val dirToCamera = uiCamera.position.clone().sub(panelPosition)
+            dirToCamera.normalize()
+            val angle = panelInfo.faces[0].normal!!.dot(dirToCamera)
+            println("Angle for ${panel.name} is $angle")
+            if (angle > 0) {
+                visiblePanels.add(panel)
+            }
+        }
+
+        println("Visible panels: ${visiblePanels.map { it.name }.sorted()}")
+    }
+
     override fun close() {
         frame.close()
     }
@@ -188,3 +222,5 @@ class ImageDataImage(val imageData: ImageData, val rowsReversed: Boolean = false
         return MediaDevices.MonoBitmap(imageData.width, imageData.height, destBuf)
     }
 }
+
+class PanelInfo(val faces: MutableList<Face3>, val meshes: MutableList<Mesh>, val geom: Geometry)
