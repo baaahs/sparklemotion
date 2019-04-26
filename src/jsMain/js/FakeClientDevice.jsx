@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import styles from './FakeClientDevice.scss';
 
@@ -15,14 +15,14 @@ export default class FakeClientDevice extends Component {
   onZoomIn = () => {};
   onDragStart = (e, draggableData) => {
     const draggableNode = draggableData.node;
-    const contentNode = draggableNode.getElementsByClassName(styles['FakeClientDevice--content'])[0];
+    const contentNode = draggableNode.getElementsByClassName(
+      styles['FakeClientDevice--content']
+    )[0];
     let eventNode = e.target;
     while (eventNode != null) {
       if (eventNode === contentNode) {
-        console.log("in content, false");
         return false;
       } else if (eventNode === draggableNode) {
-        console.log("in draggable, true");
         return true;
       } else {
         eventNode = eventNode.parentNode;
@@ -33,25 +33,36 @@ export default class FakeClientDevice extends Component {
   render() {
     const borderWidth = 10;
     const containerStyle = {
-      width: (this.width + borderWidth * 2) + 'px',
-      height: (this.height + borderWidth * 2) + 'px',
+      width: this.width + borderWidth * 2 + 'px',
+      height: this.height + borderWidth * 2 + 'px',
     };
     const contentStyle = {
       width: this.width + 'px',
       height: this.height + 'px',
     };
 
-    return <Draggable onStart={(e, data) => { return this.onDragStart(e, data); }}>
-      <div className={styles['FakeClientDevice--pad']} style={containerStyle}>
-        <div className={styles['FakeClientDevice-controls']}>
-          <i className="fas fa-search-minus" onClick={_ => this.onZoomOut()}/>
-          <i className="fas fa-search-plus" onClick={_ => this.onZoomIn()}/>
-          &nbsp;
-          <i className="far fa-times-circle" onClick={_ => this.onClose()}/>
+    return (
+      <Draggable
+        onStart={(e, data) => {
+          return this.onDragStart(e, data);
+        }}
+      >
+        <div className={styles['FakeClientDevice--pad']} style={containerStyle}>
+          <div className={styles['FakeClientDevice-controls']}>
+            <i
+              className="fas fa-search-minus"
+              onClick={() => this.onZoomOut()}
+            />
+            <i className="fas fa-search-plus" onClick={() => this.onZoomIn()} />
+            &nbsp;
+            <i className="far fa-times-circle" onClick={() => this.onClose()} />
+          </div>
+          <div
+            className={styles['FakeClientDevice--content']}
+            style={contentStyle}
+          />
         </div>
-        <div className={styles['FakeClientDevice--content']} style={contentStyle}/>
-      </div>
-    </Draggable>;
+      </Draggable>
+    );
   }
-
 }
