@@ -34,9 +34,9 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
 
         override fun onFrameReady(scene: Scene, camera: Camera) {
             altCamera.copy(camera, true)
-            altCamera.aspect = 1.0 // width.toDouble() / height
+            altCamera.aspect = width.toDouble() / height
             altCamera.updateProjectionMatrix()
-            camRenderer.render(scene, camera)
+            camRenderer.render(scene, altCamera)
 
             camCtx.asDynamic().readPixels(
                 0, 0, width, height, camCtx.asDynamic().RGBA, camCtx.asDynamic().UNSIGNED_BYTE,

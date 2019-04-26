@@ -38,12 +38,12 @@ document.createFakeClientDevice = (name, content, onClose, onResize) => {
     val.contentNode = contentHolder;
     if (content != null) {
       contentHolder.appendChild(content);
-      content.style.width = contentHolder.offsetWidth;
-      content.style.height = contentHolder.offsetHeight;
+      content.style.width = contentHolder.clientWidth;
+      content.style.height = contentHolder.clientHeight;
     }
 
     setTimeout(() => {
-      onResize(contentHolder.offsetWidth, contentHolder.offsetHeight);
+      onResize(contentHolder.clientWidth, contentHolder.clientHeight);
     }, 0);
   });
 
