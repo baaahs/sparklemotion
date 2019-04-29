@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.imaging.Bitmap
+import baaahs.imaging.Image
+import baaahs.imaging.NativeBitmap
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*
@@ -7,7 +10,7 @@ import kotlin.random.Random
 
 class Mapper(
     private val network: Network,
-    private val sheepModel: SheepModel,
+    sheepModel: SheepModel,
     private val mapperDisplay: MapperDisplay,
     mediaDevices: MediaDevices
 ) : Network.UdpListener {
@@ -18,8 +21,8 @@ class Mapper(
     val camera = mediaDevices.getCamera(width, height).apply {
         onImage = this@Mapper::haveImage
     }
-    private var baseBitmap : MediaDevices.MonoBitmap? = null
-    private lateinit var deltaBitmap : MediaDevices.MonoBitmap
+    private var baseBitmap : Bitmap? = null
+    private lateinit var deltaBitmap : Bitmap
 
     private val closeListeners = mutableListOf<() -> Unit>()
     private lateinit var link: Network.Link
@@ -175,18 +178,51 @@ class Mapper(
         closeListeners.add(listener)
     }
 
-    private fun haveImage(image: MediaDevices.Image) {
+    private fun haveImage(image: Image) {
 //        println("image: $image")
         mapperDisplay.showCamImage(image)
 
-        val monoBitmap = image.toMonoBitmap()
+        val bitmap = image.toBitmap()
         if (captureBaseImage) {
-            baseBitmap = monoBitmap
-            deltaBitmap = MediaDevices.MonoBitmap(monoBitmap.width, monoBitmap.height)
+            baseBitmap = bitmap
+            deltaBitmap = NativeBitmap(bitmap.width, bitmap.height)
             captureBaseImage = false
         } else if (baseBitmap != null) {
             deltaBitmap.copyFrom(baseBitmap!!)
-            val changeRegion = deltaBitmap.subtract(monoBitmap)
+            deltaBitmap.subtract(bitmap)
+
+            var changeRegion : MediaDevices.Region = MediaDevices.Region(-1, -1, -1, -1)
+            deltaBitmap.withData { data ->
+                var i = 0
+                var x0 = -1
+                var y0 = -1
+                var x1 = -1
+                var y1 = -1
+
+                for (y in 0 until height) {
+                    var yAnyDiff = false
+
+                    for (x in 0 until width) {
+                        val pixDiff = data[(x + y * width) * 4 +2 /* green component */].toInt()
+
+                        if (pixDiff != 0) {
+                            if (x0 == -1 || x0 > x) x0 = x
+                            if (x > x1) x1 = x
+                            yAnyDiff = true
+                        }
+
+                        i++
+                    }
+
+                    if (yAnyDiff) {
+                        if (y0 == -1) y0 = y
+                        y1 = y
+                    }
+                }
+                changeRegion = MediaDevices.Region(x0, y0, x1, y1)
+                false
+            }
+
             println("changeRegion = $changeRegion")
 
             mapperDisplay.showDiffImage(deltaBitmap, changeRegion)
@@ -205,8 +241,8 @@ interface MapperDisplay {
     var onClose: () -> Unit
 
     fun addWireframe(sheepModel: SheepModel)
-    fun showCamImage(image: MediaDevices.Image)
-    fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region)
+    fun showCamImage(image: Image)
+    fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region)
     fun showMessage(message: String)
     fun showStats(total: Int, mapped: Int, visible: Int)
     fun close()

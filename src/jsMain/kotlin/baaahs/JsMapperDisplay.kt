@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.imaging.Bitmap
+import baaahs.imaging.CanvasBitmap
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.BufferGeometry
 import info.laht.threekt.core.Face3
@@ -22,22 +24,16 @@ import kotlinx.html.div
 import kotlinx.html.dom.create
 import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
-import org.khronos.webgl.get
-import org.w3c.dom.*
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.ImageData
 import kotlin.browser.document
-import kotlin.browser.window
-import kotlin.collections.MutableList
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.collections.sorted
-import kotlin.collections.toTypedArray
 import kotlin.math.PI
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     override var onStart: () -> Unit = {}
@@ -179,65 +175,41 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         uiCamera.lookAt(centerOfSheep)
     }
 
-    override fun showCamImage(image: MediaDevices.Image) {
+    override fun showCamImage(image: baaahs.imaging.Image) {
         ui2dCtx.resetTransform()
 
-        val imageDataImage = image as ImageDataImage
-        val imageData = imageDataImage.imageData
-        val options = ImageBitmapOptions()
-        if (image.rowsReversed) {
-            options.imageOrientation = ImageOrientation.Companion.FLIPY
-        }
-        window.createImageBitmap(imageData, options).then { imageBitmap: ImageBitmap ->
-            val scale = max(
-                width.toDouble() / imageBitmap.width,
-                height.toDouble() / imageBitmap.height
-            )
-            val imgWidth = imageBitmap.width * scale
-            val imgHeight = imageBitmap.height * scale
+        val scale = max(
+            width.toDouble() / image.width,
+            height.toDouble() / image.height
+        )
+        val imgWidth = (image.width * scale).roundToInt()
+        val imgHeight = (image.height * scale).roundToInt()
 
-            val widthDiff = width - imgWidth
-            val heightDiff = height - imgHeight
+        val widthDiff = width - imgWidth
+        val heightDiff = height - imgHeight
 
-            ui2dCtx.drawImage(
-                imageBitmap, 0.0, 0.0, imageBitmap.width.toDouble(), imageBitmap.height.toDouble(),
-                widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight
-            )
+        CanvasBitmap(ui2dCanvas).drawImage(image,
+            0, 0, image.width, image.height,
+            widthDiff / 2, heightDiff / 2, imgWidth, imgHeight
+        )
 
-            // add a green line around the camera image:
-            ui2dCtx.strokeStyle = "#006600"
-            ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight)
+        // add a green line around the camera image:
+        ui2dCtx.strokeStyle = "#006600"
+        ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth.toDouble(), imgHeight.toDouble())
 
-            changeRegion?.apply {
-                ui2dCtx.strokeStyle = "#ff0000"
-                ui2dCtx.strokeRect(10.0, 10.0, 40.0, 40.0)
-                ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
-            }
+        changeRegion?.apply {
+            ui2dCtx.strokeStyle = "#ff0000"
+            ui2dCtx.strokeRect(10.0, 10.0, 40.0, 40.0)
+            ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
         }
 
         uiRenderer.render(uiScene, uiCamera)
     }
 
-    override fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region) {
+    override fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region) {
         this.changeRegion = changeRegion
 
-        val width = deltaBitmap.width
-        val height = deltaBitmap.height
-        val srcData = deltaBitmap.data
-        val imageData = ImageData(width, height)
-        val destData = imageData.data.asDynamic()
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val srcOffset = x + y * width
-                val destOffset = srcOffset * 4
-                val srcPx = srcData[srcOffset]
-                destData[destOffset] = srcPx
-                destData[destOffset + 1] = srcPx
-                destData[destOffset + 2] = srcPx
-                destData[destOffset + 3] = 255
-            }
-        }
-        diffCtx.putImageData(imageData, 0.0, 0.0)
+        CanvasBitmap(diffCanvas).drawImage(deltaBitmap.asImage())
         diffCtx.strokeStyle = "#ff0000"
         changeRegion.apply {
             diffCtx.strokeRect(x0.toDouble(), y0.toDouble(),
@@ -273,29 +245,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     override fun close() {
         frame.close()
-    }
-}
-
-class ImageDataImage(val imageData: ImageData, val rowsReversed: Boolean = false) : MediaDevices.Image {
-    @ExperimentalUnsignedTypes
-    override fun toMonoBitmap(): MediaDevices.MonoBitmap {
-        val destBuf = UByteArray(imageData.width * imageData.height)
-        val srcBuf = imageData.data
-
-        val srcBytesPerPixel = 4
-        val srcBytesPerRow = imageData.width * srcBytesPerPixel
-        val destBytesPerPixel = 1
-        val destBytesPerRow = imageData.width * destBytesPerPixel
-        val greenOffset = 1 // RGBA
-
-        for (row in 0 until imageData.height) {
-            for (col in 0 until imageData.width) {
-                val srcRow = if (rowsReversed) imageData.height - row else row
-                destBuf[row * destBytesPerRow + col * destBytesPerPixel] =
-                    srcBuf[srcRow * srcBytesPerRow + col * srcBytesPerPixel + greenOffset].toUByte()
-            }
-        }
-        return MediaDevices.MonoBitmap(imageData.width, imageData.height, destBuf)
     }
 }
 
