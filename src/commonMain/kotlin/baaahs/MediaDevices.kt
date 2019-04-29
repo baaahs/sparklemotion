@@ -13,10 +13,7 @@ interface MediaDevices {
     }
 
     data class Region(val x0: Int, val y0: Int, val x1: Int, val y1: Int) {
-        @Transient
         val width = x1 - x0
-
-        @Transient
-        val height = x1 - x0
+        val height = y1 - y0
     }
 }

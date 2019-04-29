@@ -13,7 +13,7 @@ class Mapper(
     sheepModel: SheepModel,
     private val mapperDisplay: MapperDisplay,
     mediaDevices: MediaDevices
-) : Network.UdpListener {
+) : Network.UdpListener, MapperDisplay.Listener {
     val maxPixelsPerBrain = 512
     val width = 640
     val height = 300
@@ -28,14 +28,14 @@ class Mapper(
     private lateinit var link: Network.Link
     private var isRunning: Boolean = true
     private var isAligned: Boolean = false
+    private var isPaused: Boolean = false
     private var captureBaseImage = false
 
     var scope = CoroutineScope(Dispatchers.Main)
     private val brainMappers: MutableMap<Network.Address, BrainMapper> = mutableMapOf()
 
     init {
-        mapperDisplay.onStart = { onStart() }
-        mapperDisplay.onClose = { onClose() }
+        mapperDisplay.listen(this)
         mapperDisplay.addWireframe(sheepModel)
     }
 
@@ -47,11 +47,19 @@ class Mapper(
         scope.launch { run() }
     }
 
-    private fun onStart() {
+    override fun onStart() {
         isAligned = true
     }
 
-    private fun onClose() {
+    override fun onPause() {
+        isPaused = !isPaused
+    }
+
+    override fun onStop() {
+        isAligned = false
+    }
+
+    override fun onClose() {
         isRunning = false
         camera.close()
 
@@ -128,6 +136,7 @@ class Mapper(
                 brainMappers.values.forEach { brainMapper ->
                     retries.forEach { brainMapper.shade { solidColor(Color.WHITE) } }
                     delay(34L)
+                    maybePause()
                     retries.forEach { brainMapper.shade { solidColor(Color.BLACK) } }
                 }
 
@@ -143,6 +152,7 @@ class Mapper(
                     link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader))
                     pixelShader.buffer.colors[i] = Color.BLACK
                     delay(34L)
+                    maybePause()
                 }
                 println("done identifying pixels...")
 
@@ -153,6 +163,12 @@ class Mapper(
 
         println("Mapper isRunning: $isRunning")
         link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
+    }
+
+    private suspend fun maybePause() {
+        while (isPaused) {
+            delay(100L)
+        }
     }
 
     private fun solidColor(color: Color) = BrainShaderMessage(SolidShader().apply { buffer.color = color })
@@ -191,42 +207,44 @@ class Mapper(
             deltaBitmap.copyFrom(baseBitmap!!)
             deltaBitmap.subtract(bitmap)
 
-            var changeRegion : MediaDevices.Region = MediaDevices.Region(-1, -1, -1, -1)
-            deltaBitmap.withData { data ->
-                var i = 0
-                var x0 = -1
-                var y0 = -1
-                var x1 = -1
-                var y1 = -1
+            val changeRegion: MediaDevices.Region = detectChangeRegion()
 
-                for (y in 0 until height) {
-                    var yAnyDiff = false
-
-                    for (x in 0 until width) {
-                        val pixDiff = data[(x + y * width) * 4 +2 /* green component */].toInt()
-
-                        if (pixDiff != 0) {
-                            if (x0 == -1 || x0 > x) x0 = x
-                            if (x > x1) x1 = x
-                            yAnyDiff = true
-                        }
-
-                        i++
-                    }
-
-                    if (yAnyDiff) {
-                        if (y0 == -1) y0 = y
-                        y1 = y
-                    }
-                }
-                changeRegion = MediaDevices.Region(x0, y0, x1, y1)
-                false
-            }
-
-            println("changeRegion = $changeRegion")
+            println("changeRegion = $changeRegion ${changeRegion.width} ${changeRegion.height}")
 
             mapperDisplay.showDiffImage(deltaBitmap, changeRegion)
         }
+    }
+
+    private fun detectChangeRegion(): MediaDevices.Region {
+        var changeRegion: MediaDevices.Region = MediaDevices.Region(-1, -1, -1, -1)
+        deltaBitmap.withData { data ->
+            var x0 = -1
+            var y0 = -1
+            var x1 = -1
+            var y1 = -1
+
+            for (y in 0 until height) {
+                var yAnyDiff = false
+
+                for (x in 0 until width) {
+                    val pixDiff = data[(x + y * width) * 4 + 2 /* green component */].toInt()
+
+                    if (pixDiff != 0) {
+                        if (x0 == -1 || x0 > x) x0 = x
+                        if (x > x1) x1 = x
+                        yAnyDiff = true
+                    }
+                }
+
+                if (yAnyDiff) {
+                    if (y0 == -1) y0 = y
+                    y1 = y
+                }
+            }
+            changeRegion = MediaDevices.Region(x0, y0, x1, y1)
+            false
+        }
+        return changeRegion
     }
 
     inner class BrainMapper(private val address: Network.Address) {
@@ -237,8 +255,7 @@ class Mapper(
 }
 
 interface MapperDisplay {
-    var onStart: () -> Unit
-    var onClose: () -> Unit
+    fun listen(listener: Listener)
 
     fun addWireframe(sheepModel: SheepModel)
     fun showCamImage(image: Image)
@@ -246,4 +263,11 @@ interface MapperDisplay {
     fun showMessage(message: String)
     fun showStats(total: Int, mapped: Int, visible: Int)
     fun close()
+
+    interface Listener {
+        fun onStart()
+        fun onPause()
+        fun onStop()
+        fun onClose()
+    }
 }
