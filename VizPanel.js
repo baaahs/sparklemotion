@@ -53,7 +53,7 @@ class VizPanel {
     this.faceMaterial = new THREE.MeshBasicMaterial({color: 0xaa0000,});
     this.faceMaterial.side = THREE.FrontSide;
     this.faceMaterial.transparent = true;
-    this.faceMaterial.opacity = 0.75;
+    this.faceMaterial.opacity = 0.99;
 
     this.mesh = new THREE.Mesh(panelGeometry, this.faceMaterial);
     this.mesh.panel = this; // so we can get back to the VizPanel from a raycaster intersection...

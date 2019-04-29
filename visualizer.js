@@ -63,8 +63,8 @@ function initThreeJs(sheepModel, frameListenersList) {
 
   scene = new THREE.Scene();
   pointMaterial = new THREE.PointsMaterial({color: 0xffffff});
-  lineMaterial = new THREE.LineBasicMaterial({color: 0x222222});
-  panelMaterial = new THREE.LineBasicMaterial({color: 0x111111, linewidth: 3});
+  lineMaterial = new THREE.LineBasicMaterial({color: 0xaaaaaa});
+  panelMaterial = new THREE.LineBasicMaterial({color: 0xaaaaaa, linewidth: 3});
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);

@@ -48,17 +48,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L1000 = Kotlin.Long.fromInt(1000);
   var L250 = Kotlin.Long.fromInt(250);
   var L10000 = Kotlin.Long.fromInt(10000);
+  var L500 = Kotlin.Long.fromInt(500);
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L34 = Kotlin.Long.fromInt(34);
+  var L100 = Kotlin.Long.fromInt(100);
+  var ensureNotNull = Kotlin.ensureNotNull;
   var getCallableRef = Kotlin.getCallableRef;
-  var UByteArray_init = Kotlin.kotlin.UByteArray_init_za3lpa$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
-  var toByte = Kotlin.toByte;
-  var UByte_init = Kotlin.kotlin.UByte;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
@@ -69,6 +68,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
+  var toByte = Kotlin.toByte;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.serializer_6eet4j$;
   var toString_0 = Kotlin.toString;
@@ -115,6 +115,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var BufferGeometry = THREE.BufferGeometry;
   var plus = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
   var Line_init = THREE.Line;
+  var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var Scene = THREE.Scene;
@@ -129,6 +130,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var OrbitControls = THREE.OrbitControls;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var L200000 = Kotlin.Long.fromInt(200000);
+  var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
@@ -184,6 +186,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
   ColorPickerView$ColorButton.prototype = Object.create(Button.prototype);
   ColorPickerView$ColorButton.prototype.constructor = ColorPickerView$ColorButton;
+  NativeBitmap.prototype = Object.create(CanvasBitmap.prototype);
+  NativeBitmap.prototype.constructor = NativeBitmap;
+  CanvasBitmap$asImage$ObjectLiteral.prototype = Object.create(JsImage.prototype);
+  CanvasBitmap$asImage$ObjectLiteral.prototype.constructor = CanvasBitmap$asImage$ObjectLiteral;
+  ImageBitmapImage.prototype = Object.create(JsImage.prototype);
+  ImageBitmapImage.prototype.constructor = ImageBitmapImage;
   function Brain(network, display, pixels, illicitPanelHint) {
     this.network_0 = network;
     this.display_0 = display;
@@ -733,7 +741,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Mapper(network, sheepModel, mapperDisplay, mediaDevices) {
     this.network_0 = network;
-    this.sheepModel_0 = sheepModel;
     this.mapperDisplay_0 = mapperDisplay;
     this.maxPixelsPerBrain = 512;
     this.width = 640;
@@ -743,17 +750,30 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return $receiver.haveImage_0(image), Unit;
     }.bind(null, this));
     this.camera = $receiver;
-    this.baseBitmap = UByteArray_init(Kotlin.imul(this.width, this.height) * 4 | 0);
-    this.displayBitmap = UByteArray_init(Kotlin.imul(this.width, this.height) * 4 | 0);
+    this.baseBitmap_0 = null;
+    this.deltaBitmap_hn3lh8$_0 = this.deltaBitmap_hn3lh8$_0;
     this.closeListeners_0 = ArrayList_init();
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
     this.isRunning_0 = true;
+    this.isAligned_0 = false;
+    this.isPaused_0 = false;
+    this.captureBaseImage_0 = false;
     this.scope = CoroutineScope(coroutines.Dispatchers.Main);
     this.brainMappers_0 = LinkedHashMap_init();
-    this.mapperDisplay_0.onClose = Mapper_init$lambda(this);
-    this.mapperDisplay_0.addWireframe_9u144y$(this.sheepModel_0);
+    this.mapperDisplay_0.listen_uasn0l$(this);
+    this.mapperDisplay_0.addWireframe_9u144y$(sheepModel);
     this.retries_0 = new IntRange(0, 1);
   }
+  Object.defineProperty(Mapper.prototype, 'deltaBitmap_0', {
+    get: function () {
+      if (this.deltaBitmap_hn3lh8$_0 == null)
+        return throwUPAE('deltaBitmap');
+      return this.deltaBitmap_hn3lh8$_0;
+    },
+    set: function (deltaBitmap) {
+      this.deltaBitmap_hn3lh8$_0 = deltaBitmap;
+    }
+  });
   Object.defineProperty(Mapper.prototype, 'link_0', {
     get: function () {
       if (this.link_tktc8n$_0 == null)
@@ -867,7 +887,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Mapper.prototype.start = function () {
     return doRunBlocking(Mapper$start$lambda(this));
   };
-  Mapper.prototype.onClose_0 = function () {
+  Mapper.prototype.onStart = function () {
+    this.isAligned_0 = true;
+  };
+  Mapper.prototype.onPause = function () {
+    this.isPaused_0 = !this.isPaused_0;
+  };
+  Mapper.prototype.onStop = function () {
+    this.isAligned_0 = false;
+  };
+  Mapper.prototype.onClose = function () {
     this.isRunning_0 = false;
     this.camera.close();
     var $receiver = this.scope;
@@ -888,9 +917,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element();
     }
     this.mapperDisplay_0.close();
-  };
-  Mapper.prototype.haveImage_0 = function (image) {
-    this.mapperDisplay_0.showCamImage_u6jj7u$(image);
   };
   function Coroutine$Mapper$run$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -996,7 +1022,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             throw this.exception_0;
           case 2:
             if (!this.local$this$Mapper.isRunning_0) {
-              this.state_0 = 12;
+              this.state_0 = 14;
               continue;
             }
 
@@ -1006,7 +1032,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             continue;
           case 3:
             if (!this.local$tmp$_0.hasNext()) {
-              this.state_0 = 5;
+              this.state_0 = 6;
               continue;
             }
 
@@ -1025,6 +1051,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               return COROUTINE_SUSPENDED;
             continue;
           case 4:
+            this.state_0 = 5;
+            this.result_0 = this.local$this$Mapper_0.maybePause_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
             var tmp$_0;
             tmp$_0 = this.local$this$Mapper_0.retries_0.iterator();
             while (tmp$_0.hasNext()) {
@@ -1034,23 +1066,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
 
             this.state_0 = 3;
             continue;
-          case 5:
-            this.state_0 = 6;
+          case 6:
+            this.state_0 = 7;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 6:
+          case 7:
             println('identify pixels...');
             this.local$pixelShader = new PixelShader();
             this.local$pixelShader.buffer.setAll_rny0jj$(Color$Companion_getInstance().BLACK);
             this.local$tmp$ = this.local$this$Mapper.maxPixelsPerBrain;
             this.local$i = 0;
-            this.state_0 = 7;
+            this.state_0 = 8;
             continue;
-          case 7:
+          case 8:
             if (this.local$i >= this.local$tmp$) {
-              this.state_0 = 10;
+              this.state_0 = 12;
               continue;
             }
 
@@ -1059,29 +1091,35 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().WHITE;
             this.local$this$Mapper.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(this.local$pixelShader));
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().BLACK;
-            this.state_0 = 8;
+            this.state_0 = 9;
             this.result_0 = delay(L34, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 8:
-            this.state_0 = 9;
-            continue;
           case 9:
-            this.local$i++;
-            this.state_0 = 7;
+            this.state_0 = 10;
+            this.result_0 = this.local$this$Mapper.maybePause_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 10:
-            println('done identifying pixels...');
             this.state_0 = 11;
+            continue;
+          case 11:
+            this.local$i++;
+            this.state_0 = 8;
+            continue;
+          case 12:
+            println('done identifying pixels...');
+            this.state_0 = 13;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 11:
+          case 13:
             this.state_0 = 2;
             continue;
-          case 12:
+          case 14:
             return println('done identifying things... ' + this.local$this$Mapper.isRunning_0), Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
@@ -1115,6 +1153,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.local$tmp$ = void 0;
     this.local$tmp$_0 = void 0;
     this.local$tmp$_1 = void 0;
+    this.local$tmp$_2 = void 0;
+    this.local$tmp$_3 = void 0;
   }
   Coroutine$run_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -1128,6 +1168,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       try {
         switch (this.state_0) {
           case 0:
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('ESTABLISHING UPLINK\u2026');
             this.local$tmp$ = this.$this.retries_0.iterator();
             this.state_0 = 2;
             continue;
@@ -1204,6 +1245,93 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             continue;
           case 12:
             launch(this.$this.scope, void 0, void 0, Mapper$run$lambda(this.$this));
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('READY PLAYER ONE\u2026');
+            this.local$tmp$_2 = this.$this.retries_0.iterator();
+            this.state_0 = 13;
+            continue;
+          case 13:
+            if (!this.local$tmp$_2.hasNext()) {
+              this.state_0 = 15;
+              continue;
+            }
+
+            var element_2 = this.local$tmp$_2.next();
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().WHITE));
+            this.state_0 = 14;
+            this.result_0 = delay(L250, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 14:
+            this.state_0 = 13;
+            continue;
+          case 15:
+            this.state_0 = 16;
+            this.result_0 = delay(L250, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 16:
+            this.state_0 = 17;
+            continue;
+          case 17:
+            if (this.$this.isAligned_0) {
+              this.state_0 = 19;
+              continue;
+            }
+
+            this.state_0 = 18;
+            this.result_0 = delay(L500, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 18:
+            if (Random.Default.nextFloat() < 0.1) {
+              this.$this.mapperDisplay_0.showMessage_61zpoe$('READY PLAYER ONE\u2026');
+            }
+             else if (Random.Default.nextFloat() < 0.1) {
+              this.$this.mapperDisplay_0.showMessage_61zpoe$('ALIGN THY SHEEP\u2026');
+            }
+
+            this.state_0 = 17;
+            continue;
+          case 19:
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('CALIBRATING\u2026');
+            this.local$tmp$_3 = this.$this.retries_0.iterator();
+            this.state_0 = 20;
+            continue;
+          case 20:
+            if (!this.local$tmp$_3.hasNext()) {
+              this.state_0 = 22;
+              continue;
+            }
+
+            var element_3 = this.local$tmp$_3.next();
+            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.state_0 = 21;
+            this.result_0 = delay(L250, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 21:
+            this.state_0 = 20;
+            continue;
+          case 22:
+            this.state_0 = 23;
+            this.result_0 = delay(L250, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 23:
+            this.$this.captureBaseImage_0 = true;
+            this.state_0 = 24;
+            this.result_0 = delay(L250, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 24:
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('MAPPING\u2026');
+            this.$this.mapperDisplay_0.showStats_qt1dr2$(this.$this.brainMappers_0.size, 0, -1);
             launch(this.$this.scope, void 0, void 0, Mapper$run$lambda_0(this.$this));
             println('Mapper isRunning: ' + this.$this.isRunning_0);
             this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
@@ -1226,6 +1354,66 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   Mapper.prototype.run = function (continuation_0, suspended) {
     var instance = new Coroutine$run_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Coroutine$maybePause_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$maybePause_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$maybePause_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$maybePause_0.prototype.constructor = Coroutine$maybePause_0;
+  Coroutine$maybePause_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (!this.$this.isPaused_0) {
+              this.state_0 = 4;
+              continue;
+            }
+
+            this.state_0 = 3;
+            this.result_0 = delay(L100, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 2;
+            continue;
+          case 4:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper.prototype.maybePause_0 = function (continuation_0, suspended) {
+    var instance = new Coroutine$maybePause_0(this, continuation_0);
     if (suspended)
       return instance;
     else
@@ -1270,6 +1458,58 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Mapper.prototype.addCloseListener_o14v8n$ = function (listener) {
     this.closeListeners_0.add_11rb$(listener);
   };
+  Mapper.prototype.haveImage_0 = function (image) {
+    this.mapperDisplay_0.showCamImage_6tj0gx$(image);
+    var bitmap = image.toBitmap();
+    if (this.captureBaseImage_0) {
+      this.baseBitmap_0 = bitmap;
+      this.deltaBitmap_0 = new NativeBitmap(bitmap.width, bitmap.height);
+      this.captureBaseImage_0 = false;
+    }
+     else if (this.baseBitmap_0 != null) {
+      this.deltaBitmap_0.copyFrom_5151av$(ensureNotNull(this.baseBitmap_0));
+      this.deltaBitmap_0.subtract_5151av$(bitmap);
+      var changeRegion = this.detectChangeRegion_0();
+      println('changeRegion = ' + changeRegion + ' ' + changeRegion.width + ' ' + changeRegion.height);
+      this.mapperDisplay_0.showDiffImage_qpnjw8$(this.deltaBitmap_0, changeRegion);
+    }
+  };
+  function Mapper$detectChangeRegion$lambda(this$Mapper, closure$changeRegion) {
+    return function (data) {
+      var tmp$, tmp$_0;
+      var x0 = -1;
+      var y0 = -1;
+      var x1 = -1;
+      var y1 = -1;
+      tmp$ = this$Mapper.height;
+      for (var y = 0; y < tmp$; y++) {
+        var yAnyDiff = false;
+        tmp$_0 = this$Mapper.width;
+        for (var x = 0; x < tmp$_0; x++) {
+          var pixDiff = data[((x + Kotlin.imul(y, this$Mapper.width) | 0) * 4 | 0) + 2 | 0];
+          if (pixDiff !== 0) {
+            if (x0 === -1 || x0 > x)
+              x0 = x;
+            if (x > x1)
+              x1 = x;
+            yAnyDiff = true;
+          }
+        }
+        if (yAnyDiff) {
+          if (y0 === -1)
+            y0 = y;
+          y1 = y;
+        }
+      }
+      closure$changeRegion.v = new MediaDevices$Region(x0, y0, x1, y1);
+      return false;
+    };
+  }
+  Mapper.prototype.detectChangeRegion_0 = function () {
+    var changeRegion = {v: new MediaDevices$Region(-1, -1, -1, -1)};
+    this.deltaBitmap_0.withData_c37y77$(Mapper$detectChangeRegion$lambda(this, changeRegion));
+    return changeRegion.v;
+  };
   function Mapper$BrainMapper($outer, address) {
     this.$outer = $outer;
     this.address_0 = address;
@@ -1282,19 +1522,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'BrainMapper',
     interfaces: []
   };
-  function Mapper_init$lambda(this$Mapper) {
-    return function () {
-      this$Mapper.onClose_0();
-      return Unit;
-    };
-  }
   Mapper.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Mapper',
-    interfaces: [Network$UdpListener]
+    interfaces: [MapperDisplay$Listener, Network$UdpListener]
   };
   function MapperDisplay() {
   }
+  function MapperDisplay$Listener() {
+  }
+  MapperDisplay$Listener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Listener',
+    interfaces: []
+  };
   MapperDisplay.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'MapperDisplay',
@@ -1309,33 +1550,47 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Camera',
     interfaces: []
   };
-  function MediaDevices$Image() {
+  function MediaDevices$Region(x0, y0, x1, y1) {
+    this.x0 = x0;
+    this.y0 = y0;
+    this.x1 = x1;
+    this.y1 = y1;
+    this.width = this.x1 - this.x0 | 0;
+    this.height = this.y1 - this.y0 | 0;
   }
-  MediaDevices$Image.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Image',
-    interfaces: []
-  };
-  function MediaDevices$MonoBitmap(width, height, data) {
-    if (data === void 0)
-      data = UByteArray_init(Kotlin.imul(width, height));
-    this.width = width;
-    this.height = height;
-    this.data = data;
-  }
-  MediaDevices$MonoBitmap.prototype.subtract_9x70wt$ = function (other) {
-    var tmp$;
-    if (this.data.size !== other.data.size)
-      throw IllegalStateException_init("Bitmap sizes don't match");
-    tmp$ = this.data.size;
-    for (var i = 0; i < tmp$; i++) {
-      this.data.set_2c6cbe$(i, new UByte_init(toByte((this.data.get_za3lpa$(i).data & 255) - (other.data.get_za3lpa$(i).data & 255) | 0)));
-    }
-  };
-  MediaDevices$MonoBitmap.$metadata$ = {
+  MediaDevices$Region.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'MonoBitmap',
+    simpleName: 'Region',
     interfaces: []
+  };
+  MediaDevices$Region.prototype.component1 = function () {
+    return this.x0;
+  };
+  MediaDevices$Region.prototype.component2 = function () {
+    return this.y0;
+  };
+  MediaDevices$Region.prototype.component3 = function () {
+    return this.x1;
+  };
+  MediaDevices$Region.prototype.component4 = function () {
+    return this.y1;
+  };
+  MediaDevices$Region.prototype.copy_tjonv8$ = function (x0, y0, x1, y1) {
+    return new MediaDevices$Region(x0 === void 0 ? this.x0 : x0, y0 === void 0 ? this.y0 : y0, x1 === void 0 ? this.x1 : x1, y1 === void 0 ? this.y1 : y1);
+  };
+  MediaDevices$Region.prototype.toString = function () {
+    return 'Region(x0=' + Kotlin.toString(this.x0) + (', y0=' + Kotlin.toString(this.y0)) + (', x1=' + Kotlin.toString(this.x1)) + (', y1=' + Kotlin.toString(this.y1)) + ')';
+  };
+  MediaDevices$Region.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x0) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y0) | 0;
+    result = result * 31 + Kotlin.hashCode(this.x1) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y1) | 0;
+    return result;
+  };
+  MediaDevices$Region.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x0, other.x0) && Kotlin.equals(this.y0, other.y0) && Kotlin.equals(this.x1, other.x1) && Kotlin.equals(this.y1, other.y1)))));
   };
   MediaDevices.$metadata$ = {
     kind: Kind_INTERFACE,
@@ -3941,6 +4196,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'UiDisplay',
     interfaces: []
   };
+  function Image() {
+  }
+  Image.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Image',
+    interfaces: []
+  };
+  function Bitmap() {
+  }
+  Bitmap.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Bitmap',
+    interfaces: []
+  };
   function ByteArrayWriter(bytes, offset) {
     if (bytes === void 0)
       bytes = new Int8Array(128);
@@ -5112,13 +5381,51 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.imageData_0 = new ImageData(this.pixelBuffer_0, this.width, this.height);
     this.onImage_tirclm$_0 = FakeMediaDevices$FakeCamera$onImage$lambda;
   }
+  function FakeMediaDevices$FakeCamera$onFrameReady$lambda(this$FakeCamera) {
+    return function (it) {
+      this$FakeCamera.onImage(new ImageBitmapImage(it));
+      return Unit;
+    };
+  }
   FakeMediaDevices$FakeCamera.prototype.onFrameReady = function (scene, camera) {
     this.altCamera_0.copy(camera, true);
-    this.altCamera_0.aspect = 1.0;
+    this.altCamera_0.aspect = this.width / this.height;
     this.altCamera_0.updateProjectionMatrix();
-    this.camRenderer.render(scene, camera);
+    this.camRenderer.render(scene, this.altCamera_0);
     this.camCtx_0.readPixels(0, 0, this.width, this.height, this.camCtx_0.RGBA, this.camCtx_0.UNSIGNED_BYTE, new Uint8Array(this.pixelBuffer_0.buffer));
-    this.onImage(new ImageDataImage(this.imageData_0, true));
+    var tmp$ = window;
+    var tmp$_0 = this.imageData_0;
+    var imageOrientation;
+    var premultiplyAlpha;
+    var colorSpaceConversion;
+    var resizeWidth;
+    var resizeHeight;
+    var resizeQuality;
+    if (imageOrientation === void 0) {
+      imageOrientation = 'none';
+    }
+    if (premultiplyAlpha === void 0) {
+      premultiplyAlpha = 'default';
+    }
+    if (colorSpaceConversion === void 0) {
+      colorSpaceConversion = 'default';
+    }
+    if (resizeWidth === void 0)
+      resizeWidth = undefined;
+    if (resizeHeight === void 0)
+      resizeHeight = undefined;
+    if (resizeQuality === void 0) {
+      resizeQuality = 'low';
+    }
+    var o = {};
+    o['imageOrientation'] = imageOrientation;
+    o['premultiplyAlpha'] = premultiplyAlpha;
+    o['colorSpaceConversion'] = colorSpaceConversion;
+    o['resizeWidth'] = resizeWidth;
+    o['resizeHeight'] = resizeHeight;
+    o['resizeQuality'] = resizeQuality;
+    o.imageOrientation = 'flipY';
+    tmp$.createImageBitmap(tmp$_0, o).then(FakeMediaDevices$FakeCamera$onFrameReady$lambda(this));
   };
   Object.defineProperty(FakeMediaDevices$FakeCamera.prototype, 'onImage', {
     get: function () {
@@ -5149,9 +5456,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [MediaDevices]
   };
   function JsMapperDisplay(container) {
-    this.onClose_cgypwl$_0 = JsMapperDisplay$onClose$lambda;
-    this.width_0 = 640;
-    this.height_0 = 300;
+    this.listener_h0bbis$_0 = this.listener_h0bbis$_0;
+    this.width_0 = 512;
+    this.height_0 = 384;
     this.uiRenderer = new WebGLRenderer_init({alpha: true});
     this.uiScene = new Scene();
     this.uiCamera = new PerspectiveCamera_init(45, this.width_0 / this.height_0, 1, 10000);
@@ -5159,29 +5466,38 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.wireframe = new Object3D();
     this.screen_0 = div_0(get_create(document), 'mapperUi-screen', JsMapperDisplay$screen$lambda(this));
     this.frame_0 = container.getFrame_409ufb$('Mapper', this.screen_0, JsMapperDisplay$frame$lambda(this), JsMapperDisplay$frame$lambda_0(this));
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    this.ui2dCanvas = Kotlin.isType(tmp$ = ensureNotNull(this.screen_0.getElementsByClassName('mapperUi-2d-canvas')[0]), HTMLCanvasElement) ? tmp$ : throwCCE();
-    this.ui2dCtx = Kotlin.isType(tmp$_0 = ensureNotNull(this.ui2dCanvas.getContext('2d')), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
-    this.ui3dDiv = Kotlin.isType(tmp$_1 = ensureNotNull(this.screen_0.getElementsByClassName('mapperUi-3d-div')[0]), HTMLDivElement) ? tmp$_1 : throwCCE();
-    this.ui3dCanvas = Kotlin.isType(tmp$_2 = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$_2 : throwCCE();
+    this.ui2dCanvas_0 = first(this.screen_0, 'mapperUi-2d-canvas');
+    this.ui2dCtx_0 = context2d(this.ui2dCanvas_0);
+    this.ui3dDiv_0 = first(this.screen_0, 'mapperUi-3d-div');
+    var tmp$;
+    this.ui3dCanvas_0 = Kotlin.isType(tmp$ = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE();
+    this.diffCanvas_0 = first(this.screen_0, 'mapperUi-diff-canvas');
+    this.diffCtx_0 = context2d(this.diffCanvas_0);
+    this.changeRegion_0 = null;
+    this.statsDiv_0 = first(this.screen_0, 'mapperUi-stats');
+    this.messageDiv_0 = first(this.screen_0, 'mapperUi-message');
     this.panelInfos_0 = LinkedHashMap_init();
-    this.wireframeInitialized_0 = false;
-    this.jsInitialized_0 = false;
-    this.ui3dDiv.appendChild(this.ui3dCanvas);
+    document.md = this;
+    this.ui3dDiv_0.appendChild(this.ui3dCanvas_0);
     this.uiCamera.position.z = 1000.0;
     this.uiScene.add(this.uiCamera);
     this.uiControls = new OrbitControls(this.uiCamera, this.uiRenderer.domElement);
     this.uiControls.minPolarAngle = math.PI / 2 - 0.25;
     this.uiControls.maxPolarAngle = math.PI / 2 + 0.25;
   }
-  Object.defineProperty(JsMapperDisplay.prototype, 'onClose', {
+  Object.defineProperty(JsMapperDisplay.prototype, 'listener_0', {
     get: function () {
-      return this.onClose_cgypwl$_0;
+      if (this.listener_h0bbis$_0 == null)
+        return throwUPAE('listener');
+      return this.listener_h0bbis$_0;
     },
-    set: function (onClose) {
-      this.onClose_cgypwl$_0 = onClose;
+    set: function (listener) {
+      this.listener_h0bbis$_0 = listener;
     }
   });
+  JsMapperDisplay.prototype.listen_uasn0l$ = function (listener) {
+    this.listener_0 = listener;
+  };
   JsMapperDisplay.prototype.resizeTo_0 = function (width, height) {
     var tmp$, tmp$_0;
     this.width_0 = width;
@@ -5192,8 +5508,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.uiRenderer.setPixelRatio(width / height);
     (Kotlin.isType(tmp$ = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).width = width;
     (Kotlin.isType(tmp$_0 = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$_0 : throwCCE()).height = height;
-    this.ui2dCanvas.width = width;
-    this.ui2dCanvas.height = height;
+    this.ui2dCanvas_0.width = width;
+    this.ui2dCanvas_0.height = height;
+    this.diffCanvas_0.width = width;
+    this.diffCanvas_0.height = height;
   };
   JsMapperDisplay.prototype.addWireframe_9u144y$ = function (sheepModel) {
     var geom = new Geometry();
@@ -5259,67 +5577,51 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     geom.computeVertexNormals();
     geom.computeBoundingSphere();
     this.uiScene.add(this.wireframe);
+    var tmp$_4 = new SphereBufferGeometry(1, 32, 32);
+    var $receiver_4 = new MeshBasicMaterial();
+    $receiver_4.color = new Color_init(16711680);
+    var originMarker = new Mesh_init(tmp$_4, $receiver_4);
+    this.uiScene.add(originMarker);
     var boundingSphere = ensureNotNull(geom.boundingSphere);
-    this.uiControls.target = boundingSphere.center;
+    var centerOfSheep = boundingSphere.center.clone();
+    this.uiControls.target = centerOfSheep;
     this.uiControls.update();
+    this.uiCamera.lookAt(centerOfSheep);
   };
-  function JsMapperDisplay$showCamImage$lambda(this$JsMapperDisplay, closure$imageData) {
-    return function (imageBitmap) {
-      var a = this$JsMapperDisplay.width_0 / closure$imageData.width;
-      var b = this$JsMapperDisplay.height_0 / closure$imageData.height;
-      var scale = Math_0.min(a, b);
-      var imgWidth = roundToInt(closure$imageData.width * scale);
-      var imgHeight = roundToInt(closure$imageData.height * scale);
-      var widthDiff = this$JsMapperDisplay.width_0 - imgWidth | 0;
-      var heightDiff = this$JsMapperDisplay.height_0 - imgHeight | 0;
-      this$JsMapperDisplay.ui2dCtx.drawImage(imageBitmap, 0.0, 0.0, imageBitmap.width, imageBitmap.height, widthDiff / 2.0, heightDiff / 2.0, this$JsMapperDisplay.width_0 - widthDiff / 2.0, this$JsMapperDisplay.height_0 - heightDiff / 2.0);
-      this$JsMapperDisplay.ui2dCtx.strokeStyle = '#006600';
-      this$JsMapperDisplay.ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, this$JsMapperDisplay.width_0 - widthDiff / 2.0, this$JsMapperDisplay.height_0 - heightDiff / 2.0);
-      return Unit;
-    };
-  }
-  JsMapperDisplay.prototype.showCamImage_u6jj7u$ = function (image) {
+  JsMapperDisplay.prototype.showCamImage_6tj0gx$ = function (image) {
     var tmp$;
-    this.ui2dCtx.resetTransform();
-    var imageDataImage = Kotlin.isType(tmp$ = image, ImageDataImage) ? tmp$ : throwCCE();
-    var imageData = imageDataImage.imageData;
-    var imageOrientation;
-    var premultiplyAlpha;
-    var colorSpaceConversion;
-    var resizeWidth;
-    var resizeHeight;
-    var resizeQuality;
-    if (imageOrientation === void 0) {
-      imageOrientation = 'none';
+    this.ui2dCtx_0.resetTransform();
+    var a = this.width_0 / image.width;
+    var b = this.height_0 / image.height;
+    var scale = Math_0.max(a, b);
+    var imgWidth = roundToInt(image.width * scale);
+    var imgHeight = roundToInt(image.height * scale);
+    var widthDiff = this.width_0 - imgWidth | 0;
+    var heightDiff = this.height_0 - imgHeight | 0;
+    (new CanvasBitmap(this.ui2dCanvas_0)).drawImage_daf0v5$(image, 0, 0, image.width, image.height, widthDiff / 2 | 0, heightDiff / 2 | 0, imgWidth, imgHeight);
+    this.ui2dCtx_0.strokeStyle = '#006600';
+    this.ui2dCtx_0.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight);
+    if ((tmp$ = this.changeRegion_0) != null) {
+      this.ui2dCtx_0.strokeStyle = '#ff0000';
+      this.ui2dCtx_0.strokeRect(10.0, 10.0, 40.0, 40.0);
+      this.ui2dCtx_0.strokeRect(tmp$.x0, tmp$.y0, tmp$.width, tmp$.height);
     }
-    if (premultiplyAlpha === void 0) {
-      premultiplyAlpha = 'default';
-    }
-    if (colorSpaceConversion === void 0) {
-      colorSpaceConversion = 'default';
-    }
-    if (resizeWidth === void 0)
-      resizeWidth = undefined;
-    if (resizeHeight === void 0)
-      resizeHeight = undefined;
-    if (resizeQuality === void 0) {
-      resizeQuality = 'low';
-    }
-    var o = {};
-    o['imageOrientation'] = imageOrientation;
-    o['premultiplyAlpha'] = premultiplyAlpha;
-    o['colorSpaceConversion'] = colorSpaceConversion;
-    o['resizeWidth'] = resizeWidth;
-    o['resizeHeight'] = resizeHeight;
-    o['resizeQuality'] = resizeQuality;
-    var options = o;
-    if (image.rowsReversed) {
-      options.imageOrientation = 'flipY';
-    }
-    window.createImageBitmap(imageData, options).then(JsMapperDisplay$showCamImage$lambda(this, imageData));
     this.uiRenderer.render(this.uiScene, this.uiCamera);
   };
+  JsMapperDisplay.prototype.showDiffImage_qpnjw8$ = function (deltaBitmap, changeRegion) {
+    this.changeRegion_0 = changeRegion;
+    (new CanvasBitmap(this.diffCanvas_0)).drawImage_6tj0gx$(deltaBitmap.asImage());
+    this.diffCtx_0.strokeStyle = '#ff0000';
+    this.diffCtx_0.strokeRect(changeRegion.x0, changeRegion.y0, changeRegion.width, changeRegion.height);
+  };
+  JsMapperDisplay.prototype.showMessage_61zpoe$ = function (message) {
+    this.messageDiv_0.innerText = message;
+  };
+  JsMapperDisplay.prototype.showStats_qt1dr2$ = function (total, mapped, visible) {
+    this.statsDiv_0.innerHTML = '<i class=' + '"' + 'fas fa-triangle' + '"' + '><\/i>Mapped: ' + mapped + ' / ' + total + '<br/>Visible: ' + visible;
+  };
   JsMapperDisplay.prototype.go_0 = function () {
+    this.listener_0.onStart();
     var visiblePanels = ArrayList_init();
     var tmp$;
     tmp$ = this.panelInfos_0.entries.iterator();
@@ -5348,9 +5650,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   JsMapperDisplay.prototype.close = function () {
     this.frame_0.close();
   };
-  function JsMapperDisplay$onClose$lambda() {
-    return Unit;
-  }
   function JsMapperDisplay$screen$lambda$lambda$lambda$lambda(this$JsMapperDisplay) {
     return function (it) {
       this$JsMapperDisplay.wireframe.position.y = this$JsMapperDisplay.wireframe.position.y + 10;
@@ -5385,16 +5684,45 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay) {
     return function ($receiver) {
-      i($receiver, 'fas fa-bullseye');
+      i($receiver, 'fas fa-play');
       set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_1(this$JsMapperDisplay));
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda$lambda_2(this$JsMapperDisplay) {
+    return function (it) {
+      this$JsMapperDisplay.listener_0.onPause();
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda_2(this$JsMapperDisplay) {
+    return function ($receiver) {
+      i($receiver, 'fas fa-pause');
+      set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_2(this$JsMapperDisplay));
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda$lambda_3(this$JsMapperDisplay) {
+    return function (it) {
+      this$JsMapperDisplay.listener_0.onStop();
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda_3(this$JsMapperDisplay) {
+    return function ($receiver) {
+      i($receiver, 'fas fa-stop');
+      set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_3(this$JsMapperDisplay));
+      $receiver.disabled = true;
       return Unit;
     };
   }
   function JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
-      button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-up', JsMapperDisplay$screen$lambda$lambda$lambda(this$JsMapperDisplay));
-      button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-down', JsMapperDisplay$screen$lambda$lambda$lambda_0(this$JsMapperDisplay));
-      button($receiver, void 0, void 0, void 0, void 0, 'mapperUi-down', JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_0(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_2(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_3(this$JsMapperDisplay));
       return Unit;
     };
   }
@@ -5408,17 +5736,33 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function JsMapperDisplay$screen$lambda$lambda_1($receiver) {
     return Unit;
   }
+  function JsMapperDisplay$screen$lambda$lambda_2(this$JsMapperDisplay) {
+    return function ($receiver) {
+      $receiver.width = this$JsMapperDisplay.width_0.toString() + 'px';
+      $receiver.height = this$JsMapperDisplay.height_0.toString() + 'px';
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda_3($receiver) {
+    return Unit;
+  }
+  function JsMapperDisplay$screen$lambda$lambda_4($receiver) {
+    return Unit;
+  }
   function JsMapperDisplay$screen$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
       div($receiver, 'mapperUi-controls', JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay));
       canvas($receiver, 'mapperUi-2d-canvas', JsMapperDisplay$screen$lambda$lambda_0(this$JsMapperDisplay));
       div($receiver, 'mapperUi-3d-div', JsMapperDisplay$screen$lambda$lambda_1);
+      canvas($receiver, 'mapperUi-diff-canvas', JsMapperDisplay$screen$lambda$lambda_2(this$JsMapperDisplay));
+      div($receiver, 'mapperUi-stats', JsMapperDisplay$screen$lambda$lambda_3);
+      div($receiver, 'mapperUi-message', JsMapperDisplay$screen$lambda$lambda_4);
       return Unit;
     };
   }
   function JsMapperDisplay$frame$lambda(this$JsMapperDisplay) {
     return function () {
-      this$JsMapperDisplay.onClose();
+      this$JsMapperDisplay.listener_0.onClose();
       return Unit;
     };
   }
@@ -5432,36 +5776,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_CLASS,
     simpleName: 'JsMapperDisplay',
     interfaces: [MapperDisplay]
-  };
-  function ImageDataImage(imageData, rowsReversed) {
-    if (rowsReversed === void 0)
-      rowsReversed = false;
-    this.imageData = imageData;
-    this.rowsReversed = rowsReversed;
-  }
-  ImageDataImage.prototype.toMonoBitmap = function () {
-    var tmp$, tmp$_0;
-    var destBuf = UByteArray_init(Kotlin.imul(this.imageData.width, this.imageData.height));
-    var srcBuf = this.imageData.data;
-    var srcBytesPerPixel = 4;
-    var srcBytesPerRow = Kotlin.imul(this.imageData.width, srcBytesPerPixel);
-    var destBytesPerPixel = 1;
-    var destBytesPerRow = Kotlin.imul(this.imageData.width, destBytesPerPixel);
-    var greenOffset = 1;
-    tmp$ = this.imageData.height;
-    for (var row = 0; row < tmp$; row++) {
-      tmp$_0 = this.imageData.width;
-      for (var col = 0; col < tmp$_0; col++) {
-        var srcRow = this.rowsReversed ? this.imageData.height - row | 0 : row;
-        destBuf.set_2c6cbe$(Kotlin.imul(row, destBytesPerRow) + Kotlin.imul(col, destBytesPerPixel) | 0, new UByte_init(srcBuf[Kotlin.imul(srcRow, srcBytesPerRow) + Kotlin.imul(col, srcBytesPerPixel) + greenOffset | 0]));
-      }
-    }
-    return new MediaDevices$MonoBitmap(this.imageData.width, this.imageData.height, destBuf);
-  };
-  ImageDataImage.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ImageDataImage',
-    interfaces: [MediaDevices$Image]
   };
   function PanelInfo(faces, meshes, geom) {
     this.faces = faces;
@@ -6037,6 +6351,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       $receiver.remove(ensureNotNull($receiver.item(0)));
     }
   }
+  function first($receiver, className) {
+    var tmp$;
+    return ensureNotNull((tmp$ = $receiver.getElementsByClassName(className)[0]) == null || Kotlin.isType(tmp$, HTMLElement) ? tmp$ : throwCCE());
+  }
+  function context2d($receiver) {
+    var tmp$;
+    return Kotlin.isType(tmp$ = ensureNotNull($receiver.getContext('2d')), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+  }
   function Button(data, element) {
     this.data = data;
     this.element = element;
@@ -6177,6 +6499,159 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function createUiApp(elementId, uiContext) {
     return document.createUiApp(elementId, uiContext);
   }
+  function NativeBitmap(width, height) {
+    CanvasBitmap.call(this, createCanvas(width, height));
+    this.width_geohfm$_0 = width;
+    this.height_2j0r6t$_0 = height;
+  }
+  Object.defineProperty(NativeBitmap.prototype, 'width', {
+    get: function () {
+      return this.width_geohfm$_0;
+    }
+  });
+  Object.defineProperty(NativeBitmap.prototype, 'height', {
+    get: function () {
+      return this.height_2j0r6t$_0;
+    }
+  });
+  NativeBitmap.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'NativeBitmap',
+    interfaces: [CanvasBitmap, Bitmap]
+  };
+  function createCanvas$lambda(closure$width, closure$height) {
+    return function ($receiver) {
+      $receiver.width = closure$width.toString() + 'px';
+      $receiver.height = closure$height.toString() + 'px';
+      return Unit;
+    };
+  }
+  function createCanvas(width, height) {
+    return canvas_0(get_create(document), void 0, createCanvas$lambda(width, height));
+  }
+  function CanvasBitmap(canvas) {
+    this.canvas_5fzy0b$_0 = canvas;
+    this.width_4c4jfj$_0 = this.canvas_5fzy0b$_0.width;
+    this.height_19yhui$_0 = this.canvas_5fzy0b$_0.height;
+    this.ctx_8be2vx$ = context2d(this.canvas_5fzy0b$_0);
+  }
+  Object.defineProperty(CanvasBitmap.prototype, 'width', {
+    get: function () {
+      return this.width_4c4jfj$_0;
+    }
+  });
+  Object.defineProperty(CanvasBitmap.prototype, 'height', {
+    get: function () {
+      return this.height_19yhui$_0;
+    }
+  });
+  CanvasBitmap.prototype.drawImage_6tj0gx$ = function (image) {
+    var tmp$;
+    (Kotlin.isType(tmp$ = image, JsImage) ? tmp$ : throwCCE()).draw_as725m$(this.ctx_8be2vx$, 0, 0);
+  };
+  CanvasBitmap.prototype.drawImage_daf0v5$ = function (image, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight) {
+    var tmp$;
+    (Kotlin.isType(tmp$ = image, JsImage) ? tmp$ : throwCCE()).draw_wveyom$(this.ctx_8be2vx$, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+  };
+  CanvasBitmap.prototype.copyFrom_5151av$ = function (other) {
+    var tmp$;
+    this.assertSameSizeAs_ffnq1x$_0(other);
+    this.ctx_8be2vx$.globalCompositeOperation = 'source-over';
+    this.ctx_8be2vx$.drawImage((Kotlin.isType(tmp$ = other, CanvasBitmap) ? tmp$ : throwCCE()).canvas_5fzy0b$_0, 0.0, 0.0);
+  };
+  CanvasBitmap.prototype.subtract_5151av$ = function (other) {
+    var tmp$;
+    this.assertSameSizeAs_ffnq1x$_0(other);
+    this.ctx_8be2vx$.globalCompositeOperation = 'difference';
+    this.ctx_8be2vx$.drawImage((Kotlin.isType(tmp$ = other, CanvasBitmap) ? tmp$ : throwCCE()).canvas_5fzy0b$_0, 0.0, 0.0);
+  };
+  CanvasBitmap.prototype.withData_c37y77$ = function (fn) {
+    var imageData = this.ctx_8be2vx$.getImageData(0.0, 0.0, this.width, this.height);
+    if (fn(imageData.data)) {
+      this.ctx_8be2vx$.putImageData(imageData, 0.0, 0.0);
+    }
+  };
+  function CanvasBitmap$asImage$ObjectLiteral(this$CanvasBitmap) {
+    this.this$CanvasBitmap = this$CanvasBitmap;
+    JsImage.call(this);
+    this.width_8z8elj$_0 = this$CanvasBitmap.width;
+    this.height_eohisg$_0 = this$CanvasBitmap.height;
+  }
+  Object.defineProperty(CanvasBitmap$asImage$ObjectLiteral.prototype, 'width', {
+    get: function () {
+      return this.width_8z8elj$_0;
+    }
+  });
+  Object.defineProperty(CanvasBitmap$asImage$ObjectLiteral.prototype, 'height', {
+    get: function () {
+      return this.height_eohisg$_0;
+    }
+  });
+  CanvasBitmap$asImage$ObjectLiteral.prototype.toBitmap = function () {
+    return this.this$CanvasBitmap;
+  };
+  CanvasBitmap$asImage$ObjectLiteral.prototype.draw_as725m$ = function (ctx, x, y) {
+    ctx.drawImage(this.this$CanvasBitmap.canvas_5fzy0b$_0, 0.0, 0.0);
+  };
+  CanvasBitmap$asImage$ObjectLiteral.prototype.draw_wveyom$ = function (ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight) {
+    ctx.drawImage(this.this$CanvasBitmap.canvas_5fzy0b$_0, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+  };
+  CanvasBitmap$asImage$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [JsImage]
+  };
+  CanvasBitmap.prototype.asImage = function () {
+    return new CanvasBitmap$asImage$ObjectLiteral(this);
+  };
+  CanvasBitmap.prototype.assertSameSizeAs_ffnq1x$_0 = function (other) {
+    if (this.width !== other.width || this.height !== other.height) {
+      throw IllegalArgumentException_init('other bitmap is not the same size' + (' (' + this.width + 'x' + this.height + ' != ' + other.width + 'x' + other.height + ')'));
+    }
+  };
+  CanvasBitmap.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CanvasBitmap',
+    interfaces: [Bitmap]
+  };
+  function JsImage() {
+  }
+  JsImage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsImage',
+    interfaces: [Image]
+  };
+  function ImageBitmapImage(imageBitmap) {
+    JsImage.call(this);
+    this.imageBitmap_0 = imageBitmap;
+    this.width_vq1fd5$_0 = this.imageBitmap_0.width;
+    this.height_242nww$_0 = this.imageBitmap_0.height;
+  }
+  Object.defineProperty(ImageBitmapImage.prototype, 'width', {
+    get: function () {
+      return this.width_vq1fd5$_0;
+    }
+  });
+  Object.defineProperty(ImageBitmapImage.prototype, 'height', {
+    get: function () {
+      return this.height_242nww$_0;
+    }
+  });
+  ImageBitmapImage.prototype.toBitmap = function () {
+    var bitmap = new NativeBitmap(this.imageBitmap_0.width, this.imageBitmap_0.height);
+    bitmap.drawImage_6tj0gx$(this);
+    return bitmap;
+  };
+  ImageBitmapImage.prototype.draw_as725m$ = function (ctx, x, y) {
+    ctx.drawImage(this.imageBitmap_0, 0.0, 0.0);
+  };
+  ImageBitmapImage.prototype.draw_wveyom$ = function (ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight) {
+    ctx.drawImage(this.imageBitmap_0, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+  };
+  ImageBitmapImage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ImageBitmapImage',
+    interfaces: [JsImage]
+  };
   function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -6275,10 +6750,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   $$importsForInline$$['kotlinx-coroutines-core'] = $module$kotlinx_coroutines_core;
   Mapper.BrainMapper = Mapper$BrainMapper;
   package$baaahs.Mapper = Mapper;
+  MapperDisplay.Listener = MapperDisplay$Listener;
   package$baaahs.MapperDisplay = MapperDisplay;
   MediaDevices.Camera = MediaDevices$Camera;
-  MediaDevices.Image = MediaDevices$Image;
-  MediaDevices.MonoBitmap = MediaDevices$MonoBitmap;
+  MediaDevices.Region = MediaDevices$Region;
   package$baaahs.MediaDevices = MediaDevices;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
@@ -6513,6 +6988,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.Ui = Ui;
   package$baaahs.UiContext = UiContext;
   package$baaahs.UiDisplay = UiDisplay;
+  var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
+  package$imaging.Image = Image;
+  package$imaging.Bitmap = Bitmap;
   package$baaahs.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$baaahs.ByteArrayWriter = ByteArrayWriter;
   package$baaahs.ByteArrayReader = ByteArrayReader;
@@ -6577,7 +7055,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$baaahs.FakeMediaDevices = FakeMediaDevices;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
-  package$baaahs.ImageDataImage = ImageDataImage;
   package$baaahs.PanelInfo = PanelInfo;
   package$baaahs.JsUiDisplay = JsUiDisplay;
   package$baaahs.Visualizer = Visualizer;
@@ -6590,12 +7067,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.clear_u75qir$ = clear_0;
+  package$baaahs.first_m814eh$ = first;
+  package$baaahs.context2d_ng27xv$ = context2d;
   package$baaahs.Button = Button;
   package$baaahs.ColorPickerView = ColorPickerView;
   DomContainer.Frame = DomContainer$Frame;
   package$baaahs.DomContainer = DomContainer;
   package$baaahs.FakeDomContainer = FakeDomContainer;
   package$baaahs.createUiApp_khyez$ = createUiApp;
+  package$imaging.NativeBitmap = NativeBitmap;
+  package$imaging.createCanvas_vux9f0$ = createCanvas;
+  package$imaging.CanvasBitmap = CanvasBitmap;
+  package$imaging.JsImage = JsImage;
+  package$imaging.ImageBitmapImage = ImageBitmapImage;
   package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getDisplay = getDisplay;
