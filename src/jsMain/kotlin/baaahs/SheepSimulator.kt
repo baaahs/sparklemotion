@@ -3,6 +3,7 @@ package baaahs
 import baaahs.shows.CompositeShow
 import baaahs.shows.RandomShow
 import baaahs.shows.SomeDumbShow
+import baaahs.shows.ThumpShow
 import kotlinx.coroutines.*
 
 class SheepSimulator {
@@ -15,7 +16,8 @@ class SheepSimulator {
     val showMetas = listOf(
         SomeDumbShow.Meta(),
         RandomShow.Meta(),
-        CompositeShow.Meta()
+        CompositeShow.Meta(),
+        ThumpShow.Meta()
     )
 
     val visualizer = Visualizer(sheepModel, dmxUniverse).also {
