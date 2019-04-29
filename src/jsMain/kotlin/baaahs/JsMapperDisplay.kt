@@ -69,7 +69,8 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             width = this@JsMapperDisplay.width.toString() + "px"
             height = this@JsMapperDisplay.height.toString() + "px"
         }
-        div("mapperUi-message") { +"READY PLAYER 1..." }
+        div("mapperUi-stats") { }
+        div("mapperUi-message") { }
     }
 
     private val frame = container.getFrame(
@@ -78,16 +79,18 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         { this.onClose() },
         { width, height -> this.resizeTo(width, height) })
 
-    val ui2dCanvas = screen.getElementsByClassName("mapperUi-2d-canvas")[0]!! as HTMLCanvasElement
-    val ui2dCtx = ui2dCanvas.getContext("2d")!! as CanvasRenderingContext2D
-    val ui3dDiv = screen.getElementsByClassName("mapperUi-3d-div")[0]!! as HTMLDivElement
-    val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+    private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
+    private val ui2dCtx = ui2dCanvas.context2d()
 
-    val diffCanvas = screen.getElementsByClassName("mapperUi-diff-canvas")[0]!! as HTMLCanvasElement
-    val diffCtx = diffCanvas.getContext("2d")!! as CanvasRenderingContext2D
+    private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
+    private val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+
+    private val diffCanvas = screen.first<HTMLCanvasElement>("mapperUi-diff-canvas")
+    private val diffCtx = diffCanvas.context2d()
     private var changeRegion: MediaDevices.Region? = null
 
-    val messageDiv = screen.getElementsByClassName("mapperUi-message")[0]!! as HTMLDivElement
+    private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
+    private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -244,6 +247,10 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     override fun showMessage(message: String) {
         messageDiv.innerText = message
+    }
+
+    override fun showStats(total: Int, mapped: Int, visible: Int) {
+        statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
     }
 
     private fun go() {

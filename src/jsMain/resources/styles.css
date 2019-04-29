@@ -148,6 +148,18 @@ body {
     border: 1px groove white;
 }
 
+.mapperUi-stats {
+    position: absolute;
+    right: 20px;
+    padding: 20px;
+    color: #00ff00;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 8pt;
+    text-align: right;
+    width: 100%;
+    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
+}
+
 .mapperUi-message {
     position: absolute;
     bottom: 20px;
@@ -157,4 +169,5 @@ body {
     font-size: 16pt;
     text-align: center;
     width: 100%;
+    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
 }
