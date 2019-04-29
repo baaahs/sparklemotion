@@ -22,7 +22,7 @@ class SheepSimulator {
         it.onNewMapper = {
             it.setMapperRunning(true)
             mapperScope.launch {
-                Mapper(network, sheepModel, JsMapperDisplay(FakeDomContainer()) , it.mediaDevices).apply {
+                Mapper(network, sheepModel, JsMapperDisplay(FakeDomContainer()), it.mediaDevices).apply {
                     this.addCloseListener { it.setMapperRunning(false) }
                     start()
                 }

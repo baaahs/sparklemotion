@@ -1,11 +1,14 @@
 package baaahs
 
+import baaahs.imaging.Bitmap
+import baaahs.imaging.CanvasBitmap
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.BufferGeometry
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.external.controls.OrbitControls
+import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.math.Color
@@ -21,19 +24,26 @@ import kotlinx.html.div
 import kotlinx.html.dom.create
 import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
-import org.khronos.webgl.get
-import org.w3c.dom.*
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.ImageData
 import kotlin.browser.document
-import kotlin.browser.window
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 import kotlin.math.PI
-import kotlin.math.min
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 class JsMapperDisplay(container: DomContainer) : MapperDisplay {
-    override var onClose: () -> Unit = {}
+    private lateinit var listener: MapperDisplay.Listener
 
-    private var width = 640
-    private var height = 300
+    override fun listen(listener: MapperDisplay.Listener) {
+        this.listener = listener
+    }
+
+    private var width = 512
+    private var height = 384
 
     // onscreen renderer for registration UI:
     val uiRenderer = WebGLRenderer(js("{alpha: true}"))
@@ -44,27 +54,44 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     private val screen = document.create.div("mapperUi-screen") {
         div("mapperUi-controls") {
-            button(classes = "mapperUi-up") { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
-            button(classes = "mapperUi-down") { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-            button(classes = "mapperUi-down") { i(classes="fas fa-bullseye"); onClickFunction = { go() } }
+            button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
+            button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
+//            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
+            button { i(classes="fas fa-play"); onClickFunction = { go() } }
+            button { i(classes="fas fa-pause"); onClickFunction = { listener.onPause() } }
+            button { i(classes="fas fa-stop"); onClickFunction = { listener.onStop() }; disabled = true }
         }
         canvas(classes = "mapperUi-2d-canvas") {
             width = this@JsMapperDisplay.width.toString() + "px"
             height = this@JsMapperDisplay.height.toString() + "px"
         }
         div("mapperUi-3d-div") { }
+        canvas(classes = "mapperUi-diff-canvas") {
+            width = this@JsMapperDisplay.width.toString() + "px"
+            height = this@JsMapperDisplay.height.toString() + "px"
+        }
+        div("mapperUi-stats") { }
+        div("mapperUi-message") { }
     }
 
     private val frame = container.getFrame(
         "Mapper",
         screen,
-        { this.onClose() },
+        { listener.onClose() },
         { width, height -> this.resizeTo(width, height) })
 
-    val ui2dCanvas = screen.getElementsByClassName("mapperUi-2d-canvas")[0]!! as HTMLCanvasElement
-    val ui2dCtx = ui2dCanvas.getContext("2d")!! as CanvasRenderingContext2D
-    val ui3dDiv = screen.getElementsByClassName("mapperUi-3d-div")[0]!! as HTMLDivElement
-    val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+    private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
+    private val ui2dCtx = ui2dCanvas.context2d()
+
+    private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
+    private val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+
+    private val diffCanvas = screen.first<HTMLCanvasElement>("mapperUi-diff-canvas")
+    private val diffCtx = diffCanvas.context2d()
+    private var changeRegion: MediaDevices.Region? = null
+
+    private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
+    private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -80,13 +107,15 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         ui2dCanvas.width = width
         ui2dCanvas.height = height
+
+        diffCanvas.width = width
+        diffCanvas.height = height
     }
 
     private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
-    private var wireframeInitialized = false
-    private var jsInitialized = false
 
     init {
+        js("document.md = this");
         ui3dDiv.appendChild(ui3dCanvas);
 
         uiCamera.position.z = 1000.0
@@ -138,48 +167,72 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         geom.computeBoundingSphere()
 
         uiScene.add(wireframe)
+
+        val originMarker = Mesh(
+            SphereBufferGeometry(1, 32, 32),
+            MeshBasicMaterial().apply { color = Color(0xff0000) });
+        uiScene.add(originMarker);
+
         val boundingSphere: dynamic = geom.boundingSphere!!
-        uiControls.target = boundingSphere.center
+        val centerOfSheep = boundingSphere.center.clone()
+        uiControls.target = centerOfSheep
         uiControls.update()
+        uiCamera.lookAt(centerOfSheep)
     }
 
-    override fun showCamImage(image: MediaDevices.Image) {
+    override fun showCamImage(image: baaahs.imaging.Image) {
         ui2dCtx.resetTransform()
 
-        val imageDataImage = image as ImageDataImage
-        val imageData = imageDataImage.imageData
-        val options = ImageBitmapOptions()
-        if (image.rowsReversed) {
-            options.imageOrientation = ImageOrientation.Companion.FLIPY
-        }
-        window.createImageBitmap(imageData, options).then { imageBitmap: ImageBitmap ->
-            val scale = min(
-                width.toDouble() / imageData.width,
-                height.toDouble() / imageData.height
-            )
-            val imgWidth = (imageData.width * scale).roundToInt()
-            val imgHeight = (imageData.height * scale).roundToInt()
+        val scale = max(
+            width.toDouble() / image.width,
+            height.toDouble() / image.height
+        )
+        val imgWidth = (image.width * scale).roundToInt()
+        val imgHeight = (image.height * scale).roundToInt()
 
-            val widthDiff = width - imgWidth
-            val heightDiff = height - imgHeight
+        val widthDiff = width - imgWidth
+        val heightDiff = height - imgHeight
 
-            ui2dCtx.drawImage(
-                imageBitmap, 0.0, 0.0, imageBitmap.width.toDouble(), imageBitmap.height.toDouble(),
-                widthDiff / 2.0, heightDiff / 2.0, width - widthDiff / 2.0, height - heightDiff / 2.0
-            )
+        CanvasBitmap(ui2dCanvas).drawImage(image,
+            0, 0, image.width, image.height,
+            widthDiff / 2, heightDiff / 2, imgWidth, imgHeight
+        )
 
-            // add a green line around the camera image:
-            ui2dCtx.strokeStyle = "#006600"
-            ui2dCtx.strokeRect(
-                widthDiff / 2.0, heightDiff / 2.0,
-                width - widthDiff / 2.0, height - heightDiff / 2.0
-            );
+        // add a green line around the camera image:
+        ui2dCtx.strokeStyle = "#006600"
+        ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth.toDouble(), imgHeight.toDouble())
+
+        changeRegion?.apply {
+            ui2dCtx.strokeStyle = "#ff0000"
+            ui2dCtx.strokeRect(10.0, 10.0, 40.0, 40.0)
+            ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
         }
 
         uiRenderer.render(uiScene, uiCamera)
     }
 
+    override fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region) {
+        this.changeRegion = changeRegion
+
+        CanvasBitmap(diffCanvas).drawImage(deltaBitmap.asImage())
+        diffCtx.strokeStyle = "#ff0000"
+        changeRegion.apply {
+            diffCtx.strokeRect(x0.toDouble(), y0.toDouble(),
+                changeRegion.width.toDouble(), changeRegion.height.toDouble())
+        }
+    }
+
+    override fun showMessage(message: String) {
+        messageDiv.innerText = message
+    }
+
+    override fun showStats(total: Int, mapped: Int, visible: Int) {
+        statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
+    }
+
     private fun go() {
+        listener.onStart()
+
         val visiblePanels = mutableListOf<SheepModel.Panel>()
         panelInfos.forEach { (panel, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
@@ -197,29 +250,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     override fun close() {
         frame.close()
-    }
-}
-
-class ImageDataImage(val imageData: ImageData, val rowsReversed: Boolean = false) : MediaDevices.Image {
-    @ExperimentalUnsignedTypes
-    override fun toMonoBitmap(): MediaDevices.MonoBitmap {
-        val destBuf = UByteArray(imageData.width * imageData.height)
-        val srcBuf = imageData.data
-
-        val srcBytesPerPixel = 4
-        val srcBytesPerRow = imageData.width * srcBytesPerPixel
-        val destBytesPerPixel = 1
-        val destBytesPerRow = imageData.width * destBytesPerPixel
-        val greenOffset = 1 // RGBA
-
-        for (row in 0 until imageData.height) {
-            for (col in 0 until imageData.width) {
-                val srcRow = if (rowsReversed) imageData.height - row else row
-                destBuf[row * destBytesPerRow + col * destBytesPerPixel] =
-                    srcBuf[srcRow * srcBytesPerRow + col * srcBytesPerPixel + greenOffset].toUByte()
-            }
-        }
-        return MediaDevices.MonoBitmap(imageData.width, imageData.height, destBuf)
     }
 }
 

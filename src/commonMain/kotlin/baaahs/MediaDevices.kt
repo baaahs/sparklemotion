@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.imaging.Image
+import kotlinx.serialization.Transient
+
 interface MediaDevices {
     fun getCamera(width: Int, height: Int): Camera
 
@@ -9,18 +12,8 @@ interface MediaDevices {
         fun close()
     }
 
-    interface Image {
-        fun toMonoBitmap(): MonoBitmap
-    }
-
-    @ExperimentalUnsignedTypes
-    class MonoBitmap(val width: Int, val height: Int, val data: UByteArray = UByteArray(width * height)) {
-        fun subtract(other: MonoBitmap) {
-            if (data.size != other.data.size) throw IllegalStateException("Bitmap sizes don't match")
-
-            for (i in 0 until data.size) {
-                data[i] = (data[i].toInt() - other.data[i].toInt()).toUByte()
-            }
-        }
+    data class Region(val x0: Int, val y0: Int, val x1: Int, val y1: Int) {
+        val width = x1 - x0
+        val height = y1 - y0
     }
 }
