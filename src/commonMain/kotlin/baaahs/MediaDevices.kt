@@ -1,5 +1,7 @@
 package baaahs
 
+import kotlinx.serialization.Transient
+
 interface MediaDevices {
     fun getCamera(width: Int, height: Int): Camera
 
@@ -34,11 +36,11 @@ interface MediaDevices {
                 var yAnyDiff = false
 
                 for (x in 0 until width) {
-                    val pixDiff = data[i].toInt() - other.data[i].toInt()
+                    val pixDiff = other.data[i].toInt() - data[i].toInt()
                     data[i] = pixDiff.toUByte()
 
                     if (pixDiff != 0) {
-                        if (x0 == -1) x0 = x
+                        if (x0 == -1 || x0 > x) x0 = x
                         if (x > x1) x1 = x
                         yAnyDiff = true
                     }
@@ -56,7 +58,10 @@ interface MediaDevices {
     }
 
     data class Region(val x0: Int, val y0: Int, val x1: Int, val y1: Int) {
+        @Transient
         val width = x1 - x0
+
+        @Transient
         val height = x1 - x0
     }
 }

@@ -145,4 +145,16 @@ body {
 .mapperUi-diff-canvas {
     position: absolute;
     left: 600px;
+    border: 1px groove white;
+}
+
+.mapperUi-message {
+    position: absolute;
+    bottom: 20px;
+    padding: 20px;
+    color: #00ff00;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 16pt;
+    text-align: center;
+    width: 100%;
 }
