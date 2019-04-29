@@ -116,6 +116,7 @@ class Mapper(
         delay(250L)
 
         mapperDisplay.showMessage("MAPPING…")
+        mapperDisplay.showStats(brainMappers.size, 0, -1)
 
         scope.launch {
             while (isRunning) {
@@ -207,5 +208,6 @@ interface MapperDisplay {
     fun showCamImage(image: MediaDevices.Image)
     fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region)
     fun showMessage(message: String)
+    fun showStats(total: Int, mapped: Int, visible: Int)
     fun close()
 }

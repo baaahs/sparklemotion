@@ -1,8 +1,6 @@
 package baaahs
 
-import org.w3c.dom.DOMTokenList
-import org.w3c.dom.Element
-import org.w3c.dom.ItemArrayLike
+import org.w3c.dom.*
 import kotlin.dom.appendElement
 import kotlin.dom.appendText
 
@@ -27,6 +25,9 @@ fun DOMTokenList.clear() {
         remove(item(0)!!)
     }
 }
+
+fun <T : HTMLElement> HTMLElement.first(className: String) : T = (getElementsByClassName(className)[0] as T?)!!
+fun HTMLCanvasElement.context2d() = this.getContext("2d")!! as CanvasRenderingContext2D
 
 open class Button<T>(val data: T, val element: Element) {
     lateinit var allButtons: List<Button<T>>
