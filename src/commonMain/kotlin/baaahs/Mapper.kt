@@ -3,6 +3,7 @@ package baaahs
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 class Mapper(
     private val network: Network,
@@ -23,6 +24,7 @@ class Mapper(
     private val closeListeners = mutableListOf<() -> Unit>()
     private lateinit var link: Network.Link
     private var isRunning: Boolean = true
+    private var isAligned: Boolean = false
     private var captureBaseImage = false
 
     var scope = CoroutineScope(Dispatchers.Main)
@@ -43,7 +45,7 @@ class Mapper(
     }
 
     private fun onStart() {
-        captureBaseImage = true
+        isAligned = true
     }
 
     private fun onClose() {
@@ -58,27 +60,11 @@ class Mapper(
         mapperDisplay.close()
     }
 
-    private fun haveImage(image: MediaDevices.Image) {
-//        println("image: $image")
-        mapperDisplay.showCamImage(image)
-
-        val monoBitmap = image.toMonoBitmap()
-        if (captureBaseImage) {
-            baseBitmap = monoBitmap
-            deltaBitmap = MediaDevices.MonoBitmap(monoBitmap.width, monoBitmap.height)
-            captureBaseImage = false
-        } else if (baseBitmap != null) {
-            deltaBitmap.copyFrom(baseBitmap!!)
-            val changeRegion = deltaBitmap.subtract(monoBitmap)
-            println("changeRegion = $changeRegion")
-
-            mapperDisplay.showDiffImage(deltaBitmap, changeRegion)
-        }
-    }
-
     private val retries = (0..1)
 
     suspend fun run() {
+        mapperDisplay.showMessage("ESTABLISHING UPLINK…")
+
         // shut down Pinky, advertise for Brains...
         retries.forEach {
             link.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
@@ -105,6 +91,31 @@ class Mapper(
                 delay(10000L)
             }
         }
+
+        mapperDisplay.showMessage("READY PLAYER ONE…")
+        // Blackout
+        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
+        delay(250L)
+
+        while (!isAligned) {
+            delay(500)
+
+            if (Random.nextFloat() < .1) {
+                mapperDisplay.showMessage("READY PLAYER ONE…")
+            } else if (Random.nextFloat() < .1) {
+                mapperDisplay.showMessage("ALIGN THY SHEEP…")
+            }
+        }
+
+        mapperDisplay.showMessage("CALIBRATING…")
+
+        // Blackout
+        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        delay(250L)
+        captureBaseImage = true;
+        delay(250L)
+
+        mapperDisplay.showMessage("MAPPING…")
 
         scope.launch {
             while (isRunning) {
@@ -163,6 +174,24 @@ class Mapper(
         closeListeners.add(listener)
     }
 
+    private fun haveImage(image: MediaDevices.Image) {
+//        println("image: $image")
+        mapperDisplay.showCamImage(image)
+
+        val monoBitmap = image.toMonoBitmap()
+        if (captureBaseImage) {
+            baseBitmap = monoBitmap
+            deltaBitmap = MediaDevices.MonoBitmap(monoBitmap.width, monoBitmap.height)
+            captureBaseImage = false
+        } else if (baseBitmap != null) {
+            deltaBitmap.copyFrom(baseBitmap!!)
+            val changeRegion = deltaBitmap.subtract(monoBitmap)
+            println("changeRegion = $changeRegion")
+
+            mapperDisplay.showDiffImage(deltaBitmap, changeRegion)
+        }
+    }
+
     inner class BrainMapper(private val address: Network.Address) {
         fun shade(shaderMessage: () -> BrainShaderMessage) {
             link.sendUdp(address, Ports.BRAIN, shaderMessage())
@@ -177,5 +206,6 @@ interface MapperDisplay {
     fun addWireframe(sheepModel: SheepModel)
     fun showCamImage(image: MediaDevices.Image)
     fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region)
+    fun showMessage(message: String)
     fun close()
 }

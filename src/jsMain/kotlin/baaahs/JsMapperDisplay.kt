@@ -6,6 +6,7 @@ import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.external.controls.OrbitControls
+import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.math.Color
@@ -21,11 +22,20 @@ import kotlinx.html.div
 import kotlinx.html.dom.create
 import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
-import org.khronos.webgl.Uint8ClampedArray
 import org.khronos.webgl.get
 import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
+import kotlin.collections.MutableList
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.sorted
+import kotlin.collections.toTypedArray
 import kotlin.math.PI
 import kotlin.math.max
 
@@ -59,6 +69,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             width = this@JsMapperDisplay.width.toString() + "px"
             height = this@JsMapperDisplay.height.toString() + "px"
         }
+        div("mapperUi-message") { +"READY PLAYER 1..." }
     }
 
     private val frame = container.getFrame(
@@ -75,6 +86,8 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     val diffCanvas = screen.getElementsByClassName("mapperUi-diff-canvas")[0]!! as HTMLCanvasElement
     val diffCtx = diffCanvas.getContext("2d")!! as CanvasRenderingContext2D
     private var changeRegion: MediaDevices.Region? = null
+
+    val messageDiv = screen.getElementsByClassName("mapperUi-message")[0]!! as HTMLDivElement
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -150,6 +163,12 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         geom.computeBoundingSphere()
 
         uiScene.add(wireframe)
+
+        val originMarker = Mesh(
+            SphereBufferGeometry(1, 32, 32),
+            MeshBasicMaterial().apply { color = Color(0xff0000) });
+        uiScene.add(originMarker);
+
         val boundingSphere: dynamic = geom.boundingSphere!!
         val centerOfSheep = boundingSphere.center.clone()
         uiControls.target = centerOfSheep
@@ -187,7 +206,8 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight)
 
             changeRegion?.apply {
-                ui2dCtx.strokeStyle = "#660000"
+                ui2dCtx.strokeStyle = "#ff0000"
+                ui2dCtx.strokeRect(10.0, 10.0, 40.0, 40.0)
                 ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
             }
         }
@@ -197,8 +217,33 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     override fun showDiffImage(deltaBitmap: MediaDevices.MonoBitmap, changeRegion: MediaDevices.Region) {
         this.changeRegion = changeRegion
-//        diffCtx.drawImage(deltaBitmap)
-//        TODO("${CLASS_NAME}.showDiffImage not implemented")
+
+        val width = deltaBitmap.width
+        val height = deltaBitmap.height
+        val srcData = deltaBitmap.data
+        val imageData = ImageData(width, height)
+        val destData = imageData.data.asDynamic()
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val srcOffset = x + y * width
+                val destOffset = srcOffset * 4
+                val srcPx = srcData[srcOffset]
+                destData[destOffset] = srcPx
+                destData[destOffset + 1] = srcPx
+                destData[destOffset + 2] = srcPx
+                destData[destOffset + 3] = 255
+            }
+        }
+        diffCtx.putImageData(imageData, 0.0, 0.0)
+        diffCtx.strokeStyle = "#ff0000"
+        changeRegion.apply {
+            diffCtx.strokeRect(x0.toDouble(), y0.toDouble(),
+                changeRegion.width.toDouble(), changeRegion.height.toDouble())
+        }
+    }
+
+    override fun showMessage(message: String) {
+        messageDiv.innerText = message
     }
 
     private fun go() {
