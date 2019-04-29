@@ -1,13 +1,15 @@
 package baaahs
 
+import baaahs.imaging.Image
+import baaahs.imaging.ImageBitmapImage
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.Uint8ClampedArray
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.ImageData
+import org.w3c.dom.*
+import kotlin.browser.window
 
 class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
     var currentCam: MediaDevices.Camera? = null
@@ -43,10 +45,12 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
                 Uint8Array(pixelBuffer.buffer)
             )
 
-            onImage.invoke(ImageDataImage(imageData, rowsReversed = true))
+            window.createImageBitmap(imageData, ImageBitmapOptions().apply {
+                imageOrientation = ImageOrientation.Companion.FLIPY
+            }).then { onImage.invoke(ImageBitmapImage(it)) }
         }
 
-        override var onImage: (image: MediaDevices.Image) -> Unit = { _ -> }
+        override var onImage: (image: Image) -> Unit = { _ -> }
 
         override fun close() {
             onImage = { _ -> }
