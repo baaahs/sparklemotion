@@ -36,8 +36,11 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 class JsMapperDisplay(container: DomContainer) : MapperDisplay {
-    override var onStart: () -> Unit = {}
-    override var onClose: () -> Unit = {}
+    private lateinit var listener: MapperDisplay.Listener
+
+    override fun listen(listener: MapperDisplay.Listener) {
+        this.listener = listener
+    }
 
     private var width = 512
     private var height = 384
@@ -54,7 +57,9 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
             button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
 //            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
-            button { i(classes="fas fa-bullseye"); onClickFunction = { go() } }
+            button { i(classes="fas fa-play"); onClickFunction = { go() } }
+            button { i(classes="fas fa-pause"); onClickFunction = { listener.onPause() } }
+            button { i(classes="fas fa-stop"); onClickFunction = { listener.onStop() }; disabled = true }
         }
         canvas(classes = "mapperUi-2d-canvas") {
             width = this@JsMapperDisplay.width.toString() + "px"
@@ -72,7 +77,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private val frame = container.getFrame(
         "Mapper",
         screen,
-        { this.onClose() },
+        { listener.onClose() },
         { width, height -> this.resizeTo(width, height) })
 
     private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
@@ -226,7 +231,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     }
 
     private fun go() {
-        onStart()
+        listener.onStart()
 
         val visiblePanels = mutableListOf<SheepModel.Panel>()
         panelInfos.forEach { (panel, panelInfo) ->
