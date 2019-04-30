@@ -8,6 +8,9 @@ import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.random.Random
 
+/**
+ * Canonical representation of a color.
+ */
 @Serializable
 data class Color(val argb: Int) {
     /** Values are bounded at `0..255`. */

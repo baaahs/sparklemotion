@@ -49,7 +49,15 @@ jobs:
           name: Deploy to gh-pages
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              mkdir -p build/gh-pages/.circleci
+              cp .circleci/gh-pages-config.yml build/gh-pages/.circleci/config.yml
+
+              mkdir -p build/gh-pages/doc
+              cp -r build/javadoc/* build/gh-pages/doc/.
+
+              cp -r build/processedResources/js/main/. build/gh-pages
+
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
-              gh-pages --dotfiles --message "Auto deploy" --dist build/processedResources/js/main
+              gh-pages --dotfiles --message "Auto deploy" --dist build/gh-pages
             fi
