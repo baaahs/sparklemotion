@@ -86,4 +86,4 @@ external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)
 
 external fun addMovingHead(movingHead: SheepModel.MovingHead): Any
-external fun adjustMovingHead(movingHeadJs: Any, color: Color, dimmer: Float, rotA: Float, rotB: Float)
+external fun adjustMovingHead(movingHeadJs: Any, color: Color, dimmer: Float, pan: Float, tilt: Float)
