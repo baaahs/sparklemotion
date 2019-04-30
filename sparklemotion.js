@@ -182,6 +182,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   RandomShow$Meta.prototype.constructor = RandomShow$Meta;
   SomeDumbShow$Meta.prototype = Object.create(ShowMeta.prototype);
   SomeDumbShow$Meta.prototype.constructor = SomeDumbShow$Meta;
+  ThumpShow$Meta.prototype = Object.create(ShowMeta.prototype);
+  ThumpShow$Meta.prototype.constructor = ThumpShow$Meta;
   JsPinkyDisplay$ShowButton.prototype = Object.create(Button.prototype);
   JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
   ColorPickerView$ColorButton.prototype = Object.create(Button.prototype);
@@ -2210,7 +2212,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.beatProvider_0 = new Pinky$BeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
     this.brainsChanged_0 = true;
-    this.showRunner_0 = new ShowRunner(this.display, toList(this.brains_0.values), this.dmxUniverse);
+    this.showRunner_0 = new ShowRunner(this.display, toList(this.brains_0.values), this.beatProvider_0, this.dmxUniverse);
   }
   Object.defineProperty(Pinky.prototype, 'address', {
     get: function () {
@@ -2318,7 +2320,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               this.$this.display.onPrimaryColorChange = Pinky$run$lambda_1(primaryColorChannel, this.$this);
             }
 
-            this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse);
+            this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.beatProvider_0, this.$this.dmxUniverse);
             this.local$prevSelectedShow = this.$this.display.selectedShow;
             this.local$currentShowMeta = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas))};
             this.local$buildShow = Pinky$run$lambda_2(this.local$currentShowMeta, this.$this);
@@ -2331,7 +2333,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             if (!this.$this.mapperIsRunning_0) {
               if (this.$this.brainsChanged_0 || !equals(this.$this.display.selectedShow, this.local$currentShowMeta.v)) {
                 this.local$currentShowMeta.v = this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas));
-                this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.dmxUniverse);
+                this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.beatProvider_0, this.$this.dmxUniverse);
                 this.local$show = this.local$buildShow();
                 this.$this.brainsChanged_0 = false;
               }
@@ -2391,10 +2393,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function Pinky$BeatProvider($outer, bpm) {
     this.$outer = $outer;
     this.bpm = bpm;
-    this.startTimeMillis = L0;
-    this.beat = 0;
-    this.beatsPerMeasure = 4;
+    this.startTimeMillis_0 = L0;
+    this.beatsPerMeasure_0 = 4;
+    this.millisPerBeat_0 = 1000 / (this.bpm / 60);
   }
+  Object.defineProperty(Pinky$BeatProvider.prototype, 'beat', {
+    get: function () {
+      var now = getTimeMillis();
+      return now.subtract(this.startTimeMillis_0).toNumber() / this.millisPerBeat_0 % this.beatsPerMeasure_0;
+    }
+  });
   function Coroutine$run_2($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -2412,23 +2420,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.startTimeMillis = getTimeMillis();
+            this.$this.startTimeMillis_0 = getTimeMillis();
             this.state_0 = 2;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
-            this.$this.$outer.display.beat = this.$this.beat;
-            var offsetMillis = getTimeMillis().subtract(this.$this.startTimeMillis);
-            var millisPerBeat = Kotlin.Long.fromNumber(1000 / (this.$this.bpm / 60));
-            var delayTimeMillis = millisPerBeat.subtract(offsetMillis.modulo(millisPerBeat));
+            this.$this.$outer.display.beat = numberToInt(this.$this.beat);
+            var offsetMillis = getTimeMillis().subtract(this.$this.startTimeMillis_0);
+            var millsPer = this.$this.millisPerBeat_0;
+            var delayTimeMillis = millsPer - offsetMillis.toNumber() % millsPer;
             this.state_0 = 3;
-            this.result_0 = delay(delayTimeMillis, this);
+            this.result_0 = delay(Kotlin.Long.fromNumber(delayTimeMillis), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 3:
-            this.$this.beat = (this.$this.beat + 1 | 0) % this.$this.beatsPerMeasure;
             this.state_0 = 2;
             continue;
           default:this.state_0 = 1;
@@ -2464,14 +2471,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Pinky',
     interfaces: [Network$UdpListener]
   };
-  function ShowRunner(pinkyDisplay, brains, dmxUniverse) {
+  function ShowRunner(pinkyDisplay, brains, beatProvider, dmxUniverse) {
     this.pinkyDisplay_0 = pinkyDisplay;
     this.brains_0 = brains;
+    this.beatProvider_0 = beatProvider;
     this.dmxUniverse_0 = dmxUniverse;
     this.shaders_0 = HashMap_init();
   }
   ShowRunner.prototype.getColorPicker = function () {
     return new ColorPicker(this.pinkyDisplay_0);
+  };
+  ShowRunner.prototype.getBeatProvider = function () {
+    return this.beatProvider_0;
   };
   ShowRunner.prototype.recordShader_0 = function (panel, shader) {
     var tmp$ = this.shaders_0;
@@ -4840,7 +4851,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var $receiver_1 = compositorShader.buffer;
       $receiver_1.mode = CompositingMode$ADD_getInstance();
       $receiver_1.fade = 1.0;
-      tmp$_0.call(destination, new ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
+      tmp$_0.call(destination, new CompositeShow$ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
     }
     this.shaderBufs_0 = destination;
     var $receiver_2 = sheepModel.eyes;
@@ -4877,7 +4888,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   };
   function CompositeShow$Meta() {
-    ShowMeta.call(this, 'CompositeShow');
+    ShowMeta.call(this, 'Composite');
   }
   CompositeShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
     return new CompositeShow(sheepModel, showRunner);
@@ -4887,20 +4898,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Meta',
     interfaces: [ShowMeta]
   };
-  CompositeShow.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'CompositeShow',
-    interfaces: [Show]
-  };
-  function ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+  function CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
     this.solidShaderBuffer = solidShaderBuffer;
     this.sineWaveShaderBuffer = sineWaveShaderBuffer;
     this.compositorShaderBuffer = compositorShaderBuffer;
   }
-  ShaderBufs.$metadata$ = {
+  CompositeShow$ShaderBufs.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShaderBufs',
     interfaces: []
+  };
+  CompositeShow.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CompositeShow',
+    interfaces: [Show]
   };
   function RandomShow(sheepModel, showRunner) {
     var $receiver = sheepModel.allPanels;
@@ -4945,7 +4956,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   };
   function RandomShow$Meta() {
-    ShowMeta.call(this, 'RandomShow');
+    ShowMeta.call(this, 'Random');
   }
   RandomShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
     return new RandomShow(sheepModel, showRunner);
@@ -5030,6 +5041,87 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SomeDumbShow.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SomeDumbShow',
+    interfaces: [Show]
+  };
+  function ThumpShow(sheepModel, showRunner) {
+    this.beatProvider_0 = showRunner.getBeatProvider();
+    this.colorPicker_0 = showRunner.getColorPicker();
+    var $receiver = sheepModel.allPanels;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0 = destination.add_11rb$;
+      var solidShader = showRunner.getSolidShader_jfju1k$(item);
+      var $receiver_0 = showRunner.getSineWaveShader_jfju1k$(item);
+      $receiver_0.buffer.density = Random.Default.nextFloat() * 20;
+      var sineWaveShader = $receiver_0;
+      var compositorShader = showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
+      var $receiver_1 = compositorShader.buffer;
+      $receiver_1.mode = CompositingMode$ADD_getInstance();
+      $receiver_1.fade = 1.0;
+      tmp$_0.call(destination, new ThumpShow$ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
+    }
+    this.shaderBufs_0 = destination;
+    var $receiver_2 = sheepModel.eyes;
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
+    var tmp$_1;
+    tmp$_1 = $receiver_2.iterator();
+    while (tmp$_1.hasNext()) {
+      var item_0 = tmp$_1.next();
+      destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
+    }
+    this.movingHeadBuffers_0 = destination_0;
+  }
+  ThumpShow.prototype.nextFrame = function () {
+    var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
+    var beat = this.beatProvider_0.beat;
+    var i = {v: 0};
+    var tmp$;
+    tmp$ = this.shaderBufs_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0;
+      element.solidShaderBuffer.color = Color$Companion_getInstance().BLACK.fade_6zkv30$(this.colorPicker_0.color, beat % 1.0);
+      element.sineWaveShaderBuffer.color = beat < 0.2 ? Color$Companion_getInstance().WHITE : Color$Companion_getInstance().ORANGE;
+      element.sineWaveShaderBuffer.theta = theta + (tmp$_0 = i.v, i.v = tmp$_0 + 1 | 0, tmp$_0);
+      element.compositorShaderBuffer.mode = CompositingMode$ADD_getInstance();
+      element.compositorShaderBuffer.fade = 1.0;
+    }
+    var tmp$_1;
+    tmp$_1 = this.movingHeadBuffers_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker_0.color);
+      element_0.pan = math.PI / 2;
+      element_0.tilt = beat / math.PI;
+    }
+  };
+  function ThumpShow$Meta() {
+    ShowMeta.call(this, 'Thump');
+  }
+  ThumpShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new ThumpShow(sheepModel, showRunner);
+  };
+  ThumpShow$Meta.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Meta',
+    interfaces: [ShowMeta]
+  };
+  function ThumpShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+    this.solidShaderBuffer = solidShaderBuffer;
+    this.sineWaveShaderBuffer = sineWaveShaderBuffer;
+    this.compositorShaderBuffer = compositorShaderBuffer;
+  }
+  ThumpShow$ShaderBufs.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderBufs',
+    interfaces: []
+  };
+  ThumpShow.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ThumpShow',
     interfaces: [Show]
   };
   function random($receiver) {
@@ -5971,7 +6063,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.network = new FakeNetwork(void 0, this.display.forNetwork());
     this.dmxUniverse = new FakeDmxUniverse();
     this.sheepModel = new SheepModel();
-    this.showMetas = listOf([new SomeDumbShow$Meta(), new RandomShow$Meta(), new CompositeShow$Meta()]);
+    this.showMetas = listOf([new SomeDumbShow$Meta(), new RandomShow$Meta(), new CompositeShow$Meta(), new ThumpShow$Meta()]);
     var $receiver = new Visualizer(this.sheepModel, this.dmxUniverse);
     $receiver.onNewMapper = SheepSimulator$visualizer$lambda$lambda($receiver, this);
     $receiver.onNewUi = SheepSimulator$visualizer$lambda$lambda_0(this);
@@ -7040,6 +7132,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$shows.RandomShow = RandomShow;
   SomeDumbShow.Meta = SomeDumbShow$Meta;
   package$shows.SomeDumbShow = SomeDumbShow;
+  ThumpShow.Meta = ThumpShow$Meta;
+  package$shows.ThumpShow = ThumpShow;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
   package$baaahs.toRadians_mx4ult$ = toRadians;
