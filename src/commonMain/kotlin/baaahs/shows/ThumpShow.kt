@@ -8,7 +8,8 @@ import baaahs.shaders.SolidShaderBuffer
 import kotlin.math.PI
 import kotlin.random.Random
 
-class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
+class ThumpShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
+    private val beatProvider = showRunner.getBeatProvider()
     private val colorPicker = showRunner.getColorPicker()
 
     private val shaderBufs = sheepModel.allPanels.map { panel ->
@@ -36,11 +37,12 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
 
     override fun nextFrame() {
         val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
+        val beat = beatProvider.beat
 
         var i = 0
         shaderBufs.forEach { shaderBuffer ->
-            shaderBuffer.solidShaderBuffer.color = colorPicker.color
-            shaderBuffer.sineWaveShaderBuffer.color = Color.WHITE
+            shaderBuffer.solidShaderBuffer.color = Color.BLACK.fade(colorPicker.color, beat % 1f)
+            shaderBuffer.sineWaveShaderBuffer.color = if (beat < .2) Color.WHITE else Color.ORANGE
             shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
             shaderBuffer.compositorShaderBuffer.mode = CompositingMode.ADD
             shaderBuffer.compositorShaderBuffer.fade = 1f
@@ -49,13 +51,13 @@ class CompositeShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
         movingHeadBuffers.forEach { buf ->
             buf.colorWheel = buf.closestColorFor(colorPicker.color)
             buf.pan = PI.toFloat() / 2
-            buf.tilt = theta / 2
+            buf.tilt = beat / PI.toFloat()
         }
     }
 
-    class Meta : ShowMeta("Composite") {
+    class Meta : ShowMeta("Thump") {
         override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) =
-            CompositeShow(sheepModel, showRunner)
+            ThumpShow(sheepModel, showRunner)
     }
 
     private class ShaderBufs(
