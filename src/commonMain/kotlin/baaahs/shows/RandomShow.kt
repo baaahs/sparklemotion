@@ -21,7 +21,7 @@ class RandomShow(sheepModel: SheepModel, showRunner: ShowRunner) : Show {
         }
     }
 
-    class Meta: ShowMeta("RandomShow") {
+    class Meta: ShowMeta("Random") {
         override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) =
             RandomShow(sheepModel, showRunner)
     }
