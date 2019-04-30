@@ -142,15 +142,15 @@ function addMovingHead(movingHead) {
   };
 }
 
-function adjustMovingHead(movingHeadJs, color, dimmer, rotA, rotB) {
+function adjustMovingHead(movingHeadJs, color, dimmer, pan, tilt) {
   movingHeadJs.material.color.r = color.redF;
   movingHeadJs.material.color.g = color.greenF;
   movingHeadJs.material.color.b = color.blueF;
 
   movingHeadJs.material.visible = dimmer > .1;
 
-  movingHeadJs.cone.rotation.x = -Math.PI / 2 + rotA;
-  movingHeadJs.cone.rotation.z = rotB;
+  movingHeadJs.cone.rotation.x = -Math.PI / 2 + tilt;
+  movingHeadJs.cone.rotation.z = pan;
 }
 
 const vizRotationEl = document.getElementById("vizRotation");
