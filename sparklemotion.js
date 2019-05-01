@@ -58,14 +58,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
-  var coroutines_0 = Kotlin.kotlin.coroutines;
-  var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var equals = Kotlin.equals;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
   var toByte = Kotlin.toByte;
@@ -86,22 +84,24 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var toShort = Kotlin.toShort;
-  var toBits = Kotlin.floatToBits;
-  var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
-  var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
   var copyOfRange = Kotlin.kotlin.collections.copyOfRange_ietg8x$;
+  var toBits = Kotlin.floatToBits;
+  var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
+  var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var Array_0 = Array;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
+  var coroutines_0 = Kotlin.kotlin.coroutines;
+  var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var WebGLRenderer_init = THREE.WebGLRenderer;
   var PerspectiveCamera_init = THREE.PerspectiveCamera;
@@ -176,14 +176,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SineWaveShader.prototype.constructor = SineWaveShader;
   SolidShader.prototype = Object.create(Shader.prototype);
   SolidShader.prototype.constructor = SolidShader;
-  CompositeShow$Meta.prototype = Object.create(ShowMeta.prototype);
-  CompositeShow$Meta.prototype.constructor = CompositeShow$Meta;
-  RandomShow$Meta.prototype = Object.create(ShowMeta.prototype);
-  RandomShow$Meta.prototype.constructor = RandomShow$Meta;
-  SomeDumbShow$Meta.prototype = Object.create(ShowMeta.prototype);
-  SomeDumbShow$Meta.prototype.constructor = SomeDumbShow$Meta;
-  ThumpShow$Meta.prototype = Object.create(ShowMeta.prototype);
-  ThumpShow$Meta.prototype.constructor = ThumpShow$Meta;
+  CompositeShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  CompositeShow$ObjectLiteral.prototype.constructor = CompositeShow$ObjectLiteral;
+  RandomShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  RandomShow$ObjectLiteral.prototype.constructor = RandomShow$ObjectLiteral;
+  SomeDumbShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  SomeDumbShow$ObjectLiteral.prototype.constructor = SomeDumbShow$ObjectLiteral;
+  ThumpShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  ThumpShow$ObjectLiteral.prototype.constructor = ThumpShow$ObjectLiteral;
   JsPinkyDisplay$ShowButton.prototype = Object.create(Button.prototype);
   JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
   ColorPickerView$ColorButton.prototype = Object.create(Button.prototype);
@@ -230,8 +230,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         switch (this.state_0) {
           case 0:
             this.$this.link_0 = this.$this.network_0.link();
-            this.$this.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().BRAIN, this.$this);
-            this.$this.display_0.haveLink_6qu7we$(this.$this.link_0);
+            this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().BRAIN, this.$this);
+            this.$this.display_0.haveLink_9m0ekx$(this.$this.link_0);
             this.state_0 = 2;
             this.result_0 = this.$this.sendHello_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -321,14 +321,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     else
       return instance.doResume(null);
   };
-  Brain.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
+  Brain.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainShaderMessage)) {
       var shaderImpl = message.shader.createImpl_bbfl1t$(this.pixels_0);
       shaderImpl.draw();
     }
      else if (Kotlin.isType(message, BrainIdRequest))
-      this.link_0.sendUdp_bkw8fl$(fromAddress, message.port, new BrainIdResponse(''));
+      this.link_0.sendUdp_c7y63k$(fromAddress, message.port, new BrainIdResponse(''));
   };
   Brain.$metadata$ = {
     kind: Kind_CLASS,
@@ -339,7 +339,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     Color$Companion_getInstance();
     this.argb = argb;
   }
-  Color.prototype.serialize_ep8mow$ = function (writer) {
+  Color.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeInt_za3lpa$(this.argb);
   };
   Object.defineProperty(Color.prototype, 'alphaI', {
@@ -452,7 +452,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Color$Companion.prototype.random = function () {
     return Color_init_2(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
   };
-  Color$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  Color$Companion.prototype.parse_100t80$ = function (reader) {
     return new Color(reader.readInt());
   };
   Color$Companion.prototype.fromInts = function (i) {
@@ -856,7 +856,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         switch (this.state_0) {
           case 0:
             this.local$this$Mapper.link_0 = this.local$this$Mapper.network_0.link();
-            this.local$this$Mapper.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().MAPPER, this.local$this$Mapper);
+            this.local$this$Mapper.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().MAPPER, this.local$this$Mapper);
             this.local$this$Mapper.scope = CoroutineScope(coroutines.Dispatchers.Main);
             return launch(this.local$this$Mapper.scope, void 0, void 0, Mapper$start$lambda$lambda(this.local$this$Mapper));
           case 1:
@@ -1431,7 +1431,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return this$Mapper.solidColor_0(Color$Companion_getInstance().GREEN);
     };
   }
-  Mapper.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
+  Mapper.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainIdResponse)) {
       var $receiver = this.brainMappers_0;
@@ -1517,7 +1517,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.address_0 = address;
   }
   Mapper$BrainMapper.prototype.shade_rbov5k$ = function (shaderMessage) {
-    this.$outer.link_0.sendUdp_bkw8fl$(this.address_0, Ports$Companion_getInstance().BRAIN, shaderMessage());
+    this.$outer.link_0.sendUdp_c7y63k$(this.address_0, Ports$Companion_getInstance().BRAIN, shaderMessage());
   };
   Mapper$BrainMapper.$metadata$ = {
     kind: Kind_CLASS,
@@ -1598,608 +1598,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_INTERFACE,
     simpleName: 'MediaDevices',
     interfaces: []
-  };
-  function Network() {
-  }
-  function Network$Link() {
-  }
-  Network$Link.prototype.sendUdp_bkw8fl$ = function (toAddress, port, message) {
-    this.sendUdp_z62edq$(toAddress, port, message.toBytes());
-  };
-  Network$Link.prototype.broadcastUdp_ecsl0t$ = function (port, message) {
-    this.broadcastUdp_3fbn1q$(port, message.toBytes());
-  };
-  Network$Link.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Link',
-    interfaces: []
-  };
-  function Network$Address() {
-  }
-  Network$Address.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Address',
-    interfaces: []
-  };
-  function Network$UdpListener() {
-  }
-  Network$UdpListener.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'UdpListener',
-    interfaces: []
-  };
-  function Network$TcpConnection() {
-  }
-  Network$TcpConnection.prototype.send_kq3aw3$ = function (message) {
-    this.send_fqrh44$(message.toBytes());
-  };
-  Network$TcpConnection.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'TcpConnection',
-    interfaces: []
-  };
-  function Network$TcpListener() {
-  }
-  Network$TcpListener.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'TcpListener',
-    interfaces: []
-  };
-  function Network$TcpServerSocketListener() {
-  }
-  Network$TcpServerSocketListener.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'TcpServerSocketListener',
-    interfaces: []
-  };
-  Network.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Network',
-    interfaces: []
-  };
-  function FakeNetwork(networkDelay, display, coroutineContext) {
-    if (networkDelay === void 0)
-      networkDelay = 1;
-    if (display === void 0)
-      display = null;
-    if (coroutineContext === void 0)
-      coroutineContext = coroutines_0.EmptyCoroutineContext;
-    this.networkDelay_1 = networkDelay;
-    this.display_0 = display;
-    this.coroutineScope_0 = new FakeNetwork$coroutineScope$ObjectLiteral(coroutineContext);
-    this.nextAddress_0 = 45071;
-    this.udpListeners_0 = HashMap_init();
-    this.udpListenersByPort_0 = HashMap_init();
-    this.tcpServerSocketsByPort_0 = HashMap_init();
-  }
-  FakeNetwork.prototype.link = function () {
-    var tmp$;
-    var address = new FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
-    return new FakeNetwork$FakeLink(this, address);
-  };
-  FakeNetwork.prototype.listenUdp_0 = function (address, port, udpListener) {
-    this.udpListeners_0.put_xwzc9p$(new Pair(address, port), udpListener);
-    var $receiver = this.udpListenersByPort_0;
-    var tmp$;
-    var value = $receiver.get_11rb$(port);
-    if (value == null) {
-      var answer = ArrayList_init();
-      $receiver.put_xwzc9p$(port, answer);
-      tmp$ = answer;
-    }
-     else {
-      tmp$ = value;
-    }
-    var portListeners = tmp$;
-    portListeners.add_11rb$(udpListener);
-  };
-  FakeNetwork.prototype.sendUdp_0 = function (fromAddress, toAddress, port, bytes) {
-    var tmp$;
-    if (!this.sendPacketSuccess_0()) {
-      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-      return;
-    }
-    var listener = this.udpListeners_0.get_11rb$(new Pair(toAddress, port));
-    if (listener != null)
-      this.transmitUdp_0(fromAddress, listener, bytes);
-  };
-  FakeNetwork.prototype.broadcastUdp_0 = function (fromAddress, port, bytes) {
-    var tmp$, tmp$_0;
-    if (!this.sendPacketSuccess_0()) {
-      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-      return;
-    }
-    if ((tmp$_0 = this.udpListenersByPort_0.get_11rb$(port)) != null) {
-      var tmp$_1;
-      tmp$_1 = tmp$_0.iterator();
-      while (tmp$_1.hasNext()) {
-        var element = tmp$_1.next();
-        this.transmitUdp_0(fromAddress, element, bytes);
-      }
-    }
-  };
-  function Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$udpListener = closure$udpListener_0;
-    this.local$closure$fromAddress = closure$fromAddress_0;
-    this.local$closure$bytes = closure$bytes_0;
-  }
-  Coroutine$FakeNetwork$transmitUdp$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.constructor = Coroutine$FakeNetwork$transmitUdp$lambda;
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            var tmp$, tmp$_0;
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
-              return (tmp$ = this.local$this$FakeNetwork.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-            }
-             else {
-              (tmp$_0 = this.local$this$FakeNetwork.display_0) != null ? (tmp$_0.receivedPacket(), Unit) : null;
-              return this.local$closure$udpListener.receive_cm0rz4$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
-            }
-
-          case 3:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork.prototype.transmitUdp_0 = function (fromAddress, udpListener, bytes) {
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$transmitUdp$lambda(this, udpListener, fromAddress, bytes));
-  };
-  FakeNetwork.prototype.listenTcp_0 = function (myAddress, port, tcpServerSocketListener) {
-    var $receiver = this.tcpServerSocketsByPort_0;
-    var key = new Pair(myAddress, port);
-    $receiver.put_xwzc9p$(key, tcpServerSocketListener);
-  };
-  function Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$clientListener = closure$clientListener_0;
-    this.local$closure$connection = closure$connection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda;
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$clientListener.reset_t1snl1$(this.local$closure$connection), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function FakeNetwork$connectTcp$lambda_0(closure$clientSideConnection) {
-    return function () {
-      return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
-    };
-  }
-  function FakeNetwork$connectTcp$lambda_1(closure$serverSideConnection) {
-    return function () {
-      return closure$serverSideConnection;
-    };
-  }
-  function Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$clientListener = closure$clientListener_0;
-    this.local$closure$clientSideConnection = closure$clientSideConnection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda_0.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_0;
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$clientListener.connected_t1snl1$(this.local$closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : this.local$closure$clientSideConnection.v), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda_2(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$serverListener = closure$serverListener_0;
-    this.local$closure$serverSideConnection = closure$serverSideConnection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda_1.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_1;
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$serverListener.connected_t1snl1$(this.local$closure$serverSideConnection), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork.prototype.connectTcp_0 = function (clientAddress, serverAddress, serverPort, clientListener) {
-    var serverSocketListener = this.tcpServerSocketsByPort_0.get_11rb$(new Pair(serverAddress, serverPort));
-    if (serverSocketListener == null) {
-      var connection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, null);
-      launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda(this, clientListener, connection));
-      return connection;
-    }
-    var clientSideConnection = {v: null};
-    var serverSideConnection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, clientListener, FakeNetwork$connectTcp$lambda_0(clientSideConnection));
-    var serverListener = serverSocketListener.incomingConnection_t1snl1$(serverSideConnection);
-    clientSideConnection.v = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, serverListener, FakeNetwork$connectTcp$lambda_1(serverSideConnection));
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_2(this, clientListener, clientSideConnection));
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_3(this, serverListener, serverSideConnection));
-    return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
-  };
-  function FakeNetwork$FakeTcpConnection($outer, fromAddress, toAddress, port, tcpListener, otherListener) {
-    this.$outer = $outer;
-    if (tcpListener === void 0)
-      tcpListener = null;
-    if (otherListener === void 0)
-      otherListener = null;
-    this.fromAddress_gytzal$_0 = fromAddress;
-    this.toAddress_ytzwi$_0 = toAddress;
-    this.port_8i3uvw$_0 = port;
-    this.tcpListener_0 = tcpListener;
-    this.otherListener_0 = otherListener;
-  }
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'fromAddress', {
-    get: function () {
-      return this.fromAddress_gytzal$_0;
-    }
-  });
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'toAddress', {
-    get: function () {
-      return this.toAddress_ytzwi$_0;
-    }
-  });
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'port', {
-    get: function () {
-      return this.port_8i3uvw$_0;
-    }
-  });
-  function Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeTcpConnection = this$FakeTcpConnection_0;
-    this.local$closure$bytes = closure$bytes_0;
-  }
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeTcpConnection$send$lambda;
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            var tmp$;
-            return (tmp$ = this.local$this$FakeTcpConnection.tcpListener_0) != null ? (tmp$.receive_rg1vmd$(ensureNotNull(this.local$this$FakeTcpConnection.otherListener_0)(), this.local$closure$bytes), Unit) : null;
-          case 1:
-            throw this.exception_0;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork$FakeTcpConnection.prototype.send_fqrh44$ = function (bytes) {
-    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeTcpConnection$send$lambda(this, bytes));
-  };
-  FakeNetwork$FakeTcpConnection.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeTcpConnection',
-    interfaces: [Network$TcpConnection]
-  };
-  FakeNetwork.prototype.sendPacketSuccess_0 = function () {
-    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
-  };
-  FakeNetwork.prototype.receivePacketSuccess_0 = function () {
-    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
-  };
-  FakeNetwork.prototype.packetLossRate_0 = function () {
-    var tmp$, tmp$_0;
-    return (tmp$_0 = (tmp$ = this.display_0) != null ? tmp$.packetLossRate : null) != null ? tmp$_0 : 0.0;
-  };
-  function FakeNetwork$FakeLink($outer, myAddress) {
-    this.$outer = $outer;
-    this.myAddress_1ma6oo$_0 = myAddress;
-  }
-  Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
-    get: function () {
-      return this.myAddress_1ma6oo$_0;
-    }
-  });
-  FakeNetwork$FakeLink.prototype.listenUdp_ury2hn$ = function (port, udpListener) {
-    this.$outer.listenUdp_0(this.myAddress, port, udpListener);
-  };
-  FakeNetwork$FakeLink.prototype.sendUdp_z62edq$ = function (toAddress, port, bytes) {
-    this.$outer.sendUdp_0(this.myAddress, toAddress, port, bytes);
-  };
-  FakeNetwork$FakeLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
-    this.$outer.broadcastUdp_0(this.myAddress, port, bytes);
-  };
-  FakeNetwork$FakeLink.prototype.listenTcp_5na2rz$ = function (port, tcpServerSocketListener) {
-    this.$outer.listenTcp_0(this.myAddress, port, tcpServerSocketListener);
-  };
-  FakeNetwork$FakeLink.prototype.connectTcp_cb4f41$ = function (toAddress, port, tcpListener) {
-    return this.$outer.connectTcp_0(this.myAddress, toAddress, port, tcpListener);
-  };
-  FakeNetwork$FakeLink.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeLink',
-    interfaces: [Network$Link]
-  };
-  function Coroutine$networkDelay_0($this, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-    this.$this = $this;
-  }
-  Coroutine$networkDelay_0.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$networkDelay_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$networkDelay_0.prototype.constructor = Coroutine$networkDelay_0;
-  Coroutine$networkDelay_0.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            if (this.$this.networkDelay_1 !== 0) {
-              this.state_0 = 2;
-              this.result_0 = delay(Kotlin.Long.fromInt(this.$this.networkDelay_1), this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            }
-             else {
-              this.state_0 = 3;
-              continue;
-            }
-
-          case 1:
-            throw this.exception_0;
-          case 2:
-            this.state_0 = 3;
-            continue;
-          case 3:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  FakeNetwork.prototype.networkDelay_0 = function (continuation_0, suspended) {
-    var instance = new Coroutine$networkDelay_0(this, continuation_0);
-    if (suspended)
-      return instance;
-    else
-      return instance.doResume(null);
-  };
-  function FakeNetwork$coroutineScope$ObjectLiteral(closure$coroutineContext) {
-    this.closure$coroutineContext = closure$coroutineContext;
-  }
-  Object.defineProperty(FakeNetwork$coroutineScope$ObjectLiteral.prototype, 'coroutineContext', {
-    get: function () {
-      return this.closure$coroutineContext;
-    }
-  });
-  FakeNetwork$coroutineScope$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [CoroutineScope_0]
-  };
-  FakeNetwork.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeNetwork',
-    interfaces: [Network]
-  };
-  function FakeAddress(id) {
-    this.id = id;
-  }
-  FakeAddress.prototype.toString = function () {
-    return 'x' + toString(this.id, 16);
-  };
-  FakeAddress.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeAddress',
-    interfaces: [Network$Address]
-  };
-  FakeAddress.prototype.component1 = function () {
-    return this.id;
-  };
-  FakeAddress.prototype.copy_za3lpa$ = function (id) {
-    return new FakeAddress(id === void 0 ? this.id : id);
-  };
-  FakeAddress.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.id) | 0;
-    return result;
-  };
-  FakeAddress.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
   function Pinky(sheepModel, showMetas, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
@@ -2311,7 +1709,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         switch (this.state_0) {
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
-            this.$this.link_0.listenUdp_ury2hn$(Ports$Companion_getInstance().PINKY, this.$this);
+            this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().PINKY, this.$this);
             this.$this.display.listShows_5ucgt1$(this.$this.showMetas);
             var pubSub = new PubSub$Server(this.$this.link_0, Ports$Companion_getInstance().PINKY_UI_TCP);
             var color = this.$this.display.color;
@@ -2338,7 +1736,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
                 this.$this.brainsChanged_0 = false;
               }
               this.local$show.nextFrame();
-              this.$this.showRunner_0.send_6qu7we$(this.$this.link_0);
+              this.$this.showRunner_0.send_9m0ekx$(this.$this.link_0);
             }
              else {
               this.$this.disableDmx_0();
@@ -2378,7 +1776,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Pinky.prototype.disableDmx_0 = function () {
     this.dmxUniverse.allOff();
   };
-  Pinky.prototype.receive_cm0rz4$ = function (fromAddress, bytes) {
+  Pinky.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage))
       this.foundBrain_0(new RemoteBrain(fromAddress, message.panelName));
@@ -2529,7 +1927,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
     return new Shenzarpy(this.getDmxBuffer_vux9f0$(baseChannel, 16));
   };
-  ShowRunner.prototype.send_6qu7we$ = function (link) {
+  ShowRunner.prototype.send_9m0ekx$ = function (link) {
     var tmp$;
     tmp$ = this.shaders_0.entries.iterator();
     while (tmp$.hasNext()) {
@@ -2540,7 +1938,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       tmp$_0 = remoteBrains.iterator();
       while (tmp$_0.hasNext()) {
         var element_0 = tmp$_0.next();
-        link.sendUdp_bkw8fl$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
+        link.sendUdp_c7y63k$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
       }
     }
     this.dmxUniverse_0.sendFrame();
@@ -2698,22 +2096,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var reader = new ByteArrayReader(bytes);
     switch (Type$Companion_getInstance().get_s8j3t7$(reader.readByte()).name) {
       case 'BRAIN_HELLO':
-        tmp$ = BrainHelloMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = BrainHelloMessage$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'BRAIN_PANEL_SHADE':
-        tmp$ = BrainShaderMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = BrainShaderMessage$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'MAPPER_HELLO':
-        tmp$ = MapperHelloMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = MapperHelloMessage$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'BRAIN_ID_REQUEST':
-        tmp$ = BrainIdRequest$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'BRAIN_ID_RESPONSE':
-        tmp$ = BrainIdResponse$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = BrainIdResponse$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'PINKY_PONG':
-        tmp$ = PinkyPongMessage$Companion_getInstance().parse_c4pr8w$(reader);
+        tmp$ = PinkyPongMessage$Companion_getInstance().parse_100t80$(reader);
         break;
       default:tmp$ = Kotlin.noWhenBranchMatched();
         break;
@@ -2728,7 +2126,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function BrainHelloMessage$Companion() {
     BrainHelloMessage$Companion_instance = this;
   }
-  BrainHelloMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  BrainHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
     return new BrainHelloMessage(reader.readString());
   };
   BrainHelloMessage$Companion.$metadata$ = {
@@ -2743,7 +2141,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return BrainHelloMessage$Companion_instance;
   }
-  BrainHelloMessage.prototype.serialize_ep8mow$ = function (writer) {
+  BrainHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.panelName);
   };
   BrainHelloMessage.$metadata$ = {
@@ -2759,9 +2157,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function BrainShaderMessage$Companion() {
     BrainShaderMessage$Companion_instance = this;
   }
-  BrainShaderMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
-    var shader = Shader$Companion_getInstance().parse_c4pr8w$(reader);
-    shader.readBuffer_c4pr8w$(reader);
+  BrainShaderMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    var shader = Shader$Companion_getInstance().parse_100t80$(reader);
+    shader.readBuffer_100t80$(reader);
     return new BrainShaderMessage(shader);
   };
   BrainShaderMessage$Companion.$metadata$ = {
@@ -2776,9 +2174,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return BrainShaderMessage$Companion_instance;
   }
-  BrainShaderMessage.prototype.serialize_ep8mow$ = function (writer) {
-    this.shader.serialize_ep8mow$(writer);
-    this.shader.serializeBuffer_ep8mow$(writer);
+  BrainShaderMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    this.shader.serialize_3kjoo0$(writer);
+    this.shader.serializeBuffer_3kjoo0$(writer);
   };
   BrainShaderMessage.$metadata$ = {
     kind: Kind_CLASS,
@@ -2793,7 +2191,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function MapperHelloMessage$Companion() {
     MapperHelloMessage$Companion_instance = this;
   }
-  MapperHelloMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  MapperHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
     return new MapperHelloMessage(reader.readBoolean());
   };
   MapperHelloMessage$Companion.$metadata$ = {
@@ -2808,7 +2206,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return MapperHelloMessage$Companion_instance;
   }
-  MapperHelloMessage.prototype.serialize_ep8mow$ = function (writer) {
+  MapperHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeBoolean_6taknv$(this.isRunning);
   };
   MapperHelloMessage.$metadata$ = {
@@ -2824,7 +2222,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function BrainIdRequest$Companion() {
     BrainIdRequest$Companion_instance = this;
   }
-  BrainIdRequest$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  BrainIdRequest$Companion.prototype.parse_100t80$ = function (reader) {
     return new BrainIdRequest(reader.readInt());
   };
   BrainIdRequest$Companion.$metadata$ = {
@@ -2839,7 +2237,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return BrainIdRequest$Companion_instance;
   }
-  BrainIdRequest.prototype.serialize_ep8mow$ = function (writer) {
+  BrainIdRequest.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeInt_za3lpa$(this.port);
   };
   BrainIdRequest.$metadata$ = {
@@ -2855,7 +2253,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function BrainIdResponse$Companion() {
     BrainIdResponse$Companion_instance = this;
   }
-  BrainIdResponse$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  BrainIdResponse$Companion.prototype.parse_100t80$ = function (reader) {
     return new BrainIdResponse(reader.readString());
   };
   BrainIdResponse$Companion.$metadata$ = {
@@ -2870,7 +2268,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return BrainIdResponse$Companion_instance;
   }
-  BrainIdResponse.prototype.serialize_ep8mow$ = function (writer) {
+  BrainIdResponse.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.name);
   };
   BrainIdResponse.$metadata$ = {
@@ -2886,7 +2284,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function PinkyPongMessage$Companion() {
     PinkyPongMessage$Companion_instance = this;
   }
-  PinkyPongMessage$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  PinkyPongMessage$Companion.prototype.parse_100t80$ = function (reader) {
     var brainCount = reader.readInt();
     var brainIds = ArrayList_init();
     for (var i = 0; i < brainCount; i++) {
@@ -2906,7 +2304,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return PinkyPongMessage$Companion_instance;
   }
-  PinkyPongMessage.prototype.serialize_ep8mow$ = function (writer) {
+  PinkyPongMessage.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeInt_za3lpa$(this.brainIds.size);
     var tmp$;
     tmp$ = this.brainIds.iterator();
@@ -2926,10 +2324,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Message.prototype.toBytes = function () {
     var writer = ByteArrayWriter_init(1 + this.size() | 0);
     writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
-    this.serialize_ep8mow$(writer);
+    this.serialize_3kjoo0$(writer);
     return writer.toBytes();
   };
-  Message.prototype.serialize_ep8mow$ = function (writer) {
+  Message.prototype.serialize_3kjoo0$ = function (writer) {
   };
   Message.prototype.size = function () {
     return 127;
@@ -2960,10 +2358,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function PubSub$Companion() {
     PubSub$Companion_instance = this;
   }
-  PubSub$Companion.prototype.listen_tx2csw$ = function (networkLink, port) {
+  PubSub$Companion.prototype.listen_qwvhmn$ = function (networkLink, port) {
     return new PubSub$Server(networkLink, port);
   };
-  PubSub$Companion.prototype.connect_mbxyi8$ = function (networkLink, address, port) {
+  PubSub$Companion.prototype.connect_4z1eem$ = function (networkLink, address, port) {
     return new PubSub$Client(networkLink, address, port);
   };
   PubSub$Companion.$metadata$ = {
@@ -3048,7 +2446,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.connection = null;
     this.toSend_p0j902$_0 = ArrayList_init();
   }
-  PubSub$Connection.prototype.connected_t1snl1$ = function (tcpConnection) {
+  PubSub$Connection.prototype.connected_67ozxy$ = function (tcpConnection) {
     logger$Companion_getInstance().debug_61zpoe$('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] PubSub: new ' + this + ' connection');
     this.connection = tcpConnection;
     var tmp$;
@@ -3071,7 +2469,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_CLASS,
     interfaces: [PubSub$Listener]
   };
-  PubSub$Connection.prototype.receive_rg1vmd$ = function (tcpConnection, bytes) {
+  PubSub$Connection.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
     var reader = new ByteArrayReader(bytes);
     var command = reader.readString();
     switch (command) {
@@ -3124,7 +2522,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     writer.writeString_61zpoe$(topicName);
     this.sendCommand_ma41of$(writer.toBytes());
   };
-  PubSub$Connection.prototype.reset_t1snl1$ = function (tcpConnection) {
+  PubSub$Connection.prototype.reset_67ozxy$ = function (tcpConnection) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'PubSub.Connection.reset not implemented');
   };
   PubSub$Connection.prototype.sendCommand_ma41of$ = function (bytes) {
@@ -3143,9 +2541,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function PubSub$Server(link, port) {
     this.topics_0 = HashMap_init();
-    link.listenTcp_5na2rz$(port, this);
+    link.listenTcp_kd29r4$(port, this);
   }
-  PubSub$Server.prototype.incomingConnection_t1snl1$ = function (fromAddress) {
+  PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromAddress) {
     return new PubSub$Connection('server', this.topics_0);
   };
   function PubSub$Server$publish$ObjectLiteral(closure$onUpdate, closure$topic, origin) {
@@ -3201,7 +2599,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function PubSub$Client(link, serverAddress, port) {
     this.topics_0 = HashMap_init();
     this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0);
-    link.connectTcp_cb4f41$(serverAddress, port, this.server_0);
+    link.connectTcp_dy234z$(serverAddress, port, this.server_0);
   }
   function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin) {
     this.this$Client = this$Client;
@@ -3292,7 +2690,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     ShaderType$Companion_getInstance();
   }
   function ShaderType$ShaderType$SOLID_init$lambda(reader) {
-    return SolidShader$Companion_getInstance().parse_c4pr8w$(reader);
+    return SolidShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderType$SOLID_instance;
   function ShaderType$SOLID_getInstance() {
@@ -3300,7 +2698,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return ShaderType$SOLID_instance;
   }
   function ShaderType$ShaderType$PIXEL_init$lambda(reader) {
-    return PixelShader$Companion_getInstance().parse_c4pr8w$(reader);
+    return PixelShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderType$PIXEL_instance;
   function ShaderType$PIXEL_getInstance() {
@@ -3308,7 +2706,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return ShaderType$PIXEL_instance;
   }
   function ShaderType$ShaderType$SINE_WAVE_init$lambda(reader) {
-    return SineWaveShader$Companion_getInstance().parse_c4pr8w$(reader);
+    return SineWaveShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderType$SINE_WAVE_instance;
   function ShaderType$SINE_WAVE_getInstance() {
@@ -3316,7 +2714,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return ShaderType$SINE_WAVE_instance;
   }
   function ShaderType$ShaderType$COMPOSITOR_init$lambda(reader) {
-    return CompositorShader$Companion_getInstance().parse_c4pr8w$(reader);
+    return CompositorShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderType$COMPOSITOR_instance;
   function ShaderType$COMPOSITOR_getInstance() {
@@ -3373,19 +2771,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     Shader$Companion_getInstance();
     this.type = type;
   }
-  Shader.prototype.serialize_ep8mow$ = function (writer) {
+  Shader.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
   };
-  Shader.prototype.serializeBuffer_ep8mow$ = function (writer) {
-    this.buffer.serialize_ep8mow$(writer);
+  Shader.prototype.serializeBuffer_3kjoo0$ = function (writer) {
+    this.buffer.serialize_3kjoo0$(writer);
   };
-  Shader.prototype.readBuffer_c4pr8w$ = function (reader) {
-    this.buffer.read_c4pr8w$(reader);
+  Shader.prototype.readBuffer_100t80$ = function (reader) {
+    this.buffer.read_100t80$(reader);
   };
   function Shader$Companion() {
     Shader$Companion_instance = this;
   }
-  Shader$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  Shader$Companion.prototype.parse_100t80$ = function (reader) {
     var shaderTypeI = reader.readByte();
     var shaderType = ShaderType$Companion_getInstance().get_s8j3t7$(shaderTypeI);
     return shaderType.parser(reader);
@@ -4221,6 +3619,53 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Bitmap',
     interfaces: []
   };
+  function ByteArrayReader(bytes, offset) {
+    if (offset === void 0)
+      offset = 0;
+    this.bytes = bytes;
+    this.offset = offset;
+  }
+  ByteArrayReader.prototype.readBoolean = function () {
+    return this.bytes[this.offset] !== toByte(0);
+  };
+  ByteArrayReader.prototype.readByte = function () {
+    var tmp$;
+    return this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$];
+  };
+  ByteArrayReader.prototype.readShort = function () {
+    var tmp$, tmp$_0;
+    return toShort((this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] & 255) << 8 | this.bytes[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] & 255);
+  };
+  ByteArrayReader.prototype.readChar = function () {
+    return toBoxedChar(toChar(this.readShort()));
+  };
+  ByteArrayReader.prototype.readInt = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    return (this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] & 255) << 24 | (this.bytes[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] & 255) << 16 | (this.bytes[tmp$_1 = this.offset, this.offset = tmp$_1 + 1 | 0, tmp$_1] & 255) << 8 | this.bytes[tmp$_2 = this.offset, this.offset = tmp$_2 + 1 | 0, tmp$_2] & 255;
+  };
+  ByteArrayReader.prototype.readFloat = function () {
+    var bits = this.readInt();
+    return Kotlin.floatFromBits(bits);
+  };
+  ByteArrayReader.prototype.readString = function () {
+    var length = this.readInt();
+    var buf = StringBuilder_init(length);
+    for (var i = 0; i < length; i++) {
+      buf.append_s8itvh$(unboxChar(this.readChar()));
+    }
+    return buf.toString();
+  };
+  ByteArrayReader.prototype.readBytes = function () {
+    var count = this.readInt();
+    var bytes = copyOfRange(this.bytes, this.offset, this.offset + count | 0);
+    this.offset = this.offset + count | 0;
+    return bytes;
+  };
+  ByteArrayReader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ByteArrayReader',
+    interfaces: []
+  };
   function ByteArrayWriter(bytes, offset) {
     if (bytes === void 0)
       bytes = new Int8Array(128);
@@ -4295,51 +3740,62 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     ByteArrayWriter.call($this, new Int8Array(size));
     return $this;
   }
-  function ByteArrayReader(bytes, offset) {
-    if (offset === void 0)
-      offset = 0;
-    this.bytes = bytes;
-    this.offset = offset;
+  function Network() {
   }
-  ByteArrayReader.prototype.readBoolean = function () {
-    return this.bytes[this.offset] !== toByte(0);
+  function Network$Link() {
+  }
+  Network$Link.prototype.sendUdp_c7y63k$ = function (toAddress, port, message) {
+    this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
   };
-  ByteArrayReader.prototype.readByte = function () {
-    var tmp$;
-    return this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$];
+  Network$Link.prototype.broadcastUdp_ecsl0t$ = function (port, message) {
+    this.broadcastUdp_3fbn1q$(port, message.toBytes());
   };
-  ByteArrayReader.prototype.readShort = function () {
-    var tmp$, tmp$_0;
-    return toShort((this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] & 255) << 8 | this.bytes[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] & 255);
+  Network$Link.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Link',
+    interfaces: []
   };
-  ByteArrayReader.prototype.readChar = function () {
-    return toBoxedChar(toChar(this.readShort()));
+  function Network$Address() {
+  }
+  Network$Address.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Address',
+    interfaces: []
   };
-  ByteArrayReader.prototype.readInt = function () {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    return (this.bytes[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] & 255) << 24 | (this.bytes[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] & 255) << 16 | (this.bytes[tmp$_1 = this.offset, this.offset = tmp$_1 + 1 | 0, tmp$_1] & 255) << 8 | this.bytes[tmp$_2 = this.offset, this.offset = tmp$_2 + 1 | 0, tmp$_2] & 255;
+  function Network$UdpListener() {
+  }
+  Network$UdpListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'UdpListener',
+    interfaces: []
   };
-  ByteArrayReader.prototype.readFloat = function () {
-    var bits = this.readInt();
-    return Kotlin.floatFromBits(bits);
+  function Network$TcpConnection() {
+  }
+  Network$TcpConnection.prototype.send_kq3aw3$ = function (message) {
+    this.send_fqrh44$(message.toBytes());
   };
-  ByteArrayReader.prototype.readString = function () {
-    var length = this.readInt();
-    var buf = StringBuilder_init(length);
-    for (var i = 0; i < length; i++) {
-      buf.append_s8itvh$(unboxChar(this.readChar()));
-    }
-    return buf.toString();
+  Network$TcpConnection.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpConnection',
+    interfaces: []
   };
-  ByteArrayReader.prototype.readBytes = function () {
-    var count = this.readInt();
-    var bytes = copyOfRange(this.bytes, this.offset, this.offset + count | 0);
-    this.offset = this.offset + count | 0;
-    return bytes;
+  function Network$TcpListener() {
+  }
+  Network$TcpListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpListener',
+    interfaces: []
   };
-  ByteArrayReader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ByteArrayReader',
+  function Network$TcpServerSocketListener() {
+  }
+  Network$TcpServerSocketListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'TcpServerSocketListener',
+    interfaces: []
+  };
+  Network.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Network',
     interfaces: []
   };
   function CompositorShader(aShader, bShader) {
@@ -4354,30 +3810,30 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return this.buffer_t0nanq$_0;
     }
   });
-  CompositorShader.prototype.serialize_ep8mow$ = function (writer) {
-    Shader.prototype.serialize_ep8mow$.call(this, writer);
-    this.aShader.serialize_ep8mow$(writer);
-    this.bShader.serialize_ep8mow$(writer);
+  CompositorShader.prototype.serialize_3kjoo0$ = function (writer) {
+    Shader.prototype.serialize_3kjoo0$.call(this, writer);
+    this.aShader.serialize_3kjoo0$(writer);
+    this.bShader.serialize_3kjoo0$(writer);
   };
-  CompositorShader.prototype.serializeBuffer_ep8mow$ = function (writer) {
-    Shader.prototype.serializeBuffer_ep8mow$.call(this, writer);
-    this.aShader.serializeBuffer_ep8mow$(writer);
-    this.bShader.serializeBuffer_ep8mow$(writer);
+  CompositorShader.prototype.serializeBuffer_3kjoo0$ = function (writer) {
+    Shader.prototype.serializeBuffer_3kjoo0$.call(this, writer);
+    this.aShader.serializeBuffer_3kjoo0$(writer);
+    this.bShader.serializeBuffer_3kjoo0$(writer);
   };
   CompositorShader.prototype.createImpl_bbfl1t$ = function (pixels) {
     return new CompositorShaderImpl(this.aShader, this.bShader, this.buffer, pixels);
   };
-  CompositorShader.prototype.readBuffer_c4pr8w$ = function (reader) {
-    Shader.prototype.readBuffer_c4pr8w$.call(this, reader);
-    this.aShader.readBuffer_c4pr8w$(reader);
-    this.bShader.readBuffer_c4pr8w$(reader);
+  CompositorShader.prototype.readBuffer_100t80$ = function (reader) {
+    Shader.prototype.readBuffer_100t80$.call(this, reader);
+    this.aShader.readBuffer_100t80$(reader);
+    this.bShader.readBuffer_100t80$(reader);
   };
   function CompositorShader$Companion() {
     CompositorShader$Companion_instance = this;
   }
-  CompositorShader$Companion.prototype.parse_c4pr8w$ = function (reader) {
-    var shaderA = Shader$Companion_getInstance().parse_c4pr8w$(reader);
-    var shaderB = Shader$Companion_getInstance().parse_c4pr8w$(reader);
+  CompositorShader$Companion.prototype.parse_100t80$ = function (reader) {
+    var shaderA = Shader$Companion_getInstance().parse_100t80$(reader);
+    var shaderB = Shader$Companion_getInstance().parse_100t80$(reader);
     return new CompositorShader(shaderA, shaderB);
   };
   CompositorShader$Companion.$metadata$ = {
@@ -4478,11 +3934,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.mode = mode;
     this.fade = fade;
   }
-  CompositorShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
+  CompositorShaderBuffer.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeByte_s8j3t7$(toByte(this.mode.ordinal));
     writer.writeFloat_mx4ult$(this.fade);
   };
-  CompositorShaderBuffer.prototype.read_c4pr8w$ = function (reader) {
+  CompositorShaderBuffer.prototype.read_100t80$ = function (reader) {
     this.mode = CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte());
     this.fade = reader.readFloat();
   };
@@ -4568,7 +4024,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function PixelShader$Companion() {
     PixelShader$Companion_instance = this;
   }
-  PixelShader$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  PixelShader$Companion.prototype.parse_100t80$ = function (reader) {
     return new PixelShader();
   };
   PixelShader$Companion.$metadata$ = {
@@ -4622,22 +4078,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors = array;
   }
-  PixelShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
+  PixelShaderBuffer.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeInt_za3lpa$(this.colors.length);
     var $receiver = this.colors;
     var tmp$;
     for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
       var element = $receiver[tmp$];
-      element.serialize_ep8mow$(writer);
+      element.serialize_3kjoo0$(writer);
     }
   };
-  PixelShaderBuffer.prototype.read_c4pr8w$ = function (reader) {
+  PixelShaderBuffer.prototype.read_100t80$ = function (reader) {
     var incomingColorCount = reader.readInt();
     var tmp$;
     tmp$ = until(0, incomingColorCount).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      this.colors[element] = Color$Companion_getInstance().parse_c4pr8w$(reader);
+      this.colors[element] = Color$Companion_getInstance().parse_100t80$(reader);
     }
   };
   PixelShaderBuffer.prototype.setAll_rny0jj$ = function (color) {
@@ -4668,7 +4124,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function SineWaveShader$Companion() {
     SineWaveShader$Companion_instance = this;
   }
-  SineWaveShader$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  SineWaveShader$Companion.prototype.parse_100t80$ = function (reader) {
     return new SineWaveShader();
   };
   SineWaveShader$Companion.$metadata$ = {
@@ -4723,22 +4179,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.theta = 0.0;
     this.density = 1.0;
   }
-  SineWaveShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
-    this.color.serialize_ep8mow$(writer);
+  SineWaveShaderBuffer.prototype.serialize_3kjoo0$ = function (writer) {
+    this.color.serialize_3kjoo0$(writer);
     writer.writeFloat_mx4ult$(this.theta);
     writer.writeFloat_mx4ult$(this.density);
   };
-  SineWaveShaderBuffer.prototype.read_c4pr8w$ = function (reader) {
-    this.color = Color$Companion_getInstance().parse_c4pr8w$(reader);
+  SineWaveShaderBuffer.prototype.read_100t80$ = function (reader) {
+    this.color = Color$Companion_getInstance().parse_100t80$(reader);
     this.theta = reader.readFloat();
     this.density = reader.readFloat();
   };
   function SineWaveShaderBuffer$Companion() {
     SineWaveShaderBuffer$Companion_instance = this;
   }
-  SineWaveShaderBuffer$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  SineWaveShaderBuffer$Companion.prototype.parse_100t80$ = function (reader) {
     var buf = new SineWaveShaderBuffer();
-    buf.color = Color$Companion_getInstance().parse_c4pr8w$(reader);
+    buf.color = Color$Companion_getInstance().parse_100t80$(reader);
     buf.theta = reader.readFloat();
     buf.density = reader.readFloat();
     return buf;
@@ -4776,7 +4232,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function SolidShader$Companion() {
     SolidShader$Companion_instance = this;
   }
-  SolidShader$Companion.prototype.parse_c4pr8w$ = function (reader) {
+  SolidShader$Companion.prototype.parse_100t80$ = function (reader) {
     return new SolidShader();
   };
   SolidShader$Companion.$metadata$ = {
@@ -4823,48 +4279,75 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function SolidShaderBuffer() {
     this.color = Color$Companion_getInstance().WHITE;
   }
-  SolidShaderBuffer.prototype.serialize_ep8mow$ = function (writer) {
-    this.color.serialize_ep8mow$(writer);
+  SolidShaderBuffer.prototype.serialize_3kjoo0$ = function (writer) {
+    this.color.serialize_3kjoo0$(writer);
   };
-  SolidShaderBuffer.prototype.read_c4pr8w$ = function (reader) {
-    this.color = Color$Companion_getInstance().parse_c4pr8w$(reader);
+  SolidShaderBuffer.prototype.read_100t80$ = function (reader) {
+    this.color = Color$Companion_getInstance().parse_100t80$(reader);
   };
   SolidShaderBuffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SolidShaderBuffer',
     interfaces: [ShaderBuffer]
   };
-  function CompositeShow(sheepModel, showRunner) {
-    this.colorPicker_0 = showRunner.getColorPicker();
-    var $receiver = sheepModel.allPanels;
+  function AllShows() {
+    AllShows$Companion_getInstance();
+  }
+  function AllShows$Companion() {
+    AllShows$Companion_instance = this;
+    this.allShows = listOf([SomeDumbShow, RandomShow, CompositeShow, ThumpShow]);
+  }
+  AllShows$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var AllShows$Companion_instance = null;
+  function AllShows$Companion_getInstance() {
+    if (AllShows$Companion_instance === null) {
+      new AllShows$Companion();
+    }
+    return AllShows$Companion_instance;
+  }
+  AllShows.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'AllShows',
+    interfaces: []
+  };
+  function CompositeShow$ObjectLiteral(name) {
+    ShowMeta.call(this, name);
+  }
+  function CompositeShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel, this$) {
+    this.colorPicker_0 = closure$showRunner.getColorPicker();
+    var $receiver = closure$sheepModel.allPanels;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var tmp$_0 = destination.add_11rb$;
-      var solidShader = showRunner.getSolidShader_jfju1k$(item);
-      var $receiver_0 = showRunner.getSineWaveShader_jfju1k$(item);
+      var solidShader = closure$showRunner.getSolidShader_jfju1k$(item);
+      var $receiver_0 = closure$showRunner.getSineWaveShader_jfju1k$(item);
       $receiver_0.buffer.density = Random.Default.nextFloat() * 20;
       var sineWaveShader = $receiver_0;
-      var compositorShader = showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
+      var compositorShader = closure$showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
       var $receiver_1 = compositorShader.buffer;
       $receiver_1.mode = CompositingMode$ADD_getInstance();
       $receiver_1.fade = 1.0;
-      tmp$_0.call(destination, new CompositeShow$ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
+      tmp$_0.call(destination, new CompositeShow$ObjectLiteral$ShaderBufs(this$, solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
     }
     this.shaderBufs_0 = destination;
-    var $receiver_2 = sheepModel.eyes;
+    var $receiver_2 = closure$sheepModel.eyes;
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
     var tmp$_1;
     tmp$_1 = $receiver_2.iterator();
     while (tmp$_1.hasNext()) {
       var item_0 = tmp$_1.next();
-      destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeadBuffers_0 = destination_0;
   }
-  CompositeShow.prototype.nextFrame = function () {
+  CompositeShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextFrame = function () {
     var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
     var i = {v: 0};
     var tmp$;
@@ -4887,53 +4370,53 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = theta / 2;
     }
   };
-  function CompositeShow$Meta() {
-    ShowMeta.call(this, 'Composite');
-  }
-  CompositeShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new CompositeShow(sheepModel, showRunner);
-  };
-  CompositeShow$Meta.$metadata$ = {
+  CompositeShow$ObjectLiteral$createShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Meta',
-    interfaces: [ShowMeta]
+    interfaces: [Show]
   };
-  function CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+  CompositeShow$ObjectLiteral.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new CompositeShow$ObjectLiteral$createShow$ObjectLiteral(showRunner, sheepModel, this);
+  };
+  function CompositeShow$ObjectLiteral$ShaderBufs($outer, solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+    this.$outer = $outer;
     this.solidShaderBuffer = solidShaderBuffer;
     this.sineWaveShaderBuffer = sineWaveShaderBuffer;
     this.compositorShaderBuffer = compositorShaderBuffer;
   }
-  CompositeShow$ShaderBufs.$metadata$ = {
+  CompositeShow$ObjectLiteral$ShaderBufs.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShaderBufs',
     interfaces: []
   };
-  CompositeShow.$metadata$ = {
+  CompositeShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'CompositeShow',
-    interfaces: [Show]
+    interfaces: [ShowMeta]
   };
-  function RandomShow(sheepModel, showRunner) {
-    var $receiver = sheepModel.allPanels;
+  var CompositeShow;
+  function RandomShow$ObjectLiteral(name) {
+    ShowMeta.call(this, name);
+  }
+  function RandomShow$ObjectLiteral$createShow$ObjectLiteral(closure$sheepModel, closure$showRunner) {
+    var $receiver = closure$sheepModel.allPanels;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(showRunner.getPixelShader_jfju1k$(item).buffer);
+      destination.add_11rb$(closure$showRunner.getPixelShader_jfju1k$(item).buffer);
     }
     this.pixelShaderBuffers = destination;
-    var $receiver_0 = sheepModel.eyes;
+    var $receiver_0 = closure$sheepModel.eyes;
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
       var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeadBuffers = destination_0;
   }
-  RandomShow.prototype.nextFrame = function () {
+  RandomShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextFrame = function () {
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
@@ -4955,44 +4438,43 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
     }
   };
-  function RandomShow$Meta() {
-    ShowMeta.call(this, 'Random');
-  }
-  RandomShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new RandomShow(sheepModel, showRunner);
-  };
-  RandomShow$Meta.$metadata$ = {
+  RandomShow$ObjectLiteral$createShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Meta',
-    interfaces: [ShowMeta]
-  };
-  RandomShow.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'RandomShow',
     interfaces: [Show]
   };
-  function SomeDumbShow(sheepModel, showRunner) {
-    this.colorPicker = showRunner.getColorPicker();
-    var $receiver = sheepModel.allPanels;
+  RandomShow$ObjectLiteral.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new RandomShow$ObjectLiteral$createShow$ObjectLiteral(sheepModel, showRunner);
+  };
+  RandomShow$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [ShowMeta]
+  };
+  var RandomShow;
+  function SomeDumbShow$ObjectLiteral(name) {
+    ShowMeta.call(this, name);
+  }
+  function SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+    this.colorPicker = closure$showRunner.getColorPicker();
+    var $receiver = closure$sheepModel.allPanels;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(showRunner.getPixelShader_jfju1k$(item).buffer);
+      destination.add_11rb$(closure$showRunner.getPixelShader_jfju1k$(item).buffer);
     }
     this.pixelShaderBuffers = destination;
-    var $receiver_0 = sheepModel.eyes;
+    var $receiver_0 = closure$sheepModel.eyes;
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
       var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeads = destination_0;
   }
-  SomeDumbShow.prototype.nextFrame = function () {
+  SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextFrame = function () {
     var seed = Random_0(0);
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
@@ -5017,64 +4499,63 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = element_0.tilt + (this.nextRandomFloat_0(seed) - 0.5) / 5;
     }
   };
-  SomeDumbShow.prototype.desaturateRandomishly_0 = function (baseSaturation, seed, panelColor) {
+  SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.prototype.desaturateRandomishly_0 = function (baseSaturation, seed, panelColor) {
     var x = this.nextRandomFloat_0(seed);
     var saturation = baseSaturation * Math_0.abs(x);
     var desaturatedColor = panelColor.withSaturation_mx4ult$(saturation);
     return desaturatedColor;
   };
-  SomeDumbShow.prototype.nextRandomFloat_0 = function (seed) {
+  SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextRandomFloat_0 = function (seed) {
     var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
     return Math_0.sin(x);
   };
-  function SomeDumbShow$Meta() {
-    ShowMeta.call(this, 'SomeDumbShow');
-  }
-  SomeDumbShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new SomeDumbShow(sheepModel, showRunner);
-  };
-  SomeDumbShow$Meta.$metadata$ = {
+  SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Meta',
-    interfaces: [ShowMeta]
-  };
-  SomeDumbShow.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SomeDumbShow',
     interfaces: [Show]
   };
-  function ThumpShow(sheepModel, showRunner) {
-    this.beatProvider_0 = showRunner.getBeatProvider();
-    this.colorPicker_0 = showRunner.getColorPicker();
-    var $receiver = sheepModel.allPanels;
+  SomeDumbShow$ObjectLiteral.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral(showRunner, sheepModel);
+  };
+  SomeDumbShow$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [ShowMeta]
+  };
+  var SomeDumbShow;
+  function ThumpShow$ObjectLiteral(name) {
+    ShowMeta.call(this, name);
+  }
+  function ThumpShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel, this$) {
+    this.beatProvider_0 = closure$showRunner.getBeatProvider();
+    this.colorPicker_0 = closure$showRunner.getColorPicker();
+    var $receiver = closure$sheepModel.allPanels;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var tmp$_0 = destination.add_11rb$;
-      var solidShader = showRunner.getSolidShader_jfju1k$(item);
-      var $receiver_0 = showRunner.getSineWaveShader_jfju1k$(item);
+      var solidShader = closure$showRunner.getSolidShader_jfju1k$(item);
+      var $receiver_0 = closure$showRunner.getSineWaveShader_jfju1k$(item);
       $receiver_0.buffer.density = Random.Default.nextFloat() * 20;
       var sineWaveShader = $receiver_0;
-      var compositorShader = showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
+      var compositorShader = closure$showRunner.getCompositorShader_626mua$(item, solidShader, sineWaveShader);
       var $receiver_1 = compositorShader.buffer;
       $receiver_1.mode = CompositingMode$ADD_getInstance();
       $receiver_1.fade = 1.0;
-      tmp$_0.call(destination, new ThumpShow$ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
+      tmp$_0.call(destination, new ThumpShow$ObjectLiteral$ShaderBufs(this$, solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer));
     }
     this.shaderBufs_0 = destination;
-    var $receiver_2 = sheepModel.eyes;
+    var $receiver_2 = closure$sheepModel.eyes;
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
     var tmp$_1;
     tmp$_1 = $receiver_2.iterator();
     while (tmp$_1.hasNext()) {
       var item_0 = tmp$_1.next();
-      destination_0.add_11rb$(showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeadBuffers_0 = destination_0;
   }
-  ThumpShow.prototype.nextFrame = function () {
+  ThumpShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextFrame = function () {
     var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
     var beat = this.beatProvider_0.beat;
     var i = {v: 0};
@@ -5098,31 +4579,572 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = beat / math.PI;
     }
   };
-  function ThumpShow$Meta() {
-    ShowMeta.call(this, 'Thump');
-  }
-  ThumpShow$Meta.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new ThumpShow(sheepModel, showRunner);
-  };
-  ThumpShow$Meta.$metadata$ = {
+  ThumpShow$ObjectLiteral$createShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Meta',
-    interfaces: [ShowMeta]
+    interfaces: [Show]
   };
-  function ThumpShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+  ThumpShow$ObjectLiteral.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    return new ThumpShow$ObjectLiteral$createShow$ObjectLiteral(showRunner, sheepModel, this);
+  };
+  function ThumpShow$ObjectLiteral$ShaderBufs($outer, solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
+    this.$outer = $outer;
     this.solidShaderBuffer = solidShaderBuffer;
     this.sineWaveShaderBuffer = sineWaveShaderBuffer;
     this.compositorShaderBuffer = compositorShaderBuffer;
   }
-  ThumpShow$ShaderBufs.$metadata$ = {
+  ThumpShow$ObjectLiteral$ShaderBufs.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShaderBufs',
     interfaces: []
   };
-  ThumpShow.$metadata$ = {
+  ThumpShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'ThumpShow',
-    interfaces: [Show]
+    interfaces: [ShowMeta]
+  };
+  var ThumpShow;
+  function FakeNetwork(networkDelay, display, coroutineContext) {
+    if (networkDelay === void 0)
+      networkDelay = 1;
+    if (display === void 0)
+      display = null;
+    if (coroutineContext === void 0)
+      coroutineContext = coroutines_0.EmptyCoroutineContext;
+    this.networkDelay_1 = networkDelay;
+    this.display_0 = display;
+    this.coroutineScope_0 = new FakeNetwork$coroutineScope$ObjectLiteral(coroutineContext);
+    this.nextAddress_0 = 45071;
+    this.udpListeners_0 = HashMap_init();
+    this.udpListenersByPort_0 = HashMap_init();
+    this.tcpServerSocketsByPort_0 = HashMap_init();
+  }
+  FakeNetwork.prototype.link = function () {
+    var tmp$;
+    var address = new FakeNetwork$FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
+    return new FakeNetwork$FakeLink(this, address);
+  };
+  FakeNetwork.prototype.listenUdp_0 = function (address, port, udpListener) {
+    this.udpListeners_0.put_xwzc9p$(new Pair(address, port), udpListener);
+    var $receiver = this.udpListenersByPort_0;
+    var tmp$;
+    var value = $receiver.get_11rb$(port);
+    if (value == null) {
+      var answer = ArrayList_init();
+      $receiver.put_xwzc9p$(port, answer);
+      tmp$ = answer;
+    }
+     else {
+      tmp$ = value;
+    }
+    var portListeners = tmp$;
+    portListeners.add_11rb$(udpListener);
+  };
+  FakeNetwork.prototype.sendUdp_0 = function (fromAddress, toAddress, port, bytes) {
+    var tmp$;
+    if (!this.sendPacketSuccess_0()) {
+      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+      return;
+    }
+    var listener = this.udpListeners_0.get_11rb$(new Pair(toAddress, port));
+    if (listener != null)
+      this.transmitUdp_0(fromAddress, listener, bytes);
+  };
+  FakeNetwork.prototype.broadcastUdp_0 = function (fromAddress, port, bytes) {
+    var tmp$, tmp$_0;
+    if (!this.sendPacketSuccess_0()) {
+      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+      return;
+    }
+    if ((tmp$_0 = this.udpListenersByPort_0.get_11rb$(port)) != null) {
+      var tmp$_1;
+      tmp$_1 = tmp$_0.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        this.transmitUdp_0(fromAddress, element, bytes);
+      }
+    }
+  };
+  function Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$udpListener = closure$udpListener_0;
+    this.local$closure$fromAddress = closure$fromAddress_0;
+    this.local$closure$bytes = closure$bytes_0;
+  }
+  Coroutine$FakeNetwork$transmitUdp$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.constructor = Coroutine$FakeNetwork$transmitUdp$lambda;
+  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var tmp$, tmp$_0;
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
+              return (tmp$ = this.local$this$FakeNetwork.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+            }
+             else {
+              (tmp$_0 = this.local$this$FakeNetwork.display_0) != null ? (tmp$_0.receivedPacket(), Unit) : null;
+              return this.local$closure$udpListener.receive_rq4egf$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
+            }
+
+          case 3:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork.prototype.transmitUdp_0 = function (fromAddress, udpListener, bytes) {
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$transmitUdp$lambda(this, udpListener, fromAddress, bytes));
+  };
+  FakeNetwork.prototype.listenTcp_0 = function (myAddress, port, tcpServerSocketListener) {
+    var $receiver = this.tcpServerSocketsByPort_0;
+    var key = new Pair(myAddress, port);
+    $receiver.put_xwzc9p$(key, tcpServerSocketListener);
+  };
+  function Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$clientListener = closure$clientListener_0;
+    this.local$closure$connection = closure$connection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda;
+  Coroutine$FakeNetwork$connectTcp$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$clientListener.reset_67ozxy$(this.local$closure$connection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function FakeNetwork$connectTcp$lambda_0(closure$clientSideConnection) {
+    return function () {
+      return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
+    };
+  }
+  function FakeNetwork$connectTcp$lambda_1(closure$serverSideConnection) {
+    return function () {
+      return closure$serverSideConnection;
+    };
+  }
+  function Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$clientListener = closure$clientListener_0;
+    this.local$closure$clientSideConnection = closure$clientSideConnection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_0;
+  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$clientListener.connected_67ozxy$(this.local$closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : this.local$closure$clientSideConnection.v), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda_2(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$serverListener = closure$serverListener_0;
+    this.local$closure$serverSideConnection = closure$serverSideConnection_0;
+  }
+  Coroutine$FakeNetwork$connectTcp$lambda_1.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_1;
+  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$serverListener.connected_67ozxy$(this.local$closure$serverSideConnection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$connectTcp$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork.prototype.connectTcp_0 = function (clientAddress, serverAddress, serverPort, clientListener) {
+    var serverSocketListener = this.tcpServerSocketsByPort_0.get_11rb$(new Pair(serverAddress, serverPort));
+    if (serverSocketListener == null) {
+      var connection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, null);
+      launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda(this, clientListener, connection));
+      return connection;
+    }
+    var clientSideConnection = {v: null};
+    var serverSideConnection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, clientListener, FakeNetwork$connectTcp$lambda_0(clientSideConnection));
+    var serverListener = serverSocketListener.incomingConnection_67ozxy$(serverSideConnection);
+    clientSideConnection.v = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, serverListener, FakeNetwork$connectTcp$lambda_1(serverSideConnection));
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_2(this, clientListener, clientSideConnection));
+    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_3(this, serverListener, serverSideConnection));
+    return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
+  };
+  function FakeNetwork$FakeTcpConnection($outer, fromAddress, toAddress, port, tcpListener, otherListener) {
+    this.$outer = $outer;
+    if (tcpListener === void 0)
+      tcpListener = null;
+    if (otherListener === void 0)
+      otherListener = null;
+    this.fromAddress_v9jzbw$_0 = fromAddress;
+    this.toAddress_vzjv7v$_0 = toAddress;
+    this.port_djnxqd$_0 = port;
+    this.tcpListener_0 = tcpListener;
+    this.otherListener_0 = otherListener;
+  }
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'fromAddress', {
+    get: function () {
+      return this.fromAddress_v9jzbw$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'toAddress', {
+    get: function () {
+      return this.toAddress_vzjv7v$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'port', {
+    get: function () {
+      return this.port_djnxqd$_0;
+    }
+  });
+  function Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeTcpConnection = this$FakeTcpConnection_0;
+    this.local$closure$bytes = closure$bytes_0;
+  }
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeTcpConnection$send$lambda;
+  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var tmp$;
+            return (tmp$ = this.local$this$FakeTcpConnection.tcpListener_0) != null ? (tmp$.receive_r00qii$(ensureNotNull(this.local$this$FakeTcpConnection.otherListener_0)(), this.local$closure$bytes), Unit) : null;
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork$FakeTcpConnection.prototype.send_fqrh44$ = function (bytes) {
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeTcpConnection$send$lambda(this, bytes));
+  };
+  FakeNetwork$FakeTcpConnection.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeTcpConnection',
+    interfaces: [Network$TcpConnection]
+  };
+  FakeNetwork.prototype.sendPacketSuccess_0 = function () {
+    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
+  };
+  FakeNetwork.prototype.receivePacketSuccess_0 = function () {
+    return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
+  };
+  FakeNetwork.prototype.packetLossRate_0 = function () {
+    var tmp$, tmp$_0;
+    return (tmp$_0 = (tmp$ = this.display_0) != null ? tmp$.packetLossRate : null) != null ? tmp$_0 : 0.0;
+  };
+  function FakeNetwork$FakeLink($outer, myAddress) {
+    this.$outer = $outer;
+    this.myAddress_npb8zl$_0 = myAddress;
+  }
+  Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
+    get: function () {
+      return this.myAddress_npb8zl$_0;
+    }
+  });
+  FakeNetwork$FakeLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
+    this.$outer.listenUdp_0(this.myAddress, port, udpListener);
+  };
+  FakeNetwork$FakeLink.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    this.$outer.sendUdp_0(this.myAddress, toAddress, port, bytes);
+  };
+  FakeNetwork$FakeLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    this.$outer.broadcastUdp_0(this.myAddress, port, bytes);
+  };
+  FakeNetwork$FakeLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
+    this.$outer.listenTcp_0(this.myAddress, port, tcpServerSocketListener);
+  };
+  FakeNetwork$FakeLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
+    return this.$outer.connectTcp_0(this.myAddress, toAddress, port, tcpListener);
+  };
+  FakeNetwork$FakeLink.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeLink',
+    interfaces: [Network$Link]
+  };
+  function Coroutine$networkDelay_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$networkDelay_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$networkDelay_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$networkDelay_0.prototype.constructor = Coroutine$networkDelay_0;
+  Coroutine$networkDelay_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            if (this.$this.networkDelay_1 !== 0) {
+              this.state_0 = 2;
+              this.result_0 = delay(Kotlin.Long.fromInt(this.$this.networkDelay_1), this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
+            }
+             else {
+              this.state_0 = 3;
+              continue;
+            }
+
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.state_0 = 3;
+            continue;
+          case 3:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  FakeNetwork.prototype.networkDelay_0 = function (continuation_0, suspended) {
+    var instance = new Coroutine$networkDelay_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function FakeNetwork$FakeAddress(id) {
+    this.id = id;
+  }
+  FakeNetwork$FakeAddress.prototype.toString = function () {
+    return 'x' + toString(this.id, 16);
+  };
+  FakeNetwork$FakeAddress.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeAddress',
+    interfaces: [Network$Address]
+  };
+  FakeNetwork$FakeAddress.prototype.component1 = function () {
+    return this.id;
+  };
+  FakeNetwork$FakeAddress.prototype.copy_za3lpa$ = function (id) {
+    return new FakeNetwork$FakeAddress(id === void 0 ? this.id : id);
+  };
+  FakeNetwork$FakeAddress.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.id) | 0;
+    return result;
+  };
+  FakeNetwork$FakeAddress.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
+  };
+  function FakeNetwork$coroutineScope$ObjectLiteral(closure$coroutineContext) {
+    this.closure$coroutineContext = closure$coroutineContext;
+  }
+  Object.defineProperty(FakeNetwork$coroutineScope$ObjectLiteral.prototype, 'coroutineContext', {
+    get: function () {
+      return this.closure$coroutineContext;
+    }
+  });
+  FakeNetwork$coroutineScope$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [CoroutineScope_0]
+  };
+  FakeNetwork.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeNetwork',
+    interfaces: [Network]
   };
   function random($receiver) {
     return $receiver.size > 0 ? $receiver.get_za3lpa$(Random.Default.nextInt_za3lpa$($receiver.size)) : null;
@@ -5431,7 +5453,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function JsBrainDisplay(element) {
     this.myDiv_0 = appendElement(element, 'div', JsBrainDisplay$myDiv$lambda);
   }
-  JsBrainDisplay.prototype.haveLink_6qu7we$ = function (link) {
+  JsBrainDisplay.prototype.haveLink_9m0ekx$ = function (link) {
     this.clearClasses_0();
     this.myDiv_0.classList.add('brain-link');
   };
@@ -6063,7 +6085,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.network = new FakeNetwork(void 0, this.display.forNetwork());
     this.dmxUniverse = new FakeDmxUniverse();
     this.sheepModel = new SheepModel();
-    this.showMetas = listOf([new SomeDumbShow$Meta(), new RandomShow$Meta(), new CompositeShow$Meta(), new ThumpShow$Meta()]);
+    this.showMetas = AllShows$Companion_getInstance().allShows;
     var $receiver = new Visualizer(this.sheepModel, this.dmxUniverse);
     $receiver.onNewMapper = SheepSimulator$visualizer$lambda$lambda($receiver, this);
     $receiver.onNewUi = SheepSimulator$visualizer$lambda$lambda_0(this);
@@ -6847,15 +6869,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   MediaDevices.Camera = MediaDevices$Camera;
   MediaDevices.Region = MediaDevices$Region;
   package$baaahs.MediaDevices = MediaDevices;
-  Network.Link = Network$Link;
-  Network.Address = Network$Address;
-  Network.UdpListener = Network$UdpListener;
-  Network.TcpConnection = Network$TcpConnection;
-  Network.TcpListener = Network$TcpListener;
-  Network.TcpServerSocketListener = Network$TcpServerSocketListener;
-  package$baaahs.Network = Network;
-  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
-  package$baaahs.FakeNetwork = FakeNetwork;
   Pinky.BeatProvider = Pinky$BeatProvider;
   package$baaahs.Pinky = Pinky;
   package$baaahs.ShowRunner = ShowRunner;
@@ -7083,9 +7096,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
   package$imaging.Bitmap = Bitmap;
-  package$baaahs.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
-  package$baaahs.ByteArrayWriter = ByteArrayWriter;
-  package$baaahs.ByteArrayReader = ByteArrayReader;
+  var package$io = package$baaahs.io || (package$baaahs.io = {});
+  package$io.ByteArrayReader = ByteArrayReader;
+  package$io.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
+  package$io.ByteArrayWriter = ByteArrayWriter;
+  Network.Link = Network$Link;
+  Network.Address = Network$Address;
+  Network.UdpListener = Network$UdpListener;
+  Network.TcpConnection = Network$TcpConnection;
+  Network.TcpListener = Network$TcpListener;
+  Network.TcpServerSocketListener = Network$TcpServerSocketListener;
+  var package$net = package$baaahs.net || (package$baaahs.net = {});
+  package$net.Network = Network;
   Object.defineProperty(CompositorShader, 'Companion', {
     get: CompositorShader$Companion_getInstance
   });
@@ -7125,15 +7147,34 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$shaders.SolidShader = SolidShader;
   package$shaders.SolidShaderImpl = SolidShaderImpl;
   package$shaders.SolidShaderBuffer = SolidShaderBuffer;
-  CompositeShow.Meta = CompositeShow$Meta;
+  Object.defineProperty(AllShows, 'Companion', {
+    get: AllShows$Companion_getInstance
+  });
   var package$shows = package$baaahs.shows || (package$baaahs.shows = {});
-  package$shows.CompositeShow = CompositeShow;
-  RandomShow.Meta = RandomShow$Meta;
-  package$shows.RandomShow = RandomShow;
-  SomeDumbShow.Meta = SomeDumbShow$Meta;
-  package$shows.SomeDumbShow = SomeDumbShow;
-  ThumpShow.Meta = ThumpShow$Meta;
-  package$shows.ThumpShow = ThumpShow;
+  package$shows.AllShows = AllShows;
+  Object.defineProperty(package$shows, 'CompositeShow', {
+    get: function () {
+      return CompositeShow;
+    }
+  });
+  Object.defineProperty(package$shows, 'RandomShow', {
+    get: function () {
+      return RandomShow;
+    }
+  });
+  Object.defineProperty(package$shows, 'SomeDumbShow', {
+    get: function () {
+      return SomeDumbShow;
+    }
+  });
+  Object.defineProperty(package$shows, 'ThumpShow', {
+    get: function () {
+      return ThumpShow;
+    }
+  });
+  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
+  var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
+  package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
   package$baaahs.toRadians_mx4ult$ = toRadians;
@@ -7180,8 +7221,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.getTimeMillis = getTimeMillis;
   Color$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   FakeNetwork$FakeTcpConnection.prototype.send_kq3aw3$ = Network$TcpConnection.prototype.send_kq3aw3$;
-  FakeNetwork$FakeLink.prototype.sendUdp_bkw8fl$ = Network$Link.prototype.sendUdp_bkw8fl$;
+  FakeNetwork$FakeLink.prototype.sendUdp_c7y63k$ = Network$Link.prototype.sendUdp_c7y63k$;
   FakeNetwork$FakeLink.prototype.broadcastUdp_ecsl0t$ = Network$Link.prototype.broadcastUdp_ecsl0t$;
+  CompositeShow = new CompositeShow$ObjectLiteral('Composite');
+  RandomShow = new RandomShow$ObjectLiteral('Random');
+  SomeDumbShow = new SomeDumbShow$ObjectLiteral('SomeDumbShow');
+  ThumpShow = new ThumpShow$ObjectLiteral('Thump');
   Kotlin.defineModule('sparklemotion', _);
   return _;
 }(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-runtime-js'], this['threejs-wrapper'], this['kotlinx-html-js']);
