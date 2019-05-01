@@ -4,7 +4,7 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
-class SolidShader : Shader(ShaderType.SOLID) {
+class SolidShader : Shader(ShaderId.SOLID) {
     override val buffer = SolidShaderBuffer()
 
     override fun createImpl(pixels: Pixels): ShaderImpl = SolidShaderImpl(buffer, pixels)

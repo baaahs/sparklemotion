@@ -5,7 +5,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min
 
-class PixelShader : Shader(ShaderType.PIXEL) {
+class PixelShader : Shader(ShaderId.PIXEL) {
     override val buffer = PixelShaderBuffer()
 
     override fun createImpl(pixels: Pixels): ShaderImpl = PixelShaderImpl(buffer, pixels)
