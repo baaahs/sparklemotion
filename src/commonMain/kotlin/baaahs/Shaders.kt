@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SineWaveShader

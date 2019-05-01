@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.net.Network
 import kotlinx.coroutines.delay
 
 class Brain(

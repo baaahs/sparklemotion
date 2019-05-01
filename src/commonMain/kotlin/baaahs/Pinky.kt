@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.SheepModel.Panel
+import baaahs.net.Network
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SineWaveShader

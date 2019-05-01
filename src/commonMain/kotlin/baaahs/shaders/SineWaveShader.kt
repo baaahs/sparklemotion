@@ -1,6 +1,8 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.sin
 

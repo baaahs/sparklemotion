@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
+import baaahs.net.Network
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
