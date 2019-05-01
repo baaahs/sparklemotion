@@ -96,6 +96,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
+  var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
+  var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
@@ -178,6 +181,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SolidShader.prototype.constructor = SolidShader;
   CompositeShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
   CompositeShow$ObjectLiteral.prototype.constructor = CompositeShow$ObjectLiteral;
+  PanelTweenShow.prototype = Object.create(ShowMeta.prototype);
+  PanelTweenShow.prototype.constructor = PanelTweenShow;
   RandomShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
   RandomShow$ObjectLiteral.prototype.constructor = RandomShow$ObjectLiteral;
   SomeDumbShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
@@ -4295,7 +4300,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SomeDumbShow, RandomShow, CompositeShow, ThumpShow]);
+    this.allShows = listOf([SomeDumbShow, RandomShow, CompositeShow, ThumpShow, PanelTweenShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -4393,6 +4398,70 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [ShowMeta]
   };
   var CompositeShow;
+  function PanelTweenShow() {
+    PanelTweenShow_instance = this;
+    ShowMeta.call(this, 'SolidColor');
+  }
+  function PanelTweenShow$createShow$ObjectLiteral(closure$sheepModel, closure$colorArray, closure$showRunner) {
+    this.closure$sheepModel = closure$sheepModel;
+    this.closure$colorArray = closure$colorArray;
+    var $receiver = closure$sheepModel.allPanels;
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var pair = new Pair(element, closure$showRunner.getSolidShader_jfju1k$(element));
+      destination.put_xwzc9p$(pair.first, pair.second);
+    }
+    this.shaders = destination;
+    this.frameNumber = 0;
+    this.fadeTimeMs = 500;
+  }
+  PanelTweenShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+    var $receiver = this.closure$sheepModel.allPanels;
+    this.closure$colorArray;
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var closure$colorArray = this.closure$colorArray;
+      if (get_number(element) > -1) {
+        var now = getTimeMillis().toInt();
+        var colorIndex = ((now / this.fadeTimeMs | 0) + get_number(element) | 0) % closure$colorArray.length;
+        var startColor = closure$colorArray[colorIndex];
+        var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
+        var tweenedColor = startColor.fade_6zkv30$(endColor, now % this.fadeTimeMs / this.fadeTimeMs);
+        ensureNotNull(this.shaders.get_11rb$(element)).buffer.color = tweenedColor;
+      }
+    }
+    this.frameNumber = this.frameNumber + 1 | 0;
+  };
+  PanelTweenShow$createShow$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show]
+  };
+  PanelTweenShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
+    return new PanelTweenShow$createShow$ObjectLiteral(sheepModel, colorArray, showRunner);
+  };
+  PanelTweenShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'PanelTweenShow',
+    interfaces: [ShowMeta]
+  };
+  var PanelTweenShow_instance = null;
+  function PanelTweenShow_getInstance() {
+    if (PanelTweenShow_instance === null) {
+      new PanelTweenShow();
+    }
+    return PanelTweenShow_instance;
+  }
+  function get_number($receiver) {
+    var tmp$, tmp$_0, tmp$_1;
+    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
+  }
   function RandomShow$ObjectLiteral(name) {
     ShowMeta.call(this, name);
   }
@@ -7157,6 +7226,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return CompositeShow;
     }
   });
+  Object.defineProperty(package$shows, 'PanelTweenShow', {
+    get: PanelTweenShow_getInstance
+  });
+  package$shows.get_number_y56fi1$ = get_number;
   Object.defineProperty(package$shows, 'RandomShow', {
     get: function () {
       return RandomShow;
