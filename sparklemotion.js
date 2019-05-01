@@ -53,7 +53,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L34 = Kotlin.Long.fromInt(34);
   var L100 = Kotlin.Long.fromInt(100);
   var ensureNotNull = Kotlin.ensureNotNull;
-  var getCallableRef = Kotlin.getCallableRef;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
@@ -183,6 +182,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   CompositeShow$ObjectLiteral.prototype.constructor = CompositeShow$ObjectLiteral;
   PanelTweenShow.prototype = Object.create(ShowMeta.prototype);
   PanelTweenShow.prototype.constructor = PanelTweenShow;
+  PixelTweenShow.prototype = Object.create(ShowMeta.prototype);
+  PixelTweenShow.prototype.constructor = PixelTweenShow;
   RandomShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
   RandomShow$ObjectLiteral.prototype.constructor = RandomShow$ObjectLiteral;
   SomeDumbShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
@@ -753,9 +754,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.width = 640;
     this.height = 300;
     var $receiver = mediaDevices.getCamera_vux9f0$(this.width, this.height);
-    $receiver.onImage = getCallableRef('haveImage', function ($receiver, image) {
-      return $receiver.haveImage_0(image), Unit;
-    }.bind(null, this));
+    $receiver.onImage = Mapper$camera$lambda$lambda(this);
     this.camera = $receiver;
     this.baseBitmap_0 = null;
     this.deltaBitmap_hn3lh8$_0 = this.deltaBitmap_hn3lh8$_0;
@@ -1529,6 +1528,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'BrainMapper',
     interfaces: []
   };
+  function Mapper$camera$lambda$lambda(this$Mapper) {
+    return function (image) {
+      this$Mapper.haveImage_0(image);
+      return Unit;
+    };
+  }
   Mapper.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Mapper',
@@ -4339,7 +4344,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SomeDumbShow, RandomShow, CompositeShow, ThumpShow, PanelTweenShow_getInstance()]);
+    this.allShows = listOf([SomeDumbShow, RandomShow, CompositeShow, ThumpShow, PanelTweenShow_getInstance(), PixelTweenShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -4500,6 +4505,80 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function get_number($receiver) {
     var tmp$, tmp$_0, tmp$_1;
     return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
+  }
+  function PixelTweenShow() {
+    PixelTweenShow_instance = this;
+    ShowMeta.call(this, 'PixelTweenShow');
+  }
+  function PixelTweenShow$createShow$ObjectLiteral(closure$sheepModel, closure$colorArray, closure$showRunner) {
+    this.closure$sheepModel = closure$sheepModel;
+    this.closure$colorArray = closure$colorArray;
+    var $receiver = closure$sheepModel.allPanels;
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var pair = new Pair(element, closure$showRunner.getPixelShader_jfju1k$(element));
+      destination.put_xwzc9p$(pair.first, pair.second);
+    }
+    this.shaders = destination;
+    this.fadeTimeMs = 1000;
+  }
+  PixelTweenShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+    var $receiver = this.closure$sheepModel.allPanels;
+    this.closure$colorArray;
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var closure$colorArray = this.closure$colorArray;
+      if (PixelTweenShow_getInstance().get_number_y56fi1$(element) > -1) {
+        var now = getTimeMillis().toInt();
+        var colorIndex = ((now / this.fadeTimeMs | 0) + PixelTweenShow_getInstance().get_number_y56fi1$(element) | 0) % closure$colorArray.length;
+        var startColor = closure$colorArray[colorIndex];
+        var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
+        var colors = ensureNotNull(this.shaders.get_11rb$(element)).buffer.colors;
+        var tmp$_0, tmp$_0_0;
+        var index = 0;
+        for (tmp$_0 = 0; tmp$_0 !== colors.length; ++tmp$_0) {
+          var item = colors[tmp$_0];
+          var index_0 = (tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0);
+          if (Random.Default.nextFloat() < 0.1) {
+            colors[index_0] = Color$Companion_getInstance().WHITE;
+          }
+           else {
+            var tweenedColor = startColor.fade_6zkv30$(endColor, (now + index_0 | 0) % this.fadeTimeMs / this.fadeTimeMs);
+            colors[index_0] = tweenedColor;
+          }
+        }
+      }
+    }
+  };
+  PixelTweenShow$createShow$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show]
+  };
+  PixelTweenShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+    var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
+    return new PixelTweenShow$createShow$ObjectLiteral(sheepModel, colorArray, showRunner);
+  };
+  PixelTweenShow.prototype.get_number_y56fi1$ = function ($receiver) {
+    var tmp$, tmp$_0, tmp$_1;
+    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
+  };
+  PixelTweenShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'PixelTweenShow',
+    interfaces: [ShowMeta]
+  };
+  var PixelTweenShow_instance = null;
+  function PixelTweenShow_getInstance() {
+    if (PixelTweenShow_instance === null) {
+      new PixelTweenShow();
+    }
+    return PixelTweenShow_instance;
   }
   function RandomShow$ObjectLiteral(name) {
     ShowMeta.call(this, name);
@@ -7269,6 +7348,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: PanelTweenShow_getInstance
   });
   package$shows.get_number_y56fi1$ = get_number;
+  Object.defineProperty(package$shows, 'PixelTweenShow', {
+    get: PixelTweenShow_getInstance
+  });
   Object.defineProperty(package$shows, 'RandomShow', {
     get: function () {
       return RandomShow;
