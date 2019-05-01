@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.Serializable
