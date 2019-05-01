@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.SheepModel.Panel
+import baaahs.net.Network
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SineWaveShader
@@ -8,6 +9,8 @@ import baaahs.shaders.SolidShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.floor
+import kotlin.math.roundToLong
 
 class Pinky(
     val sheepModel: SheepModel,
@@ -21,7 +24,7 @@ class Pinky(
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
-    private var showRunner: ShowRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+    private var showRunner: ShowRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
 
     val address: Network.Address get() = link.myAddress
 
@@ -33,6 +36,12 @@ class Pinky(
         display.listShows(showMetas)
 
         val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
+        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }.joinToString(",")) {
+        }
+        pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
+            display.selectedShow = showMetas.find { it.name == selectedShow }
+        }
+
         val color = display.color
         if (color != null) {
             val primaryColorChannel = pubSub.publish(Topics.primaryColor, color) {
@@ -43,7 +52,7 @@ class Pinky(
             display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
         }
 
-        showRunner = ShowRunner (display, brains.values.toList(), dmxUniverse)
+        showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
         val prevSelectedShow = display.selectedShow
         var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
         val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
@@ -53,7 +62,7 @@ class Pinky(
             if (!mapperIsRunning) {
                 if (brainsChanged || display.selectedShow != currentShowMeta) {
                     currentShowMeta = prevSelectedShow ?: showMetas.random()!!
-                    showRunner = ShowRunner(display, brains.values.toList(), dmxUniverse)
+                    showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
                     show = buildShow()
                     brainsChanged = false
                 }
@@ -96,22 +105,28 @@ class Pinky(
         brainsChanged = true
     }
 
-    inner class BeatProvider(val bpm: Float) {
-        var startTimeMillis = 0L
-        var beat = 0
-        var beatsPerMeasure = 4
+    inner class BeatProvider(var bpm: Float) {
+        private var startTimeMillis = 0L
+        private var beatsPerMeasure = 4
+
+        private val millisPerBeat = 1000 / (bpm / 60)
+
+        public val beat: Float
+            get() {
+                val now = getTimeMillis()
+                return (now - startTimeMillis) / millisPerBeat % beatsPerMeasure
+            }
 
         suspend fun run() {
             startTimeMillis = getTimeMillis()
 
             while (true) {
-                display.beat = beat
+                display.beat = beat.toInt()
 
                 val offsetMillis = getTimeMillis() - startTimeMillis
-                val millisPerBeat = (1000 / (bpm / 60)).toLong()
-                val delayTimeMillis = millisPerBeat - offsetMillis % millisPerBeat
-                delay(delayTimeMillis)
-                beat = (beat + 1) % beatsPerMeasure
+                val millsPer = millisPerBeat
+                val delayTimeMillis = millsPer - offsetMillis % millsPer
+                delay(delayTimeMillis.toLong())
             }
         }
     }
@@ -120,11 +135,14 @@ class Pinky(
 class ShowRunner(
     private val pinkyDisplay: PinkyDisplay,
     private val brains: List<RemoteBrain>,
+    private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
     private val shaders: MutableMap<Shader, MutableList<RemoteBrain>> = hashMapOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
+
+    fun getBeatProvider(): Pinky.BeatProvider = beatProvider
 
     private fun recordShader(panel: Panel, shader: Shader) {
         shaders[shader] = brains.filter { it.panelName == panel.name }.toMutableList()
