@@ -4,7 +4,7 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
-class CompositorShader(val aShader: Shader, val bShader: Shader) : Shader(ShaderType.COMPOSITOR) {
+class CompositorShader(val aShader: Shader, val bShader: Shader) : Shader(ShaderId.COMPOSITOR) {
     override val buffer = CompositorShaderBuffer()
 
     override fun serialize(writer: ByteArrayWriter) {

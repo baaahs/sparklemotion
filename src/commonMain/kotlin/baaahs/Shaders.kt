@@ -4,7 +4,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.*
 
-enum class ShaderType(val parser: (reader: ByteArrayReader) -> Shader) {
+enum class ShaderId(val parser: (reader: ByteArrayReader) -> Shader) {
     SOLID({ reader -> SolidShader.parse(reader) }),
     PIXEL({ reader -> PixelShader.parse(reader) }),
     SINE_WAVE({ reader -> SineWaveShader.parse(reader) }),
@@ -13,20 +13,20 @@ enum class ShaderType(val parser: (reader: ByteArrayReader) -> Shader) {
 
     companion object {
         val values = values()
-        fun get(i: Byte): ShaderType {
+        fun get(i: Byte): ShaderId {
             if (i > values.size || i < 0) {
-                throw Throwable("bad index for ShaderType: ${i}")
+                throw Throwable("bad index for ShaderId: ${i}")
             }
             return values[i.toInt()]
         }
     }
 }
 
-abstract class Shader(val type: ShaderType) {
+abstract class Shader(val id: ShaderId) {
     abstract val buffer: ShaderBuffer
 
     open fun serialize(writer: ByteArrayWriter) {
-        writer.writeByte(type.ordinal.toByte())
+        writer.writeByte(id.ordinal.toByte())
     }
 
     open fun serializeBuffer(writer: ByteArrayWriter) {
@@ -42,7 +42,7 @@ abstract class Shader(val type: ShaderType) {
     companion object {
         fun parse(reader: ByteArrayReader): Shader {
             val shaderTypeI = reader.readByte()
-            val shaderType = ShaderType.get(shaderTypeI)
+            val shaderType = ShaderId.get(shaderTypeI)
             return shaderType.parser(reader)
         }
     }

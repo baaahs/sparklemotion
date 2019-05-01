@@ -6,7 +6,7 @@ import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.sin
 
-class SineWaveShader : Shader(ShaderType.SINE_WAVE) {
+class SineWaveShader : Shader(ShaderId.SINE_WAVE) {
     override val buffer = SineWaveShaderBuffer()
 
     override fun createImpl(pixels: Pixels): ShaderImpl =
