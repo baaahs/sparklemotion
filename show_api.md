@@ -15,7 +15,7 @@
 | **Show** | A program running on Pinky which configures shaders for surfaces, takes input from gadgets, and sends data to shaders. | 
 | **Show Runner** | A component of Pinky which hosts shows, providing access to gadgets and shaders. |
 | **Surface** | A (roughly) flat surface illuminated with controllable LEDs (such as a panel). LEDs on a surface are directly connected to a Brain. For BAAAHS, surfaces include panels plus the face, ears, hooves, and tail. |
-| **Visualizer** | A component which creates 3D-rendered previews of the illuminated model. |
+| **Visualizer** | Component of Sparkle Mothin which creates 3D-rendered previews of the model as illuminated by a show. |
 | **Web UI** | A browser-based interface for selecting shows, presenting gadgets, and otherwise controlling the system. |
 
 ## Environment
@@ -32,7 +32,11 @@ Shows may request input from any of several types of gadgets. Shows may optional
 gadget's purpose.
 
 ```kotlin
-// TBD
+val primaryColorBuf = showRunner.getGadgetBuffer(SingleColorGadget("Primary Color"))
+
+fun nextFrame() {
+  println("Primary color is ${primaryColorBuf.color}.")
+}
 ```
 
 #### Gadget Types
@@ -51,6 +55,17 @@ gadget's purpose.
 
 
 ### Acquiring Shaders
+
+Shows may specify a shader (or an arrangement of shaders) for each surface.
+
+```kotlin
+val shaders = model.allSurfaces.map { surface -> SolidColorShader(surface).also { showRunner.setShader(surface, it) } } 
+
+fun nextFrame() {
+  shaders.forEach { shader -> shader.buffer.color = Color.ORANGE }
+}
+```
+
 
 #### Shader Types
 
