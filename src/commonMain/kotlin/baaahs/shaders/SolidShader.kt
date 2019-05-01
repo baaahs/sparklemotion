@@ -1,6 +1,8 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 
 class SolidShader : Shader(ShaderType.SOLID) {
     override val buffer = SolidShaderBuffer()
