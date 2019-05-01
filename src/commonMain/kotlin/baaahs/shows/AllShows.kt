@@ -7,7 +7,8 @@ class AllShows {
             RandomShow,
             CompositeShow,
             ThumpShow,
-            PanelTweenShow
+            PanelTweenShow,
+            PixelTweenShow
         )
     }
 }
