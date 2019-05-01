@@ -102,7 +102,7 @@ function addPanel(p) {
   panels.push(vizPanel);
 
   let pixelCount = Math.floor(vizPanel.area * pixelDensity);
-  console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels");
+  // console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels");
 
   // try to draw pixel-ish things...
   if (renderPixels) {
