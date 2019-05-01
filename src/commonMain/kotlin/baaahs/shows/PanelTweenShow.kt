@@ -2,7 +2,7 @@ package baaahs.shows
 
 import baaahs.*
 
-object PanelTweenShow : ShowMeta("SolidColor") {
+object PanelTweenShow : ShowMeta("PanelTweenShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
