@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.js.JsName
