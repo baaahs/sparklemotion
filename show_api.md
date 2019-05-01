@@ -2,48 +2,21 @@
 
 ## Terminology
 
-##### Brain
-A tiny server running on custom hardware which is physically connected to a surface's LEDs. A Brain runs shaders, taking
-direction from Pinky.
-
-##### Gadget
-A source of external data, which could be directly controlled by a user (such as a , or collected from sensors.
-
-##### Mapper
-A program running on as-yet undefined hardware which uses computer vision techniques to map Brains to surfaces.
-
-##### Model
-A 3D model of surfaces and moving heads. For BAAAHS, it includes panels and other surfaces, plus the eyes. Models may
-have installation-specific terminology of their own.
-
-##### Moving Head
-A programmable moving spotlight (sometimes referred to as a Sharpy).
-
-##### Pinky
-A single Linux-ish server which runs shows and coordinates Brains.
-
-##### Shader
-A program running on each Brain which sets the color of its LEDs based on data from a show. Multiple shaders can be
-combined to control the color of each LED.
-
-##### Simulator
-A full system simulator for Sparkle Motion that runs in a normal web browser.
-
-##### Show
-A program running on Pinky which configures shaders for surfaces, takes input from gadgets, and sends data to shaders.
-
-##### Show Runner
-A component of Pinky which hosts shows, providing access to gadgets and shaders.
-
-##### Surface
-A (roughly) flat surface illuminated with controllable LEDs (such as a panel). LEDs on a surface are directly
-connected to a Brain. For BAAAHS, surfaces include panels plus the face, ears, hooves, and tail.
-
-##### Visualizer
-A component which creates 3D-rendered previews of the illuminated model.
-
-##### Web UI
-A browser-based interface for selecting shows, presenting gadgets, and otherwise controlling the system.
+| Term | Definition |
+| --- | --- |
+| **Brain** | A tiny server running on custom hardware which is physically connected to a surface's LEDs. A Brain runs shaders, taking direction from Pinky. |
+| **Gadget** | A source of external data, which could be directly controlled by a user (such as a , or collected from sensors. |
+| **Mapper** | A program running on as-yet undefined hardware which uses computer vision techniques to map Brains to surfaces. |
+| **Model** | A 3D model of surfaces and moving heads. For BAAAHS, it includes panels and other surfaces, plus the eyes. Models may have installation-specific terminology of their own. |
+| **Moving Head** | A programmable moving spotlight (sometimes referred to as a Sharpy). |
+| **Pinky** | A single Linux-ish server which runs shows and coordinates Brains. | 
+| **Shader** | A program running on each Brain which sets the color of its LEDs based on data from a show. Multiple shaders can be combined to control the color of each LED. |
+| **Simulator** | A full system simulator for Sparkle Motion that runs in a normal web browser. | 
+| **Show** | A program running on Pinky which configures shaders for surfaces, takes input from gadgets, and sends data to shaders. | 
+| **Show Runner** | A component of Pinky which hosts shows, providing access to gadgets and shaders. |
+| **Surface** | A (roughly) flat surface illuminated with controllable LEDs (such as a panel). LEDs on a surface are directly connected to a Brain. For BAAAHS, surfaces include panels plus the face, ears, hooves, and tail. |
+| **Visualizer** | A component which creates 3D-rendered previews of the illuminated model. |
+| **Web UI** | A browser-based interface for selecting shows, presenting gadgets, and otherwise controlling the system. |
 
 ## Environment
 
