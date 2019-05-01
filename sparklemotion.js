@@ -58,11 +58,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
-  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
+  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var equals = Kotlin.equals;
+  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
@@ -74,14 +77,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
-  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -1674,20 +1674,45 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         return instance.doResume(null);
     };
   }
-  function Pinky$run$lambda_0(this$Pinky) {
+  function Pinky$run$lambda_0(it) {
+    return Unit;
+  }
+  function Pinky$run$lambda_1(this$Pinky) {
+    return function (selectedShow) {
+      var tmp$ = this$Pinky.display;
+      var $receiver = this$Pinky.showMetas;
+      var firstOrNull$result;
+      firstOrNull$break: do {
+        var tmp$_0;
+        tmp$_0 = $receiver.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          if (equals(element.name, selectedShow)) {
+            firstOrNull$result = element;
+            break firstOrNull$break;
+          }
+        }
+        firstOrNull$result = null;
+      }
+       while (false);
+      tmp$.selectedShow = firstOrNull$result;
+      return Unit;
+    };
+  }
+  function Pinky$run$lambda_2(this$Pinky) {
     return function (it) {
       this$Pinky.display.color = it;
       println('display.color = ' + it);
       return Unit;
     };
   }
-  function Pinky$run$lambda_1(closure$primaryColorChannel, this$Pinky) {
+  function Pinky$run$lambda_3(closure$primaryColorChannel, this$Pinky) {
     return function () {
       closure$primaryColorChannel.onChange(ensureNotNull(this$Pinky.display.color));
       return Unit;
     };
   }
-  function Pinky$run$lambda_2(closure$currentShowMeta, this$Pinky) {
+  function Pinky$run$lambda_4(closure$currentShowMeta, this$Pinky) {
     return function () {
       return closure$currentShowMeta.v.createShow_h1b9op$(this$Pinky.sheepModel, this$Pinky.showRunner_0);
     };
@@ -1717,16 +1742,28 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().PINKY, this.$this);
             this.$this.display.listShows_5ucgt1$(this.$this.showMetas);
             var pubSub = new PubSub$Server(this.$this.link_0, Ports$Companion_getInstance().PINKY_UI_TCP);
+            var tmp$ = Topics_getInstance().availableShows;
+            var $receiver = this.$this.showMetas;
+            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+            var tmp$_0;
+            tmp$_0 = $receiver.iterator();
+            while (tmp$_0.hasNext()) {
+              var item = tmp$_0.next();
+              destination.add_11rb$(item.name);
+            }
+
+            pubSub.publish_oiz02e$(tmp$, joinToString(destination, ','), Pinky$run$lambda_0);
+            pubSub.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.showMetas.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
             var color = this.$this.display.color;
             if (color != null) {
-              var primaryColorChannel = pubSub.publish_oiz02e$(Topics_getInstance().primaryColor, color, Pinky$run$lambda_0(this.$this));
-              this.$this.display.onPrimaryColorChange = Pinky$run$lambda_1(primaryColorChannel, this.$this);
+              var primaryColorChannel = pubSub.publish_oiz02e$(Topics_getInstance().primaryColor, color, Pinky$run$lambda_2(this.$this));
+              this.$this.display.onPrimaryColorChange = Pinky$run$lambda_3(primaryColorChannel, this.$this);
             }
 
             this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.beatProvider_0, this.$this.dmxUniverse);
             this.local$prevSelectedShow = this.$this.display.selectedShow;
             this.local$currentShowMeta = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas))};
-            this.local$buildShow = Pinky$run$lambda_2(this.local$currentShowMeta, this.$this);
+            this.local$buildShow = Pinky$run$lambda_4(this.local$currentShowMeta, this.$this);
             this.local$show = this.local$buildShow();
             this.state_0 = 2;
             continue;
@@ -3553,6 +3590,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Topics() {
     Topics_instance = this;
+    this.availableShows = new PubSub$Topic('availableShows', serializer(kotlin_js_internal_StringCompanionObject));
+    this.selectedShow = new PubSub$Topic('selectedShow', serializer(kotlin_js_internal_StringCompanionObject));
     this.primaryColor = new PubSub$Topic('primaryColor', Color$Companion_getInstance().serializer());
   }
   Topics.$metadata$ = {
@@ -6031,7 +6070,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Visualizer.prototype.start = function () {
     initThreeJs(this.sheepModel_0, this.frameListeners_0);
     ensureNotNull(document.getElementById('newMapperButton')).addEventListener('click', Visualizer$start$lambda(this));
-    ensureNotNull(document.getElementById('newUiButton')).addEventListener('click', Visualizer$start$lambda_0(this));
+    ensureNotNull(document.getElementById('webUiButton')).addEventListener('click', Visualizer$start$lambda_0(this));
   };
   Visualizer.prototype.showPanel_jfju1k$ = function (panel) {
     var maxPixelCount = 400;
