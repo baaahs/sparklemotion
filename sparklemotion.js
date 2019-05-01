@@ -4400,7 +4400,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var CompositeShow;
   function PanelTweenShow() {
     PanelTweenShow_instance = this;
-    ShowMeta.call(this, 'SolidColor');
+    ShowMeta.call(this, 'PanelTweenShow');
   }
   function PanelTweenShow$createShow$ObjectLiteral(closure$sheepModel, closure$colorArray, closure$showRunner) {
     this.closure$sheepModel = closure$sheepModel;
