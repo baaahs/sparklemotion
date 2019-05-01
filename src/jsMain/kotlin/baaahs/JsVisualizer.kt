@@ -11,7 +11,7 @@ actual class Visualizer actual constructor(private val sheepModel: SheepModel, p
     actual fun start() {
         initThreeJs(sheepModel, frameListeners)
         document.getElementById("newMapperButton")!!.addEventListener("click", { onNewMapper() })
-        document.getElementById("newUiButton")!!.addEventListener("click", { onNewUi() })
+        document.getElementById("webUiButton")!!.addEventListener("click", { onNewUi() })
     }
 
     actual fun showPanel(panel: SheepModel.Panel): JsPanel {
