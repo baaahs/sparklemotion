@@ -1,14 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
+import ShowList from './ShowList';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { primaryColor: sparklemotion.baaahs.Color.Companion.WHITE };
+    this.state = {
+      primaryColor: sparklemotion.baaahs.Color.Companion.WHITE,
+    };
     this.pubSub = props.uiContext.pubSub;
   }
 
   componentDidMount() {
+    this.subscribeToChannels();
+  }
+
+  subscribeToChannels() {
     this.primaryColorChannel = this.pubSub.subscribe(
       sparklemotion.baaahs.Topics.primaryColor,
       (primaryColor) => {
@@ -26,7 +33,7 @@ class App extends Component {
   };
 
   close = () => {
-    console.log("app closed!");
+    console.log('app closed!');
   };
 
   render() {
@@ -35,6 +42,9 @@ class App extends Component {
         <ColorPicker
           chosenColor={this.state.primaryColor}
           onColorSelect={this.colorChanged}
+        />
+        <ShowList
+          pubSub={this.pubSub}
         />
       </div>
     );

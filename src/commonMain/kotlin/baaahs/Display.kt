@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.net.Network
+
 expect fun getDisplay(): Display
 
 interface Display {
