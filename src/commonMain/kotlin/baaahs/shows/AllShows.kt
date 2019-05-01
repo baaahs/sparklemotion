@@ -6,7 +6,8 @@ class AllShows {
             SomeDumbShow,
             RandomShow,
             CompositeShow,
-            ThumpShow
+            ThumpShow,
+            PanelTweenShow
         )
     }
 }
