@@ -20,7 +20,7 @@ class Mapper(
     val height = 300
 
     val camera = mediaDevices.getCamera(width, height).apply {
-        onImage = this@Mapper::haveImage
+        onImage = { image -> haveImage(image) }
     }
     private var baseBitmap : Bitmap? = null
     private lateinit var deltaBitmap : Bitmap
