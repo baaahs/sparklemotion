@@ -3,11 +3,7 @@ package baaahs
 import baaahs.imaging.Bitmap
 import baaahs.imaging.CanvasBitmap
 import info.laht.threekt.cameras.PerspectiveCamera
-import info.laht.threekt.core.BufferGeometry
-import info.laht.threekt.core.Face3
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.core.Object3D
-import info.laht.threekt.external.controls.OrbitControls
+import info.laht.threekt.core.*
 import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
@@ -26,12 +22,10 @@ import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.ImageData
 import kotlin.browser.document
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -45,11 +39,13 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private var width = 512
     private var height = 384
 
+    val clock = Clock();
+
     // onscreen renderer for registration UI:
     val uiRenderer = WebGLRenderer(js("{alpha: true}"))
     var uiScene = Scene()
     var uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000)
-    var uiControls: OrbitControls
+    var uiControls: dynamic
     val wireframe = Object3D()
 
     private val screen = document.create.div("mapperUi-screen") {
@@ -121,9 +117,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         uiCamera.position.z = 1000.0
         uiScene.add(uiCamera)
 
-        uiControls = OrbitControls(uiCamera, uiRenderer.domElement)
-        uiControls.minPolarAngle = PI / 2 - .25; // radians
-        uiControls.maxPolarAngle = PI / 2 + .25; // radians
+        uiControls = js("document.createCameraControls")(uiCamera, uiRenderer.domElement)
     }
 
     override fun addWireframe(sheepModel: SheepModel) {
@@ -135,7 +129,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         val allFaces = mutableListOf<Face3>()
         sheepModel.panels.forEach { panel ->
             val panelFaces = mutableListOf<Face3>()
-            val panelMeshes = mutableListOf<Mesh>()
             var faceNormal = Vector3()
             panel.faces.faces.forEach { face ->
                 val face3 = Face3(face.vertexIds[0], face.vertexIds[1], face.vertexIds[2], Vector3(0, 0, 0))
@@ -146,11 +139,10 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
                 geom.faces = arrayOf(face3)
                 geom.computeFaceNormals()
                 faceNormal = face3.normal!!
-
-                val mesh = Mesh(geom, panelMaterial)
-                panelMeshes.add(mesh)
-                uiScene.add(mesh)
             }
+
+            val mesh = Mesh(geom, panelMaterial)
+            uiScene.add(mesh)
 
             // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
             panel.lines.forEach { line ->
@@ -159,7 +151,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
                 wireframe.add(Line(lineGeom, lineMaterial))
             }
 
-            panelInfos[panel] = PanelInfo(panelFaces, panelMeshes, geom)
+            panelInfos[panel] = PanelInfo(panelFaces, mesh, geom)
         }
         geom.faces = allFaces.toTypedArray()
         geom.computeFaceNormals()
@@ -175,8 +167,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         val boundingSphere: dynamic = geom.boundingSphere!!
         val centerOfSheep = boundingSphere.center.clone()
-        uiControls.target = centerOfSheep
-        uiControls.update()
+
         uiCamera.lookAt(centerOfSheep)
     }
 
@@ -193,6 +184,9 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         val widthDiff = width - imgWidth
         val heightDiff = height - imgHeight
 
+        val widthOff = widthDiff / 2.0
+        val heightOff = heightDiff / 2.0
+
         CanvasBitmap(ui2dCanvas).drawImage(image,
             0, 0, image.width, image.height,
             widthDiff / 2, heightDiff / 2, imgWidth, imgHeight
@@ -200,14 +194,14 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         // add a green line around the camera image:
         ui2dCtx.strokeStyle = "#006600"
-        ui2dCtx.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth.toDouble(), imgHeight.toDouble())
+        ui2dCtx.strokeRect(widthOff, heightOff, imgWidth.toDouble(), imgHeight.toDouble())
 
         changeRegion?.apply {
             ui2dCtx.strokeStyle = "#ff0000"
-            ui2dCtx.strokeRect(10.0, 10.0, 40.0, 40.0)
-            ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
+            ui2dCtx.strokeRect(x0 * scale + widthOff, y0 * scale + heightOff, width * scale, height * scale)
         }
 
+        uiControls.update(clock.getDelta())
         uiRenderer.render(uiScene, uiCamera)
     }
 
@@ -243,6 +237,9 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             if (angle > 0) {
                 visiblePanels.add(panel)
             }
+
+//            TODO:
+//            val vector3 = panelInfo.mesh.position + panelInfo.geom.vertices[panelInfo.faces[0].a]
         }
 
         println("Visible panels: ${visiblePanels.map { it.name }.sorted()}")
@@ -253,4 +250,4 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     }
 }
 
-class PanelInfo(val faces: MutableList<Face3>, val meshes: MutableList<Mesh>, val geom: Geometry)
+class PanelInfo(val faces: MutableList<Face3>, val mesh: Mesh, val geom: Geometry)
