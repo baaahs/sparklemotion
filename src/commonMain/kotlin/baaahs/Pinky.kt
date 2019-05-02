@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.SheepModel.Panel
 import baaahs.net.Network
+import baaahs.proto.*
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SineWaveShader
@@ -9,12 +10,10 @@ import baaahs.shaders.SolidShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.floor
-import kotlin.math.roundToLong
 
 class Pinky(
     val sheepModel: SheepModel,
-    val showMetas: List<ShowMeta>,
+    val showMetas: List<Show.MetaData>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
@@ -54,14 +53,14 @@ class Pinky(
 
         showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
         val prevSelectedShow = display.selectedShow
-        var currentShowMeta = prevSelectedShow ?: showMetas.random()!!
-        val buildShow = { currentShowMeta.createShow(sheepModel, showRunner) }
+        var currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
+        val buildShow = { currentShowMetaData.createShow(sheepModel, showRunner) }
         var show = buildShow()
 
         while (true) {
             if (!mapperIsRunning) {
-                if (brainsChanged || display.selectedShow != currentShowMeta) {
-                    currentShowMeta = prevSelectedShow ?: showMetas.random()!!
+                if (brainsChanged || display.selectedShow != currentShowMetaData) {
+                    currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
                     showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
                     show = buildShow()
                     brainsChanged = false

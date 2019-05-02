@@ -1,5 +1,6 @@
-package baaahs
+package baaahs.proto
 
+import baaahs.Shader
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 

@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.net.Network
+import baaahs.proto.Ports
 import kotlin.js.JsName
 
 class Ui(val network: Network, val pinkyAddress: Network.Address, val display: UiDisplay) {

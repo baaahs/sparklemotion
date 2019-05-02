@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.sim.FakeDmxUniverse
+
 actual class Visualizer actual constructor(sheepModel: SheepModel, dmxUniverse: FakeDmxUniverse) {
     actual fun start() {
     }

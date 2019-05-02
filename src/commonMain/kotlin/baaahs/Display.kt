@@ -17,13 +17,13 @@ interface NetworkDisplay {
 }
 
 interface PinkyDisplay {
-    fun listShows(showMetas: List<ShowMeta>)
+    fun listShows(showMetas: List<Show.MetaData>)
 
     var brainCount: Int
     var beat: Int
     var color: Color?
     var onPrimaryColorChange: (() -> Unit)?
-    var selectedShow: ShowMeta?
+    var selectedShow: Show.MetaData?
 }
 
 interface BrainDisplay {

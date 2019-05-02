@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.shows.AllShows
+import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeNetwork
 import kotlinx.coroutines.*
 
