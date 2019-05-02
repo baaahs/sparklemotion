@@ -1,6 +1,6 @@
 package baaahs.net
 
-import baaahs.Message
+import baaahs.proto.Message
 
 interface Network {
     fun link(): Link

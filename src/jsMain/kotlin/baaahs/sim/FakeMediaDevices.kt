@@ -1,5 +1,8 @@
-package baaahs
+package baaahs.sim
 
+import baaahs.FrameListener
+import baaahs.MediaDevices
+import baaahs.Visualizer
 import baaahs.imaging.Image
 import baaahs.imaging.ImageBitmapImage
 import info.laht.threekt.cameras.Camera

@@ -62,7 +62,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         }
     override var onPrimaryColorChange: (() -> Unit)? = null
 
-    override var selectedShow: ShowMeta? = null
+    override var selectedShow: Show.MetaData? = null
 
     private val brainCountDiv: Element
     private val beat1: Element
@@ -99,7 +99,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         showButtons = mutableListOf()
     }
 
-    override fun listShows(showMetas: List<ShowMeta>) {
+    override fun listShows(showMetas: List<Show.MetaData>) {
         showListDiv.clear()
         showListDiv.appendElement("b") { appendText("Shows: ") }
         showListDiv.appendElement("br") {}
@@ -130,7 +130,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             field = value
         }
 
-    private class ShowButton(showMeta: ShowMeta, element: Element) : Button<ShowMeta>(showMeta, element)
+    private class ShowButton(showMeta: Show.MetaData, element: Element) : Button<Show.MetaData>(showMeta, element)
 }
 
 class JsBrainDisplay(element: Element) : BrainDisplay {

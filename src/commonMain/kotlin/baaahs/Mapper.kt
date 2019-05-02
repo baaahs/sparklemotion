@@ -4,6 +4,7 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.net.Network
+import baaahs.proto.*
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*

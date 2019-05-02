@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeMediaDevices
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.scenes.Scene
 import kotlin.browser.document
