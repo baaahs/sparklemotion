@@ -183,3 +183,16 @@ body {
     width: 100%;
     text-shadow: 1px 1px 3px black, -1px -1px 3px black;
 }
+
+.mapperUi-table {
+    position: absolute;
+    top: -300px;
+    padding: 20px;
+    color: #00ff00;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 7pt;
+    width: 400px;
+    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
+    background: rgba(0, 0, 0, .5);
+    height: 250px;
+}

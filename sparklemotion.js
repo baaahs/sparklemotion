@@ -51,6 +51,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L34 = Kotlin.Long.fromInt(34);
   var L10 = Kotlin.Long.fromInt(10);
   var ensureNotNull = Kotlin.ensureNotNull;
+  var first = Kotlin.kotlin.collections.first_2p1efm$;
   var L100 = Kotlin.Long.fromInt(100);
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
@@ -106,23 +107,29 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
-  var Geometry = THREE.Geometry;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var Color_init = THREE.Color;
-  var MeshBasicMaterial = THREE.MeshBasicMaterial;
   var Vector3 = THREE.Vector3;
+  var Object3D = THREE.Object3D;
+  var Geometry = THREE.Geometry;
   var Face3_init = THREE.Face3;
+  var MeshBasicMaterial = THREE.MeshBasicMaterial;
   var Mesh_init = THREE.Mesh;
   var BufferGeometry = THREE.BufferGeometry;
   var plus = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
+  var Box3 = THREE.Box3;
+  var th = $module$kotlinx_html_js.kotlinx.html.th_bncpyi$;
+  var tr = $module$kotlinx_html_js.kotlinx.html.tr_7wec05$;
+  var td = $module$kotlinx_html_js.kotlinx.html.td_vlzo05$;
+  var table = $module$kotlinx_html_js.kotlinx.html.js.table_uk5qws$;
+  var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var Clock = THREE.Clock;
   var WebGLRenderer_init = THREE.WebGLRenderer;
   var Scene = THREE.Scene;
   var PerspectiveCamera_init = THREE.PerspectiveCamera;
-  var Object3D = THREE.Object3D;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
   var set_onClickFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onClickFunction_pszlq2$;
   var button = $module$kotlinx_html_js.kotlinx.html.button_i4xb7r$;
@@ -337,7 +344,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       shaderImpl.draw();
     }
      else if (Kotlin.isType(message, BrainIdRequest))
-      this.link_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(''));
+      this.link_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(this.illicitPanelHint_0.name));
   };
   Brain.$metadata$ = {
     kind: Kind_CLASS,
@@ -1055,6 +1062,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             tmp$_0.showMessage2_61zpoe$('Candidate panels: ' + destination);
+            println('Guessed panel ' + first(candidates).name + ' for ' + this.local$element.surfaceName);
             this.state_0 = 8;
             this.result_0 = this.local$this$Mapper_0.maybePause_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1440,7 +1448,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var tmp$;
       var value = $receiver.get_11rb$(fromAddress);
       if (value == null) {
-        var answer = new Mapper$BrainMapper(this, fromAddress);
+        var answer = new Mapper$BrainMapper(this, fromAddress, message.name);
         $receiver.put_xwzc9p$(fromAddress, answer);
         tmp$ = answer;
       }
@@ -1515,9 +1523,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.deltaBitmap_0.withData_c37y77$(Mapper$detectChangeRegion$lambda(this, changeRegion));
     return changeRegion.v;
   };
-  function Mapper$BrainMapper($outer, address) {
+  function Mapper$BrainMapper($outer, address, surfaceName) {
     this.$outer = $outer;
     this.address_0 = address;
+    this.surfaceName = surfaceName;
   }
   Mapper$BrainMapper.prototype.shade_s74fr6$ = function (shaderMessage) {
     this.$outer.link_0.sendUdp_wpmaqi$(this.address_0, Ports$Companion_getInstance().BRAIN, shaderMessage());
@@ -5729,17 +5738,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.wireframe = new Object3D();
     this.screen_0 = div_0(get_create(document), 'mapperUi-screen', JsMapperDisplay$screen$lambda(this));
     this.frame_0 = container.getFrame_409ufb$('Mapper', this.screen_0, JsMapperDisplay$frame$lambda(this), JsMapperDisplay$frame$lambda_0(this));
-    this.ui2dCanvas_0 = first(this.screen_0, 'mapperUi-2d-canvas');
+    this.ui2dCanvas_0 = first_0(this.screen_0, 'mapperUi-2d-canvas');
     this.ui2dCtx_0 = context2d(this.ui2dCanvas_0);
-    this.ui3dDiv_0 = first(this.screen_0, 'mapperUi-3d-div');
+    this.ui3dDiv_0 = first_0(this.screen_0, 'mapperUi-3d-div');
     var tmp$;
     this.ui3dCanvas_0 = Kotlin.isType(tmp$ = this.uiRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE();
-    this.diffCanvas_0 = first(this.screen_0, 'mapperUi-diff-canvas');
+    this.diffCanvas_0 = first_0(this.screen_0, 'mapperUi-diff-canvas');
     this.diffCtx_0 = context2d(this.diffCanvas_0);
     this.changeRegion_0 = null;
-    this.statsDiv_0 = first(this.screen_0, 'mapperUi-stats');
-    this.messageDiv_0 = first(this.screen_0, 'mapperUi-message');
-    this.message2Div_0 = first(this.screen_0, 'mapperUi-message2');
+    this.statsDiv_0 = first_0(this.screen_0, 'mapperUi-stats');
+    this.messageDiv_0 = first_0(this.screen_0, 'mapperUi-message');
+    this.message2Div_0 = first_0(this.screen_0, 'mapperUi-message2');
+    this.table_0 = first_0(this.screen_0, 'mapperUi-table');
     this.visiblePanels = ArrayList_init();
     this.panelInfos_0 = LinkedHashMap_init();
     document.md = this;
@@ -5777,27 +5787,26 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.diffCanvas_0.height = height;
   };
   JsMapperDisplay.prototype.addWireframe_9u144y$ = function (sheepModel) {
-    var geom = new Geometry();
     var $receiver = new LineBasicMaterial();
     $receiver.color = new Color_init(0.0, 1.0, 0.0);
     var lineMaterial = $receiver;
-    var $receiver_0 = new MeshBasicMaterial();
-    $receiver_0.color = new Color_init(0, 0, 0);
-    var panelMaterial = $receiver_0;
-    var $receiver_1 = sheepModel.vertices;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
+    var $receiver_0 = sheepModel.vertices;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
-    tmp$ = $receiver_1.iterator();
+    tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       destination.add_11rb$(new Vector3(item.x, item.y, item.z));
     }
-    geom.vertices = copyToArray(destination);
-    var allFaces = ArrayList_init();
+    var vertices = copyToArray(destination);
+    var container = new Object3D();
     var tmp$_0;
     tmp$_0 = sheepModel.panels.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
+      var geom = new Geometry();
+      var allFaces = ArrayList_init();
+      geom.vertices = vertices;
       var panelFaces = ArrayList_init();
       var faceNormal = {v: new Vector3()};
       var tmp$_1;
@@ -5811,6 +5820,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         geom.computeFaceNormals();
         faceNormal.v = ensureNotNull(face3.normal);
       }
+      var $receiver_1 = new MeshBasicMaterial();
+      $receiver_1.color = new Color_init(0, 0, 0);
+      var panelMaterial = $receiver_1;
       var mesh = new Mesh_init(geom, panelMaterial);
       this.uiScene.add(mesh);
       var tmp$_2;
@@ -5829,22 +5841,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         lineGeom.setFromPoints(copyToArray(destination_0));
         this.wireframe.add(new Line_init(lineGeom, lineMaterial));
       }
+      geom.faces = copyToArray(allFaces);
+      geom.computeFaceNormals();
+      geom.computeVertexNormals();
       var $receiver_3 = this.panelInfos_0;
       var value = new PanelInfo(panelFaces, mesh, geom);
       $receiver_3.put_xwzc9p$(element, value);
     }
-    geom.faces = copyToArray(allFaces);
-    geom.computeFaceNormals();
-    geom.computeVertexNormals();
-    geom.computeBoundingSphere();
     this.uiScene.add(this.wireframe);
     var tmp$_4 = new SphereBufferGeometry(1, 32, 32);
     var $receiver_4 = new MeshBasicMaterial();
     $receiver_4.color = new Color_init(16711680);
     var originMarker = new Mesh_init(tmp$_4, $receiver_4);
     this.uiScene.add(originMarker);
-    var boundingSphere = ensureNotNull(geom.boundingSphere);
-    var centerOfSheep = boundingSphere.center.clone();
+    var boundingBox = (new Box3()).setFromObject(container);
+    var centerOfSheep = boundingBox.getCenter().clone();
     this.uiCamera.lookAt(centerOfSheep);
   };
   function JsMapperDisplay$getCandidateSurfaces$lambda(closure$panelRects, closure$changeRegion) {
@@ -5853,17 +5864,75 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return ensureNotNull(closure$panelRects.get_11rb$(panel)).distanceTo_gdgylh$(closure$changeRegion);
     };
   }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda($receiver) {
+    $receiver.unaryPlus_pdl1vz$('Panel');
+    return Unit;
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_0($receiver) {
+    $receiver.unaryPlus_pdl1vz$('Centroid dist');
+    return Unit;
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda($receiver) {
+    th($receiver, void 0, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda);
+    th($receiver, void 0, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_0);
+    return Unit;
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda(closure$panel) {
+    return function ($receiver) {
+      $receiver.unaryPlus_pdl1vz$(closure$panel.name);
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda_0(closure$panelRects, closure$panel, closure$changeRegion) {
+    return function ($receiver) {
+      $receiver.unaryPlus_pdl1vz$(ensureNotNull(closure$panelRects.get_11rb$(closure$panel)).distanceTo_gdgylh$(closure$changeRegion).toString());
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_1(closure$panel, closure$panelRects, closure$changeRegion) {
+    return function ($receiver) {
+      td($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda(closure$panel));
+      td($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda_0(closure$panelRects, closure$panel, closure$changeRegion));
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda(closure$orderedPanels, closure$panelRects, closure$changeRegion) {
+    return function ($receiver) {
+      tr($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda);
+      var tmp$ = closure$orderedPanels;
+      var b = closure$orderedPanels.size;
+      var $receiver_0 = tmp$.subList_vux9f0$(0, Math_0.min(5, b));
+      var tmp$_0;
+      tmp$_0 = $receiver_0.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        var closure$panelRects_0 = closure$panelRects;
+        var closure$changeRegion_0 = closure$changeRegion;
+        var panel = element.component1()
+        , panelInfo = element.component2();
+        tr($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_1(panel, closure$panelRects_0, closure$changeRegion_0));
+      }
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$getCandidateSurfaces$lambda_0(closure$orderedPanels, closure$panelRects, closure$changeRegion) {
+    return function ($receiver) {
+      table($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda(closure$orderedPanels, closure$panelRects, closure$changeRegion));
+      return Unit;
+    };
+  }
   JsMapperDisplay.prototype.getCandidateSurfaces_gdgylh$ = function (changeRegion) {
+    var tmp$;
     var $receiver = this.visiblePanels;
     var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
     var destination = LinkedHashMap_init_0(capacity);
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
+    var tmp$_0;
+    tmp$_0 = $receiver.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
       var panel = element.component1()
       , panelInfo = element.component2();
-      var tmp$_0, tmp$_1, tmp$_2;
+      var tmp$_1, tmp$_2, tmp$_3;
       panelInfo.mesh.updateMatrixWorld();
       var panelBasePosition = panelInfo.mesh.position;
       var minX = 2147483647;
@@ -5872,12 +5941,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var maxY = -2147483648;
       var widthHalf = this.width_0 / 2.0;
       var heightHalf = this.height_0 / 2.0;
-      tmp$_0 = panelInfo.faces.iterator();
-      while (tmp$_0.hasNext()) {
-        var face = tmp$_0.next();
-        tmp$_1 = [face.a, face.b, face.c];
-        for (tmp$_2 = 0; tmp$_2 !== tmp$_1.length; ++tmp$_2) {
-          var vertexI = tmp$_1[tmp$_2];
+      tmp$_1 = panelInfo.faces.iterator();
+      while (tmp$_1.hasNext()) {
+        var face = tmp$_1.next();
+        tmp$_2 = [face.a, face.b, face.c];
+        for (tmp$_3 = 0; tmp$_3 !== tmp$_2.length; ++tmp$_3) {
+          var vertexI = tmp$_2[tmp$_3];
           var v = plus(panelBasePosition.clone(), panelInfo.geom.vertices[vertexI]);
           v.project(this.uiCamera);
           var x = numberToInt(v.x * widthHalf + widthHalf);
@@ -5896,18 +5965,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       destination.put_xwzc9p$(pair.first, pair.second);
     }
     var panelRects = destination;
-    var $receiver_0 = sortedWith(this.visiblePanels, new Comparator$ObjectLiteral(compareBy$lambda(JsMapperDisplay$getCandidateSurfaces$lambda(panelRects, changeRegion))));
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_3;
-    tmp$_3 = $receiver_0.iterator();
-    while (tmp$_3.hasNext()) {
-      var item = tmp$_3.next();
-      var tmp$_4 = destination_0.add_11rb$;
+    var orderedPanels = sortedWith(this.visiblePanels, new Comparator$ObjectLiteral(compareBy$lambda(JsMapperDisplay$getCandidateSurfaces$lambda(panelRects, changeRegion))));
+    var first_0 = first(orderedPanels);
+    (Kotlin.isType(tmp$ = first_0.second.mesh.material, MeshBasicMaterial) ? tmp$ : throwCCE()).color.r = (Kotlin.isType(tmp$ = first_0.second.mesh.material, MeshBasicMaterial) ? tmp$ : throwCCE()).color.r + 0.25;
+    clear(this.table_0);
+    append(this.table_0, JsMapperDisplay$getCandidateSurfaces$lambda_0(orderedPanels, panelRects, changeRegion));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(orderedPanels, 10));
+    var tmp$_4;
+    tmp$_4 = orderedPanels.iterator();
+    while (tmp$_4.hasNext()) {
+      var item = tmp$_4.next();
+      var tmp$_5 = destination_0.add_11rb$;
       var panel_0 = item.component1();
-      tmp$_4.call(destination_0, panel_0);
+      tmp$_5.call(destination_0, panel_0);
     }
-    var orderedPanels = destination_0;
-    return orderedPanels;
+    return destination_0;
   };
   JsMapperDisplay.prototype.showCamImage_6tj0gx$ = function (image) {
     var tmp$;
@@ -6073,6 +6145,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function JsMapperDisplay$screen$lambda$lambda_5($receiver) {
     return Unit;
   }
+  function JsMapperDisplay$screen$lambda$lambda_6($receiver) {
+    return Unit;
+  }
   function JsMapperDisplay$screen$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
       div($receiver, 'mapperUi-controls', JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay));
@@ -6082,6 +6157,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       div($receiver, 'mapperUi-stats', JsMapperDisplay$screen$lambda$lambda_3);
       div($receiver, 'mapperUi-message', JsMapperDisplay$screen$lambda$lambda_4);
       div($receiver, 'mapperUi-message2', JsMapperDisplay$screen$lambda$lambda_5);
+      div($receiver, 'mapperUi-table', JsMapperDisplay$screen$lambda$lambda_6);
       return Unit;
     };
   }
@@ -6676,7 +6752,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       $receiver.remove(ensureNotNull($receiver.item(0)));
     }
   }
-  function first($receiver, className) {
+  function first_0($receiver, className) {
     var tmp$;
     return ensureNotNull((tmp$ = $receiver.getElementsByClassName(className)[0]) == null || Kotlin.isType(tmp$, HTMLElement) ? tmp$ : throwCCE());
   }
@@ -7519,7 +7595,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.clear_u75qir$ = clear_0;
-  package$baaahs.first_m814eh$ = first;
+  package$baaahs.first_m814eh$ = first_0;
   package$baaahs.context2d_ng27xv$ = context2d;
   package$baaahs.Button = Button;
   package$baaahs.ColorPickerView = ColorPickerView;
