@@ -8,6 +8,7 @@ import baaahs.proto.*
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*
+import kotlin.math.min
 import kotlin.random.Random
 
 class Mapper(
@@ -25,6 +26,7 @@ class Mapper(
     }
     private var baseBitmap : Bitmap? = null
     private lateinit var deltaBitmap : Bitmap
+    private var newChangeRegion: MediaDevices.Region? = null
 
     private val closeListeners = mutableListOf<() -> Unit>()
     private lateinit var link: Network.Link
@@ -138,6 +140,17 @@ class Mapper(
                 brainMappers.values.forEach { brainMapper ->
                     retries.forEach { brainMapper.shade { solidColor(Color.WHITE) } }
                     delay(34L)
+
+                    // wait for a new image to come it...
+                    while (newChangeRegion == null) {
+                        delay(10)
+                    }
+                    val changeRegion = newChangeRegion!!
+                    newChangeRegion = null
+
+                    val candidates = mapperDisplay.getCandidateSurfaces(changeRegion)
+                    mapperDisplay.showMessage2("Candidate panels: ${candidates.subList(0, min(5, candidates.size)).map { it.name }}")
+
                     maybePause()
                     retries.forEach { brainMapper.shade { solidColor(Color.BLACK) } }
                 }
@@ -210,6 +223,7 @@ class Mapper(
             deltaBitmap.subtract(bitmap)
 
             val changeRegion: MediaDevices.Region = detectChangeRegion()
+            this.newChangeRegion = changeRegion
 
             println("changeRegion = $changeRegion ${changeRegion.width} ${changeRegion.height}")
 
@@ -260,9 +274,11 @@ interface MapperDisplay {
     fun listen(listener: Listener)
 
     fun addWireframe(sheepModel: SheepModel)
+    fun getCandidateSurfaces(changeRegion: MediaDevices.Region): List<SheepModel.Panel>
     fun showCamImage(image: Image)
     fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region)
     fun showMessage(message: String)
+    fun showMessage2(s: String)
     fun showStats(total: Int, mapped: Int, visible: Int)
     fun close()
 
