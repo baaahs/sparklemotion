@@ -36,7 +36,7 @@ jobs:
           name: Build
           command: |
             npm run build
-            ./gradlew build
+            ./gradlew build dokka
 
       - add_ssh_keys:
           fingerprints:
