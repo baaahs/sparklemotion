@@ -1,0 +1,5 @@
+version: 2
+jobs:
+  build:
+    branches:
+      ignore: gh-pages # prevent gh-pages from triggering circleci
