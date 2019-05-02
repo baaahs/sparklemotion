@@ -3,7 +3,7 @@ package baaahs.shows
 import baaahs.*
 import kotlin.random.Random
 
-val RandomShow = object : ShowMeta("Random") {
+val RandomShow = object : Show.MetaData("Random") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShader(it).buffer }
         val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }

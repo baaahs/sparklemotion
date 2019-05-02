@@ -3,7 +3,7 @@ package baaahs.shows
 import baaahs.*
 import kotlin.random.Random
 
-object PixelTweenShow : ShowMeta("PixelTweenShow") {
+object PixelTweenShow : Show.MetaData("PixelTweenShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
