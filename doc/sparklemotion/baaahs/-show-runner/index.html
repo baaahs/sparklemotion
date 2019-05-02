@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShowRunner - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">ShowRunner</a><br/>
+<br/>
+<h1>ShowRunner</h1>
+<code><span class="keyword">class </span><span class="identifier">ShowRunner</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">ShowRunner</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/pinkyDisplay">pinkyDisplay</span><span class="symbol">:</span>&nbsp;<a href="../-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/brains">brains</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-remote-brain/index.html"><span class="identifier">RemoteBrain</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/beatProvider">beatProvider</span><span class="symbol">:</span>&nbsp;<a href="../-pinky/-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="get-beat-provider.html">getBeatProvider</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getBeatProvider</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-pinky/-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-color-picker.html">getColorPicker</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getColorPicker</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-color-picker/index.html"><span class="identifier">ColorPicker</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-compositor-shader.html">getCompositorShader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getCompositorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/shaderA">shaderA</span><span class="symbol">:</span>&nbsp;<a href="../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/shaderB">shaderB</span><span class="symbol">:</span>&nbsp;<a href="../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-compositor-shader/index.html"><span class="identifier">CompositorShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-dmx-buffer.html">getDmxBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getDmxBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getDmxBuffer(kotlin.Int, kotlin.Int)/baseChannel">baseChannel</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getDmxBuffer(kotlin.Int, kotlin.Int)/channelCount">channelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-dmx/-buffer/index.html"><span class="identifier">Dmx.Buffer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-moving-head.html">getMovingHead</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getMovingHead</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getMovingHead(baaahs.SheepModel.MovingHead)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-moving-head/index.html"><span class="identifier">SheepModel.MovingHead</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-shenzarpy/index.html"><span class="identifier">Shenzarpy</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-pixel-shader.html">getPixelShader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getPixelShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getPixelShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-pixel-shader/index.html"><span class="identifier">PixelShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-sine-wave-shader.html">getSineWaveShader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getSineWaveShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getSineWaveShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-sine-wave-shader/index.html"><span class="identifier">SineWaveShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-solid-shader.html">getSolidShader</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getSolidShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getSolidShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-solid-shader/index.html"><span class="identifier">SolidShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="send.html">send</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$send(baaahs.net.Network.Link)/link">link</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-link/index.html"><span class="identifier">Network.Link</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Visualizer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Visualizer</a><br/>
+<br/>
+<h1>Visualizer</h1>
+<code><span class="keyword">expect</span> <span class="keyword">class </span><span class="identifier">Visualizer</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Visualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$<init>(baaahs.SheepModel, baaahs.FakeDmxUniverse)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Visualizer$<init>(baaahs.SheepModel, baaahs.FakeDmxUniverse)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="media-devices.html">mediaDevices</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">mediaDevices</span><span class="symbol">: </span><a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-new-mapper.html">onNewMapper</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">onNewMapper</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-new-ui.html">onNewUi</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">onNewUi</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="add-eye.html">addEye</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addEye</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$addEye(baaahs.SheepModel.MovingHead)/eye">eye</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-moving-head/index.html"><span class="identifier">SheepModel.MovingHead</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="add-frame-listener.html">addFrameListener</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$addFrameListener(baaahs.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="../-frame-listener/index.html"><span class="identifier">FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="remove-frame-listener.html">removeFrameListener</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$removeFrameListener(baaahs.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="../-frame-listener/index.html"><span class="identifier">FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-mapper-running.html">setMapperRunning</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setMapperRunning</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$setMapperRunning(kotlin.Boolean)/b">b</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="show-panel.html">showPanel</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">showPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.Visualizer$showPanel(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-js-panel/index.html"><span class="identifier">JsPanel</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="start.html">start</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">start</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

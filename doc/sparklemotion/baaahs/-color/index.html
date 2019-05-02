@@ -1,0 +1,280 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Color - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Color</a><br/>
+<br/>
+<h1>Color</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Color</span></code>
+<p>Canonical representation of a color.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Color</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/red">red</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/green">green</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/blue">blue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1f<span class="symbol">)</span></code>
+<p>Values are bounded at <code>0..255</code>.</p>
+<code><span class="identifier">Color</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$<init>(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/red">red</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/green">green</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/blue">blue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$<init>(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;255<span class="symbol">)</span></code>
+<p>Values are bounded at <code>0f..1f</code>.</p>
+<code><span class="identifier">Color</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$<init>(kotlin.Int)/argb">argb</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code>
+<p>Canonical representation of a color.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="alpha-f.html">alphaF</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">alphaF</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="alpha-i.html">alphaI</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">alphaI</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="argb.html">argb</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">argb</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="blue-f.html">blueF</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">blueF</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="blue-i.html">blueI</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">blueI</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="green-f.html">greenF</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">greenF</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="green-i.html">greenI</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">greenI</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="red-f.html">redF</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">redF</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="red-i.html">redI</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">redI</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="alpha-i.html">alphaI</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">alphaI</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$alphaI(kotlin.Int)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="blue-i.html">blueI</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">blueI</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$blueI(kotlin.Int)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="distance-to.html">distanceTo</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">distanceTo</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$distanceTo(baaahs.Color)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Color</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="fade.html">fade</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">fade</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$fade(baaahs.Color, kotlin.Float)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Color</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Color$fade(baaahs.Color, kotlin.Float)/amount">amount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0.5f<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="green-i.html">greenI</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">greenI</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$greenI(kotlin.Int)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="plus.html">plus</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$plus(baaahs.Color)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Color</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="red-i.html">redI</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">redI</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$redI(kotlin.Int)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="serialize.html">serialize</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-hex-string.html">toHexString</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toHexString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code><br/>
+<code><span class="keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">toHexString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-int.html">toInt</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toInt</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-string.html">toString</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="with-saturation.html">withSaturation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">withSaturation</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color$withSaturation(kotlin.Float)/saturation">saturation</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code>
+<p>Super-naive approximation of desaturation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-b-l-a-c-k.html">BLACK</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">BLACK</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-b-l-u-e.html">BLUE</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">BLUE</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-g-r-e-e-n.html">GREEN</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">GREEN</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-o-r-a-n-g-e.html">ORANGE</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">ORANGE</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-p-u-r-p-l-e.html">PURPLE</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">PURPLE</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-r-e-d.html">RED</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">RED</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-w-h-i-t-e.html">WHITE</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">WHITE</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-y-e-l-l-o-w.html">YELLOW</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">YELLOW</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="from.html">from</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">from</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color.Companion$from(kotlin.Int)/i">i</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">from</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color.Companion$from(kotlin.String)/hex">hex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="parse.html">parse</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.Color.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="random.html">random</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">random</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
