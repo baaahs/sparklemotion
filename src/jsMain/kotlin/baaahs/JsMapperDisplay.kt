@@ -68,6 +68,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         }
         div("mapperUi-stats") { }
         div("mapperUi-message") { }
+        div("mapperUi-message2") { }
     }
 
     private val frame = container.getFrame(
@@ -88,6 +89,9 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
     private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
     private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
+    private val message2Div = screen.first<HTMLDivElement>("mapperUi-message2")
+
+    val visiblePanels = mutableListOf<Pair<SheepModel.Panel, PanelInfo>>()
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -171,6 +175,44 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         uiCamera.lookAt(centerOfSheep)
     }
 
+    override fun getCandidateSurfaces(changeRegion: MediaDevices.Region): List<SheepModel.Panel> {
+        val panelRects = visiblePanels.associate { (panel, panelInfo) ->
+            panelInfo.mesh.updateMatrixWorld()
+
+            val panelBasePosition = panelInfo.mesh.position
+
+            var minX = Int.MAX_VALUE
+            var maxX = Int.MIN_VALUE
+            var minY = Int.MAX_VALUE
+            var maxY = Int.MIN_VALUE
+
+            val widthHalf = width / 2.0
+            val heightHalf = height / 2.0
+
+            for (face in panelInfo.faces) {
+                for (vertexI in arrayOf(face.a, face.b, face.c)) {
+                    val v = panelBasePosition.clone() + panelInfo.geom.vertices[vertexI]
+                    v.project(uiCamera)
+
+                    val x = ((v.x * widthHalf) + widthHalf).toInt();
+                    val y = (-(v.y * heightHalf) + heightHalf).toInt();
+
+                    if (x < minX) minX = x
+                    if (x > maxX) maxX = x
+                    if (y < minY) minY = y
+                    if (y > maxY) maxY = y
+                }
+            }
+
+            Pair(panel, MediaDevices.Region(minX, minY, maxX, maxY))
+        }
+
+        val orderedPanels = visiblePanels
+            .sortedBy { (panel, _) -> panelRects[panel]!!.distanceTo(changeRegion) }
+            .map { (panel, _) -> panel }
+        return orderedPanels
+    }
+
     override fun showCamImage(image: baaahs.imaging.Image) {
         ui2dCtx.resetTransform()
 
@@ -220,6 +262,10 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         messageDiv.innerText = message
     }
 
+    override fun showMessage2(message: String) {
+        message2Div.innerText = message
+    }
+
     override fun showStats(total: Int, mapped: Int, visible: Int) {
         statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
     }
@@ -227,7 +273,12 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private fun go() {
         listener.onStart()
 
-        val visiblePanels = mutableListOf<SheepModel.Panel>()
+        computeVisiblePanels()
+    }
+
+    private fun computeVisiblePanels() {
+        visiblePanels.clear()
+
         panelInfos.forEach { (panel, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
             val dirToCamera = uiCamera.position.clone().sub(panelPosition)
@@ -235,14 +286,9 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             val angle = panelInfo.faces[0].normal!!.dot(dirToCamera)
             println("Angle for ${panel.name} is $angle")
             if (angle > 0) {
-                visiblePanels.add(panel)
+                visiblePanels.add(Pair(panel, panelInfo))
             }
-
-//            TODO:
-//            val vector3 = panelInfo.mesh.position + panelInfo.geom.vertices[panelInfo.faces[0].a]
         }
-
-        println("Visible panels: ${visiblePanels.map { it.name }.sorted()}")
     }
 
     override fun close() {
