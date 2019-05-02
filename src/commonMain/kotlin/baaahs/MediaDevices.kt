@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.imaging.Image
-import kotlinx.serialization.Transient
 
 interface MediaDevices {
     fun getCamera(width: Int, height: Int): Camera

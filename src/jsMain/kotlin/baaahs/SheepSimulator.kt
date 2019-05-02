@@ -1,8 +1,7 @@
 package baaahs
 
-import baaahs.shows.CompositeShow
-import baaahs.shows.RandomShow
-import baaahs.shows.SomeDumbShow
+import baaahs.shows.AllShows
+import baaahs.sim.FakeNetwork
 import kotlinx.coroutines.*
 
 class SheepSimulator {
@@ -12,11 +11,7 @@ class SheepSimulator {
     var dmxUniverse = FakeDmxUniverse()
     var sheepModel = SheepModel()
 
-    val showMetas = listOf(
-        SomeDumbShow.Meta(),
-        RandomShow.Meta(),
-        CompositeShow.Meta()
-    )
+    val showMetas = AllShows.allShows
 
     val visualizer = Visualizer(sheepModel, dmxUniverse).also {
         it.onNewMapper = {

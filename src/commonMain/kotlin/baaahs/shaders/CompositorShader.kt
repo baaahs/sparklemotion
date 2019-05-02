@@ -1,6 +1,8 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 
 class CompositorShader(val aShader: Shader, val bShader: Shader) : Shader(ShaderType.COMPOSITOR) {
     override val buffer = CompositorShaderBuffer()
