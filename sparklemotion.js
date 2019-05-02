@@ -49,21 +49,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L500 = Kotlin.Long.fromInt(500);
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L34 = Kotlin.Long.fromInt(34);
-  var L100 = Kotlin.Long.fromInt(100);
+  var L10 = Kotlin.Long.fromInt(10);
   var ensureNotNull = Kotlin.ensureNotNull;
+  var L100 = Kotlin.Long.fromInt(100);
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var equals = Kotlin.equals;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
   var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.serializer_6eet4j$;
@@ -117,7 +118,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
-  var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var Clock = THREE.Clock;
   var WebGLRenderer_init = THREE.WebGLRenderer;
   var Scene = THREE.Scene;
@@ -131,6 +131,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var canvas = $module$kotlinx_html_js.kotlinx.html.canvas_dwb9fz$;
   var div_0 = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
+  var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
+  var wrapFunction = Kotlin.wrapFunction;
+  var Comparator = Kotlin.kotlin.Comparator;
   var L200000 = Kotlin.Long.fromInt(200000);
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
@@ -720,6 +723,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.camera = $receiver;
     this.baseBitmap_0 = null;
     this.deltaBitmap_hn3lh8$_0 = this.deltaBitmap_hn3lh8$_0;
+    this.newChangeRegion_0 = null;
     this.closeListeners_0 = ArrayList_init();
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
     this.isRunning_0 = true;
@@ -990,7 +994,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             throw this.exception_0;
           case 2:
             if (!this.local$this$Mapper.isRunning_0) {
-              this.state_0 = 14;
+              this.state_0 = 17;
               continue;
             }
 
@@ -1000,7 +1004,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             continue;
           case 3:
             if (!this.local$tmp$_0.hasNext()) {
-              this.state_0 = 6;
+              this.state_0 = 9;
               continue;
             }
 
@@ -1020,37 +1024,69 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             continue;
           case 4:
             this.state_0 = 5;
+            continue;
+          case 5:
+            if (this.local$this$Mapper_0.newChangeRegion_0 != null) {
+              this.state_0 = 7;
+              continue;
+            }
+
+            this.state_0 = 6;
+            this.result_0 = delay(L10, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 6:
+            this.state_0 = 5;
+            continue;
+          case 7:
+            var changeRegion = ensureNotNull(this.local$this$Mapper_0.newChangeRegion_0);
+            this.local$this$Mapper_0.newChangeRegion_0 = null;
+            var candidates = this.local$this$Mapper_0.mapperDisplay_0.getCandidateSurfaces_gdgylh$(changeRegion);
+            var tmp$_0 = this.local$this$Mapper_0.mapperDisplay_0;
+            var b = candidates.size;
+            var $receiver = candidates.subList_vux9f0$(0, Math_0.min(5, b));
+            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+            var tmp$_1;
+            tmp$_1 = $receiver.iterator();
+            while (tmp$_1.hasNext()) {
+              var item = tmp$_1.next();
+              destination.add_11rb$(item.name);
+            }
+
+            tmp$_0.showMessage2_61zpoe$('Candidate panels: ' + destination);
+            this.state_0 = 8;
             this.result_0 = this.local$this$Mapper_0.maybePause_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 5:
-            var tmp$_0;
-            tmp$_0 = this.local$this$Mapper_0.retries_0.iterator();
-            while (tmp$_0.hasNext()) {
-              var element_0 = tmp$_0.next();
+          case 8:
+            var tmp$_2;
+            tmp$_2 = this.local$this$Mapper_0.retries_0.iterator();
+            while (tmp$_2.hasNext()) {
+              var element_0 = tmp$_2.next();
               this.local$element.shade_s74fr6$(Mapper$run$lambda$lambda$lambda$lambda_0(this.local$this$Mapper_0));
             }
 
             this.state_0 = 3;
             continue;
-          case 6:
-            this.state_0 = 7;
+          case 9:
+            this.state_0 = 10;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 7:
+          case 10:
             println('identify pixels...');
             this.local$pixelShader = new PixelShader();
             this.local$pixelShader.buffer.setAll_rny0jj$(Color$Companion_getInstance().BLACK);
             this.local$tmp$ = this.local$this$Mapper.maxPixelsPerBrain;
             this.local$i = 0;
-            this.state_0 = 8;
+            this.state_0 = 11;
             continue;
-          case 8:
+          case 11:
             if (this.local$i >= this.local$tmp$) {
-              this.state_0 = 12;
+              this.state_0 = 15;
               continue;
             }
 
@@ -1059,35 +1095,35 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().WHITE;
             this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(this.local$pixelShader));
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().BLACK;
-            this.state_0 = 9;
+            this.state_0 = 12;
             this.result_0 = delay(L34, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 9:
-            this.state_0 = 10;
+          case 12:
+            this.state_0 = 13;
             this.result_0 = this.local$this$Mapper.maybePause_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 10:
+          case 13:
+            this.state_0 = 14;
+            continue;
+          case 14:
+            this.local$i++;
             this.state_0 = 11;
             continue;
-          case 11:
-            this.local$i++;
-            this.state_0 = 8;
-            continue;
-          case 12:
+          case 15:
             println('done identifying pixels...');
-            this.state_0 = 13;
+            this.state_0 = 16;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 13:
+          case 16:
             this.state_0 = 2;
             continue;
-          case 14:
+          case 17:
             return println('done identifying things... ' + this.local$this$Mapper.isRunning_0), Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
@@ -1438,6 +1474,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       this.deltaBitmap_0.copyFrom_5151av$(ensureNotNull(this.baseBitmap_0));
       this.deltaBitmap_0.subtract_5151av$(bitmap);
       var changeRegion = this.detectChangeRegion_0();
+      this.newChangeRegion_0 = changeRegion;
       println('changeRegion = ' + changeRegion + ' ' + changeRegion.width + ' ' + changeRegion.height);
       this.mapperDisplay_0.showDiffImage_qpnjw8$(this.deltaBitmap_0, changeRegion);
     }
@@ -1531,7 +1568,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.y1 = y1;
     this.width = this.x1 - this.x0 | 0;
     this.height = this.y1 - this.y0 | 0;
+    this.centerX = this.x1 - this.x0 | 0;
+    this.centerY = this.y1 - this.y0 | 0;
   }
+  MediaDevices$Region.prototype.distanceTo_gdgylh$ = function (other) {
+    var dX = this.centerX - other.centerX | 0;
+    var dY = this.centerY - other.centerY | 0;
+    var x = Kotlin.imul(dX, dX) + Kotlin.imul(dY, dY) | 0;
+    return Math_0.sqrt(x);
+  };
   MediaDevices$Region.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Region',
@@ -5656,6 +5701,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'JsBrainDisplay',
     interfaces: [BrainDisplay]
   };
+  function Comparator$ObjectLiteral(closure$comparison) {
+    this.closure$comparison = closure$comparison;
+  }
+  Comparator$ObjectLiteral.prototype.compare = function (a, b) {
+    return this.closure$comparison(a, b);
+  };
+  Comparator$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
+  var compareBy$lambda = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(a), selector(b));
+      };
+    };
+  });
   function JsMapperDisplay(container) {
     this.listener_h0bbis$_0 = this.listener_h0bbis$_0;
     this.width_0 = 512;
@@ -5678,6 +5739,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.changeRegion_0 = null;
     this.statsDiv_0 = first(this.screen_0, 'mapperUi-stats');
     this.messageDiv_0 = first(this.screen_0, 'mapperUi-message');
+    this.message2Div_0 = first(this.screen_0, 'mapperUi-message2');
+    this.visiblePanels = ArrayList_init();
     this.panelInfos_0 = LinkedHashMap_init();
     document.md = this;
     this.ui3dDiv_0.appendChild(this.ui3dCanvas_0);
@@ -5784,6 +5847,68 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var centerOfSheep = boundingSphere.center.clone();
     this.uiCamera.lookAt(centerOfSheep);
   };
+  function JsMapperDisplay$getCandidateSurfaces$lambda(closure$panelRects, closure$changeRegion) {
+    return function (f) {
+      var panel = f.component1();
+      return ensureNotNull(closure$panelRects.get_11rb$(panel)).distanceTo_gdgylh$(closure$changeRegion);
+    };
+  }
+  JsMapperDisplay.prototype.getCandidateSurfaces_gdgylh$ = function (changeRegion) {
+    var $receiver = this.visiblePanels;
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var panel = element.component1()
+      , panelInfo = element.component2();
+      var tmp$_0, tmp$_1, tmp$_2;
+      panelInfo.mesh.updateMatrixWorld();
+      var panelBasePosition = panelInfo.mesh.position;
+      var minX = 2147483647;
+      var maxX = -2147483648;
+      var minY = 2147483647;
+      var maxY = -2147483648;
+      var widthHalf = this.width_0 / 2.0;
+      var heightHalf = this.height_0 / 2.0;
+      tmp$_0 = panelInfo.faces.iterator();
+      while (tmp$_0.hasNext()) {
+        var face = tmp$_0.next();
+        tmp$_1 = [face.a, face.b, face.c];
+        for (tmp$_2 = 0; tmp$_2 !== tmp$_1.length; ++tmp$_2) {
+          var vertexI = tmp$_1[tmp$_2];
+          var v = plus(panelBasePosition.clone(), panelInfo.geom.vertices[vertexI]);
+          v.project(this.uiCamera);
+          var x = numberToInt(v.x * widthHalf + widthHalf);
+          var y = numberToInt(-(v.y * heightHalf) + heightHalf);
+          if (x < minX)
+            minX = x;
+          if (x > maxX)
+            maxX = x;
+          if (y < minY)
+            minY = y;
+          if (y > maxY)
+            maxY = y;
+        }
+      }
+      var pair = new Pair(panel, new MediaDevices$Region(minX, minY, maxX, maxY));
+      destination.put_xwzc9p$(pair.first, pair.second);
+    }
+    var panelRects = destination;
+    var $receiver_0 = sortedWith(this.visiblePanels, new Comparator$ObjectLiteral(compareBy$lambda(JsMapperDisplay$getCandidateSurfaces$lambda(panelRects, changeRegion))));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_3;
+    tmp$_3 = $receiver_0.iterator();
+    while (tmp$_3.hasNext()) {
+      var item = tmp$_3.next();
+      var tmp$_4 = destination_0.add_11rb$;
+      var panel_0 = item.component1();
+      tmp$_4.call(destination_0, panel_0);
+    }
+    var orderedPanels = destination_0;
+    return orderedPanels;
+  };
   JsMapperDisplay.prototype.showCamImage_6tj0gx$ = function (image) {
     var tmp$;
     this.ui2dCtx_0.resetTransform();
@@ -5815,12 +5940,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   JsMapperDisplay.prototype.showMessage_61zpoe$ = function (message) {
     this.messageDiv_0.innerText = message;
   };
+  JsMapperDisplay.prototype.showMessage2_61zpoe$ = function (message) {
+    this.message2Div_0.innerText = message;
+  };
   JsMapperDisplay.prototype.showStats_qt1dr2$ = function (total, mapped, visible) {
     this.statsDiv_0.innerHTML = '<i class=' + '"' + 'fas fa-triangle' + '"' + '><\/i>Mapped: ' + mapped + ' / ' + total + '<br/>Visible: ' + visible;
   };
   JsMapperDisplay.prototype.go_0 = function () {
     this.listener_0.onStart();
-    var visiblePanels = ArrayList_init();
+    this.computeVisiblePanels_0();
+  };
+  JsMapperDisplay.prototype.computeVisiblePanels_0 = function () {
+    this.visiblePanels.clear();
     var tmp$;
     tmp$ = this.panelInfos_0.entries.iterator();
     while (tmp$.hasNext()) {
@@ -5833,17 +5964,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var angle = ensureNotNull(panelInfo.faces.get_za3lpa$(0).normal).dot(dirToCamera);
       println('Angle for ' + panel.name + ' is ' + angle);
       if (angle > 0) {
-        visiblePanels.add_11rb$(panel);
+        this.visiblePanels.add_11rb$(new Pair(panel, panelInfo));
       }
     }
-    var destination = ArrayList_init_0(collectionSizeOrDefault(visiblePanels, 10));
-    var tmp$_0;
-    tmp$_0 = visiblePanels.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(item.name);
-    }
-    println('Visible panels: ' + sorted(destination));
   };
   JsMapperDisplay.prototype.close = function () {
     this.frame_0.close();
@@ -5947,6 +6070,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function JsMapperDisplay$screen$lambda$lambda_4($receiver) {
     return Unit;
   }
+  function JsMapperDisplay$screen$lambda$lambda_5($receiver) {
+    return Unit;
+  }
   function JsMapperDisplay$screen$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
       div($receiver, 'mapperUi-controls', JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay));
@@ -5955,6 +6081,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       canvas($receiver, 'mapperUi-diff-canvas', JsMapperDisplay$screen$lambda$lambda_2(this$JsMapperDisplay));
       div($receiver, 'mapperUi-stats', JsMapperDisplay$screen$lambda$lambda_3);
       div($receiver, 'mapperUi-message', JsMapperDisplay$screen$lambda$lambda_4);
+      div($receiver, 'mapperUi-message2', JsMapperDisplay$screen$lambda$lambda_5);
       return Unit;
     };
   }
