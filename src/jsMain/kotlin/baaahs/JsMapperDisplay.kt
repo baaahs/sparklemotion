@@ -7,6 +7,7 @@ import info.laht.threekt.core.*
 import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
+import info.laht.threekt.math.Box3
 import info.laht.threekt.math.Color
 import info.laht.threekt.math.Vector3
 import info.laht.threekt.math.plus
@@ -14,19 +15,20 @@ import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
-import kotlinx.html.button
-import kotlinx.html.canvas
-import kotlinx.html.div
+import kotlinx.html.*
+import kotlinx.html.dom.append
 import kotlinx.html.dom.create
-import kotlinx.html.i
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.table
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+import kotlin.dom.clear
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class JsMapperDisplay(container: DomContainer) : MapperDisplay {
@@ -69,6 +71,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         div("mapperUi-stats") { }
         div("mapperUi-message") { }
         div("mapperUi-message2") { }
+        div("mapperUi-table") { }
     }
 
     private val frame = container.getFrame(
@@ -90,6 +93,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
     private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
     private val message2Div = screen.first<HTMLDivElement>("mapperUi-message2")
+    private val table = screen.first<HTMLDivElement>("mapperUi-table")
 
     val visiblePanels = mutableListOf<Pair<SheepModel.Panel, PanelInfo>>()
 
@@ -125,13 +129,15 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     }
 
     override fun addWireframe(sheepModel: SheepModel) {
-        val geom = Geometry()
         val lineMaterial = LineBasicMaterial().apply { color = Color(0f, 1f, 0f) }
-        val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
 
-        geom.vertices = sheepModel.vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
-        val allFaces = mutableListOf<Face3>()
+        val vertices = sheepModel.vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
+        val container = Object3D()
         sheepModel.panels.forEach { panel ->
+            val geom = Geometry()
+            val allFaces = mutableListOf<Face3>()
+            geom.vertices = vertices
+
             val panelFaces = mutableListOf<Face3>()
             var faceNormal = Vector3()
             panel.faces.faces.forEach { face ->
@@ -145,6 +151,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
                 faceNormal = face3.normal!!
             }
 
+            val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
             val mesh = Mesh(geom, panelMaterial)
             uiScene.add(mesh)
 
@@ -155,12 +162,14 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
                 wireframe.add(Line(lineGeom, lineMaterial))
             }
 
+            geom.faces = allFaces.toTypedArray()
+            geom.computeFaceNormals()
+            geom.computeVertexNormals()
+
+//            container.add(mesh)
+
             panelInfos[panel] = PanelInfo(panelFaces, mesh, geom)
         }
-        geom.faces = allFaces.toTypedArray()
-        geom.computeFaceNormals()
-        geom.computeVertexNormals()
-        geom.computeBoundingSphere()
 
         uiScene.add(wireframe)
 
@@ -169,8 +178,8 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
             MeshBasicMaterial().apply { color = Color(0xff0000) });
         uiScene.add(originMarker);
 
-        val boundingSphere: dynamic = geom.boundingSphere!!
-        val centerOfSheep = boundingSphere.center.clone()
+        val boundingBox = Box3().setFromObject(container)
+        val centerOfSheep = boundingBox.getCenter().clone()
 
         uiCamera.lookAt(centerOfSheep)
     }
@@ -209,8 +218,27 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         val orderedPanels = visiblePanels
             .sortedBy { (panel, _) -> panelRects[panel]!!.distanceTo(changeRegion) }
-            .map { (panel, _) -> panel }
-        return orderedPanels
+        val first = orderedPanels.first()
+        (first.second.mesh.material as MeshBasicMaterial).color.r += .25
+
+        table.clear()
+        table.append {
+            table {
+                tr {
+                    th { +"Panel" }
+                    th { +"Centroid dist" }
+                }
+
+                orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (panel, panelInfo) ->
+                    tr {
+                        td { +panel.name }
+                        td { +"${panelRects[panel]!!.distanceTo(changeRegion)}" }
+                    }
+                }
+            }
+        }
+
+        return orderedPanels.map { (panel, _) -> panel }
     }
 
     override fun showCamImage(image: baaahs.imaging.Image) {

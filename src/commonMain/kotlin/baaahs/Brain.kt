@@ -39,7 +39,7 @@ class Brain(
                 shaderImpl.draw()
             }
             is BrainIdRequest -> {
-                link.sendUdp(fromAddress, message.port, BrainIdResponse(""))
+                link.sendUdp(fromAddress, message.port, BrainIdResponse(illicitPanelHint.name))
             }
         }
     }
