@@ -151,6 +151,8 @@ class Mapper(
                     val candidates = mapperDisplay.getCandidateSurfaces(changeRegion)
                     mapperDisplay.showMessage2("Candidate panels: ${candidates.subList(0, min(5, candidates.size)).map { it.name }}")
 
+                    println("Guessed panel ${candidates.first().name} for ${brainMapper.surfaceName}")
+
                     maybePause()
                     retries.forEach { brainMapper.shade { solidColor(Color.BLACK) } }
                 }
@@ -192,7 +194,7 @@ class Mapper(
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {
-                val brainMapper = brainMappers.getOrPut(fromAddress) { BrainMapper(fromAddress) }
+                val brainMapper = brainMappers.getOrPut(fromAddress) { BrainMapper(fromAddress, message.name) }
                 brainMapper.shade { solidColor(Color.GREEN) }
             }
 
@@ -263,7 +265,7 @@ class Mapper(
         return changeRegion
     }
 
-    inner class BrainMapper(private val address: Network.Address) {
+    inner class BrainMapper(private val address: Network.Address, val surfaceName: String) {
         fun shade(shaderMessage: () -> BrainShaderMessage) {
             link.sendUdp(address, Ports.BRAIN, shaderMessage())
         }
