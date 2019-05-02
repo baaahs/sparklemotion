@@ -120,6 +120,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
+  var Clock = THREE.Clock;
   var Scene = THREE.Scene;
   var Object3D = THREE.Object3D;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
@@ -129,7 +130,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var div = $module$kotlinx_html_js.kotlinx.html.div_ri36nr$;
   var canvas = $module$kotlinx_html_js.kotlinx.html.canvas_dwb9fz$;
   var div_0 = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
-  var OrbitControls = THREE.OrbitControls;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var L200000 = Kotlin.Long.fromInt(200000);
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
@@ -5760,6 +5760,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.listener_h0bbis$_0 = this.listener_h0bbis$_0;
     this.width_0 = 512;
     this.height_0 = 384;
+    this.clock = new Clock();
     this.uiRenderer = new WebGLRenderer_init({alpha: true});
     this.uiScene = new Scene();
     this.uiCamera = new PerspectiveCamera_init(45, this.width_0 / this.height_0, 1, 10000);
@@ -5782,9 +5783,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.ui3dDiv_0.appendChild(this.ui3dCanvas_0);
     this.uiCamera.position.z = 1000.0;
     this.uiScene.add(this.uiCamera);
-    this.uiControls = new OrbitControls(this.uiCamera, this.uiRenderer.domElement);
-    this.uiControls.minPolarAngle = math.PI / 2 - 0.25;
-    this.uiControls.maxPolarAngle = math.PI / 2 + 0.25;
+    this.uiControls = document.createCameraControls(this.uiCamera, this.uiRenderer.domElement);
   }
   Object.defineProperty(JsMapperDisplay.prototype, 'listener_0', {
     get: function () {
@@ -5837,7 +5836,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
       var panelFaces = ArrayList_init();
-      var panelMeshes = ArrayList_init();
       var faceNormal = {v: new Vector3()};
       var tmp$_1;
       tmp$_1 = element.faces.faces.iterator();
@@ -5849,10 +5847,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         geom.faces = [face3];
         geom.computeFaceNormals();
         faceNormal.v = ensureNotNull(face3.normal);
-        var mesh = new Mesh_init(geom, panelMaterial);
-        panelMeshes.add_11rb$(mesh);
-        this.uiScene.add(mesh);
       }
+      var mesh = new Mesh_init(geom, panelMaterial);
+      this.uiScene.add(mesh);
       var tmp$_2;
       tmp$_2 = element.lines.iterator();
       while (tmp$_2.hasNext()) {
@@ -5870,7 +5867,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         this.wireframe.add(new Line_init(lineGeom, lineMaterial));
       }
       var $receiver_3 = this.panelInfos_0;
-      var value = new PanelInfo(panelFaces, panelMeshes, geom);
+      var value = new PanelInfo(panelFaces, mesh, geom);
       $receiver_3.put_xwzc9p$(element, value);
     }
     geom.faces = copyToArray(allFaces);
@@ -5885,8 +5882,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.uiScene.add(originMarker);
     var boundingSphere = ensureNotNull(geom.boundingSphere);
     var centerOfSheep = boundingSphere.center.clone();
-    this.uiControls.target = centerOfSheep;
-    this.uiControls.update();
     this.uiCamera.lookAt(centerOfSheep);
   };
   JsMapperDisplay.prototype.showCamImage_6tj0gx$ = function (image) {
@@ -5899,14 +5894,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var imgHeight = roundToInt(image.height * scale);
     var widthDiff = this.width_0 - imgWidth | 0;
     var heightDiff = this.height_0 - imgHeight | 0;
+    var widthOff = widthDiff / 2.0;
+    var heightOff = heightDiff / 2.0;
     (new CanvasBitmap(this.ui2dCanvas_0)).drawImage_daf0v5$(image, 0, 0, image.width, image.height, widthDiff / 2 | 0, heightDiff / 2 | 0, imgWidth, imgHeight);
     this.ui2dCtx_0.strokeStyle = '#006600';
-    this.ui2dCtx_0.strokeRect(widthDiff / 2.0, heightDiff / 2.0, imgWidth, imgHeight);
+    this.ui2dCtx_0.strokeRect(widthOff, heightOff, imgWidth, imgHeight);
     if ((tmp$ = this.changeRegion_0) != null) {
       this.ui2dCtx_0.strokeStyle = '#ff0000';
-      this.ui2dCtx_0.strokeRect(10.0, 10.0, 40.0, 40.0);
-      this.ui2dCtx_0.strokeRect(tmp$.x0, tmp$.y0, tmp$.width, tmp$.height);
+      this.ui2dCtx_0.strokeRect(tmp$.x0 * scale + widthOff, tmp$.y0 * scale + heightOff, tmp$.width * scale, tmp$.height * scale);
     }
+    this.uiControls.update(this.clock.getDelta());
     this.uiRenderer.render(this.uiScene, this.uiCamera);
   };
   JsMapperDisplay.prototype.showDiffImage_qpnjw8$ = function (deltaBitmap, changeRegion) {
@@ -6078,9 +6075,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'JsMapperDisplay',
     interfaces: [MapperDisplay]
   };
-  function PanelInfo(faces, meshes, geom) {
+  function PanelInfo(faces, mesh, geom) {
     this.faces = faces;
-    this.meshes = meshes;
+    this.mesh = mesh;
     this.geom = geom;
   }
   PanelInfo.$metadata$ = {
