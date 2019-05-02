@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.net.Network
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import kotlin.browser.document

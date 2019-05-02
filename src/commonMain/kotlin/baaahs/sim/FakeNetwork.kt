@@ -1,63 +1,13 @@
-package baaahs
+package baaahs.sim
 
+import baaahs.NetworkDisplay
+import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.random.Random
-
-interface Network {
-    fun link(): Link
-
-    interface Link {
-        val myAddress: Address
-
-        fun listenUdp(port: Int, udpListener: UdpListener)
-        fun sendUdp(toAddress: Address, port: Int, bytes: ByteArray)
-        fun broadcastUdp(port: Int, bytes: ByteArray)
-
-        fun sendUdp(toAddress: Address, port: Int, message: Message) {
-            sendUdp(toAddress, port, message.toBytes())
-        }
-
-        fun broadcastUdp(port: Int, message: Message) {
-            broadcastUdp(port, message.toBytes())
-        }
-
-        fun listenTcp(port: Int, tcpServerSocketListener: TcpServerSocketListener)
-        fun connectTcp(toAddress: Address, port: Int, tcpListener: TcpListener): TcpConnection
-    }
-
-    interface Address
-
-    interface UdpListener {
-        fun receive(fromAddress: Address, bytes: ByteArray)
-    }
-
-    interface TcpConnection {
-        val fromAddress: Address
-        val toAddress: Address
-        val port: Int
-
-        fun send(bytes: ByteArray)
-
-        fun send(message: Message) {
-            send(message.toBytes())
-        }
-    }
-
-    interface TcpListener {
-        fun connected(tcpConnection: TcpConnection)
-        fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
-        fun reset(tcpConnection: TcpConnection)
-    }
-
-    interface TcpServerSocketListener {
-        fun incomingConnection(fromAddress: Network.TcpConnection): TcpListener
-    }
-}
-
 
 class FakeNetwork(
     private val networkDelay: Int = 1,
@@ -212,9 +162,8 @@ class FakeNetwork(
     private suspend fun networkDelay() {
         if (networkDelay != 0) delay(networkDelay.toLong())
     }
-}
 
-private data class FakeAddress(val id: Int) : Network.Address {
-    override fun toString(): String = "x${id.toString(16)}"
+    private data class FakeAddress(val id: Int) : Network.Address {
+        override fun toString(): String = "x${id.toString(16)}"
+    }
 }
-

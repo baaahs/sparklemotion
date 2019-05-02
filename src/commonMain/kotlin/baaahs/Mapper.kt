@@ -3,6 +3,7 @@ package baaahs
 import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
+import baaahs.net.Network
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import kotlinx.coroutines.*
@@ -19,7 +20,7 @@ class Mapper(
     val height = 300
 
     val camera = mediaDevices.getCamera(width, height).apply {
-        onImage = this@Mapper::haveImage
+        onImage = { image -> haveImage(image) }
     }
     private var baseBitmap : Bitmap? = null
     private lateinit var deltaBitmap : Bitmap

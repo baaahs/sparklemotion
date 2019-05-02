@@ -257,7 +257,7 @@ class VizPanel {
       if (neighbor.length === 0) {
         return null;
       } else if (neighbor.length > 1) {
-        console.log("WARN: Found multiple neighbors for ", this.panel.name, " edge ", edgeId, ": ", neighbors);
+        console.warn("Found multiple neighbors for ", this.panel.name, " edge ", edgeId, ": ", neighbors);
       }
 
       // console.log("Face for ", v, "is", edgeId, neighbor[0]);
