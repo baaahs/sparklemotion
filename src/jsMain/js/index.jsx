@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import App from './app';
 import FakeClientDevice from './FakeClientDevice';
 import styles from './FakeClientDevice.scss';
+import * as THREE from 'three';
+import CameraControls from 'camera-controls';
 
 document.createUiApp = (container, uiContext) => {
   let app = <App uiContext={uiContext} />;
@@ -48,6 +50,12 @@ document.createFakeClientDevice = (name, content, onClose, onResize) => {
   });
 
   return val;
+};
+
+CameraControls.install( { THREE: THREE } );
+
+document.createCameraControls = (camera, element) => {
+  return new CameraControls(camera, element);
 };
 
 module.hot.accept();
