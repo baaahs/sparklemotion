@@ -39,8 +39,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
-  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
   var Unit = Kotlin.kotlin.Unit;
@@ -54,6 +52,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L100 = Kotlin.Long.fromInt(100);
   var ensureNotNull = Kotlin.ensureNotNull;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
@@ -66,14 +65,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  var Enum = Kotlin.kotlin.Enum;
-  var throwISE = Kotlin.throwISE;
-  var toByte = Kotlin.toByte;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.serializer_6eet4j$;
   var toString_0 = Kotlin.toString;
   var Json = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.json.Json;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
+  var Enum = Kotlin.kotlin.Enum;
+  var throwISE = Kotlin.throwISE;
+  var toByte = Kotlin.toByte;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
@@ -91,6 +90,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var toBits = Kotlin.floatToBits;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var Array_0 = Array;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
@@ -105,8 +105,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
-  var WebGLRenderer_init = THREE.WebGLRenderer;
-  var PerspectiveCamera_init = THREE.PerspectiveCamera;
   var Geometry = THREE.Geometry;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var Color_init = THREE.Color;
@@ -121,7 +119,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var Clock = THREE.Clock;
+  var WebGLRenderer_init = THREE.WebGLRenderer;
   var Scene = THREE.Scene;
+  var PerspectiveCamera_init = THREE.PerspectiveCamera;
   var Object3D = THREE.Object3D;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
   var set_onClickFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onClickFunction_pszlq2$;
@@ -134,22 +134,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L200000 = Kotlin.Long.fromInt(200000);
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
-  FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
-  FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
-  Type.prototype = Object.create(Enum.prototype);
-  Type.prototype.constructor = Type;
-  BrainHelloMessage.prototype = Object.create(Message.prototype);
-  BrainHelloMessage.prototype.constructor = BrainHelloMessage;
-  BrainShaderMessage.prototype = Object.create(Message.prototype);
-  BrainShaderMessage.prototype.constructor = BrainShaderMessage;
-  MapperHelloMessage.prototype = Object.create(Message.prototype);
-  MapperHelloMessage.prototype.constructor = MapperHelloMessage;
-  BrainIdRequest.prototype = Object.create(Message.prototype);
-  BrainIdRequest.prototype.constructor = BrainIdRequest;
-  BrainIdResponse.prototype = Object.create(Message.prototype);
-  BrainIdResponse.prototype.constructor = BrainIdResponse;
-  PinkyPongMessage.prototype = Object.create(Message.prototype);
-  PinkyPongMessage.prototype.constructor = PinkyPongMessage;
   PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Connection$receive$ObjectLiteral.prototype.constructor = PubSub$Connection$receive$ObjectLiteral;
   PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
@@ -168,6 +152,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Shenzarpy$Channel.prototype.constructor = Shenzarpy$Channel;
   Shenzarpy.prototype = Object.create(Dmx$DeviceType.prototype);
   Shenzarpy.prototype.constructor = Shenzarpy;
+  Type.prototype = Object.create(Enum.prototype);
+  Type.prototype.constructor = Type;
+  BrainHelloMessage.prototype = Object.create(Message.prototype);
+  BrainHelloMessage.prototype.constructor = BrainHelloMessage;
+  BrainShaderMessage.prototype = Object.create(Message.prototype);
+  BrainShaderMessage.prototype.constructor = BrainShaderMessage;
+  MapperHelloMessage.prototype = Object.create(Message.prototype);
+  MapperHelloMessage.prototype.constructor = MapperHelloMessage;
+  BrainIdRequest.prototype = Object.create(Message.prototype);
+  BrainIdRequest.prototype.constructor = BrainIdRequest;
+  BrainIdResponse.prototype = Object.create(Message.prototype);
+  BrainIdResponse.prototype.constructor = BrainIdResponse;
+  PinkyPongMessage.prototype = Object.create(Message.prototype);
+  PinkyPongMessage.prototype.constructor = PinkyPongMessage;
   CompositorShader.prototype = Object.create(Shader.prototype);
   CompositorShader.prototype.constructor = CompositorShader;
   CompositingMode.prototype = Object.create(Enum.prototype);
@@ -178,18 +176,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SineWaveShader.prototype.constructor = SineWaveShader;
   SolidShader.prototype = Object.create(Shader.prototype);
   SolidShader.prototype.constructor = SolidShader;
-  CompositeShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  CompositeShow$ObjectLiteral.prototype = Object.create(Show$MetaData.prototype);
   CompositeShow$ObjectLiteral.prototype.constructor = CompositeShow$ObjectLiteral;
-  PanelTweenShow.prototype = Object.create(ShowMeta.prototype);
+  PanelTweenShow.prototype = Object.create(Show$MetaData.prototype);
   PanelTweenShow.prototype.constructor = PanelTweenShow;
-  PixelTweenShow.prototype = Object.create(ShowMeta.prototype);
+  PixelTweenShow.prototype = Object.create(Show$MetaData.prototype);
   PixelTweenShow.prototype.constructor = PixelTweenShow;
-  RandomShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  RandomShow$ObjectLiteral.prototype = Object.create(Show$MetaData.prototype);
   RandomShow$ObjectLiteral.prototype.constructor = RandomShow$ObjectLiteral;
-  SomeDumbShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  SomeDumbShow$ObjectLiteral.prototype = Object.create(Show$MetaData.prototype);
   SomeDumbShow$ObjectLiteral.prototype.constructor = SomeDumbShow$ObjectLiteral;
-  ThumpShow$ObjectLiteral.prototype = Object.create(ShowMeta.prototype);
+  ThumpShow$ObjectLiteral.prototype = Object.create(Show$MetaData.prototype);
   ThumpShow$ObjectLiteral.prototype.constructor = ThumpShow$ObjectLiteral;
+  FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
+  FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   JsPinkyDisplay$ShowButton.prototype = Object.create(Button.prototype);
   JsPinkyDisplay$ShowButton.prototype.constructor = JsPinkyDisplay$ShowButton;
   ColorPickerView$ColorButton.prototype = Object.create(Button.prototype);
@@ -293,7 +293,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             throw this.exception_0;
           case 2:
             if (!this.$this.receivingInstructions_0) {
-              this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new BrainHelloMessage(this.$this.illicitPanelHint_0.name));
+              this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new BrainHelloMessage(this.$this.illicitPanelHint_0.name));
             }
 
             this.state_0 = 3;
@@ -334,7 +334,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       shaderImpl.draw();
     }
      else if (Kotlin.isType(message, BrainIdRequest))
-      this.link_0.sendUdp_c7y63k$(fromAddress, message.port, new BrainIdResponse(''));
+      this.link_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(''));
   };
   Brain.$metadata$ = {
     kind: Kind_CLASS,
@@ -709,44 +709,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Dmx',
     interfaces: []
   };
-  function FakeDmxUniverse() {
-    Dmx$Universe.call(this);
-    this.channelsOut_0 = new Int8Array(512);
-    this.channelsIn_0 = new Int8Array(512);
-    this.listeners_0 = ArrayList_init();
-  }
-  FakeDmxUniverse.prototype.writer_vux9f0$ = function (baseChannel, channelCount) {
-    return new Dmx$Buffer(this.channelsOut_0, baseChannel, channelCount);
-  };
-  FakeDmxUniverse.prototype.reader_sxjeop$ = function (baseChannel, channelCount, listener) {
-    this.listeners_0.add_11rb$(listener);
-    return new Dmx$Buffer(this.channelsIn_0, baseChannel, channelCount);
-  };
-  FakeDmxUniverse.prototype.sendFrame = function () {
-    var $receiver = this.channelsOut_0;
-    arrayCopy($receiver, this.channelsIn_0, 0, 0, $receiver.length);
-    var tmp$;
-    tmp$ = this.listeners_0.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element();
-    }
-  };
-  FakeDmxUniverse.prototype.allOff = function () {
-    for (var i = 0; i <= 512; i++)
-      this.channelsIn_0[i] = 0;
-    var tmp$;
-    tmp$ = this.listeners_0.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element();
-    }
-  };
-  FakeDmxUniverse.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeDmxUniverse',
-    interfaces: [Dmx$Universe]
-  };
   function Mapper(network, sheepModel, mapperDisplay, mediaDevices) {
     this.network_0 = network;
     this.mapperDisplay_0 = mapperDisplay;
@@ -915,7 +877,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     var job = tmp$_0;
     job.cancel();
-    this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(false));
+    this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(false));
     var tmp$_1;
     tmp$_1 = this.closeListeners_0.iterator();
     while (tmp$_1.hasNext()) {
@@ -952,7 +914,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               continue;
             }
 
-            this.local$this$Mapper.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.local$this$Mapper.isRunning_0));
+            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.local$this$Mapper.isRunning_0));
             this.state_0 = 3;
             this.result_0 = delay(L10000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1048,7 +1010,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             tmp$ = this.local$this$Mapper_0.retries_0.iterator();
             while (tmp$.hasNext()) {
               var element = tmp$.next();
-              this.local$element.shade_rbov5k$(Mapper$run$lambda$lambda$lambda$lambda(this.local$this$Mapper_0));
+              this.local$element.shade_s74fr6$(Mapper$run$lambda$lambda$lambda$lambda(this.local$this$Mapper_0));
             }
 
             this.state_0 = 4;
@@ -1067,7 +1029,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             tmp$_0 = this.local$this$Mapper_0.retries_0.iterator();
             while (tmp$_0.hasNext()) {
               var element_0 = tmp$_0.next();
-              this.local$element.shade_rbov5k$(Mapper$run$lambda$lambda$lambda$lambda_0(this.local$this$Mapper_0));
+              this.local$element.shade_s74fr6$(Mapper$run$lambda$lambda$lambda$lambda_0(this.local$this$Mapper_0));
             }
 
             this.state_0 = 3;
@@ -1095,7 +1057,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             if (this.local$i % 128 === 0)
               println('pixel ' + this.local$i + '... isRunning is ' + this.local$this$Mapper.isRunning_0);
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().WHITE;
-            this.local$this$Mapper.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(this.local$pixelShader));
+            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(this.local$pixelShader));
             this.local$pixelShader.buffer.colors[this.local$i] = Color$Companion_getInstance().BLACK;
             this.state_0 = 9;
             this.result_0 = delay(L34, this);
@@ -1187,14 +1149,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             var element = this.local$tmp$.next();
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(true));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(true));
             this.state_0 = 3;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 3:
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
             this.state_0 = 2;
             continue;
           case 4:
@@ -1208,7 +1170,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             var element_0 = this.local$tmp$_0.next();
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, new BrainIdRequest(Ports$Companion_getInstance().MAPPER));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, new BrainIdRequest(Ports$Companion_getInstance().MAPPER));
             this.state_0 = 6;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1234,7 +1196,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             var element_1 = this.local$tmp$_1.next();
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
             this.state_0 = 10;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1262,7 +1224,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             var element_2 = this.local$tmp$_2.next();
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().WHITE));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().WHITE));
             this.state_0 = 14;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1313,7 +1275,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             var element_3 = this.local$tmp$_3.next();
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().BRAIN, this.$this.solidColor_0(Color$Companion_getInstance().BLACK));
             this.state_0 = 21;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1340,7 +1302,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             this.$this.mapperDisplay_0.showStats_qt1dr2$(this.$this.brainMappers_0.size, 0, -1);
             launch(this.$this.scope, void 0, void 0, Mapper$run$lambda_0(this.$this));
             println('Mapper isRunning: ' + this.$this.isRunning_0);
-            this.$this.link_0.broadcastUdp_ecsl0t$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
+            this.$this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(this.$this.isRunning_0));
             return;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
@@ -1450,7 +1412,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         tmp$ = value;
       }
       var brainMapper = tmp$;
-      brainMapper.shade_rbov5k$(Mapper$receive$lambda(this));
+      brainMapper.shade_s74fr6$(Mapper$receive$lambda(this));
     }
      else if (Kotlin.isType(message, PinkyPongMessage)) {
       var tmp$_0;
@@ -1520,8 +1482,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.$outer = $outer;
     this.address_0 = address;
   }
-  Mapper$BrainMapper.prototype.shade_rbov5k$ = function (shaderMessage) {
-    this.$outer.link_0.sendUdp_c7y63k$(this.address_0, Ports$Companion_getInstance().BRAIN, shaderMessage());
+  Mapper$BrainMapper.prototype.shade_s74fr6$ = function (shaderMessage) {
+    this.$outer.link_0.sendUdp_wpmaqi$(this.address_0, Ports$Companion_getInstance().BRAIN, shaderMessage());
   };
   Mapper$BrainMapper.$metadata$ = {
     kind: Kind_CLASS,
@@ -1717,9 +1679,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
-  function Pinky$run$lambda_4(closure$currentShowMeta, this$Pinky) {
+  function Pinky$run$lambda_4(closure$currentShowMetaData, this$Pinky) {
     return function () {
-      return closure$currentShowMeta.v.createShow_h1b9op$(this$Pinky.sheepModel, this$Pinky.showRunner_0);
+      return closure$currentShowMetaData.v.createShow_h1b9op$(this$Pinky.sheepModel, this$Pinky.showRunner_0);
     };
   }
   function Coroutine$run_1($this, continuation_0) {
@@ -1727,7 +1689,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.exceptionState_0 = 1;
     this.$this = $this;
     this.local$prevSelectedShow = void 0;
-    this.local$currentShowMeta = void 0;
+    this.local$currentShowMetaData = void 0;
     this.local$buildShow = void 0;
     this.local$show = void 0;
   }
@@ -1745,7 +1707,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
             this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().PINKY, this.$this);
-            this.$this.display.listShows_5ucgt1$(this.$this.showMetas);
+            this.$this.display.listShows_qxmw8h$(this.$this.showMetas);
             var pubSub = new PubSub$Server(this.$this.link_0, Ports$Companion_getInstance().PINKY_UI_TCP);
             var tmp$ = Topics_getInstance().availableShows;
             var $receiver = this.$this.showMetas;
@@ -1767,8 +1729,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
 
             this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.beatProvider_0, this.$this.dmxUniverse);
             this.local$prevSelectedShow = this.$this.display.selectedShow;
-            this.local$currentShowMeta = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas))};
-            this.local$buildShow = Pinky$run$lambda_4(this.local$currentShowMeta, this.$this);
+            this.local$currentShowMetaData = {v: this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas))};
+            this.local$buildShow = Pinky$run$lambda_4(this.local$currentShowMetaData, this.$this);
             this.local$show = this.local$buildShow();
             this.state_0 = 2;
             continue;
@@ -1776,8 +1738,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             throw this.exception_0;
           case 2:
             if (!this.$this.mapperIsRunning_0) {
-              if (this.$this.brainsChanged_0 || !equals(this.$this.display.selectedShow, this.local$currentShowMeta.v)) {
-                this.local$currentShowMeta.v = this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas));
+              if (this.$this.brainsChanged_0 || !equals(this.$this.display.selectedShow, this.local$currentShowMetaData.v)) {
+                this.local$currentShowMetaData.v = this.local$prevSelectedShow != null ? this.local$prevSelectedShow : ensureNotNull(random(this.$this.showMetas));
                 this.$this.showRunner_0 = new ShowRunner(this.$this.display, toList(this.$this.brains_0.values), this.$this.beatProvider_0, this.$this.dmxUniverse);
                 this.local$show = this.local$buildShow();
                 this.$this.brainsChanged_0 = false;
@@ -1985,7 +1947,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       tmp$_0 = remoteBrains.iterator();
       while (tmp$_0.hasNext()) {
         var element_0 = tmp$_0.next();
-        link.sendUdp_c7y63k$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
+        link.sendUdp_wpmaqi$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shader));
       }
     }
     this.dmxUniverse_0.sendFrame();
@@ -2016,372 +1978,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   RemoteBrain.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RemoteBrain',
-    interfaces: []
-  };
-  function Ports() {
-    Ports$Companion_getInstance();
-  }
-  function Ports$Companion() {
-    Ports$Companion_instance = this;
-    this.MAPPER = 8001;
-    this.PINKY = 8002;
-    this.BRAIN = 8003;
-    this.PINKY_UI_TCP = 8004;
-  }
-  Ports$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Ports$Companion_instance = null;
-  function Ports$Companion_getInstance() {
-    if (Ports$Companion_instance === null) {
-      new Ports$Companion();
-    }
-    return Ports$Companion_instance;
-  }
-  Ports.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Ports',
-    interfaces: []
-  };
-  function Type(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function Type_initFields() {
-    Type_initFields = function () {
-    };
-    Type$BRAIN_HELLO_instance = new Type('BRAIN_HELLO', 0);
-    Type$BRAIN_PANEL_SHADE_instance = new Type('BRAIN_PANEL_SHADE', 1);
-    Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 2);
-    Type$BRAIN_ID_REQUEST_instance = new Type('BRAIN_ID_REQUEST', 3);
-    Type$BRAIN_ID_RESPONSE_instance = new Type('BRAIN_ID_RESPONSE', 4);
-    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 5);
-    Type$Companion_getInstance();
-  }
-  var Type$BRAIN_HELLO_instance;
-  function Type$BRAIN_HELLO_getInstance() {
-    Type_initFields();
-    return Type$BRAIN_HELLO_instance;
-  }
-  var Type$BRAIN_PANEL_SHADE_instance;
-  function Type$BRAIN_PANEL_SHADE_getInstance() {
-    Type_initFields();
-    return Type$BRAIN_PANEL_SHADE_instance;
-  }
-  var Type$MAPPER_HELLO_instance;
-  function Type$MAPPER_HELLO_getInstance() {
-    Type_initFields();
-    return Type$MAPPER_HELLO_instance;
-  }
-  var Type$BRAIN_ID_REQUEST_instance;
-  function Type$BRAIN_ID_REQUEST_getInstance() {
-    Type_initFields();
-    return Type$BRAIN_ID_REQUEST_instance;
-  }
-  var Type$BRAIN_ID_RESPONSE_instance;
-  function Type$BRAIN_ID_RESPONSE_getInstance() {
-    Type_initFields();
-    return Type$BRAIN_ID_RESPONSE_instance;
-  }
-  var Type$PINKY_PONG_instance;
-  function Type$PINKY_PONG_getInstance() {
-    Type_initFields();
-    return Type$PINKY_PONG_instance;
-  }
-  function Type$Companion() {
-    Type$Companion_instance = this;
-    this.values = Type$values();
-  }
-  Type$Companion.prototype.get_s8j3t7$ = function (i) {
-    return this.values[i];
-  };
-  Type$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Type$Companion_instance = null;
-  function Type$Companion_getInstance() {
-    Type_initFields();
-    if (Type$Companion_instance === null) {
-      new Type$Companion();
-    }
-    return Type$Companion_instance;
-  }
-  Type.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Type',
-    interfaces: [Enum]
-  };
-  function Type$values() {
-    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_ID_RESPONSE_getInstance(), Type$PINKY_PONG_getInstance()];
-  }
-  Type.values = Type$values;
-  function Type$valueOf(name) {
-    switch (name) {
-      case 'BRAIN_HELLO':
-        return Type$BRAIN_HELLO_getInstance();
-      case 'BRAIN_PANEL_SHADE':
-        return Type$BRAIN_PANEL_SHADE_getInstance();
-      case 'MAPPER_HELLO':
-        return Type$MAPPER_HELLO_getInstance();
-      case 'BRAIN_ID_REQUEST':
-        return Type$BRAIN_ID_REQUEST_getInstance();
-      case 'BRAIN_ID_RESPONSE':
-        return Type$BRAIN_ID_RESPONSE_getInstance();
-      case 'PINKY_PONG':
-        return Type$PINKY_PONG_getInstance();
-      default:throwISE('No enum constant baaahs.Type.' + name);
-    }
-  }
-  Type.valueOf_61zpoe$ = Type$valueOf;
-  function parse(bytes) {
-    var tmp$;
-    var reader = new ByteArrayReader(bytes);
-    switch (Type$Companion_getInstance().get_s8j3t7$(reader.readByte()).name) {
-      case 'BRAIN_HELLO':
-        tmp$ = BrainHelloMessage$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'BRAIN_PANEL_SHADE':
-        tmp$ = BrainShaderMessage$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'MAPPER_HELLO':
-        tmp$ = MapperHelloMessage$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'BRAIN_ID_REQUEST':
-        tmp$ = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'BRAIN_ID_RESPONSE':
-        tmp$ = BrainIdResponse$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'PINKY_PONG':
-        tmp$ = PinkyPongMessage$Companion_getInstance().parse_100t80$(reader);
-        break;
-      default:tmp$ = Kotlin.noWhenBranchMatched();
-        break;
-    }
-    return tmp$;
-  }
-  function BrainHelloMessage(panelName) {
-    BrainHelloMessage$Companion_getInstance();
-    Message.call(this, Type$BRAIN_HELLO_getInstance());
-    this.panelName = panelName;
-  }
-  function BrainHelloMessage$Companion() {
-    BrainHelloMessage$Companion_instance = this;
-  }
-  BrainHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainHelloMessage(reader.readString());
-  };
-  BrainHelloMessage$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var BrainHelloMessage$Companion_instance = null;
-  function BrainHelloMessage$Companion_getInstance() {
-    if (BrainHelloMessage$Companion_instance === null) {
-      new BrainHelloMessage$Companion();
-    }
-    return BrainHelloMessage$Companion_instance;
-  }
-  BrainHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.panelName);
-  };
-  BrainHelloMessage.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrainHelloMessage',
-    interfaces: [Message]
-  };
-  function BrainShaderMessage(shader) {
-    BrainShaderMessage$Companion_getInstance();
-    Message.call(this, Type$BRAIN_PANEL_SHADE_getInstance());
-    this.shader = shader;
-  }
-  function BrainShaderMessage$Companion() {
-    BrainShaderMessage$Companion_instance = this;
-  }
-  BrainShaderMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    var shader = Shader$Companion_getInstance().parse_100t80$(reader);
-    shader.readBuffer_100t80$(reader);
-    return new BrainShaderMessage(shader);
-  };
-  BrainShaderMessage$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var BrainShaderMessage$Companion_instance = null;
-  function BrainShaderMessage$Companion_getInstance() {
-    if (BrainShaderMessage$Companion_instance === null) {
-      new BrainShaderMessage$Companion();
-    }
-    return BrainShaderMessage$Companion_instance;
-  }
-  BrainShaderMessage.prototype.serialize_3kjoo0$ = function (writer) {
-    this.shader.serialize_3kjoo0$(writer);
-    this.shader.serializeBuffer_3kjoo0$(writer);
-  };
-  BrainShaderMessage.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrainShaderMessage',
-    interfaces: [Message]
-  };
-  function MapperHelloMessage(isRunning) {
-    MapperHelloMessage$Companion_getInstance();
-    Message.call(this, Type$MAPPER_HELLO_getInstance());
-    this.isRunning = isRunning;
-  }
-  function MapperHelloMessage$Companion() {
-    MapperHelloMessage$Companion_instance = this;
-  }
-  MapperHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    return new MapperHelloMessage(reader.readBoolean());
-  };
-  MapperHelloMessage$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var MapperHelloMessage$Companion_instance = null;
-  function MapperHelloMessage$Companion_getInstance() {
-    if (MapperHelloMessage$Companion_instance === null) {
-      new MapperHelloMessage$Companion();
-    }
-    return MapperHelloMessage$Companion_instance;
-  }
-  MapperHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeBoolean_6taknv$(this.isRunning);
-  };
-  MapperHelloMessage.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'MapperHelloMessage',
-    interfaces: [Message]
-  };
-  function BrainIdRequest(port) {
-    BrainIdRequest$Companion_getInstance();
-    Message.call(this, Type$BRAIN_ID_REQUEST_getInstance());
-    this.port = port;
-  }
-  function BrainIdRequest$Companion() {
-    BrainIdRequest$Companion_instance = this;
-  }
-  BrainIdRequest$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainIdRequest(reader.readInt());
-  };
-  BrainIdRequest$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var BrainIdRequest$Companion_instance = null;
-  function BrainIdRequest$Companion_getInstance() {
-    if (BrainIdRequest$Companion_instance === null) {
-      new BrainIdRequest$Companion();
-    }
-    return BrainIdRequest$Companion_instance;
-  }
-  BrainIdRequest.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeInt_za3lpa$(this.port);
-  };
-  BrainIdRequest.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrainIdRequest',
-    interfaces: [Message]
-  };
-  function BrainIdResponse(name) {
-    BrainIdResponse$Companion_getInstance();
-    Message.call(this, Type$BRAIN_ID_RESPONSE_getInstance());
-    this.name = name;
-  }
-  function BrainIdResponse$Companion() {
-    BrainIdResponse$Companion_instance = this;
-  }
-  BrainIdResponse$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainIdResponse(reader.readString());
-  };
-  BrainIdResponse$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var BrainIdResponse$Companion_instance = null;
-  function BrainIdResponse$Companion_getInstance() {
-    if (BrainIdResponse$Companion_instance === null) {
-      new BrainIdResponse$Companion();
-    }
-    return BrainIdResponse$Companion_instance;
-  }
-  BrainIdResponse.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.name);
-  };
-  BrainIdResponse.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrainIdResponse',
-    interfaces: [Message]
-  };
-  function PinkyPongMessage(brainIds) {
-    PinkyPongMessage$Companion_getInstance();
-    Message.call(this, Type$PINKY_PONG_getInstance());
-    this.brainIds = brainIds;
-  }
-  function PinkyPongMessage$Companion() {
-    PinkyPongMessage$Companion_instance = this;
-  }
-  PinkyPongMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    var brainCount = reader.readInt();
-    var brainIds = ArrayList_init();
-    for (var i = 0; i < brainCount; i++) {
-      brainIds.add_11rb$(reader.readString());
-    }
-    return new PinkyPongMessage(brainIds);
-  };
-  PinkyPongMessage$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var PinkyPongMessage$Companion_instance = null;
-  function PinkyPongMessage$Companion_getInstance() {
-    if (PinkyPongMessage$Companion_instance === null) {
-      new PinkyPongMessage$Companion();
-    }
-    return PinkyPongMessage$Companion_instance;
-  }
-  PinkyPongMessage.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeInt_za3lpa$(this.brainIds.size);
-    var tmp$;
-    tmp$ = this.brainIds.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      writer.writeString_61zpoe$(element);
-    }
-  };
-  PinkyPongMessage.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PinkyPongMessage',
-    interfaces: [Message]
-  };
-  function Message(type) {
-    this.type = type;
-  }
-  Message.prototype.toBytes = function () {
-    var writer = ByteArrayWriter_init(1 + this.size() | 0);
-    writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
-    this.serialize_3kjoo0$(writer);
-    return writer.toBytes();
-  };
-  Message.prototype.serialize_3kjoo0$ = function (writer) {
-  };
-  Message.prototype.size = function () {
-    return 127;
-  };
-  Message.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Message',
     interfaces: []
   };
   function PubSub(networkLink) {
@@ -3578,16 +3174,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Shenzarpy',
     interfaces: [Dmx$DeviceType]
   };
-  function ShowMeta(name) {
-    this.name = name;
-  }
-  ShowMeta.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ShowMeta',
-    interfaces: []
-  };
   function Show() {
   }
+  function Show$MetaData(name) {
+    this.name = name;
+  }
+  Show$MetaData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MetaData',
+    interfaces: []
+  };
   Show.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Show',
@@ -3793,10 +3389,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function Network$Link() {
   }
-  Network$Link.prototype.sendUdp_c7y63k$ = function (toAddress, port, message) {
+  Network$Link.prototype.sendUdp_wpmaqi$ = function (toAddress, port, message) {
     this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
   };
-  Network$Link.prototype.broadcastUdp_ecsl0t$ = function (port, message) {
+  Network$Link.prototype.broadcastUdp_68hu5j$ = function (port, message) {
     this.broadcastUdp_3fbn1q$(port, message.toBytes());
   };
   Network$Link.$metadata$ = {
@@ -3820,7 +3416,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Network$TcpConnection() {
   }
-  Network$TcpConnection.prototype.send_kq3aw3$ = function (message) {
+  Network$TcpConnection.prototype.send_chrig3$ = function (message) {
     this.send_fqrh44$(message.toBytes());
   };
   Network$TcpConnection.$metadata$ = {
@@ -3845,6 +3441,372 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Network.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Network',
+    interfaces: []
+  };
+  function Ports() {
+    Ports$Companion_getInstance();
+  }
+  function Ports$Companion() {
+    Ports$Companion_instance = this;
+    this.MAPPER = 8001;
+    this.PINKY = 8002;
+    this.BRAIN = 8003;
+    this.PINKY_UI_TCP = 8004;
+  }
+  Ports$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Ports$Companion_instance = null;
+  function Ports$Companion_getInstance() {
+    if (Ports$Companion_instance === null) {
+      new Ports$Companion();
+    }
+    return Ports$Companion_instance;
+  }
+  Ports.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Ports',
+    interfaces: []
+  };
+  function Type(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Type_initFields() {
+    Type_initFields = function () {
+    };
+    Type$BRAIN_HELLO_instance = new Type('BRAIN_HELLO', 0);
+    Type$BRAIN_PANEL_SHADE_instance = new Type('BRAIN_PANEL_SHADE', 1);
+    Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 2);
+    Type$BRAIN_ID_REQUEST_instance = new Type('BRAIN_ID_REQUEST', 3);
+    Type$BRAIN_ID_RESPONSE_instance = new Type('BRAIN_ID_RESPONSE', 4);
+    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 5);
+    Type$Companion_getInstance();
+  }
+  var Type$BRAIN_HELLO_instance;
+  function Type$BRAIN_HELLO_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_HELLO_instance;
+  }
+  var Type$BRAIN_PANEL_SHADE_instance;
+  function Type$BRAIN_PANEL_SHADE_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_PANEL_SHADE_instance;
+  }
+  var Type$MAPPER_HELLO_instance;
+  function Type$MAPPER_HELLO_getInstance() {
+    Type_initFields();
+    return Type$MAPPER_HELLO_instance;
+  }
+  var Type$BRAIN_ID_REQUEST_instance;
+  function Type$BRAIN_ID_REQUEST_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_ID_REQUEST_instance;
+  }
+  var Type$BRAIN_ID_RESPONSE_instance;
+  function Type$BRAIN_ID_RESPONSE_getInstance() {
+    Type_initFields();
+    return Type$BRAIN_ID_RESPONSE_instance;
+  }
+  var Type$PINKY_PONG_instance;
+  function Type$PINKY_PONG_getInstance() {
+    Type_initFields();
+    return Type$PINKY_PONG_instance;
+  }
+  function Type$Companion() {
+    Type$Companion_instance = this;
+    this.values = Type$values();
+  }
+  Type$Companion.prototype.get_s8j3t7$ = function (i) {
+    return this.values[i];
+  };
+  Type$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Type$Companion_instance = null;
+  function Type$Companion_getInstance() {
+    Type_initFields();
+    if (Type$Companion_instance === null) {
+      new Type$Companion();
+    }
+    return Type$Companion_instance;
+  }
+  Type.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Type',
+    interfaces: [Enum]
+  };
+  function Type$values() {
+    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_ID_RESPONSE_getInstance(), Type$PINKY_PONG_getInstance()];
+  }
+  Type.values = Type$values;
+  function Type$valueOf(name) {
+    switch (name) {
+      case 'BRAIN_HELLO':
+        return Type$BRAIN_HELLO_getInstance();
+      case 'BRAIN_PANEL_SHADE':
+        return Type$BRAIN_PANEL_SHADE_getInstance();
+      case 'MAPPER_HELLO':
+        return Type$MAPPER_HELLO_getInstance();
+      case 'BRAIN_ID_REQUEST':
+        return Type$BRAIN_ID_REQUEST_getInstance();
+      case 'BRAIN_ID_RESPONSE':
+        return Type$BRAIN_ID_RESPONSE_getInstance();
+      case 'PINKY_PONG':
+        return Type$PINKY_PONG_getInstance();
+      default:throwISE('No enum constant baaahs.proto.Type.' + name);
+    }
+  }
+  Type.valueOf_61zpoe$ = Type$valueOf;
+  function parse(bytes) {
+    var tmp$;
+    var reader = new ByteArrayReader(bytes);
+    switch (Type$Companion_getInstance().get_s8j3t7$(reader.readByte()).name) {
+      case 'BRAIN_HELLO':
+        tmp$ = BrainHelloMessage$Companion_getInstance().parse_100t80$(reader);
+        break;
+      case 'BRAIN_PANEL_SHADE':
+        tmp$ = BrainShaderMessage$Companion_getInstance().parse_100t80$(reader);
+        break;
+      case 'MAPPER_HELLO':
+        tmp$ = MapperHelloMessage$Companion_getInstance().parse_100t80$(reader);
+        break;
+      case 'BRAIN_ID_REQUEST':
+        tmp$ = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
+        break;
+      case 'BRAIN_ID_RESPONSE':
+        tmp$ = BrainIdResponse$Companion_getInstance().parse_100t80$(reader);
+        break;
+      case 'PINKY_PONG':
+        tmp$ = PinkyPongMessage$Companion_getInstance().parse_100t80$(reader);
+        break;
+      default:tmp$ = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    return tmp$;
+  }
+  function BrainHelloMessage(panelName) {
+    BrainHelloMessage$Companion_getInstance();
+    Message.call(this, Type$BRAIN_HELLO_getInstance());
+    this.panelName = panelName;
+  }
+  function BrainHelloMessage$Companion() {
+    BrainHelloMessage$Companion_instance = this;
+  }
+  BrainHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    return new BrainHelloMessage(reader.readString());
+  };
+  BrainHelloMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainHelloMessage$Companion_instance = null;
+  function BrainHelloMessage$Companion_getInstance() {
+    if (BrainHelloMessage$Companion_instance === null) {
+      new BrainHelloMessage$Companion();
+    }
+    return BrainHelloMessage$Companion_instance;
+  }
+  BrainHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.panelName);
+  };
+  BrainHelloMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainHelloMessage',
+    interfaces: [Message]
+  };
+  function BrainShaderMessage(shader) {
+    BrainShaderMessage$Companion_getInstance();
+    Message.call(this, Type$BRAIN_PANEL_SHADE_getInstance());
+    this.shader = shader;
+  }
+  function BrainShaderMessage$Companion() {
+    BrainShaderMessage$Companion_instance = this;
+  }
+  BrainShaderMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    var shader = Shader$Companion_getInstance().parse_100t80$(reader);
+    shader.readBuffer_100t80$(reader);
+    return new BrainShaderMessage(shader);
+  };
+  BrainShaderMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainShaderMessage$Companion_instance = null;
+  function BrainShaderMessage$Companion_getInstance() {
+    if (BrainShaderMessage$Companion_instance === null) {
+      new BrainShaderMessage$Companion();
+    }
+    return BrainShaderMessage$Companion_instance;
+  }
+  BrainShaderMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    this.shader.serialize_3kjoo0$(writer);
+    this.shader.serializeBuffer_3kjoo0$(writer);
+  };
+  BrainShaderMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainShaderMessage',
+    interfaces: [Message]
+  };
+  function MapperHelloMessage(isRunning) {
+    MapperHelloMessage$Companion_getInstance();
+    Message.call(this, Type$MAPPER_HELLO_getInstance());
+    this.isRunning = isRunning;
+  }
+  function MapperHelloMessage$Companion() {
+    MapperHelloMessage$Companion_instance = this;
+  }
+  MapperHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    return new MapperHelloMessage(reader.readBoolean());
+  };
+  MapperHelloMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MapperHelloMessage$Companion_instance = null;
+  function MapperHelloMessage$Companion_getInstance() {
+    if (MapperHelloMessage$Companion_instance === null) {
+      new MapperHelloMessage$Companion();
+    }
+    return MapperHelloMessage$Companion_instance;
+  }
+  MapperHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeBoolean_6taknv$(this.isRunning);
+  };
+  MapperHelloMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MapperHelloMessage',
+    interfaces: [Message]
+  };
+  function BrainIdRequest(port) {
+    BrainIdRequest$Companion_getInstance();
+    Message.call(this, Type$BRAIN_ID_REQUEST_getInstance());
+    this.port = port;
+  }
+  function BrainIdRequest$Companion() {
+    BrainIdRequest$Companion_instance = this;
+  }
+  BrainIdRequest$Companion.prototype.parse_100t80$ = function (reader) {
+    return new BrainIdRequest(reader.readInt());
+  };
+  BrainIdRequest$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainIdRequest$Companion_instance = null;
+  function BrainIdRequest$Companion_getInstance() {
+    if (BrainIdRequest$Companion_instance === null) {
+      new BrainIdRequest$Companion();
+    }
+    return BrainIdRequest$Companion_instance;
+  }
+  BrainIdRequest.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeInt_za3lpa$(this.port);
+  };
+  BrainIdRequest.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainIdRequest',
+    interfaces: [Message]
+  };
+  function BrainIdResponse(name) {
+    BrainIdResponse$Companion_getInstance();
+    Message.call(this, Type$BRAIN_ID_RESPONSE_getInstance());
+    this.name = name;
+  }
+  function BrainIdResponse$Companion() {
+    BrainIdResponse$Companion_instance = this;
+  }
+  BrainIdResponse$Companion.prototype.parse_100t80$ = function (reader) {
+    return new BrainIdResponse(reader.readString());
+  };
+  BrainIdResponse$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainIdResponse$Companion_instance = null;
+  function BrainIdResponse$Companion_getInstance() {
+    if (BrainIdResponse$Companion_instance === null) {
+      new BrainIdResponse$Companion();
+    }
+    return BrainIdResponse$Companion_instance;
+  }
+  BrainIdResponse.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.name);
+  };
+  BrainIdResponse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainIdResponse',
+    interfaces: [Message]
+  };
+  function PinkyPongMessage(brainIds) {
+    PinkyPongMessage$Companion_getInstance();
+    Message.call(this, Type$PINKY_PONG_getInstance());
+    this.brainIds = brainIds;
+  }
+  function PinkyPongMessage$Companion() {
+    PinkyPongMessage$Companion_instance = this;
+  }
+  PinkyPongMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    var brainCount = reader.readInt();
+    var brainIds = ArrayList_init();
+    for (var i = 0; i < brainCount; i++) {
+      brainIds.add_11rb$(reader.readString());
+    }
+    return new PinkyPongMessage(brainIds);
+  };
+  PinkyPongMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PinkyPongMessage$Companion_instance = null;
+  function PinkyPongMessage$Companion_getInstance() {
+    if (PinkyPongMessage$Companion_instance === null) {
+      new PinkyPongMessage$Companion();
+    }
+    return PinkyPongMessage$Companion_instance;
+  }
+  PinkyPongMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeInt_za3lpa$(this.brainIds.size);
+    var tmp$;
+    tmp$ = this.brainIds.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      writer.writeString_61zpoe$(element);
+    }
+  };
+  PinkyPongMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PinkyPongMessage',
+    interfaces: [Message]
+  };
+  function Message(type) {
+    this.type = type;
+  }
+  Message.prototype.toBytes = function () {
+    var writer = ByteArrayWriter_init(1 + this.size() | 0);
+    writer.writeByte_s8j3t7$(toByte(this.type.ordinal));
+    this.serialize_3kjoo0$(writer);
+    return writer.toBytes();
+  };
+  Message.prototype.serialize_3kjoo0$ = function (writer) {
+  };
+  Message.prototype.size = function () {
+    return 127;
+  };
+  Message.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Message',
     interfaces: []
   };
   function CompositorShader(aShader, bShader) {
@@ -4364,7 +4326,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: []
   };
   function CompositeShow$ObjectLiteral(name) {
-    ShowMeta.call(this, name);
+    Show$MetaData.call(this, name);
   }
   function CompositeShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel, this$) {
     this.colorPicker_0 = closure$showRunner.getColorPicker();
@@ -4439,12 +4401,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   CompositeShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var CompositeShow;
   function PanelTweenShow() {
     PanelTweenShow_instance = this;
-    ShowMeta.call(this, 'PanelTweenShow');
+    Show$MetaData.call(this, 'PanelTweenShow');
   }
   function PanelTweenShow$createShow$ObjectLiteral(closure$sheepModel, closure$colorArray, closure$showRunner) {
     this.closure$sheepModel = closure$sheepModel;
@@ -4493,7 +4455,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PanelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PanelTweenShow',
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var PanelTweenShow_instance = null;
   function PanelTweenShow_getInstance() {
@@ -4508,7 +4470,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function PixelTweenShow() {
     PixelTweenShow_instance = this;
-    ShowMeta.call(this, 'PixelTweenShow');
+    Show$MetaData.call(this, 'PixelTweenShow');
   }
   function PixelTweenShow$createShow$ObjectLiteral(closure$sheepModel, closure$colorArray, closure$showRunner) {
     this.closure$sheepModel = closure$sheepModel;
@@ -4571,7 +4533,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PixelTweenShow',
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var PixelTweenShow_instance = null;
   function PixelTweenShow_getInstance() {
@@ -4581,7 +4543,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return PixelTweenShow_instance;
   }
   function RandomShow$ObjectLiteral(name) {
-    ShowMeta.call(this, name);
+    Show$MetaData.call(this, name);
   }
   function RandomShow$ObjectLiteral$createShow$ObjectLiteral(closure$sheepModel, closure$showRunner) {
     var $receiver = closure$sheepModel.allPanels;
@@ -4634,11 +4596,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   RandomShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var RandomShow;
   function SomeDumbShow$ObjectLiteral(name) {
-    ShowMeta.call(this, name);
+    Show$MetaData.call(this, name);
   }
   function SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
     this.colorPicker = closure$showRunner.getColorPicker();
@@ -4705,11 +4667,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   SomeDumbShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var SomeDumbShow;
   function ThumpShow$ObjectLiteral(name) {
-    ShowMeta.call(this, name);
+    Show$MetaData.call(this, name);
   }
   function ThumpShow$ObjectLiteral$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel, this$) {
     this.beatProvider_0 = closure$showRunner.getBeatProvider();
@@ -4786,9 +4748,47 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   ThumpShow$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [ShowMeta]
+    interfaces: [Show$MetaData]
   };
   var ThumpShow;
+  function FakeDmxUniverse() {
+    Dmx$Universe.call(this);
+    this.channelsOut_0 = new Int8Array(512);
+    this.channelsIn_0 = new Int8Array(512);
+    this.listeners_0 = ArrayList_init();
+  }
+  FakeDmxUniverse.prototype.writer_vux9f0$ = function (baseChannel, channelCount) {
+    return new Dmx$Buffer(this.channelsOut_0, baseChannel, channelCount);
+  };
+  FakeDmxUniverse.prototype.reader_sxjeop$ = function (baseChannel, channelCount, listener) {
+    this.listeners_0.add_11rb$(listener);
+    return new Dmx$Buffer(this.channelsIn_0, baseChannel, channelCount);
+  };
+  FakeDmxUniverse.prototype.sendFrame = function () {
+    var $receiver = this.channelsOut_0;
+    arrayCopy($receiver, this.channelsIn_0, 0, 0, $receiver.length);
+    var tmp$;
+    tmp$ = this.listeners_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element();
+    }
+  };
+  FakeDmxUniverse.prototype.allOff = function () {
+    for (var i = 0; i <= 512; i++)
+      this.channelsIn_0[i] = 0;
+    var tmp$;
+    tmp$ = this.listeners_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element();
+    }
+  };
+  FakeDmxUniverse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeDmxUniverse',
+    interfaces: [Dmx$Universe]
+  };
   function FakeNetwork(networkDelay, display, coroutineContext) {
     if (networkDelay === void 0)
       networkDelay = 1;
@@ -5544,7 +5544,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
-  JsPinkyDisplay.prototype.listShows_5ucgt1$ = function (showMetas) {
+  JsPinkyDisplay.prototype.listShows_qxmw8h$ = function (showMetas) {
     clear(this.showListDiv_0);
     appendElement(this.showListDiv_0, 'b', JsPinkyDisplay$listShows$lambda);
     appendElement(this.showListDiv_0, 'br', JsPinkyDisplay$listShows$lambda_0);
@@ -5655,106 +5655,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_CLASS,
     simpleName: 'JsBrainDisplay',
     interfaces: [BrainDisplay]
-  };
-  function FakeMediaDevices(visualizer) {
-    this.visualizer_0 = visualizer;
-    this.currentCam = null;
-  }
-  FakeMediaDevices.prototype.getCurrentCam = function () {
-    return this.currentCam;
-  };
-  FakeMediaDevices.prototype.getCamera_vux9f0$ = function (width, height) {
-    var $receiver = new FakeMediaDevices$FakeCamera(this, width, height);
-    this.visualizer_0.addFrameListener_9dei3h$($receiver);
-    return $receiver;
-  };
-  function FakeMediaDevices$FakeCamera($outer, width, height) {
-    this.$outer = $outer;
-    this.width = width;
-    this.height = height;
-    var $receiver = new WebGLRenderer_init({preserveDrawingBuffer: true});
-    $receiver.setSize(this.width, this.height);
-    this.camRenderer = $receiver;
-    var tmp$;
-    this.camCtx_0 = ensureNotNull((Kotlin.isType(tmp$ = this.camRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).getContext('webgl'));
-    this.altCamera_0 = new PerspectiveCamera_init(45, 1.0, 1, 1000);
-    this.pixelBuffer_0 = new Uint8ClampedArray(Kotlin.imul(this.width, this.height) * 4 | 0);
-    this.imageData_0 = new ImageData(this.pixelBuffer_0, this.width, this.height);
-    this.onImage_tirclm$_0 = FakeMediaDevices$FakeCamera$onImage$lambda;
-  }
-  function FakeMediaDevices$FakeCamera$onFrameReady$lambda(this$FakeCamera) {
-    return function (it) {
-      this$FakeCamera.onImage(new ImageBitmapImage(it));
-      return Unit;
-    };
-  }
-  FakeMediaDevices$FakeCamera.prototype.onFrameReady = function (scene, camera) {
-    this.altCamera_0.copy(camera, true);
-    this.altCamera_0.aspect = this.width / this.height;
-    this.altCamera_0.updateProjectionMatrix();
-    this.camRenderer.render(scene, this.altCamera_0);
-    this.camCtx_0.readPixels(0, 0, this.width, this.height, this.camCtx_0.RGBA, this.camCtx_0.UNSIGNED_BYTE, new Uint8Array(this.pixelBuffer_0.buffer));
-    var tmp$ = window;
-    var tmp$_0 = this.imageData_0;
-    var imageOrientation;
-    var premultiplyAlpha;
-    var colorSpaceConversion;
-    var resizeWidth;
-    var resizeHeight;
-    var resizeQuality;
-    if (imageOrientation === void 0) {
-      imageOrientation = 'none';
-    }
-    if (premultiplyAlpha === void 0) {
-      premultiplyAlpha = 'default';
-    }
-    if (colorSpaceConversion === void 0) {
-      colorSpaceConversion = 'default';
-    }
-    if (resizeWidth === void 0)
-      resizeWidth = undefined;
-    if (resizeHeight === void 0)
-      resizeHeight = undefined;
-    if (resizeQuality === void 0) {
-      resizeQuality = 'low';
-    }
-    var o = {};
-    o['imageOrientation'] = imageOrientation;
-    o['premultiplyAlpha'] = premultiplyAlpha;
-    o['colorSpaceConversion'] = colorSpaceConversion;
-    o['resizeWidth'] = resizeWidth;
-    o['resizeHeight'] = resizeHeight;
-    o['resizeQuality'] = resizeQuality;
-    o.imageOrientation = 'flipY';
-    tmp$.createImageBitmap(tmp$_0, o).then(FakeMediaDevices$FakeCamera$onFrameReady$lambda(this));
-  };
-  Object.defineProperty(FakeMediaDevices$FakeCamera.prototype, 'onImage', {
-    get: function () {
-      return this.onImage_tirclm$_0;
-    },
-    set: function (onImage) {
-      this.onImage_tirclm$_0 = onImage;
-    }
-  });
-  function FakeMediaDevices$FakeCamera$close$lambda(f) {
-    return Unit;
-  }
-  FakeMediaDevices$FakeCamera.prototype.close = function () {
-    this.onImage = FakeMediaDevices$FakeCamera$close$lambda;
-    this.$outer.visualizer_0.removeFrameListener_9dei3h$(this);
-  };
-  function FakeMediaDevices$FakeCamera$onImage$lambda(f) {
-    return Unit;
-  }
-  FakeMediaDevices$FakeCamera.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeCamera',
-    interfaces: [FrameListener, MediaDevices$Camera]
-  };
-  FakeMediaDevices.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeMediaDevices',
-    interfaces: [MediaDevices]
   };
   function JsMapperDisplay(container) {
     this.listener_h0bbis$_0 = this.listener_h0bbis$_0;
@@ -7020,6 +6920,106 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function getTimeMillis() {
     return Kotlin.Long.fromNumber(Date.now());
   }
+  function FakeMediaDevices(visualizer) {
+    this.visualizer_0 = visualizer;
+    this.currentCam = null;
+  }
+  FakeMediaDevices.prototype.getCurrentCam = function () {
+    return this.currentCam;
+  };
+  FakeMediaDevices.prototype.getCamera_vux9f0$ = function (width, height) {
+    var $receiver = new FakeMediaDevices$FakeCamera(this, width, height);
+    this.visualizer_0.addFrameListener_9dei3h$($receiver);
+    return $receiver;
+  };
+  function FakeMediaDevices$FakeCamera($outer, width, height) {
+    this.$outer = $outer;
+    this.width = width;
+    this.height = height;
+    var $receiver = new WebGLRenderer_init({preserveDrawingBuffer: true});
+    $receiver.setSize(this.width, this.height);
+    this.camRenderer = $receiver;
+    var tmp$;
+    this.camCtx_0 = ensureNotNull((Kotlin.isType(tmp$ = this.camRenderer.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).getContext('webgl'));
+    this.altCamera_0 = new PerspectiveCamera_init(45, 1.0, 1, 1000);
+    this.pixelBuffer_0 = new Uint8ClampedArray(Kotlin.imul(this.width, this.height) * 4 | 0);
+    this.imageData_0 = new ImageData(this.pixelBuffer_0, this.width, this.height);
+    this.onImage_f8p0b7$_0 = FakeMediaDevices$FakeCamera$onImage$lambda;
+  }
+  function FakeMediaDevices$FakeCamera$onFrameReady$lambda(this$FakeCamera) {
+    return function (it) {
+      this$FakeCamera.onImage(new ImageBitmapImage(it));
+      return Unit;
+    };
+  }
+  FakeMediaDevices$FakeCamera.prototype.onFrameReady = function (scene, camera) {
+    this.altCamera_0.copy(camera, true);
+    this.altCamera_0.aspect = this.width / this.height;
+    this.altCamera_0.updateProjectionMatrix();
+    this.camRenderer.render(scene, this.altCamera_0);
+    this.camCtx_0.readPixels(0, 0, this.width, this.height, this.camCtx_0.RGBA, this.camCtx_0.UNSIGNED_BYTE, new Uint8Array(this.pixelBuffer_0.buffer));
+    var tmp$ = window;
+    var tmp$_0 = this.imageData_0;
+    var imageOrientation;
+    var premultiplyAlpha;
+    var colorSpaceConversion;
+    var resizeWidth;
+    var resizeHeight;
+    var resizeQuality;
+    if (imageOrientation === void 0) {
+      imageOrientation = 'none';
+    }
+    if (premultiplyAlpha === void 0) {
+      premultiplyAlpha = 'default';
+    }
+    if (colorSpaceConversion === void 0) {
+      colorSpaceConversion = 'default';
+    }
+    if (resizeWidth === void 0)
+      resizeWidth = undefined;
+    if (resizeHeight === void 0)
+      resizeHeight = undefined;
+    if (resizeQuality === void 0) {
+      resizeQuality = 'low';
+    }
+    var o = {};
+    o['imageOrientation'] = imageOrientation;
+    o['premultiplyAlpha'] = premultiplyAlpha;
+    o['colorSpaceConversion'] = colorSpaceConversion;
+    o['resizeWidth'] = resizeWidth;
+    o['resizeHeight'] = resizeHeight;
+    o['resizeQuality'] = resizeQuality;
+    o.imageOrientation = 'flipY';
+    tmp$.createImageBitmap(tmp$_0, o).then(FakeMediaDevices$FakeCamera$onFrameReady$lambda(this));
+  };
+  Object.defineProperty(FakeMediaDevices$FakeCamera.prototype, 'onImage', {
+    get: function () {
+      return this.onImage_f8p0b7$_0;
+    },
+    set: function (onImage) {
+      this.onImage_f8p0b7$_0 = onImage;
+    }
+  });
+  function FakeMediaDevices$FakeCamera$close$lambda(f) {
+    return Unit;
+  }
+  FakeMediaDevices$FakeCamera.prototype.close = function () {
+    this.onImage = FakeMediaDevices$FakeCamera$close$lambda;
+    this.$outer.visualizer_0.removeFrameListener_9dei3h$(this);
+  };
+  function FakeMediaDevices$FakeCamera$onImage$lambda(f) {
+    return Unit;
+  }
+  FakeMediaDevices$FakeCamera.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeCamera',
+    interfaces: [FrameListener, MediaDevices$Camera]
+  };
+  FakeMediaDevices.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeMediaDevices',
+    interfaces: [MediaDevices]
+  };
   var package$baaahs = _.baaahs || (_.baaahs = {});
   package$baaahs.Brain = Brain;
   Object.defineProperty(Color, 'Companion', {
@@ -7044,7 +7044,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Dmx.Buffer = Dmx$Buffer;
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
-  package$baaahs.FakeDmxUniverse = FakeDmxUniverse;
   $$importsForInline$$['kotlinx-coroutines-core'] = $module$kotlinx_coroutines_core;
   Mapper.BrainMapper = Mapper$BrainMapper;
   package$baaahs.Mapper = Mapper;
@@ -7058,58 +7057,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.ShowRunner = ShowRunner;
   package$baaahs.ColorPicker = ColorPicker;
   package$baaahs.RemoteBrain = RemoteBrain;
-  Object.defineProperty(Ports, 'Companion', {
-    get: Ports$Companion_getInstance
-  });
-  package$baaahs.Ports = Ports;
-  Object.defineProperty(Type, 'BRAIN_HELLO', {
-    get: Type$BRAIN_HELLO_getInstance
-  });
-  Object.defineProperty(Type, 'BRAIN_PANEL_SHADE', {
-    get: Type$BRAIN_PANEL_SHADE_getInstance
-  });
-  Object.defineProperty(Type, 'MAPPER_HELLO', {
-    get: Type$MAPPER_HELLO_getInstance
-  });
-  Object.defineProperty(Type, 'BRAIN_ID_REQUEST', {
-    get: Type$BRAIN_ID_REQUEST_getInstance
-  });
-  Object.defineProperty(Type, 'BRAIN_ID_RESPONSE', {
-    get: Type$BRAIN_ID_RESPONSE_getInstance
-  });
-  Object.defineProperty(Type, 'PINKY_PONG', {
-    get: Type$PINKY_PONG_getInstance
-  });
-  Object.defineProperty(Type, 'Companion', {
-    get: Type$Companion_getInstance
-  });
-  package$baaahs.Type = Type;
-  package$baaahs.parse_fqrh44$ = parse;
-  Object.defineProperty(BrainHelloMessage, 'Companion', {
-    get: BrainHelloMessage$Companion_getInstance
-  });
-  package$baaahs.BrainHelloMessage = BrainHelloMessage;
-  Object.defineProperty(BrainShaderMessage, 'Companion', {
-    get: BrainShaderMessage$Companion_getInstance
-  });
-  package$baaahs.BrainShaderMessage = BrainShaderMessage;
-  Object.defineProperty(MapperHelloMessage, 'Companion', {
-    get: MapperHelloMessage$Companion_getInstance
-  });
-  package$baaahs.MapperHelloMessage = MapperHelloMessage;
-  Object.defineProperty(BrainIdRequest, 'Companion', {
-    get: BrainIdRequest$Companion_getInstance
-  });
-  package$baaahs.BrainIdRequest = BrainIdRequest;
-  Object.defineProperty(BrainIdResponse, 'Companion', {
-    get: BrainIdResponse$Companion_getInstance
-  });
-  package$baaahs.BrainIdResponse = BrainIdResponse;
-  Object.defineProperty(PinkyPongMessage, 'Companion', {
-    get: PinkyPongMessage$Companion_getInstance
-  });
-  package$baaahs.PinkyPongMessage = PinkyPongMessage;
-  package$baaahs.Message = Message;
   PubSub.Origin = PubSub$Origin;
   PubSub.Observer = PubSub$Observer;
   Object.defineProperty(PubSub, 'Companion', {
@@ -7269,7 +7216,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   });
   Shenzarpy.Channel = Shenzarpy$Channel;
   package$baaahs.Shenzarpy = Shenzarpy;
-  package$baaahs.ShowMeta = ShowMeta;
+  Show.MetaData = Show$MetaData;
   package$baaahs.Show = Show;
   Object.defineProperty(package$baaahs, 'Topics', {
     get: Topics_getInstance
@@ -7292,6 +7239,59 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Network.TcpServerSocketListener = Network$TcpServerSocketListener;
   var package$net = package$baaahs.net || (package$baaahs.net = {});
   package$net.Network = Network;
+  Object.defineProperty(Ports, 'Companion', {
+    get: Ports$Companion_getInstance
+  });
+  var package$proto = package$baaahs.proto || (package$baaahs.proto = {});
+  package$proto.Ports = Ports;
+  Object.defineProperty(Type, 'BRAIN_HELLO', {
+    get: Type$BRAIN_HELLO_getInstance
+  });
+  Object.defineProperty(Type, 'BRAIN_PANEL_SHADE', {
+    get: Type$BRAIN_PANEL_SHADE_getInstance
+  });
+  Object.defineProperty(Type, 'MAPPER_HELLO', {
+    get: Type$MAPPER_HELLO_getInstance
+  });
+  Object.defineProperty(Type, 'BRAIN_ID_REQUEST', {
+    get: Type$BRAIN_ID_REQUEST_getInstance
+  });
+  Object.defineProperty(Type, 'BRAIN_ID_RESPONSE', {
+    get: Type$BRAIN_ID_RESPONSE_getInstance
+  });
+  Object.defineProperty(Type, 'PINKY_PONG', {
+    get: Type$PINKY_PONG_getInstance
+  });
+  Object.defineProperty(Type, 'Companion', {
+    get: Type$Companion_getInstance
+  });
+  package$proto.Type = Type;
+  package$proto.parse_fqrh44$ = parse;
+  Object.defineProperty(BrainHelloMessage, 'Companion', {
+    get: BrainHelloMessage$Companion_getInstance
+  });
+  package$proto.BrainHelloMessage = BrainHelloMessage;
+  Object.defineProperty(BrainShaderMessage, 'Companion', {
+    get: BrainShaderMessage$Companion_getInstance
+  });
+  package$proto.BrainShaderMessage = BrainShaderMessage;
+  Object.defineProperty(MapperHelloMessage, 'Companion', {
+    get: MapperHelloMessage$Companion_getInstance
+  });
+  package$proto.MapperHelloMessage = MapperHelloMessage;
+  Object.defineProperty(BrainIdRequest, 'Companion', {
+    get: BrainIdRequest$Companion_getInstance
+  });
+  package$proto.BrainIdRequest = BrainIdRequest;
+  Object.defineProperty(BrainIdResponse, 'Companion', {
+    get: BrainIdResponse$Companion_getInstance
+  });
+  package$proto.BrainIdResponse = BrainIdResponse;
+  Object.defineProperty(PinkyPongMessage, 'Companion', {
+    get: PinkyPongMessage$Companion_getInstance
+  });
+  package$proto.PinkyPongMessage = PinkyPongMessage;
+  package$proto.Message = Message;
   Object.defineProperty(CompositorShader, 'Companion', {
     get: CompositorShader$Companion_getInstance
   });
@@ -7363,8 +7363,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return ThumpShow;
     }
   });
-  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
   var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
+  package$sim.FakeDmxUniverse = FakeDmxUniverse;
+  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
@@ -7378,8 +7379,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
   package$baaahs.JsBrainDisplay = JsBrainDisplay;
-  FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
-  package$baaahs.FakeMediaDevices = FakeMediaDevices;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.PanelInfo = PanelInfo;
   package$baaahs.JsUiDisplay = JsUiDisplay;
@@ -7410,10 +7409,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getDisplay = getDisplay;
   package$baaahs.getTimeMillis = getTimeMillis;
+  FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
+  package$sim.FakeMediaDevices = FakeMediaDevices;
   Color$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
-  FakeNetwork$FakeTcpConnection.prototype.send_kq3aw3$ = Network$TcpConnection.prototype.send_kq3aw3$;
-  FakeNetwork$FakeLink.prototype.sendUdp_c7y63k$ = Network$Link.prototype.sendUdp_c7y63k$;
-  FakeNetwork$FakeLink.prototype.broadcastUdp_ecsl0t$ = Network$Link.prototype.broadcastUdp_ecsl0t$;
+  FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
+  FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
+  FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   CompositeShow = new CompositeShow$ObjectLiteral('Composite');
   RandomShow = new RandomShow$ObjectLiteral('Random');
   SomeDumbShow = new SomeDumbShow$ObjectLiteral('SomeDumbShow');
