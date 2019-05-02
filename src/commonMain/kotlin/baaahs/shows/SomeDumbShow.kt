@@ -5,7 +5,7 @@ import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.random.Random
 
-val SomeDumbShow = object : ShowMeta("SomeDumbShow") {
+val SomeDumbShow = object : Show.MetaData("SomeDumbShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         val colorPicker = showRunner.getColorPicker()
         //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShader(it) }

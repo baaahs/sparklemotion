@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.sim.FakeDmxUniverse
+
 expect class Visualizer(sheepModel: SheepModel, dmxUniverse: FakeDmxUniverse) {
     fun start()
     fun showPanel(panel: SheepModel.Panel): JsPanel

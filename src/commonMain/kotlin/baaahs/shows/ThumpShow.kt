@@ -8,7 +8,7 @@ import baaahs.shaders.SolidShaderBuffer
 import kotlin.math.PI
 import kotlin.random.Random
 
-val ThumpShow = object : ShowMeta("Thump") {
+val ThumpShow = object : Show.MetaData("Thump") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         private val beatProvider = showRunner.getBeatProvider()
         private val colorPicker = showRunner.getColorPicker()
