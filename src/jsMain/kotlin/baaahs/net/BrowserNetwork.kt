@@ -11,21 +11,15 @@ class BrowserNetwork : Network {
     override fun link(): Network.Link = object : Network.Link {
         override val myAddress: Network.Address = object : Network.Address {}
 
-        override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
+        override val udpMtu = 1500
+        override fun listenUdp(port: Int, udpListener: Network.UdpListener): Unit =
             TODO("BrowserNetwork.listenUdp not implemented")
-        }
-
-        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray): Unit =
             TODO("BrowserNetwork.sendUdp not implemented")
-        }
-
-        override fun broadcastUdp(port: Int, bytes: ByteArray) {
+        override fun broadcastUdp(port: Int, bytes: ByteArray): Unit =
             TODO("BrowserNetwork.broadcastUdp not implemented")
-        }
-
-        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
+        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener): Unit =
             TODO("BrowserNetwork.listenTcp not implemented")
-        }
 
         override fun connectTcp(
             toAddress: Network.Address,

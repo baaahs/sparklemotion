@@ -44,7 +44,7 @@ class Mapper(
     }
 
     fun start() = doRunBlocking {
-        link = network.link()
+        link = Network.MoreReliableUdpLink(network.link())
         link.listenUdp(Ports.MAPPER, this)
 
         scope = CoroutineScope(Dispatchers.Main)

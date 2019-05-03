@@ -41,12 +41,23 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
-    fun writeBytes(data: ByteArray) {
-        growIfNecessary(4 + data.size)
-        writeInt(data.size)
+    fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+        val size = endIndex - startIndex
 
-        data.copyInto(bytes, offset)
-        offset += data.size
+        growIfNecessary(4 + size)
+        writeInt(size)
+
+        data.copyInto(bytes, offset, startIndex, endIndex)
+        offset += size
+    }
+
+    fun writeNBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+        val size = endIndex - startIndex
+
+        growIfNecessary(size)
+
+        data.copyInto(bytes, offset, startIndex, endIndex)
+        offset += size
     }
 
     fun toBytes(): ByteArray {
