@@ -40,6 +40,7 @@ kotlin {
     // For MacOS, should be changed to e.g. macosX64
     // For Windows, should be changed to e.g. mingwX64
 //    linuxX64("linux")
+
     sourceSets {
         commonMain {
             dependencies {
@@ -161,4 +162,15 @@ dokka {
     // default config apparently not compatible with kotlin-multiplatform :-(
     kotlinTasks { [] }
     sourceDirs = files('src/commonMain/kotlin') + files('src/jsMain/kotlin') + files('src/jvmMain/kotlin')
+}
+
+task runPinkyJvm(type: JavaExec) {
+    dependsOn assemble
+    main = 'baaahs.PinkyMainKt'
+
+    classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
+    args projectDir
+
+    // arguments to pass to the application
+//    args 'appArg1'
 }
