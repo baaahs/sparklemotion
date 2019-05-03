@@ -35,7 +35,7 @@ class Pinky(
         display.listShows(showMetas)
 
         val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
-        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }.joinToString(",")) {
+        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {
         }
         pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
             display.selectedShow = showMetas.find { it.name == selectedShow }
