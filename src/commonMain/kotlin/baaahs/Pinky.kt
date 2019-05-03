@@ -18,7 +18,7 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
 ) : Network.UdpListener {
-    private val link = network.link()
+    private val link = Network.MoreReliableUdpLink(network.link())
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
@@ -69,6 +69,7 @@ class Pinky(
                 show.nextFrame()
 
                 // send shader buffers out to brains
+                println("Send frame from ${currentShowMetaData.name}…")
                 showRunner.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)

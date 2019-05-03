@@ -14,7 +14,7 @@ class Brain(
     private var receivingInstructions: Boolean = false
 
     suspend fun run() {
-        link = network.link()
+        link = Network.MoreReliableUdpLink(network.link())
         link.listenUdp(Ports.BRAIN, this)
         display.haveLink(link)
 
