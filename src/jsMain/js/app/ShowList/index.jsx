@@ -22,9 +22,7 @@ class ShowList extends Component {
 
     this.props.pubSub.subscribe(
       sparklemotion.baaahs.Topics.availableShows,
-      (commaSeparatedStringOfShows) => {
-        const availableShows = commaSeparatedStringOfShows.split(',');
-
+      (availableShows) => {
         this.setState({ availableShows }, () => {
           const { availableShows } = this.state;
           console.log({ availableShows });
