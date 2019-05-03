@@ -93,6 +93,10 @@ class PubSub(private val networkLink: Network.Link) {
                     val topicInfo = topics[topic.name]
                     topicInfo?.notify(data, this)
                 }
+
+                else -> {
+                    IllegalArgumentException("huh? don't know what to do with $command")
+                }
             }
         }
 
@@ -133,7 +137,7 @@ class PubSub(private val networkLink: Network.Link) {
             link.listenTcp(port, this)
         }
 
-        override fun incomingConnection(fromAddress: Network.TcpConnection): Network.TcpListener {
+        override fun incomingConnection(fromConnection: Network.TcpConnection): Network.TcpListener {
             return Connection("server", topics)
         }
 
