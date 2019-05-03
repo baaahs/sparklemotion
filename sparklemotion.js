@@ -60,7 +60,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var equals = Kotlin.equals;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L50 = Kotlin.Long.fromInt(50);
@@ -77,12 +76,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var toByte = Kotlin.toByte;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
+  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
+  var get_list = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.get_list_gekvwj$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -1773,7 +1774,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               destination.add_11rb$(item.name);
             }
 
-            pubSub.publish_oiz02e$(tmp$, joinToString(destination, ','), Pinky$run$lambda_0);
+            pubSub.publish_oiz02e$(tmp$, destination, Pinky$run$lambda_0);
             pubSub.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.showMetas.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
             var color = this.$this.display.color;
             if (color != null) {
@@ -3245,7 +3246,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Topics() {
     Topics_instance = this;
-    this.availableShows = new PubSub$Topic('availableShows', serializer(kotlin_js_internal_StringCompanionObject));
+    this.availableShows = new PubSub$Topic('availableShows', get_list(serializer(kotlin_js_internal_StringCompanionObject)));
     this.selectedShow = new PubSub$Topic('selectedShow', serializer(kotlin_js_internal_StringCompanionObject));
     this.primaryColor = new PubSub$Topic('primaryColor', Color$Companion_getInstance().serializer());
   }
