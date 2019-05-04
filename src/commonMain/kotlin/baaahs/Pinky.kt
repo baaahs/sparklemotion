@@ -69,7 +69,7 @@ class Pinky(
                 show.nextFrame()
 
                 // send shader buffers out to brains
-                println("Send frame from ${currentShowMetaData.name}…")
+//                println("Send frame from ${currentShowMetaData.name}…")
                 showRunner.send(link)
 
 //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)

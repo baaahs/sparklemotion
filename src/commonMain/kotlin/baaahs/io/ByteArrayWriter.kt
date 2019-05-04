@@ -65,7 +65,7 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     }
 
     private fun growIfNecessary(by: Int) {
-        if (offset + by >= bytes.size) {
+        if (offset + by > bytes.size) {
             bytes = bytes.copyOf(bytes.size * 2)
         }
     }
