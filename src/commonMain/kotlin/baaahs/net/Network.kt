@@ -46,7 +46,7 @@ interface Network {
 
         var fragments = arrayListOf<Fragment>()
 
-        class Fragment(val messageId: Short, val totalSize: Short, val offset: Short, val bytes: ByteArray)
+        data class Fragment(val messageId: Short, val totalSize: Short, val offset: Short, val bytes: ByteArray)
 
         override fun listenUdp(port: Int, udpListener: UdpListener) {
             link.listenUdp(port, object : UdpListener {
@@ -64,6 +64,7 @@ interface Network {
                         val thisFragment = Fragment(messageId, totalSize, offset, frameBytes)
                         fragments.add(thisFragment)
 
+//                        println("received fragment: ${thisFragment}")
                         if (offset + size == totalSize.toInt()) {
                             // final fragment, try to reassemble…
 
@@ -125,16 +126,16 @@ interface Network {
             val messageId = nextMessageId++
             val messageCount = (bytes.size - 1) / (mtu - headerSize) + 1
             val buf = ByteArray(mtu)
-            val writer = ByteArrayWriter(buf)
             var offset = 0
             for (i in 0 until messageCount) {
+                val writer = ByteArrayWriter(buf)
                 val thisFrameSize = min((mtu - headerSize), bytes.size - offset)
                 writer.writeShort(messageId)
                 writer.writeShort(bytes.size.toShort())
                 writer.writeShort(offset.toShort())
                 writer.writeShort(thisFrameSize.toShort())
                 writer.writeNBytes(bytes, offset, offset + thisFrameSize)
-                fn(buf)
+                fn(writer.toBytes())
 
                 offset += thisFrameSize
             }

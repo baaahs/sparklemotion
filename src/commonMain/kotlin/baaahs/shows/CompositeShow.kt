@@ -36,7 +36,7 @@ val CompositeShow = object : Show.MetaData("Composite") {
         }
 
         override fun nextFrame() {
-            val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
+            val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
 
             var i = 0
             shaderBufs.forEach { shaderBuffer ->
