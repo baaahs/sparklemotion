@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
         override fun haveLink(link: Network.Link) {
             println("Brain has a link!")
         }
-    }, JvmPixelsDisplay(512), SheepModel.Panel("21L"))
+    }, JvmPixelsDisplay(2000), SheepModel.Panel("21L"))
 
     GlobalScope.launch { brain.run() }
 
@@ -64,8 +64,11 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
     init {
         frame.size = Dimension(300, 300)
         frame.isVisible = true
-        frame.add(canvas)
+
+        canvas.preferredSize = frame.size
         canvas.background = java.awt.Color.BLACK
+        frame.add(canvas)
+        frame.pack()
         frame.invalidate()
     }
 
