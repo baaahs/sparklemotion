@@ -46,9 +46,9 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
                         // final fragment, try to reassemble…
 
                         val myFragments = arrayListOf<Fragment>()
-                        fragments.removeAll {
-                            val remove = it.messageId == messageId
-                            if (remove) myFragments.add(it)
+                        fragments.removeAll { fragment ->
+                            val remove = fragment.messageId == messageId
+                            if (remove) myFragments.add(fragment)
                             remove
                         }
 
@@ -75,16 +75,12 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
 
     /** Sends payloads which might be larger than the network's MTU. */
     override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-        transmitMultipartUdp(bytes) {
-            link.sendUdp(toAddress, port, it)
-        }
+        transmitMultipartUdp(bytes) { fragment -> link.sendUdp(toAddress, port, fragment) }
     }
 
     /** Broadcasts payloads which might be larger than the network's MTU. */
     override fun broadcastUdp(port: Int, bytes: ByteArray) {
-        transmitMultipartUdp(bytes) {
-            link.broadcastUdp(port, it)
-        }
+        transmitMultipartUdp(bytes) { fragment -> link.broadcastUdp(port, fragment) }
     }
 
     override fun sendUdp(toAddress: Network.Address, port: Int, message: Message) {

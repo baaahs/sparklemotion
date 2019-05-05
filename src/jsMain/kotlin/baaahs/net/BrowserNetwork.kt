@@ -55,14 +55,8 @@ class BrowserNetwork : Network {
                 tcpListener.receive(tcpConnection, bytes)
             }
 
-            webSocket.onerror = {
-                console.log("WebSocket error!", it)
-            }
-
-            webSocket.onclose = {
-                console.log("WebSocket close!", it)
-            }
-
+            webSocket.onerror = { console.log("WebSocket error!", it) }
+            webSocket.onclose = { console.log("WebSocket close!", it) }
 
             return tcpConnection
         }
