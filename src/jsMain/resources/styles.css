@@ -19,9 +19,9 @@ body {
     bottom: 5px;
     left: 80%;
     right: 5px;
-    height: 100%;
     padding: .25em;
     font: 10pt Helvetica;
+    border-radius: 5px;
 }
 
 #panelSelect {
@@ -195,4 +195,10 @@ body {
     text-shadow: 1px 1px 3px black, -1px -1px 3px black;
     background: rgba(0, 0, 0, .5);
     height: 250px;
+}
+
+.sparklemotion-ui #simulatorView {
+    left: auto;
+    bottom: auto;
+    padding: 1em;
 }

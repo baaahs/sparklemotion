@@ -27,5 +27,6 @@ class UiContext(
 expect fun createUiApp(elementId: String, uiContext: UiContext): Any
 
 interface UiDisplay {
+    @JsName("createApp")
     fun createApp(uiContext: UiContext)
 }
