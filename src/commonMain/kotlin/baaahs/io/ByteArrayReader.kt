@@ -20,7 +20,7 @@ class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
     fun readFloat(): Float = Float.fromBits(readInt())
 
     fun readString(): String {
-        var length = readInt()
+        val length = readInt()
         val buf = StringBuilder(length)
         for (i in 0 until length) {
             buf.append(readChar())
@@ -30,6 +30,10 @@ class ByteArrayReader(val bytes: ByteArray, var offset: Int = 0) {
 
     fun readBytes(): ByteArray {
         val count = readInt()
+        return readNBytes(count)
+    }
+
+    fun readNBytes(count: Int): ByteArray {
         val bytes = bytes.copyOfRange(offset, offset + count)
         offset += count
         return bytes

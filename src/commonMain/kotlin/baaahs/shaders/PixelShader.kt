@@ -3,6 +3,7 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import kotlin.math.min
 
 class PixelShader : Shader(ShaderType.PIXEL) {
     override val buffer = PixelShaderBuffer()
@@ -18,7 +19,8 @@ class PixelShaderImpl(val buffer: PixelShaderBuffer, val pixels: Pixels) : Shade
     private val colors = Array(pixels.count) { Color.WHITE }
 
     override fun draw() {
-        for (i in colors.indices) {
+        val pixCount = min(buffer.colors.size, colors.size)
+        for (i in 0 until pixCount) {
             colors[i] = buffer.colors[i]
         }
         pixels.set(colors)

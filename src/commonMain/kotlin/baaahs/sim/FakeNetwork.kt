@@ -136,6 +136,8 @@ class FakeNetwork(
     private fun packetLossRate() = display?.packetLossRate ?: 0f
 
     private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
+        override val udpMtu = 1500
+
         override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
             this@FakeNetwork.listenUdp(myAddress, port, udpListener)
         }

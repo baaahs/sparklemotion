@@ -20,7 +20,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
             override fun nextFrame() {
                 sheepModel.allPanels.forEach { panel ->
                     if (panel.number > -1) {
-                        val now = getTimeMillis().toInt()
+                        val now = getTimeMillis().and(0xfffffff).toInt()
                         val colorIndex = (now / fadeTimeMs + panel.number) % colorArray.size
                         val startColor = colorArray[colorIndex]
                         val endColor = colorArray[(colorIndex + 1) % colorArray.size]

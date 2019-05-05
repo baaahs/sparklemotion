@@ -38,6 +38,7 @@ data class Color(val argb: Int) {
     fun greenI(value: Int) = value shr 8 and 0xff
     fun blueI(value: Int) = value and 0xff
 
+    val rgb: Int get() = argb and 0xffffff
     fun toInt(): Int = argb
 
     @JsName("toHexString")
