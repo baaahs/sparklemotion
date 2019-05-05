@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.SheepModel.Panel
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.CompositorShader
@@ -18,7 +19,7 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
 ) : Network.UdpListener {
-    private val link = Network.MoreReliableUdpLink(network.link())
+    private val link = FragmentingUdpLink(network.link())
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
