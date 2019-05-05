@@ -145,6 +145,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var L200000 = Kotlin.Long.fromInt(200000);
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
+  var toTypedArray = Kotlin.kotlin.collections.toTypedArray_964n91$;
   PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Connection$receive$ObjectLiteral.prototype.constructor = PubSub$Connection$receive$ObjectLiteral;
   PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
@@ -2203,6 +2204,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topic.name);
         topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
         break;
+      default:IllegalArgumentException_init("huh? don't know what to do with " + command);
+        break;
     }
   };
   PubSub$Connection.prototype.sendTopicUpdate_puj7f4$ = function (name, data) {
@@ -2241,7 +2244,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.topics_0 = HashMap_init();
     link.listenTcp_kd29r4$(port, this);
   }
-  PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromAddress) {
+  PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromConnection) {
     return new PubSub$Connection('server', this.topics_0);
   };
   function PubSub$Server$publish$ObjectLiteral(closure$onUpdate, closure$topic, origin) {
@@ -3283,7 +3286,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Ui.prototype.connect = function () {
     var pubSub = new PubSub$Client(this.link, this.pinkyAddress, Ports$Companion_getInstance().PINKY_UI_TCP);
     var context = new UiContext(pubSub);
-    this.display.createApp_kvdprd$(context);
+    this.display.createApp(context);
   };
   Ui.$metadata$ = {
     kind: Kind_CLASS,
@@ -6215,7 +6218,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     println('Resize to ' + width + ', ' + height);
     return Unit;
   }
-  JsUiDisplay.prototype.createApp_kvdprd$ = function (uiContext) {
+  JsUiDisplay.prototype.createApp = function (uiContext) {
     this.frame_0 = this.domContainer_0.getFrame_409ufb$('UI', this.div_0, JsUiDisplay$createApp$lambda(this), JsUiDisplay$createApp$lambda_0);
     this.jsApp_0 = document.createUiApp(this.div_0, uiContext);
   };
@@ -7124,6 +7127,122 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function getTimeMillis() {
     return Kotlin.Long.fromNumber(Date.now());
   }
+  function BrowserNetwork() {
+  }
+  function BrowserNetwork$link$ObjectLiteral() {
+    this.myAddress_4sgley$_0 = new BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral();
+  }
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'myAddress', {
+    get: function () {
+      return this.myAddress_4sgley$_0;
+    }
+  });
+  BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenUdp not implemented');
+  };
+  BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.sendUdp not implemented');
+  };
+  BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.broadcastUdp not implemented');
+  };
+  BrowserNetwork$link$ObjectLiteral.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenTcp not implemented');
+  };
+  function BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral(closure$port, closure$webSocket, this$) {
+    this.closure$port = closure$port;
+    this.closure$webSocket = closure$webSocket;
+    this.fromAddress_u3qrj2$_0 = this$.myAddress;
+    this.toAddress_f64ygj$_0 = this$.myAddress;
+  }
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'fromAddress', {
+    get: function () {
+      return this.fromAddress_u3qrj2$_0;
+    }
+  });
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'toAddress', {
+    get: function () {
+      return this.toAddress_f64ygj$_0;
+    }
+  });
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'port', {
+    get: function () {
+      return this.closure$port;
+    }
+  });
+  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_fqrh44$ = function (bytes) {
+    this.closure$webSocket.send(new Int8Array(toTypedArray(bytes)));
+  };
+  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Network$TcpConnection]
+  };
+  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda(closure$tcpListener, closure$tcpConnection) {
+    return function (it) {
+      console.log('WebSocket open!', it);
+      closure$tcpListener.connected_67ozxy$(closure$tcpConnection);
+      return Unit;
+    };
+  }
+  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_0(closure$tcpListener, closure$tcpConnection) {
+    return function (it) {
+      var tmp$, tmp$_0;
+      var buf = Kotlin.isType(tmp$ = it.data, ArrayBuffer) ? tmp$ : throwCCE();
+      var byteBuf = new Int8Array(buf);
+      var bytes = new Int8Array(byteBuf.length);
+      tmp$_0 = byteBuf.length;
+      for (var i = 0; i < tmp$_0; i++) {
+        bytes[i] = byteBuf[i];
+      }
+      closure$tcpListener.receive_r00qii$(closure$tcpConnection, bytes);
+      return Unit;
+    };
+  }
+  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_1(it) {
+    console.log('WebSocket error!', it);
+    return Unit;
+  }
+  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_2(it) {
+    console.log('WebSocket close!', it);
+    return Unit;
+  }
+  BrowserNetwork$link$ObjectLiteral.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
+    var tmp$;
+    var webSocket = new WebSocket((Kotlin.isType(tmp$ = toAddress, BrowserNetwork$BrowserAddress) ? tmp$ : throwCCE()).urlString + 'sm/ws');
+    webSocket.binaryType = 'arraybuffer';
+    var tcpConnection = new BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral(port, webSocket, this);
+    webSocket.onopen = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda(tcpListener, tcpConnection);
+    webSocket.onmessage = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_0(tcpListener, tcpConnection);
+    webSocket.onerror = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_1;
+    webSocket.onclose = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_2;
+    return tcpConnection;
+  };
+  function BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral() {
+  }
+  BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Network$Address]
+  };
+  BrowserNetwork$link$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Network$Link]
+  };
+  BrowserNetwork.prototype.link = function () {
+    return new BrowserNetwork$link$ObjectLiteral();
+  };
+  function BrowserNetwork$BrowserAddress(urlString) {
+    this.urlString = urlString;
+  }
+  BrowserNetwork$BrowserAddress.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrowserAddress',
+    interfaces: [Network$Address]
+  };
+  BrowserNetwork.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrowserNetwork',
+    interfaces: [Network]
+  };
   function FakeMediaDevices(visualizer) {
     this.visualizer_0 = visualizer;
     this.currentCam = null;
@@ -7613,12 +7732,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getDisplay = getDisplay;
   package$baaahs.getTimeMillis = getTimeMillis;
+  BrowserNetwork.BrowserAddress = BrowserNetwork$BrowserAddress;
+  package$net.BrowserNetwork = BrowserNetwork;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$sim.FakeMediaDevices = FakeMediaDevices;
   Color$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
+  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
+  BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
+  BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   CompositeShow = new CompositeShow$ObjectLiteral('Composite');
   RandomShow = new RandomShow$ObjectLiteral('Random');
   SomeDumbShow = new SomeDumbShow$ObjectLiteral('SomeDumbShow');

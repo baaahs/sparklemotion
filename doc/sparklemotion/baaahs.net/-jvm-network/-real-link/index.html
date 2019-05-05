@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>JvmNetwork.RealLink - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.net</a>&nbsp;/&nbsp;<a href="../index.html">JvmNetwork</a>&nbsp;/&nbsp;<a href="./index.html">RealLink</a><br/>
+<br/>
+<h1>RealLink</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RealLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../-network/-link/index.html"><span class="identifier">Network.Link</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">RealLink</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="default-udp-socket.html">defaultUdpSocket</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">defaultUdpSocket</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/6/docs/api/java/net/DatagramSocket.html"><span class="identifier">DatagramSocket</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="my-address.html">myAddress</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">myAddress</span><span class="symbol">: </span><a href="../-ip-address/index.html"><span class="identifier">JvmNetwork.IpAddress</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="network-scope.html">networkScope</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">networkScope</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="broadcast-udp.html">broadcastUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">broadcastUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$broadcastUdp(kotlin.Int, kotlin.ByteArray)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$broadcastUdp(kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="connect-tcp.html">connectTcp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">connectTcp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/tcpListener">tcpListener</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-tcp-listener/index.html"><span class="identifier">Network.TcpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="listen-tcp.html">listenTcp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listenTcp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenTcp(kotlin.Int, baaahs.net.Network.TcpServerSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenTcp(kotlin.Int, baaahs.net.Network.TcpServerSocketListener)/tcpServerSocketListener">tcpServerSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-tcp-server-socket-listener/index.html"><span class="identifier">Network.TcpServerSocketListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="listen-udp.html">listenUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="send-udp.html">sendUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">sendUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../-network/-link/broadcast-udp.html">broadcastUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">broadcastUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$broadcastUdp(kotlin.Int, baaahs.proto.Message)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$broadcastUdp(kotlin.Int, baaahs.proto.Message)/message">message</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.proto/-message/index.html"><span class="identifier">Message</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../-network/-link/send-udp.html">sendUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">sendUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/message">message</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.proto/-message/index.html"><span class="identifier">Message</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
