@@ -8,7 +8,7 @@ const Show = ({ name, isSelected, handleSelectShow }) => (
     onClick={() => {
       handleSelectShow(name);
     }}
-    className={classNames({
+    className={classNames(styles['show-list--item'], {
       [styles['selected']]: isSelected,
     })}
   >
