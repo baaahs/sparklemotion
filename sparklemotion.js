@@ -94,10 +94,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
+  var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
+  var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var Array_0 = Array;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var L268435455 = Kotlin.Long.fromInt(268435455);
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
@@ -247,7 +250,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.link_0 = this.$this.network_0.link();
+            this.$this.link_0 = new FragmentingUdpLink(this.$this.network_0.link());
             this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().BRAIN, this.$this);
             this.$this.display_0.haveLink_9m0ekx$(this.$this.link_0);
             this.state_0 = 2;
@@ -412,6 +415,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Color.prototype.blueI_za3lpa$ = function (value) {
     return value & 255;
   };
+  Object.defineProperty(Color.prototype, 'rgb', {
+    get: function () {
+      return this.argb & 16777215;
+    }
+  });
   Color.prototype.toInt = function () {
     return this.argb;
   };
@@ -834,7 +842,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0 = this.local$this$Mapper.network_0.link();
+            this.local$this$Mapper.link_0 = new FragmentingUdpLink(this.local$this$Mapper.network_0.link());
             this.local$this$Mapper.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().MAPPER, this.local$this$Mapper);
             this.local$this$Mapper.scope = CoroutineScope(coroutines.Dispatchers.Main);
             return launch(this.local$this$Mapper.scope, void 0, void 0, Mapper$start$lambda$lambda(this.local$this$Mapper));
@@ -1633,7 +1641,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.network = network;
     this.dmxUniverse = dmxUniverse;
     this.display = display;
-    this.link_0 = this.network.link();
+    this.link_0 = new FragmentingUdpLink(this.network.link());
     this.brains_0 = LinkedHashMap_init();
     this.beatProvider_0 = new Pinky$BeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
@@ -3360,6 +3368,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   ByteArrayReader.prototype.readBytes = function () {
     var count = this.readInt();
+    return this.readNBytes_za3lpa$(count);
+  };
+  ByteArrayReader.prototype.readNBytes_za3lpa$ = function (count) {
     var bytes = copyOfRange(this.bytes, this.offset, this.offset + count | 0);
     this.offset = this.offset + count | 0;
     return bytes;
@@ -3419,17 +3430,32 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       this.writeChar_s8itvh$(s.charCodeAt(i));
     }
   };
-  ByteArrayWriter.prototype.writeBytes_fqrh44$ = function (data) {
-    this.growIfNecessary_0(4 + data.length | 0);
-    this.writeInt_za3lpa$(data.length);
-    arrayCopy(data, this.bytes_0, this.offset, 0, data.length);
-    this.offset = this.offset + data.length | 0;
+  ByteArrayWriter.prototype.writeBytes_mj6st8$ = function (data, startIndex, endIndex) {
+    if (startIndex === void 0)
+      startIndex = 0;
+    if (endIndex === void 0)
+      endIndex = data.length;
+    var size = endIndex - startIndex | 0;
+    this.growIfNecessary_0(4 + size | 0);
+    this.writeInt_za3lpa$(size);
+    arrayCopy(data, this.bytes_0, this.offset, startIndex, endIndex);
+    this.offset = this.offset + size | 0;
+  };
+  ByteArrayWriter.prototype.writeNBytes_mj6st8$ = function (data, startIndex, endIndex) {
+    if (startIndex === void 0)
+      startIndex = 0;
+    if (endIndex === void 0)
+      endIndex = data.length;
+    var size = endIndex - startIndex | 0;
+    this.growIfNecessary_0(size);
+    arrayCopy(data, this.bytes_0, this.offset, startIndex, endIndex);
+    this.offset = this.offset + size | 0;
   };
   ByteArrayWriter.prototype.toBytes = function () {
     return copyOf(this.bytes_0, this.offset);
   };
   ByteArrayWriter.prototype.growIfNecessary_0 = function (by) {
-    if ((this.offset + by | 0) >= this.bytes_0.length) {
+    if ((this.offset + by | 0) > this.bytes_0.length) {
       this.bytes_0 = copyOf(this.bytes_0, this.bytes_0.length * 2 | 0);
     }
   };
@@ -3443,6 +3469,189 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     ByteArrayWriter.call($this, new Int8Array(size));
     return $this;
   }
+  function FragmentingUdpLink(link) {
+    this.link_0 = link;
+    this.mtu = this.link_0.udpMtu;
+    this.headerSize = 8;
+    this.nextMessageId = 0;
+    this.fragments = ArrayList_init();
+  }
+  Object.defineProperty(FragmentingUdpLink.prototype, 'myAddress', {
+    get: function () {
+      return this.link_0.myAddress;
+    }
+  });
+  Object.defineProperty(FragmentingUdpLink.prototype, 'udpMtu', {
+    get: function () {
+      return this.link_0.udpMtu;
+    }
+  });
+  function FragmentingUdpLink$Fragment(messageId, totalSize, offset, bytes) {
+    this.messageId = messageId;
+    this.totalSize = totalSize;
+    this.offset = offset;
+    this.bytes = bytes;
+  }
+  FragmentingUdpLink$Fragment.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Fragment',
+    interfaces: []
+  };
+  FragmentingUdpLink$Fragment.prototype.component1 = function () {
+    return this.messageId;
+  };
+  FragmentingUdpLink$Fragment.prototype.component2 = function () {
+    return this.totalSize;
+  };
+  FragmentingUdpLink$Fragment.prototype.component3 = function () {
+    return this.offset;
+  };
+  FragmentingUdpLink$Fragment.prototype.component4 = function () {
+    return this.bytes;
+  };
+  FragmentingUdpLink$Fragment.prototype.copy_sctihr$ = function (messageId, totalSize, offset, bytes) {
+    return new FragmentingUdpLink$Fragment(messageId === void 0 ? this.messageId : messageId, totalSize === void 0 ? this.totalSize : totalSize, offset === void 0 ? this.offset : offset, bytes === void 0 ? this.bytes : bytes);
+  };
+  FragmentingUdpLink$Fragment.prototype.toString = function () {
+    return 'Fragment(messageId=' + Kotlin.toString(this.messageId) + (', totalSize=' + Kotlin.toString(this.totalSize)) + (', offset=' + Kotlin.toString(this.offset)) + (', bytes=' + Kotlin.toString(this.bytes)) + ')';
+  };
+  FragmentingUdpLink$Fragment.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.messageId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.totalSize) | 0;
+    result = result * 31 + Kotlin.hashCode(this.offset) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bytes) | 0;
+    return result;
+  };
+  FragmentingUdpLink$Fragment.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.messageId, other.messageId) && Kotlin.equals(this.totalSize, other.totalSize) && Kotlin.equals(this.offset, other.offset) && Kotlin.equals(this.bytes, other.bytes)))));
+  };
+  function FragmentingUdpLink$listenUdp$ObjectLiteral(closure$udpListener, this$FragmentingUdpLink) {
+    this.closure$udpListener = closure$udpListener;
+    this.this$FragmentingUdpLink = this$FragmentingUdpLink;
+  }
+  function FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(closure$messageId, closure$myFragments) {
+    return function (fragment) {
+      var remove = fragment.messageId === closure$messageId;
+      if (remove)
+        closure$myFragments.add_11rb$(fragment);
+      return remove;
+    };
+  }
+  FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
+    var reader = new ByteArrayReader(bytes);
+    var messageId = reader.readShort();
+    var totalSize = reader.readShort();
+    var offset = reader.readShort();
+    var size = reader.readShort();
+    var frameBytes = reader.readNBytes_za3lpa$(size);
+    if (offset === 0 && size === totalSize) {
+      this.closure$udpListener.receive_rq4egf$(fromAddress, frameBytes);
+    }
+     else {
+      var thisFragment = new FragmentingUdpLink$Fragment(messageId, totalSize, offset, frameBytes);
+      this.this$FragmentingUdpLink.fragments.add_11rb$(thisFragment);
+      if (offset + size === totalSize) {
+        var myFragments = ArrayList_init();
+        removeAll(this.this$FragmentingUdpLink.fragments, FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(messageId, myFragments));
+        if (!this.this$FragmentingUdpLink.fragments.isEmpty()) {
+          println('remaining fragments = ' + this.this$FragmentingUdpLink.fragments);
+        }
+        var destination = ArrayList_init_0(collectionSizeOrDefault(myFragments, 10));
+        var tmp$;
+        tmp$ = myFragments.iterator();
+        while (tmp$.hasNext()) {
+          var item = tmp$.next();
+          destination.add_11rb$(item.bytes.length);
+        }
+        var iterator = destination.iterator();
+        if (!iterator.hasNext())
+          throw UnsupportedOperationException_init("Empty collection can't be reduced.");
+        var accumulator = iterator.next();
+        while (iterator.hasNext()) {
+          accumulator = accumulator + iterator.next() | 0;
+        }
+        var actualTotalSize = accumulator;
+        if (actualTotalSize !== totalSize) {
+          IllegalArgumentException_init("can't reassemble packet, " + actualTotalSize + ' != ' + totalSize + ' for ' + messageId);
+        }
+        var reassembleBytes = new Int8Array(totalSize);
+        var tmp$_0;
+        tmp$_0 = myFragments.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          var $receiver = element.bytes;
+          arrayCopy($receiver, reassembleBytes, element.offset, 0, $receiver.length);
+        }
+        this.closure$udpListener.receive_rq4egf$(fromAddress, reassembleBytes);
+      }
+    }
+  };
+  FragmentingUdpLink$listenUdp$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Network$UdpListener]
+  };
+  FragmentingUdpLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
+    this.link_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this));
+  };
+  function FragmentingUdpLink$sendUdp$lambda(this$FragmentingUdpLink, closure$toAddress, closure$port) {
+    return function (fragment) {
+      this$FragmentingUdpLink.link_0.sendUdp_ytpeqp$(closure$toAddress, closure$port, fragment);
+      return Unit;
+    };
+  }
+  FragmentingUdpLink.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$sendUdp$lambda(this, toAddress, port));
+  };
+  function FragmentingUdpLink$broadcastUdp$lambda(this$FragmentingUdpLink, closure$port) {
+    return function (fragment) {
+      this$FragmentingUdpLink.link_0.broadcastUdp_3fbn1q$(closure$port, fragment);
+      return Unit;
+    };
+  }
+  FragmentingUdpLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$broadcastUdp$lambda(this, port));
+  };
+  FragmentingUdpLink.prototype.sendUdp_wpmaqi$ = function (toAddress, port, message) {
+    this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
+  };
+  FragmentingUdpLink.prototype.broadcastUdp_68hu5j$ = function (port, message) {
+    this.broadcastUdp_3fbn1q$(port, message.toBytes());
+  };
+  FragmentingUdpLink.prototype.transmitMultipartUdp_0 = function (bytes, fn) {
+    var tmp$;
+    if (bytes.length > 65535) {
+      IllegalArgumentException_init('buffer too big! ' + bytes.length + ' must be < 65536');
+    }
+    var messageId = (tmp$ = this.nextMessageId, this.nextMessageId = toShort(tmp$ + 1), tmp$);
+    var messageCount = ((bytes.length - 1 | 0) / (this.mtu - this.headerSize | 0) | 0) + 1 | 0;
+    var buf = new Int8Array(this.mtu);
+    var offset = 0;
+    for (var i = 0; i < messageCount; i++) {
+      var writer = new ByteArrayWriter(buf);
+      var a = this.mtu - this.headerSize | 0;
+      var b = bytes.length - offset | 0;
+      var thisFrameSize = Math_0.min(a, b);
+      writer.writeShort_mq22fl$(messageId);
+      writer.writeShort_mq22fl$(toShort(bytes.length));
+      writer.writeShort_mq22fl$(toShort(offset));
+      writer.writeShort_mq22fl$(toShort(thisFrameSize));
+      writer.writeNBytes_mj6st8$(bytes, offset, offset + thisFrameSize | 0);
+      fn(writer.toBytes());
+      offset = offset + thisFrameSize | 0;
+    }
+  };
+  FragmentingUdpLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
+    this.link_0.listenTcp_kd29r4$(port, tcpServerSocketListener);
+  };
+  FragmentingUdpLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
+    return this.link_0.connectTcp_dy234z$(toAddress, port, tcpListener);
+  };
+  FragmentingUdpLink.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FragmentingUdpLink',
+    interfaces: [Network$Link]
+  };
   function Network() {
   }
   function Network$Link() {
@@ -4125,9 +4334,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.colors_0 = array;
   }
   PixelShaderImpl.prototype.draw = function () {
-    var tmp$;
-    tmp$ = this.colors_0;
-    for (var i = 0; i !== tmp$.length; ++i) {
+    var a = this.buffer.colors.length;
+    var b = this.colors_0.length;
+    var pixCount = Math_0.min(a, b);
+    for (var i = 0; i < pixCount; i++) {
       this.colors_0[i] = this.buffer.colors[i];
     }
     this.pixels.set_tmuqsv$(this.colors_0);
@@ -4417,7 +4627,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.movingHeadBuffers_0 = destination_0;
   }
   CompositeShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextFrame = function () {
-    var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
+    var theta = getTimeMillis().modulo(Kotlin.Long.fromInt(10000)).toNumber() / 1000.0 % (2 * math.PI);
     var i = {v: 0};
     var tmp$;
     tmp$ = this.shaderBufs_0.iterator();
@@ -4492,7 +4702,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var element = tmp$.next();
       var closure$colorArray = this.closure$colorArray;
       if (get_number(element) > -1) {
-        var now = getTimeMillis().toInt();
+        var now = getTimeMillis().and(L268435455).toInt();
         var colorIndex = ((now / this.fadeTimeMs | 0) + get_number(element) | 0) % closure$colorArray.length;
         var startColor = closure$colorArray[colorIndex];
         var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
@@ -4555,7 +4765,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var element = tmp$.next();
       var closure$colorArray = this.closure$colorArray;
       if (PixelTweenShow_getInstance().get_number_y56fi1$(element) > -1) {
-        var now = getTimeMillis().toInt();
+        var now = getTimeMillis().and(L268435455).toInt();
         var colorIndex = ((now / this.fadeTimeMs | 0) + PixelTweenShow_getInstance().get_number_y56fi1$(element) | 0) % closure$colorArray.length;
         var startColor = closure$colorArray[colorIndex];
         var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
@@ -5264,10 +5474,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function FakeNetwork$FakeLink($outer, myAddress) {
     this.$outer = $outer;
     this.myAddress_npb8zl$_0 = myAddress;
+    this.udpMtu_jnv15u$_0 = 1500;
   }
   Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
     get: function () {
       return this.myAddress_npb8zl$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeLink.prototype, 'udpMtu', {
+    get: function () {
+      return this.udpMtu_jnv15u$_0;
     }
   });
   FakeNetwork$FakeLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
@@ -7131,10 +7347,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function BrowserNetwork$link$ObjectLiteral() {
     this.myAddress_4sgley$_0 = new BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral();
+    this.udpMtu_1mlzjd$_0 = 1500;
   }
   Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'myAddress', {
     get: function () {
       return this.myAddress_4sgley$_0;
+    }
+  });
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'udpMtu', {
+    get: function () {
+      return this.udpMtu_1mlzjd$_0;
     }
   });
   BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
@@ -7554,13 +7776,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$io.ByteArrayReader = ByteArrayReader;
   package$io.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$io.ByteArrayWriter = ByteArrayWriter;
+  FragmentingUdpLink.Fragment = FragmentingUdpLink$Fragment;
+  var package$net = package$baaahs.net || (package$baaahs.net = {});
+  package$net.FragmentingUdpLink = FragmentingUdpLink;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
   Network.UdpListener = Network$UdpListener;
   Network.TcpConnection = Network$TcpConnection;
   Network.TcpListener = Network$TcpListener;
   Network.TcpServerSocketListener = Network$TcpServerSocketListener;
-  var package$net = package$baaahs.net || (package$baaahs.net = {});
   package$net.Network = Network;
   Object.defineProperty(Ports, 'Companion', {
     get: Ports$Companion_getInstance
