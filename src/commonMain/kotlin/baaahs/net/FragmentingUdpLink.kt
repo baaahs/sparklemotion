@@ -53,7 +53,7 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
                         }
 
                         if (!fragments.isEmpty()) {
-                            println("remaining fragments = ${fragments}")
+                            // println("remaining fragments = ${fragments}")
                         }
 
                         val actualTotalSize = myFragments.map { it.bytes.size }.reduce { acc, i -> acc + i }
