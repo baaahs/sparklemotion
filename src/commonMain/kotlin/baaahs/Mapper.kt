@@ -3,6 +3,7 @@ package baaahs
 import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
@@ -44,7 +45,7 @@ class Mapper(
     }
 
     fun start() = doRunBlocking {
-        link = Network.MoreReliableUdpLink(network.link())
+        link = FragmentingUdpLink(network.link())
         link.listenUdp(Ports.MAPPER, this)
 
         scope = CoroutineScope(Dispatchers.Main)

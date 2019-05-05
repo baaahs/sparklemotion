@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import kotlinx.coroutines.delay
@@ -14,7 +15,7 @@ class Brain(
     private var receivingInstructions: Boolean = false
 
     suspend fun run() {
-        link = Network.MoreReliableUdpLink(network.link())
+        link = FragmentingUdpLink(network.link())
         link.listenUdp(Ports.BRAIN, this)
         display.haveLink(link)
 
