@@ -49,6 +49,6 @@ interface Network {
     }
 
     interface TcpServerSocketListener {
-        fun incomingConnection(fromAddress: Network.TcpConnection): TcpListener
+        fun incomingConnection(fromConnection: TcpConnection): TcpListener
     }
 }

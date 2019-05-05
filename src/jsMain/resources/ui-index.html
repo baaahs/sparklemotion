@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sheep UI</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
+<body class="sparklemotion-ui">
+<div id="content"></div>
+
+<div id="simulatorView">
+  <h3>Sparkle Motion UI <small><i>FUCK YEAH</i></small></h3>
+</div>
+
+<script type="application/javascript" src="react_app.js"></script>
+
+<script type="application/javascript" src="lib/kotlin.js"></script>
+<script type="application/javascript" src="lib/kotlinx-coroutines-core.js"></script>
+<script type="application/javascript" src="lib/kotlinx-serialization-runtime-js.js"></script>
+<script type="application/javascript" src="lib/kotlinx-html-js.js"></script>
+
+<script type="application/javascript" src="lib/three.js"></script>
+<script type="application/javascript" src="lib/threejs-wrapper.js"></script>
+<script type="application/javascript" src="lib/OrbitControls.js"></script>
+
+<script type="application/javascript">
+  // cache busting
+  const cacheBustStr = 2 || new Date().getTime();
+  [
+    "sparklemotion.js",
+  ].forEach(function (value) {
+    document.write(`\x3Cscript type="text/javascript" src="${value}?ts=${cacheBustStr}">\x3C/script>\n`);
+  });
+</script>
+
+<script type="application/javascript">
+  function myUrl() {
+    const l = window.location;
+    return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
+  }
+
+  let network = new sparklemotion.baaahs.net.BrowserNetwork();
+  let pinkyAddress = new sparklemotion.baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
+  new sparklemotion.baaahs.Ui(network, pinkyAddress, {
+    createApp: (uiContext) => { document.createUiApp(document.getElementById("content"), uiContext); }
+  });
+</script>
+
+</body>
+</html>
