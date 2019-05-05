@@ -170,7 +170,12 @@ task runPinkyJvm(type: JavaExec) {
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
+}
 
-    // arguments to pass to the application
-//    args 'appArg1'
+task runBrainJvm(type: JavaExec) {
+    dependsOn assemble
+    main = 'baaahs.PinkyMainKt'
+
+    classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
+    args projectDir
 }

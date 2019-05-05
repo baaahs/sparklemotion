@@ -8,6 +8,7 @@ interface Network {
     interface Link {
         val myAddress: Address
 
+        val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener)
         fun sendUdp(toAddress: Address, port: Int, bytes: ByteArray)
         fun broadcastUdp(port: Int, bytes: ByteArray)
