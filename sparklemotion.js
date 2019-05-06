@@ -3554,9 +3554,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       if (offset + size === totalSize) {
         var myFragments = ArrayList_init();
         removeAll(this.this$FragmentingUdpLink.fragments, FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(messageId, myFragments));
-        if (!this.this$FragmentingUdpLink.fragments.isEmpty()) {
-          println('remaining fragments = ' + this.this$FragmentingUdpLink.fragments);
-        }
+        this.this$FragmentingUdpLink.fragments.isEmpty();
         var destination = ArrayList_init_0(collectionSizeOrDefault(myFragments, 10));
         var tmp$;
         tmp$ = myFragments.iterator();
