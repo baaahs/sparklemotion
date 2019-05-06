@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Show from './Show.jsx';
+import styles from './ShowList.scss';
 
 class ShowList extends Component {
   state = {
@@ -22,10 +23,11 @@ class ShowList extends Component {
 
     this.props.pubSub.subscribe(
       sparklemotion.baaahs.Topics.availableShows,
-      (availableShows) => {
+      (response) => {
+        const availableShows = response.toArray();
+
         this.setState({ availableShows }, () => {
           const { availableShows } = this.state;
-          console.log({ availableShows });
         });
       }
     );
@@ -44,16 +46,19 @@ class ShowList extends Component {
     const { selectedShow, availableShows } = this.state;
 
     return (
-      <ul>
-        {availableShows.map((showName) => (
-          <Show
-            key={`show-${showName}`}
-            name={showName}
-            isSelected={showName === selectedShow}
-            handleSelectShow={this.handleSelectShow}
-          />
-        ))}
-      </ul>
+      <div className={styles['show-list--wrapper']}>
+        <div className={styles['show-list--title']}>Shows</div>
+        <ul className={styles['show-list']}>
+          {availableShows.map((showName) => (
+            <Show
+              key={`show-${showName}`}
+              name={showName}
+              isSelected={showName === selectedShow}
+              handleSelectShow={this.handleSelectShow}
+            />
+          ))}
+        </ul>
+      </div>
     );
   }
 }
