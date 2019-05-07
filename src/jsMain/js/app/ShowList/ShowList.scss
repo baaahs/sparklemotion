@@ -1,13 +1,13 @@
 .show-list--wrapper {
   float: right;
-  height: 100vh;
+  height: auto;
   width: 25%;
   background: #343540;
 }
 
 .show-list {
   list-style: none;
-  padding-left: 0px;
+  padding-left: 0;
   margin-top: 0;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .show-list--item {
-  padding: 20px 0px 20px 10px;
+  padding: 5px 0 5px 10px;
   cursor: pointer;
 
   &:hover {

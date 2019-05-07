@@ -17,7 +17,8 @@ body {
     background-color: white;
     top: 5px;
     bottom: 5px;
-    right: 50%;
+    left: 80%;
+    right: 5px;
     padding: .25em;
     font: 10pt Helvetica;
     border-radius: 5px;
@@ -200,4 +201,5 @@ body {
     left: auto;
     bottom: auto;
     padding: 1em;
+    right: 50%;
 }
