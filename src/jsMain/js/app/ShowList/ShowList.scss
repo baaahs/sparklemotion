@@ -20,10 +20,10 @@
 .show-list--item {
   padding: 5px 0 5px 10px;
   cursor: pointer;
+}
 
-  &:hover {
-    background-color: #1A4042;
-  }
+.show-list--item:hover {
+  background-color: #1A4042;
 }
 
 .selected {
