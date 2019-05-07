@@ -2,16 +2,14 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.CompositorShader
-import baaahs.shaders.PixelShader
-import baaahs.shaders.SineWaveShader
-import baaahs.shaders.SolidShader
+import baaahs.shaders.*
 
 enum class ShaderType(val parser: (reader: ByteArrayReader) -> Shader) {
     SOLID({ reader -> SolidShader.parse(reader) }),
     PIXEL({ reader -> PixelShader.parse(reader) }),
     SINE_WAVE({ reader -> SineWaveShader.parse(reader) }),
-    COMPOSITOR({ reader -> CompositorShader.parse(reader) });
+    COMPOSITOR({ reader -> CompositorShader.parse(reader) }),
+    SPARKLE({ reader -> SparkleShader.parse(reader) });
 
     companion object {
         val values = values()

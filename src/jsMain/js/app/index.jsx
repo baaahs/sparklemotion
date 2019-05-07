@@ -1,6 +1,7 @@
 import React from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
 import ShowList from './ShowList';
+import Slider from './Slider';
 
 class App extends React.Component {
   constructor(props) {
@@ -42,6 +43,9 @@ class App extends React.Component {
         <ColorPicker
           chosenColor={this.state.primaryColor}
           onColorSelect={this.colorChanged}
+        />
+        <Slider
+          pubSub={this.pubSub}
         />
         <ShowList
           pubSub={this.pubSub}

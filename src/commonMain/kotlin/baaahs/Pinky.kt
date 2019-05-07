@@ -4,10 +4,7 @@ import baaahs.SheepModel.Panel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.CompositorShader
-import baaahs.shaders.PixelShader
-import baaahs.shaders.SineWaveShader
-import baaahs.shaders.SolidShader
+import baaahs.shaders.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,12 +16,13 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
 ) : Network.UdpListener {
+    private val slider = Slider()
     private val link = FragmentingUdpLink(network.link())
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
     private val beatProvider = BeatProvider(120.0f)
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
-    private var showRunner: ShowRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
+    private var showRunner: ShowRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
 
     val address: Network.Address get() = link.myAddress
 
@@ -42,6 +40,10 @@ class Pinky(
             display.selectedShow = showMetas.find { it.name == selectedShow }
         }
 
+        pubSub.publish(Topics.sliderInput, slider.value) { message ->
+            slider.value = message
+        }
+
         val color = display.color
         if (color != null) {
             val primaryColorChannel = pubSub.publish(Topics.primaryColor, color) {
@@ -52,7 +54,7 @@ class Pinky(
             display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
         }
 
-        showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
+        showRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
         val prevSelectedShow = display.selectedShow
         var currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
         val buildShow = { currentShowMetaData.createShow(sheepModel, showRunner) }
@@ -62,7 +64,7 @@ class Pinky(
             if (!mapperIsRunning) {
                 if (brainsChanged || display.selectedShow != currentShowMetaData) {
                     currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
-                    showRunner = ShowRunner(display, brains.values.toList(), beatProvider, dmxUniverse)
+                    showRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
                     show = buildShow()
                     brainsChanged = false
                 }
@@ -134,6 +136,7 @@ class Pinky(
 }
 
 class ShowRunner(
+    private val slider: Slider,
     private val pinkyDisplay: PinkyDisplay,
     private val brains: List<RemoteBrain>,
     private val beatProvider: Pinky.BeatProvider,
@@ -154,6 +157,8 @@ class ShowRunner(
     fun getPixelShader(panel: Panel): PixelShader = PixelShader().also { recordShader(panel, it) }
 
     fun getSineWaveShader(panel: Panel): SineWaveShader = SineWaveShader().also { recordShader(panel, it) }
+
+    fun getSparkleShader(panel: Panel): SparkleShader = SparkleShader().also { recordShader(panel, it) }
 
     fun getCompositorShader(panel: Panel, shaderA: Shader, shaderB: Shader): CompositorShader {
         val shaderABrains = shaders[shaderA]!!
@@ -180,6 +185,11 @@ class ShowRunner(
 
         dmxUniverse.sendFrame()
     }
+
+    fun getSlider(): Slider = slider
+}
+
+class Slider(var value: Float = 0f) {
 }
 
 class ColorPicker(private val pinkyDisplay: PinkyDisplay) {
