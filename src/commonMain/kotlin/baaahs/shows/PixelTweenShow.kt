@@ -14,7 +14,9 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
         )
 
         return object : Show {
-            val shaders = sheepModel.allPanels.associate { panel -> Pair(panel, showRunner.getPixelShader(panel)) }
+            val shaders = sheepModel.allPanels.associateWith { panel ->
+                showRunner.getPixelShader(panel)
+            }
             val fadeTimeMs = 1000
 
             override fun nextFrame() {
