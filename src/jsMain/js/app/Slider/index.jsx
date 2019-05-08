@@ -18,7 +18,6 @@ class Slider extends React.Component {
     this.sliderChannel = this.props.pubSub.subscribe(
       sparklemotion.baaahs.Topics.sliderInput,
       (sliderValue) => {
-        console.log('I GOT CALLED', sliderValue, this.state.sliderValue);
         this.setState({ sliderValue });
       }
     );
@@ -34,10 +33,11 @@ class Slider extends React.Component {
   render() {
     return (
       <div>
+        <label htmlFor="range-slider">Sparkle Slider</label>
         <input
           type="range"
           id="start"
-          name="volume"
+          name="range-slider"
           min="0"
           max="1"
           value={this.state.sliderValue}
