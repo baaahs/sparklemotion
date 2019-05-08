@@ -37,12 +37,15 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
     private val pixelsPerCol = pixelsPerRow
 
     private val frame = Frame("Pixels!")
-    private val canvas = object: Canvas() {
+    private val canvas = PanelCanvas()
+
+    inner class PanelCanvas : Canvas() {
         override fun paint(g: Graphics?) {
             g?.apply {
-                super.paint(g)
-
-                println("Paint frame from Pinky…")
+                val doubleBuffer = createImage(width, height)
+                val bufG: Graphics = doubleBuffer.graphics
+                bufG.color = java.awt.Color.BLACK
+                bufG.clearRect(0, 0, width, height)
 
                 for (i in 0 until count) {
                     val row = i % pixelsPerRow
@@ -50,13 +53,16 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
 
                     val pixWidth = width / pixelsPerCol
                     val pixHeight = height / pixelsPerRow
+                    val pixGap = if (pixWidth > 3) { 2 } else if (pixWidth > 1) { 1 } else { 0 }
 
                     val color = colors[i]
-                    g.color = java.awt.Color(color.rgb)
+                    bufG.color = java.awt.Color(color.rgb)
 
-                    g.fillRect(col * pixWidth, row * pixHeight,
-                        pixWidth - 2, pixHeight - 2)
+                    bufG.fillRect(col * pixWidth, row * pixHeight,
+                        pixWidth - pixGap, pixHeight - pixGap)
                 }
+
+                g.drawImage(doubleBuffer, 0, 0, this@PanelCanvas)
             }
         }
     }
