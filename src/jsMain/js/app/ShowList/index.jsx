@@ -26,9 +26,7 @@ class ShowList extends Component {
       (response) => {
         const availableShows = response.toArray();
 
-        this.setState({ availableShows }, () => {
-          const { availableShows } = this.state;
-        });
+        this.setState({ availableShows });
       }
     );
   }
