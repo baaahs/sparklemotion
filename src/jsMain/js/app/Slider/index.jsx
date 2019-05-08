@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import sass from './Slider.scss';
 
 class Slider extends React.Component {
   constructor(props) {
@@ -18,7 +19,6 @@ class Slider extends React.Component {
     this.sliderChannel = this.props.pubSub.subscribe(
       sparklemotion.baaahs.Topics.sliderInput,
       (sliderValue) => {
-        console.log('I GOT CALLED', sliderValue, this.state.sliderValue);
         this.setState({ sliderValue });
       }
     );
@@ -32,15 +32,20 @@ class Slider extends React.Component {
   };
 
   render() {
+    const { sliderValue } = this.state;
+
     return (
-      <div>
+      <div className={sass['slider--wrapper']}>
+        <label className={sass['slider--label']} htmlFor="range-slider">
+          Sparkle Slider: {sliderValue}
+        </label>
         <input
           type="range"
           id="start"
-          name="volume"
+          name="range-slider"
           min="0"
           max="1"
-          value={this.state.sliderValue}
+          value={sliderValue}
           step=".01"
           onChange={this.handleSliderChange}
         />

@@ -2,23 +2,53 @@ import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import styles from './FakeClientDevice.scss';
 
+const BORDER_WIDTH = 10;
+
 export default class FakeClientDevice extends Component {
   constructor(props) {
     super(props);
-    this.width = props.width / 2;
-    this.height = props.height / 2;
+
     this.onClose = props.onClose;
     this.onResize = props.onResize;
+
+    this.clientDeviceContentRef = React.createRef();
   }
 
-  onZoomOut = () => {};
-  onZoomIn = () => {};
+  get width() {
+    return this.props.width / 2;
+  }
+
+  get height() {
+    return this.props.height / 2;
+  }
+
+  get containerStyle() {
+    return {
+      width: `${this.width + BORDER_WIDTH * 2}px`,
+      height: `${this.height + BORDER_WIDTH * 2}px`,
+    };
+  }
+
+  get contentStyle() {
+    return {
+      width: `${this.width}px`,
+      height: `${this.height}px`,
+    };
+  }
+
+  onZoomOut = () => {
+    console.log('TODO: Implement onZoomOut');
+  };
+
+  onZoomIn = () => {
+    console.log('TODO: Implement onZoomin');
+  };
+
   onDragStart = (e, draggableData) => {
     const draggableNode = draggableData.node;
-    const contentNode = draggableNode.getElementsByClassName(
-      styles['FakeClientDevice--content']
-    )[0];
+    const contentNode = this.clientDeviceContentRef.current;
     let eventNode = e.target;
+
     while (eventNode != null) {
       if (eventNode === contentNode) {
         return false;
@@ -31,35 +61,26 @@ export default class FakeClientDevice extends Component {
   };
 
   render() {
-    const borderWidth = 10;
-    const containerStyle = {
-      width: this.width + borderWidth * 2 + 'px',
-      height: this.height + borderWidth * 2 + 'px',
-    };
-    const contentStyle = {
-      width: this.width + 'px',
-      height: this.height + 'px',
-    };
-
     return (
       <Draggable
         onStart={(e, data) => {
           return this.onDragStart(e, data);
         }}
       >
-        <div className={styles['FakeClientDevice--pad']} style={containerStyle}>
+        <div
+          className={styles['FakeClientDevice--pad']}
+          style={this.containerStyle}
+        >
           <div className={styles['FakeClientDevice-controls']}>
-            <i
-              className="fas fa-search-minus"
-              onClick={() => this.onZoomOut()}
-            />
-            <i className="fas fa-search-plus" onClick={() => this.onZoomIn()} />
+            <i className="fas fa-search-minus" onClick={this.onZoomOut} />
+            <i className="fas fa-search-plus" onClick={this.onZoomIn} />
             &nbsp;
-            <i className="far fa-times-circle" onClick={() => this.onClose()} />
+            <i className="far fa-times-circle" onClick={this.onClose} />
           </div>
           <div
+            ref={this.clientDeviceContentRef}
             className={styles['FakeClientDevice--content']}
-            style={contentStyle}
+            style={this.contentStyle}
           />
         </div>
       </Draggable>

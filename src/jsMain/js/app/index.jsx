@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
 import ShowList from './ShowList';
 import Slider from './Slider';
 
-class App extends React.Component {
+import NavigationTabBar from './components/NavigationTabBar';
+import TabContent from './components/TabContent';
+
+import { TAB_OPTION_SHOW_LIST } from './components/NavigationTabBar/constants';
+
+class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       primaryColor: sparklemotion.baaahs.Color.Companion.WHITE,
+      selectedTab: TAB_OPTION_SHOW_LIST,
     };
+
     this.pubSub = props.uiContext.pubSub;
   }
 
@@ -37,9 +45,20 @@ class App extends React.Component {
     console.log('app closed!');
   };
 
+  onSelectTab = (selectedTab) => {
+    this.setState({ selectedTab });
+  };
+
   render() {
+    const { selectedTab } = this.state;
+
     return (
-      <div>
+      <Fragment>
+        <NavigationTabBar
+          selectedTab={selectedTab}
+          onSelectTab={this.onSelectTab}
+        />
+        <TabContent selectedTab={selectedTab} />
         <ColorPicker
           chosenColor={this.state.primaryColor}
           onColorSelect={this.colorChanged}
@@ -50,7 +69,7 @@ class App extends React.Component {
         <ShowList
           pubSub={this.pubSub}
         />
-      </div>
+      </Fragment>
     );
   }
 }
