@@ -10,7 +10,7 @@ class SheepSimulator {
     var network = FakeNetwork(display = display.forNetwork())
 
     var dmxUniverse = FakeDmxUniverse()
-    var sheepModel = SheepModel()
+    var sheepModel = SheepModel().apply { load() }
 
     val showMetas = AllShows.allShows
 
@@ -35,8 +35,6 @@ class SheepSimulator {
     val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
-        sheepModel.load()
-
         pinkyScope.launch { pinky.run() }
 
         visualizer.start()

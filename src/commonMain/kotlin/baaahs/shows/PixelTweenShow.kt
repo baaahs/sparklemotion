@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.shaders.PixelShader
 import kotlin.random.Random
 
 object PixelTweenShow : Show.MetaData("PixelTweenShow") {
@@ -14,9 +15,10 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
         )
 
         return object : Show {
-            val shaders = sheepModel.allPanels.associateWith { panel ->
-                showRunner.getPixelShader(panel)
-            }
+            val shaders =
+                sheepModel.allPanels.associateWith { panel ->
+                    showRunner.getShaderBuffer(panel, PixelShader())
+                }
             val fadeTimeMs = 1000
 
             override fun nextFrame() {
@@ -27,12 +29,13 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
                         val startColor = colorArray[colorIndex]
                         val endColor = colorArray[(colorIndex + 1) % colorArray.size]
 
-                        val colors = shaders[panel]!!.buffer.colors
+                        val colors = shaders[panel]!!.colors
                         colors.forEachIndexed { index, color ->
                             if (Random.nextFloat() < .1) {
                                 colors[index] = Color.WHITE
                             } else {
-                                val tweenedColor = startColor.fade(endColor, ((now + index) % fadeTimeMs) / fadeTimeMs.toFloat())
+                                val tweenedColor =
+                                    startColor.fade(endColor, ((now + index) % fadeTimeMs) / fadeTimeMs.toFloat())
                                 colors[index] = tweenedColor
                             }
                         }
@@ -42,7 +45,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
         }
     }
 
-    val SheepModel.Panel.number : Int
+    val SheepModel.Panel.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 
 }

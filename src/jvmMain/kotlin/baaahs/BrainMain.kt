@@ -13,6 +13,7 @@ import java.awt.Frame
 import java.awt.Graphics
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
+import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -79,9 +80,8 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
     }
 
     override fun set(colors: Array<Color>) {
-        for ((i, color) in colors.withIndex()) {
-            this.colors[i] = color
-        }
+        val pixCount = min(colors.size, count)
+        colors.copyInto(this.colors, 0, 0, pixCount)
         canvas.repaint()
     }
 }
