@@ -19,12 +19,17 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         return object : Show {
             val slider = showRunner.getSlider()
 
-            val shaders = sheepModel.allPanels.associateWith { panel ->
-                val solidShader = showRunner.getSolidShader(panel)
-                val sparkleShader = showRunner.getSparkleShader(panel)
-                val compositorShader = showRunner.getCompositorShader(panel, solidShader, sparkleShader)
+            val solidShader = SolidShader()
+            val sparkleShader = SparkleShader()
+            val compositorShader = CompositorShader(solidShader, sparkleShader)
 
-                Shaders(solidShader, sparkleShader, compositorShader)
+            val shaders = sheepModel.allPanels.associateWith { panel ->
+                val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
+                val sparkleShaderBuffer = showRunner.getShaderBuffer(panel, sparkleShader)
+                val compositorShaderBuffer =
+                    showRunner.getCompositorBuffer(panel, solidShaderBuffer, sparkleShaderBuffer)
+
+                Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer)
             }
             val fadeTimeMs = 500
 
@@ -38,13 +43,13 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
                         val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
 
                         val shaderSet = shaders[panel]!!
-                        shaderSet.solidShader.buffer.color = tweenedColor
+                        shaderSet.solidShader.color = tweenedColor
 
-                        shaderSet.sparkleShader.buffer.color = Color.WHITE
-                        shaderSet.sparkleShader.buffer.sparkliness = slider.value
+                        shaderSet.sparkleShader.color = Color.WHITE
+                        shaderSet.sparkleShader.sparkliness = slider.value
 
-                        shaderSet.compositorShader.buffer.mode = CompositingMode.ADD
-                        shaderSet.compositorShader.buffer.fade = 1f
+                        shaderSet.compositorShader.mode = CompositingMode.ADD
+                        shaderSet.compositorShader.fade = 1f
                     }
                 }
             }
@@ -52,9 +57,9 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
     }
 
     class Shaders(
-        val solidShader: SolidShader,
-        val sparkleShader: SparkleShader,
-        val compositorShader: CompositorShader
+        val solidShader: SolidShader.Buffer,
+        val sparkleShader: SparkleShader.Buffer,
+        val compositorShader: CompositorShader.Buffer
     )
 
     val SheepModel.Panel.number : Int

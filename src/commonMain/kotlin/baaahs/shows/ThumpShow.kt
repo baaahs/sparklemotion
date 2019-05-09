@@ -2,9 +2,9 @@ package baaahs.shows
 
 import baaahs.*
 import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShaderBuffer
-import baaahs.shaders.SineWaveShaderBuffer
-import baaahs.shaders.SolidShaderBuffer
+import baaahs.shaders.CompositorShader
+import baaahs.shaders.SineWaveShader
+import baaahs.shaders.SolidShader
 import kotlin.math.PI
 import kotlin.random.Random
 
@@ -13,21 +13,21 @@ val ThumpShow = object : Show.MetaData("Thump") {
         private val beatProvider = showRunner.getBeatProvider()
         private val colorPicker = showRunner.getColorPicker()
 
+        val solidShader = SolidShader()
+        val sineWaveShader = SineWaveShader()
+        val compositorShader = CompositorShader(solidShader, sineWaveShader)
+
         private val shaderBufs = sheepModel.allPanels.map { panel ->
-            val solidShader = showRunner.getSolidShader(panel)
+            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
 
-            val sineWaveShader = showRunner.getSineWaveShader(panel).apply {
-                buffer.density = Random.nextFloat() * 20
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
+                density = Random.nextFloat() * 20
             }
 
-            val compositorShader = showRunner.getCompositorShader(panel, solidShader, sineWaveShader)
+            val compositorShaderBuffer =
+                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
 
-            compositorShader.buffer.apply {
-                mode = CompositingMode.ADD
-                fade = 1f
-            }
-
-            ShaderBufs(solidShader.buffer, sineWaveShader.buffer, compositorShader.buffer)
+            ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
         private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
@@ -58,8 +58,8 @@ val ThumpShow = object : Show.MetaData("Thump") {
     }
 
     inner class ShaderBufs(
-        val solidShaderBuffer: SolidShaderBuffer,
-        val sineWaveShaderBuffer: SineWaveShaderBuffer,
-        val compositorShaderBuffer: CompositorShaderBuffer
+        val solidShaderBuffer: SolidShader.Buffer,
+        val sineWaveShaderBuffer: SineWaveShader.Buffer,
+        val compositorShaderBuffer: CompositorShader.Buffer
     )
 }

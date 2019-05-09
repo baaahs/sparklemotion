@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -13,6 +14,13 @@ class Brain(
 ) : Network.UdpListener {
     private lateinit var link: Network.Link
     private var receivingInstructions: Boolean = false
+    private val surface = NotReallyASurface()
+    private var currentShaderDesc: ByteArray? = null
+    private var currentShaderBits: ShaderBits<*>? = null
+
+    inner class NotReallyASurface : Surface {
+        override val pixelCount: Int = SparkleMotion.DEFAULT_PIXEL_COUNT
+    }
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
@@ -32,15 +40,48 @@ class Brain(
         }
     }
 
+    class ShaderBits<B : ShaderBuffer>(val shader: Shader<B>, val shaderImpl: ShaderImpl<B>, val shaderBuffer: B) {
+        fun read(reader: ByteArrayReader) = shaderBuffer.read(reader)
+        fun draw() = shaderImpl.draw(shaderBuffer)
+    }
+
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
-        val message = parse(bytes)
-        when (message) {
-            is BrainShaderMessage -> {
-                val shaderImpl = message.shader.createImpl(pixels)
-                shaderImpl.draw()
+        val reader = ByteArrayReader(bytes)
+
+        // Inline message parsing here so we can optimize stuff.
+        val type = Type.get(reader.readByte())
+        when (type) {
+            Type.BRAIN_PANEL_SHADE -> {
+                val shaderDesc = reader.readBytes()
+
+                // If possible, use the previously-built Shader stuff:
+                val theCurrentShaderDesc = currentShaderDesc
+                if (theCurrentShaderDesc == null || !theCurrentShaderDesc.contentEquals(shaderDesc)) {
+                    currentShaderDesc = shaderDesc
+
+                    @Suppress("UNCHECKED_CAST")
+                    val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<ShaderBuffer>
+                    currentShaderBits = ShaderBits(
+                        shader,
+                        shader.createImpl(pixels),
+                        shader.createBuffer(surface)
+                    )
+                }
+
+                with(currentShaderBits!!) {
+                    read(reader)
+                    draw()
+                }
             }
-            is BrainIdRequest -> {
+
+            Type.BRAIN_ID_REQUEST -> {
+                val message = BrainIdRequest.parse(reader)
                 link.sendUdp(fromAddress, message.port, BrainIdResponse(illicitPanelHint.name))
+            }
+
+            // Other message types are ignored by Brains.
+            else -> {
+                // no-op
             }
         }
     }
