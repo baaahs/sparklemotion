@@ -1,10 +1,10 @@
 package baaahs
 
-import baaahs.SheepModel.Panel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.*
+import baaahs.shaders.CompositingMode
+import baaahs.shaders.CompositorShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,6 +23,7 @@ class Pinky(
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
     private var showRunner: ShowRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
+    private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
 
     val address: Network.Address get() = link.myAddress
 
@@ -91,7 +92,7 @@ class Pinky(
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> {
-                foundBrain(RemoteBrain(fromAddress, message.panelName))
+                foundBrain(RemoteBrain(fromAddress, surfacesByName[message.panelName]!!))
             }
 
             is MapperHelloMessage -> {
@@ -142,30 +143,59 @@ class ShowRunner(
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
-    private val shaders: MutableMap<Shader, MutableList<RemoteBrain>> = hashMapOf()
+    private val brainsBySurface = brains.groupBy { it.surface }
+    private val shaderBuffers: MutableMap<Surface, MutableList<ShaderBuffer>> = hashMapOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
     fun getBeatProvider(): Pinky.BeatProvider = beatProvider
 
-    private fun recordShader(panel: Panel, shader: Shader) {
-        shaders[shader] = brains.filter { it.panelName == panel.name }.toMutableList()
+    private fun recordShader(surface: Surface, shaderBuffer: ShaderBuffer) {
+        val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
+
+        if (shaderBuffer is CompositorShader.Buffer) {
+            if (!buffersForSurface.remove(shaderBuffer.aShaderBuffer)
+                || !buffersForSurface.remove(shaderBuffer.bShaderBuffer)
+            ) {
+                throw IllegalStateException("Composite of unknown shader buffers!")
+            }
+        }
+
+        buffersForSurface += shaderBuffer
     }
 
-    fun getSolidShader(panel: Panel): SolidShader = SolidShader().also { recordShader(panel, it) }
+    /**
+     * Obtain a shader buffer which can be used to control the illumination of a surface.
+     *
+     * @param surface The surface we're shading.
+     * @param shader The type of shader.
+     * @return A shader buffer of the appropriate type.
+     */
+    fun <B : ShaderBuffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+        val buffer = shader.createBuffer(surface)
+        recordShader(surface, buffer)
+        return buffer
+    }
 
-    fun getPixelShader(panel: Panel): PixelShader = PixelShader().also { recordShader(panel, it) }
-
-    fun getSineWaveShader(panel: Panel): SineWaveShader = SineWaveShader().also { recordShader(panel, it) }
-
-    fun getSparkleShader(panel: Panel): SparkleShader = SparkleShader().also { recordShader(panel, it) }
-
-    fun getCompositorShader(panel: Panel, shaderA: Shader, shaderB: Shader): CompositorShader {
-        val shaderABrains = shaders[shaderA]!!
-        val shaderBBrains = shaders[shaderB]!!
-        shaders.remove(shaderA)
-        shaders.remove(shaderB)
-        return CompositorShader(shaderA, shaderB).also { recordShader(panel, it) }
+    /**
+     * Obtain a compositing shader buffer which can be used to blend two other shaders together.
+     *
+     * The shaders must already have been obtained using [getShaderBuffer].
+     */
+    fun getCompositorBuffer(
+        surface: Surface,
+        shaderBufferA: ShaderBuffer,
+        shaderBufferB: ShaderBuffer,
+        mode: CompositingMode = CompositingMode.OVERLAY,
+        fade: Float = 0.5f
+    ): CompositorShader.Buffer {
+        return CompositorShader(shaderBufferA.shader, shaderBufferB.shader)
+            .createBuffer(shaderBufferA, shaderBufferB)
+            .also {
+                it.mode = mode
+                it.fade = fade
+                recordShader(surface, it)
+            }
     }
 
     fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
@@ -177,9 +207,15 @@ class ShowRunner(
     }
 
     fun send(link: Network.Link) {
-        shaders.forEach { (shader, remoteBrains) ->
-            remoteBrains.forEach { remoteBrain ->
-                link.sendUdp(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shader))
+        shaderBuffers.forEach { (surface, shaderBuffers) ->
+            if (shaderBuffers.size != 1) {
+                throw IllegalStateException("Too many shader buffers for $surface: $shaderBuffers")
+            }
+
+            val shaderBuffer = shaderBuffers.first()
+            val remoteBrains = brainsBySurface[surface]
+            remoteBrains?.forEach { remoteBrain ->
+                link.sendUdp(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer.shader, shaderBuffer))
             }
         }
 
@@ -196,4 +232,4 @@ class ColorPicker(private val pinkyDisplay: PinkyDisplay) {
     val color: Color get() = pinkyDisplay.color ?: Color.WHITE
 }
 
-class RemoteBrain(val address: Network.Address, val panelName: String)
+class RemoteBrain(val address: Network.Address, val surface: Surface)

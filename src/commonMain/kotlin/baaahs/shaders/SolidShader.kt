@@ -4,35 +4,40 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
-class SolidShader : Shader(ShaderType.SOLID) {
-    override val buffer = SolidShaderBuffer()
+class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
+    override fun createBuffer(surface: Surface): Buffer = Buffer()
 
-    override fun createImpl(pixels: Pixels): ShaderImpl = SolidShaderImpl(buffer, pixels)
+    override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
+
+    override fun createImpl(pixels: Pixels): Impl = Impl(pixels)
 
     companion object {
         fun parse(reader: ByteArrayReader) = SolidShader()
     }
-}
 
-class SolidShaderImpl(val buffer: SolidShaderBuffer, val pixels: Pixels) : ShaderImpl {
-    private val colors = Array(pixels.count) { Color.WHITE }
+    inner class Buffer : ShaderBuffer {
+        override val shader: Shader<*>
+            get() = this@SolidShader
 
-    override fun draw() {
-        for (i in colors.indices) {
-            colors[i] = buffer.color
+        var color: Color = Color.WHITE
+
+        override fun serialize(writer: ByteArrayWriter) {
+            color.serialize(writer)
         }
-        pixels.set(colors)
-    }
-}
 
-class SolidShaderBuffer : ShaderBuffer {
-    var color: Color = Color.WHITE
-
-    override fun serialize(writer: ByteArrayWriter) {
-        color.serialize(writer)
+        override fun read(reader: ByteArrayReader) {
+            color = Color.parse(reader)
+        }
     }
 
-    override fun read(reader: ByteArrayReader) {
-        color = Color.parse(reader)
+    class Impl(val pixels: Pixels) : ShaderImpl<Buffer> {
+        private val colors = Array(pixels.count) { Color.WHITE }
+
+        override fun draw(buffer: Buffer) {
+            for (i in colors.indices) {
+                colors[i] = buffer.color
+            }
+            pixels.set(colors)
+        }
     }
 }
