@@ -17,7 +17,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">BrainShaderMessage</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainShaderMessage$<init>(baaahs.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">BrainShaderMessage</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainShaderMessage$<init>(baaahs.Shader((baaahs.ShaderBuffer)), baaahs.ShaderBuffer)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainShaderMessage$<init>(baaahs.Shader((baaahs.ShaderBuffer)), baaahs.ShaderBuffer)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,10 +26,17 @@
 <tbody>
 <tr>
 <td>
+<p><a href="buffer.html">buffer</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">buffer</span><span class="symbol">: </span><a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="shader.html">shader</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -84,7 +91,9 @@
 <p><a href="parse.html">parse</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainShaderMessage.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BrainShaderMessage</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainShaderMessage.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BrainShaderMessage</span></a></code>
+<p>Suboptimal parser; on the Brain we'll do better than this.</p>
+</td>
 </tr>
 </tbody>
 </table>

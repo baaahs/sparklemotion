@@ -40,10 +40,12 @@
 </tr>
 <tr>
 <td>
-<p><a href="get-compositor-shader.html">getCompositorShader</a></p>
+<p><a href="get-compositor-buffer.html">getCompositorBuffer</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">getCompositorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/shaderA">shaderA</span><span class="symbol">:</span>&nbsp;<a href="../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorShader(baaahs.SheepModel.Panel, baaahs.Shader, baaahs.Shader)/shaderB">shaderB</span><span class="symbol">:</span>&nbsp;<a href="../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-compositor-shader/index.html"><span class="identifier">CompositorShader</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">getCompositorBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getCompositorBuffer(baaahs.Surface, baaahs.ShaderBuffer, baaahs.ShaderBuffer, baaahs.shaders.CompositingMode, kotlin.Float)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorBuffer(baaahs.Surface, baaahs.ShaderBuffer, baaahs.ShaderBuffer, baaahs.shaders.CompositingMode, kotlin.Float)/shaderBufferA">shaderBufferA</span><span class="symbol">:</span>&nbsp;<a href="../-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorBuffer(baaahs.Surface, baaahs.ShaderBuffer, baaahs.ShaderBuffer, baaahs.shaders.CompositingMode, kotlin.Float)/shaderBufferB">shaderBufferB</span><span class="symbol">:</span>&nbsp;<a href="../-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorBuffer(baaahs.Surface, baaahs.ShaderBuffer, baaahs.ShaderBuffer, baaahs.shaders.CompositingMode, kotlin.Float)/mode">mode</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.shaders/-compositing-mode/index.html"><span class="identifier">CompositingMode</span></a>&nbsp;<span class="symbol">=</span>&nbsp;CompositingMode.OVERLAY<span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getCompositorBuffer(baaahs.Surface, baaahs.ShaderBuffer, baaahs.ShaderBuffer, baaahs.shaders.CompositingMode, kotlin.Float)/fade">fade</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0.5f<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-compositor-shader/-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a></code>
+<p>Obtain a compositing shader buffer which can be used to blend two other shaders together.</p>
+</td>
 </tr>
 <tr>
 <td>
@@ -61,17 +63,12 @@
 </tr>
 <tr>
 <td>
-<p><a href="get-pixel-shader.html">getPixelShader</a></p>
+<p><a href="get-shader-buffer.html">getShaderBuffer</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">getPixelShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getPixelShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-pixel-shader/index.html"><span class="identifier">PixelShader</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="get-sine-wave-shader.html">getSineWaveShader</a></p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">&gt;</span> <span class="identifier">getShaderBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getShaderBuffer(baaahs.Surface, baaahs.Shader((baaahs.ShowRunner.getShaderBuffer.B)))/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$getShaderBuffer(baaahs.Surface, baaahs.Shader((baaahs.ShowRunner.getShaderBuffer.B)))/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><a href="get-shader-buffer.html#B"><span class="identifier">B</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="get-shader-buffer.html#B"><span class="identifier">B</span></a></code>
+<p>Obtain a shader buffer which can be used to control the illumination of a surface.</p>
 </td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getSineWaveShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getSineWaveShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-sine-wave-shader/index.html"><span class="identifier">SineWaveShader</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -79,20 +76,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getSlider</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-slider/index.html"><span class="identifier">Slider</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="get-solid-shader.html">getSolidShader</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getSolidShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getSolidShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-solid-shader/index.html"><span class="identifier">SolidShader</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="get-sparkle-shader.html">getSparkleShader</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getSparkleShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getSparkleShader(baaahs.SheepModel.Panel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.shaders/-sparkle-shader/index.html"><span class="identifier">SparkleShader</span></a></code></td>
 </tr>
 <tr>
 <td>

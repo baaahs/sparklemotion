@@ -8,7 +8,26 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.shaders</a>&nbsp;/&nbsp;<a href="./index.html">PixelShader</a><br/>
 <br/>
 <h1>PixelShader</h1>
-<code><span class="keyword">class </span><span class="identifier">PixelShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">PixelShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-buffer/index.html">Buffer</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-impl/index.html">Impl</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Impl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -21,27 +40,22 @@
 </tr>
 </tbody>
 </table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="buffer.html">buffer</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">buffer</span><span class="symbol">: </span><a href="../-pixel-shader-buffer/index.html"><span class="identifier">PixelShaderBuffer</span></a></code></td>
-</tr>
-</tbody>
-</table>
 <h3>Inherited Properties</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="../../baaahs/-shader/type.html">type</a></p>
+<p><a href="../../baaahs/-shader/descriptor-bytes.html">descriptorBytes</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">type</span><span class="symbol">: </span><a href="../../baaahs/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">descriptorBytes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs/-shader/id.html">id</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="../../baaahs/-shader-id/index.html"><span class="identifier">ShaderId</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -50,10 +64,24 @@
 <tbody>
 <tr>
 <td>
+<p><a href="create-buffer.html">createBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="create-impl.html">createImpl</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createImpl</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$createImpl(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createImpl</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$createImpl(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="read-buffer.html">readBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -62,24 +90,19 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../../baaahs/-shader/read-buffer.html">readBuffer</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="../../baaahs/-shader/serialize.html">serialize</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs/-shader/serialize-buffer.html">serializeBuffer</a></p>
+<p><a href="../../baaahs/-shader/serialize-config.html">serializeConfig</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serializeBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serializeBuffer(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Override if your shader has static configuration that needs to be shared with the ShaderImpl.</p>
+</td>
 </tr>
 </tbody>
 </table>
