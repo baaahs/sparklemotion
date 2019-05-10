@@ -32,14 +32,20 @@ class Pinky(
         link.listenUdp(Ports.PINKY, this)
 
         display.listShows(showMetas)
+        display.selectedShow = selectedShow
 
         val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
         pubSub.install(gadgetModule)
 
         pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {
         }
-        pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
+        val selectedShowChannel = pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
             this.selectedShow = showMetas.find { it.name == selectedShow }!!
+        }
+
+        display.onShowChange = {
+            this.selectedShow = display.selectedShow!!
+            selectedShowChannel.onChange(this.selectedShow.name)
         }
 
         val gadgetProvider = GadgetProvider(pubSub)
@@ -74,7 +80,10 @@ class Pinky(
                 brainsChanged = false
             }
 
-            show.nextFrame()
+            val elapsedMs = time {
+                show.nextFrame()
+            }
+            display.nextFrameMs = elapsedMs.toInt()
 
             // send shader buffers out to brains
             //                println("Send frame from ${currentShowMetaData.name}…")
