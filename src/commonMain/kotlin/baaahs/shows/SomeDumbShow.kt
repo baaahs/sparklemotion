@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.shaders.PixelShader
 import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.random.Random
@@ -8,8 +9,9 @@ import kotlin.random.Random
 val SomeDumbShow = object : Show.MetaData("SomeDumbShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         val colorPicker = showRunner.getColorPicker()
+        val pixelShader = PixelShader()
         //    val panelShaderBuffers = sheepModel.allPanels.map { showRunner.getSolidShader(it) }
-        val pixelShaderBuffers = sheepModel.allPanels.map { showRunner.getPixelShader(it).buffer }
+        val pixelShaderBuffers = sheepModel.allPanels.map { panel -> showRunner.getShaderBuffer(panel, pixelShader) }
         val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
         init {

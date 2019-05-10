@@ -25,8 +25,8 @@ class Mapper(
     val camera = mediaDevices.getCamera(width, height).apply {
         onImage = { image -> haveImage(image) }
     }
-    private var baseBitmap : Bitmap? = null
-    private lateinit var deltaBitmap : Bitmap
+    private var baseBitmap: Bitmap? = null
+    private lateinit var deltaBitmap: Bitmap
     private var newChangeRegion: MediaDevices.Region? = null
 
     private val closeListeners = mutableListOf<() -> Unit>()
@@ -150,7 +150,12 @@ class Mapper(
                     newChangeRegion = null
 
                     val candidates = mapperDisplay.getCandidateSurfaces(changeRegion)
-                    mapperDisplay.showMessage2("Candidate panels: ${candidates.subList(0, min(5, candidates.size)).map { it.name }}")
+                    mapperDisplay.showMessage2(
+                        "Candidate panels: ${candidates.subList(
+                            0,
+                            min(5, candidates.size)
+                        ).map { it.name }}"
+                    )
 
                     println("Guessed panel ${candidates.first().name} for ${brainMapper.surfaceName}")
 
@@ -163,12 +168,15 @@ class Mapper(
                 println("identify pixels...")
                 // light up each pixel...
                 val pixelShader = PixelShader()
-                pixelShader.buffer.setAll(Color.BLACK)
+                val buffer = pixelShader.createBuffer(object : Surface {
+                    override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+                })
+                buffer.setAll(Color.BLACK)
                 for (i in 0 until maxPixelsPerBrain) {
                     if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
-                    pixelShader.buffer.colors[i] = Color.WHITE
-                    link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader))
-                    pixelShader.buffer.colors[i] = Color.BLACK
+                    buffer.colors[i] = Color.WHITE
+                    link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
+                    buffer.colors[i] = Color.BLACK
                     delay(34L)
                     maybePause()
                 }
@@ -189,7 +197,13 @@ class Mapper(
         }
     }
 
-    private fun solidColor(color: Color) = BrainShaderMessage(SolidShader().apply { buffer.color = color })
+    private fun solidColor(color: Color): BrainShaderMessage {
+        val solidShader = SolidShader()
+        val buffer = solidShader.createBuffer(object : Surface {
+            override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+        }).apply { this.color = color }
+        return BrainShaderMessage(solidShader, buffer)
+    }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
         val message = parse(bytes)
