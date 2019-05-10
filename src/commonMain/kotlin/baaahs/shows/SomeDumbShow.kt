@@ -33,8 +33,8 @@ val SomeDumbShow = object : Show.MetaData("SomeDumbShow") {
 
             movingHeads.forEach { buf ->
                 buf.colorWheel = buf.closestColorFor(colorPicker.color)
-                buf.pan += (nextRandomFloat(seed) - .5).toFloat() / 5
-                buf.tilt += (nextRandomFloat(seed) - .5).toFloat() / 5
+                buf.pan += (nextRandomFloat(seed) - .5f) / 5
+                buf.tilt += (nextRandomFloat(seed) - .5f) / 5
             }
         }
 
@@ -43,12 +43,12 @@ val SomeDumbShow = object : Show.MetaData("SomeDumbShow") {
             seed: Random,
             panelColor: Color
         ): Color {
-            val saturation = baseSaturation * abs(nextRandomFloat(seed)).toFloat()
+            val saturation = baseSaturation * abs(nextRandomFloat(seed))
             val desaturatedColor = panelColor.withSaturation(saturation)
             return desaturatedColor
         }
 
-        private fun nextRandomFloat(seed: Random) =
-            sin(seed.nextDouble() + getTimeMillis() / 1000.toDouble())
+        private fun nextRandomFloat(seed: Random): Float =
+            sin(seed.nextFloat() + getTimeMillis() / 1000.0).toFloat()
     }
 }
