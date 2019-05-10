@@ -15,6 +15,7 @@ class Ui(val network: Network, val pinkyAddress: Network.Address, val display: U
 
     fun connect() {
         val pubSub = PubSub.Client(link, pinkyAddress, Ports.PINKY_UI_TCP)
+        pubSub.install(gadgetModule)
         val context = UiContext(pubSub)
         display.createApp(context)
     }

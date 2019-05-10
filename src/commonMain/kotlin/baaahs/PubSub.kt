@@ -5,17 +5,14 @@ import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.modules.EmptyModule
+import kotlinx.serialization.modules.SerialModule
+import kotlinx.serialization.modules.plus
 import kotlinx.serialization.serializer
 import kotlin.js.JsName
 
-class PubSub(private val networkLink: Network.Link) {
-
-    open class Origin
-
-    interface Observer<T> {
-        @JsName("onChange")
-        fun onChange(t: T)
-    }
+abstract class PubSub {
 
     companion object {
         fun listen(networkLink: Network.Link, port: Int): Server {
@@ -27,13 +24,22 @@ class PubSub(private val networkLink: Network.Link) {
         }
     }
 
+    open class Origin
+
+    interface Observer<T> {
+        @JsName("onChange")
+        fun onChange(t: T)
+
+        fun unsubscribe()
+    }
+
     data class Topic<T>(
         val name: String,
         val serializer: KSerializer<T>
     )
 
     abstract class Listener(private val origin: Origin) {
-        fun onUpdate(data: String, fromOrigin: PubSub.Origin) {
+        fun onUpdate(data: String, fromOrigin: Origin) {
             if (origin !== fromOrigin) {
                 onUpdate(data)
             }
@@ -46,6 +52,7 @@ class PubSub(private val networkLink: Network.Link) {
         val listeners: MutableList<Listener> = mutableListOf()
 
         fun notify(jsonData: String, origin: Origin) {
+            data = jsonData
             listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
         }
     }
@@ -66,8 +73,7 @@ class PubSub(private val networkLink: Network.Link) {
 
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
             val reader = ByteArrayReader(bytes)
-            val command = reader.readString()
-            when (command) {
+            when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
                     println("[${tcpConnection.fromAddress} -> $name] sub $topicName")
@@ -102,7 +108,7 @@ class PubSub(private val networkLink: Network.Link) {
 
         fun sendTopicUpdate(name: String, data: String) {
             val writer = ByteArrayWriter()
-            println("-> update ${name} ${data} to ${connection?.toAddress}")
+            println("-> update $name $data to ${connection?.toAddress}")
             writer.writeString("update")
             writer.writeString(name)
             writer.writeString(data)
@@ -120,7 +126,7 @@ class PubSub(private val networkLink: Network.Link) {
             TODO("PubSub.Connection.reset not implemented")
         }
 
-        internal fun sendCommand(bytes: ByteArray) {
+        private fun sendCommand(bytes: ByteArray) {
             val tcpConnection = connection
             if (tcpConnection == null) {
                 toSend.add(bytes)
@@ -130,7 +136,17 @@ class PubSub(private val networkLink: Network.Link) {
         }
     }
 
-    class Server(link: Network.Link, port: Int) : Network.TcpServerSocketListener {
+    open class Endpoint {
+        var serialModule: SerialModule = EmptyModule
+        var json = Json(JsonConfiguration.Stable, serialModule)
+
+        fun install(toInstall: SerialModule) {
+            serialModule = serialModule.plus(toInstall)
+            json = Json(JsonConfiguration.Stable, serialModule)
+        }
+    }
+
+    class Server(link: Network.Link, port: Int) : Endpoint(), Network.TcpServerSocketListener {
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
 
         init {
@@ -144,23 +160,26 @@ class PubSub(private val networkLink: Network.Link) {
         fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Observer<T> {
             val publisher = Origin()
             val topicName = topic.name
-            val jsonData = Json.stringify(topic.serializer, data)
+            val jsonData = json.stringify(topic.serializer, data)
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
-            topicInfo.data = jsonData
             topicInfo.listeners.add(object : Listener(publisher) {
-                override fun onUpdate(data: String) = onUpdate(Json.parse(topic.serializer, data))
+                override fun onUpdate(data: String) = onUpdate(json.parse(topic.serializer, data))
             })
             topicInfo.notify(jsonData, publisher)
 
             return object : Observer<T> {
                 override fun onChange(t: T) {
-                    topicInfo.notify(Json.stringify(topic.serializer, t), publisher)
+                    topicInfo.notify(json.stringify(topic.serializer, t), publisher)
+                }
+
+                override fun unsubscribe() {
+                    // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
             }
         }
     }
 
-    class Client(link: Network.Link, serverAddress: Network.Address, port: Int) {
+    class Client(link: Network.Link, serverAddress: Network.Address, port: Int): Endpoint() {
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
         private var server: Connection = Connection("client at ${link.myAddress}", topics)
 
@@ -184,7 +203,7 @@ class PubSub(private val networkLink: Network.Link) {
             }
 
             val listener = object : Listener(subscriber) {
-                override fun onUpdate(data: String) = onUpdate(Json.parse(topic.serializer, data))
+                override fun onUpdate(data: String) = onUpdate(json.parse(topic.serializer, data))
             }
             topicInfo.listeners.add(listener)
             val data = topicInfo.data
@@ -194,8 +213,12 @@ class PubSub(private val networkLink: Network.Link) {
 
             return object : Observer<T> {
                 override fun onChange(t: T) {
-                    val jsonData = Json.stringify(topic.serializer, t)
+                    val jsonData = json.stringify(topic.serializer, t)
                     topicInfo.notify(jsonData, subscriber)
+                }
+
+                override fun unsubscribe() {
+                    // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
             }
         }

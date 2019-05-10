@@ -15,6 +15,7 @@ class App extends Component {
     this.state = {
       primaryColor: sparklemotion.baaahs.Color.Companion.WHITE,
       selectedTab: TAB_OPTION_SHOW_LIST,
+      gadgets: [],
     };
 
     this.pubSub = props.uiContext.pubSub;
@@ -25,21 +26,11 @@ class App extends Component {
   }
 
   subscribeToChannels() {
-    this.primaryColorChannel = this.pubSub.subscribe(
-      sparklemotion.baaahs.Topics.primaryColor,
-      (primaryColor) => {
-        console.log('received updated primary color!', primaryColor, this);
-        this.setState({ primaryColor });
-      }
-    );
+    this.gadgetDisplay = sparklemotion.baaahs.GadgetDisplay(this.pubSub, (newGadgets) => {
+      console.log("got new gadgets!", newGadgets);
+      this.setState({gadgets: newGadgets});
+    });
   }
-
-  colorChanged = (color) => {
-    console.log('primary color selected!', color, this);
-    this.primaryColorChannel.onChange(
-      sparklemotion.baaahs.Color.Companion.fromString(color)
-    );
-  };
 
   close = () => {
     console.log('app closed!');
@@ -50,7 +41,7 @@ class App extends Component {
   };
 
   render() {
-    const { selectedTab } = this.state;
+    const { selectedTab, gadgets } = this.state;
 
     return (
       <Fragment>
@@ -59,13 +50,16 @@ class App extends Component {
           onSelectTab={this.onSelectTab}
         />
         <TabContent selectedTab={selectedTab} />
-        <ColorPicker
-          chosenColor={this.state.primaryColor}
-          onColorSelect={this.colorChanged}
-        />
-        <Slider
-          pubSub={this.pubSub}
-        />
+        {gadgets.map((gadgetInfo) => {
+          const { gadget, topicName } = gadgetInfo;
+          if (gadget instanceof sparklemotion.baaahs.gadgets.ColorPicker) {
+            return <ColorPicker key={topicName} gadget={gadget}/>;
+          } else if (gadget instanceof sparklemotion.baaahs.gadgets.Slider) {
+            return <Slider key={topicName} gadget={gadget}/>;
+          } else {
+            return <div/>;
+          }
+        })}
         <ShowList
           pubSub={this.pubSub}
         />

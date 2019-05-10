@@ -7,37 +7,28 @@ class Slider extends React.Component {
     super(props);
 
     this.state = {
-      sliderValue: 0,
+      gadget: props.gadget,
     };
+
+    props.gadget.listen({onChanged: () => {this.forceUpdate()}});
   }
 
   componentDidMount() {
-    this.subscribeToChannels();
-  }
-
-  subscribeToChannels() {
-    this.sliderChannel = this.props.pubSub.subscribe(
-      sparklemotion.baaahs.Topics.sliderInput,
-      (sliderValue) => {
-        this.setState({ sliderValue });
-      }
-    );
   }
 
   handleSliderChange = (event) => {
-    const sliderValue = event.target.value;
-
-    this.setState({ sliderValue });
-    this.sliderChannel.onChange(sliderValue);
+    const { gadget } = this.state;
+    gadget.value = event.target.value;
+    this.setState({ gadget });
   };
 
   render() {
-    const { sliderValue } = this.state;
+    const { gadget } = this.state;
 
     return (
       <div className={sass['slider--wrapper']}>
         <label className={sass['slider--label']} htmlFor="range-slider">
-          Sparkle Slider: {sliderValue}
+          {gadget.name}: {gadget.value}
         </label>
         <input
           type="range"
@@ -45,9 +36,9 @@ class Slider extends React.Component {
           name="range-slider"
           min="0"
           max="1"
-          value={sliderValue}
+          value={gadget.value}
           step=".01"
-          onChange={this.handleSliderChange}
+          onChange={this.handleSliderChange.bind(this)}
         />
       </div>
     );
@@ -56,10 +47,12 @@ class Slider extends React.Component {
 
 Slider.propTypes = {
   pubSub: PropTypes.object,
+//   gadget: PropTypes.object,
 };
 
 Slider.defaultProps = {
   pubSub: {},
+//   gadget: {},
 };
 
 export default Slider;
