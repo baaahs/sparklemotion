@@ -8,4 +8,5 @@ object Topics {
     val selectedShow = PubSub.Topic("selectedShow", String.serializer())
     val primaryColor = PubSub.Topic("primaryColor", Color.serializer())
     val sliderInput = PubSub.Topic("sliderInput", Float.serializer())
+    val activeGadgets = PubSub.Topic("activeGadgets", GadgetData.serializer().list)
 }

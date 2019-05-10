@@ -11,9 +11,6 @@ import kotlin.test.assertEquals
 
 @InternalCoroutinesApi
 class PubSubTest {
-    @Serializable
-    data class Data(val value: String)
-
     val testCoroutineContext = TestCoroutineContext("network")
     val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
 
@@ -65,14 +62,19 @@ class PubSubTest {
         client1Log.assertContents("topic1 changed: from client 2")
         client2Log.assertEmpty()
     }
-}
 
-fun MutableList<String>.assertEmpty() {
-    assertEquals(emptyList<String>(), this)
-    this.clear()
-}
+    @Test
+    fun earlySubscribersShouldBeNotifiedOfChangesToo() {
+        val serverTopicObserver = server.publish(topic1, "first value") {
+            serverLog.add("topic1 changed: $it")
+        }
 
-fun MutableList<String>.assertContents(vararg s: String) {
-    assertEquals(s.toList(), this)
-    this.clear()
+        serverTopicObserver.onChange("second value")
+
+        client1.subscribe(topic1) { client1Log.add("topic1 changed: $it") }
+        testCoroutineContext.runAll()
+
+        serverLog.assertEmpty()
+        client1Log.assertContents("topic1 changed: second value")
+    }
 }

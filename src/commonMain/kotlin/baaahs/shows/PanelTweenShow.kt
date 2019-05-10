@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.gadgets.Slider
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.SolidShader
@@ -17,7 +18,7 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         )
 
         return object : Show {
-            val slider = showRunner.getSlider()
+            val slider = showRunner.getGadget(Slider("Sparkliness", 0f))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
