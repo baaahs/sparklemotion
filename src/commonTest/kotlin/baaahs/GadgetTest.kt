@@ -43,7 +43,7 @@ class GadgetTest {
         pubSubServer.install(gadgetModule)
 
         val gadgetProvider = GadgetProvider(pubSubServer)
-        val showRunner = ShowRunner(gadgetProvider, FakePinkyDisplay(), listOf(), object : Pinky.BeatProvider {
+        val showRunner = ShowRunner(gadgetProvider, listOf(), object : Pinky.BeatProvider {
             override val beat: Float = 1.0f
             override var bpm: Float = 1.0f
         }, FakeDmxUniverse())
@@ -73,14 +73,5 @@ class GadgetTest {
         override fun toJson(): JsonElement = TODO("SomeGadget.toJson not implemented")
 
         override fun setFromJson(jsonElement: JsonElement): Unit = TODO("SomeGadget.setFromJson not implemented")
-    }
-
-    class FakePinkyDisplay : PinkyDisplay {
-        override fun listShows(showMetas: List<Show.MetaData>) {
-        }
-
-        override var brainCount = 0
-        override var beat = 0
-        override var selectedShow: Show.MetaData? = null
     }
 }
