@@ -81,8 +81,6 @@ class GadgetTest {
 
         override var brainCount = 0
         override var beat = 0
-        override var color: Color? = Color.ORANGE
-        override var onPrimaryColorChange: (() -> Unit)? = { }
         override var selectedShow: Show.MetaData? = null
     }
 }

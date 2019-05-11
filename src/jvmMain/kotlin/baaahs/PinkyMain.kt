@@ -48,8 +48,6 @@ fun main(args: Array<String>) {
 
         override var brainCount: Int = -1
         override var beat: Int = -1
-        override var color: Color? = Color.WHITE
-        override var onPrimaryColorChange: (() -> Unit)? = null
         override var selectedShow: Show.MetaData? = null
     })
 
