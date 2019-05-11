@@ -33,6 +33,7 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         gadgets.values.forEach { gadgetChannel -> gadgetChannel.channel.unsubscribe() }
         gadgets.clear()
         activeGadgets.clear()
+        activeGadgetChannel.onChange(activeGadgets)
     }
 
     class GadgetChannel(val topic: PubSub.Topic<String>, val channel: PubSub.Observer<String>)
