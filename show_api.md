@@ -59,7 +59,7 @@ fun nextFrame() {
 Shows may specify a shader (or an arrangement of shaders) for each surface.
 
 ```kotlin
-val shaders = model.allSurfaces.map { surface -> SolidColorShader(surface).also { showRunner.setShader(surface, it) } } 
+val shaders = model.allSurfaces.map { surface -> showRunner.getShaderBuffer(SolidColorShader(surface)) } 
 
 fun nextFrame() {
   shaders.forEach { shader -> shader.buffer.color = Color.ORANGE }
