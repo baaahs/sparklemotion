@@ -73,7 +73,7 @@ class ShowRunner(
         return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
 
-    fun send(link: Network.Link) {
+    fun send(link: Network.Link, stats: Stats? = null) {
         shaderBuffers.forEach { (surface, shaderBuffers) ->
             if (shaderBuffers.size != 1) {
                 throw IllegalStateException("Too many shader buffers for $surface: $shaderBuffers")
@@ -81,11 +81,19 @@ class ShowRunner(
 
             val shaderBuffer = shaderBuffers.first()
             val remoteBrains = brainsBySurface[surface]
-            remoteBrains?.forEach { remoteBrain ->
-                link.sendUdp(remoteBrain.address,
-                    Ports.BRAIN,
-                    BrainShaderMessage(shaderBuffer.shader, shaderBuffer)
-                )
+            if (remoteBrains != null && remoteBrains.isNotEmpty()) {
+                val messageBytes = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+                remoteBrains.forEach { remoteBrain ->
+                    link.sendUdp(
+                        remoteBrain.address,
+                        Ports.BRAIN,
+                        messageBytes
+                    )
+                }
+                stats?.apply {
+                    bytesSent += messageBytes.size
+                    packetsSent += 1
+                }
             }
         }
 
@@ -97,4 +105,6 @@ class ShowRunner(
     fun shutDown() {
         gadgetProvider.clear()
     }
+
+    class Stats(var bytesSent: Int = 0, var packetsSent: Int = 0)
 }

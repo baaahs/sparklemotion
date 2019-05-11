@@ -73,6 +73,12 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             nextFrameElapsed.textContent = "${value}ms"
         }
 
+    override var stats: ShowRunner.Stats? = null
+        set(value) {
+            field = value
+            statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets sent" } ?: "?"
+        }
+
     private val brainCountDiv: Element
     private val beat1: Element
     private val beat2: Element
@@ -82,6 +88,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private var showList = emptyList<Show.MetaData>()
     private val showListInput: HTMLSelectElement
     private var nextFrameElapsed: Element
+    private var statsSpan: Element
 
     init {
         element.appendText("Brains online: ")
@@ -107,6 +114,9 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
         element.appendText(".nextFrame(): ")
         nextFrameElapsed = element.appendElement("span") {}
+        element.appendElement("br") { }
+        element.appendElement("b") { appendText("Data to Brains: ") }
+        statsSpan = element.appendElement("span") {}
     }
 
     override fun listShows(showMetas: List<Show.MetaData>) {

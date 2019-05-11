@@ -24,6 +24,7 @@ interface PinkyDisplay {
     var onShowChange: (() -> Unit)
     var selectedShow: Show.MetaData?
     var nextFrameMs: Int
+    var stats: ShowRunner.Stats?
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
@@ -35,6 +36,7 @@ open class StubPinkyDisplay : PinkyDisplay {
     override var onShowChange: () -> Unit = { }
     override var selectedShow: Show.MetaData? = null
     override var nextFrameMs: Int = 0
+    override var stats: ShowRunner.Stats? = null
 }
 
 interface BrainDisplay {
