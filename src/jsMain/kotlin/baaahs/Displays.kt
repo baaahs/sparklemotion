@@ -55,13 +55,6 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
-    override var color: Color? = null
-        set(value) {
-            colorPickerView.setColor(value)
-            field = value
-        }
-    override var onPrimaryColorChange: (() -> Unit)? = null
-
     override var selectedShow: Show.MetaData? = null
 
     private val brainCountDiv: Element
@@ -70,7 +63,6 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
-    private val colorPickerView: ColorPickerView
     private val showListDiv: Element
     private val showButtons: MutableList<ShowButton>
 
@@ -88,12 +80,6 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         beat3 = beatsDiv.appendElement("span") { appendText("3") }
         beat4 = beatsDiv.appendElement("span") { appendText("4") }
         beats = listOf(beat1, beat2, beat3, beat4)
-
-        colorPickerView = ColorPickerView(element) {
-            this.color = it
-            onPrimaryColorChange?.invoke()
-        }
-        color = colorPickerView.colors[0]
 
         showListDiv = element.appendElement("div") { className = "showsDiv" }
         showButtons = mutableListOf()

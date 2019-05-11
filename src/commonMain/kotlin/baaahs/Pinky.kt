@@ -47,16 +47,6 @@ class Pinky(
             this.selectedShow = showMetas.find { it.name == selectedShow }!!
         }
 
-        val color = display.color
-        if (color != null) {
-            val primaryColorChannel = pubSub.publish(Topics.primaryColor, color) {
-                display.color = it
-                println("display.color = $it")
-            }
-
-            display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
-        }
-
         val gadgetProvider = GadgetProvider(pubSub)
 
         val buildShowRunner = {
