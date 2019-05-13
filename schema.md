@@ -21,10 +21,32 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
   "userId": ___,
   "name": "Pride Flag",
   "type": "Palette",      // the type of the gadget
-  "data": { // type-dependent:
-     // other keys here might include "analogous", "complementary", etc.
-    custom: [0xE70000, 0xFF8C00, 0xFFEF00, 0x00811F, 0x0044FF, 0x760089],
-  },
+  "data": { ... },        // type-dependent
+}
+```
+
+#### Color Gadget Data
+```js
+{
+  "color": 0xfedbca,
+}
+```
+
+#### Palette Gadget Data
+```js
+{
+  "type": "analogous" | "monochromatic" | "triad" | "complementary" | "compound" | "shades" | "custom",
+
+  // e.g. for type "custom":
+  "values": [0xE70000, 0xFF8C00, 0xFFEF00, 0x00811F, 0x0044FF, 0x760089],
+}
+
+```
+
+#### Slider Gadget Data
+```js
+{
+  "value": 0.7325,
 }
 ```
 
