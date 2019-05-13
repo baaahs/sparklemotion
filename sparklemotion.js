@@ -15,7 +15,6 @@ if (typeof this['kotlinx-html-js'] === 'undefined') {
 }
 var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_runtime_js, $module$threejs_wrapper, $module$kotlinx_html_js) {
   'use strict';
-  var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var throwUPAE = Kotlin.throwUPAE;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
@@ -46,6 +45,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
   var Unit = Kotlin.kotlin.Unit;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
+  var cancel = $module$kotlinx_coroutines_core.kotlinx.coroutines.cancel_jnvdxk$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L250 = Kotlin.Long.fromInt(250);
   var L10000 = Kotlin.Long.fromInt(10000);
@@ -58,14 +58,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
-  var Job = $module$kotlinx_coroutines_core.kotlinx.coroutines.Job;
-  var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var equals = Kotlin.equals;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var L50 = Kotlin.Long.fromInt(50);
   var L0 = Kotlin.Long.ZERO;
+  var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
@@ -946,21 +945,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Mapper.prototype.onClose = function () {
     this.isRunning_0 = false;
     this.camera.close();
-    var $receiver = this.scope;
-    var tmp$;
-    var tmp$_0;
-    if ((tmp$ = $receiver.coroutineContext.get_j3r2sn$(Job.Key)) != null)
-      tmp$_0 = tmp$;
-    else {
-      throw IllegalStateException_init(('Scope cannot be cancelled because it does not have a job: ' + $receiver).toString());
-    }
-    var job = tmp$_0;
-    job.cancel();
+    cancel(this.scope);
     this.link_0.broadcastUdp_68hu5j$(Ports$Companion_getInstance().PINKY, new MapperHelloMessage(false));
-    var tmp$_1;
-    tmp$_1 = this.closeListeners_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var element = tmp$_1.next();
+    var tmp$;
+    tmp$ = this.closeListeners_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
       element();
     }
     this.mapperDisplay_0.close();
@@ -7918,7 +7908,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Dmx.Buffer = Dmx$Buffer;
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
-  $$importsForInline$$['kotlinx-coroutines-core'] = $module$kotlinx_coroutines_core;
   Mapper.BrainMapper = Mapper$BrainMapper;
   package$baaahs.Mapper = Mapper;
   MapperDisplay.Listener = MapperDisplay$Listener;
