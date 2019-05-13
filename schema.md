@@ -15,6 +15,9 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 ```
 
 ### Gadget Presets
+
+Gadgets offer the ability to save their current values as a user preset, or to load presets.
+
 ```js
 {
   "id": ___,
@@ -52,6 +55,8 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Show Presets
 
+All of the current gadget settings for a show can be saved as a preset, which then shows up in the show selector.
+
 ```js
 {
   "userId": ___,
@@ -69,6 +74,14 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Moving Head Positions
 
+These represent a focal point for the moving heads.
+
+Currently I'm thinking the eyes work like this: in the UI, you can specify a base position for moving heads. When
+`show.nextFrame()` is called, each moving head is already set to that base position, and it can then be altered
+arbitrarily by the show.
+
+These are saved position presets. 
+
 ```js
 {
   "name": "Headlight Mode",
@@ -77,7 +90,16 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ```
 
+These could also be represented using `pan`/`tilt`, but then each head would need its own entry. That might make sense
+for disco ball mode, where only the left eye can hit the disco balls (and the other might point straight up).
+
 ### Panel Mapping Data
+
+These are collected on each panel mapping run.
+
+Maybe needs more consideration:
+* how does Pinky determine which one is authoritative? (I think we want the one with the greatest area.)
+* how do we do admin overrides (e.g. a Brain dies and we need to swap a new one in)?
 
 ```js
 {
@@ -85,10 +107,13 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
   "brainId": ___,
   "areaInSqPixels": 12345, // the area of the surface as captured by the camera for this sample
   "image": "/mapping/___", // probably only populated in dev mode
+  "outdatedAt": Time,      // or do we just delete? "ignore: true"?
 }
 ```
 
 ### Pixel Mapping Data
+
+These are collected on each pixel mapping run.
 
 ```js
 {
