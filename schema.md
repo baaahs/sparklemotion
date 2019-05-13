@@ -4,7 +4,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### User
 
-```json
+```js
 {
   "id": ___,
   "username": "xian",
@@ -15,7 +15,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 ```
 
 ### Gadget Presets
-```json
+```js
 {
   "id": ___,
   "userId": ___,
@@ -30,7 +30,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Show Presets
 
-```json
+```js
 {
   "userId": ___,
   "name": "Awesome",
@@ -47,7 +47,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Moving Head Positions
 
-```json
+```js
 {
   "name": "Headlight Mode",
   "target": { "x": ___, "y": ___, "z": ___ },
@@ -57,7 +57,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Panel Mapping Data
 
-```json
+```js
 {
   "surfaceName": "21P",
   "brainId": ___,
@@ -68,7 +68,7 @@ All record types have `createdAt` (and maybe `modifiedAt`?).
 
 ### Pixel Mapping Data
 
-```json
+```js
 {
   "surfaceName": "21P",
   "pixels": [
