@@ -1,0 +1,89 @@
+# Sparkle Motion schema (WIP)
+
+All record types have `createdAt` (and maybe `modifiedAt`?).
+
+### User
+
+```json
+{
+  "id": ___,
+  "username": "xian",
+  "password": "...",      // salted hash of pw
+  "name": "Full Name",
+  "priority": 123.4,      // e.g. for locking out other users during a performance
+}
+```
+
+### Gadget Presets
+```json
+{
+  "id": ___,
+  "userId": ___,
+  "name": "Pride Flag",
+  "type": "Palette",      // the type of the gadget
+  "data": { // type-dependent:
+     // other keys here might include "analogous", "complementary", etc.
+    custom: [0xE70000, 0xFF8C00, 0xFFEF00, 0x00811F, 0x0044FF, 0x760089],
+  },
+}
+```
+
+### Show Presets
+
+```json
+{
+  "userId": ___,
+  "name": "Awesome",
+  "showType": "TexturesAndStuff",
+  "gadgets": [
+    {
+      "id": "texture",    // the show's id for the gadget
+      "type": "Texture",  // the type of the gadget
+      "data": { "file": "/textures/tiger-print.png" }, // type-dependent
+    }
+  ]
+}
+```
+
+### Moving Head Positions
+
+```json
+{
+  "name": "Headlight Mode",
+  "target": { "x": ___, "y": ___, "z": ___ },
+}
+
+```
+
+### Panel Mapping Data
+
+```json
+{
+  "surfaceName": "21P",
+  "brainId": ___,
+  "areaInSqPixels": 12345, // the area of the surface as captured by the camera for this sample
+  "image": "/mapping/___", // probably only populated in dev mode
+}
+```
+
+### Pixel Mapping Data
+
+```json
+{
+  "surfaceName": "21P",
+  "pixels": [
+    {
+      "hotspotX": 12.3,    // within the surface-space, where (0, 0) is the (bottom, left) of a rectangle which exactly
+      "hotspotY": 45.6,    //   contains the normalized surface
+      "brightness": 0.7,
+      "leftLimitX": 3.1,   // these compose a rectangle containing 90% of the light emitted from the pixel
+      "topLimitY": 55.1,
+      "rightLimitX": 16.1,
+      "bottomLimitY": 3.1,
+      "image": "/mapping/___", // probably only populated in dev mode
+    }
+  ],
+  "areaInSqPixels": 12345, // the area of the surface as captured by the camera for this sample
+  "image": "/mapping/___", // probably only populated in dev mode
+}
+```
