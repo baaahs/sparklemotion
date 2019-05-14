@@ -40,9 +40,9 @@ class Brain(
         }
     }
 
-    class ShaderBits<B : ShaderBuffer>(val shader: Shader<B>, val shaderImpl: ShaderImpl<B>, val shaderBuffer: B) {
-        fun read(reader: ByteArrayReader) = shaderBuffer.read(reader)
-        fun draw() = shaderImpl.draw(shaderBuffer)
+    class ShaderBits<B : ShaderBuffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+        fun read(reader: ByteArrayReader) = buffer.read(reader)
+        fun draw() = renderer.draw(buffer)
     }
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
@@ -63,7 +63,7 @@ class Brain(
                     val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<ShaderBuffer>
                     currentShaderBits = ShaderBits(
                         shader,
-                        shader.createImpl(pixels),
+                        shader.createRenderer(pixels),
                         shader.createBuffer(surface)
                     )
                 }
