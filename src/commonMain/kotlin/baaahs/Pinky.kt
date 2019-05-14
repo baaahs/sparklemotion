@@ -154,8 +154,8 @@ class ShowRunner(
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
 
         if (shaderBuffer is CompositorShader.Buffer) {
-            if (!buffersForSurface.remove(shaderBuffer.aShaderBuffer)
-                || !buffersForSurface.remove(shaderBuffer.bShaderBuffer)
+            if (!buffersForSurface.remove(shaderBuffer.bufferA)
+                || !buffersForSurface.remove(shaderBuffer.bufferB)
             ) {
                 throw IllegalStateException("Composite of unknown shader buffers!")
             }

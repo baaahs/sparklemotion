@@ -3,13 +3,12 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import kotlin.math.min
 
 class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
 
     override fun createBuffer(surface: Surface): Buffer = Buffer(surface.pixelCount)
 
-    override fun createImpl(pixels: Pixels): ShaderImpl<Buffer> = Impl(pixels)
+    override fun createRenderer(pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
 
     override fun readBuffer(reader: ByteArrayReader): Buffer {
         val incomingColorCount = reader.readInt()
@@ -48,7 +47,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
         }
     }
 
-    class Impl(val pixels: Pixels) : ShaderImpl<Buffer> {
+    class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
         override fun draw(buffer: Buffer) {
             pixels.set(buffer.colors)
         }

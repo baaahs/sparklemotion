@@ -27,7 +27,7 @@ interface Surface {
 }
 
 abstract class Shader<B : ShaderBuffer>(val id: ShaderId) {
-    abstract fun createImpl(pixels: Pixels): ShaderImpl<B>
+    abstract fun createRenderer(pixels: Pixels): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
 
@@ -38,7 +38,7 @@ abstract class Shader<B : ShaderBuffer>(val id: ShaderId) {
         serializeConfig(writer)
     }
 
-    /** Override if your shader has static configuration that needs to be shared with the ShaderImpl. */
+    /** Override if your shader has static configuration that needs to be shared with the Renderer. */
     open fun serializeConfig(writer: ByteArrayWriter) {
     }
 
@@ -57,6 +57,10 @@ abstract class Shader<B : ShaderBuffer>(val id: ShaderId) {
             return shaderType.parser(reader)
         }
     }
+
+    interface Renderer<B : ShaderBuffer> {
+        fun draw(buffer: B)
+    }
 }
 
 interface ShaderBuffer {
@@ -68,10 +72,6 @@ interface ShaderBuffer {
      * Read new data into an existing buffer (as efficiently as possible).
      */
     fun read(reader: ByteArrayReader)
-}
-
-interface ShaderImpl<B : ShaderBuffer> {
-    fun draw(buffer: B)
 }
 
 interface Pixels {
