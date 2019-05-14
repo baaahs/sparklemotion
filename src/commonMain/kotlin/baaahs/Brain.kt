@@ -40,7 +40,7 @@ class Brain(
         }
     }
 
-    class ShaderBits<B : ShaderBuffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+    class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
         fun draw() = renderer.draw(buffer)
     }
@@ -60,7 +60,7 @@ class Brain(
                     currentShaderDesc = shaderDesc
 
                     @Suppress("UNCHECKED_CAST")
-                    val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<ShaderBuffer>
+                    val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
                     currentShaderBits = ShaderBits(
                         shader,
                         shader.createRenderer(pixels),

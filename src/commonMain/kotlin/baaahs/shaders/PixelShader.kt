@@ -21,7 +21,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
         fun parse(reader: ByteArrayReader) = PixelShader()
     }
 
-    inner class Buffer(pixelCount: Int) : ShaderBuffer {
+    inner class Buffer(pixelCount: Int) : Shader.Buffer {
         override val shader: Shader<*>
             get() = this@PixelShader
 

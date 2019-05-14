@@ -25,8 +25,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
             reader.readFloat()
         )
 
-    fun createBuffer(aShaderBuffer: ShaderBuffer, bShaderBuffer: ShaderBuffer): Buffer =
-        Buffer(aShaderBuffer, bShaderBuffer)
+    fun createBuffer(bufferA: Shader.Buffer, bufferB: Shader.Buffer): Buffer =
+        Buffer(bufferA, bufferB)
 
     companion object {
         fun parse(reader: ByteArrayReader): CompositorShader {
@@ -37,10 +37,10 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     }
 
     inner class Buffer(
-        val bufferA: ShaderBuffer, val bufferB: ShaderBuffer,
+        val bufferA: Shader.Buffer, val bufferB: Shader.Buffer,
         var mode: CompositingMode = CompositingMode.OVERLAY,
         var fade: Float = 0.5f
-    ) : ShaderBuffer {
+    ) : Shader.Buffer {
         override val shader: Shader<*> = this@CompositorShader
 
         override fun serialize(writer: ByteArrayWriter) {
@@ -58,7 +58,7 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         }
     }
 
-    class Renderer<A : ShaderBuffer, B : ShaderBuffer>(
+    class Renderer<A : Shader.Buffer, B : Shader.Buffer>(
         aShader: Shader<A>,
         bShader: Shader<B>,
         val pixels: Pixels
