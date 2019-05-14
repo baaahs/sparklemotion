@@ -15,7 +15,7 @@ class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
         fun parse(reader: ByteArrayReader) = SolidShader()
     }
 
-    inner class Buffer : ShaderBuffer {
+    inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
             get() = this@SolidShader
 

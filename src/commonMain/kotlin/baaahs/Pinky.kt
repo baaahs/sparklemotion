@@ -144,13 +144,13 @@ class ShowRunner(
     private val dmxUniverse: Dmx.Universe
 ) {
     private val brainsBySurface = brains.groupBy { it.surface }
-    private val shaderBuffers: MutableMap<Surface, MutableList<ShaderBuffer>> = hashMapOf()
+    private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
     fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
 
     fun getBeatProvider(): Pinky.BeatProvider = beatProvider
 
-    private fun recordShader(surface: Surface, shaderBuffer: ShaderBuffer) {
+    private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
 
         if (shaderBuffer is CompositorShader.Buffer) {
@@ -171,7 +171,7 @@ class ShowRunner(
      * @param shader The type of shader.
      * @return A shader buffer of the appropriate type.
      */
-    fun <B : ShaderBuffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+    fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
         val buffer = shader.createBuffer(surface)
         recordShader(surface, buffer)
         return buffer
@@ -184,13 +184,13 @@ class ShowRunner(
      */
     fun getCompositorBuffer(
         surface: Surface,
-        shaderBufferA: ShaderBuffer,
-        shaderBufferB: ShaderBuffer,
+        bufferA: Shader.Buffer,
+        bufferB: Shader.Buffer,
         mode: CompositingMode = CompositingMode.OVERLAY,
         fade: Float = 0.5f
     ): CompositorShader.Buffer {
-        return CompositorShader(shaderBufferA.shader, shaderBufferB.shader)
-            .createBuffer(shaderBufferA, shaderBufferB)
+        return CompositorShader(bufferA.shader, bufferB.shader)
+            .createBuffer(bufferA, bufferB)
             .also {
                 it.mode = mode
                 it.fade = fade

@@ -17,7 +17,7 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
         fun parse(reader: ByteArrayReader) = SineWaveShader()
     }
 
-    inner class Buffer : ShaderBuffer {
+    inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
             get() = this@SineWaveShader
 

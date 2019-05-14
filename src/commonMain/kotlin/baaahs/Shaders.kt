@@ -26,7 +26,7 @@ interface Surface {
     val pixelCount: Int
 }
 
-abstract class Shader<B : ShaderBuffer>(val id: ShaderId) {
+abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
     abstract fun createRenderer(pixels: Pixels): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
@@ -58,20 +58,20 @@ abstract class Shader<B : ShaderBuffer>(val id: ShaderId) {
         }
     }
 
-    interface Renderer<B : ShaderBuffer> {
+    interface Buffer {
+        val shader: Shader<*>
+
+        fun serialize(writer: ByteArrayWriter)
+
+        /**
+         * Read new data into an existing buffer (as efficiently as possible).
+         */
+        fun read(reader: ByteArrayReader)
+    }
+
+    interface Renderer<B : Buffer> {
         fun draw(buffer: B)
     }
-}
-
-interface ShaderBuffer {
-    val shader: Shader<*>
-
-    fun serialize(writer: ByteArrayWriter)
-
-    /**
-     * Read new data into an existing buffer (as efficiently as possible).
-     */
-    fun read(reader: ByteArrayReader)
 }
 
 interface Pixels {

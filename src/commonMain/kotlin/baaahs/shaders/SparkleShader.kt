@@ -16,7 +16,7 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
         fun parse(reader: ByteArrayReader) = SparkleShader()
     }
 
-    inner class Buffer : ShaderBuffer {
+    inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> = this@SparkleShader
 
         var color: Color = Color.WHITE
@@ -43,5 +43,4 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
             pixels.set(colors)
         }
     }
-
 }
