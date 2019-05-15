@@ -41,15 +41,17 @@ fun main(args: Array<String>) {
         masking = false
     }
 
-    val pinky = Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(), object : PinkyDisplay {
-        override fun listShows(showMetas: List<Show.MetaData>) {
-            println("showMetas = ${showMetas}")
-        }
+    val pinky =
+        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(), object : StubPinkyDisplay() {
+            override fun listShows(showMetas: List<Show.MetaData>) {
+                println("showMetas = ${showMetas}")
+            }
+            override var selectedShow: Show.MetaData? = null
+                set(value) { field = value; println("selectedShow: ${value}") }
 
-        override var brainCount: Int = -1
-        override var beat: Int = -1
-        override var selectedShow: Show.MetaData? = null
-    })
+            override var nextFrameMs: Int = 0
+                set(value) { field = value; println("nextFrameMs: ${value}") }
+        })
 
     GlobalScope.launch { pinky.run() }
 
