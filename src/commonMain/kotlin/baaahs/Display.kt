@@ -21,8 +21,6 @@ interface PinkyDisplay {
 
     var brainCount: Int
     var beat: Int
-    var color: Color?
-    var onPrimaryColorChange: (() -> Unit)?
     var selectedShow: Show.MetaData?
 }
 
