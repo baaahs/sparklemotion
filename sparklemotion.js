@@ -41,8 +41,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var Unit = Kotlin.kotlin.Unit;
+  var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var equals = Kotlin.equals;
   var ObservableProperty = Kotlin.kotlin.properties.ObservableProperty;
   var getKClass = Kotlin.getKClass;
@@ -124,6 +124,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
+  var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var Color_init = THREE.Color;
@@ -754,6 +755,72 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_INTERFACE,
     simpleName: 'PinkyDisplay',
     interfaces: []
+  };
+  function StubPinkyDisplay() {
+    this.brainCount_cnxvq4$_0 = 0;
+    this.beat_6xdvy1$_0 = 0;
+    this.onShowChange_33sz01$_0 = StubPinkyDisplay$onShowChange$lambda;
+    this.selectedShow_fwpmt$_0 = null;
+    this.nextFrameMs_1o69ux$_0 = 0;
+    this.stats_6me6mw$_0 = null;
+  }
+  StubPinkyDisplay.prototype.listShows_qxmw8h$ = function (showMetas) {
+  };
+  Object.defineProperty(StubPinkyDisplay.prototype, 'brainCount', {
+    get: function () {
+      return this.brainCount_cnxvq4$_0;
+    },
+    set: function (brainCount) {
+      this.brainCount_cnxvq4$_0 = brainCount;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'beat', {
+    get: function () {
+      return this.beat_6xdvy1$_0;
+    },
+    set: function (beat) {
+      this.beat_6xdvy1$_0 = beat;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'onShowChange', {
+    get: function () {
+      return this.onShowChange_33sz01$_0;
+    },
+    set: function (onShowChange) {
+      this.onShowChange_33sz01$_0 = onShowChange;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'selectedShow', {
+    get: function () {
+      return this.selectedShow_fwpmt$_0;
+    },
+    set: function (selectedShow) {
+      this.selectedShow_fwpmt$_0 = selectedShow;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'nextFrameMs', {
+    get: function () {
+      return this.nextFrameMs_1o69ux$_0;
+    },
+    set: function (nextFrameMs) {
+      this.nextFrameMs_1o69ux$_0 = nextFrameMs;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'stats', {
+    get: function () {
+      return this.stats_6me6mw$_0;
+    },
+    set: function (stats) {
+      this.stats_6me6mw$_0 = stats;
+    }
+  });
+  function StubPinkyDisplay$onShowChange$lambda() {
+    return Unit;
+  }
+  StubPinkyDisplay.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'StubPinkyDisplay',
+    interfaces: [PinkyDisplay]
   };
   function BrainDisplay() {
   }
@@ -2154,17 +2221,30 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
-  function Pinky$run$lambda_2(closure$gadgetProvider, this$Pinky) {
+  function Pinky$run$lambda_2(this$Pinky, closure$selectedShowChannel) {
+    return function () {
+      this$Pinky.selectedShow_0 = ensureNotNull(this$Pinky.display.selectedShow);
+      closure$selectedShowChannel.onChange(this$Pinky.selectedShow_0.name);
+      return Unit;
+    };
+  }
+  function Pinky$run$lambda_3(closure$gadgetProvider, this$Pinky) {
     return function () {
       return new ShowRunner(closure$gadgetProvider, toList(this$Pinky.brains_0.values), this$Pinky.beatProvider_0, this$Pinky.dmxUniverse);
     };
   }
-  function Pinky$run$lambda_3(this$Pinky, closure$currentShowMetaData) {
+  function Pinky$run$lambda_4(this$Pinky, closure$currentShowMetaData) {
     return function () {
       var $receiver = this$Pinky.selectedShow_0.createShow_h1b9op$(this$Pinky.sheepModel, this$Pinky.showRunner_0);
       var this$Pinky_0 = this$Pinky;
       closure$currentShowMetaData.v = this$Pinky_0.selectedShow_0;
       return $receiver;
+    };
+  }
+  function Pinky$run$lambda_5(closure$show) {
+    return function () {
+      closure$show.v.nextFrame();
+      return Unit;
     };
   }
   function Coroutine$run_1($this, continuation_0) {
@@ -2191,6 +2271,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
             this.$this.link_0.listenUdp_a6m852$(Ports$Companion_getInstance().PINKY, this.$this);
             this.$this.display.listShows_qxmw8h$(this.$this.showMetas);
+            this.$this.display.selectedShow = this.$this.selectedShow_0;
             var pubSub = new PubSub$Server(this.$this.link_0, Ports$Companion_getInstance().PINKY_UI_TCP);
             pubSub.install_stpyu4$(gadgetModule);
             var tmp$ = Topics_getInstance().availableShows;
@@ -2204,13 +2285,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             pubSub.publish_oiz02e$(tmp$, destination, Pinky$run$lambda_0);
-            pubSub.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.showMetas.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
+            var selectedShowChannel = pubSub.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.showMetas.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
+            this.$this.display.onShowChange = Pinky$run$lambda_2(this.$this, selectedShowChannel);
             var gadgetProvider = new GadgetProvider(pubSub);
-            this.local$buildShowRunner = Pinky$run$lambda_2(gadgetProvider, this.$this);
+            this.local$buildShowRunner = Pinky$run$lambda_3(gadgetProvider, this.$this);
             this.local$currentShowMetaData = {v: this.$this.selectedShow_0};
-            this.local$buildShow = Pinky$run$lambda_3(this.$this, this.local$currentShowMetaData);
+            this.local$buildShow = Pinky$run$lambda_4(this.$this, this.local$currentShowMetaData);
             this.$this.showRunner_0 = this.local$buildShowRunner();
-            this.local$show = this.local$buildShow();
+            this.local$show = {v: this.local$buildShow()};
             this.state_0 = 2;
             continue;
           case 1:
@@ -2239,12 +2321,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               }
               this.$this.showRunner_0.shutDown();
               this.$this.showRunner_0 = this.local$buildShowRunner();
-              this.local$show = this.local$buildShow();
+              this.local$show.v = this.local$buildShow();
               this.$this.brainsChanged_0 = false;
             }
 
-            this.local$show.nextFrame();
-            this.$this.showRunner_0.send_9m0ekx$(this.$this.link_0);
+            var elapsedMs = time(Pinky$run$lambda_5(this.local$show));
+            this.$this.display.nextFrameMs = elapsedMs.toInt();
+            var stats = new ShowRunner$Stats();
+            this.$this.showRunner_0.send_359yhm$(this.$this.link_0, stats);
+            this.$this.display.stats = stats;
             this.state_0 = 5;
             this.result_0 = delay(L50, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -3738,7 +3823,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
     return new Shenzarpy(this.getDmxBuffer_vux9f0$(baseChannel, 16));
   };
-  ShowRunner.prototype.send_9m0ekx$ = function (link) {
+  ShowRunner.prototype.send_359yhm$ = function (link, stats) {
+    if (stats === void 0)
+      stats = null;
     var tmp$;
     tmp$ = this.shaderBuffers_0.entries.iterator();
     while (tmp$.hasNext()) {
@@ -3750,12 +3837,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       }
       var shaderBuffer = first(shaderBuffers);
       var remoteBrains = this.brainsBySurface_0.get_11rb$(surface);
-      if (remoteBrains != null) {
-        var tmp$_0;
-        tmp$_0 = remoteBrains.iterator();
-        while (tmp$_0.hasNext()) {
-          var element_0 = tmp$_0.next();
-          link.sendUdp_wpmaqi$(element_0.address, Ports$Companion_getInstance().BRAIN, new BrainShaderMessage(shaderBuffer.shader, shaderBuffer));
+      var tmp$_0 = remoteBrains != null;
+      if (tmp$_0) {
+        tmp$_0 = !remoteBrains.isEmpty();
+      }
+      if (tmp$_0) {
+        var messageBytes = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer)).toBytes();
+        var tmp$_1;
+        tmp$_1 = remoteBrains.iterator();
+        while (tmp$_1.hasNext()) {
+          var element_0 = tmp$_1.next();
+          link.sendUdp_ytpeqp$(element_0.address, Ports$Companion_getInstance().BRAIN, messageBytes);
+        }
+        if (stats != null) {
+          stats.bytesSent = stats.bytesSent + messageBytes.length | 0;
+          stats.packetsSent = stats.packetsSent + 1 | 0;
         }
       }
     }
@@ -3766,6 +3862,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   ShowRunner.prototype.shutDown = function () {
     this.gadgetProvider_0.clear();
+  };
+  function ShowRunner$Stats(bytesSent, packetsSent) {
+    if (bytesSent === void 0)
+      bytesSent = 0;
+    if (packetsSent === void 0)
+      packetsSent = 0;
+    this.bytesSent = bytesSent;
+    this.packetsSent = packetsSent;
+  }
+  ShowRunner$Stats.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Stats',
+    interfaces: []
   };
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
@@ -5885,7 +5994,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return desaturatedColor;
   };
   SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.prototype.nextRandomFloat_0 = function (seed) {
-    var x = seed.nextDouble() + getTimeMillis().toNumber() / 1000;
+    var x = seed.nextFloat() + getTimeMillis().toNumber() / 1000.0;
     return Math_0.sin(x);
   };
   SomeDumbShow$ObjectLiteral$createShow$ObjectLiteral.$metadata$ = {
@@ -6656,6 +6765,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'logger',
     interfaces: []
   };
+  function time(function_0) {
+    var now = getTimeMillis();
+    function_0();
+    return getTimeMillis().subtract(now);
+  }
   function JsDisplay() {
   }
   JsDisplay.prototype.forNetwork = function () {
@@ -6712,15 +6826,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [NetworkDisplay]
   };
   function JsPinkyDisplay(element) {
+    this.onShowChange_ii9f5g$_0 = JsPinkyDisplay$onShowChange$lambda;
     this.selectedShow_l65oio$_0 = null;
+    this.nextFrameMs_yg3jc4$_0 = 0;
+    this.stats_qcsqqr$_0 = null;
     this.brainCountDiv_0 = null;
     this.beat1_0 = null;
     this.beat2_0 = null;
     this.beat3_0 = null;
     this.beat4_0 = null;
     this.beats_0 = null;
-    this.showListDiv_0 = null;
-    this.showButtons_0 = null;
+    this.showList_0 = emptyList();
+    this.showListInput_0 = null;
+    this.nextFrameElapsed_0 = null;
+    this.statsSpan_0 = null;
+    var tmp$;
     appendText(element, 'Brains online: ');
     this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
     var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_0);
@@ -6729,52 +6849,73 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
     this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
     this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    this.showListDiv_0 = appendElement(element, 'div', JsPinkyDisplay_init$lambda_5);
-    this.showButtons_0 = ArrayList_init();
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_5);
+    this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda_6), HTMLSelectElement) ? tmp$ : throwCCE();
+    this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_7(this);
+    appendText(element, '.nextFrame(): ');
+    this.nextFrameElapsed_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_8);
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_9);
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_10);
+    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_11);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
   }
+  Object.defineProperty(JsPinkyDisplay.prototype, 'onShowChange', {
+    get: function () {
+      return this.onShowChange_ii9f5g$_0;
+    },
+    set: function (onShowChange) {
+      this.onShowChange_ii9f5g$_0 = onShowChange;
+    }
+  });
   Object.defineProperty(JsPinkyDisplay.prototype, 'selectedShow', {
     get: function () {
       return this.selectedShow_l65oio$_0;
     },
-    set: function (selectedShow) {
-      this.selectedShow_l65oio$_0 = selectedShow;
+    set: function (value) {
+      var tmp$, tmp$_0;
+      this.selectedShow_l65oio$_0 = value;
+      var options = this.showListInput_0.options;
+      tmp$ = options.length;
+      for (var i = 0; i < tmp$; i++) {
+        if (equals((tmp$_0 = options[i]) != null ? tmp$_0.textContent : null, value != null ? value.name : null))
+          this.showListInput_0.selectedIndex = i;
+      }
     }
   });
-  function JsPinkyDisplay$listShows$lambda($receiver) {
-    appendText($receiver, 'Shows: ');
-    return Unit;
-  }
-  function JsPinkyDisplay$listShows$lambda_0($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay$listShows$lambda$lambda(closure$showMeta) {
+  Object.defineProperty(JsPinkyDisplay.prototype, 'nextFrameMs', {
+    get: function () {
+      return this.nextFrameMs_yg3jc4$_0;
+    },
+    set: function (value) {
+      this.nextFrameMs_yg3jc4$_0 = value;
+      this.nextFrameElapsed_0.textContent = value.toString() + 'ms';
+    }
+  });
+  Object.defineProperty(JsPinkyDisplay.prototype, 'stats', {
+    get: function () {
+      return this.stats_qcsqqr$_0;
+    },
+    set: function (value) {
+      var tmp$;
+      this.stats_qcsqqr$_0 = value;
+      this.statsSpan_0.textContent = (tmp$ = value != null ? value.bytesSent.toString() + ' bytes / ' + value.packetsSent + ' packets sent' : null) != null ? tmp$ : '?';
+    }
+  });
+  function JsPinkyDisplay$listShows$lambda$lambda(closure$it) {
     return function ($receiver) {
-      appendText($receiver, closure$showMeta.name);
-      return Unit;
-    };
-  }
-  function JsPinkyDisplay$listShows$lambda$lambda_0(this$JsPinkyDisplay) {
-    return function (it) {
-      this$JsPinkyDisplay.selectedShow = it;
+      appendText($receiver, closure$it.name);
       return Unit;
     };
   }
   JsPinkyDisplay.prototype.listShows_qxmw8h$ = function (showMetas) {
-    clear(this.showListDiv_0);
-    appendElement(this.showListDiv_0, 'b', JsPinkyDisplay$listShows$lambda);
-    appendElement(this.showListDiv_0, 'br', JsPinkyDisplay$listShows$lambda_0);
-    this.showButtons_0.clear();
+    clear(this.showListInput_0);
+    this.showList_0 = showMetas;
     var tmp$;
     tmp$ = showMetas.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var element_0 = appendElement(this.showListDiv_0, 'span', JsPinkyDisplay$listShows$lambda$lambda(element));
-      var showButton = new JsPinkyDisplay$ShowButton(element, element_0);
-      showButton.onSelect = JsPinkyDisplay$listShows$lambda$lambda_0(this);
-      showButton.allButtons = this.showButtons_0;
-      this.showButtons_0.add_11rb$(showButton);
+      appendElement(this.showListInput_0, 'option', JsPinkyDisplay$listShows$lambda$lambda(element));
     }
   };
   Object.defineProperty(JsPinkyDisplay.prototype, 'brainCount', {
@@ -6805,6 +6946,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'ShowButton',
     interfaces: [Button]
   };
+  function JsPinkyDisplay$onShowChange$lambda() {
+    return Unit;
+  }
   function JsPinkyDisplay_init$lambda($receiver) {
     return Unit;
   }
@@ -6838,7 +6982,48 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_5($receiver) {
+    appendText($receiver, 'Show: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_6($receiver) {
     $receiver.className = 'showsDiv';
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_7(this$JsPinkyDisplay) {
+    return function (it) {
+      var tmp$ = this$JsPinkyDisplay;
+      var $receiver = this$JsPinkyDisplay.showList_0;
+      var firstOrNull$result;
+      firstOrNull$break: do {
+        var tmp$_0;
+        tmp$_0 = $receiver.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          var tmp$_1;
+          if (equals(element.name, (tmp$_1 = this$JsPinkyDisplay.showListInput_0.selectedOptions[0]) != null ? tmp$_1.textContent : null)) {
+            firstOrNull$result = element;
+            break firstOrNull$break;
+          }
+        }
+        firstOrNull$result = null;
+      }
+       while (false);
+      tmp$.selectedShow = firstOrNull$result;
+      this$JsPinkyDisplay.onShowChange();
+      return Unit;
+    };
+  }
+  function JsPinkyDisplay_init$lambda_8($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_9($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_10($receiver) {
+    appendText($receiver, 'Data to Brains: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_11($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -8451,6 +8636,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.Display = Display;
   package$baaahs.NetworkDisplay = NetworkDisplay;
   package$baaahs.PinkyDisplay = PinkyDisplay;
+  package$baaahs.StubPinkyDisplay = StubPinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
   Dmx.Universe = Dmx$Universe;
   Dmx.Buffer = Dmx$Buffer;
@@ -8651,6 +8837,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.Shenzarpy = Shenzarpy;
   Show.MetaData = Show$MetaData;
   package$baaahs.Show = Show;
+  ShowRunner.Stats = ShowRunner$Stats;
   package$baaahs.ShowRunner = ShowRunner;
   Object.defineProperty(package$baaahs, 'SparkleMotion', {
     get: SparkleMotion_getInstance
@@ -8835,6 +9022,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: logger$Companion_getInstance
   });
   package$baaahs.logger = logger;
+  package$baaahs.time_ls4sck$ = time;
   package$baaahs.JsDisplay = JsDisplay;
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
