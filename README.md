@@ -2,6 +2,10 @@
 
 [![CircleCI:master](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
+## Documentation
+* [Show API](show_api.md)
+* [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/)
+
 ## Prerequisites
 
 1. Install [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
