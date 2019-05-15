@@ -14,7 +14,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         bShader.serialize(writer)
     }
 
-    override fun createImpl(pixels: Pixels): ShaderImpl<Buffer> = Impl(aShader, bShader, pixels)
+    override fun createRenderer(pixels: Pixels): Shader.Renderer<Buffer> =
+        Renderer(aShader, bShader, pixels)
 
     override fun readBuffer(reader: ByteArrayReader): Buffer =
         Buffer(
@@ -24,8 +25,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
             reader.readFloat()
         )
 
-    fun createBuffer(aShaderBuffer: ShaderBuffer, bShaderBuffer: ShaderBuffer): Buffer =
-        Buffer(aShaderBuffer, bShaderBuffer)
+    fun createBuffer(bufferA: Shader.Buffer, bufferB: Shader.Buffer): Buffer =
+        Buffer(bufferA, bufferB)
 
     companion object {
         fun parse(reader: ByteArrayReader): CompositorShader {
@@ -36,42 +37,42 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     }
 
     inner class Buffer(
-        val aShaderBuffer: ShaderBuffer, val bShaderBuffer: ShaderBuffer,
+        val bufferA: Shader.Buffer, val bufferB: Shader.Buffer,
         var mode: CompositingMode = CompositingMode.OVERLAY,
         var fade: Float = 0.5f
-    ) : ShaderBuffer {
+    ) : Shader.Buffer {
         override val shader: Shader<*> = this@CompositorShader
 
         override fun serialize(writer: ByteArrayWriter) {
-            aShaderBuffer.serialize(writer)
-            bShaderBuffer.serialize(writer)
+            bufferA.serialize(writer)
+            bufferB.serialize(writer)
             writer.writeByte(mode.ordinal.toByte())
             writer.writeFloat(fade)
         }
 
         override fun read(reader: ByteArrayReader) {
-            aShaderBuffer.read(reader)
-            bShaderBuffer.read(reader)
+            bufferA.read(reader)
+            bufferB.read(reader)
             mode = CompositingMode.get(reader.readByte())
             fade = reader.readFloat()
         }
     }
 
-    class Impl<A : ShaderBuffer, B : ShaderBuffer>(
+    class Renderer<A : Shader.Buffer, B : Shader.Buffer>(
         aShader: Shader<A>,
         bShader: Shader<B>,
         val pixels: Pixels
-    ) : ShaderImpl<Buffer> {
+    ) : Shader.Renderer<Buffer> {
         private val colors = Array(pixels.count) { Color.WHITE }
         private val aPixels = PixelBuf(pixels.count)
         private val bPixels = PixelBuf(pixels.count)
-        private val shaderAImpl: ShaderImpl<A> = aShader.createImpl(aPixels)
-        private val shaderBImpl: ShaderImpl<B> = bShader.createImpl(bPixels)
+        private val rendererA: Shader.Renderer<A> = aShader.createRenderer(aPixels)
+        private val rendererB: Shader.Renderer<B> = bShader.createRenderer(bPixels)
 
         @Suppress("UNCHECKED_CAST")
         override fun draw(buffer: Buffer) {
-            shaderAImpl.draw(buffer.aShaderBuffer as A)
-            shaderBImpl.draw(buffer.bShaderBuffer as B)
+            rendererA.draw(buffer.bufferA as A)
+            rendererB.draw(buffer.bufferB as B)
 
             val mode = buffer.mode
             for (i in colors.indices) {

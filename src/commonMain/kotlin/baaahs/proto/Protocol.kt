@@ -1,7 +1,6 @@
 package baaahs.proto
 
 import baaahs.Shader
-import baaahs.ShaderBuffer
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -52,7 +51,7 @@ class BrainHelloMessage(val panelName: String) : Message(Type.BRAIN_HELLO) {
     }
 }
 
-class BrainShaderMessage(val shader: Shader<*>, val buffer: ShaderBuffer) : Message(Type.BRAIN_PANEL_SHADE) {
+class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer) : Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
         /**
          * Suboptimal parser; on the Brain we'll do better than this.
