@@ -4,6 +4,7 @@ $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)))baaahs/kotlin.collections.-list/random.html
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)), )baaahs/kotlin.collections.-list/random.html
 baaahs
+baaahs.gadgets
 baaahs.imaging
 baaahs.io
 baaahs.net

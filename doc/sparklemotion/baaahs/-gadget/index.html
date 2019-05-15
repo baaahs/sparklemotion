@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Gadget - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Gadget</a><br/>
+<br/>
+<h1>Gadget</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Gadget</span></code>
+<p>Base class for user input gadgets.</p>
+<p>Gadgets may be requested by a <a href="../-show/index.html">Show</a>:</p>
+<pre><code class="lang-kotlin">val sparklinessSlider = showRunner.getGadget(Slider("Sparkliness"))
+
+fun nextFrame() {
+  println("Sparkliness is ${sparklinessSlider.value}.")
+}
+</code></pre>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Gadget</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>Base class for user input gadgets.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="changed.html">changed</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">changed</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="listen.html">listen</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$listen(baaahs.GadgetListener)/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-from-json.html">setFromJson</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setFromJson</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$setFromJson()/jsonElement">jsonElement</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-json.html">toJson</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">toJson</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unlisten.html">unlisten</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unlisten</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$unlisten(baaahs.GadgetListener)/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="watch-for-changes.html">watchForChanges</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">watchForChanges</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$watchForChanges(baaahs.Gadget.watchForChanges.T)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="watch-for-changes.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-gadget-value-observer/index.html"><span class="identifier">GadgetValueObserver</span></a><span class="symbol">&lt;</span><a href="watch-for-changes.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="without-triggering.html">withoutTriggering</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">withoutTriggering</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$withoutTriggering(baaahs.GadgetListener, kotlin.Function0((kotlin.Unit)))/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$withoutTriggering(baaahs.GadgetListener, kotlin.Function0((kotlin.Unit)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../baaahs.gadgets/-color-picker/index.html">ColorPicker</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ColorPicker</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Gadget</span></a></code>
+<p>A gadget for picking a single color for a color palette.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs.gadgets/-slider/index.html">Slider</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Slider</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Gadget</span></a></code>
+<p>A gadget for adjusting a value using a slider.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ColorPicker - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gadgets</a>&nbsp;/&nbsp;<a href="./index.html">ColorPicker</a><br/>
+<br/>
+<h1>ColorPicker</h1>
+<code><span class="keyword">class </span><span class="identifier">ColorPicker</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a></code>
+<p>A gadget for picking a single color for a color palette.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">ColorPicker</span><span class="symbol">(</span><span class="identifier" id="baaahs.gadgets.ColorPicker$<init>(kotlin.String, baaahs.Color)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.ColorPicker$<init>(kotlin.String, baaahs.Color)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Color.WHITE<span class="symbol">)</span></code>
+<p>A gadget for picking a single color for a color palette.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="color.html">color</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">color</span><span class="symbol">: </span><a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code>
+<p>The selected color.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="initial-value.html">initialValue</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">initialValue</span><span class="symbol">: </span><a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code>
+<p>The initial value for this color picker.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="name.html">name</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
+<p>The name for this color picker.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="set-from-json.html">setFromJson</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setFromJson</span><span class="symbol">(</span><span class="identifier" id="baaahs.gadgets.ColorPicker$setFromJson()/jsonElement">jsonElement</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-json.html">toJson</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toJson</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../baaahs/-gadget/changed.html">changed</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">changed</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs/-gadget/listen.html">listen</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$listen(baaahs.GadgetListener)/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs/-gadget/unlisten.html">unlisten</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unlisten</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$unlisten(baaahs.GadgetListener)/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs/-gadget/watch-for-changes.html">watchForChanges</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">watchForChanges</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$watchForChanges(baaahs.Gadget.watchForChanges.T)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget/watch-for-changes.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-gadget-value-observer/index.html"><span class="identifier">GadgetValueObserver</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-gadget/watch-for-changes.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../baaahs/-gadget/without-triggering.html">withoutTriggering</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">withoutTriggering</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$withoutTriggering(baaahs.GadgetListener, kotlin.Function0((kotlin.Unit)))/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget-listener/index.html"><span class="identifier">GadgetListener</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$withoutTriggering(baaahs.GadgetListener, kotlin.Function0((kotlin.Unit)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

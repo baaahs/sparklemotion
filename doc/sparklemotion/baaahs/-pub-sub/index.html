@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">PubSub</a><br/>
 <br/>
 <h1>PubSub</h1>
-<code><span class="keyword">class </span><span class="identifier">PubSub</span></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PubSub</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
@@ -17,14 +17,21 @@
 <p><a href="-client/index.html">Client</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Client</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-endpoint/index.html"><span class="identifier">PubSub.Endpoint</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="-connection/index.html">Connection</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Connection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-origin/index.html"><span class="identifier">PubSub.Origin</span></a><span class="symbol">, </span><a href="../../baaahs.net/-network/-tcp-listener/index.html"><span class="identifier">Network.TcpListener</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Connection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-origin/index.html"><span class="identifier">PubSub.Origin</span></a><span class="symbol">, </span><a href="../../baaahs.net/-network/-tcp-listener/index.html"><span class="identifier">Network.TcpListener</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-endpoint/index.html">Endpoint</a></p>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Endpoint</span></code></td>
 </tr>
 <tr>
 <td>
@@ -45,14 +52,14 @@
 <p><a href="-origin/index.html">Origin</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Origin</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Origin</span></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="-server/index.html">Server</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-tcp-server-socket-listener/index.html"><span class="identifier">Network.TcpServerSocketListener</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-endpoint/index.html"><span class="identifier">PubSub.Endpoint</span></a><span class="symbol">, </span><a href="../../baaahs.net/-network/-tcp-server-socket-listener/index.html"><span class="identifier">Network.TcpServerSocketListener</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -78,7 +85,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">PubSub</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub$<init>(baaahs.net.Network.Link)/networkLink">networkLink</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-link/index.html"><span class="identifier">Network.Link</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">PubSub</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>

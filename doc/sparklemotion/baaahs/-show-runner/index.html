@@ -17,7 +17,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">ShowRunner</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.Slider, baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/slider">slider</span><span class="symbol">:</span>&nbsp;<a href="../-slider/index.html"><span class="identifier">Slider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.Slider, baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/pinkyDisplay">pinkyDisplay</span><span class="symbol">:</span>&nbsp;<a href="../-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.Slider, baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/brains">brains</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-remote-brain/index.html"><span class="identifier">RemoteBrain</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.Slider, baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/beatProvider">beatProvider</span><span class="symbol">:</span>&nbsp;<a href="../-pinky/-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.Slider, baaahs.PinkyDisplay, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ShowRunner</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.GadgetProvider, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/gadgetProvider">gadgetProvider</span><span class="symbol">:</span>&nbsp;<a href="../-gadget-provider/index.html"><span class="identifier">GadgetProvider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.GadgetProvider, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/brains">brains</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-remote-brain/index.html"><span class="identifier">RemoteBrain</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.GadgetProvider, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/beatProvider">beatProvider</span><span class="symbol">:</span>&nbsp;<a href="../-pinky/-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner$<init>(baaahs.GadgetProvider, kotlin.collections.List((baaahs.RemoteBrain)), baaahs.Pinky.BeatProvider, baaahs.Dmx.Universe)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -30,13 +30,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getBeatProvider</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-pinky/-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="get-color-picker.html">getColorPicker</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getColorPicker</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-color-picker/index.html"><span class="identifier">ColorPicker</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -56,6 +49,13 @@
 </tr>
 <tr>
 <td>
+<p><a href="get-gadget.html">getGadget</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">getGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$getGadget(baaahs.ShowRunner.getGadget.T)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<a href="get-gadget.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="get-gadget.html#T"><span class="identifier">T</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="get-moving-head.html">getMovingHead</a></p>
 </td>
 <td>
@@ -72,17 +72,17 @@
 </tr>
 <tr>
 <td>
-<p><a href="get-slider.html">getSlider</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getSlider</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-slider/index.html"><span class="identifier">Slider</span></a></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="send.html">send</a></p>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner$send(baaahs.net.Network.Link)/link">link</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-link/index.html"><span class="identifier">Network.Link</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="shut-down.html">shutDown</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">shutDown</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
