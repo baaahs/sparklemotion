@@ -50,6 +50,9 @@ Gadgets offer the ability to save their current values as a user preset, or to l
 ```js
 {
   "value": 0.7325,
+  "minValue": 0.0,  // null/missing = default: 0.0
+  "maxValue": 1.0,  // null/missing = default: 1.0
+  "step": 0.1,      // null/missing = default: no step
 }
 ```
 
@@ -67,6 +70,27 @@ All of the current gadget settings for a show can be saved as a preset, which th
       "id": "texture",    // the show's id for the gadget
       "type": "Texture",  // the type of the gadget
       "data": { "file": "/textures/tiger-print.png" }, // type-dependent
+    }
+  ]
+}
+```
+
+### Show Playlist
+
+Users can create playlists.
+
+```js
+{
+  "userId": ___,
+  "name": "Awesome Playlist",
+  "lastPlayedShowIndex": 0,
+  "shows": [
+    {
+      "showType": "NotBadShow",
+      "gadgets": [
+          // ...
+      ],
+      "durationSec": 60,
     }
   ]
 }
