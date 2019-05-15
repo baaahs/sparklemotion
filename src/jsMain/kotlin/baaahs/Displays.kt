@@ -3,6 +3,8 @@ package baaahs
 import baaahs.net.Network
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLSelectElement
+import org.w3c.dom.get
 import kotlin.browser.document
 import kotlin.dom.addClass
 import kotlin.dom.appendElement
@@ -55,7 +57,27 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
+    override var onShowChange: (() -> Unit) = {}
     override var selectedShow: Show.MetaData? = null
+        set(value) {
+            field = value
+            val options = showListInput.options
+            for (i in 0 until options.length) {
+                if (options[i]?.textContent == value?.name) showListInput.selectedIndex = i
+            }
+        }
+
+    override var nextFrameMs: Int = 0
+        set(value) {
+            field = value
+            nextFrameElapsed.textContent = "${value}ms"
+        }
+
+    override var stats: ShowRunner.Stats? = null
+        set(value) {
+            field = value
+            statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets sent" } ?: "?"
+        }
 
     private val brainCountDiv: Element
     private val beat1: Element
@@ -63,8 +85,10 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
-    private val showListDiv: Element
-    private val showButtons: MutableList<ShowButton>
+    private var showList = emptyList<Show.MetaData>()
+    private val showListInput: HTMLSelectElement
+    private var nextFrameElapsed: Element
+    private var statsSpan: Element
 
     init {
         element.appendText("Brains online: ")
@@ -81,24 +105,26 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         beat4 = beatsDiv.appendElement("span") { appendText("4") }
         beats = listOf(beat1, beat2, beat3, beat4)
 
-        showListDiv = element.appendElement("div") { className = "showsDiv" }
-        showButtons = mutableListOf()
+        element.appendElement("b") { appendText("Show: ") }
+        showListInput = element.appendElement("select") { className = "showsDiv" } as HTMLSelectElement
+        showListInput.onchange = {
+            selectedShow = showList.find { it.name == showListInput.selectedOptions[0]?.textContent }
+            onShowChange.invoke()
+        }
+
+        element.appendText(".nextFrame(): ")
+        nextFrameElapsed = element.appendElement("span") {}
+        element.appendElement("br") { }
+        element.appendElement("b") { appendText("Data to Brains: ") }
+        statsSpan = element.appendElement("span") {}
     }
 
     override fun listShows(showMetas: List<Show.MetaData>) {
-        showListDiv.clear()
-        showListDiv.appendElement("b") { appendText("Shows: ") }
-        showListDiv.appendElement("br") {}
-
-        showButtons.clear()
-        showMetas.forEach { showMeta ->
-            val element = showListDiv.appendElement("span") { appendText(showMeta.name) }
-            val showButton = ShowButton(showMeta, element)
-            showButton.onSelect = { this.selectedShow = it }
-            showButton.allButtons = showButtons
-            showButtons.add(showButton)
+        showListInput.clear()
+        showList = showMetas
+        showMetas.forEach {
+            showListInput.appendElement("option") { appendText(it.name) }
         }
-//        showButtons[0].select()
     }
 
     override var brainCount: Int = 0

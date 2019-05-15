@@ -21,7 +21,22 @@ interface PinkyDisplay {
 
     var brainCount: Int
     var beat: Int
+    var onShowChange: (() -> Unit)
     var selectedShow: Show.MetaData?
+    var nextFrameMs: Int
+    var stats: ShowRunner.Stats?
+}
+
+open class StubPinkyDisplay : PinkyDisplay {
+    override fun listShows(showMetas: List<Show.MetaData>) {
+    }
+
+    override var brainCount = 0
+    override var beat = 0
+    override var onShowChange: () -> Unit = { }
+    override var selectedShow: Show.MetaData? = null
+    override var nextFrameMs: Int = 0
+    override var stats: ShowRunner.Stats? = null
 }
 
 interface BrainDisplay {
