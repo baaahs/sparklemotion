@@ -48,40 +48,6 @@ open class Button<T>(val data: T, val element: Element) {
     }
 }
 
-class ColorPickerView(element: Element, onSelect: (Color) -> Unit) {
-    val colors = listOf(Color.WHITE, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE)
-    private val colorButtons: List<ColorButton>
-
-    init {
-        val colorsDiv = element.appendElement("div") {
-            className = "colorsDiv"
-            appendElement("b") { appendText("Colors: ") }
-            appendElement("br") {}
-        }
-
-
-        colorButtons = colors.map { color ->
-            ColorButton(color, colorsDiv.appendElement("span") { }).also { button ->
-                button.element.setAttribute("style", "background-color: ${button.data.toHexString()}")
-                button.onSelect = { onSelect(it) }
-            }
-        }
-        colorButtons.forEach { it.allButtons = colorButtons }
-    }
-
-    fun pickRandom() {
-        colorButtons.random()!!.onClick()
-    }
-
-    fun setColor(color: Color?) {
-        for (colorButton in colorButtons) {
-            colorButton.setSelected(colorButton.color == color)
-        }
-    }
-
-    private class ColorButton(val color: Color, element: Element) : Button<Color>(color, element)
-}
-
 interface DomContainer {
     fun getFrame(
         name: String,

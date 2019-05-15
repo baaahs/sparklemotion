@@ -3,8 +3,6 @@ package baaahs
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,18 +14,19 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
 ) : Network.UdpListener {
-    private val slider = Slider()
     private val link = FragmentingUdpLink(network.link())
     private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
-    private val beatProvider = BeatProvider(120.0f)
+    private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
-    private var showRunner: ShowRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
+    private var selectedShow = showMetas.first()
+        set(value) { field = value; display.selectedShow = value }
+    private lateinit var showRunner: ShowRunner
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
 
     val address: Network.Address get() = link.myAddress
 
-    suspend fun run() {
+    suspend fun run(): Show {
         GlobalScope.launch { beatProvider.run() }
 
         link.listenUdp(Ports.PINKY, this)
@@ -35,51 +34,54 @@ class Pinky(
         display.listShows(showMetas)
 
         val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
+        pubSub.install(gadgetModule)
+
         pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {
         }
         pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
-            display.selectedShow = showMetas.find { it.name == selectedShow }
+            this.selectedShow = showMetas.find { it.name == selectedShow }!!
         }
 
-        pubSub.publish(Topics.sliderInput, slider.value) { message ->
-            slider.value = message
+        val gadgetProvider = GadgetProvider(pubSub)
+
+        val buildShowRunner = {
+            ShowRunner(gadgetProvider, brains.values.toList(), beatProvider, dmxUniverse)
         }
 
-        val color = display.color
-        if (color != null) {
-            val primaryColorChannel = pubSub.publish(Topics.primaryColor, color) {
-                display.color = it
-                println("display.color = $it")
-            }
-
-            display.onPrimaryColorChange = { primaryColorChannel.onChange(display.color!!) }
+        var currentShowMetaData = selectedShow
+        val buildShow = {
+            selectedShow.createShow(sheepModel, showRunner).also { currentShowMetaData = selectedShow }
         }
 
-        showRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
-        val prevSelectedShow = display.selectedShow
-        var currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
-        val buildShow = { currentShowMetaData.createShow(sheepModel, showRunner) }
+        showRunner = buildShowRunner()
         var show = buildShow()
 
         while (true) {
-            if (!mapperIsRunning) {
-                if (brainsChanged || display.selectedShow != currentShowMetaData) {
-                    currentShowMetaData = prevSelectedShow ?: showMetas.random()!!
-                    showRunner = ShowRunner(slider, display, brains.values.toList(), beatProvider, dmxUniverse)
-                    show = buildShow()
-                    brainsChanged = false
+            if (mapperIsRunning) {
+                disableDmx()
+                delay(50)
+                continue
+            }
+
+            if (brainsChanged || selectedShow != currentShowMetaData) {
+                if (brainsChanged) {
+                    logger.debug("Brains changed!")
                 }
 
-                show.nextFrame()
-
-                // send shader buffers out to brains
-//                println("Send frame from ${currentShowMetaData.name}…")
-                showRunner.send(link)
-
-//                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
-            } else {
-                disableDmx()
+                showRunner.shutDown()
+                showRunner = buildShowRunner()
+                show = buildShow()
+                brainsChanged = false
             }
+
+            show.nextFrame()
+
+            // send shader buffers out to brains
+            //                println("Send frame from ${currentShowMetaData.name}…")
+            showRunner.send(link)
+
+            //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
+
             delay(50)
         }
     }
@@ -109,13 +111,18 @@ class Pinky(
         brainsChanged = true
     }
 
-    inner class BeatProvider(var bpm: Float) {
+    interface BeatProvider {
+        var bpm: Float
+        val beat: Float
+    }
+
+    inner class PinkyBeatProvider(override var bpm: Float) : BeatProvider {
         private var startTimeMillis = 0L
         private var beatsPerMeasure = 4
 
         private val millisPerBeat = 1000 / (bpm / 60)
 
-        public val beat: Float
+        override val beat: Float
             get() {
                 val now = getTimeMillis()
                 return (now - startTimeMillis) / millisPerBeat % beatsPerMeasure
@@ -134,102 +141,6 @@ class Pinky(
             }
         }
     }
-}
-
-class ShowRunner(
-    private val slider: Slider,
-    private val pinkyDisplay: PinkyDisplay,
-    private val brains: List<RemoteBrain>,
-    private val beatProvider: Pinky.BeatProvider,
-    private val dmxUniverse: Dmx.Universe
-) {
-    private val brainsBySurface = brains.groupBy { it.surface }
-    private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
-
-    fun getColorPicker(): ColorPicker = ColorPicker(pinkyDisplay)
-
-    fun getBeatProvider(): Pinky.BeatProvider = beatProvider
-
-    private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
-        val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
-
-        if (shaderBuffer is CompositorShader.Buffer) {
-            if (!buffersForSurface.remove(shaderBuffer.bufferA)
-                || !buffersForSurface.remove(shaderBuffer.bufferB)
-            ) {
-                throw IllegalStateException("Composite of unknown shader buffers!")
-            }
-        }
-
-        buffersForSurface += shaderBuffer
-    }
-
-    /**
-     * Obtain a shader buffer which can be used to control the illumination of a surface.
-     *
-     * @param surface The surface we're shading.
-     * @param shader The type of shader.
-     * @return A shader buffer of the appropriate type.
-     */
-    fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
-        val buffer = shader.createBuffer(surface)
-        recordShader(surface, buffer)
-        return buffer
-    }
-
-    /**
-     * Obtain a compositing shader buffer which can be used to blend two other shaders together.
-     *
-     * The shaders must already have been obtained using [getShaderBuffer].
-     */
-    fun getCompositorBuffer(
-        surface: Surface,
-        bufferA: Shader.Buffer,
-        bufferB: Shader.Buffer,
-        mode: CompositingMode = CompositingMode.OVERLAY,
-        fade: Float = 0.5f
-    ): CompositorShader.Buffer {
-        return CompositorShader(bufferA.shader, bufferB.shader)
-            .createBuffer(bufferA, bufferB)
-            .also {
-                it.mode = mode
-                it.fade = fade
-                recordShader(surface, it)
-            }
-    }
-
-    fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
-        dmxUniverse.writer(baseChannel, channelCount)
-
-    fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
-        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        return Shenzarpy(getDmxBuffer(baseChannel, 16))
-    }
-
-    fun send(link: Network.Link) {
-        shaderBuffers.forEach { (surface, shaderBuffers) ->
-            if (shaderBuffers.size != 1) {
-                throw IllegalStateException("Too many shader buffers for $surface: $shaderBuffers")
-            }
-
-            val shaderBuffer = shaderBuffers.first()
-            val remoteBrains = brainsBySurface[surface]
-            remoteBrains?.forEach { remoteBrain ->
-                link.sendUdp(remoteBrain.address, Ports.BRAIN, BrainShaderMessage(shaderBuffer.shader, shaderBuffer))
-            }
-        }
-
-        dmxUniverse.sendFrame()
-    }
-
-    fun getSlider(): Slider = slider
-}
-
-class Slider(var value: Float = 0f) {
-}
-
-class ColorPicker(private val pinkyDisplay: PinkyDisplay) {
-    val color: Color get() = pinkyDisplay.color ?: Color.WHITE
 }
 
 class RemoteBrain(val address: Network.Address, val surface: Surface)

@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.gadgets.ColorPicker
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.SineWaveShader
@@ -10,7 +11,7 @@ import kotlin.random.Random
 
 val CompositeShow = object : Show.MetaData("Composite") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
-        private val colorPicker = showRunner.getColorPicker()
+        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()

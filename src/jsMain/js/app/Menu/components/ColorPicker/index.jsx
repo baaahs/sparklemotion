@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import classNames from 'classnames';
-import { SketchPicker } from 'react-color';
+import {SketchPicker} from 'react-color';
 
 import styles from './ColorPicker.scss';
 
@@ -10,12 +9,17 @@ class ColorPicker extends Component {
     super(props);
 
     this.state = {
+      gadget: props.gadget,
       displayColorPicker: false,
     };
+
+    props.gadget.listen({onChanged: () => {this.forceUpdate()}});
   }
 
   handleColorChange = ({ hex }) => {
-    this.props.onColorSelect(hex);
+    const { gadget } = this.state;
+    gadget.color = sparklemotion.baaahs.Color.Companion.fromString(hex);
+    this.setState({ gadget });
   };
 
   toggleColorPicker = () => {
@@ -23,12 +27,11 @@ class ColorPicker extends Component {
   };
 
   render() {
-    const { displayColorPicker } = this.state;
-    const { chosenColor } = this.props;
+    const { displayColorPicker, gadget } = this.state;
 
     return (
       <div className={styles['color-picker--pad']}>
-        <header>Primary Color</header>
+        <header>{gadget.name}</header>
         <button
           className={styles['color-picker--button']}
           onClick={this.toggleColorPicker}
@@ -42,7 +45,7 @@ class ColorPicker extends Component {
         </button>
         {displayColorPicker && (
           <SketchPicker
-            color={this.props.chosenColor.toHexString()}
+            color={gadget.color.toHexString()}
             onChangeComplete={this.handleColorChange}
           />
         )}
@@ -51,16 +54,16 @@ class ColorPicker extends Component {
   }
 }
 
-ColorPicker.propTypes = {
-  chosenColor: PropTypes.shape({
-    red: PropTypes.number,
-    blue: PropTypes.number,
-    green: PropTypes.number,
-  }),
-};
-
-ColorPicker.defaultProps = {
-  chosenColor: { red: 255, blue: 255, green: 255 },
-};
+// ColorPicker.propTypes = {
+//   chosenColor: PropTypes.shape({
+//     red: PropTypes.number,
+//     blue: PropTypes.number,
+//     green: PropTypes.number,
+//   }),
+// };
+//
+// ColorPicker.defaultProps = {
+//   chosenColor: { red: 255, blue: 255, green: 255 },
+// };
 
 export default ColorPicker;
