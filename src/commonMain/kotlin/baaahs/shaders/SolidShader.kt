@@ -9,13 +9,13 @@ class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createImpl(pixels: Pixels): Impl = Impl(pixels)
+    override fun createRenderer(pixels: Pixels): Renderer = Renderer(pixels)
 
     companion object {
         fun parse(reader: ByteArrayReader) = SolidShader()
     }
 
-    inner class Buffer : ShaderBuffer {
+    inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
             get() = this@SolidShader
 
@@ -30,7 +30,7 @@ class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
         }
     }
 
-    class Impl(val pixels: Pixels) : ShaderImpl<Buffer> {
+    class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
         private val colors = Array(pixels.count) { Color.WHITE }
 
         override fun draw(buffer: Buffer) {
