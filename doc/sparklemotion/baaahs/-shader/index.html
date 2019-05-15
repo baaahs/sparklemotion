@@ -8,7 +8,26 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Shader</a><br/>
 <br/>
 <h1>Shader</h1>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Shader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Shader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-buffer/index.html">Buffer</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Buffer</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-renderer/index.html">Renderer</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -52,10 +71,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="create-impl.html">createImpl</a></p>
+<p><a href="create-renderer.html">createRenderer</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createImpl</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$createImpl(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a><span class="symbol">&lt;</span><a href="index.html#B"><span class="identifier">B</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$createRenderer(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="index.html#B"><span class="identifier">B</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -77,7 +96,7 @@
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Override if your shader has static configuration that needs to be shared with the ShaderImpl.</p>
+<p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
 </td>
 </tr>
 </tbody>

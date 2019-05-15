@@ -367,16 +367,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     else
       return instance.doResume(null);
   };
-  function Brain$ShaderBits(shader, shaderImpl, shaderBuffer) {
+  function Brain$ShaderBits(shader, renderer, buffer) {
     this.shader = shader;
-    this.shaderImpl = shaderImpl;
-    this.shaderBuffer = shaderBuffer;
+    this.renderer = renderer;
+    this.buffer = buffer;
   }
   Brain$ShaderBits.prototype.read_100t80$ = function (reader) {
-    this.shaderBuffer.read_100t80$(reader);
+    this.buffer.read_100t80$(reader);
   };
   Brain$ShaderBits.prototype.draw = function () {
-    this.shaderImpl.draw_lpei07$(this.shaderBuffer);
+    this.renderer.draw_433sc5$(this.buffer);
   };
   Brain$ShaderBits.$metadata$ = {
     kind: Kind_CLASS,
@@ -394,7 +394,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         if (theCurrentShaderDesc == null || !contentEquals(theCurrentShaderDesc, shaderDesc)) {
           this.currentShaderDesc_0 = shaderDesc;
           var shader = Kotlin.isType(tmp$ = Shader$Companion_getInstance().parse_100t80$(new ByteArrayReader(shaderDesc)), Shader) ? tmp$ : throwCCE();
-          this.currentShaderBits_0 = new Brain$ShaderBits(shader, shader.createImpl_bbfl1t$(this.pixels_0), shader.createBuffer_ppt8xj$(this.surface_0));
+          this.currentShaderBits_0 = new Brain$ShaderBits(shader, shader.createRenderer_bbfl1t$(this.pixels_0), shader.createBuffer_ppt8xj$(this.surface_0));
         }
 
         var $receiver = ensureNotNull(this.currentShaderBits_0);
@@ -2085,23 +2085,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     var buffersForSurface = tmp$;
     if (Kotlin.isType(shaderBuffer, CompositorShader$Buffer)) {
-      if (!buffersForSurface.remove_11rb$(shaderBuffer.aShaderBuffer) || !buffersForSurface.remove_11rb$(shaderBuffer.bShaderBuffer)) {
+      if (!buffersForSurface.remove_11rb$(shaderBuffer.bufferA) || !buffersForSurface.remove_11rb$(shaderBuffer.bufferB)) {
         throw IllegalStateException_init('Composite of unknown shader buffers!');
       }
     }
     buffersForSurface.add_11rb$(shaderBuffer);
   };
-  ShowRunner.prototype.getShaderBuffer_31vj4j$ = function (surface, shader) {
+  ShowRunner.prototype.getShaderBuffer_9rhubp$ = function (surface, shader) {
     var buffer = shader.createBuffer_ppt8xj$(surface);
     this.recordShader_0(surface, buffer);
     return buffer;
   };
-  ShowRunner.prototype.getCompositorBuffer_17mk4x$ = function (surface, shaderBufferA, shaderBufferB, mode, fade) {
+  ShowRunner.prototype.getCompositorBuffer_cn6wln$ = function (surface, bufferA, bufferB, mode, fade) {
     if (mode === void 0)
       mode = CompositingMode$OVERLAY_getInstance();
     if (fade === void 0)
       fade = 0.5;
-    var $receiver = (new CompositorShader(shaderBufferA.shader, shaderBufferB.shader)).createBuffer_piqpju$(shaderBufferA, shaderBufferB);
+    var $receiver = (new CompositorShader(bufferA.shader, bufferB.shader)).createBuffer_ytrflg$(bufferA, bufferB);
     $receiver.mode = mode;
     $receiver.fade = fade;
     this.recordShader_0(surface, $receiver);
@@ -2669,6 +2669,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return Shader$Companion_instance;
   }
+  function Shader$Buffer() {
+  }
+  Shader$Buffer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Buffer',
+    interfaces: []
+  };
+  function Shader$Renderer() {
+  }
+  Shader$Renderer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Renderer',
+    interfaces: []
+  };
   function Shader$descriptorBytes$lambda(this$Shader) {
     return function () {
       return this$Shader.toBytes_zbs1bl$_0();
@@ -2677,20 +2691,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Shader.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Shader',
-    interfaces: []
-  };
-  function ShaderBuffer() {
-  }
-  ShaderBuffer.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ShaderBuffer',
-    interfaces: []
-  };
-  function ShaderImpl() {
-  }
-  ShaderImpl.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ShaderImpl',
     interfaces: []
   };
   function Pixels() {
@@ -4288,14 +4288,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.aShader.serialize_3kjoo0$(writer);
     this.bShader.serialize_3kjoo0$(writer);
   };
-  CompositorShader.prototype.createImpl_bbfl1t$ = function (pixels) {
-    return new CompositorShader$Impl(this.aShader, this.bShader, pixels);
+  CompositorShader.prototype.createRenderer_bbfl1t$ = function (pixels) {
+    return new CompositorShader$Renderer(this.aShader, this.bShader, pixels);
   };
   CompositorShader.prototype.readBuffer_100t80$ = function (reader) {
     return new CompositorShader$Buffer(this, this.aShader.readBuffer_100t80$(reader), this.bShader.readBuffer_100t80$(reader), CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte()), reader.readFloat());
   };
-  CompositorShader.prototype.createBuffer_piqpju$ = function (aShaderBuffer, bShaderBuffer) {
-    return new CompositorShader$Buffer(this, aShaderBuffer, bShaderBuffer);
+  CompositorShader.prototype.createBuffer_ytrflg$ = function (bufferA, bufferB) {
+    return new CompositorShader$Buffer(this, bufferA, bufferB);
   };
   function CompositorShader$Companion() {
     CompositorShader$Companion_instance = this;
@@ -4317,14 +4317,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return CompositorShader$Companion_instance;
   }
-  function CompositorShader$Buffer($outer, aShaderBuffer, bShaderBuffer, mode, fade) {
+  function CompositorShader$Buffer($outer, bufferA, bufferB, mode, fade) {
     this.$outer = $outer;
     if (mode === void 0)
       mode = CompositingMode$OVERLAY_getInstance();
     if (fade === void 0)
       fade = 0.5;
-    this.aShaderBuffer = aShaderBuffer;
-    this.bShaderBuffer = bShaderBuffer;
+    this.bufferA = bufferA;
+    this.bufferB = bufferB;
     this.mode = mode;
     this.fade = fade;
     this.shader_20svf$_0 = this.$outer;
@@ -4335,23 +4335,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   });
   CompositorShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.aShaderBuffer.serialize_3kjoo0$(writer);
-    this.bShaderBuffer.serialize_3kjoo0$(writer);
+    this.bufferA.serialize_3kjoo0$(writer);
+    this.bufferB.serialize_3kjoo0$(writer);
     writer.writeByte_s8j3t7$(toByte(this.mode.ordinal));
     writer.writeFloat_mx4ult$(this.fade);
   };
   CompositorShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.aShaderBuffer.read_100t80$(reader);
-    this.bShaderBuffer.read_100t80$(reader);
+    this.bufferA.read_100t80$(reader);
+    this.bufferB.read_100t80$(reader);
     this.mode = CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte());
     this.fade = reader.readFloat();
   };
   CompositorShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [ShaderBuffer]
+    interfaces: [Shader$Buffer]
   };
-  function CompositorShader$Impl(aShader, bShader, pixels) {
+  function CompositorShader$Renderer(aShader, bShader, pixels) {
     this.pixels = pixels;
     var array = Array_0(this.pixels.count);
     var tmp$;
@@ -4360,15 +4360,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       array[i] = Color$Companion_getInstance().WHITE;
     }
     this.colors_0 = array;
-    this.aPixels_0 = new CompositorShader$Impl$PixelBuf(this.pixels.count);
-    this.bPixels_0 = new CompositorShader$Impl$PixelBuf(this.pixels.count);
-    this.shaderAImpl_0 = aShader.createImpl_bbfl1t$(this.aPixels_0);
-    this.shaderBImpl_0 = bShader.createImpl_bbfl1t$(this.bPixels_0);
+    this.aPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixels.count);
+    this.bPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixels.count);
+    this.rendererA_0 = aShader.createRenderer_bbfl1t$(this.aPixels_0);
+    this.rendererB_0 = bShader.createRenderer_bbfl1t$(this.bPixels_0);
   }
-  CompositorShader$Impl.prototype.draw_lpei07$ = function (buffer) {
+  CompositorShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
     var tmp$, tmp$_0, tmp$_1;
-    this.shaderAImpl_0.draw_lpei07$(Kotlin.isType(tmp$ = buffer.aShaderBuffer, ShaderBuffer) ? tmp$ : throwCCE());
-    this.shaderBImpl_0.draw_lpei07$(Kotlin.isType(tmp$_0 = buffer.bShaderBuffer, ShaderBuffer) ? tmp$_0 : throwCCE());
+    this.rendererA_0.draw_433sc5$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE());
+    this.rendererB_0.draw_433sc5$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE());
     var mode = buffer.mode;
     tmp$_1 = this.colors_0;
     for (var i = 0; i !== tmp$_1.length; ++i) {
@@ -4378,8 +4378,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.pixels.set_tmuqsv$(this.colors_0);
   };
-  function CompositorShader$Impl$PixelBuf(count) {
-    this.count_rse4u6$_0 = count;
+  function CompositorShader$Renderer$PixelBuf(count) {
+    this.count_e7ehet$_0 = count;
     var array = Array_0(this.count);
     var tmp$;
     tmp$ = array.length - 1 | 0;
@@ -4388,23 +4388,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors = array;
   }
-  Object.defineProperty(CompositorShader$Impl$PixelBuf.prototype, 'count', {
+  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'count', {
     get: function () {
-      return this.count_rse4u6$_0;
+      return this.count_e7ehet$_0;
     }
   });
-  CompositorShader$Impl$PixelBuf.prototype.set_tmuqsv$ = function (colors) {
+  CompositorShader$Renderer$PixelBuf.prototype.set_tmuqsv$ = function (colors) {
     arrayCopy(colors, this.colors, 0, 0, colors.length);
   };
-  CompositorShader$Impl$PixelBuf.$metadata$ = {
+  CompositorShader$Renderer$PixelBuf.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'PixelBuf',
     interfaces: [Pixels]
   };
-  CompositorShader$Impl.$metadata$ = {
+  CompositorShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Impl',
-    interfaces: [ShaderImpl]
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
   };
   CompositorShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -4503,8 +4503,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelShader.prototype.createBuffer_ppt8xj$ = function (surface) {
     return new PixelShader$Buffer(this, surface.pixelCount);
   };
-  PixelShader.prototype.createImpl_bbfl1t$ = function (pixels) {
-    return new PixelShader$Impl(pixels);
+  PixelShader.prototype.createRenderer_bbfl1t$ = function (pixels) {
+    return new PixelShader$Renderer(pixels);
   };
   PixelShader.prototype.readBuffer_100t80$ = function (reader) {
     var incomingColorCount = reader.readInt();
@@ -4581,18 +4581,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [ShaderBuffer]
+    interfaces: [Shader$Buffer]
   };
-  function PixelShader$Impl(pixels) {
+  function PixelShader$Renderer(pixels) {
     this.pixels = pixels;
   }
-  PixelShader$Impl.prototype.draw_lpei07$ = function (buffer) {
+  PixelShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
     this.pixels.set_tmuqsv$(buffer.colors);
   };
-  PixelShader$Impl.$metadata$ = {
+  PixelShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Impl',
-    interfaces: [ShaderImpl]
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
   };
   PixelShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -4611,8 +4611,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SineWaveShader.prototype.createImpl_bbfl1t$ = function (pixels) {
-    return new SineWaveShader$Impl(pixels);
+  SineWaveShader.prototype.createRenderer_bbfl1t$ = function (pixels) {
+    return new SineWaveShader$Renderer(pixels);
   };
   function SineWaveShader$Companion() {
     SineWaveShader$Companion_instance = this;
@@ -4656,9 +4656,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SineWaveShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [ShaderBuffer]
+    interfaces: [Shader$Buffer]
   };
-  function SineWaveShader$Impl(pixels) {
+  function SineWaveShader$Renderer(pixels) {
     this.pixels = pixels;
     var array = Array_0(this.pixels.count);
     var tmp$;
@@ -4668,7 +4668,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors_0 = array;
   }
-  SineWaveShader$Impl.prototype.draw_lpei07$ = function (buffer) {
+  SineWaveShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
     var tmp$;
     var theta = buffer.theta;
     var pixelCount = this.pixels.count;
@@ -4681,10 +4681,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.pixels.set_tmuqsv$(this.colors_0);
   };
-  SineWaveShader$Impl.$metadata$ = {
+  SineWaveShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Impl',
-    interfaces: [ShaderImpl]
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
   };
   SineWaveShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -4703,8 +4703,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SolidShader.prototype.createImpl_bbfl1t$ = function (pixels) {
-    return new SolidShader$Impl(pixels);
+  SolidShader.prototype.createRenderer_bbfl1t$ = function (pixels) {
+    return new SolidShader$Renderer(pixels);
   };
   function SolidShader$Companion() {
     SolidShader$Companion_instance = this;
@@ -4742,9 +4742,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SolidShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [ShaderBuffer]
+    interfaces: [Shader$Buffer]
   };
-  function SolidShader$Impl(pixels) {
+  function SolidShader$Renderer(pixels) {
     this.pixels = pixels;
     var array = Array_0(this.pixels.count);
     var tmp$;
@@ -4754,7 +4754,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors_0 = array;
   }
-  SolidShader$Impl.prototype.draw_lpei07$ = function (buffer) {
+  SolidShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
     var tmp$;
     tmp$ = this.colors_0;
     for (var i = 0; i !== tmp$.length; ++i) {
@@ -4762,10 +4762,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.pixels.set_tmuqsv$(this.colors_0);
   };
-  SolidShader$Impl.$metadata$ = {
+  SolidShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Impl',
-    interfaces: [ShaderImpl]
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
   };
   SolidShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -4784,8 +4784,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SparkleShader.prototype.createImpl_bbfl1t$ = function (pixels) {
-    return new SparkleShader$Impl(pixels);
+  SparkleShader.prototype.createRenderer_bbfl1t$ = function (pixels) {
+    return new SparkleShader$Renderer(pixels);
   };
   function SparkleShader$Companion() {
     SparkleShader$Companion_instance = this;
@@ -4827,9 +4827,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SparkleShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [ShaderBuffer]
+    interfaces: [Shader$Buffer]
   };
-  function SparkleShader$Impl(pixels) {
+  function SparkleShader$Renderer(pixels) {
     this.pixels = pixels;
     var array = Array_0(this.pixels.count);
     var tmp$;
@@ -4839,7 +4839,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors_0 = array;
   }
-  SparkleShader$Impl.prototype.draw_lpei07$ = function (buffer) {
+  SparkleShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
     var tmp$;
     tmp$ = this.colors_0;
     for (var i = 0; i !== tmp$.length; ++i) {
@@ -4854,10 +4854,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.pixels.set_tmuqsv$(this.colors_0);
   };
-  SparkleShader$Impl.$metadata$ = {
+  SparkleShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Impl',
-    interfaces: [ShaderImpl]
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
   };
   SparkleShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -4903,11 +4903,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var tmp$_0 = destination.add_11rb$;
-      var solidShaderBuffer = closure$showRunner.getShaderBuffer_31vj4j$(item, this.solidShader);
-      var $receiver_0 = closure$showRunner.getShaderBuffer_31vj4j$(item, this.sineWaveShader);
+      var solidShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(item, this.solidShader);
+      var $receiver_0 = closure$showRunner.getShaderBuffer_9rhubp$(item, this.sineWaveShader);
       $receiver_0.density = Random.Default.nextFloat() * 20;
       var sineWaveShaderBuffer = $receiver_0;
-      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_17mk4x$(item, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance());
+      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_cn6wln$(item, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance());
       tmp$_0.call(destination, new CompositeShow$ObjectLiteral$ShaderBufs(this$, solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer));
     }
     this.shaderBufs_0 = destination;
@@ -4985,9 +4985,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       var tmp$_0 = result.put_xwzc9p$;
-      var solidShaderBuffer = closure$showRunner.getShaderBuffer_31vj4j$(element, this.solidShader);
-      var sparkleShaderBuffer = closure$showRunner.getShaderBuffer_31vj4j$(element, this.sparkleShader);
-      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_17mk4x$(element, solidShaderBuffer, sparkleShaderBuffer);
+      var solidShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(element, this.solidShader);
+      var sparkleShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(element, this.sparkleShader);
+      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_cn6wln$(element, solidShaderBuffer, sparkleShaderBuffer);
       tmp$_0.call(result, element, new PanelTweenShow$Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer));
     }
     this.shaders = result;
@@ -5063,7 +5063,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      result.put_xwzc9p$(element, closure$showRunner.getShaderBuffer_31vj4j$(element, new PixelShader()));
+      result.put_xwzc9p$(element, closure$showRunner.getShaderBuffer_9rhubp$(element, new PixelShader()));
     }
     this.shaders = result;
     this.fadeTimeMs = 1000;
@@ -5132,7 +5132,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_31vj4j$(item, new PixelShader()));
+      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new PixelShader()));
     }
     this.pixelShaderBuffers = destination;
     var $receiver_0 = closure$sheepModel.eyes;
@@ -5191,7 +5191,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_31vj4j$(item, this.pixelShader));
+      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, this.pixelShader));
     }
     this.pixelShaderBuffers = destination;
     var $receiver_0 = closure$sheepModel.eyes;
@@ -5267,11 +5267,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var tmp$_0 = destination.add_11rb$;
-      var solidShaderBuffer = closure$showRunner.getShaderBuffer_31vj4j$(item, this.solidShader);
-      var $receiver_0 = closure$showRunner.getShaderBuffer_31vj4j$(item, this.sineWaveShader);
+      var solidShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(item, this.solidShader);
+      var $receiver_0 = closure$showRunner.getShaderBuffer_9rhubp$(item, this.sineWaveShader);
       $receiver_0.density = Random.Default.nextFloat() * 20;
       var sineWaveShaderBuffer = $receiver_0;
-      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_17mk4x$(item, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance(), 1.0);
+      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_cn6wln$(item, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance(), 1.0);
       tmp$_0.call(destination, new ThumpShow$ObjectLiteral$ShaderBufs(this$, solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer));
     }
     this.shaderBufs_0 = destination;
@@ -7956,9 +7956,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Object.defineProperty(Shader, 'Companion', {
     get: Shader$Companion_getInstance
   });
+  Shader.Buffer = Shader$Buffer;
+  Shader.Renderer = Shader$Renderer;
   package$baaahs.Shader = Shader;
-  package$baaahs.ShaderBuffer = ShaderBuffer;
-  package$baaahs.ShaderImpl = ShaderImpl;
   package$baaahs.Pixels = Pixels;
   SheepModel.Point = SheepModel$Point;
   SheepModel.Line = SheepModel$Line;
@@ -8169,8 +8169,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: CompositorShader$Companion_getInstance
   });
   CompositorShader.Buffer = CompositorShader$Buffer;
-  CompositorShader$Impl.PixelBuf = CompositorShader$Impl$PixelBuf;
-  CompositorShader.Impl = CompositorShader$Impl;
+  CompositorShader$Renderer.PixelBuf = CompositorShader$Renderer$PixelBuf;
+  CompositorShader.Renderer = CompositorShader$Renderer;
   var package$shaders = package$baaahs.shaders || (package$baaahs.shaders = {});
   package$shaders.CompositorShader = CompositorShader;
   Object.defineProperty(CompositingMode, 'OVERLAY', {
@@ -8187,25 +8187,25 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: PixelShader$Companion_getInstance
   });
   PixelShader.Buffer = PixelShader$Buffer;
-  PixelShader.Impl = PixelShader$Impl;
+  PixelShader.Renderer = PixelShader$Renderer;
   package$shaders.PixelShader = PixelShader;
   Object.defineProperty(SineWaveShader, 'Companion', {
     get: SineWaveShader$Companion_getInstance
   });
   SineWaveShader.Buffer = SineWaveShader$Buffer;
-  SineWaveShader.Impl = SineWaveShader$Impl;
+  SineWaveShader.Renderer = SineWaveShader$Renderer;
   package$shaders.SineWaveShader = SineWaveShader;
   Object.defineProperty(SolidShader, 'Companion', {
     get: SolidShader$Companion_getInstance
   });
   SolidShader.Buffer = SolidShader$Buffer;
-  SolidShader.Impl = SolidShader$Impl;
+  SolidShader.Renderer = SolidShader$Renderer;
   package$shaders.SolidShader = SolidShader;
   Object.defineProperty(SparkleShader, 'Companion', {
     get: SparkleShader$Companion_getInstance
   });
   SparkleShader.Buffer = SparkleShader$Buffer;
-  SparkleShader.Impl = SparkleShader$Impl;
+  SparkleShader.Renderer = SparkleShader$Renderer;
   package$shaders.SparkleShader = SparkleShader;
   Object.defineProperty(AllShows, 'Companion', {
     get: AllShows$Companion_getInstance

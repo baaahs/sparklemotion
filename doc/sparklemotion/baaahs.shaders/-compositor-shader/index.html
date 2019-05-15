@@ -17,14 +17,14 @@
 <p><a href="-buffer/index.html">Buffer</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-impl/index.html">Impl</a></p>
+<p><a href="-renderer/index.html">Renderer</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Impl</span><span class="symbol">&lt;</span><span class="identifier">A</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">, </span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">A</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">, </span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -36,7 +36,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">CompositorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$<init>(baaahs.Shader((baaahs.ShaderBuffer)), baaahs.Shader((baaahs.ShaderBuffer)))/aShader">aShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.CompositorShader$<init>(baaahs.Shader((baaahs.ShaderBuffer)), baaahs.Shader((baaahs.ShaderBuffer)))/bShader">bShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">CompositorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$<init>(baaahs.Shader((baaahs.Shader.Buffer)), baaahs.Shader((baaahs.Shader.Buffer)))/aShader">aShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.CompositorShader$<init>(baaahs.Shader((baaahs.Shader.Buffer)), baaahs.Shader((baaahs.Shader.Buffer)))/bShader">bShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -87,14 +87,14 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$createBuffer(baaahs.ShaderBuffer, baaahs.ShaderBuffer)/aShaderBuffer">aShaderBuffer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.CompositorShader$createBuffer(baaahs.ShaderBuffer, baaahs.ShaderBuffer)/bShaderBuffer">bShaderBuffer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-buffer/index.html"><span class="identifier">ShaderBuffer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$createBuffer(baaahs.Shader.Buffer, baaahs.Shader.Buffer)/bufferA">bufferA</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.CompositorShader$createBuffer(baaahs.Shader.Buffer, baaahs.Shader.Buffer)/bufferB">bufferB</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="create-impl.html">createImpl</a></p>
+<p><a href="create-renderer.html">createRenderer</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createImpl</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$createImpl(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-shader-impl/index.html"><span class="identifier">ShaderImpl</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$createRenderer(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -109,7 +109,7 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.CompositorShader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Override if your shader has static configuration that needs to be shared with the ShaderImpl.</p>
+<p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
 </td>
 </tr>
 </tbody>
