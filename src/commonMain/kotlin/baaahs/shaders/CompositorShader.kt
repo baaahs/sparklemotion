@@ -4,6 +4,10 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
+/**
+ * A shader which combines the results of two sub-shaders according to a specified compositing mode and cross-fade
+ * value.
+ */
 class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     Shader<CompositorShader.Buffer>(ShaderId.COMPOSITOR) {
 

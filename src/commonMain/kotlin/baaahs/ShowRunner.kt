@@ -12,6 +12,9 @@ class ShowRunner(
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
+    val allSurfaces: List<Surface> get() = brainsBySurface.keys.toList()
+    val allUnusedSurfaces: List<Surface> get() = brainsBySurface.keys.toList().minus(shaderBuffers.keys)
+
     private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
