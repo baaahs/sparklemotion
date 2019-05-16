@@ -22,13 +22,12 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
-            val compositorShader = CompositorShader(solidShader, sparkleShader)
 
-            val shaders = sheepModel.allPanels.associateWith { panel ->
-                val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-                val sparkleShaderBuffer = showRunner.getShaderBuffer(panel, sparkleShader)
+            val shaders = sheepModel.allPanels.associateWith { surface ->
+                val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+                val sparkleShaderBuffer = showRunner.getShaderBuffer(surface, sparkleShader)
                 val compositorShaderBuffer =
-                    showRunner.getCompositorBuffer(panel, solidShaderBuffer, sparkleShaderBuffer)
+                    showRunner.getCompositorBuffer(surface, solidShaderBuffer, sparkleShaderBuffer)
 
                 Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer)
             }
@@ -63,6 +62,6 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         val compositorShader: CompositorShader.Buffer
     )
 
-    val SheepModel.Panel.number : Int
+    val SheepModel.Panel.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 }

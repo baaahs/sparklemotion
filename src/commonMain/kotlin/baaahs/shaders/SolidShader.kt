@@ -4,6 +4,9 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
+/**
+ * A shader that sets all pixels to a single color.
+ */
 class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
