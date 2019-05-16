@@ -10,7 +10,7 @@ object SolidColorShow : Show.MetaData("Solid Color") {
 
         val shader = SolidShader()
         val shaderBuffers = sheepModel.allPanels.map {
-            showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
+            showRunner.getShaderBuffer(it, shader).apply { color = Colors.WHITE }
         }
 
         return object: Show {

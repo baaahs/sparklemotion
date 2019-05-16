@@ -85,7 +85,7 @@ class Mapper(
         retries.forEach {
             link.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
             delay(1000L)
-            link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK))
+            link.broadcastUdp(Ports.BRAIN, solidColor(Colors.BLACK))
         }
 
         retries.forEach {
@@ -97,7 +97,7 @@ class Mapper(
         delay(1000L)
 
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Colors.BLACK)); delay(250L) }
         delay(250L)
 
         // keep Pinky from waking up while we're running...
@@ -110,7 +110,7 @@ class Mapper(
 
         mapperDisplay.showMessage("READY PLAYER ONE…")
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
+        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Colors.WHITE)); delay(250L) }
         delay(250L)
 
         while (!isAligned) {
@@ -126,7 +126,7 @@ class Mapper(
         mapperDisplay.showMessage("CALIBRATING…")
 
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Colors.BLACK)); delay(250L) }
         delay(250L)
         captureBaseImage = true;
         delay(250L)
@@ -139,7 +139,7 @@ class Mapper(
                 println("identify brains...")
                 // light up each brain in an arbitrary sequence...
                 brainMappers.values.forEach { brainMapper ->
-                    retries.forEach { brainMapper.shade { solidColor(Color.WHITE) } }
+                    retries.forEach { brainMapper.shade { solidColor(Colors.WHITE) } }
                     delay(34L)
 
                     // wait for a new image to come it...
@@ -160,7 +160,7 @@ class Mapper(
                     println("Guessed panel ${candidates.first().name} for ${brainMapper.surfaceName}")
 
                     maybePause()
-                    retries.forEach { brainMapper.shade { solidColor(Color.BLACK) } }
+                    retries.forEach { brainMapper.shade { solidColor(Colors.BLACK) } }
                 }
 
                 delay(1000L)
@@ -171,12 +171,12 @@ class Mapper(
                 val buffer = pixelShader.createBuffer(object : Surface {
                     override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
                 })
-                buffer.setAll(Color.BLACK)
+                buffer.setAll(Colors.BLACK)
                 for (i in 0 until maxPixelsPerBrain) {
                     if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
-                    buffer.colors[i] = Color.WHITE
+                    buffer.colors[i] = Colors.WHITE
                     link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
-                    buffer.colors[i] = Color.BLACK
+                    buffer.colors[i] = Colors.BLACK
                     delay(34L)
                     maybePause()
                 }
@@ -210,7 +210,7 @@ class Mapper(
         when (message) {
             is BrainIdResponse -> {
                 val brainMapper = brainMappers.getOrPut(fromAddress) { BrainMapper(fromAddress, message.name) }
-                brainMapper.shade { solidColor(Color.GREEN) }
+                brainMapper.shade { solidColor(Colors.GREEN) }
             }
 
             is PinkyPongMessage -> {

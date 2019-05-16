@@ -10,11 +10,11 @@ import baaahs.shaders.SparkleShader
 object PanelTweenShow : Show.MetaData("PanelTweenShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
         val colorArray = arrayOf(
-            Color.from("#FF8A47"),
-            Color.from("#FC6170"),
-            Color.from("#8CEEEE"),
-            Color.from("#26BFBF"),
-            Color.from("#FFD747")
+            Colors.from("#FF8A47"),
+            Colors.from("#FC6170"),
+            Colors.from("#8CEEEE"),
+            Colors.from("#26BFBF"),
+            Colors.from("#FFD747")
         )
 
         return object : Show {
@@ -46,7 +46,7 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
                         val shaderSet = shaders[panel]!!
                         shaderSet.solidShader.color = tweenedColor
 
-                        shaderSet.sparkleShader.color = Color.WHITE
+                        shaderSet.sparkleShader.color = Colors.WHITE
                         shaderSet.sparkleShader.sparkliness = slider.value
 
                         shaderSet.compositorShader.mode = CompositingMode.ADD

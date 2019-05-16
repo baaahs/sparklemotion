@@ -24,7 +24,7 @@ val SomeDumbShow = object : Show.MetaData("SomeDumbShow") {
 
             pixelShaderBuffers.forEach { shaderBuffer ->
                 val baseSaturation = seed.nextFloat()
-                val panelColor = if (seed.nextFloat() < 0.1) Color.random() else colorPicker.color
+                val panelColor = if (seed.nextFloat() < 0.1) Colors.random() else colorPicker.color
 
                 shaderBuffer.colors.forEachIndexed { i, pixel ->
                     shaderBuffer.colors[i] = desaturateRandomishly(baseSaturation, seed, panelColor)

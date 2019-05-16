@@ -19,19 +19,19 @@ class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
         override val shader: Shader<*>
             get() = this@SolidShader
 
-        var color: Color = Color.WHITE
+        var color: Color = Colors.WHITE
 
         override fun serialize(writer: ByteArrayWriter) {
             color.serialize(writer)
         }
 
         override fun read(reader: ByteArrayReader) {
-            color = Color.parse(reader)
+            color = Colors.parse(reader)
         }
     }
 
     class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
+        private val colors = Array(pixels.count) { Colors.WHITE }
 
         override fun draw(buffer: Buffer) {
             for (i in colors.indices) {

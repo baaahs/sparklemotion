@@ -7,11 +7,11 @@ import kotlin.random.Random
 object PixelTweenShow : Show.MetaData("PixelTweenShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
         val colorArray = arrayOf(
-            Color.from("#FF8A47"),
-            Color.from("#FC6170"),
-            Color.from("#8CEEEE"),
-            Color.from("#26BFBF"),
-            Color.from("#FFD747")
+            Colors.from("#FF8A47"),
+            Colors.from("#FC6170"),
+            Colors.from("#8CEEEE"),
+            Colors.from("#26BFBF"),
+            Colors.from("#FFD747")
         )
 
         return object : Show {
@@ -32,7 +32,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
                         val colors = shaders[panel]!!.colors
                         colors.forEachIndexed { index, color ->
                             if (Random.nextFloat() < .1) {
-                                colors[index] = Color.WHITE
+                                colors[index] = Colors.WHITE
                             } else {
                                 val tweenedColor =
                                     startColor.fade(endColor, ((now + index) % fadeTimeMs) / fadeTimeMs.toFloat())

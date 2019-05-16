@@ -142,10 +142,22 @@ function addMovingHead(movingHead) {
   };
 }
 
+function redF(color) {
+  return ((color & 0xff0000) >> 16) / 255.0
+}
+
+function greenF(color) {
+  return ((color & 0xff00) >> 8) / 255.0
+}
+
+function blueF(color) {
+  return (color & 0xff) / 255.0
+}
+
 function adjustMovingHead(movingHeadJs, color, dimmer, pan, tilt) {
-  movingHeadJs.material.color.r = color.redF;
-  movingHeadJs.material.color.g = color.greenF;
-  movingHeadJs.material.color.b = color.blueF;
+  movingHeadJs.material.color.r = redF(color);
+  movingHeadJs.material.color.g = greenF(color);
+  movingHeadJs.material.color.b = blueF(color);
 
   movingHeadJs.material.visible = dimmer > .1;
 

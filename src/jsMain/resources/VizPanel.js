@@ -270,9 +270,9 @@ class VizPanel {
     this.mesh.visible = true;
 
     if (!renderPixels) {
-      this.faceMaterial.color.r = panelBgColor.redF;
-      this.faceMaterial.color.g = panelBgColor.greenF;
-      this.faceMaterial.color.b = panelBgColor.blueF;
+      this.faceMaterial.color.r = redF(panelBgColor);
+      this.faceMaterial.color.g = greenF(panelBgColor);
+      this.faceMaterial.color.b = blueF(panelBgColor);
     } else {
       this.faceMaterial.color.r = .3;
       this.faceMaterial.color.g = .3;
@@ -283,9 +283,9 @@ class VizPanel {
       const count = Math.min(this.pixelCount, pixelColors.length);
       for (let i = 0; i < count; i++) {
         const pColor = pixelColors[i];
-        this.pixelColorsBuffer.array[i * 3] = pColor.redF;
-        this.pixelColorsBuffer.array[i * 3 + 1] = pColor.greenF;
-        this.pixelColorsBuffer.array[i * 3 + 2] = pColor.blueF;
+        this.pixelColorsBuffer.array[i * 3] = redF(pColor);
+        this.pixelColorsBuffer.array[i * 3 + 1] = greenF(pColor);
+        this.pixelColorsBuffer.array[i * 3 + 2] = blueF(pColor);
       }
       this.pixelColorsBuffer.needsUpdate = true;
     }

@@ -21,7 +21,7 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
         override val shader: Shader<*>
             get() = this@SineWaveShader
 
-        var color: Color = Color.WHITE
+        var color: Color = Colors.WHITE
         var theta: Float = 0f
         var density: Float = 1f
 
@@ -32,14 +32,14 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
         }
 
         override fun read(reader: ByteArrayReader) {
-            color = Color.parse(reader)
+            color = Colors.parse(reader)
             theta = reader.readFloat()
             density = reader.readFloat()
         }
     }
 
     class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
+        private val colors = Array(pixels.count) { Colors.WHITE }
 
         override fun draw(buffer: Buffer) {
             val theta = buffer.theta
@@ -48,7 +48,7 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
 
             for (i in colors.indices) {
                 val v = sin(theta + 2 * PI * (i / pixelCount * density)) / 2 + .5
-                colors[i] = Color.BLACK.fade(buffer.color, v.toFloat())
+                colors[i] = Colors.BLACK.fade(buffer.color, v.toFloat())
             }
             pixels.set(colors)
         }

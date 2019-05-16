@@ -1,6 +1,7 @@
 package baaahs.gadgets
 
 import baaahs.Color
+import baaahs.Colors
 import baaahs.Gadget
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -13,7 +14,7 @@ class ColorPicker(
     val name: String,
 
     /** The initial value for this color picker. */
-    val initialValue: Color = Color.WHITE
+    val initialValue: Color = Colors.WHITE
 ) : Gadget() {
     /** The selected color. */
     @JsName("color")
@@ -28,6 +29,6 @@ class ColorPicker(
 
     override fun setFromJson(jsonElement: JsonElement) {
         val jsonObject = jsonElement.jsonObject
-        color = Color.from(jsonObject["color"]!!.primitive.int)
+        color = Colors.from(jsonObject["color"]!!.primitive.int)
     }
 }

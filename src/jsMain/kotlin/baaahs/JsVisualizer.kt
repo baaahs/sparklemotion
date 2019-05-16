@@ -48,14 +48,14 @@ interface FrameListener {
 
 actual class JsPanel(private val jsPanelObj: Any, val pixelCount: Int) {
     fun setAllPixelsTo(color: Color) {
-        setPanelColor(jsPanelObj, Color.WHITE, (0..pixelCount).map { color }.toTypedArray())
+        setPanelColor(jsPanelObj, Colors.WHITE, (0..pixelCount).map { color }.toTypedArray())
     }
 
     fun setPixelsTo(colors: Array<Color>) {
-        setPanelColor(jsPanelObj, Color.WHITE, colors)
+        setPanelColor(jsPanelObj, Colors.WHITE, colors)
     }
 
-    var color: Color = Color.BLACK
+    var color: Color = Colors.BLACK
         set(value) {
             setPanelColor(jsPanelObj, value, (0..pixelCount).map { value }.toTypedArray())
             field = color

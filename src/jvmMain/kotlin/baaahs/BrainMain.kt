@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
 
 class JvmPixelsDisplay(pixelCount: Int) : Pixels {
     override val count = pixelCount
-    private val colors = Array(count) { Color.BLACK }
+    private val colors = Array(count) { Colors.BLACK }
     private val pixelsPerRow = ceil(sqrt(count.toFloat())).roundToInt()
     private val pixelsPerCol = pixelsPerRow
 

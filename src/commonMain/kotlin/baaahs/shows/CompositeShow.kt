@@ -41,7 +41,7 @@ val CompositeShow = object : Show.MetaData("Composite") {
             var i = 0
             shaderBufs.forEach { shaderBuffer ->
                 shaderBuffer.solidShaderBuffer.color = colorPicker.color
-                shaderBuffer.sineWaveShaderBuffer.color = Color.WHITE
+                shaderBuffer.sineWaveShaderBuffer.color = Colors.WHITE
                 shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
                 shaderBuffer.compositorShaderBuffer.mode = CompositingMode.ADD
                 shaderBuffer.compositorShaderBuffer.fade = 1f

@@ -63,7 +63,7 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         bShader: Shader<B>,
         val pixels: Pixels
     ) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
+        private val colors = Array(pixels.count) { Colors.WHITE }
         private val aPixels = PixelBuf(pixels.count)
         private val bPixels = PixelBuf(pixels.count)
         private val rendererA: Shader.Renderer<A> = aShader.createRenderer(aPixels)
@@ -84,7 +84,7 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         }
 
         class PixelBuf(override val count: Int) : Pixels {
-            val colors = Array(count) { Color.WHITE }
+            val colors = Array(count) { Colors.WHITE }
 
             override fun set(colors: Array<Color>) {
                 colors.copyInto(this.colors)

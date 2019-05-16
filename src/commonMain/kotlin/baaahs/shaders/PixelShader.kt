@@ -13,7 +13,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
     override fun readBuffer(reader: ByteArrayReader): Buffer {
         val incomingColorCount = reader.readInt()
         val buf = Buffer(incomingColorCount)
-        (0 until incomingColorCount).forEach { index -> buf.colors[index] = Color.parse(reader) }
+        (0 until incomingColorCount).forEach { index -> buf.colors[index] = Colors.parse(reader) }
         return buf
     }
 
@@ -25,7 +25,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
         override val shader: Shader<*>
             get() = this@PixelShader
 
-        var colors: Array<Color> = Array(pixelCount) { Color.WHITE }
+        var colors: Array<Color> = Array(pixelCount) { Colors.WHITE }
 
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeInt(colors.size)
@@ -37,7 +37,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
             if (incomingColorCount != colors.size) {
                 throw IllegalStateException("incoming color count ($incomingColorCount) doesn't match buffer (${colors.size}")
             }
-            (0 until incomingColorCount).forEach { index -> colors[index] = Color.parse(reader) }
+            (0 until incomingColorCount).forEach { index -> colors[index] = Colors.parse(reader) }
         }
 
         fun setAll(color: Color) {

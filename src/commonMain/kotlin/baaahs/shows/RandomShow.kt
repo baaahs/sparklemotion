@@ -14,12 +14,12 @@ val RandomShow = object : Show.MetaData("Random") {
         override fun nextFrame() {
             pixelShaderBuffers.forEach { shaderBuffer ->
                 shaderBuffer.colors.forEachIndexed { i, pixel ->
-                    shaderBuffer.colors[i] = Color.random()
+                    shaderBuffer.colors[i] = Colors.random()
                 }
             }
 
             movingHeadBuffers.forEach { shenzarpy ->
-                shenzarpy.colorWheel = shenzarpy.closestColorFor(Color.random())
+                shenzarpy.colorWheel = shenzarpy.closestColorFor(Colors.random())
                 shenzarpy.pan = Random.nextFloat() * Shenzarpy.panRange.endInclusive
                 shenzarpy.tilt = Random.nextFloat() * Shenzarpy.tiltRange.endInclusive
             }

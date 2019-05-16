@@ -43,8 +43,8 @@ val ThumpShow = object : Show.MetaData("Thump") {
 
             var i = 0
             shaderBufs.forEach { shaderBuffer ->
-                shaderBuffer.solidShaderBuffer.color = Color.BLACK.fade(colorPicker.color, beat % 1f)
-                shaderBuffer.sineWaveShaderBuffer.color = if (beat < .2) Color.WHITE else Color.ORANGE
+                shaderBuffer.solidShaderBuffer.color = Colors.BLACK.fade(colorPicker.color, beat % 1f)
+                shaderBuffer.sineWaveShaderBuffer.color = if (beat < .2) Colors.WHITE else Colors.ORANGE
                 shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
                 shaderBuffer.compositorShaderBuffer.mode = CompositingMode.ADD
                 shaderBuffer.compositorShaderBuffer.fade = 1f

@@ -9,21 +9,21 @@ class Shenzarpy(private val buffer: Dmx.Buffer) : Dmx.DeviceType(16) {
     }
 
     enum class WheelColor(val color: Color) {
-        RED(Color.from(0xc21e22)),
-        ORANGE(Color.from(0xeb8236)),
-        AQUAMARINE(Color.from(0x7cbc84)),
-        DEEP_GREEN(Color.from(0x12812f)),
-        LIGHT_GREEN(Color.from(0x9fc13f)),
-        LAVENDER(Color.from(0x8f74ab)),
-        PINK(Color.from(0xeb8182)),
-        YELLOW(Color.from(0xfeeb34)),
-        MAGENTA(Color.from(0xe11382)),
-        CYAN(Color.from(0x1ba7e8)),
-        CTO2(Color.from(0xf4c651)),
-        CTO1(Color.from(0xf4d88a)),
-        CTB(Color.from(0x97c7b8)),
-        DARK_BLUE(Color.from(0x085197)),
-        WHITE(Color.from(0xffffff));
+        RED(0xc21e22),
+        ORANGE(0xeb8236),
+        AQUAMARINE(0x7cbc84),
+        DEEP_GREEN(0x12812f),
+        LIGHT_GREEN(0x9fc13f),
+        LAVENDER(0x8f74ab),
+        PINK(0xeb8182),
+        YELLOW(0xfeeb34),
+        MAGENTA(0xe11382),
+        CYAN(0x1ba7e8),
+        CTO2(0xf4c651),
+        CTO1(0xf4d88a),
+        CTB(0x97c7b8),
+        DARK_BLUE(0x085197),
+        WHITE(0xffffff);
 
         companion object {
             val values = values()
