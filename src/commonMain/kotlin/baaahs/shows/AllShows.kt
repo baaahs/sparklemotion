@@ -9,7 +9,8 @@ class AllShows {
             CompositeShow,
             ThumpShow,
             PanelTweenShow,
-            PixelTweenShow
+            PixelTweenShow,
+            LifeyShow
         )
     }
 }

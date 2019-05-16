@@ -11,10 +11,15 @@ class SheepModel {
     val partySide: List<Panel>
         get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
 
+    lateinit var panelNeighbors: Map<Panel, List<Panel>>
+
     fun load() {
         val vertices: MutableList<Point> = mutableListOf()
         val panels: MutableList<Panel> = mutableListOf()
         var currentPanel = Panel("initial")
+
+        val panelsByEdge = mutableMapOf<List<Int>, MutableList<Panel>>()
+        val edgesByPanel = mutableMapOf<Panel, MutableList<List<Int>>>()
 
         getResource("newsheep_processed.obj")
             .split("\n")
@@ -49,6 +54,11 @@ class SheepModel {
                             val v = vertices[vi]
                             points.add(v)
                         }
+
+                        val sortedVerts = verts.sorted()
+                        panelsByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(currentPanel)
+                        edgesByPanel.getOrPut(currentPanel) { mutableListOf() }.add(sortedVerts)
+
                         currentPanel.lines.add(Line(points))
                     }
                 }
@@ -58,12 +68,22 @@ class SheepModel {
         this.vertices = vertices
         this.panels = panels
 
+        fun neighborsOf(panel: Panel): List<Panel> {
+            return edgesByPanel[panel]
+                ?.flatMap { panelsByEdge[it]?.toList() ?: emptyList() }
+                ?.filter { it != panel }
+                ?: emptyList()
+        }
+
+        panelNeighbors = allPanels.associateWith { neighborsOf(it) }
 
         eyes = arrayListOf(
             MovingHead("leftEye", Point(-163.738f, 204.361f, 439.302f)),
             MovingHead("rightEye", Point(-103.738f, 204.361f, 439.302f))
         )
     }
+
+    fun neighborsOf(panel: Panel) = panelNeighbors[panel] ?: emptyList()
 
     data class Point(val x: Float, val y: Float, val z: Float)
     data class Line(val points: List<Point>)
