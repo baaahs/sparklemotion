@@ -1,11 +1,14 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.gadgets.Slider
 import baaahs.shaders.SolidShader
 import kotlin.random.Random
 
 object LifeyShow : Show.MetaData("Lifey") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+        val speedSlider = showRunner.getGadget(Slider("Speed", .25f))
+
         val shader = SolidShader()
         val shaderBuffers = sheepModel.allPanels.associateWith {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
@@ -13,7 +16,6 @@ object LifeyShow : Show.MetaData("Lifey") {
 
         val selectedPanels = mutableListOf<SheepModel.Panel>()
         var lastUpdateMs : Long = 0
-        var intervalMs : Long = 250
 
         fun SheepModel.Panel.neighbors() = sheepModel.neighborsOf(this)
         fun SheepModel.Panel.isSelected() = selectedPanels.contains(this)
@@ -22,6 +24,7 @@ object LifeyShow : Show.MetaData("Lifey") {
         return object : Show {
             override fun nextFrame() {
                 val nowMs = getTimeMillis()
+                val intervalMs = (speedSlider.value * 1000).toLong()
                 if (nowMs > lastUpdateMs + intervalMs) {
                     if (selectedPanels.isEmpty()) {
                         selectedPanels.addAll(sheepModel.allPanels.filter { Random.nextFloat() < .5 })
