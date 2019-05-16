@@ -43,7 +43,7 @@ At the code level, shows acquire inputs and shader outputs during an initializat
 
 Shows are permitted to retain state between frames.
 
-### Acquiring Gadgets
+### Selecting Gadgets
 
 Shows may request input from any of
 [several types of gadgets](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs.gadgets/index.html). Shows
@@ -72,11 +72,7 @@ fun nextFrame() {
 - geocompass / accelerometer
 
 
-### Drawing Onto Surfaces
-
-
-
-#### Acquiring Shaders
+### Selecting Shaders
 
 Shows may specify a shader (or an composition of shaders) for each surface. Every type of shader has a corresponding
 `ShaderBuffer` type, used to communicate from shows to shaders. Find
@@ -116,7 +112,8 @@ rendering pass.
 
 Sparkle Motion currently uses a 3D model of BAAAHS, but in the future it will support arbitrary models.
 
-Many shows may not particularly care where in the model any given surface lives.
+Many shows may not particularly care where in the model any given surface lives. For those that do, you can access
+surfaces via the model, and you'll get additional functionality, e.g. finding surfaces' neighbors. 
 
 More words TBD.
 
