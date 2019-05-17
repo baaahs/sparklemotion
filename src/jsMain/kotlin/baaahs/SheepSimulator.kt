@@ -37,7 +37,7 @@ class SheepSimulator {
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
 
-        visualizer.start()
+//        visualizer.start()
 
         sheepModel.panels.forEach { panel ->
             val jsPanel = visualizer.showPanel(panel)

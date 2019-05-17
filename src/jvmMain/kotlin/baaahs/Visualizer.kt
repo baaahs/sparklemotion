@@ -3,9 +3,6 @@ package baaahs
 import baaahs.sim.FakeDmxUniverse
 
 actual class Visualizer actual constructor(sheepModel: SheepModel, dmxUniverse: FakeDmxUniverse) {
-    actual fun start() {
-    }
-
     actual fun showPanel(panel: SheepModel.Panel): JsPanel {
         TODO("JVM Visualizer.showPanel not implemented")
     }

@@ -4,17 +4,13 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeMediaDevices
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.scenes.Scene
-import kotlin.browser.document
+import org.w3c.dom.HTMLElement
 
-actual class Visualizer actual constructor(private val sheepModel: SheepModel, private val dmxUniverse: FakeDmxUniverse) {
+actual class Visualizer actual constructor(
+    @JsName("sheepModel") private val sheepModel: SheepModel,
+    private val dmxUniverse: FakeDmxUniverse) {
     actual val mediaDevices: MediaDevices = FakeMediaDevices(this)
-    private val frameListeners = mutableListOf<FrameListener>()
-
-    actual fun start() {
-        initThreeJs(sheepModel, frameListeners)
-        document.getElementById("newMapperButton")!!.addEventListener("click", { onNewMapper() })
-        document.getElementById("webUiButton")!!.addEventListener("click", { onNewUi() })
-    }
+    @JsName("frameListeners") val frameListeners = mutableListOf<FrameListener>()
 
     actual fun showPanel(panel: SheepModel.Panel): JsPanel {
         val maxPixelCount = 400
@@ -82,7 +78,7 @@ class MovingHeadView(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniv
     }
 }
 
-external fun initThreeJs(sheepModel: SheepModel, frameListeners: List<FrameListener>)
+external fun initThreeJs(canvasContainer: HTMLElement, sheepModel: SheepModel, frameListeners: List<FrameListener>)
 
 external fun addPanel(panel: SheepModel.Panel): Any
 external fun setPanelColor(panel: Any, color: Color, pixelColors: Array<Color>)

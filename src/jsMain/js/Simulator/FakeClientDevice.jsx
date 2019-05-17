@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Draggable from 'react-draggable';
 import styles from './FakeClientDevice.scss';
+import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 10;
 
@@ -8,10 +9,14 @@ export default class FakeClientDevice extends Component {
   constructor(props) {
     super(props);
 
-    this.onClose = props.onClose;
     this.onResize = props.onResize;
 
     this.clientDeviceContentRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const contentDiv = this.clientDeviceContentRef.current;
+    this.props.hostedWebApp.render(contentDiv);
   }
 
   get width() {
@@ -75,7 +80,7 @@ export default class FakeClientDevice extends Component {
             <i className="fas fa-search-minus" onClick={this.onZoomOut} />
             <i className="fas fa-search-plus" onClick={this.onZoomIn} />
             &nbsp;
-            <i className="far fa-times-circle" onClick={this.onClose} />
+            <i className="far fa-times-circle" onClick={this.props.onClose} />
           </div>
           <div
             ref={this.clientDeviceContentRef}
@@ -87,3 +92,9 @@ export default class FakeClientDevice extends Component {
     );
   }
 }
+
+FakeClientDevice.propTypes = {
+  id: PropTypes.number.isRequired,
+  hostedWebApp: PropTypes.shape().isRequired,
+  onClose: PropTypes.func.isRequired,
+};

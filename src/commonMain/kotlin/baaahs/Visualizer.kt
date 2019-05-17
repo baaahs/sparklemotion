@@ -3,7 +3,6 @@ package baaahs
 import baaahs.sim.FakeDmxUniverse
 
 expect class Visualizer(sheepModel: SheepModel, dmxUniverse: FakeDmxUniverse) {
-    fun start()
     fun showPanel(panel: SheepModel.Panel): JsPanel
     fun addEye(eye: SheepModel.MovingHead)
     fun setMapperRunning(b: Boolean)

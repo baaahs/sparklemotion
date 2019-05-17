@@ -51,7 +51,7 @@ function selectPanel(panel, isSelected) {
   }
 }
 
-function initThreeJs(sheepModel, frameListenersList) {
+function initThreeJs(canvasContainer, sheepModel, frameListenersList) {
   frameListeners = frameListenersList;
 
   sheepView.addEventListener('mousemove', onMouseMove, false);
@@ -235,6 +235,10 @@ const doResize = evt => {
   camera.aspect = sheepView.offsetWidth / sheepView.offsetHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight);
+};
+
+window.visualizer = {
+  doResize: doResize,
 };
 
 (() => {
