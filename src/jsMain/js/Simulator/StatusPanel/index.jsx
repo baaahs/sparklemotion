@@ -28,32 +28,9 @@ class StatusPanel extends React.Component {
         console.log('closed!');
       },
       render: function(node) {
-        // Question: What is the render function for?
-        // Is it to give the shows the ability to render whatever elements
-        // they want?
-        //
-        // If we want to give shows the ability to render elements, can we
-        // let react handle the actual rendering? I'd rather have a show
-        // define an interface to render as JSON:
-        /**
-        {
-          "showName": "someCoolShow",
-          "interface": [
-            {
-              "type": "text",
-              "value": "How Can Mirrors Be Real If Our Eyes Aren't Real"
-            },
-            {
-              "type": "slider",
-              "label": "SpArKlE SlIdEr"
-              "value": 0,
-              "step": 0.001,
-              "range": [0, 1]
-            }
-          ]
-        }
-        */
-        // and then let react handle parsing and rendering the actual elements
+        // Explanation behind what this render function is for:
+        // https://github.com/baaahs/sparklemotion/pull/70#discussion_r285393649
+
         node.innerText = 'here i am!';
       },
       onResize: function(node) {},
