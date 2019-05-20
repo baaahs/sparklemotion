@@ -16,7 +16,8 @@ export default class FakeClientDevice extends Component {
 
   componentDidMount() {
     const contentDiv = this.clientDeviceContentRef.current;
-    this.props.hostedWebApp.render(contentDiv);
+    this.props.hostedWebApp.onRender(contentDiv);
+    this.props.hostedWebApp.onResize(contentDiv);
   }
 
   get width() {

@@ -1,6 +1,7 @@
 package baaahs.sim
 
 import baaahs.NetworkDisplay
+import baaahs.logger
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -88,6 +89,7 @@ class FakeNetwork(
             val connection = FakeTcpConnection(clientAddress, serverAddress, serverPort, null)
             coroutineScope.launch {
                 networkDelay()
+                logger.warn("No such address $serverAddress:$serverPort")
                 clientListener.reset(connection);
             }
             return connection

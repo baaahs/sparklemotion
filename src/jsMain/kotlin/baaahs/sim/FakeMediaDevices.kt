@@ -14,16 +14,14 @@ import org.khronos.webgl.Uint8ClampedArray
 import org.w3c.dom.*
 import kotlin.browser.window
 
-class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
+class FakeMediaDevices(private val addFakeCamera: (width: Int, height: Int) -> MediaDevices.Camera) : MediaDevices {
     var currentCam: MediaDevices.Camera? = null
 
     @JsName("getCurrentCam")
     fun getCurrentCam() = currentCam
 
     override fun getCamera(width: Int, height: Int): MediaDevices.Camera {
-        return FakeCamera(width, height).also {
-            visualizer.addFrameListener(it)
-        }
+        return addFakeCamera(width, height)
     }
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, FrameListener {
@@ -57,7 +55,7 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
 
         override fun close() {
             onImage = { _ -> }
-            visualizer.removeFrameListener(this)
+//            visualizer.removeFrameListener(this)
         }
     }
 }

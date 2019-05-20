@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styles from './visualizer.scss';
 
-// todo: this isn't quite right, somehow encapsulate THREE rendering stuff here too?
+import ThreeVisualizer from './ThreeVisualizer';
+
 export default class Visualizer extends Component {
   constructor(props) {
     super(props);
@@ -10,23 +12,25 @@ export default class Visualizer extends Component {
   }
 
   componentDidMount() {
-    initThreeJs(
+    this.threeVisualizer = new ThreeVisualizer(
       this.threeRootElement.current,
-      this.props.model.sheepModel,
-      this.props.model.frameListeners
+      this.props.sheepSimulator.sheepModel,
+      [] // this.props.sheepSimulator.frameListeners,
     );
+
+    this.props.sheepSimulator.visualize(this.threeVisualizer);
   }
 
   render() {
     return (
-      <div
-        className="three--container"
-        ref={this.threeRootElement}
-      />
+      <div className={styles['three--container']} ref={this.threeRootElement} />
     );
   }
 }
 
 Visualizer.propTypes = {
-  model: PropTypes.shape().isRequired,
+  sheepSimulator: PropTypes.shape({
+    sheepModel: PropTypes.shape(),
+    frameListeners: PropTypes.shape(),
+  }).isRequired,
 };

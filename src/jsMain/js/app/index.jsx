@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import ColorPicker from './Menu/components/ColorPicker';
 import ShowList from './ShowList';
 import Slider from './Slider';
@@ -17,20 +18,21 @@ class App extends Component {
       selectedTab: TAB_OPTION_SHOW_LIST,
       gadgets: [],
     };
-
-    this.pubSub = props.uiContext.pubSub;
   }
 
   componentDidMount() {
     this.subscribeToChannels();
   }
 
-  subscribeToChannels() {
-    this.gadgetDisplay = sparklemotion.baaahs.GadgetDisplay(this.pubSub, (newGadgets) => {
-      console.log("got new gadgets!", newGadgets);
-      this.setState({gadgets: newGadgets});
-    });
-  }
+  subscribeToChannels = () => {
+    this.gadgetDisplay = sparklemotion.baaahs.GadgetDisplay(
+      this.props.pubSub,
+      (newGadgets) => {
+        console.log('got new gadgets!', newGadgets);
+        this.setState({ gadgets: newGadgets });
+      }
+    );
+  };
 
   close = () => {
     console.log('app closed!');
@@ -53,19 +55,24 @@ class App extends Component {
         {gadgets.map((gadgetInfo) => {
           const { gadget, topicName } = gadgetInfo;
           if (gadget instanceof sparklemotion.baaahs.gadgets.ColorPicker) {
-            return <ColorPicker key={topicName} gadget={gadget}/>;
+            return <ColorPicker key={topicName} gadget={gadget} />;
           } else if (gadget instanceof sparklemotion.baaahs.gadgets.Slider) {
-            return <Slider key={topicName} gadget={gadget}/>;
+            return <Slider key={topicName} gadget={gadget} />;
           } else {
-            return <div/>;
+            return <div />;
           }
         })}
-        <ShowList
-          pubSub={this.pubSub}
-        />
+        <ShowList pubSub={this.props.pubSub} />
       </Fragment>
     );
   }
 }
+
+App.propTypes = {
+  pubSub: PropTypes.shape({
+    subscribe: PropTypes.func.isRequired,
+    install: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default App;

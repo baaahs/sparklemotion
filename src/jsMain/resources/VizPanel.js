@@ -1,5 +1,5 @@
 class VizPanel {
-  constructor(panel) {
+  constructor(sheepGeometry, lineMaterial, scene, panel) {
     this.panel = panel;
     this.name = panel.name;
     this.geometry = new THREE.Geometry();
@@ -12,7 +12,7 @@ class VizPanel {
     panelGeometry.faces = panel.faces.faces.toArray().map(face => {
       let localVerts = [];
       face.vertexIds.toArray().forEach(vi => {
-        let v = geom.vertices[vi];
+        let v = sheepGeometry.vertices[vi];
         let lvi = panelVertices.indexOf(v);
         if (lvi === -1) {
           lvi = panelVertices.length;
@@ -42,8 +42,6 @@ class VizPanel {
       });
     });
 
-    geom.computeVertexNormals(); // todo: why is this here?
-
     let lines = panel.lines.toArray().map(line => {
       let lineGeo = new THREE.Geometry();
       lineGeo.vertices = line.points.toArray().map(pt => new THREE.Vector3(pt.x, pt.y, pt.z));
@@ -67,7 +65,7 @@ class VizPanel {
     });
   }
 
-  addPixels(pixelCount) {
+  addPixels = (scene, pixelCount) => {
     const panelGeometry = this.geometry;
     const vertices = panelGeometry.vertices;
     panelGeometry.computeFaceNormals();

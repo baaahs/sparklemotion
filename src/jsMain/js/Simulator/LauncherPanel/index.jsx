@@ -1,42 +1,45 @@
 import React, { Fragment } from 'react';
 import FakeClientDevice from '../FakeClientDevice';
+import ReactDOM from 'react-dom';
+import App from '../../app';
 
-// todo: real interface with WebUi and Mapper implementors
-// interface HostedWebApp {
-//     fun render(node);
-//     fun onResize(node);
-//     fun onClose(node);
-// }
+const baaahs = sparklemotion.baaahs;
 
 let nextHostedWebAppId = 0;
 let hostedWebApps = {};
 
-class StatusPanel extends React.Component {
+class WebUiApp {
+  constructor(network, pinkyAddress) {
+    const link = network.link();
+    this.pubSub = new baaahs.PubSub.Client(
+      link,
+      pinkyAddress,
+      baaahs.proto.Ports.Companion.PINKY_UI_TCP
+    );
+    this.pubSub.install(baaahs.gadgetModule);
+  }
+
+  onRender(node) {
+    ReactDOM.render(<App pubSub={this.pubSub} />, node);
+  }
+
+  onResize() {}
+
+  onClose() {}
+}
+
+class LauncherPanel extends React.Component {
   state = {
     hostedWebAppIds: [],
-    hostedWebApps: {},
   };
 
   handleWebUiClick = () => {
     const thisId = nextHostedWebAppId++;
 
-    const webUi = {
-      id: thisId,
-      // app: new WebUI(),
-
-      onClose: function() {
-        console.log('closed!');
-      },
-      render: function(node) {
-        // Explanation behind what this render function is for:
-        // https://github.com/baaahs/sparklemotion/pull/70#discussion_r285393649
-
-        node.innerText = 'here i am!';
-      },
-      onResize: function(node) {},
-    };
-
-    hostedWebApps[thisId] = webUi;
+    hostedWebApps[thisId] = new WebUiApp(
+      this.props.sheepSimulator.network,
+      this.props.sheepSimulator.pinky.address
+    );
 
     this.setState({
       hostedWebAppIds: [...this.state.hostedWebAppIds, thisId],
@@ -79,4 +82,4 @@ class StatusPanel extends React.Component {
   }
 }
 
-export default StatusPanel;
+export default LauncherPanel;

@@ -140,6 +140,7 @@ abstract class PubSub {
         var serialModule: SerialModule = EmptyModule
         var json = Json(JsonConfiguration.Stable, serialModule)
 
+        @JsName("install")
         fun install(toInstall: SerialModule) {
             serialModule = serialModule.plus(toInstall)
             json = Json(JsonConfiguration.Stable, serialModule)

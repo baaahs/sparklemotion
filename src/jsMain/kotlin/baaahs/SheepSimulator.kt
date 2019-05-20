@@ -27,7 +27,7 @@ class SheepSimulator {
 
         it.onNewUi = {
             GlobalScope.launch {
-                Ui(network, pinky.address, JsUiDisplay(FakeDomContainer()))
+                Ui(network, pinky.address)
             }
         }
     }
@@ -37,23 +37,37 @@ class SheepSimulator {
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
 
-//        visualizer.start()
-
-        sheepModel.panels.forEach { panel ->
-            val jsPanel = visualizer.showPanel(panel)
-            val brain = Brain(network, display.forBrain(), JsPixels(jsPanel), panel)
-            brainScope.launch { randomDelay(1000); brain.run() }
-        }
-
-        sheepModel.eyes.forEach { eye ->
-            visualizer.addEye(eye)
-            Config.DMX_DEVICES[eye.name]
-        }
-
         doRunBlocking {
             delay(200000L)
         }
     }
+
+    @JsName("visualize")
+    fun visualize(threeVisualizer: dynamic) {
+        sheepModel.panels.forEach { panel ->
+            val jsPanel = threeVisualizer.addPanel(panel)
+            val brain = Brain(network, display.forBrain(), JsPixels(jsPanel), panel)
+            brainScope.launch { randomDelay(1000); brain.run() }
+        }
+
+        sheepModel.eyes.forEach { eye -> MovingHeadView(eye, dmxUniverse, threeVisualizer)
+//            Config.DMX_DEVICES[eye.name]
+        }
+    }
+
+    class MovingHeadView(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse, val threeVisualizer: dynamic) {
+        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+        val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
+        val movingHeadJs = threeVisualizer.addMovingHead(movingHead)
+
+        private fun receivedDmxFrame() {
+            val colorWheelV = device.colorWheel
+            val wheelColor = Shenzarpy.WheelColor.get(colorWheelV)
+            threeVisualizer.adjustMovingHead(movingHeadJs, wheelColor.color, device.dimmer, device.pan, device.tilt)
+        }
+    }
+
+    fun launchNewWebUi() = Ui(network, pinky.address)
 
     val pinkyScope = CoroutineScope(Dispatchers.Main)
     val brainScope = CoroutineScope(Dispatchers.Main)
