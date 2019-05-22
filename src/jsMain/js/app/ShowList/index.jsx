@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Show from './Show.jsx';
 import styles from './ShowList.scss';
 
+const baaahs = sparklemotion.baaahs;
+
 class ShowList extends Component {
   state = {
     availableShows: [],
@@ -15,14 +17,14 @@ class ShowList extends Component {
 
   subscribeToChannels() {
     this.selectedShowChannel = this.props.pubSub.subscribe(
-      sparklemotion.baaahs.Topics.selectedShow,
+      baaahs.Topics.selectedShow,
       (selectedShow) => {
         this.setState({ selectedShow });
       }
     );
 
     this.props.pubSub.subscribe(
-      sparklemotion.baaahs.Topics.availableShows,
+      baaahs.Topics.availableShows,
       (response) => {
         const availableShows = response.toArray();
 

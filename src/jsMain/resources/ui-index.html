@@ -14,8 +14,6 @@
   <h3>Sparkle Motion UI <small><i>FUCK YEAH</i></small></h3>
 </div>
 
-<script type="application/javascript" src="react_app.js"></script>
-
 <script type="application/javascript" src="lib/kotlin.js"></script>
 <script type="application/javascript" src="lib/kotlinx-coroutines-core.js"></script>
 <script type="application/javascript" src="lib/kotlinx-serialization-runtime-js.js"></script>
@@ -25,27 +23,22 @@
 <script type="application/javascript" src="lib/threejs-wrapper.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
 
-<script type="application/javascript">
-  // cache busting
-  const cacheBustStr = 2 || new Date().getTime();
-  [
-    "sparklemotion.js",
-  ].forEach(function (value) {
-    document.write(`\x3Cscript type="text/javascript" src="${value}?ts=${cacheBustStr}">\x3C/script>\n`);
-  });
-</script>
+<script type="application/javascript" src="sparklemotion.js"></script>
+<script type="application/javascript" src="react_app.js"></script>
 
 <script type="application/javascript">
+  const baaahs = sparklemotion.baaahs;
+
   function myUrl() {
     const l = window.location;
     return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
   }
 
-  let network = new sparklemotion.baaahs.net.BrowserNetwork();
-  let pinkyAddress = new sparklemotion.baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-  new sparklemotion.baaahs.Ui(network, pinkyAddress, {
-    createApp: (uiContext) => { document.createUiApp(document.getElementById("content"), uiContext); }
-  });
+  let network = new baaahs.net.BrowserNetwork();
+  let pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
+  let pubSub = baaahs.WebUi.createPubSubClient(network, pinkyAddress);
+  let webApp = document.createUiApp(pubSub);
+  webApp.render(document.body);
 </script>
 
 </body>

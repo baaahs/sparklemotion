@@ -4,6 +4,8 @@ import {SketchPicker} from 'react-color';
 
 import styles from './ColorPicker.scss';
 
+const baaahs = sparklemotion.baaahs;
+
 class ColorPicker extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,7 @@ class ColorPicker extends Component {
 
   handleColorChange = ({ hex }) => {
     const { gadget } = this.state;
-    gadget.color = sparklemotion.baaahs.Color.Companion.fromString(hex);
+    gadget.color = baaahs.Color.Companion.fromString(hex);
     this.setState({ gadget });
   };
 

@@ -5,7 +5,10 @@ import kotlinx.coroutines.promise
 import org.w3c.xhr.XMLHttpRequest
 import kotlin.js.Date
 
-actual fun doRunBlocking(block: suspend () -> Unit): dynamic = GlobalScope.promise { block() }
+actual fun doRunBlocking(block: suspend () -> Unit) {
+    GlobalScope.promise { block() }
+    return
+}
 
 actual fun getResource(name: String): String {
     val xhr = XMLHttpRequest()
@@ -18,7 +21,5 @@ actual fun getResource(name: String): String {
 
     throw Exception("failed to load resource ${name}: ${xhr.status} ${xhr.responseText}")
 }
-
-actual fun getDisplay(): Display = JsDisplay()
 
 actual fun getTimeMillis(): Long = Date.now().toLong()

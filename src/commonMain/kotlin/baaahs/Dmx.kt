@@ -13,7 +13,7 @@ interface Dmx {
             return channels[baseChannel + index]
         }
 
-        operator fun set(index: Int, value: Byte): Unit {
+        operator fun set(index: Int, value: Byte) {
             boundsCheck(index)
             channels[baseChannel + index] = value
         }
@@ -25,6 +25,5 @@ interface Dmx {
         }
     }
 
-    open class DeviceType(val channelCount: Int) {
-    }
+    open class DeviceType(val channelCount: Int)
 }

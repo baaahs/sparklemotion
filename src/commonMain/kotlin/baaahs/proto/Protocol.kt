@@ -4,14 +4,12 @@ import baaahs.Shader
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
-interface Ports {
-    companion object {
-        val MAPPER = 8001
-        val PINKY = 8002
-        val BRAIN = 8003
+object Ports {
+    const val MAPPER = 8001
+    const val PINKY = 8002
+    const val BRAIN = 8003
 
-        val PINKY_UI_TCP = 8004
-    }
+    const val PINKY_UI_TCP = 8004
 }
 
 enum class Type {
