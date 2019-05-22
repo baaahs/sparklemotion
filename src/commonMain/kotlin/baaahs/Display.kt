@@ -2,8 +2,6 @@ package baaahs
 
 import baaahs.net.Network
 
-expect fun getDisplay(): Display
-
 interface Display {
     fun forNetwork(): NetworkDisplay
     fun forPinky(): PinkyDisplay

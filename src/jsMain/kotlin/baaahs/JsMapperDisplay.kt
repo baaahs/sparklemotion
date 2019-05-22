@@ -22,6 +22,7 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.table
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
 import kotlin.browser.document
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -31,7 +32,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-class JsMapperDisplay(container: DomContainer) : MapperDisplay {
+class JsMapperDisplay : MapperDisplay, HostedWebApp {
     private lateinit var listener: MapperDisplay.Listener
 
     override fun listen(listener: MapperDisplay.Listener) {
@@ -74,12 +75,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
         div("mapperUi-table") { }
     }
 
-    private val frame = container.getFrame(
-        "Mapper",
-        screen,
-        { listener.onClose() },
-        { width, height -> this.resizeTo(width, height) })
-
     private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
     private val ui2dCtx = ui2dCanvas.context2d()
 
@@ -96,6 +91,30 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     private val table = screen.first<HTMLDivElement>("mapperUi-table")
 
     val visiblePanels = mutableListOf<Pair<SheepModel.Panel, PanelInfo>>()
+
+    private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
+
+    init {
+        ui3dDiv.appendChild(ui3dCanvas);
+
+        uiCamera.position.z = 1000.0
+        uiScene.add(uiCamera)
+
+        uiControls = js("document.createCameraControls")(uiCamera, uiRenderer.domElement)
+    }
+
+    override fun render(parentNode: HTMLElement) {
+        parentNode.appendChild(screen)
+
+        parentNode.onresize = {
+            resizeTo(parentNode.offsetWidth, parentNode.offsetHeight)
+        }
+        resizeTo(width, height)
+    }
+
+    override fun onClose() {
+        listener.onClose()
+    }
 
     private fun resizeTo(width: Int, height: Int) {
         this.width = width
@@ -114,18 +133,6 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
 
         diffCanvas.width = width
         diffCanvas.height = height
-    }
-
-    private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
-
-    init {
-        js("document.md = this");
-        ui3dDiv.appendChild(ui3dCanvas);
-
-        uiCamera.position.z = 1000.0
-        uiScene.add(uiCamera)
-
-        uiControls = js("document.createCameraControls")(uiCamera, uiRenderer.domElement)
     }
 
     override fun addWireframe(sheepModel: SheepModel) {
@@ -320,7 +327,7 @@ class JsMapperDisplay(container: DomContainer) : MapperDisplay {
     }
 
     override fun close() {
-        frame.close()
+//        frame.close()
     }
 }
 
