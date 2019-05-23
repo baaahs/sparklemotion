@@ -132,6 +132,10 @@ jsProcessResources { t ->
 
     t.from('build/webpack')
     t.from('build/classes/kotlin/js/main')
+
+    t.from('node_modules/kotlin') { include 'kotlin.*' }
+    t.from('node_modules/kotlinx-coroutines-core') { include 'kotlinx-coroutines-core.*' }
+    t.from('node_modules/three/build') { include 'three.js' }
 }
 
 task serve {

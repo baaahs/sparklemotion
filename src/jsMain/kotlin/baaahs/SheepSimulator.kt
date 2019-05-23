@@ -1,53 +1,55 @@
 package baaahs
 
+import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeMediaDevices
 import baaahs.sim.FakeNetwork
-import kotlinx.coroutines.*
+import baaahs.visualizer.Visualizer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.browser.document
 
 class SheepSimulator {
-    var display = getDisplay()
-    var network = FakeNetwork(display = display.forNetwork())
-
-    var dmxUniverse = FakeDmxUniverse()
-    var sheepModel = SheepModel().apply { load() }
-
-    val showMetas = AllShows.allShows
-
-    val visualizer = Visualizer(sheepModel, dmxUniverse).also {
-        it.onNewMapper = {
-            it.setMapperRunning(true)
-            mapperScope.launch {
-                Mapper(network, sheepModel, JsMapperDisplay(FakeDomContainer()), it.mediaDevices).apply {
-                    this.addCloseListener { it.setMapperRunning(false) }
-                    start()
-                }
-            }
-        }
-
-        it.onNewUi = {
-            GlobalScope.launch {
-                Ui(network, pinky.address, JsUiDisplay(FakeDomContainer()))
-            }
-        }
-    }
-
-    val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
+    private val display = JsDisplay()
+    private val network = FakeNetwork(display = display.forNetwork())
+    private val dmxUniverse = FakeDmxUniverse()
+    private val sheepModel = SheepModel().apply { load() }
+    private val showMetas = AllShows.allShows
+    private val visualizer = Visualizer(sheepModel)
+    private val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
 
-        visualizer.start()
+        val launcher = Launcher(document.getElementById("launcher")!!)
+        launcher.add("Web UI") {
+            val webUiClientLink = network.link()
+            val pubSub = PubSub.Client(webUiClientLink, pinky.address, Ports.PINKY_UI_TCP).apply {
+                install(gadgetModule)
+            }
+            document.asDynamic().createUiApp(pubSub)
+        }
+
+        launcher.add("Mapper") {
+            val mapperDisplay = JsMapperDisplay(visualizer)
+
+            val mapper = Mapper(network, sheepModel, mapperDisplay, FakeMediaDevices(visualizer))
+            mapperScope.launch { mapper.start() }
+
+            mapperDisplay
+        }
 
         sheepModel.panels.forEach { panel ->
-            val jsPanel = visualizer.showPanel(panel)
-            val brain = Brain(network, display.forBrain(), JsPixels(jsPanel), panel)
+            val jsPanel = visualizer.addPanel(panel)
+            val brain = Brain(network, display.forBrain(), jsPanel.vizPixels ?: NullPixels, panel)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
 
         sheepModel.eyes.forEach { eye ->
-            visualizer.addEye(eye)
-            Config.DMX_DEVICES[eye.name]
+            visualizer.addMovingHead(eye, dmxUniverse)
         }
 
         doRunBlocking {
@@ -55,7 +57,12 @@ class SheepSimulator {
         }
     }
 
-    val pinkyScope = CoroutineScope(Dispatchers.Main)
-    val brainScope = CoroutineScope(Dispatchers.Main)
-    val mapperScope = CoroutineScope(Dispatchers.Main)
+    object NullPixels : Pixels {
+        override val count = 0
+        override fun set(colors: Array<Color>) {}
+    }
+
+    private val pinkyScope = CoroutineScope(Dispatchers.Main)
+    private val brainScope = CoroutineScope(Dispatchers.Main)
+    private val mapperScope = CoroutineScope(Dispatchers.Main)
 }

@@ -17,11 +17,15 @@ class FakeDmxUniverse : Dmx.Universe() {
 
     override fun sendFrame() {
         channelsOut.copyInto(channelsIn)
-        listeners.forEach { it() }
+        updateListeners()
     }
 
     override fun allOff() {
         for (i in 0..512) channelsIn[i] = 0
+        updateListeners()
+    }
+
+    private fun updateListeners() {
         listeners.forEach { it() }
     }
 }

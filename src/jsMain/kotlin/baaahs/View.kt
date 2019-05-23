@@ -48,13 +48,16 @@ open class Button<T>(val data: T, val element: Element) {
     }
 }
 
+interface HostedWebApp {
+    @JsName("render")
+    fun render(parentNode: HTMLElement)
+
+    @JsName("onClose")
+    fun onClose()
+}
+
 interface DomContainer {
-    fun getFrame(
-        name: String,
-        element: Element,
-        onClose: () -> Unit,
-        onResize: (width: Int, height: Int) -> Unit
-    ): Frame
+    fun createFrame(name: String, hostedWebApp: HostedWebApp): Frame
 
     interface Frame {
         @JsName("containerNode")
@@ -66,10 +69,6 @@ interface DomContainer {
 }
 
 class FakeDomContainer : DomContainer {
-    override fun getFrame(
-        name: String,
-        content: Element,
-        onClose: () -> Unit,
-        onResize: (width: Int, height: Int) -> Unit
-    ): DomContainer.Frame = js("document.createFakeClientDevice")(name, content, onClose, onResize)
+    override fun createFrame(name: String, hostedWebApp: HostedWebApp): DomContainer.Frame =
+        js("document.createFakeClientDevice")(name, hostedWebApp)
 }
