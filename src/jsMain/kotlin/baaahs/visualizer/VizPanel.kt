@@ -28,7 +28,7 @@ import kotlin.math.min
 import kotlin.math.sin
 import kotlin.random.Random
 
-class VizPanel(val panel: SheepModel.Panel, private val geom: Geometry, private val scene: Scene) {
+class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val scene: Scene) {
     private val name = panel.name
     private val geometry = Geometry()
     var area = 0.0f
@@ -88,18 +88,16 @@ class VizPanel(val panel: SheepModel.Panel, private val geom: Geometry, private 
             lineGeo
         }
 
-        this.faceMaterial = MeshBasicMaterial().apply { color.set(0xaa0000) }
+        this.faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
         this.faceMaterial.side = FrontSide
-        this.faceMaterial.transparent = true
-        this.faceMaterial.opacity = 0.99
+        this.faceMaterial.transparent = false
 
         this.mesh = Mesh(panelGeometry, this.faceMaterial)
         this.mesh.asDynamic().panel = this; // so we can get back to the VizPanel from a raycaster intersection...
-        this.mesh.visible = false
+        scene.add(this.mesh)
 
         this.lines = lines.map { line -> Line(line.asDynamic(), lineMaterial) }
 
-        scene.add(this.mesh)
         this.lines.forEach { line ->
             scene.add(line)
         }

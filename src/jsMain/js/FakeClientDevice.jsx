@@ -91,8 +91,8 @@ export default class FakeClientDevice extends Component {
 }
 
 FakeClientDevice.propTypes = {
-  width: PropTypes.number.required,
-  height: PropTypes.number.required,
-  hostedWebApp: PropTypes.object.required,
-  onClose: PropTypes.func.required,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  hostedWebApp: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
