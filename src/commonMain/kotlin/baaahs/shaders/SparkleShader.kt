@@ -5,6 +5,9 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.random.Random
 
+/**
+ * A shader that randomly sets some pixels to white, changing with each frame.
+ */
 class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 

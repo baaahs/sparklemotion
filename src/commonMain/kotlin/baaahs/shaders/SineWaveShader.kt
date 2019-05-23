@@ -6,6 +6,9 @@ import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.sin
 
+/**
+ * A shader that treats a surface's pixels as a linear strip and applies a configurable sine wave along the strip.
+ */
 class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 

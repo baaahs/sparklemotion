@@ -9,31 +9,26 @@ import baaahs.shaders.SolidShader
 import kotlin.math.PI
 import kotlin.random.Random
 
-val CompositeShow = object : Show.MetaData("Composite") {
+object CompositeShow : Show.MetaData("Composite") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         val colorPicker = showRunner.getGadget(ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
-        val compositorShader = CompositorShader(solidShader, sineWaveShader)
 
-        private val shaderBufs = sheepModel.allPanels.map { panel ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
+        private val shaderBufs = showRunner.allSurfaces.map { surface ->
+            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
+                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
 
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
         private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
-
-        init {
-//        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")
-        }
 
         override fun nextFrame() {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
@@ -55,7 +50,7 @@ val CompositeShow = object : Show.MetaData("Composite") {
         }
     }
 
-    inner class ShaderBufs(
+    class ShaderBufs(
         val solidShaderBuffer: SolidShader.Buffer,
         val sineWaveShaderBuffer: SineWaveShader.Buffer,
         val compositorShaderBuffer: CompositorShader.Buffer

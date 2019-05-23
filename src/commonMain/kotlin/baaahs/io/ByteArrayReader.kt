@@ -8,7 +8,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
             }
             field = value
         }
-    fun readBoolean(): Boolean = bytes[offset] != 0.toByte()
+
+    fun readBoolean(): Boolean = bytes[offset++].toInt() != 0
 
     fun readByte(): Byte = bytes[offset++]
 
