@@ -17,8 +17,8 @@ class Mapper(
     sheepModel: SheepModel,
     private val mapperDisplay: MapperDisplay,
     mediaDevices: MediaDevices
-) : Network.UdpListener, MapperDisplay.Listener {
-    val maxPixelsPerBrain = 512
+) : Network.UdpListener, MapperDisplay.Listener, CoroutineScope by MainScope() {
+    private val maxPixelsPerBrain = SparkleMotion.DEFAULT_PIXEL_COUNT
     val width = 640
     val height = 300
 
@@ -29,14 +29,13 @@ class Mapper(
     private lateinit var deltaBitmap: Bitmap
     private var newChangeRegion: MediaDevices.Region? = null
 
-    private val closeListeners = mutableListOf<() -> Unit>()
     private lateinit var link: Network.Link
     private var isRunning: Boolean = true
     private var isAligned: Boolean = false
     private var isPaused: Boolean = false
     private var captureBaseImage = false
 
-    var scope = CoroutineScope(Dispatchers.Main)
+    private var suppressShowsJob: Job? = null
     private val brainMappers: MutableMap<Network.Address, BrainMapper> = mutableMapOf()
 
     init {
@@ -48,8 +47,7 @@ class Mapper(
         link = FragmentingUdpLink(network.link())
         link.listenUdp(Ports.MAPPER, this)
 
-        scope = CoroutineScope(Dispatchers.Main)
-        scope.launch { run() }
+        launch { run() }
     }
 
     override fun onStart() {
@@ -65,13 +63,12 @@ class Mapper(
     }
 
     override fun onClose() {
+        println("Shutting down Mapper...")
         isRunning = false
         camera.close()
 
-        scope.cancel()
+        suppressShowsJob?.cancel()
         link.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
-
-        closeListeners.forEach { it.invoke() }
 
         mapperDisplay.close()
     }
@@ -82,13 +79,16 @@ class Mapper(
         mapperDisplay.showMessage("ESTABLISHING UPLINK…")
 
         // shut down Pinky, advertise for Brains...
-        retries.forEach {
+        retry {
             link.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
             delay(1000L)
             link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK))
         }
 
-        retries.forEach {
+        // keep Pinky from waking up while we're running...
+        suppressShows()
+
+        retry {
             link.broadcastUdp(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
             delay(1000L)
         }
@@ -97,20 +97,12 @@ class Mapper(
         delay(1000L)
 
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
         delay(250L)
-
-        // keep Pinky from waking up while we're running...
-        scope.launch {
-            while (isRunning) {
-                link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
-                delay(10000L)
-            }
-        }
 
         mapperDisplay.showMessage("READY PLAYER ONE…")
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
+        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
         delay(250L)
 
         while (!isAligned) {
@@ -126,69 +118,81 @@ class Mapper(
         mapperDisplay.showMessage("CALIBRATING…")
 
         // Blackout
-        retries.forEach { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
         delay(250L)
-        captureBaseImage = true;
+        captureBaseImage = true
         delay(250L)
 
         mapperDisplay.showMessage("MAPPING…")
         mapperDisplay.showStats(brainMappers.size, 0, -1)
 
-        scope.launch {
-            while (isRunning) {
-                println("identify brains...")
-                // light up each brain in an arbitrary sequence...
-                brainMappers.values.forEach { brainMapper ->
-                    retries.forEach { brainMapper.shade { solidColor(Color.WHITE) } }
-                    delay(34L)
+        while (isRunning) {
+            println("identify brains...")
+            // light up each brain in an arbitrary sequence...
+            brainMappers.values.forEach { brainMapper ->
+                retry { brainMapper.shade { solidColor(Color.WHITE) } }
+                delay(34L)
 
-                    // wait for a new image to come it...
-                    while (newChangeRegion == null) {
-                        delay(10)
-                    }
-                    val changeRegion = newChangeRegion!!
-                    newChangeRegion = null
-
-                    val candidates = mapperDisplay.getCandidateSurfaces(changeRegion)
-                    mapperDisplay.showMessage2(
-                        "Candidate panels: ${candidates.subList(
-                            0,
-                            min(5, candidates.size)
-                        ).map { it.name }}"
-                    )
-
-                    println("Guessed panel ${candidates.first().name} for ${brainMapper.surfaceName}")
-
-                    maybePause()
-                    retries.forEach { brainMapper.shade { solidColor(Color.BLACK) } }
+                // wait for a new image to come it...
+                while (newChangeRegion == null) {
+                    delay(10)
                 }
+                val changeRegion = newChangeRegion!!
+                newChangeRegion = null
 
-                delay(1000L)
+                val candidates = mapperDisplay.getCandidateSurfaces(changeRegion)
+                mapperDisplay.showMessage2(
+                    "Candidate panels: ${candidates.subList(
+                        0,
+                        min(5, candidates.size)
+                    ).map { it.name }}"
+                )
 
-                println("identify pixels...")
-                // light up each pixel...
-                val pixelShader = PixelShader()
-                val buffer = pixelShader.createBuffer(object : Surface {
-                    override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
-                })
-                buffer.setAll(Color.BLACK)
-                for (i in 0 until maxPixelsPerBrain) {
-                    if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
-                    buffer.colors[i] = Color.WHITE
-                    link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
-                    buffer.colors[i] = Color.BLACK
-                    delay(34L)
-                    maybePause()
-                }
-                println("done identifying pixels...")
+                println("Guessed panel ${candidates.first().name} for ${brainMapper.surfaceName}")
 
-                delay(1000L)
+                maybePause()
+                retry { brainMapper.shade { solidColor(Color.BLACK) } }
             }
-            println("done identifying things... $isRunning")
-        }
 
-        println("Mapper isRunning: $isRunning")
-        link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
+            delay(1000L)
+
+            println("identify pixels...")
+            // light up each pixel...
+            val pixelShader = PixelShader()
+            val buffer = pixelShader.createBuffer(object : Surface {
+                override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+            })
+            buffer.setAll(Color.BLACK)
+            for (i in 0 until maxPixelsPerBrain) {
+                if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
+                buffer.colors[i] = Color.WHITE
+                link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
+                buffer.colors[i] = Color.BLACK
+                delay(34L)
+                maybePause()
+            }
+            println("done identifying pixels...")
+
+            delay(1000L)
+        }
+        println("done identifying things... $isRunning")
+
+        retry { link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
+    }
+
+    private suspend fun retry(fn: suspend () -> Unit) {
+        fn()
+        fn()
+    }
+
+    // keep Pinky from restarting a show up while Mapper is running...
+    private fun suppressShows() {
+        suppressShowsJob = launch(CoroutineName("Suppress Pinky")) {
+            while (isRunning) {
+                delay(10000L)
+                link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
+            }
+        }
     }
 
     private suspend fun maybePause() {
@@ -220,10 +224,6 @@ class Mapper(
                 }
             }
         }
-    }
-
-    fun addCloseListener(listener: () -> Unit) {
-        closeListeners.add(listener)
     }
 
     private fun haveImage(image: Image) {
@@ -295,7 +295,7 @@ interface MapperDisplay {
     fun showCamImage(image: Image)
     fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region)
     fun showMessage(message: String)
-    fun showMessage2(s: String)
+    fun showMessage2(message: String)
     fun showStats(total: Int, mapped: Int, visible: Int)
     fun close()
 

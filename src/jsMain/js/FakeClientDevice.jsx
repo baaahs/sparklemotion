@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Draggable from 'react-draggable';
 import styles from './FakeClientDevice.scss';
+import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 10;
 
 export default class FakeClientDevice extends Component {
   constructor(props) {
     super(props);
-
-    this.onClose = props.onClose;
-    this.onResize = props.onResize;
 
     this.clientDeviceContentRef = React.createRef();
   }
@@ -35,6 +33,10 @@ export default class FakeClientDevice extends Component {
       height: `${this.height}px`,
     };
   }
+
+  componentDidMount = () => {
+    this.props.hostedWebApp.render(this.clientDeviceContentRef.current);
+  };
 
   onZoomOut = () => {
     console.log('TODO: Implement onZoomOut');
@@ -75,7 +77,7 @@ export default class FakeClientDevice extends Component {
             <i className="fas fa-search-minus" onClick={this.onZoomOut} />
             <i className="fas fa-search-plus" onClick={this.onZoomIn} />
             &nbsp;
-            <i className="far fa-times-circle" onClick={this.onClose} />
+            <i className="far fa-times-circle" onClick={this.props.onClose} />
           </div>
           <div
             ref={this.clientDeviceContentRef}
@@ -87,3 +89,10 @@ export default class FakeClientDevice extends Component {
     );
   }
 }
+
+FakeClientDevice.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  hostedWebApp: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

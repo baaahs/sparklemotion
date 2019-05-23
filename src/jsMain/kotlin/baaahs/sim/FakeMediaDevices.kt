@@ -1,10 +1,9 @@
 package baaahs.sim
 
-import baaahs.FrameListener
 import baaahs.MediaDevices
-import baaahs.Visualizer
 import baaahs.imaging.Image
 import baaahs.imaging.ImageBitmapImage
+import baaahs.visualizer.Visualizer
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.renderers.WebGLRenderer
@@ -26,7 +25,7 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
         }
     }
 
-    inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, FrameListener {
+    inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, Visualizer.FrameListener {
         // offscreen renderer for virtual camera:
         var camRenderer = WebGLRenderer(js("{preserveDrawingBuffer: true}")).apply {
             setSize(width, height)
