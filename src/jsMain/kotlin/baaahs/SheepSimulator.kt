@@ -6,7 +6,10 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeMediaDevices
 import baaahs.sim.FakeNetwork
 import baaahs.visualizer.Visualizer
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.browser.document
 
 class SheepSimulator {
@@ -31,8 +34,7 @@ class SheepSimulator {
         }
 
         launcher.add("Mapper") {
-            visualizer.rotate = false
-            val mapperDisplay = JsMapperDisplay()
+            val mapperDisplay = JsMapperDisplay(visualizer)
 
             val mapper = Mapper(network, sheepModel, mapperDisplay, FakeMediaDevices(visualizer))
             mapperScope.launch { mapper.start() }

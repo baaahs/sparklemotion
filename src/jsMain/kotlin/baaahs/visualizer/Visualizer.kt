@@ -1,6 +1,8 @@
 package baaahs.visualizer
 
-import baaahs.*
+import baaahs.Config
+import baaahs.SheepModel
+import baaahs.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -39,34 +41,45 @@ class Visualizer(sheepModel: SheepModel) {
             getVizRotationEl().checked = value
         }
 
+    var mapperIsRunning = false
+        set(isRunning) {
+            field = isRunning
+
+            vizPanels.forEach { panel -> panel.faceMaterial.transparent = !isRunning }
+
+            if (isRunning) {
+                rotate = false
+            }
+        }
+
     private val frameListeners = mutableListOf<FrameListener>()
-    val renderPixels = true
+    private val renderPixels = true
 
-    val controls: OrbitControls
-    val camera: PerspectiveCamera
-    val scene: Scene
-    val renderer: WebGLRenderer
-    val geom: Geometry
+    private val controls: OrbitControls
+    private val camera: PerspectiveCamera
+    private val scene: Scene
+    private val renderer: WebGLRenderer
+    private val geom: Geometry
 
-    var obj: Object3D = Object3D()
-    val pointMaterial: Material
-    val lineMaterial: Material
-    val panelMaterial: Material
+    private var obj: Object3D = Object3D()
+    private val pointMaterial: Material
+    private val lineMaterial: Material
+    private val panelMaterial: Material
 
-    val raycaster: Raycaster
-    val mouse = Vector2()
-    val sphere: Mesh
+    private val raycaster: Raycaster
+    private val mouse = Vector2()
+    private val sphere: Mesh
 
-    val rendererListeners = mutableListOf<() -> Unit>()
+    private val rendererListeners = mutableListOf<() -> Unit>()
 
-    var vizPanels = mutableListOf<VizPanel>()
+    private var vizPanels = mutableListOf<VizPanel>()
 
-    var select = document.getElementById("panelSelect")!! as HTMLSelectElement
-    var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
+    private var select = document.getElementById("panelSelect")!! as HTMLSelectElement
+    private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
 
-    val pixelDensity = 0.2
+    private val pixelDensity = 0.2
 
-    val omitPanels = arrayOf(
+    private val omitPanels = arrayOf(
         "60R", "60L", // ears
         "Face",
         "Tail"
@@ -227,25 +240,6 @@ class Visualizer(sheepModel: SheepModel) {
     }
 
     private fun getVizRotationEl() = document.getElementById("vizRotation") as HTMLInputElement
-
-    /////////////////////// Mapper ///////////////////////
-    var mapperIsRunning = false
-
-    fun setMapperRunning(isRunning: Boolean, jsMapperDisplay: JsMapperDisplay) {
-        mapperIsRunning = isRunning
-
-        vizPanels.forEach { panel -> panel.faceMaterial.transparent = !isRunning }
-
-        if (isRunning) {
-            getVizRotationEl().checked = false
-            // rendererListeners.push(jsMapperDisplay)
-        } else {
-            // var i = rendererListeners.indexOf(jsMapperDisplay)
-            // if (i > -1) {
-            //   rendererListeners = rendererListeners.splice(i, 1)
-            // }
-        }
-    }
 
     fun startRender() {
         geom.computeBoundingSphere()

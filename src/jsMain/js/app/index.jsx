@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, {Component, Fragment} from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
 import ShowList from './ShowList';
 import Slider from './Slider';
@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import NavigationTabBar from './components/NavigationTabBar';
 import TabContent from './components/TabContent';
 
-import { TAB_OPTION_SHOW_LIST } from './components/NavigationTabBar/constants';
+import {TAB_OPTION_SHOW_LIST} from './components/NavigationTabBar/constants';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -73,5 +73,5 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-  pubSub: PropTypes.object.required,
+  pubSub: PropTypes.object.isRequired,
 };
