@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">JsMapperDisplay</a><br/>
 <br/>
 <h1>JsMapperDisplay</h1>
-<code><span class="keyword">class </span><span class="identifier">JsMapperDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">JsMapperDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a><span class="symbol">, </span><a href="../-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,61 +17,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">JsMapperDisplay</span><span class="symbol">(</span><span class="identifier" id="baaahs.JsMapperDisplay$<init>(baaahs.DomContainer)/container">container</span><span class="symbol">:</span>&nbsp;<a href="../-dom-container/index.html"><span class="identifier">DomContainer</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="clock.html">clock</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">clock</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="ui-camera.html">uiCamera</a></p>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">uiCamera</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="ui-controls.html">uiControls</a></p>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">uiControls</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="ui-renderer.html">uiRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">uiRenderer</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="ui-scene.html">uiScene</a></p>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">uiScene</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="visible-panels.html">visiblePanels</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">visiblePanels</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="wireframe.html">wireframe</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">wireframe</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="identifier">JsMapperDisplay</span><span class="symbol">(</span><span class="identifier" id="baaahs.JsMapperDisplay$<init>(baaahs.visualizer.Visualizer)/visualizer">visualizer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-visualizer/index.html"><span class="identifier">Visualizer</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -105,6 +51,20 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.JsMapperDisplay$listen(baaahs.MapperDisplay.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-display/-listener/index.html"><span class="identifier">MapperDisplay.Listener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-close.html">onClose</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onClose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="render.html">render</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="baaahs.JsMapperDisplay$render()/parentNode">parentNode</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

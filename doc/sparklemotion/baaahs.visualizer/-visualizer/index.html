@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Visualizer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.visualizer</a>&nbsp;/&nbsp;<a href="./index.html">Visualizer</a><br/>
+<br/>
+<h1>Visualizer</h1>
+<code><span class="keyword">class </span><span class="identifier">Visualizer</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-frame-listener/index.html">FrameListener</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">FrameListener</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-viz-moving-head/index.html">VizMovingHead</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">VizMovingHead</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Visualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.SheepModel)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="mapper-is-running.html">mapperIsRunning</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">mapperIsRunning</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-r-e-f-r-e-s-h_-d-e-l-a-y.html">REFRESH_DELAY</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">REFRESH_DELAY</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="resize-delay.html">resizeDelay</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">resizeDelay</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="rotate.html">rotate</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">rotate</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="total-pixels.html">totalPixels</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">totalPixels</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="add-frame-listener.html">addFrameListener</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="-frame-listener/index.html"><span class="identifier">Visualizer.FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="add-moving-head.html">addMovingHead</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addMovingHead</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.SheepModel.MovingHead, baaahs.sim.FakeDmxUniverse)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-sheep-model/-moving-head/index.html"><span class="identifier">SheepModel.MovingHead</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.SheepModel.MovingHead, baaahs.sim.FakeDmxUniverse)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.sim/-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-viz-moving-head/index.html"><span class="identifier">Visualizer.VizMovingHead</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="add-panel.html">addPanel</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addPanel(baaahs.SheepModel.Panel)/p">p</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-viz-panel/index.html"><span class="identifier">VizPanel</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="do-resize.html">doResize</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">doResize</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$doResize(org.w3c.dom.events.Event)/evt">evt</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html"><span class="identifier">Event</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-mouse-move.html">onMouseMove</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onMouseMove</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$onMouseMove(org.w3c.dom.events.MouseEvent)/event">event</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html"><span class="identifier">MouseEvent</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="on-select-change.html">onSelectChange</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onSelectChange</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$onSelectChange(org.w3c.dom.events.Event)/event">event</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-event/index.html"><span class="identifier">Event</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="remove-frame-listener.html">removeFrameListener</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$removeFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="-frame-listener/index.html"><span class="identifier">Visualizer.FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="render.html">render</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$render(kotlin.Double)/timestamp">timestamp</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="select-panel.html">selectPanel</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">selectPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$selectPanel(baaahs.SheepModel.Panel, kotlin.Boolean)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$selectPanel(baaahs.SheepModel.Panel, kotlin.Boolean)/isSelected">isSelected</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="start-render.html">startRender</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">startRender</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

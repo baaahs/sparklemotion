@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>VizPanel - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.visualizer</a>&nbsp;/&nbsp;<a href="./index.html">VizPanel</a><br/>
+<br/>
+<h1>VizPanel</h1>
+<code><span class="keyword">class </span><span class="identifier">VizPanel</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-point2/index.html">Point2</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Point2</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-swirly-pixel-arranger/index.html">SwirlyPixelArranger</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SwirlyPixelArranger</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-viz-pixels/index.html">VizPixels</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">VizPixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">VizPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel$<init>(baaahs.SheepModel.Panel, , )/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel$<init>(baaahs.SheepModel.Panel, , )/geom">geom</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel$<init>(baaahs.SheepModel.Panel, , )/scene">scene</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="area.html">area</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">area</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="pixel-spacing.html">pixelSpacing</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelSpacing</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="viz-pixels.html">vizPixels</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">vizPixels</span><span class="symbol">: </span><a href="-viz-pixels/index.html"><span class="identifier">VizPanel.VizPixels</span></a><span class="symbol">?</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="is-inside-face.html">isInsideFace</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isInsideFace</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel$isInsideFace(, )/curFace">curFace</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel$isInsideFace(, )/v">v</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="random-location.html">randomLocation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">randomLocation</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel$randomLocation(, kotlin.Array(()))/face">face</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel$randomLocation(, kotlin.Array(()))/vertices">vertices</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-panel-color.html">setPanelColor</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setPanelColor</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel$setPanelColor(baaahs.Color, kotlin.Array((baaahs.Color)))/panelBgColor">panelBgColor</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel$setPanelColor(baaahs.Color, kotlin.Array((baaahs.Color)))/pixelColors">pixelColors</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">&gt;</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="is-inside.html">isInside</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isInside</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel.Companion$isInside(baaahs.visualizer.VizPanel.Point2, kotlin.Array((baaahs.visualizer.VizPanel.Point2)))/point">point</span><span class="symbol">:</span>&nbsp;<a href="-point2/index.html"><span class="identifier">VizPanel.Point2</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPanel.Companion$isInside(baaahs.visualizer.VizPanel.Point2, kotlin.Array((baaahs.visualizer.VizPanel.Point2)))/vs">vs</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-point2/index.html"><span class="identifier">VizPanel.Point2</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="xy.html">xy</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">xy</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPanel.Companion$xy()/v">v</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-point2/index.html"><span class="identifier">VizPanel.Point2</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
