@@ -43,10 +43,11 @@ At the code level, shows acquire inputs and shader outputs during an initializat
 
 Shows are permitted to retain state between frames.
 
-### Acquiring Gadgets
+### Selecting Gadgets
 
-Shows may request input from any of several types of gadgets. Shows may optionally provide a description of the
-gadget's purpose.
+Shows may request input from any of
+[several types of gadgets](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs.gadgets/index.html). Shows
+may optionally provide a description of the gadget's purpose.
 
 ```kotlin
 val primaryColorBuf = showRunner.getGadgetBuffer(SingleColorGadget("Primary Color"))
@@ -71,10 +72,12 @@ fun nextFrame() {
 - geocompass / accelerometer
 
 
-### Acquiring Shaders
+### Selecting Shaders
 
-Shows may specify a shader (or an arrangement of shaders) for each surface. Every type of shader has a corresponding
-`ShaderBuffer` type, used to communicate from shows to shaders.
+Shows may specify a shader (or an composition of shaders) for each surface. Every type of shader has a corresponding
+`ShaderBuffer` type, used to communicate from shows to shaders. Find
+[existing shaders](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs.shaders/index.html) you like, or
+[write your own](#writing-a-shader)!
 
 ```kotlin
 val shaderBuffers = model.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, SolidColorShader()) } 
@@ -105,25 +108,33 @@ val shaderBuffers = sheepModel.allSurfaces.map { surface ->
 Compositing shaders can be arranged recursively, allowing for an arbitrary number of shaders to contribute to a
 rendering pass.
 
-#### Shader Types
+## Models, Geometry, Surfaces, and Moving Heads
 
-## Geometry
+Sparkle Motion currently uses a 3D model of BAAAHS, but in the future it will support arbitrary models.
 
-TBD
+Many shows may not particularly care where in the model any given surface lives. For those that do, you can access
+surfaces via the model, and you'll get additional functionality, e.g. finding surfaces' neighbors. 
+
+More words TBD.
 
 ## Writing a Gadget
 
 Gadgets represent an external data source, often user-controllable.
 
-In code, a gadget extends the `Gadget` class, adding data values and implementing serialization/deserialization methods
-for transferring data between UI and Pinky instances.
+In code, a gadget extends the
+[`Gadget`](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs/-gadget/index.html) class, adding data values
+and implementing serialization/deserialization methods for transferring data between UI instances and Pinky.
 
 ## Writing a Shader
 
 A shader takes configuration data from a show and uses it to render colors to the array of pixels it controls.
 
-In code, a shader comprises three classes: the `Shader` itself (representing its platonic ideal), and a corresponding
-`Shader.Buffer` (holding data transferred from the show to the shader for every frame) and a `Shader.Renderer` (which
+In code, a shader comprises three classes: the
+[`Shader`](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs/-shader/index.html) itself (representing its
+platonic ideal), and a corresponding
+[`Shader.Buffer`](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs/-shader/-buffer/index.html) (holding
+data transferred from the show to the shader for every frame) and a
+[`Shader.Renderer`](https://baaahs.github.io/sparklemotion/doc/sparklemotion/baaahs/-shader/-renderer/index.html) (which
 performs the actual work of rendering pixels on a Brain).
 
 When a show requests a shader, Pinky creates an appropriate buffer and renderer instance on the associated Brain.

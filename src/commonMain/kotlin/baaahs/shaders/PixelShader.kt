@@ -4,6 +4,11 @@ import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
+/**
+ * A shader that allows control of individual pixels' colors directly from a show.
+ *
+ * This is a suboptimal shader for most purposes, consider writing a custom shader instead!
+ */
 class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
 
     override fun createBuffer(surface: Surface): Buffer = Buffer(surface.pixelCount)

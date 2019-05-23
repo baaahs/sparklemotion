@@ -2,7 +2,10 @@ package baaahs
 
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.*
+import baaahs.proto.BrainHelloMessage
+import baaahs.proto.MapperHelloMessage
+import baaahs.proto.Ports
+import baaahs.proto.parse
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -105,14 +108,21 @@ class Pinky(
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> {
-                foundBrain(RemoteBrain(fromAddress, surfacesByName[message.panelName]!!))
+                val surfaceName = message.surfaceName
+                val surface = surfacesByName[surfaceName] ?: unknownSurface()
+                foundBrain(RemoteBrain(fromAddress, surface))
             }
 
             is MapperHelloMessage -> {
                 mapperIsRunning = message.isRunning
             }
         }
+    }
 
+    private fun unknownSurface(): Surface {
+        return object : Surface {
+            override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+        }
     }
 
     private fun foundBrain(remoteBrain: RemoteBrain) {

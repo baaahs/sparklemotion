@@ -15,29 +15,26 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
         )
 
         return object : Show {
-            val shaders =
-                sheepModel.allPanels.associateWith { panel ->
-                    showRunner.getShaderBuffer(panel, PixelShader())
-                }
+            val shaderBuffers = showRunner.allSurfaces.map { surface ->
+                showRunner.getShaderBuffer(surface, PixelShader())
+            }
             val fadeTimeMs = 1000
 
             override fun nextFrame() {
-                sheepModel.allPanels.forEach { panel ->
-                    if (panel.number > -1) {
-                        val now = getTimeMillis().and(0xfffffff).toInt()
-                        val colorIndex = (now / fadeTimeMs + panel.number) % colorArray.size
-                        val startColor = colorArray[colorIndex]
-                        val endColor = colorArray[(colorIndex + 1) % colorArray.size]
+                shaderBuffers.forEachIndexed { i, buffer ->
+                    val now = getTimeMillis().and(0xfffffff).toInt()
+                    val colorIndex = (now / fadeTimeMs + i) % colorArray.size
+                    val startColor = colorArray[colorIndex]
+                    val endColor = colorArray[(colorIndex + 1) % colorArray.size]
 
-                        val colors = shaders[panel]!!.colors
-                        colors.forEachIndexed { index, color ->
-                            if (Random.nextFloat() < .1) {
-                                colors[index] = Color.WHITE
-                            } else {
-                                val tweenedColor =
-                                    startColor.fade(endColor, ((now + index) % fadeTimeMs) / fadeTimeMs.toFloat())
-                                colors[index] = tweenedColor
-                            }
+                    val colors = buffer.colors
+                    colors.forEachIndexed { index, color ->
+                        if (Random.nextFloat() < .1) {
+                            colors[index] = Color.WHITE
+                        } else {
+                            val tweenedColor =
+                                startColor.fade(endColor, ((now + index) % fadeTimeMs) / fadeTimeMs.toFloat())
+                            colors[index] = tweenedColor
                         }
                     }
                 }

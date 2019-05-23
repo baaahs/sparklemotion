@@ -22,35 +22,31 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
-            val compositorShader = CompositorShader(solidShader, sparkleShader)
 
-            val shaders = sheepModel.allPanels.associateWith { panel ->
-                val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-                val sparkleShaderBuffer = showRunner.getShaderBuffer(panel, sparkleShader)
-                val compositorShaderBuffer =
-                    showRunner.getCompositorBuffer(panel, solidShaderBuffer, sparkleShaderBuffer)
+            val shaderBuffers = showRunner.allSurfaces.map { surface ->
+                val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+                val sparkleShaderBuffer = showRunner.getShaderBuffer(surface, sparkleShader)
+                val compositorShaderBuffer = showRunner.getCompositorBuffer(
+                    surface, solidShaderBuffer, sparkleShaderBuffer, CompositingMode.ADD, 1f
+                )
 
                 Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer)
             }
             val fadeTimeMs = 500
 
             override fun nextFrame() {
-                sheepModel.allPanels.forEach { panel ->
-                    if (panel.number > -1) {
-                        val now = getTimeMillis().and(0xfffffff).toInt()
-                        val colorIndex = (now / fadeTimeMs + panel.number) % colorArray.size
-                        val startColor = colorArray[colorIndex]
-                        val endColor = colorArray[(colorIndex + 1) % colorArray.size]
-                        val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
+                shaderBuffers.forEachIndexed() { number, bufs ->
+                    val now = getTimeMillis().and(0xfffffff).toInt()
+                    val colorIndex = (now / fadeTimeMs + number) % colorArray.size
+                    val startColor = colorArray[colorIndex]
+                    val endColor = colorArray[(colorIndex + 1) % colorArray.size]
+                    val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
 
-                        val shaderSet = shaders[panel]!!
-                        shaderSet.solidShader.color = tweenedColor
+                    bufs.apply {
+                        solidShader.color = tweenedColor
 
-                        shaderSet.sparkleShader.color = Color.WHITE
-                        shaderSet.sparkleShader.sparkliness = slider.value
-
-                        shaderSet.compositorShader.mode = CompositingMode.ADD
-                        shaderSet.compositorShader.fade = 1f
+                        sparkleShader.color = Color.WHITE
+                        sparkleShader.sparkliness = slider.value
                     }
                 }
             }
@@ -63,6 +59,6 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         val compositorShader: CompositorShader.Buffer
     )
 
-    val SheepModel.Panel.number : Int
+    val SheepModel.Panel.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 }

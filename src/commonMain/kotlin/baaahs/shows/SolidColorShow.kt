@@ -1,6 +1,9 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Color
+import baaahs.SheepModel
+import baaahs.Show
+import baaahs.ShowRunner
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.SolidShader
 
@@ -9,11 +12,11 @@ object SolidColorShow : Show.MetaData("Solid Color") {
         val colorPicker = showRunner.getGadget(ColorPicker("Color"))
 
         val shader = SolidShader()
-        val shaderBuffers = sheepModel.allPanels.map {
+        val shaderBuffers = showRunner.allSurfaces.map {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
-        return object: Show {
+        return object : Show {
             var priorColor = colorPicker.color
 
             override fun nextFrame() {
