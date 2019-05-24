@@ -8,6 +8,7 @@ import NavigationTabBar from './components/NavigationTabBar';
 import TabContent from './components/TabContent';
 
 import {TAB_OPTION_SHOW_LIST} from './components/NavigationTabBar/constants';
+import styles from './app.scss';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -58,17 +59,21 @@ export default class App extends Component {
         <TabContent selectedTab={selectedTab} />
         {gadgets.map((gadgetInfo) => {
           const { gadget, topicName } = gadgetInfo;
-          if (gadget instanceof baaahs.gadgets.ColorPicker) {
-            return <ColorPicker key={topicName} gadget={gadget} />;
-          } else if (gadget instanceof baaahs.gadgets.Slider) {
-            return <Slider key={topicName} gadget={gadget} />;
-          } else {
-            return <div />;
-          }
+          return <div key={topicName} className={styles['gadget-view']}>{this.createGadgetView(gadget)}</div>;
         })}
         <ShowList pubSub={this.props.pubSub} />
       </Fragment>
     );
+  }
+
+  createGadgetView = (gadget) => {
+    if (gadget instanceof baaahs.gadgets.ColorPicker) {
+      return <ColorPicker gadget={gadget}/>;
+    } else if (gadget instanceof baaahs.gadgets.Slider) {
+      return <Slider gadget={gadget}/>;
+    } else {
+      return <div/>;
+    }
   }
 }
 
