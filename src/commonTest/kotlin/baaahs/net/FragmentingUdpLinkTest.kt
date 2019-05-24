@@ -45,6 +45,16 @@ class FragmentingUdpLinkTest {
         expect(5) { recvTestLink.receviedPackets.size }
     }
 
+    @Test
+    fun shouldFragmentAndReassemblePayloadsLargerThan64k() {
+        val mediumPayload = Random.nextBytes(100_000)
+        send(mediumPayload)
+
+        expect(1) { receivedPayloads.size }
+        expect(mediumPayload.toList()) { receivedPayloads.first().toList() }
+        expect(73) { recvTestLink.receviedPackets.size }
+    }
+
     /////////////////////////
 
     private fun send(smallPayload: ByteArray) {
