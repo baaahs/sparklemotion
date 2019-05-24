@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.db.IndexedDbFacade
+import baaahs.db.Persistence
+import baaahs.db.Storage
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
@@ -11,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.browser.document
+import kotlin.browser.window
 
 class SheepSimulator {
     private val display = JsDisplay()
@@ -18,11 +22,17 @@ class SheepSimulator {
     private val dmxUniverse = FakeDmxUniverse()
     private val sheepModel = SheepModel().apply { load() }
     private val showMetas = AllShows.allShows
+    private val persistence = Persistence(IndexedDbFacade(window.indexedDB()))
+    private val storage = Storage(persistence)
     private val visualizer = Visualizer(sheepModel)
     private val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
+
+        storage.simulatorPixels.transaction { store ->
+            store.put()
+        }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
