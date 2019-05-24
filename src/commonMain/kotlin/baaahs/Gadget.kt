@@ -73,7 +73,7 @@ class GadgetData(@Polymorphic val gadget: Gadget, val topicName: String)
 
 class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>) -> Unit) {
     val activeGadgets = mutableListOf<GadgetData>()
-    val channels = hashMapOf<String, PubSub.Observer<String>>()
+    val channels = hashMapOf<String, PubSub.Channel<String>>()
     val jsonParser = Json(JsonConfiguration.Stable)
 
     init {
