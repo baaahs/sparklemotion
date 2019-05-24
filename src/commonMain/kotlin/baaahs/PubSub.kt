@@ -26,7 +26,7 @@ abstract class PubSub {
 
     open class Origin
 
-    interface Observer<T> {
+    interface Channel<T> {
         @JsName("onChange")
         fun onChange(t: T)
 
@@ -157,7 +157,7 @@ abstract class PubSub {
             return Connection("server", topics)
         }
 
-        fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Observer<T> {
+        fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
             val publisher = Origin()
             val topicName = topic.name
             val jsonData = json.stringify(topic.serializer, data)
@@ -167,7 +167,7 @@ abstract class PubSub {
             })
             topicInfo.notify(jsonData, publisher)
 
-            return object : Observer<T> {
+            return object : Channel<T> {
                 override fun onChange(t: T) {
                     topicInfo.notify(json.stringify(topic.serializer, t), publisher)
                 }
@@ -188,7 +188,7 @@ abstract class PubSub {
         }
 
         @JsName("subscribe")
-        fun <T> subscribe(topic: Topic<T>, onUpdate: (T) -> Unit): Observer<T> {
+        fun <T> subscribe(topic: Topic<T>, onUpdate: (T) -> Unit): Channel<T> {
             val subscriber = Origin()
 
             val topicName = topic.name
@@ -211,7 +211,7 @@ abstract class PubSub {
                 listener.onUpdate(data)
             }
 
-            return object : Observer<T> {
+            return object : Channel<T> {
                 override fun onChange(t: T) {
                     val jsonData = json.stringify(topic.serializer, t)
                     topicInfo.notify(jsonData, subscriber)

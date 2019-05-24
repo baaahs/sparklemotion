@@ -36,5 +36,5 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         activeGadgetChannel.onChange(activeGadgets)
     }
 
-    class GadgetChannel(val topic: PubSub.Topic<String>, val channel: PubSub.Observer<String>)
+    class GadgetChannel(val topic: PubSub.Topic<String>, val channel: PubSub.Channel<String>)
 }
