@@ -4803,10 +4803,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function FragmentingUdpLink(link) {
     this.link_0 = link;
-    this.mtu = this.link_0.udpMtu;
-    this.headerSize = 8;
-    this.nextMessageId = 0;
-    this.fragments = ArrayList_init();
+    this.mtu_0 = this.link_0.udpMtu;
+    this.headerSize_0 = 12;
+    this.nextMessageId_0 = 0;
+    this.fragments_0 = ArrayList_init();
   }
   Object.defineProperty(FragmentingUdpLink.prototype, 'myAddress', {
     get: function () {
@@ -4818,9 +4818,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return this.link_0.udpMtu;
     }
   });
-  function FragmentingUdpLink$Fragment(messageId, totalSize, offset, bytes) {
+  function FragmentingUdpLink$Fragment(messageId, offset, bytes) {
     this.messageId = messageId;
-    this.totalSize = totalSize;
     this.offset = offset;
     this.bytes = bytes;
   }
@@ -4828,35 +4827,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_CLASS,
     simpleName: 'Fragment',
     interfaces: []
-  };
-  FragmentingUdpLink$Fragment.prototype.component1 = function () {
-    return this.messageId;
-  };
-  FragmentingUdpLink$Fragment.prototype.component2 = function () {
-    return this.totalSize;
-  };
-  FragmentingUdpLink$Fragment.prototype.component3 = function () {
-    return this.offset;
-  };
-  FragmentingUdpLink$Fragment.prototype.component4 = function () {
-    return this.bytes;
-  };
-  FragmentingUdpLink$Fragment.prototype.copy_sctihr$ = function (messageId, totalSize, offset, bytes) {
-    return new FragmentingUdpLink$Fragment(messageId === void 0 ? this.messageId : messageId, totalSize === void 0 ? this.totalSize : totalSize, offset === void 0 ? this.offset : offset, bytes === void 0 ? this.bytes : bytes);
-  };
-  FragmentingUdpLink$Fragment.prototype.toString = function () {
-    return 'Fragment(messageId=' + Kotlin.toString(this.messageId) + (', totalSize=' + Kotlin.toString(this.totalSize)) + (', offset=' + Kotlin.toString(this.offset)) + (', bytes=' + Kotlin.toString(this.bytes)) + ')';
-  };
-  FragmentingUdpLink$Fragment.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.messageId) | 0;
-    result = result * 31 + Kotlin.hashCode(this.totalSize) | 0;
-    result = result * 31 + Kotlin.hashCode(this.offset) | 0;
-    result = result * 31 + Kotlin.hashCode(this.bytes) | 0;
-    return result;
-  };
-  FragmentingUdpLink$Fragment.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.messageId, other.messageId) && Kotlin.equals(this.totalSize, other.totalSize) && Kotlin.equals(this.offset, other.offset) && Kotlin.equals(this.bytes, other.bytes)))));
   };
   function FragmentingUdpLink$listenUdp$ObjectLiteral(closure$udpListener, this$FragmentingUdpLink) {
     this.closure$udpListener = closure$udpListener;
@@ -4873,20 +4843,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
     var reader = new ByteArrayReader(bytes);
     var messageId = reader.readShort();
-    var totalSize = reader.readShort();
-    var offset = reader.readShort();
     var size = reader.readShort();
+    var totalSize = reader.readInt();
+    var offset = reader.readInt();
     var frameBytes = reader.readNBytes_za3lpa$(size);
     if (offset === 0 && size === totalSize) {
       this.closure$udpListener.receive_rq4egf$(fromAddress, frameBytes);
     }
      else {
-      var thisFragment = new FragmentingUdpLink$Fragment(messageId, totalSize, offset, frameBytes);
-      this.this$FragmentingUdpLink.fragments.add_11rb$(thisFragment);
+      var thisFragment = new FragmentingUdpLink$Fragment(messageId, offset, frameBytes);
+      this.this$FragmentingUdpLink.fragments_0.add_11rb$(thisFragment);
       if (offset + size === totalSize) {
         var myFragments = ArrayList_init();
-        removeAll(this.this$FragmentingUdpLink.fragments, FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(messageId, myFragments));
-        this.this$FragmentingUdpLink.fragments.isEmpty();
+        removeAll(this.this$FragmentingUdpLink.fragments_0, FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(messageId, myFragments));
+        this.this$FragmentingUdpLink.fragments_0.isEmpty();
         var destination = ArrayList_init_0(collectionSizeOrDefault(myFragments, 10));
         var tmp$;
         tmp$ = myFragments.iterator();
@@ -4953,19 +4923,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     if (bytes.length > 65535) {
       IllegalArgumentException_init('buffer too big! ' + bytes.length + ' must be < 65536');
     }
-    var messageId = (tmp$ = this.nextMessageId, this.nextMessageId = toShort(tmp$ + 1), tmp$);
-    var messageCount = ((bytes.length - 1 | 0) / (this.mtu - this.headerSize | 0) | 0) + 1 | 0;
-    var buf = new Int8Array(this.mtu);
+    var messageId = (tmp$ = this.nextMessageId_0, this.nextMessageId_0 = toShort(tmp$ + 1), tmp$);
+    var messageCount = ((bytes.length - 1 | 0) / (this.mtu_0 - this.headerSize_0 | 0) | 0) + 1 | 0;
+    var buf = new Int8Array(this.mtu_0);
     var offset = 0;
     for (var i = 0; i < messageCount; i++) {
       var writer = new ByteArrayWriter(buf);
-      var a = this.mtu - this.headerSize | 0;
+      var a = this.mtu_0 - this.headerSize_0 | 0;
       var b = bytes.length - offset | 0;
       var thisFrameSize = Math_0.min(a, b);
       writer.writeShort_mq22fl$(messageId);
-      writer.writeShort_mq22fl$(toShort(bytes.length));
-      writer.writeShort_mq22fl$(toShort(offset));
       writer.writeShort_mq22fl$(toShort(thisFrameSize));
+      writer.writeInt_za3lpa$(bytes.length);
+      writer.writeInt_za3lpa$(offset);
       writer.writeNBytes_mj6st8$(bytes, offset, offset + thisFrameSize | 0);
       fn(writer.toBytes());
       offset = offset + thisFrameSize | 0;
