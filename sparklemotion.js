@@ -2887,11 +2887,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Origin',
     interfaces: []
   };
-  function PubSub$Observer() {
+  function PubSub$Channel() {
   }
-  PubSub$Observer.$metadata$ = {
+  PubSub$Channel.$metadata$ = {
     kind: Kind_INTERFACE,
-    simpleName: 'Observer',
+    simpleName: 'Channel',
     interfaces: []
   };
   function PubSub$Topic(name, serializer) {
@@ -3107,7 +3107,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   PubSub$Server$publish$ObjectLiteral_0.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [PubSub$Observer]
+    interfaces: [PubSub$Channel]
   };
   PubSub$Server.prototype.publish_oiz02e$ = function (topic, data, onUpdate) {
     var publisher = new PubSub$Origin();
@@ -3179,7 +3179,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   PubSub$Client$subscribe$ObjectLiteral_0.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [PubSub$Observer]
+    interfaces: [PubSub$Channel]
   };
   PubSub$Client.prototype.subscribe = function (topic, onUpdate) {
     var subscriber = new PubSub$Origin();
@@ -9747,7 +9747,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: PubSub$Companion_getInstance
   });
   PubSub.Origin = PubSub$Origin;
-  PubSub.Observer = PubSub$Observer;
+  PubSub.Channel = PubSub$Channel;
   PubSub.Topic = PubSub$Topic;
   PubSub.Listener = PubSub$Listener;
   PubSub.TopicInfo = PubSub$TopicInfo;
