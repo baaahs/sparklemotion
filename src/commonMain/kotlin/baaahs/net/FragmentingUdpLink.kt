@@ -10,20 +10,20 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
     override val udpMtu: Int get() = link.udpMtu
 
     /**
-     * Header format is:
+     * Header is 12 bytes long; format is:
      * * message ID (short)
-     * * total payload size (short)
-     * * this frame offset (short)
      * * this frame size (short)
+     * * total payload size (long)
+     * * this frame offset (long)
      */
 
-    val mtu = link.udpMtu
-    val headerSize = 8
-    var nextMessageId: Short = 0
+    private val mtu = link.udpMtu
+    private val headerSize = 12
+    private var nextMessageId: Short = 0
 
-    var fragments = arrayListOf<Fragment>()
+    private var fragments = arrayListOf<Fragment>()
 
-    data class Fragment(val messageId: Short, val totalSize: Short, val offset: Short, val bytes: ByteArray)
+    class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray)
 
     override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
         link.listenUdp(port, object : Network.UdpListener {
@@ -31,18 +31,18 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
                 // reassemble fragmented payloads...
                 val reader = ByteArrayReader(bytes)
                 val messageId = reader.readShort()
-                val totalSize = reader.readShort()
-                val offset = reader.readShort()
                 val size = reader.readShort()
+                val totalSize = reader.readInt()
+                val offset = reader.readInt()
                 val frameBytes = reader.readNBytes(size.toInt())
-                if (offset.toInt() == 0 && size == totalSize) {
+                if (offset == 0 && size.toInt() == totalSize) {
                     udpListener.receive(fromAddress, frameBytes)
                 } else {
-                    val thisFragment = Fragment(messageId, totalSize, offset, frameBytes)
+                    val thisFragment = Fragment(messageId, offset, frameBytes)
                     fragments.add(thisFragment)
 
 //                        println("received fragment: ${thisFragment}")
-                    if (offset + size == totalSize.toInt()) {
+                    if (offset + size == totalSize) {
                         // final fragment, try to reassemble…
 
                         val myFragments = arrayListOf<Fragment>()
@@ -57,13 +57,13 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
                         }
 
                         val actualTotalSize = myFragments.map { it.bytes.size }.reduce { acc, i -> acc + i }
-                        if (actualTotalSize != totalSize.toInt()) {
+                        if (actualTotalSize != totalSize) {
                             IllegalArgumentException("can't reassemble packet, $actualTotalSize != $totalSize for $messageId")
                         }
 
-                        val reassembleBytes = ByteArray(totalSize.toInt())
+                        val reassembleBytes = ByteArray(totalSize)
                         myFragments.forEach {
-                            it.bytes.copyInto(reassembleBytes, it.offset.toInt())
+                            it.bytes.copyInto(reassembleBytes, it.offset)
                         }
 
                         udpListener.receive(fromAddress, reassembleBytes)
@@ -104,9 +104,9 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
             val writer = ByteArrayWriter(buf)
             val thisFrameSize = min((mtu - headerSize), bytes.size - offset)
             writer.writeShort(messageId)
-            writer.writeShort(bytes.size.toShort())
-            writer.writeShort(offset.toShort())
             writer.writeShort(thisFrameSize.toShort())
+            writer.writeInt(bytes.size)
+            writer.writeInt(offset)
             writer.writeNBytes(bytes, offset, offset + thisFrameSize)
             fn(writer.toBytes())
 
