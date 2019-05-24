@@ -30,7 +30,6 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.math.PI
 import kotlin.math.cos
-import kotlin.math.floor
 import kotlin.math.sin
 
 class Visualizer(sheepModel: SheepModel) {
@@ -77,7 +76,7 @@ class Visualizer(sheepModel: SheepModel) {
     private var select = document.getElementById("panelSelect")!! as HTMLSelectElement
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
 
-    private val pixelDensity = 0.2
+    private val pixelDensity = 0.2f
 
     private val omitPanels = arrayOf(
         "60R", "60L", // ears
@@ -189,15 +188,16 @@ class Visualizer(sheepModel: SheepModel) {
         val vizPanel = VizPanel(p, geom, scene)
         vizPanels.add(vizPanel)
 
-        var pixelCount = floor(vizPanel.area * pixelDensity).toInt()
         // console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels")
 
         // try to draw pixel-ish things...
         if (renderPixels) {
-            vizPanel.vizPixels = vizPanel.SwirlyPixelArranger().arrangePixels(pixelCount)
+            val pixelArranger = SwirlyPixelArranger(pixelDensity, 2)
+            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
+            vizPanel.vizPixels = VizPanel.VizPixels(pixelPositions)
+            totalPixels += pixelPositions.size
         }
 
-        totalPixels += pixelCount
         document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
         select.options[select.options.length] = Option(p.name, (vizPanels.size - 1).toString())

@@ -18,11 +18,12 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 fun main(args: Array<String>) {
-    val brain = Brain(JvmNetwork(notReallyAnHttpServer()), object: BrainDisplay {
+    val network = JvmNetwork(notReallyAnHttpServer())
+    val brain = Brain(JvmNetwork.myAddress.toString(), network, object: BrainDisplay {
         override fun haveLink(link: Network.Link) {
             println("Brain has a link!")
         }
-    }, JvmPixelsDisplay(2000), SheepModel.Panel("21L"))
+    }, JvmPixelsDisplay(2000))
 
     GlobalScope.launch { brain.run() }
 
@@ -54,7 +55,7 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
 
                     val pixWidth = width / pixelsPerCol
                     val pixHeight = height / pixelsPerRow
-                    val pixGap = if (pixWidth > 3) { 2 } else if (pixWidth > 1) { 1 } else { 0 }
+                    val pixGap = if (pixWidth > 3) 2 else if (pixWidth > 1) 1 else 0
 
                     val color = colors[i]
                     bufG.color = java.awt.Color(color.rgb)

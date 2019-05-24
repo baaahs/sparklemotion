@@ -36,6 +36,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return buf.toString()
     }
 
+    fun readNullableString(): String? = if (readBoolean()) readString() else null
+
     fun readBytes(): ByteArray {
         val count = readInt()
         return readNBytes(count)

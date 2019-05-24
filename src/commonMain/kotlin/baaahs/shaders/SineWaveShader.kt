@@ -14,7 +14,7 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
+    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
 
     companion object {
         fun parse(reader: ByteArrayReader) = SineWaveShader()

@@ -6,7 +6,6 @@ import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -55,6 +54,7 @@ class GadgetTest {
 
         var clientGadgets = listOf<Gadget>()
         GadgetDisplay(pubSubClient) { gadgets -> clientGadgets = gadgets.map { it.gadget }.toMutableList() }
+        gadgetProvider.sync()
         testCoroutineContext.runAll()
 
         expect(1) { clientGadgets.size }

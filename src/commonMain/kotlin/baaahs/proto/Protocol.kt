@@ -19,6 +19,7 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_ID_RESPONSE,
+    BRAIN_MAPPING,
     PINKY_PONG;
 
     companion object {
@@ -35,21 +36,24 @@ fun parse(bytes: ByteArray): Message {
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_ID_RESPONSE -> BrainIdResponse.parse(reader)
+        Type.BRAIN_MAPPING -> BrainMapping.parse(reader)
         Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
     }
 }
 
-class BrainHelloMessage(val surfaceName: String?) : Message(Type.BRAIN_HELLO) {
+class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message(Type.BRAIN_HELLO) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainHelloMessage {
-            val surfaceName = if (reader.readBoolean()) reader.readString() else null
-            return BrainHelloMessage(surfaceName)
+            return BrainHelloMessage(
+                reader.readString(),
+                reader.readNullableString()
+            )
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeBoolean(surfaceName != null)
-        surfaceName?.let { writer.writeString(it) }
+        writer.writeString(brainId)
+        writer.writeNullableString(surfaceName)
     }
 }
 
@@ -94,14 +98,54 @@ class BrainIdRequest(val port: Int) : Message(Type.BRAIN_ID_REQUEST) {
     }
 }
 
-class BrainIdResponse(val name: String) : Message(Type.BRAIN_ID_RESPONSE) {
+class BrainIdResponse(val id: String, val surfaceName: String?) : Message(Type.BRAIN_ID_RESPONSE) {
     companion object {
-        fun parse(reader: ByteArrayReader) = BrainIdResponse(reader.readString())
+        fun parse(reader: ByteArrayReader) = BrainIdResponse(reader.readString(), reader.readNullableString())
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeString(name)
+        writer.writeString(id)
+        writer.writeNullableString(surfaceName)
     }
+}
+
+class BrainMapping(
+    val brainId: String,
+    val surfaceName: String?,
+    val pixelCount: Int,
+    val pixelVertices: List<Vector2F>
+) : Message(Type.BRAIN_MAPPING) {
+    companion object {
+        fun ByteArrayReader.readListOfVertices(): List<Vector2F> {
+            val vertexCount = readInt()
+            return (0 until vertexCount).map { Vector2F(readFloat(), readFloat()) }
+        }
+
+        fun parse(reader: ByteArrayReader) = BrainMapping(
+            reader.readString(),
+            reader.readNullableString(),
+            reader.readInt(),
+            reader.readListOfVertices()
+        )
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeString(brainId)
+        writer.writeNullableString(surfaceName)
+        writer.writeInt(pixelCount)
+
+        val vertexCount = pixelVertices.size
+        writer.writeInt(vertexCount)
+        pixelVertices.forEach { v ->
+            writer.writeFloat(v.x)
+            writer.writeFloat(v.y)
+        }
+    }
+}
+
+class Vector2F(val x: Float, val y: Float) {
+    operator fun component1() = x
+    operator fun component2() = y
 }
 
 class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {

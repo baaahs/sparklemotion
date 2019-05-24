@@ -13,7 +13,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
 
     override fun createBuffer(surface: Surface): Buffer = Buffer(surface.pixelCount)
 
-    override fun createRenderer(pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
+    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
 
     override fun readBuffer(reader: ByteArrayReader): Buffer {
         val incomingColorCount = reader.readInt()
