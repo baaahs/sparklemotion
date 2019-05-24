@@ -18,8 +18,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         bShader.serialize(writer)
     }
 
-    override fun createRenderer(pixels: Pixels): Shader.Renderer<Buffer> =
-        Renderer(aShader, bShader, pixels)
+    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> =
+        Renderer(surface, pixels, aShader, bShader)
 
     override fun readBuffer(reader: ByteArrayReader): Buffer =
         Buffer(
@@ -63,15 +63,16 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     }
 
     class Renderer<A : Shader.Buffer, B : Shader.Buffer>(
+        surface: Surface,
+        val pixels: Pixels,
         aShader: Shader<A>,
-        bShader: Shader<B>,
-        val pixels: Pixels
+        bShader: Shader<B>
     ) : Shader.Renderer<Buffer> {
         private val colors = Array(pixels.count) { Color.WHITE }
         private val aPixels = PixelBuf(pixels.count)
         private val bPixels = PixelBuf(pixels.count)
-        private val rendererA: Shader.Renderer<A> = aShader.createRenderer(aPixels)
-        private val rendererB: Shader.Renderer<B> = bShader.createRenderer(bPixels)
+        private val rendererA: Shader.Renderer<A> = aShader.createRenderer(surface, aPixels)
+        private val rendererB: Shader.Renderer<B> = bShader.createRenderer(surface, bPixels)
 
         @Suppress("UNCHECKED_CAST")
         override fun draw(buffer: Buffer) {
