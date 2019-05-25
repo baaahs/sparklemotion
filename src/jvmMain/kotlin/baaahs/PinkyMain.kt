@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.DmxDevice
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
@@ -41,8 +42,20 @@ fun main(args: Array<String>) {
         masking = false
     }
 
+    val dmxDevices = DmxDevice.listDevices()
+    val dmxUniverse = if (dmxDevices.isEmpty()) {
+        logger.warn("No DMX USB devices found, DMX will be disabled.")
+        FakeDmxUniverse()
+    } else {
+        if (dmxDevices.size > 1) {
+            logger.warn("Multiple DMX USB devices found, using ${dmxDevices.first()}.")
+        }
+
+        dmxDevices.first()
+    }
+
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(), object : StubPinkyDisplay() {
+        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), dmxUniverse, object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }
