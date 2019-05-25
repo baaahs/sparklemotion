@@ -41,6 +41,13 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
+    fun writeNullableString(s: String?) {
+        writeBoolean(s != null)
+        if (s != null) {
+            writeString(s)
+        }
+    }
+
     fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 

@@ -10,7 +10,8 @@ class AllShows {
             ThumpShow,
             PanelTweenShow,
             PixelTweenShow,
-            LifeyShow
+            LifeyShow,
+            SimpleSpatialShow
         )
     }
 }

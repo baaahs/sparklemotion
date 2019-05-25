@@ -24,7 +24,6 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         gadgets[gadget] = GadgetChannel(topic, channel)
 
         activeGadgets.add(GadgetData(gadget, topic.name))
-        activeGadgetChannel.onChange(activeGadgets)
 
         return gadget
     }
@@ -33,6 +32,9 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         gadgets.values.forEach { gadgetChannel -> gadgetChannel.channel.unsubscribe() }
         gadgets.clear()
         activeGadgets.clear()
+    }
+
+    fun sync() {
         activeGadgetChannel.onChange(activeGadgets)
     }
 
