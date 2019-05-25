@@ -31,7 +31,7 @@ class SheepSimulator {
                 install(gadgetModule)
             }
             document.asDynamic().createUiApp(pubSub)
-        }
+        }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
             val mapperDisplay = JsMapperDisplay(visualizer)
