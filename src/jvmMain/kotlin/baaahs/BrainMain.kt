@@ -7,10 +7,8 @@ import io.ktor.server.engine.ApplicationEngineEnvironment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.awt.Canvas
-import java.awt.Dimension
-import java.awt.Frame
-import java.awt.Graphics
+import java.awt.*
+import java.awt.event.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.min
@@ -19,11 +17,15 @@ import kotlin.math.sqrt
 
 fun main(args: Array<String>) {
     val network = JvmNetwork(notReallyAnHttpServer())
+    val display = JvmPixelsDisplay(2000)
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object: BrainDisplay {
         override fun haveLink(link: Network.Link) {
             println("Brain has a link!")
         }
-    }, JvmPixelsDisplay(2000))
+    }, display)
+    brain.addSurfaceListener {
+        display.surface = it
+    }
 
     GlobalScope.launch { brain.run() }
 
@@ -33,6 +35,8 @@ fun main(args: Array<String>) {
 }
 
 class JvmPixelsDisplay(pixelCount: Int) : Pixels {
+    var surface: Surface? = null
+
     override val count = pixelCount
     private val colors = Array(count) { Color.BLACK }
     private val pixelsPerRow = ceil(sqrt(count.toFloat())).roundToInt()
@@ -49,23 +53,53 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
                 bufG.color = java.awt.Color.BLACK
                 bufG.clearRect(0, 0, width, height)
 
-                for (i in 0 until count) {
-                    val row = i % pixelsPerRow
-                    val col = i / pixelsPerRow
 
-                    val pixWidth = width / pixelsPerCol
-                    val pixHeight = height / pixelsPerRow
-                    val pixGap = if (pixWidth > 3) 2 else if (pixWidth > 1) 1 else 0
-
-                    val color = colors[i]
-                    bufG.color = java.awt.Color(color.rgb)
-
-                    bufG.fillRect(col * pixWidth, row * pixHeight,
-                        pixWidth - pixGap, pixHeight - pixGap)
+                val curSurface = surface
+                if (curSurface != null && curSurface is Brain.MappedSurface && curSurface.pixelVertices != null) {
+                    renderWithSpatialData(bufG, width, height, curSurface)
+                } else {
+                    renderWithoutSpatialData(bufG, width, height)
                 }
 
                 g.drawImage(doubleBuffer, 0, 0, this@PanelCanvas)
             }
+        }
+    }
+
+    private fun renderWithSpatialData(bufG: Graphics, width: Int, height: Int, surface: Brain.MappedSurface) {
+        for (i in 0 until count) {
+            val (pixX, pixY) = surface.pixelVertices!![i]
+
+            val pixWidth = width / pixelsPerCol
+            val pixHeight = height / pixelsPerRow
+            val pixGap = if (pixWidth > 3) 2 else if (pixWidth > 1) 1 else 0
+
+            val color = colors[i]
+            bufG.color = java.awt.Color(color.rgb)
+
+            bufG.fillRect(
+                (pixX * width - pixWidth / 2).toInt(), (pixY * pixHeight - pixHeight / 2).toInt(),
+                pixWidth - pixGap, pixHeight - pixGap
+            )
+        }
+    }
+
+    private fun renderWithoutSpatialData(bufG: Graphics, width: Int, height: Int) {
+        for (i in 0 until count) {
+            val row = i % pixelsPerRow
+            val col = i / pixelsPerRow
+
+            val pixWidth = width / pixelsPerCol
+            val pixHeight = height / pixelsPerRow
+            val pixGap = if (pixWidth > 3) 2 else if (pixWidth > 1) 1 else 0
+
+            val color = colors[i]
+            bufG.color = java.awt.Color(color.rgb)
+
+            bufG.fillRect(
+                col * pixWidth, row * pixHeight,
+                pixWidth - pixGap, pixHeight - pixGap
+            )
         }
     }
 
@@ -78,6 +112,11 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
         frame.add(canvas)
         frame.pack()
         frame.invalidate()
+        frame.addWindowListener(object: WindowAdapter() {
+            override fun windowClosing(e: WindowEvent?) {
+                System.exit(0)
+            }
+        })
     }
 
     override fun set(colors: Array<Color>) {

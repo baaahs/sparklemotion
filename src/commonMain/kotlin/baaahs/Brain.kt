@@ -16,8 +16,10 @@ class Brain(
     private var lastInstructionsReceivedAtMs: Long = 0
     private var surfaceName : String? = null
     private var surface : Surface = UnmappedSurface()
+        set(value) { field = value; surfaceListeners.forEach { it(value) } }
     private var currentShaderDesc: ByteArray? = null
     private var currentShaderBits: ShaderBits<*>? = null
+    private val surfaceListeners = mutableListOf<(Surface) -> Unit>()
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
@@ -92,6 +94,8 @@ class Brain(
             }
         }
     }
+
+    fun addSurfaceListener(fn: (Surface) -> Unit) { surfaceListeners.add(fn) }
 
     class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
