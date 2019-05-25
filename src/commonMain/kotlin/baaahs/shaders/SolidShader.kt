@@ -12,7 +12,7 @@ class SolidShader() : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(pixels: Pixels): Renderer = Renderer(pixels)
+    override fun createRenderer(surface: Surface, pixels: Pixels): Renderer = Renderer(pixels)
 
     companion object {
         fun parse(reader: ByteArrayReader) = SolidShader()

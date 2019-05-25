@@ -9,7 +9,8 @@ enum class ShaderId(val parser: (reader: ByteArrayReader) -> Shader<*>) {
     PIXEL({ reader -> PixelShader.parse(reader) }),
     SINE_WAVE({ reader -> SineWaveShader.parse(reader) }),
     COMPOSITOR({ reader -> CompositorShader.parse(reader) }),
-    SPARKLE({ reader -> SparkleShader.parse(reader) });
+    SPARKLE({ reader -> SparkleShader.parse(reader) }),
+    SIMPLE_SPATIAL({ reader -> SimpleSpatialShader.parse(reader) });
 
     companion object {
         val values = values()
@@ -27,7 +28,7 @@ interface Surface {
 }
 
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
-    abstract fun createRenderer(pixels: Pixels): Renderer<B>
+    abstract fun createRenderer(surface: Surface, pixels: Pixels): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
 

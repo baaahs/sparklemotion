@@ -42,15 +42,25 @@ class SheepSimulator {
             mapperDisplay
         }
 
-        sheepModel.panels.forEach { panel ->
+        sheepModel.panels.sortedBy(SheepModel.Panel::name).forEachIndexed { index, panel ->
             val jsPanel = visualizer.addPanel(panel)
-            val brain = Brain(network, display.forBrain(), jsPanel.vizPixels ?: NullPixels, panel)
+
+            val pixelLocations = jsPanel.getPixelLocations()!!
+            pinky.providePixelMapping(panel, pixelLocations)
+
+            val brain = Brain("brain//$index", network, display.forBrain(),  jsPanel.vizPixels ?: NullPixels)
+            pinky.providePanelMapping(brain.id, panel)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
+
+        pinkyScope.launch { pinky.run() }
 
         sheepModel.eyes.forEach { eye ->
             visualizer.addMovingHead(eye, dmxUniverse)
         }
+
+//        val users = storage.users.transaction { store -> store.getAll() }
+//        println("users = ${users}")
 
         doRunBlocking {
             delay(200000L)

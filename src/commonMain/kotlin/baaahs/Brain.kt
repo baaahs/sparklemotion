@@ -7,20 +7,17 @@ import baaahs.proto.*
 import kotlinx.coroutines.delay
 
 class Brain(
+    val id: String,
     private val network: Network,
     private val display: BrainDisplay,
-    private val pixels: Pixels,
-    private val illicitPanelHint: SheepModel.Panel
+    private val pixels: Pixels
 ) : Network.UdpListener {
     private lateinit var link: Network.Link
-    private var receivingInstructions: Boolean = false
-    private val surface = NotReallyASurface()
+    private var lastInstructionsReceivedAtMs: Long = 0
+    private var surfaceName : String? = null
+    private var surface : Surface = UnmappedSurface()
     private var currentShaderDesc: ByteArray? = null
     private var currentShaderBits: ShaderBits<*>? = null
-
-    inner class NotReallyASurface : Surface {
-        override val pixelCount: Int = SparkleMotion.DEFAULT_PIXEL_COUNT
-    }
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
@@ -32,20 +29,18 @@ class Brain(
 
     private suspend fun sendHello() {
         while (true) {
-            if (!receivingInstructions) {
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(illicitPanelHint.name))
+            if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
-            delay(60000)
+            delay(5000)
         }
     }
 
-    class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
-        fun read(reader: ByteArrayReader) = buffer.read(reader)
-        fun draw() = renderer.draw(buffer)
-    }
-
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+        val now = getTimeMillis()
+        lastInstructionsReceivedAtMs = now
+
         val reader = ByteArrayReader(bytes)
 
         // Inline message parsing here so we can optimize stuff.
@@ -63,7 +58,7 @@ class Brain(
                     val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
                     currentShaderBits = ShaderBits(
                         shader,
-                        shader.createRenderer(pixels),
+                        shader.createRenderer(surface, pixels),
                         shader.createBuffer(surface)
                     )
                 }
@@ -76,7 +71,19 @@ class Brain(
 
             Type.BRAIN_ID_REQUEST -> {
                 val message = BrainIdRequest.parse(reader)
-                link.sendUdp(fromAddress, message.port, BrainIdResponse(illicitPanelHint.name))
+                link.sendUdp(fromAddress, message.port, BrainIdResponse(id, surfaceName))
+            }
+
+            Type.BRAIN_MAPPING -> {
+                val message = BrainMapping.parse(reader)
+                surfaceName = message.surfaceName
+                surface = MappedSurface(message.pixelCount, message.pixelVertices)
+
+                // next frame we'll need to recreate everything...
+                currentShaderDesc = null
+                currentShaderBits = null
+
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
             // Other message types are ignored by Brains.
@@ -85,4 +92,18 @@ class Brain(
             }
         }
     }
+
+    class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+        fun read(reader: ByteArrayReader) = buffer.read(reader)
+        fun draw() = renderer.draw(buffer)
+    }
+
+    inner class UnmappedSurface : Surface {
+        override val pixelCount: Int = SparkleMotion.DEFAULT_PIXEL_COUNT
+    }
+
+    inner class MappedSurface(
+        override val pixelCount: Int,
+        var pixelVertices : List<Vector2F>? = null
+    ) : Surface
 }

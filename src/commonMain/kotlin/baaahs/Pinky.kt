@@ -1,11 +1,9 @@
 package baaahs
 
+import baaahs.geom.Vector2
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.BrainHelloMessage
-import baaahs.proto.MapperHelloMessage
-import baaahs.proto.Ports
-import baaahs.proto.parse
+import baaahs.proto.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,9 +21,13 @@ class Pinky(
     private var mapperIsRunning = false
     private var brainsChanged: Boolean = true
     private var selectedShow = showMetas.first()
-        set(value) { field = value; display.selectedShow = value }
+        set(value) {
+            field = value; display.selectedShow = value
+        }
     private lateinit var showRunner: ShowRunner
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
+    private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
+    private val surfacesByBrainId = mutableMapOf<String, Surface>()
 
     val address: Network.Address get() = link.myAddress
 
@@ -60,6 +62,7 @@ class Pinky(
         var currentShowMetaData = selectedShow
         val buildShow = {
             selectedShow.createShow(sheepModel, showRunner).also { currentShowMetaData = selectedShow }
+                .also { gadgetProvider.sync() }
         }
 
         showRunner = buildShowRunner()
@@ -110,11 +113,27 @@ class Pinky(
             is BrainHelloMessage -> {
                 val surfaceName = message.surfaceName
                 val surface = surfacesByName[surfaceName] ?: unknownSurface()
-                foundBrain(RemoteBrain(fromAddress, surface))
+                foundBrain(RemoteBrain(fromAddress, message.brainId, surface))
+
+                maybeMoreMapping(fromAddress, surfaceName, message)
             }
 
             is MapperHelloMessage -> {
                 mapperIsRunning = message.isRunning
+            }
+        }
+    }
+
+    private fun maybeMoreMapping(address: Network.Address, surfaceName: String?, message: BrainHelloMessage) {
+        if (surfaceName == null) {
+            val surface = surfacesByBrainId[message.brainId]
+            if (surface != null && surface is SheepModel.Panel) {
+                val pixelLocations = pixelsBySurface[surface]
+                val pixelCount = pixelLocations?.size ?: -1
+                val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
+                    ?: emptyList<Vector2F>()
+                val mappingMsg = BrainMapping(message.brainId, surface.name, pixelCount, pixelVertices)
+                link.sendUdp(address, Ports.BRAIN, mappingMsg)
             }
         }
     }
@@ -130,6 +149,14 @@ class Pinky(
         display.brainCount = brains.size
 
         brainsChanged = true
+    }
+
+    fun providePanelMapping(brainId: String, surface: Surface) {
+        surfacesByBrainId[brainId] = surface
+    }
+
+    fun providePixelMapping(surface: Surface, pixelLocations: Array<Vector2>) {
+        pixelsBySurface[surface] = pixelLocations
     }
 
     interface BeatProvider {
@@ -164,4 +191,4 @@ class Pinky(
     }
 }
 
-class RemoteBrain(val address: Network.Address, val surface: Surface)
+class RemoteBrain(val address: Network.Address, val brainId: String, val surface: Surface)

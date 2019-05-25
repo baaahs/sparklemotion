@@ -20,6 +20,7 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
     companion object {
         private const val MAX_UDP_SIZE = 2048
 
+        val myAddress = InetAddress.getLocalHost()
         private val broadcastAddress = InetAddress.getByName("255.255.255.255")
     }
 
