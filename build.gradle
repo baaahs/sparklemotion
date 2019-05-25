@@ -81,6 +81,8 @@ kotlin {
                 implementation "io.ktor:ktor-server-host-common:$ktor_version"
                 implementation "io.ktor:ktor-websockets:$ktor_version"
                 implementation "ch.qos.logback:logback-classic:$logback_version"
+                implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
+                implementation files("src/jvmMain/lib/javax.util.property-2_0.jar") // required by ftd2xxj
             }
         }
         jvmTest {
@@ -180,6 +182,7 @@ task runPinkyJvm(type: JavaExec) {
     dependsOn assemble
     main = 'baaahs.PinkyMainKt'
 
+    systemProperties["java.library.path"] = file("src/jvmMain/jni")
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
 }

@@ -14,7 +14,7 @@ object SomeDumbShow : Show("SomeDumbShow") {
 
         val pixelShaderBuffers =
             showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, pixelShader) }
-        val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
+        val movingHeads = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val seed = Random(0)
@@ -37,7 +37,7 @@ object SomeDumbShow : Show("SomeDumbShow") {
             }
 
             movingHeads.forEach { buf ->
-                buf.colorWheel = buf.closestColorFor(colorPicker.color)
+                buf.color = colorPicker.color
                 buf.pan += (seed.nextTimeShiftedFloat() - .5f) / 5
                 buf.tilt += (seed.nextTimeShiftedFloat() - .5f) / 5
             }
