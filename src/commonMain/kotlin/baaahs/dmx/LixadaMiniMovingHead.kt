@@ -41,7 +41,7 @@ class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9),
 //        COLOR_11,
 //        COLOR_12,
 //        COLOR_CONTROL,
-        COLOR_RESET;
+        RESET;
 
         override val offset = ordinal
     }
