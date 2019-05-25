@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.Shenzarpy
 import baaahs.net.Network
 import baaahs.proto.BrainShaderMessage
 import baaahs.proto.Ports
@@ -71,7 +72,7 @@ class ShowRunner(
     fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
+    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }

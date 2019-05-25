@@ -16,6 +16,8 @@ object SolidColorShow : Show.MetaData("Solid Color") {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
+        val eyes = sheepModel.eyes.map { eye -> showRunner.getMovingHeadBuffer(eye) }
+
         return object : Show {
             var priorColor = colorPicker.color
 
@@ -23,6 +25,7 @@ object SolidColorShow : Show.MetaData("Solid Color") {
                 val color = colorPicker.color
                 if (color != priorColor) {
                     shaderBuffers.forEach { it.color = color }
+                    eyes.forEach { it.color = color }
                     priorColor = color
                 }
             }

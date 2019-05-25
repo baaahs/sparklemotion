@@ -15,11 +15,13 @@ import kotlin.random.Random
  */
 @Serializable
 data class Color(val argb: Int) {
-    /** Values are bounded at `0..255`. */
+    /** Values are bounded at `0f..1f`. */
     constructor(red: Float, green: Float, blue: Float, alpha: Float = 1f) : this(asArgb(red, green, blue, alpha))
 
-    /** Values are bounded at `0f..1f`. */
+    /** Values are bounded at `0..255`. */
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 255) : this(asArgb(red, green, blue, alpha))
+
+    constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()) : this(asArgb(red, green, blue, alpha))
 
     fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
 
@@ -139,8 +141,16 @@ data class Color(val argb: Int) {
                     or (bounded(blue)))
         }
 
-        private fun bounded(i: Int): Int = max(0, min(255, i))
+        private fun asArgb(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()): Int {
+            return ((bounded(alpha) shl 24)
+                    or (bounded(red) shl 16)
+                    or (bounded(green) shl 8)
+                    or (bounded(blue)))
+        }
+
         private fun bounded(f: Float): Float = max(0f, min(1f, f))
+        private fun bounded(i: Int): Int = max(0, min(255, i))
+        private fun bounded(b: Byte): Int = b.toInt() and 0xff
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
     }
 }

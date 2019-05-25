@@ -1,8 +1,9 @@
 package baaahs.visualizer
 
 import baaahs.Config
+import baaahs.MovingHead
 import baaahs.SheepModel
-import baaahs.Shenzarpy
+import baaahs.dmx.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -205,11 +206,11 @@ class Visualizer(sheepModel: SheepModel) {
         return vizPanel
     }
 
-    fun addMovingHead(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
+    fun addMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
         return VizMovingHead(movingHead, dmxUniverse)
     }
 
-    inner class VizMovingHead(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
+    inner class VizMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
         val geometry = ConeBufferGeometry(50, 1000)
@@ -227,11 +228,7 @@ class Visualizer(sheepModel: SheepModel) {
         }
 
         private fun receivedDmxFrame() {
-            val colorWheelV = device.colorWheel
-            val wheelColor = Shenzarpy.WheelColor.get(colorWheelV)
-
-            material.color.set(wheelColor.color.rgb)
-
+            material.color.set(device.color.rgb)
             material.visible = device.dimmer > .1
 
             cone.rotation.x = -PI / 2 + device.tilt

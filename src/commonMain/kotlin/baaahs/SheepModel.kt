@@ -102,8 +102,5 @@ class SheepModel {
         val lines = mutableListOf<Line>()
     }
 
-    class MovingHead(val name: String, val origin: Point/*, val heading: Point*/) {
-
-    }
 }
 
