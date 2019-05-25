@@ -183,7 +183,7 @@ task runPinkyJvm(type: JavaExec) {
 
 task runBrainJvm(type: JavaExec) {
     dependsOn assemble
-    main = 'baaahs.PinkyMainKt'
+    main = 'baaahs.BrainMainKt'
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
