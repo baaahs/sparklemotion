@@ -2,7 +2,8 @@
 
 Sparkle Motion is an open source lighting design and collaborative performance system, created for BAAAHS but designed
 to be useful for many other sorts of installation. The general architecture is a distributed processing system, where
-numerous low-cost rendering engines (Brains) are coordinated by a central entity (Pinky).
+numerous low-cost rendering engines (Brains, based on the [esp32](https://en.wikipedia.org/wiki/ESP32) microcontroller)
+are coordinated by a central entity (Pinky). DMX fixtures can also be controlled.
 
 This document lays out the various components and APIs of Sparkle Motion.
 
@@ -14,7 +15,7 @@ This document lays out the various components and APIs of Sparkle Motion.
 | **Gadget** | A source of external data, which could be directly controlled by a user (such as a color picker or sliders), or data collected from sensors (such as audio spectral analysis). |
 | **Mapper** | A program running on as-yet undefined hardware which uses computer vision techniques to map Brains to surfaces. |
 | **Model** | A 3D model of surfaces and moving heads. For BAAAHS, it includes panels and other surfaces, plus the eyes. Models may have installation-specific terminology of their own. |
-| **Moving Head** | A programmable moving spotlight (sometimes referred to as a Sharpy). |
+| **Moving Head** | A programmable moving spotlight. |
 | **Pinky** | A single Linux-ish server which runs shows and coordinates Brains. | 
 | **Shader** | A program running on each Brain which sets the color of its LEDs based on data from a show. Multiple shaders can be combined to control the color of each LED. |
 | **Simulator** | A full system simulator for Sparkle Motion that runs in a normal web browser. | 
