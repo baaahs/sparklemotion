@@ -8472,7 +8472,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     };
   }
   Launcher.prototype.add_yfl68i$ = function (name, onLaunch) {
-    appendElement(this.parentNode, 'button', Launcher$add$lambda(name, this, onLaunch));
+    var tmp$;
+    return Kotlin.isType(tmp$ = appendElement(this.parentNode, 'button', Launcher$add$lambda(name, this, onLaunch)), HTMLButtonElement) ? tmp$ : throwCCE();
   };
   Launcher.$metadata$ = {
     kind: Kind_CLASS,
@@ -8786,6 +8787,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.local$this$SheepSimulator = this$SheepSimulator_0;
+    this.local$launcher = void 0;
+    this.local$$receiver = void 0;
   }
   Coroutine$SheepSimulator$start$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -8800,9 +8803,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         switch (this.state_0) {
           case 0:
             launch(this.local$this$SheepSimulator.pinkyScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda(this.local$this$SheepSimulator));
-            var launcher = new Launcher(ensureNotNull(document.getElementById('launcher')));
-            launcher.add_yfl68i$('Web UI', SheepSimulator$start$lambda$lambda_0(this.local$this$SheepSimulator));
-            launcher.add_yfl68i$('Mapper', SheepSimulator$start$lambda$lambda_1(this.local$this$SheepSimulator));
+            this.local$launcher = new Launcher(ensureNotNull(document.getElementById('launcher')));
+            this.local$$receiver = this.local$launcher.add_yfl68i$('Web UI', SheepSimulator$start$lambda$lambda_0(this.local$this$SheepSimulator));
+            this.state_0 = 2;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.local$$receiver.click();
+            this.local$launcher.add_yfl68i$('Mapper', SheepSimulator$start$lambda$lambda_1(this.local$this$SheepSimulator));
             var tmp$, tmp$_0;
             var index = 0;
             tmp$ = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_0(compareBy$lambda_0(getPropertyCallableRef('name', 1, function ($receiver) {
@@ -8831,8 +8843,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
 
             return doRunBlocking(SheepSimulator$start$lambda$lambda_3), Unit;
-          case 1:
-            throw this.exception_0;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
