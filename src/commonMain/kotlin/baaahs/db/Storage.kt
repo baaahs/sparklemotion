@@ -44,7 +44,7 @@ class Storage(private val persistence: Persistence, private val dbName: String =
     }
 }
 
-class Migration(val number: Long, val migrate: (database: Persistence.Database) -> Unit)
+class Migration(val number: Long, val migrate: suspend (database: Persistence.Database) -> Unit)
 
 
 @Serializable

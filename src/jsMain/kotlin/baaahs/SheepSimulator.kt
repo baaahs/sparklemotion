@@ -31,7 +31,6 @@ class SheepSimulator {
         pinkyScope.launch { pinky.run() }
 
         storage.simulatorPixels.transaction { store ->
-            store.put()
         }
 
         val launcher = Launcher(document.getElementById("launcher")!!)

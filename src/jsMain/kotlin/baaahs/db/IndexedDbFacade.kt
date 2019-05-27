@@ -23,7 +23,7 @@ class IndexedDbFacade(private val factory: IDBFactory) : Persistence.Impl {
     override suspend fun open(
         name: String,
         version: Long,
-        migrateFn: (database: Persistence.Database, fromVersion: Long, toVersion: Long) -> Unit
+        migrateFn: suspend (database: Persistence.Database, fromVersion: Long, toVersion: Long) -> Unit
     ): Persistence.Database =
         suspendCoroutine { cont ->
             val dbRequest = factory.open(name, version)
@@ -32,7 +32,9 @@ class IndexedDbFacade(private val factory: IDBFactory) : Persistence.Impl {
             dbRequest.onupgradeneeded = { event ->
                 console.log("db $name needs upgrade", event.oldVersion, event.newVersion)
                 val databaseFacade = DatabaseFacade(target(event).result)
-                migrateFn(databaseFacade, event.oldVersion, event.newVersion)
+                doRunBlocking {
+                    migrateFn(databaseFacade, event.oldVersion, event.newVersion)
+                }
                 // No cont.resume() here because onsuccess will still be called.
             }
             dbRequest.onsuccess = { event ->
@@ -49,13 +51,11 @@ class IndexedDbFacade(private val factory: IDBFactory) : Persistence.Impl {
         factory.delete(name)
     }
 
-    class DatabaseFacade(private val db: baaahs.IDBDatabase) : Persistence.Database {
+    class DatabaseFacade(private val db: IDBDatabase) : Persistence.Database {
         override val name: String = db.name
         override val version: Long = db.version
 
-        override fun close() = db.close()
-
-        override fun <T> createStore(name: String, serializer: KSerializer<T>): Persistence.Store<T> =
+        override suspend fun <T> createStore(name: String, serializer: KSerializer<T>): Persistence.Store<T> =
             StoreFacade(db.createObjectStore(name, js("{'keyPath': 'id', 'autoIncrement': true}")), serializer)
 
         override fun deleteStore(name: String) = db.deleteObjectStore(name)
@@ -70,6 +70,8 @@ class IndexedDbFacade(private val factory: IDBFactory) : Persistence.Impl {
                 Persistence.TransactionMode.READ_ONLY -> "readonly"
                 Persistence.TransactionMode.READ_WRITE -> "readwrite"
             }
+
+        override fun close() = db.close()
     }
 
     class StoreFacade<T>(
@@ -78,13 +80,13 @@ class IndexedDbFacade(private val factory: IDBFactory) : Persistence.Impl {
     ) : Persistence.Store<T> {
         override val name: String get() = objectStore.name
 
-        override suspend fun getAll(): Array<T> = suspendCoroutine { cont ->
+        override suspend fun getAll(): List<T> = suspendCoroutine { cont ->
             val idbRequest = objectStore.getAll()
             fun target(event: Event) = (event.target as IDBRequest)
 
             idbRequest.onsuccess = { event ->
                 val result = target(event).result as JsonElement
-                val items = json.fromJson(serializer.list, result).toTypedArray()
+                val items = json.fromJson(serializer.list, result)
                 cont.resume(items)
             }
             idbRequest.onerror = { event -> cont.resumeWithException(target(event).error) }

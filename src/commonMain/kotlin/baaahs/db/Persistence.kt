@@ -7,7 +7,7 @@ class Persistence(private val impl: Impl) {
     suspend fun open(
         name: String,
         version: Long,
-        migrateFn: (database: Database, oldVersion: Long, newVersion: Long) -> Unit
+        migrateFn: suspend (database: Database, oldVersion: Long, newVersion: Long) -> Unit
     ) = impl.open(name, version, migrateFn)
 
     fun delete(name: String) = impl.delete(name)
@@ -16,8 +16,7 @@ class Persistence(private val impl: Impl) {
         val name: String
         val version: Long
 
-        fun close()
-        fun <T> createStore(name: String, serializer: KSerializer<T>): Store<T>
+        suspend fun <T> createStore(name: String, serializer: KSerializer<T>): Store<T>
         fun deleteStore(name: String)
 
         suspend fun transaction(
@@ -29,12 +28,14 @@ class Persistence(private val impl: Impl) {
             storeNames: Array<String>,
             mode: TransactionMode = TransactionMode.READ_ONLY
         ): Transaction
+
+        fun close()
     }
 
     interface Store<T> {
         val name: String
 
-        suspend fun getAll(): Array<T>
+        suspend fun getAll(): List<T>
 
         suspend fun put(value: T)
     }
@@ -54,7 +55,7 @@ class Persistence(private val impl: Impl) {
         suspend fun open(
             name: String,
             version: Long,
-            migrateFn: (database: Database, oldVersion: Long, newVersion: Long) -> Unit
+            migrateFn: suspend (database: Database, oldVersion: Long, newVersion: Long) -> Unit
         ): Database
 
         fun delete(name: String)

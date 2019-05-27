@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.db.Persistence
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
@@ -20,6 +21,8 @@ import java.time.Duration
 fun main(args: Array<String>) {
     val sheepModel = SheepModel()
     sheepModel.load()
+
+    Persistence(MongoDbFacade())
 
     val classesDir = Paths.get(Pinky::class.java.getResource(".").file)
     val jsResDir = classesDir.parent.parent.parent.parent.parent.parent
@@ -50,7 +53,7 @@ fun main(args: Array<String>) {
                 set(value) { field = value; println("selectedShow: ${value}") }
 
             override var nextFrameMs: Int = 0
-                set(value) { field = value; println("nextFrameMs: ${value}") }
+                set(value) { field = value; /*println("nextFrameMs: ${value}")*/ }
         })
 
     GlobalScope.launch { pinky.run() }
