@@ -2800,7 +2800,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   };
   function Pinky$unknownSurface$ObjectLiteral() {
-    this.pixelCount_mxdgq0$_0 = 2048;
+    this.pixelCount_mxdgq0$_0 = -1;
   }
   Object.defineProperty(Pinky$unknownSurface$ObjectLiteral.prototype, 'pixelCount', {
     get: function () {
@@ -3791,7 +3791,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function SheepModel$Panel(name) {
     this.name = name;
-    this.pixelCount_tjn0yd$_0 = 2048;
+    this.pixelCount_tjn0yd$_0 = -1;
     this.faces = new SheepModel$Faces();
     this.lines = ArrayList_init();
   }
@@ -4442,7 +4442,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function SparkleMotion() {
     SparkleMotion_instance = this;
-    this.DEFAULT_PIXEL_COUNT = 2048;
+    this.MAX_PIXEL_COUNT = 2048;
+    this.PIXEL_COUNT_UNKNOWN = -1;
   }
   SparkleMotion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -5814,10 +5815,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function PixelShader$Buffer($outer, pixelCount) {
     this.$outer = $outer;
-    var array = Array_0(pixelCount);
+    this.colors = null;
     var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
+    if (pixelCount === -1) {
+      tmp$ = 2048;
+    }
+     else {
+      tmp$ = pixelCount;
+    }
+    var bufPixelCount = tmp$;
+    var array = Array_0(bufPixelCount);
+    var tmp$_0;
+    tmp$_0 = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$_0; i++) {
       array[i] = Color$Companion_getInstance().WHITE;
     }
     this.colors = array;
@@ -5837,15 +5847,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   };
   PixelShader$Buffer.prototype.read_100t80$ = function (reader) {
-    var incomingColorCount = reader.readInt();
-    if (incomingColorCount !== this.colors.length) {
-      throw IllegalStateException_init('incoming color count (' + incomingColorCount + ") doesn't match buffer (" + this.colors.length);
-    }
     var tmp$;
-    tmp$ = until(0, incomingColorCount).iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      this.colors[element] = Color$Companion_getInstance().parse_100t80$(reader);
+    var incomingColorCount = reader.readInt();
+    var a = this.colors.length;
+    var countFromBuffer = Math_0.min(a, incomingColorCount);
+    for (var i = 0; i < countFromBuffer; i++) {
+      this.colors[i] = Color$Companion_getInstance().parse_100t80$(reader);
+    }
+    tmp$ = this.colors.length;
+    for (var i_0 = countFromBuffer; i_0 < tmp$; i_0++) {
+      this.colors[i_0] = this.colors[i_0 % countFromBuffer];
     }
   };
   PixelShader$Buffer.prototype.setAll_rny0jj$ = function (color) {
