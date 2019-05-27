@@ -96,7 +96,7 @@ class SheepModel {
     }
 
     class Panel(val name: String) : Surface {
-        override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT // todo: not this
+        override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
 
         val faces = Faces()
         val lines = mutableListOf<Line>()

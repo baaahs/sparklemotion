@@ -18,7 +18,7 @@ class Mapper(
     private val mapperDisplay: MapperDisplay,
     mediaDevices: MediaDevices
 ) : Network.UdpListener, MapperDisplay.Listener, CoroutineScope by MainScope() {
-    private val maxPixelsPerBrain = SparkleMotion.DEFAULT_PIXEL_COUNT
+    private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
     val width = 640
     val height = 300
 
@@ -160,7 +160,7 @@ class Mapper(
             // light up each pixel...
             val pixelShader = PixelShader()
             val buffer = pixelShader.createBuffer(object : Surface {
-                override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+                override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
             })
             buffer.setAll(Color.BLACK)
             for (i in 0 until maxPixelsPerBrain) {
@@ -204,7 +204,7 @@ class Mapper(
     private fun solidColor(color: Color): BrainShaderMessage {
         val solidShader = SolidShader()
         val buffer = solidShader.createBuffer(object : Surface {
-            override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+            override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
         }).apply { this.color = color }
         return BrainShaderMessage(solidShader, buffer)
     }
