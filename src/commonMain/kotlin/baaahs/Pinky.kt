@@ -140,7 +140,7 @@ class Pinky(
 
     private fun unknownSurface(): Surface {
         return object : Surface {
-            override val pixelCount = SparkleMotion.DEFAULT_PIXEL_COUNT
+            override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
         }
     }
 

@@ -3,6 +3,7 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import kotlin.math.min
 
 /**
  * A shader that allows control of individual pixels' colors directly from a show.
@@ -30,7 +31,15 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
         override val shader: Shader<*>
             get() = this@PixelShader
 
-        var colors: Array<Color> = Array(pixelCount) { Color.WHITE }
+        var colors: Array<Color>
+        init {
+            val bufPixelCount = if (pixelCount == SparkleMotion.PIXEL_COUNT_UNKNOWN) {
+                SparkleMotion.MAX_PIXEL_COUNT
+            } else {
+                pixelCount
+            }
+            colors = Array(bufPixelCount) { Color.WHITE }
+        }
 
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeInt(colors.size)
@@ -39,10 +48,17 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
 
         override fun read(reader: ByteArrayReader) {
             val incomingColorCount = reader.readInt()
-            if (incomingColorCount != colors.size) {
-                throw IllegalStateException("incoming color count ($incomingColorCount) doesn't match buffer (${colors.size}")
+
+            // if there are more colors in the buffer than pixels, drop from the end
+            val countFromBuffer = min(colors.size, incomingColorCount)
+            for (i in 0 until countFromBuffer) {
+                colors[i] = Color.parse(reader)
             }
-            (0 until incomingColorCount).forEach { index -> colors[index] = Color.parse(reader) }
+
+            // if there are more pixels than colors in the buffer, repeat
+            for (i in countFromBuffer until colors.size) {
+                colors[i] = colors[i % countFromBuffer]
+            }
         }
 
         fun setAll(color: Color) {

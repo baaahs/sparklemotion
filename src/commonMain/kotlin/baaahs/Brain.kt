@@ -99,7 +99,7 @@ class Brain(
     }
 
     inner class UnmappedSurface : Surface {
-        override val pixelCount: Int = SparkleMotion.DEFAULT_PIXEL_COUNT
+        override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
     }
 
     inner class MappedSurface(
