@@ -41,19 +41,19 @@ fun parse(bytes: ByteArray): Message {
     }
 }
 
-class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message(Type.BRAIN_HELLO) {
+class BrainHelloMessage(val brainId: String, val panelName: String) : Message(Type.BRAIN_HELLO) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainHelloMessage {
             return BrainHelloMessage(
                 reader.readString(),
-                reader.readNullableString()
+                reader.readString()
             )
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(brainId)
-        writer.writeNullableString(surfaceName)
+        writer.writeString(panelName)
     }
 }
 

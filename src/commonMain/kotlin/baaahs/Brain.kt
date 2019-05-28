@@ -30,7 +30,7 @@ class Brain(
     private suspend fun sendHello() {
         while (true) {
             if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName ?: ""))
             }
 
             delay(5000)
@@ -83,7 +83,7 @@ class Brain(
                 currentShaderDesc = null
                 currentShaderBits = null
 
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName ?: ""))
             }
 
             // Other message types are ignored by Brains.
