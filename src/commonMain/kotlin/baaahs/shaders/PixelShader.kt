@@ -23,8 +23,8 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
         return buf
     }
 
-    companion object {
-        fun parse(reader: ByteArrayReader) = PixelShader()
+    companion object : ShaderReader<PixelShader> {
+        override fun parse(reader: ByteArrayReader) = PixelShader()
     }
 
     inner class Buffer(pixelCount: Int) : Shader.Buffer {
@@ -32,6 +32,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
             get() = this@PixelShader
 
         var colors: Array<Color>
+
         init {
             val bufPixelCount = if (pixelCount == SparkleMotion.PIXEL_COUNT_UNKNOWN) {
                 SparkleMotion.MAX_PIXEL_COUNT

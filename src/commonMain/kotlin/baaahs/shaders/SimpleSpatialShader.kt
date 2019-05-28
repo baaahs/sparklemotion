@@ -16,8 +16,8 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
 
     override fun createRenderer(surface: Surface, pixels: Pixels): Renderer = Renderer(surface, pixels)
 
-    companion object {
-        fun parse(reader: ByteArrayReader) = SimpleSpatialShader()
+    companion object : ShaderReader<SimpleSpatialShader> {
+        override fun parse(reader: ByteArrayReader) = SimpleSpatialShader()
     }
 
     inner class Buffer : Shader.Buffer {
