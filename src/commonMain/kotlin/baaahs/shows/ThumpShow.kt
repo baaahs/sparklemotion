@@ -16,17 +16,16 @@ object ThumpShow : Show.MetaData("Thump") {
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
-        val compositorShader = CompositorShader(solidShader, sineWaveShader)
 
-        private val shaderBufs = showRunner.allSurfaces.map { surface ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+        private val shaderBufs = sheepModel.allPanels.map { panel ->
+            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
 
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
+                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
 
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }

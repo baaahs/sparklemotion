@@ -15,7 +15,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
         )
 
         return object : Show {
-            val shaderBuffers = showRunner.allSurfaces.map { surface ->
+            val shaderBuffers = sheepModel.allPanels.map { surface ->
                 showRunner.getShaderBuffer(surface, PixelShader())
             }
             val fadeTimeMs = 1000
