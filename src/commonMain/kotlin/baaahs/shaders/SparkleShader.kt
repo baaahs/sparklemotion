@@ -15,8 +15,8 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
 
     override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
 
-    companion object {
-        fun parse(reader: ByteArrayReader) = SparkleShader()
+    companion object : ShaderReader<SparkleShader> {
+        override fun parse(reader: ByteArrayReader) = SparkleShader()
     }
 
     inner class Buffer : Shader.Buffer {
