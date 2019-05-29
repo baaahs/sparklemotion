@@ -16,14 +16,14 @@ object CompositeShow : Show.MetaData("Composite") {
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
 
-        private val shaderBufs = sheepModel.allPanels.map { panel ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
+        private val shaderBufs = showRunner.allSurfaces.map { surface ->
+            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
+                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
 
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
