@@ -11,7 +11,9 @@ object SomeDumbShow : Show.MetaData("SomeDumbShow") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         val colorPicker = showRunner.getGadget(ColorPicker("Color"))
         val pixelShader = PixelShader()
-        val pixelShaderBuffers = sheepModel.allPanels.map { panel -> showRunner.getShaderBuffer(panel, pixelShader) }
+
+        val pixelShaderBuffers =
+            showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, pixelShader) }
         val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
         override fun nextFrame() {

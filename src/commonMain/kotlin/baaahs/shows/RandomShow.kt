@@ -6,8 +6,8 @@ import kotlin.random.Random
 
 object RandomShow : Show.MetaData("Random") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
-        val pixelShaderBuffers = sheepModel.allPanels.map { panel ->
-            showRunner.getShaderBuffer(panel, PixelShader())
+        val pixelShaderBuffers = showRunner.allSurfaces.map { surface ->
+            showRunner.getShaderBuffer(surface, PixelShader())
         }
         val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 

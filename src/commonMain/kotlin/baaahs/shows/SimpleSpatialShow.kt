@@ -15,7 +15,7 @@ object SimpleSpatialShow : Show.MetaData("Spatial") {
         val radiusSlider = showRunner.getGadget(Slider("radius", 0.25f))
 
         val shader = SimpleSpatialShader()
-        val shaderBuffers = sheepModel.allPanels.map {
+        val shaderBuffers = showRunner.allSurfaces.map {
             showRunner.getShaderBuffer(it, shader)
         }
 

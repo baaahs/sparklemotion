@@ -111,14 +111,11 @@ class Pinky(
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> {
-                val panelName = message.panelName
-                val surface = surfacesByName[panelName]
-                if (surface == null) {
-                    maybeMoreMapping(fromAddress, message)
-                } else {
-                    foundBrain(RemoteBrain(fromAddress, message.brainId, surface))
-                }
+                val surfaceName = message.surfaceName
+                val surface = surfacesByName[surfaceName] ?: unknownSurface()
+                foundBrain(RemoteBrain(fromAddress, message.brainId, surface))
 
+                maybeMoreMapping(fromAddress, surfaceName, message)
             }
 
             is MapperHelloMessage -> {
@@ -127,15 +124,17 @@ class Pinky(
         }
     }
 
-    private fun maybeMoreMapping(address: Network.Address, message: BrainHelloMessage) {
-        val surface = surfacesByBrainId[message.brainId]
-        if (surface != null && surface is SheepModel.Panel) {
-            val pixelLocations = pixelsBySurface[surface]
-            val pixelCount = pixelLocations?.size ?: -1
-            val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
-                ?: emptyList()
-            val mappingMsg = BrainMapping(message.brainId, surface.name, pixelCount, pixelVertices)
-            link.sendUdp(address, Ports.BRAIN, mappingMsg)
+    private fun maybeMoreMapping(address: Network.Address, surfaceName: String?, message: BrainHelloMessage) {
+        if (surfaceName == null) {
+            val surface = surfacesByBrainId[message.brainId]
+            if (surface != null && surface is SheepModel.Panel) {
+                val pixelLocations = pixelsBySurface[surface]
+                val pixelCount = pixelLocations?.size ?: -1
+                val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
+                    ?: emptyList<Vector2F>()
+                val mappingMsg = BrainMapping(message.brainId, surface.name, pixelCount, pixelVertices)
+                link.sendUdp(address, Ports.BRAIN, mappingMsg)
+            }
         }
     }
 
