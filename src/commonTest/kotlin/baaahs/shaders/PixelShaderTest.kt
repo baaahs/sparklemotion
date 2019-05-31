@@ -9,19 +9,36 @@ import kotlin.test.Test
 import kotlin.test.expect
 
 class PixelShaderTest {
+    private val srcShader = PixelShader()
+    private val srcBuf = srcShader.Buffer(5).apply {
+        (0 until 5).forEach { i -> colors[i] = Color.from(i) }
+    }
+
     @Test
     fun shouldRender() {
-        val srcShader = PixelShader()
-        val srcBuf = srcShader.Buffer(10)
-
-        (0 until 10).forEach { i -> srcBuf.colors[i] = Color.from(i) }
-        val dstBuf = transmit(srcShader, srcBuf)
-        expect("0,1,2,3,4,5,6,7,8,9") {
+        val dstBuf = transmit(srcShader, srcBuf, FakeSurface(5))
+        expect("0,1,2,3,4") {
             dstBuf.colors.map { "${it.argb}" }.joinToString(",")
         }
     }
 
-    private fun <T : Shader.Buffer> transmit(srcShader: Shader<T>, srcBuf: T): T {
+    @Test
+    fun whenFewerPixels_shouldTruncate() {
+        val dstBuf = transmit(srcShader, srcBuf, FakeSurface(3))
+        expect("0,1,2") {
+            dstBuf.colors.map { "${it.argb}" }.joinToString(",")
+        }
+    }
+
+    @Test
+    fun whenMorePixels_shouldRepeat() {
+        val dstBuf = transmit(srcShader, srcBuf, FakeSurface(12))
+        expect("0,1,2,3,4,0,1,2,3,4,0,1") {
+            dstBuf.colors.map { "${it.argb}" }.joinToString(",")
+        }
+    }
+
+    private fun <T : Shader.Buffer> transmit(srcShader: Shader<T>, srcBuf: T, surface: Surface): T {
         val writer = ByteArrayWriter()
         srcShader.serialize(writer)
         srcBuf.serialize(writer)
@@ -31,7 +48,7 @@ class PixelShaderTest {
         expect(srcShader.id.ordinal.toByte()) { reader.readByte() }
 
         val dstShader: Shader<T> = srcShader.id.reader.parse(reader) as Shader<T>
-        val dstBuf = dstShader.createBuffer(FakeSurface(10))
+        val dstBuf = dstShader.createBuffer(surface)
         dstBuf.read(reader)
         return dstBuf
     }
