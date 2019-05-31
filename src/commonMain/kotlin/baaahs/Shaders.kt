@@ -4,13 +4,13 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.*
 
-enum class ShaderId(val parser: (reader: ByteArrayReader) -> Shader<*>) {
-    SOLID({ reader -> SolidShader.parse(reader) }),
-    PIXEL({ reader -> PixelShader.parse(reader) }),
-    SINE_WAVE({ reader -> SineWaveShader.parse(reader) }),
-    COMPOSITOR({ reader -> CompositorShader.parse(reader) }),
-    SPARKLE({ reader -> SparkleShader.parse(reader) }),
-    SIMPLE_SPATIAL({ reader -> SimpleSpatialShader.parse(reader) });
+enum class ShaderId(val reader: ShaderReader<*>) {
+    SOLID(SolidShader),
+    PIXEL(PixelShader),
+    SINE_WAVE(SineWaveShader),
+    COMPOSITOR(CompositorShader),
+    SPARKLE(SparkleShader),
+    SIMPLE_SPATIAL(SimpleSpatialShader);
 
     companion object {
         val values = values()
@@ -25,6 +25,10 @@ enum class ShaderId(val parser: (reader: ByteArrayReader) -> Shader<*>) {
 
 interface Surface {
     val pixelCount: Int
+}
+
+interface ShaderReader<T : Shader<*>> {
+    fun parse(reader: ByteArrayReader): T
 }
 
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
@@ -55,7 +59,7 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
         fun parse(reader: ByteArrayReader): Shader<*> {
             val shaderTypeI = reader.readByte()
             val shaderType = ShaderId.get(shaderTypeI)
-            return shaderType.parser(reader)
+            return shaderType.reader.parse(reader)
         }
     }
 

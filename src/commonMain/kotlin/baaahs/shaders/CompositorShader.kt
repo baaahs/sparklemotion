@@ -32,8 +32,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     fun createBuffer(bufferA: Shader.Buffer, bufferB: Shader.Buffer): Buffer =
         Buffer(bufferA, bufferB)
 
-    companion object {
-        fun parse(reader: ByteArrayReader): CompositorShader {
+    companion object : ShaderReader<CompositorShader> {
+        override fun parse(reader: ByteArrayReader): CompositorShader {
             val shaderA = Shader.parse(reader)
             val shaderB = Shader.parse(reader)
             return CompositorShader(shaderA, shaderB)
