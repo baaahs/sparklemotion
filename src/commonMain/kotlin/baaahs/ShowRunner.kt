@@ -5,15 +5,15 @@ import baaahs.shaders.CompositorShader
 
 class ShowRunner(
     private val model: SheepModel,
-    initialShow: Show.MetaData,
+    initialShow: Show,
     private val gadgetProvider: GadgetProvider,
     brains: List<RemoteBrain>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
-    var nextShow: Show.MetaData? = initialShow
-    var currentShow: Show.MetaData? = null
-    var currentShowRenderer: Show? = null
+    var nextShow: Show? = initialShow
+    private var currentShow: Show? = null
+    private var currentShowRenderer: Show.Renderer? = null
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
 
@@ -144,7 +144,7 @@ class ShowRunner(
                 shadersLocked = false
                 gadgetsLocked = false
 
-                currentShowRenderer = it.createShow(model, this)
+                currentShowRenderer = it.createRenderer(model, this)
 
                 shadersLocked = true
                 gadgetsLocked = true

@@ -7,8 +7,8 @@ import baaahs.shaders.CompositorShader
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 
-object PanelTweenShow : Show.MetaData("PanelTweenShow") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+object PanelTweenShow : Show("PanelTweenShow") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
@@ -17,7 +17,7 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
             Color.from("#FFD747")
         )
 
-        return object : Show {
+        return object : Renderer {
             val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f))
 
             val solidShader = SolidShader()

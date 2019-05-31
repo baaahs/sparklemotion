@@ -41,15 +41,15 @@ class PinkyTest {
 
     fun defrag(bytes: ByteArray) = bytes.slice(FragmentingUdpLink.headerSize until bytes.size).toByteArray()
 
-    class TestShow1(var supportsSurfaceChange: Boolean = true) : Show.MetaData("TestShow1") {
+    class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+        override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
             return ShowRenderer(showRunner).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Show {
+        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
             val shaderBuffers =
                 showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
 

@@ -7,8 +7,8 @@ import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.random.Random
 
-object SomeDumbShow : Show.MetaData("SomeDumbShow") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
+object SomeDumbShow : Show("SomeDumbShow") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
         val pixelShader = PixelShader()
 
