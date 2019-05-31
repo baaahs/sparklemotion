@@ -4,8 +4,8 @@ import baaahs.*
 import baaahs.shaders.PixelShader
 import kotlin.random.Random
 
-object PixelTweenShow : Show.MetaData("PixelTweenShow") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+object PixelTweenShow : Show("PixelTweenShow") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
@@ -14,7 +14,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
             Color.from("#FFD747")
         )
 
-        return object : Show {
+        return object : Renderer {
             val shaderBuffers = showRunner.allSurfaces.map { surface ->
                 showRunner.getShaderBuffer(surface, PixelShader())
             }
