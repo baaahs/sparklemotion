@@ -3290,65 +3290,47 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'PubSub',
     interfaces: []
   };
-  function ShaderId(name, ordinal, parser) {
+  function ShaderId(name, ordinal, reader) {
     Enum.call(this);
-    this.parser = parser;
+    this.reader = reader;
     this.name$ = name;
     this.ordinal$ = ordinal;
   }
   function ShaderId_initFields() {
     ShaderId_initFields = function () {
     };
-    ShaderId$SOLID_instance = new ShaderId('SOLID', 0, ShaderId$ShaderId$SOLID_init$lambda);
-    ShaderId$PIXEL_instance = new ShaderId('PIXEL', 1, ShaderId$ShaderId$PIXEL_init$lambda);
-    ShaderId$SINE_WAVE_instance = new ShaderId('SINE_WAVE', 2, ShaderId$ShaderId$SINE_WAVE_init$lambda);
-    ShaderId$COMPOSITOR_instance = new ShaderId('COMPOSITOR', 3, ShaderId$ShaderId$COMPOSITOR_init$lambda);
-    ShaderId$SPARKLE_instance = new ShaderId('SPARKLE', 4, ShaderId$ShaderId$SPARKLE_init$lambda);
-    ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, ShaderId$ShaderId$SIMPLE_SPATIAL_init$lambda);
+    ShaderId$SOLID_instance = new ShaderId('SOLID', 0, SolidShader$Companion_getInstance());
+    ShaderId$PIXEL_instance = new ShaderId('PIXEL', 1, PixelShader$Companion_getInstance());
+    ShaderId$SINE_WAVE_instance = new ShaderId('SINE_WAVE', 2, SineWaveShader$Companion_getInstance());
+    ShaderId$COMPOSITOR_instance = new ShaderId('COMPOSITOR', 3, CompositorShader$Companion_getInstance());
+    ShaderId$SPARKLE_instance = new ShaderId('SPARKLE', 4, SparkleShader$Companion_getInstance());
+    ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, SimpleSpatialShader$Companion_getInstance());
     ShaderId$Companion_getInstance();
-  }
-  function ShaderId$ShaderId$SOLID_init$lambda(reader) {
-    return SolidShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderId$SOLID_instance;
   function ShaderId$SOLID_getInstance() {
     ShaderId_initFields();
     return ShaderId$SOLID_instance;
   }
-  function ShaderId$ShaderId$PIXEL_init$lambda(reader) {
-    return PixelShader$Companion_getInstance().parse_100t80$(reader);
-  }
   var ShaderId$PIXEL_instance;
   function ShaderId$PIXEL_getInstance() {
     ShaderId_initFields();
     return ShaderId$PIXEL_instance;
-  }
-  function ShaderId$ShaderId$SINE_WAVE_init$lambda(reader) {
-    return SineWaveShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderId$SINE_WAVE_instance;
   function ShaderId$SINE_WAVE_getInstance() {
     ShaderId_initFields();
     return ShaderId$SINE_WAVE_instance;
   }
-  function ShaderId$ShaderId$COMPOSITOR_init$lambda(reader) {
-    return CompositorShader$Companion_getInstance().parse_100t80$(reader);
-  }
   var ShaderId$COMPOSITOR_instance;
   function ShaderId$COMPOSITOR_getInstance() {
     ShaderId_initFields();
     return ShaderId$COMPOSITOR_instance;
   }
-  function ShaderId$ShaderId$SPARKLE_init$lambda(reader) {
-    return SparkleShader$Companion_getInstance().parse_100t80$(reader);
-  }
   var ShaderId$SPARKLE_instance;
   function ShaderId$SPARKLE_getInstance() {
     ShaderId_initFields();
     return ShaderId$SPARKLE_instance;
-  }
-  function ShaderId$ShaderId$SIMPLE_SPATIAL_init$lambda(reader) {
-    return SimpleSpatialShader$Companion_getInstance().parse_100t80$(reader);
   }
   var ShaderId$SIMPLE_SPATIAL_instance;
   function ShaderId$SIMPLE_SPATIAL_getInstance() {
@@ -3412,6 +3394,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Surface',
     interfaces: []
   };
+  function ShaderReader() {
+  }
+  ShaderReader.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ShaderReader',
+    interfaces: []
+  };
   function Shader(id) {
     Shader$Companion_getInstance();
     this.id = id;
@@ -3439,7 +3428,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Shader$Companion.prototype.parse_100t80$ = function (reader) {
     var shaderTypeI = reader.readByte();
     var shaderType = ShaderId$Companion_getInstance().get_s8j3t7$(shaderTypeI);
-    return shaderType.parser(reader);
+    return shaderType.reader.parse_100t80$(reader);
   };
   Shader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -5574,7 +5563,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   CompositorShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var CompositorShader$Companion_instance = null;
   function CompositorShader$Companion_getInstance() {
@@ -5792,7 +5781,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var PixelShader$Companion_instance = null;
   function PixelShader$Companion_getInstance() {
@@ -5899,7 +5888,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SimpleSpatialShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var SimpleSpatialShader$Companion_instance = null;
   function SimpleSpatialShader$Companion_getInstance() {
@@ -6012,7 +6001,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SineWaveShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var SineWaveShader$Companion_instance = null;
   function SineWaveShader$Companion_getInstance() {
@@ -6104,7 +6093,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SolidShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var SolidShader$Companion_instance = null;
   function SolidShader$Companion_getInstance() {
@@ -6185,7 +6174,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SparkleShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [ShaderReader]
   };
   var SparkleShader$Companion_instance = null;
   function SparkleShader$Companion_getInstance() {
@@ -10313,6 +10302,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   });
   package$baaahs.ShaderId = ShaderId;
   package$baaahs.Surface = Surface;
+  package$baaahs.ShaderReader = ShaderReader;
   Object.defineProperty(Shader, 'Companion', {
     get: Shader$Companion_getInstance
   });
