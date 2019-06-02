@@ -18,7 +18,7 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         )
 
         return object : Show {
-            val slider = showRunner.getGadget(Slider("Sparkliness", 0f))
+            val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()

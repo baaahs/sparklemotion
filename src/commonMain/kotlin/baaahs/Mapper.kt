@@ -161,6 +161,8 @@ class Mapper(
             val pixelShader = PixelShader()
             val buffer = pixelShader.createBuffer(object : Surface {
                 override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+
+                override fun describe(): String = "Mapper surface"
             })
             buffer.setAll(Color.BLACK)
             for (i in 0 until maxPixelsPerBrain) {
@@ -205,6 +207,8 @@ class Mapper(
         val solidShader = SolidShader()
         val buffer = solidShader.createBuffer(object : Surface {
             override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+
+            override fun describe(): String = "Mapper surface"
         }).apply { this.color = color }
         return BrainShaderMessage(solidShader, buffer)
     }

@@ -16,13 +16,29 @@ class Brain(
     private var lastInstructionsReceivedAtMs: Long = 0
     private var surfaceName : String? = null
     private var surface : Surface = UnmappedSurface()
+        set(value) { field = value; display.surface = value }
     private var currentShaderDesc: ByteArray? = null
     private var currentShaderBits: ShaderBits<*>? = null
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
         link.listenUdp(Ports.BRAIN, this)
+        display.id = id
         display.haveLink(link)
+        display.onReset = {
+            println("Resetting Brain $id!")
+            reset()
+        }
+
+        sendHello()
+    }
+
+    private suspend fun reset() {
+        lastInstructionsReceivedAtMs = 0
+        surfaceName = null
+        surface = UnmappedSurface()
+        currentShaderDesc = null
+        currentShaderBits = null
 
         sendHello()
     }
@@ -77,7 +93,11 @@ class Brain(
             Type.BRAIN_MAPPING -> {
                 val message = BrainMapping.parse(reader)
                 surfaceName = message.surfaceName
-                surface = MappedSurface(message.pixelCount, message.pixelVertices)
+                surface = if (message.surfaceName != null) {
+                    MappedSurface(message.pixelCount, message.pixelVertices, message.surfaceName)
+                } else {
+                    UnmappedSurface()
+                }
 
                 // next frame we'll need to recreate everything...
                 currentShaderDesc = null
@@ -100,10 +120,15 @@ class Brain(
 
     inner class UnmappedSurface : Surface {
         override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
+
+        override fun describe(): String = "unmapped"
     }
 
     inner class MappedSurface(
         override val pixelCount: Int,
-        var pixelVertices : List<Vector2F>? = null
-    ) : Surface
+        var pixelVertices: List<Vector2F>? = null,
+        private val name: String
+    ) : Surface {
+        override fun describe(): String = name
+    }
 }
