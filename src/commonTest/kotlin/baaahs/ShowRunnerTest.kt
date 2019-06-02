@@ -4,6 +4,7 @@ import baaahs.SheepModel.Panel
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
 import baaahs.shaders.SolidShader
+import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
@@ -12,28 +13,29 @@ import kotlin.test.*
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
-    val testCoroutineContext = TestCoroutineContext("network")
-    val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
+    private val testCoroutineContext = TestCoroutineContext("network")
+    private val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
 
-    val serverNetwork = network.link()
-    val server = PubSub.listen(serverNetwork, 1234).apply { install(gadgetModule) }
+    private val serverNetwork = network.link()
+    private val server = PubSub.listen(serverNetwork, 1234).apply { install(gadgetModule) }
 
-    val gadgetProvider = GadgetProvider(server)
-    lateinit var showRunner: ShowRunner
+    private val gadgetProvider = GadgetProvider(server)
+    private lateinit var showRunner: ShowRunner
 
-    val testShow1 = TestShow1()
-    val surface1Messages = mutableListOf<Shader.Buffer>()
-    val surface1Receiver = SurfaceReceiver(Panel("surface 1")) { buffer -> surface1Messages.add(buffer) }
-    val surface2Messages = mutableListOf<Shader.Buffer>()
-    val surface2Receiver = SurfaceReceiver(Panel("surface 2")) { buffer -> surface2Messages.add(buffer) }
-    lateinit var dmxUniverse: FakeDmxUniverse
-    val dmxEvents = mutableListOf<String>()
+    private val testShow1 = TestShow1()
+    private val surface1Messages = mutableListOf<Shader.Buffer>()
+    private val surface1Receiver = SurfaceReceiver(Panel("surface 1")) { buffer -> surface1Messages.add(buffer) }
+    private val surface2Messages = mutableListOf<Shader.Buffer>()
+    private val surface2Receiver = SurfaceReceiver(Panel("surface 2")) { buffer -> surface2Messages.add(buffer) }
+    private lateinit var dmxUniverse: FakeDmxUniverse
+    private val dmxEvents = mutableListOf<String>()
+    private val sheepModel = SheepModel()
 
     @BeforeTest
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(SheepModel(), testShow1, gadgetProvider, listOf(), FakeBeatProvider, dmxUniverse)
+        showRunner = ShowRunner(sheepModel, testShow1, gadgetProvider, listOf(), FakeBeatProvider, dmxUniverse)
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -183,9 +185,7 @@ class ShowRunnerTest {
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
         showRunner.nextFrame() // Creates show but doesn't render a frame yet.
-        val e = assertFailsWith(IllegalStateException::class) {
-            showRunner.nextFrame()
-        }
+        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
         assertTrue { e.message!!.startsWith("Too many shader buffers for Panel surface 1") }
     }
 
@@ -205,13 +205,56 @@ class ShowRunnerTest {
         showRunner.nextFrame() // Renders frame, expect no exceptions due to too many buffers.
     }
 
+    @Test
+    fun whenShowAttemptsToObtainShaderBufferDuringNextFrame_shouldThrowException() {
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame()
+
+        testShow1.onNextFrame = {
+            // It's illegal to request a new ShaderBuffer during #nextFrame().
+            showRunner.getShaderBuffer(surface1Receiver.surface, SparkleShader())
+        }
+
+        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
+        assertTrue { e.message!!.startsWith("Shaders can't be obtained during #nextFrame()") }
+    }
+
+    @Test
+    fun whenShowAttemptsToObtainMovingHeadDuringNextFrame_shouldThrowException() {
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame()
+
+        testShow1.onNextFrame = {
+            // It's illegal to request a new ShaderBuffer during #nextFrame().
+            showRunner.getMovingHead(SheepModel.MovingHead("leftEye",
+                SheepModel.Point(-163.738f, 204.361f, 439.302f)))
+        }
+
+        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
+        expect(e.message!!) { "Moving heads can't be obtained during #nextFrame()" }
+    }
+
+    @Test
+    fun whenShowAttemptsToObtainGadgetDuringNextFrame_shouldThrowException() {
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame()
+
+        testShow1.onNextFrame = {
+            // It's illegal to request a new Gadget during #nextFrame().
+            showRunner.getGadget("another-gadget", Slider("Another Gadget"))
+        }
+
+        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
+        assertTrue { e.message!!.startsWith("Gadgets can't be obtained during #nextFrame()") }
+    }
+
     class TestShow1(
         var supportsSurfaceChange: Boolean = true,
         var onShowCreate: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
     ) : Show.MetaData("TestShow1") {
-        val createdShows = mutableListOf<Show>()
+        val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
         override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {

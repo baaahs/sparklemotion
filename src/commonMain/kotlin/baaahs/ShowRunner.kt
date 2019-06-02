@@ -23,6 +23,9 @@ class ShowRunner(
     private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
+    private var shadersLocked = true
+    private var gadgetsLocked = true
+
     fun getBeatProvider(): Pinky.BeatProvider = beatProvider
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
@@ -47,6 +50,7 @@ class ShowRunner(
      * @return A shader buffer of the appropriate type.
      */
     fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         val buffer = shader.createBuffer(surface)
         recordShader(surface, buffer)
         return buffer
@@ -64,6 +68,7 @@ class ShowRunner(
         mode: CompositingMode = CompositingMode.OVERLAY,
         fade: Float = 0.5f
     ): CompositorShader.Buffer {
+        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         return CompositorShader(bufferA.shader, bufferB.shader)
             .createBuffer(bufferA, bufferB)
             .also {
@@ -73,10 +78,11 @@ class ShowRunner(
             }
     }
 
-    fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
+    private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
     fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
+        if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
@@ -87,7 +93,10 @@ class ShowRunner(
      * @param name Symbolic name for this gadget; must be unique within the show.
      * @param gadget The gadget to display.
      */
-    fun <T : Gadget> getGadget(name: String, gadget: T) = gadgetProvider.getGadget(name, gadget)
+    fun <T : Gadget> getGadget(name: String, gadget: T): T {
+        if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
+        return gadgetProvider.getGadget(name, gadget)
+    }
 
     fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
         changedSurfaces.add(SurfacesChanges(ArrayList(addedSurfaces), ArrayList(removedSurfaces)))
@@ -113,12 +122,14 @@ class ShowRunner(
             for (receiver in added) addReceiver(receiver)
 
             if (nextShow == null) {
+                shadersLocked = false
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
                 }
+                shadersLocked = true
             }
         }
         changedSurfaces.clear()
@@ -129,7 +140,15 @@ class ShowRunner(
 
                 val gadgetsState = gadgetProvider.getGadgetsState()
                 gadgetProvider.clear()
+
+                shadersLocked = false
+                gadgetsLocked = false
+
                 currentShowRenderer = it.createShow(model, this)
+
+                shadersLocked = true
+                gadgetsLocked = true
+
                 currentShow = nextShow
                 gadgetProvider.setGadgetsState(gadgetsState)
                 gadgetProvider.sync()
