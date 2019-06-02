@@ -177,7 +177,7 @@ class ShowRunnerTest {
 
     @Test
     fun whenShowLeavesHangingBuffersForASurface_shouldReportError() {
-        testShow1.onShowCreate = {
+        testShow1.onCreateShow = {
             showRunner.allSurfaces.forEach { surface ->
                 showRunner.getShaderBuffer(surface, SolidShader())
             }
@@ -250,7 +250,7 @@ class ShowRunnerTest {
 
     class TestShow1(
         var supportsSurfaceChange: Boolean = true,
-        var onShowCreate: () -> Unit = {},
+        var onCreateShow: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
     ) : Show.MetaData("TestShow1") {
@@ -267,7 +267,7 @@ class ShowRunnerTest {
                 showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
 
             init {
-                onShowCreate()
+                onCreateShow()
             }
 
             override fun nextFrame() {
