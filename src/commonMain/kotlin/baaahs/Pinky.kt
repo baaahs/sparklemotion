@@ -16,20 +16,29 @@ class Pinky(
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
-    private val brains: MutableMap<Network.Address, RemoteBrain> = mutableMapOf()
+    private val brainsById: MutableMap<String, RemoteBrain> = mutableMapOf()
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
-    private var brainsChanged: Boolean = true
     private var selectedShow = showMetas.first()
         set(value) {
-            field = value; display.selectedShow = value
+            field = value
+            display.selectedShow = value
+            showRunner.nextShow = selectedShow
         }
-    private lateinit var showRunner: ShowRunner
+
+    private val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP).apply { install(gadgetModule) }
+    private val gadgetProvider = GadgetProvider(pubSub)
+    private val showRunner =
+        ShowRunner(sheepModel, selectedShow, gadgetProvider, emptyList(), beatProvider, dmxUniverse)
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
     private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
     private val surfacesByBrainId = mutableMapOf<String, Surface>()
 
+    private val surfacesToAdd = mutableSetOf<ShowRunner.SurfaceReceiver>()
+    private val surfacesToRemove = mutableSetOf<ShowRunner.SurfaceReceiver>()
+
     val address: Network.Address get() = link.myAddress
+    private val networkStats = NetworkStats()
 
     suspend fun run(): Show {
         GlobalScope.launch { beatProvider.run() }
@@ -39,11 +48,7 @@ class Pinky(
         display.listShows(showMetas)
         display.selectedShow = selectedShow
 
-        val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP)
-        pubSub.install(gadgetModule)
-
-        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {
-        }
+        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {}
         val selectedShowChannel = pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
             this.selectedShow = showMetas.find { it.name == selectedShow }!!
         }
@@ -53,21 +58,6 @@ class Pinky(
             selectedShowChannel.onChange(this.selectedShow.name)
         }
 
-        val gadgetProvider = GadgetProvider(pubSub)
-
-        val buildShowRunner = {
-            ShowRunner(gadgetProvider, brains.values.toList(), beatProvider, dmxUniverse)
-        }
-
-        var currentShowMetaData = selectedShow
-        val buildShow = {
-            selectedShow.createShow(sheepModel, showRunner).also { currentShowMetaData = selectedShow }
-                .also { gadgetProvider.sync() }
-        }
-
-        showRunner = buildShowRunner()
-        var show = buildShow()
-
         while (true) {
             if (mapperIsRunning) {
                 disableDmx()
@@ -75,32 +65,29 @@ class Pinky(
                 continue
             }
 
-            if (brainsChanged || selectedShow != currentShowMetaData) {
-                if (brainsChanged) {
-                    logger.debug("Brains changed!")
-                }
+            updateSurfaces()
 
-                showRunner.shutDown()
-                showRunner = buildShowRunner()
-                show = buildShow()
-                brainsChanged = false
-            }
-
+            networkStats.reset()
             val elapsedMs = time {
-                show.nextFrame()
+                drawNextFrame()
             }
             display.nextFrameMs = elapsedMs.toInt()
-
-            // send shader buffers out to brains
-            //                println("Send frame from ${currentShowMetaData.name}…")
-            val stats = ShowRunner.Stats()
-            showRunner.send(link, stats)
-            display.stats = stats
-
-            //                    show!!.nextFrame(display.color, beatProvider.beat, brains, link)
+            display.stats = networkStats
 
             delay(50)
         }
+    }
+
+    internal fun updateSurfaces() {
+        if (surfacesToAdd.isNotEmpty() || surfacesToRemove.isNotEmpty()) {
+            showRunner.surfacesChanged(surfacesToAdd, surfacesToRemove)
+            surfacesToAdd.clear()
+            surfacesToRemove.clear()
+        }
+    }
+
+    internal fun drawNextFrame() {
+        showRunner.nextFrame()
     }
 
     private fun disableDmx() {
@@ -112,7 +99,7 @@ class Pinky(
         when (message) {
             is BrainHelloMessage -> {
                 val surfaceName = message.surfaceName
-                val surface = surfacesByName[surfaceName] ?: unknownSurface()
+                val surface = surfacesByName[surfaceName] ?: UnknownSurface(message.brainId)
                 foundBrain(RemoteBrain(fromAddress, message.brainId, surface))
 
                 maybeMoreMapping(fromAddress, surfaceName, message)
@@ -138,17 +125,45 @@ class Pinky(
         }
     }
 
-    private fun unknownSurface(): Surface {
-        return object : Surface {
-            override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
-        }
+    class UnknownSurface(val brainId: String) : Surface {
+        override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
+
+        override fun describe(): String = "Unknown surface for $brainId"
+        override fun equals(other: Any?): Boolean = other is UnknownSurface && brainId.equals(other.brainId)
+        override fun hashCode(): Int = brainId.hashCode()
     }
 
     private fun foundBrain(remoteBrain: RemoteBrain) {
-        brains.put(remoteBrain.address, remoteBrain)
-        display.brainCount = brains.size
+        val oldRemoteBrain = brainsById[remoteBrain.brainId]
+        if (oldRemoteBrain != null
+            && oldRemoteBrain.brainId == remoteBrain.brainId
+            && oldRemoteBrain.surface === remoteBrain.surface
+        ) {
+            // Duplicate packet?
+            return
+        }
 
-        brainsChanged = true
+//        println("Found ${remoteBrain.brainId} -> ${remoteBrain.surface}")
+
+        oldRemoteBrain?.let { it.surfaceReceiver?.let { receiver ->
+//            println("Remove listener for ${oldRemoteBrain.brainId} -> ${oldRemoteBrain.surface}")
+            surfacesToAdd.remove(receiver)
+            surfacesToRemove.add(receiver)
+        } }
+
+        brainsById.put(remoteBrain.brainId, remoteBrain)
+        display.brainCount = brainsById.size
+
+        val surfaceReceiver = ShowRunner.SurfaceReceiver(remoteBrain.surface) { shaderBuffer ->
+            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+            link.sendUdp(remoteBrain.address, Ports.BRAIN, message)
+
+            networkStats.packetsSent++
+            networkStats.bytesSent += message.size
+        }
+        surfacesToAdd.add(surfaceReceiver)
+        surfacesToRemove.remove(surfaceReceiver)
+        remoteBrain.surfaceReceiver = surfaceReceiver
     }
 
     fun providePanelMapping(brainId: String, surface: Surface) {
@@ -189,6 +204,18 @@ class Pinky(
             }
         }
     }
+
+    class NetworkStats(var bytesSent: Int = 0, var packetsSent: Int = 0) {
+        internal fun reset() {
+            bytesSent = 0
+            packetsSent = 0
+        }
+    }
 }
 
-class RemoteBrain(val address: Network.Address, val brainId: String, val surface: Surface)
+class RemoteBrain(
+    val address: Network.Address,
+    val brainId: String,
+    val surface: Surface,
+    var surfaceReceiver: ShowRunner.SurfaceReceiver? = null
+)

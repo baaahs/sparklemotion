@@ -12,7 +12,7 @@ import kotlin.random.Random
 object ThumpShow : Show.MetaData("Thump") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         private val beatProvider = showRunner.getBeatProvider()
-        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()

@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.gadgets.Slider
+import baaahs.shows.SimpleSpatialShow
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
@@ -42,12 +43,12 @@ class GadgetTest {
         pubSubServer.install(gadgetModule)
 
         val gadgetProvider = GadgetProvider(pubSubServer)
-        val showRunner = ShowRunner(gadgetProvider, listOf(), object : Pinky.BeatProvider {
+        val showRunner = ShowRunner(SheepModel(), SimpleSpatialShow, gadgetProvider, listOf(), object : Pinky.BeatProvider {
             override val beat: Float = 1.0f
             override var bpm: Float = 1.0f
         }, FakeDmxUniverse())
 
-        val serverSlider = showRunner.getGadget(Slider("fader", .1234f))
+        val serverSlider = showRunner.getGadget("fader", Slider("fader", .1234f))
 
         val pubSubClient = PubSub.connect(serverLink, serverLink.myAddress, 1234)
         pubSubClient.install(gadgetModule)

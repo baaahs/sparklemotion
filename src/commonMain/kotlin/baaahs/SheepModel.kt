@@ -36,7 +36,7 @@ class SheepModel {
                     }
                     "g" -> {
                         var name = args.joinToString(" ")
-                        val match = Regex("^G_([^_]+).*?\$").matchEntire(name)
+                        val match = Regex("^G_0?([^_]+).*?\$").matchEntire(name)
                         if (match != null) {
                             name = match.groups[1]!!.value
                         }
@@ -100,6 +100,10 @@ class SheepModel {
 
         val faces = Faces()
         val lines = mutableListOf<Line>()
+
+        override fun describe(): String = "Panel $name"
+        override fun equals(other: Any?): Boolean = other is Panel && name == other.name
+        override fun hashCode(): Int = name.hashCode()
     }
 
     class MovingHead(val name: String, val origin: Point/*, val heading: Point*/) {
