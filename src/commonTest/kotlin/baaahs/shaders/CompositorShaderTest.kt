@@ -43,6 +43,18 @@ class CompositorShaderTest {
     }
 
     @Test
+    fun addMode_doesntOverflow() {
+        val pixels = render(
+            composite(
+                solid(Color(0xffeedd).opaque()),
+                solid(Color(0x111111).opaque()),
+                CompositingMode.ADD
+            ), surface
+        )
+        expect(Color(0xffffee).opaque()) { pixels[0] }
+    }
+
+    @Test
     fun shouldCrossFade() {
         buffer.fade = 1f
         val pixels = render(compositor, buffer, surface)
