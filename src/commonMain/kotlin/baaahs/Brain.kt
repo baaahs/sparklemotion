@@ -58,14 +58,14 @@ class Brain(
                     val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
                     currentShaderBits = ShaderBits(
                         shader,
-                        shader.createRenderer(surface, pixels),
+                        shader.createRenderer(surface),
                         shader.createBuffer(surface)
                     )
                 }
 
                 with(currentShaderBits!!) {
                     read(reader)
-                    draw()
+                    draw(pixels)
                 }
             }
 
@@ -95,7 +95,7 @@ class Brain(
 
     class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
-        fun draw() = renderer.draw(buffer)
+        fun draw(pixels: Pixels) = renderer.draw(buffer, pixels)
     }
 
     inner class UnmappedSurface : Surface {

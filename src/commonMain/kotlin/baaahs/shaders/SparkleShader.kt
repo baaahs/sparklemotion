@@ -13,7 +13,7 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
+    override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> = Renderer()
 
     companion object : ShaderReader<SparkleShader> {
         override fun parse(reader: ByteArrayReader) = SparkleShader()
@@ -36,14 +36,11 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
         }
     }
 
-    class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
-
-        override fun draw(buffer: Buffer) {
-            for (i in colors.indices) {
-                colors[i] = if (Random.nextFloat() < buffer.sparkliness ) { buffer.color } else { Color.BLACK }
+    class Renderer : Shader.Renderer<Buffer> {
+        override fun draw(buffer: Buffer, pixels: Pixels) {
+            for (i in pixels.indices) {
+                pixels[i] = if (Random.nextFloat() < buffer.sparkliness ) { buffer.color } else { Color.BLACK }
             }
-            pixels.set(colors)
         }
     }
 }
