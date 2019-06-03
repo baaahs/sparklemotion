@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.Color
+import baaahs.Shader
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -46,5 +47,45 @@ class CompositorShaderTest {
         buffer.fade = 1f
         val pixels = render(compositor, buffer, surface)
         expect(Color.WHITE) { pixels[0] }
+    }
+
+    @Test
+    fun multiLevelCompositing() {
+        val pixels = render(
+            composite(
+                composite(
+                    solid(Color(0x010000).opaque()),
+                    solid(Color(0x100000).opaque()),
+                    CompositingMode.ADD
+                ),
+                composite(
+                    solid(Color(0x000100).opaque()),
+                    solid(Color(0x001000).opaque()),
+                    CompositingMode.ADD
+                ),
+                CompositingMode.ADD
+            ), surface
+        )
+        expect(Color(0x111100).opaque()) { pixels[0] }
+    }
+
+    fun composite(
+        left: Pair<Shader<*>, Shader.Buffer>,
+        right: Pair<Shader<*>, Shader.Buffer>,
+        mode: CompositingMode = CompositingMode.OVERLAY,
+        fade: Float = 1f
+    ): Pair<CompositorShader, CompositorShader.Buffer> {
+        val shader = CompositorShader(left.first, right.first)
+        val buffer = shader.createBuffer(left.second, right.second)
+        buffer.mode = mode
+        buffer.fade = fade
+        return shader to buffer
+    }
+
+    fun solid(color: Color): Pair<SolidShader, SolidShader.Buffer> {
+        val shader = SolidShader()
+        val buffer = shader.createBuffer(surface)
+        buffer.color = color
+        return shader to buffer
     }
 }

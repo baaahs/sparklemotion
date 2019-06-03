@@ -37,6 +37,9 @@ internal fun <T : Shader.Buffer> render(srcShader: Shader<T>, srcBuf: T, surface
     return pixels
 }
 
+internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
+    render(srcShaderAndBuffer.first, srcShaderAndBuffer.second, surface)
+
 class FakeSurface(override val pixelCount: Int) : Surface
 
 class FakePixels(override val size: Int) : Pixels {
