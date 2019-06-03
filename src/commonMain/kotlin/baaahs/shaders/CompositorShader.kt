@@ -18,8 +18,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         bShader.serialize(writer)
     }
 
-    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> =
-        Renderer(surface, pixels, aShader, bShader)
+    override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> =
+        Renderer(surface, aShader, bShader)
 
     override fun readBuffer(reader: ByteArrayReader): Buffer =
         Buffer(
@@ -64,32 +64,38 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
 
     class Renderer<A : Shader.Buffer, B : Shader.Buffer>(
         surface: Surface,
-        val pixels: Pixels,
         aShader: Shader<A>,
         bShader: Shader<B>
     ) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
-        private val aPixels = PixelBuf(pixels.count)
-        private val bPixels = PixelBuf(pixels.count)
-        private val rendererA: Shader.Renderer<A> = aShader.createRenderer(surface, aPixels)
-        private val rendererB: Shader.Renderer<B> = bShader.createRenderer(surface, bPixels)
+        private val pixelCount = surface.pixelCount
+        private val srcPixels = PixelBuf(pixelCount)
+        private val rendererA: Shader.Renderer<A> = aShader.createRenderer(surface)
+        private val rendererB: Shader.Renderer<B> = bShader.createRenderer(surface)
 
         @Suppress("UNCHECKED_CAST")
-        override fun draw(buffer: Buffer) {
-            rendererA.draw(buffer.bufferA as A)
-            rendererB.draw(buffer.bufferB as B)
+        override fun draw(buffer: Buffer, pixels: Pixels) {
+            @Suppress("UnnecessaryVariable")
+            val destPixels = pixels
+
+            rendererA.draw(buffer.bufferA as A, destPixels)
+            rendererB.draw(buffer.bufferB as B, srcPixels)
 
             val mode = buffer.mode
-            for (i in colors.indices) {
-                val aColor = aPixels.colors[i]
-                val bColor = bPixels.colors[i]
-                colors[i] = aColor.fade(mode.composite(aColor, bColor), buffer.fade)
+            for (i in 0 until pixelCount) {
+                val src = srcPixels[i]
+                val dest = destPixels[i]
+                destPixels[i] = dest.fade(mode.composite(src, dest), buffer.fade)
             }
-            pixels.set(colors)
         }
 
-        class PixelBuf(override val count: Int) : Pixels {
-            val colors = Array(count) { Color.WHITE }
+        class PixelBuf(override val size: Int) : Pixels {
+            val colors = Array(size) { Color.WHITE }
+
+            override fun get(i: Int): Color = colors[i]
+
+            override fun set(i: Int, color: Color) {
+                colors[i] = color
+            }
 
             override fun set(colors: Array<Color>) {
                 colors.copyInto(this.colors)
@@ -99,8 +105,12 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
 }
 
 enum class CompositingMode {
-    OVERLAY { override fun composite(src: Color, dest: Color) = src },
-    ADD { override fun composite(src: Color, dest: Color) = dest.plus(src) };
+    OVERLAY {
+        override fun composite(src: Color, dest: Color) = src
+    },
+    ADD {
+        override fun composite(src: Color, dest: Color) = dest.plus(src)
+    };
 
     abstract fun composite(src: Color, dest: Color): Color
 

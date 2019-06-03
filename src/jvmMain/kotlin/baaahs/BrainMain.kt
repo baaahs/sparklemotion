@@ -19,7 +19,7 @@ import kotlin.math.sqrt
 
 fun main(args: Array<String>) {
     val network = JvmNetwork(notReallyAnHttpServer())
-    val brain = Brain(JvmNetwork.myAddress.toString(), network, object: BrainDisplay {
+    val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
         override fun haveLink(link: Network.Link) {
             println("Brain has a link!")
         }
@@ -33,9 +33,9 @@ fun main(args: Array<String>) {
 }
 
 class JvmPixelsDisplay(pixelCount: Int) : Pixels {
-    override val count = pixelCount
-    private val colors = Array(count) { Color.BLACK }
-    private val pixelsPerRow = ceil(sqrt(count.toFloat())).roundToInt()
+    override val size = pixelCount
+    private val colors = Array(size) { Color.BLACK }
+    private val pixelsPerRow = ceil(sqrt(size.toFloat())).roundToInt()
     private val pixelsPerCol = pixelsPerRow
 
     private val frame = Frame("Pixels!")
@@ -49,7 +49,7 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
                 bufG.color = java.awt.Color.BLACK
                 bufG.clearRect(0, 0, width, height)
 
-                for (i in 0 until count) {
+                for (i in 0 until this@JvmPixelsDisplay.size) {
                     val row = i % pixelsPerRow
                     val col = i / pixelsPerRow
 
@@ -60,8 +60,10 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
                     val color = colors[i]
                     bufG.color = java.awt.Color(color.rgb)
 
-                    bufG.fillRect(col * pixWidth, row * pixHeight,
-                        pixWidth - pixGap, pixHeight - pixGap)
+                    bufG.fillRect(
+                        col * pixWidth, row * pixHeight,
+                        pixWidth - pixGap, pixHeight - pixGap
+                    )
                 }
 
                 g.drawImage(doubleBuffer, 0, 0, this@PanelCanvas)
@@ -80,8 +82,14 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
         frame.invalidate()
     }
 
+    override fun get(i: Int): Color = colors[i]
+
+    override fun set(i: Int, color: Color) {
+        colors[i] = color
+    }
+
     override fun set(colors: Array<Color>) {
-        val pixCount = min(colors.size, count)
+        val pixCount = min(colors.size, size)
         colors.copyInto(this.colors, 0, 0, pixCount)
         canvas.repaint()
     }

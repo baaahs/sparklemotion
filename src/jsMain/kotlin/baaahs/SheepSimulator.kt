@@ -68,7 +68,10 @@ class SheepSimulator {
     }
 
     object NullPixels : Pixels {
-        override val count = 0
+        override val size = 0
+
+        override fun get(i: Int): Color = Color.BLACK
+        override fun set(i: Int, color: Color) {}
         override fun set(colors: Array<Color>) {}
     }
 
