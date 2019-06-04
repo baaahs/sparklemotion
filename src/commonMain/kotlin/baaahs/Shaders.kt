@@ -10,7 +10,8 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SINE_WAVE(SineWaveShader),
     COMPOSITOR(CompositorShader),
     SPARKLE(SparkleShader),
-    SIMPLE_SPATIAL(SimpleSpatialShader);
+    SIMPLE_SPATIAL(SimpleSpatialShader),
+    HEART(HeartShader);
 
     companion object {
         val values = values()

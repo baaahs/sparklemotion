@@ -18,7 +18,7 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link())
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
-    private var selectedShow = shows.first()
+    private var selectedShow = shows.last()
         set(value) {
             field = value
             display.selectedShow = value
