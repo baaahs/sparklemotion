@@ -1,33 +1,18 @@
-#include <stdio.h>
-#include <string.h>
+#include "net_priv.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-// #include "esp_system.h"
-// #include "esp_event_loop.h"
+
 #include "esp_err.h"
-// #include "esp_event.h"
-#include "esp_log.h"
-// #include "esp_eth.h"
-// #include "esp32/rom/gpio.h"
 #include "tcpip_adapter.h"
-// #include "driver/gpio.h"
-// #include "driver/periph_ctrl.h"
 
-#include "./ethernet.h"
-#include "./wifi.h"
+#include "ethernet.h"
+#include "wifi.h"
 
-static const char *TAG = "net";
-
-// Totally making this up. For the ESP32 this is in bytes
-#define TASK_NET_STACK_SIZE 10240
-
-// Lower numbers are less important. Causes memory allocation though
-// so don't want it higher than necessary
-#define TASK_NET_PRIORITY 10
 
 void static task_net_main(void* pvParameters) {
     TickType_t xLastWakeTime;
-    const TickType_t xFrequency = 1 * xPortGetTickRateHz();
+    const TickType_t xFrequency = 10 * xPortGetTickRateHz();
 
     // Initialization
     tcpip_adapter_init();

@@ -40,7 +40,9 @@ internal fun <T : Shader.Buffer> render(srcShader: Shader<T>, srcBuf: T, surface
 internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
     render(srcShaderAndBuffer.first, srcShaderAndBuffer.second, surface)
 
-class FakeSurface(override val pixelCount: Int) : Surface
+class FakeSurface(override val pixelCount: Int) : Surface {
+    override fun describe(): String = "fake"
+}
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

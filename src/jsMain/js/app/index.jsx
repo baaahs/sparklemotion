@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader';
 import React, {Component, Fragment} from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
 import ShowList from './ShowList';
@@ -12,7 +13,7 @@ import styles from './app.scss';
 
 const baaahs = sparklemotion.baaahs;
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
 
@@ -80,3 +81,5 @@ export default class App extends Component {
 App.propTypes = {
   pubSub: PropTypes.object.isRequired,
 };
+
+export default hot(module)(App);

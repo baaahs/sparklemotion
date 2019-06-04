@@ -12,20 +12,21 @@ import kotlin.random.Random
 object ThumpShow : Show.MetaData("Thump") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
         private val beatProvider = showRunner.getBeatProvider()
-        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
+        val compositorShader = CompositorShader(solidShader, sineWaveShader)
 
-        private val shaderBufs = sheepModel.allPanels.map { panel ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
+        private val shaderBufs = showRunner.allSurfaces.map { surface ->
+            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
 
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
+                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
 
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }

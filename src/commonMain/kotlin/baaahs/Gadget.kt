@@ -69,7 +69,7 @@ class GadgetValueObserver<T>(initialValue: T, val onChange: () -> Unit) : Observ
 }
 
 @Serializable()
-class GadgetData(@Polymorphic val gadget: Gadget, val topicName: String)
+class GadgetData(val name: String, @Polymorphic val gadget: Gadget, val topicName: String)
 
 class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>) -> Unit) {
     val activeGadgets = mutableListOf<GadgetData>()

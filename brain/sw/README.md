@@ -21,5 +21,7 @@ The highlights are
 
 Assuming all that is done you should be able to cd into one of the firmware directories and run `idf.py build`.
 
+However, right now I don't understand why the spiffs storage.bin file doesn't build. To build this manually in the playa directory, from the `playa\build` directory you can run `ninja spiffs_storage_bin` or possibly `make spiffs_storage_bin` depending on which build system you are using.
+
 If the build works use `idf.py flash` to flash a board connected via usb and `idf.py monitor` to connect to the serial console.
 
