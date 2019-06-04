@@ -10423,7 +10423,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.controls_0.update();
     this.raycaster_0.setFromCamera(this.mouse_0, this.camera_0);
     var intersections = this.raycaster_0.intersectObjects(this.scene_0.children, false);
-    if (!intersections.isEmpty()) {
+    if (intersections.size > 0) {
       var intersection = intersections.get_za3lpa$(0);
       if (intersection.object.panel) {
         (Kotlin.isType(tmp$ = document.getElementById('selectionInfo'), HTMLDivElement) ? tmp$ : throwCCE()).innerText = 'Selected: ' + toString_0(intersections.get_za3lpa$(0).object.panel.name);
