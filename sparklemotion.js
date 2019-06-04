@@ -474,6 +474,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     else
       return instance.doResume(null);
   };
+  Brain.prototype.forcedSurfaceName_61zpoe$ = function (name) {
+    this.surfaceName_0 = name;
+  };
   function Coroutine$sendHello_0($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
