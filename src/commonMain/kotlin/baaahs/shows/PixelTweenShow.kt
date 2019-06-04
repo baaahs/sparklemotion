@@ -28,7 +28,7 @@ object PixelTweenShow : Show.MetaData("PixelTweenShow") {
                     val endColor = colorArray[(colorIndex + 1) % colorArray.size]
 
                     val colors = buffer.colors
-                    colors.forEachIndexed { index, color ->
+                    colors.forEachIndexed { index, _ ->
                         if (Random.nextFloat() < .1) {
                             colors[index] = Color.WHITE
                         } else {

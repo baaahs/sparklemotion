@@ -14,7 +14,7 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(surface: Surface, pixels: Pixels): Shader.Renderer<Buffer> = Renderer(pixels)
+    override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> = Renderer()
 
     companion object : ShaderReader<SineWaveShader> {
         override fun parse(reader: ByteArrayReader) = SineWaveShader()
@@ -41,19 +41,16 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
         }
     }
 
-    class Renderer(val pixels: Pixels) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
-
-        override fun draw(buffer: Buffer) {
+    class Renderer : Shader.Renderer<Buffer> {
+        override fun draw(buffer: Buffer, pixels: Pixels) {
             val theta = buffer.theta
-            val pixelCount = pixels.count.toFloat()
+            val pixelCount = pixels.size
             val density = buffer.density
 
-            for (i in colors.indices) {
-                val v = sin(theta + 2 * PI * (i / pixelCount * density)) / 2 + .5
-                colors[i] = Color.BLACK.fade(buffer.color, v.toFloat())
+            for (i in pixels.indices) {
+                val v = sin(theta + 2 * PI * (i.toFloat() / pixelCount * density)) / 2 + .5
+                pixels[i] = Color.BLACK.fade(buffer.color, v.toFloat())
             }
-            pixels.set(colors)
         }
     }
 }
