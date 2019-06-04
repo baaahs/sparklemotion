@@ -2,6 +2,7 @@ package baaahs
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.serializer
 
 class GadgetProvider(private val pubSub: PubSub.Server) {
@@ -12,7 +13,7 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
     private val gadgets = mutableMapOf<Gadget, GadgetChannel>()
     private var nextGadgetId = 1
 
-    fun <G : Gadget> getGadget(gadget: G): G {
+    fun <G : Gadget> getGadget(name: String, gadget: G): G {
         val gadgetId = nextGadgetId++
 
         val topic =
@@ -23,7 +24,7 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         }
         gadgets[gadget] = GadgetChannel(topic, channel)
 
-        activeGadgets.add(GadgetData(gadget, topic.name))
+        activeGadgets.add(GadgetData(name, gadget, topic.name))
 
         return gadget
     }
@@ -37,6 +38,25 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
     fun sync() {
         activeGadgetChannel.onChange(activeGadgets)
     }
+
+    fun getGadgetsState() : Map<String, JsonElement> {
+        return activeGadgets.associate { gadgetData ->
+            gadgetData.name to gadgetData.gadget.toJson()
+        }
+    }
+
+    fun setGadgetsState(state: Map<String, JsonElement>) {
+        state.forEach { (name, data) ->
+            try {
+                findGadget(name)!!.setFromJson(data)
+            } catch (e: Exception) {
+                logger.error("Error updating gadget $name: ${e.message}")
+            }
+        }
+    }
+
+    internal fun findGadget(name: String) = activeGadgets.find { it.name == name }?.gadget
+    internal fun findGadgetChannel(name: String) = gadgets[findGadget(name)]?.channel
 
     class GadgetChannel(val topic: PubSub.Topic<String>, val channel: PubSub.Channel<String>)
 }

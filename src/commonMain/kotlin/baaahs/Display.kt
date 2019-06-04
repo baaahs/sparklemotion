@@ -22,7 +22,7 @@ interface PinkyDisplay {
     var onShowChange: (() -> Unit)
     var selectedShow: Show.MetaData?
     var nextFrameMs: Int
-    var stats: ShowRunner.Stats?
+    var stats: Pinky.NetworkStats?
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
@@ -34,9 +34,12 @@ open class StubPinkyDisplay : PinkyDisplay {
     override var onShowChange: () -> Unit = { }
     override var selectedShow: Show.MetaData? = null
     override var nextFrameMs: Int = 0
-    override var stats: ShowRunner.Stats? = null
+    override var stats: Pinky.NetworkStats? = null
 }
 
 interface BrainDisplay {
+    var id: String?
+    var surface: Surface?
+    var onReset: suspend () -> Unit
     fun haveLink(link: Network.Link)
 }

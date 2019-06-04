@@ -11,21 +11,24 @@ import kotlin.random.Random
 
 object CompositeShow : Show.MetaData("Composite") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
-        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
 
-        private val shaderBufs = sheepModel.allPanels.map { panel ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(panel, sineWaveShader).apply {
+        private val shaderBufs = showRunner.allSurfaces.associateWith { surface -> shaderBufsFor(surface) }
+            .toMutableMap()
+
+        private fun shaderBufsFor(surface: Surface): ShaderBufs {
+            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(panel, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
+                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
 
-            ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
+            return ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
         private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
@@ -34,7 +37,7 @@ object CompositeShow : Show.MetaData("Composite") {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
 
             var i = 0
-            shaderBufs.forEach { shaderBuffer ->
+            shaderBufs.values.forEach { shaderBuffer ->
                 shaderBuffer.solidShaderBuffer.color = colorPicker.color
                 shaderBuffer.sineWaveShaderBuffer.color = Color.WHITE
                 shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
@@ -47,6 +50,11 @@ object CompositeShow : Show.MetaData("Composite") {
                 buf.pan = PI.toFloat() / 2
                 buf.tilt = theta / 2
             }
+        }
+
+        override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
+            removedSurfaces.forEach { shaderBufs.remove(it) }
+            newSurfaces.forEach { shaderBufs[it] = shaderBufsFor(it) }
         }
     }
 

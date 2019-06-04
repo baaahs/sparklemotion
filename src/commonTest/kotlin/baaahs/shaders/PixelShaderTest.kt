@@ -36,5 +36,7 @@ class PixelShaderTest {
         return dstBuf
     }
 
-    class FakeSurface(override val pixelCount: Int) : Surface
+    class FakeSurface(override val pixelCount: Int) : Surface {
+        override fun describe(): String = "fake"
+    }
 }

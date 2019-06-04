@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 object LifeyShow : Show.MetaData("Lifey") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
-        val speedSlider = showRunner.getGadget(Slider("Speed", .25f))
+        val speedSlider = showRunner.getGadget("speed", Slider("Speed", .25f))
 
         val shader = SolidShader()
         val shaderBuffers = sheepModel.allPanels.associateWith {

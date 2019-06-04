@@ -16,9 +16,11 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
      * * total payload size (long)
      * * this frame offset (long)
      */
+    companion object {
+        const val headerSize = 12
+    }
 
     private val mtu = link.udpMtu
-    private val headerSize = 12
     private var nextMessageId: Short = 0
 
     private var fragments = arrayListOf<Fragment>()
