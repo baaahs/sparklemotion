@@ -18,15 +18,16 @@ object PanelTweenShow : Show.MetaData("PanelTweenShow") {
         )
 
         return object : Show {
-            val slider = showRunner.getGadget(Slider("Sparkliness", 0f))
+            val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
-            val shaderBuffers = sheepModel.allPanels.map { panel ->
-                val solidShaderBuffer = showRunner.getShaderBuffer(panel, solidShader)
-                val sparkleShaderBuffer = showRunner.getShaderBuffer(panel, sparkleShader)
+
+            val shaderBuffers = showRunner.allSurfaces.map { surface ->
+                val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+                val sparkleShaderBuffer = showRunner.getShaderBuffer(surface, sparkleShader)
                 val compositorShaderBuffer = showRunner.getCompositorBuffer(
-                    panel, solidShaderBuffer, sparkleShaderBuffer, CompositingMode.ADD, 1f
+                    surface, solidShaderBuffer, sparkleShaderBuffer, CompositingMode.ADD, 1f
                 )
 
                 Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer)

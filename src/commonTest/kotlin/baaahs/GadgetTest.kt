@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.gadgets.Slider
-import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -20,11 +19,19 @@ class GadgetTest {
         val someGadget = SomeGadget(123)
 
         val log1 = mutableListOf<String>()
-        val listener1 = object: GadgetListener { override fun onChanged(gadget: Gadget) { log1.add("changed") } }
+        val listener1 = object : GadgetListener {
+            override fun onChanged(gadget: Gadget) {
+                log1.add("changed")
+            }
+        }
         someGadget.listen(listener1)
 
         val log2 = mutableListOf<String>()
-        val listener2 = object: GadgetListener { override fun onChanged(gadget: Gadget) { log2.add("changed") } }
+        val listener2 = object : GadgetListener {
+            override fun onChanged(gadget: Gadget) {
+                log2.add("changed")
+            }
+        }
         someGadget.listen(listener2)
 
         someGadget.value = 321
@@ -42,12 +49,7 @@ class GadgetTest {
         pubSubServer.install(gadgetModule)
 
         val gadgetProvider = GadgetProvider(pubSubServer)
-        val showRunner = ShowRunner(gadgetProvider, listOf(), object : Pinky.BeatProvider {
-            override val beat: Float = 1.0f
-            override var bpm: Float = 1.0f
-        }, FakeDmxUniverse())
-
-        val serverSlider = showRunner.getGadget(Slider("fader", .1234f))
+        val serverSlider = gadgetProvider.getGadget("fader", Slider("fader", .1234f))
 
         val pubSubClient = PubSub.connect(serverLink, serverLink.myAddress, 1234)
         pubSubClient.install(gadgetModule)

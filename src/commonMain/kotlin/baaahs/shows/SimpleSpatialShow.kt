@@ -9,13 +9,13 @@ import baaahs.shaders.SimpleSpatialShader
 
 object SimpleSpatialShow : Show.MetaData("Spatial") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
-        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
-        val centerXSlider = showRunner.getGadget(Slider("center X", 0.5f))
-        val centerYSlider = showRunner.getGadget(Slider("center Y", 0.5f))
-        val radiusSlider = showRunner.getGadget(Slider("radius", 0.25f))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
+        val centerXSlider = showRunner.getGadget("centerX", Slider("center X", 0.5f))
+        val centerYSlider = showRunner.getGadget("centerY", Slider("center Y", 0.5f))
+        val radiusSlider = showRunner.getGadget("radius", Slider("radius", 0.25f))
 
         val shader = SimpleSpatialShader()
-        val shaderBuffers = sheepModel.allPanels.map {
+        val shaderBuffers = showRunner.allSurfaces.map {
             showRunner.getShaderBuffer(it, shader)
         }
 

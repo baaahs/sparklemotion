@@ -1,6 +1,8 @@
 package baaahs
 
 import baaahs.net.Network
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLSelectElement
@@ -18,7 +20,10 @@ class JsDisplay : Display {
         JsPinkyDisplay(document.getElementById("pinkyView")!!)
 
     override fun forBrain(): BrainDisplay =
-        JsBrainDisplay(document.getElementById("brainsView")!!)
+        JsBrainDisplay(
+            document.getElementById("brainsView")!!,
+            document.getElementById("brainDetails")!!
+        )
 }
 
 class JsNetworkDisplay(document: Document) : NetworkDisplay {
@@ -73,7 +78,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             nextFrameElapsed.textContent = "${value}ms"
         }
 
-    override var stats: ShowRunner.Stats? = null
+    override var stats: Pinky.NetworkStats? = null
         set(value) {
             field = value
             statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets sent" } ?: "?"
@@ -141,20 +146,30 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
             field = value
         }
-
-    private class ShowButton(showMeta: Show.MetaData, element: Element) : Button<Show.MetaData>(showMeta, element)
 }
 
-class JsBrainDisplay(element: Element) : BrainDisplay {
-    private var myDiv = element.appendElement("div") { addClass("brain-offline") }
+class JsBrainDisplay(container: Element, detailsContainer: Element) : BrainDisplay {
+    override var id: String? = null
+    override var surface: Surface? = null
+    override var onReset: suspend () -> Unit = {}
+
+    private var myDiv = container.appendElement("div") {
+        addClass("brain-box", "brain-offline")
+        this.addEventListener("click", { event -> GlobalScope.launch { onReset() } })
+        this.addEventListener("mouseover", { event ->
+            detailsContainer.clear()
+            detailsContainer.appendElement("hr") {}
+            detailsContainer.appendElement("b") {
+                appendText("Brain ${this@JsBrainDisplay.id}")
+            }
+            detailsContainer.appendElement("div") {
+                appendText("Surface: ${surface?.describe()}}")
+            }
+        })
+    }
 
     override fun haveLink(link: Network.Link) {
-        clearClasses()
+        myDiv.classList.remove("brain-offline")
         myDiv.classList.add("brain-link")
     }
-
-    private fun clearClasses() {
-        myDiv.classList.clear()
-    }
-
 }

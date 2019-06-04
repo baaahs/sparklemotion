@@ -10,9 +10,9 @@ class FragmentingUdpLinkTest {
     private val mtu = 1400
 
     private val receivedPayloads = mutableListOf<ByteArray>()
-    private val sendTestLink = TestNetworkLink(mtu)
+    private val sendTestLink = TestNetwork.TestNetworkLink(mtu)
     private val sendLink = FragmentingUdpLink(sendTestLink)
-    private val recvTestLink = TestNetworkLink(mtu)
+    private val recvTestLink = TestNetwork.TestNetworkLink(mtu)
     private val recvLink = FragmentingUdpLink(recvTestLink)
 
     @BeforeTest
@@ -60,52 +60,6 @@ class FragmentingUdpLinkTest {
     private fun send(smallPayload: ByteArray) {
         sendLink.sendUdp(recvLink.myAddress, port, smallPayload)
         sendTestLink.sendTo(recvTestLink)
-    }
-
-    class TestNetworkLink(mtu: Int) : Network.Link {
-        override val myAddress = someAddress()
-        val packetsToSend = mutableListOf<ByteArray>()
-        val receviedPackets = mutableListOf<ByteArray>()
-
-        private var udpListener: Network.UdpListener? = null
-
-        fun sendTo(link: TestNetworkLink) {
-            packetsToSend.forEach { bytes ->
-                link.receiveUdp(bytes)
-            }
-            packetsToSend.clear()
-        }
-
-        private fun receiveUdp(bytes: ByteArray) {
-            receviedPackets += bytes
-            udpListener?.receive(myAddress, bytes)
-        }
-
-        override val udpMtu = mtu
-
-        override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
-            this.udpListener = udpListener
-        }
-
-        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-            packetsToSend += bytes
-        }
-
-        override fun broadcastUdp(port: Int, bytes: ByteArray) {
-            packetsToSend += bytes
-        }
-
-        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
-            TODO("TestNetworkLink.listenTcp not implemented")
-        }
-
-        override fun connectTcp(
-            toAddress: Network.Address,
-            port: Int,
-            tcpListener: Network.TcpListener
-        ): Network.TcpConnection {
-            TODO("TestNetworkLink.connectTcp not implemented")
-        }
     }
 
     companion object {
