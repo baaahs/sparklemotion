@@ -14,17 +14,37 @@
 #include "driver/periph_ctrl.h"
 
 #include "net/task_net.h"
+#include "httpd/task_httpd.h"
+
+#include "brain.h"
+
+static Brain brain;
 
 extern "C" void app_main()
 {
     // Basic setup
+
+    // Go to a not so much debug level which can be overriden on a TAG basis
+    esp_log_level_set("*", ESP_LOG_INFO);
+    // Our standard for tags is start with a # and then 6 characters right aligned
+    //esp_log_level_set("httpd", ESP_LOG_DEBUG);
+    esp_log_level_set("#   net", ESP_LOG_DEBUG);
+    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
+    esp_log_level_set("# brain", ESP_LOG_DEBUG);
+
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     // Start the various tasks
     task_net_create();
+    task_httpd_create();
 
     // Hang out doing nothing or exit? I think it's ok to exit...
     // while(1) {
 
     // }
+
+    brain.start();
+
+    // We will never exit!
+    //brain.receiveMessages();
 }

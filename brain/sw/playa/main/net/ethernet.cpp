@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <string.h>
+#include "net_priv.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
@@ -23,8 +23,6 @@
 #include "eth_phy/phy_ip101.h"
 #define DEFAULT_ETHERNET_PHY_CONFIG phy_ip101_default_ethernet_config
 #endif
-
-static const char *TAG = "net eth";
 
 #define PIN_PHY_POWER CONFIG_PHY_POWER_PIN
 #define PIN_SMI_MDC CONFIG_PHY_SMI_MDC_PIN
@@ -124,7 +122,7 @@ static void got_ip_event_handler(void* arg, esp_event_base_t event_base,
 
 void ethernet_init()
 {
-    ESP_LOGD(TAG, "Begining initialization");
+    ESP_LOGD(TAG, "ethernet_init start");
 
     eth_config_t config = DEFAULT_ETHERNET_PHY_CONFIG;
     config.phy_addr = (eth_phy_base_t)CONFIG_PHY_ADDRESS;
@@ -142,5 +140,5 @@ void ethernet_init()
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &got_ip_event_handler, NULL));
     ESP_ERROR_CHECK(esp_eth_enable()) ;
 
-    ESP_LOGD(TAG, "Initialization done");
+    ESP_LOGD(TAG, "ethernet_init done");
 }

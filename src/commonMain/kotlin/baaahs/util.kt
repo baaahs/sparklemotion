@@ -8,6 +8,11 @@ fun <E> List<E>.random(): E? = if (size > 0) get(Random.nextInt(size)) else null
 
 fun <E> List<E>.random(random: Random): E? = if (size > 0) get(random.nextInt(size)) else null
 
+fun <E> Collection<E>.only(description: String = "item"): E {
+    if (size != 1) throw IllegalArgumentException("Expected one $description, found $size: $this")
+    else return iterator().next()
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
 suspend fun randomDelay(timeMs: Int) {
@@ -22,6 +27,10 @@ class logger {
 
         fun warn(message: String) {
             println("WARN: $message")
+        }
+
+        fun error(message: String) {
+            println("ERROR: $message")
         }
     }
 }

@@ -20,10 +20,15 @@ import kotlin.math.sqrt
 fun main(args: Array<String>) {
     val network = JvmNetwork(notReallyAnHttpServer())
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
+        override var id: String? = null
+        override var surface: Surface? = null
+        override var onReset: suspend () -> Unit = {}
         override fun haveLink(link: Network.Link) {
             println("Brain has a link!")
         }
     }, JvmPixelsDisplay(2000))
+
+    brain.forcedSurfaceName("33R")
 
     GlobalScope.launch { brain.run() }
 
