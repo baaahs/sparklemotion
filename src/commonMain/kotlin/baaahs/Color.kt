@@ -91,6 +91,8 @@ data class Color(val argb: Int) {
         )
     }
 
+    fun opaque(): Color = Color(argb or 0xff000000.toInt())
+
     override fun toString(): String {
         return "Color(${toHexString()})"
     }

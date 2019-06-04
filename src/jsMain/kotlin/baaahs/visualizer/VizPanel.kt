@@ -131,13 +131,13 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
 
 
     class VizPixels(positions: Array<Vector3>) : Pixels {
-        override val count = positions.size
+        override val size = positions.size
         private val points: Points
         private val pixGeometry = BufferGeometry()
         private val colorsBufferAttr: BufferAttribute
 
         init {
-            val positionsArray = Float32Array(count * 3)
+            val positionsArray = Float32Array(size * 3)
             positions.forEachIndexed { i, v ->
                 positionsArray[i * 3] = v.x.toFloat()
                 positionsArray[i * 3 + 1] = v.y.toFloat()
@@ -146,7 +146,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
             val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
             pixGeometry.addAttribute("position", positionsBufferAttr)
 
-            colorsBufferAttr = Float32BufferAttribute(Float32Array(this.count * 3), 3)
+            colorsBufferAttr = Float32BufferAttribute(Float32Array(size * 3), 3)
             colorsBufferAttr.dynamic = true
             pixGeometry.addAttribute("color", colorsBufferAttr)
             val material = PointsMaterial()
@@ -162,8 +162,25 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
             scene.remove(points)
         }
 
+        override fun get(i: Int): Color {
+            val rgbBuf = colorsBufferAttr.array
+            return Color(
+                rgbBuf[i * 3] as Float,
+                rgbBuf[i * 3 + 1] as Float,
+                rgbBuf[i * 3 + 2] as Float
+            )
+        }
+
+        override fun set(i: Int, color: Color) {
+            val rgbBuf = colorsBufferAttr.array
+            rgbBuf[i * 3] = color.redF
+            rgbBuf[i * 3 + 1] = color.greenF
+            rgbBuf[i * 3 + 2] = color.blueF
+            colorsBufferAttr.needsUpdate = true
+        }
+
         override fun set(colors: Array<Color>) {
-            val maxCount = min(this.count, colors.size)
+            val maxCount = min(this.size, colors.size)
             val rgbBuf = colorsBufferAttr.array
             for (i in 0 until maxCount) {
                 val pColor = colors[i]
@@ -171,7 +188,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
                 rgbBuf[i * 3 + 1] = pColor.greenF
                 rgbBuf[i * 3 + 2] = pColor.blueF
             }
-            this.colorsBufferAttr.needsUpdate = true
+            colorsBufferAttr.needsUpdate = true
         }
 
         fun getPixelLocationsInPanelSpace(vizPanel: VizPanel): Array<Vector2> {

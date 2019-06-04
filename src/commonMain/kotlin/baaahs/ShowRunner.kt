@@ -65,7 +65,7 @@ class ShowRunner(
         surface: Surface,
         bufferA: Shader.Buffer,
         bufferB: Shader.Buffer,
-        mode: CompositingMode = CompositingMode.OVERLAY,
+        mode: CompositingMode = CompositingMode.NORMAL,
         fade: Float = 0.5f
     ): CompositorShader.Buffer {
         if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")

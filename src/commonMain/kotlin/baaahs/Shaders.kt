@@ -16,7 +16,7 @@ enum class ShaderId(val reader: ShaderReader<*>) {
         val values = values()
         fun get(i: Byte): ShaderId {
             if (i > values.size || i < 0) {
-                throw Throwable("bad index for ShaderId: ${i}")
+                throw Throwable("bad index for ShaderId: $i")
             }
             return values[i.toInt()]
         }
@@ -34,7 +34,7 @@ interface ShaderReader<T : Shader<*>> {
 }
 
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
-    abstract fun createRenderer(surface: Surface, pixels: Pixels): Renderer<B>
+    abstract fun createRenderer(surface: Surface): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
 
@@ -77,12 +77,28 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
     }
 
     interface Renderer<B : Buffer> {
-        fun draw(buffer: B)
+        fun draw(buffer: B, pixels: Pixels)
     }
 }
 
-interface Pixels {
-    val count: Int
+interface Pixels : Iterable<Color> {
+    val size: Int
+
+    val indices: IntRange
+        get() = IntRange(0, size - 1)
+
+    operator fun get(i: Int): Color
+    operator fun set(i: Int, color: Color)
 
     fun set(colors: Array<Color>)
+
+    override fun iterator(): Iterator<Color> {
+        return object : Iterator<Color> {
+            private var i = 0
+
+            override fun hasNext(): Boolean = i < size
+
+            override fun next(): Color = get(i++)
+        }
+    }
 }

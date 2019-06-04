@@ -14,7 +14,7 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(surface: Surface, pixels: Pixels): Renderer = Renderer(surface, pixels)
+    override fun createRenderer(surface: Surface): Renderer = Renderer(surface)
 
     companion object : ShaderReader<SimpleSpatialShader> {
         override fun parse(reader: ByteArrayReader) = SimpleSpatialShader()
@@ -44,20 +44,19 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
         }
     }
 
-    class Renderer(private val surface: Surface, private val pixels: Pixels) : Shader.Renderer<Buffer> {
-        private val colors = Array(pixels.count) { Color.WHITE }
+    class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
         private val pixelVertices = (surface as? Brain.MappedSurface)?.pixelVertices
 
-        override fun draw(buffer: Buffer) {
+        override fun draw(buffer: Buffer, pixels: Pixels) {
             if (pixelVertices == null) return
 
-            for (i in 0 until min(colors.size, pixelVertices.size)) {
+            for (i in 0 until min(pixels.size, pixelVertices.size)) {
                 val (pixX, pixY) = pixelVertices[i]
 
                 val distX = pixX - buffer.centerX
                 val distY = pixY - buffer.centerY
                 val dist = sqrt(distX * distX + distY * distY)
-                colors[i] = if (dist < buffer.radius - 0.025f) {
+                pixels[i] = if (dist < buffer.radius - 0.025f) {
                     buffer.color
                 } else if (dist < buffer.radius + 0.025f) {
                     Color.BLACK
@@ -65,7 +64,6 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
                     buffer.color.fade(Color.BLACK, dist * 2)
                 }
             }
-            pixels.set(colors)
         }
     }
 }
