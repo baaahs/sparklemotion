@@ -42,7 +42,7 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
 
     inner class Buffer(
         val bufferA: Shader.Buffer, val bufferB: Shader.Buffer,
-        var mode: CompositingMode = CompositingMode.OVERLAY,
+        var mode: CompositingMode = CompositingMode.NORMAL,
         var fade: Float = 0.5f
     ) : Shader.Buffer {
         override val shader: Shader<*> = this@CompositorShader
@@ -105,7 +105,7 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
 }
 
 enum class CompositingMode {
-    OVERLAY {
+    NORMAL {
         override fun composite(src: Color, dest: Color) = src
     },
     ADD {

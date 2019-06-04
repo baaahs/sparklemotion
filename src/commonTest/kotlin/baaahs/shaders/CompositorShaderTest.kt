@@ -12,7 +12,7 @@ class CompositorShaderTest {
     private val bBuffer = bShader.Buffer().apply { color = Color.WHITE }
     private val compositor = CompositorShader(aShader, bShader)
     private val buffer = compositor.Buffer(aBuffer, bBuffer).apply {
-        mode = CompositingMode.OVERLAY
+        mode = CompositingMode.NORMAL
         fade = .5f
     }
     private val surface = FakeSurface(1)
@@ -20,7 +20,7 @@ class CompositorShaderTest {
     @Test
     fun shouldTransmit() {
         val dstBuf = transmit(compositor, buffer, surface)
-        expect(CompositingMode.OVERLAY) { dstBuf.mode }
+        expect(CompositingMode.NORMAL) { dstBuf.mode }
         expect(.5f) { dstBuf.fade }
         expect(Color.BLACK) { (dstBuf.bufferA as SolidShader.Buffer).color }
         expect(Color.WHITE) { (dstBuf.bufferB as SolidShader.Buffer).color }
@@ -84,7 +84,7 @@ class CompositorShaderTest {
     fun composite(
         left: Pair<Shader<*>, Shader.Buffer>,
         right: Pair<Shader<*>, Shader.Buffer>,
-        mode: CompositingMode = CompositingMode.OVERLAY,
+        mode: CompositingMode = CompositingMode.NORMAL,
         fade: Float = 1f
     ): Pair<CompositorShader, CompositorShader.Buffer> {
         val shader = CompositorShader(left.first, right.first)
