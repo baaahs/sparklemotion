@@ -36,7 +36,7 @@ Run this in one shell window:
 Run this in a second shell window and go to http://localhost:8001/index.html :
 
 ```sh
-./gradlew serve
+npm run start:dev
 ```
 
 ## CI & Deployment
