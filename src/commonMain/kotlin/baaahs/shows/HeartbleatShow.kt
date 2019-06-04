@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.SheepModel
 import baaahs.Show
 import baaahs.ShowRunner
+import baaahs.gadgets.RadioButtons
 import baaahs.gadgets.Slider
 import baaahs.shaders.HeartShader
 import baaahs.shaders.SolidShader
@@ -17,6 +18,8 @@ object HeartbleatShow : Show("Heartbleat") {
             val beatProvider = showRunner.getBeatProvider()
             val hearts = sheepModel.allPanels.filter { it.number == 7 }
                 .map { showRunner.getShaderBuffer(it, HeartShader()) }
+            val beatModeGadget =
+                showRunner.getGadget("beatMode", RadioButtons("Beat Mode", listOf("3/4", "4/4"), "4/4"))
             val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
             val strokeSize = showRunner.getGadget("strokeSize", Slider("Stroke Size", .5f))
             val xOff = showRunner.getGadget("xOff", Slider("X Offset", .4f))

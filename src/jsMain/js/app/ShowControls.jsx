@@ -26,6 +26,8 @@ export default class ShowControls extends Component {
       return <ColorPicker gadget={gadget} />;
     } else if (gadget instanceof baaahs.gadgets.Slider) {
       return <RangeSlider gadget={gadget} />;
+    } else if (gadget instanceof baaahs.gadgets.RadioButtons) {
+      return <RadioButtons gadget={gadget}/>;
     } else {
       return <div />;
     }
