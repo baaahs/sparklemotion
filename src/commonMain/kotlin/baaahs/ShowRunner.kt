@@ -7,7 +7,6 @@ class ShowRunner(
     private val model: SheepModel,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
-    brains: List<BrainInfo>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
@@ -18,9 +17,8 @@ class ShowRunner(
     private var totalSurfaceReceivers = 0
 
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
-    val allUnusedSurfaces: List<Surface> get() = brainsBySurface.keys.toList().minus(shaderBuffers.keys)
+    val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
 
-    private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()

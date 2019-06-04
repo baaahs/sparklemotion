@@ -163,7 +163,7 @@ class JsBrainDisplay(container: Element, detailsContainer: Element) : BrainDispl
                 appendText("Brain ${this@JsBrainDisplay.id}")
             }
             detailsContainer.appendElement("div") {
-                appendText("Surface: ${surface?.describe()}}")
+                appendText("Surface: ${surface?.describe()}")
             }
         })
     }
