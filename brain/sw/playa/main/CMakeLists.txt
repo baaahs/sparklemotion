@@ -4,6 +4,7 @@ set(COMPONENT_SRCS
         "net/task_net.cpp"
         "net/ethernet.cpp"
         "net/wifi.cpp"
+        "net/ip_port.cpp"
         "net/msg.cpp"
         "net/msg_handler.cpp"
         "net/msg_slinger.cpp"

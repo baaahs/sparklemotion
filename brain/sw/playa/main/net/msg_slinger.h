@@ -2,16 +2,17 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
-#ifndef PLAYA_MSG_SLINGER_H
-#define PLAYA_MSG_SLINGER_H
+#ifndef BRAIN_MSG_SLINGER_H
+#define BRAIN_MSG_SLINGER_H
 
 #include "esp_err.h"
+#include "esp_event.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/ringbuf.h"
 
 #include "msg.h"
 #include "msg_handler.h"
+
+#include "tcpip_adapter.h"
 
 class IpPort;
 
@@ -26,7 +27,7 @@ public:
      * @param msg
      * @return
      */
-    esp_err_t sendMsg(IpPort& ipPort, Msg* msg);
+    esp_err_t sendMsg(Msg* msg);
 
     /**
      * Registers a handler which will receive messages as they arrive.
@@ -35,24 +36,26 @@ public:
      */
     void registerHandler(MsgHandler* handler) { m_handler = handler; }
 
-    void inputPump();
-    //void outputPump();
-    void handleOutputPump(Msg* msg);
+    void _gotIp(int32_t id, void* data);
+    void _inputPump();
+    void _handleNetOut(Msg *pMsg);
 
 private:
     uint16_t m_port;
-    int m_sock;
-    uint8_t m_buffer[2000];
+    int m_sock = -1;
 
-//    RingbufHandle_t m_hRing;
-//    QueueSetHandle_t m_hQueueSet;
+    ip4_addr_t m_broadcastEth;
+    ip4_addr_t m_broadcastSta;
+
+    esp_event_loop_args_t m_argsOutputLoop;
+    esp_event_loop_handle_t m_hOutputLoop;
 
     // There can be only one (for now)
     MsgHandler* m_handler;
 
-//    MsgSlinger() {}
-
+    void bindSocket();
+    void updateBroadcasts();
 };
 
 
-#endif //PLAYA_MSG_SLINGER_H
+#endif //BRAIN_MSG_SLINGER_H

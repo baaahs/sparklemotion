@@ -4,9 +4,7 @@
 
 #include "msg.h"
 
-#include "esp_log.h"
-
-static const char* TAG = "msg";
+#include "net_priv.h"
 
 bool
 Msg::prepCapacity(size_t atLeast) {
@@ -32,24 +30,52 @@ Msg::prepCapacity(size_t atLeast) {
 }
 
 Msg*
-Msg::parseAndRelease()
+Msg::parse()
 {
     Msg* out = NULL;
 
     if (!m_used || !m_buf) {
-        release();
         return out;
     }
 
-    switch(m_buf[0]) {
+    switch(m_buf[m_cursor++]) {
         case static_cast<int>(Msg::Type::BRAIN_PANEL_SHADE):
             out = new BrainShaderMsg(this);
             break;
 
         default:
-            ESP_LOGW(TAG, "Unknown message type %d", m_buf[0]);
+            ESP_LOGW(TAG, "Unknown message type %d", m_buf[--m_cursor]);
     }
 
-    release();
     return out;
 }
+
+void Msg::injectFragmentingHeader() {
+    static uint8_t messageId = 0;
+
+    if (prepCapacity(m_used + 12)) {
+        memcpy(m_buf + 12, m_buf, m_used);
+
+        rewind();
+        writeShort(messageId++);
+        writeShort(m_used);
+        writeInt(m_used);
+        writeInt(0);
+
+        m_used += 12;
+    }
+}
+
+void Msg::rewindToPostFragmentingHeader() {
+    m_cursor = 12;
+}
+
+bool Msg::isSingleFragmentMessage() {
+    m_cursor = 2;
+    auto frameSize = readShort();
+    auto totalSize = readInt();
+    auto offset = readInt();
+
+    return ( offset == 0 && frameSize == totalSize );
+}
+

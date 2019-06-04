@@ -18,7 +18,7 @@
 #define SCRATCH_BUFSIZE 8192
 
 
-static const char *TAG = "SpiffsHandler";
+static const char *TAG = "#SpiffsHandler";
 
 static esp_err_t sGetHandler(httpd_req_t *req) {
     if (!req) return ESP_ERR_INVALID_ARG;
