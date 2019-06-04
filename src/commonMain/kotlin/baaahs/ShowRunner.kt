@@ -1,19 +1,30 @@
 package baaahs
 
-import baaahs.net.Network
-import baaahs.proto.BrainShaderMessage
-import baaahs.proto.Ports
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
 class ShowRunner(
+    private val model: SheepModel,
+    initialShow: Show.MetaData,
     private val gadgetProvider: GadgetProvider,
     brains: List<RemoteBrain>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
+    var nextShow: Show.MetaData? = initialShow
+    var currentShow: Show.MetaData? = null
+    var currentShowRenderer: Show? = null
+    private val changedSurfaces = mutableListOf<SurfacesChanges>()
+    private var totalSurfaceReceivers = 0
+
+    val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
+    val allUnusedSurfaces: List<Surface> get() = brainsBySurface.keys.toList().minus(shaderBuffers.keys)
+
     private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
+
+    private var shadersLocked = true
+    private var gadgetsLocked = true
 
     fun getBeatProvider(): Pinky.BeatProvider = beatProvider
 
@@ -39,6 +50,7 @@ class ShowRunner(
      * @return A shader buffer of the appropriate type.
      */
     fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         val buffer = shader.createBuffer(surface)
         recordShader(surface, buffer)
         return buffer
@@ -56,6 +68,7 @@ class ShowRunner(
         mode: CompositingMode = CompositingMode.OVERLAY,
         fade: Float = 0.5f
     ): CompositorShader.Buffer {
+        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         return CompositorShader(bufferA.shader, bufferB.shader)
             .createBuffer(bufferA, bufferB)
             .also {
@@ -65,46 +78,121 @@ class ShowRunner(
             }
     }
 
-    fun getDmxBuffer(baseChannel: Int, channelCount: Int) =
+    private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
     fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
+        if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))
     }
 
-    fun send(link: Network.Link, stats: Stats? = null) {
+    /**
+     * Obtain a gadget that can be used to receive input from a user. The gadget will be displayed in the show's UI.
+     *
+     * @param name Symbolic name for this gadget; must be unique within the show.
+     * @param gadget The gadget to display.
+     */
+    fun <T : Gadget> getGadget(name: String, gadget: T): T {
+        if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
+        return gadgetProvider.getGadget(name, gadget)
+    }
+
+    fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
+        changedSurfaces.add(SurfacesChanges(ArrayList(addedSurfaces), ArrayList(removedSurfaces)))
+    }
+
+    fun nextFrame() {
+        // Always generate and send the next frame right away, then perform any housekeeping tasks immediately
+        // afterward, to avoid frame lag.
+        currentShowRenderer?.let {
+            it.nextFrame()
+            send()
+        }
+
+        housekeeping()
+    }
+
+    private val surfaceReceivers = mutableMapOf<Surface, MutableList<SurfaceReceiver>>()
+
+    private fun housekeeping() {
+        for ((added, removed) in changedSurfaces) {
+            println("ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed")
+            for (receiver in removed) removeReceiver(receiver)
+            for (receiver in added) addReceiver(receiver)
+
+            if (nextShow == null) {
+                shadersLocked = false
+                try {
+                    currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
+                } catch (e: Show.RestartShowException) {
+                    // Show doesn't support changing surfaces, just restart it cold.
+                    nextShow = currentShow ?: nextShow
+                }
+                shadersLocked = true
+            }
+        }
+        changedSurfaces.clear()
+
+        if (totalSurfaceReceivers > 0) {
+            nextShow?.let {
+                shaderBuffers.clear()
+
+                val gadgetsState = gadgetProvider.getGadgetsState()
+                gadgetProvider.clear()
+
+                shadersLocked = false
+                gadgetsLocked = false
+
+                currentShowRenderer = it.createShow(model, this)
+
+                shadersLocked = true
+                gadgetsLocked = true
+
+                currentShow = nextShow
+                gadgetProvider.setGadgetsState(gadgetsState)
+                gadgetProvider.sync()
+
+                nextShow = null
+            }
+        }
+    }
+
+    private fun addReceiver(receiver: SurfaceReceiver) {
+        receiversFor(receiver.surface).add(receiver)
+        totalSurfaceReceivers++
+    }
+
+    private fun removeReceiver(receiver: SurfaceReceiver) {
+        receiversFor(receiver.surface).remove(receiver)
+        shaderBuffers.remove(receiver.surface)
+        totalSurfaceReceivers--
+    }
+
+    private fun receiversFor(surface: Surface): MutableList<SurfaceReceiver> {
+        return surfaceReceivers.getOrPut(surface) { mutableListOf() }
+    }
+
+    fun send() {
         shaderBuffers.forEach { (surface, shaderBuffers) ->
             if (shaderBuffers.size != 1) {
-                throw IllegalStateException("Too many shader buffers for $surface: $shaderBuffers")
+                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
             }
-
             val shaderBuffer = shaderBuffers.first()
-            val remoteBrains = brainsBySurface[surface]
-            if (remoteBrains != null && remoteBrains.isNotEmpty()) {
-                val messageBytes = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
-                remoteBrains.forEach { remoteBrain ->
-                    link.sendUdp(
-                        remoteBrain.address,
-                        Ports.BRAIN,
-                        messageBytes
-                    )
-                }
-                stats?.apply {
-                    bytesSent += messageBytes.size
-                    packetsSent += 1
-                }
+
+            receiversFor(surface).forEach { receiver ->
+                receiver.sendFn(shaderBuffer)
             }
         }
 
         dmxUniverse.sendFrame()
     }
 
-    fun <T : Gadget> getGadget(gadget: T) = gadgetProvider.getGadget(gadget)
-
     fun shutDown() {
         gadgetProvider.clear()
     }
 
-    class Stats(var bytesSent: Int = 0, var packetsSent: Int = 0)
+    data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
+    data class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
+
 }
