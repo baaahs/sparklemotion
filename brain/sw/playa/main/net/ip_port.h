@@ -2,21 +2,24 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
-#ifndef PLAYA_IP_PORT_H
-#define PLAYA_IP_PORT_H
+#ifndef BRAIN_IP_PORT_H
+#define BRAIN_IP_PORT_H
 
 #include <stdint.h>
+#include <string.h>
+#include <ostream>
 
-#include "lwip/err.h"
 #include "lwip/sockets.h"
+
 
 class IpPort {
 public:
+
     IpPort() {
     }
 
     IpPort(uint16_t port) {
-        m_addr.sin_port = port;
+        m_addr.sin_port = htons(port);
         m_addr.sin_family = AF_INET;
         m_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     }
@@ -29,6 +32,14 @@ public:
     struct sockaddr_in * addr_in() { return &m_addr; }
 
     size_t size() { return sizeof(m_addr); }
+
+    const char * toString();
+
+    static const IpPort BroadcastPinky;
+
+    friend std::ostream &operator<<(std::ostream &os, const IpPort &port);
+
+
 private:
     struct sockaddr_in m_addr;
 };

@@ -2,8 +2,8 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
-#ifndef PLAYA_MSG_H
-#define PLAYA_MSG_H
+#ifndef BRAIN_MSG_H
+#define BRAIN_MSG_H
 
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -15,6 +15,8 @@
 #include <sys/param.h>
 
 #include "ip_port.h"
+
+#define MSG_TAG "#   msg"
 
 class BrainHelloMsg;
 class BrainShaderMsg;
@@ -66,6 +68,10 @@ public:
     void release() {
         m_refCount--;
         if (!m_refCount) {
+            if (m_pSrc) {
+                m_pSrc->release();
+            }
+
             if (m_buf) {
                 free(m_buf);
             }
@@ -80,9 +86,11 @@ public:
     size_t capacity() { return m_capacity; }
     size_t used() { return m_used; }
 
-    void setUsed(size_t used) { m_used = MIN(used, m_capacity); }
+    void setUsed(int used) { m_used = MIN(used, m_capacity); }
 
     void rewind() { m_cursor = 0; }
+    void skip(size_t amt) { m_cursor += amt; }
+    size_t pos() { return m_cursor; }
 
     //////////////////
 
@@ -96,6 +104,14 @@ public:
     void writeByte(uint8_t v) {
         if (prepCapacity(m_used + 1)) {
             m_buf[m_cursor++] = v;
+            if (m_cursor > m_used) m_used = m_cursor;
+        }
+    }
+
+    void writeShort(uint16_t i) {
+        if (prepCapacity(m_used + 2)) {
+            m_buf[m_cursor++] = (uint8_t)((i >>  8) & 0x000000ff);
+            m_buf[m_cursor++] = (uint8_t)((i      ) & 0x000000ff);
             if (m_cursor > m_used) m_used = m_cursor;
         }
     }
@@ -131,15 +147,76 @@ public:
         return 4 + (strlen(sz) * 2);
     }
 
-    //////////////////
+    bool readBoolean() {
+        if (m_cursor + 1 > m_used) {
+            return false;
+        }
+        return m_buf[m_cursor++];
+    }
+
+    uint8_t readByte() {
+        if (m_cursor + 1 > m_used) {
+            return false;
+        }
+        return m_buf[m_cursor++];
+    }
+
+    uint16_t readShort() {
+        if (m_cursor + 2 > m_used) {
+            return 0;
+        }
+        uint16_t out  = m_buf[m_cursor++] << 8;
+        out |= m_buf[m_cursor++];
+
+        return out;
+    }
+
+    uint32_t readInt() {
+        if (m_cursor + 4 > m_used) {
+            return 0;
+        }
+        uint32_t out  = m_buf[m_cursor++] << 24;
+        out |= m_buf[m_cursor++] << 16;
+        out |= m_buf[m_cursor++] <<  8;
+        out |= m_buf[m_cursor++];
+        return out;
+    }
+
+    void readBytes(uint8_t* dest, uint32_t len) {
+        if (m_cursor + len > m_used) {
+            return;
+        }
+
+        memcpy(dest, m_buf + m_cursor, len);
+        m_cursor += len;
+    }
+
+    uint32_t readString(char* sz, uint32_t max) {
+        if (!sz) return 0;
+
+        uint32_t len = readInt();
+        if (m_cursor + len > m_used) {
+            return 0;
+        }
+        for (int i=0; i<len; i++) {
+            m_cursor++; // Stupid double wide chars...
+            sz[i] = (char)m_buf[m_cursor++];
+        }
+        return len;
+    }
 
     //////////////////
+    void injectFragmentingHeader();
+    void rewindToPostFragmentingHeader();
+    bool isSingleFragmentMessage();
+    //////////////////
 
-    Msg* parseAndRelease();
+    Msg* parse();
 
-    virtual void log() {
-        ESP_LOGI("msg", "Msg cap=%d used=%d type=%d", m_capacity, m_used,
-                m_capacity ? m_buf[0] : -1);
+    virtual void log(const char* name = "Unknown") {
+        ESP_LOGI(MSG_TAG, "%s Msg cap=%d used=%d type=%d dest=%s", name, m_capacity, m_used,
+                m_capacity ? m_buf[0] : -1, dest.toString());
+        ESP_LOG_BUFFER_HEXDUMP(MSG_TAG, m_buf, m_used, ESP_LOG_INFO);
     }
 
 protected:
@@ -151,48 +228,50 @@ protected:
     size_t m_capacity = 0;
     size_t m_used = 0;
     size_t m_cursor = 0;
+
+    // This points at our original source data (or not)
+    Msg* m_pSrc;
 };
 
 
 class BrainHelloMsg : public Msg {
 public:
     BrainHelloMsg(const char* brainId, const char* panelName) {
-        if (prepCapacity(capFor(brainId) + capFor(panelName) + 1)) {
+        if (prepCapacity(capFor(brainId) + capFor(panelName) + 1)) {\
             writeByte(static_cast<int>(Msg::Type::BRAIN_HELLO));
+
             writeString(brainId);
             writeString(panelName);
         }
         rewind();
     }
 
-    virtual void log() {
-        ESP_LOGI("msg", "BrainHelloMsg: ");
+    virtual void log(const char* name = "") {
+        Msg::log("BrainHelloMsg");
     }
 };
 
 class BrainShaderMsg : public Msg {
+    size_t m_shaderDescOff;
+    size_t m_shaderDescLen;
+
 public:
     BrainShaderMsg(Msg* pMsg) {
-        BrainShaderMsg* pSrc = (BrainShaderMsg*)pMsg;
-        m_buf = (uint8_t*)malloc(pSrc->m_used);
-        if (!m_buf) {
-            ESP_LOGE("msg", "OOM BrainShaderMsg");
-            return;
-        }
+        if (!pMsg) return;
 
-        memcpy(m_buf, pSrc->m_buf, pSrc->m_used);
-        m_capacity = pSrc->m_used;
-        m_used = pSrc->m_used;
+        m_pSrc = pMsg;
+        m_pSrc->addRef();
 
-        // TODO: Dig into the message I guess?
-        // Or maybe the user will now start calling readXXXX methods maybe...
+        m_shaderDescOff = m_pSrc->pos();
+        m_shaderDescLen = m_pSrc->readInt();
+        m_pSrc->skip(m_shaderDescLen);
     }
 
-    virtual void log() {
-        ESP_LOGI("msg", "BrainShaderMsg: ");
+    virtual void log(const char* name = "") {
+        Msg::log("BrainShaderMsg");
     }
 
 };
 
 
-#endif //PLAYA_MSG_H
+#endif //BRAIN_MSG_H

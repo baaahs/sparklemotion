@@ -11,7 +11,7 @@
 
 static const uint16_t BRAIN_PORT = 8003;
 
-static const char* TAG = "brain";
+static const char* TAG = "# brain";
 
 Brain::Brain()
 {
@@ -21,6 +21,23 @@ void
 Brain::handleMsg(Msg* pMsg)
 {
     ESP_LOGI(TAG, "Got message with length=%d", pMsg->used());
+
+    if (pMsg->isSingleFragmentMessage()) {
+        // Do stuff
+        ESP_LOGI(TAG, "Parsing...");
+        pMsg->log();
+
+        // Ignore framing data
+        pMsg->rewindToPostFragmentingHeader();
+
+        auto pParsed = pMsg->parse();
+        if (pParsed) {
+
+            pParsed->release();
+        }
+    } else {
+        ESP_LOGW(TAG, "Ignoring multi-fragment messages");
+    }
 }
 
 void maybe_send_hello(TimerHandle_t hTimer)
@@ -32,6 +49,14 @@ void
 Brain::maybeSendHello()
 {
     ESP_LOGE(TAG, "Want to send a hello now...");
+
+    Msg* pHello = new BrainHelloMsg("esp", "33R");
+    pHello->dest = IpPort::BroadcastPinky;
+
+    pHello->injectFragmentingHeader(); // Because hatefulness
+    m_msgSlinger.sendMsg(pHello);
+
+    pHello->release();
 }
 
 void

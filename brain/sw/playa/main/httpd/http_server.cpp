@@ -6,7 +6,7 @@
 
 #include "esp_log.h"
 
-static const char *TAG = "HttpServer";
+static const char *TAG = "#HttpServer";
 
 esp_err_t HttpServer::start() {
     esp_err_t err;

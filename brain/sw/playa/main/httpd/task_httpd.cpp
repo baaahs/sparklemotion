@@ -20,7 +20,7 @@
 
 #include "http_server.h"
 
-static const char *TAG = "httpd";
+static const char *TAG = "#httpd";
 
 // Totally making this up. For the ESP32 this is in bytes
 #define TASK_HTTPD_STACK_SIZE 10240

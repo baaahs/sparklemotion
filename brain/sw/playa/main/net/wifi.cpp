@@ -1,19 +1,10 @@
-/* WiFi station Example
+#include "net_priv.h"
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "esp_system.h"
 #include "esp_wifi.h"
-#include "esp_event.h"
-#include "esp_log.h"
 #include "nvs_flash.h"
 
 #include "lwip/err.h"
@@ -34,8 +25,6 @@ static EventGroupHandle_t s_wifi_event_group;
 /* The event group allows multiple bits for each event, but we only care about one event 
  * - are we connected to the AP with an IP? */
 const int WIFI_CONNECTED_BIT = BIT0;
-
-static const char *TAG = "net wifi sta";
 
 static int s_retry_num = 0;
 
@@ -86,9 +75,10 @@ void wifi_init_sta()
 
 void wifi_init()
 {
-    ESP_LOGD(TAG, "Begining initialization");
+    ESP_LOGD(TAG, "wifi_init start");
 
     //Initialize NVS
+    ESP_LOGI(TAG, "calling nvs_flash_init()");
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
       ESP_ERROR_CHECK(nvs_flash_erase());
@@ -96,8 +86,8 @@ void wifi_init()
     }
     ESP_ERROR_CHECK(ret);
     
-    ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+    ESP_LOGI(TAG, "calling wifi_init_sta()");
     wifi_init_sta();
 
-    ESP_LOGD(TAG, "Initialization done");    
+    ESP_LOGD(TAG, "wifi_init done");
 }
