@@ -27,6 +27,13 @@ class Brain(
         sendHello()
     }
 
+    /**
+     * So that the JVM standalone can boot up and have a surface name without mapping
+     */
+    fun forcedSurfaceName(name: String) {
+        surfaceName = name
+    }
+
     private suspend fun sendHello() {
         while (true) {
             if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {

@@ -25,6 +25,8 @@ fun main(args: Array<String>) {
         }
     }, JvmPixelsDisplay(2000))
 
+    brain.forcedSurfaceName("33R")
+
     GlobalScope.launch { brain.run() }
 
     doRunBlocking {
