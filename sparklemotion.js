@@ -184,7 +184,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Line3 = THREE.Line3;
   var ConeBufferGeometry = THREE.ConeBufferGeometry;
   var Points = THREE.Points;
-  var getCallableRef = Kotlin.getCallableRef;
   var OrbitControls = THREE.OrbitControls;
   var PointsMaterial = THREE.PointsMaterial;
   var Raycaster_init = THREE.Raycaster;
@@ -7141,12 +7140,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var $receiver = element.colors;
-      var tmp$_0, tmp$_0_0;
-      var index = 0;
-      for (tmp$_0 = 0; tmp$_0 !== $receiver.length; ++tmp$_0) {
-        var item = $receiver[tmp$_0];
-        element.colors[tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0] = Color$Companion_getInstance().random();
+      var tmp$_0;
+      tmp$_0 = element.colors;
+      for (var i = 0; i !== tmp$_0.length; ++i) {
+        element.colors[i] = Color$Companion_getInstance().random();
       }
     }
     var tmp$_1;
@@ -7321,7 +7318,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
     }
     this.movingHeads = destination_0;
-    println('SomeDumbShow: pixelShaderBuffers = ' + this.pixelShaderBuffers.size);
   }
   function SomeDumbShow$createShow$ObjectLiteral$nextFrame$nextTimeShiftedFloat(closure$now) {
     return function ($receiver) {
@@ -7342,14 +7338,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
+      var tmp$_0;
       var baseSaturation = seed.nextFloat();
       var panelColor = nextTimeShiftedFloat(seed) < 0.1 ? Color$Companion_getInstance().random() : this.colorPicker.color;
-      var $receiver = element.colors;
-      var tmp$_0, tmp$_0_0;
-      var index = 0;
-      for (tmp$_0 = 0; tmp$_0 !== $receiver.length; ++tmp$_0) {
-        var item = $receiver[tmp$_0];
-        element.colors[tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0] = desaturateRandomishly(panelColor, baseSaturation, seed);
+      tmp$_0 = element.colors;
+      for (var i = 0; i !== tmp$_0.length; ++i) {
+        element.colors[i] = desaturateRandomishly(panelColor, baseSaturation, seed);
       }
     }
     var tmp$_1;
@@ -8539,7 +8533,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     };
   }
   function JsBrainDisplay$myDiv$lambda$lambda(this$JsBrainDisplay) {
-    return function (event) {
+    return function (it) {
       launch(coroutines.GlobalScope, void 0, void 0, JsBrainDisplay$myDiv$lambda$lambda$lambda(this$JsBrainDisplay));
       return Unit;
     };
@@ -8561,7 +8555,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     };
   }
   function JsBrainDisplay$myDiv$lambda$lambda_0(closure$detailsContainer, this$JsBrainDisplay) {
-    return function (event) {
+    return function (it) {
       clear(closure$detailsContainer);
       appendElement(closure$detailsContainer, 'hr', JsBrainDisplay$myDiv$lambda$lambda$lambda_0);
       appendElement(closure$detailsContainer, 'b', JsBrainDisplay$myDiv$lambda$lambda$lambda_1(this$JsBrainDisplay));
@@ -9543,48 +9537,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var tmp$;
     return Kotlin.isType(tmp$ = ensureNotNull($receiver.getContext('2d')), CanvasRenderingContext2D) ? tmp$ : throwCCE();
   }
-  function Button(data, element) {
-    this.data = data;
-    this.element = element;
-    this.allButtons_pdnxqa$_0 = this.allButtons_pdnxqa$_0;
-    this.onSelect = null;
-    this.element.addEventListener('click', Button_init$lambda(this));
-  }
-  Object.defineProperty(Button.prototype, 'allButtons', {
-    get: function () {
-      if (this.allButtons_pdnxqa$_0 == null)
-        return throwUPAE('allButtons');
-      return this.allButtons_pdnxqa$_0;
-    },
-    set: function (allButtons) {
-      this.allButtons_pdnxqa$_0 = allButtons;
-    }
-  });
-  Button.prototype.setSelected_6taknv$ = function (isSelected) {
-    this.element.classList.toggle('selected', isSelected);
-  };
-  Button.prototype.onClick = function () {
-    var tmp$;
-    this.setSelected_6taknv$(true);
-    var tmp$_0;
-    tmp$_0 = this.allButtons.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      element.setSelected_6taknv$(false);
-    }
-    (tmp$ = this.onSelect) != null ? tmp$(this.data) : null;
-  };
-  function Button_init$lambda(this$Button) {
-    return function (it) {
-      this$Button.onClick();
-      return Unit;
-    };
-  }
-  Button.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Button',
-    interfaces: []
-  };
   function HostedWebApp() {
   }
   HostedWebApp.$metadata$ = {
@@ -10292,14 +10244,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.sphere_0 = null;
     this.rendererListeners_0 = ArrayList_init();
     this.vizPanels_0 = ArrayList_init();
-    var tmp$, tmp$_0;
-    this.select_0 = Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('panelSelect')), HTMLSelectElement) ? tmp$ : throwCCE();
-    this.sheepView_0 = Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$_0 : throwCCE();
+    var tmp$;
+    this.sheepView_0 = Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE();
     this.pixelDensity_0 = 0.2;
-    this.omitPanels_0 = ['60R', '60L', 'Face', 'Tail'];
-    this.totalPixels = 0;
-    this.select_0.onchange = Visualizer_init$lambda(this);
-    this.sheepView_0.addEventListener('mousemove', Visualizer_init$lambda_0(this), false);
+    this.totalPixels_0 = 0;
+    this.sheepView_0.addEventListener('mousemove', Visualizer_init$lambda(this), false);
     this.camera_0 = new PerspectiveCamera_init(45, this.sheepView_0.offsetWidth / this.sheepView_0.offsetHeight, 1, 10000);
     this.camera_0.position.z = 1000.0;
     this.controls_0 = new OrbitControls(this.camera_0, this.sheepView_0);
@@ -10324,24 +10273,24 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.geom_0 = new Geometry();
     this.raycaster_0 = new Raycaster_init(undefined, undefined, undefined, undefined);
     this.raycaster_0.params.Points.threshold = 1;
-    var tmp$_1 = new SphereBufferGeometry(1, 32, 32);
+    var tmp$_0 = new SphereBufferGeometry(1, 32, 32);
     var $receiver_2 = new MeshBasicMaterial();
     $receiver_2.color.set(16711680);
-    this.sphere_0 = new Mesh_init(tmp$_1, $receiver_2);
+    this.sphere_0 = new Mesh_init(tmp$_0, $receiver_2);
     this.scene_0.add(this.sphere_0);
-    var tmp$_2;
-    tmp$_2 = sheepModel.vertices.iterator();
-    while (tmp$_2.hasNext()) {
-      var element = tmp$_2.next();
+    var tmp$_1;
+    tmp$_1 = sheepModel.vertices.iterator();
+    while (tmp$_1.hasNext()) {
+      var element = tmp$_1.next();
       this.geom_0.vertices.push(new Vector3(element.x, element.y, element.z));
     }
-    this.startRender();
+    this.startRender_0();
     var resizeTaskId = {v: null};
-    window.addEventListener('resize', Visualizer_init$lambda_1(resizeTaskId, this));
-    this.REFRESH_DELAY = 50;
-    this.resizeDelay = 100;
+    window.addEventListener('resize', Visualizer_init$lambda_0(resizeTaskId, this));
+    this.REFRESH_DELAY_0 = 50;
+    this.resizeDelay_0 = 100;
   }
-  Object.defineProperty(Visualizer.prototype, 'rotate', {
+  Object.defineProperty(Visualizer.prototype, 'rotate_0', {
     get: function () {
       return this.getVizRotationEl_0().checked;
     },
@@ -10362,7 +10311,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         element.faceMaterial_8be2vx$.transparent = !isRunning;
       }
       if (isRunning) {
-        this.rotate = false;
+        this.rotate_0 = false;
       }
     }
   });
@@ -10372,14 +10321,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Visualizer.prototype.removeFrameListener_imgev1$ = function (frameListener) {
     this.frameListeners_0.remove_11rb$(frameListener);
   };
-  Visualizer.prototype.onSelectChange_9ojx7i$ = function (event) {
-  };
   Visualizer.prototype.onMouseMove_tfvzir$ = function (event) {
     event.preventDefault();
     this.mouse_0.x = event.clientX / this.sheepView_0.offsetWidth * 2 - 1;
     this.mouse_0.y = -(event.clientY / this.sheepView_0.offsetHeight) * 2 + 1;
-  };
-  Visualizer.prototype.selectPanel_7it1pd$ = function (panel, isSelected) {
   };
   Visualizer.prototype.addPanel_jfju1k$ = function (p) {
     var vizPanel = new VizPanel(p, this.geom_0, this.scene_0);
@@ -10388,10 +10333,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       var pixelArranger = new SwirlyPixelArranger(this.pixelDensity_0, 2);
       var pixelPositions = pixelArranger.arrangePixels_zdreix$(vizPanel);
       vizPanel.vizPixels = new VizPanel$VizPixels(pixelPositions);
-      this.totalPixels = this.totalPixels + pixelPositions.length | 0;
+      this.totalPixels_0 = this.totalPixels_0 + pixelPositions.length | 0;
     }
-    document.getElementById('visualizerPixelCount').innerText = this.totalPixels.toString();
-    this.select_0.options[this.select_0.options.length] = new Option(p.name, (this.vizPanels_0.size - 1 | 0).toString());
+    document.getElementById('visualizerPixelCount').innerText = this.totalPixels_0.toString();
     return vizPanel;
   };
   Visualizer.prototype.addMovingHead_nmqlne$ = function (movingHead, dmxUniverse) {
@@ -10399,27 +10343,27 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Visualizer$VizMovingHead($outer, movingHead, dmxUniverse) {
     this.$outer = $outer;
-    this.baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
-    this.device = new Shenzarpy(dmxUniverse.reader_sxjeop$(this.baseChannel, 16, Visualizer$VizMovingHead$device$lambda(this)));
-    this.geometry = new ConeBufferGeometry(50, 1000);
+    this.baseChannel_0 = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
+    this.device_0 = new Shenzarpy(dmxUniverse.reader_sxjeop$(this.baseChannel_0, 16, Visualizer$VizMovingHead$device$lambda(this)));
+    this.geometry_0 = new ConeBufferGeometry(50, 1000);
     var $receiver = new MeshBasicMaterial();
     $receiver.color.set(16776960);
-    this.material = $receiver;
-    this.cone = new Mesh_init(this.geometry, this.material);
-    this.geometry.applyMatrix((new Matrix4_init()).makeTranslation(0.0, -500.0, 0.0));
-    this.material.transparent = true;
-    this.material.opacity = 0.75;
-    this.cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z);
-    this.cone.rotation.x = -math.PI / 2;
-    this.$outer.scene_0.add(this.cone);
+    this.material_0 = $receiver;
+    this.cone_0 = new Mesh_init(this.geometry_0, this.material_0);
+    this.geometry_0.applyMatrix((new Matrix4_init()).makeTranslation(0.0, -500.0, 0.0));
+    this.material_0.transparent = true;
+    this.material_0.opacity = 0.75;
+    this.cone_0.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z);
+    this.cone_0.rotation.x = -math.PI / 2;
+    this.$outer.scene_0.add(this.cone_0);
   }
   Visualizer$VizMovingHead.prototype.receivedDmxFrame_0 = function () {
-    var colorWheelV = this.device.colorWheel;
+    var colorWheelV = this.device_0.colorWheel;
     var wheelColor = Shenzarpy$WheelColor$Companion_getInstance().get_s8j3t7$(colorWheelV);
-    this.material.color.set(wheelColor.color.rgb);
-    this.material.visible = this.device.dimmer > 0.1;
-    this.cone.rotation.x = -math.PI / 2 + this.device.tilt;
-    this.cone.rotation.z = this.device.pan;
+    this.material_0.color.set(wheelColor.color.rgb);
+    this.material_0.visible = this.device_0.dimmer > 0.1;
+    this.cone_0.rotation.x = -math.PI / 2 + this.device_0.tilt;
+    this.cone_0.rotation.z = this.device_0.pan;
   };
   function Visualizer$VizMovingHead$device$lambda(this$VizMovingHead) {
     return function () {
@@ -10436,7 +10380,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var tmp$;
     return Kotlin.isType(tmp$ = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$ : throwCCE();
   };
-  Visualizer.prototype.startRender = function () {
+  Visualizer.prototype.startRender_0 = function () {
     this.geom_0.computeBoundingSphere();
     var $receiver = new Points();
     $receiver.geometry = this.geom_0;
@@ -10446,18 +10390,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var target = this.geom_0.boundingSphere.center.clone();
     this.controls_0.target = target;
     this.camera_0.lookAt(target);
-    this.render_14dthe$(0.0);
+    this.render();
   };
-  function Visualizer$render$lambda(this$Visualizer) {
-    return function () {
-      window.requestAnimationFrame(getCallableRef('render', function ($receiver, timestamp) {
-        return $receiver.render_14dthe$(timestamp), Unit;
-      }.bind(null, this$Visualizer)));
+  function Visualizer$render$lambda$lambda(this$Visualizer) {
+    return function (it) {
+      this$Visualizer.render();
+      return Unit;
     };
   }
-  Visualizer.prototype.render_14dthe$ = function (timestamp) {
+  function Visualizer$render$lambda(this$Visualizer) {
+    return function () {
+      window.requestAnimationFrame(Visualizer$render$lambda$lambda(this$Visualizer));
+    };
+  }
+  Visualizer.prototype.render = function () {
     var tmp$;
-    window.setTimeout(Visualizer$render$lambda(this), this.REFRESH_DELAY);
+    window.setTimeout(Visualizer$render$lambda(this), this.REFRESH_DELAY_0);
     if (!this.mapperIsRunning) {
       if (this.getVizRotationEl_0().checked) {
         var rotSpeed = 0.01;
@@ -10475,7 +10423,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.controls_0.update();
     this.raycaster_0.setFromCamera(this.mouse_0, this.camera_0);
     var intersections = this.raycaster_0.intersectObjects(this.scene_0.children, false);
-    if (intersections.size > 0) {
+    if (!intersections.isEmpty()) {
       var intersection = intersections.get_za3lpa$(0);
       if (intersection.object.panel) {
         (Kotlin.isType(tmp$ = document.getElementById('selectionInfo'), HTMLDivElement) ? tmp$ : throwCCE()).innerText = 'Selected: ' + toString_0(intersections.get_za3lpa$(0).object.panel.name);
@@ -10495,7 +10443,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0();
     }
   };
-  Visualizer.prototype.doResize_9ojx7i$ = function (evt) {
+  Visualizer.prototype.doResize_0 = function () {
     this.camera_0.aspect = this.sheepView_0.offsetWidth / this.sheepView_0.offsetHeight;
     this.camera_0.updateProjectionMatrix();
     this.renderer_0.setSize(this.sheepView_0.offsetWidth, this.sheepView_0.offsetHeight);
@@ -10509,31 +10457,25 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Visualizer_init$lambda(this$Visualizer) {
     return function (event) {
-      this$Visualizer.onSelectChange_9ojx7i$(event);
-      return Unit;
-    };
-  }
-  function Visualizer_init$lambda_0(this$Visualizer) {
-    return function (event) {
       var tmp$, tmp$_0;
       tmp$_0 = Kotlin.isType(tmp$ = event, MouseEvent) ? tmp$ : throwCCE();
       this$Visualizer.onMouseMove_tfvzir$(tmp$_0);
       return Unit;
     };
   }
-  function Visualizer_init$lambda$lambda(closure$resizeTaskId, closure$evt, this$Visualizer) {
+  function Visualizer_init$lambda$lambda(closure$resizeTaskId, this$Visualizer) {
     return function () {
       closure$resizeTaskId.v = null;
-      this$Visualizer.doResize_9ojx7i$(closure$evt);
+      this$Visualizer.doResize_0();
       return Unit;
     };
   }
-  function Visualizer_init$lambda_1(closure$resizeTaskId, this$Visualizer) {
-    return function (evt) {
+  function Visualizer_init$lambda_0(closure$resizeTaskId, this$Visualizer) {
+    return function (it) {
       if (closure$resizeTaskId.v !== null) {
         window.clearTimeout(ensureNotNull(closure$resizeTaskId.v));
       }
-      closure$resizeTaskId.v = window.setTimeout(Visualizer_init$lambda$lambda(closure$resizeTaskId, evt, this$Visualizer), this$Visualizer.resizeDelay);
+      closure$resizeTaskId.v = window.setTimeout(Visualizer_init$lambda$lambda(closure$resizeTaskId, this$Visualizer), this$Visualizer.resizeDelay_0);
       return Unit;
     };
   }
@@ -11295,7 +11237,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   package$baaahs.clear_u75qir$ = clear_0;
   package$baaahs.first_m814eh$ = first_0;
   package$baaahs.context2d_ng27xv$ = context2d;
-  package$baaahs.Button = Button;
   package$baaahs.HostedWebApp = HostedWebApp;
   DomContainer.Frame = DomContainer$Frame;
   package$baaahs.DomContainer = DomContainer;
