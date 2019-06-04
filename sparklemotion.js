@@ -92,6 +92,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var throwISE = Kotlin.throwISE;
   var toByte = Kotlin.toByte;
   var lazy = Kotlin.kotlin.lazy_klfg04$;
+  var Iterator = Kotlin.kotlin.collections.Iterator;
+  var Iterable = Kotlin.kotlin.collections.Iterable;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
@@ -241,8 +243,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   CompositorShader.prototype.constructor = CompositorShader;
   CompositingMode.prototype = Object.create(Enum.prototype);
   CompositingMode.prototype.constructor = CompositingMode;
-  CompositingMode$OVERLAY.prototype = Object.create(CompositingMode.prototype);
-  CompositingMode$OVERLAY.prototype.constructor = CompositingMode$OVERLAY;
+  CompositingMode$NORMAL.prototype = Object.create(CompositingMode.prototype);
+  CompositingMode$NORMAL.prototype.constructor = CompositingMode$NORMAL;
   CompositingMode$ADD.prototype = Object.create(CompositingMode.prototype);
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
   PixelShader.prototype = Object.create(Shader.prototype);
@@ -547,12 +549,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         if (theCurrentShaderDesc == null || !contentEquals(theCurrentShaderDesc, shaderDesc)) {
           this.currentShaderDesc_0 = shaderDesc;
           var shader = Kotlin.isType(tmp$ = Shader$Companion_getInstance().parse_100t80$(new ByteArrayReader(shaderDesc)), Shader) ? tmp$ : throwCCE();
-          this.currentShaderBits_0 = new Brain$ShaderBits(shader, shader.createRenderer_onphn6$(this.surface_0, this.pixels_0), shader.createBuffer_ppt8xj$(this.surface_0));
+          this.currentShaderBits_0 = new Brain$ShaderBits(shader, shader.createRenderer_ppt8xj$(this.surface_0), shader.createBuffer_ppt8xj$(this.surface_0));
         }
 
         var $receiver = ensureNotNull(this.currentShaderBits_0);
         $receiver.read_100t80$(reader);
-        $receiver.draw();
+        $receiver.draw_bbfl1t$(this.pixels_0);
         break;
       case 'BRAIN_ID_REQUEST':
         var message = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
@@ -584,8 +586,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Brain$ShaderBits.prototype.read_100t80$ = function (reader) {
     this.buffer.read_100t80$(reader);
   };
-  Brain$ShaderBits.prototype.draw = function () {
-    this.renderer.draw_433sc5$(this.buffer);
+  Brain$ShaderBits.prototype.draw_bbfl1t$ = function (pixels) {
+    this.renderer.draw_4adlm$(this.buffer, pixels);
   };
   Brain$ShaderBits.$metadata$ = {
     kind: Kind_CLASS,
@@ -739,6 +741,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       amount = 0.5;
     var amountThis = 1 - amount;
     return Color_init_1(this.redF * amountThis + other.redF * amount, this.greenF * amountThis + other.greenF * amount, this.blueF * amountThis + other.blueF * amount, this.alphaF * amountThis + other.alphaF * amount);
+  };
+  Color.prototype.opaque = function () {
+    return new Color(this.argb | -16777216);
   };
   Color.prototype.toString = function () {
     return 'Color(' + this.toHexString() + ')';
@@ -3717,10 +3722,34 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function Pixels() {
   }
+  Object.defineProperty(Pixels.prototype, 'indices', {
+    get: function () {
+      return new IntRange(0, this.size - 1 | 0);
+    }
+  });
+  function Pixels$iterator$ObjectLiteral(this$Pixels) {
+    this.this$Pixels = this$Pixels;
+    this.i_0 = 0;
+  }
+  Pixels$iterator$ObjectLiteral.prototype.hasNext = function () {
+    return this.i_0 < this.this$Pixels.size;
+  };
+  Pixels$iterator$ObjectLiteral.prototype.next = function () {
+    var tmp$, tmp$_0;
+    tmp$_0 = (tmp$ = this.i_0, this.i_0 = tmp$ + 1 | 0, tmp$);
+    return this.this$Pixels.get_za3lpa$(tmp$_0);
+  };
+  Pixels$iterator$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Iterator]
+  };
+  Pixels.prototype.iterator = function () {
+    return new Pixels$iterator$ObjectLiteral(this);
+  };
   Pixels.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Pixels',
-    interfaces: []
+    interfaces: [Iterable]
   };
   function SheepModel() {
     this.vertices_mqvov9$_0 = this.vertices_mqvov9$_0;
@@ -4634,7 +4663,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   ShowRunner.prototype.getCompositorBuffer_cn6wln$ = function (surface, bufferA, bufferB, mode, fade) {
     if (mode === void 0)
-      mode = CompositingMode$OVERLAY_getInstance();
+      mode = CompositingMode$NORMAL_getInstance();
     if (fade === void 0)
       fade = 0.5;
     if (this.shadersLocked_0)
@@ -5990,8 +6019,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.aShader.serialize_3kjoo0$(writer);
     this.bShader.serialize_3kjoo0$(writer);
   };
-  CompositorShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new CompositorShader$Renderer(surface, pixels, this.aShader, this.bShader);
+  CompositorShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new CompositorShader$Renderer(surface, this.aShader, this.bShader);
   };
   CompositorShader.prototype.readBuffer_100t80$ = function (reader) {
     return new CompositorShader$Buffer(this, this.aShader.readBuffer_100t80$(reader), this.bShader.readBuffer_100t80$(reader), CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte()), reader.readFloat());
@@ -6022,7 +6051,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function CompositorShader$Buffer($outer, bufferA, bufferB, mode, fade) {
     this.$outer = $outer;
     if (mode === void 0)
-      mode = CompositingMode$OVERLAY_getInstance();
+      mode = CompositingMode$NORMAL_getInstance();
     if (fade === void 0)
       fade = 0.5;
     this.bufferA = bufferA;
@@ -6053,36 +6082,28 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function CompositorShader$Renderer(surface, pixels, aShader, bShader) {
-    this.pixels = pixels;
-    var array = Array_0(this.pixels.count);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors_0 = array;
-    this.aPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixels.count);
-    this.bPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixels.count);
-    this.rendererA_0 = aShader.createRenderer_onphn6$(surface, this.aPixels_0);
-    this.rendererB_0 = bShader.createRenderer_onphn6$(surface, this.bPixels_0);
+  function CompositorShader$Renderer(surface, aShader, bShader) {
+    this.pixelCount_0 = surface.pixelCount;
+    this.srcPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixelCount_0);
+    this.rendererA_0 = aShader.createRenderer_ppt8xj$(surface);
+    this.rendererB_0 = bShader.createRenderer_ppt8xj$(surface);
   }
-  CompositorShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
+  CompositorShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
     var tmp$, tmp$_0, tmp$_1;
-    this.rendererA_0.draw_433sc5$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE());
-    this.rendererB_0.draw_433sc5$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE());
+    var destPixels = pixels;
+    this.rendererA_0.draw_4adlm$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), destPixels);
+    this.rendererB_0.draw_4adlm$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), this.srcPixels_0);
     var mode = buffer.mode;
-    tmp$_1 = this.colors_0;
-    for (var i = 0; i !== tmp$_1.length; ++i) {
-      var aColor = this.aPixels_0.colors[i];
-      var bColor = this.bPixels_0.colors[i];
-      this.colors_0[i] = aColor.fade_6zkv30$(mode.composite_dggbqs$(aColor, bColor), buffer.fade);
+    tmp$_1 = this.pixelCount_0;
+    for (var i = 0; i < tmp$_1; i++) {
+      var src = this.srcPixels_0.get_za3lpa$(i);
+      var dest = destPixels.get_za3lpa$(i);
+      destPixels.set_ibd5tj$(i, dest.fade_6zkv30$(mode.composite_dggbqs$(src, dest), buffer.fade));
     }
-    this.pixels.set_tmuqsv$(this.colors_0);
   };
-  function CompositorShader$Renderer$PixelBuf(count) {
-    this.count_e7ehet$_0 = count;
-    var array = Array_0(this.count);
+  function CompositorShader$Renderer$PixelBuf(size) {
+    this.size_fc7zpd$_0 = size;
+    var array = Array_0(this.size);
     var tmp$;
     tmp$ = array.length - 1 | 0;
     for (var i = 0; i <= tmp$; i++) {
@@ -6090,11 +6111,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.colors = array;
   }
-  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'count', {
+  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'size', {
     get: function () {
-      return this.count_e7ehet$_0;
+      return this.size_fc7zpd$_0;
     }
   });
+  CompositorShader$Renderer$PixelBuf.prototype.get_za3lpa$ = function (i) {
+    return this.colors[i];
+  };
+  CompositorShader$Renderer$PixelBuf.prototype.set_ibd5tj$ = function (i, color) {
+    this.colors[i] = color;
+  };
   CompositorShader$Renderer$PixelBuf.prototype.set_tmuqsv$ = function (colors) {
     arrayCopy(colors, this.colors, 0, 0, colors.length);
   };
@@ -6121,26 +6148,26 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   function CompositingMode_initFields() {
     CompositingMode_initFields = function () {
     };
-    new CompositingMode$OVERLAY();
+    new CompositingMode$NORMAL();
     new CompositingMode$ADD();
     CompositingMode$Companion_getInstance();
   }
-  function CompositingMode$OVERLAY() {
-    CompositingMode$OVERLAY_instance = this;
-    CompositingMode.call(this, 'OVERLAY', 0);
+  function CompositingMode$NORMAL() {
+    CompositingMode$NORMAL_instance = this;
+    CompositingMode.call(this, 'NORMAL', 0);
   }
-  CompositingMode$OVERLAY.prototype.composite_dggbqs$ = function (src, dest) {
+  CompositingMode$NORMAL.prototype.composite_dggbqs$ = function (src, dest) {
     return src;
   };
-  CompositingMode$OVERLAY.$metadata$ = {
+  CompositingMode$NORMAL.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'OVERLAY',
+    simpleName: 'NORMAL',
     interfaces: [CompositingMode]
   };
-  var CompositingMode$OVERLAY_instance = null;
-  function CompositingMode$OVERLAY_getInstance() {
+  var CompositingMode$NORMAL_instance = null;
+  function CompositingMode$NORMAL_getInstance() {
     CompositingMode_initFields();
-    return CompositingMode$OVERLAY_instance;
+    return CompositingMode$NORMAL_instance;
   }
   function CompositingMode$ADD() {
     CompositingMode$ADD_instance = this;
@@ -6185,13 +6212,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [Enum]
   };
   function CompositingMode$values() {
-    return [CompositingMode$OVERLAY_getInstance(), CompositingMode$ADD_getInstance()];
+    return [CompositingMode$NORMAL_getInstance(), CompositingMode$ADD_getInstance()];
   }
   CompositingMode.values = CompositingMode$values;
   function CompositingMode$valueOf(name) {
     switch (name) {
-      case 'OVERLAY':
-        return CompositingMode$OVERLAY_getInstance();
+      case 'NORMAL':
+        return CompositingMode$NORMAL_getInstance();
       case 'ADD':
         return CompositingMode$ADD_getInstance();
       default:throwISE('No enum constant baaahs.shaders.CompositingMode.' + name);
@@ -6205,8 +6232,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelShader.prototype.createBuffer_ppt8xj$ = function (surface) {
     return new PixelShader$Buffer(this, surface.pixelCount);
   };
-  PixelShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new PixelShader$Renderer(pixels);
+  PixelShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new PixelShader$Renderer();
   };
   PixelShader.prototype.readBuffer_100t80$ = function (reader) {
     var incomingColorCount = reader.readInt();
@@ -6295,11 +6322,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function PixelShader$Renderer(pixels) {
-    this.pixels = pixels;
+  function PixelShader$Renderer() {
   }
-  PixelShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
-    this.pixels.set_tmuqsv$(buffer.colors);
+  PixelShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
+    pixels.set_tmuqsv$(buffer.colors);
   };
   PixelShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6323,8 +6349,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SimpleSpatialShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new SimpleSpatialShader$Renderer(surface, pixels);
+  SimpleSpatialShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new SimpleSpatialShader$Renderer(surface);
   };
   function SimpleSpatialShader$Companion() {
     SimpleSpatialShader$Companion_instance = this;
@@ -6373,24 +6399,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function SimpleSpatialShader$Renderer(surface, pixels) {
-    this.surface_0 = surface;
-    this.pixels_0 = pixels;
-    var array = Array_0(this.pixels_0.count);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors_0 = array;
-    var tmp$_0, tmp$_1;
-    this.pixelVertices_0 = (tmp$_1 = Kotlin.isType(tmp$_0 = this.surface_0, Brain$MappedSurface) ? tmp$_0 : null) != null ? tmp$_1.pixelVertices : null;
+  function SimpleSpatialShader$Renderer(surface) {
+    var tmp$, tmp$_0;
+    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, Brain$MappedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
   }
-  SimpleSpatialShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
+  SimpleSpatialShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
     var tmp$, tmp$_0;
     if (this.pixelVertices_0 == null)
       return;
-    var a = this.colors_0.length;
+    var a = pixels.size;
     var b = this.pixelVertices_0.size;
     tmp$ = Math_0.min(a, b);
     for (var i = 0; i < tmp$; i++) {
@@ -6410,9 +6427,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
        else {
         tmp$_0 = buffer.color.fade_6zkv30$(Color$Companion_getInstance().BLACK, dist * 2);
       }
-      this.colors_0[i] = tmp$_0;
+      pixels.set_ibd5tj$(i, tmp$_0);
     }
-    this.pixels_0.set_tmuqsv$(this.colors_0);
   };
   SimpleSpatialShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6436,8 +6452,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SineWaveShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new SineWaveShader$Renderer(pixels);
+  SineWaveShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new SineWaveShader$Renderer();
   };
   function SineWaveShader$Companion() {
     SineWaveShader$Companion_instance = this;
@@ -6483,28 +6499,22 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function SineWaveShader$Renderer(pixels) {
-    this.pixels = pixels;
-    var array = Array_0(this.pixels.count);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors_0 = array;
+  function SineWaveShader$Renderer() {
   }
-  SineWaveShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
-    var tmp$;
+  SineWaveShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var theta = buffer.theta;
-    var pixelCount = this.pixels.count;
+    var pixelCount = pixels.size;
     var density = buffer.density;
-    tmp$ = this.colors_0;
-    for (var i = 0; i !== tmp$.length; ++i) {
+    tmp$ = pixels.indices;
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
       var x = theta + 2 * math.PI * (i / pixelCount * density);
       var v = Math_0.sin(x) / 2 + 0.5;
-      this.colors_0[i] = Color$Companion_getInstance().BLACK.fade_6zkv30$(buffer.color, v);
+      pixels.set_ibd5tj$(i, Color$Companion_getInstance().BLACK.fade_6zkv30$(buffer.color, v));
     }
-    this.pixels.set_tmuqsv$(this.colors_0);
   };
   SineWaveShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6528,8 +6538,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SolidShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new SolidShader$Renderer(pixels);
+  SolidShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new SolidShader$Renderer();
   };
   function SolidShader$Companion() {
     SolidShader$Companion_instance = this;
@@ -6569,23 +6579,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function SolidShader$Renderer(pixels) {
-    this.pixels = pixels;
-    var array = Array_0(this.pixels.count);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors_0 = array;
+  function SolidShader$Renderer() {
   }
-  SolidShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
-    var tmp$;
-    tmp$ = this.colors_0;
-    for (var i = 0; i !== tmp$.length; ++i) {
-      this.colors_0[i] = buffer.color;
+  SolidShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    tmp$ = pixels.indices;
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
+      pixels.set_ibd5tj$(i, buffer.color);
     }
-    this.pixels.set_tmuqsv$(this.colors_0);
   };
   SolidShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6609,8 +6613,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver.read_100t80$(reader);
     return $receiver;
   };
-  SparkleShader.prototype.createRenderer_onphn6$ = function (surface, pixels) {
-    return new SparkleShader$Renderer(pixels);
+  SparkleShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new SparkleShader$Renderer();
   };
   function SparkleShader$Companion() {
     SparkleShader$Companion_instance = this;
@@ -6654,30 +6658,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function SparkleShader$Renderer(pixels) {
-    this.pixels = pixels;
-    var array = Array_0(this.pixels.count);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors_0 = array;
+  function SparkleShader$Renderer() {
   }
-  SparkleShader$Renderer.prototype.draw_433sc5$ = function (buffer) {
-    var tmp$;
-    tmp$ = this.colors_0;
-    for (var i = 0; i !== tmp$.length; ++i) {
-      var tmp$_0;
+  SparkleShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    tmp$ = pixels.indices;
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
       if (Random.Default.nextFloat() < buffer.sparkliness) {
-        tmp$_0 = buffer.color;
+        tmp$_3 = buffer.color;
       }
        else {
-        tmp$_0 = Color$Companion_getInstance().BLACK;
+        tmp$_3 = Color$Companion_getInstance().BLACK;
       }
-      this.colors_0[i] = tmp$_0;
+      pixels.set_ibd5tj$(i, tmp$_3);
     }
-    this.pixels.set_tmuqsv$(this.colors_0);
   };
   SparkleShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -9484,13 +9481,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function SheepSimulator$NullPixels() {
     SheepSimulator$NullPixels_instance = this;
-    this.count_dbt3w$_0 = 0;
+    this.size_dint0g$_0 = 0;
   }
-  Object.defineProperty(SheepSimulator$NullPixels.prototype, 'count', {
+  Object.defineProperty(SheepSimulator$NullPixels.prototype, 'size', {
     get: function () {
-      return this.count_dbt3w$_0;
+      return this.size_dint0g$_0;
     }
   });
+  SheepSimulator$NullPixels.prototype.get_za3lpa$ = function (i) {
+    return Color$Companion_getInstance().BLACK;
+  };
+  SheepSimulator$NullPixels.prototype.set_ibd5tj$ = function (i, color) {
+  };
   SheepSimulator$NullPixels.prototype.set_tmuqsv$ = function (colors) {
   };
   SheepSimulator$NullPixels.$metadata$ = {
@@ -10700,11 +10702,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: []
   };
   function VizPanel$VizPixels(positions) {
-    this.count_nf4s6i$_0 = positions.length;
+    this.size_cgbufu$_0 = positions.length;
     this.points_0 = null;
     this.pixGeometry_0 = new BufferGeometry();
     this.colorsBufferAttr_0 = null;
-    var positionsArray = new Float32Array(this.count * 3 | 0);
+    var positionsArray = new Float32Array(this.size * 3 | 0);
     var tmp$, tmp$_0;
     var index = 0;
     for (tmp$ = 0; tmp$ !== positions.length; ++tmp$) {
@@ -10716,7 +10718,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     var positionsBufferAttr = new Float32BufferAttribute(positionsArray, 3);
     this.pixGeometry_0.addAttribute('position', positionsBufferAttr);
-    this.colorsBufferAttr_0 = new Float32BufferAttribute(new Float32Array(this.count * 3 | 0), 3);
+    this.colorsBufferAttr_0 = new Float32BufferAttribute(new Float32Array(this.size * 3 | 0), 3);
     this.colorsBufferAttr_0.dynamic = true;
     this.pixGeometry_0.addAttribute('color', this.colorsBufferAttr_0);
     var $receiver = new PointsMaterial();
@@ -10728,9 +10730,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     $receiver_0.material = material;
     this.points_0 = $receiver_0;
   }
-  Object.defineProperty(VizPanel$VizPixels.prototype, 'count', {
+  Object.defineProperty(VizPanel$VizPixels.prototype, 'size', {
     get: function () {
-      return this.count_nf4s6i$_0;
+      return this.size_cgbufu$_0;
     }
   });
   VizPanel$VizPixels.prototype.addToScene_smv6vb$ = function (scene) {
@@ -10739,8 +10741,20 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   VizPanel$VizPixels.prototype.removeFromScene_smv6vb$ = function (scene) {
     scene.remove(this.points_0);
   };
+  VizPanel$VizPixels.prototype.get_za3lpa$ = function (i) {
+    var tmp$, tmp$_0, tmp$_1;
+    var rgbBuf = this.colorsBufferAttr_0.array;
+    return Color_init_1(typeof (tmp$ = rgbBuf[i * 3 | 0]) === 'number' ? tmp$ : throwCCE(), typeof (tmp$_0 = rgbBuf[(i * 3 | 0) + 1 | 0]) === 'number' ? tmp$_0 : throwCCE(), typeof (tmp$_1 = rgbBuf[(i * 3 | 0) + 2 | 0]) === 'number' ? tmp$_1 : throwCCE());
+  };
+  VizPanel$VizPixels.prototype.set_ibd5tj$ = function (i, color) {
+    var rgbBuf = this.colorsBufferAttr_0.array;
+    rgbBuf[i * 3 | 0] = color.redF;
+    rgbBuf[(i * 3 | 0) + 1 | 0] = color.greenF;
+    rgbBuf[(i * 3 | 0) + 2 | 0] = color.blueF;
+    this.colorsBufferAttr_0.needsUpdate = true;
+  };
   VizPanel$VizPixels.prototype.set_tmuqsv$ = function (colors) {
-    var a = this.count;
+    var a = this.size;
     var maxCount = Math_0.min(a, colors.length);
     var rgbBuf = this.colorsBufferAttr_0.array;
     for (var i = 0; i < maxCount; i++) {
@@ -11175,8 +11189,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   CompositorShader.Renderer = CompositorShader$Renderer;
   var package$shaders = package$baaahs.shaders || (package$baaahs.shaders = {});
   package$shaders.CompositorShader = CompositorShader;
-  Object.defineProperty(CompositingMode, 'OVERLAY', {
-    get: CompositingMode$OVERLAY_getInstance
+  Object.defineProperty(CompositingMode, 'NORMAL', {
+    get: CompositingMode$NORMAL_getInstance
   });
   Object.defineProperty(CompositingMode, 'ADD', {
     get: CompositingMode$ADD_getInstance
@@ -11319,6 +11333,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  CompositorShader$Renderer$PixelBuf.prototype.iterator = Pixels.prototype.iterator;
   LifeyShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
   PixelTweenShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
@@ -11330,9 +11346,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
+  Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
   BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
+  Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
   gadgetModule = SerializersModule(gadgetModule$lambda);
   Kotlin.defineModule('sparklemotion', _);
   return _;
