@@ -1,8 +1,6 @@
 package baaahs
 
 import org.w3c.dom.*
-import kotlin.dom.appendElement
-import kotlin.dom.appendText
 
 var Element.disabled: Boolean
     get() = getAttribute("disabled") == "disabled"
@@ -26,27 +24,10 @@ fun DOMTokenList.clear() {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T : HTMLElement> HTMLElement.first(className: String) : T = (getElementsByClassName(className)[0] as T?)!!
+
 fun HTMLCanvasElement.context2d() = this.getContext("2d")!! as CanvasRenderingContext2D
-
-open class Button<T>(val data: T, val element: Element) {
-    lateinit var allButtons: List<Button<T>>
-    var onSelect: ((T) -> Unit)? = null
-
-    init {
-        element.addEventListener("click", { onClick() })
-    }
-
-    fun setSelected(isSelected: Boolean) {
-        element.classList.toggle("selected", isSelected)
-    }
-
-    fun onClick() {
-        setSelected(true)
-        allButtons.forEach { it.setSelected(false) }
-        onSelect?.invoke(data)
-    }
-}
 
 interface HostedWebApp {
     @JsName("render")
@@ -60,9 +41,6 @@ interface DomContainer {
     fun createFrame(name: String, hostedWebApp: HostedWebApp): Frame
 
     interface Frame {
-        @JsName("containerNode")
-        val containerNode: Element
-
         @JsName("close")
         fun close()
     }

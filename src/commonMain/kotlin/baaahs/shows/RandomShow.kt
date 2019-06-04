@@ -13,7 +13,7 @@ object RandomShow : Show.MetaData("Random") {
 
         override fun nextFrame() {
             pixelShaderBuffers.forEach { shaderBuffer ->
-                shaderBuffer.colors.forEachIndexed { i, pixel ->
+                for (i in shaderBuffer.colors.indices) {
                     shaderBuffer.colors[i] = Color.random()
                 }
             }
