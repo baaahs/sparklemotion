@@ -155,8 +155,8 @@ class JsBrainDisplay(container: Element, detailsContainer: Element) : BrainDispl
 
     private var myDiv = container.appendElement("div") {
         addClass("brain-box", "brain-offline")
-        this.addEventListener("click", { event -> GlobalScope.launch { onReset() } })
-        this.addEventListener("mouseover", { event ->
+        this.addEventListener("click", { GlobalScope.launch { onReset() } })
+        this.addEventListener("mouseover", {
             detailsContainer.clear()
             detailsContainer.appendElement("hr") {}
             detailsContainer.appendElement("b") {

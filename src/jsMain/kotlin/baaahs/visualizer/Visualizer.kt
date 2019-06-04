@@ -34,7 +34,7 @@ import kotlin.math.sin
 
 class Visualizer(sheepModel: SheepModel) {
 
-    var rotate: Boolean
+    private var rotate: Boolean
         get() = getVizRotationEl().checked
         set(value) {
             getVizRotationEl().checked = value
@@ -73,28 +73,19 @@ class Visualizer(sheepModel: SheepModel) {
 
     private var vizPanels = mutableListOf<VizPanel>()
 
-    private var select = document.getElementById("panelSelect")!! as HTMLSelectElement
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
 
     private val pixelDensity = 0.2f
 
-    private val omitPanels = arrayOf(
-        "60R", "60L", // ears
-        "Face",
-        "Tail"
-    )
-
-    var totalPixels = 0
+    private var totalPixels = 0
 
     init {
-        select.onchange = { event -> onSelectChange(event) }
-
         sheepView.addEventListener("mousemove", { event -> onMouseMove(event as MouseEvent) }, false)
         camera = PerspectiveCamera(45, sheepView.offsetWidth.toDouble() / sheepView.offsetHeight, 1, 10000)
         camera.position.z = 1000.0
         controls = OrbitControls(camera, sheepView)
-        controls.minPolarAngle = PI / 2 - .25; // radians
-        controls.maxPolarAngle = PI / 2 + .25; // radians
+        controls.minPolarAngle = PI / 2 - .25 // radians
+        controls.maxPolarAngle = PI / 2 + .25 // radians
 
         scene = Scene()
         pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
@@ -122,14 +113,14 @@ class Visualizer(sheepModel: SheepModel) {
         startRender()
 
         var resizeTaskId: Int? = null
-        window.addEventListener("resize", { evt: Event ->
+        window.addEventListener("resize", {
             if (resizeTaskId !== null) {
                 window.clearTimeout(resizeTaskId!!)
             }
 
             resizeTaskId = window.setTimeout({
                 resizeTaskId = null
-                doResize(evt)
+                doResize()
             }, resizeDelay)
         })
     }
@@ -142,43 +133,10 @@ class Visualizer(sheepModel: SheepModel) {
         frameListeners.remove(frameListener)
     }
 
-    fun onSelectChange(event: Event) {
-//        var idx = (event.target!! as HTMLSelectElement).value.toInt()
-//        for (i in 0 until panels.size) {
-//            panels[i].faces.visible = i === idx
-//            for (var line of panels[i].lines) {
-//            line.material = i === idx ? panelMaterial : lineMaterial
-//        }
-//
-//        // surface area
-//        var area = 0
-//        for (face in panels[idx].faces.geometry.faces) {
-//            var a = panels[idx].faces.geometry.vertices[face.a]
-//            var b = panels[idx].faces.geometry.vertices[face.b]
-//            var c = panels[idx].faces.geometry.vertices[face.c]
-//            var u = b.clone().sub(a)
-//            var v = c.clone().sub(a)
-//            area += sqrt(
-//                (u.y * v.z - u.z * v.y) * *
-//                2 + (u.z * v.x - u.x * v.z) * *
-//                2 + (u.x * v.y - u.y * v.x) * *
-//                2
-//            ) / 2
-//        }
-//        info2.innerText = `Total surface area: ${(area / 144).toFixed(2)} sq. ft.`
-    }
-
     fun onMouseMove(event: MouseEvent) {
         event.preventDefault()
         mouse.x = (event.clientX.toDouble() / sheepView.offsetWidth) * 2 - 1
         mouse.y = -(event.clientY.toDouble() / sheepView.offsetHeight) * 2 + 1
-    }
-
-    fun selectPanel(panel: SheepModel.Panel, isSelected: Boolean) {
-//        panel.faces.visible = isSelected
-//        for (var line of panel.lines) {
-//            line.material = isSelected ? panelMaterial : lineMaterial
-//        }
     }
 
     fun addPanel(p: SheepModel.Panel): VizPanel {
@@ -200,8 +158,6 @@ class Visualizer(sheepModel: SheepModel) {
 
         document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
-        select.options[select.options.length] = Option(p.name, (vizPanels.size - 1).toString())
-
         return vizPanel
     }
 
@@ -210,11 +166,11 @@ class Visualizer(sheepModel: SheepModel) {
     }
 
     inner class VizMovingHead(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
-        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
-        val geometry = ConeBufferGeometry(50, 1000)
-        val material = MeshBasicMaterial().apply { color.set(0xffff00) }
-        val cone = Mesh(geometry, material)
+        private val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+        private val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
+        private val geometry = ConeBufferGeometry(50, 1000)
+        private val material = MeshBasicMaterial().apply { color.set(0xffff00) }
+        private val cone = Mesh(geometry, material)
 
 
         init {
@@ -241,7 +197,7 @@ class Visualizer(sheepModel: SheepModel) {
 
     private fun getVizRotationEl() = document.getElementById("vizRotation") as HTMLInputElement
 
-    fun startRender() {
+    private fun startRender() {
         geom.computeBoundingSphere()
         this.obj = Points().apply { geometry = geom; material = pointMaterial }
         scene.add(obj)
@@ -249,14 +205,14 @@ class Visualizer(sheepModel: SheepModel) {
         controls.target = target
         camera.lookAt(target)
 
-        render(0.0)
+        render()
     }
 
-    val REFRESH_DELAY = 50; // ms
+    private val REFRESH_DELAY = 50 // ms
 
-    fun render(timestamp: Double) {
+    fun render() {
         window.setTimeout(fun() {
-            window.requestAnimationFrame(::render)
+            window.requestAnimationFrame { render() }
         }, REFRESH_DELAY)
 
         if (!mapperIsRunning) {
@@ -274,7 +230,7 @@ class Visualizer(sheepModel: SheepModel) {
 
         raycaster.setFromCamera(mouse, camera)
         val intersections = raycaster.intersectObjects(scene.children.asDynamic(), false)
-        if (intersections.size > 0) {
+        if (intersections.isNotEmpty()) {
             val intersection = intersections[0]
             if (intersection.`object`.asDynamic().panel) {
                 (document.getElementById("selectionInfo") as HTMLDivElement).innerText =
@@ -290,9 +246,9 @@ class Visualizer(sheepModel: SheepModel) {
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord
 
-    val resizeDelay = 100
+    private val resizeDelay = 100
 
-    fun doResize(evt: Event) {
+    private fun doResize() {
         camera.aspect = sheepView.offsetWidth.toDouble() / sheepView.offsetHeight
         camera.updateProjectionMatrix()
         renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)

@@ -113,7 +113,7 @@ class TestCoroutineContext constructor(private val name: String?) : CoroutineCon
 
 private class TestHandler {
     /** The ordered queue for the runnable tasks.  */
-    private val queue = PriorityBlockingQueue<TimedRunnable>(16)
+    private val queue = PriorityBlockingQueue<TimedRunnable>()
     /** The per-scheduler global order counter.  */
     /*@Volatile*/ private var counter = 0L
     // Storing time in nanoseconds internally.
@@ -192,7 +192,7 @@ private class TestHandler {
     }
 }
 
-class PriorityBlockingQueue<T : Comparable<T>>(i: Int) {
+class PriorityBlockingQueue<T : Comparable<T>> {
     val items: MutableList<T?> = mutableListOf()
 
     fun add(t: T) {

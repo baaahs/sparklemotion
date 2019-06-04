@@ -16,10 +16,6 @@ object SomeDumbShow : Show.MetaData("SomeDumbShow") {
             showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, pixelShader) }
         val movingHeads = sheepModel.eyes.map { showRunner.getMovingHead(it) }
 
-        init {
-            println("SomeDumbShow: pixelShaderBuffers = ${pixelShaderBuffers.size}")
-        }
-
         override fun nextFrame() {
             val seed = Random(0)
             val now = getTimeMillis()
@@ -35,7 +31,7 @@ object SomeDumbShow : Show.MetaData("SomeDumbShow") {
                 val baseSaturation = seed.nextFloat()
                 val panelColor = if (seed.nextTimeShiftedFloat() < 0.1) Color.random() else colorPicker.color
 
-                shaderBuffer.colors.forEachIndexed { i, pixel ->
+                for (i in shaderBuffer.colors.indices) {
                     shaderBuffer.colors[i] = panelColor.desaturateRandomishly(baseSaturation, seed)
                 }
             }
