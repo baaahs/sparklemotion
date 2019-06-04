@@ -230,7 +230,7 @@ class Visualizer(sheepModel: SheepModel) {
 
         raycaster.setFromCamera(mouse, camera)
         val intersections = raycaster.intersectObjects(scene.children.asDynamic(), false)
-        if (intersections.isNotEmpty()) {
+        if (intersections.size > 0) {
             val intersection = intersections[0]
             if (intersection.`object`.asDynamic().panel) {
                 (document.getElementById("selectionInfo") as HTMLDivElement).innerText =
