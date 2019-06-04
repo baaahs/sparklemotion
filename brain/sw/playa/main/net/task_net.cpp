@@ -27,7 +27,7 @@ static const char *TAG = "net";
 
 void static task_net_main(void* pvParameters) {
     TickType_t xLastWakeTime;
-    const TickType_t xFrequency = 1 * xPortGetTickRateHz();
+    const TickType_t xFrequency = 10 * xPortGetTickRateHz();
 
     // Initialization
     tcpip_adapter_init();
