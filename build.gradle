@@ -128,25 +128,10 @@ compileTestKotlinJvm {
 }
 
 jsProcessResources { t ->
-    t.dependsOn(":buildReactUI")
-
-    t.from('build/webpack')
     t.from('build/classes/kotlin/js/main')
-
     t.from('node_modules/kotlin') { include 'kotlin.*' }
     t.from('node_modules/kotlinx-coroutines-core') { include 'kotlinx-coroutines-core.*' }
     t.from('node_modules/three/build') { include 'three.js' }
-}
-
-task serve {
-    dependsOn(":jsJar")
-
-    doLast {
-        SimpleHttpFileServerFactory factory = new SimpleHttpFileServerFactory()
-        HttpFileServer server = factory.start(new File("build/processedResources/js/main"), 8001)
-        println("Server Started on http://localhost:${server.port}/index.html ctrc+c to kill it")
-        java.lang.Thread.sleep(Long.MAX_VALUE);
-    }
 }
 
 task installReactUImodules(type: Exec) {

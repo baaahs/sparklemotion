@@ -9,10 +9,10 @@ import baaahs.shaders.SolidShader
 
 object SolidColorShow : Show.MetaData("Solid Color") {
     override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
-        val colorPicker = showRunner.getGadget(ColorPicker("Color"))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val shader = SolidShader()
-        val shaderBuffers = sheepModel.allPanels.map {
+        val shaderBuffers = showRunner.allSurfaces.map {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
