@@ -123,6 +123,7 @@ data class Color(val argb: Int) {
         val GREEN = Color(0, 255, 0)
         val BLUE = Color(0, 0, 255)
         val PURPLE = Color(200, 0, 212)
+        val TRANSPARENT = Color(0, 0, 0, 0)
 
         fun random() = Color(
             Random.nextInt() and 0xff,
