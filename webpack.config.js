@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: ['react-hot-loader/patch', './src/jsMain/js/index.jsx'],
+  entry: ['./src/jsMain/js/index.jsx'],
   module: {
     rules: [
       {
@@ -30,23 +30,21 @@ module.exports = {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
   },
-  output: {
-    path: __dirname + '/build/webpack/',
-    publicPath: '/js/',
-    filename: 'react_app.js',
-  },
-  devtool: false,
+  devtool: 'eval',
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.SourceMapDevToolPlugin({
       test: /\.(js|jsx|css|sass|scss)$/,
       exclude: /node_modules/,
     }),
   ],
   devServer: {
-    contentBase: './',
     hot: true,
     port: 8000,
     open: true, // Opens page in browser
+    contentBase: __dirname + '/build/processedResources/js/main/',
+  },
+  output: {
+    path: __dirname + '/build/processedResources/js/main/',
+    filename: 'react_app.js',
   },
 };

@@ -45,5 +45,3 @@ CameraControls.install( { THREE: THREE } );
 document.createCameraControls = (camera, element) => {
   return new CameraControls(camera, element);
 };
-
-module.hot.accept();
