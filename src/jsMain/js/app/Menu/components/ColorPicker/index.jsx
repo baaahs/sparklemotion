@@ -22,6 +22,8 @@ class ColorPicker extends Component {
       gadget,
       colors: [color],
       radius: 200,
+      selectedIndex: -1,
+      grabbingIndex: -1,
       clientWidth: 400,
     };
 
@@ -31,9 +33,14 @@ class ColorPicker extends Component {
 
     this._changeListener = {
       onChanged: (gadget) => {
+        const { colors } = this.state;
         const { redI, greenI, blueI } = gadget.color;
         const color = [redI, greenI, blueI];
-        this.setState({ colors: [color] });
+
+        const updatedColors = colors.slice();
+        updatedColors[0] = color;
+
+        this.setState({ colors: updatedColors });
       },
     };
     gadget.listen(this._changeListener);
@@ -96,37 +103,90 @@ class ColorPicker extends Component {
     gadget.color = baaahs.Color.Companion.fromString(hex);
   };
 
-  _onPickerMouseDown(ev) {
-    this.setState({ selected: true });
+  _onPickerDragStart(ev, index) {
+    // this.setState({
+    //   selectedIndex: index,
+    //   grabbingIndex: index,
+    // });
   }
 
-  _onPickerDragged(ev, data) {
+  _onPickerDragged(ev, data, index) {
     const { x, y } = data;
-    const { radius } = this.state;
+    const { radius, colors } = this.state;
     const color = xy2rgb(x - radius, y - radius, radius);
 
-    this.setState({ colors: [color] }, () =>
-      this._throttledHandleColorChange()
+    const updatedColors = colors.slice();
+    updatedColors[index] = color;
+
+    this.setState(
+      { selectedIndex: index, grabbingIndex: index, colors: updatedColors },
+      () => this._throttledHandleColorChange()
     );
   }
 
-  _onPickerMouseUp(ev, data) {
-    const { radius } = this.state;
+  _onPickerMouseUp(ev, data, index) {
+    const { radius, colors } = this.state;
     const color = xy2rgb(data.x - radius, data.y - radius, radius);
+
+    const updatedColors = colors.slice();
+    updatedColors[index] = color;
 
     this.setState(
       {
-        colors: [color],
-        selected: false,
+        colors: updatedColors,
+        grabbingIndex: -1,
       },
       () => this._handleColorChange()
     );
   }
 
+  _renderPicker(picker, index) {
+    const { radius, selectedIndex, grabbingIndex } = this.state;
+    const { color } = picker;
+    const [r, g, b] = color;
+    const position = rgb2xy(color, radius);
+    return (
+      <Draggable
+        key={index}
+        defaultClassName={styles['color-picker--draggable']}
+        defaultClassNameDragging={styles['color-picker--draggable--dragging']}
+        position={{ x: position[0], y: position[1] }}
+        onStart={(e, data) => {
+          return this._onPickerDragStart(e, data, index);
+        }}
+        onDrag={(e, data) => {
+          return this._onPickerDragged(e, data, index);
+        }}
+        onStop={(e, data) => {
+          return this._onPickerMouseUp(e, data, index);
+        }}
+        bounds={{ top: 0, left: 0, right: radius * 2, bottom: radius * 2 }}
+      >
+        <div>
+          <div
+            style={{
+              width: pickerRadius * 2,
+              height: pickerRadius * 2,
+              backgroundColor: `rgb(${r}, ${g}, ${b})`,
+            }}
+            className={classNames(styles['color-picker--picker'], {
+              [styles['grabbing']]: index === grabbingIndex,
+              [styles['selected']]: index === selectedIndex,
+            })}
+            onMouseDown={() => {
+              this.setState({
+                selectedIndex: index,
+                grabbingIndex: index,
+              });
+            }}
+          />
+        </div>
+      </Draggable>
+    );
+  }
+
   render() {
-    const { radius, selected, colors } = this.state;
-    const [r, g, b] = colors[0];
-    const pickerPosition = rgb2xy(colors[0], radius);
+    const { radius, colors } = this.state;
 
     return (
       <div
@@ -147,35 +207,14 @@ class ColorPicker extends Component {
           height={radius * 2}
           className={styles['canvas']}
           ref={(el) => (this._canvasEl = el)}
+          onMouseDown={() => {
+            this.setState({
+              selectedIndex: -1,
+            });
+          }}
         />
-        {radius != null && (
-          <Draggable
-            position={{ x: pickerPosition[0], y: pickerPosition[1] }}
-            onStart={(e, data) => {
-              return this._onPickerMouseDown(e, data);
-            }}
-            onDrag={(e, data) => {
-              return this._onPickerDragged(e, data);
-            }}
-            onStop={(e, data) => {
-              return this._onPickerMouseUp(e, data);
-            }}
-            bounds={{ top: 0, left: 0, right: radius * 2, bottom: radius * 2 }}
-          >
-            <div>
-              <div
-                style={{
-                  width: pickerRadius * 2,
-                  height: pickerRadius * 2,
-                  backgroundColor: `rgb(${r}, ${g}, ${b})`,
-                }}
-                className={classNames(styles['color-picker--picker'], {
-                  [styles['selected']]: selected,
-                })}
-              />
-            </div>
-          </Draggable>
-        )}
+        {radius != null &&
+          colors.map((color, i) => this._renderPicker({ color }, i))}
       </div>
     );
   }
