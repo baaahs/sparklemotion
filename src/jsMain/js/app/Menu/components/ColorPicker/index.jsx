@@ -242,10 +242,11 @@ class ColorPicker extends Component {
         <div className={styles.harmonyModes}>
           {Object.keys(HARMONY_MODES).map((harmonyMode) => (
             <button
+              key={harmonyMode}
+              onClick={() => this.setState({ harmonyMode })}
               className={classNames(styles.harmonyMode, {
                 [styles.active]: harmonyMode === this.state.harmonyMode,
               })}
-              onClick={() => this.setState({ harmonyMode })}
             >
               {harmonyMode}
             </button>
