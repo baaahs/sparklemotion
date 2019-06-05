@@ -1,4 +1,4 @@
-.color-picker--pad {
+.root {
   border-radius: 0.5em;
   color: black;
   display: inline-block;
@@ -7,20 +7,7 @@
   min-width: 200px;
 }
 
-.color-picker--button {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.color-picker--button--icon {
-  font-size: 24px;
-}
-
-.canvas-wrapper {
+.canvasWrapper {
   position: relative;
 }
 
@@ -31,18 +18,18 @@
   position: absolute;
 }
 
-.color-picker--draggable {
+.draggablePicker {
   z-index: 0;
   top: -10px;
   left: -10px;
   position: absolute;
+
+  &.dragging {
+    z-index: 10;
+  }
 }
 
-.color-picker--draggable--dragging {
-  z-index: 10;
-}
-
-.color-picker--picker {
+.picker {
   top: 0;
   left: 0;
   cursor: grab;
@@ -53,19 +40,19 @@
   border: 2px solid white;
   transition: border-color 0.1s, color 0s;
 
+  &:hover {
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  &.selected {
+    border: 2px solid black;
+  }
+
+  &.grabbing {
+    cursor: grabbing;
+  }
 }
 
-.color-picker--picker:hover {
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.color-picker--picker.selected {
-  border: 2px solid black;
-}
-
-.color-picker--picker.grabbing {
-  cursor: grabbing;
-}
 
 .harmonyModes {
   display: flex;
@@ -85,13 +72,12 @@
   cursor: pointer;
   padding: 8px;
   outline: 0;
-}
 
-.harmonyMode.active {
-  background: #4BBDC2;
-}
+  &.active {
+    background: #4BBDC2;
+  }
 
-
-.harmonyMode + .harmonyMode {
-  border-left: 1px solid rgba(13, 13, 13, 0.91);
+  & + & {
+    border-left: 1px solid rgba(13, 13, 13, 0.91);
+  }
 }

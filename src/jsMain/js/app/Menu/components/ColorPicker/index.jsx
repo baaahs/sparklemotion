@@ -153,7 +153,8 @@ class ColorPicker extends Component {
         const [currentHue, s, v] = chroma.rgb(colors[index]).hsv();
         let indexOffset = i + Math.floor(colors.length / 2);
         if (i >= colors.length / 2) indexOffset += 1;
-        const nextHue = (currentHue - analogousHueSpread + (spreadStep) * indexOffset) % 360;
+        const nextHue =
+          (currentHue - analogousHueSpread + spreadStep * indexOffset) % 360;
         const nextColor = chroma.hsv(nextHue, s, v).rgb();
         updatedColors[nextIndex] = nextColor;
       }
@@ -170,8 +171,8 @@ class ColorPicker extends Component {
     return (
       <Draggable
         key={index}
-        defaultClassName={styles['color-picker--draggable']}
-        defaultClassNameDragging={styles['color-picker--draggable--dragging']}
+        defaultClassName={styles.draggablePicker}
+        defaultClassNameDragging={styles.dragging}
         position={{ x: position[0], y: position[1] }}
         onDrag={(e, data) => {
           return this._onPickerDragged(e, data, index);
@@ -188,9 +189,9 @@ class ColorPicker extends Component {
               height: pickerRadius * 2,
               backgroundColor: `rgb(${r}, ${g}, ${b})`,
             }}
-            className={classNames(styles['color-picker--picker'], {
-              [styles['grabbing']]: index === grabbingIndex,
-              [styles['selected']]: index === selectedIndex,
+            className={classNames(styles.picker, {
+              [styles.grabbing]: index === grabbingIndex,
+              [styles.selected]: index === selectedIndex,
             })}
             onMouseDown={() => {
               this.setState({
@@ -218,16 +219,16 @@ class ColorPicker extends Component {
             this.setState({ radius: newRadius }, () => this.updateWheel());
           }
         }}
-        className={styles['color-picker--pad']}
+        className={styles.root}
       >
         <div
-          className={styles['canvas-wrapper']}
+          className={styles.canvasWrapper}
           style={{ width: radius * 2, height: radius * 2 }}
         >
           <canvas
             width={radius * 2}
             height={radius * 2}
-            className={styles['canvas']}
+            className={styles.canvas}
             ref={(el) => (this._canvasEl = el)}
             onMouseDown={() => {
               this.setState({
