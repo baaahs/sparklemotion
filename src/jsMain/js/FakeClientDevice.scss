@@ -6,29 +6,29 @@
   color: white;
   right: 5px;
   bottom: 5px;
-}
 
-.FakeClientDevice--pad .FakeClientDevice-controls {
-  position: absolute;
-  font-size: 75%;
-  top: -10px;
-  right: 3px;
-  color: #aaaaaa;
-  z-index: 1;
-}
+  .FakeClientDevice-controls {
+    position: absolute;
+    font-size: 75%;
+    top: -10px;
+    right: 3px;
+    color: #aaaaaa;
+    z-index: 1;
 
-.FakeClientDevice--pad .FakeClientDevice-controls i {
-  background: #666666;
-  border-radius: 5px;
-  color: #ffffff;
-  padding: 3px;
-}
+    i {
+      background: #666666;
+      border-radius: 5px;
+      color: #ffffff;
+      padding: 3px;
+    }
+  }
 
-.FakeClientDevice--pad .FakeClientDevice--content {
-  position: relative;
-  width: auto;
-  height: auto;
-  margin: 9px;
-  background-color: black;
-  border: 1px inset #444444;
+  .FakeClientDevice--content {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: 9px;
+    background-color: black;
+    border: 1px inset #444444;
+  }
 }
