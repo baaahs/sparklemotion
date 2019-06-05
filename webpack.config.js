@@ -22,7 +22,7 @@ module.exports = {
               localIdentName: '[local]___[hash:base64:5]',
             },
           },
-          // 'sass-loader', // Removed because of https://github.com/sass/node-sass/issues/2625
+          'sass-loader',
         ],
       },
     ],
