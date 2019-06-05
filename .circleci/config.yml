@@ -34,9 +34,11 @@ jobs:
 
       - run:
           name: Build
+          # Make sure the webpack build runs after the gradle build
+          # because it outputs directly into the gradle build directory
           command: |
-            npm run build
             ./gradlew build dokka
+            npm run build
 
       - add_ssh_keys:
           fingerprints:
