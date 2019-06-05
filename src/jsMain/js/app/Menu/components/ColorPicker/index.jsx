@@ -96,10 +96,9 @@ class ColorPicker extends Component {
   _onPickerDragged(ev, data) {
     const { x, y } = data;
     const { radius } = this.state;
+    const color = xy2rgb(x - radius, y - radius, radius);
 
-    const [red, green, blue] = xy2rgb(x - radius, y - radius, radius);
-
-    this.setState({ color: [red, green, blue] }, () =>
+    this.setState({ color }, () =>
       this._throttledHandleColorChange()
     );
   }
@@ -155,6 +154,7 @@ class ColorPicker extends Component {
             onStop={(e, data) => {
               return this._onPickerMouseUp(e, data);
             }}
+            bounds={{ top: 0, left: 0, right: radius * 2, bottom: radius * 2 }}
           >
             <div>
               <div
