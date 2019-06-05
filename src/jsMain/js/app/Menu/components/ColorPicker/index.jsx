@@ -27,7 +27,6 @@ class ColorPicker extends Component {
       clientWidth: 400,
     };
 
-    // this._updateColorStateFromGadget(gadget);
     // Send color updates once every 150ms while the picker is dragged
     this._throttledHandleColorChange = throttle(this._handleColorChange, 150);
 
@@ -59,7 +58,7 @@ class ColorPicker extends Component {
 
     const width = radius * 2;
     const height = radius * 2;
-    const feateringPx = 1;
+    const featheringPx = 1;
 
     let ctx = this._canvasEl.getContext('2d');
     let image = ctx.createImageData(width, height);
@@ -70,16 +69,16 @@ class ColorPicker extends Component {
         let [r] = xy2polar(x, y);
         // Figure out the starting index of this pixel in the image data array.
         let rowLength = 2 * radius;
-        let adjustedX = x + radius; // convert x from [-50, 50] to [0, 100] (the coordinates of the image data array)
-        let adjustedY = y + radius; // convert y from [-50, 50] to [0, 100] (the coordinates of the image data array)
+        let adjustedX = x + radius; // convert x from [-radius, radius] to [0, radius*2] (the coordinates of the image data array)
+        let adjustedY = y + radius; // convert y from [-radius, radius] to [0, radius*2] (the coordinates of the image data array)
         let pixelWidth = 4; // each pixel requires 4 slots in the data array
         let index = (adjustedX + adjustedY * rowLength) * pixelWidth;
 
         let [red, green, blue] = xy2rgb(x, y, radius);
         let alpha = 255;
-        if (r >= radius - feateringPx) {
+        if (r >= radius - featheringPx) {
           alpha = Math.max(
-            255 - 255 * ((r - (radius - feateringPx)) / feateringPx),
+            255 - 255 * ((r - (radius - featheringPx)) / featheringPx),
             0
           );
         }
@@ -102,13 +101,6 @@ class ColorPicker extends Component {
     const { gadget } = this.state;
     gadget.color = baaahs.Color.Companion.fromString(hex);
   };
-
-  _onPickerDragStart(ev, index) {
-    // this.setState({
-    //   selectedIndex: index,
-    //   grabbingIndex: index,
-    // });
-  }
 
   _onPickerDragged(ev, data, index) {
     const { x, y } = data;
@@ -151,9 +143,6 @@ class ColorPicker extends Component {
         defaultClassName={styles['color-picker--draggable']}
         defaultClassNameDragging={styles['color-picker--draggable--dragging']}
         position={{ x: position[0], y: position[1] }}
-        onStart={(e, data) => {
-          return this._onPickerDragStart(e, data, index);
-        }}
         onDrag={(e, data) => {
           return this._onPickerDragged(e, data, index);
         }}
