@@ -20,7 +20,7 @@ class ColorPicker extends Component {
 
     this.state = {
       gadget,
-      color,
+      colors: [color],
       radius: 200,
       clientWidth: 400,
     };
@@ -29,13 +29,21 @@ class ColorPicker extends Component {
     // Send color updates once every 150ms while the picker is dragged
     this._throttledHandleColorChange = throttle(this._handleColorChange, 150);
 
-    gadget.listen({
+    this._changeListener = {
       onChanged: (gadget) => {
         const { redI, greenI, blueI } = gadget.color;
         const color = [redI, greenI, blueI];
-        this.setState({ color });
+        this.setState({ colors: [color] });
       },
-    });
+    };
+    gadget.listen(this._changeListener);
+  }
+
+  componentWillUnmount() {
+    const { gadget } = this.state;
+    if (this._changeListener) {
+      gadget.unlisten(this._changeListener);
+    }
   }
 
   updateWheel() {
@@ -80,13 +88,12 @@ class ColorPicker extends Component {
   }
 
   _handleColorChange = () => {
-    const { color } = this.state;
-    const [red, green, blue] = color;
+    const { colors } = this.state;
+    const [red, green, blue] = colors[0];
     const hex = chroma.rgb(red, green, blue).hex();
 
     const { gadget } = this.state;
     gadget.color = baaahs.Color.Companion.fromString(hex);
-    this.setState({ gadget, color });
   };
 
   _onPickerMouseDown(ev) {
@@ -98,7 +105,7 @@ class ColorPicker extends Component {
     const { radius } = this.state;
     const color = xy2rgb(x - radius, y - radius, radius);
 
-    this.setState({ color }, () =>
+    this.setState({ colors: [color] }, () =>
       this._throttledHandleColorChange()
     );
   }
@@ -109,7 +116,7 @@ class ColorPicker extends Component {
 
     this.setState(
       {
-        color,
+        colors: [color],
         selected: false,
       },
       () => this._handleColorChange()
@@ -117,10 +124,9 @@ class ColorPicker extends Component {
   }
 
   render() {
-    const { radius, selected, color } = this.state;
-    const [r, g, b] = color;
-
-    const pickerPosition = rgb2xy(color, radius);
+    const { radius, selected, colors } = this.state;
+    const [r, g, b] = colors[0];
+    const pickerPosition = rgb2xy(colors[0], radius);
 
     return (
       <div
