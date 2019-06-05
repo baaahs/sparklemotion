@@ -10,6 +10,12 @@ const baaahs = sparklemotion.baaahs;
 
 const pickerRadius = 12;
 
+const HARMONY_MODES = {
+  custom: 'custom',
+  triad: 'triad',
+  analogous: 'analogous',
+};
+
 class ColorPicker extends Component {
   constructor(props) {
     super(props);
@@ -21,10 +27,11 @@ class ColorPicker extends Component {
     this.state = {
       gadget,
       colors: [color],
-      radius: 200,
+      radius: 10,
       selectedIndex: -1,
       grabbingIndex: -1,
-      clientWidth: 400,
+      clientWidth: 20,
+      harmonyMode: HARMONY_MODES.custom,
     };
 
     // Send color updates once every 150ms while the picker is dragged
@@ -104,12 +111,7 @@ class ColorPicker extends Component {
 
   _onPickerDragged(ev, data, index) {
     const { x, y } = data;
-    const { radius, colors } = this.state;
-    const color = xy2rgb(x - radius, y - radius, radius);
-
-    const updatedColors = colors.slice();
-    updatedColors[index] = color;
-
+    const updatedColors = this._getUpdatedColors(x, y, index);
     this.setState(
       { selectedIndex: index, grabbingIndex: index, colors: updatedColors },
       () => this._throttledHandleColorChange()
@@ -117,12 +119,8 @@ class ColorPicker extends Component {
   }
 
   _onPickerMouseUp(ev, data, index) {
-    const { radius, colors } = this.state;
-    const color = xy2rgb(data.x - radius, data.y - radius, radius);
-
-    const updatedColors = colors.slice();
-    updatedColors[index] = color;
-
+    const { x, y } = data;
+    const updatedColors = this._getUpdatedColors(x, y, index);
     this.setState(
       {
         colors: updatedColors,
@@ -130,6 +128,38 @@ class ColorPicker extends Component {
       },
       () => this._handleColorChange()
     );
+  }
+
+  _getUpdatedColors(x, y, index) {
+    const { radius, colors, harmonyMode } = this.state;
+    const color = xy2rgb(x - radius, y - radius, radius);
+
+    const updatedColors = colors.slice();
+    updatedColors[index] = color;
+
+    if (harmonyMode === HARMONY_MODES.triad) {
+      for (let i = 1; i < colors.length; i++) {
+        const nextIndex = (index + i) % colors.length;
+        const [currentHue, s, v] = chroma.rgb(colors[index]).hsv();
+        const nextHue = currentHue + (((360 / colors.length) * i) % 360);
+        const nextColor = chroma.hsv(nextHue, s, v).rgb();
+        updatedColors[nextIndex] = nextColor;
+      }
+    } else if (harmonyMode === HARMONY_MODES.analogous) {
+      const analogousHueSpread = 90;
+      const spreadStep = analogousHueSpread / colors.length;
+      for (let i = 1; i < colors.length; i++) {
+        const nextIndex = (index + i) % colors.length;
+        const [currentHue, s, v] = chroma.rgb(colors[index]).hsv();
+        let indexOffset = i + Math.floor(colors.length / 2);
+        if (i >= colors.length / 2) indexOffset += 1;
+        const nextHue = (currentHue - analogousHueSpread + (spreadStep) * indexOffset) % 360;
+        const nextColor = chroma.hsv(nextHue, s, v).rgb();
+        updatedColors[nextIndex] = nextColor;
+      }
+    }
+
+    return updatedColors;
   }
 
   _renderPicker(picker, index) {
@@ -189,21 +219,37 @@ class ColorPicker extends Component {
           }
         }}
         className={styles['color-picker--pad']}
-        style={{ height: radius * 2 }}
       >
-        <canvas
-          width={radius * 2}
-          height={radius * 2}
-          className={styles['canvas']}
-          ref={(el) => (this._canvasEl = el)}
-          onMouseDown={() => {
-            this.setState({
-              selectedIndex: -1,
-            });
-          }}
-        />
+        <div
+          className={styles['canvas-wrapper']}
+          style={{ width: radius * 2, height: radius * 2 }}
+        >
+          <canvas
+            width={radius * 2}
+            height={radius * 2}
+            className={styles['canvas']}
+            ref={(el) => (this._canvasEl = el)}
+            onMouseDown={() => {
+              this.setState({
+                selectedIndex: -1,
+              });
+            }}
+          />
+        </div>
         {radius != null &&
           colors.map((color, i) => this._renderPicker({ color }, i))}
+        <div className={styles.harmonyModes}>
+          {Object.keys(HARMONY_MODES).map((harmonyMode) => (
+            <button
+              className={classNames(styles.harmonyMode, {
+                [styles.active]: harmonyMode === this.state.harmonyMode,
+              })}
+              onClick={() => this.setState({ harmonyMode })}
+            >
+              {harmonyMode}
+            </button>
+          ))}
+        </div>
       </div>
     );
   }
