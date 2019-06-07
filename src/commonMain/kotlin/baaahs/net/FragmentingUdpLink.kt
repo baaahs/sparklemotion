@@ -5,9 +5,9 @@ import baaahs.io.ByteArrayWriter
 import baaahs.proto.Message
 import kotlin.math.min
 
-class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
-    override val myAddress: Network.Address get() = link.myAddress
-    override val udpMtu: Int get() = link.udpMtu
+class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
+    override val myAddress: Network.Address get() = wrappedLink.myAddress
+    override val udpMtu: Int get() = wrappedLink.udpMtu
 
     /**
      * Header is 12 bytes long; format is:
@@ -20,7 +20,7 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
         const val headerSize = 12
     }
 
-    private val mtu = link.udpMtu
+    private val mtu = wrappedLink.udpMtu
     private var nextMessageId: Short = 0
 
     private var fragments = arrayListOf<Fragment>()
@@ -28,7 +28,7 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
     class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray)
 
     override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
-        link.listenUdp(port, object : Network.UdpListener {
+        wrappedLink.listenUdp(port, object : Network.UdpListener {
             override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
                 // reassemble fragmented payloads...
                 val reader = ByteArrayReader(bytes)
@@ -77,12 +77,12 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
 
     /** Sends payloads which might be larger than the network's MTU. */
     override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-        transmitMultipartUdp(bytes) { fragment -> link.sendUdp(toAddress, port, fragment) }
+        transmitMultipartUdp(bytes) { fragment -> wrappedLink.sendUdp(toAddress, port, fragment) }
     }
 
     /** Broadcasts payloads which might be larger than the network's MTU. */
     override fun broadcastUdp(port: Int, bytes: ByteArray) {
-        transmitMultipartUdp(bytes) { fragment -> link.broadcastUdp(port, fragment) }
+        transmitMultipartUdp(bytes) { fragment -> wrappedLink.broadcastUdp(port, fragment) }
     }
 
     override fun sendUdp(toAddress: Network.Address, port: Int, message: Message) {
@@ -117,9 +117,9 @@ class FragmentingUdpLink(private val link: Network.Link) : Network.Link {
     }
 
     override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener): Unit =
-        link.listenTcp(port, tcpServerSocketListener)
+        wrappedLink.listenTcp(port, tcpServerSocketListener)
 
     override fun connectTcp(toAddress: Network.Address, port: Int, tcpListener: Network.TcpListener): Network.TcpConnection =
-        link.connectTcp(toAddress, port, tcpListener)
+        wrappedLink.connectTcp(toAddress, port, tcpListener)
 
 }

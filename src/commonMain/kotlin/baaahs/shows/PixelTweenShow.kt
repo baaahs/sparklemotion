@@ -21,8 +21,8 @@ object PixelTweenShow : Show("PixelTweenShow") {
             val fadeTimeMs = 1000
 
             override fun nextFrame() {
+                val now = getTimeMillis().and(0xfffffff).toInt()
                 shaderBuffers.forEachIndexed { i, buffer ->
-                    val now = getTimeMillis().and(0xfffffff).toInt()
                     val colorIndex = (now / fadeTimeMs + i) % colorArray.size
                     val startColor = colorArray[colorIndex]
                     val endColor = colorArray[(colorIndex + 1) % colorArray.size]
