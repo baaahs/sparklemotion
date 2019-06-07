@@ -40,6 +40,8 @@ class Brain(
         currentShaderDesc = null
         currentShaderBits = null
 
+        for (i in pixels.indices) pixels[i] = Color.WHITE
+
         sendHello()
     }
 
