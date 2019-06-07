@@ -20,6 +20,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L0 = Kotlin.Long.ZERO;
+  var equals = Kotlin.equals;
   var L5000 = Kotlin.Long.fromInt(5000);
   var delay = $module$kotlinx_coroutines_core.kotlinx.coroutines.delay_s8cxhz$;
   var contentEquals = Kotlin.arrayEquals;
@@ -45,7 +46,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var Unit = Kotlin.kotlin.Unit;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
-  var equals = Kotlin.equals;
   var ObservableProperty = Kotlin.kotlin.properties.ObservableProperty;
   var getKClass = Kotlin.getKClass;
   var PolymorphicSerializer = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.PolymorphicSerializer;
@@ -84,7 +84,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var L50 = Kotlin.Long.fromInt(50);
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
-  var hashCode = Kotlin.hashCode;
   var plus = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.modules.plus_7n7cf$;
   var modules = $module$kotlinx_serialization_runtime_js.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
@@ -101,6 +100,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
+  var hashCode = Kotlin.hashCode;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
@@ -234,8 +234,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   BrainIdRequest.prototype.constructor = BrainIdRequest;
   BrainIdResponse.prototype = Object.create(Message.prototype);
   BrainIdResponse.prototype.constructor = BrainIdResponse;
-  BrainMapping.prototype = Object.create(Message.prototype);
-  BrainMapping.prototype.constructor = BrainMapping;
+  BrainMappingMessage.prototype = Object.create(Message.prototype);
+  BrainMappingMessage.prototype.constructor = BrainMappingMessage;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
   PinkyPongMessage.prototype.constructor = PinkyPongMessage;
   CompositorShader.prototype = Object.create(Shader.prototype);
@@ -438,11 +438,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       try {
         switch (this.state_0) {
           case 0:
+            var tmp$, tmp$_0, tmp$_1, tmp$_2;
             this.$this.lastInstructionsReceivedAtMs_0 = L0;
             this.$this.surfaceName_0 = null;
             this.$this.surface_0 = new Brain$UnmappedSurface(this.$this);
             this.$this.currentShaderDesc_0 = null;
             this.$this.currentShaderBits_0 = null;
+            tmp$ = this.$this.pixels_0.indices;
+            tmp$_0 = tmp$.first;
+            tmp$_1 = tmp$.last;
+            tmp$_2 = tmp$.step;
+            for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2)
+              this.$this.pixels_0.set_ibd5tj$(i, Color$Companion_getInstance().WHITE);
             this.state_0 = 2;
             this.result_0 = this.$this.sendHello_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -500,7 +507,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
           case 1:
             throw this.exception_0;
           case 2:
-            if (this.$this.lastInstructionsReceivedAtMs_0.compareTo_11rb$(getTimeMillis().subtract(Kotlin.Long.fromInt(10000))) < 0) {
+            var elapsedSinceMessageMs = getTimeMillis().subtract(this.$this.lastInstructionsReceivedAtMs_0);
+            if (elapsedSinceMessageMs.toNumber() > 10000) {
+              if (!equals(this.$this.lastInstructionsReceivedAtMs_0, L0)) {
+                logger$Companion_getInstance().info_61zpoe$(this.$this.id + ": haven't heard from Pinky in " + elapsedSinceMessageMs.toString() + 'ms');
+              }
               this.$this.link_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.$this.id, this.$this.surfaceName_0));
             }
 
@@ -560,7 +571,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         this.link_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(this.id, this.surfaceName_0));
         break;
       case 'BRAIN_MAPPING':
-        var message_0 = BrainMapping$Companion_getInstance().parse_100t80$(reader);
+        var message_0 = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
         this.surfaceName_0 = message_0.surfaceName;
         if (message_0.surfaceName != null) {
           tmp$_0 = new Brain$MappedSurface(this, message_0.pixelCount, message_0.pixelVertices, message_0.surfaceName);
@@ -1404,6 +1415,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       }
     }
   };
+  Object.defineProperty(GadgetProvider.prototype, 'activeGadgetCount', {
+    get: function () {
+      return this.activeGadgets_0.size;
+    }
+  });
   GadgetProvider.prototype.findGadget_y4putb$ = function (name) {
     var tmp$;
     var $receiver = this.activeGadgets_0;
@@ -2716,7 +2732,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.dmxUniverse = dmxUniverse;
     this.display = display;
     this.link_0 = new FragmentingUdpLink(this.network.link());
-    this.brainsById_0 = LinkedHashMap_init();
     this.beatProvider_0 = new Pinky$PinkyBeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = first(this.showMetas);
@@ -2736,9 +2751,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.surfacesByName_0 = destination;
     this.pixelsBySurface_0 = LinkedHashMap_init();
-    this.surfacesByBrainId_0 = LinkedHashMap_init();
-    this.surfacesToAdd_0 = LinkedHashSet_init();
-    this.surfacesToRemove_0 = LinkedHashSet_init();
+    this.surfaceMappingsByBrain_0 = LinkedHashMap_init();
+    this.brainInfos_0 = LinkedHashMap_init();
+    this.pendingBrainInfos_0 = LinkedHashMap_init();
     this.networkStats_0 = new Pinky$NetworkStats();
   }
   Object.defineProperty(Pinky.prototype, 'selectedShow_0', {
@@ -2940,15 +2955,26 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return instance.doResume(null);
   };
   Pinky.prototype.updateSurfaces_8be2vx$ = function () {
-    var tmp$ = !this.surfacesToAdd_0.isEmpty();
-    if (!tmp$) {
-      tmp$ = !this.surfacesToRemove_0.isEmpty();
+    if (!this.pendingBrainInfos_0.isEmpty()) {
+      var brainSurfacesToRemove = ArrayList_init();
+      var brainSurfacesToAdd = ArrayList_init();
+      var tmp$;
+      tmp$ = this.pendingBrainInfos_0.entries.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var brainId = element.key;
+        var brainInfo = element.value;
+        var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
+        if (priorBrainInfo != null) {
+          brainSurfacesToRemove.add_11rb$(priorBrainInfo.surfaceReceiver);
+        }
+        brainSurfacesToAdd.add_11rb$(brainInfo.surfaceReceiver);
+        this.brainInfos_0.put_xwzc9p$(brainId, brainInfo);
+      }
+      this.showRunner_0.surfacesChanged_ji9tfc$(brainSurfacesToAdd, brainSurfacesToRemove);
+      this.pendingBrainInfos_0.clear();
     }
-    if (tmp$) {
-      this.showRunner_0.surfacesChanged_ji9tfc$(this.surfacesToAdd_0, this.surfacesToRemove_0);
-      this.surfacesToAdd_0.clear();
-      this.surfacesToRemove_0.clear();
-    }
+    this.display.brainCount = this.brainInfos_0.size;
   };
   Pinky.prototype.drawNextFrame_8be2vx$ = function () {
     this.showRunner_0.nextFrame();
@@ -2957,42 +2983,33 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.dmxUniverse.allOff();
   };
   Pinky.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
-    var tmp$;
     var message = parse(bytes);
-    if (Kotlin.isType(message, BrainHelloMessage)) {
-      var surfaceName = message.surfaceName;
-      var $receiver = this.surfacesByName_0;
-      var tmp$_0;
-      var surface = (tmp$ = (Kotlin.isType(tmp$_0 = $receiver, Map) ? tmp$_0 : throwCCE()).get_11rb$(surfaceName)) != null ? tmp$ : new Pinky$UnknownSurface(message.brainId);
-      this.foundBrain_0(new RemoteBrain(fromAddress, message.brainId, surface));
-      this.maybeMoreMapping_0(fromAddress, surfaceName, message);
-    }
-     else if (Kotlin.isType(message, MapperHelloMessage))
+    if (Kotlin.isType(message, BrainHelloMessage))
+      this.foundBrain_0(fromAddress, new BrainId(message.brainId), message.surfaceName);
+    else if (Kotlin.isType(message, MapperHelloMessage))
       this.mapperIsRunning_0 = message.isRunning;
   };
-  Pinky.prototype.maybeMoreMapping_0 = function (address, surfaceName, message) {
+  Pinky.prototype.maybeSendMapping_0 = function (address, brainId) {
     var tmp$, tmp$_0;
-    if (surfaceName == null) {
-      var surface = this.surfacesByBrainId_0.get_11rb$(message.brainId);
-      if (surface != null && Kotlin.isType(surface, SheepModel$Panel)) {
-        var pixelLocations = this.pixelsBySurface_0.get_11rb$(surface);
-        var pixelCount = (tmp$ = pixelLocations != null ? pixelLocations.length : null) != null ? tmp$ : -1;
-        var tmp$_1;
-        if (pixelLocations != null) {
-          var destination = ArrayList_init_0(pixelLocations.length);
-          var tmp$_2;
-          for (tmp$_2 = 0; tmp$_2 !== pixelLocations.length; ++tmp$_2) {
-            var item = pixelLocations[tmp$_2];
-            destination.add_11rb$(new Vector2F(item.x, item.y));
-          }
-          tmp$_1 = destination;
+    var surface = this.surfaceMappingsByBrain_0.get_11rb$(brainId);
+    if (surface != null && Kotlin.isType(surface, SheepModel$Panel)) {
+      var pixelLocations = this.pixelsBySurface_0.get_11rb$(surface);
+      var pixelCount = (tmp$ = pixelLocations != null ? pixelLocations.length : null) != null ? tmp$ : -1;
+      var tmp$_1;
+      if (pixelLocations != null) {
+        var destination = ArrayList_init_0(pixelLocations.length);
+        var tmp$_2;
+        for (tmp$_2 = 0; tmp$_2 !== pixelLocations.length; ++tmp$_2) {
+          var item = pixelLocations[tmp$_2];
+          destination.add_11rb$(new Vector2F(item.x, item.y));
         }
-         else
-          tmp$_1 = null;
-        var pixelVertices = (tmp$_0 = tmp$_1) != null ? tmp$_0 : emptyList();
-        var mappingMsg = new BrainMapping(message.brainId, surface.name, pixelCount, pixelVertices);
-        this.link_0.sendUdp_wpmaqi$(address, 8003, mappingMsg);
+        tmp$_1 = destination;
       }
+       else
+        tmp$_1 = null;
+      var pixelVertices = (tmp$_0 = tmp$_1) != null ? tmp$_0 : emptyList();
+      var mappingMsg = new BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices);
+      this.link_0.sendUdp_wpmaqi$(address, 8003, mappingMsg);
     }
   };
   function Pinky$UnknownSurface(brainId) {
@@ -3008,21 +3025,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return 'Unknown surface for ' + this.brainId;
   };
   Pinky$UnknownSurface.prototype.equals = function (other) {
-    return Kotlin.isType(other, Pinky$UnknownSurface) && equals(this.brainId, other.brainId);
+    return Kotlin.isType(other, Pinky$UnknownSurface) && this.brainId.equals(other.brainId);
   };
   Pinky$UnknownSurface.prototype.hashCode = function () {
-    return hashCode(this.brainId);
+    return this.brainId.hashCode();
   };
   Pinky$UnknownSurface.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'UnknownSurface',
     interfaces: [Surface]
   };
-  function Pinky$foundBrain$lambda(this$Pinky, closure$remoteBrain) {
+  function Pinky$foundBrain$lambda(this$Pinky, closure$brainAddress) {
     return function (shaderBuffer) {
       var tmp$;
       var message = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer)).toBytes();
-      this$Pinky.link_0.sendUdp_ytpeqp$(closure$remoteBrain.address, 8003, message);
+      this$Pinky.link_0.sendUdp_ytpeqp$(closure$brainAddress, 8003, message);
       var tmp$_0;
       tmp$_0 = this$Pinky.networkStats_0;
       tmp$_0.packetsSent = tmp$_0.packetsSent + 1 | 0;
@@ -3031,27 +3048,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
-  Pinky.prototype.foundBrain_0 = function (remoteBrain) {
-    var oldRemoteBrain = this.brainsById_0.get_11rb$(remoteBrain.brainId);
-    if (oldRemoteBrain != null && equals(oldRemoteBrain.brainId, remoteBrain.brainId) && oldRemoteBrain.surface === remoteBrain.surface) {
-      return;
-    }
-    if (oldRemoteBrain != null) {
-      var tmp$;
-      if ((tmp$ = oldRemoteBrain.surfaceReceiver) != null) {
-        this.surfacesToAdd_0.remove_11rb$(tmp$);
-        this.surfacesToRemove_0.add_11rb$(tmp$);
+  Pinky.prototype.foundBrain_0 = function (brainAddress, brainId, surfaceName) {
+    var tmp$, tmp$_0;
+    var surface = (tmp$ = surfaceName != null ? this.surfacesByName_0.get_11rb$(surfaceName) : null) != null ? tmp$ : new Pinky$UnknownSurface(brainId);
+    if (Kotlin.isType(surface, Pinky$UnknownSurface))
+      this.maybeSendMapping_0(brainAddress, brainId);
+    var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
+    if (priorBrainInfo != null) {
+      if (((tmp$_0 = priorBrainInfo.brainId) != null ? tmp$_0.equals(brainId) : null) && equals(priorBrainInfo.surface, surface)) {
+        return;
       }
     }
-    this.brainsById_0.put_xwzc9p$(remoteBrain.brainId, remoteBrain);
-    this.display.brainCount = this.brainsById_0.size;
-    var surfaceReceiver = new ShowRunner$SurfaceReceiver(remoteBrain.surface, Pinky$foundBrain$lambda(this, remoteBrain));
-    this.surfacesToAdd_0.add_11rb$(surfaceReceiver);
-    this.surfacesToRemove_0.remove_11rb$(surfaceReceiver);
-    remoteBrain.surfaceReceiver = surfaceReceiver;
+    var surfaceReceiver = new ShowRunner$SurfaceReceiver(surface, Pinky$foundBrain$lambda(this, brainAddress));
+    var brainInfo = new BrainInfo(brainAddress, brainId, surface, surfaceReceiver);
+    this.pendingBrainInfos_0.put_xwzc9p$(brainId, brainInfo);
   };
-  Pinky.prototype.providePanelMapping_jm2l9z$ = function (brainId, surface) {
-    this.surfacesByBrainId_0.put_xwzc9p$(brainId, surface);
+  Pinky.prototype.providePanelMapping_epc2uw$ = function (brainId, surface) {
+    this.surfaceMappingsByBrain_0.put_xwzc9p$(brainId, surface);
   };
   Pinky.prototype.providePixelMapping_td2c2y$ = function (surface, pixelLocations) {
     this.pixelsBySurface_0.put_xwzc9p$(surface, pixelLocations);
@@ -3169,17 +3182,40 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Pinky',
     interfaces: [Network$UdpListener]
   };
-  function RemoteBrain(address, brainId, surface, surfaceReceiver) {
-    if (surfaceReceiver === void 0)
-      surfaceReceiver = null;
+  function BrainId(uuid) {
+    this.uuid = uuid;
+  }
+  BrainId.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainId',
+    interfaces: []
+  };
+  BrainId.prototype.component1 = function () {
+    return this.uuid;
+  };
+  BrainId.prototype.copy_61zpoe$ = function (uuid) {
+    return new BrainId(uuid === void 0 ? this.uuid : uuid);
+  };
+  BrainId.prototype.toString = function () {
+    return 'BrainId(uuid=' + Kotlin.toString(this.uuid) + ')';
+  };
+  BrainId.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.uuid) | 0;
+    return result;
+  };
+  BrainId.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.uuid, other.uuid))));
+  };
+  function BrainInfo(address, brainId, surface, surfaceReceiver) {
     this.address = address;
     this.brainId = brainId;
     this.surface = surface;
     this.surfaceReceiver = surfaceReceiver;
   }
-  RemoteBrain.$metadata$ = {
+  BrainInfo.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'RemoteBrain',
+    simpleName: 'BrainInfo',
     interfaces: []
   };
   function PubSub() {
@@ -4736,6 +4772,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
             }
             tmp$_2.surfacesChanged_yroyvo$(destination, destination_0);
           }
+          logger$Companion_getInstance().info_61zpoe$('Show ' + ensureNotNull(this.currentShow_0).name + ' updated; ' + (this.shaderBuffers_0.size.toString() + ' surfaces'));
         }
          catch (e) {
           if (Kotlin.isType(e, Show$RestartShowException)) {
@@ -4756,6 +4793,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         this.shadersLocked_0 = false;
         this.gadgetsLocked_0 = false;
         this.currentShowRenderer_0 = tmp$_4.createRenderer_h1b9op$(this.model_0, this);
+        logger$Companion_getInstance().info_61zpoe$('New show ' + tmp$_4.name + ' created; ' + (this.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this.gadgetProvider_0.activeGadgetCount + ' gadgets'));
         this.shadersLocked_0 = true;
         this.gadgetsLocked_0 = true;
         this.currentShow_0 = this.nextShow;
@@ -4849,27 +4887,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     kind: Kind_CLASS,
     simpleName: 'SurfaceReceiver',
     interfaces: []
-  };
-  ShowRunner$SurfaceReceiver.prototype.component1 = function () {
-    return this.surface;
-  };
-  ShowRunner$SurfaceReceiver.prototype.component2 = function () {
-    return this.sendFn;
-  };
-  ShowRunner$SurfaceReceiver.prototype.copy_oxwoep$ = function (surface, sendFn) {
-    return new ShowRunner$SurfaceReceiver(surface === void 0 ? this.surface : surface, sendFn === void 0 ? this.sendFn : sendFn);
-  };
-  ShowRunner$SurfaceReceiver.prototype.toString = function () {
-    return 'SurfaceReceiver(surface=' + Kotlin.toString(this.surface) + (', sendFn=' + Kotlin.toString(this.sendFn)) + ')';
-  };
-  ShowRunner$SurfaceReceiver.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.surface) | 0;
-    result = result * 31 + Kotlin.hashCode(this.sendFn) | 0;
-    return result;
-  };
-  ShowRunner$SurfaceReceiver.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.surface, other.surface) && Kotlin.equals(this.sendFn, other.sendFn)))));
   };
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
@@ -5333,21 +5350,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     ByteArrayWriter.call($this, new Int8Array(size));
     return $this;
   }
-  function FragmentingUdpLink(link) {
+  function FragmentingUdpLink(wrappedLink) {
     FragmentingUdpLink$Companion_getInstance();
-    this.link_0 = link;
-    this.mtu_0 = this.link_0.udpMtu;
+    this.wrappedLink_0 = wrappedLink;
+    this.mtu_0 = this.wrappedLink_0.udpMtu;
     this.nextMessageId_0 = 0;
     this.fragments_0 = ArrayList_init();
   }
   Object.defineProperty(FragmentingUdpLink.prototype, 'myAddress', {
     get: function () {
-      return this.link_0.myAddress;
+      return this.wrappedLink_0.myAddress;
     }
   });
   Object.defineProperty(FragmentingUdpLink.prototype, 'udpMtu', {
     get: function () {
-      return this.link_0.udpMtu;
+      return this.wrappedLink_0.udpMtu;
     }
   });
   function FragmentingUdpLink$Companion() {
@@ -5440,11 +5457,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [Network$UdpListener]
   };
   FragmentingUdpLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
-    this.link_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this));
+    this.wrappedLink_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this));
   };
   function FragmentingUdpLink$sendUdp$lambda(this$FragmentingUdpLink, closure$toAddress, closure$port) {
     return function (fragment) {
-      this$FragmentingUdpLink.link_0.sendUdp_ytpeqp$(closure$toAddress, closure$port, fragment);
+      this$FragmentingUdpLink.wrappedLink_0.sendUdp_ytpeqp$(closure$toAddress, closure$port, fragment);
       return Unit;
     };
   }
@@ -5453,7 +5470,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function FragmentingUdpLink$broadcastUdp$lambda(this$FragmentingUdpLink, closure$port) {
     return function (fragment) {
-      this$FragmentingUdpLink.link_0.broadcastUdp_3fbn1q$(closure$port, fragment);
+      this$FragmentingUdpLink.wrappedLink_0.broadcastUdp_3fbn1q$(closure$port, fragment);
       return Unit;
     };
   }
@@ -5490,10 +5507,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
   };
   FragmentingUdpLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
-    this.link_0.listenTcp_kd29r4$(port, tcpServerSocketListener);
+    this.wrappedLink_0.listenTcp_kd29r4$(port, tcpServerSocketListener);
   };
   FragmentingUdpLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
-    return this.link_0.connectTcp_dy234z$(toAddress, port, tcpListener);
+    return this.wrappedLink_0.connectTcp_dy234z$(toAddress, port, tcpListener);
   };
   FragmentingUdpLink.$metadata$ = {
     kind: Kind_CLASS,
@@ -5698,7 +5715,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         tmp$ = BrainIdResponse$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'BRAIN_MAPPING':
-        tmp$ = BrainMapping$Companion_getInstance().parse_100t80$(reader);
+        tmp$ = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'PINKY_PONG':
         tmp$ = PinkyPongMessage$Companion_getInstance().parse_100t80$(reader);
@@ -5872,18 +5889,18 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'BrainIdResponse',
     interfaces: [Message]
   };
-  function BrainMapping(brainId, surfaceName, pixelCount, pixelVertices) {
-    BrainMapping$Companion_getInstance();
+  function BrainMappingMessage(brainId, surfaceName, pixelCount, pixelVertices) {
+    BrainMappingMessage$Companion_getInstance();
     Message.call(this, Type$BRAIN_MAPPING_getInstance());
     this.brainId = brainId;
     this.surfaceName = surfaceName;
     this.pixelCount = pixelCount;
     this.pixelVertices = pixelVertices;
   }
-  function BrainMapping$Companion() {
-    BrainMapping$Companion_instance = this;
+  function BrainMappingMessage$Companion() {
+    BrainMappingMessage$Companion_instance = this;
   }
-  BrainMapping$Companion.prototype.readListOfVertices_v0p5xb$ = function ($receiver) {
+  BrainMappingMessage$Companion.prototype.readListOfVertices_v0p5xb$ = function ($receiver) {
     var vertexCount = $receiver.readInt();
     var $receiver_0 = until(0, vertexCount);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
@@ -5895,23 +5912,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     return destination;
   };
-  BrainMapping$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainMapping(reader.readString(), reader.readNullableString(), reader.readInt(), this.readListOfVertices_v0p5xb$(reader));
+  BrainMappingMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    return new BrainMappingMessage(new BrainId(reader.readString()), reader.readNullableString(), reader.readInt(), this.readListOfVertices_v0p5xb$(reader));
   };
-  BrainMapping$Companion.$metadata$ = {
+  BrainMappingMessage$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
     interfaces: []
   };
-  var BrainMapping$Companion_instance = null;
-  function BrainMapping$Companion_getInstance() {
-    if (BrainMapping$Companion_instance === null) {
-      new BrainMapping$Companion();
+  var BrainMappingMessage$Companion_instance = null;
+  function BrainMappingMessage$Companion_getInstance() {
+    if (BrainMappingMessage$Companion_instance === null) {
+      new BrainMappingMessage$Companion();
     }
-    return BrainMapping$Companion_instance;
+    return BrainMappingMessage$Companion_instance;
   }
-  BrainMapping.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.brainId);
+  BrainMappingMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.brainId.uuid);
     writer.writeNullableString_pdl1vj$(this.surfaceName);
     writer.writeInt_za3lpa$(this.pixelCount);
     var vertexCount = this.pixelVertices.size;
@@ -5924,9 +5941,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       writer.writeFloat_mx4ult$(element.y);
     }
   };
-  BrainMapping.$metadata$ = {
+  BrainMappingMessage.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'BrainMapping',
+    simpleName: 'BrainMappingMessage',
     interfaces: [Message]
   };
   function Vector2F(x, y) {
@@ -6987,6 +7004,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.fadeTimeMs = 500;
   }
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+    var now = getTimeMillis().and(L268435455).toInt();
     var $receiver = this.shaderBuffers;
     this.closure$colorArray;
     var tmp$, tmp$_0;
@@ -6995,9 +7013,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var closure$colorArray = this.closure$colorArray;
-      var number = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-      var now = getTimeMillis().and(L268435455).toInt();
-      var colorIndex = ((now / this.fadeTimeMs | 0) + number | 0) % closure$colorArray.length;
+      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % closure$colorArray.length;
       var startColor = closure$colorArray[colorIndex];
       var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
       var tweenedColor = startColor.fade_6zkv30$(endColor, now % this.fadeTimeMs / this.fadeTimeMs);
@@ -7058,6 +7074,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.fadeTimeMs = 1000;
   }
   PixelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+    var now = getTimeMillis().and(L268435455).toInt();
     var $receiver = this.shaderBuffers;
     this.closure$colorArray;
     var tmp$, tmp$_0;
@@ -7066,9 +7083,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       var closure$colorArray = this.closure$colorArray;
-      var i = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-      var now = getTimeMillis().and(L268435455).toInt();
-      var colorIndex = ((now / this.fadeTimeMs | 0) + i | 0) % closure$colorArray.length;
+      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % closure$colorArray.length;
       var startColor = closure$colorArray[colorIndex];
       var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
       var colors = item.colors;
@@ -8123,6 +8138,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   logger$Companion.prototype.debug_61zpoe$ = function (message) {
     println('DEBUG: ' + message);
   };
+  logger$Companion.prototype.info_61zpoe$ = function (message) {
+    println('INFO: ' + message);
+  };
   logger$Companion.prototype.warn_61zpoe$ = function (message) {
     println('WARN: ' + message);
   };
@@ -9059,17 +9077,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.parentNode = parentNode;
     this.fakeDomContainer_0 = new FakeDomContainer();
   }
-  function Launcher$add$lambda$lambda(this$Launcher, closure$name, closure$onLaunch) {
+  function Launcher$add$lambda$lambda(closure$name, this$, this$Launcher, closure$onLaunch) {
     return function (it) {
+      console.log('Launch ' + closure$name, this$);
       return this$Launcher.fakeDomContainer_0.createFrame_56nt9y$(closure$name, closure$onLaunch());
     };
   }
   function Launcher$add$lambda(closure$name, this$Launcher, closure$onLaunch) {
     return function ($receiver) {
       var tmp$;
-      console.log('launcher for ' + closure$name, $receiver);
       appendText($receiver, closure$name);
-      (Kotlin.isType(tmp$ = $receiver, HTMLElement) ? tmp$ : throwCCE()).onclick = Launcher$add$lambda$lambda(this$Launcher, closure$name, closure$onLaunch);
+      (Kotlin.isType(tmp$ = $receiver, HTMLElement) ? tmp$ : throwCCE()).onclick = Launcher$add$lambda$lambda(closure$name, $receiver, this$Launcher, closure$onLaunch);
       return Unit;
     };
   }
@@ -9285,11 +9303,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         return instance.doResume(null);
     };
   }
-  function Coroutine$SheepSimulator$start$lambda$lambda_0(this$SheepSimulator_0, $receiver_0, controller, continuation_0) {
+  function Coroutine$SheepSimulator$start$lambda$lambda_0(continuation_0) {
     CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
     this.exceptionState_0 = 1;
-    this.local$this$SheepSimulator = this$SheepSimulator_0;
   }
   Coroutine$SheepSimulator$start$lambda$lambda_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -9299,56 +9315,6 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Coroutine$SheepSimulator$start$lambda$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
   Coroutine$SheepSimulator$start$lambda$lambda_0.prototype.constructor = Coroutine$SheepSimulator$start$lambda$lambda_0;
   Coroutine$SheepSimulator$start$lambda$lambda_0.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$SheepSimulator.pinky_0.run(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.result_0;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function SheepSimulator$start$lambda$lambda_2(this$SheepSimulator_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$SheepSimulator$start$lambda$lambda_0(this$SheepSimulator_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function Coroutine$SheepSimulator$start$lambda$lambda_1(continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-  }
-  Coroutine$SheepSimulator$start$lambda$lambda_1.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$SheepSimulator$start$lambda$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$SheepSimulator$start$lambda$lambda_1.prototype.constructor = Coroutine$SheepSimulator$start$lambda$lambda_1;
-  Coroutine$SheepSimulator$start$lambda$lambda_1.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
@@ -9378,8 +9344,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       }
      while (true);
   };
-  function SheepSimulator$start$lambda$lambda_3(continuation_0, suspended) {
-    var instance = new Coroutine$SheepSimulator$start$lambda$lambda_1(continuation_0);
+  function SheepSimulator$start$lambda$lambda_2(continuation_0, suspended) {
+    var instance = new Coroutine$SheepSimulator$start$lambda$lambda_0(continuation_0);
     if (suspended)
       return instance;
     else
@@ -9431,11 +9397,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               var pixelLocations = ensureNotNull(jsPanel.getPixelLocations());
               this$SheepSimulator.pinky_0.providePixelMapping_td2c2y$(item, pixelLocations);
               var brain = new Brain('brain//' + index_0, this$SheepSimulator.network_0, this$SheepSimulator.display_0.forBrain(), (tmp$_1 = jsPanel.vizPixels) != null ? tmp$_1 : SheepSimulator$NullPixels_getInstance());
-              this$SheepSimulator.pinky_0.providePanelMapping_jm2l9z$(brain.id, item);
+              this$SheepSimulator.pinky_0.providePanelMapping_epc2uw$(new BrainId(brain.id), item);
               launch(this$SheepSimulator.brainScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda_0(brain));
             }
 
-            launch(this.local$this$SheepSimulator.pinkyScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda_2(this.local$this$SheepSimulator));
             var tmp$_2;
             tmp$_2 = this.local$this$SheepSimulator.sheepModel_0.eyes.iterator();
             while (tmp$_2.hasNext()) {
@@ -9444,7 +9409,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
               this$SheepSimulator_0.visualizer_0.addMovingHead_nmqlne$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
 
-            return doRunBlocking(SheepSimulator$start$lambda$lambda_3), Unit;
+            return doRunBlocking(SheepSimulator$start$lambda$lambda_2), Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -10847,7 +10812,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Pinky.PinkyBeatProvider = Pinky$PinkyBeatProvider;
   Pinky.NetworkStats = Pinky$NetworkStats;
   package$baaahs.Pinky = Pinky;
-  package$baaahs.RemoteBrain = RemoteBrain;
+  package$baaahs.BrainId = BrainId;
+  package$baaahs.BrainInfo = BrainInfo;
   Object.defineProperty(PubSub, 'Companion', {
     get: PubSub$Companion_getInstance
   });
@@ -11113,10 +11079,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     get: BrainIdResponse$Companion_getInstance
   });
   package$proto.BrainIdResponse = BrainIdResponse;
-  Object.defineProperty(BrainMapping, 'Companion', {
-    get: BrainMapping$Companion_getInstance
+  Object.defineProperty(BrainMappingMessage, 'Companion', {
+    get: BrainMappingMessage$Companion_getInstance
   });
-  package$proto.BrainMapping = BrainMapping;
+  package$proto.BrainMappingMessage = BrainMappingMessage;
   package$proto.Vector2F = Vector2F;
   Object.defineProperty(PinkyPongMessage, 'Companion', {
     get: PinkyPongMessage$Companion_getInstance

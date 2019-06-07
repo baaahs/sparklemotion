@@ -1,14 +1,14 @@
 <HTML>
 <HEAD>
 <meta charset="UTF-8">
-<title>BrainMapping - sparklemotion</title>
+<title>BrainMappingMessage - sparklemotion</title>
 <link rel="stylesheet" href="../../../style.css">
 </HEAD>
 <BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.proto</a>&nbsp;/&nbsp;<a href="./index.html">BrainMapping</a><br/>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.proto</a>&nbsp;/&nbsp;<a href="./index.html">BrainMappingMessage</a><br/>
 <br/>
-<h1>BrainMapping</h1>
-<code><span class="keyword">class </span><span class="identifier">BrainMapping</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-message/index.html"><span class="identifier">Message</span></a></code>
+<h1>BrainMappingMessage</h1>
+<code><span class="keyword">class </span><span class="identifier">BrainMappingMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-message/index.html"><span class="identifier">Message</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">BrainMapping</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMapping$<init>(kotlin.String, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMapping$<init>(kotlin.String, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/surfaceName">surfaceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMapping$<init>(kotlin.String, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMapping$<init>(kotlin.String, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/pixelVertices">pixelVertices</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-vector2-f/index.html"><span class="identifier">Vector2F</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">BrainMappingMessage</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMappingMessage$<init>(baaahs.BrainId, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMappingMessage$<init>(baaahs.BrainId, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/surfaceName">surfaceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMappingMessage$<init>(baaahs.BrainId, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.proto.BrainMappingMessage$<init>(baaahs.BrainId, kotlin.String, kotlin.Int, kotlin.collections.List((baaahs.proto.Vector2F)))/pixelVertices">pixelVertices</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-vector2-f/index.html"><span class="identifier">Vector2F</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +29,7 @@
 <p><a href="brain-id.html">brainId</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">brainId</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">brainId</span><span class="symbol">: </span><a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -74,7 +74,7 @@
 <p><a href="serialize.html">serialize</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMapping$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMappingMessage$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -105,7 +105,7 @@
 <p><a href="parse.html">parse</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMapping.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BrainMapping</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.BrainMappingMessage.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BrainMappingMessage</span></a></code></td>
 </tr>
 <tr>
 <td>
