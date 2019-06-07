@@ -1,9 +1,6 @@
 package baaahs.shows
 
-import baaahs.Color
-import baaahs.SheepModel
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.gadgets.RadioButtons
 import baaahs.gadgets.Slider
 import baaahs.shaders.HeartShader
@@ -25,6 +22,12 @@ object HeartbleatShow : Show("Heartbleat") {
             val xOff = showRunner.getGadget("xOff", Slider("X Offset", .4f))
             val yOff = showRunner.getGadget("yOff", Slider("Y Offset", .67f))
             val otherSurfaces = showRunner.allUnusedSurfaces.map { showRunner.getShaderBuffer(it, SolidShader()) }
+
+            init {
+                logger.info("hearts is ${hearts.size} surfaces");
+                logger.info("have ${otherSurfaces.size} other surfaces");
+                logger.info("otherSurfaces is now ${showRunner.allUnusedSurfaces.size}")
+            }
 
             override fun nextFrame() {
                 var phase = (beatProvider.beat % 1.0) * 3.0f

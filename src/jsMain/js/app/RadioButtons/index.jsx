@@ -31,9 +31,9 @@ class RadioButtons extends React.Component {
           {gadget.name}: {gadget.value}
         </label>
         {gadget.options.toArray().map ((option) => (
-        <div>
+        <div
+          key={option}>
             <input
-              key={option}
               type="radio"
               value={option}
               step=".01"

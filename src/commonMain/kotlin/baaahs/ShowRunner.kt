@@ -16,6 +16,7 @@ class ShowRunner(
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
 
+    private val surfaceReceivers = mutableMapOf<Surface, MutableList<SurfaceReceiver>>()
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
     val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
 
@@ -114,8 +115,6 @@ class ShowRunner(
 
         housekeeping()
     }
-
-    private val surfaceReceivers = mutableMapOf<Surface, MutableList<SurfaceReceiver>>()
 
     private fun housekeeping() {
         for ((added, removed) in changedSurfaces) {
