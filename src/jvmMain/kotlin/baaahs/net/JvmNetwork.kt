@@ -10,24 +10,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.InetSocketAddress
+import java.net.*
 import java.nio.ByteBuffer
 
 class JvmNetwork(val httpServer: ApplicationEngine) : Network {
     companion object {
         private const val MAX_UDP_SIZE = 2048
 
-        val myAddress = InetAddress.getLocalHost()
+//        val myAddress = InetAddress.getLocalHost()
+        val myAddress = InetAddress.getByName("10.0.1.10")
         private val broadcastAddress = InetAddress.getByName("255.255.255.255")
     }
 
     override fun link(): Network.Link = RealLink()
 
     inner class RealLink() : Network.Link {
-        private var defaultUdpSocket = DatagramSocket()
+        private var defaultUdpSocket = DatagramSocket(0, InetAddress.getByName("10.0.1.10"))
         private val networkScope = CoroutineScope(Dispatchers.IO)
 
         override val udpMtu = 1400
@@ -49,13 +47,17 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
         }
 
         override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+            broadcastUdp(port, bytes);
+            return
             val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
             defaultUdpSocket.send(packetOut)
+            println("unicast udpfrom ${defaultUdpSocket.localAddress}")
         }
 
         override fun broadcastUdp(port: Int, bytes: ByteArray) {
             val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
             defaultUdpSocket.send(packetOut)
+            println("broadcast from ${defaultUdpSocket.localAddress}")
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
@@ -111,7 +113,8 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
 
     class IpAddress(val address: InetAddress) : Network.Address {
         companion object {
-            fun mine() = IpAddress(InetAddress.getLocalHost())
+//            fun mine() = IpAddress(InetAddress.getLocalHost())
+            fun mine() = IpAddress(InetAddress.getByName("10.0.1.10"))
         }
     }
 }
