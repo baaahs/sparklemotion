@@ -52,7 +52,11 @@ class Brain(
 
     private suspend fun sendHello() {
         while (true) {
-            if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {
+            val elapsedSinceMessageMs = getTimeMillis() - lastInstructionsReceivedAtMs
+            if (elapsedSinceMessageMs > 10000) {
+                if (lastInstructionsReceivedAtMs != 0L) {
+                    logger.info("$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms")
+                }
                 link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
@@ -98,7 +102,7 @@ class Brain(
             }
 
             Type.BRAIN_MAPPING -> {
-                val message = BrainMapping.parse(reader)
+                val message = BrainMappingMessage.parse(reader)
                 surfaceName = message.surfaceName
                 surface = if (message.surfaceName != null) {
                     MappedSurface(message.pixelCount, message.pixelVertices, message.surfaceName)

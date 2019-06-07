@@ -35,8 +35,8 @@ object PanelTweenShow : Show("PanelTweenShow") {
             val fadeTimeMs = 500
 
             override fun nextFrame() {
+                val now = getTimeMillis().and(0xfffffff).toInt()
                 shaderBuffers.forEachIndexed() { number, bufs ->
-                    val now = getTimeMillis().and(0xfffffff).toInt()
                     val colorIndex = (now / fadeTimeMs + number) % colorArray.size
                     val startColor = colorArray[colorIndex]
                     val endColor = colorArray[(colorIndex + 1) % colorArray.size]
