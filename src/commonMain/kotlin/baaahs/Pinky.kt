@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class Pinky(
     val sheepModel: SheepModel,
-    val showMetas: List<Show.MetaData>,
+    val showMetas: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
@@ -40,7 +40,7 @@ class Pinky(
     val address: Network.Address get() = link.myAddress
     private val networkStats = NetworkStats()
 
-    suspend fun run(): Show {
+    suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
 
         link.listenUdp(Ports.PINKY, this)

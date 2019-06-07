@@ -15,24 +15,24 @@ interface NetworkDisplay {
 }
 
 interface PinkyDisplay {
-    fun listShows(showMetas: List<Show.MetaData>)
+    fun listShows(showMetas: List<Show>)
 
     var brainCount: Int
     var beat: Int
     var onShowChange: (() -> Unit)
-    var selectedShow: Show.MetaData?
+    var selectedShow: Show?
     var nextFrameMs: Int
     var stats: Pinky.NetworkStats?
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
-    override fun listShows(showMetas: List<Show.MetaData>) {
+    override fun listShows(showMetas: List<Show>) {
     }
 
     override var brainCount = 0
     override var beat = 0
     override var onShowChange: () -> Unit = { }
-    override var selectedShow: Show.MetaData? = null
+    override var selectedShow: Show? = null
     override var nextFrameMs: Int = 0
     override var stats: Pinky.NetworkStats? = null
 }
