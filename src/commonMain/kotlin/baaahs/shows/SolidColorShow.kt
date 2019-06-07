@@ -7,8 +7,8 @@ import baaahs.ShowRunner
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.SolidShader
 
-object SolidColorShow : Show.MetaData("Solid Color") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+object SolidColorShow : Show("Solid Color") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val shader = SolidShader()
@@ -16,7 +16,7 @@ object SolidColorShow : Show.MetaData("Solid Color") {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
-        return object : Show {
+        return object : Renderer {
             var priorColor = colorPicker.color
 
             override fun nextFrame() {

@@ -5,8 +5,8 @@ import baaahs.gadgets.Slider
 import baaahs.shaders.SolidShader
 import kotlin.random.Random
 
-object LifeyShow : Show.MetaData("Lifey") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+object LifeyShow : Show("Lifey") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val speedSlider = showRunner.getGadget("speed", Slider("Speed", .25f))
 
         val shader = SolidShader()
@@ -21,7 +21,7 @@ object LifeyShow : Show.MetaData("Lifey") {
         fun SheepModel.Panel.isSelected() = selectedPanels.contains(this)
         fun SheepModel.Panel.neighborsSelected() = neighbors().filter { selectedPanels.contains(it) }.count()
 
-        return object : Show {
+        return object : Renderer {
             override fun nextFrame() {
                 val nowMs = getTimeMillis()
                 val intervalMs = (speedSlider.value * 1000).toLong()

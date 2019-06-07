@@ -4,8 +4,8 @@ import baaahs.*
 import baaahs.shaders.PixelShader
 import kotlin.random.Random
 
-object RandomShow : Show.MetaData("Random") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
+object RandomShow : Show("Random") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
         val pixelShaderBuffers = showRunner.allSurfaces.map { surface ->
             showRunner.getShaderBuffer(surface, PixelShader())
         }
