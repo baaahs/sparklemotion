@@ -1,7 +1,6 @@
 import { hot } from 'react-hot-loader';
 import React, {Component, Fragment} from 'react';
 import ColorPicker from './Menu/components/ColorPicker';
-import ShowList from './ShowList';
 import Slider from './Slider';
 import PropTypes from 'prop-types';
 
@@ -49,6 +48,7 @@ class App extends Component {
   };
 
   render() {
+    const { pubSub } = this.props;
     const { selectedTab, gadgets } = this.state;
 
     return (
@@ -57,24 +57,9 @@ class App extends Component {
           selectedTab={selectedTab}
           onSelectTab={this.onSelectTab}
         />
-        <TabContent selectedTab={selectedTab} />
-        {gadgets.map((gadgetInfo) => {
-          const { gadget, topicName } = gadgetInfo;
-          return <div key={topicName} className={styles['gadget-view']}>{this.createGadgetView(gadget)}</div>;
-        })}
-        <ShowList pubSub={this.props.pubSub} />
+        <TabContent selectedTab={selectedTab} gadgets={gadgets} pubSub={pubSub}/>
       </Fragment>
     );
-  }
-
-  createGadgetView = (gadget) => {
-    if (gadget instanceof baaahs.gadgets.ColorPicker) {
-      return <ColorPicker gadget={gadget}/>;
-    } else if (gadget instanceof baaahs.gadgets.Slider) {
-      return <Slider gadget={gadget}/>;
-    } else {
-      return <div/>;
-    }
   }
 }
 

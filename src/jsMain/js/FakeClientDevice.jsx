@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Draggable from 'react-draggable';
+import classNames from 'classnames';
 import styles from './FakeClientDevice.scss';
 import PropTypes from 'prop-types';
 
@@ -29,8 +30,8 @@ export default class FakeClientDevice extends Component {
 
   get contentStyle() {
     return {
-      width: `${this.width}px`,
-      height: `${this.height}px`,
+      width: `100%`,
+      height: `100%`,
     };
   }
 
@@ -74,10 +75,26 @@ export default class FakeClientDevice extends Component {
           style={this.containerStyle}
         >
           <div className={styles['FakeClientDevice-controls']}>
-            <i className="fas fa-search-minus" onClick={this.onZoomOut} />
-            <i className="fas fa-search-plus" onClick={this.onZoomIn} />
-            &nbsp;
-            <i className="far fa-times-circle" onClick={this.props.onClose} />
+            <i
+              className={classNames(
+                'fas',
+                'fa-search-minus',
+                styles.iconButton
+              )}
+              onClick={this.onZoomOut}
+            />
+            <i
+              className={classNames('fas', 'fa-search-plus', styles.iconButton)}
+              onClick={this.onZoomIn}
+            />
+            <i
+              className={classNames(
+                'far',
+                'fa-times-circle',
+                styles.iconButton
+              )}
+              onClick={this.props.onClose}
+            />
           </div>
           <div
             ref={this.clientDeviceContentRef}
