@@ -256,23 +256,23 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   SolidShader.prototype.constructor = SolidShader;
   SparkleShader.prototype = Object.create(Shader.prototype);
   SparkleShader.prototype.constructor = SparkleShader;
-  CompositeShow.prototype = Object.create(Show$MetaData.prototype);
+  CompositeShow.prototype = Object.create(Show.prototype);
   CompositeShow.prototype.constructor = CompositeShow;
-  LifeyShow.prototype = Object.create(Show$MetaData.prototype);
+  LifeyShow.prototype = Object.create(Show.prototype);
   LifeyShow.prototype.constructor = LifeyShow;
-  PanelTweenShow.prototype = Object.create(Show$MetaData.prototype);
+  PanelTweenShow.prototype = Object.create(Show.prototype);
   PanelTweenShow.prototype.constructor = PanelTweenShow;
-  PixelTweenShow.prototype = Object.create(Show$MetaData.prototype);
+  PixelTweenShow.prototype = Object.create(Show.prototype);
   PixelTweenShow.prototype.constructor = PixelTweenShow;
-  RandomShow.prototype = Object.create(Show$MetaData.prototype);
+  RandomShow.prototype = Object.create(Show.prototype);
   RandomShow.prototype.constructor = RandomShow;
-  SimpleSpatialShow.prototype = Object.create(Show$MetaData.prototype);
+  SimpleSpatialShow.prototype = Object.create(Show.prototype);
   SimpleSpatialShow.prototype.constructor = SimpleSpatialShow;
-  SolidColorShow.prototype = Object.create(Show$MetaData.prototype);
+  SolidColorShow.prototype = Object.create(Show.prototype);
   SolidColorShow.prototype.constructor = SolidColorShow;
-  SomeDumbShow.prototype = Object.create(Show$MetaData.prototype);
+  SomeDumbShow.prototype = Object.create(Show.prototype);
   SomeDumbShow.prototype.constructor = SomeDumbShow;
-  ThumpShow.prototype = Object.create(Show$MetaData.prototype);
+  ThumpShow.prototype = Object.create(Show.prototype);
   ThumpShow.prototype.constructor = ThumpShow;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
@@ -968,7 +968,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.nextFrameMs_1o69ux$_0 = 0;
     this.stats_6me6mw$_0 = null;
   }
-  StubPinkyDisplay.prototype.listShows_qxmw8h$ = function (showMetas) {
+  StubPinkyDisplay.prototype.listShows_3lsa6o$ = function (showMetas) {
   };
   Object.defineProperty(StubPinkyDisplay.prototype, 'brainCount', {
     get: function () {
@@ -2865,7 +2865,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
             this.$this.link_0.listenUdp_a6m852$(8002, this.$this);
-            this.$this.display.listShows_qxmw8h$(this.$this.showMetas);
+            this.$this.display.listShows_3lsa6o$(this.$this.showMetas);
             this.$this.display.selectedShow = this.$this.selectedShow_0;
             var tmp$ = this.$this.pubSub_0;
             var tmp$_0 = Topics_getInstance().availableShows;
@@ -4558,17 +4558,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     simpleName: 'Shenzarpy',
     interfaces: [Dmx$DeviceType]
   };
-  function Show() {
-  }
-  Show.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
-    throw new Show$RestartShowException();
-  };
-  function Show$MetaData(name) {
+  function Show(name) {
     this.name = name;
   }
-  Show$MetaData.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'MetaData',
+  function Show$Renderer() {
+  }
+  Show$Renderer.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
+    throw new Show$RestartShowException();
+  };
+  Show$Renderer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Renderer',
     interfaces: []
   };
   function Show$RestartShowException() {
@@ -4581,7 +4581,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     interfaces: [Exception]
   };
   Show.$metadata$ = {
-    kind: Kind_INTERFACE,
+    kind: Kind_CLASS,
     simpleName: 'Show',
     interfaces: []
   };
@@ -4591,8 +4591,8 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.beatProvider_0 = beatProvider;
     this.dmxUniverse_0 = dmxUniverse;
     this.nextShow = initialShow;
-    this.currentShow = null;
-    this.currentShowRenderer = null;
+    this.currentShow_0 = null;
+    this.currentShowRenderer_0 = null;
     this.changedSurfaces_0 = ArrayList_init();
     this.totalSurfaceReceivers_0 = 0;
     var destination = LinkedHashMap_init();
@@ -4692,7 +4692,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   ShowRunner.prototype.nextFrame = function () {
     var tmp$;
-    if ((tmp$ = this.currentShowRenderer) != null) {
+    if ((tmp$ = this.currentShowRenderer_0) != null) {
       tmp$.nextFrame();
       this.send();
     }
@@ -4719,7 +4719,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       if (this.nextShow == null) {
         this.shadersLocked_0 = false;
         try {
-          if ((tmp$_2 = this.currentShowRenderer) != null) {
+          if ((tmp$_2 = this.currentShowRenderer_0) != null) {
             var destination = ArrayList_init_0(collectionSizeOrDefault(added, 10));
             var tmp$_6;
             tmp$_6 = added.iterator();
@@ -4739,7 +4739,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         }
          catch (e) {
           if (Kotlin.isType(e, Show$RestartShowException)) {
-            this.nextShow = (tmp$_3 = this.currentShow) != null ? tmp$_3 : this.nextShow;
+            this.nextShow = (tmp$_3 = this.currentShow_0) != null ? tmp$_3 : this.nextShow;
           }
            else
             throw e;
@@ -4755,10 +4755,10 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
         this.gadgetProvider_0.clear();
         this.shadersLocked_0 = false;
         this.gadgetsLocked_0 = false;
-        this.currentShowRenderer = tmp$_4.createShow_h1b9op$(this.model_0, this);
+        this.currentShowRenderer_0 = tmp$_4.createRenderer_h1b9op$(this.model_0, this);
         this.shadersLocked_0 = true;
         this.gadgetsLocked_0 = true;
-        this.currentShow = this.nextShow;
+        this.currentShow_0 = this.nextShow;
         this.gadgetProvider_0.setGadgetsState_fnd918$(gadgetsState);
         this.gadgetProvider_0.sync();
         this.nextShow = null;
@@ -6711,9 +6711,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   };
   function CompositeShow() {
     CompositeShow_instance = this;
-    Show$MetaData.call(this, 'Composite');
+    Show.call(this, 'Composite');
   }
-  function CompositeShow$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+  function CompositeShow$createRenderer$ObjectLiteral(closure$showRunner, closure$sheepModel) {
     this.closure$showRunner = closure$showRunner;
     this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     this.solidShader = new SolidShader();
@@ -6737,7 +6737,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.movingHeadBuffers_0 = destination;
   }
-  CompositeShow$createShow$ObjectLiteral.prototype.shaderBufsFor_0 = function (surface) {
+  CompositeShow$createRenderer$ObjectLiteral.prototype.shaderBufsFor_0 = function (surface) {
     var solidShaderBuffer = this.closure$showRunner.getShaderBuffer_9rhubp$(surface, this.solidShader);
     var $receiver = this.closure$showRunner.getShaderBuffer_9rhubp$(surface, this.sineWaveShader);
     $receiver.density = Random.Default.nextFloat() * 20;
@@ -6745,7 +6745,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var compositorShaderBuffer = this.closure$showRunner.getCompositorBuffer_cn6wln$(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance());
     return new CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer);
   };
-  CompositeShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  CompositeShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var theta = getTimeMillis().modulo(Kotlin.Long.fromInt(10000)).toNumber() / 1000.0 % (2 * math.PI);
     var i = {v: 0};
     var tmp$;
@@ -6768,7 +6768,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = theta / 2;
     }
   };
-  CompositeShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
+  CompositeShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
     var tmp$;
     tmp$ = removedSurfaces.iterator();
     while (tmp$.hasNext()) {
@@ -6784,12 +6784,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       $receiver.put_xwzc9p$(element_0, value);
     }
   };
-  CompositeShow$createShow$ObjectLiteral.$metadata$ = {
+  CompositeShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  CompositeShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new CompositeShow$createShow$ObjectLiteral(showRunner, sheepModel);
+  CompositeShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    return new CompositeShow$createRenderer$ObjectLiteral(showRunner, sheepModel);
   };
   function CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
     this.solidShaderBuffer = solidShaderBuffer;
@@ -6804,7 +6804,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   CompositeShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'CompositeShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var CompositeShow_instance = null;
   function CompositeShow_getInstance() {
@@ -6815,19 +6815,19 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function LifeyShow() {
     LifeyShow_instance = this;
-    Show$MetaData.call(this, 'Lifey');
+    Show.call(this, 'Lifey');
   }
-  function LifeyShow$createShow$neighbors(closure$sheepModel) {
+  function LifeyShow$createRenderer$neighbors(closure$sheepModel) {
     return function ($receiver) {
       return closure$sheepModel.neighborsOf_jfju1k$($receiver);
     };
   }
-  function LifeyShow$createShow$isSelected(closure$selectedPanels) {
+  function LifeyShow$createRenderer$isSelected(closure$selectedPanels) {
     return function ($receiver) {
       return closure$selectedPanels.contains_11rb$($receiver);
     };
   }
-  function LifeyShow$createShow$neighborsSelected(closure$neighbors, closure$selectedPanels) {
+  function LifeyShow$createRenderer$neighborsSelected(closure$neighbors, closure$selectedPanels) {
     return function ($receiver) {
       var $receiver_0 = closure$neighbors($receiver);
       var destination = ArrayList_init();
@@ -6841,7 +6841,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return destination.size;
     };
   }
-  function LifeyShow$createShow$ObjectLiteral(closure$speedSlider, closure$lastUpdateMs, closure$selectedPanels, closure$sheepModel, closure$isSelected, closure$neighborsSelected, closure$neighbors, closure$shaderBuffers) {
+  function LifeyShow$createRenderer$ObjectLiteral(closure$speedSlider, closure$lastUpdateMs, closure$selectedPanels, closure$sheepModel, closure$isSelected, closure$neighborsSelected, closure$neighbors, closure$shaderBuffers) {
     this.closure$speedSlider = closure$speedSlider;
     this.closure$lastUpdateMs = closure$lastUpdateMs;
     this.closure$selectedPanels = closure$selectedPanels;
@@ -6851,7 +6851,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.closure$neighbors = closure$neighbors;
     this.closure$shaderBuffers = closure$shaderBuffers;
   }
-  LifeyShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  LifeyShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var nowMs = getTimeMillis();
     var intervalMs = Kotlin.Long.fromNumber(this.closure$speedSlider.value * 1000);
     if (nowMs.compareTo_11rb$(this.closure$lastUpdateMs.v.add(intervalMs)) > 0) {
@@ -6924,11 +6924,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       buffer.color = closure$selectedPanels.contains_11rb$(panel) ? Color$Companion_getInstance().WHITE : Color$Companion_getInstance().BLACK;
     }
   };
-  LifeyShow$createShow$ObjectLiteral.$metadata$ = {
+  LifeyShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  LifeyShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+  LifeyShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
     var speedSlider = showRunner.getGadget_vedre8$('speed', new Slider('Speed', 0.25));
     var shader = new SolidShader();
     var $receiver = sheepModel.allPanels;
@@ -6945,15 +6945,15 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     var shaderBuffers = result;
     var selectedPanels = ArrayList_init();
     var lastUpdateMs = {v: L0};
-    var neighbors = LifeyShow$createShow$neighbors(sheepModel);
-    var isSelected = LifeyShow$createShow$isSelected(selectedPanels);
-    var neighborsSelected = LifeyShow$createShow$neighborsSelected(neighbors, selectedPanels);
-    return new LifeyShow$createShow$ObjectLiteral(speedSlider, lastUpdateMs, selectedPanels, sheepModel, isSelected, neighborsSelected, neighbors, shaderBuffers);
+    var neighbors = LifeyShow$createRenderer$neighbors(sheepModel);
+    var isSelected = LifeyShow$createRenderer$isSelected(selectedPanels);
+    var neighborsSelected = LifeyShow$createRenderer$neighborsSelected(neighbors, selectedPanels);
+    return new LifeyShow$createRenderer$ObjectLiteral(speedSlider, lastUpdateMs, selectedPanels, sheepModel, isSelected, neighborsSelected, neighbors, shaderBuffers);
   };
   LifeyShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'LifeyShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var LifeyShow_instance = null;
   function LifeyShow_getInstance() {
@@ -6964,9 +6964,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function PanelTweenShow() {
     PanelTweenShow_instance = this;
-    Show$MetaData.call(this, 'PanelTweenShow');
+    Show.call(this, 'PanelTweenShow');
   }
-  function PanelTweenShow$createShow$ObjectLiteral(closure$colorArray, closure$showRunner) {
+  function PanelTweenShow$createRenderer$ObjectLiteral(closure$colorArray, closure$showRunner) {
     this.closure$colorArray = closure$colorArray;
     this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.0));
     this.solidShader = new SolidShader();
@@ -6986,7 +6986,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.shaderBuffers = destination;
     this.fadeTimeMs = 500;
   }
-  PanelTweenShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  PanelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.shaderBuffers;
     this.closure$colorArray;
     var tmp$, tmp$_0;
@@ -7006,13 +7006,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       item.sparkleShader.sparkliness = this.slider.value;
     }
   };
-  PanelTweenShow$createShow$ObjectLiteral.$metadata$ = {
+  PanelTweenShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  PanelTweenShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+  PanelTweenShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
     var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
-    return new PanelTweenShow$createShow$ObjectLiteral(colorArray, showRunner);
+    return new PanelTweenShow$createRenderer$ObjectLiteral(colorArray, showRunner);
   };
   function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
     this.solidShader = solidShader;
@@ -7031,7 +7031,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PanelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PanelTweenShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var PanelTweenShow_instance = null;
   function PanelTweenShow_getInstance() {
@@ -7042,9 +7042,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function PixelTweenShow() {
     PixelTweenShow_instance = this;
-    Show$MetaData.call(this, 'PixelTweenShow');
+    Show.call(this, 'PixelTweenShow');
   }
-  function PixelTweenShow$createShow$ObjectLiteral(closure$colorArray, closure$showRunner) {
+  function PixelTweenShow$createRenderer$ObjectLiteral(closure$colorArray, closure$showRunner) {
     this.closure$colorArray = closure$colorArray;
     var $receiver = closure$showRunner.allSurfaces;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
@@ -7057,7 +7057,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     this.shaderBuffers = destination;
     this.fadeTimeMs = 1000;
   }
-  PixelTweenShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  PixelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.shaderBuffers;
     this.closure$colorArray;
     var tmp$, tmp$_0;
@@ -7087,13 +7087,13 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       }
     }
   };
-  PixelTweenShow$createShow$ObjectLiteral.$metadata$ = {
+  PixelTweenShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  PixelTweenShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+  PixelTweenShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
     var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
-    return new PixelTweenShow$createShow$ObjectLiteral(colorArray, showRunner);
+    return new PixelTweenShow$createRenderer$ObjectLiteral(colorArray, showRunner);
   };
   PixelTweenShow.prototype.get_number_y56fi1$ = function ($receiver) {
     var tmp$, tmp$_0, tmp$_1;
@@ -7102,7 +7102,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   PixelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PixelTweenShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var PixelTweenShow_instance = null;
   function PixelTweenShow_getInstance() {
@@ -7113,9 +7113,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function RandomShow() {
     RandomShow_instance = this;
-    Show$MetaData.call(this, 'Random');
+    Show.call(this, 'Random');
   }
-  function RandomShow$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+  function RandomShow$createRenderer$ObjectLiteral(closure$showRunner, closure$sheepModel) {
     var $receiver = closure$showRunner.allSurfaces;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
@@ -7135,7 +7135,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.movingHeadBuffers = destination_0;
   }
-  RandomShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  RandomShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
@@ -7155,17 +7155,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
     }
   };
-  RandomShow$createShow$ObjectLiteral.$metadata$ = {
+  RandomShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  RandomShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new RandomShow$createShow$ObjectLiteral(showRunner, sheepModel);
+  RandomShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    return new RandomShow$createRenderer$ObjectLiteral(showRunner, sheepModel);
   };
   RandomShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'RandomShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var RandomShow_instance = null;
   function RandomShow_getInstance() {
@@ -7176,16 +7176,16 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function SimpleSpatialShow() {
     SimpleSpatialShow_instance = this;
-    Show$MetaData.call(this, 'Spatial');
+    Show.call(this, 'Spatial');
   }
-  function SimpleSpatialShow$createShow$ObjectLiteral(closure$shaderBuffers, closure$colorPicker, closure$centerXSlider, closure$centerYSlider, closure$radiusSlider) {
+  function SimpleSpatialShow$createRenderer$ObjectLiteral(closure$shaderBuffers, closure$colorPicker, closure$centerXSlider, closure$centerYSlider, closure$radiusSlider) {
     this.closure$shaderBuffers = closure$shaderBuffers;
     this.closure$colorPicker = closure$colorPicker;
     this.closure$centerXSlider = closure$centerXSlider;
     this.closure$centerYSlider = closure$centerYSlider;
     this.closure$radiusSlider = closure$radiusSlider;
   }
-  SimpleSpatialShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  SimpleSpatialShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.closure$shaderBuffers;
     this.closure$colorPicker;
     this.closure$centerXSlider;
@@ -7205,11 +7205,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element.radius = closure$radiusSlider.value;
     }
   };
-  SimpleSpatialShow$createShow$ObjectLiteral.$metadata$ = {
+  SimpleSpatialShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  SimpleSpatialShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+  SimpleSpatialShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
     var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     var centerXSlider = showRunner.getGadget_vedre8$('centerX', new Slider('center X', 0.5));
     var centerYSlider = showRunner.getGadget_vedre8$('centerY', new Slider('center Y', 0.5));
@@ -7224,12 +7224,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
     }
     var shaderBuffers = destination;
-    return new SimpleSpatialShow$createShow$ObjectLiteral(shaderBuffers, colorPicker, centerXSlider, centerYSlider, radiusSlider);
+    return new SimpleSpatialShow$createRenderer$ObjectLiteral(shaderBuffers, colorPicker, centerXSlider, centerYSlider, radiusSlider);
   };
   SimpleSpatialShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'SimpleSpatialShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var SimpleSpatialShow_instance = null;
   function SimpleSpatialShow_getInstance() {
@@ -7240,14 +7240,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function SolidColorShow() {
     SolidColorShow_instance = this;
-    Show$MetaData.call(this, 'Solid Color');
+    Show.call(this, 'Solid Color');
   }
-  function SolidColorShow$createShow$ObjectLiteral(closure$colorPicker, closure$shaderBuffers) {
+  function SolidColorShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers) {
     this.closure$colorPicker = closure$colorPicker;
     this.closure$shaderBuffers = closure$shaderBuffers;
     this.priorColor = closure$colorPicker.color;
   }
-  SolidColorShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  SolidColorShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var tmp$;
     var color = {v: this.closure$colorPicker.color};
     if (!((tmp$ = color.v) != null ? tmp$.equals(this.priorColor) : null)) {
@@ -7260,11 +7260,11 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       this.priorColor = color.v;
     }
   };
-  SolidColorShow$createShow$ObjectLiteral.$metadata$ = {
+  SolidColorShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  SolidColorShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
+  SolidColorShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
     var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     var shader = new SolidShader();
     var $receiver = showRunner.allSurfaces;
@@ -7279,12 +7279,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       tmp$_0.call(destination, $receiver_0);
     }
     var shaderBuffers = destination;
-    return new SolidColorShow$createShow$ObjectLiteral(colorPicker, shaderBuffers);
+    return new SolidColorShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers);
   };
   SolidColorShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'SolidColorShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var SolidColorShow_instance = null;
   function SolidColorShow_getInstance() {
@@ -7295,9 +7295,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function SomeDumbShow() {
     SomeDumbShow_instance = this;
-    Show$MetaData.call(this, 'SomeDumbShow');
+    Show.call(this, 'SomeDumbShow');
   }
-  function SomeDumbShow$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+  function SomeDumbShow$createRenderer$ObjectLiteral(closure$showRunner, closure$sheepModel) {
     this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     this.pixelShader = new PixelShader();
     var $receiver = closure$showRunner.allSurfaces;
@@ -7319,21 +7319,21 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.movingHeads = destination_0;
   }
-  function SomeDumbShow$createShow$ObjectLiteral$nextFrame$nextTimeShiftedFloat(closure$now) {
+  function SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$nextTimeShiftedFloat(closure$now) {
     return function ($receiver) {
       var x = $receiver.nextFloat() + closure$now.toNumber() / 1000.0;
       return Math_0.sin(x);
     };
   }
-  function SomeDumbShow$createShow$ObjectLiteral$nextFrame$desaturateRandomishly($receiver, baseSaturation, seed) {
+  function SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$desaturateRandomishly($receiver, baseSaturation, seed) {
     var x = seed.nextFloat();
     return $receiver.withSaturation_mx4ult$(baseSaturation * Math_0.abs(x));
   }
-  SomeDumbShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  SomeDumbShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var seed = Random_0(0);
     var now = getTimeMillis();
-    var nextTimeShiftedFloat = SomeDumbShow$createShow$ObjectLiteral$nextFrame$nextTimeShiftedFloat(now);
-    var desaturateRandomishly = SomeDumbShow$createShow$ObjectLiteral$nextFrame$desaturateRandomishly;
+    var nextTimeShiftedFloat = SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$nextTimeShiftedFloat(now);
+    var desaturateRandomishly = SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$desaturateRandomishly;
     var tmp$;
     tmp$ = this.pixelShaderBuffers.iterator();
     while (tmp$.hasNext()) {
@@ -7355,17 +7355,17 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = element_0.tilt + (nextTimeShiftedFloat(seed) - 0.5) / 5;
     }
   };
-  SomeDumbShow$createShow$ObjectLiteral.$metadata$ = {
+  SomeDumbShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  SomeDumbShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new SomeDumbShow$createShow$ObjectLiteral(showRunner, sheepModel);
+  SomeDumbShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    return new SomeDumbShow$createRenderer$ObjectLiteral(showRunner, sheepModel);
   };
   SomeDumbShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'SomeDumbShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var SomeDumbShow_instance = null;
   function SomeDumbShow_getInstance() {
@@ -7376,9 +7376,9 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   }
   function ThumpShow() {
     ThumpShow_instance = this;
-    Show$MetaData.call(this, 'Thump');
+    Show.call(this, 'Thump');
   }
-  function ThumpShow$createShow$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+  function ThumpShow$createRenderer$ObjectLiteral(closure$showRunner, closure$sheepModel) {
     this.beatProvider_0 = closure$showRunner.getBeatProvider();
     this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     this.solidShader = new SolidShader();
@@ -7409,7 +7409,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     }
     this.movingHeadBuffers_0 = destination_0;
   }
-  ThumpShow$createShow$ObjectLiteral.prototype.nextFrame = function () {
+  ThumpShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
     var beat = this.beatProvider_0.beat;
     var i = {v: 0};
@@ -7433,12 +7433,12 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       element_0.tilt = beat / math.PI;
     }
   };
-  ThumpShow$createShow$ObjectLiteral.$metadata$ = {
+  ThumpShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [Show]
+    interfaces: [Show$Renderer]
   };
-  ThumpShow.prototype.createShow_h1b9op$ = function (sheepModel, showRunner) {
-    return new ThumpShow$createShow$ObjectLiteral(showRunner, sheepModel);
+  ThumpShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    return new ThumpShow$createRenderer$ObjectLiteral(showRunner, sheepModel);
   };
   function ThumpShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
     this.solidShaderBuffer = solidShaderBuffer;
@@ -7453,7 +7453,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   ThumpShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'ThumpShow',
-    interfaces: [Show$MetaData]
+    interfaces: [Show]
   };
   var ThumpShow_instance = null;
   function ThumpShow_getInstance() {
@@ -8289,7 +8289,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
       return Unit;
     };
   }
-  JsPinkyDisplay.prototype.listShows_qxmw8h$ = function (showMetas) {
+  JsPinkyDisplay.prototype.listShows_3lsa6o$ = function (showMetas) {
     clear(this.showListInput_0);
     this.showList_0 = showMetas;
     var tmp$;
@@ -8355,7 +8355,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_5($receiver) {
-    appendText($receiver, 'Show: ');
+    appendText($receiver, 'Renderer: ');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_6($receiver) {
@@ -11016,7 +11016,7 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   });
   Shenzarpy.Channel = Shenzarpy$Channel;
   package$baaahs.Shenzarpy = Shenzarpy;
-  Show.MetaData = Show$MetaData;
+  Show.Renderer = Show$Renderer;
   Show.RestartShowException = Show$RestartShowException;
   package$baaahs.Show = Show;
   ShowRunner.SurfacesChanges = ShowRunner$SurfacesChanges;
@@ -11276,14 +11276,14 @@ var sparklemotion = function (_, Kotlin, $module$kotlinx_coroutines_core, $modul
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   CompositorShader$Renderer$PixelBuf.prototype.iterator = Pixels.prototype.iterator;
-  LifeyShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  PanelTweenShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  PixelTweenShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  RandomShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  SimpleSpatialShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  SolidColorShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  SomeDumbShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
-  ThumpShow$createShow$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show.prototype.surfacesChanged_yroyvo$;
+  LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  PixelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  RandomShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  SimpleSpatialShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  SolidColorShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  SomeDumbShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  ThumpShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
