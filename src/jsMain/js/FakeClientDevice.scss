@@ -2,13 +2,24 @@
   position: absolute;
   border: 1px solid #404040;
   border-radius: 8px;
-  background-color: #404040;
+  background-image: linear-gradient(to bottom right, #eee, #fff);
   cursor: grab;
-  padding-top: 28px;
+  padding: 28px 40px 28px 28px;
   color: white;
   right: 5px;
   bottom: 5px;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.15);
+
+  .FakeClientDevice-home-button {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: 6px;
+    top: 50%;
+    border: 1px solid black;
+    border-radius: 50%;
+    background-image: radial-gradient(#fff, #ddd);
+  }
 
   .FakeClientDevice-controls {
     position: absolute;
@@ -16,7 +27,7 @@
     top: 0px;
     padding: 4px;
     right: 0;
-    color: #aaaaaa;
+    color: #222;
     z-index: 1;
   }
 
@@ -25,7 +36,8 @@
     position: relative;
     width: auto;
     height: auto;
-    border-top: 1px solid #373737;
+    padding: 2px;
+    border: 2px solid #373737;
     background-color: #4F4F4F;
 
     nav {
@@ -35,7 +47,7 @@
 }
 
 .iconButton {
-  color: #ffffff;
+  color: #222222;
   padding: 4px;
   margin-left: 8px;
   cursor: pointer;
