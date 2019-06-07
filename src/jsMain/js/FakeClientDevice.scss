@@ -1,15 +1,15 @@
 .FakeClientDevice--pad {
   position: absolute;
   border: 1px solid white;
-  border-radius: 1em;
-  background-color: #222;
+  border-radius: 8px;
+  background-color: #4F4F4F;
   color: white;
   right: 5px;
   bottom: 5px;
 
   .FakeClientDevice-controls {
     position: absolute;
-    font-size: 75%;
+    font-size: 14px;
     top: -10px;
     right: 3px;
     color: #aaaaaa;
@@ -28,7 +28,6 @@
     width: auto;
     height: auto;
     margin: 9px;
-    background-color: black;
-    border: 1px inset #444444;
+    background-color: #4F4F4F;
   }
 }
