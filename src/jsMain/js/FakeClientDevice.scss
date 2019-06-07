@@ -1,33 +1,46 @@
 .FakeClientDevice--pad {
   position: absolute;
-  border: 1px solid white;
+  border: 1px solid #404040;
   border-radius: 8px;
-  background-color: #4F4F4F;
+  background-color: #404040;
+  cursor: grab;
+  padding-top: 28px;
   color: white;
   right: 5px;
   bottom: 5px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.15);
 
   .FakeClientDevice-controls {
     position: absolute;
     font-size: 14px;
-    top: -10px;
-    right: 3px;
+    top: 0px;
+    padding: 4px;
+    right: 0;
     color: #aaaaaa;
     z-index: 1;
-
-    i {
-      background: #666666;
-      border-radius: 5px;
-      color: #ffffff;
-      padding: 3px;
-    }
   }
 
   .FakeClientDevice--content {
+    cursor: default;
     position: relative;
     width: auto;
     height: auto;
-    margin: 9px;
+    border-top: 1px solid #373737;
     background-color: #4F4F4F;
+
+    nav {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.iconButton {
+  color: #ffffff;
+  padding: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+
+  &:hover {
+    color: #e3e3e3;
   }
 }
