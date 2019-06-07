@@ -7,7 +7,7 @@ class ShowRunner(
     private val model: SheepModel,
     initialShow: Show,
     private val gadgetProvider: GadgetProvider,
-    brains: List<RemoteBrain>,
+    brains: List<BrainInfo>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
@@ -125,6 +125,9 @@ class ShowRunner(
                 shadersLocked = false
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
+
+                    logger.info("Show ${currentShow!!.name} updated; " +
+                            "${shaderBuffers.size} surfaces")
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
@@ -145,6 +148,9 @@ class ShowRunner(
                 gadgetsLocked = false
 
                 currentShowRenderer = it.createRenderer(model, this)
+                logger.info("New show ${it.name} created; " +
+                        "${shaderBuffers.size} surfaces " +
+                        "and ${gadgetProvider.activeGadgetCount} gadgets")
 
                 shadersLocked = true
                 gadgetsLocked = true
@@ -193,6 +199,6 @@ class ShowRunner(
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
-    data class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
+    class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
 
 }
