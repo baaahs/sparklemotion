@@ -16,6 +16,7 @@ class Pinky(
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
+//    private val link = network.link()
     private val brainsById: MutableMap<String, RemoteBrain> = mutableMapOf()
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
@@ -96,10 +97,12 @@ class Pinky(
 
     override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
         val message = parse(bytes)
+        println("received from ${fromAddress} : ${bytes} which is ${message}")
         when (message) {
             is BrainHelloMessage -> {
                 val surfaceName = message.surfaceName
                 val surface = surfacesByName[surfaceName] ?: UnknownSurface(message.brainId)
+                println("  panelName='${panelName}' surface=${surface} brainId=${message.brainId}")
                 foundBrain(RemoteBrain(fromAddress, message.brainId, surface))
 
                 maybeMoreMapping(fromAddress, surfaceName, message)

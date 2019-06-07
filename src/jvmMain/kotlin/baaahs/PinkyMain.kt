@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
                 set(value) { field = value; println("selectedShow: ${value}") }
 
             override var nextFrameMs: Int = 0
-                set(value) { field = value; println("nextFrameMs: ${value}") }
+                set(value) { field = value; /* println("nextFrameMs: ${value}") */ }
         })
 
     GlobalScope.launch { pinky.run() }

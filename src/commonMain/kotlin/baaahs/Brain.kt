@@ -53,7 +53,10 @@ class Brain(
     private suspend fun sendHello() {
         while (true) {
             if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+                // println("Sending a hello packet")
+                val msg = BrainHelloMessage(id, surfaceName ?: "")
+                val bytes = msg.toBytes();
+                link.broadcastUdp(Ports.PINKY, msg)
             }
 
             delay(5000)
@@ -68,6 +71,7 @@ class Brain(
 
         // Inline message parsing here so we can optimize stuff.
         val type = Type.get(reader.readByte())
+        // println("Got a message of type ${type}")
         when (type) {
             Type.BRAIN_PANEL_SHADE -> {
                 val shaderDesc = reader.readBytes()
@@ -90,6 +94,7 @@ class Brain(
                     read(reader)
                     draw(pixels)
                 }
+
             }
 
             Type.BRAIN_ID_REQUEST -> {
