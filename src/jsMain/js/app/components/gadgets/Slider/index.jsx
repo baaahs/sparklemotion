@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sass from './Slider.scss';
-import { Slider, Handles, Tracks, Rail, Ticks } from 'react-compound-slider';
-import { Handle, Track, Tick, SliderRail } from './slider-parts';
+import {Handles, Rail, Slider, Ticks, Tracks} from 'react-compound-slider';
+import {Handle, SliderRail, Tick, Track} from './slider-parts';
 
 const sliderStyle = {
   position: 'relative',

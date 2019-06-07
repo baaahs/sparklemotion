@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Draggable from 'react-draggable';
 import classNames from 'classnames';
 import styles from './FakeClientDevice.scss';
@@ -96,6 +96,7 @@ export default class FakeClientDevice extends Component {
               onClick={this.props.onClose}
             />
           </div>
+          <div className={styles['FakeClientDevice-home-button']}/>
           <div
             ref={this.clientDeviceContentRef}
             className={styles['FakeClientDevice--content']}

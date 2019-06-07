@@ -1,14 +1,9 @@
-import { hot } from 'react-hot-loader';
+import {hot} from 'react-hot-loader';
 import React, {Component, Fragment} from 'react';
-import ColorPicker from './Menu/components/ColorPicker';
-import Slider from './Slider';
 import PropTypes from 'prop-types';
-
-import NavigationTabBar from './components/NavigationTabBar';
-import TabContent from './components/TabContent';
-
-import {TAB_OPTION_SHOW_LIST} from './components/NavigationTabBar/constants';
-import styles from './app.scss';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import ShowList from './ShowList';
+import ShowControls from './ShowControls';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -18,7 +13,7 @@ class App extends Component {
 
     this.state = {
       primaryColor: baaahs.Color.Companion.WHITE,
-      selectedTab: TAB_OPTION_SHOW_LIST,
+      showPickerOpen: false,
       gadgets: [],
     };
 
@@ -43,21 +38,59 @@ class App extends Component {
     console.log('app closed!');
   };
 
-  onSelectTab = (selectedTab) => {
-    this.setState({ selectedTab });
+  toggleShowPicker = (event) => {
+    const { showPickerOpen } = this.state;
+    console.log('set showPickerOpen to', !showPickerOpen);
+    this.setState({ showPickerOpen: !showPickerOpen });
   };
 
   render() {
     const { pubSub } = this.props;
-    const { selectedTab, gadgets } = this.state;
+    const { showPickerOpen, gadgets } = this.state;
 
     return (
       <Fragment>
-        <NavigationTabBar
-          selectedTab={selectedTab}
-          onSelectTab={this.onSelectTab}
-        />
-        <TabContent selectedTab={selectedTab} gadgets={gadgets} pubSub={pubSub}/>
+        <div id="drawer-container" style={{ position: 'relative' }}>
+          <div
+            style={{
+              position: 'absolute',
+              width: '2em',
+              height: '-webkit-fill-available',
+              backgroundImage: "linear-gradient(to bottom right, #2F2F2F, #474747)"
+            }}
+            onClick={this.toggleShowPicker}
+          >
+            <div
+              style={{
+                transform: 'rotate(90deg)',
+              }}
+            >
+              Shows
+            </div>
+          </div>
+          <SwipeableDrawer
+            anchor="left"
+            open={showPickerOpen}
+            onOpen={this.toggleShowPicker}
+            onClose={this.toggleShowPicker}
+            PaperProps={{ style: { position: 'absolute' } }}
+            BackdropProps={{ style: { position: 'absolute' } }}
+            ModalProps={{
+              container: document.getElementById('drawer-container'),
+              style: { position: 'absolute' },
+            }}
+            variant="temporary"
+          >
+            <ShowList pubSub={pubSub} onSelect={this.toggleShowPicker} />
+          </SwipeableDrawer>
+
+          <div style={{
+            marginLeft: '2em',
+            backgroundImage: "linear-gradient(to bottom right, #3F3F3F, #575f5f)"
+          }}>
+            <ShowControls gadgets={gadgets} />
+          </div>
+        </div>
       </Fragment>
     );
   }
