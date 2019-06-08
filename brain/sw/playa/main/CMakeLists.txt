@@ -14,6 +14,7 @@ set(COMPONENT_SRCS
 )
 
 set(COMPONENT_ADD_INCLUDEDIRS ".")
+set(COMPONENT_REQUIRES led-renderer spiffs esp_http_server)
 
 register_component()
 

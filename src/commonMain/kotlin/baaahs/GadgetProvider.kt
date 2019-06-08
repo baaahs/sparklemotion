@@ -55,6 +55,8 @@ class GadgetProvider(private val pubSub: PubSub.Server) {
         }
     }
 
+    val activeGadgetCount: Int get() = activeGadgets.size
+
     internal fun findGadget(name: String) = activeGadgets.find { it.name == name }?.gadget
     internal fun findGadgetChannel(name: String) = gadgets[findGadget(name)]?.channel
 

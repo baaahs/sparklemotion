@@ -25,6 +25,10 @@ class logger {
             println("DEBUG: $message")
         }
 
+        fun info(message: String) {
+            println("INFO: $message")
+        }
+
         fun warn(message: String) {
             println("WARN: $message")
         }

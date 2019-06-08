@@ -253,15 +253,15 @@ class ShowRunnerTest {
         var onCreateShow: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
-    ) : Show.MetaData("TestShow1") {
+    ) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+        override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
             return ShowRenderer(showRunner).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Show {
+        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
             val slider = showRunner.getGadget("slider", Slider("slider"))
             val shaderBuffers =
                 showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
