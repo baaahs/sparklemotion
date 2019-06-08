@@ -9,8 +9,8 @@ import baaahs.shaders.SolidShader
 import kotlin.math.PI
 import kotlin.random.Random
 
-object CompositeShow : Show.MetaData("Composite") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner) = object : Show {
+object CompositeShow : Show("Composite") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()

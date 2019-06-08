@@ -75,6 +75,9 @@ Brain::start()
         ESP_LOGE(TAG, "failed to start timer");
         return;
     }
+
+    // Start talking to the pixels
+    m_ledRenderer.start();
 }
 
 

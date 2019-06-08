@@ -8,6 +8,8 @@
 #include "net/msg_handler.h"
 #include "net/msg_slinger.h"
 
+#include "led-renderer.h"
+
 class Brain : public MsgHandler {
 public:
     Brain();
@@ -20,6 +22,7 @@ public:
 
 private:
     MsgSlinger m_msgSlinger;
+    LEDRenderer m_ledRenderer;
 };
 
 

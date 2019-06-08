@@ -23,8 +23,8 @@ import info.laht.threekt.objects.Mesh
 import info.laht.threekt.objects.Points
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
-import org.w3c.dom.*
-import org.w3c.dom.events.Event
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
 import kotlin.browser.window

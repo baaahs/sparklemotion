@@ -230,7 +230,7 @@ protected:
     size_t m_cursor = 0;
 
     // This points at our original source data (or not)
-    Msg* m_pSrc;
+    Msg* m_pSrc = nullptr;
 };
 
 

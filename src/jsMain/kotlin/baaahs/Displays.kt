@@ -63,7 +63,7 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
     override var onShowChange: (() -> Unit) = {}
-    override var selectedShow: Show.MetaData? = null
+    override var selectedShow: Show? = null
         set(value) {
             field = value
             val options = showListInput.options
@@ -90,7 +90,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
-    private var showList = emptyList<Show.MetaData>()
+    private var showList = emptyList<Show>()
     private val showListInput: HTMLSelectElement
     private var nextFrameElapsed: Element
     private var statsSpan: Element
@@ -110,7 +110,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         beat4 = beatsDiv.appendElement("span") { appendText("4") }
         beats = listOf(beat1, beat2, beat3, beat4)
 
-        element.appendElement("b") { appendText("Show: ") }
+        element.appendElement("b") { appendText("Renderer: ") }
         showListInput = element.appendElement("select") { className = "showsDiv" } as HTMLSelectElement
         showListInput.onchange = {
             selectedShow = showList.find { it.name == showListInput.selectedOptions[0]?.textContent }
@@ -124,7 +124,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         statsSpan = element.appendElement("span") {}
     }
 
-    override fun listShows(showMetas: List<Show.MetaData>) {
+    override fun listShows(showMetas: List<Show>) {
         showListInput.clear()
         showList = showMetas
         showMetas.forEach {
