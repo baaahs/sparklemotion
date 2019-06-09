@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import throttle from 'lodash/throttle';
 import sass from './Slider.scss';
-import {Handles, Rail, Slider, Ticks, Tracks} from 'react-compound-slider';
-import {Handle, SliderRail, Tick, Track} from './slider-parts';
+import { Handles, Rail, Slider, Ticks, Tracks } from 'react-compound-slider';
+import { Handle, SliderRail, Tick, Track } from './slider-parts';
 
 const sliderStyle = {
   position: 'relative',
@@ -32,19 +33,22 @@ class RangeSlider extends React.Component {
   }
 
   onUpdate = (update) => {
-    this.setState({ update });
+    this.setState({ update }, () => {
+      this.throttleUpdateGadgetValue(update);
+    });
   };
+
+  throttleUpdateGadgetValue = throttle(
+    (values) => {
+      this.props.gadget.value = 1 - values[0];
+    },
+    10,
+  );
 
   onChange = (values) => {
     const { gadget } = this.props;
     this.setState({ values });
     gadget.value = 1 - values[0];
-  };
-
-  handleSliderChange = (event) => {
-    const { gadget } = this.state;
-    gadget.value = event.target.value;
-    this.setState({ gadget });
   };
 
   render() {
