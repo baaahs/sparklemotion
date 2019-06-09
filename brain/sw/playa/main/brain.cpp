@@ -13,7 +13,8 @@ static const uint16_t BRAIN_PORT = 8003;
 
 static const char* TAG = "# brain";
 
-Brain::Brain()
+Brain::Brain() :
+    m_ledRenderer(m_timeBase)
 {
 }
 
@@ -76,8 +77,22 @@ Brain::start()
         return;
     }
 
+    m_timeBase.setFPS(30);
+    m_ledRenderer.setBrightness(10);
+
+    m_ledShader = new LEDShaderFiller(m_timeBase, m_ledRenderer.getNumPixels());
+    m_ledRenderer.setShader(m_ledShader);
+
     // Start talking to the pixels
     m_ledRenderer.start();
+    m_ledRenderer.startLocalRenderTask();
+
+    // Some initial debugging stuff
+    ESP_LOGE(TAG, "------- Brain Start ---------");
+    ESP_LOGE(TAG, "xPortGetTickRateHz = %d", xPortGetTickRateHz());
+    ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %d", pdMS_TO_TICKS(1000));
+    ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());
+    ESP_LOGE(TAG, "getFrameDuration() = %d", m_timeBase.getFrameDuration());
 }
 
 
