@@ -46,4 +46,4 @@ Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
 Passing builds are automatically deployed here: https://baaahs.github.io/sparklemotion
 
 ## Demo
-[Link to .gif](/demo.gif)
+![Link to .gif](/demo.gif)
