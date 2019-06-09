@@ -22,7 +22,11 @@ public:
 
 private:
     MsgSlinger m_msgSlinger;
+
+    TimeBase m_timeBase;
     LEDRenderer m_ledRenderer;
+
+    LEDShader* m_ledShader;
 };
 
 
