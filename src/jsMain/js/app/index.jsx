@@ -1,9 +1,10 @@
-import {hot} from 'react-hot-loader';
-import React, {Component, Fragment} from 'react';
+import { hot } from 'react-hot-loader';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import ShowList from './ShowList';
 import ShowControls from './ShowControls';
+import styles from './app.scss';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -50,30 +51,25 @@ class App extends Component {
 
     return (
       <Fragment>
-        <div id="drawer-container" style={{ position: 'relative' }}>
+        <div id="drawer-container" className={styles['drawer-container']}>
           <div
-            style={{
-              position: 'absolute',
-              width: '2em',
-              height: '-webkit-fill-available',
-              backgroundImage: "linear-gradient(to bottom right, #2F2F2F, #474747)"
-            }}
+            className={styles['show-picker--button']}
             onClick={this.toggleShowPicker}
           >
-            <div
-              style={{
-                transform: 'rotate(90deg)',
-              }}
-            >
-              Shows
-            </div>
+            <div className={styles['show-picker--label']}>Shows</div>
           </div>
           <SwipeableDrawer
             anchor="left"
             open={showPickerOpen}
             onOpen={this.toggleShowPicker}
             onClose={this.toggleShowPicker}
-            PaperProps={{ style: { position: 'absolute' } }}
+            PaperProps={{
+              style: {
+                position: 'absolute',
+                overflowX: 'hidden',
+                backgroundColor: '#575f5f',
+              },
+            }}
             BackdropProps={{ style: { position: 'absolute' } }}
             ModalProps={{
               container: document.getElementById('drawer-container'),
@@ -84,10 +80,13 @@ class App extends Component {
             <ShowList pubSub={pubSub} onSelect={this.toggleShowPicker} />
           </SwipeableDrawer>
 
-          <div style={{
-            marginLeft: '2em',
-            backgroundImage: "linear-gradient(to bottom right, #3F3F3F, #575f5f)"
-          }}>
+          <div
+            style={{
+              marginLeft: '2em',
+              backgroundImage:
+                'linear-gradient(to bottom right, #3F3F3F, #575f5f)',
+            }}
+          >
             <ShowControls gadgets={gadgets} />
           </div>
         </div>
