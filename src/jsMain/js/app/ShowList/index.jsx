@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Show from './Show.jsx';
 import styles from './ShowList.scss';
@@ -36,6 +36,7 @@ class ShowList extends Component {
   handleSelectShow = (selectedShow) => {
     this.setState({ selectedShow });
     this.setSelectedShow(selectedShow);
+    this.props.onSelect();
   };
 
   setSelectedShow(name) {

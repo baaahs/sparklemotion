@@ -1,3 +1,20 @@
 .gadget-view {
   float: left;
 }
+
+.drawer-container {
+  position: relative;
+  height: 100%;
+
+  .show-picker--button {
+    position: absolute;
+    width: 2em;
+    height: 60px;
+    background-image: linear-gradient(to bottom right, #2F2F2F, #474747);
+
+    .show-picker--label {
+      transform: rotate(90deg);
+      margin-top: 15px;
+    }
+  }
+}

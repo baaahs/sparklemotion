@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import styles from './ColorPicker.scss';
 import classNames from 'classnames';
 import chroma from 'chroma-js';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
-import { rgb2xy, xy2polar, xy2rgb } from '../../../../utils/colorUtils';
+import {rgb2xy, xy2polar, xy2rgb} from '../../../../utils/colorUtils';
 
 const baaahs = sparklemotion.baaahs;
 
