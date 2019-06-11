@@ -9,7 +9,6 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.plus
-import kotlinx.serialization.serializer
 import kotlin.js.JsName
 
 abstract class PubSub {
@@ -29,6 +28,8 @@ abstract class PubSub {
     interface Channel<T> {
         @JsName("onChange")
         fun onChange(t: T)
+
+        fun replaceOnUpdate(onUpdate: (T) -> Unit)
 
         fun unsubscribe()
     }
@@ -92,11 +93,10 @@ abstract class PubSub {
 
                 "update" -> {
                     val topicName = reader.readString()
-                    val topic = Topic(topicName, String.serializer())
                     val data = reader.readString()
                     println("[${tcpConnection.fromAddress} -> $name] update $topicName $data")
 
-                    val topicInfo = topics[topic.name]
+                    val topicInfo = topics[topicName]
                     topicInfo?.notify(data, this)
                 }
 
@@ -162,9 +162,8 @@ abstract class PubSub {
             val topicName = topic.name
             val jsonData = json.stringify(topic.serializer, data)
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
-            topicInfo.listeners.add(object : Listener(publisher) {
-                override fun onUpdate(data: String) = onUpdate(json.parse(topic.serializer, data))
-            })
+            val listener = PublisherListener(topic, publisher, onUpdate)
+            topicInfo.listeners.add(listener)
             topicInfo.notify(jsonData, publisher)
 
             return object : Channel<T> {
@@ -172,9 +171,25 @@ abstract class PubSub {
                     topicInfo.notify(json.stringify(topic.serializer, t), publisher)
                 }
 
+                override fun replaceOnUpdate(onUpdate: (T) -> Unit) {
+                    listener.onUpdate = onUpdate
+                }
+
                 override fun unsubscribe() {
                     // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
+            }
+        }
+
+        internal fun getTopicInfo(topicName: String) = topics[topicName]
+
+        inner class PublisherListener<T : Any>(
+            private val topic: Topic<T>,
+            origin: Origin,
+            var onUpdate: (T) -> Unit
+        ) : Listener(origin) {
+            override fun onUpdate(data: String) {
+                onUpdate(json.parse(topic.serializer, data))
             }
         }
     }
@@ -215,6 +230,10 @@ abstract class PubSub {
                 override fun onChange(t: T) {
                     val jsonData = json.stringify(topic.serializer, t)
                     topicInfo.notify(jsonData, subscriber)
+                }
+
+                override fun replaceOnUpdate(onUpdate: (T) -> Unit) {
+                    TODO("Client.channel.replaceOnUpdate not implemented")
                 }
 
                 override fun unsubscribe() {

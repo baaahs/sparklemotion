@@ -73,9 +73,10 @@ export function Handle({
           zIndex: 2,
           width: 20,
           height: 20,
-          borderRadius: '50%',
           boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.3)',
-          backgroundColor: '#6ABBC0',
+          backgroundImage: 'linear-gradient(to bottom, #333, #444, #555, #7F7, #555, #444, #333)',
+          borderLeft: '1px solid #999',
+          borderRight: '1px solid #999',
         }}
       />
     </Fragment>
@@ -185,7 +186,7 @@ export function Tick({ tick, format }) {
           height: 1,
           width: 6,
           backgroundColor: 'rgb(200,200,200)',
-          bottom: `${tick.percent}%`,
+          bottom: `${100 - tick.percent}%`,
         }}
       />
       <div
@@ -195,7 +196,7 @@ export function Tick({ tick, format }) {
           marginLeft: 20,
           fontSize: 10,
           color: '#aeaeae',
-          bottom: `${tick.percent}%`,
+          bottom: `${100 - tick.percent}%`,
           transform: `translateY(50%)`,
         }}
       >

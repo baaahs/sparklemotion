@@ -24,7 +24,7 @@ object LifeyShow : Show("Lifey") {
         return object : Renderer {
             override fun nextFrame() {
                 val nowMs = getTimeMillis()
-                val intervalMs = (speedSlider.value * 1000).toLong()
+                val intervalMs = ((1f - speedSlider.value) * 1000).toLong()
                 if (nowMs > lastUpdateMs + intervalMs) {
                     if (selectedPanels.isEmpty()) {
                         selectedPanels.addAll(sheepModel.allPanels.filter { Random.nextFloat() < .5 })
