@@ -34,11 +34,6 @@ class SolidShader : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
     }
 
     class Renderer : Shader.Renderer<Buffer> {
-
-        override fun draw(buffer: Buffer, pixels: Pixels) {
-            for (i in pixels.indices) {
-                pixels[i] = buffer.color
-            }
-        }
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.color
     }
 }
