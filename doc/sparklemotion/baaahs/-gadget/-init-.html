@@ -18,5 +18,9 @@ fun nextFrame() {
   println("Sparkliness is ${sparklinessSlider.value}.")
 }
 </code></pre>
+<p>Mutable values in a gadget should be declared like this:</p>
+<pre><code class="lang-kotlin">    var value: Float by updatable("value", initialValue, Float.serializer())
+</code></pre>
+<p>Mutable values <em>should not</em> be included in tests for equality.</p>
 </BODY>
 </HTML>

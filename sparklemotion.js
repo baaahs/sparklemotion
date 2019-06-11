@@ -42,39 +42,43 @@
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var numberToInt = Kotlin.numberToInt;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var SerialClassDescImpl = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
-  var UnknownFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
   var internal = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal;
-  var GeneratedSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
-  var MissingFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
+  var withName = $module$kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var KSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
   var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var Unit = Kotlin.kotlin.Unit;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
-  var ObservableProperty = Kotlin.kotlin.properties.ObservableProperty;
+  var ReadWriteProperty = Kotlin.kotlin.properties.ReadWriteProperty;
+  var SerialClassDescImpl = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
   var getKClass = Kotlin.getKClass;
   var PolymorphicSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.PolymorphicSerializer;
-  var JsonConfiguration = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
-  var Json = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
+  var UnknownFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
+  var GeneratedSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
+  var MissingFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.serializer_6eet4j$;
-  var SerializersModule = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
-  var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  var copyToArray = Kotlin.kotlin.collections.copyToArray;
-  var toString_0 = Kotlin.toString;
+  var JsonElement = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonElement;
   var to = Kotlin.kotlin.to_ujzrz7$;
-  var Exception = Kotlin.kotlin.Exception;
+  var get_map = $module$kotlinx_serialization_runtime.kotlinx.serialization.get_map_kgqhr1$;
+  var SerializersModule = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
+  var JsonConfiguration = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
+  var Json = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
+  var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var copyToArray = Kotlin.kotlin.collections.copyToArray;
+  var emptyMap = Kotlin.kotlin.collections.emptyMap_q3lmfv$;
+  var zip = Kotlin.kotlin.collections.zip_45mdf7$;
+  var toString_0 = Kotlin.toString;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
-  var Map = Kotlin.kotlin.collections.Map;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L250 = Kotlin.Long.fromInt(250);
@@ -114,13 +118,14 @@
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var Exception_init_0 = Kotlin.kotlin.Exception_init;
+  var Exception = Kotlin.kotlin.Exception;
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
   var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
+  var toList_0 = Kotlin.kotlin.collections.toList_abgq59$;
   var get_list = $module$kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
-  var JsonPrimitive = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_rcaewn$;
-  var mapOf_0 = Kotlin.kotlin.collections.mapOf_x2b85n$;
-  var JsonObject = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
+  var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
+  var serializer_0 = $module$kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -188,7 +193,6 @@
   var toTypedArray = Kotlin.kotlin.collections.toTypedArray_964n91$;
   var Quaternion = THREE.Quaternion;
   var Matrix4_init = THREE.Matrix4;
-  var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var Line3 = THREE.Line3;
   var ConeBufferGeometry = THREE.ConeBufferGeometry;
   var Points = THREE.Points;
@@ -200,14 +204,12 @@
   var Triangle = THREE.Triangle;
   var indexOf = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
-  GadgetValueObserver.prototype = Object.create(ObservableProperty.prototype);
-  GadgetValueObserver.prototype.constructor = GadgetValueObserver;
   PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Connection$receive$ObjectLiteral.prototype.constructor = PubSub$Connection$receive$ObjectLiteral;
   PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
   PubSub$Connection.prototype.constructor = PubSub$Connection;
-  PubSub$Server$publish$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
-  PubSub$Server$publish$ObjectLiteral.prototype.constructor = PubSub$Server$publish$ObjectLiteral;
+  PubSub$Server$PublisherListener.prototype = Object.create(PubSub$Listener.prototype);
+  PubSub$Server$PublisherListener.prototype.constructor = PubSub$Server$PublisherListener;
   PubSub$Server.prototype = Object.create(PubSub$Endpoint.prototype);
   PubSub$Server.prototype.constructor = PubSub$Server;
   PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
@@ -741,7 +743,7 @@
   };
   Color.prototype.withSaturation_mx4ult$ = function (saturation) {
     var desaturation = 1 - saturation;
-    return Color_init_1(this.redF + (1 - this.redF) * desaturation, this.greenF + (1 - this.greenF) * desaturation, this.blueF + (1 - this.blueF) * desaturation, this.alphaF);
+    return Color_init_0(this.redF + (1 - this.redF) * desaturation, this.greenF + (1 - this.greenF) * desaturation, this.blueF + (1 - this.blueF) * desaturation, this.alphaF);
   };
   Color.prototype.distanceTo_rny0jj$ = function (other) {
     var dist = this.square_0(other.redF - this.redF) + this.square_0(other.greenF - this.greenF) + this.square_0(other.blueF - this.blueF);
@@ -752,13 +754,13 @@
     return f * f;
   };
   Color.prototype.plus_rny0jj$ = function (other) {
-    return Color_init_2(this.redI + other.redI | 0, this.greenI + other.greenI | 0, this.blueI + other.blueI | 0, this.alphaI);
+    return Color_init_1(this.redI + other.redI | 0, this.greenI + other.greenI | 0, this.blueI + other.blueI | 0, this.alphaI);
   };
   Color.prototype.fade_6zkv30$ = function (other, amount) {
     if (amount === void 0)
       amount = 0.5;
     var amountThis = 1 - amount;
-    return Color_init_1(this.redF * amountThis + other.redF * amount, this.greenF * amountThis + other.greenF * amount, this.blueF * amountThis + other.blueF * amount, this.alphaF * amountThis + other.alphaF * amount);
+    return Color_init_0(this.redF * amountThis + other.redF * amount, this.greenF * amountThis + other.greenF * amount, this.blueF * amountThis + other.blueF * amount, this.alphaF * amountThis + other.alphaF * amount);
   };
   Color.prototype.opaque = function () {
     return new Color(this.argb | -16777216);
@@ -768,17 +770,18 @@
   };
   function Color$Companion() {
     Color$Companion_instance = this;
-    this.BLACK = Color_init_2(0, 0, 0);
-    this.WHITE = Color_init_2(255, 255, 255);
-    this.RED = Color_init_2(255, 0, 0);
-    this.ORANGE = Color_init_2(255, 127, 0);
-    this.YELLOW = Color_init_2(255, 255, 0);
-    this.GREEN = Color_init_2(0, 255, 0);
-    this.BLUE = Color_init_2(0, 0, 255);
-    this.PURPLE = Color_init_2(200, 0, 212);
+    this.BLACK = Color_init_1(0, 0, 0);
+    this.WHITE = Color_init_1(255, 255, 255);
+    this.RED = Color_init_1(255, 0, 0);
+    this.ORANGE = Color_init_1(255, 127, 0);
+    this.YELLOW = Color_init_1(255, 255, 0);
+    this.GREEN = Color_init_1(0, 255, 0);
+    this.BLUE = Color_init_1(0, 0, 255);
+    this.PURPLE = Color_init_1(200, 0, 212);
+    this.descriptor_dxdv46$_0 = withName(internal.IntDescriptor, 'Color');
   }
   Color$Companion.prototype.random = function () {
-    return Color_init_2(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
+    return Color_init_1(Random.Default.nextInt() & 255, Random.Default.nextInt() & 255, Random.Default.nextInt() & 255);
   };
   Color$Companion.prototype.parse_100t80$ = function (reader) {
     return new Color(reader.readInt());
@@ -816,13 +819,24 @@
   Color$Companion.prototype.asInt_0 = function (f) {
     return numberToInt(this.bounded_1(f) * 255);
   };
+  Object.defineProperty(Color$Companion.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_dxdv46$_0;
+    }
+  });
+  Color$Companion.prototype.serialize_awe97i$ = function (encoder, obj) {
+    encoder.encodeInt_za3lpa$(obj.argb);
+  };
+  Color$Companion.prototype.deserialize_nts5qn$ = function (decoder) {
+    return new Color(decoder.decodeInt());
+  };
   Color$Companion.prototype.serializer = function () {
-    return Color$$serializer_getInstance();
+    return Color$Companion_getInstance();
   };
   Color$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: []
+    interfaces: [KSerializer]
   };
   var Color$Companion_instance = null;
   function Color$Companion_getInstance() {
@@ -831,80 +845,19 @@
     }
     return Color$Companion_instance;
   }
-  function Color$$serializer() {
-    this.descriptor_h91vo$_0 = new SerialClassDescImpl('baaahs.Color', this);
-    this.descriptor.addElement_ivxn3r$('argb', false);
-    Color$$serializer_instance = this;
-  }
-  Object.defineProperty(Color$$serializer.prototype, 'descriptor', {
-    get: function () {
-      return this.descriptor_h91vo$_0;
-    }
-  });
-  Color$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
-    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
-    output.encodeIntElement_4wpqag$(this.descriptor, 0, obj.argb);
-    output.endStructure_qatsm0$(this.descriptor);
-  };
-  Color$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
-    var index, readAll = false;
-    var bitMask0 = 0;
-    var local0;
-    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
-    loopLabel: while (true) {
-      index = input.decodeElementIndex_qatsm0$(this.descriptor);
-      switch (index) {
-        case -2:
-          readAll = true;
-        case 0:
-          local0 = input.decodeIntElement_3zr2iy$(this.descriptor, 0);
-          bitMask0 |= 1;
-          if (!readAll)
-            break;
-        case -1:
-          break loopLabel;
-        default:throw new UnknownFieldException(index);
-      }
-    }
-    input.endStructure_qatsm0$(this.descriptor);
-    return Color_init_0(bitMask0, local0, null);
-  };
-  Color$$serializer.prototype.childSerializers = function () {
-    return [internal.IntSerializer];
-  };
-  Color$$serializer.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: '$serializer',
-    interfaces: [GeneratedSerializer]
-  };
-  var Color$$serializer_instance = null;
-  function Color$$serializer_getInstance() {
-    if (Color$$serializer_instance === null) {
-      new Color$$serializer();
-    }
-    return Color$$serializer_instance;
-  }
-  function Color_init_0(seen1, argb, serializationConstructorMarker) {
-    var $this = serializationConstructorMarker || Object.create(Color.prototype);
-    if ((seen1 & 1) === 0)
-      throw new MissingFieldException('argb');
-    else
-      $this.argb = argb;
-    return $this;
-  }
   Color.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Color',
     interfaces: []
   };
-  function Color_init_1(red, green, blue, alpha, $this) {
+  function Color_init_0(red, green, blue, alpha, $this) {
     if (alpha === void 0)
       alpha = 1.0;
     $this = $this || Object.create(Color.prototype);
     Color.call($this, Color$Companion_getInstance().asArgb_1(red, green, blue, alpha));
     return $this;
   }
-  function Color_init_2(red, green, blue, alpha, $this) {
+  function Color_init_1(red, green, blue, alpha, $this) {
     if (alpha === void 0)
       alpha = 255;
     $this = $this || Object.create(Color.prototype);
@@ -1099,6 +1052,7 @@
   };
   function Gadget() {
     this.listeners_zg49rb$_0 = LinkedHashSet_init();
+    this.state = HashMap_init();
   }
   Gadget.prototype.listen = function (gadgetListener) {
     if (!this.listeners_zg49rb$_0.add_11rb$(gadgetListener))
@@ -1125,14 +1079,14 @@
       this.listen(gadgetListener);
     }
   };
-  function Gadget$watchForChanges$lambda(this$Gadget) {
+  function Gadget$updatable$lambda(this$Gadget) {
     return function () {
       this$Gadget.withoutTriggering();
       return Unit;
     };
   }
-  Gadget.prototype.watchForChanges_mh5how$ = function (initialValue) {
-    return new GadgetValueObserver(initialValue, Gadget$watchForChanges$lambda(this));
+  Gadget.prototype.updatable_t7zvzq$ = function (name, initialValue, serializer) {
+    return new GadgetValueObserver(name, initialValue, serializer, this.state, Gadget$updatable$lambda(this));
   };
   Gadget.$metadata$ = {
     kind: Kind_CLASS,
@@ -1146,18 +1100,36 @@
     simpleName: 'GadgetListener',
     interfaces: []
   };
-  function GadgetValueObserver(initialValue, onChange) {
-    ObservableProperty.call(this, initialValue);
+  function GadgetValueObserver(name, initialValue, serializer, data, onChange) {
+    this.name = name;
+    this.initialValue = initialValue;
+    this.serializer_0 = serializer;
+    this.data = data;
     this.onChange = onChange;
   }
-  GadgetValueObserver.prototype.afterChange_jxtfl0$ = function (property, oldValue, newValue) {
-    if (!equals(newValue, oldValue))
+  GadgetValueObserver.prototype.getValue_lrcp0p$ = function (thisRef, property) {
+    var tmp$;
+    var value = this.data.get_11rb$(this.name);
+    if (value == null)
+      tmp$ = this.initialValue;
+    else {
+      tmp$ = jsonParser.fromJson_htt2tq$(this.serializer_0, value);
+    }
+    return tmp$;
+  };
+  GadgetValueObserver.prototype.setValue_9rddgb$ = function (thisRef, property, value) {
+    if (!equals(this.getValue_lrcp0p$(thisRef, property), value)) {
+      var $receiver = this.data;
+      var key = this.name;
+      var value_0 = jsonParser.toJson_tf03ej$(this.serializer_0, value);
+      $receiver.put_xwzc9p$(key, value_0);
       this.onChange();
+    }
   };
   GadgetValueObserver.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GadgetValueObserver',
-    interfaces: [ObservableProperty]
+    interfaces: [ReadWriteProperty]
   };
   function GadgetData(name, gadget, topicName) {
     GadgetData$Companion_getInstance();
@@ -1273,10 +1245,10 @@
     simpleName: 'GadgetData',
     interfaces: []
   };
+  var GadgetDataSerializer;
   function GadgetDisplay(pubSub, onUpdatedGadgets) {
     this.activeGadgets = ArrayList_init();
     this.channels = HashMap_init();
-    this.jsonParser = new Json(JsonConfiguration.Companion.Stable);
     pubSub.subscribe(Topics_getInstance().activeGadgets, GadgetDisplay_init$lambda(this, pubSub, onUpdatedGadgets));
   }
   function GadgetDisplay_init$lambda$lambda$ObjectLiteral(this$GadgetDisplay, closure$topicName) {
@@ -1289,23 +1261,23 @@
       println('Huh, no observer for ' + this.closure$topicName + '; discarding update (know about ' + this.this$GadgetDisplay.channels.keys + ')');
     }
      else {
-      observer.onChange(gadget.toJson().toString());
+      observer.onChange(gadget.state);
     }
   };
   GadgetDisplay_init$lambda$lambda$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [GadgetListener]
   };
-  function GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(this$GadgetDisplay, closure$json, this$) {
+  function GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, closure$json) {
     return function () {
-      this$.setFromJson_qiw0cd$(this$GadgetDisplay.jsonParser.parseJson_61zpoe$(closure$json));
+      closure$gadget.state.putAll_a2k3zr$(closure$json);
       return Unit;
     };
   }
-  function GadgetDisplay_init$lambda$lambda$lambda(closure$gadget, closure$listener, this$GadgetDisplay) {
+  function GadgetDisplay_init$lambda$lambda$lambda(closure$gadget, closure$listener) {
     return function (json) {
       var $receiver = closure$gadget;
-      $receiver.withoutTriggering_zde6sx$(closure$listener, GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(this$GadgetDisplay, json, $receiver));
+      $receiver.withoutTriggering_zde6sx$(closure$listener, GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, json));
       return Unit;
     };
   }
@@ -1330,7 +1302,7 @@
         var listener = new GadgetDisplay_init$lambda$lambda$ObjectLiteral(this$GadgetDisplay_0, topicName);
         gadget.listen(listener);
         var $receiver = this$GadgetDisplay_0.channels;
-        var value = closure$pubSub_0.subscribe(new PubSub$Topic(topicName, serializer(kotlin_js_internal_StringCompanionObject)), GadgetDisplay_init$lambda$lambda$lambda(gadget, listener, this$GadgetDisplay_0));
+        var value = closure$pubSub_0.subscribe(new PubSub$Topic(topicName, GadgetDataSerializer), GadgetDisplay_init$lambda$lambda$lambda(gadget, listener));
         $receiver.put_xwzc9p$(topicName, value);
         this$GadgetDisplay_0.activeGadgets.add_11rb$(element_0);
       }
@@ -1353,32 +1325,16 @@
     return Unit;
   }
   var gadgetModule;
-  function GadgetProvider(pubSub) {
+  var jsonParser;
+  function GadgetManager(pubSub) {
     this.pubSub_0 = pubSub;
-    this.jsonParser = new Json(JsonConfiguration.Companion.Stable);
     this.activeGadgets_0 = ArrayList_init();
-    this.activeGadgetChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().activeGadgets, this.activeGadgets_0, GadgetProvider$activeGadgetChannel$lambda);
+    this.activeGadgetChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().activeGadgets, this.activeGadgets_0, GadgetManager$activeGadgetChannel$lambda);
     this.gadgets_0 = LinkedHashMap_init();
+    this.priorRequestedGadgets_0 = ArrayList_init();
     this.nextGadgetId_0 = 1;
   }
-  function GadgetProvider$getGadget$lambda(closure$gadget, this$GadgetProvider) {
-    return function (updated) {
-      closure$gadget.setFromJson_qiw0cd$(this$GadgetProvider.jsonParser.parseJson_61zpoe$(updated));
-      return Unit;
-    };
-  }
-  GadgetProvider.prototype.getGadget_vedre8$ = function (name, gadget) {
-    var tmp$;
-    var gadgetId = (tmp$ = this.nextGadgetId_0, this.nextGadgetId_0 = tmp$ + 1 | 0, tmp$);
-    var topic = new PubSub$Topic('/gadgets/' + toString_0(Kotlin.getKClassFromExpression(gadget).simpleName) + '/' + gadgetId, serializer(kotlin_js_internal_StringCompanionObject));
-    var channel = this.pubSub_0.publish_oiz02e$(topic, gadget.toJson().toString(), GadgetProvider$getGadget$lambda(gadget, this));
-    var $receiver = this.gadgets_0;
-    var value = new GadgetProvider$GadgetChannel(topic, channel);
-    $receiver.put_xwzc9p$(gadget, value);
-    this.activeGadgets_0.add_11rb$(new GadgetData(name, gadget, topic.name));
-    return gadget;
-  };
-  GadgetProvider.prototype.clear = function () {
+  GadgetManager.prototype.clear = function () {
     var tmp$;
     tmp$ = this.gadgets_0.values.iterator();
     while (tmp$.hasNext()) {
@@ -1388,10 +1344,74 @@
     this.gadgets_0.clear();
     this.activeGadgets_0.clear();
   };
-  GadgetProvider.prototype.sync = function () {
-    this.activeGadgetChannel_0.onChange(this.activeGadgets_0);
+  function GadgetManager$sync$lambda$lambda(closure$newGadget) {
+    return function (updated) {
+      closure$newGadget.state.putAll_a2k3zr$(updated);
+      return Unit;
+    };
+  }
+  function GadgetManager$sync$lambda$lambda_0(closure$gadget) {
+    return function (updated) {
+      closure$gadget.state.putAll_a2k3zr$(updated);
+      return Unit;
+    };
+  }
+  GadgetManager.prototype.sync_7kvwdj$ = function (requestedGadgets, restoreState) {
+    if (restoreState === void 0)
+      restoreState = emptyMap();
+    var tmp$;
+    tmp$ = requestedGadgets.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var name = element.component1()
+      , gadget = element.component2();
+      var tmp$_0;
+      if ((tmp$_0 = restoreState.get_11rb$(name)) != null) {
+        gadget.state.putAll_a2k3zr$(tmp$_0);
+      }
+    }
+    if (equals(this.priorRequestedGadgets_0, requestedGadgets)) {
+      var tmp$_1;
+      tmp$_1 = zip(requestedGadgets, this.priorRequestedGadgets_0).iterator();
+      while (tmp$_1.hasNext()) {
+        var element_0 = tmp$_1.next();
+        var new_0 = element_0.component1()
+        , old = element_0.component2();
+        var name_0 = old.component1()
+        , oldGadget = old.component2();
+        var newGadget = new_0.second;
+        var gadgetInfo = ensureNotNull(this.gadgets_0.get_11rb$(name_0));
+        gadgetInfo.channel.replaceOnUpdate_qlkmfe$(GadgetManager$sync$lambda$lambda(newGadget));
+        gadgetInfo.gadgetData.gadget = newGadget;
+        if (!equals(oldGadget.state, newGadget.state)) {
+          gadgetInfo.channel.onChange(newGadget.state);
+        }
+      }
+    }
+     else {
+      this.activeGadgets_0.clear();
+      var tmp$_2;
+      tmp$_2 = requestedGadgets.iterator();
+      while (tmp$_2.hasNext()) {
+        var element_1 = tmp$_2.next();
+        var name_1 = element_1.component1()
+        , gadget_0 = element_1.component2();
+        var tmp$_3;
+        var gadgetId = (tmp$_3 = this.nextGadgetId_0, this.nextGadgetId_0 = tmp$_3 + 1 | 0, tmp$_3);
+        var topic = new PubSub$Topic('/gadgets/' + toString_0(Kotlin.getKClassFromExpression(gadget_0).simpleName) + '/' + gadgetId, GadgetDataSerializer);
+        var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0));
+        var gadgetData = new GadgetData(name_1, gadget_0, topic.name);
+        this.activeGadgets_0.add_11rb$(gadgetData);
+        var $receiver = this.gadgets_0;
+        var value = new GadgetManager$GadgetInfo(topic, channel, gadgetData);
+        $receiver.put_xwzc9p$(name_1, value);
+      }
+      this.activeGadgetChannel_0.onChange(this.activeGadgets_0);
+    }
+    this.priorRequestedGadgets_0.clear();
+    this.priorRequestedGadgets_0.addAll_brywnq$(requestedGadgets);
   };
-  GadgetProvider.prototype.getGadgetsState = function () {
+  GadgetManager.prototype.getGadgetsState = function () {
     var $receiver = this.activeGadgets_0;
     var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
     var destination = LinkedHashMap_init_0(capacity);
@@ -1399,76 +1419,34 @@
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var pair = to(element.name, element.gadget.toJson());
+      var pair = to(element.name, element.gadget.state);
       destination.put_xwzc9p$(pair.first, pair.second);
     }
     return destination;
   };
-  GadgetProvider.prototype.setGadgetsState_fnd918$ = function (state) {
-    var tmp$;
-    tmp$ = state.entries.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var name = element.key;
-      var data = element.value;
-      try {
-        ensureNotNull(this.findGadget_y4putb$(name)).setFromJson_qiw0cd$(data);
-      }
-       catch (e) {
-        if (Kotlin.isType(e, Exception)) {
-          logger$Companion_getInstance().error_61zpoe$('Error updating gadget ' + name + ': ' + toString_0(e.message));
-        }
-         else
-          throw e;
-      }
-    }
+  GadgetManager.prototype.findGadget_y4putb$ = function (name) {
+    var tmp$, tmp$_0;
+    return (tmp$_0 = (tmp$ = this.gadgets_0.get_11rb$(name)) != null ? tmp$.gadgetData : null) != null ? tmp$_0.gadget : null;
   };
-  Object.defineProperty(GadgetProvider.prototype, 'activeGadgetCount', {
-    get: function () {
-      return this.activeGadgets_0.size;
-    }
-  });
-  GadgetProvider.prototype.findGadget_y4putb$ = function (name) {
-    var tmp$;
-    var $receiver = this.activeGadgets_0;
-    var firstOrNull$result;
-    firstOrNull$break: do {
-      var tmp$_0;
-      tmp$_0 = $receiver.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        if (equals(element.name, name)) {
-          firstOrNull$result = element;
-          break firstOrNull$break;
-        }
-      }
-      firstOrNull$result = null;
-    }
-     while (false);
-    return (tmp$ = firstOrNull$result) != null ? tmp$.gadget : null;
+  GadgetManager.prototype.findGadgetInfo_y4putb$ = function (name) {
+    return this.gadgets_0.get_11rb$(name);
   };
-  GadgetProvider.prototype.findGadgetChannel_y4putb$ = function (name) {
-    var tmp$;
-    var $receiver = this.gadgets_0;
-    var key = this.findGadget_y4putb$(name);
-    var tmp$_0;
-    return (tmp$ = (Kotlin.isType(tmp$_0 = $receiver, Map) ? tmp$_0 : throwCCE()).get_11rb$(key)) != null ? tmp$.channel : null;
-  };
-  function GadgetProvider$GadgetChannel(topic, channel) {
+  function GadgetManager$GadgetInfo(topic, channel, gadgetData) {
     this.topic = topic;
     this.channel = channel;
+    this.gadgetData = gadgetData;
   }
-  GadgetProvider$GadgetChannel.$metadata$ = {
+  GadgetManager$GadgetInfo.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'GadgetChannel',
+    simpleName: 'GadgetInfo',
     interfaces: []
   };
-  function GadgetProvider$activeGadgetChannel$lambda(it) {
+  function GadgetManager$activeGadgetChannel$lambda(it) {
     return Unit;
   }
-  GadgetProvider.$metadata$ = {
+  GadgetManager.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'GadgetProvider',
+    simpleName: 'GadgetManager',
     interfaces: []
   };
   function Mapper(network, sheepModel, mapperDisplay, mediaDevices) {
@@ -2746,8 +2724,8 @@
     var $receiver = new PubSub$Server(this.link_0, 8004);
     $receiver.install_stpyu4$(gadgetModule);
     this.pubSub_0 = $receiver;
-    this.gadgetProvider_0 = new GadgetProvider(this.pubSub_0);
-    this.showRunner_0 = new ShowRunner(this.sheepModel, this.selectedShow_0, this.gadgetProvider_0, emptyList(), this.beatProvider_0, this.dmxUniverse);
+    this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
+    this.showRunner_0 = new ShowRunner(this.sheepModel, this.selectedShow_0, this.gadgetManager_0, emptyList(), this.beatProvider_0, this.dmxUniverse);
     var $receiver_0 = this.sheepModel.allPanels;
     var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver_0, 10)), 16);
     var destination = LinkedHashMap_init_0(capacity);
@@ -3294,8 +3272,8 @@
   PubSub$Topic.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.serializer, other.serializer)))));
   };
-  function PubSub$Listener(origin) {
-    this.origin_fg10in$_0 = origin;
+  function PubSub$Listener(origin_0) {
+    this.origin_fg10in$_0 = origin_0;
   }
   PubSub$Listener.prototype.onUpdate_btyzc5$ = function (data, fromOrigin) {
     if (this.origin_fg10in$_0 !== fromOrigin) {
@@ -3346,10 +3324,10 @@
     }
     this.toSend_p0j902$_0.clear();
   };
-  function PubSub$Connection$receive$ObjectLiteral(closure$topicName, this$Connection, origin) {
+  function PubSub$Connection$receive$ObjectLiteral(closure$topicName, this$Connection, origin_0) {
     this.closure$topicName = closure$topicName;
     this.this$Connection = this$Connection;
-    PubSub$Listener.call(this, origin);
+    PubSub$Listener.call(this, origin_0);
   }
   PubSub$Connection$receive$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
     this.this$Connection.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
@@ -3388,10 +3366,9 @@
         break;
       case 'update':
         var topicName_0 = reader.readString();
-        var topic = new PubSub$Topic(topicName_0, serializer(kotlin_js_internal_StringCompanionObject));
         var data = reader.readString();
         println('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] update ' + topicName_0 + ' ' + data);
-        var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topic.name);
+        var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topicName_0);
         topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
         break;
       default:IllegalArgumentException_init("huh? don't know what to do with " + command);
@@ -3451,31 +3428,22 @@
   PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromConnection) {
     return new PubSub$Connection('server', this.topics_0);
   };
-  function PubSub$Server$publish$ObjectLiteral(closure$onUpdate, this$Server, closure$topic, origin) {
-    this.closure$onUpdate = closure$onUpdate;
-    this.this$Server = this$Server;
-    this.closure$topic = closure$topic;
-    PubSub$Listener.call(this, origin);
-  }
-  PubSub$Server$publish$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
-    this.closure$onUpdate(this.this$Server.json.parse_awif5v$(this.closure$topic.serializer, data));
-  };
-  PubSub$Server$publish$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [PubSub$Listener]
-  };
-  function PubSub$Server$publish$ObjectLiteral_0(closure$topicInfo, this$Server, closure$topic, closure$publisher) {
+  function PubSub$Server$publish$ObjectLiteral(closure$topicInfo, this$Server, closure$topic, closure$publisher, closure$listener) {
     this.closure$topicInfo = closure$topicInfo;
     this.this$Server = this$Server;
     this.closure$topic = closure$topic;
     this.closure$publisher = closure$publisher;
+    this.closure$listener = closure$listener;
   }
-  PubSub$Server$publish$ObjectLiteral_0.prototype.onChange = function (t) {
+  PubSub$Server$publish$ObjectLiteral.prototype.onChange = function (t) {
     this.closure$topicInfo.notify_btyzc5$(this.this$Server.json.stringify_tf03ej$(this.closure$topic.serializer, t), this.closure$publisher);
   };
-  PubSub$Server$publish$ObjectLiteral_0.prototype.unsubscribe = function () {
+  PubSub$Server$publish$ObjectLiteral.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
+    this.closure$listener.onUpdate = onUpdate;
   };
-  PubSub$Server$publish$ObjectLiteral_0.$metadata$ = {
+  PubSub$Server$publish$ObjectLiteral.prototype.unsubscribe = function () {
+  };
+  PubSub$Server$publish$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [PubSub$Channel]
   };
@@ -3495,9 +3463,27 @@
       tmp$ = value;
     }
     var topicInfo = tmp$;
-    topicInfo.listeners.add_11rb$(new PubSub$Server$publish$ObjectLiteral(onUpdate, this, topic, publisher));
+    var listener = new PubSub$Server$PublisherListener(this, topic, publisher, onUpdate);
+    topicInfo.listeners.add_11rb$(listener);
     topicInfo.notify_btyzc5$(jsonData, publisher);
-    return new PubSub$Server$publish$ObjectLiteral_0(topicInfo, this, topic, publisher);
+    return new PubSub$Server$publish$ObjectLiteral(topicInfo, this, topic, publisher, listener);
+  };
+  PubSub$Server.prototype.getTopicInfo_y4putb$ = function (topicName) {
+    return this.topics_0.get_11rb$(topicName);
+  };
+  function PubSub$Server$PublisherListener($outer, topic, origin, onUpdate) {
+    this.$outer = $outer;
+    PubSub$Listener.call(this, origin);
+    this.topic_0 = topic;
+    this.onUpdate = onUpdate;
+  }
+  PubSub$Server$PublisherListener.prototype.onUpdate_61zpoe$ = function (data) {
+    this.onUpdate(this.$outer.json.parse_awif5v$(this.topic_0.serializer, data));
+  };
+  PubSub$Server$PublisherListener.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PublisherListener',
+    interfaces: [PubSub$Listener]
   };
   PubSub$Server.$metadata$ = {
     kind: Kind_CLASS,
@@ -3510,10 +3496,10 @@
     this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0);
     link.connectTcp_dy234z$(serverAddress, port, this.server_0);
   }
-  function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin) {
+  function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin_0) {
     this.this$Client = this$Client;
     this.closure$topicName = closure$topicName;
-    PubSub$Listener.call(this, origin);
+    PubSub$Listener.call(this, origin_0);
   }
   PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
     this.this$Client.server_0.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
@@ -3522,11 +3508,11 @@
     kind: Kind_CLASS,
     interfaces: [PubSub$Listener]
   };
-  function PubSub$Client$subscribe$ObjectLiteral(closure$onUpdate, this$Client, closure$topic, origin) {
+  function PubSub$Client$subscribe$ObjectLiteral(closure$onUpdate, this$Client, closure$topic, origin_0) {
     this.closure$onUpdate = closure$onUpdate;
     this.this$Client = this$Client;
     this.closure$topic = closure$topic;
-    PubSub$Listener.call(this, origin);
+    PubSub$Listener.call(this, origin_0);
   }
   PubSub$Client$subscribe$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
     this.closure$onUpdate(this.this$Client.json.parse_awif5v$(this.closure$topic.serializer, data));
@@ -3544,6 +3530,9 @@
   PubSub$Client$subscribe$ObjectLiteral_0.prototype.onChange = function (t) {
     var jsonData = this.this$Client.json.stringify_tf03ej$(this.closure$topic.serializer, t);
     this.closure$topicInfo.notify_btyzc5$(jsonData, this.closure$subscriber);
+  };
+  PubSub$Client$subscribe$ObjectLiteral_0.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'Client.channel.replaceOnUpdate not implemented');
   };
   PubSub$Client$subscribe$ObjectLiteral_0.prototype.unsubscribe = function () {
   };
@@ -4629,9 +4618,9 @@
     simpleName: 'Show',
     interfaces: []
   };
-  function ShowRunner(model, initialShow, gadgetProvider, brains, beatProvider, dmxUniverse) {
+  function ShowRunner(model, initialShow, gadgetManager, brains, beatProvider, dmxUniverse) {
     this.model_0 = model;
-    this.gadgetProvider_0 = gadgetProvider;
+    this.gadgetManager_0 = gadgetManager;
     this.beatProvider_0 = beatProvider;
     this.dmxUniverse_0 = dmxUniverse;
     this.nextShow = initialShow;
@@ -4660,6 +4649,7 @@
     }
     this.brainsBySurface_0 = destination;
     this.shaderBuffers_0 = HashMap_init();
+    this.requestedGadgets_0 = LinkedHashMap_init();
     this.shadersLocked_0 = true;
     this.gadgetsLocked_0 = true;
     this.surfaceReceivers_0 = LinkedHashMap_init();
@@ -4729,7 +4719,10 @@
   ShowRunner.prototype.getGadget_vedre8$ = function (name, gadget) {
     if (this.gadgetsLocked_0)
       throw IllegalStateException_init("Gadgets can't be obtained during #nextFrame()");
-    return this.gadgetProvider_0.getGadget_vedre8$(name, gadget);
+    var oldValue = this.requestedGadgets_0.put_xwzc9p$(name, gadget);
+    if (oldValue != null)
+      throw IllegalStateException_init('Gadget names must be unique (' + name + ')');
+    return gadget;
   };
   ShowRunner.prototype.surfacesChanged_ji9tfc$ = function (addedSurfaces, removedSurfaces) {
     this.changedSurfaces_0.add_11rb$(new ShowRunner$SurfacesChanges(ArrayList_init_1(addedSurfaces), ArrayList_init_1(removedSurfaces)));
@@ -4795,20 +4788,36 @@
     this.changedSurfaces_0.clear();
     if (this.totalSurfaceReceivers_0 > 0) {
       if ((tmp$_4 = this.nextShow) != null) {
-        this.shaderBuffers_0.clear();
-        var gadgetsState = this.gadgetProvider_0.getGadgetsState();
-        this.gadgetProvider_0.clear();
-        this.shadersLocked_0 = false;
-        this.gadgetsLocked_0 = false;
-        this.currentShowRenderer_0 = tmp$_4.createRenderer_h1b9op$(this.model_0, this);
-        logger$Companion_getInstance().info_61zpoe$('New show ' + tmp$_4.name + ' created; ' + (this.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this.gadgetProvider_0.activeGadgetCount + ' gadgets'));
-        this.shadersLocked_0 = true;
-        this.gadgetsLocked_0 = true;
+        this.createShowRenderer_0(tmp$_4);
         this.currentShow_0 = this.nextShow;
-        this.gadgetProvider_0.setGadgetsState_fnd918$(gadgetsState);
-        this.gadgetProvider_0.sync();
         this.nextShow = null;
       }
+    }
+  };
+  function ShowRunner$createShowRenderer$lambda(closure$startingShow, this$ShowRunner) {
+    return function () {
+      this$ShowRunner.currentShowRenderer_0 = closure$startingShow.createRenderer_h1b9op$(this$ShowRunner.model_0, this$ShowRunner);
+      return Unit;
+    };
+  }
+  ShowRunner.prototype.createShowRenderer_0 = function (startingShow) {
+    this.shaderBuffers_0.clear();
+    var restartingSameShow = equals(this.nextShow, this.currentShow_0);
+    var gadgetsState = restartingSameShow ? this.gadgetManager_0.getGadgetsState() : emptyMap();
+    this.unlockShadersAndGadgets_0(ShowRunner$createShowRenderer$lambda(startingShow, this));
+    logger$Companion_getInstance().info_61zpoe$('New show ' + startingShow.name + ' created; ' + (this.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this.requestedGadgets_0.size + ' gadgets'));
+    this.gadgetManager_0.sync_7kvwdj$(toList_0(this.requestedGadgets_0), gadgetsState);
+    this.requestedGadgets_0.clear();
+  };
+  ShowRunner.prototype.unlockShadersAndGadgets_0 = function (fn) {
+    this.shadersLocked_0 = false;
+    this.gadgetsLocked_0 = false;
+    try {
+      fn();
+    }
+    finally {
+      this.shadersLocked_0 = true;
+      this.gadgetsLocked_0 = true;
     }
   };
   ShowRunner.prototype.addReceiver_0 = function (receiver) {
@@ -4855,7 +4864,7 @@
     this.dmxUniverse_0.sendFrame();
   };
   ShowRunner.prototype.shutDown = function () {
-    this.gadgetProvider_0.clear();
+    this.gadgetManager_0.clear();
   };
   function ShowRunner$SurfacesChanges(added, removed) {
     this.added = added;
@@ -4943,7 +4952,7 @@
     Gadget.call(this);
     this.name = name;
     this.initialValue = initialValue;
-    this.color_u6ly2p$_0 = this.watchForChanges_mh5how$(this.initialValue);
+    this.color_u6ly2p$_0 = this.updatable_t7zvzq$('color', this.initialValue, Color$Companion_getInstance().serializer());
   }
   var ColorPicker$color_metadata = new PropertyMetadata('color');
   Object.defineProperty(ColorPicker.prototype, 'color', {
@@ -4954,13 +4963,6 @@
       this.color_u6ly2p$_0.setValue_9rddgb$(this, ColorPicker$color_metadata, color);
     }
   });
-  ColorPicker.prototype.toJson = function () {
-    return new JsonObject(mapOf_0(to('color', JsonPrimitive(this.color.toInt()))));
-  };
-  ColorPicker.prototype.setFromJson_qiw0cd$ = function (jsonElement) {
-    var jsonObject = jsonElement.jsonObject;
-    this.color = Color$Companion_getInstance().fromInts(ensureNotNull(jsonObject.get_11rb$('color')).primitive.int);
-  };
   function ColorPicker$Companion() {
     ColorPicker$Companion_instance = this;
   }
@@ -4994,7 +4996,7 @@
     var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
     output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.name);
     if (!equals(obj.initialValue, Color$Companion_getInstance().WHITE) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 1))
-      output.encodeSerializableElement_blecud$(this.descriptor, 1, Color$$serializer_getInstance(), obj.initialValue);
+      output.encodeSerializableElement_blecud$(this.descriptor, 1, Color$Companion_getInstance(), obj.initialValue);
     output.endStructure_qatsm0$(this.descriptor);
   };
   ColorPicker$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
@@ -5014,7 +5016,7 @@
           if (!readAll)
             break;
         case 1:
-          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, Color$$serializer_getInstance()) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, Color$$serializer_getInstance(), local1);
+          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, Color$Companion_getInstance()) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, Color$Companion_getInstance(), local1);
           bitMask0 |= 2;
           if (!readAll)
             break;
@@ -5027,7 +5029,7 @@
     return ColorPicker_init(bitMask0, local0, local1, null);
   };
   ColorPicker$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, Color$$serializer_getInstance()];
+    return [internal.StringSerializer, Color$Companion_getInstance()];
   };
   ColorPicker$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -5052,13 +5054,34 @@
       $this.initialValue = Color$Companion_getInstance().WHITE;
     else
       $this.initialValue = initialValue;
-    $this.color_u6ly2p$_0 = $this.watchForChanges_mh5how$($this.initialValue);
+    $this.color_u6ly2p$_0 = $this.updatable_t7zvzq$('color', $this.initialValue, Color$Companion_getInstance().serializer());
     return $this;
   }
   ColorPicker.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ColorPicker',
     interfaces: [Gadget]
+  };
+  ColorPicker.prototype.component1 = function () {
+    return this.name;
+  };
+  ColorPicker.prototype.component2 = function () {
+    return this.initialValue;
+  };
+  ColorPicker.prototype.copy_ancvbn$ = function (name, initialValue) {
+    return new ColorPicker(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue);
+  };
+  ColorPicker.prototype.toString = function () {
+    return 'ColorPicker(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + ')';
+  };
+  ColorPicker.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.initialValue) | 0;
+    return result;
+  };
+  ColorPicker.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue)))));
   };
   function Slider(name, initialValue) {
     Slider$Companion_getInstance();
@@ -5067,7 +5090,7 @@
     Gadget.call(this);
     this.name = name;
     this.initialValue = initialValue;
-    this.value_2xmiz9$_0 = this.watchForChanges_mh5how$(this.initialValue);
+    this.value_2xmiz9$_0 = this.updatable_t7zvzq$('value', this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
   }
   var Slider$value_metadata = new PropertyMetadata('value');
   Object.defineProperty(Slider.prototype, 'value', {
@@ -5078,13 +5101,6 @@
       this.value_2xmiz9$_0.setValue_9rddgb$(this, Slider$value_metadata, value);
     }
   });
-  Slider.prototype.toJson = function () {
-    return new JsonObject(mapOf_0(to('value', JsonPrimitive(this.value))));
-  };
-  Slider.prototype.setFromJson_qiw0cd$ = function (jsonElement) {
-    var jsonObject = jsonElement.jsonObject;
-    this.value = ensureNotNull(jsonObject.get_11rb$('value')).primitive.float;
-  };
   function Slider$Companion() {
     Slider$Companion_instance = this;
   }
@@ -5176,13 +5192,34 @@
       $this.initialValue = 1.0;
     else
       $this.initialValue = initialValue;
-    $this.value_2xmiz9$_0 = $this.watchForChanges_mh5how$($this.initialValue);
+    $this.value_2xmiz9$_0 = $this.updatable_t7zvzq$('value', $this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
     return $this;
   }
   Slider.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Slider',
     interfaces: [Gadget]
+  };
+  Slider.prototype.component1 = function () {
+    return this.name;
+  };
+  Slider.prototype.component2 = function () {
+    return this.initialValue;
+  };
+  Slider.prototype.copy_9sobi5$ = function (name, initialValue) {
+    return new Slider(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue);
+  };
+  Slider.prototype.toString = function () {
+    return 'Slider(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + ')';
+  };
+  Slider.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.initialValue) | 0;
+    return result;
+  };
+  Slider.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue)))));
   };
   function Image() {
   }
@@ -6878,7 +6915,7 @@
   }
   LifeyShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var nowMs = getTimeMillis();
-    var intervalMs = Kotlin.Long.fromNumber(this.closure$speedSlider.value * 1000);
+    var intervalMs = Kotlin.Long.fromNumber((1.0 - this.closure$speedSlider.value) * 1000);
     if (nowMs.compareTo_11rb$(this.closure$lastUpdateMs.v.add(intervalMs)) > 0) {
       if (this.closure$selectedPanels.isEmpty()) {
         var tmp$ = this.closure$selectedPanels;
@@ -10621,6 +10658,7 @@
     this.points_0 = null;
     this.pixGeometry_0 = new BufferGeometry();
     this.colorsBufferAttr_0 = null;
+    this.colorsAsInts_0 = new Int32Array(this.size);
     var positionsArray = new Float32Array(this.size * 3 | 0);
     var tmp$, tmp$_0;
     var index = 0;
@@ -10657,11 +10695,10 @@
     scene.remove(this.points_0);
   };
   VizPanel$VizPixels.prototype.get_za3lpa$ = function (i) {
-    var tmp$, tmp$_0, tmp$_1;
-    var rgbBuf = this.colorsBufferAttr_0.array;
-    return Color_init_1(typeof (tmp$ = rgbBuf[i * 3 | 0]) === 'number' ? tmp$ : throwCCE(), typeof (tmp$_0 = rgbBuf[(i * 3 | 0) + 1 | 0]) === 'number' ? tmp$_0 : throwCCE(), typeof (tmp$_1 = rgbBuf[(i * 3 | 0) + 2 | 0]) === 'number' ? tmp$_1 : throwCCE());
+    return new Color(this.colorsAsInts_0[i]);
   };
   VizPanel$VizPixels.prototype.set_ibd5tj$ = function (i, color) {
+    this.colorsAsInts_0[i] = color.argb;
     var rgbBuf = this.colorsBufferAttr_0.array;
     rgbBuf[i * 3 | 0] = color.redF;
     rgbBuf[(i * 3 | 0) + 1 | 0] = color.greenF;
@@ -10673,6 +10710,7 @@
     var maxCount = Math_0.min(a, colors.length);
     var rgbBuf = this.colorsBufferAttr_0.array;
     for (var i = 0; i < maxCount; i++) {
+      this.colorsAsInts_0[i] = colors[i].argb;
       var pColor = colors[i];
       rgbBuf[i * 3 | 0] = pColor.redF;
       rgbBuf[(i * 3 | 0) + 1 | 0] = pColor.greenF;
@@ -10770,11 +10808,8 @@
   Object.defineProperty(Color, 'Companion', {
     get: Color$Companion_getInstance
   });
-  Object.defineProperty(Color, '$serializer', {
-    get: Color$$serializer_getInstance
-  });
-  package$baaahs.Color_init_7b5o5w$ = Color_init_1;
-  package$baaahs.Color_init_tjonv8$ = Color_init_2;
+  package$baaahs.Color_init_7b5o5w$ = Color_init_0;
+  package$baaahs.Color_init_tjonv8$ = Color_init_1;
   package$baaahs.Color = Color;
   Object.defineProperty(Config, 'Companion', {
     get: Config$Companion_getInstance
@@ -10800,14 +10835,19 @@
     get: GadgetData$$serializer_getInstance
   });
   package$baaahs.GadgetData = GadgetData;
+  Object.defineProperty(package$baaahs, 'GadgetDataSerializer', {
+    get: function () {
+      return GadgetDataSerializer;
+    }
+  });
   package$baaahs.GadgetDisplay = GadgetDisplay;
   Object.defineProperty(package$baaahs, 'gadgetModule', {
     get: function () {
       return gadgetModule;
     }
   });
-  GadgetProvider.GadgetChannel = GadgetProvider$GadgetChannel;
-  package$baaahs.GadgetProvider = GadgetProvider;
+  GadgetManager.GadgetInfo = GadgetManager$GadgetInfo;
+  package$baaahs.GadgetManager = GadgetManager;
   Mapper.BrainMapper = Mapper$BrainMapper;
   package$baaahs.Mapper = Mapper;
   MapperDisplay.Listener = MapperDisplay$Listener;
@@ -10832,6 +10872,7 @@
   PubSub.TopicInfo = PubSub$TopicInfo;
   PubSub.Connection = PubSub$Connection;
   PubSub.Endpoint = PubSub$Endpoint;
+  PubSub$Server.PublisherListener = PubSub$Server$PublisherListener;
   PubSub.Server = PubSub$Server;
   PubSub.Client = PubSub$Client;
   package$baaahs.PubSub = PubSub;
@@ -11244,7 +11285,7 @@
   package$visualizer.segments_182k4$ = segments;
   package$visualizer.asKey_eko7cz$ = asKey;
   package$visualizer.Rotator = Rotator;
-  Color$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Color$Companion.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
@@ -11268,7 +11309,9 @@
   BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
+  GadgetDataSerializer = get_map(to(serializer(kotlin_js_internal_StringCompanionObject), JsonElement.Companion.serializer()));
   gadgetModule = SerializersModule(gadgetModule$lambda);
+  jsonParser = new Json(JsonConfiguration.Companion.Stable);
   Kotlin.defineModule('sparklemotion', _);
   return _;
 }));
