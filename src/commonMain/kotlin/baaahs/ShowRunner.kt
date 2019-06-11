@@ -6,7 +6,7 @@ import baaahs.shaders.CompositorShader
 class ShowRunner(
     private val model: SheepModel,
     initialShow: Show,
-    private val gadgetProvider: GadgetProvider,
+    private val gadgetManager: GadgetManager,
     brains: List<BrainInfo>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
@@ -22,6 +22,8 @@ class ShowRunner(
 
     private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
+
+    private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
     private var shadersLocked = true
     private var gadgetsLocked = true
@@ -95,7 +97,9 @@ class ShowRunner(
      */
     fun <T : Gadget> getGadget(name: String, gadget: T): T {
         if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
-        return gadgetProvider.getGadget(name, gadget)
+        val oldValue = requestedGadgets.put(name, gadget)
+        if (oldValue != null) throw IllegalStateException("Gadget names must be unique ($name)")
+        return gadget
     }
 
     fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
@@ -138,29 +142,44 @@ class ShowRunner(
         changedSurfaces.clear()
 
         if (totalSurfaceReceivers > 0) {
-            nextShow?.let {
-                shaderBuffers.clear()
-
-                val gadgetsState = gadgetProvider.getGadgetsState()
-                gadgetProvider.clear()
-
-                shadersLocked = false
-                gadgetsLocked = false
-
-                currentShowRenderer = it.createRenderer(model, this)
-                logger.info("New show ${it.name} created; " +
-                        "${shaderBuffers.size} surfaces " +
-                        "and ${gadgetProvider.activeGadgetCount} gadgets")
-
-                shadersLocked = true
-                gadgetsLocked = true
+            nextShow?.let { startingShow ->
+                createShowRenderer(startingShow)
 
                 currentShow = nextShow
-                gadgetProvider.setGadgetsState(gadgetsState)
-                gadgetProvider.sync()
-
                 nextShow = null
             }
+        }
+    }
+
+    private fun createShowRenderer(startingShow: Show) {
+        shaderBuffers.clear()
+
+        val restartingSameShow = nextShow == currentShow
+        val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
+
+        unlockShadersAndGadgets {
+            currentShowRenderer = startingShow.createRenderer(model, this)
+        }
+
+        logger.info(
+            "New show ${startingShow.name} created; " +
+                    "${shaderBuffers.size} surfaces " +
+                    "and ${requestedGadgets.size} gadgets"
+        )
+
+        gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
+        requestedGadgets.clear()
+    }
+
+    private fun unlockShadersAndGadgets(fn: () -> Unit) {
+        shadersLocked = false
+        gadgetsLocked = false
+
+        try {
+            fn()
+        } finally {
+            shadersLocked = true
+            gadgetsLocked = true
         }
     }
 
@@ -195,7 +214,7 @@ class ShowRunner(
     }
 
     fun shutDown() {
-        gadgetProvider.clear()
+        gadgetManager.clear()
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
