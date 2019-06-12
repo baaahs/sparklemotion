@@ -67,39 +67,25 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         aShader: Shader<A>,
         bShader: Shader<B>
     ) : Shader.Renderer<Buffer> {
-        private val pixelCount = surface.pixelCount
-        private val srcPixels = PixelBuf(pixelCount)
         private val rendererA: Shader.Renderer<A> = aShader.createRenderer(surface)
         private val rendererB: Shader.Renderer<B> = bShader.createRenderer(surface)
 
         @Suppress("UNCHECKED_CAST")
-        override fun draw(buffer: Buffer, pixels: Pixels) {
-            @Suppress("UnnecessaryVariable")
-            val destPixels = pixels
-
-            rendererA.draw(buffer.bufferA as A, destPixels)
-            rendererB.draw(buffer.bufferB as B, srcPixels)
-
-            val mode = buffer.mode
-            for (i in 0 until pixelCount) {
-                val src = srcPixels[i]
-                val dest = destPixels[i]
-                destPixels[i] = dest.fade(mode.composite(src, dest), buffer.fade)
-            }
+        override fun beginFrame(buffer: Buffer, pixelCount: Int) {
+            rendererA.beginFrame(buffer.bufferA as A, pixelCount)
+            rendererB.beginFrame(buffer.bufferB as B, pixelCount)
         }
 
-        class PixelBuf(override val size: Int) : Pixels {
-            val colors = Array(size) { Color.WHITE }
+        @Suppress("UNCHECKED_CAST")
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
+            val dest = rendererA.draw(buffer.bufferA as A, pixelIndex)
+            val src = rendererB.draw(buffer.bufferB as B, pixelIndex)
+            return dest.fade(buffer.mode.composite(src, dest), buffer.fade)
+        }
 
-            override fun get(i: Int): Color = colors[i]
-
-            override fun set(i: Int, color: Color) {
-                colors[i] = color
-            }
-
-            override fun set(colors: Array<Color>) {
-                colors.copyInto(this.colors)
-            }
+        override fun endFrame() {
+            rendererA.endFrame()
+            rendererB.endFrame()
         }
     }
 }
