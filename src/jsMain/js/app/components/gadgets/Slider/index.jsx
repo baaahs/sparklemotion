@@ -18,11 +18,11 @@ class RangeSlider extends React.Component {
   constructor(props) {
     super(props);
 
-    let values = [props.gadget.value];
+    let value = props.gadget.value;
     this.state = {
       gadget: props.gadget,
-      values: values,
-      update: values,
+      value: value,
+      update: value,
     };
 
     props.gadget.listen({
@@ -38,21 +38,18 @@ class RangeSlider extends React.Component {
     });
   };
 
-  throttleUpdateGadgetValue = throttle(
-    (values) => {
-      this.props.gadget.value = 1 - values[0];
-    },
-    10,
-  );
+  throttleUpdateGadgetValue = throttle((value) => {
+    this.props.gadget.value = value;
+  }, 10);
 
-  onChange = (values) => {
+  onChange = (value) => {
     const { gadget } = this.props;
-    this.setState({ values });
-    gadget.value = 1 - values[0];
+    this.setState({ value });
+    gadget.value = value;
   };
 
   render() {
-    const { gadget, values, update } = this.state;
+    const { gadget, value, update } = this.state;
 
     return (
       <div className={sass['slider--wrapper']}>
@@ -61,13 +58,16 @@ class RangeSlider extends React.Component {
         </label>
         <Slider
           vertical
+          reversed
           mode={2}
           step={0.01}
           domain={domain}
           rootStyle={sliderStyle}
           onUpdate={this.onUpdate}
-          onChange={this.onChange}
-          values={values}
+          onChange={(values) => {
+            this.onChange(values[0]);
+          }}
+          values={[value]}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
@@ -100,7 +100,7 @@ class RangeSlider extends React.Component {
               </div>
             )}
           </Tracks>
-          <Ticks count={5}>
+          <Ticks count={10}>
             {({ ticks }) => (
               <div className="slider-ticks">
                 {ticks.map((tick) => (

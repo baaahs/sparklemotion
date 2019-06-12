@@ -37,10 +37,8 @@ class SparkleShader : Shader<SparkleShader.Buffer>(ShaderId.SPARKLE) {
     }
 
     class Renderer : Shader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixels: Pixels) {
-            for (i in pixels.indices) {
-                pixels[i] = if (Random.nextFloat() < buffer.sparkliness ) { buffer.color } else { Color.BLACK }
-            }
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
+            return if (Random.nextFloat() < buffer.sparkliness ) { buffer.color } else { Color.BLACK }
         }
     }
 }

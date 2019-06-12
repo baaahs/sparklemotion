@@ -70,9 +70,7 @@ class PixelShader() : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
     }
 
     class Renderer : Shader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixels: Pixels) {
-            pixels.set(buffer.colors)
-        }
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.colors[pixelIndex]
     }
 
 }

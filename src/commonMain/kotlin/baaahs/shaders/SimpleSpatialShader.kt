@@ -47,22 +47,18 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
         private val pixelVertices = (surface as? Brain.MappedSurface)?.pixelVertices
 
-        override fun draw(buffer: Buffer, pixels: Pixels) {
-            if (pixelVertices == null) return
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
+            if (pixelVertices == null || pixelIndex >= pixelVertices.size) return Color.BLACK
 
-            for (i in 0 until min(pixels.size, pixelVertices.size)) {
-                val (pixX, pixY) = pixelVertices[i]
+            val (pixX, pixY) = pixelVertices[pixelIndex]
 
-                val distX = pixX - buffer.centerX
-                val distY = pixY - buffer.centerY
-                val dist = sqrt(distX * distX + distY * distY)
-                pixels[i] = if (dist < buffer.radius - 0.025f) {
-                    buffer.color
-                } else if (dist < buffer.radius + 0.025f) {
-                    Color.BLACK
-                } else {
-                    buffer.color.fade(Color.BLACK, dist * 2)
-                }
+            val distX = pixX - buffer.centerX
+            val distY = pixY - buffer.centerY
+            val dist = sqrt(distX * distX + distY * distY)
+            return when {
+                dist < buffer.radius - 0.025f -> buffer.color
+                dist < buffer.radius + 0.025f -> Color.BLACK
+                else -> buffer.color.fade(Color.BLACK, dist * 2)
             }
         }
     }

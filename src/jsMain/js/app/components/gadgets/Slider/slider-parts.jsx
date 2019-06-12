@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import styles from './Slider.scss';
 
 // *******************************************************
@@ -68,10 +69,30 @@ export function Handle({
         <div className={styles['slider--handle-notch']} />
         <div className={styles['slider--handle-notch']} />
         <div className={styles['slider--handle-notch']} />
-        <div className={styles['slider--handle-notch']} />
-        <div className={styles['slider--handle-notch']} />
-        <div className={styles['slider--handle-notch']} />
-        <div className={styles['slider--handle-notch']} />
+        <div
+          className={classNames(
+            styles['slider--handle-notch'],
+            styles['slider--handle-notch-middle']
+          )}
+        />
+        <div
+          className={classNames(
+            styles['slider--handle-notch'],
+            styles['slider--handle-notch-lower']
+          )}
+        />
+        <div
+          className={classNames(
+            styles['slider--handle-notch'],
+            styles['slider--handle-notch-lower']
+          )}
+        />
+        <div
+          className={classNames(
+            styles['slider--handle-notch'],
+            styles['slider--handle-notch-lower']
+          )}
+        />
       </div>
     </Fragment>
   );
@@ -180,7 +201,7 @@ export function Tick({ tick, format }) {
           height: 1,
           width: 6,
           backgroundColor: 'rgb(200,200,200)',
-          bottom: `${tick.percent}%`,
+          bottom: `${100 - tick.percent}%`,
         }}
       />
       <div
@@ -190,7 +211,7 @@ export function Tick({ tick, format }) {
           marginLeft: 20,
           fontSize: 10,
           color: '#aeaeae',
-          bottom: `${tick.percent}%`,
+          bottom: `${100 - tick.percent}%`,
           transform: `translateY(50%)`,
         }}
       >
