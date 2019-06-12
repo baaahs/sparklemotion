@@ -607,7 +607,16 @@
     this.buffer.read_100t80$(reader);
   };
   Brain$ShaderBits.prototype.draw_bbfl1t$ = function (pixels) {
-    this.renderer.draw_4adlm$(this.buffer, pixels);
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    this.renderer.beginFrame_b23bvv$(this.buffer, pixels.size);
+    tmp$ = pixels.indices;
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
+      pixels.set_ibd5tj$(i, this.renderer.draw_b23bvv$(this.buffer, i));
+    }
+    this.renderer.endFrame();
   };
   Brain$ShaderBits.$metadata$ = {
     kind: Kind_CLASS,
@@ -3737,6 +3746,10 @@
   };
   function Shader$Renderer() {
   }
+  Shader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+  };
+  Shader$Renderer.prototype.endFrame = function () {
+  };
   Shader$Renderer.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Renderer',
@@ -6144,52 +6157,23 @@
     interfaces: [Shader$Buffer]
   };
   function CompositorShader$Renderer(surface, aShader, bShader) {
-    this.pixelCount_0 = surface.pixelCount;
-    this.srcPixels_0 = new CompositorShader$Renderer$PixelBuf(this.pixelCount_0);
     this.rendererA_0 = aShader.createRenderer_ppt8xj$(surface);
     this.rendererB_0 = bShader.createRenderer_ppt8xj$(surface);
   }
-  CompositorShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    var tmp$, tmp$_0, tmp$_1;
-    var destPixels = pixels;
-    this.rendererA_0.draw_4adlm$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), destPixels);
-    this.rendererB_0.draw_4adlm$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), this.srcPixels_0);
-    var mode = buffer.mode;
-    tmp$_1 = this.pixelCount_0;
-    for (var i = 0; i < tmp$_1; i++) {
-      var src = this.srcPixels_0.get_za3lpa$(i);
-      var dest = destPixels.get_za3lpa$(i);
-      destPixels.set_ibd5tj$(i, dest.fade_6zkv30$(mode.composite_dggbqs$(src, dest), buffer.fade));
-    }
+  CompositorShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+    var tmp$, tmp$_0;
+    this.rendererA_0.beginFrame_b23bvv$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), pixelCount);
+    this.rendererB_0.beginFrame_b23bvv$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), pixelCount);
   };
-  function CompositorShader$Renderer$PixelBuf(size) {
-    this.size_fc7zpd$_0 = size;
-    var array = Array_0(this.size);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors = array;
-  }
-  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'size', {
-    get: function () {
-      return this.size_fc7zpd$_0;
-    }
-  });
-  CompositorShader$Renderer$PixelBuf.prototype.get_za3lpa$ = function (i) {
-    return this.colors[i];
+  CompositorShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    var tmp$, tmp$_0;
+    var dest = this.rendererA_0.draw_b23bvv$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), pixelIndex);
+    var src = this.rendererB_0.draw_b23bvv$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), pixelIndex);
+    return dest.fade_6zkv30$(buffer.mode.composite_dggbqs$(src, dest), buffer.fade);
   };
-  CompositorShader$Renderer$PixelBuf.prototype.set_ibd5tj$ = function (i, color) {
-    this.colors[i] = color;
-  };
-  CompositorShader$Renderer$PixelBuf.prototype.set_tmuqsv$ = function (colors) {
-    arrayCopy(colors, this.colors, 0, 0, colors.length);
-  };
-  CompositorShader$Renderer$PixelBuf.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PixelBuf',
-    interfaces: [Pixels]
+  CompositorShader$Renderer.prototype.endFrame = function () {
+    this.rendererA_0.endFrame();
+    this.rendererB_0.endFrame();
   };
   CompositorShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6385,8 +6369,8 @@
   };
   function PixelShader$Renderer() {
   }
-  PixelShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    pixels.set_tmuqsv$(buffer.colors);
+  PixelShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return buffer.colors[pixelIndex];
   };
   PixelShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6464,32 +6448,24 @@
     var tmp$, tmp$_0;
     this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, Brain$MappedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
   }
-  SimpleSpatialShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    var tmp$, tmp$_0;
-    if (this.pixelVertices_0 == null)
-      return;
-    var a = pixels.size;
-    var b = this.pixelVertices_0.size;
-    tmp$ = Math_0.min(a, b);
-    for (var i = 0; i < tmp$; i++) {
-      var tmp$_1 = this.pixelVertices_0.get_za3lpa$(i);
-      var pixX = tmp$_1.component1()
-      , pixY = tmp$_1.component2();
-      var distX = pixX - buffer.centerX;
-      var distY = pixY - buffer.centerY;
-      var x = distX * distX + distY * distY;
-      var dist = Math_0.sqrt(x);
-      if (dist < buffer.radius - 0.025) {
-        tmp$_0 = buffer.color;
-      }
-       else if (dist < buffer.radius + 0.025) {
-        tmp$_0 = Color$Companion_getInstance().BLACK;
-      }
-       else {
-        tmp$_0 = buffer.color.fade_6zkv30$(Color$Companion_getInstance().BLACK, dist * 2);
-      }
-      pixels.set_ibd5tj$(i, tmp$_0);
-    }
+  SimpleSpatialShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    var tmp$;
+    if (this.pixelVertices_0 == null || pixelIndex >= this.pixelVertices_0.size)
+      return Color$Companion_getInstance().BLACK;
+    var tmp$_0 = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var pixX = tmp$_0.component1()
+    , pixY = tmp$_0.component2();
+    var distX = pixX - buffer.centerX;
+    var distY = pixY - buffer.centerY;
+    var x = distX * distX + distY * distY;
+    var dist = Math_0.sqrt(x);
+    if (dist < buffer.radius - 0.025)
+      tmp$ = buffer.color;
+    else if (dist < buffer.radius + 0.025)
+      tmp$ = Color$Companion_getInstance().BLACK;
+    else
+      tmp$ = buffer.color.fade_6zkv30$(Color$Companion_getInstance().BLACK, dist * 2);
+    return tmp$;
   };
   SimpleSpatialShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6561,21 +6537,17 @@
     interfaces: [Shader$Buffer]
   };
   function SineWaveShader$Renderer() {
+    this.pixelCount_0 = 1;
   }
-  SineWaveShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+  SineWaveShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+    this.pixelCount_0 = pixelCount;
+  };
+  SineWaveShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     var theta = buffer.theta;
-    var pixelCount = pixels.size;
     var density = buffer.density;
-    tmp$ = pixels.indices;
-    tmp$_0 = tmp$.first;
-    tmp$_1 = tmp$.last;
-    tmp$_2 = tmp$.step;
-    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
-      var x = theta + 2 * math.PI * (i / pixelCount * density);
-      var v = Math_0.sin(x) / 2 + 0.5;
-      pixels.set_ibd5tj$(i, Color$Companion_getInstance().BLACK.fade_6zkv30$(buffer.color, v));
-    }
+    var x = theta + 2 * math.PI * (pixelIndex / this.pixelCount_0 * density);
+    var v = Math_0.sin(x) / 2 + 0.5;
+    return Color$Companion_getInstance().BLACK.fade_6zkv30$(buffer.color, v);
   };
   SineWaveShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6642,15 +6614,8 @@
   };
   function SolidShader$Renderer() {
   }
-  SolidShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    tmp$ = pixels.indices;
-    tmp$_0 = tmp$.first;
-    tmp$_1 = tmp$.last;
-    tmp$_2 = tmp$.step;
-    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
-      pixels.set_ibd5tj$(i, buffer.color);
-    }
+  SolidShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return buffer.color;
   };
   SolidShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -6721,21 +6686,15 @@
   };
   function SparkleShader$Renderer() {
   }
-  SparkleShader$Renderer.prototype.draw_4adlm$ = function (buffer, pixels) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
-    tmp$ = pixels.indices;
-    tmp$_0 = tmp$.first;
-    tmp$_1 = tmp$.last;
-    tmp$_2 = tmp$.step;
-    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
-      if (Random.Default.nextFloat() < buffer.sparkliness) {
-        tmp$_3 = buffer.color;
-      }
-       else {
-        tmp$_3 = Color$Companion_getInstance().BLACK;
-      }
-      pixels.set_ibd5tj$(i, tmp$_3);
+  SparkleShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    var tmp$;
+    if (Random.Default.nextFloat() < buffer.sparkliness) {
+      tmp$ = buffer.color;
     }
+     else {
+      tmp$ = Color$Companion_getInstance().BLACK;
+    }
+    return tmp$;
   };
   SparkleShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -11142,7 +11101,6 @@
     get: CompositorShader$Companion_getInstance
   });
   CompositorShader.Buffer = CompositorShader$Buffer;
-  CompositorShader$Renderer.PixelBuf = CompositorShader$Renderer$PixelBuf;
   CompositorShader.Renderer = CompositorShader$Renderer;
   var package$shaders = package$baaahs.shaders || (package$baaahs.shaders = {});
   package$shaders.CompositorShader = CompositorShader;
@@ -11289,8 +11247,15 @@
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
-  Object.defineProperty(CompositorShader$Renderer$PixelBuf.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
-  CompositorShader$Renderer$PixelBuf.prototype.iterator = Pixels.prototype.iterator;
+  PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  PixelShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SimpleSpatialShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  SimpleSpatialShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SineWaveShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SolidShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PixelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
