@@ -4,7 +4,7 @@ import baaahs.gadgets.Slider
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -48,15 +48,16 @@ class GadgetTest {
         val pubSubServer = PubSub.listen(serverLink, 1234)
         pubSubServer.install(gadgetModule)
 
-        val gadgetProvider = GadgetProvider(pubSubServer)
-        val serverSlider = gadgetProvider.getGadget("fader", Slider("fader", .1234f))
+        val gadgetManager = GadgetManager(pubSubServer)
+        val serverSlider = Slider("fader", .1234f)
+        gadgetManager.sync(listOf("fader" to serverSlider))
 
         val pubSubClient = PubSub.connect(serverLink, serverLink.myAddress, 1234)
         pubSubClient.install(gadgetModule)
 
         var clientGadgets = listOf<Gadget>()
         GadgetDisplay(pubSubClient) { gadgets -> clientGadgets = gadgets.map { it.gadget }.toMutableList() }
-        gadgetProvider.sync()
+        gadgetManager.sync(listOf("fader" to serverSlider))
         testCoroutineContext.runAll()
 
         expect(1) { clientGadgets.size }
@@ -70,10 +71,6 @@ class GadgetTest {
     }
 
     class SomeGadget(initialValue: Int) : Gadget() {
-        var value: Int by watchForChanges(initialValue)
-
-        override fun toJson(): JsonElement = TODO("SomeGadget.toJson not implemented")
-
-        override fun setFromJson(jsonElement: JsonElement): Unit = TODO("SomeGadget.setFromJson not implemented")
+        var value: Int by updatable("value", initialValue, Int.serializer())
     }
 }
