@@ -444,7 +444,7 @@
         let [pixels, depths, colors, normals] = [[], [], [], []];
         while (pixels.length < panel.numPixels && abortCount < abortThreshold) {
           let p = new THREE.Vector2(Math.random() * 2 - 1 , Math.random() * 2 - 1);
-          if (pointInPoly(p, mappedVerts)) {
+          if (pointInPoly(p, mappedVerts) && distanceToNearestEdge(p, mappedVerts) * panel.panelScale > 1.25) {
             pixels.push(p);
             colors.push(colorOverride || randomColor());
             depths.push(depthOverride || Math.random() + 1);
@@ -592,6 +592,19 @@
       }
     }
     return wn !== 0;
+  }
+
+  function distanceToNearestEdge(point, verts) {
+    let min = Infinity;
+    for (let i = 0; i < verts.length; ++i) {
+      let j = (i + 1) % verts.length;
+      let v = verts[i];
+      let w = verts[j];
+      let t = ((point.x - v.x) * (w.x - v.x) + (point.y - v.y) * (w.y - v.y)) / v.distanceToSquared(w);
+      t = Math.max(0, Math.min(1, t));
+      min = Math.min(min, point.distanceTo(v.clone().add(w.clone().sub(v).multiplyScalar(t))));
+    }
+    return min;
   }
 
   function randomNormal() {
