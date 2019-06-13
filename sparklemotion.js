@@ -949,7 +949,7 @@
     this.nextFrameMs_1o69ux$_0 = 0;
     this.stats_6me6mw$_0 = null;
   }
-  StubPinkyDisplay.prototype.listShows_3lsa6o$ = function (showMetas) {
+  StubPinkyDisplay.prototype.listShows_3lsa6o$ = function (shows) {
   };
   Object.defineProperty(StubPinkyDisplay.prototype, 'brainCount', {
     get: function () {
@@ -2720,16 +2720,16 @@
     simpleName: 'MediaDevices',
     interfaces: []
   };
-  function Pinky(sheepModel, showMetas, network, dmxUniverse, display) {
+  function Pinky(sheepModel, shows, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
-    this.showMetas = showMetas;
+    this.shows = shows;
     this.network = network;
     this.dmxUniverse = dmxUniverse;
     this.display = display;
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.beatProvider_0 = new Pinky$PinkyBeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
-    this.selectedShow_vpdlot$_0 = first(this.showMetas);
+    this.selectedShow_vpdlot$_0 = first(this.shows);
     var $receiver = new PubSub$Server(this.link_0, 8004);
     $receiver.install_stpyu4$(gadgetModule);
     this.pubSub_0 = $receiver;
@@ -2824,7 +2824,7 @@
   function Pinky$run$lambda_1(this$Pinky) {
     return function (selectedShow) {
       var tmp$ = this$Pinky;
-      var $receiver = this$Pinky.showMetas;
+      var $receiver = this$Pinky.shows;
       var firstOrNull$result;
       firstOrNull$break: do {
         var tmp$_0;
@@ -2875,11 +2875,11 @@
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
             this.$this.link_0.listenUdp_a6m852$(8002, this.$this);
-            this.$this.display.listShows_3lsa6o$(this.$this.showMetas);
+            this.$this.display.listShows_3lsa6o$(this.$this.shows);
             this.$this.display.selectedShow = this.$this.selectedShow_0;
             var tmp$ = this.$this.pubSub_0;
             var tmp$_0 = Topics_getInstance().availableShows;
-            var $receiver = this.$this.showMetas;
+            var $receiver = this.$this.shows;
             var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
             var tmp$_1;
             tmp$_1 = $receiver.iterator();
@@ -2889,7 +2889,7 @@
             }
 
             tmp$.publish_oiz02e$(tmp$_0, destination, Pinky$run$lambda_0);
-            var selectedShowChannel = this.$this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.showMetas.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
+            var selectedShowChannel = this.$this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.shows.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
             this.$this.display.onShowChange = Pinky$run$lambda_2(this.$this, selectedShowChannel);
             this.state_0 = 2;
             continue;
@@ -8311,11 +8311,11 @@
       return Unit;
     };
   }
-  JsPinkyDisplay.prototype.listShows_3lsa6o$ = function (showMetas) {
+  JsPinkyDisplay.prototype.listShows_3lsa6o$ = function (shows) {
     clear(this.showListInput_0);
-    this.showList_0 = showMetas;
+    this.showList_0 = shows;
     var tmp$;
-    tmp$ = showMetas.iterator();
+    tmp$ = shows.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       appendElement(this.showListInput_0, 'option', JsPinkyDisplay$listShows$lambda$lambda(element));
@@ -9127,9 +9127,9 @@
     var $receiver = new SheepModel();
     $receiver.load();
     this.sheepModel_0 = $receiver;
-    this.showMetas_0 = AllShows$Companion_getInstance().allShows;
+    this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.sheepModel_0);
-    this.pinky_0 = new Pinky(this.sheepModel_0, this.showMetas_0, this.network_0, this.dmxUniverse_0, this.display_0.forPinky());
+    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.display_0.forPinky());
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
