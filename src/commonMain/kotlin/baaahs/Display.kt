@@ -15,7 +15,7 @@ interface NetworkDisplay {
 }
 
 interface PinkyDisplay {
-    fun listShows(showMetas: List<Show>)
+    fun listShows(shows: List<Show>)
 
     var brainCount: Int
     var beat: Int
@@ -26,7 +26,7 @@ interface PinkyDisplay {
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
-    override fun listShows(showMetas: List<Show>) {
+    override fun listShows(shows: List<Show>) {
     }
 
     override var brainCount = 0
