@@ -139,8 +139,8 @@
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
-  var Array_0 = Array;
   var math = Kotlin.kotlin.math;
+  var Array_0 = Array;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
@@ -256,6 +256,8 @@
   CompositingMode$NORMAL.prototype.constructor = CompositingMode$NORMAL;
   CompositingMode$ADD.prototype = Object.create(CompositingMode.prototype);
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
+  HeartShader.prototype = Object.create(Shader.prototype);
+  HeartShader.prototype.constructor = HeartShader;
   PixelShader.prototype = Object.create(Shader.prototype);
   PixelShader.prototype.constructor = PixelShader;
   SimpleSpatialShader.prototype = Object.create(Shader.prototype);
@@ -268,6 +270,8 @@
   SparkleShader.prototype.constructor = SparkleShader;
   CompositeShow.prototype = Object.create(Show.prototype);
   CompositeShow.prototype.constructor = CompositeShow;
+  HeartbleatShow.prototype = Object.create(Show.prototype);
+  HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
   LifeyShow.prototype.constructor = LifeyShow;
   PanelTweenShow.prototype = Object.create(Show.prototype);
@@ -787,6 +791,7 @@
     this.GREEN = Color_init_1(0, 255, 0);
     this.BLUE = Color_init_1(0, 0, 255);
     this.PURPLE = Color_init_1(200, 0, 212);
+    this.TRANSPARENT = Color_init_1(0, 0, 0, 0);
     this.descriptor_dxdv46$_0 = withName(internal.IntDescriptor, 'Color');
   }
   Color$Companion.prototype.random = function () {
@@ -2734,7 +2739,7 @@
     $receiver.install_stpyu4$(gadgetModule);
     this.pubSub_0 = $receiver;
     this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
-    this.showRunner_0 = new ShowRunner(this.sheepModel, this.selectedShow_0, this.gadgetManager_0, emptyList(), this.beatProvider_0, this.dmxUniverse);
+    this.showRunner_0 = new ShowRunner(this.sheepModel, this.selectedShow_0, this.gadgetManager_0, this.beatProvider_0, this.dmxUniverse);
     var $receiver_0 = this.sheepModel.allPanels;
     var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver_0, 10)), 16);
     var destination = LinkedHashMap_init_0(capacity);
@@ -3600,6 +3605,7 @@
     ShaderId$COMPOSITOR_instance = new ShaderId('COMPOSITOR', 3, CompositorShader$Companion_getInstance());
     ShaderId$SPARKLE_instance = new ShaderId('SPARKLE', 4, SparkleShader$Companion_getInstance());
     ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, SimpleSpatialShader$Companion_getInstance());
+    ShaderId$HEART_instance = new ShaderId('HEART', 6, HeartShader$Companion_getInstance());
     ShaderId$Companion_getInstance();
   }
   var ShaderId$SOLID_instance;
@@ -3632,6 +3638,11 @@
     ShaderId_initFields();
     return ShaderId$SIMPLE_SPATIAL_instance;
   }
+  var ShaderId$HEART_instance;
+  function ShaderId$HEART_getInstance() {
+    ShaderId_initFields();
+    return ShaderId$HEART_instance;
+  }
   function ShaderId$Companion() {
     ShaderId$Companion_instance = this;
     this.values = ShaderId$values();
@@ -3661,7 +3672,7 @@
     interfaces: [Enum]
   };
   function ShaderId$values() {
-    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance()];
+    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance()];
   }
   ShaderId.values = ShaderId$values;
   function ShaderId$valueOf(name) {
@@ -3678,6 +3689,8 @@
         return ShaderId$SPARKLE_getInstance();
       case 'SIMPLE_SPATIAL':
         return ShaderId$SIMPLE_SPATIAL_getInstance();
+      case 'HEART':
+        return ShaderId$HEART_getInstance();
       default:throwISE('No enum constant baaahs.ShaderId.' + name);
     }
   }
@@ -4631,7 +4644,7 @@
     simpleName: 'Show',
     interfaces: []
   };
-  function ShowRunner(model, initialShow, gadgetManager, brains, beatProvider, dmxUniverse) {
+  function ShowRunner(model, initialShow, gadgetManager, beatProvider, dmxUniverse) {
     this.model_0 = model;
     this.gadgetManager_0 = gadgetManager;
     this.beatProvider_0 = beatProvider;
@@ -4641,26 +4654,6 @@
     this.currentShowRenderer_0 = null;
     this.changedSurfaces_0 = ArrayList_init();
     this.totalSurfaceReceivers_0 = 0;
-    var destination = LinkedHashMap_init();
-    var tmp$;
-    tmp$ = brains.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var key = element.surface;
-      var tmp$_0;
-      var value = destination.get_11rb$(key);
-      if (value == null) {
-        var answer = ArrayList_init();
-        destination.put_xwzc9p$(key, answer);
-        tmp$_0 = answer;
-      }
-       else {
-        tmp$_0 = value;
-      }
-      var list = tmp$_0;
-      list.add_11rb$(element);
-    }
-    this.brainsBySurface_0 = destination;
     this.shaderBuffers_0 = HashMap_init();
     this.requestedGadgets_0 = LinkedHashMap_init();
     this.shadersLocked_0 = true;
@@ -4674,7 +4667,7 @@
   });
   Object.defineProperty(ShowRunner.prototype, 'allUnusedSurfaces', {
     get: function () {
-      return minus(toList(this.brainsBySurface_0.keys), this.shaderBuffers_0.keys);
+      return minus(this.allSurfaces, this.shaderBuffers_0.keys);
     }
   });
   ShowRunner.prototype.getBeatProvider = function () {
@@ -6270,6 +6263,131 @@
     }
   }
   CompositingMode.valueOf_61zpoe$ = CompositingMode$valueOf;
+  function HeartShader() {
+    HeartShader$Companion_getInstance();
+    Shader.call(this, ShaderId$HEART_getInstance());
+  }
+  HeartShader.prototype.createBuffer_ppt8xj$ = function (surface) {
+    return new HeartShader$Buffer(this);
+  };
+  HeartShader.prototype.readBuffer_100t80$ = function (reader) {
+    var $receiver = new HeartShader$Buffer(this);
+    $receiver.read_100t80$(reader);
+    return $receiver;
+  };
+  HeartShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new HeartShader$Renderer(surface);
+  };
+  function HeartShader$Companion() {
+    HeartShader$Companion_instance = this;
+  }
+  HeartShader$Companion.prototype.parse_100t80$ = function (reader) {
+    return new HeartShader();
+  };
+  HeartShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: [ShaderReader]
+  };
+  var HeartShader$Companion_instance = null;
+  function HeartShader$Companion_getInstance() {
+    if (HeartShader$Companion_instance === null) {
+      new HeartShader$Companion();
+    }
+    return HeartShader$Companion_instance;
+  }
+  function HeartShader$Buffer($outer) {
+    this.$outer = $outer;
+    this.edgeColor = Color$Companion_getInstance().RED;
+    this.centerColor = Color$Companion_getInstance().RED.fade_6zkv30$(Color$Companion_getInstance().WHITE, 0.2);
+    this.heartSize = 1.0;
+    this.strokeSize = 1.0;
+    this.xOff = 0.0;
+    this.yOff = 0.0;
+  }
+  Object.defineProperty(HeartShader$Buffer.prototype, 'shader', {
+    get: function () {
+      return this.$outer;
+    }
+  });
+  HeartShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeFloat_mx4ult$(this.heartSize);
+    writer.writeFloat_mx4ult$(this.strokeSize);
+    writer.writeFloat_mx4ult$(this.xOff);
+    writer.writeFloat_mx4ult$(this.yOff);
+  };
+  HeartShader$Buffer.prototype.read_100t80$ = function (reader) {
+    this.heartSize = reader.readFloat();
+    this.strokeSize = reader.readFloat();
+    this.xOff = reader.readFloat();
+    this.yOff = reader.readFloat();
+  };
+  HeartShader$Buffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Buffer',
+    interfaces: [Shader$Buffer]
+  };
+  function HeartShader$Renderer(surface) {
+    var tmp$, tmp$_0;
+    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, Brain$MappedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
+  }
+  HeartShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    var tmp$, tmp$_0;
+    if (this.pixelVertices_0 == null) {
+      return Color$Companion_getInstance().BLACK;
+    }
+    var tmp$_1 = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var x = tmp$_1.component1()
+    , y = tmp$_1.component2();
+    x -= 0.5 + buffer.xOff - 0.5;
+    x *= 1.1;
+    y -= 0.5 + buffer.yOff - 0.5;
+    x /= buffer.heartSize;
+    y /= buffer.heartSize;
+    var $receiver = Math_0.abs(x) - 1;
+    var upperCurveDist = y - (1 - Math_0.pow($receiver, 2));
+    var x_0 = 1 - Math_0.abs(x);
+    var lowerCurveDist = y - (Math_0.acos(x_0) - math.PI);
+    if (y >= 0) {
+      if (upperCurveDist < 0) {
+        if (Math_0.abs(upperCurveDist) < buffer.strokeSize) {
+          tmp$ = 0.0;
+        }
+         else {
+          var x_1 = upperCurveDist / buffer.heartSize;
+          tmp$ = Math_0.abs(x_1);
+        }
+        var fadeAmount = tmp$;
+        return buffer.edgeColor.fade_6zkv30$(buffer.centerColor, fadeAmount);
+      }
+       else {
+        return Color$Companion_getInstance().TRANSPARENT;
+      }
+    }
+     else if (lowerCurveDist > 0) {
+      if (lowerCurveDist < buffer.strokeSize) {
+        tmp$_0 = 1.0;
+      }
+       else {
+        tmp$_0 = lowerCurveDist / buffer.heartSize;
+      }
+      var fadeAmount_0 = tmp$_0;
+      return buffer.edgeColor.fade_6zkv30$(buffer.centerColor, fadeAmount_0);
+    }
+     else {
+      return Color$Companion_getInstance().TRANSPARENT;
+    }
+  };
+  HeartShader$Renderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
+  };
+  HeartShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'HeartShader',
+    interfaces: [Shader]
+  };
   function PixelShader() {
     PixelShader$Companion_getInstance();
     Shader.call(this, ShaderId$PIXEL_getInstance());
@@ -6711,7 +6829,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6833,6 +6951,102 @@
       new CompositeShow();
     }
     return CompositeShow_instance;
+  }
+  function HeartbleatShow() {
+    HeartbleatShow_instance = this;
+    Show.call(this, 'Heartbleat');
+  }
+  function HeartbleatShow$createRenderer$ObjectLiteral(closure$showRunner, closure$sheepModel) {
+    this.beatProvider = closure$showRunner.getBeatProvider();
+    var $receiver = closure$sheepModel.allPanels;
+    var destination = ArrayList_init();
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (HeartbleatShow_getInstance().get_number_y56fi1$(element) === 7)
+        destination.add_11rb$(element);
+    }
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
+    var tmp$_0;
+    tmp$_0 = destination.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination_0.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new HeartShader()));
+    }
+    this.hearts = destination_0;
+    this.heartSizeGadget = closure$showRunner.getGadget_vedre8$('heartSize', new Slider('Heart Size', 0.16));
+    this.strokeSize = closure$showRunner.getGadget_vedre8$('strokeSize', new Slider('Stroke Size', 0.5));
+    this.xOff = closure$showRunner.getGadget_vedre8$('xOff', new Slider('X Offset', 0.4));
+    this.yOff = closure$showRunner.getGadget_vedre8$('yOff', new Slider('Y Offset', 0.67));
+    var $receiver_0 = closure$showRunner.allUnusedSurfaces;
+    var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_1;
+    tmp$_1 = $receiver_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var item_0 = tmp$_1.next();
+      destination_1.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item_0, new SolidShader()));
+    }
+    this.otherSurfaces = destination_1;
+  }
+  HeartbleatShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+    var tmp$, tmp$_0;
+    var phase = this.beatProvider.beat % 1.0 * 3.0;
+    tmp$_0 = this.heartSizeGadget.value;
+    if (phase > 1.5 && phase < 2.5) {
+      var x = phase - 2;
+      tmp$ = 1.0 + (0.5 - Math_0.abs(x)) / 4;
+    }
+     else if (phase > 2.5 || phase < 0.5) {
+      if (phase > 2.5)
+        phase -= 3;
+      tmp$ = 1.0 + (0.5 - Math_0.abs(phase)) / 2;
+    }
+     else {
+      tmp$ = 1.0;
+    }
+    var heartSize = tmp$_0 * tmp$;
+    var tmp$_1;
+    tmp$_1 = this.hearts.iterator();
+    while (tmp$_1.hasNext()) {
+      var element = tmp$_1.next();
+      element.heartSize = heartSize;
+      element.strokeSize = this.strokeSize.value;
+      element.xOff = this.xOff.value;
+      element.yOff = this.yOff.value;
+    }
+    var tmp$_2;
+    tmp$_2 = this.otherSurfaces.iterator();
+    while (tmp$_2.hasNext()) {
+      var element_0 = tmp$_2.next();
+      var tmp$_3 = Color_init_0(0.25, 0.25, 0.25);
+      var tmp$_4 = Color_init_0(0.75, 0.3, 0.3);
+      var x_0 = this.beatProvider.beat / 4.0 * math.PI;
+      element_0.color = tmp$_3.fade_6zkv30$(tmp$_4, Math_0.sin(x_0));
+    }
+  };
+  HeartbleatShow$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show$Renderer]
+  };
+  HeartbleatShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    return new HeartbleatShow$createRenderer$ObjectLiteral(showRunner, sheepModel);
+  };
+  HeartbleatShow.prototype.get_number_y56fi1$ = function ($receiver) {
+    var tmp$, tmp$_0, tmp$_1;
+    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
+  };
+  HeartbleatShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'HeartbleatShow',
+    interfaces: [Show]
+  };
+  var HeartbleatShow_instance = null;
+  function HeartbleatShow_getInstance() {
+    if (HeartbleatShow_instance === null) {
+      new HeartbleatShow();
+    }
+    return HeartbleatShow_instance;
   }
   function LifeyShow() {
     LifeyShow_instance = this;
@@ -8572,7 +8786,7 @@
   function JsBrainDisplay$myDiv$lambda$lambda$lambda_2(this$JsBrainDisplay) {
     return function ($receiver) {
       var tmp$;
-      appendText($receiver, 'Surface: ' + toString_0((tmp$ = this$JsBrainDisplay.surface) != null ? tmp$.describe() : null) + '}');
+      appendText($receiver, 'Surface: ' + toString_0((tmp$ = this$JsBrainDisplay.surface) != null ? tmp$.describe() : null));
       return Unit;
     };
   }
@@ -10853,6 +11067,9 @@
   Object.defineProperty(ShaderId, 'SIMPLE_SPATIAL', {
     get: ShaderId$SIMPLE_SPATIAL_getInstance
   });
+  Object.defineProperty(ShaderId, 'HEART', {
+    get: ShaderId$HEART_getInstance
+  });
   Object.defineProperty(ShaderId, 'Companion', {
     get: ShaderId$Companion_getInstance
   });
@@ -11114,6 +11331,12 @@
     get: CompositingMode$Companion_getInstance
   });
   package$shaders.CompositingMode = CompositingMode;
+  Object.defineProperty(HeartShader, 'Companion', {
+    get: HeartShader$Companion_getInstance
+  });
+  HeartShader.Buffer = HeartShader$Buffer;
+  HeartShader.Renderer = HeartShader$Renderer;
+  package$shaders.HeartShader = HeartShader;
   Object.defineProperty(PixelShader, 'Companion', {
     get: PixelShader$Companion_getInstance
   });
@@ -11152,6 +11375,9 @@
   CompositeShow.prototype.ShaderBufs = CompositeShow$ShaderBufs;
   Object.defineProperty(package$shows, 'CompositeShow', {
     get: CompositeShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'HeartbleatShow', {
+    get: HeartbleatShow_getInstance
   });
   Object.defineProperty(package$shows, 'LifeyShow', {
     get: LifeyShow_getInstance
@@ -11247,6 +11473,8 @@
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   PixelShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SimpleSpatialShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -11256,6 +11484,7 @@
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PixelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
