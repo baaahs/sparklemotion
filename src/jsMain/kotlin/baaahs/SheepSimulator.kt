@@ -17,9 +17,9 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val sheepModel = SheepModel().apply { load() }
-    private val showMetas = AllShows.allShows
+    private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel)
-    private val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }

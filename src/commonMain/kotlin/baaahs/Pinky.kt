@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class Pinky(
     val sheepModel: SheepModel,
-    val showMetas: List<Show>,
+    val shows: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val display: PinkyDisplay
@@ -18,7 +18,7 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link())
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
-    private var selectedShow = showMetas.first()
+    private var selectedShow = shows.first()
         set(value) {
             field = value
             display.selectedShow = value
@@ -44,12 +44,12 @@ class Pinky(
 
         link.listenUdp(Ports.PINKY, this)
 
-        display.listShows(showMetas)
+        display.listShows(shows)
         display.selectedShow = selectedShow
 
-        pubSub.publish(Topics.availableShows, showMetas.map { showMeta -> showMeta.name }) {}
-        val selectedShowChannel = pubSub.publish(Topics.selectedShow, showMetas[0].name) { selectedShow ->
-            this.selectedShow = showMetas.find { it.name == selectedShow }!!
+        pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
+        val selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
+            this.selectedShow = shows.find { it.name == selectedShow }!!
         }
 
         display.onShowChange = {

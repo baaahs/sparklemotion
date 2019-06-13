@@ -124,10 +124,10 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         statsSpan = element.appendElement("span") {}
     }
 
-    override fun listShows(showMetas: List<Show>) {
+    override fun listShows(shows: List<Show>) {
         showListInput.clear()
-        showList = showMetas
-        showMetas.forEach {
+        showList = shows
+        shows.forEach {
             showListInput.appendElement("option") { appendText(it.name) }
         }
     }
