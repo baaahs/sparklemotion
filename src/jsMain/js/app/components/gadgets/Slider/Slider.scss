@@ -37,6 +37,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
 
   .slider--handle-notch {
     height: 1px;
@@ -50,6 +51,7 @@
     border-bottom: none;
     box-shadow: 0px 0px 3px #00FF28;
     background-color: #00E622;
+    width: 50%;
   }
 
   .slider--handle-notch-lower {
