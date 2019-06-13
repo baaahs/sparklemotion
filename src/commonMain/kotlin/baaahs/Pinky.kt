@@ -18,7 +18,7 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link())
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
-    private var selectedShow = shows.first()
+    private var selectedShow = shows.last()
         set(value) {
             field = value
             display.selectedShow = value
@@ -28,7 +28,7 @@ class Pinky(
     private val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
     private val showRunner =
-        ShowRunner(sheepModel, selectedShow, gadgetManager, emptyList(), beatProvider, dmxUniverse)
+        ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse)
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
     private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
     private val surfaceMappingsByBrain = mutableMapOf<BrainId, Surface>()

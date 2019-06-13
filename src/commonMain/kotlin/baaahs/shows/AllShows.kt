@@ -11,7 +11,8 @@ class AllShows {
             PanelTweenShow,
             PixelTweenShow,
             LifeyShow,
-            SimpleSpatialShow
+            SimpleSpatialShow,
+            HeartbleatShow
         )
     }
 }
