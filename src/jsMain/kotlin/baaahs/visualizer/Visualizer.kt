@@ -75,7 +75,7 @@ class Visualizer(sheepModel: SheepModel) {
 
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
 
-    private val pixelDensity = 0.5f
+    private val pixelDensity = 0.2f
 
     private var totalPixels = 0
 
