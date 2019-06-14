@@ -260,6 +260,8 @@
   HeartShader.prototype.constructor = HeartShader;
   PixelShader.prototype = Object.create(Shader.prototype);
   PixelShader.prototype.constructor = PixelShader;
+  RandomShader.prototype = Object.create(Shader.prototype);
+  RandomShader.prototype.constructor = RandomShader;
   SimpleSpatialShader.prototype = Object.create(Shader.prototype);
   SimpleSpatialShader.prototype.constructor = SimpleSpatialShader;
   SineWaveShader.prototype = Object.create(Shader.prototype);
@@ -3606,6 +3608,7 @@
     ShaderId$SPARKLE_instance = new ShaderId('SPARKLE', 4, SparkleShader$Companion_getInstance());
     ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, SimpleSpatialShader$Companion_getInstance());
     ShaderId$HEART_instance = new ShaderId('HEART', 6, HeartShader$Companion_getInstance());
+    ShaderId$RANDOM_instance = new ShaderId('RANDOM', 7, RandomShader$Companion_getInstance());
     ShaderId$Companion_getInstance();
   }
   var ShaderId$SOLID_instance;
@@ -3643,6 +3646,11 @@
     ShaderId_initFields();
     return ShaderId$HEART_instance;
   }
+  var ShaderId$RANDOM_instance;
+  function ShaderId$RANDOM_getInstance() {
+    ShaderId_initFields();
+    return ShaderId$RANDOM_instance;
+  }
   function ShaderId$Companion() {
     ShaderId$Companion_instance = this;
     this.values = ShaderId$values();
@@ -3672,7 +3680,7 @@
     interfaces: [Enum]
   };
   function ShaderId$values() {
-    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance()];
+    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance()];
   }
   ShaderId.values = ShaderId$values;
   function ShaderId$valueOf(name) {
@@ -3691,6 +3699,8 @@
         return ShaderId$SIMPLE_SPATIAL_getInstance();
       case 'HEART':
         return ShaderId$HEART_getInstance();
+      case 'RANDOM':
+        return ShaderId$RANDOM_getInstance();
       default:throwISE('No enum constant baaahs.ShaderId.' + name);
     }
   }
@@ -6500,6 +6510,71 @@
     simpleName: 'PixelShader',
     interfaces: [Shader]
   };
+  function RandomShader() {
+    RandomShader$Companion_getInstance();
+    Shader.call(this, ShaderId$RANDOM_getInstance());
+  }
+  RandomShader.prototype.createBuffer_ppt8xj$ = function (surface) {
+    return new RandomShader$Buffer(this);
+  };
+  RandomShader.prototype.readBuffer_100t80$ = function (reader) {
+    var $receiver = new RandomShader$Buffer(this);
+    $receiver.read_100t80$(reader);
+    return $receiver;
+  };
+  RandomShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new RandomShader$Renderer();
+  };
+  function RandomShader$Companion() {
+    RandomShader$Companion_instance = this;
+  }
+  RandomShader$Companion.prototype.parse_100t80$ = function (reader) {
+    return new RandomShader();
+  };
+  RandomShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: [ShaderReader]
+  };
+  var RandomShader$Companion_instance = null;
+  function RandomShader$Companion_getInstance() {
+    if (RandomShader$Companion_instance === null) {
+      new RandomShader$Companion();
+    }
+    return RandomShader$Companion_instance;
+  }
+  function RandomShader$Buffer($outer) {
+    this.$outer = $outer;
+  }
+  Object.defineProperty(RandomShader$Buffer.prototype, 'shader', {
+    get: function () {
+      return this.$outer;
+    }
+  });
+  RandomShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+  };
+  RandomShader$Buffer.prototype.read_100t80$ = function (reader) {
+  };
+  RandomShader$Buffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Buffer',
+    interfaces: [Shader$Buffer]
+  };
+  function RandomShader$Renderer() {
+  }
+  RandomShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return Color$Companion_getInstance().fromInts(Random.Default.nextInt_za3lpa$(16777215) | 0);
+  };
+  RandomShader$Renderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
+  };
+  RandomShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RandomShader',
+    interfaces: [Shader]
+  };
   function SimpleSpatialShader() {
     SimpleSpatialShader$Companion_getInstance();
     Shader.call(this, ShaderId$SIMPLE_SPATIAL_getInstance());
@@ -7355,9 +7430,8 @@
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new PixelShader()));
+      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new RandomShader()));
     }
-    this.pixelShaderBuffers = destination;
     var $receiver_0 = closure$sheepModel.eyes;
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
@@ -7370,22 +7444,12 @@
   }
   RandomShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var tmp$;
-    tmp$ = this.pixelShaderBuffers.iterator();
+    tmp$ = this.movingHeadBuffers.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var tmp$_0;
-      tmp$_0 = element.colors;
-      for (var i = 0; i !== tmp$_0.length; ++i) {
-        element.colors[i] = Color$Companion_getInstance().random();
-      }
-    }
-    var tmp$_1;
-    tmp$_1 = this.movingHeadBuffers.iterator();
-    while (tmp$_1.hasNext()) {
-      var element_0 = tmp$_1.next();
-      element_0.colorWheel = element_0.closestColorFor_rny0jj$(Color$Companion_getInstance().random());
-      element_0.pan = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().panRange.endInclusive;
-      element_0.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
+      element.colorWheel = element.closestColorFor_rny0jj$(Color$Companion_getInstance().random());
+      element.pan = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().panRange.endInclusive;
+      element.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
     }
   };
   RandomShow$createRenderer$ObjectLiteral.$metadata$ = {
@@ -11070,6 +11134,9 @@
   Object.defineProperty(ShaderId, 'HEART', {
     get: ShaderId$HEART_getInstance
   });
+  Object.defineProperty(ShaderId, 'RANDOM', {
+    get: ShaderId$RANDOM_getInstance
+  });
   Object.defineProperty(ShaderId, 'Companion', {
     get: ShaderId$Companion_getInstance
   });
@@ -11343,6 +11410,12 @@
   PixelShader.Buffer = PixelShader$Buffer;
   PixelShader.Renderer = PixelShader$Renderer;
   package$shaders.PixelShader = PixelShader;
+  Object.defineProperty(RandomShader, 'Companion', {
+    get: RandomShader$Companion_getInstance
+  });
+  RandomShader.Buffer = RandomShader$Buffer;
+  RandomShader.Renderer = RandomShader$Renderer;
+  package$shaders.RandomShader = RandomShader;
   Object.defineProperty(SimpleSpatialShader, 'Companion', {
     get: SimpleSpatialShader$Companion_getInstance
   });
@@ -11477,6 +11550,8 @@
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   PixelShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  RandomShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  RandomShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SimpleSpatialShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SimpleSpatialShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SineWaveShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
