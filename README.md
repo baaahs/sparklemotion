@@ -16,6 +16,10 @@
 
    `brew install node`
 
+1. Install [Docker](https://docs.docker.com/docker-for-mac/install/):
+
+   `curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh`
+
 ## Running from source
 
 * Open as a gradle project with [IntelliJ](https://www.jetbrains.com/idea/download/)
@@ -27,6 +31,26 @@
 
 ## Local build
 
+### Setup the DB
+
+These next steps are very important to do in the order listed here. Note, if you have already pulled the docker image for mongodb, then you can skip the `initMongo` step.
+
+Pull the mongodb docker image:
+```sh
+./gradlew initMongo
+```
+
+Start mongodb docker container:
+```sh
+./gradlew startMongo
+```
+
+Whenever you want to restart the DB, or just stop the docker container running MongoDB, do:
+```sh
+./gradlew stopMongo
+```
+
+### Setup the dev server
 Run this in one shell window:
 
 ```sh

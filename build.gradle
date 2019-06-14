@@ -167,6 +167,19 @@ task buildReactUI(type: Exec) {
     commandLine "$projectDir/node_modules/.bin/webpack-cli", "--config", "$projectDir/webpack.config.js", "--mode", "development", "--color"
 }
 
+task initMongo(type: Exec) {
+    commandLine "docker", "pull", "mongo:4.0.10"
+}
+
+task startMongo(type: Exec) {
+    commandLine "docker", "run", "-d", "-p", "27017-27019:27017-27019", "--name", "mongodb", "mongo:4.0.10"
+}
+
+task stopMongo(type: Exec) {
+    commandLine "docker", "stop", "mongodb"
+    // commandLine "docker", "rm", "mongodb"
+}
+
 dokka {
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
