@@ -37,8 +37,7 @@ class ColorPicker extends Component {
     // Send color updates once every 150ms while the picker is dragged
     this._throttledHandleColorChange = throttle(this._handleColorChange, 150);
 
-    this._changeListener = {
-      onChanged: (gadget) => {
+    this._changeListener = () => {
         const { colors } = this.state;
         const { redI, greenI, blueI } = gadget.color;
         const color = [redI, greenI, blueI];
@@ -47,7 +46,6 @@ class ColorPicker extends Component {
         updatedColors[0] = color;
 
         this.setState({ colors: updatedColors });
-      },
     };
     gadget.listen(this._changeListener);
   }

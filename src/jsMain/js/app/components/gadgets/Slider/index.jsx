@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import throttle from 'lodash/throttle';
 import sass from './Slider.scss';
-import { Handles, Rail, Slider, Ticks, Tracks } from 'react-compound-slider';
-import { Handle, SliderRail, Tick, Track } from './slider-parts';
+import {Handles, Rail, Slider, Ticks, Tracks} from 'react-compound-slider';
+import {Handle, SliderRail, Tick, Track} from './slider-parts';
 
 const sliderStyle = {
   position: 'relative',
@@ -18,38 +18,34 @@ class RangeSlider extends React.Component {
   constructor(props) {
     super(props);
 
-    let value = props.gadget.value;
     this.state = {
       gadget: props.gadget,
-      value: value,
-      update: value,
     };
 
-    props.gadget.listen({
-      onChanged: () => {
-        this.forceUpdate();
-      },
+    props.gadget.listen(() => {
+      this.forceUpdate();
     });
   }
 
-  onUpdate = (update) => {
-    this.setState({ update }, () => {
-      this.throttleUpdateGadgetValue(update);
-    });
-  };
+  componentWillUnmount() {
+    const { gadget } = this.state;
+    if (this._changeListener) {
+      gadget.unlisten(this._changeListener);
+    }
+  }
 
-  throttleUpdateGadgetValue = throttle((value) => {
-    this.props.gadget.value = value;
+  onUpdate = throttle((value) => {
+    this.onChange(value);
   }, 10);
 
   onChange = (value) => {
-    const { gadget } = this.props;
-    this.setState({ value });
+    const { gadget } = this.state;
     gadget.value = value;
+    this.setState({ gadget });
   };
 
   render() {
-    const { gadget, value, update } = this.state;
+    const { gadget } = this.state;
 
     return (
       <div className={sass['slider--wrapper']}>
@@ -63,11 +59,13 @@ class RangeSlider extends React.Component {
           step={0.01}
           domain={domain}
           rootStyle={sliderStyle}
-          onUpdate={this.onUpdate}
+          onUpdate={(values) => {
+            this.onUpdate(values[0]);
+          }}
           onChange={(values) => {
             this.onChange(values[0]);
           }}
-          values={[value]}
+          values={[gadget.value]}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
