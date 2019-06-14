@@ -1,4 +1,5 @@
 ((global) => {
+
   let randomColor = (() => {
 
     let randomSeed = Math.random();
@@ -61,7 +62,6 @@
       void main() {
         vec4 emission = texture2D(tPixels, vUv);
         gl_FragColor = vec4(emission.rgb, 1.0);
-        //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
       }
       `
       });
@@ -198,9 +198,6 @@
         renderer.render(this.renderTarget.scene, this.renderTarget.camera, this.renderTarget);
         renderer.setRenderTarget(null);
         this.renderTarget.dirty = false;
-        if (this.renderTarget.img) {
-          textureToImage(renderer, this.renderTarget, this.renderTarget.img);
-        }
       }
     }
 
@@ -218,6 +215,22 @@
       if (idx < 0 || idx >= this.numPixels) throw new Error('index out of range');
       let pp = value.clone().project(this.panelCam);
       return this.setPixelPositionInPanelSpace(idx, new THREE.Vector2(pp.x, pp.y));
+    }
+
+    getPixelPositionsInAssemblySpace() {
+      let projected = [];
+      let positions = this.pixels.geometry.getAttribute('position');
+      for (let i = 0; i < this.numPixels; ++i) {
+        projected[i] = new THREE.Vector3(positions.getX(i), positions.getY(i), positions.getZ(i)).unproject(this.panelCam); // includes depth for organicness
+      }
+      return projected;
+    }
+
+    getPixelPositionInAssemblySpace(idx) {
+      if (typeof idx !== 'number') throw new Error('getPixelPositionInAssemblySpace() requires an index');
+      if (idx < 0 || idx >= this.numPixels) throw new Error('index out of range');
+      let positions = this.pixels.geometry.getAttribute('position');
+      return new THREE.Vector3(positions.getX(idx), positions.getY(idx), positions.getZ(idx)).unproject(this.panelCam);
     }
 
     setPixelPositionsInPanelSpace(values) {
@@ -508,11 +521,6 @@
     });
   }
 
-  function extractScale(matrix) {
-    let e = matrix.elements;
-    return new THREE.Vector3(new THREE.Vector3(e[0], e[1], e[2]).length(), new THREE.Vector3(e[4], e[5], e[6]).length(), new THREE.Vector3(e[8], e[9], e[10]).length());
-  }
-
   function buildPanelGeometry(triangles, matrix) {
     let geom = new THREE.Geometry();
     let centroid = getCentroid(triangles);
@@ -613,30 +621,6 @@
     return new THREE.Vector3(Math.sin(phi) * Math.cos(theta), Math.sin(phi) * Math.sin(theta), Math.cos(phi));
   }
 
-  function textureToImage(renderer, renderTarget, img) {
-    let ctx = renderer.getContext();
-    let webglTexture = renderer.properties.get(renderTarget.texture).__webglTexture;
-    let width = renderTarget.width;
-    let height = renderTarget.height;
-
-    let framebuffer = ctx.createFramebuffer();
-    let data = new Uint8Array(width * height * 4);
-    let canvas = document.createElement('canvas');
-    let context = canvas.getContext('2d');
-    let imageData = context.createImageData(width, height);
-
-    ctx.bindFramebuffer(ctx.FRAMEBUFFER, framebuffer);
-    ctx.framebufferTexture2D(ctx.FRAMEBUFFER, ctx.COLOR_ATTACHMENT0, ctx.TEXTURE_2D, webglTexture, 0);
-    ctx.readPixels(0, 0, width, height, ctx.RGBA, ctx.UNSIGNED_BYTE, data);
-    ctx.deleteFramebuffer(framebuffer);
-    canvas.width = width;
-    canvas.height = height;
-    imageData.data.set(data);
-    context.putImageData(imageData, 0, 0);
-    img.src = canvas.toDataURL();
-
-    return img;
-  }
 })(window);
 
 
