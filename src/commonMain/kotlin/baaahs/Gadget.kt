@@ -4,12 +4,15 @@ import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import kotlinx.serialization.*
+import kotlinx.serialization.internal.ArrayListSerializer
+import kotlinx.serialization.internal.ReferenceArraySerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.js.JsName
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 /**
@@ -144,3 +147,5 @@ val gadgetModule = SerializersModule {
 }
 
 private val jsonParser = Json(JsonConfiguration.Stable)
+
+fun <T : Any> KSerializer<T>.array(kKlass: KClass<T>): KSerializer<Array<T>> = ReferenceArraySerializer(kKlass, this)
