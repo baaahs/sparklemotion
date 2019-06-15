@@ -13,7 +13,7 @@ data class PalettePicker(
     /** The name for the palette picker. */
     val name: String,
 
-    val initialColors: Array<Color> = emptyArray()
+    val initialColors: List<Color> = emptyList()
 ) : Gadget() {
-    var colors: Array<Color> by updatable("colors", initialColors, Color.serializer().array(Color::class))
+    var colors: List<Color> by updatable("colors", initialColors, Color.serializer().list)
 }
