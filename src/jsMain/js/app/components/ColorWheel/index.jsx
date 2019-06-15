@@ -17,13 +17,6 @@ const HARMONY_MODES = {
   analogous: 'analogous',
 };
 
-function fromColorsToRgbArrays(colors) {
-  return colors.map(fromColorToRgbArray);
-}
-
-function fromRgbArraysToColors(rgbArrays) {
-  return rgbArrays.map(fromRgbArrayToColor);
-}
 function fromColorToRgbArray(color) {
   return [color.redI, color.greenI, color.blueI];
 }
@@ -37,7 +30,7 @@ class ColorWheel extends Component {
     super(props);
 
     this.state = {
-      colors: props.colors.map(fromColorsToRgbArrays),
+      colors: props.colors.map(fromColorToRgbArray),
       radius: 10,
       selectedIndex: -1,
       grabbingIndex: -1,
@@ -91,7 +84,7 @@ class ColorWheel extends Component {
   }
 
   _handleColorChange = () => {
-    this.props.onChange(this.state.colors.map(fromRgbArraysToColors));
+    this.props.onChange(this.state.colors.map(fromRgbArrayToColor));
   };
 
   _onPickerDragged(ev, data, index) {
@@ -243,7 +236,7 @@ class ColorWheel extends Component {
 }
 
 ColorWheel.propTypes = {
-  colors: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  // colors: PropTypes.arrayOf(baaahs.Color).isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
