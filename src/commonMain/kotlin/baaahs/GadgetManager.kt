@@ -39,6 +39,9 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 }
             }
         } else {
+            println("Gadgets don't match!")
+            println("old: ${priorRequestedGadgets}")
+            println("new: ${requestedGadgets}")
             activeGadgets.clear()
             requestedGadgets.forEach { (name, gadget) ->
                 val gadgetId = nextGadgetId++

@@ -10,7 +10,7 @@ import baaahs.shaders.SparkleShader
 
 object PanelTweenShow : Show("PanelTweenShow") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
-        val initialColors = arrayOf(
+        val initialColors = listOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
             Color.from("#8CEEEE"),

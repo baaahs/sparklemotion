@@ -6,8 +6,8 @@ class PalettePicker extends React.Component {
     super(props);
 
     this.state = {
-      colors: this.props.gadget.colors,
-    };
+      colors: this.props.gadget.colors.toArray(),
+    }
   }
 
   componentDidMount() {
@@ -20,11 +20,11 @@ class PalettePicker extends React.Component {
 
   _handleChangeFromUi = (colors) => {
     this.setState({ colors });
-    this.props.gadget.colors = colors;
+    this.props.gadget.colors = new kotlin.kotlin.collections.ArrayList(colors);
   };
 
   _handleChangeFromServer = () => {
-    this.setState({ colors: this.props.gadget.colors });
+    this.setState({ colors: this.props.gadget.colors.toArray() });
   };
 
   render() {
