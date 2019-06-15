@@ -1078,15 +1078,15 @@
     if (!this.listeners_zg49rb$_0.remove_11rb$(gadgetListener))
       throw IllegalStateException_init(gadgetListener.toString() + " isn't listening to " + this);
   };
-  Gadget.prototype.withoutTriggering = function () {
+  Gadget.prototype.changed = function () {
     var tmp$;
     tmp$ = this.listeners_zg49rb$_0.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      element.onChanged(this);
+      element(this);
     }
   };
-  Gadget.prototype.withoutTriggering_zde6sx$ = function (gadgetListener, fn) {
+  Gadget.prototype.withoutTriggering_s6xcqc$ = function (gadgetListener, fn) {
     this.unlisten(gadgetListener);
     try {
       fn();
@@ -1097,7 +1097,7 @@
   };
   function Gadget$updatable$lambda(this$Gadget) {
     return function () {
-      this$Gadget.withoutTriggering();
+      this$Gadget.changed();
       return Unit;
     };
   }
@@ -1107,13 +1107,6 @@
   Gadget.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Gadget',
-    interfaces: []
-  };
-  function GadgetListener() {
-  }
-  GadgetListener.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'GadgetListener',
     interfaces: []
   };
   function GadgetValueObserver(name, initialValue, serializer, data, onChange) {
@@ -1267,33 +1260,29 @@
     this.channels = HashMap_init();
     pubSub.subscribe(Topics_getInstance().activeGadgets, GadgetDisplay_init$lambda(this, pubSub, onUpdatedGadgets));
   }
-  function GadgetDisplay_init$lambda$lambda$ObjectLiteral(this$GadgetDisplay, closure$topicName) {
-    this.this$GadgetDisplay = this$GadgetDisplay;
-    this.closure$topicName = closure$topicName;
-  }
-  GadgetDisplay_init$lambda$lambda$ObjectLiteral.prototype.onChanged = function (gadget) {
-    var observer = this.this$GadgetDisplay.channels.get_11rb$(this.closure$topicName);
-    if (observer == null) {
-      println('Huh, no observer for ' + this.closure$topicName + '; discarding update (know about ' + this.this$GadgetDisplay.channels.keys + ')');
-    }
-     else {
-      observer.onChange(gadget.state);
-    }
-  };
-  GadgetDisplay_init$lambda$lambda$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [GadgetListener]
-  };
-  function GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, closure$json) {
-    return function () {
-      closure$gadget.state.putAll_a2k3zr$(closure$json);
+  function GadgetDisplay_init$lambda$lambda$lambda(this$GadgetDisplay, closure$topicName) {
+    return function (it) {
+      var observer = this$GadgetDisplay.channels.get_11rb$(closure$topicName);
+      if (observer == null) {
+        println('Huh, no observer for ' + closure$topicName + '; discarding update (know about ' + this$GadgetDisplay.channels.keys + ')');
+      }
+       else {
+        observer.onChange(it.state);
+      }
       return Unit;
     };
   }
-  function GadgetDisplay_init$lambda$lambda$lambda(closure$gadget, closure$listener) {
+  function GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, closure$json) {
+    return function () {
+      closure$gadget.state.putAll_a2k3zr$(closure$json);
+      closure$gadget.changed();
+      return Unit;
+    };
+  }
+  function GadgetDisplay_init$lambda$lambda$lambda_0(closure$gadget, closure$listener) {
     return function (json) {
       var $receiver = closure$gadget;
-      $receiver.withoutTriggering_zde6sx$(closure$listener, GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, json));
+      $receiver.withoutTriggering_s6xcqc$(closure$listener, GadgetDisplay_init$lambda$lambda$lambda$lambda$lambda(closure$gadget, json));
       return Unit;
     };
   }
@@ -1315,10 +1304,10 @@
         var closure$pubSub_0 = closure$pubSub;
         var gadget = element_0.gadget;
         var topicName = element_0.topicName;
-        var listener = new GadgetDisplay_init$lambda$lambda$ObjectLiteral(this$GadgetDisplay_0, topicName);
+        var listener = GadgetDisplay_init$lambda$lambda$lambda(this$GadgetDisplay_0, topicName);
         gadget.listen(listener);
         var $receiver = this$GadgetDisplay_0.channels;
-        var value = closure$pubSub_0.subscribe(new PubSub$Topic(topicName, GadgetDataSerializer), GadgetDisplay_init$lambda$lambda$lambda(gadget, listener));
+        var value = closure$pubSub_0.subscribe(new PubSub$Topic(topicName, GadgetDataSerializer), GadgetDisplay_init$lambda$lambda$lambda_0(gadget, listener));
         $receiver.put_xwzc9p$(topicName, value);
         this$GadgetDisplay_0.activeGadgets.add_11rb$(element_0);
       }
@@ -3330,7 +3319,7 @@
     this.toSend_p0j902$_0 = ArrayList_init();
   }
   PubSub$Connection.prototype.connected_67ozxy$ = function (tcpConnection) {
-    logger$Companion_getInstance().debug_61zpoe$('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] PubSub: new ' + this + ' connection');
+    this.debug_6bynea$_0('connection ' + this + ' established');
     this.connection = tcpConnection;
     var tmp$;
     tmp$ = this.toSend_p0j902$_0.iterator();
@@ -3358,7 +3347,6 @@
     switch (command) {
       case 'sub':
         var topicName = reader.readString();
-        println('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] sub ' + topicName);
         var $receiver = this.topics_okivn7$_0;
         var tmp$;
         var value = $receiver.get_11rb$(topicName);
@@ -3383,7 +3371,6 @@
       case 'update':
         var topicName_0 = reader.readString();
         var data = reader.readString();
-        println('[' + tcpConnection.fromAddress + ' -> ' + this.name_qs3czq$_0 + '] update ' + topicName_0 + ' ' + data);
         var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topicName_0);
         topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
         break;
@@ -3392,15 +3379,15 @@
     }
   };
   PubSub$Connection.prototype.sendTopicUpdate_puj7f4$ = function (name, data) {
-    var tmp$;
+    this.debug_6bynea$_0('update ' + name + ' ' + data);
     var writer = new ByteArrayWriter();
-    println('-> update ' + name + ' ' + data + ' to ' + toString_0((tmp$ = this.connection) != null ? tmp$.toAddress : null));
     writer.writeString_61zpoe$('update');
     writer.writeString_61zpoe$(name);
     writer.writeString_61zpoe$(data);
     this.sendCommand_su7uv8$_0(writer.toBytes());
   };
   PubSub$Connection.prototype.sendTopicSub_61zpoe$ = function (topicName) {
+    this.debug_6bynea$_0('sub ' + topicName);
     var writer = new ByteArrayWriter();
     writer.writeString_61zpoe$('sub');
     writer.writeString_61zpoe$(topicName);
@@ -3417,6 +3404,10 @@
      else {
       tcpConnection.send_fqrh44$(bytes);
     }
+  };
+  PubSub$Connection.prototype.debug_6bynea$_0 = function (message) {
+    var tmp$, tmp$_0;
+    logger$Companion_getInstance().debug_61zpoe$('[PubSub ' + this.name_qs3czq$_0 + ' -> ' + ((tmp$_0 = (tmp$ = this.connection) != null ? tmp$.toAddress : null) != null ? tmp$_0 : '(deferred)').toString() + ']: ' + message);
   };
   PubSub$Connection.$metadata$ = {
     kind: Kind_CLASS,
@@ -3442,7 +3433,7 @@
     link.listenTcp_kd29r4$(port, this);
   }
   PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromConnection) {
-    return new PubSub$Connection('server', this.topics_0);
+    return new PubSub$Connection('server at ' + fromConnection.toAddress, this.topics_0);
   };
   function PubSub$Server$publish$ObjectLiteral(closure$topicInfo, this$Server, closure$topic, closure$publisher, closure$listener) {
     this.closure$topicInfo = closure$topicInfo;
@@ -11063,7 +11054,6 @@
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
   package$baaahs.Gadget = Gadget;
-  package$baaahs.GadgetListener = GadgetListener;
   package$baaahs.GadgetValueObserver = GadgetValueObserver;
   Object.defineProperty(GadgetData, 'Companion', {
     get: GadgetData$Companion_getInstance
