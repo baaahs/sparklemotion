@@ -10,7 +10,7 @@ import baaahs.shaders.SparkleShader
 
 object PanelTweenShow : Show("PanelTweenShow") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
-        val colorArray = listOf(
+        val initialColors = arrayOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
             Color.from("#8CEEEE"),
@@ -19,8 +19,8 @@ object PanelTweenShow : Show("PanelTweenShow") {
         )
 
         return object : Renderer {
+            val palettePicker = showRunner.getGadget("palette", PalettePicker("Palette", initialColors))
             val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f))
-            val palettePicker = showRunner.getGadget("palette", PalettePicker("Palette", colorArray))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
@@ -38,10 +38,11 @@ object PanelTweenShow : Show("PanelTweenShow") {
 
             override fun nextFrame() {
                 val now = getTimeMillis().and(0xfffffff).toInt()
+                val colors = palettePicker.colors
                 shaderBuffers.forEachIndexed() { number, bufs ->
-                    val colorIndex = (now / fadeTimeMs + number) % colorArray.size
-                    val startColor = colorArray[colorIndex]
-                    val endColor = colorArray[(colorIndex + 1) % colorArray.size]
+                    val colorIndex = (now / fadeTimeMs + number) % colors.size
+                    val startColor = colors[colorIndex]
+                    val endColor = colors[(colorIndex + 1) % colors.size]
                     val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
 
                     bufs.apply {
