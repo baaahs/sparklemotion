@@ -28,8 +28,8 @@ class RangeSlider extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this._changeListener) {
-      this.props.gadget.unlisten(this._changeListener);
+    if (this._serverChangeListener) {
+      this.props.gadget.unlisten(this._serverChangeListener);
     }
   }
 

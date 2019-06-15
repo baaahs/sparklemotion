@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.gadgets.ColorPicker
+import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
@@ -137,6 +138,7 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
 val gadgetModule = SerializersModule {
     polymorphic(Gadget::class) {
         ColorPicker::class with ColorPicker.serializer()
+        PalettePicker::class with PalettePicker.serializer()
         Slider::class with Slider.serializer()
     }
 }
