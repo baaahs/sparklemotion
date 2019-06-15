@@ -19,18 +19,17 @@ class RangeSlider extends React.Component {
     super(props);
 
     this.state = {
-      gadget: props.gadget,
+      value: props.gadget.value,
     };
 
     props.gadget.listen(() => {
-      this.forceUpdate();
+      this.setState({ value: props.gadget.value });
     });
   }
 
   componentWillUnmount() {
-    const { gadget } = this.state;
     if (this._changeListener) {
-      gadget.unlisten(this._changeListener);
+      this.props.gadget.unlisten(this._changeListener);
     }
   }
 
@@ -39,18 +38,17 @@ class RangeSlider extends React.Component {
   }, 10);
 
   onChange = (value) => {
-    const { gadget } = this.state;
-    gadget.value = value;
-    this.setState({ gadget });
+    this.props.gadget.value = value;
+    this.setState({ value });
   };
 
   render() {
-    const { gadget } = this.state;
+    const { value } = this.state;
 
     return (
       <div className={sass['slider--wrapper']}>
         <label className={sass['slider--label']} htmlFor="range-slider">
-          {gadget.name}
+          {this.props.gadget.name}
         </label>
         <Slider
           vertical
@@ -65,7 +63,7 @@ class RangeSlider extends React.Component {
           onChange={(values) => {
             this.onChange(values[0]);
           }}
-          values={[gadget.value]}
+          values={[value]}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
