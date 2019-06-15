@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
@@ -9,7 +10,7 @@ import baaahs.shaders.SparkleShader
 
 object PanelTweenShow : Show("PanelTweenShow") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
-        val colorArray = arrayOf(
+        val colorArray = listOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
             Color.from("#8CEEEE"),
@@ -19,6 +20,7 @@ object PanelTweenShow : Show("PanelTweenShow") {
 
         return object : Renderer {
             val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f))
+            val palettePicker = showRunner.getGadget("palette", PalettePicker("Palette", colorArray))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
