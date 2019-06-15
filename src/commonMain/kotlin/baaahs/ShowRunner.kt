@@ -119,7 +119,7 @@ class ShowRunner(
 
     private fun housekeeping() {
         for ((added, removed) in changedSurfaces) {
-            println("ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed")
+//            println("ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed")
             for (receiver in removed) removeReceiver(receiver)
             for (receiver in added) addReceiver(receiver)
 
@@ -159,11 +159,11 @@ class ShowRunner(
             currentShowRenderer = startingShow.createRenderer(model, this)
         }
 
-        logger.info(
-            "New show ${startingShow.name} created; " +
-                    "${shaderBuffers.size} surfaces " +
-                    "and ${requestedGadgets.size} gadgets"
-        )
+//        logger.info(
+//            "New show ${startingShow.name} created; " +
+//                    "${shaderBuffers.size} surfaces " +
+//                    "and ${requestedGadgets.size} gadgets"
+//        )
 
         gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
         requestedGadgets.clear()

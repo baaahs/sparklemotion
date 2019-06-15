@@ -2,6 +2,7 @@ package baaahs.gadgets
 
 import baaahs.Gadget
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.serializer
 import kotlin.js.JsName
 
@@ -12,9 +13,12 @@ data class Slider(
     val name: String,
 
     /** The initial value for this slider. */
-    val initialValue: Float = 1f
+    val initialValue: Float = 1f,
+    @Transient val id: Int = nextSliderId++
 ) : Gadget() {
     /** The selected value. */
     @JsName("value")
     var value: Float by updatable("value", initialValue, Float.serializer())
 }
+
+var nextSliderId = 0

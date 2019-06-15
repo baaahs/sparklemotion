@@ -47,7 +47,10 @@ open class Gadget {
     }
 
     @JsName("withoutTriggering")
-    fun changed() = listeners.forEach { it.onChanged(this) }
+    fun changed() {
+        println("$this Notified of change, $state")
+        listeners.forEach { it.onChanged(this) }
+    }
 
     fun withoutTriggering(gadgetListener: GadgetListener, fn: () -> Unit) {
         unlisten(gadgetListener)
@@ -122,10 +125,9 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
 
                 channels[topicName] =
                     pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer)) { json ->
-                        gadget.apply {
-                            withoutTriggering(listener) {
-                                gadget.state.putAll(json)
-                            }
+                        gadget.withoutTriggering(listener) {
+                            gadget.state.putAll(json)
+                            gadget.changed()
                         }
                     }
 

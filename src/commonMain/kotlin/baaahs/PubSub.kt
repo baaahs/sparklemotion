@@ -43,6 +43,8 @@ abstract class PubSub {
         fun onUpdate(data: String, fromOrigin: Origin) {
             if (origin !== fromOrigin) {
                 onUpdate(data)
+            } else {
+                println("Not updating ${origin::class} cuz that's where this update came from")
             }
         }
 
@@ -66,7 +68,7 @@ abstract class PubSub {
         private val toSend: MutableList<ByteArray> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
-            logger.debug("[${tcpConnection.fromAddress} -> $name] PubSub: new $this connection")
+            debug("connection $this established: from ${tcpConnection.fromAddress} to ${tcpConnection.toAddress}")
             connection = tcpConnection
             toSend.forEach { tcpConnection.send(it) }
             toSend.clear()
@@ -134,6 +136,12 @@ abstract class PubSub {
                 tcpConnection.send(bytes)
             }
         }
+
+        private fun debug(message: String) {
+            logger.debug("[PubSub $name -> ${connection?.fromAddress ?: "(deferred)"}]: $message")
+        }
+
+        override fun toString(): String = name
     }
 
     open class Endpoint {

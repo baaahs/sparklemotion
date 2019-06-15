@@ -106,11 +106,13 @@ class FakeNetwork(
 
         coroutineScope.launch {
             networkDelay();
+            println("About to call client.connected: from = ${clientSideConnection.fromAddress}, to = ${clientSideConnection.toAddress}")
             clientListener.connected(clientSideConnection)
         }
 
         coroutineScope.launch {
             networkDelay();
+            println("About to call server.connected: from = ${serverSideConnection.fromAddress}, to = ${serverSideConnection.toAddress}")
             serverListener.connected(serverSideConnection)
         }
 

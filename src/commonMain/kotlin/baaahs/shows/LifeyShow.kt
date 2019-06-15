@@ -71,6 +71,10 @@ object LifeyShow : Show("Lifey") {
                     buffer.color = if (selectedPanels.contains(panel)) Color.WHITE else Color.BLACK
                 }
             }
+
+            override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
+                // ignore
+            }
         }
     }
 }
