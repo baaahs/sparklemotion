@@ -5,10 +5,11 @@
 #ifndef PLAYA_BRAIN_H
 #define PLAYA_BRAIN_H
 
-#include "net/msg_handler.h"
-#include "net/msg_slinger.h"
+#include "msg_handler.h"
+#include "msg_slinger.h"
 
 #include "led-renderer.h"
+#include "shade-tree.h"
 
 class Brain : public MsgHandler {
 public:
@@ -27,6 +28,13 @@ private:
     LEDRenderer m_ledRenderer;
 
     LEDShader* m_ledShader;
+
+    ShadeTree m_shadeTree;
+
+    void msgBrainPanelShade(Msg* pMsg);
+    void msgMapperHello(Msg* pMsg);
+    void msgBrainMapping(Msg* pMsg);
+    void msgPinkyPong(Msg* pMsg);
 };
 
 
