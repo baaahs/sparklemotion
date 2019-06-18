@@ -13,7 +13,7 @@
 #include "driver/gpio.h"
 #include "driver/periph_ctrl.h"
 
-#include "net/task_net.h"
+#include "task_net.h"
 #include "httpd/task_httpd.h"
 
 #include "brain.h"
@@ -35,7 +35,7 @@ extern "C" void app_main()
 
     esp_log_level_set("httpd", ESP_LOG_NONE);
     esp_log_level_set("#   net", ESP_LOG_NONE);
-    esp_log_level_set("#   msg", ESP_LOG_NONE);
+    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 

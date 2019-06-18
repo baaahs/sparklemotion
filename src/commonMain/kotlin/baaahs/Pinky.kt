@@ -16,7 +16,6 @@ class Pinky(
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
-//    private val link = network.link()
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
     private var selectedShow = shows.first()

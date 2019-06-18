@@ -1,6 +1,6 @@
 
 #define ARDUINO_ARCH_ESP32
-#include "NeoPixelBrightnessBus.h"
+#include "NeoPixelBus.h"
 
 
 #include "freertos/FreeRTOS.h"
@@ -11,11 +11,7 @@
 #include "time-base.h"
 #include "esp_log.h"
 
-class LEDShader {
-public:
-    virtual void Begin() = 0;
-    virtual void Apply(uint16_t indexPixel, uint8_t* color, uint8_t* currentColor) = 0;
-};
+#include "led-shader.h"
 
 class LEDShaderFiller : public LEDShader {
 public:
@@ -26,18 +22,22 @@ public:
         m_colorSecondary(0, 16, 16)
         { }
 
-    virtual void Begin() {
+    void beginShade() override {
         m_pos = m_timeBase.posInInterval(m_timeBase.currentTime(), m_timeBase.duration(4), m_numPixels + 1);
         // ESP_LOGI("#filler", "Render begin, m_pos=%d", m_pos);
     }
 
-    virtual void Apply(uint16_t indexPixel, uint8_t* color, uint8_t* currentColor) {
+    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override {
         if (indexPixel < m_pos) {
             memcpy((void*)color, (void*)&m_colorPrimary, 3);
         } else {
             memcpy((void*)color, (void*)&m_colorSecondary, 3);
         }
         // ESP_LOGI("#filler", "%d = %d %d %d", indexPixel, color[0], color[1], color[2]);
+    }
+
+    void endShade() override {
+
     }
 private:
     TimeBase& m_timeBase;
@@ -63,13 +63,18 @@ public:
     void setShader(LEDShader* shader) { m_shader = shader; }
     void render();
 
-    void setBrightness(uint8_t brightness) { m_pixels.SetBrightness(brightness); }
+    void setBrightness(uint8_t brightness) { m_nBrightness = brightness; }
     uint16_t getNumPixels() { return m_pixels.PixelCount(); }
 
     void _task();
     void _localRenderTask();
+
+    void logPixels();
+
 private:
-    NeoPixelBrightnessBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod> m_pixels;
+    uint8_t m_nBrightness;
+
+    NeoPixelBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod> m_pixels;
     NeoBuffer<NeoBufferMethod<NeoGrbFeature>> m_buffer;
 
     SemaphoreHandle_t m_hPixelsAccess;

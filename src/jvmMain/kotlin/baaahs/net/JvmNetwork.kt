@@ -51,13 +51,11 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
             return
             val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
             defaultUdpSocket.send(packetOut)
-            println("unicast udpfrom ${defaultUdpSocket.localAddress}")
         }
 
         override fun broadcastUdp(port: Int, bytes: ByteArray) {
             val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
             defaultUdpSocket.send(packetOut)
-            println("broadcast from ${defaultUdpSocket.localAddress}")
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {

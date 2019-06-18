@@ -21,25 +21,66 @@ Brain::Brain() :
 void
 Brain::handleMsg(Msg* pMsg)
 {
+    if (!pMsg) return;
+
     ESP_LOGI(TAG, "Got message with length=%d", pMsg->used());
 
-    if (pMsg->isSingleFragmentMessage()) {
-        // Do stuff
-        ESP_LOGI(TAG, "Parsing...");
-        pMsg->log();
+    // The first byte of the message tells us the type
+    auto nMsgType = pMsg->readByte();
 
-        // Ignore framing data
-        pMsg->rewindToPostFragmentingHeader();
+    switch (nMsgType) {
+        case static_cast<int>(Msg::Type::BRAIN_PANEL_SHADE):
+            msgBrainPanelShade(pMsg);
+            break;
 
-        auto pParsed = pMsg->parse();
-        if (pParsed) {
+        case static_cast<int>(Msg::Type::MAPPER_HELLO):
+            msgMapperHello(pMsg);
+            break;
 
-            pParsed->release();
-        }
-    } else {
-        ESP_LOGW(TAG, "Ignoring multi-fragment messages");
+        case static_cast<int>(Msg::Type::BRAIN_MAPPING):
+            msgBrainMapping(pMsg);
+            break;
+
+        case static_cast<int>(Msg::Type::PINKY_PONG):
+            msgPinkyPong(pMsg);
+            break;
+
+        default:
+            ESP_LOGW(TAG, "Unknown message type %d", nMsgType);
+            break;
     }
 }
+
+void
+Brain::msgBrainPanelShade(Msg* pMsg) {
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: BrainPanelShade");
+
+    m_shadeTree.handleMessage(pMsg);
+}
+
+void
+Brain::msgMapperHello(Msg* pMsg) {
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: MapperHello");
+}
+
+void
+Brain::msgBrainMapping(Msg* pMsg) {
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: BrainMapping");
+}
+
+void
+Brain::msgPinkyPong(Msg* pMsg) {
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: PinkyPong");
+}
+
 
 void maybe_send_hello(TimerHandle_t hTimer)
 {
@@ -77,11 +118,14 @@ Brain::start()
         return;
     }
 
+    m_shadeTree.start();
+
     m_timeBase.setFPS(30);
     m_ledRenderer.setBrightness(10);
 
     m_ledShader = new LEDShaderFiller(m_timeBase, m_ledRenderer.getNumPixels());
-    m_ledRenderer.setShader(m_ledShader);
+//    m_ledRenderer.setShader(m_ledShader);
+    m_ledRenderer.setShader(&m_shadeTree);
 
     // Start talking to the pixels
     m_ledRenderer.start();

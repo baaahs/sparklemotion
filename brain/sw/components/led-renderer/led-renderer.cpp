@@ -8,9 +8,10 @@ LEDRenderer::LEDRenderer(TimeBase& timeBase) :
     m_buffer(PIXEL_COUNT, 1, nullptr),
     m_timeBase(timeBase)
 {
-    // Do something
+    // Start with an empty buffer
+    m_buffer.ClearTo(RgbColor(0, 0, 0));
+
     m_pixels.Begin();
-    m_pixels.SetBrightness(32);
 }
 
 void static task_ledren(void* pvParameters) {
@@ -132,10 +133,12 @@ LEDRenderer::render() {
         // by using our own functional approach to shaders where we loop
         // through a tree structure to calculate each output value
 
-        // Rather than forcing the shader to detect the begining by indexPixel == 0
-        m_shader->Begin();
+        // Rather than forcing the shader to detect the beginning by indexPixel == 0
+        m_shader->beginShade();
 
         m_buffer.Render(m_buffer, *m_shader);
+
+        m_shader->endShade();
     } else {
         ESP_LOGE(TAG, "Nothing to render!!!!");
     }
@@ -150,7 +153,7 @@ LEDRenderer::render() {
 
     // ESP_LOGI(TAG, "Doing Blt");
     m_buffer.Blt(m_pixels, 0);
-
+    // logPixels();
     xSemaphoreGive(m_hPixelsAccess);
 }
 
@@ -170,4 +173,9 @@ LEDRenderer::_localRenderTask() {
 
     // Just in case we ever exit, we're supposed to do this
     vTaskDelete(nullptr);
+}
+
+void
+LEDRenderer::logPixels() {
+    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), m_pixels.PixelsSize(), ESP_LOG_INFO);
 }
