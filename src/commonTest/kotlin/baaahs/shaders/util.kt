@@ -33,7 +33,11 @@ internal fun <T : Shader.Buffer> render(srcShader: Shader<T>, srcBuf: T, surface
     val (dstShader: Shader<T>, dstBuf) = send(srcShader, srcBuf, surface)
     val pixels = FakePixels(surface.pixelCount)
     val renderer = dstShader.createRenderer(surface)
-    renderer.draw(dstBuf, pixels)
+    renderer.beginFrame(dstBuf, pixels.size)
+    for (i in pixels.indices) {
+        pixels[i] = renderer.draw(dstBuf, i)
+    }
+    renderer.endFrame()
     return pixels
 }
 

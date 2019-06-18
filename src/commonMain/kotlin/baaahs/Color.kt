@@ -2,8 +2,8 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.IntDescriptor
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.math.min
@@ -23,15 +23,31 @@ data class Color(val argb: Int) {
 
     fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
 
-    @Transient val alphaI: Int get() = alphaI(argb)
-    @Transient val redI: Int get() = redI(argb)
-    @Transient val greenI: Int get() = greenI(argb)
-    @Transient val blueI: Int get() = blueI(argb)
+    @Transient
+    val alphaI: Int
+        get() = alphaI(argb)
+    @Transient
+    val redI: Int
+        get() = redI(argb)
+    @Transient
+    val greenI: Int
+        get() = greenI(argb)
+    @Transient
+    val blueI: Int
+        get() = blueI(argb)
 
-    @Transient val alphaF: Float get() = alphaI.toFloat() / 255
-    @Transient val redF: Float get() = redI.toFloat() / 255
-    @Transient val greenF: Float get() = greenI.toFloat() / 255
-    @Transient val blueF: Float get() = blueI.toFloat() / 255
+    @Transient
+    val alphaF: Float
+        get() = alphaI.toFloat() / 255
+    @Transient
+    val redF: Float
+        get() = redI.toFloat() / 255
+    @Transient
+    val greenF: Float
+        get() = greenI.toFloat() / 255
+    @Transient
+    val blueF: Float
+        get() = blueI.toFloat() / 255
 
     fun alphaI(value: Int) = value shr 24 and 0xff
     fun redI(value: Int) = value shr 16 and 0xff
@@ -97,7 +113,8 @@ data class Color(val argb: Int) {
         return "Color(${toHexString()})"
     }
 
-    companion object {
+    @Serializer(forClass = Color::class)
+    companion object : KSerializer<Color> {
         val BLACK = Color(0, 0, 0)
         val WHITE = Color(255, 255, 255)
         val RED = Color(255, 0, 0)
@@ -106,6 +123,7 @@ data class Color(val argb: Int) {
         val GREEN = Color(0, 255, 0)
         val BLUE = Color(0, 0, 255)
         val PURPLE = Color(200, 0, 212)
+        val TRANSPARENT = Color(0, 0, 0, 0)
 
         fun random() = Color(
             Random.nextInt() and 0xff,
@@ -144,5 +162,9 @@ data class Color(val argb: Int) {
         private fun bounded(i: Int): Int = max(0, min(255, i))
         private fun bounded(f: Float): Float = max(0f, min(1f, f))
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
+
+        override val descriptor: SerialDescriptor = IntDescriptor.withName("Color")
+        override fun serialize(encoder: Encoder, obj: Color) = encoder.encodeInt(obj.argb)
+        override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt())
     }
 }

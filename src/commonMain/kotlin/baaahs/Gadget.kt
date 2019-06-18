@@ -2,15 +2,13 @@ package baaahs
 
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.serializer
 import kotlin.js.JsName
-import kotlin.properties.ObservableProperty
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 /**
@@ -25,8 +23,17 @@ import kotlin.reflect.KProperty
  *   println("Sparkliness is ${sparklinessSlider.value}.")
  * }
  * ```
+ *
+ * Mutable values in a gadget should be declared like this:
+ *
+ * ```kotlin
+ *     var value: Float by updatable("value", initialValue, Float.serializer())
+ * ```
+ *
+ * Mutable values _should not_ be included in tests for equality.
  */
-abstract class Gadget {
+open class Gadget {
+    @Transient
     private val listeners = mutableSetOf<GadgetListener>()
 
     @JsName("listen")
@@ -39,8 +46,7 @@ abstract class Gadget {
         if (!listeners.remove(gadgetListener)) throw IllegalStateException("$gadgetListener isn't listening to $this")
     }
 
-    @JsName("withoutTriggering")
-    fun changed() = listeners.forEach { it.onChanged(this) }
+    fun changed() = listeners.forEach { it.invoke(this) }
 
     fun withoutTriggering(gadgetListener: GadgetListener, fn: () -> Unit) {
         unlisten(gadgetListener)
@@ -51,30 +57,44 @@ abstract class Gadget {
         }
     }
 
-    abstract fun toJson(): JsonElement
-    abstract fun setFromJson(jsonElement: JsonElement)
+    protected fun <T> updatable(name: String, initialValue: T, serializer: KSerializer<T>) =
+        GadgetValueObserver(name, initialValue, serializer, state) { changed() }
 
-    protected fun <T> watchForChanges(initialValue: T) = GadgetValueObserver(initialValue) { changed() }
+    val state: MutableMap<String, JsonElement> = hashMapOf()
 }
 
-interface GadgetListener {
-    @JsName("onChanged")
-    fun onChanged(gadget: Gadget)
-}
+typealias GadgetListener = (Gadget) -> Unit
 
-class GadgetValueObserver<T>(initialValue: T, val onChange: () -> Unit) : ObservableProperty<T>(initialValue) {
-    override fun afterChange(property: KProperty<*>, oldValue: T, newValue: T) {
-        if (newValue != oldValue) onChange()
+class GadgetValueObserver<T>(
+    val name: String,
+    val initialValue: T,
+    private val serializer: KSerializer<T>,
+    val data: MutableMap<String, JsonElement>,
+    val onChange: () -> Unit
+) : ReadWriteProperty<Gadget, T> {
+    override fun getValue(thisRef: Gadget, property: KProperty<*>): T {
+        val value = data[name]
+        return if (value == null) initialValue else {
+            jsonParser.fromJson(serializer, value)
+        }
+    }
+
+    override fun setValue(thisRef: Gadget, property: KProperty<*>, value: T) {
+        if (getValue(thisRef, property) != value) {
+            data[name] = jsonParser.toJson(serializer, value)
+            onChange()
+        }
     }
 }
 
 @Serializable()
-class GadgetData(val name: String, @Polymorphic val gadget: Gadget, val topicName: String)
+class GadgetData(val name: String, @Polymorphic var gadget: Gadget, val topicName: String)
+
+val GadgetDataSerializer = (String.serializer() to JsonElement.serializer()).map
 
 class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>) -> Unit) {
     val activeGadgets = mutableListOf<GadgetData>()
-    val channels = hashMapOf<String, PubSub.Channel<String>>()
-    val jsonParser = Json(JsonConfiguration.Stable)
+    val channels = hashMapOf<String, PubSub.Channel<Map<String, JsonElement>>>()
 
     init {
         pubSub.subscribe(Topics.activeGadgets) { gadgetDatas ->
@@ -86,21 +106,24 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
                 val gadget = gadgetData.gadget
                 val topicName = gadgetData.topicName
 
-                val listener = object : GadgetListener {
-                    override fun onChanged(gadget: Gadget) {
-                        val observer = channels[topicName]
-                        if (observer == null) {
-                            println("Huh, no observer for $topicName; discarding update (know about ${channels.keys})")
-                        } else {
-                            observer.onChange(gadget.toJson().toString())
-                        }
+                val listener: GadgetListener = {
+                    val observer = channels[topicName]
+                    if (observer == null) {
+                        println("Huh, no observer for $topicName; discarding update (know about ${channels.keys})")
+                    } else {
+                        observer.onChange(it.state)
                     }
                 }
                 gadget.listen(listener)
 
                 channels[topicName] =
-                    pubSub.subscribe(PubSub.Topic(topicName, String.serializer())) { json ->
-                        gadget.apply { withoutTriggering(listener) { setFromJson(jsonParser.parseJson(json)) } }
+                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer)) { json ->
+                        gadget.apply {
+                            withoutTriggering(listener) {
+                                gadget.state.putAll(json)
+                                gadget.changed()
+                            }
+                        }
                     }
 
                 activeGadgets.add(gadgetData)
@@ -118,3 +141,4 @@ val gadgetModule = SerializersModule {
     }
 }
 
+private val jsonParser = Json(JsonConfiguration.Stable)

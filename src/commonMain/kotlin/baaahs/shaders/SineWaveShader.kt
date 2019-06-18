@@ -42,15 +42,18 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
     }
 
     class Renderer : Shader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixels: Pixels) {
+        private var pixelCount: Int = 1
+
+        override fun beginFrame(buffer: Buffer, pixelCount: Int) {
+            this.pixelCount = pixelCount
+        }
+
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
             val theta = buffer.theta
-            val pixelCount = pixels.size
             val density = buffer.density
 
-            for (i in pixels.indices) {
-                val v = sin(theta + 2 * PI * (i.toFloat() / pixelCount * density)) / 2 + .5
-                pixels[i] = Color.BLACK.fade(buffer.color, v.toFloat())
-            }
+            val v = sin(theta + 2 * PI * (pixelIndex.toFloat() / pixelCount * density)) / 2 + .5
+            return Color.BLACK.fade(buffer.color, v.toFloat())
         }
     }
 }

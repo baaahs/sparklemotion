@@ -1,5 +1,6 @@
 package baaahs.proto
 
+import baaahs.BrainId
 import baaahs.Shader
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
@@ -36,7 +37,7 @@ fun parse(bytes: ByteArray): Message {
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_ID_RESPONSE -> BrainIdResponse.parse(reader)
-        Type.BRAIN_MAPPING -> BrainMapping.parse(reader)
+        Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
         Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
     }
 }
@@ -109,8 +110,8 @@ class BrainIdResponse(val id: String, val surfaceName: String?) : Message(Type.B
     }
 }
 
-class BrainMapping(
-    val brainId: String,
+class BrainMappingMessage(
+    val brainId: BrainId,
     val surfaceName: String?,
     val pixelCount: Int,
     val pixelVertices: List<Vector2F>
@@ -121,8 +122,8 @@ class BrainMapping(
             return (0 until vertexCount).map { Vector2F(readFloat(), readFloat()) }
         }
 
-        fun parse(reader: ByteArrayReader) = BrainMapping(
-            reader.readString(),
+        fun parse(reader: ByteArrayReader) = BrainMappingMessage(
+            BrainId(reader.readString()),
             reader.readNullableString(),
             reader.readInt(),
             reader.readListOfVertices()
@@ -130,7 +131,7 @@ class BrainMapping(
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeString(brainId)
+        writer.writeString(brainId.uuid)
         writer.writeNullableString(surfaceName)
         writer.writeInt(pixelCount)
 

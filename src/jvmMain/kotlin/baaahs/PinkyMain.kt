@@ -43,10 +43,10 @@ fun main(args: Array<String>) {
 
     val pinky =
         Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(), object : StubPinkyDisplay() {
-            override fun listShows(showMetas: List<Show.MetaData>) {
-                println("showMetas = ${showMetas}")
+            override fun listShows(shows: List<Show>) {
+                println("shows = ${shows}")
             }
-            override var selectedShow: Show.MetaData? = null
+            override var selectedShow: Show? = null
                 set(value) { field = value; println("selectedShow: ${value}") }
 
             override var nextFrameMs: Int = 0

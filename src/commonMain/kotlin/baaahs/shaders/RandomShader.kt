@@ -3,37 +3,35 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import kotlin.random.Random
 
 /**
- * A shader that sets all pixels to a single color.
+ * A shader that sets pixels to a random colors.
  */
-class SolidShader : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
+class RandomShader : Shader<RandomShader.Buffer>(ShaderId.RANDOM) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
     override fun createRenderer(surface: Surface): Renderer = Renderer()
 
-    companion object : ShaderReader<SolidShader> {
-        override fun parse(reader: ByteArrayReader) = SolidShader()
+    companion object : ShaderReader<RandomShader> {
+        override fun parse(reader: ByteArrayReader) = RandomShader()
     }
 
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
-            get() = this@SolidShader
-
-        var color: Color = Color.WHITE
+            get() = this@RandomShader
 
         override fun serialize(writer: ByteArrayWriter) {
-            color.serialize(writer)
         }
 
         override fun read(reader: ByteArrayReader) {
-            color = Color.parse(reader)
         }
     }
 
     class Renderer : Shader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.color
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color =
+            Color.from(Random.nextInt(0xffffff) or (0xff ushr 24))
     }
 }

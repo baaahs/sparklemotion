@@ -10,7 +10,9 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SINE_WAVE(SineWaveShader),
     COMPOSITOR(CompositorShader),
     SPARKLE(SparkleShader),
-    SIMPLE_SPATIAL(SimpleSpatialShader);
+    SIMPLE_SPATIAL(SimpleSpatialShader),
+    HEART(HeartShader),
+    RANDOM(RandomShader);
 
     companion object {
         val values = values()
@@ -77,7 +79,9 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
     }
 
     interface Renderer<B : Buffer> {
-        fun draw(buffer: B, pixels: Pixels)
+        fun beginFrame(buffer: B, pixelCount: Int) {}
+        fun draw(buffer: B, pixelIndex: Int): Color
+        fun endFrame() {}
     }
 }
 

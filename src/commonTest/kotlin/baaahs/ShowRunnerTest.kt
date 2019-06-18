@@ -3,23 +3,20 @@ package baaahs
 import baaahs.SheepModel.Panel
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
+import baaahs.net.TestNetwork
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
-import baaahs.sim.FakeNetwork
-import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.*
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
-    private val testCoroutineContext = TestCoroutineContext("network")
-    private val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
-
+    private val network = TestNetwork(0)
     private val serverNetwork = network.link()
     private val server = PubSub.listen(serverNetwork, 1234).apply { install(gadgetModule) }
 
-    private val gadgetProvider = GadgetProvider(server)
+    private val gadgetManager = GadgetManager(server)
     private lateinit var showRunner: ShowRunner
 
     private val testShow1 = TestShow1()
@@ -35,7 +32,7 @@ class ShowRunnerTest {
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(sheepModel, testShow1, gadgetProvider, listOf(), FakeBeatProvider, dmxUniverse)
+        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, FakeBeatProvider, dmxUniverse)
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -148,15 +145,37 @@ class ShowRunnerTest {
         showRunner.nextFrame() // Create show and request gadgets.
         expect(testShow1.createdShows.size) { 1 }
 
-        val originalSlider = gadgetProvider.findGadget("slider")!! as Slider
+        val originalSlider = gadgetManager.findGadget("slider")!! as Slider
         expect(originalSlider.value) { 1.0f }
         originalSlider.value = 0.5f
 
         showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame() // Recreate show and restore gadget data.
+        showRunner.nextFrame() // Recreate show and restore gadget state.
         expect(testShow1.createdShows.size) { 2 }
 
-        val recreatedSlider = gadgetProvider.findGadget("slider")!! as Slider
+        val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
+        expect(recreatedSlider.value) { 0.5f }
+    }
+
+    @Test
+    fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_publishedActiveGadgetsAreUnchanged() {
+        testShow1.supportsSurfaceChange = false
+
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame() // Create show and request gadgets.
+        expect(testShow1.createdShows.size) { 1 }
+
+        expect(0) { serverNetwork.packetsToSend.size }
+
+        val originalSlider = gadgetManager.findGadget("slider")!! as Slider
+        expect(originalSlider.value) { 1.0f }
+        originalSlider.value = 0.5f
+
+        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
+        showRunner.nextFrame() // Recreate show and restore gadget state.
+        expect(testShow1.createdShows.size) { 2 }
+
+        val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
         expect(recreatedSlider.value) { 0.5f }
     }
 
@@ -253,15 +272,15 @@ class ShowRunnerTest {
         var onCreateShow: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
-    ) : Show.MetaData("TestShow1") {
+    ) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+        override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
             return ShowRenderer(showRunner).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Show {
+        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
             val slider = showRunner.getGadget("slider", Slider("slider"))
             val shaderBuffers =
                 showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()

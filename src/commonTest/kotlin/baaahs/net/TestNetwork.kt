@@ -1,20 +1,20 @@
 package baaahs.net
 
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
-    val links = mutableListOf<TestNetworkLink>()
+    val links = mutableListOf<Link>()
 
-    override fun link(): Network.Link {
-        return TestNetworkLink(defaultMtu).also { links.add(it) }
+    override fun link(): Link {
+        return Link(defaultMtu).also { links.add(it) }
     }
 
-    class TestNetworkLink(mtu: Int) : Network.Link {
-        override val myAddress = FragmentingUdpLinkTest.someAddress()
+    class Link(mtu: Int) : Network.Link {
+        override val myAddress = Address()
         val packetsToSend = mutableListOf<ByteArray>()
         val receviedPackets = mutableListOf<ByteArray>()
 
         private var udpListener: Network.UdpListener? = null
 
-        fun sendTo(link: TestNetworkLink) {
+        fun sendTo(link: Link) {
             packetsToSend.forEach { bytes ->
                 link.receiveUdp(bytes)
             }
@@ -41,7 +41,7 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
-//            TODO("TestNetworkLink.listenTcp not implemented")
+//            TODO("Link.listenTcp not implemented")
         }
 
         override fun connectTcp(
@@ -49,8 +49,14 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             port: Int,
             tcpListener: Network.TcpListener
         ): Network.TcpConnection {
-            TODO("TestNetworkLink.connectTcp not implemented")
+            TODO("Link.connectTcp not implemented")
         }
     }
 
+
+    class Address(private val name: String = "some address") : Network.Address {
+        override fun toString(): String {
+            return name
+        }
+    }
 }
