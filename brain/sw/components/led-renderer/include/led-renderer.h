@@ -22,8 +22,8 @@ public:
     LEDShaderFiller(TimeBase& timeBase, uint16_t numPixels) :
         m_timeBase(timeBase),
         m_numPixels(numPixels),
-        m_colorPrimary(255, 255, 0),
-        m_colorSecondary(0, 255, 255)
+        m_colorPrimary(16, 16, 0),
+        m_colorSecondary(0, 16, 16)
         { }
 
     virtual void Begin() {
