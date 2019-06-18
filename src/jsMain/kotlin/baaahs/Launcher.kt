@@ -11,10 +11,10 @@ class Launcher(val parentNode: Element) {
 
     fun add(name: String, onLaunch: () -> HostedWebApp): HTMLButtonElement {
         return parentNode.appendElement("button") {
-            console.log("launcher for $name", this)
             appendText(name)
 
             (this as HTMLElement).onclick = {
+                console.log("Launch $name", this)
                 fakeDomContainer.createFrame(name, onLaunch())
             }
         } as HTMLButtonElement

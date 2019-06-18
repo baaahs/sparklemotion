@@ -1,34 +1,59 @@
 .FakeClientDevice--pad {
   position: absolute;
-  border: 1px solid white;
-  border-radius: 1em;
-  background-color: #222;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  background-image: linear-gradient(to bottom right, #eee, #fff);
+  cursor: grab;
+  padding: 28px 40px 28px 28px;
   color: white;
   right: 5px;
   bottom: 5px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.15);
+
+  .FakeClientDevice-home-button {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: 6px;
+    top: 50%;
+    border: 1px solid black;
+    border-radius: 50%;
+    background-image: radial-gradient(#fff, #ddd);
+  }
 
   .FakeClientDevice-controls {
     position: absolute;
-    font-size: 75%;
-    top: -10px;
-    right: 3px;
-    color: #aaaaaa;
+    font-size: 14px;
+    top: 0px;
+    padding: 4px;
+    right: 0;
+    color: #222;
     z-index: 1;
-
-    i {
-      background: #666666;
-      border-radius: 5px;
-      color: #ffffff;
-      padding: 3px;
-    }
   }
 
   .FakeClientDevice--content {
+    overflow: hidden;
+    cursor: default;
     position: relative;
     width: auto;
     height: auto;
-    margin: 9px;
-    background-color: black;
-    border: 1px inset #444444;
+    padding: 2px;
+    border: 2px solid #373737;
+    background-color: #4F4F4F;
+
+    nav {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.iconButton {
+  color: #222222;
+  padding: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+
+  &:hover {
+    color: #e3e3e3;
   }
 }

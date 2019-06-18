@@ -40,6 +40,8 @@ class Brain(
         currentShaderDesc = null
         currentShaderBits = null
 
+        for (i in pixels.indices) pixels[i] = Color.WHITE
+
         sendHello()
     }
 
@@ -52,11 +54,12 @@ class Brain(
 
     private suspend fun sendHello() {
         while (true) {
-            if (lastInstructionsReceivedAtMs < getTimeMillis() - 10000) {
-                // println("Sending a hello packet")
-                val msg = BrainHelloMessage(id, surfaceName ?: "")
-                val bytes = msg.toBytes();
-                link.broadcastUdp(Ports.PINKY, msg)
+            val elapsedSinceMessageMs = getTimeMillis() - lastInstructionsReceivedAtMs
+            if (elapsedSinceMessageMs > 10000) {
+                if (lastInstructionsReceivedAtMs != 0L) {
+                    logger.info("$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms")
+                }
+                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
             delay(5000)
@@ -103,7 +106,7 @@ class Brain(
             }
 
             Type.BRAIN_MAPPING -> {
-                val message = BrainMapping.parse(reader)
+                val message = BrainMappingMessage.parse(reader)
                 surfaceName = message.surfaceName
                 surface = if (message.surfaceName != null) {
                     MappedSurface(message.pixelCount, message.pixelVertices, message.surfaceName)
@@ -127,7 +130,13 @@ class Brain(
 
     class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
-        fun draw(pixels: Pixels) = renderer.draw(buffer, pixels)
+        fun draw(pixels: Pixels) {
+            renderer.beginFrame(buffer, pixels.size)
+            for (i in pixels.indices) {
+                pixels[i] = renderer.draw(buffer, i)
+            }
+            renderer.endFrame()
+        }
     }
 
     inner class UnmappedSurface : Surface {

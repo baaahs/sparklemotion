@@ -1,14 +1,9 @@
 import { hot } from 'react-hot-loader';
-import React, {Component, Fragment} from 'react';
-import ColorPicker from './Menu/components/ColorPicker';
-import ShowList from './ShowList';
-import Slider from './Slider';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-
-import NavigationTabBar from './components/NavigationTabBar';
-import TabContent from './components/TabContent';
-
-import {TAB_OPTION_SHOW_LIST} from './components/NavigationTabBar/constants';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import ShowList from './ShowList';
+import ShowControls from './ShowControls';
 import styles from './app.scss';
 
 const baaahs = sparklemotion.baaahs;
@@ -19,7 +14,7 @@ class App extends Component {
 
     this.state = {
       primaryColor: baaahs.Color.Companion.WHITE,
-      selectedTab: TAB_OPTION_SHOW_LIST,
+      showPickerOpen: false,
       gadgets: [],
     };
 
@@ -44,37 +39,59 @@ class App extends Component {
     console.log('app closed!');
   };
 
-  onSelectTab = (selectedTab) => {
-    this.setState({ selectedTab });
+  toggleShowPicker = (event) => {
+    const { showPickerOpen } = this.state;
+    console.log('set showPickerOpen to', !showPickerOpen);
+    this.setState({ showPickerOpen: !showPickerOpen });
   };
 
   render() {
-    const { selectedTab, gadgets } = this.state;
+    const { pubSub } = this.props;
+    const { showPickerOpen, gadgets } = this.state;
 
     return (
       <Fragment>
-        <NavigationTabBar
-          selectedTab={selectedTab}
-          onSelectTab={this.onSelectTab}
-        />
-        <TabContent selectedTab={selectedTab} />
-        {gadgets.map((gadgetInfo) => {
-          const { gadget, topicName } = gadgetInfo;
-          return <div key={topicName} className={styles['gadget-view']}>{this.createGadgetView(gadget)}</div>;
-        })}
-        <ShowList pubSub={this.props.pubSub} />
+        <div id="drawer-container" className={styles['drawer-container']}>
+          <div
+            className={styles['show-picker--button']}
+            onClick={this.toggleShowPicker}
+          >
+            <div className={styles['show-picker--label']}>Shows</div>
+          </div>
+          <SwipeableDrawer
+            anchor="left"
+            open={showPickerOpen}
+            onOpen={this.toggleShowPicker}
+            onClose={this.toggleShowPicker}
+            PaperProps={{
+              style: {
+                position: 'absolute',
+                overflowX: 'hidden',
+                backgroundColor: '#575f5f',
+              },
+            }}
+            BackdropProps={{ style: { position: 'absolute' } }}
+            ModalProps={{
+              container: document.getElementById('drawer-container'),
+              style: { position: 'absolute' },
+            }}
+            variant="temporary"
+          >
+            <ShowList pubSub={pubSub} onSelect={this.toggleShowPicker} />
+          </SwipeableDrawer>
+
+          <div
+            style={{
+              marginLeft: '2em',
+              backgroundImage:
+                'linear-gradient(to bottom right, #3F3F3F, #575f5f)',
+            }}
+          >
+            <ShowControls gadgets={gadgets} />
+          </div>
+        </div>
       </Fragment>
     );
-  }
-
-  createGadgetView = (gadget) => {
-    if (gadget instanceof baaahs.gadgets.ColorPicker) {
-      return <ColorPicker gadget={gadget}/>;
-    } else if (gadget instanceof baaahs.gadgets.Slider) {
-      return <Slider gadget={gadget}/>;
-    } else {
-      return <div/>;
-    }
   }
 }
 

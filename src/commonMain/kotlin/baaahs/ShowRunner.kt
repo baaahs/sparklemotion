@@ -5,23 +5,23 @@ import baaahs.shaders.CompositorShader
 
 class ShowRunner(
     private val model: SheepModel,
-    initialShow: Show.MetaData,
-    private val gadgetProvider: GadgetProvider,
-    brains: List<RemoteBrain>,
+    initialShow: Show,
+    private val gadgetManager: GadgetManager,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
-    var nextShow: Show.MetaData? = initialShow
-    var currentShow: Show.MetaData? = null
-    var currentShowRenderer: Show? = null
+    var nextShow: Show? = initialShow
+    private var currentShow: Show? = null
+    private var currentShowRenderer: Show.Renderer? = null
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
 
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
-    val allUnusedSurfaces: List<Surface> get() = brainsBySurface.keys.toList().minus(shaderBuffers.keys)
+    val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
 
-    private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
+
+    private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
     private var shadersLocked = true
     private var gadgetsLocked = true
@@ -95,7 +95,9 @@ class ShowRunner(
      */
     fun <T : Gadget> getGadget(name: String, gadget: T): T {
         if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
-        return gadgetProvider.getGadget(name, gadget)
+        val oldValue = requestedGadgets.put(name, gadget)
+        if (oldValue != null) throw IllegalStateException("Gadget names must be unique ($name)")
+        return gadget
     }
 
     fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
@@ -125,6 +127,9 @@ class ShowRunner(
                 shadersLocked = false
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
+
+                    logger.info("Show ${currentShow!!.name} updated; " +
+                            "${shaderBuffers.size} surfaces")
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
@@ -135,26 +140,44 @@ class ShowRunner(
         changedSurfaces.clear()
 
         if (totalSurfaceReceivers > 0) {
-            nextShow?.let {
-                shaderBuffers.clear()
-
-                val gadgetsState = gadgetProvider.getGadgetsState()
-                gadgetProvider.clear()
-
-                shadersLocked = false
-                gadgetsLocked = false
-
-                currentShowRenderer = it.createShow(model, this)
-
-                shadersLocked = true
-                gadgetsLocked = true
+            nextShow?.let { startingShow ->
+                createShowRenderer(startingShow)
 
                 currentShow = nextShow
-                gadgetProvider.setGadgetsState(gadgetsState)
-                gadgetProvider.sync()
-
                 nextShow = null
             }
+        }
+    }
+
+    private fun createShowRenderer(startingShow: Show) {
+        shaderBuffers.clear()
+
+        val restartingSameShow = nextShow == currentShow
+        val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
+
+        unlockShadersAndGadgets {
+            currentShowRenderer = startingShow.createRenderer(model, this)
+        }
+
+        logger.info(
+            "New show ${startingShow.name} created; " +
+                    "${shaderBuffers.size} surfaces " +
+                    "and ${requestedGadgets.size} gadgets"
+        )
+
+        gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
+        requestedGadgets.clear()
+    }
+
+    private fun unlockShadersAndGadgets(fn: () -> Unit) {
+        shadersLocked = false
+        gadgetsLocked = false
+
+        try {
+            fn()
+        } finally {
+            shadersLocked = true
+            gadgetsLocked = true
         }
     }
 
@@ -189,10 +212,10 @@ class ShowRunner(
     }
 
     fun shutDown() {
-        gadgetProvider.clear()
+        gadgetManager.clear()
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
-    data class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
+    class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
 
 }

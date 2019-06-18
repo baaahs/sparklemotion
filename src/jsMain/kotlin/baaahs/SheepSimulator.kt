@@ -17,9 +17,9 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val sheepModel = SheepModel().apply { load() }
-    private val showMetas = AllShows.allShows
+    private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel)
-    private val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
@@ -43,17 +43,17 @@ class SheepSimulator {
         }
 
         sheepModel.panels.sortedBy(SheepModel.Panel::name).forEachIndexed { index, panel ->
+//            if (panel.name != "17L") return@forEachIndexed
+
             val jsPanel = visualizer.addPanel(panel)
 
             val pixelLocations = jsPanel.getPixelLocations()!!
             pinky.providePixelMapping(panel, pixelLocations)
 
             val brain = Brain("brain//$index", network, display.forBrain(),  jsPanel.vizPixels ?: NullPixels)
-            pinky.providePanelMapping(brain.id, panel)
+            pinky.providePanelMapping(BrainId(brain.id), panel)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
-
-        pinkyScope.launch { pinky.run() }
 
         sheepModel.eyes.forEach { eye ->
             visualizer.addMovingHead(eye, dmxUniverse)

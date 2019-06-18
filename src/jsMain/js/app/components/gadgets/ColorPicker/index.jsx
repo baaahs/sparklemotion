@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import styles from './ColorPicker.scss';
 import classNames from 'classnames';
 import chroma from 'chroma-js';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
-import { rgb2xy, xy2polar, xy2rgb } from '../../../../utils/colorUtils';
+import {rgb2xy, xy2polar, xy2rgb} from '../../../../utils/colorUtils';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -20,12 +20,10 @@ class ColorPicker extends Component {
   constructor(props) {
     super(props);
 
-    const { gadget } = this.props;
-    const { redI, greenI, blueI } = gadget.color;
+    const { redI, greenI, blueI } = props.gadget.color;
     const color = [redI, greenI, blueI];
 
     this.state = {
-      gadget,
       colors: [color],
       radius: 10,
       selectedIndex: -1,
@@ -37,25 +35,12 @@ class ColorPicker extends Component {
     // Send color updates once every 150ms while the picker is dragged
     this._throttledHandleColorChange = throttle(this._handleColorChange, 150);
 
-    this._changeListener = {
-      onChanged: (gadget) => {
-        const { colors } = this.state;
-        const { redI, greenI, blueI } = gadget.color;
-        const color = [redI, greenI, blueI];
-
-        const updatedColors = colors.slice();
-        updatedColors[0] = color;
-
-        this.setState({ colors: updatedColors });
-      },
-    };
-    gadget.listen(this._changeListener);
+    props.gadget.listen(this._changeListener);
   }
 
   componentWillUnmount() {
-    const { gadget } = this.state;
     if (this._changeListener) {
-      gadget.unlisten(this._changeListener);
+      this.props.gadget.unlisten(this._changeListener);
     }
   }
 
@@ -100,13 +85,24 @@ class ColorPicker extends Component {
     ctx.putImageData(image, 0, 0);
   }
 
+  _changeListener = () => {
+    const { colors } = this.state;
+    const { redI, greenI, blueI } = this.props.gadget.color;
+    const color = [redI, greenI, blueI];
+
+    const updatedColors = colors.slice();
+    updatedColors[0] = color;
+
+    this.setState({ colors: updatedColors });
+  };
+
+
   _handleColorChange = () => {
     const { colors } = this.state;
     const [red, green, blue] = colors[0];
     const hex = chroma.rgb(red, green, blue).hex();
 
-    const { gadget } = this.state;
-    gadget.color = baaahs.Color.Companion.fromString(hex);
+    this.props.gadget.color = baaahs.Color.Companion.fromString(hex);
   };
 
   _onPickerDragged(ev, data, index) {

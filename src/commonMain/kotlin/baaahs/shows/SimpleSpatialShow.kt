@@ -7,8 +7,8 @@ import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
 import baaahs.shaders.SimpleSpatialShader
 
-object SimpleSpatialShow : Show.MetaData("Spatial") {
-    override fun createShow(sheepModel: SheepModel, showRunner: ShowRunner): Show {
+object SimpleSpatialShow : Show("Spatial") {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
         val centerXSlider = showRunner.getGadget("centerX", Slider("center X", 0.5f))
         val centerYSlider = showRunner.getGadget("centerY", Slider("center Y", 0.5f))
@@ -19,7 +19,7 @@ object SimpleSpatialShow : Show.MetaData("Spatial") {
             showRunner.getShaderBuffer(it, shader)
         }
 
-        return object : Show {
+        return object : Renderer {
             override fun nextFrame() {
                 shaderBuffers.forEach {
                     it.color = colorPicker.color

@@ -10,9 +10,9 @@ class FragmentingUdpLinkTest {
     private val mtu = 1400
 
     private val receivedPayloads = mutableListOf<ByteArray>()
-    private val sendTestLink = TestNetwork.TestNetworkLink(mtu)
+    private val sendTestLink = TestNetwork.Link(mtu)
     private val sendLink = FragmentingUdpLink(sendTestLink)
-    private val recvTestLink = TestNetwork.TestNetworkLink(mtu)
+    private val recvTestLink = TestNetwork.Link(mtu)
     private val recvLink = FragmentingUdpLink(recvTestLink)
 
     @BeforeTest
@@ -62,7 +62,5 @@ class FragmentingUdpLinkTest {
         sendTestLink.sendTo(recvTestLink)
     }
 
-    companion object {
-        fun someAddress() = object : Network.Address {}
-    }
+    fun defrag(bytes: ByteArray) = bytes.slice(FragmentingUdpLink.headerSize until bytes.size).toByteArray()
 }

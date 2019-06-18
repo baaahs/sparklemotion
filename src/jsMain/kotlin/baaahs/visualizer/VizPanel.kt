@@ -135,6 +135,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         private val points: Points
         private val pixGeometry = BufferGeometry()
         private val colorsBufferAttr: BufferAttribute
+        private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
         init {
             val positionsArray = Float32Array(size * 3)
@@ -163,15 +164,12 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         }
 
         override fun get(i: Int): Color {
-            val rgbBuf = colorsBufferAttr.array
-            return Color(
-                rgbBuf[i * 3] as Float,
-                rgbBuf[i * 3 + 1] as Float,
-                rgbBuf[i * 3 + 2] as Float
-            )
+            return Color(colorsAsInts[i])
         }
 
         override fun set(i: Int, color: Color) {
+            colorsAsInts[i] = color.argb
+
             val rgbBuf = colorsBufferAttr.array
             rgbBuf[i * 3] = color.redF
             rgbBuf[i * 3 + 1] = color.greenF
@@ -183,6 +181,8 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
             val maxCount = min(this.size, colors.size)
             val rgbBuf = colorsBufferAttr.array
             for (i in 0 until maxCount) {
+                colorsAsInts[i] = colors[i].argb
+
                 val pColor = colors[i]
                 rgbBuf[i * 3] = pColor.redF
                 rgbBuf[i * 3 + 1] = pColor.greenF
