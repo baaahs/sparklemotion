@@ -10,6 +10,7 @@
 
 #include "led-renderer.h"
 #include "shade-tree.h"
+#include "sysmon.h"
 
 class Brain : public MsgHandler {
 public:
@@ -30,6 +31,7 @@ private:
     LEDShader* m_ledShader;
 
     ShadeTree m_shadeTree;
+    SysMon m_sysMon;
 
     void msgBrainPanelShade(Msg* pMsg);
     void msgMapperHello(Msg* pMsg);

@@ -29,6 +29,8 @@ ShadeTree::beginShade() {
 
     if (m_pCurrentShader && m_pMsg) {
         m_pCurrentShader->begin(m_pMsg);
+    } else {
+        //ESP_LOGW(TAG, "beginShade but don't have a message and a current shader");
     }
 }
 
@@ -40,8 +42,10 @@ ShadeTree::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
         // However, because the color OUT parameter will absolutely be set as
         // the value of the pixel, we DO have to copy the current color
         // into the output.
-        color[0] = currentColor[0];
-        color[1] = currentColor[1];
+        // However However, the pixels are going through a color feature so we
+        // have to do this swap on the first two bytes.
+        color[0] = currentColor[1];
+        color[1] = currentColor[0];
         color[2] = currentColor[2];
         return;
     }
@@ -80,6 +84,10 @@ ShadeTree::handleMessage(Msg* pMsg){
         return;
     };
     // ESP_LOGW(TAG, "handleMessage pMsg=%p got semaphore", pMsg);
+
+    if (m_pMsg) {
+        m_pMsg->release();
+    }
 
     // All we need to do is set this message in
     m_pMsg = pMsg;
@@ -148,7 +156,7 @@ ShadeTree::buildNewTree() {
         // Shaders are expressed in a tree structure so we actually only need to
         // read a single root. However, that root might be a composite that
         // goes on to read further branches.
-        m_pCurrentShader = Shader::createShaderFromDescrip(pCursor, pEnd);
+        m_pCurrentShader = Shader::createShaderFromDescrip(&pCursor, pEnd);
     }
 
     if (!m_pCurrentShader) {

@@ -23,7 +23,16 @@ public:
         RANDOM,
     };
 
-    static Shader* createShaderFromDescrip(uint8_t* pCursor, uint8_t* pEnd);
+    /**
+     * Creates a new shader using the description found at *ppCursor. *ppCursor
+     * will be advanced by at least one byte and possibly more depending on what
+     * type of shader(s) get created.
+     *
+     * @param ppCursor
+     * @param pEnd
+     * @return
+     */
+    static Shader* createShaderFromDescrip(uint8_t** ppCursor, uint8_t* pEnd);
 
     Shader() { };
     virtual ~Shader() { };

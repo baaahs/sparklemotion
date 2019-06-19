@@ -30,12 +30,12 @@ extern "C" void app_main()
     //esp_log_level_set("httpd", ESP_LOG_DEBUG);
     // esp_log_level_set("#   net", ESP_LOG_DEBUG);
     // esp_log_level_set("#   msg", ESP_LOG_DEBUG);
-    esp_log_level_set("# brain", ESP_LOG_DEBUG);
+    esp_log_level_set("# brain", ESP_LOG_INFO);
     esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 
     esp_log_level_set("httpd", ESP_LOG_NONE);
     esp_log_level_set("#   net", ESP_LOG_NONE);
-    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
+    esp_log_level_set("#   msg", ESP_LOG_NONE);
     esp_log_level_set("#shader", ESP_LOG_DEBUG);
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
