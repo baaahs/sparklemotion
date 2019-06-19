@@ -178,6 +178,7 @@ dokka {
 
 task runPinkyJvm(type: JavaExec) {
     dependsOn assemble
+    dependsOn buildReactUI
     main = 'baaahs.PinkyMainKt'
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
