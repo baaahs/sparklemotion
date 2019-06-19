@@ -8,15 +8,18 @@
 #include "compositor-shader.h"
 
 Shader*
-Shader::createShaderFromDescrip(uint8_t* pCursor, uint8_t* pEnd) {
-    if (pCursor >= pEnd) return nullptr;
+Shader::createShaderFromDescrip(uint8_t** ppCursor, uint8_t* pEnd) {
+    if (*ppCursor >= pEnd) return nullptr;
 
-    switch(*pCursor) {
+    uint8_t last = **ppCursor;
+    *ppCursor += 1;
+
+    switch(last) {
         case static_cast<int>(Shader::Type::SOLID):
-            return new SolidShader(pCursor+1, pEnd);
+            return new SolidShader(ppCursor, pEnd);
 
-        case static_cast<int>(Shader::Type::COMPOSITOR):
-            return new CompositorShader(pCursor+1, pEnd);
+//        case static_cast<int>(Shader::Type::COMPOSITOR):
+//            return new CompositorShader(ppCursor, pEnd);
     }
 
     // Failsafe

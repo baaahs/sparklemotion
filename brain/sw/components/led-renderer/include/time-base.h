@@ -21,8 +21,8 @@ typedef int32_t braintime_t;
 
 #define USEC_IN_SEC 1000000
 
-// #define DEFAULT_FPS 30
-#define DEFAULT_FPS 2
+#define DEFAULT_FPS 30
+// #define DEFAULT_FPS 1
 
 class TimeBase {
 public:

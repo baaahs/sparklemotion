@@ -3,8 +3,8 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-SolidShader::SolidShader(uint8_t* pCursor, uint8_t* pEnd) {
-
+SolidShader::SolidShader(uint8_t** ppCursor, uint8_t* pEnd) {
+    // No additional bytes of configuration
 }
 
 SolidShader::~SolidShader() {

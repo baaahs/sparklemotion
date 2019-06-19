@@ -177,5 +177,6 @@ LEDRenderer::_localRenderTask() {
 
 void
 LEDRenderer::logPixels() {
-    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), m_pixels.PixelsSize(), ESP_LOG_INFO);
+    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), 6, ESP_LOG_INFO);
+    // ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), m_pixels.PixelsSize(), ESP_LOG_INFO);
 }
