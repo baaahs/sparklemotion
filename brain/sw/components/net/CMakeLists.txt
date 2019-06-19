@@ -9,6 +9,6 @@ set(COMPONENT_SRCS
         )
 set(COMPONENT_ADD_INCLUDEDIRS "include")
 
-set(COMPONENT_REQUIRES nvs_flash)
+set(COMPONENT_REQUIRES nvs_flash led-renderer)
 
 register_component()

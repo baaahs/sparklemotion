@@ -7,6 +7,9 @@ private:
     Shader* m_shaderA;
     Shader* m_shaderB;
 
+    int8_t m_mode;
+    float m_fade;
+
 public:
     CompositorShader(uint8_t** ppCursor, uint8_t* pEnd);
     ~CompositorShader();
