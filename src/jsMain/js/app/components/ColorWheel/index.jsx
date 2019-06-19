@@ -183,8 +183,27 @@ class ColorWheel extends Component {
     );
   }
 
+  _renderPalettePicker() {
+    return (
+      <div className={styles.harmonyModes}>
+        {Object.keys(HARMONY_MODES).map((harmonyMode) => (
+          <button
+            key={harmonyMode}
+            onClick={() => this.setState({ harmonyMode })}
+            className={classNames(styles.harmonyMode, {
+              [styles.active]: harmonyMode === this.state.harmonyMode,
+            })}
+          >
+            {harmonyMode}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   render() {
     const { radius, colors } = this.state;
+    const { isPalette } = this.props;
 
     return (
       <div
@@ -217,27 +236,20 @@ class ColorWheel extends Component {
         </div>
         {radius != null &&
           colors.map((color, i) => this._renderPicker({ color }, i))}
-        <div className={styles.harmonyModes}>
-          {Object.keys(HARMONY_MODES).map((harmonyMode) => (
-            <button
-              key={harmonyMode}
-              onClick={() => this.setState({ harmonyMode })}
-              className={classNames(styles.harmonyMode, {
-                [styles.active]: harmonyMode === this.state.harmonyMode,
-              })}
-            >
-              {harmonyMode}
-            </button>
-          ))}
-        </div>
+        {isPalette && this._renderPalettePicker()}
       </div>
     );
   }
 }
 
 ColorWheel.propTypes = {
-  // colors: PropTypes.arrayOf(baaahs.Color).isRequired,
+  colors: PropTypes.arrayOf(PropTypes.instanceOf(baaahs.Color)).isRequired,
   onChange: PropTypes.func.isRequired,
+  isPalette: PropTypes.bool,
+};
+
+ColorWheel.defaultProps = {
+  isPalette: false,
 };
 
 export default ColorWheel;
