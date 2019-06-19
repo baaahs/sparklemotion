@@ -39,6 +39,19 @@ Run this in a second shell window and go to http://localhost:8001/index.html :
 npm run start:dev
 ```
 
+Not that at least one of the above steps seems to perform a somewhat important build process
+related to making the UI available. Presuming you have run jsJar and start:dev at least once
+and poked at the resulting simulator UI, you should be able to do the following to run Pinky
+in *standalone JVM mode*. This is required if you want to talk to actual Brain hardware.
+
+    ./gradlew runPinkyJvm
+    
+When running in this mode you should be able to access the UI at http://localhost:8004 
+
+Note that this is different from the URL above (it doesn't have the `index.html` part). If you
+load the index page you'll be loading a full local simulation into your browser and won't be talking
+to the Pinky instance which is actually (presumably) talking to the Brains.
+
 ## CI & Deployment
 
 Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
