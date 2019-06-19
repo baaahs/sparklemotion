@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <esp_types.h>
 #include <sys/param.h>
+#include <internal/RgbColor.h>
 
 #include "ip_port.h"
 
@@ -218,7 +219,16 @@ public:
     }
 
     float readFloat() {
-        return 0;
+        if (m_cursor + 4 > m_used) {
+            return 0;
+        }
+        uint32_t bits = m_buf[m_cursor++] << 24;
+        bits |= m_buf[m_cursor++] << 16;
+        bits |= m_buf[m_cursor++] <<  8;
+        bits |= m_buf[m_cursor++];
+
+        // Hey, maybe this will work...
+        return *((float*)(&bits));
     }
 
     size_t readString(char* sz, uint32_t max) {
@@ -304,6 +314,29 @@ public:
         memcpy(dest, m_buf + m_cursor, len);
         m_cursor += len;
     }
+
+    /**
+     * Reads a 4 byte color value, ARGB, discarding the first byte
+     *
+     * @return
+     */
+    RgbColor readColor() {
+        if (m_cursor + 4 > m_used) {
+            return RgbColor();
+        }
+
+        RgbColor out;
+
+        // Ignore Alpha
+        m_cursor++;
+
+        // Get the RGB
+        memcpy((void*)&out, m_buf + m_cursor, 3);
+        m_cursor += 3;
+
+        return out;
+    }
+
 
     Header readHeader() {
         Header h = {};

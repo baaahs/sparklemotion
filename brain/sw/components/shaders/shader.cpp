@@ -6,6 +6,7 @@
 
 #include "solid-shader.h"
 #include "compositor-shader.h"
+#include "sine-wave-shader.h"
 
 Shader*
 Shader::createShaderFromDescrip(uint8_t** ppCursor, uint8_t* pEnd) {
@@ -18,8 +19,11 @@ Shader::createShaderFromDescrip(uint8_t** ppCursor, uint8_t* pEnd) {
         case static_cast<int>(Shader::Type::SOLID):
             return new SolidShader(ppCursor, pEnd);
 
-//        case static_cast<int>(Shader::Type::COMPOSITOR):
-//            return new CompositorShader(ppCursor, pEnd);
+        case static_cast<int>(Shader::Type::COMPOSITOR):
+            return new CompositorShader(ppCursor, pEnd);
+
+        case static_cast<int>(Shader::Type::SINE_WAVE):
+            return new SineWaveShader(ppCursor, pEnd);
     }
 
     // Failsafe
