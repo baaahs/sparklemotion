@@ -25,6 +25,7 @@ void
 ShadeTree::beginShade() {
     xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
     // Assume success
+    // ESP_LOGW(TAG, "beginShade got semaphore");
 
     if (m_pCurrentShader && m_pMsg) {
         m_pCurrentShader->begin(m_pMsg);
@@ -62,19 +63,23 @@ ShadeTree::endShade() {
     }
 
     // Be nice and give it back
+    // ESP_LOGW(TAG, "endShade giving semaphore");
     xSemaphoreGive(m_hMsgAccess);
 }
 
 void
 ShadeTree::handleMessage(Msg* pMsg){
+    // ESP_LOGW(TAG, "handleMessage pMsg=%p", pMsg);
     if (!pMsg) return;
 
     // Wait, but not forever so that the network task keeps running just in
     // case rendering explodes somehow.
+    // ESP_LOGW(TAG, "handleMessage pMsg=%p waiting", pMsg);
     if (xSemaphoreTake(m_hMsgAccess, pdMS_TO_TICKS(3000)) == pdFALSE) {
         ESP_LOGE(TAG, "Dropping a shader message because we couldn't get the semaphore");
         return;
     };
+    // ESP_LOGW(TAG, "handleMessage pMsg=%p got semaphore", pMsg);
 
     // All we need to do is set this message in
     m_pMsg = pMsg;
@@ -89,6 +94,7 @@ ShadeTree::handleMessage(Msg* pMsg){
     checkForShaderChanges();
 
     // And that's it!
+    // ESP_LOGW(TAG, "handleMessage pMsg=%p give semaphore back", pMsg);
     xSemaphoreGive(m_hMsgAccess);
 }
 
@@ -109,6 +115,12 @@ ShadeTree::checkForShaderChanges() {
     if (!m_pCurrentShaderDesc->isSameAs(m_pMsg)) {
         buildNewTree();
         return;
+    } else {
+        // Skip to the good parts of the message
+
+        // This magic 4 is because there is a 4 byte int followed by the description
+        m_pMsg->skip(4);
+        m_pMsg->skip(m_pCurrentShaderDesc->m_len);
     }
 
     // The current tree is valid. Let rendering proceed using the current message
@@ -123,6 +135,7 @@ ShadeTree::buildNewTree() {
         delete m_pCurrentShaderDesc;
     }
 
+    ESP_LOGI(TAG, "buildNewTree");
     m_pCurrentShaderDesc = new ShaderDesc(m_pMsg);
     if (!m_pCurrentShaderDesc) {
         ESP_LOGE(TAG, "Error: Did not get a shader desc.");
@@ -130,7 +143,6 @@ ShadeTree::buildNewTree() {
         uint8_t * pCursor = m_pCurrentShaderDesc->m_pBuf;
         uint8_t * pEnd = pCursor + m_pCurrentShaderDesc->m_len;
 
-        ESP_LOGI(TAG, "buildNewTree");
         m_pCurrentShaderDesc->log(TAG);
 
         // Shaders are expressed in a tree structure so we actually only need to

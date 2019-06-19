@@ -206,12 +206,15 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
 
     // This message contains a header, so let's parse it
     auto header = pMsg->readHeader();
+    ESP_LOGD(TAG, "Read a msg header");
 
     if (header.frameOffset == 0) {
         // It is a new message
         if (header.frameSize == header.msgSize) {
             // It is a single message so we can dispatch it as is
+            ESP_LOGD(TAG, "Dispatching single fragment message");
             dispatch(pMsg);
+            ESP_LOGD(TAG, "Dispatch complete for single fragment message");
         } else {
             // It is merely the first fragment, so prepare ourselves
             // for that.
@@ -221,6 +224,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
                 ESP_LOGE(TAG, "Unable to prep a fragged message of size %d, dropping it", header.msgSize);
                 return;
             }
+            ESP_LOGD(TAG, "Got first segment of a fragmented message");
 
             // Cool, we hold onto this message then (making sure not to leak
             // anything that was previously hanging around)
@@ -248,8 +252,10 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
 
         // Add this fragment, which is presumably the next fragment, and
         // if it happens to be the last fragment, then we dispatch
+        ESP_LOGD(TAG, "Adding a fragment to an existing message");
         if (m_pFraggedMsg->addFragment(pMsg)) {
             // Oh hey, we should dispatch it!
+            ESP_LOGD(TAG, "Dispatching fragmented message");
             dispatch(m_pFraggedMsg);
             m_pFraggedMsg->release();
             m_pFraggedMsg = nullptr;

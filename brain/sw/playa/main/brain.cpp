@@ -23,7 +23,7 @@ Brain::handleMsg(Msg* pMsg)
 {
     if (!pMsg) return;
 
-    ESP_LOGI(TAG, "Got message with length=%d", pMsg->used());
+    ESP_LOGI(TAG, "Brain::handleMsg with length=%d", pMsg->used());
 
     // The first byte of the message tells us the type
     auto nMsgType = pMsg->readByte();

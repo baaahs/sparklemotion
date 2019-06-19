@@ -1,5 +1,8 @@
 #include "solid-shader.h"
 
+#include "esp_log.h"
+#define TAG "#shader"
+
 SolidShader::SolidShader(uint8_t* pCursor, uint8_t* pEnd) {
 
 }
@@ -11,6 +14,9 @@ SolidShader::~SolidShader() {
 void
 SolidShader::begin(Msg* pMsg) {
     auto argb = pMsg->readInt();
+
+    // ESP_LOGD(TAG, "argb = %x", argb);
+
     m_color.R = (argb >> 16) & 0xff;
     m_color.G = (argb >>  8) & 0xff;
     m_color.B = (argb      ) & 0xff;

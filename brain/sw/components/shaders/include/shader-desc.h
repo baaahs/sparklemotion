@@ -34,8 +34,11 @@ public:
      * @return
      */
     bool isSameAs(Msg* pMsg) {
+        // Do this as a peek
         size_t dLen = pMsg->readInt();
+        pMsg->skip(-4);
 
+        // ESP_LOGI(MSG_TAG, "Start isSameAs dLen=%d m_len=%d m_pBuf=%p", dLen, m_len, m_pBuf);
         // Have to the same length for sure
         if (dLen != m_len) {
             return false;
@@ -48,9 +51,12 @@ public:
         uint8_t* pEnd = m_pBuf + m_len;
         while(pMe < pEnd) {
             if (*pMe != *pOther) return false;
+            pMe++;
+            pOther++;
         }
 
         // It's okay, they are the same
+        // pMsg->log("Same Message??");
         return true;
     }
 
