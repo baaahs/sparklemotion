@@ -195,7 +195,7 @@
       super.onBeforeRender(renderer, scene, camera, geometry, material, group);
       if (this.renderTarget.dirty) {
         renderer.setRenderTarget(this.renderTarget);
-        renderer.render(this.renderTarget.scene, this.renderTarget.camera, this.renderTarget);
+        renderer.render(this.renderTarget.scene, this.renderTarget.camera);
         renderer.setRenderTarget(null);
         this.renderTarget.dirty = false;
       }
