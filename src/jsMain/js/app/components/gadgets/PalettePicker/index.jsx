@@ -6,8 +6,8 @@ class PalettePicker extends React.Component {
     super(props);
 
     this.state = {
-      colors: this.props.gadget.colors.toArray(),
-    }
+      colors: props.gadget.colors.toArray(),
+    };
   }
 
   componentDidMount() {
@@ -30,7 +30,13 @@ class PalettePicker extends React.Component {
   render() {
     const { colors } = this.state;
 
-    return <ColorWheel colors={colors} onChange={this._handleChangeFromUi} />;
+    return (
+      <ColorWheel
+        colors={colors}
+        onChange={this._handleChangeFromUi}
+        isPalette
+      />
+    );
   }
 }
 
