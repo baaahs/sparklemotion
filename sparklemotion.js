@@ -1,8 +1,8 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-coroutines-core', 'kotlinx-serialization-runtime', 'threejs-wrapper', 'kotlinx-html-js'], factory);
+    define(['exports', 'kotlin', 'kotlinx-coroutines-core', 'kotlinx-serialization-kotlinx-serialization-runtime', 'threejs-wrapper', 'kotlinx-html-js'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-coroutines-core'), require('kotlinx-serialization-runtime'), require('threejs-wrapper'), require('kotlinx-html-js'));
+    factory(module.exports, require('kotlin'), require('kotlinx-coroutines-core'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('threejs-wrapper'), require('kotlinx-html-js'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'sparklemotion'.");
@@ -10,8 +10,8 @@
     if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'sparklemotion'.");
     }
-    if (typeof this['kotlinx-serialization-runtime'] === 'undefined') {
-      throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-runtime' was not found. Please, check whether 'kotlinx-serialization-runtime' is loaded prior to 'sparklemotion'.");
+    if (typeof this['kotlinx-serialization-kotlinx-serialization-runtime'] === 'undefined') {
+      throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-kotlinx-serialization-runtime' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-runtime' is loaded prior to 'sparklemotion'.");
     }
     if (typeof this['threejs-wrapper'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'threejs-wrapper' was not found. Please, check whether 'threejs-wrapper' is loaded prior to 'sparklemotion'.");
@@ -19,9 +19,9 @@
     if (typeof this['kotlinx-html-js'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'sparklemotion'.");
     }
-    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-runtime'], this['threejs-wrapper'], this['kotlinx-html-js']);
+    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-kotlinx-serialization-runtime'], this['threejs-wrapper'], this['kotlinx-html-js']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_runtime, $module$threejs_wrapper, $module$kotlinx_html_js) {
+}(this, function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$threejs_wrapper, $module$kotlinx_html_js) {
   'use strict';
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
@@ -42,10 +42,10 @@
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var numberToInt = Kotlin.numberToInt;
-  var internal = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal;
-  var withName = $module$kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
+  var internal = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal;
+  var withName = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var KSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
+  var KSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
   var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
@@ -53,21 +53,21 @@
   var Unit = Kotlin.kotlin.Unit;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var ReadWriteProperty = Kotlin.kotlin.properties.ReadWriteProperty;
-  var SerialClassDescImpl = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
+  var SerialClassDescImpl = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
   var getKClass = Kotlin.getKClass;
-  var PolymorphicSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.PolymorphicSerializer;
-  var UnknownFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
-  var GeneratedSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
-  var MissingFieldException = $module$kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
+  var PolymorphicSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.PolymorphicSerializer;
+  var UnknownFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
+  var GeneratedSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
+  var MissingFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
-  var serializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.serializer_6eet4j$;
-  var JsonElement = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonElement;
+  var serializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_6eet4j$;
+  var JsonElement = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonElement;
   var to = Kotlin.kotlin.to_ujzrz7$;
-  var get_map = $module$kotlinx_serialization_runtime.kotlinx.serialization.get_map_kgqhr1$;
-  var SerializersModule = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
-  var JsonConfiguration = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
-  var Json = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
-  var ReferenceArraySerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.ReferenceArraySerializer;
+  var get_map = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.get_map_kgqhr1$;
+  var SerializersModule = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
+  var JsonConfiguration = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
+  var Json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
+  var ReferenceArraySerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ReferenceArraySerializer;
   var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
@@ -97,8 +97,8 @@
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var L50 = Kotlin.Long.fromInt(50);
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
-  var plus = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
-  var modules = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules;
+  var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
+  var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
@@ -123,11 +123,11 @@
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
   var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
   var toList_0 = Kotlin.kotlin.collections.toList_abgq59$;
-  var get_list = $module$kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
+  var get_list = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
-  var ArrayListSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
+  var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
-  var serializer_0 = $module$kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
+  var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
