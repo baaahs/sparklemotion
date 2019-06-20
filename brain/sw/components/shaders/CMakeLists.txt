@@ -1,8 +1,17 @@
-set(COMPONENT_ADD_INCLUDEDIRS .)
+set(COMPONENT_ADD_INCLUDEDIRS . "include")
 
-set(COMPONENT_SRCS "shader-tree.cpp")
-set(COMPONENT_ADD_INCLUDEDIRS "include")
+set(COMPONENT_SRCS
+        "shade-tree.cpp"
+        "shader.cpp"
+        "default-shader.cpp"
+        "compositor-shader.cpp"
+        "pixel-shader.cpp"
+        "solid-shader.cpp"
+        "sine-wave-shader.cpp"
+        "sparkle-shader.cpp"
+        )
 
-# set(COMPONENT_REQUIRES console nvs_flash)
+
+set(COMPONENT_REQUIRES net led-renderer)
 
 register_component()

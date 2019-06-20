@@ -4,33 +4,44 @@ import baaahs.Color
 import baaahs.Pixels
 import baaahs.SheepModel
 import baaahs.geom.Vector2
-import info.laht.threekt.THREE
+import info.laht.threekt.THREE.AdditiveBlending
 import info.laht.threekt.THREE.FrontSide
-import info.laht.threekt.core.BufferAttribute
+import info.laht.threekt.THREE.VertexColors
 import info.laht.threekt.core.BufferGeometry
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
+import info.laht.threekt.geometries.PlaneBufferGeometry
+import info.laht.threekt.loaders.TextureLoader
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.materials.PointsMaterial
 import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Triangle
 import info.laht.threekt.math.Vector3
 import info.laht.threekt.math.minus
 import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
-import info.laht.threekt.objects.Points
 import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.w3c.dom.get
+import three.BufferGeometryUtils
 import three.Float32BufferAttribute
 import kotlin.browser.document
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.random.Random
 
 class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val scene: Scene) {
+    companion object {
+        private val roundLightTx = TextureLoader().load(
+            "./visualizer/textures/round.png",
+            { println("loaded!") },
+            { println("progress!") },
+            { println("error!") }
+        )
+    }
+
     private val name = panel.name
     internal val geometry = Geometry()
     var area = 0.0f
@@ -130,11 +141,11 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
     }
 
 
-    class VizPixels(positions: Array<Vector3>) : Pixels {
+    class VizPixels(vizPanel: VizPanel, positions: Array<Vector3>) : Pixels {
         override val size = positions.size
-        private val points: Points
         private val pixGeometry = BufferGeometry()
-        private val colorsBufferAttr: BufferAttribute
+        private val planeGeometry: BufferGeometry
+        private val vertexColorBufferAttr: Float32BufferAttribute
         private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
         init {
@@ -144,23 +155,41 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
                 positionsArray[i * 3 + 1] = v.y.toFloat()
                 positionsArray[i * 3 + 2] = v.z.toFloat()
             }
+
             val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
             pixGeometry.addAttribute("position", positionsBufferAttr)
 
-            colorsBufferAttr = Float32BufferAttribute(Float32Array(size * 3), 3)
-            colorsBufferAttr.dynamic = true
-            pixGeometry.addAttribute("color", colorsBufferAttr)
-            val material = PointsMaterial()
-                .apply { size = 3; vertexColors = THREE.VertexColors }
-            points = Points().apply { geometry = pixGeometry; this.material = material }
+            vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
+            vertexColorBufferAttr.dynamic = true
+
+            val rotator = Rotator(Vector3(0, 0, 1), vizPanel.panelNormal)
+            planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
+                val geometry = PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8)
+                rotator.rotate(geometry)
+                geometry.translate(position.x, position.y, position.z)
+                geometry
+            }.toTypedArray())
+            planeGeometry.addAttribute("color", vertexColorBufferAttr)
         }
 
+        private val pixelsMesh = Mesh(planeGeometry, MeshBasicMaterial().apply {
+            side = FrontSide
+            transparent = true
+            blending = AdditiveBlending
+//            depthFunc = AlwaysDepth
+            depthTest = false
+            depthWrite = false
+            vertexColors = VertexColors
+
+            map = roundLightTx
+        })
+
         fun addToScene(scene: Scene) {
-            scene.add(points)
+            scene.add(pixelsMesh)
         }
 
         fun removeFromScene(scene: Scene) {
-            scene.remove(points)
+            scene.remove(pixelsMesh)
         }
 
         override fun get(i: Int): Color {
@@ -170,25 +199,30 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         override fun set(i: Int, color: Color) {
             colorsAsInts[i] = color.argb
 
-            val rgbBuf = colorsBufferAttr.array
-            rgbBuf[i * 3] = color.redF
-            rgbBuf[i * 3 + 1] = color.greenF
-            rgbBuf[i * 3 + 2] = color.blueF
-            colorsBufferAttr.needsUpdate = true
+            val redF = color.redF / 2
+            val greenF = color.greenF / 2
+            val blueF = color.blueF / 2
+
+            val rgb3Buf = vertexColorBufferAttr
+            rgb3Buf.setXYZ(i * 4, redF, greenF, blueF)
+            rgb3Buf.setXYZ(i * 4 + 1, redF, greenF, blueF)
+            rgb3Buf.setXYZ(i * 4 + 2, redF, greenF, blueF)
+            rgb3Buf.setXYZ(i * 4 + 3, redF, greenF, blueF)
+            vertexColorBufferAttr.needsUpdate = true
         }
 
         override fun set(colors: Array<Color>) {
             val maxCount = min(this.size, colors.size)
-            val rgbBuf = colorsBufferAttr.array
+            val rgbBuf = vertexColorBufferAttr.array
             for (i in 0 until maxCount) {
                 colorsAsInts[i] = colors[i].argb
 
                 val pColor = colors[i]
-                rgbBuf[i * 3] = pColor.redF
-                rgbBuf[i * 3 + 1] = pColor.greenF
-                rgbBuf[i * 3 + 2] = pColor.blueF
+                rgbBuf[i * 3] = pColor.redF / 2
+                rgbBuf[i * 3 + 1] = pColor.greenF / 2
+                rgbBuf[i * 3 + 2] = pColor.blueF / 2
             }
-            colorsBufferAttr.needsUpdate = true
+            vertexColorBufferAttr.needsUpdate = true
         }
 
         fun getPixelLocationsInPanelSpace(vizPanel: VizPanel): Array<Vector2> {

@@ -24,6 +24,8 @@ class JsDisplay : Display {
             document.getElementById("brainsView")!!,
             document.getElementById("brainDetails")!!
         )
+
+    override fun forVisualizer(): VisualizerDisplay = JsVisualizerDisplay()
 }
 
 class JsNetworkDisplay(document: Document) : NetworkDisplay {
@@ -72,10 +74,11 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             }
         }
 
-    override var nextFrameMs: Int = 0
+    override var showFrameMs: Int = 0
         set(value) {
             field = value
-            nextFrameElapsed.textContent = "${value}ms"
+            showFramerate.textContent = "${1000 / value}fps"
+            showElapsedMs.textContent = "${value}ms"
         }
 
     override var stats: Pinky.NetworkStats? = null
@@ -92,7 +95,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beats: List<Element>
     private var showList = emptyList<Show>()
     private val showListInput: HTMLSelectElement
-    private var nextFrameElapsed: Element
+    private var showFramerate: Element = document.getElementById("showFramerate")!!
+    private var showElapsedMs: Element = document.getElementById("showElapsedMs")!!
     private var statsSpan: Element
 
     init {
@@ -117,8 +121,6 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             onShowChange.invoke()
         }
 
-        element.appendText(".nextFrame(): ")
-        nextFrameElapsed = element.appendElement("span") {}
         element.appendElement("br") { }
         element.appendElement("b") { appendText("Data to Brains: ") }
         statsSpan = element.appendElement("span") {}
@@ -172,4 +174,16 @@ class JsBrainDisplay(container: Element, detailsContainer: Element) : BrainDispl
         myDiv.classList.remove("brain-offline")
         myDiv.classList.add("brain-link")
     }
+}
+
+class JsVisualizerDisplay : VisualizerDisplay {
+    private var visualizerFramerate: Element = document.getElementById("visualizerFramerate")!!
+    private var visualizerElapsedMs: Element = document.getElementById("visualizerElapsedMs")!!
+
+    override var renderMs: Int = 0
+        set(value) {
+            field = value
+            visualizerFramerate.textContent = "${1000 / value}fps"
+            visualizerElapsedMs.textContent = "${value}ms"
+        }
 }

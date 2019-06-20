@@ -35,8 +35,7 @@ void handle_net_out(void *arg, esp_event_base_t base, int32_t id, void *data) {
 }
 
 void
-MsgSlinger::start(uint16_t port)
-{
+MsgSlinger::start(uint16_t port) {
     m_port = port;
 
     ////////////////
@@ -159,8 +158,7 @@ MsgSlinger::bindSocket() {
 }
 
 void
-MsgSlinger::_inputPump()
-{
+MsgSlinger::_inputPump() {
     ESP_LOGI(TAG, "_inputPump starting");
 
     while(true) {
@@ -169,7 +167,7 @@ MsgSlinger::_inputPump()
         // Get a new input buffer message and make sure it has a reasonable
         // capacity.
         Msg* pMsg = Msg::obtain();
-        pMsg->prepCapacity(2000);
+        pMsg->prepCapacity(Msg::FRAGMENT_MAX);
 
         socklen_t socklen = pMsg->dest.size();
 
@@ -185,7 +183,7 @@ MsgSlinger::_inputPump()
             ESP_LOGE(TAG, "recvfrom failed: %d %s", errno, strerror(errno));
             // Delay at least a little bit so the rest of the system isn't horribly
             // gunked up on an endless error scenario. Presumably the socket
-            // we get re-bound at some point because an interface comes back up.
+            // will get re-bound at some point because an interface comes back up.
             vTaskDelay(pdMS_TO_TICKS(100));
             break;
         } else {
@@ -196,13 +194,81 @@ MsgSlinger::_inputPump()
             //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
             ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
 
-            if (m_handler) {
-                m_handler->handleMsg(pMsg);
-            } else {
-                ESP_LOGW(TAG, "Got input but no handler registered");
-            }
+            handleNetIn(pMsg);
         }
         pMsg->release();
+    }
+}
+
+void
+MsgSlinger::handleNetIn(Msg *pMsg) {
+    if (!pMsg) return;
+
+    // This message contains a header, so let's parse it
+    auto header = pMsg->readHeader();
+    ESP_LOGD(TAG, "Read a msg header");
+
+    if (header.frameOffset == 0) {
+        // It is a new message
+        if (header.frameSize == header.msgSize) {
+            // It is a single message so we can dispatch it as is
+            ESP_LOGD(TAG, "Dispatching single fragment message");
+            dispatch(pMsg);
+            ESP_LOGD(TAG, "Dispatch complete for single fragment message");
+        } else {
+            // It is merely the first fragment, so prepare ourselves
+            // for that.
+
+            // Allocate space for the whole message
+            if (!pMsg->prepCapacity(header.msgSize + Msg::HEADER_SIZE)) {
+                ESP_LOGE(TAG, "Unable to prep a fragged message of size %d, dropping it", header.msgSize);
+                return;
+            }
+            ESP_LOGD(TAG, "Got first segment of a fragmented message");
+
+            // Cool, we hold onto this message then (making sure not to leak
+            // anything that was previously hanging around)
+            if (m_pFraggedMsg) {
+                m_pFraggedMsg->release();
+            }
+            m_pFraggedMsg = pMsg;
+            m_pFraggedMsg->addRef();
+
+            m_nFraggedMsgId = header.id;
+        }
+    } else {
+        // It is a continuing fragment of an old message
+        if (!m_pFraggedMsg) {
+            ESP_LOGW(TAG, "Got continuation fragment for %d but do not have that message waiting.", header.id);
+            return;
+        }
+
+        if (header.id != m_nFraggedMsgId) {
+            ESP_LOGW(TAG, "Got continuation of %d but have %d, dropping both", header.id, m_nFraggedMsgId);
+            m_pFraggedMsg->release();
+            m_pFraggedMsg = nullptr;
+            return;
+        }
+
+        // Add this fragment, which is presumably the next fragment, and
+        // if it happens to be the last fragment, then we dispatch
+        ESP_LOGD(TAG, "Adding a fragment to an existing message");
+        if (m_pFraggedMsg->addFragment(pMsg)) {
+            // Oh hey, we should dispatch it!
+            ESP_LOGD(TAG, "Dispatching fragmented message");
+            dispatch(m_pFraggedMsg);
+            m_pFraggedMsg->release();
+            m_pFraggedMsg = nullptr;
+        }
+    }
+}
+
+void
+MsgSlinger::dispatch(Msg *pMsg) {
+    if (m_handler) {
+        m_handler->handleMsg(pMsg);
+    } else {
+        ESP_LOGW(TAG, "Got input but no handler registered");
     }
 }
 

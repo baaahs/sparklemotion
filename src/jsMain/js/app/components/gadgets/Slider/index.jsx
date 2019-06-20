@@ -18,43 +18,41 @@ class RangeSlider extends React.Component {
   constructor(props) {
     super(props);
 
-    let value = props.gadget.value;
     this.state = {
-      gadget: props.gadget,
-      value: value,
-      update: value,
+      value: props.gadget.value,
     };
-
-    props.gadget.listen({
-      onChanged: () => {
-        this.forceUpdate();
-      },
-    });
   }
 
-  onUpdate = (update) => {
-    this.setState({ update }, () => {
-      this.throttleUpdateGadgetValue(update);
-    });
+  componentDidMount() {
+    this.props.gadget.listen(this._handleChangeFromServer);
+  }
+
+  componentWillUnmount() {
+    if (this._handleChangeFromServer) {
+      this.props.gadget.unlisten(this._handleChangeFromServer);
+    }
+  }
+
+  _handleChangeFromServer = () => {
+    this.setState({ value: this.props.gadget.value });
   };
 
-  throttleUpdateGadgetValue = throttle((value) => {
-    this.props.gadget.value = value;
+  onUpdate = throttle((value) => {
+    this.onChange(value);
   }, 10);
 
   onChange = (value) => {
-    const { gadget } = this.props;
+    this.props.gadget.value = value;
     this.setState({ value });
-    gadget.value = value;
   };
 
   render() {
-    const { gadget, value, update } = this.state;
+    const { value } = this.state;
 
     return (
       <div className={sass['slider--wrapper']}>
         <label className={sass['slider--label']} htmlFor="range-slider">
-          {gadget.name}
+          {this.props.gadget.name}
         </label>
         <Slider
           vertical
@@ -63,7 +61,9 @@ class RangeSlider extends React.Component {
           step={0.01}
           domain={domain}
           rootStyle={sliderStyle}
-          onUpdate={this.onUpdate}
+          onUpdate={(values) => {
+            this.onUpdate(values[0]);
+          }}
           onChange={(values) => {
             this.onChange(values[0]);
           }}
