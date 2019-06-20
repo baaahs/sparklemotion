@@ -1,12 +1,12 @@
 import React from 'react';
 import ColorWheel from '../../ColorWheel';
 
-class ColorPicker extends React.Component {
+class PalettePicker extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      colors: [props.gadget.color],
+      colors: props.gadget.colors.toArray(),
     };
   }
 
@@ -18,23 +18,26 @@ class ColorPicker extends React.Component {
     this.props.gadget.unlisten(this._handleChangeFromServer);
   }
 
-  _handleChangeFromUi = ([colors]) => {
-    this.setState({ colors: [colors] });
-    this.props.gadget.color = colors;
+  _handleChangeFromUi = (colors) => {
+    this.setState({ colors });
+    this.props.gadget.colors = new kotlin.kotlin.collections.ArrayList(colors);
   };
 
   _handleChangeFromServer = () => {
-    this.setState({ colors: [this.props.gadget.color] });
+    this.setState({ colors: this.props.gadget.colors.toArray() });
   };
 
   render() {
+    const { colors } = this.state;
+
     return (
       <ColorWheel
-        colors={this.state.colors}
+        colors={colors}
         onChange={this._handleChangeFromUi}
+        isPalette
       />
     );
   }
 }
 
-export default ColorPicker;
+export default PalettePicker;
