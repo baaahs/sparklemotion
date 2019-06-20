@@ -67,6 +67,7 @@
   var SerializersModule = $module$kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
   var JsonConfiguration = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
   var Json = $module$kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
+  var ReferenceArraySerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.ReferenceArraySerializer;
   var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
@@ -124,6 +125,7 @@
   var toList_0 = Kotlin.kotlin.collections.toList_abgq59$;
   var get_list = $module$kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
+  var ArrayListSerializer = $module$kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var toShort = Kotlin.toShort;
@@ -232,6 +234,8 @@
   Show$RestartShowException.prototype.constructor = Show$RestartShowException;
   ColorPicker.prototype = Object.create(Gadget.prototype);
   ColorPicker.prototype.constructor = ColorPicker;
+  PalettePicker.prototype = Object.create(Gadget.prototype);
+  PalettePicker.prototype.constructor = PalettePicker;
   Slider.prototype = Object.create(Gadget.prototype);
   Slider.prototype.constructor = Slider;
   Type.prototype = Object.create(Enum.prototype);
@@ -804,8 +808,11 @@
   Color$Companion.prototype.parse_100t80$ = function (reader) {
     return new Color(reader.readInt());
   };
-  Color$Companion.prototype.fromInts = function (i) {
+  Color$Companion.prototype.fromInt = function (i) {
     return new Color(i);
+  };
+  Color$Companion.prototype.fromInts = function (r, g, b) {
+    return Color_init_1(r, g, b);
   };
   Color$Companion.prototype.fromString = function (hex) {
     var hexDigits = trimStart(hex, Kotlin.charArrayOf(35));
@@ -1324,6 +1331,7 @@
   };
   function gadgetModule$lambda$lambda($receiver) {
     $receiver.with_kmpi2j$(getKClass(ColorPicker), ColorPicker$Companion_getInstance().serializer());
+    $receiver.with_kmpi2j$(getKClass(PalettePicker), PalettePicker$Companion_getInstance().serializer());
     $receiver.with_kmpi2j$(getKClass(Slider), Slider$Companion_getInstance().serializer());
     return Unit;
   }
@@ -1333,6 +1341,9 @@
   }
   var gadgetModule;
   var jsonParser;
+  function array($receiver, kKlass) {
+    return new ReferenceArraySerializer(kKlass, $receiver);
+  }
   function GadgetManager(pubSub) {
     this.pubSub_0 = pubSub;
     this.activeGadgets_0 = ArrayList_init();
@@ -1396,6 +1407,7 @@
       }
     }
      else {
+      logger$Companion_getInstance().debug_61zpoe$("Gadgets don't match!\n" + ('old: ' + this.priorRequestedGadgets_0 + '\n') + ('new: ' + requestedGadgets));
       this.activeGadgets_0.clear();
       var tmp$_2;
       tmp$_2 = requestedGadgets.iterator();
@@ -4186,21 +4198,21 @@
   function Shenzarpy$WheelColor_initFields() {
     Shenzarpy$WheelColor_initFields = function () {
     };
-    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().fromInts(12721698));
-    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().fromInts(15434294));
-    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().fromInts(8174724));
-    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().fromInts(1212719));
-    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().fromInts(10469695));
-    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().fromInts(9401515));
-    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().fromInts(15434114));
-    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().fromInts(16706356));
-    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().fromInts(14750594));
-    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().fromInts(1812456));
-    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().fromInts(16041553));
-    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().fromInts(16046218));
-    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().fromInts(9947064));
-    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().fromInts(545175));
-    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().fromInts(16777215));
+    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().fromInt(12721698));
+    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().fromInt(15434294));
+    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().fromInt(8174724));
+    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().fromInt(1212719));
+    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().fromInt(10469695));
+    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().fromInt(9401515));
+    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().fromInt(15434114));
+    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().fromInt(16706356));
+    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().fromInt(14750594));
+    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().fromInt(1812456));
+    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().fromInt(16041553));
+    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().fromInt(16046218));
+    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().fromInt(9947064));
+    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().fromInt(545175));
+    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().fromInt(16777215));
     Shenzarpy$WheelColor$Companion_getInstance();
   }
   var Shenzarpy$WheelColor$RED_instance;
@@ -5091,6 +5103,144 @@
   };
   ColorPicker.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue)))));
+  };
+  function PalettePicker(name, initialColors) {
+    PalettePicker$Companion_getInstance();
+    if (initialColors === void 0)
+      initialColors = emptyList();
+    Gadget.call(this);
+    this.name = name;
+    this.initialColors = initialColors;
+    this.colors_a88nfe$_0 = this.updatable_t7zvzq$('colors', this.initialColors, get_list(Color$Companion_getInstance().serializer()));
+  }
+  var PalettePicker$colors_metadata = new PropertyMetadata('colors');
+  Object.defineProperty(PalettePicker.prototype, 'colors', {
+    get: function () {
+      return this.colors_a88nfe$_0.getValue_lrcp0p$(this, PalettePicker$colors_metadata);
+    },
+    set: function (colors) {
+      this.colors_a88nfe$_0.setValue_9rddgb$(this, PalettePicker$colors_metadata, colors);
+    }
+  });
+  function PalettePicker$Companion() {
+    PalettePicker$Companion_instance = this;
+  }
+  PalettePicker$Companion.prototype.serializer = function () {
+    return PalettePicker$$serializer_getInstance();
+  };
+  PalettePicker$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PalettePicker$Companion_instance = null;
+  function PalettePicker$Companion_getInstance() {
+    if (PalettePicker$Companion_instance === null) {
+      new PalettePicker$Companion();
+    }
+    return PalettePicker$Companion_instance;
+  }
+  function PalettePicker$$serializer() {
+    this.descriptor_inlol9$_0 = new SerialClassDescImpl('baaahs.gadgets.PalettePicker', this);
+    this.descriptor.addElement_ivxn3r$('name', false);
+    this.descriptor.addElement_ivxn3r$('initialColors', true);
+    PalettePicker$$serializer_instance = this;
+  }
+  Object.defineProperty(PalettePicker$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_inlol9$_0;
+    }
+  });
+  PalettePicker$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.name);
+    if (!equals(obj.initialColors, emptyList()) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 1))
+      output.encodeSerializableElement_blecud$(this.descriptor, 1, new ArrayListSerializer(Color$Companion_getInstance()), obj.initialColors);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  PalettePicker$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeStringElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, new ArrayListSerializer(Color$Companion_getInstance())) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, new ArrayListSerializer(Color$Companion_getInstance()), local1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return PalettePicker_init(bitMask0, local0, local1, null);
+  };
+  PalettePicker$$serializer.prototype.childSerializers = function () {
+    return [internal.StringSerializer, new ArrayListSerializer(Color$Companion_getInstance())];
+  };
+  PalettePicker$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var PalettePicker$$serializer_instance = null;
+  function PalettePicker$$serializer_getInstance() {
+    if (PalettePicker$$serializer_instance === null) {
+      new PalettePicker$$serializer();
+    }
+    return PalettePicker$$serializer_instance;
+  }
+  function PalettePicker_init(seen1, name, initialColors, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(PalettePicker.prototype);
+    Gadget.call($this);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('name');
+    else
+      $this.name = name;
+    if ((seen1 & 2) === 0)
+      $this.initialColors = emptyList();
+    else
+      $this.initialColors = initialColors;
+    $this.colors_a88nfe$_0 = $this.updatable_t7zvzq$('colors', $this.initialColors, get_list(Color$Companion_getInstance().serializer()));
+    return $this;
+  }
+  PalettePicker.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PalettePicker',
+    interfaces: [Gadget]
+  };
+  PalettePicker.prototype.component1 = function () {
+    return this.name;
+  };
+  PalettePicker.prototype.component2 = function () {
+    return this.initialColors;
+  };
+  PalettePicker.prototype.copy_dm5ovu$ = function (name, initialColors) {
+    return new PalettePicker(name === void 0 ? this.name : name, initialColors === void 0 ? this.initialColors : initialColors);
+  };
+  PalettePicker.prototype.toString = function () {
+    return 'PalettePicker(name=' + Kotlin.toString(this.name) + (', initialColors=' + Kotlin.toString(this.initialColors)) + ')';
+  };
+  PalettePicker.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.initialColors) | 0;
+    return result;
+  };
+  PalettePicker.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialColors, other.initialColors)))));
   };
   function Slider(name, initialValue) {
     Slider$Companion_getInstance();
@@ -6556,7 +6706,7 @@
   function RandomShader$Renderer() {
   }
   RandomShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return Color$Companion_getInstance().fromInts(Random.Default.nextInt_za3lpa$(16777215) | 0);
+    return Color$Companion_getInstance().fromInt(Random.Default.nextInt_za3lpa$(16777215) | 0);
   };
   RandomShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -7269,8 +7419,8 @@
     PanelTweenShow_instance = this;
     Show.call(this, 'PanelTweenShow');
   }
-  function PanelTweenShow$createRenderer$ObjectLiteral(closure$colorArray, closure$showRunner) {
-    this.closure$colorArray = closure$colorArray;
+  function PanelTweenShow$createRenderer$ObjectLiteral(closure$showRunner, closure$initialColors) {
+    this.palettePicker = closure$showRunner.getGadget_vedre8$('palette', new PalettePicker('Palette', closure$initialColors));
     this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.0));
     this.solidShader = new SolidShader();
     this.sparkleShader = new SparkleShader();
@@ -7291,17 +7441,15 @@
   }
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var now = getTimeMillis().and(L268435455).toInt();
-    var $receiver = this.shaderBuffers;
-    this.closure$colorArray;
+    var colors = this.palettePicker.colors;
     var tmp$, tmp$_0;
     var index = 0;
-    tmp$ = $receiver.iterator();
+    tmp$ = this.shaderBuffers.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      var closure$colorArray = this.closure$colorArray;
-      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % closure$colorArray.length;
-      var startColor = closure$colorArray[colorIndex];
-      var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
+      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % colors.size;
+      var startColor = colors.get_za3lpa$(colorIndex);
+      var endColor = colors.get_za3lpa$((colorIndex + 1 | 0) % colors.size);
       var tweenedColor = startColor.fade_6zkv30$(endColor, now % this.fadeTimeMs / this.fadeTimeMs);
       item.solidShader.color = tweenedColor;
       item.sparkleShader.color = Color$Companion_getInstance().WHITE;
@@ -7313,8 +7461,8 @@
     interfaces: [Show$Renderer]
   };
   PanelTweenShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
-    var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
-    return new PanelTweenShow$createRenderer$ObjectLiteral(colorArray, showRunner);
+    var initialColors = listOf([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
+    return new PanelTweenShow$createRenderer$ObjectLiteral(showRunner, initialColors);
   };
   function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
     this.solidShader = solidShader;
@@ -11112,6 +11260,7 @@
       return gadgetModule;
     }
   });
+  package$baaahs.array_byae19$ = array;
   GadgetManager.GadgetInfo = GadgetManager$GadgetInfo;
   package$baaahs.GadgetManager = GadgetManager;
   Mapper.BrainMapper = Mapper$BrainMapper;
@@ -11323,6 +11472,13 @@
   });
   var package$gadgets = package$baaahs.gadgets || (package$baaahs.gadgets = {});
   package$gadgets.ColorPicker = ColorPicker;
+  Object.defineProperty(PalettePicker, 'Companion', {
+    get: PalettePicker$Companion_getInstance
+  });
+  Object.defineProperty(PalettePicker, '$serializer', {
+    get: PalettePicker$$serializer_getInstance
+  });
+  package$gadgets.PalettePicker = PalettePicker;
   Object.defineProperty(Slider, 'Companion', {
     get: Slider$Companion_getInstance
   });
@@ -11577,6 +11733,7 @@
   Color$Companion.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  PalettePicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
