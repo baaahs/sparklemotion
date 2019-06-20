@@ -11,7 +11,6 @@
 #include "led-renderer.h"
 #include "shade-tree.h"
 #include "sysmon.h"
-#include "brain-ui.h"
 
 class Brain : public MsgHandler {
 public:
@@ -33,8 +32,6 @@ private:
 
     ShadeTree m_shadeTree;
     SysMon m_sysMon;
-
-    BrainUI m_brainUI;
 
     void msgBrainPanelShade(Msg* pMsg);
     void msgMapperHello(Msg* pMsg);
