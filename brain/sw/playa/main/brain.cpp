@@ -105,7 +105,6 @@ void
 Brain::start()
 {
     m_sysMon.start();
-    m_brainUI.start();
 
     m_msgSlinger.registerHandler(this);
     m_msgSlinger.start(BRAIN_PORT);
