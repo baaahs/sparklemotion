@@ -34,7 +34,7 @@ SysMon::_task() {
     // Initialization
     // Task actions
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = 1 * xPortGetTickRateHz();
+    const TickType_t xFrequency = 30 * xPortGetTickRateHz();
 
     while(1) {
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
