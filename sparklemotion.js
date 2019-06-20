@@ -632,6 +632,7 @@
       pixels.set_ibd5tj$(i, this.renderer.draw_b23bvv$(this.buffer, i));
     }
     this.renderer.endFrame();
+    pixels.finishedFrame();
   };
   Brain$ShaderBits.$metadata$ = {
     kind: Kind_CLASS,
@@ -3810,6 +3811,8 @@
       return new IntRange(0, this.size - 1 | 0);
     }
   });
+  Pixels.prototype.finishedFrame = function () {
+  };
   function Pixels$iterator$ObjectLiteral(this$Pixels) {
     this.this$Pixels = this$Pixels;
     this.i_0 = 0;
@@ -11846,11 +11849,13 @@
   FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
   BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
   BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  VizPanel$VizPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
   GadgetDataSerializer = get_map(to(serializer(kotlin_js_internal_StringCompanionObject), JsonElement.Companion.serializer()));
   gadgetModule = SerializersModule(gadgetModule$lambda);
