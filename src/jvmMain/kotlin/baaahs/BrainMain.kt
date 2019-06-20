@@ -96,6 +96,9 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
     override fun set(colors: Array<Color>) {
         val pixCount = min(colors.size, size)
         colors.copyInto(this.colors, 0, 0, pixCount)
+    }
+
+    override fun finishedFrame() {
         canvas.repaint()
     }
 }

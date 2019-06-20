@@ -136,6 +136,7 @@ class Brain(
                 pixels[i] = renderer.draw(buffer, i)
             }
             renderer.endFrame()
+            pixels.finishedFrame()
         }
     }
 
