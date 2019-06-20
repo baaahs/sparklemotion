@@ -191,6 +191,8 @@
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var toTypedArray = Kotlin.kotlin.collections.toTypedArray_964n91$;
+  var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
+  var toMap = Kotlin.kotlin.collections.toMap_6hr0sd$;
   var Quaternion = THREE.Quaternion;
   var Matrix4_init = THREE.Matrix4;
   var Line3 = THREE.Line3;
@@ -9628,6 +9630,7 @@
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.local$this$SheepSimulator = this$SheepSimulator_0;
+    this.local$queryParams = void 0;
     this.local$launcher = void 0;
     this.local$$receiver = void 0;
   }
@@ -9643,6 +9646,7 @@
       try {
         switch (this.state_0) {
           case 0:
+            this.local$queryParams = decodeQueryParams(ensureNotNull(document.location));
             launch(this.local$this$SheepSimulator.pinkyScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda(this.local$this$SheepSimulator));
             this.local$launcher = new Launcher(ensureNotNull(document.getElementById('launcher')));
             this.local$$receiver = this.local$launcher.add_yfl68i$('Web UI', SheepSimulator$start$lambda$lambda_0(this.local$this$SheepSimulator));
@@ -9656,28 +9660,40 @@
           case 2:
             this.local$$receiver.click();
             this.local$launcher.add_yfl68i$('Mapper', SheepSimulator$start$lambda$lambda_1(this.local$this$SheepSimulator));
-            var tmp$, tmp$_0;
+            var key = 'pixelDensity';
+            var tmp$;
+            var pixelDensity = toDouble((tmp$ = this.local$queryParams.get_11rb$(key)) != null ? tmp$ : '0.2');
+            var key_0 = 'pixelSpacing';
+            var tmp$_0;
+            var pixelSpacing = toDouble((tmp$_0 = this.local$queryParams.get_11rb$(key_0)) != null ? tmp$_0 : '2');
+            var pixelArranger = new SwirlyPixelArranger(pixelDensity, pixelSpacing);
+            var totalPixels = {v: 0};
+            var tmp$_1, tmp$_0_0;
             var index = 0;
-            tmp$ = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_0(compareBy$lambda_0(getPropertyCallableRef('name', 1, function ($receiver) {
+            tmp$_1 = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_0(compareBy$lambda_0(getPropertyCallableRef('name', 1, function ($receiver) {
               return $receiver.name;
             })))).iterator();
-            while (tmp$.hasNext()) {
-              var item = tmp$.next();
+            while (tmp$_1.hasNext()) {
+              var item = tmp$_1.next();
               var this$SheepSimulator = this.local$this$SheepSimulator;
-              var index_0 = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-              var tmp$_1;
-              var jsPanel = this$SheepSimulator.visualizer_0.addPanel_jfju1k$(item);
-              var pixelLocations = ensureNotNull(jsPanel.getPixelLocations());
+              var index_0 = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
+              var tmp$_2;
+              var vizPanel = this$SheepSimulator.visualizer_0.addPanel_jfju1k$(item);
+              var pixelPositions = pixelArranger.arrangePixels_zdreix$(vizPanel);
+              vizPanel.vizPixels = new VizPanel$VizPixels(pixelPositions);
+              totalPixels.v = totalPixels.v + pixelPositions.length | 0;
+              document.getElementById('visualizerPixelCount').innerText = totalPixels.v.toString();
+              var pixelLocations = ensureNotNull(vizPanel.getPixelLocations());
               this$SheepSimulator.pinky_0.providePixelMapping_td2c2y$(item, pixelLocations);
-              var brain = new Brain('brain//' + index_0, this$SheepSimulator.network_0, this$SheepSimulator.display_0.forBrain(), (tmp$_1 = jsPanel.vizPixels) != null ? tmp$_1 : SheepSimulator$NullPixels_getInstance());
+              var brain = new Brain('brain//' + index_0, this$SheepSimulator.network_0, this$SheepSimulator.display_0.forBrain(), (tmp$_2 = vizPanel.vizPixels) != null ? tmp$_2 : SheepSimulator$NullPixels_getInstance());
               this$SheepSimulator.pinky_0.providePanelMapping_epc2uw$(new BrainId(brain.id), item);
               launch(this$SheepSimulator.brainScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda_0(brain));
             }
 
-            var tmp$_2;
-            tmp$_2 = this.local$this$SheepSimulator.sheepModel_0.eyes.iterator();
-            while (tmp$_2.hasNext()) {
-              var element = tmp$_2.next();
+            var tmp$_3;
+            tmp$_3 = this.local$this$SheepSimulator.sheepModel_0.eyes.iterator();
+            while (tmp$_3.hasNext()) {
+              var element = tmp$_3.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
               this$SheepSimulator_0.visualizer_0.addMovingHead_nmqlne$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
@@ -10277,11 +10293,44 @@
     simpleName: 'FakeMediaDevices',
     interfaces: [MediaDevices]
   };
+  function decodeQueryParams(location) {
+    var query = location.search;
+    if (startsWith(query, '?')) {
+      return decodeQueryParams_0(query.substring(1));
+    }
+     else {
+      return emptyMap();
+    }
+  }
+  function decodeHashParams(location) {
+    var hash = location.hash;
+    if (startsWith(hash, '#')) {
+      return decodeQueryParams_0(hash.substring(1));
+    }
+     else {
+      return emptyMap();
+    }
+  }
+  function decodeQueryParams_0($receiver) {
+    var $receiver_0 = split($receiver, ['&']);
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$;
+    tmp$ = $receiver_0.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0 = destination.add_11rb$;
+      var tmp$_1 = split(item, ['='], void 0, 2);
+      var k = tmp$_1.get_za3lpa$(0);
+      var v = tmp$_1.get_za3lpa$(1);
+      tmp$_0.call(destination, to(decodeURIComponent(k), decodeURIComponent(v)));
+    }
+    return toMap(destination);
+  }
   function SwirlyPixelArranger(pixelDensity, pixelSpacing) {
     if (pixelDensity === void 0)
       pixelDensity = 0.2;
     if (pixelSpacing === void 0)
-      pixelSpacing = 2;
+      pixelSpacing = 2.0;
     this.pixelDensity_0 = pixelDensity;
     this.pixelSpacing_0 = pixelSpacing;
   }
@@ -10467,7 +10516,6 @@
   function Visualizer(sheepModel) {
     this.mapperIsRunning_y90e96$_0 = false;
     this.frameListeners_0 = ArrayList_init();
-    this.renderPixels_0 = true;
     this.controls_0 = null;
     this.camera_0 = null;
     this.scene_0 = null;
@@ -10484,8 +10532,6 @@
     this.vizPanels_0 = ArrayList_init();
     var tmp$;
     this.sheepView_0 = Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE();
-    this.pixelDensity_0 = 0.2;
-    this.totalPixels_0 = 0;
     this.sheepView_0.addEventListener('mousemove', Visualizer_init$lambda(this), false);
     this.camera_0 = new PerspectiveCamera_init(45, this.sheepView_0.offsetWidth / this.sheepView_0.offsetHeight, 1, 10000);
     this.camera_0.position.z = 1000.0;
@@ -10567,13 +10613,6 @@
   Visualizer.prototype.addPanel_jfju1k$ = function (p) {
     var vizPanel = new VizPanel(p, this.geom_0, this.scene_0);
     this.vizPanels_0.add_11rb$(vizPanel);
-    if (this.renderPixels_0) {
-      var pixelArranger = new SwirlyPixelArranger(this.pixelDensity_0, 2);
-      var pixelPositions = pixelArranger.arrangePixels_zdreix$(vizPanel);
-      vizPanel.vizPixels = new VizPanel$VizPixels(pixelPositions);
-      this.totalPixels_0 = this.totalPixels_0 + pixelPositions.length | 0;
-    }
-    document.getElementById('visualizerPixelCount').innerText = this.totalPixels_0.toString();
     return vizPanel;
   };
   Visualizer.prototype.addMovingHead_nmqlne$ = function (movingHead, dmxUniverse) {
@@ -11520,6 +11559,9 @@
   package$net.BrowserNetwork = BrowserNetwork;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$sim.FakeMediaDevices = FakeMediaDevices;
+  _.decodeQueryParams_h13imq$ = decodeQueryParams;
+  _.decodeHashParams_h13imq$ = decodeHashParams;
+  _.decodeQueryParams_pdl1vz$ = decodeQueryParams_0;
   SwirlyPixelArranger.PanelArranger = SwirlyPixelArranger$PanelArranger;
   var package$visualizer = package$baaahs.visualizer || (package$baaahs.visualizer = {});
   package$visualizer.SwirlyPixelArranger = SwirlyPixelArranger;
