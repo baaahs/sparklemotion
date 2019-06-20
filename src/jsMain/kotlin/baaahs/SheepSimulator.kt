@@ -48,7 +48,7 @@ class SheepSimulator {
         }
 
         val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "2" }.toFloat()
+        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
         val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
         var totalPixels = 0
 
@@ -57,7 +57,7 @@ class SheepSimulator {
 
             val vizPanel = visualizer.addPanel(panel)
             val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizPanel.VizPixels(pixelPositions)
+            vizPanel.vizPixels = VizPanel.VizPixels(vizPanel, pixelPositions)
 
             totalPixels += pixelPositions.size
             document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
