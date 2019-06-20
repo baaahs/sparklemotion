@@ -10,8 +10,8 @@ class IOTest {
 
         expect(
             listOf(
-                0, 0, 0, 4,
-                0, 'a'.toByte(), 0, 'b'.toByte(), 0, 'c'.toByte(), 34, 2
+                0, 0, 0, 6,
+                'a'.toByte(), 'b'.toByte(), 'c'.toByte(), -30, -120, -126
             )
         ) { abcBuffer.toList() }
     }
