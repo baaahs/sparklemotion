@@ -1,8 +1,6 @@
 package baaahs.visualizer
 
-import baaahs.Config
-import baaahs.SheepModel
-import baaahs.Shenzarpy
+import baaahs.*
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -32,7 +30,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel) {
+class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay) {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked
@@ -220,7 +218,9 @@ class Visualizer(sheepModel: SheepModel) {
             }
         }
 
+        val startMs = getTimeMillis()
         renderer.render(scene, camera)
+        display.renderMs = (getTimeMillis() - startMs).toInt()
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
         rendererListeners.forEach { value -> value() }

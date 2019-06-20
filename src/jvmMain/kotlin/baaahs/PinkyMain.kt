@@ -49,8 +49,8 @@ fun main(args: Array<String>) {
             override var selectedShow: Show? = null
                 set(value) { field = value; println("selectedShow: ${value}") }
 
-            override var nextFrameMs: Int = 0
-                set(value) { field = value; /* println("nextFrameMs: ${value}") */ }
+            override var showFrameMs: Int = 0
+                set(value) { field = value; /* println("showFrameMs: ${value}") */ }
         })
 
     GlobalScope.launch { pinky.run() }

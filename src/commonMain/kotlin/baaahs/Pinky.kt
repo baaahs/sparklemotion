@@ -70,7 +70,7 @@ class Pinky(
             val elapsedMs = time {
                 drawNextFrame()
             }
-            display.nextFrameMs = elapsedMs.toInt()
+            display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
 
             delay(50)
