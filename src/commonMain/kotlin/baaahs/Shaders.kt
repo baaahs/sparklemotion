@@ -96,6 +96,8 @@ interface Pixels : Iterable<Color> {
 
     fun set(colors: Array<Color>)
 
+    fun finishedFrame() {}
+
     override fun iterator(): Iterator<Color> {
         return object : Iterator<Color> {
             private var i = 0
