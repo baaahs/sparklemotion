@@ -47,12 +47,12 @@ static void phy_device_power_enable_via_gpio(bool enable)
     }
 
     gpio_pad_select_gpio(PIN_PHY_POWER);
-    gpio_set_direction(PIN_PHY_POWER, GPIO_MODE_OUTPUT);
+    gpio_set_direction((gpio_num_t)PIN_PHY_POWER, (gpio_mode_t)GPIO_MODE_OUTPUT);
     if (enable == true) {
-        gpio_set_level(PIN_PHY_POWER, 1);
+        gpio_set_level((gpio_num_t)PIN_PHY_POWER, 1);
         ESP_LOGI(TAG, "Power On Ethernet PHY");
     } else {
-        gpio_set_level(PIN_PHY_POWER, 0);
+        gpio_set_level((gpio_num_t)PIN_PHY_POWER, 0);
         ESP_LOGI(TAG, "Power Off Ethernet PHY");
     }
 
