@@ -962,7 +962,7 @@
     this.beat_6xdvy1$_0 = 0;
     this.onShowChange_33sz01$_0 = StubPinkyDisplay$onShowChange$lambda;
     this.selectedShow_fwpmt$_0 = null;
-    this.nextFrameMs_1o69ux$_0 = 0;
+    this.showFrameMs_1he7j5$_0 = 0;
     this.stats_6me6mw$_0 = null;
   }
   StubPinkyDisplay.prototype.listShows_3lsa6o$ = function (shows) {
@@ -999,12 +999,12 @@
       this.selectedShow_fwpmt$_0 = selectedShow;
     }
   });
-  Object.defineProperty(StubPinkyDisplay.prototype, 'nextFrameMs', {
+  Object.defineProperty(StubPinkyDisplay.prototype, 'showFrameMs', {
     get: function () {
-      return this.nextFrameMs_1o69ux$_0;
+      return this.showFrameMs_1he7j5$_0;
     },
-    set: function (nextFrameMs) {
-      this.nextFrameMs_1o69ux$_0 = nextFrameMs;
+    set: function (showFrameMs) {
+      this.showFrameMs_1he7j5$_0 = showFrameMs;
     }
   });
   Object.defineProperty(StubPinkyDisplay.prototype, 'stats', {
@@ -1028,6 +1028,13 @@
   BrainDisplay.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'BrainDisplay',
+    interfaces: []
+  };
+  function VisualizerDisplay() {
+  }
+  VisualizerDisplay.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'VisualizerDisplay',
     interfaces: []
   };
   function Dmx() {
@@ -2926,7 +2933,7 @@
             this.$this.updateSurfaces_8be2vx$();
             this.$this.networkStats_0.reset_8be2vx$();
             var elapsedMs = time(Pinky$run$lambda_3(this.$this));
-            this.$this.display.nextFrameMs = elapsedMs.toInt();
+            this.$this.display.showFrameMs = elapsedMs.toInt();
             this.$this.display.stats = this.$this.networkStats_0;
             this.state_0 = 5;
             this.result_0 = delay(L50, this);
@@ -8603,6 +8610,9 @@
   JsDisplay.prototype.forBrain = function () {
     return new JsBrainDisplay(ensureNotNull(document.getElementById('brainsView')), ensureNotNull(document.getElementById('brainDetails')));
   };
+  JsDisplay.prototype.forVisualizer = function () {
+    return new JsVisualizerDisplay();
+  };
   JsDisplay.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'JsDisplay',
@@ -8650,7 +8660,7 @@
   function JsPinkyDisplay(element) {
     this.onShowChange_ii9f5g$_0 = JsPinkyDisplay$onShowChange$lambda;
     this.selectedShow_l65oio$_0 = null;
-    this.nextFrameMs_yg3jc4$_0 = 0;
+    this.showFrameMs_vaj1y2$_0 = 0;
     this.stats_qcsqqr$_0 = null;
     this.brainCountDiv_0 = null;
     this.beat1_0 = null;
@@ -8660,7 +8670,8 @@
     this.beats_0 = null;
     this.showList_0 = emptyList();
     this.showListInput_0 = null;
-    this.nextFrameElapsed_0 = null;
+    this.showFramerate_0 = ensureNotNull(document.getElementById('showFramerate'));
+    this.showElapsedMs_0 = ensureNotNull(document.getElementById('showElapsedMs'));
     this.statsSpan_0 = null;
     var tmp$;
     appendText(element, 'Brains online: ');
@@ -8674,11 +8685,9 @@
     appendElement(element, 'b', JsPinkyDisplay_init$lambda_5);
     this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda_6), HTMLSelectElement) ? tmp$ : throwCCE();
     this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_7(this);
-    appendText(element, '.nextFrame(): ');
-    this.nextFrameElapsed_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_8);
-    appendElement(element, 'br', JsPinkyDisplay_init$lambda_9);
-    appendElement(element, 'b', JsPinkyDisplay_init$lambda_10);
-    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_11);
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_8);
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_9);
+    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_10);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
   }
@@ -8705,13 +8714,14 @@
       }
     }
   });
-  Object.defineProperty(JsPinkyDisplay.prototype, 'nextFrameMs', {
+  Object.defineProperty(JsPinkyDisplay.prototype, 'showFrameMs', {
     get: function () {
-      return this.nextFrameMs_yg3jc4$_0;
+      return this.showFrameMs_vaj1y2$_0;
     },
     set: function (value) {
-      this.nextFrameMs_yg3jc4$_0 = value;
-      this.nextFrameElapsed_0.textContent = value.toString() + 'ms';
+      this.showFrameMs_vaj1y2$_0 = value;
+      this.showFramerate_0.textContent = (1000 / value | 0).toString() + 'fps';
+      this.showElapsedMs_0.textContent = value.toString() + 'ms';
     }
   });
   Object.defineProperty(JsPinkyDisplay.prototype, 'stats', {
@@ -8831,13 +8841,10 @@
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_9($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_10($receiver) {
     appendText($receiver, 'Data to Brains: ');
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_11($receiver) {
+  function JsPinkyDisplay_init$lambda_10($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -9016,6 +9023,26 @@
     kind: Kind_CLASS,
     simpleName: 'JsBrainDisplay',
     interfaces: [BrainDisplay]
+  };
+  function JsVisualizerDisplay() {
+    this.visualizerFramerate_0 = ensureNotNull(document.getElementById('visualizerFramerate'));
+    this.visualizerElapsedMs_0 = ensureNotNull(document.getElementById('visualizerElapsedMs'));
+    this.renderMs_lh9op3$_0 = 0;
+  }
+  Object.defineProperty(JsVisualizerDisplay.prototype, 'renderMs', {
+    get: function () {
+      return this.renderMs_lh9op3$_0;
+    },
+    set: function (value) {
+      this.renderMs_lh9op3$_0 = value;
+      this.visualizerFramerate_0.textContent = (1000 / value | 0).toString() + 'fps';
+      this.visualizerElapsedMs_0.textContent = value.toString() + 'ms';
+    }
+  });
+  JsVisualizerDisplay.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsVisualizerDisplay',
+    interfaces: [VisualizerDisplay]
   };
   function Comparator$ObjectLiteral(closure$comparison) {
     this.closure$comparison = closure$comparison;
@@ -9547,7 +9574,7 @@
     $receiver.load();
     this.sheepModel_0 = $receiver;
     this.shows_0 = AllShows$Companion_getInstance().allShows;
-    this.visualizer_0 = new Visualizer(this.sheepModel_0);
+    this.visualizer_0 = new Visualizer(this.sheepModel_0, this.display_0.forVisualizer());
     this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.display_0.forPinky());
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -10661,7 +10688,8 @@
     simpleName: 'SwirlyPixelArranger',
     interfaces: []
   };
-  function Visualizer(sheepModel) {
+  function Visualizer(sheepModel, display) {
+    this.display_0 = display;
     this.mapperIsRunning_y90e96$_0 = false;
     this.frameListeners_0 = ArrayList_init();
     this.controls_0 = null;
@@ -10854,7 +10882,9 @@
         (Kotlin.isType(tmp$ = document.getElementById('selectionInfo'), HTMLDivElement) ? tmp$ : throwCCE()).innerText = 'Selected: ' + toString_0(intersections.get_za3lpa$(0).object.panel.name);
       }
     }
+    var startMs = getTimeMillis();
     this.renderer_0.render(this.scene_0, this.camera_0);
+    this.display_0.renderMs = getTimeMillis().subtract(startMs).toInt();
     var tmp$_2;
     tmp$_2 = this.frameListeners_0.iterator();
     while (tmp$_2.hasNext()) {
@@ -11236,6 +11266,7 @@
   package$baaahs.PinkyDisplay = PinkyDisplay;
   package$baaahs.StubPinkyDisplay = StubPinkyDisplay;
   package$baaahs.BrainDisplay = BrainDisplay;
+  package$baaahs.VisualizerDisplay = VisualizerDisplay;
   Dmx.Universe = Dmx$Universe;
   Dmx.Buffer = Dmx$Buffer;
   Dmx.DeviceType = Dmx$DeviceType;
@@ -11681,6 +11712,7 @@
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
   package$baaahs.JsBrainDisplay = JsBrainDisplay;
+  package$baaahs.JsVisualizerDisplay = JsVisualizerDisplay;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.PanelInfo = PanelInfo;
   package$baaahs.Launcher = Launcher;
