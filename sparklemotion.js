@@ -203,8 +203,11 @@
   var OrbitControls = THREE.OrbitControls;
   var PointsMaterial = THREE.PointsMaterial;
   var Raycaster_init = THREE.Raycaster;
+  var TextureLoader_init = THREE.TextureLoader;
   var minus_0 = $module$threejs_wrapper.info.laht.threekt.math.minus_gulir3$;
   var Float32BufferAttribute = THREE.Float32BufferAttribute;
+  var BufferGeometryUtils$Companion = THREE.BufferGeometryUtils;
+  var PlaneBufferGeometry = THREE.PlaneBufferGeometry;
   var Triangle = THREE.Triangle;
   var indexOf = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
@@ -9840,7 +9843,7 @@
             var pixelDensity = toDouble((tmp$ = this.local$queryParams.get_11rb$(key)) != null ? tmp$ : '0.2');
             var key_0 = 'pixelSpacing';
             var tmp$_0;
-            var pixelSpacing = toDouble((tmp$_0 = this.local$queryParams.get_11rb$(key_0)) != null ? tmp$_0 : '2');
+            var pixelSpacing = toDouble((tmp$_0 = this.local$queryParams.get_11rb$(key_0)) != null ? tmp$_0 : '3');
             var pixelArranger = new SwirlyPixelArranger(pixelDensity, pixelSpacing);
             var totalPixels = {v: 0};
             var tmp$_1, tmp$_0_0;
@@ -9855,7 +9858,7 @@
               var tmp$_2;
               var vizPanel = this$SheepSimulator.visualizer_0.addPanel_jfju1k$(item);
               var pixelPositions = pixelArranger.arrangePixels_zdreix$(vizPanel);
-              vizPanel.vizPixels = new VizPanel$VizPixels(pixelPositions);
+              vizPanel.vizPixels = new VizPanel$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
               document.getElementById('visualizerPixelCount').innerText = totalPixels.v.toString();
               var pixelLocations = ensureNotNull(vizPanel.getPixelLocations());
@@ -10940,6 +10943,7 @@
     interfaces: []
   };
   function VizPanel(panel, geom, scene) {
+    VizPanel$Companion_getInstance();
     this.geom_0 = geom;
     this.scene_0 = scene;
     this.name_0 = panel.name;
@@ -11072,6 +11076,34 @@
       this.scene_0.add(element_1);
     }
   }
+  function VizPanel$Companion() {
+    VizPanel$Companion_instance = this;
+    this.roundLightTx_0 = (new TextureLoader_init()).load('./visualizer/textures/round.png', VizPanel$Companion$roundLightTx$lambda, VizPanel$Companion$roundLightTx$lambda_0, VizPanel$Companion$roundLightTx$lambda_1);
+  }
+  function VizPanel$Companion$roundLightTx$lambda(it) {
+    println('loaded!');
+    return Unit;
+  }
+  function VizPanel$Companion$roundLightTx$lambda_0(it) {
+    println('progress!');
+    return Unit;
+  }
+  function VizPanel$Companion$roundLightTx$lambda_1(it) {
+    println('error!');
+    return Unit;
+  }
+  VizPanel$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var VizPanel$Companion_instance = null;
+  function VizPanel$Companion_getInstance() {
+    if (VizPanel$Companion_instance === null) {
+      new VizPanel$Companion();
+    }
+    return VizPanel$Companion_instance;
+  }
   Object.defineProperty(VizPanel.prototype, 'vizPixels', {
     get: function () {
       return this.vizPixels_6qsto5$_0;
@@ -11098,11 +11130,11 @@
     simpleName: 'Point2',
     interfaces: []
   };
-  function VizPanel$VizPixels(positions) {
+  function VizPanel$VizPixels(vizPanel, positions) {
     this.size_cgbufu$_0 = positions.length;
-    this.points_0 = null;
     this.pixGeometry_0 = new BufferGeometry();
-    this.colorsBufferAttr_0 = null;
+    this.planeGeometry_0 = null;
+    this.vertexColorBufferAttr_0 = null;
     this.colorsAsInts_0 = new Int32Array(this.size);
     var positionsArray = new Float32Array(this.size * 3 | 0);
     var tmp$, tmp$_0;
@@ -11116,17 +11148,31 @@
     }
     var positionsBufferAttr = new Float32BufferAttribute(positionsArray, 3);
     this.pixGeometry_0.addAttribute('position', positionsBufferAttr);
-    this.colorsBufferAttr_0 = new Float32BufferAttribute(new Float32Array(this.size * 3 | 0), 3);
-    this.colorsBufferAttr_0.dynamic = true;
-    this.pixGeometry_0.addAttribute('color', this.colorsBufferAttr_0);
-    var $receiver = new PointsMaterial();
-    $receiver.size = 3;
+    this.vertexColorBufferAttr_0 = new Float32BufferAttribute(new Float32Array((this.size * 3 | 0) * 4 | 0), 3);
+    this.vertexColorBufferAttr_0.dynamic = true;
+    var rotator = new Rotator(new Vector3(0, 0, 1), vizPanel.panelNormal_0);
+    var destination = ArrayList_init_0(positions.length);
+    var tmp$_1;
+    for (tmp$_1 = 0; tmp$_1 !== positions.length; ++tmp$_1) {
+      var item_0 = positions[tmp$_1];
+      var tmp$_2 = destination.add_11rb$;
+      var geometry = new PlaneBufferGeometry(2 + Random.Default.nextFloat() * 8, 2 + Random.Default.nextFloat() * 8);
+      rotator.rotate_lbyolm$([geometry]);
+      geometry.translate(item_0.x, item_0.y, item_0.z);
+      tmp$_2.call(destination, geometry);
+    }
+    this.planeGeometry_0 = BufferGeometryUtils$Companion.mergeBufferGeometries(copyToArray(destination));
+    this.planeGeometry_0.addAttribute('color', this.vertexColorBufferAttr_0);
+    var tmp$_3 = this.planeGeometry_0;
+    var $receiver = new MeshBasicMaterial();
+    $receiver.side = THREE.FrontSide;
+    $receiver.transparent = true;
+    $receiver.blending = THREE.AdditiveBlending;
+    $receiver.depthTest = false;
+    $receiver.depthWrite = false;
     $receiver.vertexColors = THREE.VertexColors;
-    var material = $receiver;
-    var $receiver_0 = new Points();
-    $receiver_0.geometry = this.pixGeometry_0;
-    $receiver_0.material = material;
-    this.points_0 = $receiver_0;
+    $receiver.map = VizPanel$Companion_getInstance().roundLightTx_0;
+    this.pixelsMesh_0 = new Mesh_init(tmp$_3, $receiver);
   }
   Object.defineProperty(VizPanel$VizPixels.prototype, 'size', {
     get: function () {
@@ -11134,34 +11180,38 @@
     }
   });
   VizPanel$VizPixels.prototype.addToScene_smv6vb$ = function (scene) {
-    scene.add(this.points_0);
+    scene.add(this.pixelsMesh_0);
   };
   VizPanel$VizPixels.prototype.removeFromScene_smv6vb$ = function (scene) {
-    scene.remove(this.points_0);
+    scene.remove(this.pixelsMesh_0);
   };
   VizPanel$VizPixels.prototype.get_za3lpa$ = function (i) {
     return new Color(this.colorsAsInts_0[i]);
   };
   VizPanel$VizPixels.prototype.set_ibd5tj$ = function (i, color) {
     this.colorsAsInts_0[i] = color.argb;
-    var rgbBuf = this.colorsBufferAttr_0.array;
-    rgbBuf[i * 3 | 0] = color.redF;
-    rgbBuf[(i * 3 | 0) + 1 | 0] = color.greenF;
-    rgbBuf[(i * 3 | 0) + 2 | 0] = color.blueF;
-    this.colorsBufferAttr_0.needsUpdate = true;
+    var redF = color.redF / 2;
+    var greenF = color.greenF / 2;
+    var blueF = color.blueF / 2;
+    var rgb3Buf = this.vertexColorBufferAttr_0;
+    rgb3Buf.setXYZ(i * 4 | 0, redF, greenF, blueF);
+    rgb3Buf.setXYZ((i * 4 | 0) + 1 | 0, redF, greenF, blueF);
+    rgb3Buf.setXYZ((i * 4 | 0) + 2 | 0, redF, greenF, blueF);
+    rgb3Buf.setXYZ((i * 4 | 0) + 3 | 0, redF, greenF, blueF);
+    this.vertexColorBufferAttr_0.needsUpdate = true;
   };
   VizPanel$VizPixels.prototype.set_tmuqsv$ = function (colors) {
     var a = this.size;
     var maxCount = Math_0.min(a, colors.length);
-    var rgbBuf = this.colorsBufferAttr_0.array;
+    var rgbBuf = this.vertexColorBufferAttr_0.array;
     for (var i = 0; i < maxCount; i++) {
       this.colorsAsInts_0[i] = colors[i].argb;
       var pColor = colors[i];
-      rgbBuf[i * 3 | 0] = pColor.redF;
-      rgbBuf[(i * 3 | 0) + 1 | 0] = pColor.greenF;
-      rgbBuf[(i * 3 | 0) + 2 | 0] = pColor.blueF;
+      rgbBuf[i * 3 | 0] = pColor.redF / 2;
+      rgbBuf[(i * 3 | 0) + 1 | 0] = pColor.greenF / 2;
+      rgbBuf[(i * 3 | 0) + 2 | 0] = pColor.blueF / 2;
     }
-    this.colorsBufferAttr_0.needsUpdate = true;
+    this.vertexColorBufferAttr_0.needsUpdate = true;
   };
   VizPanel$VizPixels.prototype.getPixelLocationsInPanelSpace_zdreix$ = function (vizPanel) {
     var tmp$, tmp$_0;
@@ -11756,6 +11806,9 @@
   Visualizer.VizMovingHead = Visualizer$VizMovingHead;
   Visualizer.FrameListener = Visualizer$FrameListener;
   package$visualizer.Visualizer = Visualizer;
+  Object.defineProperty(VizPanel, 'Companion', {
+    get: VizPanel$Companion_getInstance
+  });
   VizPanel.Point2 = VizPanel$Point2;
   VizPanel.VizPixels = VizPanel$VizPixels;
   package$visualizer.VizPanel = VizPanel;
