@@ -11,7 +11,12 @@
 
 #include "lwip/sockets.h"
 
-
+/**
+ * This class normalizes handling of an IP and Port tuple, what the
+ * socket layer would call an address and what the LWIP library has
+ * a handful of macros around. It's just a bit easier to deal with in
+ * full on C++ using this sort of a wrapper.
+ */
 class IpPort {
 public:
 

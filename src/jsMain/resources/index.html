@@ -17,22 +17,23 @@
   <div id="launcher" class="simulatorSection">
   </div>
 
-  <div id="networkView" class="simulatorSection">
-    <b>Network</b>
-    <br/>Packet loss rate: <span id="networkPacketLossRate"></span>
-    <br/>Packets received: <span id="networkPacketsReceived"></span>
-    <br/>Packets dropped: <span id="networkPacketsDropped"></span>
-  </div>
+  <table id="networkView" class="simulatorSection" style="table-layout: fixed; width: 100%;">
+    <tr><th colspan="2" style="text-align: left;">Network</th></tr>
+    <tr><td>Packet loss rate:</td><td id="networkPacketLossRate"></td></tr>
+    <tr><td>Packets received:</td><td id="networkPacketsReceived"></td></tr>
+    <tr><td>Packets dropped:</td><td id="networkPacketsDropped"></td></tr>
+  </table>
+
+  <table id="framerateView" class="simulatorSection" style="table-layout: fixed; width: 100%;">
+    <tr><th colspan="2" style="text-align: left;">Effective frame rate</th><th>Elapsed</th></tr>
+    <tr><td>Show:</td><td id="showFramerate"></td><td id="showElapsedMs"></td></tr>
+    <tr><td>Visualizer:</td><td id="visualizerFramerate"></td><td id="visualizerElapsedMs"></td></tr>
+    <tr><td>Brains:</td><td id="brainsFramerate">tbd</td><td id="brainsElapsedMs"></td></tr>
+  </table>
 
   <div class="simulatorSection">
     <b>Pinky:</b>
     <div id="pinkyView"></div>
-  </div>
-
-  <div class="simulatorSection">
-    <b>Brains:</b>
-    <div id="brainsView"></div>
-    <div id="brainDetails"></div>
   </div>
 
   <div class="visualizerSection">
@@ -40,6 +41,12 @@
     <input type="checkbox" id="vizRotation" checked/> <label for="vizRotation">Rotate</label>
     <div id="selectionInfo"></div>
     <div>Pixel count: <span id="visualizerPixelCount">n/a</span></div>
+  </div>
+
+  <div class="simulatorSection">
+    <b>Brains:</b>
+    <div id="brainsView"></div>
+    <div id="brainDetails"></div>
   </div>
 </div>
 
@@ -53,6 +60,7 @@
 
 <script type="application/javascript" src="three.js"></script>
 <script type="application/javascript" src="lib/threejs-wrapper.js"></script>
+<script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
 
 <script type="application/javascript" src="sparklemotion.js"></script>

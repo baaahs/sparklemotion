@@ -1,8 +1,6 @@
 package baaahs.visualizer
 
-import baaahs.Config
-import baaahs.MovingHead
-import baaahs.SheepModel
+import baaahs.*
 import baaahs.dmx.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
@@ -33,7 +31,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel) {
+class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay) {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked
@@ -53,7 +51,6 @@ class Visualizer(sheepModel: SheepModel) {
         }
 
     private val frameListeners = mutableListOf<FrameListener>()
-    private val renderPixels = true
 
     private val controls: OrbitControls
     private val camera: PerspectiveCamera
@@ -75,10 +72,6 @@ class Visualizer(sheepModel: SheepModel) {
     private var vizPanels = mutableListOf<VizPanel>()
 
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
-
-    private val pixelDensity = 0.2f
-
-    private var totalPixels = 0
 
     init {
         sheepView.addEventListener("mousemove", { event -> onMouseMove(event as MouseEvent) }, false)
@@ -146,19 +139,6 @@ class Visualizer(sheepModel: SheepModel) {
 
         val vizPanel = VizPanel(p, geom, scene)
         vizPanels.add(vizPanel)
-
-        // console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels")
-
-        // try to draw pixel-ish things...
-        if (renderPixels) {
-            val pixelArranger = SwirlyPixelArranger(pixelDensity, 2)
-            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizPanel.VizPixels(pixelPositions)
-            totalPixels += pixelPositions.size
-        }
-
-        document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
-
         return vizPanel
     }
 
@@ -235,7 +215,9 @@ class Visualizer(sheepModel: SheepModel) {
             }
         }
 
+        val startMs = getTimeMillis()
         renderer.render(scene, camera)
+        display.renderMs = (getTimeMillis() - startMs).toInt()
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
         rendererListeners.forEach { value -> value() }

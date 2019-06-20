@@ -45,6 +45,7 @@ class Mapper(
 
     fun start() = doRunBlocking {
         link = FragmentingUdpLink(network.link())
+        // link = network.link()
         link.listenUdp(Ports.MAPPER, this)
 
         launch { run() }

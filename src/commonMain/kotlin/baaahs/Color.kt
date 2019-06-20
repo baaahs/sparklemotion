@@ -135,8 +135,11 @@ data class Color(val argb: Int) {
 
         fun parse(reader: ByteArrayReader) = Color(reader.readInt())
 
-        @JsName("fromInts")
+        @JsName("fromInt")
         fun from(i: Int) = Color(i)
+
+        @JsName("fromInts")
+        fun from(r: Int, g: Int, b: Int) = Color(r, g, b)
 
         @JsName("fromString")
         fun from(hex: String): Color {

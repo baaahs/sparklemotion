@@ -11,7 +11,8 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     COMPOSITOR(CompositorShader),
     SPARKLE(SparkleShader),
     SIMPLE_SPATIAL(SimpleSpatialShader),
-    HEART(HeartShader);
+    HEART(HeartShader),
+    RANDOM(RandomShader);
 
     companion object {
         val values = values()
@@ -94,6 +95,8 @@ interface Pixels : Iterable<Color> {
     operator fun set(i: Int, color: Color)
 
     fun set(colors: Array<Color>)
+
+    fun finishedFrame() {}
 
     override fun iterator(): Iterator<Color> {
         return object : Iterator<Color> {

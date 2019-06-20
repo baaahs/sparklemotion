@@ -74,6 +74,7 @@ class Brain(
 
         // Inline message parsing here so we can optimize stuff.
         val type = Type.get(reader.readByte())
+        // println("Got a message of type ${type}")
         when (type) {
             Type.BRAIN_PANEL_SHADE -> {
                 val shaderDesc = reader.readBytes()
@@ -96,6 +97,7 @@ class Brain(
                     read(reader)
                     draw(pixels)
                 }
+
             }
 
             Type.BRAIN_ID_REQUEST -> {
@@ -134,6 +136,7 @@ class Brain(
                 pixels[i] = renderer.draw(buffer, i)
             }
             renderer.endFrame()
+            pixels.finishedFrame()
         }
     }
 

@@ -5,23 +5,18 @@ import baaahs.SheepModel
 import baaahs.Show
 import baaahs.ShowRunner
 import baaahs.dmx.Shenzarpy
-import baaahs.shaders.PixelShader
+import baaahs.shaders.RandomShader
 import kotlin.random.Random
 
 object RandomShow : Show("Random") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
-        val pixelShaderBuffers = showRunner.allSurfaces.map { surface ->
-            showRunner.getShaderBuffer(surface, PixelShader())
+        init {
+            showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, RandomShader()) }
         }
+
         val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
-            pixelShaderBuffers.forEach { shaderBuffer ->
-                for (i in shaderBuffer.colors.indices) {
-                    shaderBuffer.colors[i] = Color.random()
-                }
-            }
-
             movingHeadBuffers.forEach { shenzarpy ->
                 shenzarpy.color = Color.random()
                 shenzarpy.pan = Random.nextFloat() * Shenzarpy.panRange.endInclusive

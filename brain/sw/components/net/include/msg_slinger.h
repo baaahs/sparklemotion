@@ -52,9 +52,14 @@ private:
 
     // There can be only one (for now)
     MsgHandler* m_handler;
+    Msg* m_pFraggedMsg;
+    int16_t m_nFraggedMsgId;
 
     void bindSocket();
     void updateBroadcasts();
+
+    void handleNetIn(Msg *pMsg);
+    void dispatch(Msg* pMsg);
 };
 
 

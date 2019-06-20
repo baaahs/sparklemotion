@@ -180,6 +180,7 @@ dokka {
 
 task runPinkyJvm(type: JavaExec) {
     dependsOn assemble
+    dependsOn buildReactUI
     main = 'baaahs.PinkyMainKt'
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
