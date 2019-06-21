@@ -321,11 +321,11 @@ public:
      * @return
      */
     RgbColor readColor() {
-        if (m_cursor + 4 > m_used) {
-            return RgbColor();
-        }
+        RgbColor out(0,0,0);
 
-        RgbColor out;
+        if (m_cursor + 4 > m_used) {
+            return out;
+        }
 
         // Ignore Alpha
         m_cursor++;
