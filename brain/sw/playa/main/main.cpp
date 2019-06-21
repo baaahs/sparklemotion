@@ -25,7 +25,10 @@ extern "C" void app_main()
     // Basic setup
 
     // Go to a not so much debug level which can be overriden on a TAG basis
-    esp_log_level_set("*", ESP_LOG_INFO);
+    esp_log_level_set("*", ESP_LOG_DEBUG);
+
+    esp_log_level_set("ledc", ESP_LOG_DEBUG);
+
     // Our standard for tags is start with a # and then 6 characters right aligned
     //esp_log_level_set("httpd", ESP_LOG_DEBUG);
     // esp_log_level_set("#   net", ESP_LOG_DEBUG);
@@ -33,11 +36,12 @@ extern "C" void app_main()
     esp_log_level_set("# brain", ESP_LOG_INFO);
     esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 
-    esp_log_level_set("httpd", ESP_LOG_NONE);
+    esp_log_level_set("# httpd", ESP_LOG_NONE);
     esp_log_level_set("#   net", ESP_LOG_NONE);
     esp_log_level_set("#   msg", ESP_LOG_NONE);
     esp_log_level_set("#shader", ESP_LOG_NONE);
     esp_log_level_set("#shdtre", ESP_LOG_NONE);
+    esp_log_level_set("#    ui", ESP_LOG_DEBUG);
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
