@@ -7,7 +7,7 @@ set(COMPONENT_SRCS
 )
 
 set(COMPONENT_ADD_INCLUDEDIRS ".")
-set(COMPONENT_REQUIRES led-renderer spiffs esp_http_server net shaders sysmon)
+set(COMPONENT_REQUIRES led-renderer spiffs esp_http_server net shaders sysmon brain-ui)
 
 register_component()
 
