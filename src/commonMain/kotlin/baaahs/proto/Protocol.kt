@@ -11,6 +11,7 @@ object Ports {
     const val BRAIN = 8003
 
     const val PINKY_UI_TCP = 8004
+    const val SIM_BRIDGE = 8005
 }
 
 enum class Type {

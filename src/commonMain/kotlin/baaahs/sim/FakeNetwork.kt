@@ -1,6 +1,7 @@
 package baaahs.sim
 
 import baaahs.NetworkDisplay
+import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -137,6 +138,11 @@ class FakeNetwork(
 
     private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
+        private var proxy: Network.TcpConnection? = null
+
+        fun connectToProxy(proxy: Network.TcpConnection) {
+            this.proxy = proxy
+        }
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
             this@FakeNetwork.listenUdp(myAddress, port, udpListener)
@@ -144,6 +150,13 @@ class FakeNetwork(
 
         override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
             this@FakeNetwork.sendUdp(myAddress, toAddress, port, bytes)
+            proxy?.let {
+                val writer = ByteArrayWriter()
+                writer.writeString("UDP")
+                writer.writeBytes((toAddress.address.address)
+                writer.writeBytes(bytes)
+                it.send(writer.toBytes())
+            }
         }
 
         override fun broadcastUdp(port: Int, bytes: ByteArray) {
