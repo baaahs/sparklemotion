@@ -12,7 +12,8 @@ class AllShows {
             PixelTweenShow,
             LifeyShow,
             SimpleSpatialShow,
-            HeartbleatShow
+            HeartbleatShow,
+            PixelShaderShow
         )
     }
 }

@@ -3,41 +3,25 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-CompositorShader::CompositorShader(uint8_t** ppCursor, uint8_t* pEnd) {
-    if (*ppCursor < pEnd - 1) {
-        m_shaderA = Shader::createShaderFromDescrip(ppCursor, pEnd);
-
-        if (*ppCursor < pEnd) {
-            m_shaderB = Shader::createShaderFromDescrip(ppCursor, pEnd);
-        }
-    }
+CompositorShader::CompositorShader(Surface *surface, Msg *config) : Shader(surface) {
+    m_shaderA = Shader::createShaderFromDescrip(surface, config);
+    m_shaderB = Shader::createShaderFromDescrip(surface, config);
 }
 
 CompositorShader::~CompositorShader() {
-    if (m_shaderA) {
-        delete m_shaderA;
-    }
-
-    if (m_shaderB) {
-        delete m_shaderB;
-    }
+    if (m_shaderA) delete m_shaderA;
+    if (m_shaderB) delete m_shaderB;
 }
-
 
 void
 CompositorShader::begin(Msg* pMsg) {
-    if (m_shaderA) {
-        m_shaderA->begin(pMsg);
+    if (m_shaderA) m_shaderA->begin(pMsg);
+    if (m_shaderB) m_shaderB->begin(pMsg);
 
-        if (m_shaderB) {
-            m_shaderB->begin(pMsg);
+    m_mode = pMsg->readByte();
+    m_fade = pMsg->readFloat();
 
-            m_mode = pMsg->readByte();
-            m_fade = pMsg->readFloat();
-
-            ESP_LOGI(TAG, "Compositor mode=%d fade=%f", m_mode, m_fade);
-        }
-    }
+    ESP_LOGI(TAG, "Compositor mode=%d fade=%f", m_mode, m_fade);
 }
 
 void

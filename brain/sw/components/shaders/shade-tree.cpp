@@ -6,8 +6,8 @@
 
 #define TAG "#shdtre"
 
-ShadeTree::ShadeTree() {
-
+ShadeTree::ShadeTree(Surface *surface) {
+    m_surface = surface;
 }
 
 void
@@ -156,7 +156,10 @@ ShadeTree::buildNewTree() {
         // Shaders are expressed in a tree structure so we actually only need to
         // read a single root. However, that root might be a composite that
         // goes on to read further branches.
-        m_pCurrentShader = Shader::createShaderFromDescrip(&pCursor, pEnd);
+        Msg shaderConfig;
+        shaderConfig.reuse(pCursor, pEnd - pCursor, pEnd - pCursor);
+
+        m_pCurrentShader = Shader::createShaderFromDescrip(m_surface, &shaderConfig);
     }
 
     if (!m_pCurrentShader) {
