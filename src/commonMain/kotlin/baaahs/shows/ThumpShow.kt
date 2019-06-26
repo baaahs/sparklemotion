@@ -1,17 +1,20 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Color
+import baaahs.SheepModel
+import baaahs.Show
+import baaahs.ShowRunner
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 import baaahs.shaders.SineWaveShader
 import baaahs.shaders.SolidShader
-import kotlin.math.PI
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 object ThumpShow : Show("Thump") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
-        private val beatProvider = showRunner.getBeatProvider()
+        private val beatSource = showRunner.getBeatSource()
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
@@ -38,22 +41,24 @@ object ThumpShow : Show("Thump") {
         }
 
         override fun nextFrame() {
-            val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
-            val beat = beatProvider.beat
+//            val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
+            val beat = showRunner.currentBeat
 
             var i = 0
+            val beatColor = Color.WHITE.fade(colorPicker.color, beat % 1)
+
             shaderBufs.forEach { shaderBuffer ->
-                shaderBuffer.solidShaderBuffer.color = Color.BLACK.fade(colorPicker.color, beat % 1f)
-                shaderBuffer.sineWaveShaderBuffer.color = if (beat < .2) Color.WHITE else Color.ORANGE
-                shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
+                shaderBuffer.solidShaderBuffer.color = beatColor
+                shaderBuffer.sineWaveShaderBuffer.color = beatColor
+//                shaderBuffer.sineWaveShaderBuffer.theta = theta + i++
                 shaderBuffer.compositorShaderBuffer.mode = CompositingMode.ADD
                 shaderBuffer.compositorShaderBuffer.fade = 1f
             }
 
             movingHeadBuffers.forEach { buf ->
-                buf.colorWheel = buf.closestColorFor(colorPicker.color)
-                buf.pan = PI.toFloat() / 2
-                buf.tilt = beat / PI.toFloat()
+                buf.colorWheel = buf.closestColorFor(beatColor)
+                buf.pan = beat.roundToInt().toFloat() / 2
+                buf.tilt = beat.roundToInt().toFloat() / 2
             }
         }
     }

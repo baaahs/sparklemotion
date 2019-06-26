@@ -21,3 +21,7 @@ fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
     val jsonString = json.stringify(serializer, obj)
     return json.parse(serializer, jsonString)
 }
+
+class FakeClock(var now: Time = 0.0) : Clock {
+    override fun now(): Time = now
+}

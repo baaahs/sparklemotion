@@ -26,6 +26,13 @@ fun main(args: Array<String>) {
         .resolve("build/processedResources/js/main")
     println("jsResDir = ${jsResDir}")
     val httpServer = embeddedServer(Netty, Ports.PINKY_UI_TCP) {
+        install(io.ktor.websocket.WebSockets) {
+            pingPeriod = Duration.ofSeconds(15)
+            timeout = Duration.ofSeconds(15)
+            maxFrameSize = Long.MAX_VALUE
+            masking = false
+        }
+
         routing {
             static {
                 files(jsResDir.toFile())
@@ -34,26 +41,29 @@ fun main(args: Array<String>) {
         }
     }.start(false)
 
-    httpServer.application.install(io.ktor.websocket.WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(15)
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
-    }
-
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(), object : StubPinkyDisplay() {
+        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(),
+            BeatLinkBeatSource(SystemClock()), object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }
+
             override var selectedShow: Show? = null
-                set(value) { field = value; println("selectedShow: ${value}") }
+                set(value) {
+                    field = value; println("selectedShow: ${value}")
+                }
 
             override var showFrameMs: Int = 0
-                set(value) { field = value; /* println("showFrameMs: ${value}") */ }
-        })
+        }, SystemClock())
 
-    GlobalScope.launch { pinky.run() }
+    GlobalScope.launch {
+        println("Pinky launching!")
+
+        val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
+        beatLinkBeatSource.start()
+
+        pinky.run()
+    }
 
     doRunBlocking {
         delay(200000L)

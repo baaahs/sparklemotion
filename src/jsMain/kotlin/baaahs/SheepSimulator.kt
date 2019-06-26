@@ -13,7 +13,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import org.w3c.dom.WebSocket
 import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.js.Date
 
 class SheepSimulator {
     private val display = JsDisplay()
@@ -22,7 +27,8 @@ class SheepSimulator {
     private val sheepModel = SheepModel().apply { load() }
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel, display.forVisualizer())
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, display.forPinky())
+    private val beatSource: BeatSource = BridgedBeatSource("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, beatSource, display.forPinky(), JsClock())
 
     fun start() = doRunBlocking {
         val queryParams = decodeQueryParams(document.location!!)
@@ -94,4 +100,34 @@ class SheepSimulator {
     private val pinkyScope = CoroutineScope(Dispatchers.Main)
     private val brainScope = CoroutineScope(Dispatchers.Main)
     private val mapperScope = CoroutineScope(Dispatchers.Main)
+}
+
+class JsClock : Clock {
+    override fun now(): Time = Date.now()
+}
+
+class BridgedBeatSource(url: String) : BeatSource {
+    private var beatData = BeatData(0.0, 0, confidence = 0f)
+
+    override fun getBeatData(): BeatData = beatData
+
+    private val webSocket = WebSocket("ws://${url}/bridge/beatSource")
+    private val json = Json(JsonConfiguration.Stable)
+
+    init {
+        webSocket.onopen = {
+            console.log("WebSocket open!", it)
+        }
+
+        webSocket.onmessage = {
+            // TODO: be less woefully inefficient...
+            val buf = it.data as String
+            println("buf is $buf")
+            beatData = json.parse(BeatData.serializer(), buf)
+            null
+        }
+
+        webSocket.onerror = { console.log("WebSocket error!", it) }
+        webSocket.onclose = { console.log("WebSocket close!", it) }
+    }
 }

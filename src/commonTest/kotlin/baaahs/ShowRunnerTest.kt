@@ -8,7 +8,12 @@ import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.test.expect
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
@@ -32,7 +37,7 @@ class ShowRunnerTest {
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, FakeBeatProvider, dmxUniverse)
+        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse, FakeClock())
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -305,10 +310,5 @@ class ShowRunnerTest {
                 onSurfacesChanged(newSurfaces, removedSurfaces)
             }
         }
-    }
-
-    object FakeBeatProvider : Pinky.BeatProvider {
-        override var bpm = 120f
-        override val beat = 0f
     }
 }

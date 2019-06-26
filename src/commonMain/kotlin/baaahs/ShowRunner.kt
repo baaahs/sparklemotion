@@ -7,8 +7,9 @@ class ShowRunner(
     private val model: SheepModel,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
-    private val beatProvider: Pinky.BeatProvider,
-    private val dmxUniverse: Dmx.Universe
+    private val beatSource: BeatSource,
+    private val dmxUniverse: Dmx.Universe,
+    private val clock: Clock
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
@@ -26,7 +27,10 @@ class ShowRunner(
     private var shadersLocked = true
     private var gadgetsLocked = true
 
-    fun getBeatProvider(): Pinky.BeatProvider = beatProvider
+    val currentBeat: Float
+        get() = beatSource.getBeatData().beatWithinMeasure(clock)
+
+    fun getBeatSource(): BeatSource = beatSource
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
@@ -129,7 +133,7 @@ class ShowRunner(
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
 
                     logger.info("Show ${currentShow!!.name} updated; " +
-                            "${shaderBuffers.size} surfaces")
+                        "${shaderBuffers.size} surfaces")
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
@@ -161,8 +165,8 @@ class ShowRunner(
 
         logger.info(
             "New show ${startingShow.name} created; " +
-                    "${shaderBuffers.size} surfaces " +
-                    "and ${requestedGadgets.size} gadgets"
+                "${shaderBuffers.size} surfaces " +
+                "and ${requestedGadgets.size} gadgets"
         )
 
         gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
@@ -217,5 +221,4 @@ class ShowRunner(
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
     class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
-
 }

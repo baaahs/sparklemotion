@@ -11,6 +11,7 @@ object Ports {
     const val BRAIN = 8003
 
     const val PINKY_UI_TCP = 8004
+    const val SIMULATOR_BRIDGE_TCP = 8005
 }
 
 enum class Type {
@@ -152,7 +153,7 @@ class Vector2F(val x: Float, val y: Float) {
 class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
     companion object {
         fun parse(reader: ByteArrayReader): PinkyPongMessage {
-            val brainCount = reader.readInt();
+            val brainCount = reader.readInt()
             val brainIds = mutableListOf<String>()
             for (i in 0 until brainCount) {
                 brainIds.add(reader.readString())
