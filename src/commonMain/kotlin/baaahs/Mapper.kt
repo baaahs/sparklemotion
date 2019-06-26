@@ -159,18 +159,22 @@ class Mapper(
 
             println("identify pixels...")
             // light up each pixel...
-            val pixelShader = PixelShader()
+            val pixelShader = PixelShader(PixelShader.Encoding.INDEXED_2)
             val buffer = pixelShader.createBuffer(object : Surface {
                 override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
                 override fun describe(): String = "Mapper surface"
-            })
-            buffer.setAll(Color.BLACK)
+            }).apply {
+                palette[0] = Color.BLACK
+                palette[0] = Color.WHITE
+                setAll(0)
+            }
+
             for (i in 0 until maxPixelsPerBrain) {
                 if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
-                buffer.colors[i] = Color.WHITE
+                buffer[i] = 1 // white
                 link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
-                buffer.colors[i] = Color.BLACK
+                buffer[i] = 0 // black
                 delay(34L)
                 maybePause()
             }

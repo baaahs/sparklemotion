@@ -50,7 +50,7 @@ private:
 
 class LEDRenderer {
 public:
-    LEDRenderer(TimeBase& timeBase);
+    LEDRenderer(TimeBase& timeBase, uint16_t pixelCount);
 
     void start();
 

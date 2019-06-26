@@ -11,7 +11,7 @@ private:
     float m_fade;
 
 public:
-    CompositorShader(uint8_t** ppCursor, uint8_t* pEnd);
+    CompositorShader(Surface *surface, Msg *config);
     ~CompositorShader();
 
     void begin(Msg* pMsg) override;
