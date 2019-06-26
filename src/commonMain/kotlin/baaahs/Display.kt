@@ -20,6 +20,7 @@ interface PinkyDisplay {
 
     var brainCount: Int
     var beat: Int
+    var bpm: Int
     var onShowChange: (() -> Unit)
     var selectedShow: Show?
     var showFrameMs: Int
@@ -32,6 +33,7 @@ open class StubPinkyDisplay : PinkyDisplay {
 
     override var brainCount = 0
     override var beat = 0
+    override var bpm = 0
     override var onShowChange: () -> Unit = { }
     override var selectedShow: Show? = null
     override var showFrameMs: Int = 0

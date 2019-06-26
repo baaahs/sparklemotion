@@ -8,9 +8,10 @@ class ShowRunner(
     private val model: Model<*>,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
-    private val beatProvider: Pinky.BeatProvider,
+    private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
-    private val movingHeadManager: MovingHeadManager
+    private val movingHeadManager: MovingHeadManager,
+    private val clock: Clock
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
@@ -30,7 +31,10 @@ class ShowRunner(
     private var shadersLocked = true
     private var gadgetsLocked = true
 
-    fun getBeatProvider(): Pinky.BeatProvider = beatProvider
+    val currentBeat: Float
+        get() = beatSource.getBeatData().beatWithinMeasure(clock)
+
+    fun getBeatSource(): BeatSource = beatSource
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
