@@ -9,7 +9,13 @@ import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.*
+import baaahs.proto.BrainHelloMessage
+import baaahs.proto.BrainMappingMessage
+import baaahs.proto.BrainShaderMessage
+import baaahs.proto.MapperHelloMessage
+import baaahs.proto.PingMessage
+import baaahs.proto.Ports
+import baaahs.proto.parse
 import baaahs.shaders.PixelShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -21,6 +27,8 @@ class Pinky(
     val shows: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
+    val beatSource: BeatSource,
+    val clock: Clock,
     val fs: Fs,
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
@@ -31,7 +39,7 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
-    private val beatProvider = PinkyBeatProvider(120.0f)
+    private val beatProvider = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
     private var selectedShow = shows.first()
         set(value) {
@@ -44,7 +52,7 @@ class Pinky(
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     private val showRunner =
-        ShowRunner(model, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
+        ShowRunner(model, selectedShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock)
 
     private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
     private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector2F>>()
@@ -228,33 +236,13 @@ class Pinky(
         surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 
-    interface BeatProvider {
-        var bpm: Float
-        val beat: Float
-    }
-
-    inner class PinkyBeatProvider(override var bpm: Float) : BeatProvider {
-        private var startTimeMillis = 0L
-        private var beatsPerMeasure = 4
-
-        private val millisPerBeat = 1000 / (bpm / 60)
-
-        override val beat: Float
-            get() {
-                val now = getTimeMillis()
-                return (now - startTimeMillis) / millisPerBeat % beatsPerMeasure
-            }
-
+    inner class PinkyBeatDisplayer(val beatSource: BeatSource) {
         suspend fun run() {
-            startTimeMillis = getTimeMillis()
-
             while (true) {
-                display.beat = beat.toInt()
-
-                val offsetMillis = getTimeMillis() - startTimeMillis
-                val millsPer = millisPerBeat
-                val delayTimeMillis = millsPer - offsetMillis % millsPer
-                delay(delayTimeMillis.toLong())
+               val beatData = beatSource.getBeatData()
+                display.beat = beatData.beatWithinMeasure(clock).toInt() - 1
+                display.bpm = beatData.bpm.toInt() //TODO: show fractions of bpm
+                delay(10)
             }
         }
     }

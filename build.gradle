@@ -8,6 +8,8 @@ buildscript {
     ext.serialization_runtime_version = '0.11.1'
     ext.klockVersion = "1.5.0"
     ext.lwjglVersion = "3.2.2"
+    ext.mockk_version = '1.9.3'
+    ext.beatlink_version = '0.5.1'
 
     repositories {
         jcenter()
@@ -95,6 +97,8 @@ kotlin {
                 implementation "io.ktor:ktor-server-host-common:$ktor_version"
                 implementation "io.ktor:ktor-websockets:$ktor_version"
                 implementation "ch.qos.logback:logback-classic:$logback_version"
+                implementation "org.deepsymmetry:beat-link:$beatlink_version"
+
                 implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
                 implementation files("src/jvmMain/lib/javax.util.property-2_0.jar") // required by ftd2xxj
 
@@ -122,6 +126,7 @@ kotlin {
                 implementation kotlin('test-junit')
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+                implementation "io.mockk:mockk:$mockk_version"
             }
         }
 

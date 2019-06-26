@@ -12,6 +12,7 @@ object Ports {
 
     const val PINKY_UI_TCP = 8004
     const val PINKY_MAPPER_TCP = 8005
+    const val SIMULATOR_BRIDGE_TCP = 8006
 }
 
 enum class Type {
