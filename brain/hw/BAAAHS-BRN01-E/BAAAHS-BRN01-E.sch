@@ -50523,12 +50523,13 @@ chip</description>
 <wire x1="-7.875" y1="1.492" x2="-7.875" y2="-7.09" width="0.1524" layer="21"/>
 <wire x1="7.875" y1="1.492" x2="7.875" y2="-7.08" width="0.1524" layer="21"/>
 </package>
-<package name="3WAY_LED_WIRES" urn="urn:adsk.eagle:footprint:11609836/1" library_version="1" library_locally_modified="yes">
-<pad name="1" x="3.175" y="3.175" drill="1.399540625" diameter="3.81" shape="square"/>
-<pad name="3" x="3.175" y="-3.175" drill="1.399540625" diameter="3.81" shape="square"/>
-<pad name="2" x="-3.175" y="0" drill="1.399540625" diameter="3.81" shape="square"/>
+<package name="3WAY_LED_WIRES" urn="urn:adsk.eagle:footprint:11609836/1" locally_modified="yes" library_version="3" library_locally_modified="yes">
+<pad name="1" x="3.175" y="3.175" drill="1.651" diameter="3.81" shape="square"/>
+<pad name="3" x="3.175" y="-3.175" drill="1.651" diameter="3.81" shape="square"/>
+<pad name="2" x="-3.175" y="0" drill="1.651" diameter="3.81" shape="square"/>
 <text x="-6.35" y="3.81" size="1.27" layer="25" font="vector" ratio="13">&gt;NAME</text>
 <text x="-6.35" y="-5.08" size="1.27" layer="27" font="vector" ratio="13">&gt;VALUE</text>
+<text x="-6.35" y="2.54" size="1.27" layer="111" font="vector" ratio="13">&gt;NAME</text>
 </package>
 <package name="1X10" urn="urn:adsk.eagle:footprint:11609837/1" library_version="1" library_locally_modified="yes">
 <wire x1="-4.445" y1="1.27" x2="-3.175" y2="1.27" width="0.1524" layer="51"/>
@@ -51128,7 +51129,7 @@ chip</description>
 <packageinstance name="WIZNET_RB1-125BAG1A"/>
 </packageinstances>
 </package3d>
-<package3d name="3WAY_LED_WIRES" urn="urn:adsk.eagle:package:11609897/2" type="box" library_version="3">
+<package3d name="3WAY_LED_WIRES" urn="urn:adsk.eagle:package:11609897/2" type="box" library_version="3" library_locally_modified="yes">
 <packageinstances>
 <packageinstance name="3WAY_LED_WIRES"/>
 </packageinstances>
@@ -51725,7 +51726,7 @@ chip</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="PINHD1X3" urn="urn:adsk.eagle:component:11609920/2" prefix="J" library_version="3">
+<deviceset name="PINHD1X3" urn="urn:adsk.eagle:component:11609920/2" prefix="J" library_version="3" library_locally_modified="yes">
 <description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
 <gates>
 <gate name="&gt;NAME" symbol="PINHD3" x="0" y="0"/>
@@ -54623,7 +54624,6 @@ chip</description>
 <part name="GND39" library="symbols" deviceset="GND" device=""/>
 <part name="V11" library="symbols" deviceset="3V3" device=""/>
 <part name="V12" library="symbols" deviceset="5V0" device=""/>
-<part name="V13" library="symbols" deviceset="5V0" device=""/>
 <part name="GND1" library="symbols" deviceset="GND" device=""/>
 <part name="GND2" library="symbols" deviceset="GND" device=""/>
 <part name="GND3" library="symbols" deviceset="GND" device=""/>
@@ -54667,7 +54667,6 @@ chip</description>
 <part name="GND24" library="symbols" deviceset="GND" device=""/>
 <part name="GND26" library="symbols" deviceset="GND" device=""/>
 <part name="GND40" library="symbols" deviceset="GND" device=""/>
-<part name="D1" library="diodes" library_urn="urn:adsk.eagle:library:11609018" deviceset="D_SCHOTTKY" device="-SOT23" package3d_urn="urn:adsk.eagle:package:11609095/2" value="BAT54L"/>
 <part name="C3" library="capacitors" library_urn="urn:adsk.eagle:library:11608356" deviceset="C" device="-C0402" package3d_urn="urn:adsk.eagle:package:11608370/2" technology="-4.7UF_10V_10%" value="4.7uF"/>
 <part name="GND41" library="symbols" deviceset="GND" device=""/>
 <part name="V24" library="symbols" deviceset="VBUS" device=""/>
@@ -54754,8 +54753,6 @@ chip</description>
 <sheets>
 <sheet>
 <plain>
-<text x="25.4" y="48.26" size="1.778" layer="97">Schottky Diode to prevent
-backflow power into usb</text>
 <text x="58.42" y="226.06" size="1.778" layer="97" rot="R180" align="center">Normal booting &amp; resetting requires 
 IO0 pulled up
 IO2 pulled down
@@ -54924,7 +54921,6 @@ to the on-module flash</text>
 <instance part="GND39" gate="G$1" x="327.66" y="205.74" smashed="yes"/>
 <instance part="V11" gate="G$1" x="368.3" y="68.58" smashed="yes"/>
 <instance part="V12" gate="G$1" x="360.68" y="68.58" smashed="yes"/>
-<instance part="V13" gate="G$1" x="38.1" y="43.18" smashed="yes"/>
 <instance part="GND1" gate="G$1" x="55.88" y="45.72" smashed="yes"/>
 <instance part="GND2" gate="G$1" x="276.86" y="33.02" smashed="yes"/>
 <instance part="GND3" gate="G$1" x="180.34" y="91.44" smashed="yes"/>
@@ -54972,10 +54968,6 @@ to the on-module flash</text>
 <instance part="GND24" gate="G$1" x="66.04" y="45.72" smashed="yes"/>
 <instance part="GND26" gate="G$1" x="198.12" y="35.56" smashed="yes"/>
 <instance part="GND40" gate="G$1" x="187.96" y="35.56" smashed="yes"/>
-<instance part="D1" gate="G$1" x="38.1" y="35.56" smashed="yes" rot="R90">
-<attribute name="NAME" x="40.132" y="36.449" size="1.778" layer="95"/>
-<attribute name="VALUE" x="40.132" y="33.909" size="1.778" layer="96"/>
-</instance>
 <instance part="C3" gate="G$1" x="50.8" y="20.32" smashed="yes">
 <attribute name="NAME" x="51.816" y="20.955" size="1.778" layer="95"/>
 <attribute name="VALUE" x="51.816" y="16.129" size="1.778" layer="96"/>
@@ -56003,11 +55995,6 @@ to the on-module flash</text>
 <junction x="106.68" y="127"/>
 </segment>
 <segment>
-<pinref part="V13" gate="G$1" pin="5V0"/>
-<pinref part="D1" gate="G$1" pin="C"/>
-<wire x1="38.1" y1="40.64" x2="38.1" y2="38.1" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="V25" gate="G$1" pin="5V0"/>
 <pinref part="U7" gate="A" pin="VCCB"/>
 <wire x1="83.82" y1="96.52" x2="106.68" y2="96.52" width="0.1524" layer="91"/>
@@ -56057,11 +56044,7 @@ to the on-module flash</text>
 </net>
 <net name="VBUS" class="0">
 <segment>
-<pinref part="D1" gate="G$1" pin="A"/>
-<wire x1="50.8" y1="30.48" x2="38.1" y2="30.48" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="30.48" x2="35.56" y2="30.48" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="33.02" x2="38.1" y2="30.48" width="0.1524" layer="91"/>
-<junction x="38.1" y="30.48"/>
+<wire x1="50.8" y1="30.48" x2="35.56" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="1"/>
 <wire x1="50.8" y1="22.86" x2="50.8" y2="30.48" width="0.1524" layer="91"/>
 <junction x="50.8" y="30.48"/>
