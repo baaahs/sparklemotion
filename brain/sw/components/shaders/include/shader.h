@@ -37,7 +37,7 @@ public:
     Shader() { };
     virtual ~Shader() { };
 
-    virtual void begin(Msg* pMsg) {};
+    virtual void begin(Msg *pMsg, float progress) {};
     virtual void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {};
     virtual void end() {};
 };

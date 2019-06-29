@@ -25,12 +25,12 @@ CompositorShader::~CompositorShader() {
 
 
 void
-CompositorShader::begin(Msg* pMsg) {
+CompositorShader::begin(Msg *pMsg, float progress) {
     if (m_shaderA) {
-        m_shaderA->begin(pMsg);
+        m_shaderA->begin(pMsg, 0);
 
         if (m_shaderB) {
-            m_shaderB->begin(pMsg);
+            m_shaderB->begin(pMsg, 0);
 
             m_mode = pMsg->readByte();
             m_fade = pMsg->readFloat();

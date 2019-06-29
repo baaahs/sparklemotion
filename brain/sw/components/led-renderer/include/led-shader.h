@@ -18,7 +18,7 @@
  */
 class LEDShader {
 public:
-    virtual void beginShade() = 0;
+    virtual void beginShade(float progress) = 0;
     virtual void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) = 0;
     virtual void endShade() = 0;
 };

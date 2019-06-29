@@ -22,7 +22,7 @@ public:
         m_colorSecondary(0, 16, 16)
         { }
 
-    void beginShade() override {
+    void beginShade(float progress) override {
         m_pos = m_timeBase.posInInterval(m_timeBase.currentTime(), m_timeBase.duration(4), m_numPixels + 1);
         // ESP_LOGI("#filler", "Render begin, m_pos=%d", m_pos);
     }
@@ -71,6 +71,17 @@ public:
 
     void logPixels();
 
+    // Sets the brightness
+    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
+        uint8_t* end = currentColor + 3;
+
+        while (currentColor != end)
+        {
+            uint16_t value = *currentColor;
+            *(color++) = (value * m_nBrightness) >> 8;
+            currentColor++;
+        }
+    }
 private:
     uint8_t m_nBrightness;
 

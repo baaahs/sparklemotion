@@ -36,13 +36,13 @@ BrainUI::_task() {
         val += 4;
         if (val > 255) val = 0;
 
-        ESP_LOGI(TAG, "Update LEDs to %d", val);
-        green.setValue(val);
-        blue.setValue((uint8_t)255-val);
+//        ESP_LOGI(TAG, "Update LEDs to %d", val);
+//        green.setValue(val);
+//        blue.setValue((uint8_t)255-val);
 
-        rgbR.setValue(val);
-        rgbG.setValue(val);
-        rgbB.setValue((uint8_t)255-val);
+//        rgbR.setValue(val);
+//        rgbG.setValue(val);
+//        rgbB.setValue((uint8_t)255-val);
     }
 
     // Just in case we ever exit, we're supposed to do this.
@@ -62,8 +62,11 @@ BrainUI::start() {
 
     // Then we can do stuff
     green.setValue(0);
-    blue.setValue(255);
+    blue.setValue(0);
 
+    rgbR.setValue(0);
+    rgbG.setValue(0);
+    rgbB.setValue(0);
 
     TaskHandle_t tHandle = NULL;
 

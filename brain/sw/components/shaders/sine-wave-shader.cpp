@@ -14,7 +14,7 @@ SineWaveShader::~SineWaveShader() {
 }
 
 void
-SineWaveShader::begin(Msg* pMsg) {
+SineWaveShader::begin(Msg *pMsg, float progress) {
     m_color = pMsg->readColor();
     m_theta = pMsg->readFloat();
     m_density = pMsg->readFloat();

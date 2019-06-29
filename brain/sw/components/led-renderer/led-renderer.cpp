@@ -9,9 +9,11 @@ LEDRenderer::LEDRenderer(TimeBase& timeBase) :
     m_timeBase(timeBase)
 {
     // Start with an empty buffer
-    m_buffer.ClearTo(RgbColor(0, 0, 0));
+    m_buffer.ClearTo(RgbColor(0, 0, 255));
 
     m_pixels.Begin();
+
+    m_nBrightness = 64;
 }
 
 void static task_ledren(void* pvParameters) {
@@ -134,9 +136,18 @@ LEDRenderer::render() {
         // through a tree structure to calculate each output value
 
         // Rather than forcing the shader to detect the beginning by indexPixel == 0
-        m_shader->beginShade();
+        const uint16_t INTERVAL_BASE = 1000;
+        uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/10000, 8 * USEC_IN_SEC/10000, INTERVAL_BASE);
+        float progress = ((float)intPos) / (float)INTERVAL_BASE;
+
+        m_shader->beginShade(progress);
+        // ESP_LOGI(TAG, "time=%d, intPos = %d  progress=%f", m_timeBase.currentTime(), intPos, progress);
 
         m_buffer.Render(m_buffer, *m_shader);
+
+        if (m_nBrightness != 255) {
+            m_buffer.Render(m_buffer, *this);
+        }
 
         m_shader->endShade();
     } else {
