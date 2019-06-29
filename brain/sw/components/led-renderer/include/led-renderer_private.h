@@ -16,7 +16,7 @@
 
 #define BRN01D_LED_OUT 32 // IO32_5VIO_0A
 
-#define PIXEL_COUNT 24
+#define PIXEL_COUNT 32
 
 static const int TASK_LEDREN_STACK_SIZE = 10240;
 static const int TASK_LEDREN_PRIORITY = 5;

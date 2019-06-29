@@ -12,7 +12,7 @@ SolidShader::~SolidShader() {
 }
 
 void
-SolidShader::begin(Msg* pMsg) {
+SolidShader::begin(Msg *pMsg, float progress) {
     auto argb = pMsg->readInt();
 
     // ESP_LOGD(TAG, "argb = %x", argb);

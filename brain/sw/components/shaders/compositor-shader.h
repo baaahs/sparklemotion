@@ -14,7 +14,7 @@ public:
     CompositorShader(uint8_t** ppCursor, uint8_t* pEnd);
     ~CompositorShader();
 
-    void begin(Msg* pMsg) override;
+    void begin(Msg *pMsg, float progress) override;
     void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) override;
     void end() override;
 };

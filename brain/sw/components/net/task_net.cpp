@@ -21,8 +21,8 @@ void static task_net_main(void* pvParameters) {
     // or an event loop thing where rather than only initializing them at
     // booth we can re-init them later.
     // TODO: Make network init more robust.
-    ethernet_init();
-    wifi_init();
+    // ethernet_init();
+    // wifi_init();
 
     xLastWakeTime = xTaskGetTickCount();
 

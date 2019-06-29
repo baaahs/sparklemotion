@@ -31,6 +31,11 @@ public:
         m_frameDuration = USEC_IN_SEC / (braintime_t)m_fps;
     }
 
+    void setDuration(braintime_t duration) {
+        m_fps = USEC_IN_SEC / duration;
+        m_frameDuration = duration;
+    }
+
     uint16_t getFPS() { return m_fps; }
 
     braintime_t getFrameDuration() { return m_frameDuration; }

@@ -104,6 +104,7 @@ Brain::maybeSendHello()
 void
 Brain::start()
 {
+    ESP_LOGE(TAG, "------- Brain Start Start ---------");
     m_sysMon.start();
     m_brainUI.start();
 
@@ -122,6 +123,7 @@ Brain::start()
     }
 
     m_shadeTree.start();
+    ESP_LOGE(TAG, "m_shadeTree started");
 
     m_timeBase.setFPS(30);
     m_ledRenderer.setBrightness(10);
