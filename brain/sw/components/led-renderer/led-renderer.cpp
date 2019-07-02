@@ -13,7 +13,7 @@ LEDRenderer::LEDRenderer(TimeBase& timeBase) :
 
     m_pixels.Begin();
 
-    m_nBrightness = 64;
+    m_nBrightness = 140;
 }
 
 void static task_ledren(void* pvParameters) {
