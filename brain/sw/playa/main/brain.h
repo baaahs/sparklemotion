@@ -13,7 +13,7 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 
-#define DEFAULT_PIXEL_COUNT 120
+#define DEFAULT_PIXEL_COUNT 128
 
 class Brain : public MsgHandler {
 public:
@@ -26,6 +26,8 @@ public:
     void maybeSendHello();
 
 private:
+    char m_brainId[8];
+
     MsgSlinger m_msgSlinger;
 
     TimeBase m_timeBase;
@@ -39,9 +41,11 @@ private:
     BrainUI m_brainUI;
 
     void msgBrainPanelShade(Msg* pMsg);
-    void msgMapperHello(Msg* pMsg);
+    void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);
     void msgPinkyPong(Msg* pMsg);
+
+    void sendHello(const IpPort &port);
 };
 
 

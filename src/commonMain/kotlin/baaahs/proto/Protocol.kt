@@ -2,6 +2,7 @@ package baaahs.proto
 
 import baaahs.BrainId
 import baaahs.Shader
+import baaahs.geom.Vector2F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -10,6 +11,7 @@ object Ports {
     const val BRAIN = 8003
 
     const val PINKY_UI_TCP = 8004
+    const val PINKY_MAPPER_TCP = 8005
 }
 
 enum class Type {
@@ -18,7 +20,6 @@ enum class Type {
     BRAIN_PANEL_SHADE,
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
-    BRAIN_ID_RESPONSE,
     BRAIN_MAPPING,
     PINKY_PONG;
 
@@ -35,7 +36,6 @@ fun parse(bytes: ByteArray): Message {
         Type.BRAIN_PANEL_SHADE -> BrainShaderMessage.parse(reader)
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
-        Type.BRAIN_ID_RESPONSE -> BrainIdResponse.parse(reader)
         Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
         Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
     }
@@ -88,64 +88,75 @@ class MapperHelloMessage(val isRunning: Boolean) : Message(Type.MAPPER_HELLO) {
     }
 }
 
-class BrainIdRequest(val port: Int) : Message(Type.BRAIN_ID_REQUEST) {
+class BrainIdRequest : Message(Type.BRAIN_ID_REQUEST) {
     companion object {
-        fun parse(reader: ByteArrayReader) = BrainIdRequest(reader.readInt())
+        fun parse(reader: ByteArrayReader) = BrainIdRequest()
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeInt(port)
-    }
-}
-
-class BrainIdResponse(val id: String, val surfaceName: String?) : Message(Type.BRAIN_ID_RESPONSE) {
-    companion object {
-        fun parse(reader: ByteArrayReader) = BrainIdResponse(reader.readString(), reader.readNullableString())
-    }
-
-    override fun serialize(writer: ByteArrayWriter) {
-        writer.writeString(id)
-        writer.writeNullableString(surfaceName)
     }
 }
 
 class BrainMappingMessage(
     val brainId: BrainId,
     val surfaceName: String?,
+    val uvMapName: String?,
+    val panelUvTopLeft: Vector2F,
+    val panelUvBottomRight: Vector2F,
     val pixelCount: Int,
     val pixelVertices: List<Vector2F>
 ) : Message(Type.BRAIN_MAPPING) {
+
     companion object {
-        fun ByteArrayReader.readListOfVertices(): List<Vector2F> {
-            val vertexCount = readInt()
-            return (0 until vertexCount).map { Vector2F(readFloat(), readFloat()) }
+        fun parse(reader: ByteArrayReader) = BrainMappingMessage(
+            BrainId(reader.readString()), // brainId
+            reader.readNullableString(), // surfaceName
+            reader.readNullableString(), // uvMapName
+            reader.readVector2F(), // panelUvTopLeft
+            reader.readVector2F(), // panelUvBottomRight
+            reader.readInt(), // pixelCount
+            reader.readRelativeVerticesList()
+        )
+
+        private fun ByteArrayReader.readVector2F() = Vector2F(readFloat(), readFloat())
+
+        private fun ByteArrayWriter.writeVector2F(v: Vector2F) {
+            writeFloat(v.x)
+            writeFloat(v.y)
         }
 
-        fun parse(reader: ByteArrayReader) = BrainMappingMessage(
-            BrainId(reader.readString()),
-            reader.readNullableString(),
-            reader.readInt(),
-            reader.readListOfVertices()
-        )
+        private fun ByteArrayReader.readRelativeVerticesList(): List<Vector2F> {
+            val vertexCount = readInt()
+            return (0 until vertexCount).map {
+                Vector2F(readShort() / 65536.0f, readShort() / 65536.0f)
+            }
+        }
+
+        private fun ByteArrayWriter.writeRelativeVerticesList(pixelVertices: List<Vector2F>) {
+            writeInt(pixelVertices.size)
+            pixelVertices.forEach { vertex ->
+                if (vertex.x < 0 || vertex.x > 1 || vertex.y < 0 || vertex.y > 1) {
+                    throw IllegalArgumentException("Pixel vertices must be [0..1], but $vertex!")
+                }
+
+                writeShort((vertex.x * 65536).toShort())
+                writeShort((vertex.y * 65536).toShort())
+            }
+        }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(brainId.uuid)
         writer.writeNullableString(surfaceName)
+        writer.writeNullableString(uvMapName)
+        writer.writeVector2F(panelUvTopLeft)
+        writer.writeVector2F(panelUvBottomRight)
         writer.writeInt(pixelCount)
 
         val vertexCount = pixelVertices.size
         writer.writeInt(vertexCount)
-        pixelVertices.forEach { v ->
-            writer.writeFloat(v.x)
-            writer.writeFloat(v.y)
-        }
+        writer.writeRelativeVerticesList(pixelVertices)
     }
-}
-
-class Vector2F(val x: Float, val y: Float) {
-    operator fun component1() = x
-    operator fun component2() = y
 }
 
 class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {

@@ -71,6 +71,7 @@ PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bi
     size_t bufOffset = pixelIndex / pixelsPerByte % m_dataBufSize;
     uint8_t positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1;
     uint8_t bitShift = positionInByte * bitsPerPixel;
+    uint8_t i = m_dataBuf[bufOffset] >> bitShift & mask;
     return m_dataBuf[bufOffset] >> bitShift & mask;
 }
 
@@ -105,10 +106,8 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
             color.channel.b = m_dataBuf[bufOffset % m_dataBufSize];
             break;
 
-        case Encoding::INDEXED_2: {
-            const uint8_t p = paletteIndex(pixelIndex, 8, 1, 0x01);
-            color = m_palette[p];
-        }
+        case Encoding::INDEXED_2:
+            color = m_palette[paletteIndex(pixelIndex, 8, 1, 0x01)];
             break;
 
         case Encoding::INDEXED_4:
