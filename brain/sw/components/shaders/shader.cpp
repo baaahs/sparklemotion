@@ -9,13 +9,25 @@
 #include "sine-wave-shader.h"
 #include "pixel-shader.h"
 
+/**
+ * Creates a shader based on the given configuration bytes.
+ *
+ * On return, `config`'s position will be moved past this shader's configuration bytes.
+ *
+ * If the requested shader is of an unknown type, or it can't be allocated, `nullptr`
+ * will be returned and subsequent shaders in the tree will probably be invalid.
+ *
+ * @param surface The surface the shader will be shading.
+ * @param config A buffer containing the specification for the shader.
+ * @return The shader, or `nullptr` if the shader couldn't be created.
+ */
 Shader *
 Shader::createShaderFromDescrip(Surface *surface, Msg *config) {
     if (!config->available(1)) return nullptr;
 
-    uint8_t last = config->readByte();
+    uint8_t shaderType = config->readByte();
 
-    switch(last) {
+    switch(shaderType) {
         case static_cast<int>(Shader::Type::SOLID):
             return new SolidShader(surface, config);
 
