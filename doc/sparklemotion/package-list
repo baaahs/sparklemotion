@@ -6,6 +6,7 @@ $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)))baaahs
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)), )baaahs/kotlin.collections.-list/random.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 baaahs
+baaahs.dmx
 baaahs.gadgets
 baaahs.geom
 baaahs.imaging

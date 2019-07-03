@@ -41,6 +41,7 @@
   var trimStart = Kotlin.kotlin.text.trimStart_wqw3xr$;
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var toByte = Kotlin.toByte;
   var numberToInt = Kotlin.numberToInt;
   var internal = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal;
   var withName = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
@@ -94,15 +95,14 @@
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var Enum = Kotlin.kotlin.Enum;
+  var throwISE = Kotlin.throwISE;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var L50 = Kotlin.Long.fromInt(50);
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
   var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
-  var Enum = Kotlin.kotlin.Enum;
-  var throwISE = Kotlin.throwISE;
-  var toByte = Kotlin.toByte;
   var lazy = Kotlin.kotlin.lazy_klfg04$;
   var Iterator = Kotlin.kotlin.collections.Iterator;
   var Iterable = Kotlin.kotlin.collections.Iterable;
@@ -117,13 +117,15 @@
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
-  var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var Exception_init_0 = Kotlin.kotlin.Exception_init;
   var Exception = Kotlin.kotlin.Exception;
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
   var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
   var toList_0 = Kotlin.kotlin.collections.toList_abgq59$;
   var get_list = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
+  var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init;
+  var toList_1 = Kotlin.kotlin.collections.toList_us0mfu$;
+  var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
@@ -139,7 +141,7 @@
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
-  var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
+  var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var Array_0 = Array;
@@ -211,6 +213,8 @@
   var Triangle = THREE.Triangle;
   var indexOf = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
+  MovingHead$ColorMode.prototype = Object.create(Enum.prototype);
+  MovingHead$ColorMode.prototype.constructor = MovingHead$ColorMode;
   PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Connection$receive$ObjectLiteral.prototype.constructor = PubSub$Connection$receive$ObjectLiteral;
   PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
@@ -227,14 +231,18 @@
   PubSub$Client.prototype.constructor = PubSub$Client;
   ShaderId.prototype = Object.create(Enum.prototype);
   ShaderId.prototype.constructor = ShaderId;
+  Show$RestartShowException.prototype = Object.create(Exception.prototype);
+  Show$RestartShowException.prototype.constructor = Show$RestartShowException;
+  LixadaMiniMovingHead$Channel.prototype = Object.create(Enum.prototype);
+  LixadaMiniMovingHead$Channel.prototype.constructor = LixadaMiniMovingHead$Channel;
+  LixadaMiniMovingHead.prototype = Object.create(Dmx$DeviceType.prototype);
+  LixadaMiniMovingHead.prototype.constructor = LixadaMiniMovingHead;
   Shenzarpy$WheelColor.prototype = Object.create(Enum.prototype);
   Shenzarpy$WheelColor.prototype.constructor = Shenzarpy$WheelColor;
   Shenzarpy$Channel.prototype = Object.create(Enum.prototype);
   Shenzarpy$Channel.prototype.constructor = Shenzarpy$Channel;
   Shenzarpy.prototype = Object.create(Dmx$DeviceType.prototype);
   Shenzarpy.prototype.constructor = Shenzarpy;
-  Show$RestartShowException.prototype = Object.create(Exception.prototype);
-  Show$RestartShowException.prototype.constructor = Show$RestartShowException;
   ColorPicker.prototype = Object.create(Gadget.prototype);
   ColorPicker.prototype.constructor = ColorPicker;
   PalettePicker.prototype = Object.create(Gadget.prototype);
@@ -837,16 +845,24 @@
       alpha = 255;
     return this.bounded_0(alpha) << 24 | this.bounded_0(red) << 16 | this.bounded_0(green) << 8 | this.bounded_0(blue);
   };
+  Color$Companion.prototype.asArgb_2 = function (red, green, blue, alpha) {
+    if (alpha === void 0)
+      alpha = toByte(255);
+    return this.bounded_1(alpha) << 24 | this.bounded_1(red) << 16 | this.bounded_1(green) << 8 | this.bounded_1(blue);
+  };
+  Color$Companion.prototype.bounded_2 = function (f) {
+    var b = Math_0.min(1.0, f);
+    return Math_0.max(0.0, b);
+  };
   Color$Companion.prototype.bounded_0 = function (i) {
     var b = Math_0.min(255, i);
     return Math_0.max(0, b);
   };
-  Color$Companion.prototype.bounded_1 = function (f) {
-    var b = Math_0.min(1.0, f);
-    return Math_0.max(0.0, b);
+  Color$Companion.prototype.bounded_1 = function (b) {
+    return b & 255;
   };
   Color$Companion.prototype.asInt_0 = function (f) {
-    return numberToInt(this.bounded_1(f) * 255);
+    return numberToInt(this.bounded_2(f) * 255);
   };
   Object.defineProperty(Color$Companion.prototype, 'descriptor', {
     get: function () {
@@ -891,6 +907,13 @@
       alpha = 255;
     $this = $this || Object.create(Color.prototype);
     Color.call($this, Color$Companion_getInstance().asArgb_0(red, green, blue, alpha));
+    return $this;
+  }
+  function Color_init_2(red, green, blue, alpha, $this) {
+    if (alpha === void 0)
+      alpha = toByte(255);
+    $this = $this || Object.create(Color.prototype);
+    Color.call($this, Color$Companion_getInstance().asArgb_2(red, green, blue, alpha));
     return $this;
   }
   Color.prototype.component1 = function () {
@@ -1055,9 +1078,15 @@
     this.baseChannel = baseChannel;
     this.channelCount = channelCount;
   }
+  Dmx$Buffer.prototype.get_6ui4v4$ = function (channel) {
+    return this.get_za3lpa$(channel.offset);
+  };
   Dmx$Buffer.prototype.get_za3lpa$ = function (index) {
     this.boundsCheck_0(index);
     return this.channels_0[this.baseChannel + index | 0];
+  };
+  Dmx$Buffer.prototype.set_h90ill$ = function (channel, value) {
+    this.set_6t1wet$(channel.offset, value);
   };
   Dmx$Buffer.prototype.set_6t1wet$ = function (index, value) {
     this.boundsCheck_0(index);
@@ -1071,6 +1100,13 @@
   Dmx$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
+    interfaces: []
+  };
+  function Dmx$Channel() {
+  }
+  Dmx$Channel.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Channel',
     interfaces: []
   };
   function Dmx$DeviceType(channelCount) {
@@ -2741,6 +2777,139 @@
     simpleName: 'MediaDevices',
     interfaces: []
   };
+  function MovingHead(name, origin) {
+    this.name = name;
+    this.origin = origin;
+  }
+  function MovingHead$ColorMode(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function MovingHead$ColorMode_initFields() {
+    MovingHead$ColorMode_initFields = function () {
+    };
+    MovingHead$ColorMode$ColorWheel_instance = new MovingHead$ColorMode('ColorWheel', 0);
+    MovingHead$ColorMode$RGB_instance = new MovingHead$ColorMode('RGB', 1);
+    MovingHead$ColorMode$RGBW_instance = new MovingHead$ColorMode('RGBW', 2);
+  }
+  var MovingHead$ColorMode$ColorWheel_instance;
+  function MovingHead$ColorMode$ColorWheel_getInstance() {
+    MovingHead$ColorMode_initFields();
+    return MovingHead$ColorMode$ColorWheel_instance;
+  }
+  var MovingHead$ColorMode$RGB_instance;
+  function MovingHead$ColorMode$RGB_getInstance() {
+    MovingHead$ColorMode_initFields();
+    return MovingHead$ColorMode$RGB_instance;
+  }
+  var MovingHead$ColorMode$RGBW_instance;
+  function MovingHead$ColorMode$RGBW_getInstance() {
+    MovingHead$ColorMode_initFields();
+    return MovingHead$ColorMode$RGBW_instance;
+  }
+  MovingHead$ColorMode.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorMode',
+    interfaces: [Enum]
+  };
+  function MovingHead$ColorMode$values() {
+    return [MovingHead$ColorMode$ColorWheel_getInstance(), MovingHead$ColorMode$RGB_getInstance(), MovingHead$ColorMode$RGBW_getInstance()];
+  }
+  MovingHead$ColorMode.values = MovingHead$ColorMode$values;
+  function MovingHead$ColorMode$valueOf(name) {
+    switch (name) {
+      case 'ColorWheel':
+        return MovingHead$ColorMode$ColorWheel_getInstance();
+      case 'RGB':
+        return MovingHead$ColorMode$RGB_getInstance();
+      case 'RGBW':
+        return MovingHead$ColorMode$RGBW_getInstance();
+      default:throwISE('No enum constant baaahs.MovingHead.ColorMode.' + name);
+    }
+  }
+  MovingHead$ColorMode.valueOf_61zpoe$ = MovingHead$ColorMode$valueOf;
+  function MovingHead$Buffer() {
+  }
+  Object.defineProperty(MovingHead$Buffer.prototype, 'supportsFinePositioning', {
+    get: function () {
+      return this.panFineChannel != null && this.tiltFineChannel != null;
+    }
+  });
+  Object.defineProperty(MovingHead$Buffer.prototype, 'pan', {
+    get: function () {
+      return this.getFloat_gej297$_0(this.panChannel, this.panFineChannel);
+    },
+    set: function (value) {
+      this.setFloat_8xjzlm$_0(this.panChannel, this.panFineChannel, value);
+    }
+  });
+  Object.defineProperty(MovingHead$Buffer.prototype, 'tilt', {
+    get: function () {
+      return this.getFloat_gej297$_0(this.tiltChannel, this.tiltFineChannel);
+    },
+    set: function (value) {
+      this.setFloat_8xjzlm$_0(this.tiltChannel, this.tiltFineChannel, value);
+    }
+  });
+  Object.defineProperty(MovingHead$Buffer.prototype, 'dimmer', {
+    get: function () {
+      return this.getFloat_b37jry$_0(this.dimmerChannel);
+    },
+    set: function (value) {
+      this.setFloat_vl9zqr$_0(this.dimmerChannel, value);
+    }
+  });
+  MovingHead$Buffer.prototype.closestColorFor_rny0jj$ = function (color) {
+    var bestMatch = {v: Shenzarpy$WheelColor$WHITE_getInstance()};
+    var bestDistance = {v: 1.0};
+    var tmp$;
+    tmp$ = this.colorWheelColors.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var distance = element.color.distanceTo_rny0jj$(color);
+      if (distance < bestDistance.v) {
+        bestMatch.v = element;
+        bestDistance.v = distance;
+      }
+    }
+    return toByte(bestMatch.v.ordinal);
+  };
+  MovingHead$Buffer.prototype.getFloat_b37jry$_0 = function (channel) {
+    var byteVal = this.buffer.get_6ui4v4$(channel) & 255;
+    return ((byteVal << 8) + byteVal | 0) / 65535.0;
+  };
+  MovingHead$Buffer.prototype.getFloat_gej297$_0 = function (coarseChannel, fineChannel) {
+    if (fineChannel == null) {
+      return this.getFloat_b37jry$_0(coarseChannel);
+    }
+    var firstByte = this.buffer.get_6ui4v4$(coarseChannel) & 255;
+    var secondByte = this.buffer.get_6ui4v4$(fineChannel) & 255;
+    var scaled = (firstByte * 256 | 0) + secondByte | 0;
+    return scaled / 65535.0;
+  };
+  MovingHead$Buffer.prototype.setFloat_vl9zqr$_0 = function (channel, value) {
+    var scaled = numberToInt(value * 65535);
+    this.buffer.set_h90ill$(channel, toByte(scaled >> 8));
+  };
+  MovingHead$Buffer.prototype.setFloat_8xjzlm$_0 = function (coarseChannel, fineChannel, value) {
+    if (fineChannel == null) {
+      return this.setFloat_vl9zqr$_0(coarseChannel, value);
+    }
+    var scaled = numberToInt(value * 65535);
+    this.buffer.set_h90ill$(coarseChannel, toByte(scaled >> 8));
+    this.buffer.set_h90ill$(fineChannel, toByte(scaled & 255));
+  };
+  MovingHead$Buffer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Buffer',
+    interfaces: []
+  };
+  MovingHead.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovingHead',
+    interfaces: []
+  };
   function Pinky(sheepModel, shows, network, dmxUniverse, display) {
     this.sheepModel = sheepModel;
     this.shows = shows;
@@ -4057,7 +4226,7 @@
       result.put_xwzc9p$(element_0, neighborsOf(element_0));
     }
     this.panelNeighbors = result;
-    this.eyes = arrayListOf([new SheepModel$MovingHead('leftEye', new SheepModel$Point(-163.738, 204.361, 439.302)), new SheepModel$MovingHead('rightEye', new SheepModel$Point(-103.738, 204.361, 439.302))]);
+    this.eyes = arrayListOf([new MovingHead('leftEye', new SheepModel$Point(-163.738, 204.361, 439.302)), new MovingHead('rightEye', new SheepModel$Point(-103.738, 204.361, 439.302))]);
   };
   SheepModel.prototype.neighborsOf_jfju1k$ = function (panel) {
     var tmp$;
@@ -4165,485 +4334,10 @@
     simpleName: 'Panel',
     interfaces: [Surface]
   };
-  function SheepModel$MovingHead(name, origin) {
-    this.name = name;
-    this.origin = origin;
-  }
-  SheepModel$MovingHead.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'MovingHead',
-    interfaces: []
-  };
   SheepModel.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SheepModel',
     interfaces: []
-  };
-  function Shenzarpy(buffer) {
-    Shenzarpy$Companion_getInstance();
-    Dmx$DeviceType.call(this, 16);
-    this.buffer_0 = buffer;
-    this.dimmer = 1.0;
-  }
-  function Shenzarpy$Companion() {
-    Shenzarpy$Companion_instance = this;
-    this.panRange = rangeTo(toRadians(0.0), toRadians(540.0));
-    this.tiltRange = rangeTo(toRadians(-110.0), toRadians(110.0));
-  }
-  Shenzarpy$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Shenzarpy$Companion_instance = null;
-  function Shenzarpy$Companion_getInstance() {
-    if (Shenzarpy$Companion_instance === null) {
-      new Shenzarpy$Companion();
-    }
-    return Shenzarpy$Companion_instance;
-  }
-  function Shenzarpy$WheelColor(name, ordinal, color) {
-    Enum.call(this);
-    this.color = color;
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function Shenzarpy$WheelColor_initFields() {
-    Shenzarpy$WheelColor_initFields = function () {
-    };
-    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().fromInt(12721698));
-    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().fromInt(15434294));
-    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().fromInt(8174724));
-    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().fromInt(1212719));
-    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().fromInt(10469695));
-    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().fromInt(9401515));
-    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().fromInt(15434114));
-    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().fromInt(16706356));
-    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().fromInt(14750594));
-    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().fromInt(1812456));
-    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().fromInt(16041553));
-    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().fromInt(16046218));
-    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().fromInt(9947064));
-    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().fromInt(545175));
-    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().fromInt(16777215));
-    Shenzarpy$WheelColor$Companion_getInstance();
-  }
-  var Shenzarpy$WheelColor$RED_instance;
-  function Shenzarpy$WheelColor$RED_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$RED_instance;
-  }
-  var Shenzarpy$WheelColor$ORANGE_instance;
-  function Shenzarpy$WheelColor$ORANGE_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$ORANGE_instance;
-  }
-  var Shenzarpy$WheelColor$AQUAMARINE_instance;
-  function Shenzarpy$WheelColor$AQUAMARINE_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$AQUAMARINE_instance;
-  }
-  var Shenzarpy$WheelColor$DEEP_GREEN_instance;
-  function Shenzarpy$WheelColor$DEEP_GREEN_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$DEEP_GREEN_instance;
-  }
-  var Shenzarpy$WheelColor$LIGHT_GREEN_instance;
-  function Shenzarpy$WheelColor$LIGHT_GREEN_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$LIGHT_GREEN_instance;
-  }
-  var Shenzarpy$WheelColor$LAVENDER_instance;
-  function Shenzarpy$WheelColor$LAVENDER_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$LAVENDER_instance;
-  }
-  var Shenzarpy$WheelColor$PINK_instance;
-  function Shenzarpy$WheelColor$PINK_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$PINK_instance;
-  }
-  var Shenzarpy$WheelColor$YELLOW_instance;
-  function Shenzarpy$WheelColor$YELLOW_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$YELLOW_instance;
-  }
-  var Shenzarpy$WheelColor$MAGENTA_instance;
-  function Shenzarpy$WheelColor$MAGENTA_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$MAGENTA_instance;
-  }
-  var Shenzarpy$WheelColor$CYAN_instance;
-  function Shenzarpy$WheelColor$CYAN_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$CYAN_instance;
-  }
-  var Shenzarpy$WheelColor$CTO2_instance;
-  function Shenzarpy$WheelColor$CTO2_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$CTO2_instance;
-  }
-  var Shenzarpy$WheelColor$CTO1_instance;
-  function Shenzarpy$WheelColor$CTO1_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$CTO1_instance;
-  }
-  var Shenzarpy$WheelColor$CTB_instance;
-  function Shenzarpy$WheelColor$CTB_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$CTB_instance;
-  }
-  var Shenzarpy$WheelColor$DARK_BLUE_instance;
-  function Shenzarpy$WheelColor$DARK_BLUE_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$DARK_BLUE_instance;
-  }
-  var Shenzarpy$WheelColor$WHITE_instance;
-  function Shenzarpy$WheelColor$WHITE_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    return Shenzarpy$WheelColor$WHITE_instance;
-  }
-  function Shenzarpy$WheelColor$Companion() {
-    Shenzarpy$WheelColor$Companion_instance = this;
-    this.values = Shenzarpy$WheelColor$values();
-  }
-  Shenzarpy$WheelColor$Companion.prototype.get_s8j3t7$ = function (i) {
-    return this.values[i];
-  };
-  Shenzarpy$WheelColor$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Shenzarpy$WheelColor$Companion_instance = null;
-  function Shenzarpy$WheelColor$Companion_getInstance() {
-    Shenzarpy$WheelColor_initFields();
-    if (Shenzarpy$WheelColor$Companion_instance === null) {
-      new Shenzarpy$WheelColor$Companion();
-    }
-    return Shenzarpy$WheelColor$Companion_instance;
-  }
-  Shenzarpy$WheelColor.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'WheelColor',
-    interfaces: [Enum]
-  };
-  function Shenzarpy$WheelColor$values() {
-    return [Shenzarpy$WheelColor$RED_getInstance(), Shenzarpy$WheelColor$ORANGE_getInstance(), Shenzarpy$WheelColor$AQUAMARINE_getInstance(), Shenzarpy$WheelColor$DEEP_GREEN_getInstance(), Shenzarpy$WheelColor$LIGHT_GREEN_getInstance(), Shenzarpy$WheelColor$LAVENDER_getInstance(), Shenzarpy$WheelColor$PINK_getInstance(), Shenzarpy$WheelColor$YELLOW_getInstance(), Shenzarpy$WheelColor$MAGENTA_getInstance(), Shenzarpy$WheelColor$CYAN_getInstance(), Shenzarpy$WheelColor$CTO2_getInstance(), Shenzarpy$WheelColor$CTO1_getInstance(), Shenzarpy$WheelColor$CTB_getInstance(), Shenzarpy$WheelColor$DARK_BLUE_getInstance(), Shenzarpy$WheelColor$WHITE_getInstance()];
-  }
-  Shenzarpy$WheelColor.values = Shenzarpy$WheelColor$values;
-  function Shenzarpy$WheelColor$valueOf(name) {
-    switch (name) {
-      case 'RED':
-        return Shenzarpy$WheelColor$RED_getInstance();
-      case 'ORANGE':
-        return Shenzarpy$WheelColor$ORANGE_getInstance();
-      case 'AQUAMARINE':
-        return Shenzarpy$WheelColor$AQUAMARINE_getInstance();
-      case 'DEEP_GREEN':
-        return Shenzarpy$WheelColor$DEEP_GREEN_getInstance();
-      case 'LIGHT_GREEN':
-        return Shenzarpy$WheelColor$LIGHT_GREEN_getInstance();
-      case 'LAVENDER':
-        return Shenzarpy$WheelColor$LAVENDER_getInstance();
-      case 'PINK':
-        return Shenzarpy$WheelColor$PINK_getInstance();
-      case 'YELLOW':
-        return Shenzarpy$WheelColor$YELLOW_getInstance();
-      case 'MAGENTA':
-        return Shenzarpy$WheelColor$MAGENTA_getInstance();
-      case 'CYAN':
-        return Shenzarpy$WheelColor$CYAN_getInstance();
-      case 'CTO2':
-        return Shenzarpy$WheelColor$CTO2_getInstance();
-      case 'CTO1':
-        return Shenzarpy$WheelColor$CTO1_getInstance();
-      case 'CTB':
-        return Shenzarpy$WheelColor$CTB_getInstance();
-      case 'DARK_BLUE':
-        return Shenzarpy$WheelColor$DARK_BLUE_getInstance();
-      case 'WHITE':
-        return Shenzarpy$WheelColor$WHITE_getInstance();
-      default:throwISE('No enum constant baaahs.Shenzarpy.WheelColor.' + name);
-    }
-  }
-  Shenzarpy$WheelColor.valueOf_61zpoe$ = Shenzarpy$WheelColor$valueOf;
-  function Shenzarpy$Channel(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function Shenzarpy$Channel_initFields() {
-    Shenzarpy$Channel_initFields = function () {
-    };
-    Shenzarpy$Channel$COLOR_WHEEL_instance = new Shenzarpy$Channel('COLOR_WHEEL', 0);
-    Shenzarpy$Channel$SHUTTER_instance = new Shenzarpy$Channel('SHUTTER', 1);
-    Shenzarpy$Channel$DIMMER_instance = new Shenzarpy$Channel('DIMMER', 2);
-    Shenzarpy$Channel$GOBO_WHEEL_instance = new Shenzarpy$Channel('GOBO_WHEEL', 3);
-    Shenzarpy$Channel$PRISM_instance = new Shenzarpy$Channel('PRISM', 4);
-    Shenzarpy$Channel$PRISM_ROTATION_instance = new Shenzarpy$Channel('PRISM_ROTATION', 5);
-    Shenzarpy$Channel$MACRO_instance = new Shenzarpy$Channel('MACRO', 6);
-    Shenzarpy$Channel$FROST_instance = new Shenzarpy$Channel('FROST', 7);
-    Shenzarpy$Channel$FOCUS_instance = new Shenzarpy$Channel('FOCUS', 8);
-    Shenzarpy$Channel$PAN_instance = new Shenzarpy$Channel('PAN', 9);
-    Shenzarpy$Channel$PAN_FINE_instance = new Shenzarpy$Channel('PAN_FINE', 10);
-    Shenzarpy$Channel$TILT_instance = new Shenzarpy$Channel('TILT', 11);
-    Shenzarpy$Channel$TILT_FINE_instance = new Shenzarpy$Channel('TILT_FINE', 12);
-    Shenzarpy$Channel$PAN_TILT_SPEED_instance = new Shenzarpy$Channel('PAN_TILT_SPEED', 13);
-    Shenzarpy$Channel$RESET_instance = new Shenzarpy$Channel('RESET', 14);
-    Shenzarpy$Channel$LAMP_CONTROL_instance = new Shenzarpy$Channel('LAMP_CONTROL', 15);
-    Shenzarpy$Channel$BLANK_instance = new Shenzarpy$Channel('BLANK', 16);
-    Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance = new Shenzarpy$Channel('COLOR_WHEEL_SPEED', 17);
-    Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance = new Shenzarpy$Channel('DIM_PRISM_ATOM_SPEED', 18);
-    Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance = new Shenzarpy$Channel('GOBO_WHEEL_SPEED', 19);
-    Shenzarpy$Channel$Companion_getInstance();
-  }
-  var Shenzarpy$Channel$COLOR_WHEEL_instance;
-  function Shenzarpy$Channel$COLOR_WHEEL_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$COLOR_WHEEL_instance;
-  }
-  var Shenzarpy$Channel$SHUTTER_instance;
-  function Shenzarpy$Channel$SHUTTER_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$SHUTTER_instance;
-  }
-  var Shenzarpy$Channel$DIMMER_instance;
-  function Shenzarpy$Channel$DIMMER_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$DIMMER_instance;
-  }
-  var Shenzarpy$Channel$GOBO_WHEEL_instance;
-  function Shenzarpy$Channel$GOBO_WHEEL_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$GOBO_WHEEL_instance;
-  }
-  var Shenzarpy$Channel$PRISM_instance;
-  function Shenzarpy$Channel$PRISM_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$PRISM_instance;
-  }
-  var Shenzarpy$Channel$PRISM_ROTATION_instance;
-  function Shenzarpy$Channel$PRISM_ROTATION_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$PRISM_ROTATION_instance;
-  }
-  var Shenzarpy$Channel$MACRO_instance;
-  function Shenzarpy$Channel$MACRO_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$MACRO_instance;
-  }
-  var Shenzarpy$Channel$FROST_instance;
-  function Shenzarpy$Channel$FROST_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$FROST_instance;
-  }
-  var Shenzarpy$Channel$FOCUS_instance;
-  function Shenzarpy$Channel$FOCUS_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$FOCUS_instance;
-  }
-  var Shenzarpy$Channel$PAN_instance;
-  function Shenzarpy$Channel$PAN_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$PAN_instance;
-  }
-  var Shenzarpy$Channel$PAN_FINE_instance;
-  function Shenzarpy$Channel$PAN_FINE_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$PAN_FINE_instance;
-  }
-  var Shenzarpy$Channel$TILT_instance;
-  function Shenzarpy$Channel$TILT_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$TILT_instance;
-  }
-  var Shenzarpy$Channel$TILT_FINE_instance;
-  function Shenzarpy$Channel$TILT_FINE_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$TILT_FINE_instance;
-  }
-  var Shenzarpy$Channel$PAN_TILT_SPEED_instance;
-  function Shenzarpy$Channel$PAN_TILT_SPEED_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$PAN_TILT_SPEED_instance;
-  }
-  var Shenzarpy$Channel$RESET_instance;
-  function Shenzarpy$Channel$RESET_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$RESET_instance;
-  }
-  var Shenzarpy$Channel$LAMP_CONTROL_instance;
-  function Shenzarpy$Channel$LAMP_CONTROL_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$LAMP_CONTROL_instance;
-  }
-  var Shenzarpy$Channel$BLANK_instance;
-  function Shenzarpy$Channel$BLANK_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$BLANK_instance;
-  }
-  var Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
-  function Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
-  }
-  var Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
-  function Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
-  }
-  var Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
-  function Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance() {
-    Shenzarpy$Channel_initFields();
-    return Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
-  }
-  function Shenzarpy$Channel$Companion() {
-    Shenzarpy$Channel$Companion_instance = this;
-    this.values = Shenzarpy$Channel$values();
-  }
-  Shenzarpy$Channel$Companion.prototype.get_s8j3t7$ = function (i) {
-    return this.values[i];
-  };
-  Shenzarpy$Channel$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Shenzarpy$Channel$Companion_instance = null;
-  function Shenzarpy$Channel$Companion_getInstance() {
-    Shenzarpy$Channel_initFields();
-    if (Shenzarpy$Channel$Companion_instance === null) {
-      new Shenzarpy$Channel$Companion();
-    }
-    return Shenzarpy$Channel$Companion_instance;
-  }
-  Shenzarpy$Channel.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Channel',
-    interfaces: [Enum]
-  };
-  function Shenzarpy$Channel$values() {
-    return [Shenzarpy$Channel$COLOR_WHEEL_getInstance(), Shenzarpy$Channel$SHUTTER_getInstance(), Shenzarpy$Channel$DIMMER_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_getInstance(), Shenzarpy$Channel$PRISM_getInstance(), Shenzarpy$Channel$PRISM_ROTATION_getInstance(), Shenzarpy$Channel$MACRO_getInstance(), Shenzarpy$Channel$FROST_getInstance(), Shenzarpy$Channel$FOCUS_getInstance(), Shenzarpy$Channel$PAN_getInstance(), Shenzarpy$Channel$PAN_FINE_getInstance(), Shenzarpy$Channel$TILT_getInstance(), Shenzarpy$Channel$TILT_FINE_getInstance(), Shenzarpy$Channel$PAN_TILT_SPEED_getInstance(), Shenzarpy$Channel$RESET_getInstance(), Shenzarpy$Channel$LAMP_CONTROL_getInstance(), Shenzarpy$Channel$BLANK_getInstance(), Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance(), Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance()];
-  }
-  Shenzarpy$Channel.values = Shenzarpy$Channel$values;
-  function Shenzarpy$Channel$valueOf(name) {
-    switch (name) {
-      case 'COLOR_WHEEL':
-        return Shenzarpy$Channel$COLOR_WHEEL_getInstance();
-      case 'SHUTTER':
-        return Shenzarpy$Channel$SHUTTER_getInstance();
-      case 'DIMMER':
-        return Shenzarpy$Channel$DIMMER_getInstance();
-      case 'GOBO_WHEEL':
-        return Shenzarpy$Channel$GOBO_WHEEL_getInstance();
-      case 'PRISM':
-        return Shenzarpy$Channel$PRISM_getInstance();
-      case 'PRISM_ROTATION':
-        return Shenzarpy$Channel$PRISM_ROTATION_getInstance();
-      case 'MACRO':
-        return Shenzarpy$Channel$MACRO_getInstance();
-      case 'FROST':
-        return Shenzarpy$Channel$FROST_getInstance();
-      case 'FOCUS':
-        return Shenzarpy$Channel$FOCUS_getInstance();
-      case 'PAN':
-        return Shenzarpy$Channel$PAN_getInstance();
-      case 'PAN_FINE':
-        return Shenzarpy$Channel$PAN_FINE_getInstance();
-      case 'TILT':
-        return Shenzarpy$Channel$TILT_getInstance();
-      case 'TILT_FINE':
-        return Shenzarpy$Channel$TILT_FINE_getInstance();
-      case 'PAN_TILT_SPEED':
-        return Shenzarpy$Channel$PAN_TILT_SPEED_getInstance();
-      case 'RESET':
-        return Shenzarpy$Channel$RESET_getInstance();
-      case 'LAMP_CONTROL':
-        return Shenzarpy$Channel$LAMP_CONTROL_getInstance();
-      case 'BLANK':
-        return Shenzarpy$Channel$BLANK_getInstance();
-      case 'COLOR_WHEEL_SPEED':
-        return Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance();
-      case 'DIM_PRISM_ATOM_SPEED':
-        return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance();
-      case 'GOBO_WHEEL_SPEED':
-        return Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance();
-      default:throwISE('No enum constant baaahs.Shenzarpy.Channel.' + name);
-    }
-  }
-  Shenzarpy$Channel.valueOf_61zpoe$ = Shenzarpy$Channel$valueOf;
-  Object.defineProperty(Shenzarpy.prototype, 'colorWheel', {
-    get: function () {
-      return this.get_0(this.buffer_0, Shenzarpy$Channel$COLOR_WHEEL_getInstance());
-    },
-    set: function (value) {
-      this.set_0(this.buffer_0, Shenzarpy$Channel$COLOR_WHEEL_getInstance(), value);
-    }
-  });
-  Object.defineProperty(Shenzarpy.prototype, 'dimmer', {
-    get: function () {
-      return (this.get_0(this.buffer_0, Shenzarpy$Channel$DIMMER_getInstance()) & 255) / 255.0;
-    },
-    set: function (value) {
-      this.set_0(this.buffer_0, Shenzarpy$Channel$DIMMER_getInstance(), toByte(numberToInt(value * 255) & 255));
-    }
-  });
-  Object.defineProperty(Shenzarpy.prototype, 'pan', {
-    get: function () {
-      var firstByte = this.get_0(this.buffer_0, Shenzarpy$Channel$PAN_getInstance()) & 255;
-      var secondByte = this.get_0(this.buffer_0, Shenzarpy$Channel$PAN_FINE_getInstance()) & 255;
-      var scaled = (firstByte * 256 | 0) + secondByte | 0;
-      return scaled / 65535.0;
-    },
-    set: function (value) {
-      var x = value % Shenzarpy$Companion_getInstance().panRange.endInclusive;
-      var modVal = Math_0.abs(x);
-      var scaled = numberToInt(modVal * 65535);
-      this.set_0(this.buffer_0, Shenzarpy$Channel$PAN_getInstance(), toByte(scaled >> 8));
-      this.set_0(this.buffer_0, Shenzarpy$Channel$PAN_FINE_getInstance(), toByte(scaled & 255));
-    }
-  });
-  Object.defineProperty(Shenzarpy.prototype, 'tilt', {
-    get: function () {
-      var firstByte = this.get_0(this.buffer_0, Shenzarpy$Channel$TILT_getInstance()) & 255;
-      var secondByte = this.get_0(this.buffer_0, Shenzarpy$Channel$TILT_FINE_getInstance()) & 255;
-      var scaled = (firstByte * 256 | 0) + secondByte | 0;
-      return scaled / 65535.0;
-    },
-    set: function (value) {
-      var x = value % Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
-      var modVal = Math_0.abs(x);
-      var scaled = numberToInt(modVal * 65535);
-      this.set_0(this.buffer_0, Shenzarpy$Channel$TILT_getInstance(), toByte(scaled >> 8));
-      this.set_0(this.buffer_0, Shenzarpy$Channel$TILT_FINE_getInstance(), toByte(scaled & 255));
-    }
-  });
-  Shenzarpy.prototype.set_0 = function ($receiver, channel, value) {
-    this.buffer_0.set_6t1wet$(channel.ordinal, value);
-  };
-  Shenzarpy.prototype.get_0 = function ($receiver, channel) {
-    return this.buffer_0.get_za3lpa$(channel.ordinal);
-  };
-  Shenzarpy.prototype.closestColorFor_rny0jj$ = function (color) {
-    var bestMatch = {v: Shenzarpy$WheelColor$WHITE_getInstance()};
-    var bestDistance = {v: 1.0};
-    var $receiver = Shenzarpy$WheelColor$Companion_getInstance().values;
-    var tmp$;
-    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
-      var element = $receiver[tmp$];
-      var distance = element.color.distanceTo_rny0jj$(color);
-      if (distance < bestDistance.v) {
-        bestMatch.v = element;
-        bestDistance.v = distance;
-      }
-    }
-    return toByte(bestMatch.v.ordinal);
-  };
-  Shenzarpy.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Shenzarpy',
-    interfaces: [Dmx$DeviceType]
   };
   function Show(name) {
     this.name = name;
@@ -4744,7 +4438,7 @@
   ShowRunner.prototype.getDmxBuffer_0 = function (baseChannel, channelCount) {
     return this.dmxUniverse_0.writer_vux9f0$(baseChannel, channelCount);
   };
-  ShowRunner.prototype.getMovingHead_1hma8m$ = function (movingHead) {
+  ShowRunner.prototype.getMovingHeadBuffer_d2e776$ = function (movingHead) {
     if (this.shadersLocked_0)
       throw IllegalStateException_init("Moving heads can't be obtained during #nextFrame()");
     var baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
@@ -4979,6 +4673,631 @@
     }
     return Topics_instance;
   }
+  function LixadaMiniMovingHead(buffer) {
+    Dmx$DeviceType.call(this, 9);
+    this.buffer_5ntmif$_0 = buffer;
+    this.dimmer = 34304 / 65535.0;
+    this.buffer.set_h90ill$(LixadaMiniMovingHead$Channel$WHITE_getInstance(), toByte(255));
+  }
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'buffer', {
+    get: function () {
+      return this.buffer_5ntmif$_0;
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'panChannel', {
+    get: function () {
+      return LixadaMiniMovingHead$Channel$PAN_getInstance();
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'panFineChannel', {
+    get: function () {
+      return null;
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'tiltChannel', {
+    get: function () {
+      return LixadaMiniMovingHead$Channel$TILT_getInstance();
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'tiltFineChannel', {
+    get: function () {
+      return null;
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'dimmerChannel', {
+    get: function () {
+      return LixadaMiniMovingHead$Channel$DIMMER_getInstance();
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'color', {
+    get: function () {
+      return Color_init_2(this.buffer.get_6ui4v4$(LixadaMiniMovingHead$Channel$RED_getInstance()), this.buffer.get_6ui4v4$(LixadaMiniMovingHead$Channel$GREEN_getInstance()), this.buffer.get_6ui4v4$(LixadaMiniMovingHead$Channel$BLUE_getInstance()));
+    },
+    set: function (value) {
+      this.buffer.set_h90ill$(LixadaMiniMovingHead$Channel$RED_getInstance(), toByte(value.redI));
+      this.buffer.set_h90ill$(LixadaMiniMovingHead$Channel$GREEN_getInstance(), toByte(value.greenI));
+      this.buffer.set_h90ill$(LixadaMiniMovingHead$Channel$BLUE_getInstance(), toByte(value.blueI));
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'colorMode', {
+    get: function () {
+      return MovingHead$ColorMode$RGBW_getInstance();
+    }
+  });
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'colorWheelColors', {
+    get: function () {
+      throw UnsupportedOperationException_init();
+    }
+  });
+  function LixadaMiniMovingHead$Channel(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+    this.offset_fr1z2f$_0 = this.ordinal;
+  }
+  function LixadaMiniMovingHead$Channel_initFields() {
+    LixadaMiniMovingHead$Channel_initFields = function () {
+    };
+    LixadaMiniMovingHead$Channel$PAN_instance = new LixadaMiniMovingHead$Channel('PAN', 0);
+    LixadaMiniMovingHead$Channel$TILT_instance = new LixadaMiniMovingHead$Channel('TILT', 1);
+    LixadaMiniMovingHead$Channel$DIMMER_instance = new LixadaMiniMovingHead$Channel('DIMMER', 2);
+    LixadaMiniMovingHead$Channel$RED_instance = new LixadaMiniMovingHead$Channel('RED', 3);
+    LixadaMiniMovingHead$Channel$GREEN_instance = new LixadaMiniMovingHead$Channel('GREEN', 4);
+    LixadaMiniMovingHead$Channel$BLUE_instance = new LixadaMiniMovingHead$Channel('BLUE', 5);
+    LixadaMiniMovingHead$Channel$WHITE_instance = new LixadaMiniMovingHead$Channel('WHITE', 6);
+    LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_instance = new LixadaMiniMovingHead$Channel('PAN_TILT_SPEED', 7);
+    LixadaMiniMovingHead$Channel$COLOR_RESET_instance = new LixadaMiniMovingHead$Channel('COLOR_RESET', 8);
+  }
+  var LixadaMiniMovingHead$Channel$PAN_instance;
+  function LixadaMiniMovingHead$Channel$PAN_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$PAN_instance;
+  }
+  var LixadaMiniMovingHead$Channel$TILT_instance;
+  function LixadaMiniMovingHead$Channel$TILT_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$TILT_instance;
+  }
+  var LixadaMiniMovingHead$Channel$DIMMER_instance;
+  function LixadaMiniMovingHead$Channel$DIMMER_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$DIMMER_instance;
+  }
+  var LixadaMiniMovingHead$Channel$RED_instance;
+  function LixadaMiniMovingHead$Channel$RED_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$RED_instance;
+  }
+  var LixadaMiniMovingHead$Channel$GREEN_instance;
+  function LixadaMiniMovingHead$Channel$GREEN_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$GREEN_instance;
+  }
+  var LixadaMiniMovingHead$Channel$BLUE_instance;
+  function LixadaMiniMovingHead$Channel$BLUE_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$BLUE_instance;
+  }
+  var LixadaMiniMovingHead$Channel$WHITE_instance;
+  function LixadaMiniMovingHead$Channel$WHITE_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$WHITE_instance;
+  }
+  var LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_instance;
+  function LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_instance;
+  }
+  var LixadaMiniMovingHead$Channel$COLOR_RESET_instance;
+  function LixadaMiniMovingHead$Channel$COLOR_RESET_getInstance() {
+    LixadaMiniMovingHead$Channel_initFields();
+    return LixadaMiniMovingHead$Channel$COLOR_RESET_instance;
+  }
+  Object.defineProperty(LixadaMiniMovingHead$Channel.prototype, 'offset', {
+    get: function () {
+      return this.offset_fr1z2f$_0;
+    }
+  });
+  LixadaMiniMovingHead$Channel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Channel',
+    interfaces: [Dmx$Channel, Enum]
+  };
+  function LixadaMiniMovingHead$Channel$values() {
+    return [LixadaMiniMovingHead$Channel$PAN_getInstance(), LixadaMiniMovingHead$Channel$TILT_getInstance(), LixadaMiniMovingHead$Channel$DIMMER_getInstance(), LixadaMiniMovingHead$Channel$RED_getInstance(), LixadaMiniMovingHead$Channel$GREEN_getInstance(), LixadaMiniMovingHead$Channel$BLUE_getInstance(), LixadaMiniMovingHead$Channel$WHITE_getInstance(), LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_getInstance(), LixadaMiniMovingHead$Channel$COLOR_RESET_getInstance()];
+  }
+  LixadaMiniMovingHead$Channel.values = LixadaMiniMovingHead$Channel$values;
+  function LixadaMiniMovingHead$Channel$valueOf(name) {
+    switch (name) {
+      case 'PAN':
+        return LixadaMiniMovingHead$Channel$PAN_getInstance();
+      case 'TILT':
+        return LixadaMiniMovingHead$Channel$TILT_getInstance();
+      case 'DIMMER':
+        return LixadaMiniMovingHead$Channel$DIMMER_getInstance();
+      case 'RED':
+        return LixadaMiniMovingHead$Channel$RED_getInstance();
+      case 'GREEN':
+        return LixadaMiniMovingHead$Channel$GREEN_getInstance();
+      case 'BLUE':
+        return LixadaMiniMovingHead$Channel$BLUE_getInstance();
+      case 'WHITE':
+        return LixadaMiniMovingHead$Channel$WHITE_getInstance();
+      case 'PAN_TILT_SPEED':
+        return LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_getInstance();
+      case 'COLOR_RESET':
+        return LixadaMiniMovingHead$Channel$COLOR_RESET_getInstance();
+      default:throwISE('No enum constant baaahs.dmx.LixadaMiniMovingHead.Channel.' + name);
+    }
+  }
+  LixadaMiniMovingHead$Channel.valueOf_61zpoe$ = LixadaMiniMovingHead$Channel$valueOf;
+  LixadaMiniMovingHead.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LixadaMiniMovingHead',
+    interfaces: [MovingHead$Buffer, Dmx$DeviceType]
+  };
+  function Shenzarpy(buffer) {
+    Shenzarpy$Companion_getInstance();
+    Dmx$DeviceType.call(this, 16);
+    this.buffer_ljatoh$_0 = buffer;
+    this.colorWheelColors_m14kjt$_0 = toList_1(Shenzarpy$WheelColor$Companion_getInstance().values);
+    this.dimmer = 1.0;
+  }
+  Object.defineProperty(Shenzarpy.prototype, 'buffer', {
+    get: function () {
+      return this.buffer_ljatoh$_0;
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'panChannel', {
+    get: function () {
+      return Shenzarpy$Channel$PAN_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'panFineChannel', {
+    get: function () {
+      return Shenzarpy$Channel$PAN_FINE_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'tiltChannel', {
+    get: function () {
+      return Shenzarpy$Channel$TILT_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'tiltFineChannel', {
+    get: function () {
+      return Shenzarpy$Channel$TILT_FINE_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'dimmerChannel', {
+    get: function () {
+      return Shenzarpy$Channel$DIMMER_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'color', {
+    get: function () {
+      return Shenzarpy$WheelColor$Companion_getInstance().values[this.colorWheel].color;
+    },
+    set: function (value) {
+      this.colorWheel = this.closestColorFor_rny0jj$(value);
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'colorMode', {
+    get: function () {
+      return MovingHead$ColorMode$ColorWheel_getInstance();
+    }
+  });
+  Object.defineProperty(Shenzarpy.prototype, 'colorWheelColors', {
+    get: function () {
+      return this.colorWheelColors_m14kjt$_0;
+    }
+  });
+  function Shenzarpy$Companion() {
+    Shenzarpy$Companion_instance = this;
+    this.panRange = rangeTo(toRadians(0.0), toRadians(540.0));
+    this.tiltRange = rangeTo(toRadians(-110.0), toRadians(110.0));
+  }
+  Shenzarpy$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Shenzarpy$Companion_instance = null;
+  function Shenzarpy$Companion_getInstance() {
+    if (Shenzarpy$Companion_instance === null) {
+      new Shenzarpy$Companion();
+    }
+    return Shenzarpy$Companion_instance;
+  }
+  function Shenzarpy$WheelColor(name, ordinal, color) {
+    Enum.call(this);
+    this.color = color;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Shenzarpy$WheelColor_initFields() {
+    Shenzarpy$WheelColor_initFields = function () {
+    };
+    Shenzarpy$WheelColor$RED_instance = new Shenzarpy$WheelColor('RED', 0, Color$Companion_getInstance().fromInt(12721698));
+    Shenzarpy$WheelColor$ORANGE_instance = new Shenzarpy$WheelColor('ORANGE', 1, Color$Companion_getInstance().fromInt(15434294));
+    Shenzarpy$WheelColor$AQUAMARINE_instance = new Shenzarpy$WheelColor('AQUAMARINE', 2, Color$Companion_getInstance().fromInt(8174724));
+    Shenzarpy$WheelColor$DEEP_GREEN_instance = new Shenzarpy$WheelColor('DEEP_GREEN', 3, Color$Companion_getInstance().fromInt(1212719));
+    Shenzarpy$WheelColor$LIGHT_GREEN_instance = new Shenzarpy$WheelColor('LIGHT_GREEN', 4, Color$Companion_getInstance().fromInt(10469695));
+    Shenzarpy$WheelColor$LAVENDER_instance = new Shenzarpy$WheelColor('LAVENDER', 5, Color$Companion_getInstance().fromInt(9401515));
+    Shenzarpy$WheelColor$PINK_instance = new Shenzarpy$WheelColor('PINK', 6, Color$Companion_getInstance().fromInt(15434114));
+    Shenzarpy$WheelColor$YELLOW_instance = new Shenzarpy$WheelColor('YELLOW', 7, Color$Companion_getInstance().fromInt(16706356));
+    Shenzarpy$WheelColor$MAGENTA_instance = new Shenzarpy$WheelColor('MAGENTA', 8, Color$Companion_getInstance().fromInt(14750594));
+    Shenzarpy$WheelColor$CYAN_instance = new Shenzarpy$WheelColor('CYAN', 9, Color$Companion_getInstance().fromInt(1812456));
+    Shenzarpy$WheelColor$CTO2_instance = new Shenzarpy$WheelColor('CTO2', 10, Color$Companion_getInstance().fromInt(16041553));
+    Shenzarpy$WheelColor$CTO1_instance = new Shenzarpy$WheelColor('CTO1', 11, Color$Companion_getInstance().fromInt(16046218));
+    Shenzarpy$WheelColor$CTB_instance = new Shenzarpy$WheelColor('CTB', 12, Color$Companion_getInstance().fromInt(9947064));
+    Shenzarpy$WheelColor$DARK_BLUE_instance = new Shenzarpy$WheelColor('DARK_BLUE', 13, Color$Companion_getInstance().fromInt(545175));
+    Shenzarpy$WheelColor$WHITE_instance = new Shenzarpy$WheelColor('WHITE', 14, Color$Companion_getInstance().fromInt(16777215));
+    Shenzarpy$WheelColor$Companion_getInstance();
+  }
+  var Shenzarpy$WheelColor$RED_instance;
+  function Shenzarpy$WheelColor$RED_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$RED_instance;
+  }
+  var Shenzarpy$WheelColor$ORANGE_instance;
+  function Shenzarpy$WheelColor$ORANGE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$ORANGE_instance;
+  }
+  var Shenzarpy$WheelColor$AQUAMARINE_instance;
+  function Shenzarpy$WheelColor$AQUAMARINE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$AQUAMARINE_instance;
+  }
+  var Shenzarpy$WheelColor$DEEP_GREEN_instance;
+  function Shenzarpy$WheelColor$DEEP_GREEN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$DEEP_GREEN_instance;
+  }
+  var Shenzarpy$WheelColor$LIGHT_GREEN_instance;
+  function Shenzarpy$WheelColor$LIGHT_GREEN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$LIGHT_GREEN_instance;
+  }
+  var Shenzarpy$WheelColor$LAVENDER_instance;
+  function Shenzarpy$WheelColor$LAVENDER_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$LAVENDER_instance;
+  }
+  var Shenzarpy$WheelColor$PINK_instance;
+  function Shenzarpy$WheelColor$PINK_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$PINK_instance;
+  }
+  var Shenzarpy$WheelColor$YELLOW_instance;
+  function Shenzarpy$WheelColor$YELLOW_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$YELLOW_instance;
+  }
+  var Shenzarpy$WheelColor$MAGENTA_instance;
+  function Shenzarpy$WheelColor$MAGENTA_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$MAGENTA_instance;
+  }
+  var Shenzarpy$WheelColor$CYAN_instance;
+  function Shenzarpy$WheelColor$CYAN_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CYAN_instance;
+  }
+  var Shenzarpy$WheelColor$CTO2_instance;
+  function Shenzarpy$WheelColor$CTO2_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTO2_instance;
+  }
+  var Shenzarpy$WheelColor$CTO1_instance;
+  function Shenzarpy$WheelColor$CTO1_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTO1_instance;
+  }
+  var Shenzarpy$WheelColor$CTB_instance;
+  function Shenzarpy$WheelColor$CTB_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$CTB_instance;
+  }
+  var Shenzarpy$WheelColor$DARK_BLUE_instance;
+  function Shenzarpy$WheelColor$DARK_BLUE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$DARK_BLUE_instance;
+  }
+  var Shenzarpy$WheelColor$WHITE_instance;
+  function Shenzarpy$WheelColor$WHITE_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    return Shenzarpy$WheelColor$WHITE_instance;
+  }
+  function Shenzarpy$WheelColor$Companion() {
+    Shenzarpy$WheelColor$Companion_instance = this;
+    this.values = Shenzarpy$WheelColor$values();
+  }
+  Shenzarpy$WheelColor$Companion.prototype.get_s8j3t7$ = function (i) {
+    return this.values[i];
+  };
+  Shenzarpy$WheelColor$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Shenzarpy$WheelColor$Companion_instance = null;
+  function Shenzarpy$WheelColor$Companion_getInstance() {
+    Shenzarpy$WheelColor_initFields();
+    if (Shenzarpy$WheelColor$Companion_instance === null) {
+      new Shenzarpy$WheelColor$Companion();
+    }
+    return Shenzarpy$WheelColor$Companion_instance;
+  }
+  Shenzarpy$WheelColor.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'WheelColor',
+    interfaces: [Enum]
+  };
+  function Shenzarpy$WheelColor$values() {
+    return [Shenzarpy$WheelColor$RED_getInstance(), Shenzarpy$WheelColor$ORANGE_getInstance(), Shenzarpy$WheelColor$AQUAMARINE_getInstance(), Shenzarpy$WheelColor$DEEP_GREEN_getInstance(), Shenzarpy$WheelColor$LIGHT_GREEN_getInstance(), Shenzarpy$WheelColor$LAVENDER_getInstance(), Shenzarpy$WheelColor$PINK_getInstance(), Shenzarpy$WheelColor$YELLOW_getInstance(), Shenzarpy$WheelColor$MAGENTA_getInstance(), Shenzarpy$WheelColor$CYAN_getInstance(), Shenzarpy$WheelColor$CTO2_getInstance(), Shenzarpy$WheelColor$CTO1_getInstance(), Shenzarpy$WheelColor$CTB_getInstance(), Shenzarpy$WheelColor$DARK_BLUE_getInstance(), Shenzarpy$WheelColor$WHITE_getInstance()];
+  }
+  Shenzarpy$WheelColor.values = Shenzarpy$WheelColor$values;
+  function Shenzarpy$WheelColor$valueOf(name) {
+    switch (name) {
+      case 'RED':
+        return Shenzarpy$WheelColor$RED_getInstance();
+      case 'ORANGE':
+        return Shenzarpy$WheelColor$ORANGE_getInstance();
+      case 'AQUAMARINE':
+        return Shenzarpy$WheelColor$AQUAMARINE_getInstance();
+      case 'DEEP_GREEN':
+        return Shenzarpy$WheelColor$DEEP_GREEN_getInstance();
+      case 'LIGHT_GREEN':
+        return Shenzarpy$WheelColor$LIGHT_GREEN_getInstance();
+      case 'LAVENDER':
+        return Shenzarpy$WheelColor$LAVENDER_getInstance();
+      case 'PINK':
+        return Shenzarpy$WheelColor$PINK_getInstance();
+      case 'YELLOW':
+        return Shenzarpy$WheelColor$YELLOW_getInstance();
+      case 'MAGENTA':
+        return Shenzarpy$WheelColor$MAGENTA_getInstance();
+      case 'CYAN':
+        return Shenzarpy$WheelColor$CYAN_getInstance();
+      case 'CTO2':
+        return Shenzarpy$WheelColor$CTO2_getInstance();
+      case 'CTO1':
+        return Shenzarpy$WheelColor$CTO1_getInstance();
+      case 'CTB':
+        return Shenzarpy$WheelColor$CTB_getInstance();
+      case 'DARK_BLUE':
+        return Shenzarpy$WheelColor$DARK_BLUE_getInstance();
+      case 'WHITE':
+        return Shenzarpy$WheelColor$WHITE_getInstance();
+      default:throwISE('No enum constant baaahs.dmx.Shenzarpy.WheelColor.' + name);
+    }
+  }
+  Shenzarpy$WheelColor.valueOf_61zpoe$ = Shenzarpy$WheelColor$valueOf;
+  function Shenzarpy$Channel(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+    this.offset_ydpwan$_0 = this.ordinal;
+  }
+  function Shenzarpy$Channel_initFields() {
+    Shenzarpy$Channel_initFields = function () {
+    };
+    Shenzarpy$Channel$COLOR_WHEEL_instance = new Shenzarpy$Channel('COLOR_WHEEL', 0);
+    Shenzarpy$Channel$SHUTTER_instance = new Shenzarpy$Channel('SHUTTER', 1);
+    Shenzarpy$Channel$DIMMER_instance = new Shenzarpy$Channel('DIMMER', 2);
+    Shenzarpy$Channel$GOBO_WHEEL_instance = new Shenzarpy$Channel('GOBO_WHEEL', 3);
+    Shenzarpy$Channel$PRISM_instance = new Shenzarpy$Channel('PRISM', 4);
+    Shenzarpy$Channel$PRISM_ROTATION_instance = new Shenzarpy$Channel('PRISM_ROTATION', 5);
+    Shenzarpy$Channel$MACRO_instance = new Shenzarpy$Channel('MACRO', 6);
+    Shenzarpy$Channel$FROST_instance = new Shenzarpy$Channel('FROST', 7);
+    Shenzarpy$Channel$FOCUS_instance = new Shenzarpy$Channel('FOCUS', 8);
+    Shenzarpy$Channel$PAN_instance = new Shenzarpy$Channel('PAN', 9);
+    Shenzarpy$Channel$PAN_FINE_instance = new Shenzarpy$Channel('PAN_FINE', 10);
+    Shenzarpy$Channel$TILT_instance = new Shenzarpy$Channel('TILT', 11);
+    Shenzarpy$Channel$TILT_FINE_instance = new Shenzarpy$Channel('TILT_FINE', 12);
+    Shenzarpy$Channel$PAN_TILT_SPEED_instance = new Shenzarpy$Channel('PAN_TILT_SPEED', 13);
+    Shenzarpy$Channel$RESET_instance = new Shenzarpy$Channel('RESET', 14);
+    Shenzarpy$Channel$LAMP_CONTROL_instance = new Shenzarpy$Channel('LAMP_CONTROL', 15);
+    Shenzarpy$Channel$BLANK_instance = new Shenzarpy$Channel('BLANK', 16);
+    Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance = new Shenzarpy$Channel('COLOR_WHEEL_SPEED', 17);
+    Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance = new Shenzarpy$Channel('DIM_PRISM_ATOM_SPEED', 18);
+    Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance = new Shenzarpy$Channel('GOBO_WHEEL_SPEED', 19);
+    Shenzarpy$Channel$Companion_getInstance();
+  }
+  var Shenzarpy$Channel$COLOR_WHEEL_instance;
+  function Shenzarpy$Channel$COLOR_WHEEL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$COLOR_WHEEL_instance;
+  }
+  var Shenzarpy$Channel$SHUTTER_instance;
+  function Shenzarpy$Channel$SHUTTER_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$SHUTTER_instance;
+  }
+  var Shenzarpy$Channel$DIMMER_instance;
+  function Shenzarpy$Channel$DIMMER_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$DIMMER_instance;
+  }
+  var Shenzarpy$Channel$GOBO_WHEEL_instance;
+  function Shenzarpy$Channel$GOBO_WHEEL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$GOBO_WHEEL_instance;
+  }
+  var Shenzarpy$Channel$PRISM_instance;
+  function Shenzarpy$Channel$PRISM_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PRISM_instance;
+  }
+  var Shenzarpy$Channel$PRISM_ROTATION_instance;
+  function Shenzarpy$Channel$PRISM_ROTATION_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PRISM_ROTATION_instance;
+  }
+  var Shenzarpy$Channel$MACRO_instance;
+  function Shenzarpy$Channel$MACRO_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$MACRO_instance;
+  }
+  var Shenzarpy$Channel$FROST_instance;
+  function Shenzarpy$Channel$FROST_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$FROST_instance;
+  }
+  var Shenzarpy$Channel$FOCUS_instance;
+  function Shenzarpy$Channel$FOCUS_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$FOCUS_instance;
+  }
+  var Shenzarpy$Channel$PAN_instance;
+  function Shenzarpy$Channel$PAN_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_instance;
+  }
+  var Shenzarpy$Channel$PAN_FINE_instance;
+  function Shenzarpy$Channel$PAN_FINE_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_FINE_instance;
+  }
+  var Shenzarpy$Channel$TILT_instance;
+  function Shenzarpy$Channel$TILT_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$TILT_instance;
+  }
+  var Shenzarpy$Channel$TILT_FINE_instance;
+  function Shenzarpy$Channel$TILT_FINE_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$TILT_FINE_instance;
+  }
+  var Shenzarpy$Channel$PAN_TILT_SPEED_instance;
+  function Shenzarpy$Channel$PAN_TILT_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$PAN_TILT_SPEED_instance;
+  }
+  var Shenzarpy$Channel$RESET_instance;
+  function Shenzarpy$Channel$RESET_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$RESET_instance;
+  }
+  var Shenzarpy$Channel$LAMP_CONTROL_instance;
+  function Shenzarpy$Channel$LAMP_CONTROL_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$LAMP_CONTROL_instance;
+  }
+  var Shenzarpy$Channel$BLANK_instance;
+  function Shenzarpy$Channel$BLANK_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$BLANK_instance;
+  }
+  var Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
+  function Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$COLOR_WHEEL_SPEED_instance;
+  }
+  var Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
+  function Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_instance;
+  }
+  var Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
+  function Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance() {
+    Shenzarpy$Channel_initFields();
+    return Shenzarpy$Channel$GOBO_WHEEL_SPEED_instance;
+  }
+  function Shenzarpy$Channel$Companion() {
+    Shenzarpy$Channel$Companion_instance = this;
+    this.values = Shenzarpy$Channel$values();
+  }
+  Shenzarpy$Channel$Companion.prototype.get_s8j3t7$ = function (i) {
+    return this.values[i];
+  };
+  Shenzarpy$Channel$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Shenzarpy$Channel$Companion_instance = null;
+  function Shenzarpy$Channel$Companion_getInstance() {
+    Shenzarpy$Channel_initFields();
+    if (Shenzarpy$Channel$Companion_instance === null) {
+      new Shenzarpy$Channel$Companion();
+    }
+    return Shenzarpy$Channel$Companion_instance;
+  }
+  Object.defineProperty(Shenzarpy$Channel.prototype, 'offset', {
+    get: function () {
+      return this.offset_ydpwan$_0;
+    }
+  });
+  Shenzarpy$Channel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Channel',
+    interfaces: [Dmx$Channel, Enum]
+  };
+  function Shenzarpy$Channel$values() {
+    return [Shenzarpy$Channel$COLOR_WHEEL_getInstance(), Shenzarpy$Channel$SHUTTER_getInstance(), Shenzarpy$Channel$DIMMER_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_getInstance(), Shenzarpy$Channel$PRISM_getInstance(), Shenzarpy$Channel$PRISM_ROTATION_getInstance(), Shenzarpy$Channel$MACRO_getInstance(), Shenzarpy$Channel$FROST_getInstance(), Shenzarpy$Channel$FOCUS_getInstance(), Shenzarpy$Channel$PAN_getInstance(), Shenzarpy$Channel$PAN_FINE_getInstance(), Shenzarpy$Channel$TILT_getInstance(), Shenzarpy$Channel$TILT_FINE_getInstance(), Shenzarpy$Channel$PAN_TILT_SPEED_getInstance(), Shenzarpy$Channel$RESET_getInstance(), Shenzarpy$Channel$LAMP_CONTROL_getInstance(), Shenzarpy$Channel$BLANK_getInstance(), Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance(), Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance(), Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance()];
+  }
+  Shenzarpy$Channel.values = Shenzarpy$Channel$values;
+  function Shenzarpy$Channel$valueOf(name) {
+    switch (name) {
+      case 'COLOR_WHEEL':
+        return Shenzarpy$Channel$COLOR_WHEEL_getInstance();
+      case 'SHUTTER':
+        return Shenzarpy$Channel$SHUTTER_getInstance();
+      case 'DIMMER':
+        return Shenzarpy$Channel$DIMMER_getInstance();
+      case 'GOBO_WHEEL':
+        return Shenzarpy$Channel$GOBO_WHEEL_getInstance();
+      case 'PRISM':
+        return Shenzarpy$Channel$PRISM_getInstance();
+      case 'PRISM_ROTATION':
+        return Shenzarpy$Channel$PRISM_ROTATION_getInstance();
+      case 'MACRO':
+        return Shenzarpy$Channel$MACRO_getInstance();
+      case 'FROST':
+        return Shenzarpy$Channel$FROST_getInstance();
+      case 'FOCUS':
+        return Shenzarpy$Channel$FOCUS_getInstance();
+      case 'PAN':
+        return Shenzarpy$Channel$PAN_getInstance();
+      case 'PAN_FINE':
+        return Shenzarpy$Channel$PAN_FINE_getInstance();
+      case 'TILT':
+        return Shenzarpy$Channel$TILT_getInstance();
+      case 'TILT_FINE':
+        return Shenzarpy$Channel$TILT_FINE_getInstance();
+      case 'PAN_TILT_SPEED':
+        return Shenzarpy$Channel$PAN_TILT_SPEED_getInstance();
+      case 'RESET':
+        return Shenzarpy$Channel$RESET_getInstance();
+      case 'LAMP_CONTROL':
+        return Shenzarpy$Channel$LAMP_CONTROL_getInstance();
+      case 'BLANK':
+        return Shenzarpy$Channel$BLANK_getInstance();
+      case 'COLOR_WHEEL_SPEED':
+        return Shenzarpy$Channel$COLOR_WHEEL_SPEED_getInstance();
+      case 'DIM_PRISM_ATOM_SPEED':
+        return Shenzarpy$Channel$DIM_PRISM_ATOM_SPEED_getInstance();
+      case 'GOBO_WHEEL_SPEED':
+        return Shenzarpy$Channel$GOBO_WHEEL_SPEED_getInstance();
+      default:throwISE('No enum constant baaahs.dmx.Shenzarpy.Channel.' + name);
+    }
+  }
+  Shenzarpy$Channel.valueOf_61zpoe$ = Shenzarpy$Channel$valueOf;
+  Object.defineProperty(Shenzarpy.prototype, 'colorWheel', {
+    get: function () {
+      return this.buffer.get_6ui4v4$(Shenzarpy$Channel$COLOR_WHEEL_getInstance());
+    },
+    set: function (value) {
+      this.buffer.set_h90ill$(Shenzarpy$Channel$COLOR_WHEEL_getInstance(), value);
+    }
+  });
+  Shenzarpy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Shenzarpy',
+    interfaces: [MovingHead$Buffer, Dmx$DeviceType]
+  };
   function ColorPicker(name, initialValue) {
     ColorPicker$Companion_getInstance();
     if (initialValue === void 0)
@@ -5648,7 +5967,7 @@
         }
         var iterator = destination.iterator();
         if (!iterator.hasNext())
-          throw UnsupportedOperationException_init("Empty collection can't be reduced.");
+          throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
         var accumulator = iterator.next();
         while (iterator.hasNext()) {
           accumulator = accumulator + iterator.next() | 0;
@@ -7103,7 +7422,7 @@
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
       var item = tmp$_0.next();
-      destination.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item));
+      destination.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item));
     }
     this.movingHeadBuffers_0 = destination;
   }
@@ -7133,7 +7452,7 @@
     tmp$_1 = this.movingHeadBuffers_0.iterator();
     while (tmp$_1.hasNext()) {
       var element_0 = tmp$_1.next();
-      element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker.color);
+      element_0.color = this.colorPicker.color;
       element_0.pan = math.PI / 2;
       element_0.tilt = theta / 2;
     }
@@ -7592,7 +7911,7 @@
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
       var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
     }
     this.movingHeadBuffers = destination_0;
   }
@@ -7601,7 +7920,7 @@
     tmp$ = this.movingHeadBuffers.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      element.colorWheel = element.closestColorFor_rny0jj$(Color$Companion_getInstance().random());
+      element.color = Color$Companion_getInstance().random();
       element.pan = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().panRange.endInclusive;
       element.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
     }
@@ -7693,9 +8012,10 @@
     SolidColorShow_instance = this;
     Show.call(this, 'Solid Color');
   }
-  function SolidColorShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers) {
+  function SolidColorShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers, closure$eyes) {
     this.closure$colorPicker = closure$colorPicker;
     this.closure$shaderBuffers = closure$shaderBuffers;
+    this.closure$eyes = closure$eyes;
     this.priorColor = closure$colorPicker.color;
   }
   SolidColorShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
@@ -7707,6 +8027,12 @@
       while (tmp$_0.hasNext()) {
         var element = tmp$_0.next();
         element.color = color.v;
+      }
+      var tmp$_1;
+      tmp$_1 = this.closure$eyes.iterator();
+      while (tmp$_1.hasNext()) {
+        var element_0 = tmp$_1.next();
+        element_0.color = color.v;
       }
       this.priorColor = color.v;
     }
@@ -7730,7 +8056,16 @@
       tmp$_0.call(destination, $receiver_0);
     }
     var shaderBuffers = destination;
-    return new SolidColorShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers);
+    var $receiver_1 = sheepModel.eyes;
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
+    var tmp$_1;
+    tmp$_1 = $receiver_1.iterator();
+    while (tmp$_1.hasNext()) {
+      var item_0 = tmp$_1.next();
+      destination_0.add_11rb$(showRunner.getMovingHeadBuffer_d2e776$(item_0));
+    }
+    var eyes = destination_0;
+    return new SolidColorShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers, eyes);
   };
   SolidColorShow.$metadata$ = {
     kind: Kind_OBJECT,
@@ -7766,7 +8101,7 @@
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
       var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
     }
     this.movingHeads = destination_0;
   }
@@ -7801,7 +8136,7 @@
     tmp$_1 = this.movingHeads.iterator();
     while (tmp$_1.hasNext()) {
       var element_0 = tmp$_1.next();
-      element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker.color);
+      element_0.color = this.colorPicker.color;
       element_0.pan = element_0.pan + (nextTimeShiftedFloat(seed) - 0.5) / 5;
       element_0.tilt = element_0.tilt + (nextTimeShiftedFloat(seed) - 0.5) / 5;
     }
@@ -7856,7 +8191,7 @@
     tmp$_1 = $receiver_1.iterator();
     while (tmp$_1.hasNext()) {
       var item_0 = tmp$_1.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHead_1hma8m$(item_0));
+      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
     }
     this.movingHeadBuffers_0 = destination_0;
   }
@@ -7879,7 +8214,7 @@
     tmp$_1 = this.movingHeadBuffers_0.iterator();
     while (tmp$_1.hasNext()) {
       var element_0 = tmp$_1.next();
-      element_0.colorWheel = element_0.closestColorFor_rny0jj$(this.colorPicker.color);
+      element_0.color = this.colorPicker.color;
       element_0.pan = math.PI / 2;
       element_0.tilt = beat / math.PI;
     }
@@ -9876,7 +10211,7 @@
             while (tmp$_3.hasNext()) {
               var element = tmp$_3.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
-              this$SheepSimulator_0.visualizer_0.addMovingHead_nmqlne$(element, this$SheepSimulator_0.dmxUniverse_0);
+              this$SheepSimulator_0.visualizer_0.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
 
             return doRunBlocking(SheepSimulator$start$lambda$lambda_2), Unit;
@@ -10797,7 +11132,7 @@
     this.vizPanels_0.add_11rb$(vizPanel);
     return vizPanel;
   };
-  Visualizer.prototype.addMovingHead_nmqlne$ = function (movingHead, dmxUniverse) {
+  Visualizer.prototype.addMovingHead_g9d0gu$ = function (movingHead, dmxUniverse) {
     return new Visualizer$VizMovingHead(this, movingHead, dmxUniverse);
   };
   function Visualizer$VizMovingHead($outer, movingHead, dmxUniverse) {
@@ -10817,9 +11152,7 @@
     this.$outer.scene_0.add(this.cone_0);
   }
   Visualizer$VizMovingHead.prototype.receivedDmxFrame_0 = function () {
-    var colorWheelV = this.device_0.colorWheel;
-    var wheelColor = Shenzarpy$WheelColor$Companion_getInstance().get_s8j3t7$(colorWheelV);
-    this.material_0.color.set(wheelColor.color.rgb);
+    this.material_0.color.set(this.device_0.color.rgb);
     this.material_0.visible = this.device_0.dimmer > 0.1;
     this.cone_0.rotation.x = -math.PI / 2 + this.device_0.tilt;
     this.cone_0.rotation.z = this.device_0.pan;
@@ -11308,6 +11641,7 @@
   });
   package$baaahs.Color_init_7b5o5w$ = Color_init_0;
   package$baaahs.Color_init_tjonv8$ = Color_init_1;
+  package$baaahs.Color_init_sz6or4$ = Color_init_2;
   package$baaahs.Color = Color;
   Object.defineProperty(Config, 'Companion', {
     get: Config$Companion_getInstance
@@ -11322,6 +11656,7 @@
   package$baaahs.VisualizerDisplay = VisualizerDisplay;
   Dmx.Universe = Dmx$Universe;
   Dmx.Buffer = Dmx$Buffer;
+  Dmx.Channel = Dmx$Channel;
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
   package$baaahs.Gadget = Gadget;
@@ -11354,6 +11689,18 @@
   MediaDevices.Camera = MediaDevices$Camera;
   MediaDevices.Region = MediaDevices$Region;
   package$baaahs.MediaDevices = MediaDevices;
+  Object.defineProperty(MovingHead$ColorMode, 'ColorWheel', {
+    get: MovingHead$ColorMode$ColorWheel_getInstance
+  });
+  Object.defineProperty(MovingHead$ColorMode, 'RGB', {
+    get: MovingHead$ColorMode$RGB_getInstance
+  });
+  Object.defineProperty(MovingHead$ColorMode, 'RGBW', {
+    get: MovingHead$ColorMode$RGBW_getInstance
+  });
+  MovingHead.ColorMode = MovingHead$ColorMode;
+  MovingHead.Buffer = MovingHead$Buffer;
+  package$baaahs.MovingHead = MovingHead;
   Pinky.UnknownSurface = Pinky$UnknownSurface;
   Pinky.BeatProvider = Pinky$BeatProvider;
   Pinky.PinkyBeatProvider = Pinky$PinkyBeatProvider;
@@ -11417,8 +11764,49 @@
   SheepModel.Face = SheepModel$Face;
   SheepModel.Faces = SheepModel$Faces;
   SheepModel.Panel = SheepModel$Panel;
-  SheepModel.MovingHead = SheepModel$MovingHead;
   package$baaahs.SheepModel = SheepModel;
+  Show.Renderer = Show$Renderer;
+  Show.RestartShowException = Show$RestartShowException;
+  package$baaahs.Show = Show;
+  ShowRunner.SurfacesChanges = ShowRunner$SurfacesChanges;
+  ShowRunner.SurfaceReceiver = ShowRunner$SurfaceReceiver;
+  package$baaahs.ShowRunner = ShowRunner;
+  Object.defineProperty(package$baaahs, 'SparkleMotion', {
+    get: SparkleMotion_getInstance
+  });
+  Object.defineProperty(package$baaahs, 'Topics', {
+    get: Topics_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'PAN', {
+    get: LixadaMiniMovingHead$Channel$PAN_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'TILT', {
+    get: LixadaMiniMovingHead$Channel$TILT_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'DIMMER', {
+    get: LixadaMiniMovingHead$Channel$DIMMER_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'RED', {
+    get: LixadaMiniMovingHead$Channel$RED_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'GREEN', {
+    get: LixadaMiniMovingHead$Channel$GREEN_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'BLUE', {
+    get: LixadaMiniMovingHead$Channel$BLUE_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'WHITE', {
+    get: LixadaMiniMovingHead$Channel$WHITE_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'PAN_TILT_SPEED', {
+    get: LixadaMiniMovingHead$Channel$PAN_TILT_SPEED_getInstance
+  });
+  Object.defineProperty(LixadaMiniMovingHead$Channel, 'COLOR_RESET', {
+    get: LixadaMiniMovingHead$Channel$COLOR_RESET_getInstance
+  });
+  LixadaMiniMovingHead.Channel = LixadaMiniMovingHead$Channel;
+  var package$dmx = package$baaahs.dmx || (package$baaahs.dmx = {});
+  package$dmx.LixadaMiniMovingHead = LixadaMiniMovingHead;
   Object.defineProperty(Shenzarpy, 'Companion', {
     get: Shenzarpy$Companion_getInstance
   });
@@ -11535,19 +11923,7 @@
     get: Shenzarpy$Channel$Companion_getInstance
   });
   Shenzarpy.Channel = Shenzarpy$Channel;
-  package$baaahs.Shenzarpy = Shenzarpy;
-  Show.Renderer = Show$Renderer;
-  Show.RestartShowException = Show$RestartShowException;
-  package$baaahs.Show = Show;
-  ShowRunner.SurfacesChanges = ShowRunner$SurfacesChanges;
-  ShowRunner.SurfaceReceiver = ShowRunner$SurfaceReceiver;
-  package$baaahs.ShowRunner = ShowRunner;
-  Object.defineProperty(package$baaahs, 'SparkleMotion', {
-    get: SparkleMotion_getInstance
-  });
-  Object.defineProperty(package$baaahs, 'Topics', {
-    get: Topics_getInstance
-  });
+  package$dmx.Shenzarpy = Shenzarpy;
   Object.defineProperty(ColorPicker, 'Companion', {
     get: ColorPicker$Companion_getInstance
   });
@@ -11820,6 +12196,24 @@
   package$visualizer.Rotator = Rotator;
   Color$Companion.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'supportsFinePositioning', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'supportsFinePositioning'));
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'pan', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'pan'));
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'tilt', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'tilt'));
+  Object.defineProperty(LixadaMiniMovingHead.prototype, 'dimmer', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'dimmer'));
+  LixadaMiniMovingHead.prototype.closestColorFor_rny0jj$ = MovingHead$Buffer.prototype.closestColorFor_rny0jj$;
+  LixadaMiniMovingHead.prototype.getFloat_b37jry$_0 = MovingHead$Buffer.prototype.getFloat_b37jry$_0;
+  LixadaMiniMovingHead.prototype.getFloat_gej297$_0 = MovingHead$Buffer.prototype.getFloat_gej297$_0;
+  LixadaMiniMovingHead.prototype.setFloat_vl9zqr$_0 = MovingHead$Buffer.prototype.setFloat_vl9zqr$_0;
+  LixadaMiniMovingHead.prototype.setFloat_8xjzlm$_0 = MovingHead$Buffer.prototype.setFloat_8xjzlm$_0;
+  Object.defineProperty(Shenzarpy.prototype, 'supportsFinePositioning', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'supportsFinePositioning'));
+  Object.defineProperty(Shenzarpy.prototype, 'pan', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'pan'));
+  Object.defineProperty(Shenzarpy.prototype, 'tilt', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'tilt'));
+  Object.defineProperty(Shenzarpy.prototype, 'dimmer', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'dimmer'));
+  Shenzarpy.prototype.closestColorFor_rny0jj$ = MovingHead$Buffer.prototype.closestColorFor_rny0jj$;
+  Shenzarpy.prototype.getFloat_b37jry$_0 = MovingHead$Buffer.prototype.getFloat_b37jry$_0;
+  Shenzarpy.prototype.getFloat_gej297$_0 = MovingHead$Buffer.prototype.getFloat_gej297$_0;
+  Shenzarpy.prototype.setFloat_vl9zqr$_0 = MovingHead$Buffer.prototype.setFloat_vl9zqr$_0;
+  Shenzarpy.prototype.setFloat_8xjzlm$_0 = MovingHead$Buffer.prototype.setFloat_8xjzlm$_0;
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   PalettePicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
