@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.browser.RealMediaDevices
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
@@ -41,7 +42,10 @@ class SheepSimulator {
         launcher.add("Mapper") {
             val mapperDisplay = JsMapperDisplay(visualizer)
 
-            val mapper = Mapper(network, sheepModel, mapperDisplay, FakeMediaDevices(visualizer))
+//            val mediaDevices = FakeMediaDevices(visualizer)
+            val mediaDevices = RealMediaDevices()
+
+            val mapper = Mapper(network, sheepModel, mapperDisplay, mediaDevices)
             mapperScope.launch { mapper.start() }
 
             mapperDisplay

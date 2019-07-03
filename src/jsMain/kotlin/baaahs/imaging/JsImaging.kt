@@ -5,6 +5,7 @@ import kotlinx.html.dom.create
 import kotlinx.html.js.canvas
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
 import kotlin.browser.document
 
@@ -114,3 +115,27 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
     }
 }
 
+class VideoElementImage(private val videoEl: HTMLVideoElement) : JsImage() {
+    override val width get() = videoEl.videoWidth
+    override val height get() = videoEl.videoHeight
+
+    override fun toBitmap(): Bitmap {
+        val bitmap = NativeBitmap(videoEl.videoWidth, videoEl.videoHeight)
+        bitmap.drawImage(this)
+        return bitmap
+    }
+
+    override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
+        ctx.drawImage(videoEl, 0.0, 0.0)
+    }
+
+    override fun draw(ctx: CanvasRenderingContext2D,
+                      sX: Int, sY: Int, sWidth: Int, sHeight: Int,
+                      dX: Int, dY: Int, dWidth: Int, dHeight: Int
+    ) {
+        ctx.drawImage(videoEl,
+            sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
+            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble())
+    }
+
+}

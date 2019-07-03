@@ -1,6 +1,10 @@
 package baaahs.visualizer
 
-import baaahs.*
+import baaahs.Config
+import baaahs.SheepModel
+import baaahs.Shenzarpy
+import baaahs.VisualizerDisplay
+import baaahs.getTimeMillis
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
