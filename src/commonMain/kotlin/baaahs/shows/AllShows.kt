@@ -13,7 +13,7 @@ class AllShows {
             LifeyShow,
             SimpleSpatialShow,
             HeartbleatShow,
-            PixelShaderShow
+            CreepingPixelsShow
         )
     }
 }

@@ -7,7 +7,7 @@ import baaahs.ShowRunner
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.PixelShader
 
-object PixelShaderShow : Show("Pixel Shader") {
+object CreepingPixelsShow : Show("Creeping Pixels") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
