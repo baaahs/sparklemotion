@@ -5,6 +5,7 @@ import baaahs.net.TestNetwork
 import baaahs.proto.BrainHelloMessage
 import baaahs.shaders.SolidShader
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -27,7 +28,7 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubPinkyDisplay())
+        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), FakeFs(), StubPinkyDisplay())
         pinkyLink = network.links.only()
     }
 

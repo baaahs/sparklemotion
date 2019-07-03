@@ -1,15 +1,20 @@
 package baaahs.imaging
 
+import baaahs.MediaDevices
 import baaahs.context2d
+import baaahs.first
 import kotlinx.html.dom.create
 import kotlinx.html.js.canvas
+import org.khronos.webgl.Uint8ClampedArray
+import org.khronos.webgl.get
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
 import kotlin.browser.document
 
-actual class NativeBitmap actual constructor(override val width: Int, override val height: Int) : CanvasBitmap(
-    createCanvas(width, height)), Bitmap
+actual class NativeBitmap actual constructor(override val width: Int, override val height: Int) :
+    CanvasBitmap(createCanvas(width, height)), Bitmap
 
 fun createCanvas(width: Int, height: Int) =
     document.create.canvas {
@@ -34,26 +39,47 @@ open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
     override fun copyFrom(other: Bitmap) {
         assertSameSizeAs(other)
 
+        ctx.resetTransform()
         ctx.globalCompositeOperation = "source-over"
         ctx.drawImage((other as CanvasBitmap).canvas, 0.0, 0.0)
+        ctx.resetTransform()
     }
 
     override fun subtract(other: Bitmap) {
+        val beforeCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-before-canvas")
+        val afterCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-after-canvas")
+        val beforeCtx = beforeCanvas.getContext("2d") as CanvasRenderingContext2D
+        beforeCtx.resetTransform()
+        beforeCtx.scale(.3, .3)
+        beforeCtx.drawImage(canvas, 0.0, 0.0)
+        val afterCtx = afterCanvas.getContext("2d") as CanvasRenderingContext2D
+        afterCtx.resetTransform()
+        afterCtx.scale(.3, .3)
+        afterCtx.drawImage((other as CanvasBitmap).canvas, 0.0, 0.0)
+
         assertSameSizeAs(other)
 
+        ctx.resetTransform()
         ctx.globalCompositeOperation = "difference"
-        ctx.drawImage((other as CanvasBitmap).canvas, 0.0, 0.0)
+        ctx.drawImage(other.canvas, 0.0, 0.0)
+        ctx.resetTransform()
     }
 
-    override fun withData(fn: (data: ByteArray) -> Boolean) {
-        val imageData = ctx.getImageData(0.0, 0.0, width.toDouble(), height.toDouble())
-        if (fn(imageData.data.asDynamic())) {
-            ctx.putImageData(imageData, 0.0, 0.0)
+    override fun toDataUrl(): String = canvas.toDataURL("image/webp")
+
+    override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
+        val x = region.x0.toDouble()
+        val y = region.y0.toDouble()
+        val width = region.width.toDouble()
+        val height = region.height.toDouble()
+        val imageData = ctx.getImageData(x, y, width, height)
+        if (fn(JsUByteClampedArray(imageData.data))) {
+            ctx.putImageData(imageData, x, y, x, y, width, height)
         }
     }
 
     override fun asImage(): Image {
-        return object: JsImage() {
+        return object : JsImage() {
             override val width = this@CanvasBitmap.width
             override val height = this@CanvasBitmap.height
             override fun toBitmap(): Bitmap = this@CanvasBitmap
@@ -67,17 +93,21 @@ open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
                 sX: Int, sY: Int, sWidth: Int, sHeight: Int,
                 dX: Int, dY: Int, dWidth: Int, dHeight: Int
             ) {
-                ctx.drawImage(canvas,
+                ctx.drawImage(
+                    canvas,
                     sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
-                    dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble())
+                    dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
+                )
             }
         }
     }
 
     private fun assertSameSizeAs(other: Bitmap) {
         if (width != other.width || height != other.height) {
-            throw IllegalArgumentException("other bitmap is not the same size" +
-                    " (${width}x${height} != ${other.width}x${other.height})")
+            throw IllegalArgumentException(
+                "other bitmap is not the same size" +
+                        " (${width}x${height} != ${other.width}x${other.height})"
+            )
         }
     }
 }
@@ -85,9 +115,11 @@ open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
 abstract class JsImage : Image {
     abstract fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int)
 
-    abstract fun draw(ctx: CanvasRenderingContext2D,
+    abstract fun draw(
+        ctx: CanvasRenderingContext2D,
         sX: Int, sY: Int, sWidth: Int, sHeight: Int,
-        dX: Int, dY: Int, dWidth: Int, dHeight: Int)
+        dX: Int, dY: Int, dWidth: Int, dHeight: Int
+    )
 }
 
 class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
@@ -104,13 +136,54 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
         ctx.drawImage(imageBitmap, 0.0, 0.0)
     }
 
-    override fun draw(ctx: CanvasRenderingContext2D,
+    override fun draw(
+        ctx: CanvasRenderingContext2D,
         sX: Int, sY: Int, sWidth: Int, sHeight: Int,
         dX: Int, dY: Int, dWidth: Int, dHeight: Int
     ) {
-        ctx.drawImage(imageBitmap,
+        ctx.drawImage(
+            imageBitmap,
             sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
-            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble())
+            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
+        )
     }
 }
 
+class VideoElementImage(private val videoEl: HTMLVideoElement) : JsImage() {
+    override val width get() = videoEl.videoWidth
+    override val height get() = videoEl.videoHeight
+
+    override fun toBitmap(): Bitmap {
+        val bitmap = NativeBitmap(videoEl.videoWidth, videoEl.videoHeight)
+        bitmap.drawImage(this)
+        return bitmap
+    }
+
+    override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
+        ctx.drawImage(videoEl, 0.0, 0.0)
+    }
+
+    override fun draw(
+        ctx: CanvasRenderingContext2D,
+        sX: Int, sY: Int, sWidth: Int, sHeight: Int,
+        dX: Int, dY: Int, dWidth: Int, dHeight: Int
+    ) {
+        ctx.drawImage(
+            videoEl,
+            sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
+            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
+        )
+    }
+}
+
+class JsUByteClampedArray(val delegate: Uint8ClampedArray) : UByteClampedArray {
+    override val size: Int get() = delegate.length
+
+    override operator fun get(index: Int): Int {
+        return delegate[index].toInt()
+    }
+
+    override operator fun set(index: Int, value: UByte) {
+        delegate.asDynamic()[index] = value
+    }
+}

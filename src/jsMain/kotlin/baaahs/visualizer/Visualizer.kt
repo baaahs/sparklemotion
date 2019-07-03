@@ -30,7 +30,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay) {
+class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay): JsMapperDisplay.StatusListener {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked
@@ -236,6 +236,10 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         camera.aspect = sheepView.offsetWidth.toDouble() / sheepView.offsetHeight
         camera.updateProjectionMatrix()
         renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)
+    }
+
+    override fun mapperStatusChanged(isRunning: Boolean) {
+        mapperIsRunning = isRunning
     }
 
     interface FrameListener {
