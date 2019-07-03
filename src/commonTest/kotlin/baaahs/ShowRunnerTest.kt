@@ -245,7 +245,7 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getMovingHead(SheepModel.MovingHead("leftEye",
+            showRunner.getMovingHeadBuffer(MovingHead("leftEye",
                 SheepModel.Point(-163.738f, 204.361f, 439.302f)))
         }
 
