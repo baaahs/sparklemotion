@@ -106,8 +106,5 @@ class SheepModel {
         override fun hashCode(): Int = name.hashCode()
     }
 
-    class MovingHead(val name: String, val origin: Point/*, val heading: Point*/) {
-
-    }
 }
 

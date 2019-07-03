@@ -31,7 +31,7 @@ object CompositeShow : Show("Composite") {
             return ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
+        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
@@ -46,7 +46,7 @@ object CompositeShow : Show("Composite") {
             }
 
             movingHeadBuffers.forEach { buf ->
-                buf.colorWheel = buf.closestColorFor(colorPicker.color)
+                buf.color = colorPicker.color
                 buf.pan = PI.toFloat() / 2
                 buf.tilt = theta / 2
             }
