@@ -1,8 +1,10 @@
 package baaahs
 
+import baaahs.browser.RealMediaDevices
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeFs
 import baaahs.sim.FakeMediaDevices
 import baaahs.sim.FakeNetwork
 import baaahs.visualizer.SwirlyPixelArranger
@@ -22,7 +24,8 @@ class SheepSimulator {
     private val sheepModel = SheepModel().apply { load() }
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel, display.forVisualizer())
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, display.forPinky())
+    private val fs = FakeFs()
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, fs, display.forPinky())
 
     fun start() = doRunBlocking {
         val queryParams = decodeQueryParams(document.location!!)
@@ -40,8 +43,8 @@ class SheepSimulator {
 
         launcher.add("Mapper") {
             val mapperDisplay = JsMapperDisplay(visualizer)
-
-            val mapper = Mapper(network, sheepModel, mapperDisplay, FakeMediaDevices(visualizer))
+            val mediaDevices = FakeMediaDevices(visualizer)
+            val mapper = Mapper(network, sheepModel, mapperDisplay, mediaDevices, pinky.address)
             mapperScope.launch { mapper.start() }
 
             mapperDisplay

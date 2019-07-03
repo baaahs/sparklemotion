@@ -1,11 +1,17 @@
 package baaahs.imaging
 
+import baaahs.MediaDevices
+
 actual class NativeBitmap actual constructor(width: Int, height: Int) : Bitmap {
+    override fun toDataUrl(): String {
+        TODO("NativeBitmap.toDataUrl not implemented")
+    }
+
     override val width: Int
         get() = TODO("NativeBitmap.width not implemented")
+
     override val height: Int
         get() = TODO("NativeBitmap.height not implemented")
-
     override fun drawImage(image: Image) {
         TODO("NativeBitmap.drawImage not implemented")
     }
@@ -32,7 +38,7 @@ actual class NativeBitmap actual constructor(width: Int, height: Int) : Bitmap {
         TODO("NativeBitmap.subtract not implemented")
     }
 
-    override fun withData(fn: (data: ByteArray) -> Boolean) {
+    override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
         TODO("NativeBitmap.withData not implemented")
     }
 

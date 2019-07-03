@@ -23,3 +23,7 @@ actual fun getResource(name: String): String {
 }
 
 actual fun getTimeMillis(): Long = Date.now().toLong()
+
+actual fun decodeBase64(s: String): ByteArray {
+    TODO("decodeBase64 not implemented")
+}

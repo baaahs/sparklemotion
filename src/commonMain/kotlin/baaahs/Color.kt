@@ -138,7 +138,9 @@ data class Color(val argb: Int) {
         val ORANGE = Color(255, 127, 0)
         val YELLOW = Color(255, 255, 0)
         val GREEN = Color(0, 255, 0)
+        val CYAN = Color(0, 255, 255)
         val BLUE = Color(0, 0, 255)
+        val MAGENTA = Color(255, 0, 255)
         val PURPLE = Color(200, 0, 212)
         val TRANSPARENT = Color(0, 0, 0, 0)
 

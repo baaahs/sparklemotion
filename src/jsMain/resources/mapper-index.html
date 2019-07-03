@@ -35,11 +35,17 @@
     return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
   }
 
-  let network = new baaahs.net.BrowserNetwork();
-  let pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-  let pubSub = baaahs.WebUi.createPubSubClient(network, pinkyAddress);
-  let webApp = document.createUiApp(pubSub);
-  webApp.render(document.body);
+  const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
+  const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
+
+  const sheepModel = new baaahs.SheepModel();
+  sheepModel.load();
+
+  const mapperDisplay = new baaahs.JsMapperDisplay();
+  const mediaDevices = new baaahs.browser.RealMediaDevices();
+  const mapper = new baaahs.Mapper(network, sheepModel, mapperDisplay, mediaDevices, pinkyAddress);
+  mapperDisplay.render(document.body);
+  mapper.start();
 </script>
 
 </body>

@@ -19,8 +19,8 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
     @JsName("getCurrentCam")
     fun getCurrentCam() = currentCam
 
-    override fun getCamera(width: Int, height: Int): MediaDevices.Camera {
-        return FakeCamera(width, height).also {
+    override fun getCamera(): MediaDevices.Camera {
+        return FakeCamera(640, 480).also {
             visualizer.addFrameListener(it)
         }
     }

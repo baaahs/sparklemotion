@@ -1,5 +1,7 @@
 package baaahs.imaging
 
+import baaahs.MediaDevices
+
 public interface Image {
     val width: Int
     val height: Int
@@ -13,16 +15,29 @@ public interface Bitmap {
 
     fun drawImage(image: Image)
 
-    fun drawImage(image: Image,
-                  sX: Int, sY: Int, sWidth: Int, sHeight: Int,
-                  dX: Int, dY: Int, dWidth: Int, dHeight: Int)
+    fun drawImage(
+        image: Image,
+        sX: Int, sY: Int, sWidth: Int, sHeight: Int,
+        dX: Int, dY: Int, dWidth: Int, dHeight: Int
+    )
 
     fun copyFrom(other: Bitmap)
 
     fun subtract(other: Bitmap)
 
-    fun withData(fn: (data: ByteArray) -> Boolean)
+    fun withData(
+        region: MediaDevices.Region = MediaDevices.Region.containing(this),
+        fn: (data: UByteClampedArray) -> Boolean
+    )
+
     fun asImage(): Image
+    fun toDataUrl(): String
+}
+
+interface UByteClampedArray {
+    val size: Int
+    operator fun get(index: Int): Int
+    operator fun set(index: Int, value: UByte)
 }
 
 expect class NativeBitmap(width: Int, height: Int) : Bitmap
