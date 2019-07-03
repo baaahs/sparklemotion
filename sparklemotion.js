@@ -273,6 +273,8 @@
   CompositingMode$NORMAL.prototype.constructor = CompositingMode$NORMAL;
   CompositingMode$ADD.prototype = Object.create(CompositingMode.prototype);
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
+  GlslSandbox55301Shader.prototype = Object.create(Shader.prototype);
+  GlslSandbox55301Shader.prototype.constructor = GlslSandbox55301Shader;
   HeartShader.prototype = Object.create(Shader.prototype);
   HeartShader.prototype.constructor = HeartShader;
   PixelShader.prototype = Object.create(Shader.prototype);
@@ -289,6 +291,8 @@
   SparkleShader.prototype.constructor = SparkleShader;
   CompositeShow.prototype = Object.create(Show.prototype);
   CompositeShow.prototype.constructor = CompositeShow;
+  GlslSandbox55301Show.prototype = Object.create(Show.prototype);
+  GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -3794,6 +3798,7 @@
     ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, SimpleSpatialShader$Companion_getInstance());
     ShaderId$HEART_instance = new ShaderId('HEART', 6, HeartShader$Companion_getInstance());
     ShaderId$RANDOM_instance = new ShaderId('RANDOM', 7, RandomShader$Companion_getInstance());
+    ShaderId$GLSL_SANDBOX_55301_instance = new ShaderId('GLSL_SANDBOX_55301', 8, GlslSandbox55301Shader$Companion_getInstance());
     ShaderId$Companion_getInstance();
   }
   var ShaderId$SOLID_instance;
@@ -3836,6 +3841,11 @@
     ShaderId_initFields();
     return ShaderId$RANDOM_instance;
   }
+  var ShaderId$GLSL_SANDBOX_55301_instance;
+  function ShaderId$GLSL_SANDBOX_55301_getInstance() {
+    ShaderId_initFields();
+    return ShaderId$GLSL_SANDBOX_55301_instance;
+  }
   function ShaderId$Companion() {
     ShaderId$Companion_instance = this;
     this.values = ShaderId$values();
@@ -3865,7 +3875,7 @@
     interfaces: [Enum]
   };
   function ShaderId$values() {
-    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance()];
+    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance(), ShaderId$GLSL_SANDBOX_55301_getInstance()];
   }
   ShaderId.values = ShaderId$values;
   function ShaderId$valueOf(name) {
@@ -3886,6 +3896,8 @@
         return ShaderId$HEART_getInstance();
       case 'RANDOM':
         return ShaderId$RANDOM_getInstance();
+      case 'GLSL_SANDBOX_55301':
+        return ShaderId$GLSL_SANDBOX_55301_getInstance();
       default:throwISE('No enum constant baaahs.ShaderId.' + name);
     }
   }
@@ -6748,6 +6760,167 @@
     }
   }
   CompositingMode.valueOf_61zpoe$ = CompositingMode$valueOf;
+  function GlslSandbox55301Shader() {
+    GlslSandbox55301Shader$Companion_getInstance();
+    Shader.call(this, ShaderId$GLSL_SANDBOX_55301_getInstance());
+  }
+  GlslSandbox55301Shader.prototype.createBuffer_ppt8xj$ = function (surface) {
+    return new GlslSandbox55301Shader$Buffer(this);
+  };
+  GlslSandbox55301Shader.prototype.readBuffer_100t80$ = function (reader) {
+    var $receiver = new GlslSandbox55301Shader$Buffer(this);
+    $receiver.read_100t80$(reader);
+    return $receiver;
+  };
+  GlslSandbox55301Shader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    return new GlslSandbox55301Shader$Renderer(surface);
+  };
+  function GlslSandbox55301Shader$Companion() {
+    GlslSandbox55301Shader$Companion_instance = this;
+  }
+  GlslSandbox55301Shader$Companion.prototype.parse_100t80$ = function (reader) {
+    return new GlslSandbox55301Shader();
+  };
+  GlslSandbox55301Shader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: [ShaderReader]
+  };
+  var GlslSandbox55301Shader$Companion_instance = null;
+  function GlslSandbox55301Shader$Companion_getInstance() {
+    if (GlslSandbox55301Shader$Companion_instance === null) {
+      new GlslSandbox55301Shader$Companion();
+    }
+    return GlslSandbox55301Shader$Companion_instance;
+  }
+  function GlslSandbox55301Shader$Buffer($outer) {
+    this.$outer = $outer;
+  }
+  Object.defineProperty(GlslSandbox55301Shader$Buffer.prototype, 'shader', {
+    get: function () {
+      return this.$outer;
+    }
+  });
+  GlslSandbox55301Shader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+  };
+  GlslSandbox55301Shader$Buffer.prototype.read_100t80$ = function (reader) {
+  };
+  GlslSandbox55301Shader$Buffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Buffer',
+    interfaces: [Shader$Buffer]
+  };
+  function GlslSandbox55301Shader$Renderer(surface) {
+    var tmp$, tmp$_0;
+    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, Brain$MappedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
+  }
+  GlslSandbox55301Shader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    if (this.pixelVertices_0 == null || pixelIndex >= this.pixelVertices_0.size)
+      return Color$Companion_getInstance().BLACK;
+    var tmp$ = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var pixX = tmp$.component1()
+    , pixY = tmp$.component2();
+    var time = getTimeMillis().toNumber() / 1000.0;
+    var resolution = new GlslSandbox55301Shader$Vector2(1.0, 1.0);
+    return this.glslSandbox55301_0(new GlslSandbox55301Shader$Vector2(pixX, pixY), resolution, time);
+  };
+  GlslSandbox55301Shader$Renderer.prototype.glslSandbox55301_0 = function (coord, resolution, time) {
+    var v = coord.minus_mx4ult$(resolution.x * 0.5);
+    var t = time * 0.4;
+    var r = 0.0;
+    var N = 6;
+    for (var i = 0; i <= 5; i++) {
+      var d = 3.1415927 / N * (i * 5.0);
+      r += v.length + 0.01;
+      var tmp$ = v.x;
+      var tmp$_0 = v.y;
+      var x = r;
+      var x_0 = tmp$_0 + Math_0.cos(x) + d;
+      var tmp$_1 = tmp$ + Math_0.cos(x_0) + Math_0.cos(t);
+      var tmp$_2 = v.y;
+      var tmp$_3 = v.x;
+      var x_1 = r;
+      var x_2 = tmp$_3 + Math_0.cos(x_1) + d;
+      v = new GlslSandbox55301Shader$Vector2(tmp$_1, tmp$_2 - Math_0.sin(x_2) + Math_0.sin(t));
+    }
+    var x_3 = r * 0.1;
+    r = Math_0.sin(x_3) * 0.5 + 0.5;
+    var $receiver = r;
+    r = Math_0.pow($receiver, 128.0);
+    var tmp$_4 = r;
+    var a = r - 0.75;
+    var $receiver_0 = Math_0.max(a, 0.0) * 4.0;
+    var tmp$_5 = Math_0.pow($receiver_0, 2.0);
+    var a_0 = r - 0.875;
+    var $receiver_1 = Math_0.max(a_0, 0.0) * 8.0;
+    return Color_init_0(tmp$_4, tmp$_5, Math_0.pow($receiver_1, 4.0));
+  };
+  GlslSandbox55301Shader$Renderer.prototype.glslSandbox55306_0 = function (coord, resolution, time) {
+    var position = coord.div_mx4ult$(resolution.x).minus_mx4ult$(0.5);
+    var r = position.length;
+    var x = position.y / position.x;
+    var a = Math_0.atan(x);
+    var t = time + 100.0 / (r + 1.0);
+    var tmp$ = Math_0.sin(t);
+    var x_0 = time + a * 8.0;
+    var x_1 = 0.05 * (tmp$ + Math_0.sin(x_0));
+    var light = 15.0 * Math_0.abs(x_1);
+    var tmp$_0 = Color$Companion_getInstance();
+    var tmp$_1 = r * 5.0 - a - time;
+    var x_2 = r + t;
+    var x_3 = tmp$_1 + Math_0.sin(x_2);
+    var tmp$_2 = -Math_0.sin(x_3);
+    var tmp$_3 = r * 3.0 + a - Math_0.cos(time);
+    var x_4 = r + t;
+    var x_5 = tmp$_3 + Math_0.sin(x_4);
+    var tmp$_4 = Math_0.sin(x_5);
+    var tmp$_5 = r + a * 2.0;
+    var x_6 = 5.001 - a / 4.0;
+    var x_7 = tmp$_5 + Math_0.log(x_6) + time;
+    var tmp$_6 = Math_0.cos(x_7);
+    var x_8 = r + t;
+    var color = normalized(tmp$_0, tmp$_2, tmp$_4, tmp$_6 - Math_0.sin(x_8));
+    return Color_init_0((color.redF + 0.9) * light, (color.greenF + 0.9) * light, (color.blueF + 0.9) * light, 1.0);
+  };
+  GlslSandbox55301Shader$Renderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
+  };
+  function GlslSandbox55301Shader$Vector2(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  GlslSandbox55301Shader$Vector2.prototype.div_mx4ult$ = function (scalar) {
+    return new GlslSandbox55301Shader$Vector2(this.x / scalar, this.y / scalar);
+  };
+  GlslSandbox55301Shader$Vector2.prototype.minus_mx4ult$ = function (scalar) {
+    return new GlslSandbox55301Shader$Vector2(this.x - scalar, this.y - scalar);
+  };
+  GlslSandbox55301Shader$Vector2.prototype.minus_b949h1$ = function (other) {
+    return new GlslSandbox55301Shader$Vector2(this.x - other.x, this.y - other.y);
+  };
+  Object.defineProperty(GlslSandbox55301Shader$Vector2.prototype, 'length', {
+    get: function () {
+      var x = this.x * this.x + this.y * this.y;
+      return Math_0.sqrt(x);
+    }
+  });
+  GlslSandbox55301Shader$Vector2.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vector2',
+    interfaces: []
+  };
+  GlslSandbox55301Shader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslSandbox55301Shader',
+    interfaces: [Shader]
+  };
+  function normalized($receiver, r, g, b) {
+    var x = r * r + g * g + b * b;
+    var length = Math_0.sqrt(x);
+    return Color_init_0(r / length, g / length, b / length);
+  }
   function HeartShader() {
     HeartShader$Companion_getInstance();
     Shader.call(this, ShaderId$HEART_getInstance());
@@ -7379,7 +7552,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), GlslSandbox55301Show_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -7501,6 +7674,42 @@
       new CompositeShow();
     }
     return CompositeShow_instance;
+  }
+  function GlslSandbox55301Show() {
+    GlslSandbox55301Show_instance = this;
+    Show.call(this, 'GlslSandbox 55301');
+  }
+  function GlslSandbox55301Show$createRenderer$ObjectLiteral() {
+  }
+  GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+  };
+  GlslSandbox55301Show$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show$Renderer]
+  };
+  GlslSandbox55301Show.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    var shader = new GlslSandbox55301Shader();
+    var $receiver = showRunner.allSurfaces;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
+    }
+    return new GlslSandbox55301Show$createRenderer$ObjectLiteral();
+  };
+  GlslSandbox55301Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox55301Show',
+    interfaces: [Show]
+  };
+  var GlslSandbox55301Show_instance = null;
+  function GlslSandbox55301Show_getInstance() {
+    if (GlslSandbox55301Show_instance === null) {
+      new GlslSandbox55301Show();
+    }
+    return GlslSandbox55301Show_instance;
   }
   function HeartbleatShow() {
     HeartbleatShow_instance = this;
@@ -11746,6 +11955,9 @@
   Object.defineProperty(ShaderId, 'RANDOM', {
     get: ShaderId$RANDOM_getInstance
   });
+  Object.defineProperty(ShaderId, 'GLSL_SANDBOX_55301', {
+    get: ShaderId$GLSL_SANDBOX_55301_getInstance
+  });
   Object.defineProperty(ShaderId, 'Companion', {
     get: ShaderId$Companion_getInstance
   });
@@ -12043,6 +12255,13 @@
     get: CompositingMode$Companion_getInstance
   });
   package$shaders.CompositingMode = CompositingMode;
+  Object.defineProperty(GlslSandbox55301Shader, 'Companion', {
+    get: GlslSandbox55301Shader$Companion_getInstance
+  });
+  GlslSandbox55301Shader.Buffer = GlslSandbox55301Shader$Buffer;
+  GlslSandbox55301Shader.Renderer = GlslSandbox55301Shader$Renderer;
+  GlslSandbox55301Shader.Vector2 = GlslSandbox55301Shader$Vector2;
+  package$shaders.GlslSandbox55301Shader = GlslSandbox55301Shader;
   Object.defineProperty(HeartShader, 'Companion', {
     get: HeartShader$Companion_getInstance
   });
@@ -12093,6 +12312,9 @@
   CompositeShow.prototype.ShaderBufs = CompositeShow$ShaderBufs;
   Object.defineProperty(package$shows, 'CompositeShow', {
     get: CompositeShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
+    get: GlslSandbox55301Show_getInstance
   });
   Object.defineProperty(package$shows, 'HeartbleatShow', {
     get: HeartbleatShow_getInstance
@@ -12217,6 +12439,8 @@
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   PalettePicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  GlslSandbox55301Shader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
+  GlslSandbox55301Shader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -12230,6 +12454,7 @@
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
