@@ -122,6 +122,7 @@ LEDRenderer::_task() {
 
 void
 LEDRenderer::render() {
+    int64_t startTime = esp_timer_get_time();
 
     // Render into all the pixels
     if (m_shader) {
@@ -142,6 +143,9 @@ LEDRenderer::render() {
     } else {
         ESP_LOGE(TAG, "Nothing to render!!!!");
     }
+
+    int64_t endTime = esp_timer_get_time();
+    ESP_LOGI(TAG, "Rendering %d pixels took %lldms", m_buffer.PixelCount(), (endTime - startTime) / 1000);
 
 
     // Don't want to block a rendering task in case the blitter task has gone upside down
