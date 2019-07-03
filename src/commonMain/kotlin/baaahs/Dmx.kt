@@ -8,10 +8,14 @@ interface Dmx {
     }
 
     class Buffer(private val channels: ByteArray, val baseChannel: Int, val channelCount: Int) {
+        operator fun get(channel: Channel): Byte = get(channel.offset)
+
         operator fun get(index: Int): Byte {
             boundsCheck(index)
             return channels[baseChannel + index]
         }
+
+        operator fun set(channel: Channel, value: Byte) = set(channel.offset, value)
 
         operator fun set(index: Int, value: Byte) {
             boundsCheck(index)
@@ -23,6 +27,10 @@ interface Dmx {
                 throw Exception("index out of bounds: $index >= ${channelCount}")
             }
         }
+    }
+
+    interface Channel {
+        val offset: Int
     }
 
     open class DeviceType(val channelCount: Int)
