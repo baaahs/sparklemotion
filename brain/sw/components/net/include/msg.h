@@ -108,7 +108,7 @@ public:
 
     void setUsed(int used) { m_used = MIN(used, m_capacity); }
 
-    void rewind() { m_cursor = 0; }
+    void rewind(int pos = 0) { m_cursor = pos; }
     void skip(int amt) { m_cursor += amt; }
     size_t pos() { return m_cursor; }
 
