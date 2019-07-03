@@ -201,13 +201,13 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
             val maxIndex: Int
             when (bitsPerPixel) {
                 1 -> {
-                    mask = 0x01; pixelsPerByte = 8; maxIndex = 15
+                    mask = 0x01; pixelsPerByte = 8; maxIndex = 1
                 }
                 2 -> {
                     mask = 0x03; pixelsPerByte = 4; maxIndex = 3
                 }
                 4 -> {
-                    mask = 0x0F; pixelsPerByte = 2; maxIndex = 1
+                    mask = 0x0F; pixelsPerByte = 2; maxIndex = 15
                 }
                 else -> throw IllegalStateException()
             }
@@ -217,7 +217,8 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
 
 
             val bufOffset = pixelIndex / pixelsPerByte % dataBuf.size
-            val bitShift = 7 - pixelIndex % pixelsPerByte
+            val positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1
+            val bitShift = positionInByte * bitsPerPixel
             val byte = (dataBuf[bufOffset].toInt() and (mask shl bitShift).inv()) or (paletteIndex shl bitShift)
             dataBuf[bufOffset] = byte.toByte()
         }
@@ -261,7 +262,8 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
             }
 
             val bufOffset = pixelIndex / pixelsPerByte % dataBuf.size
-            val bitShift = 7 - pixelIndex % pixelsPerByte
+            val positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1
+            val bitShift = positionInByte * bitsPerPixel
             return dataBuf[bufOffset].toInt() shr bitShift and mask
         }
 

@@ -66,10 +66,11 @@ PixelShader::begin(Msg *pMsg) {
 }
 
 uint8_t
-PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t mask) {
+PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bitsPerPixel, uint8_t mask) {
     // Offset is modulo m_dataBufSize so we wrap around and repeat any missing pixels.
     size_t bufOffset = pixelIndex / pixelsPerByte % m_dataBufSize;
-    uint8_t bitShift = 7 - pixelIndex % pixelsPerByte;
+    uint8_t positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1;
+    uint8_t bitShift = positionInByte * bitsPerPixel;
     return m_dataBuf[bufOffset] >> bitShift & mask;
 }
 
@@ -105,17 +106,17 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
             break;
 
         case Encoding::INDEXED_2: {
-            const uint8_t p = paletteIndex(pixelIndex, 8, 0x01);
+            const uint8_t p = paletteIndex(pixelIndex, 8, 1, 0x01);
             color = m_palette[p];
         }
             break;
 
         case Encoding::INDEXED_4:
-            color = m_palette[paletteIndex(pixelIndex, 4, 0x03)];
+            color = m_palette[paletteIndex(pixelIndex, 4, 2, 0x03)];
             break;
 
         case Encoding::INDEXED_16:
-            color = m_palette[paletteIndex(pixelIndex, 2, 0x0F)];
+            color = m_palette[paletteIndex(pixelIndex, 2, 4, 0x0F)];
             break;
     }
 

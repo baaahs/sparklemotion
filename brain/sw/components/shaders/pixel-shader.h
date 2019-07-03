@@ -25,7 +25,7 @@ private:
 
     size_t paletteCountFor(PixelShader::Encoding encoding);
 
-    uint8_t paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t mask);
+    uint8_t paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bitsPerPixel, uint8_t mask);
 
 public:
     PixelShader(Surface *surface, Msg *pMsg);
