@@ -53,19 +53,51 @@ class PixelShaderTest {
     }
 
     @Test
+    fun forIndexed4_shouldSetDataBufCorrectly() {
+        val dstBuf = indexedBuffer(
+            arrayOf(Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN),
+            arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_4
+        ) as PixelShader.IndexedBuffer
+
+        expect(2) { dstBuf.dataBuf.size }
+        expect("00 00") { dstBuf.bytes() }
+
+        dstBuf[0] = 1 // orange
+        expect("40 00") { dstBuf.bytes() }
+
+        dstBuf[2] = 3 // green
+        expect("4c 00") { dstBuf.bytes() }
+
+        dstBuf[4] = 2 // yellow
+        expect("4c 80") { dstBuf.bytes() }
+
+        expect(Color.ORANGE) { dstBuf.colors[0] }
+        expect(Color.GREEN) { dstBuf.colors[2] }
+        expect(Color.YELLOW) { dstBuf.colors[4] }
+    }
+
+    @Test
     fun forIndexed16_shouldSetDataBufCorrectly() {
         val dstBuf = indexedBuffer(
-            arrayOf(Color.BLACK, Color.YELLOW), arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_16
+            arrayOf(Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE),
+            arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_16
         ) as PixelShader.IndexedBuffer
-        expect(1) { dstBuf.dataBuf.size }
-        expect(0x00) { dstBuf.byte(0) }
 
-        dstBuf[0] = 1
-        expect(0x80) { dstBuf.byte(0) }
-        dstBuf[2] = 1
-        expect(0xA0) { dstBuf.byte(0) }
-        dstBuf[4] = 1
-        expect(0xA8) { dstBuf.byte(0) }
+        expect(3) { dstBuf.dataBuf.size }
+        expect("00 00 00") { dstBuf.bytes() }
+
+        dstBuf[0] = 1 // orange
+        expect("10 00 00") { dstBuf.bytes() }
+
+        dstBuf[2] = 3 // green
+        expect("10 30 00") { dstBuf.bytes() }
+
+        dstBuf[4] = 15 // unset, so white
+        expect("10 30 f0") { dstBuf.bytes() }
+
+        expect(Color.ORANGE) { dstBuf.colors[0] }
+        expect(Color.GREEN) { dstBuf.colors[2] }
+        expect(Color.WHITE) { dstBuf.colors[4] }
     }
 
     @Test
@@ -122,4 +154,6 @@ class PixelShaderTest {
     private fun PixelShader.Buffer.getColors() = colors.map { it.toHexString() }.joinToString(",")
     private fun Pixels.getColors() = map { it.toHexString() }.joinToString(",")
     private fun PixelShader.IndexedBuffer.byte(index: Int) = dataBuf[index].toInt() and 0xFF
+    private fun PixelShader.IndexedBuffer.bytes() =
+        dataBuf.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 }
