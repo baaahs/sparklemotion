@@ -2,7 +2,7 @@
 
 #include "esp_log.h"
 
-#define TAG "#PixelShader"
+#define TAG "#shPixl"
 
 PixelShader::PixelShader(Surface *surface, Msg *pMsg) : Shader(surface) {
     if (!pMsg->available(1)) {
@@ -10,11 +10,7 @@ PixelShader::PixelShader(Surface *surface, Msg *pMsg) : Shader(surface) {
         m_disabled = 1;
     }
 
-    int8_t encoding = pMsg->readByte();
-    ESP_LOGE(TAG, "encoding=%x", encoding);
-    m_encoding = static_cast<Encoding>(encoding);
-    // ESP_LOGD(TAG, "pixelCount = %x", m_pixelCount);
-
+    m_encoding = static_cast<Encoding>(pMsg->readByte());
     m_dataBufSize = bufferSizeFor(m_encoding, surface->pixelCount());
     m_dataBuf = static_cast<uint8_t *>(malloc(m_dataBufSize));
 
@@ -42,9 +38,7 @@ PixelShader::~PixelShader() {
 
 void
 PixelShader::begin(Msg *pMsg) {
-    pMsg->log("PixelShader");
-    int16_t pixelCount = pMsg->readShort(); // ignore pixel count
-    ESP_LOGE(TAG, "pixelCount=%x", pixelCount);
+    pMsg->readShort(); // ignore pixel count
 
     uint8_t paletteCount = paletteCountFor(m_encoding);
     for (int i = 0; i < paletteCount; i++) {
@@ -53,12 +47,9 @@ PixelShader::begin(Msg *pMsg) {
         m_palette[i].channel.r = color.R;
         m_palette[i].channel.g = color.G;
         m_palette[i].channel.b = color.B;
-
-        ESP_LOGE(TAG, "Palette[%x] = %08x", i, m_palette[i].argb);
     }
 
     size_t dataBufLen = pMsg->readInt();
-    ESP_LOGE(TAG, "dataBufLen=%x disabled=%x", dataBufLen, m_disabled);
     if (m_disabled) {
         // We still need to skip bytes in the buffer intended for us before bailing.
         pMsg->skip(dataBufLen);
@@ -67,9 +58,11 @@ PixelShader::begin(Msg *pMsg) {
 
     size_t readLen = MIN(m_dataBufSize, dataBufLen);
     m_dataBufSize = pMsg->readBytes(m_dataBuf, readLen);
-    if (readLen < dataBufLen) pMsg->skip(dataBufLen - readLen);
 
-    ESP_LOG_BUFFER_HEXDUMP(MSG_TAG, m_dataBuf, m_dataBufSize, ESP_LOG_ERROR);
+    // If we received data for more pixels than we have, skip those bytes.
+    if (readLen < dataBufLen) {
+        pMsg->skip(dataBufLen - readLen);
+    }
 }
 
 uint8_t

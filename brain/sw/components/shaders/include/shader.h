@@ -13,11 +13,12 @@
 typedef union Color {
     uint32_t argb;
 
+    // esp32 is little-endian, so reversed:
     struct channel {
-        uint8_t a;
-        uint8_t r;
-        uint8_t g;
         uint8_t b;
+        uint8_t g;
+        uint8_t r;
+        uint8_t a;
     } channel;
 } Color;
 
@@ -60,7 +61,7 @@ public:
      * @param pEnd
      * @return
      */
-    static Shader *createShaderFromDescrip(Surface *surface, Msg *config);
+    static Shader* createShaderFromDescrip(Surface *surface, Msg *config);
 
     Shader(Surface* surface) {
         m_surface = surface;
