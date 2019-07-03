@@ -125,10 +125,8 @@ ShadeTree::checkForShaderChanges() {
         return;
     } else {
         // Skip to the good parts of the message
-
-        // This magic 4 is because there is a 4 byte int followed by the description
-        m_pMsg->skip(4);
-        m_pMsg->skip(m_pCurrentShaderDesc->m_len);
+        int32_t shaderDescLen = m_pMsg->readInt();
+        m_pMsg->skip(shaderDescLen);
     }
 
     // The current tree is valid. Let rendering proceed using the current message
@@ -156,6 +154,8 @@ ShadeTree::buildNewTree() {
         // Shaders are expressed in a tree structure so we actually only need to
         // read a single root. However, that root might be a composite that
         // goes on to read further branches.
+
+        // TODO: refactor to extract buffer streaming from Msg.
         Msg shaderConfig;
         shaderConfig.reuse(pCursor, pEnd - pCursor, pEnd - pCursor);
 

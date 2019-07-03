@@ -78,6 +78,12 @@ public:
         return m;
     }
 
+    /**
+     * This should only be used to initialize a Msg that was created on the stack
+     * using an existing buffer. Don't call `release()`!
+     *
+     * TODO: refactor to extract buffer streaming.
+     */
     void reuse(uint8_t* buf, size_t capacity, size_t used, size_t cursor = 0) {
         m_buf = buf;
         m_capacity = capacity;
