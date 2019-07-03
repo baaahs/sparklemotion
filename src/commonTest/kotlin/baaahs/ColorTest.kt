@@ -37,6 +37,12 @@ public class ColorTest {
     }
 
     @Test
+    fun testFromBytes() {
+        val white = Color(0xfe.toByte(), 0xfd.toByte(), 0xff.toByte())
+        assertEquals(listOf(254, 253, 255), listOf(white.redI, white.greenI, white.blueI))
+    }
+
+    @Test
     fun testDistanceTo() {
         assertEquals(1f, Color.WHITE.distanceTo(Color.BLACK))
         assertEquals(0f, Color.WHITE.distanceTo(Color.WHITE))
