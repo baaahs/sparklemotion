@@ -12,7 +12,8 @@ class AllShows {
             PixelTweenShow,
             LifeyShow,
             SimpleSpatialShow,
-            HeartbleatShow
+            HeartbleatShow,
+            GlslSandbox55301Show
         )
     }
 }
