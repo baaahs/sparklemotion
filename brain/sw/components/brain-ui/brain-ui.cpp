@@ -5,9 +5,9 @@
 #include "freertos/task.h"
 
 BrainUI::BrainUI() :
-    green(LEDC_CHANNEL_0, 4),
-    blue(LEDC_CHANNEL_1, 16),
-    rgbR(LEDC_CHANNEL_2, 34),
+    green(LEDC_CHANNEL_0, 4), // Right Eye
+    blue(LEDC_CHANNEL_1, 16), // Left Eye
+    rgbR(LEDC_CHANNEL_2, 12), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
     rgbG(LEDC_CHANNEL_3, 33),
     rgbB(LEDC_CHANNEL_4, 14)
 {
@@ -36,7 +36,7 @@ BrainUI::_task() {
         val += 4;
         if (val > 255) val = 0;
 
-        ESP_LOGI(TAG, "Update LEDs to %d", val);
+        // ESP_LOGI(TAG, "Update LEDs to %d", val);
         green.setValue(val);
         blue.setValue((uint8_t)255-val);
 
@@ -64,6 +64,9 @@ BrainUI::start() {
     green.setValue(0);
     blue.setValue(255);
 
+    rgbR.setValue(0);
+    rgbG.setValue(0);
+    rgbB.setValue(0);
 
     TaskHandle_t tHandle = NULL;
 
