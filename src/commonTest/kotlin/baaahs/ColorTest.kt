@@ -2,6 +2,7 @@ package baaahs;
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.expect
 
 public class ColorTest {
     @Test
@@ -24,14 +25,20 @@ public class ColorTest {
     }
 
     @Test
-    fun testFromBytes() {
-        val white = Color(0xfe.toByte(), 0xfd.toByte(), 0xff.toByte())
-        assertEquals(listOf(254, 253, 255), listOf(white.redI, white.greenI, white.blueI))
+    fun testFromRGBString() {
+        expect(Color.from(0xfffefdff.toInt())) { Color.from("#fefdff") }
     }
 
     @Test
-    fun testFromString() {
-        val white = Color.from("#fefdff")
+    fun testFromARGBString() {
+        expect(Color.from(0xfffefdff.toInt())) { Color.from("#fffefdff") }
+        expect(Color.from(0xf7fefdff.toInt())) { Color.from("#f7fefdff") }
+        expect(Color.from(0x00fefdff)) { Color.from("#00fefdff") }
+    }
+
+    @Test
+    fun testFromBytes() {
+        val white = Color(0xfe.toByte(), 0xfd.toByte(), 0xff.toByte())
         assertEquals(listOf(254, 253, 255), listOf(white.redI, white.greenI, white.blueI))
     }
 
@@ -44,6 +51,10 @@ public class ColorTest {
     @Test
     fun testToHexString() {
         assertEquals("#fefdff", Color.from("#fefdff").toHexString())
+        assertEquals("#f7fefdff", Color.from("#f7fefdff").toHexString())
+        assertEquals("#01010101", Color.from("#01010101").toHexString())
+        assertEquals("#000000", Color.from("#ff000000").toHexString())
+        assertEquals("#00000000", Color.from("#00000000").toHexString())
     }
 
     @Test
