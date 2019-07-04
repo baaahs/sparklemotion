@@ -73,7 +73,7 @@ class Pinky(
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
 
-            delay(50)
+            delay(100)
         }
     }
 

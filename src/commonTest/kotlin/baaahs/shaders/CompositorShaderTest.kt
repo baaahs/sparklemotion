@@ -19,7 +19,7 @@ class CompositorShaderTest {
 
     @Test
     fun shouldTransmit() {
-        val dstBuf = transmit(compositor, buffer, surface)
+        val dstBuf = transmit(buffer, surface)
         expect(CompositingMode.NORMAL) { dstBuf.mode }
         expect(.5f) { dstBuf.fade }
         expect(Color.BLACK) { (dstBuf.bufferA as SolidShader.Buffer).color }
@@ -28,7 +28,7 @@ class CompositorShaderTest {
 
     @Test
     fun shouldRender() {
-        val pixels = render(compositor, buffer, surface)
+        val pixels = render(buffer, surface)
         expect(Color(.5f, .5f, .5f)) { pixels[0] }
     }
 
@@ -38,7 +38,7 @@ class CompositorShaderTest {
         bBuffer.color = Color.GREEN
         buffer.mode = CompositingMode.ADD
         buffer.fade = 1f
-        val pixels = render(compositor, buffer, surface)
+        val pixels = render(buffer, surface)
         expect(Color.YELLOW) { pixels[0] }
     }
 
@@ -57,7 +57,7 @@ class CompositorShaderTest {
     @Test
     fun shouldCrossFade() {
         buffer.fade = 1f
-        val pixels = render(compositor, buffer, surface)
+        val pixels = render(buffer, surface)
         expect(Color.WHITE) { pixels[0] }
     }
 
