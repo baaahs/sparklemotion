@@ -173,7 +173,6 @@ public:
         if (prepCapacity(m_used + xtra)) {
             writeInt(len);
             for ( int i = 0; i < len; i++ ) {
-                m_buf[m_cursor++] = 0; // 16 byte chars? Really???
                 m_buf[m_cursor++] = (uint8_t)sz[i];
             }
             if (m_cursor > m_used) m_used = m_cursor;
@@ -193,7 +192,7 @@ public:
     size_t capFor(const char* sz) {
         if (!sz) return 0;
 
-        return 4 + (strlen(sz) * 2);
+        return 4 + strlen(sz);
     }
 
     inline bool available(size_t len) const { return m_cursor + len <= m_used; }
@@ -254,7 +253,6 @@ public:
             return 0;
         }
         for (int i=0; i<len; i++) {
-            m_cursor++; // Stupid double wide chars...
             sz[i] = (char)m_buf[m_cursor++];
         }
         return len;
