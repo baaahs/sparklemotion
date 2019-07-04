@@ -35,13 +35,13 @@
   var throwCCE = Kotlin.throwCCE;
   var ensureNotNull = Kotlin.ensureNotNull;
   var Kind_CLASS = Kotlin.Kind.CLASS;
+  var toByte = Kotlin.toByte;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var Random = Kotlin.kotlin.random.Random;
   var trimStart = Kotlin.kotlin.text.trimStart_wqw3xr$;
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
-  var toByte = Kotlin.toByte;
   var numberToInt = Kotlin.numberToInt;
   var internal = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal;
   var withName = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
@@ -136,14 +136,17 @@
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
   var copyOfRange = Kotlin.kotlin.collections.copyOfRange_ietg8x$;
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toBits = Kotlin.floatToBits;
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
-  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
+  var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
+  var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
+  var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var Array_0 = Array;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
@@ -277,6 +280,26 @@
   GlslSandbox55301Shader.prototype.constructor = GlslSandbox55301Shader;
   HeartShader.prototype = Object.create(Shader.prototype);
   HeartShader.prototype.constructor = HeartShader;
+  PixelShader$Encoding.prototype = Object.create(Enum.prototype);
+  PixelShader$Encoding.prototype.constructor = PixelShader$Encoding;
+  PixelShader$Encoding$DIRECT_ARGB.prototype = Object.create(PixelShader$Encoding.prototype);
+  PixelShader$Encoding$DIRECT_ARGB.prototype.constructor = PixelShader$Encoding$DIRECT_ARGB;
+  PixelShader$Encoding$DIRECT_RGB.prototype = Object.create(PixelShader$Encoding.prototype);
+  PixelShader$Encoding$DIRECT_RGB.prototype.constructor = PixelShader$Encoding$DIRECT_RGB;
+  PixelShader$Encoding$INDEXED_2.prototype = Object.create(PixelShader$Encoding.prototype);
+  PixelShader$Encoding$INDEXED_2.prototype.constructor = PixelShader$Encoding$INDEXED_2;
+  PixelShader$Encoding$INDEXED_4.prototype = Object.create(PixelShader$Encoding.prototype);
+  PixelShader$Encoding$INDEXED_4.prototype.constructor = PixelShader$Encoding$INDEXED_4;
+  PixelShader$Encoding$INDEXED_16.prototype = Object.create(PixelShader$Encoding.prototype);
+  PixelShader$Encoding$INDEXED_16.prototype.constructor = PixelShader$Encoding$INDEXED_16;
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype = Object.create(AbstractMutableList.prototype);
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype.constructor = PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral;
+  PixelShader$DirectColorBuffer.prototype = Object.create(PixelShader$Buffer.prototype);
+  PixelShader$DirectColorBuffer.prototype.constructor = PixelShader$DirectColorBuffer;
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype = Object.create(AbstractMutableList.prototype);
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype.constructor = PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral;
+  PixelShader$IndexedBuffer.prototype = Object.create(PixelShader$Buffer.prototype);
+  PixelShader$IndexedBuffer.prototype.constructor = PixelShader$IndexedBuffer;
   PixelShader.prototype = Object.create(Shader.prototype);
   PixelShader.prototype.constructor = PixelShader;
   RandomShader.prototype = Object.create(Shader.prototype);
@@ -291,6 +314,8 @@
   SparkleShader.prototype.constructor = SparkleShader;
   CompositeShow.prototype = Object.create(Show.prototype);
   CompositeShow.prototype.constructor = CompositeShow;
+  CreepingPixelsShow.prototype = Object.create(Show.prototype);
+  CreepingPixelsShow.prototype.constructor = CreepingPixelsShow;
   GlslSandbox55301Show.prototype = Object.create(Show.prototype);
   GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
@@ -701,6 +726,26 @@
   Color.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeInt_za3lpa$(this.argb);
   };
+  Object.defineProperty(Color.prototype, 'alphaB', {
+    get: function () {
+      return toByte(this.alphaI_za3lpa$(this.argb));
+    }
+  });
+  Object.defineProperty(Color.prototype, 'redB', {
+    get: function () {
+      return toByte(this.redI_za3lpa$(this.argb));
+    }
+  });
+  Object.defineProperty(Color.prototype, 'greenB', {
+    get: function () {
+      return toByte(this.greenI_za3lpa$(this.argb));
+    }
+  });
+  Object.defineProperty(Color.prototype, 'blueB', {
+    get: function () {
+      return toByte(this.blueI_za3lpa$(this.argb));
+    }
+  });
   Object.defineProperty(Color.prototype, 'alphaI', {
     get: function () {
       return this.alphaI_za3lpa$(this.argb);
@@ -831,10 +876,19 @@
     return Color_init_1(r, g, b);
   };
   Color$Companion.prototype.fromString = function (hex) {
-    var hexDigits = trimStart(hex, Kotlin.charArrayOf(35));
-    if (hexDigits.length === 6) {
-      var l = -16777216;
-      return new Color(l | toInt(hexDigits, 16));
+    var tmp$;
+    var hexDigits = {v: trimStart(hex, Kotlin.charArrayOf(35))};
+    if (hexDigits.v.length === 8) {
+      var $receiver = toInt(hexDigits.v.substring(0, 2), 16);
+      hexDigits.v = hexDigits.v.substring(2);
+      tmp$ = $receiver;
+    }
+     else {
+      tmp$ = 255;
+    }
+    var alpha = tmp$;
+    if (hexDigits.v.length === 6) {
+      return new Color(alpha << 24 | toInt(hexDigits.v, 16));
     }
     throw IllegalArgumentException_init('unknown color ' + '"' + hex + '"');
   };
@@ -2307,9 +2361,12 @@
             continue;
           case 25:
             println('identify pixels...');
-            this.local$pixelShader = new PixelShader();
-            this.local$buffer = this.local$pixelShader.createBuffer_ppt8xj$(new Mapper$run$ObjectLiteral());
-            this.local$buffer.setAll_rny0jj$(Color$Companion_getInstance().BLACK);
+            this.local$pixelShader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
+            var $receiver_0 = this.local$pixelShader.createBuffer_ppt8xj$(new Mapper$run$ObjectLiteral());
+            $receiver_0.palette[0] = Color$Companion_getInstance().BLACK;
+            $receiver_0.palette[0] = Color$Companion_getInstance().WHITE;
+            $receiver_0.setAll_za3lpa$(0);
+            this.local$buffer = $receiver_0;
             this.local$tmp$ = this.$this.maxPixelsPerBrain_0;
             this.local$i = 0;
             this.state_0 = 26;
@@ -2322,9 +2379,9 @@
 
             if (this.local$i % 128 === 0)
               println('pixel ' + this.local$i + '... isRunning is ' + this.$this.isRunning_0);
-            this.local$buffer.colors[this.local$i] = Color$Companion_getInstance().WHITE;
+            this.local$buffer.set_vux9f0$(this.local$i, 1);
             this.$this.link_0.broadcastUdp_68hu5j$(8003, new BrainShaderMessage(this.local$pixelShader, this.local$buffer));
-            this.local$buffer.colors[this.local$i] = Color$Companion_getInstance().BLACK;
+            this.local$buffer.set_vux9f0$(this.local$i, 0);
             this.state_0 = 27;
             this.result_0 = delay(L34, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -3113,7 +3170,7 @@
             this.$this.display.showFrameMs = elapsedMs.toInt();
             this.$this.display.stats = this.$this.networkStats_0;
             this.state_0 = 5;
-            this.result_0 = delay(L50, this);
+            this.result_0 = delay(L100, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -4653,6 +4710,7 @@
   function SparkleMotion() {
     SparkleMotion_instance = this;
     this.MAX_PIXEL_COUNT = 2048;
+    this.DEFAULT_PIXEL_COUNT = 512;
     this.PIXEL_COUNT_UNKNOWN = -1;
   }
   SparkleMotion.$metadata$ = {
@@ -5798,6 +5856,13 @@
     this.offset = this.offset + count | 0;
     return bytes;
   };
+  ByteArrayReader.prototype.readBytes_fqrh44$ = function (buffer) {
+    var count = this.readInt();
+    var toCopy = Math_0.min(buffer.length, count);
+    arrayCopy(this.bytes, buffer, 0, this.offset, this.offset + toCopy | 0);
+    this.offset = this.offset + count | 0;
+    return toCopy;
+  };
   ByteArrayReader.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ByteArrayReader',
@@ -5821,6 +5886,12 @@
     this.growIfNecessary_0(1);
     this.bytes_0[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] = b;
   };
+  ByteArrayWriter.prototype.writeShort_za3lpa$ = function (i) {
+    if ((i & 65535) !== i) {
+      throw IllegalArgumentException_init(i.toString() + " doesn't fit in a short");
+    }
+    this.writeShort_mq22fl$(toShort(i));
+  };
   ByteArrayWriter.prototype.writeShort_mq22fl$ = function (s) {
     var tmp$, tmp$_0;
     this.growIfNecessary_0(2);
@@ -5830,13 +5901,13 @@
   ByteArrayWriter.prototype.writeChar_s8itvh$ = function (c) {
     this.writeShort_mq22fl$(toShort(c | 0));
   };
-  ByteArrayWriter.prototype.writeInt_za3lpa$ = function (l) {
+  ByteArrayWriter.prototype.writeInt_za3lpa$ = function (i) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
     this.growIfNecessary_0(4);
-    this.bytes_0[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] = toByte(l >> 24 & 255);
-    this.bytes_0[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] = toByte(l >> 16 & 255);
-    this.bytes_0[tmp$_1 = this.offset, this.offset = tmp$_1 + 1 | 0, tmp$_1] = toByte(l >> 8 & 255);
-    this.bytes_0[tmp$_2 = this.offset, this.offset = tmp$_2 + 1 | 0, tmp$_2] = toByte(l & 255);
+    this.bytes_0[tmp$ = this.offset, this.offset = tmp$ + 1 | 0, tmp$] = toByte(i >> 24 & 255);
+    this.bytes_0[tmp$_0 = this.offset, this.offset = tmp$_0 + 1 | 0, tmp$_0] = toByte(i >> 16 & 255);
+    this.bytes_0[tmp$_1 = this.offset, this.offset = tmp$_1 + 1 | 0, tmp$_1] = toByte(i >> 8 & 255);
+    this.bytes_0[tmp$_2 = this.offset, this.offset = tmp$_2 + 1 | 0, tmp$_2] = toByte(i & 255);
   };
   ByteArrayWriter.prototype.writeFloat_mx4ult$ = function (f) {
     this.writeInt_za3lpa$(toBits(f));
@@ -5885,7 +5956,10 @@
   };
   ByteArrayWriter.prototype.growIfNecessary_0 = function (by) {
     if ((this.offset + by | 0) > this.bytes_0.length) {
-      this.bytes_0 = copyOf(this.bytes_0, this.bytes_0.length * 2 | 0);
+      var newSize = this.bytes_0.length * 2 | 0;
+      while ((this.offset + by | 0) > newSize)
+        newSize = newSize * 2 | 0;
+      this.bytes_0 = copyOf(this.bytes_0, newSize);
     }
   };
   ByteArrayWriter.$metadata$ = {
@@ -7046,32 +7120,187 @@
     simpleName: 'HeartShader',
     interfaces: [Shader]
   };
-  function PixelShader() {
+  function PixelShader(encoding) {
     PixelShader$Companion_getInstance();
+    if (encoding === void 0)
+      encoding = PixelShader$Encoding$DIRECT_ARGB_getInstance();
     Shader.call(this, ShaderId$PIXEL_getInstance());
+    this.encoding_0 = encoding;
   }
+  function PixelShader$Encoding(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function PixelShader$Encoding_initFields() {
+    PixelShader$Encoding_initFields = function () {
+    };
+    new PixelShader$Encoding$DIRECT_ARGB();
+    new PixelShader$Encoding$DIRECT_RGB();
+    new PixelShader$Encoding$INDEXED_2();
+    new PixelShader$Encoding$INDEXED_4();
+    new PixelShader$Encoding$INDEXED_16();
+    PixelShader$Encoding$Companion_getInstance();
+  }
+  function PixelShader$Encoding$DIRECT_ARGB() {
+    PixelShader$Encoding$DIRECT_ARGB_instance = this;
+    PixelShader$Encoding.call(this, 'DIRECT_ARGB', 0);
+  }
+  PixelShader$Encoding$DIRECT_ARGB.prototype.createBuffer_aycglj$ = function (shader, pixelCount) {
+    return new PixelShader$DirectColorBuffer(shader, pixelCount);
+  };
+  PixelShader$Encoding$DIRECT_ARGB.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DIRECT_ARGB',
+    interfaces: [PixelShader$Encoding]
+  };
+  var PixelShader$Encoding$DIRECT_ARGB_instance = null;
+  function PixelShader$Encoding$DIRECT_ARGB_getInstance() {
+    PixelShader$Encoding_initFields();
+    return PixelShader$Encoding$DIRECT_ARGB_instance;
+  }
+  function PixelShader$Encoding$DIRECT_RGB() {
+    PixelShader$Encoding$DIRECT_RGB_instance = this;
+    PixelShader$Encoding.call(this, 'DIRECT_RGB', 1);
+  }
+  PixelShader$Encoding$DIRECT_RGB.prototype.createBuffer_aycglj$ = function (shader, pixelCount) {
+    return new PixelShader$DirectColorBuffer(shader, pixelCount, true);
+  };
+  PixelShader$Encoding$DIRECT_RGB.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DIRECT_RGB',
+    interfaces: [PixelShader$Encoding]
+  };
+  var PixelShader$Encoding$DIRECT_RGB_instance = null;
+  function PixelShader$Encoding$DIRECT_RGB_getInstance() {
+    PixelShader$Encoding_initFields();
+    return PixelShader$Encoding$DIRECT_RGB_instance;
+  }
+  function PixelShader$Encoding$INDEXED_2() {
+    PixelShader$Encoding$INDEXED_2_instance = this;
+    PixelShader$Encoding.call(this, 'INDEXED_2', 2);
+  }
+  PixelShader$Encoding$INDEXED_2.prototype.createBuffer_aycglj$ = function (shader, pixelCount) {
+    return new PixelShader$IndexedBuffer(shader, 1, pixelCount);
+  };
+  PixelShader$Encoding$INDEXED_2.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'INDEXED_2',
+    interfaces: [PixelShader$Encoding]
+  };
+  var PixelShader$Encoding$INDEXED_2_instance = null;
+  function PixelShader$Encoding$INDEXED_2_getInstance() {
+    PixelShader$Encoding_initFields();
+    return PixelShader$Encoding$INDEXED_2_instance;
+  }
+  function PixelShader$Encoding$INDEXED_4() {
+    PixelShader$Encoding$INDEXED_4_instance = this;
+    PixelShader$Encoding.call(this, 'INDEXED_4', 3);
+  }
+  PixelShader$Encoding$INDEXED_4.prototype.createBuffer_aycglj$ = function (shader, pixelCount) {
+    return new PixelShader$IndexedBuffer(shader, 2, pixelCount);
+  };
+  PixelShader$Encoding$INDEXED_4.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'INDEXED_4',
+    interfaces: [PixelShader$Encoding]
+  };
+  var PixelShader$Encoding$INDEXED_4_instance = null;
+  function PixelShader$Encoding$INDEXED_4_getInstance() {
+    PixelShader$Encoding_initFields();
+    return PixelShader$Encoding$INDEXED_4_instance;
+  }
+  function PixelShader$Encoding$INDEXED_16() {
+    PixelShader$Encoding$INDEXED_16_instance = this;
+    PixelShader$Encoding.call(this, 'INDEXED_16', 4);
+  }
+  PixelShader$Encoding$INDEXED_16.prototype.createBuffer_aycglj$ = function (shader, pixelCount) {
+    return new PixelShader$IndexedBuffer(shader, 4, pixelCount);
+  };
+  PixelShader$Encoding$INDEXED_16.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'INDEXED_16',
+    interfaces: [PixelShader$Encoding]
+  };
+  var PixelShader$Encoding$INDEXED_16_instance = null;
+  function PixelShader$Encoding$INDEXED_16_getInstance() {
+    PixelShader$Encoding_initFields();
+    return PixelShader$Encoding$INDEXED_16_instance;
+  }
+  function PixelShader$Encoding$Companion() {
+    PixelShader$Encoding$Companion_instance = this;
+    this.values = PixelShader$Encoding$values();
+  }
+  PixelShader$Encoding$Companion.prototype.get_s8j3t7$ = function (i) {
+    return this.values[i];
+  };
+  PixelShader$Encoding$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PixelShader$Encoding$Companion_instance = null;
+  function PixelShader$Encoding$Companion_getInstance() {
+    PixelShader$Encoding_initFields();
+    if (PixelShader$Encoding$Companion_instance === null) {
+      new PixelShader$Encoding$Companion();
+    }
+    return PixelShader$Encoding$Companion_instance;
+  }
+  PixelShader$Encoding.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Encoding',
+    interfaces: [Enum]
+  };
+  function PixelShader$Encoding$values() {
+    return [PixelShader$Encoding$DIRECT_ARGB_getInstance(), PixelShader$Encoding$DIRECT_RGB_getInstance(), PixelShader$Encoding$INDEXED_2_getInstance(), PixelShader$Encoding$INDEXED_4_getInstance(), PixelShader$Encoding$INDEXED_16_getInstance()];
+  }
+  PixelShader$Encoding.values = PixelShader$Encoding$values;
+  function PixelShader$Encoding$valueOf(name) {
+    switch (name) {
+      case 'DIRECT_ARGB':
+        return PixelShader$Encoding$DIRECT_ARGB_getInstance();
+      case 'DIRECT_RGB':
+        return PixelShader$Encoding$DIRECT_RGB_getInstance();
+      case 'INDEXED_2':
+        return PixelShader$Encoding$INDEXED_2_getInstance();
+      case 'INDEXED_4':
+        return PixelShader$Encoding$INDEXED_4_getInstance();
+      case 'INDEXED_16':
+        return PixelShader$Encoding$INDEXED_16_getInstance();
+      default:throwISE('No enum constant baaahs.shaders.PixelShader.Encoding.' + name);
+    }
+  }
+  PixelShader$Encoding.valueOf_61zpoe$ = PixelShader$Encoding$valueOf;
+  PixelShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
+    writer.writeByte_s8j3t7$(toByte(this.encoding_0.ordinal));
+  };
   PixelShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new PixelShader$Buffer(this, surface.pixelCount);
+    var tmp$;
+    if (surface.pixelCount === -1) {
+      tmp$ = 512;
+    }
+     else {
+      tmp$ = surface.pixelCount;
+    }
+    var pixelCount = tmp$;
+    return this.encoding_0.createBuffer_aycglj$(this, pixelCount);
   };
   PixelShader.prototype.createRenderer_ppt8xj$ = function (surface) {
     return new PixelShader$Renderer();
   };
   PixelShader.prototype.readBuffer_100t80$ = function (reader) {
-    var incomingColorCount = reader.readInt();
-    var buf = new PixelShader$Buffer(this, incomingColorCount);
-    var tmp$;
-    tmp$ = until(0, incomingColorCount).iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      buf.colors[element] = Color$Companion_getInstance().parse_100t80$(reader);
-    }
+    var incomingPixelCount = reader.readShort();
+    var buf = this.encoding_0.createBuffer_aycglj$(this, incomingPixelCount);
+    buf.read_kbpt9e$(reader, incomingPixelCount);
     return buf;
   };
   function PixelShader$Companion() {
     PixelShader$Companion_instance = this;
   }
   PixelShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new PixelShader();
+    var encoding = PixelShader$Encoding$Companion_getInstance().get_s8j3t7$(reader.readByte());
+    return new PixelShader(encoding);
   };
   PixelShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -7085,68 +7314,325 @@
     }
     return PixelShader$Companion_instance;
   }
-  function PixelShader$Buffer($outer, pixelCount) {
+  function PixelShader$Buffer($outer) {
     this.$outer = $outer;
-    this.colors = null;
-    var tmp$;
-    if (pixelCount === -1) {
-      tmp$ = 2048;
-    }
-     else {
-      tmp$ = pixelCount;
-    }
-    var bufPixelCount = tmp$;
-    var array = Array_0(bufPixelCount);
-    var tmp$_0;
-    tmp$_0 = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$_0; i++) {
-      array[i] = Color$Companion_getInstance().WHITE;
-    }
-    this.colors = array;
   }
   Object.defineProperty(PixelShader$Buffer.prototype, 'shader', {
     get: function () {
       return this.$outer;
     }
   });
-  PixelShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeInt_za3lpa$(this.colors.length);
-    var $receiver = this.colors;
-    var tmp$;
-    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
-      var element = $receiver[tmp$];
-      element.serialize_3kjoo0$(writer);
-    }
-  };
   PixelShader$Buffer.prototype.read_100t80$ = function (reader) {
-    var tmp$;
-    var incomingColorCount = reader.readInt();
-    var a = this.colors.length;
-    var countFromBuffer = Math_0.min(a, incomingColorCount);
-    for (var i = 0; i < countFromBuffer; i++) {
-      this.colors[i] = Color$Companion_getInstance().parse_100t80$(reader);
-    }
-    tmp$ = this.colors.length;
-    for (var i_0 = countFromBuffer; i_0 < tmp$; i_0++) {
-      this.colors[i_0] = this.colors[i_0 % countFromBuffer];
-    }
-  };
-  PixelShader$Buffer.prototype.setAll_rny0jj$ = function (color) {
-    var tmp$;
-    tmp$ = this.colors;
-    for (var i = 0; i !== tmp$.length; ++i) {
-      this.colors[i] = color;
-    }
+    var incomingPixelCount = reader.readShort();
+    this.read_kbpt9e$(reader, incomingPixelCount);
   };
   PixelShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
+  function PixelShader$DirectColorBuffer($outer, pixelCount, rgb24BitMode) {
+    this.$outer = $outer;
+    if (rgb24BitMode === void 0)
+      rgb24BitMode = false;
+    PixelShader$Buffer.call(this, this.$outer);
+    this.pixelCount_0 = pixelCount;
+    this.rgb24BitMode_0 = rgb24BitMode;
+    this.palette_j72hve$_0 = [];
+    var array = Array_0(this.pixelCount_0);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = Color$Companion_getInstance().WHITE;
+    }
+    this.colorsBuf_0 = array;
+    this.indices_4idwzy$_0 = get_indices_0(this.colorsBuf_0);
+  }
+  Object.defineProperty(PixelShader$DirectColorBuffer.prototype, 'palette', {
+    get: function () {
+      return this.palette_j72hve$_0;
+    }
+  });
+  function PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral(this$DirectColorBuffer) {
+    this.this$DirectColorBuffer = this$DirectColorBuffer;
+    AbstractMutableList.call(this);
+    this.size_hgyj2k$_0 = this$DirectColorBuffer.pixelCount_0;
+  }
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype.add_wxm5ur$ = function (index, element) {
+    throw UnsupportedOperationException_init();
+  };
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype.removeAt_za3lpa$ = function (index) {
+    throw UnsupportedOperationException_init();
+  };
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype.set_wxm5ur$ = function (index, element) {
+    var oldValue = this.get_za3lpa$(index);
+    this.this$DirectColorBuffer.set_ibd5tj$(index, element);
+    return oldValue;
+  };
+  Object.defineProperty(PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype, 'size', {
+    get: function () {
+      return this.size_hgyj2k$_0;
+    }
+  });
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.prototype.get_za3lpa$ = function (index) {
+    return this.this$DirectColorBuffer.get_za3lpa$(index);
+  };
+  PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [AbstractMutableList]
+  };
+  Object.defineProperty(PixelShader$DirectColorBuffer.prototype, 'colors', {
+    get: function () {
+      return new PixelShader$DirectColorBuffer$get_PixelShader$DirectColorBuffer$colors$ObjectLiteral(this);
+    }
+  });
+  PixelShader$DirectColorBuffer.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeShort_za3lpa$(this.colorsBuf_0.length);
+    var $receiver = this.colorsBuf_0;
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
+      var element = $receiver[tmp$];
+      this.writeColor_0(element, writer);
+    }
+  };
+  PixelShader$DirectColorBuffer.prototype.read_kbpt9e$ = function (reader, incomingPixelCount) {
+    var tmp$;
+    var a = this.colorsBuf_0.length;
+    var countFromBuffer = Math_0.min(a, incomingPixelCount);
+    for (var i = 0; i < countFromBuffer; i++) {
+      this.colorsBuf_0[i] = this.readColor_0(reader);
+    }
+    tmp$ = this.colorsBuf_0.length;
+    for (var i_0 = countFromBuffer; i_0 < tmp$; i_0++) {
+      this.colorsBuf_0[i_0] = this.colorsBuf_0[i_0 % countFromBuffer];
+    }
+  };
+  PixelShader$DirectColorBuffer.prototype.writeColor_0 = function (color, writer) {
+    if (this.rgb24BitMode_0) {
+      writer.writeByte_s8j3t7$(color.redB);
+      writer.writeByte_s8j3t7$(color.greenB);
+      writer.writeByte_s8j3t7$(color.blueB);
+    }
+     else {
+      writer.writeInt_za3lpa$(color.argb);
+    }
+  };
+  PixelShader$DirectColorBuffer.prototype.readColor_0 = function (reader) {
+    var tmp$;
+    if (this.rgb24BitMode_0) {
+      tmp$ = Color_init_2(reader.readByte(), reader.readByte(), reader.readByte());
+    }
+     else {
+      tmp$ = new Color(reader.readInt());
+    }
+    return tmp$;
+  };
+  PixelShader$DirectColorBuffer.prototype.get_za3lpa$ = function (pixelIndex) {
+    return this.colorsBuf_0[pixelIndex];
+  };
+  PixelShader$DirectColorBuffer.prototype.set_ibd5tj$ = function (pixelIndex, color) {
+    this.colorsBuf_0[pixelIndex] = color;
+  };
+  PixelShader$DirectColorBuffer.prototype.set_vux9f0$ = function (pixelIndex, paletteIndex) {
+    throw UnsupportedOperationException_init_0("Indexed colors aren't available in this mode");
+  };
+  PixelShader$DirectColorBuffer.prototype.setAll_rny0jj$ = function (color) {
+    var tmp$;
+    tmp$ = this.colorsBuf_0;
+    for (var i = 0; i !== tmp$.length; ++i) {
+      this.set_ibd5tj$(i, color);
+    }
+  };
+  PixelShader$DirectColorBuffer.prototype.setAll_za3lpa$ = function (paletteIndex) {
+    throw UnsupportedOperationException_init_0("Indexed colors aren't available in this mode");
+  };
+  Object.defineProperty(PixelShader$DirectColorBuffer.prototype, 'indices', {
+    get: function () {
+      return this.indices_4idwzy$_0;
+    }
+  });
+  PixelShader$DirectColorBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DirectColorBuffer',
+    interfaces: [PixelShader$Buffer]
+  };
+  function PixelShader$IndexedBuffer($outer, bitsPerPixel, pixelCount) {
+    this.$outer = $outer;
+    PixelShader$Buffer.call(this, this.$outer);
+    this.bitsPerPixel_0 = bitsPerPixel;
+    this.pixelCount_0 = pixelCount;
+    var array = Array_0(1 << this.bitsPerPixel_0);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = Color$Companion_getInstance().WHITE;
+    }
+    this.palette_ieg50d$_0 = array;
+    var array_0 = new Int8Array(this.bufferSizeFor_0(this.pixelCount_0));
+    var tmp$_0;
+    tmp$_0 = array_0.length - 1 | 0;
+    for (var i_0 = 0; i_0 <= tmp$_0; i_0++) {
+      array_0[i_0] = 0;
+    }
+    this.dataBuf_8be2vx$ = array_0;
+    this.indices_x34pvt$_0 = until(0, this.pixelCount_0);
+  }
+  Object.defineProperty(PixelShader$IndexedBuffer.prototype, 'palette', {
+    get: function () {
+      return this.palette_ieg50d$_0;
+    }
+  });
+  function PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral(this$IndexedBuffer) {
+    this.this$IndexedBuffer = this$IndexedBuffer;
+    AbstractMutableList.call(this);
+    this.size_nv01kz$_0 = this$IndexedBuffer.pixelCount_0;
+  }
+  Object.defineProperty(PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype, 'size', {
+    get: function () {
+      return this.size_nv01kz$_0;
+    }
+  });
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype.add_wxm5ur$ = function (index, element) {
+    throw UnsupportedOperationException_init();
+  };
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype.removeAt_za3lpa$ = function (index) {
+    throw UnsupportedOperationException_init();
+  };
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype.set_wxm5ur$ = function (index, element) {
+    throw IllegalArgumentException_init("Can't set color directly when using indexed color buffers");
+  };
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.prototype.get_za3lpa$ = function (index) {
+    return this.this$IndexedBuffer.get_za3lpa$(index);
+  };
+  PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [AbstractMutableList]
+  };
+  Object.defineProperty(PixelShader$IndexedBuffer.prototype, 'colors', {
+    get: function () {
+      return new PixelShader$IndexedBuffer$get_PixelShader$IndexedBuffer$colors$ObjectLiteral(this);
+    }
+  });
+  PixelShader$IndexedBuffer.prototype.get_za3lpa$ = function (pixelIndex) {
+    return this.palette[this.paletteIndex_0(pixelIndex)];
+  };
+  PixelShader$IndexedBuffer.prototype.set_ibd5tj$ = function (pixelIndex, color) {
+    throw IllegalArgumentException_init("Can't set color directly when using indexed color buffers");
+  };
+  PixelShader$IndexedBuffer.prototype.set_vux9f0$ = function (pixelIndex, paletteIndex) {
+    var mask;
+    var pixelsPerByte;
+    var maxIndex;
+    switch (this.bitsPerPixel_0) {
+      case 1:
+        mask = 1;
+        pixelsPerByte = 8;
+        maxIndex = 1;
+        break;
+      case 2:
+        mask = 3;
+        pixelsPerByte = 4;
+        maxIndex = 3;
+        break;
+      case 4:
+        mask = 15;
+        pixelsPerByte = 2;
+        maxIndex = 15;
+        break;
+      default:throw IllegalStateException_init_0();
+    }
+    if (paletteIndex < 0 || paletteIndex > maxIndex)
+      throw IllegalArgumentException_init('Invalid color index ' + paletteIndex);
+    var bufOffset = (pixelIndex / pixelsPerByte | 0) % this.dataBuf_8be2vx$.length;
+    var positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1 | 0;
+    var bitShift = Kotlin.imul(positionInByte, this.bitsPerPixel_0);
+    var byte = this.dataBuf_8be2vx$[bufOffset] & ~(mask << bitShift) | paletteIndex << bitShift;
+    this.dataBuf_8be2vx$[bufOffset] = toByte(byte);
+  };
+  PixelShader$IndexedBuffer.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeShort_za3lpa$(this.pixelCount_0);
+    var $receiver = this.palette;
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
+      var element = $receiver[tmp$];
+      writer.writeInt_za3lpa$(element.argb);
+    }
+    writer.writeBytes_mj6st8$(this.dataBuf_8be2vx$);
+  };
+  PixelShader$IndexedBuffer.prototype.read_kbpt9e$ = function (reader, incomingPixelCount) {
+    var tmp$;
+    tmp$ = get_indices_0(this.palette).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.palette[element] = Color$Companion_getInstance().fromInt(reader.readInt());
+    }
+    reader.readBytes_fqrh44$(this.dataBuf_8be2vx$);
+  };
+  PixelShader$IndexedBuffer.prototype.setAll_rny0jj$ = function (color) {
+    throw IllegalArgumentException_init("Can't set color directly when using indexed color buffers");
+  };
+  PixelShader$IndexedBuffer.prototype.setAll_za3lpa$ = function (paletteIndex) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    tmp$ = this.indices;
+    tmp$_0 = tmp$.first;
+    tmp$_1 = tmp$.last;
+    tmp$_2 = tmp$.step;
+    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2)
+      this.set_vux9f0$(i, paletteIndex);
+  };
+  Object.defineProperty(PixelShader$IndexedBuffer.prototype, 'indices', {
+    get: function () {
+      return this.indices_x34pvt$_0;
+    }
+  });
+  PixelShader$IndexedBuffer.prototype.paletteIndex_0 = function (pixelIndex) {
+    var mask;
+    var pixelsPerByte;
+    switch (this.bitsPerPixel_0) {
+      case 1:
+        mask = 1;
+        pixelsPerByte = 8;
+        break;
+      case 2:
+        mask = 3;
+        pixelsPerByte = 4;
+        break;
+      case 4:
+        mask = 15;
+        pixelsPerByte = 2;
+        break;
+      default:throw IllegalStateException_init_0();
+    }
+    var bufOffset = (pixelIndex / pixelsPerByte | 0) % this.dataBuf_8be2vx$.length;
+    var positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1 | 0;
+    var bitShift = Kotlin.imul(positionInByte, this.bitsPerPixel_0);
+    return this.dataBuf_8be2vx$[bufOffset] >> bitShift & mask;
+  };
+  PixelShader$IndexedBuffer.prototype.bufferSizeFor_0 = function (pixelCount) {
+    var tmp$;
+    switch (this.bitsPerPixel_0) {
+      case 1:
+        tmp$ = (pixelCount + 7 | 0) / 8 | 0;
+        break;
+      case 2:
+        tmp$ = (pixelCount + 3 | 0) / 4 | 0;
+        break;
+      case 4:
+        tmp$ = (pixelCount + 1 | 0) / 2 | 0;
+        break;
+      default:throw IllegalStateException_init_0();
+    }
+    return tmp$;
+  };
+  PixelShader$IndexedBuffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'IndexedBuffer',
+    interfaces: [PixelShader$Buffer]
+  };
   function PixelShader$Renderer() {
   }
   PixelShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return buffer.colors[pixelIndex];
+    return buffer.colors.get_za3lpa$(pixelIndex);
   };
   PixelShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
@@ -7552,7 +8038,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), GlslSandbox55301Show_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301Show_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -7674,6 +8160,60 @@
       new CompositeShow();
     }
     return CompositeShow_instance;
+  }
+  function CreepingPixelsShow() {
+    CreepingPixelsShow_instance = this;
+    Show.call(this, 'Creeping Pixels');
+  }
+  function CreepingPixelsShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers) {
+    this.closure$colorPicker = closure$colorPicker;
+    this.closure$shaderBuffers = closure$shaderBuffers;
+    this.i = 0;
+  }
+  CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+    var color = this.closure$colorPicker.color;
+    var tmp$;
+    tmp$ = this.closure$shaderBuffers.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.palette[1] = color;
+      element.setAll_za3lpa$(0);
+      element.set_vux9f0$(this.i % 60, 1);
+    }
+    this.i = this.i + 1 | 0;
+  };
+  CreepingPixelsShow$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show$Renderer]
+  };
+  CreepingPixelsShow.prototype.createRenderer_h1b9op$ = function (sheepModel, showRunner) {
+    var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
+    var shader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
+    var $receiver = showRunner.allSurfaces;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0 = destination.add_11rb$;
+      var $receiver_0 = showRunner.getShaderBuffer_9rhubp$(item, shader);
+      $receiver_0.palette[0] = Color$Companion_getInstance().BLACK;
+      tmp$_0.call(destination, $receiver_0);
+    }
+    var shaderBuffers = destination;
+    return new CreepingPixelsShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers);
+  };
+  CreepingPixelsShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'CreepingPixelsShow',
+    interfaces: [Show]
+  };
+  var CreepingPixelsShow_instance = null;
+  function CreepingPixelsShow_getInstance() {
+    if (CreepingPixelsShow_instance === null) {
+      new CreepingPixelsShow();
+    }
+    return CreepingPixelsShow_instance;
   }
   function GlslSandbox55301Show() {
     GlslSandbox55301Show_instance = this;
@@ -8064,15 +8604,16 @@
       var colors = item.colors;
       var tmp$_1, tmp$_0_0;
       var index_0 = 0;
-      for (tmp$_1 = 0; tmp$_1 !== colors.length; ++tmp$_1) {
-        var item_0 = colors[tmp$_1];
-        var index_1 = (tmp$_0_0 = index_0, index_0 = tmp$_0_0 + 1 | 0, tmp$_0_0);
+      tmp$_1 = colors.iterator();
+      while (tmp$_1.hasNext()) {
+        var item_0 = tmp$_1.next();
+        var index_1 = checkIndexOverflow((tmp$_0_0 = index_0, index_0 = tmp$_0_0 + 1 | 0, tmp$_0_0));
         if (Random.Default.nextFloat() < 0.1) {
-          colors[index_1] = Color$Companion_getInstance().WHITE;
+          colors.set_wxm5ur$(index_1, Color$Companion_getInstance().WHITE);
         }
          else {
           var tweenedColor = startColor.fade_6zkv30$(endColor, (now + index_1 | 0) % this.fadeTimeMs / this.fadeTimeMs);
-          colors[index_1] = tweenedColor;
+          colors.set_wxm5ur$(index_1, tweenedColor);
         }
       }
     }
@@ -8337,8 +8878,8 @@
       var baseSaturation = seed.nextFloat();
       var panelColor = nextTimeShiftedFloat(seed) < 0.1 ? Color$Companion_getInstance().random() : this.colorPicker.color;
       tmp$_0 = element.colors;
-      for (var i = 0; i !== tmp$_0.length; ++i) {
-        element.colors[i] = desaturateRandomishly(panelColor, baseSaturation, seed);
+      for (var i = 0; i !== tmp$_0.size; ++i) {
+        element.colors.set_wxm5ur$(i, desaturateRandomishly(panelColor, baseSaturation, seed));
       }
     }
     var tmp$_1;
@@ -12268,10 +12809,31 @@
   HeartShader.Buffer = HeartShader$Buffer;
   HeartShader.Renderer = HeartShader$Renderer;
   package$shaders.HeartShader = HeartShader;
+  Object.defineProperty(PixelShader$Encoding, 'DIRECT_ARGB', {
+    get: PixelShader$Encoding$DIRECT_ARGB_getInstance
+  });
+  Object.defineProperty(PixelShader$Encoding, 'DIRECT_RGB', {
+    get: PixelShader$Encoding$DIRECT_RGB_getInstance
+  });
+  Object.defineProperty(PixelShader$Encoding, 'INDEXED_2', {
+    get: PixelShader$Encoding$INDEXED_2_getInstance
+  });
+  Object.defineProperty(PixelShader$Encoding, 'INDEXED_4', {
+    get: PixelShader$Encoding$INDEXED_4_getInstance
+  });
+  Object.defineProperty(PixelShader$Encoding, 'INDEXED_16', {
+    get: PixelShader$Encoding$INDEXED_16_getInstance
+  });
+  Object.defineProperty(PixelShader$Encoding, 'Companion', {
+    get: PixelShader$Encoding$Companion_getInstance
+  });
+  PixelShader.Encoding = PixelShader$Encoding;
   Object.defineProperty(PixelShader, 'Companion', {
     get: PixelShader$Companion_getInstance
   });
   PixelShader.Buffer = PixelShader$Buffer;
+  PixelShader.DirectColorBuffer = PixelShader$DirectColorBuffer;
+  PixelShader.IndexedBuffer = PixelShader$IndexedBuffer;
   PixelShader.Renderer = PixelShader$Renderer;
   package$shaders.PixelShader = PixelShader;
   Object.defineProperty(RandomShader, 'Companion', {
@@ -12312,6 +12874,9 @@
   CompositeShow.prototype.ShaderBufs = CompositeShow$ShaderBufs;
   Object.defineProperty(package$shows, 'CompositeShow', {
     get: CompositeShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'CreepingPixelsShow', {
+    get: CreepingPixelsShow_getInstance
   });
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
@@ -12454,6 +13019,7 @@
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;

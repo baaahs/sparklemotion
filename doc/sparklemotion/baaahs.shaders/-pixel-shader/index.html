@@ -19,7 +19,7 @@
 <p><a href="-buffer/index.html">Buffer</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -27,6 +27,27 @@
 </td>
 <td>
 <code><span class="keyword">companion</span> <span class="keyword">object </span><span class="identifier">Companion</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-reader/index.html"><span class="identifier">ShaderReader</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">PixelShader</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-direct-color-buffer/index.html">DirectColorBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">DirectColorBuffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-encoding/index.html">Encoding</a></p>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Encoding</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-indexed-buffer/index.html">IndexedBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">IndexedBuffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -45,7 +66,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">PixelShader</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<code><span class="identifier">PixelShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$<init>(baaahs.shaders.PixelShader.Encoding)/encoding">encoding</span><span class="symbol">:</span>&nbsp;<a href="-encoding/index.html"><span class="identifier">PixelShader.Encoding</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Encoding.DIRECT_ARGB<span class="symbol">)</span></code>
 <p>A shader that allows control of individual pixels' colors directly from a show.</p>
 </td>
 </tr>
@@ -94,6 +115,15 @@
 <td>
 <code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a></code></td>
 </tr>
+<tr>
+<td>
+<p><a href="serialize-config.html">serializeConfig</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelShader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
+</td>
+</tr>
 </tbody>
 </table>
 <h3>Inherited Functions</h3>
@@ -105,15 +135,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/serialize-config.html">serializeConfig</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
-</td>
 </tr>
 </tbody>
 </table>
