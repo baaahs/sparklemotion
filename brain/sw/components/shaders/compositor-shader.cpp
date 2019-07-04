@@ -3,13 +3,12 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-CompositorShader::CompositorShader(uint8_t** ppCursor, uint8_t* pEnd) {
-    if (*ppCursor < pEnd - 1) {
-        m_shaderA = Shader::createShaderFromDescrip(ppCursor, pEnd);
+CompositorShader::CompositorShader(Surface *surface, Msg *config) : Shader(surface) {
+    m_shaderA = Shader::createShaderFromDescrip(surface, config);
+    m_shaderB = Shader::createShaderFromDescrip(surface, config);
 
-        if (*ppCursor < pEnd) {
-            m_shaderB = Shader::createShaderFromDescrip(ppCursor, pEnd);
-        }
+    if (!m_shaderA || !m_shaderB) {
+        ESP_LOGE(TAG, "A shader couldn't be created, the shader tree is probably broken!");
     }
 }
 
@@ -22,7 +21,6 @@ CompositorShader::~CompositorShader() {
         delete m_shaderB;
     }
 }
-
 
 void
 CompositorShader::begin(Msg* pMsg) {

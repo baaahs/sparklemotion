@@ -8,7 +8,7 @@ class SineWaveShader : public Shader {
     float m_density;
 
 public:
-    SineWaveShader(uint8_t** ppCursor, uint8_t* pEnd);
+    SineWaveShader(Surface *surface, Msg *msg);
     ~SineWaveShader();
 
     void begin(Msg* pMsg) override;

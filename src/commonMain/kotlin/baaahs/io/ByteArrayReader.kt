@@ -1,5 +1,7 @@
 package baaahs.io
 
+import kotlin.math.min
+
 class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
     var offset = offset
         set(value) {
@@ -47,5 +49,17 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         val bytes = bytes.copyOfRange(offset, offset + count)
         offset += count
         return bytes
+    }
+
+    /**
+     * Reads up to as many bytes as are present in `buffer`, or as many bytes are available in the incoming byte array,
+     * and returns the number of bytes actually read. Any unread incoming bytes are skipped.
+     */
+    fun readBytes(buffer: ByteArray): Int {
+        val count = readInt()
+        val toCopy = min(buffer.size, count)
+        bytes.copyInto(buffer, 0, offset, offset + toCopy)
+        offset += count
+        return toCopy
     }
 }

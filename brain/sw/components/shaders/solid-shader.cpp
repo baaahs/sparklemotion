@@ -3,7 +3,7 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-SolidShader::SolidShader(uint8_t** ppCursor, uint8_t* pEnd) {
+SolidShader::SolidShader(Surface *surface, Msg *msg) : Shader(surface) {
     // No additional bytes of configuration
 }
 
