@@ -4,12 +4,12 @@
 #include "led-renderer_private.h"
 
 LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
-    m_pixels(pixelCount, BRN01D_LED_OUT),
+    m_pixels(pixelCount, BRN01D_LED1_OUT),
     m_buffer(pixelCount, 1, nullptr),
     m_timeBase(timeBase)
 {
     // Start with an empty buffer
-    m_buffer.ClearTo(RgbColor(0, 0, 0));
+    m_buffer.ClearTo(RgbColor(255, 0, 0));
 
     m_pixels.Begin();
 }
