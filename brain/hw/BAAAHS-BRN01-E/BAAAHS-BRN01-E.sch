@@ -49831,8 +49831,7 @@ chip</description>
 <wire x1="1.49" y1="0.83" x2="1.49" y2="-0.83" width="0.127" layer="21"/>
 <wire x1="-1.2598" y1="-0.83" x2="-1.49" y2="-0.5998" width="0.127" layer="21"/>
 <wire x1="-1.49" y1="-0.5998" x2="-1.49" y2="0.83" width="0.127" layer="21"/>
-<wire x1="-1.5" y1="0.83" x2="-1.4" y2="0.83" width="0.127" layer="51"/>
-<wire x1="1.4" y1="0.83" x2="1.5" y2="0.83" width="0.127" layer="51"/>
+<wire x1="-1.49" y1="0.83" x2="1.49" y2="0.83" width="0.127" layer="51"/>
 <circle x="-1.905" y="-0.635" radius="0.254" width="0" layer="21"/>
 <smd name="1" x="-0.95" y="-1.3" dx="1" dy="0.69" layer="1" rot="R90"/>
 <smd name="2" x="0" y="-1.3" dx="1" dy="0.69" layer="1" rot="R90"/>
@@ -49845,6 +49844,12 @@ chip</description>
 <text x="-1.905" y="2.54" size="1.27" layer="111" font="vector" ratio="15">&gt;NAME</text>
 <rectangle x1="-1.524" y1="-0.83" x2="1.524" y2="0.83" layer="39"/>
 <rectangle x1="-0.381" y1="-0.381" x2="0.381" y2="0.381" layer="21"/>
+<wire x1="1.49" y1="0.83" x2="1.49" y2="-0.83" width="0.127" layer="51"/>
+<wire x1="-1.49" y1="-0.5998" x2="-1.49" y2="0.83" width="0.127" layer="51"/>
+<wire x1="-1.2598" y1="-0.83" x2="-1.49" y2="-0.5998" width="0.127" layer="51"/>
+<wire x1="-1.2598" y1="-0.83" x2="1.49" y2="-0.83" width="0.127" layer="51"/>
+<circle x="-1.905" y="-0.635" radius="0.254" width="0" layer="21"/>
+<circle x="-1.905" y="-0.635" radius="0.254" width="0" layer="51"/>
 </package>
 <package name="SOT23" urn="urn:adsk.eagle:footprint:11609142/1" library_version="1" library_locally_modified="yes">
 <description>&lt;B&gt;DIODE&lt;/B&gt;</description>
@@ -55670,7 +55675,7 @@ to the on-module flash</text>
 <wire x1="309.88" y1="172.72" x2="294.64" y2="172.72" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="IO39_3V3IO_1_LOW" class="0">
+<net name="IO39_3V3IO_1_DOWN" class="0">
 <segment>
 <wire x1="40.64" y1="198.12" x2="15.24" y2="198.12" width="0.1524" layer="91"/>
 <label x="15.24" y="198.12" size="1.778" layer="95" rot="MR0" align="bottom-right"/>
