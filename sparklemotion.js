@@ -133,19 +133,18 @@
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
-  var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
-  var unboxChar = Kotlin.unboxChar;
+  var decodeToString = Kotlin.kotlin.text.decodeToString_964n91$;
   var copyOfRange = Kotlin.kotlin.collections.copyOfRange_ietg8x$;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toBits = Kotlin.floatToBits;
-  var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
+  var encodeToByteArray = Kotlin.kotlin.text.encodeToByteArray_pdl1vz$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
-  var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
+  var get_indices = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var Array_0 = Array;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
@@ -5837,12 +5836,7 @@
     return Kotlin.floatFromBits(bits);
   };
   ByteArrayReader.prototype.readString = function () {
-    var length = this.readInt();
-    var buf = StringBuilder_init(length);
-    for (var i = 0; i < length; i++) {
-      buf.append_s8itvh$(unboxChar(this.readChar()));
-    }
-    return buf.toString();
+    return decodeToString(this.readBytes());
   };
   ByteArrayReader.prototype.readNullableString = function () {
     return this.readBoolean() ? this.readString() : null;
@@ -5913,16 +5907,7 @@
     this.writeInt_za3lpa$(toBits(f));
   };
   ByteArrayWriter.prototype.writeString_61zpoe$ = function (s) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    this.growIfNecessary_0(4 + (2 * s.length | 0) | 0);
-    this.writeInt_za3lpa$(s.length);
-    tmp$ = get_indices(s);
-    tmp$_0 = tmp$.first;
-    tmp$_1 = tmp$.last;
-    tmp$_2 = tmp$.step;
-    for (var i = tmp$_0; i <= tmp$_1; i += tmp$_2) {
-      this.writeChar_s8itvh$(s.charCodeAt(i));
-    }
+    this.writeBytes_mj6st8$(encodeToByteArray(s));
   };
   ByteArrayWriter.prototype.writeNullableString_pdl1vj$ = function (s) {
     this.writeBoolean_6taknv$(s != null);
@@ -7346,7 +7331,7 @@
       array[i] = Color$Companion_getInstance().WHITE;
     }
     this.colorsBuf_0 = array;
-    this.indices_4idwzy$_0 = get_indices_0(this.colorsBuf_0);
+    this.indices_4idwzy$_0 = get_indices(this.colorsBuf_0);
   }
   Object.defineProperty(PixelShader$DirectColorBuffer.prototype, 'palette', {
     get: function () {
@@ -7561,7 +7546,7 @@
   };
   PixelShader$IndexedBuffer.prototype.read_kbpt9e$ = function (reader, incomingPixelCount) {
     var tmp$;
-    tmp$ = get_indices_0(this.palette).iterator();
+    tmp$ = get_indices(this.palette).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       this.palette[element] = Color$Companion_getInstance().fromInt(reader.readInt());
