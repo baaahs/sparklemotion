@@ -79,6 +79,19 @@ public:
     }
 
     /**
+     * This should only be used to initialize a Msg that was created on the stack
+     * using an existing buffer. Don't call `release()`!
+     *
+     * TODO: refactor to extract buffer streaming.
+     */
+    void reuse(uint8_t* buf, size_t capacity, size_t used, size_t cursor = 0) {
+        m_buf = buf;
+        m_capacity = capacity;
+        m_used = used;
+        m_cursor = cursor;
+    }
+
+    /**
      * Adds one more to the ref count. Must be paired with an eventual release().
      * Since obtain() returns a message with a ref count of 1 this is only needed
      * when a message is being passed around elsewhere.
@@ -108,7 +121,7 @@ public:
 
     void setUsed(int used) { m_used = MIN(used, m_capacity); }
 
-    void rewind() { m_cursor = 0; }
+    void rewind(int pos = 0) { m_cursor = pos; }
     void skip(int amt) { m_cursor += amt; }
     size_t pos() { return m_cursor; }
 
@@ -183,22 +196,24 @@ public:
         return 4 + (strlen(sz) * 2);
     }
 
+    inline bool available(size_t len) const { return m_cursor + len <= m_used; }
+
     bool readBoolean() {
-        if (m_cursor + 1 > m_used) {
+        if (!available(1)) {
             return false;
         }
         return m_buf[m_cursor++];
     }
 
     int8_t readByte() {
-        if (m_cursor + 1 > m_used) {
+        if (!available(1)) {
             return false;
         }
         return (int8_t)m_buf[m_cursor++];
     }
 
     int16_t readShort() {
-        if (m_cursor + 2 > m_used) {
+        if (!available(2)) {
             return 0;
         }
         int16_t out  = m_buf[m_cursor++] << 8;
@@ -208,7 +223,7 @@ public:
     }
 
     int32_t readInt() {
-        if (m_cursor + 4 > m_used) {
+        if (!available(4)) {
             return 0;
         }
         int32_t out  = m_buf[m_cursor++] << 24;
@@ -219,7 +234,7 @@ public:
     }
 
     float readFloat() {
-        if (m_cursor + 4 > m_used) {
+        if (!available(4)) {
             return 0;
         }
         uint32_t bits = m_buf[m_cursor++] << 24;
@@ -235,7 +250,7 @@ public:
         if (!sz) return 0;
 
         auto len = (size_t)readInt();
-        if (m_cursor + len > m_used) {
+        if (!available(len)) {
             return 0;
         }
         for (int i=0; i<len; i++) {
@@ -260,21 +275,24 @@ public:
         return readString(sz, max);
     }
 
-
-    // This probably isn't useful
+    /**
+     * Copies at most `len` bytes, or at least as many bytes are available to be read.
+     *
+     * @param dest The buffer to fill.
+     * @param len The size of the `dest` buffer.
+     * @return The number of bytes read.
+     */
     size_t readBytes(uint8_t* dest, size_t len) {
-        auto srcLen = (size_t)readInt();
-
-        if (dest) {
-            uint32_t toRead = MIN(srcLen, len);
-            memcpy(dest, m_buf + m_cursor, toRead);
-
-            // Even if the output buffer was small, should still move the
-            // cursor the proper amount to stay in sync with the protocol
-            m_cursor += srcLen;
+        int32_t available = m_used - m_cursor;
+        if (available < 0) {
+            return 0;
         }
 
-        return srcLen;
+        size_t toCopy = MIN(len, available);
+
+        memcpy(dest, m_buf + m_cursor, toCopy);
+        m_cursor += toCopy;
+        return toCopy;
     }
 
     /**
@@ -323,7 +341,7 @@ public:
     RgbColor readColor() {
         RgbColor out(0,0,0);
 
-        if (m_cursor + 4 > m_used) {
+        if (!available(4)) {
             return out;
         }
 

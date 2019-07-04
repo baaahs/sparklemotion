@@ -13,6 +13,7 @@ class AllShows {
             LifeyShow,
             SimpleSpatialShow,
             HeartbleatShow,
+            CreepingPixelsShow,
             GlslSandbox55301Show
         )
     }
