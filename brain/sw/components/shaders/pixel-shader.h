@@ -1,7 +1,7 @@
 #pragma once
 
 #include "shader.h"
-#include "../../../../../../../esp/xtensa-esp32-elf/xtensa-esp32-elf/include/c++/8.2.0/cstdint"
+#include <cstdint>
 
 class PixelShader : public Shader {
     enum class Encoding : uint8_t {

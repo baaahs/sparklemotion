@@ -11,21 +11,46 @@ This directory structure is likely to evolve over time.
 Build Environment Setup
 =======================
 
-The basic thing is to follow the [Get Started](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#step-1-set-up-the-toolchain) section of the Espressif ESP-IDF.
+The basic thing is to follow the [Get Started (CMake)](https://docs.espressif.com/projects/esp-idf/en/latest/get-started-cmake/index.html) section of the Espressif ESP-IDF.
 
 The highlights are 
-* You're going to be installing a pre-built version of the xtensa toolchain. In the page referenced above you will need to click on a link to go to a second page with detailed instructions for your OS: Mac, Windows, or Linux. Follow the instructions.
-* We're using the latest version on master until we find a reason not to. The bleeding edge is where it's at. Basically this is v4. We're also using the CMake build system which is officially in Preview at the moment, but again, why not?
+* Previously you would have installed a pre-built version of the xtensa toolchain. In the page referenced above you will need to click on a link to go to a second page with detailed instructions for your OS: Mac, Windows, or Linux. Follow the instructions. I think the xtensa toolchain is now installed/compiled when you run the `install` script mentioned on the Get Started page. Haven't had a chance to test this though.
+* We're using the latest version on master until we find a reason not to. The bleeding edge is where it's at. Basically this is v4. We're also using the CMake build system which is officially in Preview at the moment, but again, why not? See below for info about staying up to date.
 * Clone the IDF into a suitable directory. Their examples use `~/esp/esp-idf` so unless you are particular about your machine that's probably a reasonable thing to do.
-* Note that they use git submodules so you either need to use `--recursive` when you clone the repo or you need to do a `git submodule update --init` after you have cloned it.
+* Note that they use git submodules so you either need to use `--recursive` when you clone the repo (recommended) or you need to do a `git submodule update --init` after you have cloned it.
 * The `IDF_PATH` environment variable needs to be set to the root of the idf.
 * You also want to add `IDF_PATH/tools` to your system `PATH`
 * The build tools are written in python. Check `${IDF_PATH}/requirements.txt` for details
 * I think I also installed the `ninja` build tool per the Get Started directions. That might be a thing also.
+* They recommend installing `ccache` - I have little to say about whether this is awesome or lame. I'm pretty sure I installed it.
 
 Assuming all that is done you should be able to cd into one of the firmware directories (right now that means the `playa` directory) and run `idf.py build`.
 
-However, right now I don't understand why the spiffs storage.bin file doesn't build. To build this manually in the playa directory, from the `playa\build` directory you can run `ninja spiffs_storage_bin` or possibly `make spiffs_storage_bin` depending on which build system you are using. *Update: as of 2019-05-21 it seems that whatever was causing an issue where this spiffs file wasn't getting built has been corrected so this paragraph probably doesn't apply. Yay fast moving open source...*
+On an earlier version of the v4 master branch the `storage.bin` file which contains the SPIFFS filesystem image which is flashed to the board wasn't building. The solution was to cd into `playa\build` and run either `ninja spiffs_storage_bin` or `make spiffs_storage_bin` depending on which build system you were using. As of 2019-05-21 it seems that whatever was causing an issue is now fixed so if you are up to date with the IDF this should just build automagically. For the moment I'm leaving these instructions here but I don't know, may delete later.
+
+Updating the IDF
+================
+
+If you are updating from a version of the IDF prior to about July 1 you will have installed the xtensa toolchain manually in something like `~/esp/xtensa-esp32-elf` and will have likely added it to your path. *You need to remove this old method of installing the toolchain.* Renaming or deleting this directory should be fine. You may also want to cleanup your `.profile` or `.bashrc` script.
+
+The IDF now includes a `install.sh` script which installs and updates the toolchain. This script also generates an `export.sh` file which should be sourced to setup appropriate paths. As a result of these changes my `.profile` now contains the following lines related to the IDF:
+
+    ######
+    # For ESP32 development
+    export IDF_PATH=~/esp/esp-idf
+    . ${IDF_PATH}/export.sh > /dev/null
+    ######
+
+Not that the `export.sh` file both needs to be sourced, hence the leading `.` and it generates a bunch of garbage that I don't want to see everytime I open a new shell, hence the redirection to `/dev/null`.
+
+Since we are using a clone of master you need to do the following to stay up to date with the core IDF. (Note that this assumes Mac or Linux and the default installation location of your home directory.)
+
+    cd ~/esp/esp-idf
+    git pull
+    git submodule update --init --recursive
+    ./install.sh
+
+Because of the vagaries of the universe you may periodically have to entirely remove the IDF and re-install it though. When v4 is released we'll probably stabilize on that version for some period of time, but for now it seems like we need to stay in this world.
 
 Flashing the Board
 ==================

@@ -78,6 +78,13 @@ void wifi_init()
     ESP_LOGD(TAG, "wifi_init start");
 
     //Initialize NVS
+
+    // Because of a bug in the IDF as of July 3, we ALWAYS erase the flash right now. This seems to be
+    // related to refactorings where they moved the wap supplicant code around and probably didn't
+    // update nvs_flash_init properly.
+    // TODO: Try to remove this sometime after about July 7 or so
+    ESP_ERROR_CHECK(nvs_flash_erase());
+
     ESP_LOGI(TAG, "calling nvs_flash_init()");
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
