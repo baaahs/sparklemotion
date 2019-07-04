@@ -40,12 +40,9 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         writeInt(f.toBits())
     }
 
+    @UseExperimental(ExperimentalStdlibApi::class)
     fun writeString(s: String) {
-        growIfNecessary(4 + 2 * s.length)
-        writeInt(s.length)
-        for (i in s.indices) {
-            writeChar(s[i])
-        }
+        writeBytes(s.encodeToByteArray())
     }
 
     fun writeNullableString(s: String?) {
