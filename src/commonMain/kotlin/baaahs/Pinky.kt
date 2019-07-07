@@ -240,7 +240,7 @@ class Pinky(
         suspend fun run() {
             while (true) {
                val beatData = beatSource.getBeatData()
-                display.beat = beatData.beatWithinMeasure(clock).toInt() - 1
+                display.beat = beatData.beatWithinMeasure(clock).toInt()
                 display.bpm = beatData.bpm.toInt() //TODO: show fractions of bpm
                 delay(10)
             }
