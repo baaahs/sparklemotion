@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm test",
     "start": "webpack-cli --config ./webpack.config.js --mode development --watch",
-    "start:dev": "webpack-dev-server --config ./webpack.config.js --host 192.168.7.125 --hot --inline --mode development --color",
+    "start:dev": "webpack-dev-server --config ./webpack.config.js --host 169.254.247.95 --hot --inline --mode development --color",
     "build": "webpack-cli --config ./webpack.config.js --mode production"
   },
   "repository": {

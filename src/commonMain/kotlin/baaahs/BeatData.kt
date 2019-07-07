@@ -19,7 +19,7 @@ data class BeatData(
 
     fun beatWithinMeasure(clock: Clock): Float {
         val elapsedSinceStartOfMeasure = clock.now() - measureStartTimeMs
-        return ((elapsedSinceStartOfMeasure / beatIntervalMs).toFloat()) % beatsPerMeasure + 1
+        return ((elapsedSinceStartOfMeasure / beatIntervalMs).toFloat()) % beatsPerMeasure
     }
 }
 
