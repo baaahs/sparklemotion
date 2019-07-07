@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.DmxDevice
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
@@ -26,13 +27,6 @@ fun main(args: Array<String>) {
         .resolve("build/processedResources/js/main")
     println("jsResDir = ${jsResDir}")
     val httpServer = embeddedServer(Netty, Ports.PINKY_UI_TCP) {
-        install(io.ktor.websocket.WebSockets) {
-            pingPeriod = Duration.ofSeconds(15)
-            timeout = Duration.ofSeconds(15)
-            maxFrameSize = Long.MAX_VALUE
-            masking = false
-        }
-
         routing {
             static {
                 files(jsResDir.toFile())
@@ -41,9 +35,33 @@ fun main(args: Array<String>) {
         }
     }.start(false)
 
+    httpServer.application.install(io.ktor.websocket.WebSockets) {
+        pingPeriod = Duration.ofSeconds(15)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+    }
+
+    val dmxDevices = DmxDevice.listDevices()
+    val dmxUniverse = if (dmxDevices.isEmpty()) {
+        logger.warn("No DMX USB devices found, DMX will be disabled.")
+        FakeDmxUniverse()
+    } else {
+        if (dmxDevices.size > 1) {
+            logger.warn("Multiple DMX USB devices found, using ${dmxDevices.first()}.")
+        }
+
+        dmxDevices.first()
+    }
+
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), FakeDmxUniverse(),
-            BeatLinkBeatSource(SystemClock()), object : StubPinkyDisplay() {
+        Pinky(
+            sheepModel,
+            AllShows.allShows,
+            JvmNetwork(httpServer),
+            dmxUniverse,
+            BeatLinkBeatSource(SystemClock()),
+            object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }

@@ -15,13 +15,30 @@ import kotlin.random.Random
  */
 @Serializable
 data class Color(val argb: Int) {
-    /** Values are bounded at `0..255`. */
+    /** Values are bounded at `0f..1f`. */
     constructor(red: Float, green: Float, blue: Float, alpha: Float = 1f) : this(asArgb(red, green, blue, alpha))
 
-    /** Values are bounded at `0f..1f`. */
+    /** Values are bounded at `0..255`. */
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 255) : this(asArgb(red, green, blue, alpha))
 
+    /** Values are bounded at `0..255` (but really `-128..127` because signed). */
+    // TODO: use UByte.
+    constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()) : this(asArgb(red, green, blue, alpha))
+
     fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
+
+    @Transient
+    val alphaB: Byte
+        get() = alphaI(argb).toByte()
+    @Transient
+    val redB: Byte
+        get() = redI(argb).toByte()
+    @Transient
+    val greenB: Byte
+        get() = greenI(argb).toByte()
+    @Transient
+    val blueB: Byte
+        get() = blueI(argb).toByte()
 
     @Transient
     val alphaI: Int
@@ -141,11 +158,16 @@ data class Color(val argb: Int) {
 
         @JsName("fromString")
         fun from(hex: String): Color {
-            val hexDigits = hex.trimStart('#')
+            var hexDigits = hex.trimStart('#')
+            val alpha = if (hexDigits.length == 8) {
+                hexDigits.substring(0, 2).toInt(16).also { hexDigits = hexDigits.substring(2) }
+            } else {
+                0xff
+            }
+
             if (hexDigits.length == 6) {
-                val l: Int = 0xff000000.toInt()
                 // huh? that's not an Int already? I'm supposed to do twos-complement math and negate? blech Kotlin.
-                return Color((l or hexDigits.toInt(16)).toInt())
+                return Color(alpha shl 24 or hexDigits.toInt(16))
             }
             throw IllegalArgumentException("unknown color \"$hex\"")
         }
@@ -162,8 +184,16 @@ data class Color(val argb: Int) {
                     or (bounded(blue)))
         }
 
-        private fun bounded(i: Int): Int = max(0, min(255, i))
+        private fun asArgb(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()): Int {
+            return ((bounded(alpha) shl 24)
+                    or (bounded(red) shl 16)
+                    or (bounded(green) shl 8)
+                    or (bounded(blue)))
+        }
+
         private fun bounded(f: Float): Float = max(0f, min(1f, f))
+        private fun bounded(i: Int): Int = max(0, min(255, i))
+        private fun bounded(b: Byte): Int = b.toInt() and 0xff
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
 
         override val descriptor: SerialDescriptor = IntDescriptor.withName("Color")

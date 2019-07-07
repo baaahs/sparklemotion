@@ -34,29 +34,33 @@ public:
      * @return
      */
     bool isSameAs(Msg* pMsg) {
+        size_t rewindPos = pMsg->pos();
+        
         // Do this as a peek
         size_t dLen = pMsg->readInt();
-        pMsg->skip(-4);
 
         // ESP_LOGI(MSG_TAG, "Start isSameAs dLen=%d m_len=%d m_pBuf=%p", dLen, m_len, m_pBuf);
-        // Have to the same length for sure
+        // Have to be the same length for sure
         if (dLen != m_len) {
+            pMsg->rewind(rewindPos);
             return false;
         }
 
         // Then we just check byte by byte
         uint8_t* pMe = m_pBuf;
-        uint8_t* pOther = pMsg->cursor();
 
-        uint8_t* pEnd = m_pBuf + m_len;
-        while(pMe < pEnd) {
-            if (*pMe != *pOther) return false;
+        for(int i = 0; i < dLen; i++) {
+            int8_t byte = pMsg->readByte();
+            if (*pMe != byte) {
+                pMsg->rewind(rewindPos);
+                return false;
+            }
             pMe++;
-            pOther++;
         }
 
         // It's okay, they are the same
         // pMsg->log("Same Message??");
+        pMsg->rewind(rewindPos);
         return true;
     }
 

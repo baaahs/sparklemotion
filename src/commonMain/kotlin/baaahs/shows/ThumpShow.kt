@@ -34,7 +34,7 @@ object ThumpShow : Show("Thump") {
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHead(it) }
+        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
         init {
 //        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")
@@ -56,7 +56,7 @@ object ThumpShow : Show("Thump") {
             }
 
             movingHeadBuffers.forEach { buf ->
-                buf.colorWheel = buf.closestColorFor(beatColor)
+                buf.color = colorPicker.color //buf.closestColorFor(beatColor)
                 buf.pan = beat.roundToInt().toFloat() / 2
                 buf.tilt = beat.roundToInt().toFloat() / 2
             }

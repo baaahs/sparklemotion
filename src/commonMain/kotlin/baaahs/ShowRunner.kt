@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.Shenzarpy
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
@@ -86,7 +87,7 @@ class ShowRunner(
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
+    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))

@@ -4,13 +4,7 @@ import baaahs.Dmx.Universe
 import baaahs.geom.Vector2
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.BrainHelloMessage
-import baaahs.proto.BrainMappingMessage
-import baaahs.proto.BrainShaderMessage
-import baaahs.proto.MapperHelloMessage
-import baaahs.proto.Ports
-import baaahs.proto.Vector2F
-import baaahs.proto.parse
+import baaahs.proto.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,7 +76,7 @@ class Pinky(
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
 
-            delay(50)
+            delay(100)
         }
     }
 

@@ -8,12 +8,7 @@ import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
-import kotlin.test.expect
+import kotlin.test.*
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
@@ -250,7 +245,9 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getMovingHead(SheepModel.MovingHead("leftEye",
+            showRunner.getMovingHeadBuffer(
+                MovingHead(
+                    "leftEye",
                 SheepModel.Point(-163.738f, 204.361f, 439.302f)))
         }
 
