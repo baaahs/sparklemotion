@@ -14,7 +14,6 @@ import kotlin.math.sin
 object HeartbleatShow : Show("Heartbleat") {
     override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         return object : Renderer {
-            val beatProvider = showRunner.getBeatSource()
             val hearts = sheepModel.allPanels.filter { it.number == 7 }
                 .map { showRunner.getShaderBuffer(it, HeartShader()) }
             val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
@@ -24,7 +23,7 @@ object HeartbleatShow : Show("Heartbleat") {
             val otherSurfaces = showRunner.allUnusedSurfaces.map { showRunner.getShaderBuffer(it, SolidShader()) }
 
             override fun nextFrame() {
-                val currentBeat = showRunner.currentBeat - 1
+                val currentBeat = showRunner.currentBeat
                 var phase = (currentBeat % 1.0) * 3.0f
                 val heartSize = heartSizeGadget.value * if (phase > 1.5 && phase < 2.5f) {
                     1f + ((.5f - abs(phase - 2)) / 4).toFloat()

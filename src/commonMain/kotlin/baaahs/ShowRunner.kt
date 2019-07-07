@@ -27,6 +27,7 @@ class ShowRunner(
     private var shadersLocked = true
     private var gadgetsLocked = true
 
+    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
     val currentBeat: Float
         get() = beatSource.getBeatData().beatWithinMeasure(clock)
 
