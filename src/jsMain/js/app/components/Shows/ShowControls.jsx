@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import styles from './app.scss';
-import ColorPicker from './components/gadgets/ColorPicker';
-import PalettePicker from './components/gadgets/PalettePicker';
-import RangeSlider from './components/gadgets/Slider';
+import styles from './Shows.scss';
+import ColorPicker from '../gadgets/ColorPicker';
+import PalettePicker from '../gadgets/PalettePicker';
+import RangeSlider from '../gadgets/Slider';
 
 export default class ShowControls extends Component {
   render() {
