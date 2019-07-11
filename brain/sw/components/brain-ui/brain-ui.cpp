@@ -5,11 +5,14 @@
 #include "freertos/task.h"
 
 BrainUI::BrainUI() :
-    green(LEDC_CHANNEL_0, 4), // Right Eye
-    blue(LEDC_CHANNEL_1, 16), // Left Eye
+    leftEye(LEDC_CHANNEL_1, 16), // Left Eye
+    rightEye(LEDC_CHANNEL_0, 4), // Right Eye
     rgbR(LEDC_CHANNEL_2, 12), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
     rgbG(LEDC_CHANNEL_3, 33),
-    rgbB(LEDC_CHANNEL_4, 14)
+    rgbB(LEDC_CHANNEL_4, 14),
+
+    btnLeft(GPIO_NUM_0, true, *this),
+    btnRight(GPIO_NUM_2, false, *this) // Rev D this is IO2, Rev E is IO34, both are low default
 {
 
 }
@@ -33,12 +36,17 @@ BrainUI::_task() {
     while(1) {
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
-        val += 4;
-        if (val > 255) val = 0;
+        val += 16;
+        // if (val > 255) val = 0;
+
+//        if (!val) {
+//           ESP_LOGI(TAG, "Left  Button %s", btnLeft.readDown() ? "down" : "up");
+//           ESP_LOGI(TAG, "Right Button %s", btnRight.readDown() ? "down" : "up");
+//        }
 
         // ESP_LOGI(TAG, "Update LEDs to %d", val);
-        green.setValue(val);
-        blue.setValue((uint8_t)255-val);
+//        leftEye.setValue(val);
+//        rightEye.setValue((uint8_t)255-val);
 
         rgbR.setValue(val);
         rgbG.setValue(val);
@@ -54,15 +62,19 @@ BrainUI::_task() {
 void
 BrainUI::start() {
     // Start all the LEDs first
-    green.start();
-    blue.start();
+    leftEye.start();
+    rightEye.start();
     rgbR.start();
     rgbG.start();
     rgbB.start();
 
+    // Also some buttons
+    btnLeft.start();
+    btnRight.start();
+
     // Then we can do stuff
-    green.setValue(0);
-    blue.setValue(255);
+    leftEye.setValue(0);
+    rightEye.setValue(0);
 
     rgbR.setValue(0);
     rgbG.setValue(0);
@@ -84,3 +96,23 @@ BrainUI::start() {
         ESP_LOGI(TAG, "BrainUI task started");
     }
 }
+
+void
+BrainUI::buttonDown(BrainButton& sw, bool longPress) {
+    bool isLeft = (&sw == &btnLeft);
+
+    ESP_LOGI(TAG, "%s Button  V  isLong=%d", isLeft ? "Left " : "Right", longPress);
+
+    if (isLeft) {
+        leftEye.setValue(leftEye.getValue() ? 0 : 255);
+    } else {
+        rightEye.setValue(rightEye.getValue() ? 0 : 255);
+    }
+};
+
+void
+BrainUI::buttonUp(BrainButton& sw) {
+    bool isLeft = (&sw == &btnLeft);
+
+    ESP_LOGI(TAG, "%s Button  ^", isLeft ? "Left " : "Right");
+};
