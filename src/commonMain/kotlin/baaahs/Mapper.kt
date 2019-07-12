@@ -46,7 +46,7 @@ class Mapper(
 
     fun start() = doRunBlocking {
         link = FragmentingUdpLink(network.link())
-        udpSocket = link.listenUdp(Ports.MAPPER, this)
+        udpSocket = link.listenUdp(0, this)
 
         launch { run() }
     }
@@ -90,7 +90,7 @@ class Mapper(
         suppressShows()
 
         retry {
-            udpSocket.broadcastUdp(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
+            udpSocket.broadcastUdp(Ports.BRAIN, BrainIdRequest(udpSocket.serverPort))
             delay(1000L)
         }
 
@@ -218,7 +218,7 @@ class Mapper(
         return BrainShaderMessage(solidShader, buffer)
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {

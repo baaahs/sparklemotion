@@ -109,7 +109,7 @@ class Pinky(
         dmxUniverse.allOff()
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> foundBrain(fromAddress, BrainId(message.brainId), message.surfaceName)

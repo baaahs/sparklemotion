@@ -68,7 +68,7 @@ class Brain(
         }
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val now = getTimeMillis()
         lastInstructionsReceivedAtMs = now
 
