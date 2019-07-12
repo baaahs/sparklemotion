@@ -18,7 +18,7 @@ interface Network {
     interface Address
 
     interface UdpListener {
-        fun receive(fromAddress: Address, bytes: ByteArray)
+        fun receive(fromAddress: Address, fromPort: Int, bytes: ByteArray)
     }
 
     interface UdpSocket {

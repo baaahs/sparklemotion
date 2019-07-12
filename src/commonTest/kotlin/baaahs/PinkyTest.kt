@@ -32,7 +32,7 @@ class PinkyTest {
 
     @Test
     fun whenUnmappedBrainUnknownToPinkyComesOnline_showShouldBeNotified() {
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", null).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
@@ -45,7 +45,7 @@ class PinkyTest {
     fun whenUnmappedBrainKnownToPinkyComesOnline_showShouldBeNotifiedAndBrainShouldReceiveMapping() {
         pinky.providePanelMapping(BrainId("brain1"), panel17)
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", null).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
@@ -58,7 +58,7 @@ class PinkyTest {
     fun whenMappedBrainComesOnline_showShouldBeNotified() {
         pinky.providePanelMapping(BrainId("brain1"), panel17)
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", panel17.name).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
@@ -71,7 +71,7 @@ class PinkyTest {
     fun asBrainsComeOnlineAndAreMapped_showShouldBeNotified() {
         pinky.providePanelMapping(BrainId("brain1"), panel17)
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", null).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
@@ -80,7 +80,7 @@ class PinkyTest {
         expect(1) { show.shaderBuffers.size }
         expect(true) { show.shaderBuffers.keys.only() is Pinky.UnknownSurface }
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", panel17.name).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
@@ -92,23 +92,23 @@ class PinkyTest {
 
     @Test
     fun whenBrainHelloRaceCondition_asBrainsComeOnline_showShouldBeNotified() {
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", null).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
         val show = testShow1.createdShows.only()
 
         // Remap to 17L...
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", panel17.name).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", panel17.name).toBytes())
         // ... but a packet also made it through identifying brain1 as unmapped.
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", null).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
 
         // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", panel17.name).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
@@ -116,7 +116,7 @@ class PinkyTest {
         expect(1) { show.shaderBuffers.size }
         expect(true) { show.shaderBuffers.keys.only() == panel17 }
 
-        pinky.receive(clientAddress, BrainHelloMessage("brain1", panel17.name).toBytes())
+        pinky.receive(clientAddress, xxx, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
