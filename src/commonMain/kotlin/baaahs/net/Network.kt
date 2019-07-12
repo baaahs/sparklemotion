@@ -9,17 +9,7 @@ interface Network {
         val myAddress: Address
 
         val udpMtu: Int
-        fun listenUdp(port: Int, udpListener: UdpListener)
-        fun sendUdp(toAddress: Address, port: Int, bytes: ByteArray)
-        fun broadcastUdp(port: Int, bytes: ByteArray)
-
-        fun sendUdp(toAddress: Address, port: Int, message: Message) {
-            sendUdp(toAddress, port, message.toBytes())
-        }
-
-        fun broadcastUdp(port: Int, message: Message) {
-            broadcastUdp(port, message.toBytes())
-        }
+        fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
 
         fun listenTcp(port: Int, tcpServerSocketListener: TcpServerSocketListener)
         fun connectTcp(toAddress: Address, port: Int, tcpListener: TcpListener): TcpConnection
@@ -29,6 +19,15 @@ interface Network {
 
     interface UdpListener {
         fun receive(fromAddress: Address, bytes: ByteArray)
+    }
+
+    interface UdpSocket {
+        val serverPort: Int
+
+        fun sendUdp(toAddress: Address, port: Int, bytes: ByteArray)
+        fun sendUdp(toAddress: Address, port: Int, message: Message) = sendUdp(toAddress, port, message.toBytes())
+        fun broadcastUdp(port: Int, bytes: ByteArray)
+        fun broadcastUdp(port: Int, message: Message) = broadcastUdp(port, message.toBytes())
     }
 
     interface TcpConnection {
