@@ -16,6 +16,7 @@ class Pinky(
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
+    private lateinit var udpSocket: Network.UdpSocket
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
     private var selectedShow = shows.first()
@@ -42,7 +43,7 @@ class Pinky(
     suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
 
-        link.listenUdp(Ports.PINKY, this)
+        udpSocket = link.listenUdp(Ports.PINKY, this)
 
         display.listShows(shows)
         display.selectedShow = selectedShow
@@ -124,7 +125,7 @@ class Pinky(
             val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
                 ?: emptyList()
             val mappingMsg = BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices)
-            link.sendUdp(address, Ports.BRAIN, mappingMsg)
+            udpSocket.sendUdp(address, Ports.BRAIN, mappingMsg)
         }
     }
 
@@ -163,7 +164,7 @@ class Pinky(
 
         val surfaceReceiver = ShowRunner.SurfaceReceiver(surface) { shaderBuffer ->
             val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
-            link.sendUdp(brainAddress, Ports.BRAIN, message)
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
 
             networkStats.packetsSent++
             networkStats.bytesSent += message.size
