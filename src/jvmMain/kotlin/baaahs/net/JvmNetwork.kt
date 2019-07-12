@@ -31,7 +31,7 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
 
         override val udpMtu = 1400
 
-        override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
+        override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = DatagramSocket(port)
 
             networkScope.launch {
@@ -41,23 +41,27 @@ class JvmNetwork(val httpServer: ApplicationEngine) : Network {
                     socket.receive(packetIn)
                     udpListener.receive(
                         IpAddress(packetIn.address),
-                        xxx,
+                        packetIn.port,
                         data.copyOfRange(packetIn.offset, packetIn.length)
                     )
                 }
             }
+
+            return JvmUdpSocket(socket.localPort)
         }
 
-        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-            // broadcastUdp(port, bytes);
-            // return
-            val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
-            defaultUdpSocket.send(packetOut)
-        }
+        inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
+            override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                // broadcastUdp(port, bytes);
+                // return
+                val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
+                defaultUdpSocket.send(packetOut)
+            }
 
-        override fun broadcastUdp(port: Int, bytes: ByteArray) {
-            val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
-            defaultUdpSocket.send(packetOut)
+            override fun broadcastUdp(port: Int, bytes: ByteArray) {
+                val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
+                defaultUdpSocket.send(packetOut)
+            }
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
