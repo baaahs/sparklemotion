@@ -23,21 +23,25 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
 
         private fun receiveUdp(bytes: ByteArray) {
             receviedPackets += bytes
-            udpListener?.receive(myAddress, xxx, bytes)
+            udpListener?.receive(myAddress, 1234, bytes)
         }
 
         override val udpMtu = mtu
 
-        override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
+        override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             this.udpListener = udpListener
+            return TestUdpSocket(port)
         }
 
-        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-            packetsToSend += bytes
-        }
+        inner class TestUdpSocket(override val serverPort: Int) : Network.UdpSocket {
+            override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                packetsToSend += bytes
+            }
 
-        override fun broadcastUdp(port: Int, bytes: ByteArray) {
-            packetsToSend += bytes
+            override fun broadcastUdp(port: Int, bytes: ByteArray) {
+                packetsToSend += bytes
+            }
+
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
