@@ -4,8 +4,14 @@ import PropTypes from 'prop-types';
 import TabBar from './components/TabBar';
 import Shows from './components/Shows';
 import Eyes from './components/Eyes';
+import modalStyles from './components/Modal/Modal.scss';
 
-import { SHOWS, EYE_CONTROLS, MAIN_TABS } from './constants';
+import {
+  SHOWS,
+  EYE_CONTROLS,
+  MAIN_TABS,
+  MODAL_PORTAL_DOM_NODE_ID,
+} from './constants';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -54,6 +60,7 @@ class App extends Component {
           onTabClick={this.handleTabClick}
         />
         {this.renderContent(selectedTab)}
+        <div id={MODAL_PORTAL_DOM_NODE_ID} />
       </Fragment>
     );
   }
