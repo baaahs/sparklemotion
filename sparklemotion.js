@@ -351,6 +351,7 @@
     this.display_0 = display;
     this.pixels_0 = pixels;
     this.link_q2tdi4$_0 = this.link_q2tdi4$_0;
+    this.udpSocket_cf1pha$_0 = this.udpSocket_cf1pha$_0;
     this.lastInstructionsReceivedAtMs_0 = L0;
     this.surfaceName_0 = null;
     this.surface_6p23av$_0 = new Brain$UnmappedSurface(this);
@@ -365,6 +366,16 @@
     },
     set: function (link) {
       this.link_q2tdi4$_0 = link;
+    }
+  });
+  Object.defineProperty(Brain.prototype, 'udpSocket_0', {
+    get: function () {
+      if (this.udpSocket_cf1pha$_0 == null)
+        return throwUPAE('udpSocket');
+      return this.udpSocket_cf1pha$_0;
+    },
+    set: function (udpSocket) {
+      this.udpSocket_cf1pha$_0 = udpSocket;
     }
   });
   Object.defineProperty(Brain.prototype, 'surface_0', {
@@ -446,7 +457,7 @@
         switch (this.state_0) {
           case 0:
             this.$this.link_0 = new FragmentingUdpLink(this.$this.network_0.link());
-            this.$this.link_0.listenUdp_a6m852$(8003, this.$this);
+            this.$this.udpSocket_0 = this.$this.link_0.listenUdp_a6m852$(8003, this.$this);
             this.$this.display_0.id = this.$this.id;
             this.$this.display_0.haveLink_9m0ekx$(this.$this.link_0);
             this.$this.display_0.onReset = Brain$run$lambda(this.$this);
@@ -573,7 +584,7 @@
               if (!equals(this.$this.lastInstructionsReceivedAtMs_0, L0)) {
                 logger$Companion_getInstance().info_61zpoe$(this.$this.id + ": haven't heard from Pinky in " + elapsedSinceMessageMs.toString() + 'ms');
               }
-              this.$this.link_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.$this.id, this.$this.surfaceName_0));
+              this.$this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.$this.id, this.$this.surfaceName_0));
             }
 
             this.state_0 = 3;
@@ -607,7 +618,7 @@
     else
       return instance.doResume(null);
   };
-  Brain.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
+  Brain.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var tmp$, tmp$_0;
     var now = getTimeMillis();
     this.lastInstructionsReceivedAtMs_0 = now;
@@ -629,7 +640,7 @@
         break;
       case 'BRAIN_ID_REQUEST':
         var message = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
-        this.link_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(this.id, this.surfaceName_0));
+        this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(this.id, this.surfaceName_0));
         break;
       case 'BRAIN_MAPPING':
         var message_0 = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
@@ -644,7 +655,7 @@
         this.surface_0 = tmp$_0;
         this.currentShaderDesc_0 = null;
         this.currentShaderBits_0 = null;
-        this.link_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.id, this.surfaceName_0));
+        this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.id, this.surfaceName_0));
         break;
       default:break;
     }
@@ -1586,6 +1597,7 @@
     this.deltaBitmap_hn3lh8$_0 = this.deltaBitmap_hn3lh8$_0;
     this.newChangeRegion_0 = null;
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
+    this.udpSocket_eiksen$_0 = this.udpSocket_eiksen$_0;
     this.isRunning_0 = true;
     this.isAligned_0 = false;
     this.isPaused_0 = false;
@@ -1614,6 +1626,16 @@
     },
     set: function (link) {
       this.link_tktc8n$_0 = link;
+    }
+  });
+  Object.defineProperty(Mapper.prototype, 'udpSocket_0', {
+    get: function () {
+      if (this.udpSocket_eiksen$_0 == null)
+        return throwUPAE('udpSocket');
+      return this.udpSocket_eiksen$_0;
+    },
+    set: function (udpSocket) {
+      this.udpSocket_eiksen$_0 = udpSocket;
     }
   });
   function Coroutine$Mapper$start$lambda$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
@@ -1686,7 +1708,7 @@
         switch (this.state_0) {
           case 0:
             this.local$this$Mapper.link_0 = new FragmentingUdpLink(this.local$this$Mapper.network_0.link());
-            this.local$this$Mapper.link_0.listenUdp_a6m852$(8001, this.local$this$Mapper);
+            this.local$this$Mapper.udpSocket_0 = this.local$this$Mapper.link_0.listenUdp_a6m852$(0, this.local$this$Mapper);
             return launch(this.local$this$Mapper, void 0, void 0, Mapper$start$lambda$lambda(this.local$this$Mapper));
           case 1:
             throw this.exception_0;
@@ -1733,7 +1755,7 @@
     this.isRunning_0 = false;
     this.camera.close();
     (tmp$ = this.suppressShowsJob_0) != null ? (tmp$.cancel_m4sck1$(), Unit) : null;
-    this.link_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(false));
+    this.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(false));
     this.mapperDisplay_0.close();
   };
   function Coroutine$Mapper$run$lambda(this$Mapper_0, continuation_0) {
@@ -1753,7 +1775,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(true));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(true));
             this.state_0 = 2;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1762,7 +1784,7 @@
           case 1:
             throw this.exception_0;
           case 2:
-            return this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK)), Unit;
+            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK)), Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -1805,7 +1827,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest(8001));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest(this.local$this$Mapper.udpSocket_0.serverPort));
             this.state_0 = 2;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1857,7 +1879,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1909,7 +1931,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().WHITE));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().WHITE));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1961,7 +1983,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -2130,7 +2152,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            return this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0)), Unit;
+            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0)), Unit;
           case 1:
             throw this.exception_0;
           default:this.state_0 = 1;
@@ -2379,7 +2401,7 @@
             if (this.local$i % 128 === 0)
               println('pixel ' + this.local$i + '... isRunning is ' + this.$this.isRunning_0);
             this.local$buffer.set_vux9f0$(this.local$i, 1);
-            this.$this.link_0.broadcastUdp_68hu5j$(8003, new BrainShaderMessage(this.local$pixelShader, this.local$buffer));
+            this.$this.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainShaderMessage(this.local$pixelShader, this.local$buffer));
             this.local$buffer.set_vux9f0$(this.local$i, 0);
             this.state_0 = 27;
             this.result_0 = delay(L34, this);
@@ -2531,7 +2553,7 @@
               return COROUTINE_SUSPENDED;
             continue;
           case 3:
-            this.local$this$Mapper.link_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0));
             this.state_0 = 2;
             continue;
           case 4:
@@ -2651,7 +2673,7 @@
       return this$Mapper.solidColor_0(Color$Companion_getInstance().GREEN);
     };
   }
-  Mapper.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
+  Mapper.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainIdResponse)) {
       var $receiver = this.brainMappers_0;
@@ -2736,7 +2758,7 @@
     this.brainId = brainId;
   }
   Mapper$BrainMapper.prototype.shade_s74fr6$ = function (shaderMessage) {
-    this.$outer.link_0.sendUdp_wpmaqi$(this.address_0, 8003, shaderMessage());
+    this.$outer.udpSocket_0.sendUdp_wpmaqi$(this.address_0, 8003, shaderMessage());
   };
   Mapper$BrainMapper.$metadata$ = {
     kind: Kind_CLASS,
@@ -2977,6 +2999,7 @@
     this.dmxUniverse = dmxUniverse;
     this.display = display;
     this.link_0 = new FragmentingUdpLink(this.network.link());
+    this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.beatProvider_0 = new Pinky$PinkyBeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = first(this.shows);
@@ -3124,7 +3147,6 @@
         switch (this.state_0) {
           case 0:
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
-            this.$this.link_0.listenUdp_a6m852$(8002, this.$this);
             this.$this.display.listShows_3lsa6o$(this.$this.shows);
             this.$this.display.selectedShow = this.$this.selectedShow_0;
             var tmp$ = this.$this.pubSub_0;
@@ -3227,7 +3249,7 @@
   Pinky.prototype.disableDmx_0 = function () {
     this.dmxUniverse.allOff();
   };
-  Pinky.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
+  Pinky.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage))
       this.foundBrain_0(fromAddress, new BrainId(message.brainId), message.surfaceName);
@@ -3254,7 +3276,7 @@
         tmp$_1 = null;
       var pixelVertices = (tmp$_0 = tmp$_1) != null ? tmp$_0 : emptyList();
       var mappingMsg = new BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices);
-      this.link_0.sendUdp_wpmaqi$(address, 8003, mappingMsg);
+      this.udpSocket_0.sendUdp_wpmaqi$(address, 8003, mappingMsg);
     }
   };
   function Pinky$UnknownSurface(brainId) {
@@ -3284,7 +3306,7 @@
     return function (shaderBuffer) {
       var tmp$;
       var message = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer)).toBytes();
-      this$Pinky.link_0.sendUdp_ytpeqp$(closure$brainAddress, 8003, message);
+      this$Pinky.udpSocket_0.sendUdp_ytpeqp$(closure$brainAddress, 8003, message);
       var tmp$_0;
       tmp$_0 = this$Pinky.networkStats_0;
       tmp$_0.packetsSent = tmp$_0.packetsSent + 1 | 0;
@@ -3628,8 +3650,7 @@
         var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topicName_0);
         topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
         break;
-      default:IllegalArgumentException_init("huh? don't know what to do with " + command);
-        break;
+      default:throw IllegalArgumentException_init("huh? don't know what to do with " + command);
     }
   };
   PubSub$Connection.prototype.sendTopicUpdate_puj7f4$ = function (name, data) {
@@ -6012,7 +6033,7 @@
       return remove;
     };
   }
-  FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_rq4egf$ = function (fromAddress, bytes) {
+  FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var reader = new ByteArrayReader(bytes);
     var messageId = reader.readShort();
     var size = reader.readShort();
@@ -6020,7 +6041,7 @@
     var offset = reader.readInt();
     var frameBytes = reader.readNBytes_za3lpa$(size);
     if (offset === 0 && size === totalSize) {
-      this.closure$udpListener.receive_rq4egf$(fromAddress, frameBytes);
+      this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, frameBytes);
     }
      else {
       var thisFragment = new FragmentingUdpLink$Fragment(messageId, offset, frameBytes);
@@ -6055,7 +6076,7 @@
           var $receiver = element.bytes;
           arrayCopy($receiver, reassembleBytes, element.offset, 0, $receiver.length);
         }
-        this.closure$udpListener.receive_rq4egf$(fromAddress, reassembleBytes);
+        this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, reassembleBytes);
       }
     }
   };
@@ -6064,44 +6085,47 @@
     interfaces: [Network$UdpListener]
   };
   FragmentingUdpLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
-    this.wrappedLink_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this));
+    return new FragmentingUdpLink$FragmentingUdpSocket(this, this.wrappedLink_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this)));
   };
-  function FragmentingUdpLink$sendUdp$lambda(this$FragmentingUdpLink, closure$toAddress, closure$port) {
+  function FragmentingUdpLink$FragmentingUdpSocket($outer, delegate) {
+    this.$outer = $outer;
+    this.delegate_0 = delegate;
+  }
+  Object.defineProperty(FragmentingUdpLink$FragmentingUdpSocket.prototype, 'serverPort', {
+    get: function () {
+      return this.delegate_0.serverPort;
+    }
+  });
+  function FragmentingUdpLink$FragmentingUdpSocket$sendUdp$lambda(this$FragmentingUdpSocket, closure$toAddress, closure$port) {
     return function (fragment) {
-      this$FragmentingUdpLink.wrappedLink_0.sendUdp_ytpeqp$(closure$toAddress, closure$port, fragment);
+      this$FragmentingUdpSocket.delegate_0.sendUdp_ytpeqp$(closure$toAddress, closure$port, fragment);
       return Unit;
     };
   }
-  FragmentingUdpLink.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
-    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$sendUdp$lambda(this, toAddress, port));
+  FragmentingUdpLink$FragmentingUdpSocket.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$FragmentingUdpSocket$sendUdp$lambda(this, toAddress, port));
   };
-  function FragmentingUdpLink$broadcastUdp$lambda(this$FragmentingUdpLink, closure$port) {
+  function FragmentingUdpLink$FragmentingUdpSocket$broadcastUdp$lambda(this$FragmentingUdpSocket, closure$port) {
     return function (fragment) {
-      this$FragmentingUdpLink.wrappedLink_0.broadcastUdp_3fbn1q$(closure$port, fragment);
+      this$FragmentingUdpSocket.delegate_0.broadcastUdp_3fbn1q$(closure$port, fragment);
       return Unit;
     };
   }
-  FragmentingUdpLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
-    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$broadcastUdp$lambda(this, port));
+  FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    this.transmitMultipartUdp_0(bytes, FragmentingUdpLink$FragmentingUdpSocket$broadcastUdp$lambda(this, port));
   };
-  FragmentingUdpLink.prototype.sendUdp_wpmaqi$ = function (toAddress, port, message) {
-    this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
-  };
-  FragmentingUdpLink.prototype.broadcastUdp_68hu5j$ = function (port, message) {
-    this.broadcastUdp_3fbn1q$(port, message.toBytes());
-  };
-  FragmentingUdpLink.prototype.transmitMultipartUdp_0 = function (bytes, fn) {
+  FragmentingUdpLink$FragmentingUdpSocket.prototype.transmitMultipartUdp_0 = function (bytes, fn) {
     var tmp$;
     if (bytes.length > 65535) {
       IllegalArgumentException_init('buffer too big! ' + bytes.length + ' must be < 65536');
     }
-    var messageId = (tmp$ = this.nextMessageId_0, this.nextMessageId_0 = toShort(tmp$ + 1), tmp$);
-    var messageCount = ((bytes.length - 1 | 0) / (this.mtu_0 - 12 | 0) | 0) + 1 | 0;
-    var buf = new Int8Array(this.mtu_0);
+    var messageId = (tmp$ = this.$outer.nextMessageId_0, this.$outer.nextMessageId_0 = toShort(tmp$ + 1), tmp$);
+    var messageCount = ((bytes.length - 1 | 0) / (this.$outer.mtu_0 - 12 | 0) | 0) + 1 | 0;
+    var buf = new Int8Array(this.$outer.mtu_0);
     var offset = 0;
     for (var i = 0; i < messageCount; i++) {
       var writer = new ByteArrayWriter(buf);
-      var a = this.mtu_0 - 12 | 0;
+      var a = this.$outer.mtu_0 - 12 | 0;
       var b = bytes.length - offset | 0;
       var thisFrameSize = Math_0.min(a, b);
       writer.writeShort_mq22fl$(messageId);
@@ -6112,6 +6136,11 @@
       fn(writer.toBytes());
       offset = offset + thisFrameSize | 0;
     }
+  };
+  FragmentingUdpLink$FragmentingUdpSocket.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FragmentingUdpSocket',
+    interfaces: [Network$UdpSocket]
   };
   FragmentingUdpLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
     this.wrappedLink_0.listenTcp_kd29r4$(port, tcpServerSocketListener);
@@ -6128,12 +6157,6 @@
   }
   function Network$Link() {
   }
-  Network$Link.prototype.sendUdp_wpmaqi$ = function (toAddress, port, message) {
-    this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
-  };
-  Network$Link.prototype.broadcastUdp_68hu5j$ = function (port, message) {
-    this.broadcastUdp_3fbn1q$(port, message.toBytes());
-  };
   Network$Link.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Link',
@@ -6151,6 +6174,19 @@
   Network$UdpListener.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'UdpListener',
+    interfaces: []
+  };
+  function Network$UdpSocket() {
+  }
+  Network$UdpSocket.prototype.sendUdp_wpmaqi$ = function (toAddress, port, message) {
+    this.sendUdp_ytpeqp$(toAddress, port, message.toBytes());
+  };
+  Network$UdpSocket.prototype.broadcastUdp_68hu5j$ = function (port, message) {
+    this.broadcastUdp_3fbn1q$(port, message.toBytes());
+  };
+  Network$UdpSocket.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'UdpSocket',
     interfaces: []
   };
   function Network$TcpConnection() {
@@ -6184,7 +6220,6 @@
   };
   function Ports() {
     Ports_instance = this;
-    this.MAPPER = 8001;
     this.PINKY = 8002;
     this.BRAIN = 8003;
     this.PINKY_UI_TCP = 8004;
@@ -9039,115 +9074,6 @@
     var address = new FakeNetwork$FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
   };
-  FakeNetwork.prototype.listenUdp_0 = function (address, port, udpListener) {
-    this.udpListeners_0.put_xwzc9p$(new Pair(address, port), udpListener);
-    var $receiver = this.udpListenersByPort_0;
-    var tmp$;
-    var value = $receiver.get_11rb$(port);
-    if (value == null) {
-      var answer = ArrayList_init();
-      $receiver.put_xwzc9p$(port, answer);
-      tmp$ = answer;
-    }
-     else {
-      tmp$ = value;
-    }
-    var portListeners = tmp$;
-    portListeners.add_11rb$(udpListener);
-  };
-  FakeNetwork.prototype.sendUdp_0 = function (fromAddress, toAddress, port, bytes) {
-    var tmp$;
-    if (!this.sendPacketSuccess_0()) {
-      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-      return;
-    }
-    var listener = this.udpListeners_0.get_11rb$(new Pair(toAddress, port));
-    if (listener != null)
-      this.transmitUdp_0(fromAddress, listener, bytes);
-  };
-  FakeNetwork.prototype.broadcastUdp_0 = function (fromAddress, port, bytes) {
-    var tmp$, tmp$_0;
-    if (!this.sendPacketSuccess_0()) {
-      (tmp$ = this.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-      return;
-    }
-    if ((tmp$_0 = this.udpListenersByPort_0.get_11rb$(port)) != null) {
-      var tmp$_1;
-      tmp$_1 = tmp$_0.iterator();
-      while (tmp$_1.hasNext()) {
-        var element = tmp$_1.next();
-        this.transmitUdp_0(fromAddress, element, bytes);
-      }
-    }
-  };
-  function Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$udpListener = closure$udpListener_0;
-    this.local$closure$fromAddress = closure$fromAddress_0;
-    this.local$closure$bytes = closure$bytes_0;
-  }
-  Coroutine$FakeNetwork$transmitUdp$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.constructor = Coroutine$FakeNetwork$transmitUdp$lambda;
-  Coroutine$FakeNetwork$transmitUdp$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            var tmp$, tmp$_0;
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
-              return (tmp$ = this.local$this$FakeNetwork.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
-            }
-             else {
-              (tmp$_0 = this.local$this$FakeNetwork.display_0) != null ? (tmp$_0.receivedPacket(), Unit) : null;
-              return this.local$closure$udpListener.receive_rq4egf$(this.local$closure$fromAddress, this.local$closure$bytes), Unit;
-            }
-
-          case 3:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$bytes_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork.prototype.transmitUdp_0 = function (fromAddress, udpListener, bytes) {
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$transmitUdp$lambda(this, udpListener, fromAddress, bytes));
-  };
   FakeNetwork.prototype.listenTcp_0 = function (myAddress, port, tcpServerSocketListener) {
     var $receiver = this.tcpServerSocketsByPort_0;
     var key = new Pair(myAddress, port);
@@ -9437,6 +9363,7 @@
     this.$outer = $outer;
     this.myAddress_npb8zl$_0 = myAddress;
     this.udpMtu_jnv15u$_0 = 1500;
+    this.nextAvailablePort_0 = 65000;
   }
   Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
     get: function () {
@@ -9449,19 +9376,138 @@
     }
   });
   FakeNetwork$FakeLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
-    this.$outer.listenUdp_0(this.myAddress, port, udpListener);
-  };
-  FakeNetwork$FakeLink.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
-    this.$outer.sendUdp_0(this.myAddress, toAddress, port, bytes);
-  };
-  FakeNetwork$FakeLink.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
-    this.$outer.broadcastUdp_0(this.myAddress, port, bytes);
+    var tmp$;
+    var serverPort = port === 0 ? (tmp$ = this.nextAvailablePort_0, this.nextAvailablePort_0 = tmp$ + 1 | 0, tmp$) : port;
+    this.$outer.udpListeners_0.put_xwzc9p$(new Pair(this.myAddress, serverPort), udpListener);
+    var $receiver = this.$outer.udpListenersByPort_0;
+    var tmp$_0;
+    var value = $receiver.get_11rb$(serverPort);
+    if (value == null) {
+      var answer = ArrayList_init();
+      $receiver.put_xwzc9p$(serverPort, answer);
+      tmp$_0 = answer;
+    }
+     else {
+      tmp$_0 = value;
+    }
+    var portListeners = tmp$_0;
+    portListeners.add_11rb$(udpListener);
+    return new FakeNetwork$FakeLink$FakeUdpSocket(this, serverPort);
   };
   FakeNetwork$FakeLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
     this.$outer.listenTcp_0(this.myAddress, port, tcpServerSocketListener);
   };
   FakeNetwork$FakeLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
     return this.$outer.connectTcp_0(this.myAddress, toAddress, port, tcpListener);
+  };
+  function FakeNetwork$FakeLink$FakeUdpSocket($outer, serverPort) {
+    this.$outer = $outer;
+    this.serverPort_e2ivp4$_0 = serverPort;
+  }
+  Object.defineProperty(FakeNetwork$FakeLink$FakeUdpSocket.prototype, 'serverPort', {
+    get: function () {
+      return this.serverPort_e2ivp4$_0;
+    }
+  });
+  FakeNetwork$FakeLink$FakeUdpSocket.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    var tmp$;
+    if (!this.$outer.$outer.sendPacketSuccess_0()) {
+      (tmp$ = this.$outer.$outer.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+      return;
+    }
+    var listener = this.$outer.$outer.udpListeners_0.get_11rb$(new Pair(toAddress, port));
+    if (listener != null)
+      this.transmitUdp_0(this.$outer.myAddress, this.serverPort, listener, bytes);
+  };
+  FakeNetwork$FakeLink$FakeUdpSocket.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    var tmp$, tmp$_0;
+    if (!this.$outer.$outer.sendPacketSuccess_0()) {
+      (tmp$ = this.$outer.$outer.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+      return;
+    }
+    if ((tmp$_0 = this.$outer.$outer.udpListenersByPort_0.get_11rb$(port)) != null) {
+      this.$outer;
+      var tmp$_1;
+      tmp$_1 = tmp$_0.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        this.transmitUdp_0(this.$outer.myAddress, this.serverPort, element, bytes);
+      }
+    }
+  };
+  function Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$fromPort_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$udpListener = closure$udpListener_0;
+    this.local$closure$fromAddress = closure$fromAddress_0;
+    this.local$closure$fromPort = closure$fromPort_0;
+    this.local$closure$bytes = closure$bytes_0;
+  }
+  Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda;
+  Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var tmp$, tmp$_0;
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (!this.local$this$FakeNetwork.receivePacketSuccess_0()) {
+              return (tmp$ = this.local$this$FakeNetwork.display_0) != null ? (tmp$.droppedPacket(), Unit) : null;
+            }
+             else {
+              (tmp$_0 = this.local$this$FakeNetwork.display_0) != null ? (tmp$_0.receivedPacket(), Unit) : null;
+              return this.local$closure$udpListener.receive_ytpeqp$(this.local$closure$fromAddress, this.local$closure$fromPort, this.local$closure$bytes), Unit;
+            }
+
+          case 3:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$fromPort_0, closure$bytes_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda(this$FakeNetwork_0, closure$udpListener_0, closure$fromAddress_0, closure$fromPort_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork$FakeLink$FakeUdpSocket.prototype.transmitUdp_0 = function (fromAddress, fromPort, udpListener, bytes) {
+    launch(this.$outer.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$FakeUdpSocket$transmitUdp$lambda(this.$outer.$outer, udpListener, fromAddress, fromPort, bytes));
+  };
+  FakeNetwork$FakeLink$FakeUdpSocket.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeUdpSocket',
+    interfaces: [Network$UdpSocket]
   };
   FakeNetwork$FakeLink.$metadata$ = {
     kind: Kind_CLASS,
@@ -11341,12 +11387,6 @@
   BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenUdp not implemented');
   };
-  BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.sendUdp not implemented');
-  };
-  BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.broadcastUdp not implemented');
-  };
   BrowserNetwork$link$ObjectLiteral.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenTcp not implemented');
   };
@@ -12695,11 +12735,13 @@
     get: FragmentingUdpLink$Companion_getInstance
   });
   FragmentingUdpLink.Fragment = FragmentingUdpLink$Fragment;
+  FragmentingUdpLink.FragmentingUdpSocket = FragmentingUdpLink$FragmentingUdpSocket;
   var package$net = package$baaahs.net || (package$baaahs.net = {});
   package$net.FragmentingUdpLink = FragmentingUdpLink;
   Network.Link = Network$Link;
   Network.Address = Network$Address;
   Network.UdpListener = Network$UdpListener;
+  Network.UdpSocket = Network$UdpSocket;
   Network.TcpConnection = Network$TcpConnection;
   Network.TcpListener = Network$TcpListener;
   Network.TcpServerSocketListener = Network$TcpServerSocketListener;
@@ -12989,6 +13031,8 @@
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   PalettePicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  FragmentingUdpLink$FragmentingUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
+  FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   GlslSandbox55301Shader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   GlslSandbox55301Shader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -13016,14 +13060,12 @@
   SomeDumbShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   ThumpShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
-  FakeNetwork$FakeLink.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
-  FakeNetwork$FakeLink.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
+  FakeNetwork$FakeLink$FakeUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
+  FakeNetwork$FakeLink$FakeUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
   BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
-  BrowserNetwork$link$ObjectLiteral.prototype.sendUdp_wpmaqi$ = Network$Link.prototype.sendUdp_wpmaqi$;
-  BrowserNetwork$link$ObjectLiteral.prototype.broadcastUdp_68hu5j$ = Network$Link.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   VizPanel$VizPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;

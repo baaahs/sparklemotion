@@ -19,6 +19,13 @@
 <td>
 <code><span class="keyword">class </span><span class="identifier">Fragment</span></code></td>
 </tr>
+<tr>
+<td>
+<p><a href="-fragmenting-udp-socket/index.html">FragmentingUdpSocket</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FragmentingUdpSocket</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-network/-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Constructors</h3>
@@ -57,15 +64,6 @@
 <tbody>
 <tr>
 <td>
-<p><a href="broadcast-udp.html">broadcastUdp</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">broadcastUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$broadcastUdp(kotlin.Int, kotlin.ByteArray)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$broadcastUdp(kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Broadcasts payloads which might be larger than the network's MTU.</p>
-<code><span class="keyword">fun </span><span class="identifier">broadcastUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$broadcastUdp(kotlin.Int, baaahs.proto.Message)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$broadcastUdp(kotlin.Int, baaahs.proto.Message)/message">message</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.proto/-message/index.html"><span class="identifier">Message</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="connect-tcp.html">connectTcp</a></p>
 </td>
 <td>
@@ -83,16 +81,7 @@
 <p><a href="listen-udp.html">listenUdp</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="send-udp.html">sendUdp</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">sendUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Sends payloads which might be larger than the network's MTU.</p>
-<code><span class="keyword">fun </span><span class="identifier">sendUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$sendUdp(baaahs.net.Network.Address, kotlin.Int, baaahs.proto.Message)/message">message</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.proto/-message/index.html"><span class="identifier">Message</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.FragmentingUdpLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.FragmentingUdpLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-network/-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
 </tr>
 </tbody>
 </table>
