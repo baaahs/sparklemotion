@@ -6,7 +6,6 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
 object Ports {
-    const val MAPPER = 8001
     const val PINKY = 8002
     const val BRAIN = 8003
 
