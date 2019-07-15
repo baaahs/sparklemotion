@@ -16,6 +16,7 @@ class Pinky(
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
+    private val udpSocket = link.listenUdp(Ports.PINKY, this)
     private val beatProvider = PinkyBeatProvider(120.0f)
     private var mapperIsRunning = false
     private var selectedShow = shows.first()
@@ -25,10 +26,9 @@ class Pinky(
             showRunner.nextShow = selectedShow
         }
 
-    private val pubSub = PubSub.Server(link, Ports.PINKY_UI_TCP).apply { install(gadgetModule) }
+    private val pubSub: PubSub.Server = PubSub.Server(link, Ports.PINKY_UI_TCP).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
-    private val showRunner =
-        ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse)
+    private val showRunner = ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse)
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
     private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
     private val surfaceMappingsByBrain = mutableMapOf<BrainId, Surface>()
@@ -41,8 +41,6 @@ class Pinky(
 
     suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
-
-        link.listenUdp(Ports.PINKY, this)
 
         display.listShows(shows)
         display.selectedShow = selectedShow
@@ -108,7 +106,7 @@ class Pinky(
         dmxUniverse.allOff()
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> foundBrain(fromAddress, BrainId(message.brainId), message.surfaceName)
@@ -124,7 +122,7 @@ class Pinky(
             val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
                 ?: emptyList()
             val mappingMsg = BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices)
-            link.sendUdp(address, Ports.BRAIN, mappingMsg)
+            udpSocket.sendUdp(address, Ports.BRAIN, mappingMsg)
         }
     }
 
@@ -163,7 +161,7 @@ class Pinky(
 
         val surfaceReceiver = ShowRunner.SurfaceReceiver(surface) { shaderBuffer ->
             val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
-            link.sendUdp(brainAddress, Ports.BRAIN, message)
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
 
             networkStats.packetsSent++
             networkStats.bytesSent += message.size

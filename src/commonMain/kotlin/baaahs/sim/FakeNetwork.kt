@@ -29,46 +29,6 @@ class FakeNetwork(
         return FakeLink(address)
     }
 
-    private fun listenUdp(address: Network.Address, port: Int, udpListener: Network.UdpListener) {
-        udpListeners.put(Pair(address, port), udpListener)
-        val portListeners = udpListenersByPort.getOrPut(port) { mutableListOf() }
-        portListeners.add(udpListener)
-    }
-
-    private fun sendUdp(fromAddress: Network.Address, toAddress: Network.Address, port: Int, bytes: ByteArray) {
-        if (!sendPacketSuccess()) {
-            display?.droppedPacket()
-            return
-        }
-
-        val listener = udpListeners[Pair(toAddress, port)]
-        if (listener != null) transmitUdp(fromAddress, listener, bytes)
-    }
-
-    private fun broadcastUdp(fromAddress: Network.Address, port: Int, bytes: ByteArray) {
-        if (!sendPacketSuccess()) {
-            display?.droppedPacket()
-            return
-        }
-
-        udpListenersByPort[port]?.forEach { listener ->
-            transmitUdp(fromAddress, listener, bytes)
-        }
-    }
-
-    private fun transmitUdp(fromAddress: Network.Address, udpListener: Network.UdpListener, bytes: ByteArray) {
-        coroutineScope.launch {
-            networkDelay()
-
-            if (!receivePacketSuccess()) {
-                display?.droppedPacket()
-            } else {
-                display?.receivedPacket()
-                udpListener.receive(fromAddress, bytes)
-            }
-        }
-    }
-
     private fun listenTcp(
         myAddress: Network.Address,
         port: Int,
@@ -137,17 +97,14 @@ class FakeNetwork(
 
     private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
+        private var nextAvailablePort = 65000
 
-        override fun listenUdp(port: Int, udpListener: Network.UdpListener) {
-            this@FakeNetwork.listenUdp(myAddress, port, udpListener)
-        }
-
-        override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-            this@FakeNetwork.sendUdp(myAddress, toAddress, port, bytes)
-        }
-
-        override fun broadcastUdp(port: Int, bytes: ByteArray) {
-            this@FakeNetwork.broadcastUdp(myAddress, port, bytes)
+        override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
+            val serverPort = if (port == 0) nextAvailablePort++ else port
+            udpListeners.put(Pair(myAddress, serverPort), udpListener)
+            val portListeners = udpListenersByPort.getOrPut(serverPort) { mutableListOf() }
+            portListeners.add(udpListener)
+            return FakeUdpSocket(serverPort)
         }
 
         override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
@@ -159,6 +116,47 @@ class FakeNetwork(
             port: Int,
             tcpListener: Network.TcpListener
         ): Network.TcpConnection = this@FakeNetwork.connectTcp(myAddress, toAddress, port, tcpListener)
+
+        private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
+            override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                if (!sendPacketSuccess()) {
+                    display?.droppedPacket()
+                    return
+                }
+
+                val listener = udpListeners[Pair(toAddress, port)]
+                if (listener != null) transmitUdp(myAddress, serverPort, listener, bytes)
+            }
+
+            override fun broadcastUdp(port: Int, bytes: ByteArray) {
+                if (!sendPacketSuccess()) {
+                    display?.droppedPacket()
+                    return
+                }
+
+                udpListenersByPort[port]?.forEach { listener ->
+                    transmitUdp(myAddress, serverPort, listener, bytes)
+                }
+            }
+
+            private fun transmitUdp(
+                fromAddress: Network.Address,
+                fromPort: Int,
+                udpListener: Network.UdpListener,
+                bytes: ByteArray
+            ) {
+                coroutineScope.launch {
+                    networkDelay()
+
+                    if (!receivePacketSuccess()) {
+                        display?.droppedPacket()
+                    } else {
+                        display?.receivedPacket()
+                        udpListener.receive(fromAddress, fromPort, bytes)
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun networkDelay() {
