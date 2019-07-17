@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.db.MongoDB
 import baaahs.dmx.DmxDevice
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
@@ -19,6 +20,7 @@ import java.nio.file.Paths
 import java.time.Duration
 
 fun main(args: Array<String>) {
+    val db = MongoDB()
     val sheepModel = SheepModel()
     sheepModel.load()
 

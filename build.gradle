@@ -83,6 +83,7 @@ kotlin {
                 implementation "ch.qos.logback:logback-classic:$logback_version"
                 implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
                 implementation files("src/jvmMain/lib/javax.util.property-2_0.jar") // required by ftd2xxj
+                implementation 'org.litote.kmongo:kmongo:3.10.2'
             }
         }
         jvmTest {
