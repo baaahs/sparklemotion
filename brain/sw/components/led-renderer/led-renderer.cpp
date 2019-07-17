@@ -1,7 +1,10 @@
 #include "led-renderer.h"
 
+#include "sysmon.h"
 
 #include "led-renderer_private.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/timers.h>
 
 LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
     m_pixels(pixelCount, BRN01D_LED1_OUT),
@@ -9,7 +12,7 @@ LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
     m_timeBase(timeBase)
 {
     // Start with an empty buffer
-    m_buffer.ClearTo(RgbColor(255, 0, 0));
+    m_buffer.ClearTo(RgbColor(255, 255, 255));
 
     m_pixels.Begin();
 }
@@ -122,7 +125,9 @@ LEDRenderer::_task() {
 
 void
 LEDRenderer::render() {
-
+//    int64_t startTime = esp_timer_get_time();
+//    portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
+    gSysMon.startTiming(TIMING_RENDER);
     // Render into all the pixels
     if (m_shader) {
         // The NeoBuffer concept of a renderer allows a buffer to be filtered
@@ -143,6 +148,9 @@ LEDRenderer::render() {
         ESP_LOGE(TAG, "Nothing to render!!!!");
     }
 
+//    int64_t endTime = esp_timer_get_time();
+//    ESP_LOGI(TAG, "Rendering %d pixels took %lldms", m_buffer.PixelCount(), (endTime - startTime) / 1000);
+    gSysMon.endTiming(TIMING_RENDER);
 
     // Don't want to block a rendering task in case the blitter task has gone upside down
     // ESP_LOGI(TAG, "Getting pixel access to blt");

@@ -104,7 +104,7 @@ Brain::maybeSendHello()
 void
 Brain::start()
 {
-    m_sysMon.start();
+    gSysMon.start();
     m_brainUI.start();
 
     m_msgSlinger.registerHandler(this);

@@ -17,6 +17,6 @@ set(COMPONENT_SRCS "led-renderer.cpp"
         "esp32-hal-gpio.c"
         )
 
-set(COMPONENT_REQUIRES nvs_flash)
+set(COMPONENT_REQUIRES nvs_flash sysmon)
 
 register_component()
