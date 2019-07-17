@@ -66,7 +66,7 @@ abstract class PubSub {
         private val toSend: MutableList<ByteArray> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
-            logger.debug("[${tcpConnection.fromAddress} -> $name] PubSub: new $this connection")
+            debug("connection $this established")
             connection = tcpConnection
             toSend.forEach { tcpConnection.send(it) }
             toSend.clear()
@@ -77,8 +77,6 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    println("[${tcpConnection.fromAddress} -> $name] sub $topicName")
-
                     val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
                     val listener = object : Listener(this) {
                         override fun onUpdate(data: String) = sendTopicUpdate(topicName, data)
@@ -94,21 +92,20 @@ abstract class PubSub {
                 "update" -> {
                     val topicName = reader.readString()
                     val data = reader.readString()
-                    println("[${tcpConnection.fromAddress} -> $name] update $topicName $data")
-
                     val topicInfo = topics[topicName]
                     topicInfo?.notify(data, this)
                 }
 
                 else -> {
-                    IllegalArgumentException("huh? don't know what to do with $command")
+                    throw IllegalArgumentException("huh? don't know what to do with $command")
                 }
             }
         }
 
         fun sendTopicUpdate(name: String, data: String) {
+            debug("update $name $data")
+
             val writer = ByteArrayWriter()
-            println("-> update $name $data to ${connection?.toAddress}")
             writer.writeString("update")
             writer.writeString(name)
             writer.writeString(data)
@@ -116,6 +113,8 @@ abstract class PubSub {
         }
 
         fun sendTopicSub(topicName: String) {
+            debug("sub $topicName")
+
             val writer = ByteArrayWriter()
             writer.writeString("sub")
             writer.writeString(topicName)
@@ -133,6 +132,10 @@ abstract class PubSub {
             } else {
                 tcpConnection.send(bytes)
             }
+        }
+
+        private fun debug(message: String) {
+            logger.debug("[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message")
         }
     }
 
@@ -154,7 +157,7 @@ abstract class PubSub {
         }
 
         override fun incomingConnection(fromConnection: Network.TcpConnection): Network.TcpListener {
-            return Connection("server", topics)
+            return Connection("server at ${fromConnection.toAddress}", topics)
         }
 
         fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {

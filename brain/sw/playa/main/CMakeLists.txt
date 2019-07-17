@@ -1,20 +1,13 @@
 set(COMPONENT_SRCS
         "main.cpp"
         "brain.cpp"
-        "net/task_net.cpp"
-        "net/ethernet.cpp"
-        "net/wifi.cpp"
-        "net/ip_port.cpp"
-        "net/msg.cpp"
-        "net/msg_handler.cpp"
-        "net/msg_slinger.cpp"
         "httpd/task_httpd.cpp"
         "httpd/spiffs_handler.cpp"
         "httpd/http_server.cpp"
 )
 
 set(COMPONENT_ADD_INCLUDEDIRS ".")
-set(COMPONENT_REQUIRES led-renderer spiffs esp_http_server)
+set(COMPONENT_REQUIRES led-renderer spiffs esp_http_server net shaders sysmon brain-ui)
 
 register_component()
 

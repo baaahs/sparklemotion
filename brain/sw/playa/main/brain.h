@@ -5,10 +5,15 @@
 #ifndef PLAYA_BRAIN_H
 #define PLAYA_BRAIN_H
 
-#include "net/msg_handler.h"
-#include "net/msg_slinger.h"
+#include "msg_handler.h"
+#include "msg_slinger.h"
 
 #include "led-renderer.h"
+#include "shade-tree.h"
+#include "sysmon.h"
+#include "brain-ui.h"
+
+#define DEFAULT_PIXEL_COUNT 60
 
 class Brain : public MsgHandler {
 public:
@@ -22,7 +27,23 @@ public:
 
 private:
     MsgSlinger m_msgSlinger;
+
+    TimeBase m_timeBase;
+
+    uint16_t m_pixelCount = DEFAULT_PIXEL_COUNT;
     LEDRenderer m_ledRenderer;
+    LEDShader* m_ledShader;
+
+    Surface m_surface = Surface(m_pixelCount);
+    ShadeTree m_shadeTree = ShadeTree(&m_surface);
+    SysMon m_sysMon;
+
+    BrainUI m_brainUI;
+
+    void msgBrainPanelShade(Msg* pMsg);
+    void msgMapperHello(Msg* pMsg);
+    void msgBrainMapping(Msg* pMsg);
+    void msgPinkyPong(Msg* pMsg);
 };
 
 

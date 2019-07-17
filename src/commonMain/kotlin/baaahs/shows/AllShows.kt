@@ -11,7 +11,10 @@ class AllShows {
             PanelTweenShow,
             PixelTweenShow,
             LifeyShow,
-            SimpleSpatialShow
+            SimpleSpatialShow,
+            HeartbleatShow,
+            CreepingPixelsShow,
+            GlslSandbox55301Show
         )
     }
 }

@@ -12,7 +12,7 @@ import kotlin.math.floor
 import kotlin.math.sin
 import kotlin.random.Random
 
-class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pixelSpacing : Int = 2) {
+class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pixelSpacing : Float = 2f) {
 
     fun arrangePixels(vizPanel: VizPanel): Array<Vector3> = PanelArranger(vizPanel).arrangePixels()
 

@@ -12,6 +12,50 @@
   width: 100%;
   flex: 0 0 auto;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
+.slider--touch-area {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background-color: transparent;
+  z-index: 5;
+  width: 42px;
+  height: 45px;
+  cursor: 'pointer';
+}
+
+.slider--handle-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 20px;
+  height: 40px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(#6ABBC0, #00A4D1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .slider--handle-notch {
+    height: 1px;
+    background-color: black;
+    border-bottom: 1px solid #B8D5CF;
+    width: 100%;
+  }
+
+  .slider--handle-notch-middle {
+    height: 2px;
+    border-bottom: none;
+    box-shadow: 0px 0px 3px #00FF28;
+    background-color: #00E622;
+    width: 50%;
+  }
+
+  .slider--handle-notch-lower {
+    border-bottom: none;
+    border-top: 1px solid #B8D5CF;
+  }
+}

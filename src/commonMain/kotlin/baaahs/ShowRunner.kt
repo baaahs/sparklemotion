@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.Shenzarpy
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
@@ -7,7 +8,6 @@ class ShowRunner(
     private val model: SheepModel,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
-    brains: List<BrainInfo>,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe
 ) {
@@ -18,9 +18,8 @@ class ShowRunner(
     private var totalSurfaceReceivers = 0
 
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
-    val allUnusedSurfaces: List<Surface> get() = brainsBySurface.keys.toList().minus(shaderBuffers.keys)
+    val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
 
-    private val brainsBySurface = brains.groupBy { it.surface }
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
@@ -83,7 +82,7 @@ class ShowRunner(
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHead(movingHead: SheepModel.MovingHead): Shenzarpy {
+    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         return Shenzarpy(getDmxBuffer(baseChannel, 16))

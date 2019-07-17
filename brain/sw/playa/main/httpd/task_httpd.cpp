@@ -20,7 +20,7 @@
 
 #include "http_server.h"
 
-static const char *TAG = "#httpd";
+static const char *TAG = "# httpd";
 
 // Totally making this up. For the ESP32 this is in bytes
 #define TASK_HTTPD_STACK_SIZE 10240
@@ -224,6 +224,8 @@ static const httpd_uri_t ctrl = {
         .user_ctx  = NULL
 };
 
+/*
+
 static httpd_handle_t start_webserver(void)
 {
     httpd_handle_t server = NULL;
@@ -271,7 +273,7 @@ static void connect_handler(void* arg, esp_event_base_t event_base,
     }
 }
 
-static void task_httpd_main_simple(void* pvParameters) {
+ static void task_httpd_main_simple(void* pvParameters) {
 
     // Initialization
     static httpd_handle_t server = NULL;
@@ -298,6 +300,7 @@ static void task_httpd_main_simple(void* pvParameters) {
     // the safest thing because like, there are callbacks bro!
     vTaskDelete(NULL);
 }
+*/
 
 /* Function to initialize SPIFFS */
 static esp_err_t init_spiffs(void)

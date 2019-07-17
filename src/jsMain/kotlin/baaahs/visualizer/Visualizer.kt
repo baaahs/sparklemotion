@@ -1,8 +1,7 @@
 package baaahs.visualizer
 
-import baaahs.Config
-import baaahs.SheepModel
-import baaahs.Shenzarpy
+import baaahs.*
+import baaahs.dmx.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -32,7 +31,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel) {
+class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay) {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked
@@ -52,7 +51,6 @@ class Visualizer(sheepModel: SheepModel) {
         }
 
     private val frameListeners = mutableListOf<FrameListener>()
-    private val renderPixels = true
 
     private val controls: OrbitControls
     private val camera: PerspectiveCamera
@@ -74,10 +72,6 @@ class Visualizer(sheepModel: SheepModel) {
     private var vizPanels = mutableListOf<VizPanel>()
 
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
-
-    private val pixelDensity = 0.2f
-
-    private var totalPixels = 0
 
     init {
         sheepView.addEventListener("mousemove", { event -> onMouseMove(event as MouseEvent) }, false)
@@ -145,27 +139,14 @@ class Visualizer(sheepModel: SheepModel) {
 
         val vizPanel = VizPanel(p, geom, scene)
         vizPanels.add(vizPanel)
-
-        // console.log("Panel " + p.name + " area is " + vizPanel.area + "; will add " + pixelCount + " pixels")
-
-        // try to draw pixel-ish things...
-        if (renderPixels) {
-            val pixelArranger = SwirlyPixelArranger(pixelDensity, 2)
-            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizPanel.VizPixels(pixelPositions)
-            totalPixels += pixelPositions.size
-        }
-
-        document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
-
         return vizPanel
     }
 
-    fun addMovingHead(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
+    fun addMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
         return VizMovingHead(movingHead, dmxUniverse)
     }
 
-    inner class VizMovingHead(movingHead: SheepModel.MovingHead, dmxUniverse: FakeDmxUniverse) {
+    inner class VizMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
         private val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         private val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
         private val geometry = ConeBufferGeometry(50, 1000)
@@ -183,11 +164,7 @@ class Visualizer(sheepModel: SheepModel) {
         }
 
         private fun receivedDmxFrame() {
-            val colorWheelV = device.colorWheel
-            val wheelColor = Shenzarpy.WheelColor.get(colorWheelV)
-
-            material.color.set(wheelColor.color.rgb)
-
+            material.color.set(device.color.rgb)
             material.visible = device.dimmer > .1
 
             cone.rotation.x = -PI / 2 + device.tilt
@@ -238,7 +215,9 @@ class Visualizer(sheepModel: SheepModel) {
             }
         }
 
+        val startMs = getTimeMillis()
         renderer.render(scene, camera)
+        display.renderMs = (getTimeMillis() - startMs).toInt()
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
         rendererListeners.forEach { value -> value() }

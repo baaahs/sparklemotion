@@ -10,7 +10,10 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SINE_WAVE(SineWaveShader),
     COMPOSITOR(CompositorShader),
     SPARKLE(SparkleShader),
-    SIMPLE_SPATIAL(SimpleSpatialShader);
+    SIMPLE_SPATIAL(SimpleSpatialShader),
+    HEART(HeartShader),
+    RANDOM(RandomShader),
+    GLSL_SANDBOX_55301(GlslSandbox55301Shader);
 
     companion object {
         val values = values()
@@ -93,6 +96,8 @@ interface Pixels : Iterable<Color> {
     operator fun set(i: Int, color: Color)
 
     fun set(colors: Array<Color>)
+
+    fun finishedFrame() {}
 
     override fun iterator(): Iterator<Color> {
         return object : Iterator<Color> {

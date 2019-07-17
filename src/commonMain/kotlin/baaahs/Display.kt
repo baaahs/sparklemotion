@@ -6,6 +6,7 @@ interface Display {
     fun forNetwork(): NetworkDisplay
     fun forPinky(): PinkyDisplay
     fun forBrain(): BrainDisplay
+    fun forVisualizer(): VisualizerDisplay
 }
 
 interface NetworkDisplay {
@@ -15,25 +16,25 @@ interface NetworkDisplay {
 }
 
 interface PinkyDisplay {
-    fun listShows(showMetas: List<Show>)
+    fun listShows(shows: List<Show>)
 
     var brainCount: Int
     var beat: Int
     var onShowChange: (() -> Unit)
     var selectedShow: Show?
-    var nextFrameMs: Int
+    var showFrameMs: Int
     var stats: Pinky.NetworkStats?
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
-    override fun listShows(showMetas: List<Show>) {
+    override fun listShows(shows: List<Show>) {
     }
 
     override var brainCount = 0
     override var beat = 0
     override var onShowChange: () -> Unit = { }
     override var selectedShow: Show? = null
-    override var nextFrameMs: Int = 0
+    override var showFrameMs: Int = 0
     override var stats: Pinky.NetworkStats? = null
 }
 
@@ -42,4 +43,8 @@ interface BrainDisplay {
     var surface: Surface?
     var onReset: suspend () -> Unit
     fun haveLink(link: Network.Link)
+}
+
+interface VisualizerDisplay {
+    var renderMs: Int
 }

@@ -5,7 +5,10 @@ import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeMediaDevices
 import baaahs.sim.FakeNetwork
+import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
+import baaahs.visualizer.VizPanel
+import decodeQueryParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -17,11 +20,13 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val sheepModel = SheepModel().apply { load() }
-    private val showMetas = AllShows.allShows
-    private val visualizer = Visualizer(sheepModel)
-    private val pinky = Pinky(sheepModel, showMetas, network, dmxUniverse, display.forPinky())
+    private val shows = AllShows.allShows
+    private val visualizer = Visualizer(sheepModel, display.forVisualizer())
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, display.forPinky())
 
     fun start() = doRunBlocking {
+        val queryParams = decodeQueryParams(document.location!!)
+
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
@@ -42,15 +47,26 @@ class SheepSimulator {
             mapperDisplay
         }
 
+        val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
+        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
+        val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
+        var totalPixels = 0
+
         sheepModel.panels.sortedBy(SheepModel.Panel::name).forEachIndexed { index, panel ->
-//            if (panel.name != "17L") return@forEachIndexed
+            //            if (panel.name != "17L") return@forEachIndexed
 
-            val jsPanel = visualizer.addPanel(panel)
+            val vizPanel = visualizer.addPanel(panel)
+            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
+            vizPanel.vizPixels = VizPanel.VizPixels(vizPanel, pixelPositions)
 
-            val pixelLocations = jsPanel.getPixelLocations()!!
+            totalPixels += pixelPositions.size
+            document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
+
+            // This part is cheating... TODO: don't cheat!
+            val pixelLocations = vizPanel.getPixelLocations()!!
             pinky.providePixelMapping(panel, pixelLocations)
 
-            val brain = Brain("brain//$index", network, display.forBrain(),  jsPanel.vizPixels ?: NullPixels)
+            val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
             pinky.providePanelMapping(BrainId(brain.id), panel)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
