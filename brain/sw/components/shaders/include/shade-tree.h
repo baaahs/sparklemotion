@@ -16,7 +16,7 @@ public:
 
     void start();
 
-    void beginShade(float progress) override;
+    void beginShade(LEDShaderContext* pCtx) override;
 
     void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override;
 

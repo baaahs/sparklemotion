@@ -3,14 +3,13 @@
 #include "shader.h"
 
 class RainbowShader : public Shader {
-    float m_progress;
-    RgbColor m_color;
+    LEDShaderContext* m_pCtx;
 
 public:
-    RainbowShader(uint8_t** ppCursor, uint8_t* pEnd);
+    RainbowShader(Surface* pSurface, Msg* config);
     ~RainbowShader();
 
-    void begin(Msg *pMsg, float progress) override;
+    void begin(Msg *pMsg, LEDShaderContext* pCtx) override;
     void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) override;
     void end() override;
 };

@@ -3,7 +3,7 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-CompositorShader::CompositorShader(Surface *surface, Msg *config) : Shader(surface) {
+CompositorShader::CompositorShader(Surface *surface, Msg *config) : Shader(surface, config) {
     m_shaderA = Shader::createShaderFromDescrip(surface, config);
     m_shaderB = Shader::createShaderFromDescrip(surface, config);
 
@@ -23,7 +23,7 @@ CompositorShader::~CompositorShader() {
 }
 
 void
-CompositorShader::begin(Msg *pMsg, float progress) {
+CompositorShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     if (m_shaderA) {
         m_shaderA->begin(pMsg, 0);
 

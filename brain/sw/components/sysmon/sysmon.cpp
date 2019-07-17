@@ -46,11 +46,11 @@ SysMon::_task() {
 
     while(1) {
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
-        ESP_LOGE(TAG, "===========================================");
-        ESP_LOGE(TAG, "free=%d  largest=%d", xPortGetFreeHeapSize(),
+        ESP_LOGE(TAG, "================== Sys Mon ===================");
+        ESP_LOGE(TAG, "Memory: free=%d     largest block=%d", xPortGetFreeHeapSize(),
                 heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
         logTimings();
-        ESP_LOGE(TAG, "===========================================");
+        ESP_LOGE(TAG, "==============================================");
     }
 
     // Just in case we ever exit, we're supposed to do this.
@@ -139,8 +139,9 @@ SysMon::getInfo(uint8_t timing) {
 
 void
 SysMon::logTimings() {
+    ESP_LOGI(TAG, "Timer   Count Avg    Min    Max");
     for(uint8_t i = 0; i < TIMING_LAST; i++) {
         TimingInfo info = getInfo(i);
-        ESP_LOGI(TAG, "%s  %d  %" PRId64 "  %" PRId64 "  %" PRId64, info.name, info.count, info.average, info.max, info.min);
+        ESP_LOGI(TAG, "%s  %d  %" PRId64 "uS  %" PRId64 "uS  %" PRId64 "uS", info.name, info.count, info.average, info.min, info.max);
     }
 }
