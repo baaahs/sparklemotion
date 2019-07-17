@@ -36,7 +36,6 @@ private:
 
     Surface m_surface = Surface(m_pixelCount);
     ShadeTree m_shadeTree = ShadeTree(&m_surface);
-    SysMon m_sysMon;
 
     BrainUI m_brainUI;
 
