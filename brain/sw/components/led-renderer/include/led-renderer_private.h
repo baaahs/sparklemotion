@@ -24,7 +24,12 @@
 #define BRN01E_LED1_OUT 32
 #define BRN01E_LED2_OUT 2
 
-static const int TASK_LEDREN_STACK_SIZE = 10240;
-static const int TASK_LEDREN_PRIORITY = 5;
+static const int TASK_SHOW_STACK_SIZE = 10240;
+static const int TASK_SHOW_PRIORITY = 4;
+static const int TASK_SHOW_CORE = 1;
+
+static const int TASK_RENDER_STACK_SIZE = 10240;
+static const int TASK_RENDER_PRIORITY = 5;
+static const int TASK_RENDER_CORE = 1;
 
 #define FPS 30

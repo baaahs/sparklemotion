@@ -127,13 +127,10 @@ Brain::start()
     m_timeBase.setFPS(30);
     m_ledRenderer.setBrightness(10);
 
-    m_ledShader = new LEDShaderFiller(m_timeBase, m_ledRenderer.getNumPixels());
-//    m_ledRenderer.setShader(m_ledShader);
     m_ledRenderer.setShader(&m_shadeTree);
 
     // Start talking to the pixels
     m_ledRenderer.start();
-    m_ledRenderer.startLocalRenderTask();
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");

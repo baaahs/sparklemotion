@@ -4,13 +4,13 @@
 
 #define TAG "#shPixl"
 
-PixelShader::PixelShader(Surface *surface, Msg *pMsg) : Shader(surface) {
-    if (!pMsg->available(1)) {
+PixelShader::PixelShader(Surface *surface, Msg *config) : Shader(surface, config) {
+    if (!config->available(1)) {
         ESP_LOGE(TAG, "invalid config");
         m_disabled = 1;
     }
 
-    m_encoding = static_cast<Encoding>(pMsg->readByte());
+    m_encoding = static_cast<Encoding>(config->readByte());
     m_dataBufSize = bufferSizeFor(m_encoding, surface->pixelCount());
     m_dataBuf = static_cast<uint8_t *>(malloc(m_dataBufSize));
 
@@ -37,7 +37,7 @@ PixelShader::~PixelShader() {
 }
 
 void
-PixelShader::begin(Msg *pMsg) {
+PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     pMsg->readShort(); // ignore pixel count
 
     uint8_t paletteCount = paletteCountFor(m_encoding);

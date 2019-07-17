@@ -1,6 +1,6 @@
 #include "default-shader.h"
 
-DefaultShader::DefaultShader(Surface *surface, Msg *config) : Shader(surface) {
+DefaultShader::DefaultShader(Surface *surface, Msg *config) : Shader(surface, config) {
 
 }
 

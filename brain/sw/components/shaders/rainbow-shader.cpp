@@ -27,8 +27,6 @@ colorInPalette(float progress) {
     }
 
     if (progress == 1.0f ) {
-        // Serial.print("progress="); Serial.print(progress, 3);
-        // Serial.print(" Resetting to 0----\n");
         progress = 0.0f;
     }
 
@@ -39,20 +37,13 @@ colorInPalette(float progress) {
 
     float intervalDistance = pos - (float)lowIx;
 
-    // Serial.print("progress="); Serial.print(progress, 3);
-    // Serial.print(" pos="); Serial.print(pos,3);
-    // Serial.print(" idist="); Serial.print(intervalDistance,3);
-    // Serial.printf(" lowIx=%d, highIx=%d", lowIx, highIx);
-
     RgbColor color = RgbColor::LinearBlend(Palette_RYB[lowIx], Palette_RYB[highIx], intervalDistance);
 
-    // Serial.printf(" ==> (%3d, %3d, %3d)\n", color.R, color.G, color.B);
     return color;
 }
 
-RainbowShader::RainbowShader(uint8_t** ppCursor, uint8_t* pEnd) {
+RainbowShader::RainbowShader(Surface* surface, Msg* config) : Shader(surface, config) {
     // No additional bytes of configuration
-    m_color = RgbColor(32, 32, 0);
 }
 
 RainbowShader::~RainbowShader() {
@@ -60,24 +51,14 @@ RainbowShader::~RainbowShader() {
 }
 
 void
-RainbowShader::begin(Msg *pMsg, float progress) {
-    m_progress = progress;
-
-    if (!pMsg) return;
-
-    auto argb = pMsg->readInt();
-
-    // ESP_LOGD(TAG, "argb = %x", argb);
-
-    m_color.R = (argb >> 16) & 0xff;
-    m_color.G = (argb >>  8) & 0xff;
-    m_color.B = (argb      ) & 0xff;
+RainbowShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
+    m_pCtx = pCtx;
 }
 
 void
 RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
 //    memcpy((void*)colorOut, (void*)&m_color, 3);
-    float paletteProgress = m_progress + (pixelIndex / 32.0f);
+    float paletteProgress = m_pCtx->progress + (pixelIndex / 32.0f);
     if (paletteProgress > 1.0f) {
         paletteProgress -= 1.0f;
     }

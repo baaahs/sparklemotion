@@ -32,7 +32,6 @@ private:
 
     uint16_t m_pixelCount = DEFAULT_PIXEL_COUNT;
     LEDRenderer m_ledRenderer;
-    LEDShader* m_ledShader;
 
     Surface m_surface = Surface(m_pixelCount);
     ShadeTree m_shadeTree = ShadeTree(&m_surface);

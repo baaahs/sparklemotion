@@ -30,16 +30,16 @@ ShadeTree::start() {
 }
 
 void
-ShadeTree::beginShade(float progress) {
+ShadeTree::beginShade(LEDShaderContext* pCtx) {
     xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
     // Assume success
-    ESP_LOGW(TAG, "beginShade got semaphore");
+    ESP_LOGD(TAG, "beginShade got semaphore");
 
     if (m_pCurrentShader && m_pMsg) {
-        m_pCurrentShader->begin(m_pMsg, progress);
+        m_pCurrentShader->begin(m_pMsg, pCtx);
     } else if (m_pLocalShader) {
         ESP_LOGI(TAG, "beginShade with localShader");
-        m_pLocalShader->begin(nullptr, progress);
+        m_pLocalShader->begin(nullptr, pCtx);
     } else {
         //ESP_LOGW(TAG, "beginShade but don't have a message and a current shader");
     }
