@@ -14,7 +14,7 @@ static const uint16_t BRAIN_PORT = 8003;
 static const char* TAG = "# brain";
 
 Brain::Brain() :
-    m_ledRenderer(m_timeBase)
+    m_ledRenderer(m_timeBase, m_pixelCount)
 {
 }
 
@@ -104,8 +104,7 @@ Brain::maybeSendHello()
 void
 Brain::start()
 {
-    ESP_LOGE(TAG, "------- Brain Start Start ---------");
-    m_sysMon.start();
+    gSysMon.start();
     m_brainUI.start();
 
     m_msgSlinger.registerHandler(this);

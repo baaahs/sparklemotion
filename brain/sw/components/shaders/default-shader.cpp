@@ -1,6 +1,6 @@
 #include "default-shader.h"
 
-DefaultShader::DefaultShader(uint8_t* pCursor, uint8_t* pEnd) {
+DefaultShader::DefaultShader(Surface *surface, Msg *config) : Shader(surface) {
 
 }
 

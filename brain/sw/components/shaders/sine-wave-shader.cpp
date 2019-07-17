@@ -5,7 +5,7 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-SineWaveShader::SineWaveShader(uint8_t** ppCursor, uint8_t* pEnd) {
+SineWaveShader::SineWaveShader(Surface *surface, Msg *msg) : Shader(surface) {
     // No additional bytes of configuration
 }
 

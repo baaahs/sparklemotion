@@ -13,6 +13,8 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 
+#define DEFAULT_PIXEL_COUNT 60
+
 class Brain : public MsgHandler {
 public:
     Brain();
@@ -27,12 +29,13 @@ private:
     MsgSlinger m_msgSlinger;
 
     TimeBase m_timeBase;
-    LEDRenderer m_ledRenderer;
 
+    uint16_t m_pixelCount = DEFAULT_PIXEL_COUNT;
+    LEDRenderer m_ledRenderer;
     LEDShader* m_ledShader;
 
-    ShadeTree m_shadeTree;
-    SysMon m_sysMon;
+    Surface m_surface = Surface(m_pixelCount);
+    ShadeTree m_shadeTree = ShadeTree(&m_surface);
 
     BrainUI m_brainUI;
 

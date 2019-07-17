@@ -30,6 +30,7 @@ class Mapper(
     private var newChangeRegion: MediaDevices.Region? = null
 
     private lateinit var link: Network.Link
+    private lateinit var udpSocket: Network.UdpSocket
     private var isRunning: Boolean = true
     private var isAligned: Boolean = false
     private var isPaused: Boolean = false
@@ -45,8 +46,7 @@ class Mapper(
 
     fun start() = doRunBlocking {
         link = FragmentingUdpLink(network.link())
-        // link = network.link()
-        link.listenUdp(Ports.MAPPER, this)
+        udpSocket = link.listenUdp(0, this)
 
         launch { run() }
     }
@@ -69,7 +69,7 @@ class Mapper(
         camera.close()
 
         suppressShowsJob?.cancel()
-        link.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
+        udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
 
         mapperDisplay.close()
     }
@@ -81,16 +81,16 @@ class Mapper(
 
         // shut down Pinky, advertise for Brains...
         retry {
-            link.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
+            udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
             delay(1000L)
-            link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK))
+            udpSocket.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK))
         }
 
         // keep Pinky from waking up while we're running...
         suppressShows()
 
         retry {
-            link.broadcastUdp(Ports.BRAIN, BrainIdRequest(Ports.MAPPER))
+            udpSocket.broadcastUdp(Ports.BRAIN, BrainIdRequest(udpSocket.serverPort))
             delay(1000L)
         }
 
@@ -98,12 +98,12 @@ class Mapper(
         delay(1000L)
 
         // Blackout
-        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retry { udpSocket.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
         delay(250L)
 
         mapperDisplay.showMessage("READY PLAYER ONE…")
         // Blackout
-        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
+        retry { udpSocket.broadcastUdp(Ports.BRAIN, solidColor(Color.WHITE)); delay(250L) }
         delay(250L)
 
         while (!isAligned) {
@@ -119,7 +119,7 @@ class Mapper(
         mapperDisplay.showMessage("CALIBRATING…")
 
         // Blackout
-        retry { link.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
+        retry { udpSocket.broadcastUdp(Ports.BRAIN, solidColor(Color.BLACK)); delay(250L) }
         delay(250L)
         captureBaseImage = true
         delay(250L)
@@ -159,18 +159,22 @@ class Mapper(
 
             println("identify pixels...")
             // light up each pixel...
-            val pixelShader = PixelShader()
+            val pixelShader = PixelShader(PixelShader.Encoding.INDEXED_2)
             val buffer = pixelShader.createBuffer(object : Surface {
                 override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
                 override fun describe(): String = "Mapper surface"
-            })
-            buffer.setAll(Color.BLACK)
+            }).apply {
+                palette[0] = Color.BLACK
+                palette[0] = Color.WHITE
+                setAll(0)
+            }
+
             for (i in 0 until maxPixelsPerBrain) {
                 if (i % 128 == 0) println("pixel $i... isRunning is $isRunning")
-                buffer.colors[i] = Color.WHITE
-                link.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
-                buffer.colors[i] = Color.BLACK
+                buffer[i] = 1 // white
+                udpSocket.broadcastUdp(Ports.BRAIN, BrainShaderMessage(pixelShader, buffer))
+                buffer[i] = 0 // black
                 delay(34L)
                 maybePause()
             }
@@ -180,7 +184,7 @@ class Mapper(
         }
         println("done identifying things... $isRunning")
 
-        retry { link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
+        retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
     }
 
     private suspend fun retry(fn: suspend () -> Unit) {
@@ -193,7 +197,7 @@ class Mapper(
         suppressShowsJob = launch(CoroutineName("Suppress Pinky")) {
             while (isRunning) {
                 delay(10000L)
-                link.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
+                udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
             }
         }
     }
@@ -214,7 +218,7 @@ class Mapper(
         return BrainShaderMessage(solidShader, buffer)
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
             is BrainIdResponse -> {
@@ -287,7 +291,7 @@ class Mapper(
 
     inner class BrainMapper(private val address: Network.Address, val brainId: String) {
         fun shade(shaderMessage: () -> BrainShaderMessage) {
-            link.sendUdp(address, Ports.BRAIN, shaderMessage())
+            udpSocket.sendUdp(address, Ports.BRAIN, shaderMessage())
         }
     }
 }

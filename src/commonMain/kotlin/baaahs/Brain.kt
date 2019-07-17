@@ -13,6 +13,7 @@ class Brain(
     private val pixels: Pixels
 ) : Network.UdpListener {
     private lateinit var link: Network.Link
+    private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAtMs: Long = 0
     private var surfaceName : String? = null
     private var surface : Surface = UnmappedSurface()
@@ -22,7 +23,8 @@ class Brain(
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
-        link.listenUdp(Ports.BRAIN, this)
+        udpSocket = link.listenUdp(Ports.BRAIN, this)
+
         display.id = id
         display.haveLink(link)
         display.onReset = {
@@ -59,14 +61,14 @@ class Brain(
                 if (lastInstructionsReceivedAtMs != 0L) {
                     logger.info("$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms")
                 }
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
             delay(5000)
         }
     }
 
-    override fun receive(fromAddress: Network.Address, bytes: ByteArray) {
+    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val now = getTimeMillis()
         lastInstructionsReceivedAtMs = now
 
@@ -102,7 +104,7 @@ class Brain(
 
             Type.BRAIN_ID_REQUEST -> {
                 val message = BrainIdRequest.parse(reader)
-                link.sendUdp(fromAddress, message.port, BrainIdResponse(id, surfaceName))
+                udpSocket.sendUdp(fromAddress, message.port, BrainIdResponse(id, surfaceName))
             }
 
             Type.BRAIN_MAPPING -> {
@@ -118,7 +120,7 @@ class Brain(
                 currentShaderDesc = null
                 currentShaderBits = null
 
-                link.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
 
             // Other message types are ignored by Brains.

@@ -12,7 +12,7 @@
 
 class ShadeTree : public LEDShader {
 public:
-    ShadeTree();
+    ShadeTree(Surface *surface);
 
     void start();
 
@@ -30,6 +30,8 @@ public:
     void nextLocalShader();
 
 private:
+    Surface *m_surface;
+
     SemaphoreHandle_t m_hMsgAccess;
     Msg* m_pMsg;
 

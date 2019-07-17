@@ -13,6 +13,13 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = b
     }
 
+    fun writeShort(i: Int) {
+        if (i and 0xffff != i) {
+            throw IllegalArgumentException("$i doesn't fit in a short")
+        }
+        writeShort(i.toShort())
+    }
+
     fun writeShort(s: Short) {
         growIfNecessary(2)
         bytes[offset++] = s.toInt().shr(8).and(0xff).toByte()
@@ -21,24 +28,21 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
 
     fun writeChar(c: Char) = writeShort(c.toShort())
 
-    fun writeInt(l: Int) {
+    fun writeInt(i: Int) {
         growIfNecessary(4)
-        bytes[offset++] = l.shr(24).and(0xff).toByte()
-        bytes[offset++] = l.shr(16).and(0xff).toByte()
-        bytes[offset++] = l.shr(8).and(0xff).toByte()
-        bytes[offset++] = l.and(0xff).toByte()
+        bytes[offset++] = i.shr(24).and(0xff).toByte()
+        bytes[offset++] = i.shr(16).and(0xff).toByte()
+        bytes[offset++] = i.shr(8).and(0xff).toByte()
+        bytes[offset++] = i.and(0xff).toByte()
     }
 
     fun writeFloat(f: Float) {
         writeInt(f.toBits())
     }
 
+    @UseExperimental(ExperimentalStdlibApi::class)
     fun writeString(s: String) {
-        growIfNecessary(4 + 2 * s.length)
-        writeInt(s.length)
-        for (i in s.indices) {
-            writeChar(s[i])
-        }
+        writeBytes(s.encodeToByteArray())
     }
 
     fun writeNullableString(s: String?) {
@@ -73,7 +77,9 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
 
     private fun growIfNecessary(by: Int) {
         if (offset + by > bytes.size) {
-            bytes = bytes.copyOf(bytes.size * 2)
+            var newSize = bytes.size * 2
+            while (offset + by > newSize) newSize *= 2
+            bytes = bytes.copyOf(newSize)
         }
     }
 }

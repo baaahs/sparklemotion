@@ -6,7 +6,7 @@ class SolidShader : public Shader {
     RgbColor m_color;
 
 public:
-    SolidShader(uint8_t** ppCursor, uint8_t* pEnd);
+    SolidShader(Surface *surface, Msg *msg);
     ~SolidShader();
 
     void begin(Msg *pMsg, float progress) override;

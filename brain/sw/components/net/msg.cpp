@@ -29,27 +29,6 @@ Msg::prepCapacity(size_t atLeast) {
     return m_capacity >= atLeast;
 }
 
-//Msg*
-//Msg::parse()
-//{
-//    Msg* out = NULL;
-//
-//    if (!m_used || !m_buf) {
-//        return out;
-//    }
-//
-//    switch(m_buf[m_cursor++]) {
-////        case static_cast<int>(Msg::Type::BRAIN_PANEL_SHADE):
-////            out = new BrainShaderMsg(this);
-////            break;
-//
-//        default:
-//            ESP_LOGW(TAG, "Unknown message type %d", m_buf[--m_cursor]);
-//    }
-//
-//    return out;
-//}
-
 void Msg::injectFragmentingHeader() {
     static uint8_t messageId = 0;
 

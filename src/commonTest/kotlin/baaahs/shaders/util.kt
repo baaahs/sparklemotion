@@ -24,13 +24,15 @@ private fun <T : Shader.Buffer> send(srcShader: Shader<T>, srcBuf: T, surface: S
     return Pair(dstShader, dstBuf)
 }
 
-internal fun <T : Shader.Buffer> transmit(srcShader: Shader<T>, srcBuf: T, surface: Surface): T {
-    val (_: Shader<T>, dstBuf) = send(srcShader, srcBuf, surface)
+@Suppress("UNCHECKED_CAST")
+internal fun <T : Shader.Buffer> transmit(srcBuf: T, surface: Surface): T {
+    val (_: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
     return dstBuf
 }
 
-internal fun <T : Shader.Buffer> render(srcShader: Shader<T>, srcBuf: T, surface: Surface): Pixels {
-    val (dstShader: Shader<T>, dstBuf) = send(srcShader, srcBuf, surface)
+@Suppress("UNCHECKED_CAST")
+internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
+    val (dstShader: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
     val pixels = FakePixels(surface.pixelCount)
     val renderer = dstShader.createRenderer(surface)
     renderer.beginFrame(dstBuf, pixels.size)
@@ -42,7 +44,7 @@ internal fun <T : Shader.Buffer> render(srcShader: Shader<T>, srcBuf: T, surface
 }
 
 internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
-    render(srcShaderAndBuffer.first, srcShaderAndBuffer.second, surface)
+    render(srcShaderAndBuffer.second, surface)
 
 class FakeSurface(override val pixelCount: Int) : Surface {
     override fun describe(): String = "fake"

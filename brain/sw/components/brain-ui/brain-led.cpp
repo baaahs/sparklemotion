@@ -25,6 +25,7 @@ BrainLed::start() {
 
 void
 BrainLed::setValue(uint8_t val) {
+    m_val = val;
     ledc_set_duty(m_config.speed_mode, m_config.channel, 256 - val);
     ledc_update_duty(m_config.speed_mode, m_config.channel);
 }
