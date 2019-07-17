@@ -12,7 +12,8 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SPARKLE(SparkleShader),
     SIMPLE_SPATIAL(SimpleSpatialShader),
     HEART(HeartShader),
-    RANDOM(RandomShader);
+    RANDOM(RandomShader),
+    GLSL_SANDBOX_55301(GlslSandbox55301Shader);
 
     companion object {
         val values = values()

@@ -12,9 +12,11 @@ public:
 
     void start();
     void setValue(uint8_t val);
+    uint8_t getValue() { return m_val; }
 
 private:
     ledc_channel_config_t m_config;
+    uint8_t m_val;
 
     static bool initDone;
     static void checkInit();

@@ -97,7 +97,7 @@ abstract class PubSub {
                 }
 
                 else -> {
-                    IllegalArgumentException("huh? don't know what to do with $command")
+                    throw IllegalArgumentException("huh? don't know what to do with $command")
                 }
             }
         }
