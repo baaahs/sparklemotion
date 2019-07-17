@@ -31,19 +31,19 @@ class MongoDB {
 //        println("GOT THIS USER::::::::::: $admin")
 //    }
 
-    fun saveNewEyePreset(val preset: EyePreset) {
+    fun saveNewEyePreset(preset: EyePreset) {
         val col = database.getCollection<EyePreset>()
         col.insertOne(preset)
     }
 
-    fun getEyePreset(val eyePresetName: String): EyePreset? {
+    fun getEyePreset(eyePresetName: String): EyePreset? {
         val col = database.getCollection<EyePreset>()
         val preset: EyePreset? = col.findOne(EyePreset::name eq eyePresetName)
 
         return preset
     }
 
-    fun updateEyePreset(val preset: EyePreset) {
+    fun updateEyePreset(preset: EyePreset) {
         val col = database.getCollection<EyePreset>()
         col.updateOneById(preset._id, preset)
     }
