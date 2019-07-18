@@ -58,6 +58,12 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     ESP_LOGD(TAG, "MSG: BrainPanelShade");
 
     m_shadeTree.handleMessage(pMsg);
+
+    // Always force a render immediately after receipt of a panel shade message.
+    // While this _does_ tie the network processing to the rendering process, this
+    // is likely what we want??? Time based rendering still should be looked at, but
+    // this approach should get us the highest interactive responsiveness.
+    m_ledRenderer.render();
 }
 
 void
