@@ -1,10 +1,17 @@
 import { hot } from 'react-hot-loader';
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import ShowList from './ShowList';
-import ShowControls from './ShowControls';
-import styles from './app.scss';
+import TabBar from './components/TabBar';
+import Shows from './components/Shows';
+import Eyes from './components/Eyes';
+import modalStyles from './components/Modal/Modal.scss';
+
+import {
+  SHOWS,
+  EYE_CONTROLS,
+  MAIN_TABS,
+  MODAL_PORTAL_DOM_NODE_ID,
+} from './constants';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -13,83 +20,47 @@ class App extends Component {
     super(props);
 
     this.state = {
-      primaryColor: baaahs.Color.Companion.WHITE,
       showPickerOpen: false,
-      gadgets: [],
+      selectedTab: SHOWS,
     };
-
-    this.pubSub = props.pubSub;
-  }
-
-  componentDidMount() {
-    this.subscribeToChannels();
-  }
-
-  subscribeToChannels() {
-    this.gadgetDisplay = baaahs.GadgetDisplay(
-      this.props.pubSub,
-      (newGadgets) => {
-        console.log('got new gadgets!', newGadgets);
-        this.setState({ gadgets: newGadgets });
-      }
-    );
   }
 
   close = () => {
     console.log('app closed!');
   };
 
-  toggleShowPicker = (event) => {
-    const { showPickerOpen } = this.state;
-    console.log('set showPickerOpen to', !showPickerOpen);
-    this.setState({ showPickerOpen: !showPickerOpen });
+  handleTabClick = (tab) => {
+    this.setState({ selectedTab: tab });
+  };
+
+  renderContent = (tab) => {
+    if (tab === SHOWS) {
+      return <Shows pubSub={this.props.pubSub} />;
+    } else if (tab === EYE_CONTROLS) {
+      return <Eyes pubSub={this.props.pubSub} />;
+    }
+
+    console.warn(
+      `Warning: Attempting to render tab content that does not exist for tab:`,
+      tab
+    );
+
+    return null;
   };
 
   render() {
     const { pubSub } = this.props;
-    const { showPickerOpen, gadgets } = this.state;
+    const { selectedTab } = this.state;
 
     return (
       <Fragment>
-        <div id="drawer-container" className={styles['drawer-container']}>
-          <div
-            className={styles['show-picker--button']}
-            onClick={this.toggleShowPicker}
-          >
-            <div className={styles['show-picker--label']}>Shows</div>
-          </div>
-          <SwipeableDrawer
-            anchor="left"
-            open={showPickerOpen}
-            onOpen={this.toggleShowPicker}
-            onClose={this.toggleShowPicker}
-            PaperProps={{
-              style: {
-                position: 'absolute',
-                overflowX: 'hidden',
-                backgroundColor: '#575f5f',
-              },
-            }}
-            BackdropProps={{ style: { position: 'absolute' } }}
-            ModalProps={{
-              container: document.getElementById('drawer-container'),
-              style: { position: 'absolute' },
-            }}
-            variant="temporary"
-          >
-            <ShowList pubSub={pubSub} onSelect={this.toggleShowPicker} />
-          </SwipeableDrawer>
-
-          <div
-            style={{
-              marginLeft: '2em',
-              backgroundImage:
-                'linear-gradient(to bottom right, #3F3F3F, #575f5f)',
-            }}
-          >
-            <ShowControls gadgets={gadgets} />
-          </div>
-        </div>
+        <TabBar
+          tabs={MAIN_TABS}
+          activeTab={selectedTab}
+          onTabClick={this.handleTabClick}
+        />
+        {this.renderContent(selectedTab)}
+        <div id={MODAL_PORTAL_DOM_NODE_ID} />
       </Fragment>
     );
   }

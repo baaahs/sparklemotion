@@ -4,7 +4,7 @@
   padding-left: .25em;
   padding-right: 1em;
   color: white;
-  background-color: #575f5f;
+  background-color: #747F7F
 }
 
 .show-list {
@@ -24,10 +24,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #1A4042;
+    background-color: #72F2EB;
+    color: black;
   }
 }
 
 .selected {
-  background-color: #4BBDC2 !important;
+  background-color: #FF4858 !important;
 }
