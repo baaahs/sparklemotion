@@ -19,14 +19,14 @@ static const int INPUT_STACK = 10240; // Because 10k seems reasonable???
 static const int OUTPUT_STACK = 10240; // Because 10k seems reasonable???
 
 // TODO: Manage priorities more centrally perhaps?
-static const int INPUT_PRIO = 5;
-static const int OUTPUT_PRIO = 6;
+static const int INPUT_PRIO = 2;
+static const int OUTPUT_PRIO = 1;
 
 // Totally making this up. For the ESP32 this is in bytes
 static const int TASK_NET_STACK_SIZE = 10240;
 
 // Lower numbers are less important. Causes memory allocation though
 // so don't want it higher than necessary
-static const int TASK_NET_PRIORITY = 10;
+static const int TASK_NET_PRIORITY = 0;
 
 #endif // NET_PRIV_H

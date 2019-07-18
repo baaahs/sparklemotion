@@ -15,6 +15,7 @@
  * if it so desires.
  */
 struct LEDShaderContext {
+    uint16_t numPixels;
     float progress;
     braintime_t now;
 };

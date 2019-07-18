@@ -120,6 +120,8 @@ LEDRenderer::_showTask() {
         // Show waits for any pending DMA to finish, copies the values from the
         // pixel buffer into the DMA buffer, and then starts a new DMA
         // ESP_LOGI(TAG, "Show!");
+        gSysMon.endTiming(TIMING_SHOW_OUTPUTS);
+        gSysMon.startTiming(TIMING_SHOW_OUTPUTS);
         m_pixels.Show();
 
         xSemaphoreGive(m_hPixelsAccess);
@@ -135,6 +137,10 @@ LEDRenderer::render() {
 
     gSysMon.startTiming(TIMING_RENDER);
 
+    // Not that this should change, but maybe???
+    m_context.numPixels = m_buffer.PixelCount();
+
+    // The current time, which probably shouldn't be used in favor of .progress but still, be nice
     m_context.now = m_timeBase.currentTime();
 
     // Render into all the pixels
@@ -149,7 +155,7 @@ LEDRenderer::render() {
 
         // Rather than forcing the shader to detect the beginning by indexPixel == 0
         const uint16_t INTERVAL_BASE = 1000;
-        uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/10000, 8 * USEC_IN_SEC/10000, INTERVAL_BASE);
+        uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/1000, 1 * USEC_IN_SEC/1000, INTERVAL_BASE);
         m_context.progress = ((float)intPos) / (float)INTERVAL_BASE;
 
         m_shader->beginShade(&m_context);

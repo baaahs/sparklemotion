@@ -240,7 +240,7 @@ public:
         if (!available(4)) {
             return 0;
         }
-        uint32_t bits = m_buf[m_cursor++] << 24;
+        int32_t bits = m_buf[m_cursor++] << 24;
         bits |= m_buf[m_cursor++] << 16;
         bits |= m_buf[m_cursor++] <<  8;
         bits |= m_buf[m_cursor++];

@@ -12,7 +12,8 @@
 #define TASK_SYSMON_PRIORITY 0
 
 #define TIMING_RENDER 0
-#define TIMING_LAST 1
+#define TIMING_SHOW_OUTPUTS 1
+#define TIMING_LAST 2
 
 #define HISTORY_COUNT 21
 

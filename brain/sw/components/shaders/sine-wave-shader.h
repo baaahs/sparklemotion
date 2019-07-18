@@ -3,6 +3,7 @@
 #include "shader.h"
 
 class SineWaveShader : public Shader {
+    LEDShaderContext* m_pCtx;
     RgbColor m_color;
     float m_theta;
     float m_density;
