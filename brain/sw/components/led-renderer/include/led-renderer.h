@@ -19,40 +19,46 @@
 // Something else?
 //#define LED_RENDERER_COLORFEATURE NeoRgbFeature
 
-//class LEDShaderFiller : public LEDShader {
-//public:
-//    LEDShaderFiller(TimeBase& timeBase, uint16_t numPixels) :
-//        m_timeBase(timeBase),
-//        m_numPixels(numPixels),
-//        m_colorPrimary(16, 16, 0),
-//        m_colorSecondary(0, 16, 16)
-//        { }
-//
-//    void beginShade(float progress) override {
-//        m_pos = m_timeBase.posInInterval(m_timeBase.currentTime(), m_timeBase.duration(4), m_numPixels + 1);
-//        // ESP_LOGI("#filler", "Render begin, m_pos=%d", m_pos);
-//    }
-//
-//    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override {
-//        if (indexPixel < m_pos) {
-//            memcpy((void*)color, (void*)&m_colorPrimary, 3);
-//        } else {
-//            memcpy((void*)color, (void*)&m_colorSecondary, 3);
+class LEDShaderFiller : public LEDShader {
+public:
+    LEDShaderFiller() :
+        m_pos(0),
+        m_colorPrimary(255, 255, 0),
+        m_colorSecondary(0, 255, 255)
+        { }
+
+    void beginShade(LEDShaderContext* pCtx) override {
+        m_pCtx = pCtx;
+
+        // m_pos = m_timeBase.posInInterval(m_timeBase.currentTime(), m_timeBase.duration(4), m_numPixels + 1);
+        // ESP_LOGI("#filler", "Render begin, m_pos=%d", m_pos);
+//        m_pos++;
+//        if (m_pos >= pCtx->numPixels) {
+//            m_pos = 0;
 //        }
-//        // ESP_LOGI("#filler", "%d = %d %d %d", indexPixel, color[0], color[1], color[2]);
-//    }
-//
-//    void endShade() override {
-//
-//    }
-//private:
-//    TimeBase& m_timeBase;
-//    uint16_t m_numPixels;
-//    uint16_t m_pos;
-//
-//    RgbColor m_colorPrimary;
-//    RgbColor m_colorSecondary;
-//};
+        m_pos = pCtx->progress * pCtx->numPixels;
+    }
+
+    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override {
+        if (indexPixel < m_pos) {
+            memcpy((void*)color, (void*)&m_colorPrimary, 3);
+        } else {
+            memcpy((void*)color, (void*)&m_colorSecondary, 3);
+        }
+        // ESP_LOGI("#filler", "%d = %d %d %d", indexPixel, color[0], color[1], color[2]);
+    }
+
+    void endShade() override {
+
+    }
+
+private:
+    LEDShaderContext* m_pCtx;
+    uint16_t m_pos;
+
+    RgbColor m_colorPrimary;
+    RgbColor m_colorSecondary;
+};
 
 class LEDRenderer {
 public:

@@ -68,7 +68,12 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     // While this _does_ tie the network processing to the rendering process, this
     // is likely what we want??? Time based rendering still should be looked at, but
     // this approach should get us the highest interactive responsiveness.
+    //
+    // We also turn off local rendering.
+    // TODO: Implement a thing where if we haven't heard from Pinky in some time we turn local rendering back on
+    m_ledRenderer.enableLocalRenderLoop(false);
     m_ledRenderer.render();
+
 }
 
 void
@@ -145,7 +150,10 @@ Brain::start()
     m_timeBase.setFPS(30);
     m_ledRenderer.setBrightness(255);
 
+
     m_ledRenderer.setShader(&m_shadeTree);
+//    LEDShaderFiller* filler = new LEDShaderFiller();
+//    m_ledRenderer.setShader(filler);
 
     // Start talking to the pixels
     m_ledRenderer.start();

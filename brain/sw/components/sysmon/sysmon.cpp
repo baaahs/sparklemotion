@@ -100,8 +100,12 @@ SysMon::getInfo(uint8_t timing) {
 
     switch(timing) {
     case TIMING_RENDER:
-        strncpy(info.name, "Render", sizeof(info.name)-1);
+        strncpy(info.name, "Render ", sizeof(info.name)-1);
         break;
+
+    case TIMING_SHOW_OUTPUTS:
+        strncpy(info.name, "ShowOut", sizeof(info.name)-1);
+            break;
 
     default:
         strncpy(info.name, "Unknown", sizeof(info.name)-1);
