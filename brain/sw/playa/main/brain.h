@@ -13,7 +13,7 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 
-#define DEFAULT_PIXEL_COUNT 60
+#define DEFAULT_PIXEL_COUNT 120
 
 class Brain : public MsgHandler {
 public:

@@ -157,8 +157,18 @@ LEDRenderer::render() {
 
         m_buffer.Render(m_buffer, *m_shader);
 
+        // We used to implement brightness by calling Render a second time on the same buffer.
+        // However, that is inefficient because if you are using a non-RGB color feature you would
+        // have to un-apply the feature since Rendering automatically applies it back. That's a waste
+        // so we do this more efficient thing instead.
         if (m_nBrightness != 255) {
-            m_buffer.Render(m_buffer, *this);
+            NeoBufferContext<LED_RENDERER_COLORFEATURE> context = m_buffer;
+            uint8_t* pCursor = context.Pixels;
+            uint8_t* pEnd = pCursor + context.SizePixels;
+            while(pCursor != pEnd) {
+                uint16_t value = *pCursor;
+                *(pCursor++) = (value * m_nBrightness) >> 8;
+            }
         }
 
         m_shader->endShade();
@@ -194,7 +204,11 @@ void
 LEDRenderer::_renderTask() {
     while(true) {
         // Render a frame
-        render();
+        if (m_localRenderEnabled) {
+            render();
+        }
+        // Could we stop this task? Yes. However, it's easier to leave it running and only consuming
+        // a tiny amount of resources.
 
         // Delay until 1/4 frame duration into the next frame
         TickType_t toDelay = m_timeBase.ticksToNextFrame() +

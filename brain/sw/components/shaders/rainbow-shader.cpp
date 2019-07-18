@@ -17,6 +17,23 @@ const RgbColor Palette_RYB[] = {
         RgbColor(128, 0, 128),
         RgbColor(191, 0, 64),
 };
+
+// This is a "Red" palette that is useful for making sure you don't have
+// an Grb vs. Rgb color swap issue occurring
+//const RgbColor Palette_RYB[] = {
+//        RgbColor(255, 0, 0),
+//        RgbColor(255, 0, 0),
+//        RgbColor(255, 0, 0),
+//        RgbColor(255, 0, 0),
+//        RgbColor(255, 0, 0),
+//        RgbColor(128, 0, 25),
+//        RgbColor(0, 0, 51),
+//        RgbColor(21, 0, 102),
+//        RgbColor(42, 0, 153),
+//        RgbColor(85, 0, 140),
+//        RgbColor(128, 0, 128),
+//        RgbColor(191, 0, 64),
+//};
 #define RYB_LEN 12
 
 RgbColor

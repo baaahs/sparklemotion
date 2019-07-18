@@ -13,6 +13,12 @@
 
 #include "led-shader.h"
 
+// ws2812 & ws2815
+#define LED_RENDERER_COLORFEATURE NeoGrbFeature
+
+// Something else?
+//#define LED_RENDERER_COLORFEATURE NeoRgbFeature
+
 //class LEDShaderFiller : public LEDShader {
 //public:
 //    LEDShaderFiller(TimeBase& timeBase, uint16_t numPixels) :
@@ -63,6 +69,8 @@ public:
     void setShader(LEDShader* shader) { m_shader = shader; }
     void render();
 
+    void enableLocalRenderLoop(bool enable) { m_localRenderEnabled = enable; }
+
     void setBrightness(uint8_t brightness) { m_nBrightness = brightness; }
     uint16_t getNumPixels() { return m_pixels.PixelCount(); }
 
@@ -78,22 +86,12 @@ public:
 
     void logPixels();
 
-    // Sets the brightness
-    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
-        uint8_t* end = currentColor + 3;
-
-        while (currentColor != end)
-        {
-            uint16_t value = *currentColor;
-            *(color++) = (value * m_nBrightness) >> 8;
-            currentColor++;
-        }
-    }
 private:
     uint8_t m_nBrightness;
+    bool m_localRenderEnabled = true;
 
-    NeoPixelBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod> m_pixels;
-    NeoBuffer<NeoBufferMethod<NeoGrbFeature>> m_buffer;
+    NeoPixelBus<LED_RENDERER_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
+    NeoBuffer<NeoBufferMethod<LED_RENDERER_COLORFEATURE>> m_buffer;
 
     SemaphoreHandle_t m_hPixelsAccess;
     LEDShader* m_shader;
