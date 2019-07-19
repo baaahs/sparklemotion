@@ -1,58 +1,80 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import GridSlider from '../GridSlider';
+
+import s from './Eyes.scss';
 
 class EyeAdjustModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      x: 50,
-      y: 50,
-      color: 'white',
+      currentEye: 'partyEye',
+      partyEye: [50, 50],
+      businessEye: [50, 50],
+      partEyeColor: 'white',
+      businessEyeColor: 'white',
     };
   }
 
   handleSave = () => {
     this.props.onSave(this.state);
-  }
+  };
 
-  handlePanTiltChange = (event, axis) => {
-    this.setState({ [axis]: event.target.value });
+  handlePanTiltChange = (eyeSide, { x, y }) => {
+    this.setState({ [eyeSide]: [x, y] });
+  };
+
+  handleEyeToggle = (e) => {
+    this.setState({
+      currentEye: e.target.checked ? 'businessEye' : 'partyEye',
+    });
+  };
+
+  renderEyeControls = () => {
+    const {
+      currentEye,
+      partyEye,
+      businessEye,
+      partEyeColor,
+      businessEyeColor,
+    } = this.state;
+    const [x, y] = currentEye === 'partyEye' ? partyEye : businessEye;
+    const eyeColor =
+      currentEye === 'partyEye' ? partEyeColor : businessEyeColor;
+
+    return (
+      <Fragment>
+        <GridSlider
+          className={s['grid-slider']}
+          onChange={(e, data) => {
+            this.handlePanTiltChange(currentEye, data);
+          }}
+          x={x}
+          y={y}
+        />
+        <div>Eye Color: {eyeColor}</div>
+      </Fragment>
+    );
   };
 
   render() {
     return (
-      <div>
-        <div>{this.props.title}</div>
-        <div>
-          <label htmlFor="x">X:</label>
-          <input
-            name="x"
-            type="range"
-            min="-100"
-            max="100"
-            value={this.state.x}
-            onChange={(event) => {
-              this.handlePanTiltChange(event, 'x');
-            }}
-          />
-          {this.state.x}
+      <div style={{ width: '100%' }}>
+        <div className={s['toggle-switch__wrapper']}>
+          <span>Party</span>
+          <div className={s['toggle-switch']}>
+            <input
+              type="checkbox"
+              id="toggle-switch"
+              checked={this.state.currentEye === 'businessEye'}
+              onChange={this.handleEyeToggle}
+            />
+            <label htmlFor="toggle-switch">Eye Toggle</label>
+          </div>
+          <span>Business</span>
         </div>
-        <div>
-          <label htmlFor="y">Y:</label>
-          <input
-            name="y"
-            type="range"
-            min="-100"
-            max="100"
-            value={this.state.y}
-            onChange={(event) => {
-              this.handlePanTiltChange(event, 'y');
-            }}
-          />
-          {this.state.y}
-        </div>
-        <div>Eye Color: {this.state.color}</div>
+        {this.renderEyeControls()}
         <button onClick={this.handleSave}>SAVE</button>
       </div>
     );
@@ -61,7 +83,6 @@ class EyeAdjustModal extends React.Component {
 
 EyeAdjustModal.propTypes = {
   onSave: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-}
+};
 
 export default EyeAdjustModal;

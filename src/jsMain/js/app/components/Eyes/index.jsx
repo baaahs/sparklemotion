@@ -22,7 +22,6 @@ class Eyes extends React.Component {
   handleEditHeadlightPreset = (preset) => {
     const modalToOpen = (
       <EyeAdjustModal
-        title={`Adjust ${preset} presets`}
         onSave={(settings) => {
           this.handleSaveHeadlightPreset(preset, settings);
         }}
@@ -34,7 +33,9 @@ class Eyes extends React.Component {
 
   handleSaveHeadlightPreset = (preset, settings) => {
     console.log(
-      `Should make server call to set preset to ${preset}, with settings: ${JSON.stringify(settings)}`
+      `Should make server call to set preset to ${preset}, with settings: ${JSON.stringify(
+        settings
+      )}`
     );
   };
 
@@ -86,7 +87,11 @@ class Eyes extends React.Component {
           </div>
         </div>
 
-        <Modal isOpen={this.state.isModalOpen} onClose={this.handleCloseModal}>
+        <Modal
+          isOpen={this.state.isModalOpen}
+          onClose={this.handleCloseModal}
+          size="large"
+        >
           {this.state.modalToDisplay}
         </Modal>
       </div>
