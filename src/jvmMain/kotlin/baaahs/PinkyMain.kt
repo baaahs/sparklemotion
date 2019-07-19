@@ -26,21 +26,8 @@ fun main(args: Array<String>) {
     val jsResDir = classesDir.parent.parent.parent.parent.parent.parent
         .resolve("build/processedResources/js/main")
     println("jsResDir = ${jsResDir}")
-    val httpServer = embeddedServer(Netty, Ports.PINKY_UI_TCP) {
-        routing {
-            static {
-                files(jsResDir.toFile())
-                default(jsResDir.resolve("ui-index.html").toFile())
-            }
-        }
-    }.start(false)
 
-    httpServer.application.install(io.ktor.websocket.WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(15)
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
-    }
+    val network = JvmNetwork()
 
     val dmxDevices = DmxDevice.listDevices()
     val dmxUniverse = if (dmxDevices.isEmpty()) {
@@ -55,7 +42,7 @@ fun main(args: Array<String>) {
     }
 
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, JvmNetwork(httpServer), dmxUniverse, object : StubPinkyDisplay() {
+        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }
@@ -65,6 +52,13 @@ fun main(args: Array<String>) {
             override var showFrameMs: Int = 0
                 set(value) { field = value; /* println("showFrameMs: ${value}") */ }
         })
+
+    (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
+        static {
+            files(jsResDir.toFile())
+            default(jsResDir.resolve("ui-index.html").toFile())
+        }
+    }
 
     GlobalScope.launch { pinky.run() }
 

@@ -44,16 +44,22 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
 
         }
 
-        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
-//            TODO("Link.listenTcp not implemented")
+        override fun startHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {
+            override fun listenWebSocket(
+                path: String,
+                onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
+            ) {
+//                TODO("TestNetwork.Link.listenWebSocket not implemented")
+            }
         }
 
-        override fun connectTcp(
+        override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
-            tcpListener: Network.TcpListener
+            path: String,
+            webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
-            TODO("Link.connectTcp not implemented")
+            TODO("Link.connectWebSocket not implemented")
         }
     }
 
