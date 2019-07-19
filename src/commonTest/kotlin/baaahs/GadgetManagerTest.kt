@@ -3,13 +3,21 @@ package baaahs
 import baaahs.gadgets.Slider
 import baaahs.net.Network
 import baaahs.net.TestNetwork
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
 
 class GadgetManagerTest {
+    lateinit var httpServer: Network.HttpServer
+
+    @BeforeTest
+    fun setUp() {
+        httpServer = TestNetwork().link().startHttpServer(1234)
+    }
+
     @Test
     fun forInitialGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(TestNetwork().link(), 1234).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
         val gadgetManager = GadgetManager(pubSub)
 
         val first = Slider("first")
@@ -36,7 +44,7 @@ class GadgetManagerTest {
 
     @Test
     fun forDifferentGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(TestNetwork().link(), 1234).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
@@ -64,8 +72,7 @@ class GadgetManagerTest {
 
     @Test
     fun forSameGadgetsWithDifferentState_sync_shouldSyncOnlyGadgetState() {
-        val network = TestNetwork()
-        val pubSub = PubSub.Server(network.link(), 1234).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
