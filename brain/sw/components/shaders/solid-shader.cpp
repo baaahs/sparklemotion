@@ -3,7 +3,7 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-SolidShader::SolidShader(Surface *surface, Msg *msg) : Shader(surface) {
+SolidShader::SolidShader(Surface *surface, Msg *msg) : Shader(surface, msg) {
     // No additional bytes of configuration
 }
 
@@ -12,8 +12,11 @@ SolidShader::~SolidShader() {
 }
 
 void
-SolidShader::begin(Msg* pMsg) {
-    auto argb = pMsg->readInt();
+SolidShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
+    int32_t argb = 0;
+    if (pMsg) {
+        argb = pMsg->readInt();
+    }
 
     // ESP_LOGD(TAG, "argb = %x", argb);
 

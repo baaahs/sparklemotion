@@ -5,6 +5,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "led-shader.h"
 #include "shader-desc.h"
 
 #define ARDUINO_ARCH_ESP32
@@ -63,12 +64,12 @@ public:
      */
     static Shader* createShaderFromDescrip(Surface *surface, Msg *config);
 
-    Shader(Surface* surface) {
+    Shader(Surface* surface, Msg* config) {
         m_surface = surface;
     };
     virtual ~Shader() { };
 
-    virtual void begin(Msg* pMsg) {};
+    virtual void begin(Msg *pMsg, LEDShaderContext* pCtx) {};
     virtual void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {};
     virtual void end() {};
 

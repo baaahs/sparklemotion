@@ -15,7 +15,7 @@ class PubSubTest {
     val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
 
     val serverNetwork = network.link()
-    val server = PubSub.listen(serverNetwork, 1234)
+    val server = PubSub.listen(serverNetwork.startHttpServer(1234))
     val serverLog = mutableListOf<String>()
 
     val client1Network = network.link()

@@ -3,6 +3,8 @@
 #include "esp_log.h"
 
 #include "default-shader.h"
+#include "solid-shader.h"
+#include "rainbow-shader.h"
 
 #define TAG "#shdtre"
 
@@ -17,18 +19,27 @@ ShadeTree::start() {
         ESP_LOGE(TAG, "ERROR: Unable to create m_hMsgAccess semaphore");
         return;
     }
+
     // Always start with a give
     xSemaphoreGive(m_hMsgAccess);
+
+
+    // Start with a local shader
+    // Important to do AFTER the semaphore has been initialized!
+    nextLocalShader();
 }
 
 void
-ShadeTree::beginShade() {
+ShadeTree::beginShade(LEDShaderContext* pCtx) {
     xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
     // Assume success
-    // ESP_LOGW(TAG, "beginShade got semaphore");
+    ESP_LOGD(TAG, "beginShade got semaphore");
 
     if (m_pCurrentShader && m_pMsg) {
-        m_pCurrentShader->begin(m_pMsg);
+        m_pCurrentShader->begin(m_pMsg, pCtx);
+    } else if (m_pLocalShader) {
+        ESP_LOGI(TAG, "beginShade with localShader");
+        m_pLocalShader->begin(nullptr, pCtx);
     } else {
         //ESP_LOGW(TAG, "beginShade but don't have a message and a current shader");
     }
@@ -38,7 +49,7 @@ void
 ShadeTree::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
     // If we don't have a pNextMsg set, we don't want to change anything
     // about the pixels
-    if (!m_pMsg || !m_pCurrentShader) {
+    if (!(m_pCurrentShader || m_pLocalShader)) {
         // However, because the color OUT parameter will absolutely be set as
         // the value of the pixel, we DO have to copy the current color
         // into the output.
@@ -50,7 +61,11 @@ ShadeTree::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
         return;
     }
 
-    m_pCurrentShader->apply(indexPixel, color, currentColor);
+    if (m_pCurrentShader) {
+        m_pCurrentShader->apply(indexPixel, color, currentColor);
+    } else if (m_pLocalShader) {
+        m_pLocalShader->apply(indexPixel, color, currentColor);
+    }
 }
 
 void
@@ -58,6 +73,8 @@ ShadeTree::endShade() {
 
     if (m_pCurrentShader) {
         m_pCurrentShader->end();
+    } else if (m_pLocalShader) {
+        m_pLocalShader->end();
     }
 
     if (m_pMsg) {
@@ -169,3 +186,26 @@ ShadeTree::buildNewTree() {
     }
 }
 
+void
+ShadeTree::nextLocalShader() {
+    xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
+
+    if (m_pLocalShader) {
+        delete m_pLocalShader;
+        m_pLocalShader = nullptr;
+    }
+
+    m_localShaderIndex++;
+
+    switch (m_localShaderIndex % 2) {
+        case 0: // Boring Red
+            m_pLocalShader = new SolidShader(nullptr, nullptr);
+            break;
+
+        case 1: // Boring Red
+            m_pLocalShader = new RainbowShader(nullptr, nullptr);
+            break;
+    }
+
+    xSemaphoreGive(m_hMsgAccess);
+}

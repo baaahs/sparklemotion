@@ -58,6 +58,7 @@ extern "C" void app_main()
 //    esp_log_level_set("ledc", ESP_LOG_DEBUG);
 
     // Enable logging for our components
+//    esp_log_level_set("#sysmon", ESP_LOG_DEBUG);
 //    esp_log_level_set("# brain", ESP_LOG_DEBUG);
 //    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 //

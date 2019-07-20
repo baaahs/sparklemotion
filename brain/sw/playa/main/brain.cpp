@@ -58,6 +58,12 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     ESP_LOGD(TAG, "MSG: BrainPanelShade");
 
     m_shadeTree.handleMessage(pMsg);
+
+    // Always force a render immediately after receipt of a panel shade message.
+    // While this _does_ tie the network processing to the rendering process, this
+    // is likely what we want??? Time based rendering still should be looked at, but
+    // this approach should get us the highest interactive responsiveness.
+    m_ledRenderer.render();
 }
 
 void
@@ -104,7 +110,7 @@ Brain::maybeSendHello()
 void
 Brain::start()
 {
-    m_sysMon.start();
+    gSysMon.start();
     m_brainUI.start();
 
     m_msgSlinger.registerHandler(this);
@@ -122,17 +128,15 @@ Brain::start()
     }
 
     m_shadeTree.start();
+    ESP_LOGE(TAG, "m_shadeTree started");
 
     m_timeBase.setFPS(30);
     m_ledRenderer.setBrightness(10);
 
-    m_ledShader = new LEDShaderFiller(m_timeBase, m_ledRenderer.getNumPixels());
-//    m_ledRenderer.setShader(m_ledShader);
     m_ledRenderer.setShader(&m_shadeTree);
 
     // Start talking to the pixels
     m_ledRenderer.start();
-    m_ledRenderer.startLocalRenderTask();
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");

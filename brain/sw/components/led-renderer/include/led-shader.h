@@ -4,6 +4,21 @@
 
 #pragma once
 
+#include "time-base.h"
+
+/**
+ * An LEDShaderContext pointer is passed to the current LEDShader at the beginning of
+ * the shading cycle. In particular it contains timing information about the frame that
+ * is currently being rendered. Shaders should not themselves be inspecting the system
+ * time, but need to use the information passed in via the shader context so that the
+ * underlying infrastructure can do things like predictively calculate future frames
+ * if it so desires.
+ */
+struct LEDShaderContext {
+    float progress;
+    braintime_t now;
+};
+
 /**
  * An instance of LEDShader is what drives the output to the pixel buffer.
  * At the start of frame rendering Begin() will be called. This will be
@@ -18,7 +33,7 @@
  */
 class LEDShader {
 public:
-    virtual void beginShade() = 0;
+    virtual void beginShade(LEDShaderContext* pCtx) = 0;
     virtual void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) = 0;
     virtual void endShade() = 0;
 };

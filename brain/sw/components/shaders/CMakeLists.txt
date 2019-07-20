@@ -9,6 +9,7 @@ set(COMPONENT_SRCS
         "solid-shader.cpp"
         "sine-wave-shader.cpp"
         "sparkle-shader.cpp"
+        "rainbow-shader.cpp"
         )
 
 

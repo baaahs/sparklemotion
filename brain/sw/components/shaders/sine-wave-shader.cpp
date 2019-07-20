@@ -5,7 +5,7 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
-SineWaveShader::SineWaveShader(Surface *surface, Msg *msg) : Shader(surface) {
+SineWaveShader::SineWaveShader(Surface *surface, Msg *msg) : Shader(surface, msg) {
     // No additional bytes of configuration
 }
 
@@ -14,7 +14,7 @@ SineWaveShader::~SineWaveShader() {
 }
 
 void
-SineWaveShader::begin(Msg* pMsg) {
+SineWaveShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     m_color = pMsg->readColor();
     m_theta = pMsg->readFloat();
     m_density = pMsg->readFloat();

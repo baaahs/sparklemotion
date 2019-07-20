@@ -18,7 +18,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 fun main(args: Array<String>) {
-    val network = JvmNetwork(notReallyAnHttpServer())
+    val network = JvmNetwork()
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
         override var id: String? = null
         override var surface: Surface? = null
@@ -100,20 +100,5 @@ class JvmPixelsDisplay(pixelCount: Int) : Pixels {
 
     override fun finishedFrame() {
         canvas.repaint()
-    }
-}
-
-private fun notReallyAnHttpServer(): ApplicationEngine {
-    return object : ApplicationEngine {
-        override val environment: ApplicationEngineEnvironment
-            get() = TODO("FakeHttpServer.environment not implemented")
-
-        override fun start(wait: Boolean): ApplicationEngine {
-            TODO("FakeHttpServer.start not implemented")
-        }
-
-        override fun stop(gracePeriod: Long, timeout: Long, timeUnit: TimeUnit) {
-            TODO("FakeHttpServer.stop not implemented")
-        }
     }
 }
