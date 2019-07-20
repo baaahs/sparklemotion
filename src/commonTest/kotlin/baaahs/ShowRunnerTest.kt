@@ -14,7 +14,7 @@ import kotlin.test.*
 class ShowRunnerTest {
     private val network = TestNetwork(0)
     private val serverNetwork = network.link()
-    private val server = PubSub.listen(serverNetwork, 1234).apply { install(gadgetModule) }
+    private val server = PubSub.listen(serverNetwork.startHttpServer(1234)).apply { install(gadgetModule) }
 
     private val gadgetManager = GadgetManager(server)
     private lateinit var showRunner: ShowRunner

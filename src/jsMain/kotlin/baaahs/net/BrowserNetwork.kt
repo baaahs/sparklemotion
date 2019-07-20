@@ -15,15 +15,16 @@ class BrowserNetwork : Network {
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket =
             TODO("BrowserNetwork.listenUdp not implemented")
-        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener): Unit =
-            TODO("BrowserNetwork.listenTcp not implemented")
+        override fun startHttpServer(port: Int): Network.HttpServer =
+            TODO("BrowserNetwork.startHttpServer not implemented")
 
-        override fun connectTcp(
+        override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
-            tcpListener: Network.TcpListener
+            path: String,
+            webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
-            val webSocket = WebSocket((toAddress as BrowserAddress).urlString + "sm/ws")
+            val webSocket = WebSocket((toAddress as BrowserAddress).urlString.trimEnd('/') + path)
             webSocket.binaryType = BinaryType.ARRAYBUFFER
 
             val tcpConnection = object : Network.TcpConnection {
@@ -38,7 +39,7 @@ class BrowserNetwork : Network {
 
             webSocket.onopen = {
                 console.log("WebSocket open!", it)
-                tcpListener.connected(tcpConnection)
+                webSocketListener.connected(tcpConnection)
             }
 
             webSocket.onmessage = {
@@ -49,7 +50,7 @@ class BrowserNetwork : Network {
                 for (i in 0 until byteBuf.length) {
                     bytes[i] = byteBuf[i]
                 }
-                tcpListener.receive(tcpConnection, bytes)
+                webSocketListener.receive(tcpConnection, bytes)
             }
 
             webSocket.onerror = { console.log("WebSocket error!", it) }

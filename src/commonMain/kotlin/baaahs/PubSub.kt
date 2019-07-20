@@ -14,8 +14,8 @@ import kotlin.js.JsName
 abstract class PubSub {
 
     companion object {
-        fun listen(networkLink: Network.Link, port: Int): Server {
-            return Server(networkLink, port)
+        fun listen(httpServer: Network.HttpServer): Server {
+            return Server(httpServer)
         }
 
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
@@ -61,7 +61,7 @@ abstract class PubSub {
     open class Connection(
         private val name: String,
         private val topics: MutableMap<String, TopicInfo>
-    ) : Origin(), Network.TcpListener {
+    ) : Origin(), Network.WebSocketListener {
         protected var connection: Network.TcpConnection? = null
         private val toSend: MutableList<ByteArray> = mutableListOf()
 
@@ -149,15 +149,13 @@ abstract class PubSub {
         }
     }
 
-    class Server(link: Network.Link, port: Int) : Endpoint(), Network.TcpServerSocketListener {
+    class Server(httpServer: Network.HttpServer) : Endpoint() {
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
 
         init {
-            link.listenTcp(port, this)
-        }
-
-        override fun incomingConnection(fromConnection: Network.TcpConnection): Network.TcpListener {
-            return Connection("server at ${fromConnection.toAddress}", topics)
+            httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
+                Connection("server at ${incomingConnection.toAddress}", topics)
+            }
         }
 
         fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
@@ -202,7 +200,7 @@ abstract class PubSub {
         private var server: Connection = Connection("client at ${link.myAddress}", topics)
 
         init {
-            link.connectTcp(serverAddress, port, server)
+            link.connectWebSocket(serverAddress, port, "/sm/ws", server)
         }
 
         @JsName("subscribe")
