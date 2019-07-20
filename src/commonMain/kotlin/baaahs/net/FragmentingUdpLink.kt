@@ -112,10 +112,15 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         }
     }
 
-    override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener): Unit =
-        wrappedLink.listenTcp(port, tcpServerSocketListener)
+    override fun startHttpServer(port: Int): Network.HttpServer =
+        wrappedLink.startHttpServer(port)
 
-    override fun connectTcp(toAddress: Network.Address, port: Int, tcpListener: Network.TcpListener): Network.TcpConnection =
-        wrappedLink.connectTcp(toAddress, port, tcpListener)
+    override fun connectWebSocket(
+        toAddress: Network.Address,
+        port: Int,
+        path: String,
+        webSocketListener: Network.WebSocketListener
+    ): Network.TcpConnection =
+        wrappedLink.connectWebSocket(toAddress, port, path, webSocketListener)
 
 }
