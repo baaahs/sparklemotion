@@ -8,7 +8,7 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">PubSub</a>&nbsp;/&nbsp;<a href="./index.html">Server</a><br/>
 <br/>
 <h1>Server</h1>
-<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-endpoint/index.html"><span class="identifier">PubSub.Endpoint</span></a><span class="symbol">, </span><a href="../../../baaahs.net/-network/-tcp-server-socket-listener/index.html"><span class="identifier">Network.TcpServerSocketListener</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-endpoint/index.html"><span class="identifier">PubSub.Endpoint</span></a></code>
 <h3>Types</h3>
 <table>
 <tbody>
@@ -29,7 +29,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Server</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$<init>(baaahs.net.Network.Link, kotlin.Int)/link">link</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-link/index.html"><span class="identifier">Network.Link</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Server$<init>(baaahs.net.Network.Link, kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Server</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$<init>(baaahs.net.Network.HttpServer)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-http-server/index.html"><span class="identifier">Network.HttpServer</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -55,13 +55,6 @@
 <h3>Functions</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<p><a href="incoming-connection.html">incomingConnection</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">incomingConnection</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$incomingConnection(baaahs.net.Network.TcpConnection)/fromConnection">fromConnection</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.net/-network/-tcp-listener/index.html"><span class="identifier">Network.TcpListener</span></a></code></td>
-</tr>
 <tr>
 <td>
 <p><a href="publish.html">publish</a></p>

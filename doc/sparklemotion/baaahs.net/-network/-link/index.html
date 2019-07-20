@@ -33,17 +33,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="connect-tcp.html">connectTcp</a></p>
+<p><a href="connect-web-socket.html">connectWebSocket</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">connectTcp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$connectTcp(baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.TcpListener)/tcpListener">tcpListener</span><span class="symbol">:</span>&nbsp;<a href="../-tcp-listener/index.html"><span class="identifier">Network.TcpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="listen-tcp.html">listenTcp</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">listenTcp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$listenTcp(kotlin.Int, baaahs.net.Network.TcpServerSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$listenTcp(kotlin.Int, baaahs.net.Network.TcpServerSocketListener)/tcpServerSocketListener">tcpServerSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../-tcp-server-socket-listener/index.html"><span class="identifier">Network.TcpServerSocketListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">connectWebSocket</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../-web-socket-listener/index.html"><span class="identifier">Network.WebSocketListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -51,6 +44,13 @@
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.Network.Link$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="start-http-server.html">startHttpServer</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">startHttpServer</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.Link$startHttpServer(kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-http-server/index.html"><span class="identifier">Network.HttpServer</span></a></code></td>
 </tr>
 </tbody>
 </table>

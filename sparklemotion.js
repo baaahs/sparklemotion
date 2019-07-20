@@ -196,6 +196,7 @@
   var Vector2 = THREE.Vector2;
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
+  var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
   var toTypedArray = Kotlin.kotlin.collections.toTypedArray_964n91$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var toMap = Kotlin.kotlin.collections.toMap_6hr0sd$;
@@ -3000,10 +3001,11 @@
     this.display = display;
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
+    this.httpServer = this.link_0.startHttpServer_za3lpa$(8004);
     this.beatProvider_0 = new Pinky$PinkyBeatProvider(this, 120.0);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = first(this.shows);
-    var $receiver = new PubSub$Server(this.link_0, 8004);
+    var $receiver = new PubSub$Server(this.httpServer);
     $receiver.install_stpyu4$(gadgetModule);
     this.pubSub_0 = $receiver;
     this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
@@ -3491,8 +3493,8 @@
   function PubSub$Companion() {
     PubSub$Companion_instance = this;
   }
-  PubSub$Companion.prototype.listen_qwvhmn$ = function (networkLink, port) {
-    return new PubSub$Server(networkLink, port);
+  PubSub$Companion.prototype.listen_76wx40$ = function (httpServer) {
+    return new PubSub$Server(httpServer);
   };
   PubSub$Companion.prototype.connect_4z1eem$ = function (networkLink, address, port) {
     return new PubSub$Client(networkLink, address, port);
@@ -3687,7 +3689,7 @@
   PubSub$Connection.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Connection',
-    interfaces: [Network$TcpListener, PubSub$Origin]
+    interfaces: [Network$WebSocketListener, PubSub$Origin]
   };
   function PubSub$Endpoint() {
     this.serialModule = modules.EmptyModule;
@@ -3702,14 +3704,11 @@
     simpleName: 'Endpoint',
     interfaces: []
   };
-  function PubSub$Server(link, port) {
+  function PubSub$Server(httpServer) {
     PubSub$Endpoint.call(this);
     this.topics_0 = HashMap_init();
-    link.listenTcp_kd29r4$(port, this);
+    httpServer.listenWebSocket_brdh44$('/sm/ws', PubSub$PubSub$Server_init$lambda(this));
   }
-  PubSub$Server.prototype.incomingConnection_67ozxy$ = function (fromConnection) {
-    return new PubSub$Connection('server at ' + fromConnection.toAddress, this.topics_0);
-  };
   function PubSub$Server$publish$ObjectLiteral(closure$topicInfo, this$Server, closure$topic, closure$publisher, closure$listener) {
     this.closure$topicInfo = closure$topicInfo;
     this.this$Server = this$Server;
@@ -3767,16 +3766,21 @@
     simpleName: 'PublisherListener',
     interfaces: [PubSub$Listener]
   };
+  function PubSub$PubSub$Server_init$lambda(this$Server) {
+    return function (incomingConnection) {
+      return new PubSub$Connection('server at ' + incomingConnection.toAddress, this$Server.topics_0);
+    };
+  }
   PubSub$Server.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Server',
-    interfaces: [Network$TcpServerSocketListener, PubSub$Endpoint]
+    interfaces: [PubSub$Endpoint]
   };
   function PubSub$Client(link, serverAddress, port) {
     PubSub$Endpoint.call(this);
     this.topics_0 = HashMap_init();
     this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0);
-    link.connectTcp_dy234z$(serverAddress, port, this.server_0);
+    link.connectWebSocket_t0j9bj$(serverAddress, port, '/sm/ws', this.server_0);
   }
   function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin_0) {
     this.this$Client = this$Client;
@@ -6142,11 +6146,11 @@
     simpleName: 'FragmentingUdpSocket',
     interfaces: [Network$UdpSocket]
   };
-  FragmentingUdpLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
-    this.wrappedLink_0.listenTcp_kd29r4$(port, tcpServerSocketListener);
+  FragmentingUdpLink.prototype.startHttpServer_za3lpa$ = function (port) {
+    return this.wrappedLink_0.startHttpServer_za3lpa$(port);
   };
-  FragmentingUdpLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
-    return this.wrappedLink_0.connectTcp_dy234z$(toAddress, port, tcpListener);
+  FragmentingUdpLink.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
+    return this.wrappedLink_0.connectWebSocket_t0j9bj$(toAddress, port, path, webSocketListener);
   };
   FragmentingUdpLink.$metadata$ = {
     kind: Kind_CLASS,
@@ -6199,18 +6203,18 @@
     simpleName: 'TcpConnection',
     interfaces: []
   };
-  function Network$TcpListener() {
+  function Network$HttpServer() {
   }
-  Network$TcpListener.$metadata$ = {
+  Network$HttpServer.$metadata$ = {
     kind: Kind_INTERFACE,
-    simpleName: 'TcpListener',
+    simpleName: 'HttpServer',
     interfaces: []
   };
-  function Network$TcpServerSocketListener() {
+  function Network$WebSocketListener() {
   }
-  Network$TcpServerSocketListener.$metadata$ = {
+  Network$WebSocketListener.$metadata$ = {
     kind: Kind_INTERFACE,
-    simpleName: 'TcpServerSocketListener',
+    simpleName: 'WebSocketListener',
     interfaces: []
   };
   Network.$metadata$ = {
@@ -9067,287 +9071,12 @@
     this.nextAddress_0 = 45071;
     this.udpListeners_0 = HashMap_init();
     this.udpListenersByPort_0 = HashMap_init();
-    this.tcpServerSocketsByPort_0 = HashMap_init();
+    this.httpServersByPort_0 = HashMap_init();
   }
   FakeNetwork.prototype.link = function () {
     var tmp$;
     var address = new FakeNetwork$FakeAddress((tmp$ = this.nextAddress_0, this.nextAddress_0 = tmp$ + 1 | 0, tmp$));
     return new FakeNetwork$FakeLink(this, address);
-  };
-  FakeNetwork.prototype.listenTcp_0 = function (myAddress, port, tcpServerSocketListener) {
-    var $receiver = this.tcpServerSocketsByPort_0;
-    var key = new Pair(myAddress, port);
-    $receiver.put_xwzc9p$(key, tcpServerSocketListener);
-  };
-  function Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$clientListener = closure$clientListener_0;
-    this.local$closure$connection = closure$connection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda;
-  Coroutine$FakeNetwork$connectTcp$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$clientListener.reset_67ozxy$(this.local$closure$connection), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda(this$FakeNetwork_0, closure$clientListener_0, closure$connection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function FakeNetwork$connectTcp$lambda_0(closure$clientSideConnection) {
-    return function () {
-      return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
-    };
-  }
-  function FakeNetwork$connectTcp$lambda_1(closure$serverSideConnection) {
-    return function () {
-      return closure$serverSideConnection;
-    };
-  }
-  function Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$clientListener = closure$clientListener_0;
-    this.local$closure$clientSideConnection = closure$clientSideConnection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda_0.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_0;
-  Coroutine$FakeNetwork$connectTcp$lambda_0.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$clientListener.connected_67ozxy$(this.local$closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : this.local$closure$clientSideConnection.v), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda_2(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_0(this$FakeNetwork_0, closure$clientListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeNetwork = this$FakeNetwork_0;
-    this.local$closure$serverListener = closure$serverListener_0;
-    this.local$closure$serverSideConnection = closure$serverSideConnection_0;
-  }
-  Coroutine$FakeNetwork$connectTcp$lambda_1.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.constructor = Coroutine$FakeNetwork$connectTcp$lambda_1;
-  Coroutine$FakeNetwork$connectTcp$lambda_1.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return this.local$closure$serverListener.connected_67ozxy$(this.local$closure$serverSideConnection), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$connectTcp$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$connectTcp$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork.prototype.connectTcp_0 = function (clientAddress, serverAddress, serverPort, clientListener) {
-    var serverSocketListener = this.tcpServerSocketsByPort_0.get_11rb$(new Pair(serverAddress, serverPort));
-    if (serverSocketListener == null) {
-      var connection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, null);
-      launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda(this, clientListener, connection));
-      return connection;
-    }
-    var clientSideConnection = {v: null};
-    var serverSideConnection = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, clientListener, FakeNetwork$connectTcp$lambda_0(clientSideConnection));
-    var serverListener = serverSocketListener.incomingConnection_67ozxy$(serverSideConnection);
-    clientSideConnection.v = new FakeNetwork$FakeTcpConnection(this, clientAddress, serverAddress, serverPort, serverListener, FakeNetwork$connectTcp$lambda_1(serverSideConnection));
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_2(this, clientListener, clientSideConnection));
-    launch(this.coroutineScope_0, void 0, void 0, FakeNetwork$connectTcp$lambda_3(this, serverListener, serverSideConnection));
-    return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
-  };
-  function FakeNetwork$FakeTcpConnection($outer, fromAddress, toAddress, port, tcpListener, otherListener) {
-    this.$outer = $outer;
-    if (tcpListener === void 0)
-      tcpListener = null;
-    if (otherListener === void 0)
-      otherListener = null;
-    this.fromAddress_v9jzbw$_0 = fromAddress;
-    this.toAddress_vzjv7v$_0 = toAddress;
-    this.port_djnxqd$_0 = port;
-    this.tcpListener_0 = tcpListener;
-    this.otherListener_0 = otherListener;
-  }
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'fromAddress', {
-    get: function () {
-      return this.fromAddress_v9jzbw$_0;
-    }
-  });
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'toAddress', {
-    get: function () {
-      return this.toAddress_vzjv7v$_0;
-    }
-  });
-  Object.defineProperty(FakeNetwork$FakeTcpConnection.prototype, 'port', {
-    get: function () {
-      return this.port_djnxqd$_0;
-    }
-  });
-  function Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$FakeTcpConnection = this$FakeTcpConnection_0;
-    this.local$closure$bytes = closure$bytes_0;
-  }
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeTcpConnection$send$lambda;
-  Coroutine$FakeNetwork$FakeTcpConnection$send$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            var tmp$;
-            return (tmp$ = this.local$this$FakeTcpConnection.tcpListener_0) != null ? (tmp$.receive_r00qii$(ensureNotNull(this.local$this$FakeTcpConnection.otherListener_0)(), this.local$closure$bytes), Unit) : null;
-          case 1:
-            throw this.exception_0;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$FakeNetwork$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  FakeNetwork$FakeTcpConnection.prototype.send_fqrh44$ = function (bytes) {
-    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeTcpConnection$send$lambda(this, bytes));
-  };
-  FakeNetwork$FakeTcpConnection.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'FakeTcpConnection',
-    interfaces: [Network$TcpConnection]
   };
   FakeNetwork.prototype.sendPacketSuccess_0 = function () {
     return Random.Default.nextFloat() > this.packetLossRate_0() / 2;
@@ -9394,11 +9123,284 @@
     portListeners.add_11rb$(udpListener);
     return new FakeNetwork$FakeLink$FakeUdpSocket(this, serverPort);
   };
-  FakeNetwork$FakeLink.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
-    this.$outer.listenTcp_0(this.myAddress, port, tcpServerSocketListener);
+  FakeNetwork$FakeLink.prototype.startHttpServer_za3lpa$ = function (port) {
+    var fakeHttpServer = new FakeNetwork$FakeLink$FakeHttpServer(this, port);
+    var $receiver = this.$outer.httpServersByPort_0;
+    var key = to(this.myAddress, port);
+    $receiver.put_xwzc9p$(key, fakeHttpServer);
+    return fakeHttpServer;
   };
-  FakeNetwork$FakeLink.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
-    return this.$outer.connectTcp_0(this.myAddress, toAddress, port, tcpListener);
+  function Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$webSocketListener = closure$webSocketListener_0;
+    this.local$closure$connection = closure$connection_0;
+  }
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda;
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$webSocketListener.reset_67ozxy$(this.local$closure$connection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_0(closure$clientSideConnection) {
+    return function () {
+      return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
+    };
+  }
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_1(closure$serverSideConnection) {
+    return function () {
+      return closure$serverSideConnection;
+    };
+  }
+  function Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$webSocketListener = closure$webSocketListener_0;
+    this.local$closure$clientSideConnection = closure$clientSideConnection_0;
+  }
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0.prototype.constructor = Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0;
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$webSocketListener.connected_67ozxy$(this.local$closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : this.local$closure$clientSideConnection.v), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_2(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeNetwork = this$FakeNetwork_0;
+    this.local$closure$serverListener = closure$serverListener_0;
+    this.local$closure$serverSideConnection = closure$serverSideConnection_0;
+  }
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1.prototype.constructor = Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1;
+  Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$FakeNetwork.networkDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$closure$serverListener.connected_67ozxy$(this.local$closure$serverSideConnection), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork$FakeLink.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
+    var tmp$;
+    var fakeHttpServer = this.$outer.httpServersByPort_0.get_11rb$(to(toAddress, port));
+    var onConnectCallback = (tmp$ = fakeHttpServer != null ? fakeHttpServer.webSocketListeners : null) != null ? tmp$.get_11rb$(path) : null;
+    if (onConnectCallback == null) {
+      var connection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, null);
+      launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda(this.$outer, webSocketListener, connection));
+      return connection;
+    }
+    var clientSideConnection = {v: null};
+    var serverSideConnection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, webSocketListener, FakeNetwork$FakeLink$connectWebSocket$lambda_0(clientSideConnection));
+    var serverListener = onConnectCallback(serverSideConnection);
+    clientSideConnection.v = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, serverListener, FakeNetwork$FakeLink$connectWebSocket$lambda_1(serverSideConnection));
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_2(this.$outer, webSocketListener, clientSideConnection));
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_3(this.$outer, serverListener, serverSideConnection));
+    return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
+  };
+  function FakeNetwork$FakeLink$FakeTcpConnection($outer, fromAddress, toAddress, port, webSocketListener, otherListener) {
+    this.$outer = $outer;
+    if (webSocketListener === void 0)
+      webSocketListener = null;
+    if (otherListener === void 0)
+      otherListener = null;
+    this.fromAddress_kb44jh$_0 = fromAddress;
+    this.toAddress_ubzij8$_0 = toAddress;
+    this.port_8z3c1y$_0 = port;
+    this.webSocketListener_0 = webSocketListener;
+    this.otherListener_0 = otherListener;
+  }
+  Object.defineProperty(FakeNetwork$FakeLink$FakeTcpConnection.prototype, 'fromAddress', {
+    get: function () {
+      return this.fromAddress_kb44jh$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeLink$FakeTcpConnection.prototype, 'toAddress', {
+    get: function () {
+      return this.toAddress_ubzij8$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeLink$FakeTcpConnection.prototype, 'port', {
+    get: function () {
+      return this.port_8z3c1y$_0;
+    }
+  });
+  function Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$FakeTcpConnection = this$FakeTcpConnection_0;
+    this.local$closure$bytes = closure$bytes_0;
+  }
+  Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda.prototype.constructor = Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda;
+  Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            var tmp$;
+            return (tmp$ = this.local$this$FakeTcpConnection.webSocketListener_0) != null ? (tmp$.receive_r00qii$(ensureNotNull(this.local$this$FakeTcpConnection.otherListener_0)(), this.local$closure$bytes), Unit) : null;
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function FakeNetwork$FakeLink$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$FakeNetwork$FakeLink$FakeTcpConnection$send$lambda(this$FakeTcpConnection_0, closure$bytes_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  FakeNetwork$FakeLink$FakeTcpConnection.prototype.send_fqrh44$ = function (bytes) {
+    launch(this.$outer.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$FakeTcpConnection$send$lambda(this, bytes));
+  };
+  FakeNetwork$FakeLink$FakeTcpConnection.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeTcpConnection',
+    interfaces: [Network$TcpConnection]
   };
   function FakeNetwork$FakeLink$FakeUdpSocket($outer, serverPort) {
     this.$outer = $outer;
@@ -9508,6 +9510,19 @@
     kind: Kind_CLASS,
     simpleName: 'FakeUdpSocket',
     interfaces: [Network$UdpSocket]
+  };
+  function FakeNetwork$FakeLink$FakeHttpServer($outer, port) {
+    this.$outer = $outer;
+    this.port = port;
+    this.webSocketListeners = LinkedHashMap_init();
+  }
+  FakeNetwork$FakeLink$FakeHttpServer.prototype.listenWebSocket_brdh44$ = function (path, onConnect) {
+    this.webSocketListeners.put_xwzc9p$(path, onConnect);
+  };
+  FakeNetwork$FakeLink$FakeHttpServer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeHttpServer',
+    interfaces: [Network$HttpServer]
   };
   FakeNetwork$FakeLink.$metadata$ = {
     kind: Kind_CLASS,
@@ -11387,45 +11402,45 @@
   BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenUdp not implemented');
   };
-  BrowserNetwork$link$ObjectLiteral.prototype.listenTcp_kd29r4$ = function (port, tcpServerSocketListener) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenTcp not implemented');
+  BrowserNetwork$link$ObjectLiteral.prototype.startHttpServer_za3lpa$ = function (port) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.startHttpServer not implemented');
   };
-  function BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral(closure$port, closure$webSocket, this$) {
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral(closure$port, closure$webSocket, this$) {
     this.closure$port = closure$port;
     this.closure$webSocket = closure$webSocket;
-    this.fromAddress_u3qrj2$_0 = this$.myAddress;
-    this.toAddress_f64ygj$_0 = this$.myAddress;
+    this.fromAddress_rtwpt4$_0 = this$.myAddress;
+    this.toAddress_z3r81z$_0 = this$.myAddress;
   }
-  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'fromAddress', {
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype, 'fromAddress', {
     get: function () {
-      return this.fromAddress_u3qrj2$_0;
+      return this.fromAddress_rtwpt4$_0;
     }
   });
-  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'toAddress', {
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype, 'toAddress', {
     get: function () {
-      return this.toAddress_f64ygj$_0;
+      return this.toAddress_z3r81z$_0;
     }
   });
-  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype, 'port', {
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype, 'port', {
     get: function () {
       return this.closure$port;
     }
   });
-  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_fqrh44$ = function (bytes) {
+  BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_fqrh44$ = function (bytes) {
     this.closure$webSocket.send(new Int8Array(toTypedArray(bytes)));
   };
-  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.$metadata$ = {
+  BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [Network$TcpConnection]
   };
-  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda(closure$tcpListener, closure$tcpConnection) {
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda(closure$webSocketListener, closure$tcpConnection) {
     return function (it) {
       console.log('WebSocket open!', it);
-      closure$tcpListener.connected_67ozxy$(closure$tcpConnection);
+      closure$webSocketListener.connected_67ozxy$(closure$tcpConnection);
       return Unit;
     };
   }
-  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_0(closure$tcpListener, closure$tcpConnection) {
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_0(closure$webSocketListener, closure$tcpConnection) {
     return function (it) {
       var tmp$, tmp$_0;
       var buf = Kotlin.isType(tmp$ = it.data, ArrayBuffer) ? tmp$ : throwCCE();
@@ -11435,27 +11450,27 @@
       for (var i = 0; i < tmp$_0; i++) {
         bytes[i] = byteBuf[i];
       }
-      closure$tcpListener.receive_r00qii$(closure$tcpConnection, bytes);
+      closure$webSocketListener.receive_r00qii$(closure$tcpConnection, bytes);
       return Unit;
     };
   }
-  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_1(it) {
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_1(it) {
     console.log('WebSocket error!', it);
     return Unit;
   }
-  function BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_2(it) {
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2(it) {
     console.log('WebSocket close!', it);
     return Unit;
   }
-  BrowserNetwork$link$ObjectLiteral.prototype.connectTcp_dy234z$ = function (toAddress, port, tcpListener) {
+  BrowserNetwork$link$ObjectLiteral.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
     var tmp$;
-    var webSocket = new WebSocket((Kotlin.isType(tmp$ = toAddress, BrowserNetwork$BrowserAddress) ? tmp$ : throwCCE()).urlString + 'sm/ws');
+    var webSocket = new WebSocket(trimEnd((Kotlin.isType(tmp$ = toAddress, BrowserNetwork$BrowserAddress) ? tmp$ : throwCCE()).urlString, Kotlin.charArrayOf(47)) + path);
     webSocket.binaryType = 'arraybuffer';
-    var tcpConnection = new BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral(port, webSocket, this);
-    webSocket.onopen = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda(tcpListener, tcpConnection);
-    webSocket.onmessage = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_0(tcpListener, tcpConnection);
-    webSocket.onerror = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_1;
-    webSocket.onclose = BrowserNetwork$link$ObjectLiteral$connectTcp$lambda_2;
+    var tcpConnection = new BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral(port, webSocket, this);
+    webSocket.onopen = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda(webSocketListener, tcpConnection);
+    webSocket.onmessage = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_0(webSocketListener, tcpConnection);
+    webSocket.onerror = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_1;
+    webSocket.onclose = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2;
     return tcpConnection;
   };
   function BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral() {
@@ -12743,8 +12758,8 @@
   Network.UdpListener = Network$UdpListener;
   Network.UdpSocket = Network$UdpSocket;
   Network.TcpConnection = Network$TcpConnection;
-  Network.TcpListener = Network$TcpListener;
-  Network.TcpServerSocketListener = Network$TcpServerSocketListener;
+  Network.HttpServer = Network$HttpServer;
+  Network.WebSocketListener = Network$WebSocketListener;
   package$net.Network = Network;
   var package$proto = package$baaahs.proto || (package$baaahs.proto = {});
   Object.defineProperty(package$proto, 'Ports', {
@@ -12939,7 +12954,6 @@
   });
   var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
   package$sim.FakeDmxUniverse = FakeDmxUniverse;
-  FakeNetwork.FakeTcpConnection = FakeNetwork$FakeTcpConnection;
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
@@ -13059,13 +13073,13 @@
   SolidColorShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   SomeDumbShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   ThumpShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  FakeNetwork$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
+  FakeNetwork$FakeLink$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
-  BrowserNetwork$link$ObjectLiteral$connectTcp$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
+  BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   VizPanel$VizPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
