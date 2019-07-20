@@ -38,7 +38,7 @@ class GadgetTest {
 
     @Test
     fun testClientServerIntegration() {
-        val pubSubServer = PubSub.listen(serverLink, 1234)
+        val pubSubServer = PubSub.listen(serverLink.startHttpServer(1234))
         pubSubServer.install(gadgetModule)
 
         val gadgetManager = GadgetManager(pubSubServer)

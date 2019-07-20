@@ -11,8 +11,13 @@ interface Network {
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
 
-        fun listenTcp(port: Int, tcpServerSocketListener: TcpServerSocketListener)
-        fun connectTcp(toAddress: Address, port: Int, tcpListener: TcpListener): TcpConnection
+        fun startHttpServer(port: Int): HttpServer
+        fun connectWebSocket(
+            toAddress: Address,
+            port: Int,
+            path: String,
+            webSocketListener: WebSocketListener
+        ): TcpConnection
     }
 
     interface Address
@@ -42,13 +47,13 @@ interface Network {
         }
     }
 
-    interface TcpListener {
+    interface HttpServer {
+        fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
+    }
+
+    interface WebSocketListener {
         fun connected(tcpConnection: TcpConnection)
         fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
         fun reset(tcpConnection: TcpConnection)
-    }
-
-    interface TcpServerSocketListener {
-        fun incomingConnection(fromConnection: TcpConnection): TcpListener
     }
 }

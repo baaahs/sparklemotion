@@ -21,74 +21,12 @@ class FakeNetwork(
     private val udpListeners: MutableMap<Pair<Network.Address, Int>, Network.UdpListener> = hashMapOf()
     private val udpListenersByPort: MutableMap<Int, MutableList<Network.UdpListener>> = hashMapOf()
 
-    private val tcpServerSocketsByPort: MutableMap<Pair<Network.Address, Int>, Network.TcpServerSocketListener> =
-        hashMapOf()
+    private val httpServersByPort:
+            MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
     override fun link(): Network.Link {
         val address = FakeAddress(nextAddress++)
         return FakeLink(address)
-    }
-
-    private fun listenTcp(
-        myAddress: Network.Address,
-        port: Int,
-        tcpServerSocketListener: Network.TcpServerSocketListener
-    ) {
-        tcpServerSocketsByPort[Pair(myAddress, port)] = tcpServerSocketListener
-    }
-
-    private fun connectTcp(
-        clientAddress: Network.Address,
-        serverAddress: Network.Address,
-        serverPort: Int,
-        clientListener: Network.TcpListener
-    ): Network.TcpConnection {
-        val serverSocketListener = tcpServerSocketsByPort[Pair(serverAddress, serverPort)]
-        if (serverSocketListener == null) {
-            val connection = FakeTcpConnection(clientAddress, serverAddress, serverPort, null)
-            coroutineScope.launch {
-                networkDelay()
-                clientListener.reset(connection);
-            }
-            return connection
-        }
-
-        lateinit var clientSideConnection: FakeTcpConnection
-        val serverSideConnection = FakeTcpConnection(clientAddress, serverAddress, serverPort, clientListener) {
-            clientSideConnection
-        }
-
-        val serverListener = serverSocketListener.incomingConnection(serverSideConnection)
-
-        clientSideConnection = FakeTcpConnection(clientAddress, serverAddress, serverPort, serverListener) {
-            serverSideConnection
-        }
-
-        coroutineScope.launch {
-            networkDelay();
-            clientListener.connected(clientSideConnection)
-        }
-
-        coroutineScope.launch {
-            networkDelay();
-            serverListener.connected(serverSideConnection)
-        }
-
-        return clientSideConnection
-    }
-
-    inner class FakeTcpConnection(
-        override val fromAddress: Network.Address,
-        override val toAddress: Network.Address,
-        override val port: Int,
-        private val tcpListener: Network.TcpListener? = null,
-        private val otherListener: (() -> Network.TcpConnection)? = null
-    ) : Network.TcpConnection {
-        override fun send(bytes: ByteArray) {
-            coroutineScope.launch {
-                tcpListener?.receive(otherListener!!(), bytes)
-            }
-        }
     }
 
     private fun sendPacketSuccess() = Random.nextFloat() > packetLossRate() / 2
@@ -107,15 +45,66 @@ class FakeNetwork(
             return FakeUdpSocket(serverPort)
         }
 
-        override fun listenTcp(port: Int, tcpServerSocketListener: Network.TcpServerSocketListener) {
-            this@FakeNetwork.listenTcp(myAddress, port, tcpServerSocketListener)
+        override fun startHttpServer(port: Int): Network.HttpServer {
+            val fakeHttpServer = FakeHttpServer(port)
+            httpServersByPort[myAddress to port] = fakeHttpServer
+            return fakeHttpServer
         }
 
-        override fun connectTcp(
+        override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
-            tcpListener: Network.TcpListener
-        ): Network.TcpConnection = this@FakeNetwork.connectTcp(myAddress, toAddress, port, tcpListener)
+            path: String,
+            webSocketListener: Network.WebSocketListener
+        ): Network.TcpConnection {
+            val fakeHttpServer = httpServersByPort[toAddress to port]
+            val onConnectCallback = fakeHttpServer?.webSocketListeners?.get(path)
+            if (onConnectCallback == null) {
+                val connection = FakeTcpConnection(myAddress, toAddress, port, null)
+                coroutineScope.launch {
+                    networkDelay()
+                    webSocketListener.reset(connection)
+                }
+                return connection
+            }
+
+            lateinit var clientSideConnection: FakeTcpConnection
+            val serverSideConnection = FakeTcpConnection(myAddress, toAddress, port, webSocketListener) {
+                clientSideConnection
+            }
+
+            val serverListener = onConnectCallback(serverSideConnection)
+
+            clientSideConnection = FakeTcpConnection(myAddress, toAddress, port, serverListener) {
+                serverSideConnection
+            }
+
+            coroutineScope.launch {
+                networkDelay()
+                webSocketListener.connected(clientSideConnection)
+            }
+
+            coroutineScope.launch {
+                networkDelay()
+                serverListener.connected(serverSideConnection)
+            }
+
+            return clientSideConnection
+        }
+
+        inner class FakeTcpConnection(
+            override val fromAddress: Network.Address,
+            override val toAddress: Network.Address,
+            override val port: Int,
+            private val webSocketListener: Network.WebSocketListener? = null,
+            private val otherListener: (() -> Network.TcpConnection)? = null
+        ) : Network.TcpConnection {
+            override fun send(bytes: ByteArray) {
+                coroutineScope.launch {
+                    webSocketListener?.receive(otherListener!!(), bytes)
+                }
+            }
+        }
 
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
@@ -155,6 +144,18 @@ class FakeNetwork(
                         udpListener.receive(fromAddress, fromPort, bytes)
                     }
                 }
+            }
+        }
+
+        internal inner class FakeHttpServer(val port: Int) : Network.HttpServer {
+            val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
+                mutableMapOf()
+
+            override fun listenWebSocket(
+                path: String,
+                onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
+            ) {
+                webSocketListeners[path] = onConnect
             }
         }
     }
