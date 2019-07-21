@@ -276,41 +276,39 @@ class VizPanel(panel: SheepModel.Panel, geom: Geometry, private val scene: Scene
         }
 //        console.log("line3s", line3s);
 
-        var longestEdge = line3s[0]
-        line3s.forEach() { line3 ->
-            if (line3.distance() > longestEdge.distance()) {
-                longestEdge = line3
+        var smallestBox: Box3? = null
+        fun Box3.dist() = min.distanceTo(max)
+        line3s.forEach() { edge ->
+            val localGeom = geometry.clone()
+            // move so start of longest edge is at (0,0,0)
+            val offset = edge.start
+            localGeom.translate(-offset.x, -offset.y, -offset.z)
+
+            // rotate so longest edge is flat at grade
+            val delta = edge.end.clone().sub(edge.start)
+            val angle2 = atan2(delta.y, delta.x)
+            val matrix = Matrix4().makeRotationZ(-angle2)
+            localGeom.applyMatrix(matrix)
+
+            // move so bounding box min is at (0,0,0)
+            localGeom.computeBoundingBox()
+            val min = localGeom.boundingBox!!.min
+            val max = localGeom.boundingBox!!.max
+            localGeom.translate(-min.x/* + panelLeft * 100.0*/, -max.y, -min.z)
+
+            localGeom.computeBoundingBox()
+            val box = localGeom.boundingBox!!
+
+            if (smallestBox == null || box.dist() < smallestBox!!.dist()) {
+                smallestBox = box
             }
         }
-//        console.log("longestEdge", longestEdge);
-
-        // move so start of longest edge is at (0,0,0)
-        val offset = longestEdge.start
-        geometry.translate(-offset.x, -offset.y, -offset.z)
-//        console.log("lines:" , lines.map { (it.geometry as Geometry).vertices }.toTypedArray())
-//        lines.forEach { it.geometry.translate(-offset.x, -offset.y, -offset.z) }
-//        console.log("at 0,0,0", name, geometry.vertices)
-
-        // rotate so longest edge is flat at grade
-        val delta = longestEdge.end.clone().sub(longestEdge.start)
-        val angle2 = atan2(delta.y, delta.x)
-        val matrix = Matrix4().makeRotationZ(-angle2)
-        geometry.applyMatrix(matrix)
-//        lines.forEach { it.applyMatrix(matrix) }
-//        console.log("rotated again", geometry.vertices)
-
-        // move so bounding box min is at (0,0,0)
-        geometry.computeBoundingBox()
-        val min = geometry.boundingBox!!.min
-        val max = geometry.boundingBox!!.max
-        geometry.translate(-min.x/* + panelLeft * 100.0*/, -max.y, -min.z)
-//        lines.forEach { it.geometry.translate(-min.x + panelLeft * 100.0, -min.y, -min.z) }
-//        console.log("zero", name, geometry.vertices)
-
-        geometry.computeBoundingBox()
-        val dist = geometry.boundingBox!!.max.clone().sub(geometry.boundingBox!!.min)
+        val dist = smallestBox!!.max.clone().sub(smallestBox!!.min)
         val x = abs(dist.x)
         val y = abs(dist.y)
-        console.log(name, max(x, y), min(x, y))
+        console.log(
+            name.replace('R', 'D').replace('L', 'P'),
+            max(x, y), min(x, y)
+        )
     }
 }
