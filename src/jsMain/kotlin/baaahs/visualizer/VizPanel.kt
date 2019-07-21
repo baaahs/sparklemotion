@@ -14,10 +14,7 @@ import info.laht.threekt.geometries.PlaneBufferGeometry
 import info.laht.threekt.loaders.TextureLoader
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.math.Matrix4
-import info.laht.threekt.math.Triangle
-import info.laht.threekt.math.Vector3
-import info.laht.threekt.math.minus
+import info.laht.threekt.math.*
 import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
 import info.laht.threekt.scenes.Scene
@@ -28,11 +25,13 @@ import org.w3c.dom.get
 import three.BufferGeometryUtils
 import three.Float32BufferAttribute
 import kotlin.browser.document
+import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val scene: Scene) {
+class VizPanel(panel: SheepModel.Panel, geom: Geometry, private val scene: Scene) {
     companion object {
         private val roundLightTx = TextureLoader().load(
             "./visualizer/textures/round.png",
@@ -69,7 +68,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         val faceAreas = mutableListOf<Float>()
         panelGeometry.faces = panel.faces.faces.map { face ->
             val localVerts = face.vertexIds.map { vi ->
-                val v = geom.vertices[vi]
+                val v = geom.vertices[vi].clone()
                 var lvi = panelVertices.indexOf(v)
                 if (lvi == -1) {
                     lvi = panelVertices.size
@@ -114,12 +113,6 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
 
         geom.computeVertexNormals() // todo: why is this here?
 
-        val lines = panel.lines.map { line ->
-            val lineGeo = Geometry()
-            lineGeo.vertices = line.points.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
-            lineGeo
-        }
-
         this.faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
         this.faceMaterial.side = FrontSide
         this.faceMaterial.transparent = false
@@ -128,10 +121,10 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         this.mesh.asDynamic().panel = this // so we can get back to the VizPanel from a raycaster intersection...
         scene.add(this.mesh)
 
-        this.lines = lines.map { line -> Line(line.asDynamic(), lineMaterial) }
-
-        this.lines.forEach { line ->
-            scene.add(line)
+        this.lines = panel.lines.map { line ->
+            val lineGeom = Geometry()
+            lineGeom.vertices = line.points.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
+            Line(lineGeom.asDynamic(), lineMaterial).also { scene.add(it) }
         }
     }
 
@@ -266,5 +259,60 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
 
     fun getPixelLocations(): Array<Vector2>? {
         return vizPixels?.getPixelLocationsInPanelSpace(this)
+    }
+
+    fun reorient(panelLeft: Int) {
+//        console.log("vertices", name, geometry.vertices)
+
+        // rotate to face forward
+        val rotator = Rotator(panelNormal, Vector3(0, 0, 1))
+        rotator.rotate(geometry)
+        lines.forEach { rotator.rotate(it.geometry) }
+//        console.log("normalized vertices", name, geometry.vertices)
+
+        val line3s = lines.mapIndexed { i, line ->
+            val geom = line.geometry as Geometry
+            Line3(geom.vertices[0], geom.vertices[1])
+        }
+//        console.log("line3s", line3s);
+
+        var longestEdgeIndex = 0
+        line3s.mapIndexed { i, line3 ->
+            line3.distance()
+        }.reduceIndexed { index, acc, d ->
+            if (d > acc) longestEdgeIndex = index; d
+        }
+
+        val longestEdge = line3s[longestEdgeIndex]
+//        console.log("longestEdge", longestEdge);
+
+        // move so start of longest edge is at (0,0,0)
+        val offset = longestEdge.start
+        geometry.translate(-offset.x, -offset.y, -offset.z)
+//        console.log("lines:" , lines.map { (it.geometry as Geometry).vertices }.toTypedArray())
+//        lines.forEach { it.geometry.translate(-offset.x, -offset.y, -offset.z) }
+//        console.log("at 0,0,0", name, geometry.vertices)
+
+        // rotate so longest edge is flat at grade
+        val delta = longestEdge.end.clone().sub(longestEdge.start)
+        val angle2 = atan2(delta.y, delta.x)
+        val matrix = Matrix4().makeRotationZ(-angle2)
+        geometry.applyMatrix(matrix)
+//        lines.forEach { it.applyMatrix(matrix) }
+//        console.log("rotated again", geometry.vertices)
+
+        // move so bounding box min is at (0,0,0)
+        geometry.computeBoundingBox()
+        val min = geometry.boundingBox!!.min
+        val max = geometry.boundingBox!!.max
+        geometry.translate(-min.x/* + panelLeft * 100.0*/, -max.y, -min.z)
+//        lines.forEach { it.geometry.translate(-min.x + panelLeft * 100.0, -min.y, -min.z) }
+//        console.log("zero", name, geometry.vertices)
+
+        geometry.computeBoundingBox()
+        val dist = geometry.boundingBox!!.max.clone().sub(geometry.boundingBox!!.min)
+        val x = abs(dist.x)
+        val y = abs(dist.y)
+        console.log(name, max(x, y), min(x, y))
     }
 }

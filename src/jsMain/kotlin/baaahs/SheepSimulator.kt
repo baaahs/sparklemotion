@@ -52,10 +52,14 @@ class SheepSimulator {
         val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
         var totalPixels = 0
 
+        var panelLeft = 0
         sheepModel.panels.sortedBy(SheepModel.Panel::name).forEachIndexed { index, panel ->
             //            if (panel.name != "17L") return@forEachIndexed
 
             val vizPanel = visualizer.addPanel(panel)
+//            if (panel.name == "1L")
+                vizPanel.reorient(panelLeft++)
+
             val pixelPositions = pixelArranger.arrangePixels(vizPanel)
             vizPanel.vizPixels = VizPanel.VizPixels(vizPanel, pixelPositions)
 
