@@ -276,14 +276,12 @@ class VizPanel(panel: SheepModel.Panel, geom: Geometry, private val scene: Scene
         }
 //        console.log("line3s", line3s);
 
-        var longestEdgeIndex = 0
-        line3s.mapIndexed { i, line3 ->
-            line3.distance()
-        }.reduceIndexed { index, acc, d ->
-            if (d > acc) longestEdgeIndex = index; d
+        var longestEdge = line3s[0]
+        line3s.forEach() { line3 ->
+            if (line3.distance() > longestEdge.distance()) {
+                longestEdge = line3
+            }
         }
-
-        val longestEdge = line3s[longestEdgeIndex]
 //        console.log("longestEdge", longestEdge);
 
         // move so start of longest edge is at (0,0,0)
