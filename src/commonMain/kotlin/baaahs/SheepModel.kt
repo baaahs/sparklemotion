@@ -35,11 +35,7 @@ class SheepModel {
                         vertices.add(Point(coords[0], coords[1], coords[2]))
                     }
                     "g" -> {
-                        var name = args.joinToString(" ")
-                        val match = Regex("^G_0?([^_]+).*?\$").matchEntire(name)
-                        if (match != null) {
-                            name = match.groups[1]!!.value
-                        }
+                        val name = args.joinToString(" ")
                         currentPanel = Panel(name)
                         panels.add(currentPanel)
                     }
