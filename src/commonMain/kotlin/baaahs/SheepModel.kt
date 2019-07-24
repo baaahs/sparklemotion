@@ -34,7 +34,7 @@ class SheepModel {
                         val coords = args.map { it.toFloat() }
                         vertices.add(Point(coords[0], coords[1], coords[2]))
                     }
-                    "g" -> {
+                    "o" -> {
                         val name = args.joinToString(" ")
                         currentPanel = Panel(name)
                         panels.add(currentPanel)
