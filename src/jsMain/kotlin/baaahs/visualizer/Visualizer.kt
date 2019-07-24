@@ -7,7 +7,6 @@ import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
-import info.laht.threekt.core.Raycaster
 import info.laht.threekt.external.controls.OrbitControls
 import info.laht.threekt.geometries.ConeBufferGeometry
 import info.laht.threekt.geometries.SphereBufferGeometry
@@ -64,7 +63,7 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
     private val panelMaterial: Material
 
     private val raycaster: Raycaster
-    private val mouse = Vector2()
+    private var mouse: Vector2? = null
     private val sphere: Mesh
 
     private val rendererListeners = mutableListOf<() -> Unit>()
@@ -72,9 +71,10 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
     private var vizPanels = mutableListOf<VizPanel>()
 
     private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
+    private val selectionInfo = document.getElementById("selectionInfo")!! as HTMLDivElement
 
     init {
-        sheepView.addEventListener("mousemove", { event -> onMouseMove(event as MouseEvent) }, false)
+        sheepView.addEventListener("mousedown", { event -> onMouseDown(event as MouseEvent) }, false)
         camera = PerspectiveCamera(45, sheepView.offsetWidth.toDouble() / sheepView.offsetHeight, 1, 10000)
         camera.position.z = 1000.0
         controls = OrbitControls(camera, sheepView)
@@ -91,7 +91,7 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)
         sheepView.appendChild(renderer.domElement)
         geom = Geometry()
-        raycaster = Raycaster(js("undefined"), js("undefined"), js("undefined"), js("undefined"))
+        raycaster = Raycaster()
         raycaster.asDynamic().params.Points.threshold = 1
         sphere = Mesh(
             SphereBufferGeometry(1, 32, 32),
@@ -127,10 +127,11 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         frameListeners.remove(frameListener)
     }
 
-    fun onMouseMove(event: MouseEvent) {
-        event.preventDefault()
-        mouse.x = (event.clientX.toDouble() / sheepView.offsetWidth) * 2 - 1
-        mouse.y = -(event.clientY.toDouble() / sheepView.offsetHeight) * 2 + 1
+    fun onMouseDown(event: MouseEvent) {
+        mouse = Vector2(
+            (event.clientX.toDouble() / sheepView.offsetWidth) * 2 - 1,
+            -(event.clientY.toDouble() / sheepView.offsetHeight) * 2 + 1
+        )
     }
 
     fun addPanel(p: SheepModel.Panel): VizPanel {
@@ -192,6 +193,20 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
             window.requestAnimationFrame { render() }
         }, REFRESH_DELAY)
 
+        mouse?.let { mouseClick ->
+            mouse = null
+            raycaster.setFromCamera(mouseClick, camera)
+            val intersections = raycaster.intersectObjects(scene.children, false)
+            intersections.forEach { intersection ->
+                val intersectedObject = intersection.`object`
+                val vizPanel = VizPanel.getFromObject(intersectedObject)
+                vizPanel?.let {
+                    selectionInfo.innerText = "Selected: " + vizPanel.name
+                    return@forEach
+                }
+            }
+        }
+
         if (!mapperIsRunning) {
             if (getVizRotationEl().checked) {
                 val rotSpeed = .01
@@ -204,16 +219,6 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         }
 
         controls.update()
-
-        raycaster.setFromCamera(mouse, camera)
-        val intersections = raycaster.intersectObjects(scene.children.asDynamic(), false)
-        if (intersections.size > 0) {
-            val intersection = intersections[0]
-            if (intersection.`object`.asDynamic().panel) {
-                (document.getElementById("selectionInfo") as HTMLDivElement).innerText =
-                    "Selected: " + intersections[0].`object`.asDynamic().panel.name
-            }
-        }
 
         val startMs = getTimeMillis()
         renderer.render(scene, camera)
