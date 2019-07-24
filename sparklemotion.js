@@ -4205,7 +4205,7 @@
     var currentPanel = {v: new SheepModel$Panel('initial')};
     var panelsByEdge = LinkedHashMap_init();
     var edgesByPanel = LinkedHashMap_init();
-    var $receiver = split(getResource('newsheep_processed.obj'), ['\n']);
+    var $receiver = split(getResource('baaahs-model.obj'), ['\n']);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
@@ -4236,13 +4236,8 @@
           var coords = destination_0;
           vertices.add_11rb$(new SheepModel$Point(coords.get_za3lpa$(0), coords.get_za3lpa$(1), coords.get_za3lpa$(2)));
           break;
-        case 'g':
+        case 'o':
           var name = joinToString(args, ' ');
-          var match = Regex_init('^G_0?([^_]+).*?$').matchEntire_6bul2c$(name);
-          if (match != null) {
-            name = ensureNotNull(match.groups.get_za3lpa$(1)).value;
-          }
-
           currentPanel.v = new SheepModel$Panel(name);
           panels.add_11rb$(currentPanel.v);
           break;
@@ -11833,13 +11828,14 @@
     this.lineMaterial_0 = null;
     this.panelMaterial_0 = null;
     this.raycaster_0 = null;
-    this.mouse_0 = new Vector2();
+    this.mouse_0 = null;
     this.sphere_0 = null;
     this.rendererListeners_0 = ArrayList_init();
     this.vizPanels_0 = ArrayList_init();
-    var tmp$;
+    var tmp$, tmp$_0;
     this.sheepView_0 = Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE();
-    this.sheepView_0.addEventListener('mousemove', Visualizer_init$lambda(this), false);
+    this.selectionInfo_0 = Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE();
+    this.sheepView_0.addEventListener('mousedown', Visualizer_init$lambda(this), false);
     this.camera_0 = new PerspectiveCamera_init(45, this.sheepView_0.offsetWidth / this.sheepView_0.offsetHeight, 1, 10000);
     this.camera_0.position.z = 1000.0;
     this.controls_0 = new OrbitControls(this.camera_0, this.sheepView_0);
@@ -11862,17 +11858,17 @@
     this.renderer_0.setSize(this.sheepView_0.offsetWidth, this.sheepView_0.offsetHeight);
     this.sheepView_0.appendChild(this.renderer_0.domElement);
     this.geom_0 = new Geometry();
-    this.raycaster_0 = new Raycaster_init(undefined, undefined, undefined, undefined);
+    this.raycaster_0 = new Raycaster_init();
     this.raycaster_0.params.Points.threshold = 1;
-    var tmp$_0 = new SphereBufferGeometry(1, 32, 32);
+    var tmp$_1 = new SphereBufferGeometry(1, 32, 32);
     var $receiver_2 = new MeshBasicMaterial();
     $receiver_2.color.set(16711680);
-    this.sphere_0 = new Mesh_init(tmp$_0, $receiver_2);
+    this.sphere_0 = new Mesh_init(tmp$_1, $receiver_2);
     this.scene_0.add(this.sphere_0);
-    var tmp$_1;
-    tmp$_1 = sheepModel.vertices.iterator();
-    while (tmp$_1.hasNext()) {
-      var element = tmp$_1.next();
+    var tmp$_2;
+    tmp$_2 = sheepModel.vertices.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
       this.geom_0.vertices.push(new Vector3(element.x, element.y, element.z));
     }
     this.startRender_0();
@@ -11912,10 +11908,8 @@
   Visualizer.prototype.removeFrameListener_imgev1$ = function (frameListener) {
     this.frameListeners_0.remove_11rb$(frameListener);
   };
-  Visualizer.prototype.onMouseMove_tfvzir$ = function (event) {
-    event.preventDefault();
-    this.mouse_0.x = event.clientX / this.sheepView_0.offsetWidth * 2 - 1;
-    this.mouse_0.y = -(event.clientY / this.sheepView_0.offsetHeight) * 2 + 1;
+  Visualizer.prototype.onMouseDown_tfvzir$ = function (event) {
+    this.mouse_0 = new Vector2(event.clientX / this.sheepView_0.offsetWidth * 2 - 1, -(event.clientY / this.sheepView_0.offsetHeight) * 2 + 1);
   };
   Visualizer.prototype.addPanel_jfju1k$ = function (p) {
     var vizPanel = new VizPanel(p, this.geom_0, this.scene_0);
@@ -11988,43 +11982,49 @@
   Visualizer.prototype.render = function () {
     var tmp$;
     window.setTimeout(Visualizer$render$lambda(this), this.REFRESH_DELAY_0);
+    if ((tmp$ = this.mouse_0) != null) {
+      this.mouse_0 = null;
+      this.raycaster_0.setFromCamera(tmp$, this.camera_0);
+      var intersections = this.raycaster_0.intersectObjects(this.scene_0.children, false);
+      var tmp$_0;
+      for (tmp$_0 = 0; tmp$_0 !== intersections.length; ++tmp$_0) {
+        var element = intersections[tmp$_0];
+        var intersectedObject = element.object;
+        var vizPanel = VizPanel$Companion_getInstance().getFromObject_pz83aj$(intersectedObject);
+        if (vizPanel != null) {
+          this.selectionInfo_0.innerText = 'Selected: ' + vizPanel.name;
+        }
+      }
+    }
     if (!this.mapperIsRunning) {
       if (this.getVizRotationEl_0().checked) {
         var rotSpeed = 0.01;
         var x = this.camera_0.position.x;
         var z = this.camera_0.position.z;
         this.camera_0.position.x = x * Math_0.cos(rotSpeed) + z * Math_0.sin(rotSpeed);
-        var tmp$_0 = this.camera_0.position;
+        var tmp$_1 = this.camera_0.position;
         var x_0 = rotSpeed * 2;
-        var tmp$_1 = z * Math_0.cos(x_0);
+        var tmp$_2 = z * Math_0.cos(x_0);
         var x_1 = rotSpeed * 2;
-        tmp$_0.z = tmp$_1 - x * Math_0.sin(x_1);
+        tmp$_1.z = tmp$_2 - x * Math_0.sin(x_1);
         this.camera_0.lookAt(this.scene_0.position);
       }
     }
     this.controls_0.update();
-    this.raycaster_0.setFromCamera(this.mouse_0, this.camera_0);
-    var intersections = this.raycaster_0.intersectObjects(this.scene_0.children, false);
-    if (intersections.size > 0) {
-      var intersection = intersections.get_za3lpa$(0);
-      if (intersection.object.panel) {
-        (Kotlin.isType(tmp$ = document.getElementById('selectionInfo'), HTMLDivElement) ? tmp$ : throwCCE()).innerText = 'Selected: ' + toString_0(intersections.get_za3lpa$(0).object.panel.name);
-      }
-    }
     var startMs = getTimeMillis();
     this.renderer_0.render(this.scene_0, this.camera_0);
     this.display_0.renderMs = getTimeMillis().subtract(startMs).toInt();
-    var tmp$_2;
-    tmp$_2 = this.frameListeners_0.iterator();
-    while (tmp$_2.hasNext()) {
-      var element = tmp$_2.next();
-      element.onFrameReady(this.scene_0, this.camera_0);
-    }
     var tmp$_3;
-    tmp$_3 = this.rendererListeners_0.iterator();
+    tmp$_3 = this.frameListeners_0.iterator();
     while (tmp$_3.hasNext()) {
       var element_0 = tmp$_3.next();
-      element_0();
+      element_0.onFrameReady(this.scene_0, this.camera_0);
+    }
+    var tmp$_4;
+    tmp$_4 = this.rendererListeners_0.iterator();
+    while (tmp$_4.hasNext()) {
+      var element_1 = tmp$_4.next();
+      element_1();
     }
   };
   Visualizer.prototype.doResize_0 = function () {
@@ -12043,7 +12043,7 @@
     return function (event) {
       var tmp$, tmp$_0;
       tmp$_0 = Kotlin.isType(tmp$ = event, MouseEvent) ? tmp$ : throwCCE();
-      this$Visualizer.onMouseMove_tfvzir$(tmp$_0);
+      this$Visualizer.onMouseDown_tfvzir$(tmp$_0);
       return Unit;
     };
   }
@@ -12072,7 +12072,7 @@
     VizPanel$Companion_getInstance();
     this.geom_0 = geom;
     this.scene_0 = scene;
-    this.name_0 = panel.name;
+    this.name = panel.name;
     this.geometry_8be2vx$ = new Geometry();
     this.area = 0.0;
     this.panelNormal_0 = null;
@@ -12185,7 +12185,8 @@
     this.faceMaterial_8be2vx$.side = THREE.FrontSide;
     this.faceMaterial_8be2vx$.transparent = false;
     this.mesh_0 = new Mesh_init(panelGeometry, this.faceMaterial_8be2vx$);
-    this.mesh_0.panel = this;
+    this.mesh_0.name = 'Surface: ' + this.name;
+    this.mesh_0.userData['VizPanel'] = this;
     this.scene_0.add(this.mesh_0);
     var destination_3 = ArrayList_init_0(collectionSizeOrDefault(lines, 10));
     var tmp$_11;
@@ -12206,6 +12207,10 @@
     VizPanel$Companion_instance = this;
     this.roundLightTx_0 = (new TextureLoader_init()).load('./visualizer/textures/round.png', VizPanel$Companion$roundLightTx$lambda, VizPanel$Companion$roundLightTx$lambda_0, VizPanel$Companion$roundLightTx$lambda_1);
   }
+  VizPanel$Companion.prototype.getFromObject_pz83aj$ = function (object3D) {
+    var tmp$;
+    return (tmp$ = object3D.userData['VizPanel']) == null || Kotlin.isType(tmp$, VizPanel) ? tmp$ : throwCCE();
+  };
   function VizPanel$Companion$roundLightTx$lambda(it) {
     println('loaded!');
     return Unit;
