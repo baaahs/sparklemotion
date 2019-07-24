@@ -21,7 +21,7 @@ class SheepModel {
         val panelsByEdge = mutableMapOf<List<Int>, MutableList<Panel>>()
         val edgesByPanel = mutableMapOf<Panel, MutableList<List<Int>>>()
 
-        getResource("newsheep_processed.obj")
+        getResource("baaahs-model.obj")
             .split("\n")
             .map { it.trim() }
             .forEach { line ->
