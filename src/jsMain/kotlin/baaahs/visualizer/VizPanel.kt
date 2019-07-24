@@ -10,6 +10,7 @@ import info.laht.threekt.THREE.VertexColors
 import info.laht.threekt.core.BufferGeometry
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
+import info.laht.threekt.core.Object3D
 import info.laht.threekt.geometries.PlaneBufferGeometry
 import info.laht.threekt.loaders.TextureLoader
 import info.laht.threekt.materials.LineBasicMaterial
@@ -40,9 +41,12 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
             { println("progress!") },
             { println("error!") }
         )
+
+        fun getFromObject(object3D: Object3D): VizPanel? =
+            object3D.userData.asDynamic()["VizPanel"] as VizPanel?
     }
 
-    private val name = panel.name
+    val name = panel.name
     internal val geometry = Geometry()
     var area = 0.0f
     private var panelNormal: Vector3
@@ -125,7 +129,11 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         this.faceMaterial.transparent = false
 
         this.mesh = Mesh(panelGeometry, this.faceMaterial)
-        this.mesh.asDynamic().panel = this // so we can get back to the VizPanel from a raycaster intersection...
+        mesh.asDynamic().name = "Surface: $name"
+
+        // so we can get back to the VizPanel from a raycaster intersection:
+        this.mesh.userData.asDynamic()["VizPanel"] = this
+
         scene.add(this.mesh)
 
         this.lines = lines.map { line -> Line(line.asDynamic(), lineMaterial) }
