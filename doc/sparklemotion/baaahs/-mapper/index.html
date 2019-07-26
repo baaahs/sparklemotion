@@ -14,10 +14,24 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-brain-mapper/index.html">BrainMapper</a></p>
+<p><a href="-brain-mapping/index.html">BrainMapping</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainMapper</span></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainMapping</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-detector/index.html">Detector</a></p>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Detector</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-pixel-map-data/index.html">PixelMapData</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PixelMapData</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +43,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices)/mapperDisplay">mapperDisplay</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/mapperDisplay">mapperDisplay</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,17 +59,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="height.html">height</a></p>
+<p><a href="detectors.html">detectors</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">height</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="width.html">width</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">width</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">detectors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-detector/index.html"><span class="identifier">Mapper.Detector</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

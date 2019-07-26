@@ -14,10 +14,24 @@
 <tbody>
 <tr>
 <td>
+<p><a href="-camera-orientation.html">CameraOrientation</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CameraOrientation</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-listener/index.html">Listener</a></p>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Listener</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-visible-surface/index.html">VisibleSurface</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VisibleSurface</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -40,10 +54,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="get-candidate-surfaces.html">getCandidateSurfaces</a></p>
+<p><a href="get-visible-surfaces.html">getVisibleSurfaces</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getCandidateSurfaces</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$getCandidateSurfaces(baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/-region/index.html"><span class="identifier">MediaDevices.Region</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getVisibleSurfaces</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="-visible-surface/index.html"><span class="identifier">MapperDisplay.VisibleSurface</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -54,17 +68,31 @@
 </tr>
 <tr>
 <td>
+<p><a href="lock-ui.html">lockUi</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">lockUi</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-camera-orientation.html"><span class="identifier">MapperDisplay.CameraOrientation</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="show-cam-image.html">showCamImage</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showCamImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showCamImage(baaahs.imaging.Image)/image">image</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-image/index.html"><span class="identifier">Image</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showCamImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showCamImage(baaahs.imaging.Image, baaahs.MediaDevices.Region)/image">image</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-image/index.html"><span class="identifier">Image</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperDisplay$showCamImage(baaahs.imaging.Image, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/-region/index.html"><span class="identifier">MediaDevices.Region</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="show-candidates.html">showCandidates</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showCandidates</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showCandidates(kotlin.collections.List((((baaahs.MapperDisplay.VisibleSurface, kotlin.Float)))))/orderedPanels">orderedPanels</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-visible-surface/index.html"><span class="identifier">MapperDisplay.VisibleSurface</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="show-diff-image.html">showDiffImage</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showDiffImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/deltaBitmap">deltaBitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperDisplay$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/-region/index.html"><span class="identifier">MediaDevices.Region</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showDiffImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/deltaBitmap">deltaBitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperDisplay$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/-region/index.html"><span class="identifier">MediaDevices.Region</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -86,6 +114,13 @@
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showStats</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperDisplay$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/total">total</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperDisplay$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/mapped">mapped</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperDisplay$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/visible">visible</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unlock-ui.html">unlockUi</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unlockUi</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

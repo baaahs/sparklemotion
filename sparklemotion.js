@@ -1,8 +1,8 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-coroutines-core', 'kotlinx-serialization-kotlinx-serialization-runtime', 'threejs-wrapper', 'kotlinx-html-js'], factory);
+    define(['exports', 'kotlin', 'kotlinx-coroutines-core', 'kotlinx-serialization-kotlinx-serialization-runtime', 'klock-root-klock', 'threejs-wrapper', 'kotlinx-html-js'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-coroutines-core'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('threejs-wrapper'), require('kotlinx-html-js'));
+    factory(module.exports, require('kotlin'), require('kotlinx-coroutines-core'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('klock-root-klock'), require('threejs-wrapper'), require('kotlinx-html-js'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'sparklemotion'.");
@@ -13,15 +13,18 @@
     if (typeof this['kotlinx-serialization-kotlinx-serialization-runtime'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-kotlinx-serialization-runtime' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-runtime' is loaded prior to 'sparklemotion'.");
     }
+    if (typeof this['klock-root-klock'] === 'undefined') {
+      throw new Error("Error loading module 'sparklemotion'. Its dependency 'klock-root-klock' was not found. Please, check whether 'klock-root-klock' is loaded prior to 'sparklemotion'.");
+    }
     if (typeof this['threejs-wrapper'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'threejs-wrapper' was not found. Please, check whether 'threejs-wrapper' is loaded prior to 'sparklemotion'.");
     }
     if (typeof this['kotlinx-html-js'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'sparklemotion'.");
     }
-    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-kotlinx-serialization-runtime'], this['threejs-wrapper'], this['kotlinx-html-js']);
+    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-kotlinx-serialization-runtime'], this['klock-root-klock'], this['threejs-wrapper'], this['kotlinx-html-js']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$threejs_wrapper, $module$kotlinx_html_js) {
+}(this, function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$klock_root_klock, $module$threejs_wrapper, $module$kotlinx_html_js) {
   'use strict';
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
@@ -81,22 +84,28 @@
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
+  var Enum = Kotlin.kotlin.Enum;
+  var throwISE = Kotlin.throwISE;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var L1000 = Kotlin.Long.fromInt(1000);
   var L250 = Kotlin.Long.fromInt(250);
   var L500 = Kotlin.Long.fromInt(500);
-  var L34 = Kotlin.Long.fromInt(34);
-  var L10 = Kotlin.Long.fromInt(10);
+  var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
+  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
+  var L200 = Kotlin.Long.fromInt(200);
   var first = Kotlin.kotlin.collections.first_2p1efm$;
+  var L100 = Kotlin.Long.fromInt(100);
   var CoroutineName = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineName;
   var L10000 = Kotlin.Long.fromInt(10000);
-  var L100 = Kotlin.Long.fromInt(100);
+  var L2 = Kotlin.Long.fromInt(2);
   var MainScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.MainScope;
-  var IntRange = Kotlin.kotlin.ranges.IntRange;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  var Enum = Kotlin.kotlin.Enum;
-  var throwISE = Kotlin.throwISE;
+  var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
+  var wrapFunction = Kotlin.wrapFunction;
+  var Comparator = Kotlin.kotlin.Comparator;
+  var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
+  var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var L50 = Kotlin.Long.fromInt(50);
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
@@ -104,11 +113,11 @@
   var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var lazy = Kotlin.kotlin.lazy_klfg04$;
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
   var Iterator = Kotlin.kotlin.collections.Iterator;
   var Iterable = Kotlin.kotlin.collections.Iterable;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
-  var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var toList = Kotlin.kotlin.collections.toList_7wnvza$;
@@ -130,6 +139,7 @@
   var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
+  var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -139,9 +149,18 @@
   var toBits = Kotlin.floatToBits;
   var encodeToByteArray = Kotlin.kotlin.text.encodeToByteArray_pdl1vz$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
+  var min = Kotlin.kotlin.collections.min_i2lc79$;
+  var max = Kotlin.kotlin.collections.max_i2lc79$;
+  var UByte_init = Kotlin.kotlin.UByte;
+  var indexOf = Kotlin.kotlin.text.indexOf_l5u8uk$;
+  var JsonPrimitive = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_pdl1vj$;
+  var jsonArray = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.jsonArray_mb52fq$;
+  var json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json;
+  var get_contentOrNull = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.get_contentOrNull_u3sd3g$;
+  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
+  var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
-  var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var math = Kotlin.kotlin.math;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices = Kotlin.kotlin.collections.get_indices_m7z4lg$;
@@ -150,17 +169,18 @@
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
-  var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  var substring = Kotlin.kotlin.text.substring_fc3b62$;
+  var Matrix4_init = THREE.Matrix4;
+  var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var Color_init = THREE.Color;
   var Vector3 = THREE.Vector3;
-  var Object3D = THREE.Object3D;
   var Geometry = THREE.Geometry;
   var Face3_init = THREE.Face3;
   var MeshBasicMaterial = THREE.MeshBasicMaterial;
@@ -170,52 +190,58 @@
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var Box3 = THREE.Box3;
+  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
+  var max_0 = Kotlin.kotlin.collections.max_exjks8$;
+  var Raycaster_init = THREE.Raycaster;
+  var Vector2 = THREE.Vector2;
+  var first_0 = Kotlin.kotlin.collections.first_us0mfu$;
+  var PointsMaterial = THREE.PointsMaterial;
+  var Points = THREE.Points;
+  var List = Kotlin.kotlin.collections.List;
   var th = $module$kotlinx_html_js.kotlinx.html.th_bncpyi$;
   var tr = $module$kotlinx_html_js.kotlinx.html.tr_7wec05$;
   var td = $module$kotlinx_html_js.kotlinx.html.td_vlzo05$;
   var table = $module$kotlinx_html_js.kotlinx.html.js.table_uk5qws$;
   var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
-  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
+  var Box2 = THREE.Box2;
   var Clock = THREE.Clock;
   var WebGLRenderer_init = THREE.WebGLRenderer;
   var Scene = THREE.Scene;
   var PerspectiveCamera_init = THREE.PerspectiveCamera;
+  var Object3D = THREE.Object3D;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
+  var set_tabIndex = $module$kotlinx_html_js.kotlinx.html.set_tabIndex_ueiko3$;
   var set_onClickFunction = $module$kotlinx_html_js.kotlinx.html.js.set_onClickFunction_pszlq2$;
   var button = $module$kotlinx_html_js.kotlinx.html.button_i4xb7r$;
   var i = $module$kotlinx_html_js.kotlinx.html.i_5g1p9k$;
   var div = $module$kotlinx_html_js.kotlinx.html.div_ri36nr$;
   var canvas = $module$kotlinx_html_js.kotlinx.html.canvas_dwb9fz$;
   var div_0 = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
-  var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
-  var wrapFunction = Kotlin.wrapFunction;
-  var Comparator = Kotlin.kotlin.Comparator;
+  var Triangle = THREE.Triangle;
   var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var L200000 = Kotlin.Long.fromInt(200000);
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
-  var Vector2 = THREE.Vector2;
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
   var toTypedArray = Kotlin.kotlin.collections.toTypedArray_964n91$;
-  var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
+  var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
+  var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
+  var contentHashCode = Kotlin.arrayHashCode;
   var toMap = Kotlin.kotlin.collections.toMap_6hr0sd$;
   var Quaternion = THREE.Quaternion;
-  var Matrix4_init = THREE.Matrix4;
   var Line3 = THREE.Line3;
   var ConeBufferGeometry = THREE.ConeBufferGeometry;
-  var Points = THREE.Points;
   var OrbitControls = THREE.OrbitControls;
-  var PointsMaterial = THREE.PointsMaterial;
-  var Raycaster_init = THREE.Raycaster;
   var TextureLoader_init = THREE.TextureLoader;
   var minus_0 = $module$threejs_wrapper.info.laht.threekt.math.minus_gulir3$;
   var Float32BufferAttribute = THREE.Float32BufferAttribute;
   var BufferGeometryUtils$Companion = THREE.BufferGeometryUtils;
   var PlaneBufferGeometry = THREE.PlaneBufferGeometry;
-  var Triangle = THREE.Triangle;
-  var indexOf = Kotlin.kotlin.collections.indexOf_mjy6jw$;
+  var indexOf_0 = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
+  Mapper$Detector.prototype = Object.create(Enum.prototype);
+  Mapper$Detector.prototype.constructor = Mapper$Detector;
   MovingHead$ColorMode.prototype = Object.create(Enum.prototype);
   MovingHead$ColorMode.prototype.constructor = MovingHead$ColorMode;
   PubSub$Connection$receive$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
@@ -262,8 +288,6 @@
   MapperHelloMessage.prototype.constructor = MapperHelloMessage;
   BrainIdRequest.prototype = Object.create(Message.prototype);
   BrainIdRequest.prototype.constructor = BrainIdRequest;
-  BrainIdResponse.prototype = Object.create(Message.prototype);
-  BrainIdResponse.prototype.constructor = BrainIdResponse;
   BrainMappingMessage.prototype = Object.create(Message.prototype);
   BrainMappingMessage.prototype.constructor = BrainMappingMessage;
   PinkyPongMessage.prototype = Object.create(Message.prototype);
@@ -346,6 +370,8 @@
   CanvasBitmap$asImage$ObjectLiteral.prototype.constructor = CanvasBitmap$asImage$ObjectLiteral;
   ImageBitmapImage.prototype = Object.create(JsImage.prototype);
   ImageBitmapImage.prototype.constructor = ImageBitmapImage;
+  VideoElementImage.prototype = Object.create(JsImage.prototype);
+  VideoElementImage.prototype.constructor = VideoElementImage;
   function Brain(id, network, display, pixels) {
     this.id = id;
     this.network_0 = network;
@@ -640,14 +666,13 @@
         $receiver.draw_bbfl1t$(this.pixels_0);
         break;
       case 'BRAIN_ID_REQUEST':
-        var message = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
-        this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, message.port, new BrainIdResponse(this.id, this.surfaceName_0));
+        this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new BrainHelloMessage(this.id, this.surfaceName_0));
         break;
       case 'BRAIN_MAPPING':
-        var message_0 = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
-        this.surfaceName_0 = message_0.surfaceName;
-        if (message_0.surfaceName != null) {
-          tmp$_0 = new Brain$MappedSurface(this, message_0.pixelCount, message_0.pixelVertices, message_0.surfaceName);
+        var message = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
+        this.surfaceName_0 = message.surfaceName;
+        if (message.surfaceName != null) {
+          tmp$_0 = new Brain$MappedSurface(this, message.pixelCount, message.pixelVertices, message.surfaceName);
         }
          else {
           tmp$_0 = new Brain$UnmappedSurface(this);
@@ -869,7 +894,9 @@
     this.ORANGE = Color_init_1(255, 127, 0);
     this.YELLOW = Color_init_1(255, 255, 0);
     this.GREEN = Color_init_1(0, 255, 0);
+    this.CYAN = Color_init_1(0, 255, 255);
     this.BLUE = Color_init_1(0, 0, 255);
+    this.MAGENTA = Color_init_1(255, 0, 255);
     this.PURPLE = Color_init_1(200, 0, 212);
     this.TRANSPARENT = Color_init_1(0, 0, 0, 0);
     this.descriptor_dxdv46$_0 = withName(internal.IntDescriptor, 'Color');
@@ -1584,41 +1611,52 @@
     simpleName: 'GadgetManager',
     interfaces: []
   };
-  function Mapper(network, sheepModel, mapperDisplay, mediaDevices) {
+  function Comparator$ObjectLiteral(closure$comparison) {
+    this.closure$comparison = closure$comparison;
+  }
+  Comparator$ObjectLiteral.prototype.compare = function (a, b) {
+    return this.closure$comparison(a, b);
+  };
+  Comparator$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
+  var compareBy$lambda = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(a), selector(b));
+      };
+    };
+  });
+  function Mapper(network, sheepModel, mapperDisplay, mediaDevices, pinkyAddress) {
     this.network_0 = network;
     this.mapperDisplay_0 = mapperDisplay;
+    this.pinkyAddress_0 = pinkyAddress;
     this.$delegate_9rrh7p$_0 = MainScope();
-    this.maxPixelsPerBrain_0 = 2048;
-    this.width = 640;
-    this.height = 300;
-    var $receiver = mediaDevices.getCamera_vux9f0$(this.width, this.height);
+    this.maxPixelsPerBrain_0 = 120;
+    var $receiver = mediaDevices.getCamera();
     $receiver.onImage = Mapper$camera$lambda$lambda(this);
     this.camera = $receiver;
     this.baseBitmap_0 = null;
-    this.deltaBitmap_hn3lh8$_0 = this.deltaBitmap_hn3lh8$_0;
-    this.newChangeRegion_0 = null;
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
     this.udpSocket_eiksen$_0 = this.udpSocket_eiksen$_0;
+    this.mapperClient_pocmit$_0 = this.mapperClient_pocmit$_0;
     this.isRunning_0 = true;
     this.isAligned_0 = false;
     this.isPaused_0 = false;
-    this.captureBaseImage_0 = false;
+    this.newIncomingImage_0 = null;
     this.suppressShowsJob_0 = null;
     this.brainMappers_0 = LinkedHashMap_init();
+    this.activeColor_0 = Color_init_1(7, 255, 7);
+    this.inactiveColor_0 = Color_init_1(7, 0, 7);
+    this.detectors = [Mapper$Detector$GREEN_getInstance(), Mapper$Detector$GREEN_getInstance(), Mapper$Detector$GREEN_getInstance()];
+    this.redRgbaIndex_0 = 0;
+    this.greenRgbaIndex_0 = 1;
+    this.blueRgbaIndex_0 = 2;
+    this.signalRgbaIndex_0 = this.blueRgbaIndex_0;
+    this.indicatorRgbaIndex_0 = this.greenRgbaIndex_0;
     this.mapperDisplay_0.listen_uasn0l$(this);
     this.mapperDisplay_0.addWireframe_9u144y$(sheepModel);
-    this.retries_0 = new IntRange(0, 1);
   }
-  Object.defineProperty(Mapper.prototype, 'deltaBitmap_0', {
-    get: function () {
-      if (this.deltaBitmap_hn3lh8$_0 == null)
-        return throwUPAE('deltaBitmap');
-      return this.deltaBitmap_hn3lh8$_0;
-    },
-    set: function (deltaBitmap) {
-      this.deltaBitmap_hn3lh8$_0 = deltaBitmap;
-    }
-  });
   Object.defineProperty(Mapper.prototype, 'link_0', {
     get: function () {
       if (this.link_tktc8n$_0 == null)
@@ -1639,6 +1677,67 @@
       this.udpSocket_eiksen$_0 = udpSocket;
     }
   });
+  Object.defineProperty(Mapper.prototype, 'mapperClient_0', {
+    get: function () {
+      if (this.mapperClient_pocmit$_0 == null)
+        return throwUPAE('mapperClient');
+      return this.mapperClient_pocmit$_0;
+    },
+    set: function (mapperClient) {
+      this.mapperClient_pocmit$_0 = mapperClient;
+    }
+  });
+  function Mapper$Detector(name, ordinal, rgbaIndex, color, alternateColor) {
+    Enum.call(this);
+    this.rgbaIndex = rgbaIndex;
+    this.color = color;
+    this.alternateColor = alternateColor;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Mapper$Detector_initFields() {
+    Mapper$Detector_initFields = function () {
+    };
+    Mapper$Detector$RED_instance = new Mapper$Detector('RED', 0, 0, Color$Companion_getInstance().RED, Color$Companion_getInstance().CYAN);
+    Mapper$Detector$GREEN_instance = new Mapper$Detector('GREEN', 1, 1, Color_init_1(1, 255, 1), Color_init_1(1, 0, 1));
+    Mapper$Detector$BLUE_instance = new Mapper$Detector('BLUE', 2, 2, Color$Companion_getInstance().BLUE, Color$Companion_getInstance().YELLOW);
+  }
+  var Mapper$Detector$RED_instance;
+  function Mapper$Detector$RED_getInstance() {
+    Mapper$Detector_initFields();
+    return Mapper$Detector$RED_instance;
+  }
+  var Mapper$Detector$GREEN_instance;
+  function Mapper$Detector$GREEN_getInstance() {
+    Mapper$Detector_initFields();
+    return Mapper$Detector$GREEN_instance;
+  }
+  var Mapper$Detector$BLUE_instance;
+  function Mapper$Detector$BLUE_getInstance() {
+    Mapper$Detector_initFields();
+    return Mapper$Detector$BLUE_instance;
+  }
+  Mapper$Detector.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Detector',
+    interfaces: [Enum]
+  };
+  function Mapper$Detector$values() {
+    return [Mapper$Detector$RED_getInstance(), Mapper$Detector$GREEN_getInstance(), Mapper$Detector$BLUE_getInstance()];
+  }
+  Mapper$Detector.values = Mapper$Detector$values;
+  function Mapper$Detector$valueOf(name) {
+    switch (name) {
+      case 'RED':
+        return Mapper$Detector$RED_getInstance();
+      case 'GREEN':
+        return Mapper$Detector$GREEN_getInstance();
+      case 'BLUE':
+        return Mapper$Detector$BLUE_getInstance();
+      default:throwISE('No enum constant baaahs.Mapper.Detector.' + name);
+    }
+  }
+  Mapper$Detector.valueOf_61zpoe$ = Mapper$Detector$valueOf;
   function Coroutine$Mapper$start$lambda$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -1710,6 +1809,7 @@
           case 0:
             this.local$this$Mapper.link_0 = new FragmentingUdpLink(this.local$this$Mapper.network_0.link());
             this.local$this$Mapper.udpSocket_0 = this.local$this$Mapper.link_0.listenUdp_a6m852$(0, this.local$this$Mapper);
+            this.local$this$Mapper.mapperClient_0 = new MapperClient(this.local$this$Mapper.link_0, this.local$this$Mapper.pinkyAddress_0);
             return launch(this.local$this$Mapper, void 0, void 0, Mapper$start$lambda$lambda(this.local$this$Mapper));
           case 1:
             throw this.exception_0;
@@ -1741,14 +1841,74 @@
   Mapper.prototype.start = function () {
     doRunBlocking(Mapper$start$lambda(this));
   };
+  function Coroutine$Mapper$onStart$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$onStart$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$onStart$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$onStart$lambda.prototype.constructor = Coroutine$Mapper$onStart$lambda;
+  Coroutine$Mapper$onStart$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.run(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$onStart$lambda(this$Mapper_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$onStart$lambda(this$Mapper_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
   Mapper.prototype.onStart = function () {
-    this.isAligned_0 = true;
+    if (!this.isRunning_0) {
+      this.isAligned_0 = false;
+      this.isRunning_0 = true;
+      launch(this, void 0, void 0, Mapper$onStart$lambda(this));
+    }
+     else {
+      this.isAligned_0 = true;
+    }
   };
   Mapper.prototype.onPause = function () {
     this.isPaused_0 = !this.isPaused_0;
   };
   Mapper.prototype.onStop = function () {
     this.isAligned_0 = false;
+    this.onClose();
   };
   Mapper.prototype.onClose = function () {
     var tmp$;
@@ -1785,7 +1945,7 @@
           case 1:
             throw this.exception_0;
           case 2:
-            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK)), Unit;
+            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(this.local$this$Mapper.inactiveColor_0)), Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -1828,7 +1988,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest(this.local$this$Mapper.udpSocket_0.serverPort));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest());
             this.state_0 = 2;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1880,7 +2040,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(this.local$this$Mapper.inactiveColor_0));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1932,7 +2092,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().WHITE));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(this.local$this$Mapper.activeColor_0));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -1984,7 +2144,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK));
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, this.local$this$Mapper.solidColor_0(this.local$this$Mapper.inactiveColor_0));
             this.state_0 = 2;
             this.result_0 = delay(L250, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -2021,7 +2181,7 @@
   }
   function Mapper$run$lambda$lambda$lambda(this$Mapper) {
     return function () {
-      return this$Mapper.solidColor_0(Color$Companion_getInstance().WHITE);
+      return this$Mapper.solidColor_0(this$Mapper.activeColor_0);
     };
   }
   function Coroutine$Mapper$run$lambda$lambda(closure$brainMapper_0, this$Mapper_0, continuation_0) {
@@ -2070,9 +2230,12 @@
         return instance.doResume(null);
     };
   }
+  function Mapper$run$lambda$lambda_0(it) {
+    return it.second;
+  }
   function Mapper$run$lambda$lambda$lambda_0(this$Mapper) {
     return function () {
-      return this$Mapper.solidColor_0(Color$Companion_getInstance().BLACK);
+      return this$Mapper.solidColor_0(this$Mapper.inactiveColor_0);
     };
   }
   function Coroutine$Mapper$run$lambda$lambda_0(closure$brainMapper_0, this$Mapper_0, continuation_0) {
@@ -2112,7 +2275,7 @@
       }
      while (true);
   };
-  function Mapper$run$lambda$lambda_0(closure$brainMapper_0, this$Mapper_0) {
+  function Mapper$run$lambda$lambda_1(closure$brainMapper_0, this$Mapper_0) {
     return function (continuation_0, suspended) {
       var instance = new Coroutine$Mapper$run$lambda$lambda_0(closure$brainMapper_0, this$Mapper_0, continuation_0);
       if (suspended)
@@ -2136,6 +2299,17 @@
     kind: Kind_CLASS,
     interfaces: [Surface]
   };
+  function Mapper$run$resetToBase(closure$buffer) {
+    return function () {
+      var $receiver = closure$buffer.indices;
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        closure$buffer.set_vux9f0$(element, element % 3);
+      }
+    };
+  }
   function Coroutine$Mapper$run$lambda_4(this$Mapper_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -2153,9 +2327,15 @@
       try {
         switch (this.state_0) {
           case 0:
-            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0)), Unit;
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
           case 1:
             throw this.exception_0;
+          case 2:
+            return this.result_0;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -2181,16 +2361,293 @@
         return instance.doResume(null);
     };
   }
+  function Coroutine$Mapper$run$lambda_5(this$Mapper_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$run$lambda_5.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$run$lambda_5.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$run$lambda_5.prototype.constructor = Coroutine$Mapper$run$lambda_5;
+  Coroutine$Mapper$run$lambda_5.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$run$lambda_5(this$Mapper_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$run$lambda_5(this$Mapper_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$Mapper$run$lambda_6(this$Mapper_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$run$lambda_6.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$run$lambda_6.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$run$lambda_6.prototype.constructor = Coroutine$Mapper$run$lambda_6;
+  Coroutine$Mapper$run$lambda_6.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$run$lambda_6(this$Mapper_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$run$lambda_6(this$Mapper_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$Mapper$run$lambda_7(this$Mapper_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$run$lambda_7.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$run$lambda_7.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$run$lambda_7.prototype.constructor = Coroutine$Mapper$run$lambda_7;
+  Coroutine$Mapper$run$lambda_7.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$run$lambda_7(this$Mapper_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$run$lambda_7(this$Mapper_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Coroutine$Mapper$run$lambda_8(this$Mapper_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$run$lambda_8.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$run$lambda_8.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$run$lambda_8.prototype.constructor = Coroutine$Mapper$run$lambda_8;
+  Coroutine$Mapper$run$lambda_8.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Mapper.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$run$lambda_8(this$Mapper_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$run$lambda_8(this$Mapper_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Mapper$run$actualPixelIndex(closure$pixelStep, this$Mapper) {
+    return function (pixelIndexX) {
+      return Kotlin.imul(pixelIndexX, closure$pixelStep) % this$Mapper.maxPixelsPerBrain_0 + (Kotlin.imul(pixelIndexX, closure$pixelStep) / this$Mapper.maxPixelsPerBrain_0 | 0) | 0;
+    };
+  }
+  function Mapper$run$turnOnPixel(closure$resetToBase, closure$whitePaletteIndex, closure$buffer, this$Mapper, closure$pixelShader) {
+    return function (pixelIndex) {
+      closure$resetToBase();
+      closure$buffer.set_vux9f0$(pixelIndex, closure$whitePaletteIndex);
+      this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainShaderMessage(closure$pixelShader, closure$buffer));
+    };
+  }
+  function Coroutine$Mapper$run$lambda_9(this$Mapper_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Mapper = this$Mapper_0;
+  }
+  Coroutine$Mapper$run$lambda_9.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$run$lambda_9.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$run$lambda_9.prototype.constructor = Coroutine$Mapper$run$lambda_9;
+  Coroutine$Mapper$run$lambda_9.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            return this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8002, new MapperHelloMessage(this.local$this$Mapper.isRunning_0)), Unit;
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$run$lambda_9(this$Mapper_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$run$lambda_9(this$Mapper_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
   function Coroutine$run_0($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
     this.local$tmp$ = void 0;
-    this.local$tmp$_0 = void 0;
-    this.local$element = void 0;
+    this.local$sessionStartTime = void 0;
+    this.local$visibleSurfaces = void 0;
+    this.local$baseImageName = void 0;
+    this.local$deltaBitmap = void 0;
+    this.local$surfaceScheme = void 0;
+    this.local$tmp$_1 = void 0;
+    this.local$index = void 0;
+    this.local$item = void 0;
+    this.local$panelOnImage = void 0;
+    this.local$tries = void 0;
     this.local$pixelShader = void 0;
     this.local$buffer = void 0;
-    this.local$i = void 0;
+    this.local$whitePaletteIndex = void 0;
+    this.local$resetToBase = void 0;
+    this.local$actualPixelIndex = void 0;
+    this.local$turnOnPixel = void 0;
+    this.local$pixelIndexX = void 0;
+    this.local$pixelIndex = void 0;
+    this.local$detector = void 0;
+    this.local$pixelOnImage = void 0;
+    this.local$tries_0 = void 0;
   }
   Coroutine$run_0.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -2204,6 +2661,7 @@
       try {
         switch (this.state_0) {
           case 0:
+            var tmp$;
             this.$this.mapperDisplay_0.showMessage_61zpoe$('ESTABLISHING UPLINK\u2026');
             this.state_0 = 2;
             this.result_0 = this.$this.retry_0(Mapper$run$lambda(this.$this), this);
@@ -2275,7 +2733,19 @@
             this.state_0 = 9;
             continue;
           case 11:
+            this.local$sessionStartTime = DateTime.Companion.now();
             this.$this.mapperDisplay_0.showMessage_61zpoe$('CALIBRATING\u2026');
+            this.local$visibleSurfaces = this.$this.mapperDisplay_0.getVisibleSurfaces();
+            var destination = ArrayList_init_0(collectionSizeOrDefault(this.local$visibleSurfaces, 10));
+            var tmp$_0;
+            tmp$_0 = this.local$visibleSurfaces.iterator();
+            while (tmp$_0.hasNext()) {
+              var item = tmp$_0.next();
+              var tmp$_1;
+              destination.add_11rb$((Kotlin.isType(tmp$_1 = item.surface, SheepModel$Panel) ? tmp$_1 : throwCCE()).name);
+            }
+
+            println('Visible surfaces: ' + joinToString(destination));
             this.state_0 = 12;
             this.result_0 = this.$this.retry_0(Mapper$run$lambda_3(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -2283,163 +2753,367 @@
             continue;
           case 12:
             this.state_0 = 13;
-            this.result_0 = delay(L250, this);
+            this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 13:
-            this.$this.captureBaseImage_0 = true;
             this.state_0 = 14;
-            this.result_0 = delay(L250, this);
+            this.result_0 = this.$this.getImage_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 14:
+            var bitmap = this.result_0.toBitmap();
+            this.$this.baseBitmap_0 = bitmap;
+            this.local$baseImageName = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'base', bitmap);
+            this.local$deltaBitmap = new NativeBitmap(bitmap.width, bitmap.height);
+            this.$this.mapperDisplay_0.lockUi();
             this.$this.mapperDisplay_0.showMessage_61zpoe$('MAPPING\u2026');
             this.$this.mapperDisplay_0.showStats_qt1dr2$(this.$this.brainMappers_0.size, 0, -1);
+            this.local$surfaceScheme = Mapper$Detector$GREEN_getInstance();
             this.state_0 = 15;
             continue;
           case 15:
             if (!this.$this.isRunning_0) {
-              this.state_0 = 32;
+              this.state_0 = 45;
               continue;
             }
 
-            println('identify brains...');
-            this.local$tmp$_0 = this.$this.brainMappers_0.values.iterator();
+            println('identify surfaces...');
+            var tmp$_0_0;
+            this.local$index = 0;
+            this.local$tmp$_1 = this.$this.brainMappers_0.values.iterator();
             this.state_0 = 16;
             continue;
           case 16:
-            if (!this.local$tmp$_0.hasNext()) {
-              this.state_0 = 24;
+            if (!this.local$tmp$_1.hasNext()) {
+              this.state_0 = 25;
               continue;
             }
 
-            this.local$element = this.local$tmp$_0.next();
+            this.local$item = this.local$tmp$_1.next();
+            var tmp$_2, tmp$_3;
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('MAPPING SURFACE ' + checkIndexOverflow((tmp$_0_0 = this.local$index, this.local$index = tmp$_0_0 + 1 | 0, tmp$_0_0)) + ' / ' + this.$this.brainMappers_0.size + ' (' + this.local$item.brainId + ')\u2026');
             this.state_0 = 17;
-            this.result_0 = this.$this.retry_0(Mapper$run$lambda$lambda(this.local$element, this.$this), this);
+            this.result_0 = this.$this.retry_0(Mapper$run$lambda$lambda(this.local$item, this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 17:
             this.state_0 = 18;
-            this.result_0 = delay(L34, this);
+            this.result_0 = delay(L200, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 18:
             this.state_0 = 19;
-            continue;
-          case 19:
-            if (this.$this.newChangeRegion_0 != null) {
-              this.state_0 = 21;
-              continue;
-            }
-
-            this.state_0 = 20;
-            this.result_0 = delay(L10, this);
+            this.result_0 = this.$this.getImage_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 20:
-            this.state_0 = 19;
+          case 19:
+            this.local$panelOnImage = this.result_0;
+            this.local$tries = 5;
+            this.state_0 = 20;
             continue;
-          case 21:
-            var changeRegion = ensureNotNull(this.$this.newChangeRegion_0);
-            this.$this.newChangeRegion_0 = null;
-            var candidates = this.$this.mapperDisplay_0.getCandidateSurfaces_gdgylh$(changeRegion);
-            var tmp$ = this.$this.mapperDisplay_0;
-            var b = candidates.size;
-            var $receiver = candidates.subList_vux9f0$(0, Math_0.min(5, b));
-            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-            var tmp$_0;
-            tmp$_0 = $receiver.iterator();
-            while (tmp$_0.hasNext()) {
-              var item = tmp$_0.next();
-              destination.add_11rb$(item.name);
+          case 20:
+            if (!ImageProcessing$Companion_getInstance().findChanges_tlt7yx$(this.local$panelOnImage.toBitmap(), ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$surfaceScheme).isEmpty() || (tmp$_2 = this.local$tries, this.local$tries = tmp$_2 - 1 | 0, tmp$_2) <= 0) {
+              this.state_0 = 22;
+              continue;
             }
 
-            tmp$.showMessage2_61zpoe$('Candidate panels: ' + destination);
-            println('Guessed panel ' + first(candidates).name + ' for ' + this.local$element.brainId);
-            this.state_0 = 22;
+            this.$this.mapperDisplay_0.showDiffImage_oa2j07$(this.local$deltaBitmap);
+            println('No changes detected for brain ' + this.local$item.brainId + ', trying again...');
+            this.state_0 = 21;
+            this.result_0 = this.$this.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 21:
+            this.local$panelOnImage = this.result_0;
+            this.state_0 = 20;
+            continue;
+          case 22:
+            var panelOnBitmap = this.local$panelOnImage.toBitmap();
+            var changeRegion = ImageProcessing$Companion_getInstance().findChanges_tlt7yx$(panelOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$surfaceScheme);
+            this.$this.mapperDisplay_0.showDiffImage_oa2j07$(this.local$deltaBitmap, changeRegion);
+            this.local$item.changeRegion = changeRegion;
+            this.$this.mapperDisplay_0.showCamImage_q5ica7$(this.local$panelOnImage, changeRegion);
+            var destination_0 = ArrayList_init_0(collectionSizeOrDefault(this.local$visibleSurfaces, 10));
+            var tmp$_4;
+            tmp$_4 = this.local$visibleSurfaces.iterator();
+            while (tmp$_4.hasNext()) {
+              var item_0 = tmp$_4.next();
+              destination_0.add_11rb$(to(item_0, item_0.boxOnScreen.distanceTo_gdgylh$(changeRegion)));
+            }
+
+            var orderedPanels = sortedWith(destination_0, new Comparator$ObjectLiteral(compareBy$lambda(Mapper$run$lambda$lambda_0)));
+            this.$this.mapperDisplay_0.showCandidates_k9wkp5$(orderedPanels);
+            var firstGuess = first(orderedPanels).first;
+            var firstGuessSurface = Kotlin.isType(tmp$_3 = firstGuess.surface, SheepModel$Panel) ? tmp$_3 : throwCCE();
+            var tmp$_5 = this.$this.mapperDisplay_0;
+            var b = orderedPanels.size;
+            var $receiver = orderedPanels.subList_vux9f0$(0, Math_0.min(5, b));
+            var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+            var tmp$_6;
+            tmp$_6 = $receiver.iterator();
+            while (tmp$_6.hasNext()) {
+              var item_1 = tmp$_6.next();
+              destination_1.add_11rb$(firstGuessSurface.name);
+            }
+
+            tmp$_5.showMessage2_61zpoe$('Candidate panels: ' + destination_1);
+            println('Guessed panel ' + firstGuessSurface.name + ' for ' + this.local$item.brainId);
+            this.local$item.guessedPanel = firstGuessSurface;
+            this.local$item.guessedVisibleSurface = firstGuess;
+            this.local$item.panelDeltaBitmap = this.local$deltaBitmap;
+            this.local$item.deltaImageName = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'brain-' + this.local$item.brainId, this.local$deltaBitmap);
+            this.state_0 = 23;
             this.result_0 = this.$this.maybePause_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 22:
-            this.state_0 = 23;
-            this.result_0 = this.$this.retry_0(Mapper$run$lambda$lambda_0(this.local$element, this.$this), this);
+          case 23:
+            this.state_0 = 24;
+            this.result_0 = this.$this.retry_0(Mapper$run$lambda$lambda_1(this.local$item, this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 23:
+          case 24:
             this.state_0 = 16;
             continue;
-          case 24:
-            this.state_0 = 25;
+          case 25:
+            this.state_0 = 26;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 25:
+          case 26:
             println('identify pixels...');
-            this.local$pixelShader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
+            this.local$pixelShader = new PixelShader(PixelShader$Encoding$INDEXED_4_getInstance());
             var $receiver_0 = this.local$pixelShader.createBuffer_ppt8xj$(new Mapper$run$ObjectLiteral());
-            $receiver_0.palette[0] = Color$Companion_getInstance().BLACK;
-            $receiver_0.palette[0] = Color$Companion_getInstance().WHITE;
+            $receiver_0.palette[0] = this.$this.detectors[0].alternateColor;
+            $receiver_0.palette[1] = this.$this.detectors[1].alternateColor;
+            $receiver_0.palette[2] = this.$this.detectors[2].alternateColor;
+            $receiver_0.palette[3] = Color$Companion_getInstance().WHITE;
             $receiver_0.setAll_za3lpa$(0);
             this.local$buffer = $receiver_0;
-            this.local$tmp$ = this.$this.maxPixelsPerBrain_0;
-            this.local$i = 0;
-            this.state_0 = 26;
-            continue;
-          case 26:
-            if (this.local$i >= this.local$tmp$) {
-              this.state_0 = 30;
-              continue;
-            }
-
-            if (this.local$i % 128 === 0)
-              println('pixel ' + this.local$i + '... isRunning is ' + this.$this.isRunning_0);
-            this.local$buffer.set_vux9f0$(this.local$i, 1);
+            this.local$whitePaletteIndex = 3;
+            this.local$resetToBase = Mapper$run$resetToBase(this.local$buffer);
+            this.local$resetToBase();
             this.$this.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainShaderMessage(this.local$pixelShader, this.local$buffer));
-            this.local$buffer.set_vux9f0$(this.local$i, 0);
             this.state_0 = 27;
-            this.result_0 = delay(L34, this);
+            this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 27:
             this.state_0 = 28;
-            this.result_0 = this.$this.maybePause_0(this);
+            this.result_0 = time(Mapper$run$lambda_4(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 28:
+            println('getImage took ' + this.result_0.toString());
             this.state_0 = 29;
+            this.result_0 = time(Mapper$run$lambda_5(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 29:
-            this.local$i++;
-            this.state_0 = 26;
+            println('getImage took ' + this.result_0.toString());
+            this.state_0 = 30;
+            this.result_0 = time(Mapper$run$lambda_6(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 30:
-            println('done identifying pixels...');
+            println('getImage took ' + this.result_0.toString());
             this.state_0 = 31;
-            this.result_0 = delay(L1000, this);
+            this.result_0 = time(Mapper$run$lambda_7(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 31:
-            this.state_0 = 15;
+            println('getImage took ' + this.result_0.toString());
+            this.state_0 = 32;
+            this.result_0 = time(Mapper$run$lambda_8(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
             continue;
           case 32:
-            println('done identifying things... ' + this.$this.isRunning_0);
+            println('getImage took ' + this.result_0.toString());
             this.state_0 = 33;
-            this.result_0 = this.$this.retry_0(Mapper$run$lambda_4(this.$this), this);
+            this.result_0 = this.$this.getImage_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 33:
+            this.state_0 = 34;
+            this.result_0 = this.$this.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 34:
+            this.$this.baseBitmap_0 = this.result_0.toBitmap();
+            var pixelStep = 4;
+            this.local$actualPixelIndex = Mapper$run$actualPixelIndex(pixelStep, this.$this);
+            this.local$turnOnPixel = Mapper$run$turnOnPixel(this.local$resetToBase, this.local$whitePaletteIndex, this.local$buffer, this.$this, this.local$pixelShader);
+            this.local$tmp$ = this.$this.maxPixelsPerBrain_0;
+            this.local$pixelIndexX = 0;
+            this.state_0 = 35;
+            continue;
+          case 35:
+            if (this.local$pixelIndexX >= this.local$tmp$) {
+              this.state_0 = 43;
+              continue;
+            }
+
+            this.local$pixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX);
+            this.local$detector = this.$this.detectors[this.local$pixelIndex % this.$this.detectors.length];
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('MAPPING PIXEL ' + this.local$pixelIndex + ' / ' + this.$this.maxPixelsPerBrain_0 + ' (' + this.local$detector + ')\u2026');
+            if (this.local$pixelIndex % 128 === 0)
+              println('pixel ' + this.local$pixelIndex + '... isRunning is ' + this.$this.isRunning_0);
+            this.local$turnOnPixel(this.local$pixelIndex);
+            this.state_0 = 36;
+            this.result_0 = this.$this.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 36:
+            this.local$pixelOnImage = {v: this.result_0};
+            this.local$tries_0 = 5;
+            this.state_0 = 37;
+            continue;
+          case 37:
+            if (!ImageProcessing$Companion_getInstance().findChanges_tlt7yx$(this.local$pixelOnImage.v.toBitmap(), ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$detector).isEmpty() || (tmp$ = this.local$tries_0, this.local$tries_0 = tmp$ - 1 | 0, tmp$) <= 0) {
+              this.state_0 = 39;
+              continue;
+            }
+
+            this.$this.mapperDisplay_0.showDiffImage_oa2j07$(this.local$deltaBitmap);
+            println('No changes detected for pixel ' + this.local$pixelIndex + ', trying again...');
+            this.state_0 = 38;
+            this.result_0 = this.$this.getImage_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 38:
+            this.local$pixelOnImage.v = this.result_0;
+            this.state_0 = 37;
+            continue;
+          case 39:
+            var nextPixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX + 1 | 0);
+            if (nextPixelIndex < this.$this.maxPixelsPerBrain_0)
+              this.local$turnOnPixel(this.local$pixelIndex);
+            var tmp$_7;
+            tmp$_7 = this.$this.brainMappers_0.values.iterator();
+            while (tmp$_7.hasNext()) {
+              var element = tmp$_7.next();
+              var surfaceChangeRegion = element.changeRegion;
+              var visibleSurface = element.guessedVisibleSurface;
+              if (surfaceChangeRegion != null && surfaceChangeRegion.sqPix() > 0 && visibleSurface != null) {
+                var pixelOnBitmap = this.local$pixelOnImage.v.toBitmap();
+                var pixelOnImageName = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'pixel-' + this.local$pixelIndex, this.local$deltaBitmap);
+                var pixelChangeRegion = ImageProcessing$Companion_getInstance().findChanges_tlt7yx$(pixelOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$detector, surfaceChangeRegion);
+                this.$this.mapperDisplay_0.showDiffImage_oa2j07$(this.local$deltaBitmap, pixelChangeRegion);
+                if (!pixelChangeRegion.isEmpty()) {
+                  var center = new SheepModel$Point((pixelChangeRegion.centerX - surfaceChangeRegion.x0 | 0) / surfaceChangeRegion.width, (pixelChangeRegion.centerY - surfaceChangeRegion.y0 | 0) / surfaceChangeRegion.height, 0.0);
+                  visibleSurface.addPixel_nhq4am$(this.local$pixelIndex, pixelChangeRegion.centerX, pixelChangeRegion.centerY);
+                  var $receiver_1 = element.pixelMapData;
+                  var value = new Mapper$PixelMapData(pixelChangeRegion, pixelOnImageName);
+                  $receiver_1.put_xwzc9p$(this.local$pixelIndex, value);
+                  println(this.local$pixelIndex.toString() + '/' + element.brainId + ': center = ' + center);
+                }
+              }
+            }
+
+            this.state_0 = 40;
+            this.result_0 = delay(L100, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 40:
+            this.state_0 = 41;
+            this.result_0 = this.$this.maybePause_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 41:
+            this.state_0 = 42;
+            continue;
+          case 42:
+            this.local$pixelIndexX++;
+            this.state_0 = 35;
+            continue;
+          case 43:
+            println('done identifying pixels...');
+            this.state_0 = 44;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 44:
+            this.$this.isRunning_0 = false;
+            this.state_0 = 15;
+            continue;
+          case 45:
+            println('done identifying things... ' + this.$this.isRunning_0);
+            this.$this.mapperDisplay_0.showMessage_61zpoe$('++LEVEL UNLOCKED++');
+            this.$this.mapperDisplay_0.unlockUi();
+            this.state_0 = 46;
+            this.result_0 = this.$this.retry_0(Mapper$run$lambda_9(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 46:
+            println("Here's what we learned!");
+            var surfaces = ArrayList_init();
+            var tmp$_8;
+            tmp$_8 = this.$this.brainMappers_0.entries.iterator();
+            while (tmp$_8.hasNext()) {
+              var element_0 = tmp$_8.next();
+              var address = element_0.key;
+              var brainMapper = element_0.value;
+              var tmp$_9;
+              println('Brain ID: ' + brainMapper.brainId + ' at ' + address + ':');
+              println('  Surface: ' + toString_0(brainMapper.guessedPanel));
+              println('  Pixels:');
+              var visibleSurface_0 = brainMapper.guessedVisibleSurface;
+              if (visibleSurface_0 != null) {
+                visibleSurface_0.showPixels();
+                var tmp$_10;
+                tmp$_10 = brainMapper.pixelMapData.entries.iterator();
+                while (tmp$_10.hasNext()) {
+                  var element_1 = tmp$_10.next();
+                  var pixelIndex = element_1.key;
+                  var mapData = element_1.value;
+                  var changeRegion_0 = mapData.pixelChangeRegion;
+                  var position = visibleSurface_0.translatePixelToPanelSpace_dleff0$(changeRegion_0.centerX, changeRegion_0.centerY);
+                  println('    ' + pixelIndex + ' -> ' + toString_0(position != null ? position.x : null) + ',' + toString_0(position != null ? position.y : null));
+                }
+                var $receiver_2 = visibleSurface_0.pixelsInModelSpace;
+                var destination_2 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
+                var tmp$_11, tmp$_0_1;
+                var index = 0;
+                tmp$_11 = $receiver_2.iterator();
+                while (tmp$_11.hasNext()) {
+                  var item_2 = tmp$_11.next();
+                  var tmp$_12 = destination_2.add_11rb$;
+                  var pixelMapData = brainMapper.pixelMapData.get_11rb$(checkIndexOverflow((tmp$_0_1 = index, index = tmp$_0_1 + 1 | 0, tmp$_0_1)));
+                  var pixelChangeRegion_0 = pixelMapData != null ? pixelMapData.pixelChangeRegion : null;
+                  var screenPosition = pixelChangeRegion_0 != null ? visibleSurface_0.translatePixelToPanelSpace_dleff0$(pixelChangeRegion_0.centerX, pixelChangeRegion_0.centerY) : null;
+                  tmp$_12.call(destination_2, new MappingSession$SurfaceData$PixelData(item_2, screenPosition, pixelMapData != null ? pixelMapData.deltaImageName : null));
+                }
+                var pixels = destination_2;
+                surfaces.add_11rb$(new MappingSession$SurfaceData(brainMapper.brainId, (Kotlin.isType(tmp$_9 = visibleSurface_0.surface, SheepModel$Panel) ? tmp$_9 : throwCCE()).name, pixels, brainMapper.deltaImageName));
+              }
+            }
+
+            var cameraMatrix = new Matrix4([]);
+            var mappingSession = new MappingSession(this.local$sessionStartTime.unixMillis, surfaces, cameraMatrix, this.local$baseImageName);
+            this.$this.mapperClient_0.saveSession_x3z8ep$(mappingSession);
             return;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
@@ -2675,95 +3349,127 @@
     };
   }
   Mapper.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
+    var tmp$;
+    println('Mapper received message from ' + fromAddress + ':' + fromPort + ' ' + bytes[0]);
     var message = parse(bytes);
-    if (Kotlin.isType(message, BrainIdResponse)) {
+    if (Kotlin.isType(message, BrainHelloMessage)) {
+      println('Heard from Brain ' + message.brainId + ' surface=' + ((tmp$ = message.surfaceName) != null ? tmp$ : 'unknown'));
       var $receiver = this.brainMappers_0;
-      var tmp$;
+      var tmp$_0;
       var value = $receiver.get_11rb$(fromAddress);
       if (value == null) {
-        var answer = new Mapper$BrainMapper(this, fromAddress, message.id);
+        var answer = new Mapper$BrainMapping(this, fromAddress, message.brainId);
         $receiver.put_xwzc9p$(fromAddress, answer);
-        tmp$ = answer;
+        tmp$_0 = answer;
       }
        else {
-        tmp$ = value;
+        tmp$_0 = value;
       }
-      var brainMapper = tmp$;
+      var brainMapper = tmp$_0;
       brainMapper.shade_s74fr6$(Mapper$receive$lambda(this));
     }
      else if (Kotlin.isType(message, PinkyPongMessage)) {
-      var tmp$_0;
-      tmp$_0 = message.brainIds.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
+      var tmp$_1;
+      tmp$_1 = message.brainIds.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
         println('id = ' + element);
       }
     }
   };
   Mapper.prototype.haveImage_0 = function (image) {
-    this.mapperDisplay_0.showCamImage_6tj0gx$(image);
-    var bitmap = image.toBitmap();
-    if (this.captureBaseImage_0) {
-      this.baseBitmap_0 = bitmap;
-      this.deltaBitmap_0 = new NativeBitmap(bitmap.width, bitmap.height);
-      this.captureBaseImage_0 = false;
-    }
-     else if (this.baseBitmap_0 != null) {
-      this.deltaBitmap_0.copyFrom_5151av$(ensureNotNull(this.baseBitmap_0));
-      this.deltaBitmap_0.subtract_5151av$(bitmap);
-      var changeRegion = this.detectChangeRegion_0();
-      this.newChangeRegion_0 = changeRegion;
-      println('changeRegion = ' + changeRegion + ' ' + changeRegion.width + ' ' + changeRegion.height);
-      this.mapperDisplay_0.showDiffImage_qpnjw8$(this.deltaBitmap_0, changeRegion);
-    }
+    this.mapperDisplay_0.showCamImage_q5ica7$(image);
+    this.newIncomingImage_0 = image;
   };
-  function Mapper$detectChangeRegion$lambda(this$Mapper, closure$changeRegion) {
-    return function (data) {
-      var tmp$, tmp$_0;
-      var x0 = -1;
-      var y0 = -1;
-      var x1 = -1;
-      var y1 = -1;
-      tmp$ = this$Mapper.height;
-      for (var y = 0; y < tmp$; y++) {
-        var yAnyDiff = false;
-        tmp$_0 = this$Mapper.width;
-        for (var x = 0; x < tmp$_0; x++) {
-          var pixDiff = data[((x + Kotlin.imul(y, this$Mapper.width) | 0) * 4 | 0) + 2 | 0];
-          if (pixDiff !== 0) {
-            if (x0 === -1 || x0 > x)
-              x0 = x;
-            if (x > x1)
-              x1 = x;
-            yAnyDiff = true;
-          }
-        }
-        if (yAnyDiff) {
-          if (y0 === -1)
-            y0 = y;
-          y1 = y;
+  function Coroutine$getImage_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$getImage_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$getImage_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$getImage_0.prototype.constructor = Coroutine$getImage_0;
+  Coroutine$getImage_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.newIncomingImage_0 = null;
+            this.state_0 = 2;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            if (this.$this.newIncomingImage_0 != null) {
+              this.state_0 = 4;
+              continue;
+            }
+
+            this.state_0 = 3;
+            this.result_0 = delay(L2, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 2;
+            continue;
+          case 4:
+            var image = ensureNotNull(this.$this.newIncomingImage_0);
+            this.$this.newIncomingImage_0 = null;
+            return image;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
         }
       }
-      closure$changeRegion.v = new MediaDevices$Region(x0, y0, x1, y1);
-      return false;
-    };
-  }
-  Mapper.prototype.detectChangeRegion_0 = function () {
-    var changeRegion = {v: new MediaDevices$Region(-1, -1, -1, -1)};
-    this.deltaBitmap_0.withData_c37y77$(Mapper$detectChangeRegion$lambda(this, changeRegion));
-    return changeRegion.v;
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
   };
-  function Mapper$BrainMapper($outer, address, brainId) {
+  Mapper.prototype.getImage_0 = function (continuation_0, suspended) {
+    var instance = new Coroutine$getImage_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Mapper$BrainMapping($outer, address, brainId) {
     this.$outer = $outer;
     this.address_0 = address;
     this.brainId = brainId;
+    this.changeRegion = null;
+    this.guessedPanel = null;
+    this.guessedVisibleSurface = null;
+    this.panelDeltaBitmap = null;
+    this.deltaImageName = null;
+    this.pixelMapData = LinkedHashMap_init();
   }
-  Mapper$BrainMapper.prototype.shade_s74fr6$ = function (shaderMessage) {
+  Mapper$BrainMapping.prototype.shade_s74fr6$ = function (shaderMessage) {
     this.$outer.udpSocket_0.sendUdp_wpmaqi$(this.address_0, 8003, shaderMessage());
   };
-  Mapper$BrainMapper.$metadata$ = {
+  Mapper$BrainMapping.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'BrainMapper',
+    simpleName: 'BrainMapping',
+    interfaces: []
+  };
+  function Mapper$PixelMapData(pixelChangeRegion, deltaImageName) {
+    this.pixelChangeRegion = pixelChangeRegion;
+    this.deltaImageName = deltaImageName;
+  }
+  Mapper$PixelMapData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PixelMapData',
     interfaces: []
   };
   Object.defineProperty(Mapper.prototype, 'coroutineContext', {
@@ -2784,11 +3490,35 @@
   };
   function MapperDisplay() {
   }
+  MapperDisplay.prototype.showCamImage_q5ica7$ = function (image, changeRegion, callback$default) {
+    if (changeRegion === void 0)
+      changeRegion = null;
+    callback$default ? callback$default(image, changeRegion) : this.showCamImage_q5ica7$$default(image, changeRegion);
+  };
+  MapperDisplay.prototype.showDiffImage_oa2j07$ = function (deltaBitmap, changeRegion, callback$default) {
+    if (changeRegion === void 0)
+      changeRegion = null;
+    callback$default ? callback$default(deltaBitmap, changeRegion) : this.showDiffImage_oa2j07$$default(deltaBitmap, changeRegion);
+  };
   function MapperDisplay$Listener() {
   }
   MapperDisplay$Listener.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Listener',
+    interfaces: []
+  };
+  function MapperDisplay$VisibleSurface() {
+  }
+  MapperDisplay$VisibleSurface.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'VisibleSurface',
+    interfaces: []
+  };
+  function MapperDisplay$CameraOrientation() {
+  }
+  MapperDisplay$CameraOrientation.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'CameraOrientation',
     interfaces: []
   };
   MapperDisplay.$metadata$ = {
@@ -2806,14 +3536,17 @@
     interfaces: []
   };
   function MediaDevices$Region(x0, y0, x1, y1) {
+    MediaDevices$Region$Companion_getInstance();
     this.x0 = x0;
     this.y0 = y0;
     this.x1 = x1;
     this.y1 = y1;
     this.width = this.x1 - this.x0 | 0;
     this.height = this.y1 - this.y0 | 0;
-    this.centerX = this.x1 - this.x0 | 0;
-    this.centerY = this.y1 - this.y0 | 0;
+    this.centerX = ((this.x1 - this.x0 | 0) / 2 | 0) + this.x0 | 0;
+    this.centerY = ((this.y1 - this.y0 | 0) / 2 | 0) + this.y0 | 0;
+    this.xRange = until(this.x0, this.x1);
+    this.yRange = until(this.y0, this.y1);
   }
   MediaDevices$Region.prototype.distanceTo_gdgylh$ = function (other) {
     var dX = this.centerX - other.centerX | 0;
@@ -2821,6 +3554,63 @@
     var x = Kotlin.imul(dX, dX) + Kotlin.imul(dY, dY) | 0;
     return Math_0.sqrt(x);
   };
+  MediaDevices$Region.prototype.intersectionWith_gdgylh$ = function (other) {
+    var tmp$;
+    var a = this.x0;
+    var b = other.x0;
+    var leftX = Math_0.max(a, b);
+    var a_0 = this.x1;
+    var b_0 = this.x1;
+    var rightX = Math_0.min(a_0, b_0);
+    var a_1 = this.y0;
+    var b_1 = other.y0;
+    var topY = Math_0.max(a_1, b_1);
+    var a_2 = this.y1;
+    var b_2 = other.y1;
+    var bottomY = Math_0.min(a_2, b_2);
+    if (leftX < rightX && topY < bottomY) {
+      tmp$ = new MediaDevices$Region(leftX, topY, rightX, bottomY);
+    }
+     else {
+      tmp$ = MediaDevices$Region$Companion_getInstance().EMPTY;
+    }
+    return tmp$;
+  };
+  MediaDevices$Region.prototype.sqPix = function () {
+    var $receiver = this.x1 - this.x0;
+    var tmp$ = Math_0.pow($receiver, 2);
+    var $receiver_0 = this.y1 - this.y0;
+    var x = tmp$ + Math_0.pow($receiver_0, 2);
+    return Math_0.sqrt(x);
+  };
+  MediaDevices$Region.prototype.scaled_tjonv8$ = function (fromX, fromY, toX, toY) {
+    return new MediaDevices$Region(numberToInt(this.x0 / fromX * toX), numberToInt(this.y0 / fromX * toX), numberToInt(this.x1 / fromY * toY), numberToInt(this.y1 / fromY * toY));
+  };
+  MediaDevices$Region.prototype.isEmpty = function () {
+    return this.width <= 0 || this.height <= 0;
+  };
+  function MediaDevices$Region$Companion() {
+    MediaDevices$Region$Companion_instance = this;
+    this.EMPTY = new MediaDevices$Region(-1, -1, -1, -1);
+  }
+  MediaDevices$Region$Companion.prototype.containing_5151av$ = function (bitmap) {
+    return new MediaDevices$Region(0, 0, bitmap.width, bitmap.height);
+  };
+  MediaDevices$Region$Companion.prototype.containing_6tj0gx$ = function (image) {
+    return new MediaDevices$Region(0, 0, image.width, image.height);
+  };
+  MediaDevices$Region$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MediaDevices$Region$Companion_instance = null;
+  function MediaDevices$Region$Companion_getInstance() {
+    if (MediaDevices$Region$Companion_instance === null) {
+      new MediaDevices$Region$Companion();
+    }
+    return MediaDevices$Region$Companion_instance;
+  }
   MediaDevices$Region.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Region',
@@ -2993,11 +3783,12 @@
     simpleName: 'MovingHead',
     interfaces: []
   };
-  function Pinky(sheepModel, shows, network, dmxUniverse, display) {
+  function Pinky(sheepModel, shows, network, dmxUniverse, fs, display) {
     this.sheepModel = sheepModel;
     this.shows = shows;
     this.network = network;
     this.dmxUniverse = dmxUniverse;
+    this.fs = fs;
     this.display = display;
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
@@ -3025,6 +3816,8 @@
     this.brainInfos_0 = LinkedHashMap_init();
     this.pendingBrainInfos_0 = LinkedHashMap_init();
     this.networkStats_0 = new Pinky$NetworkStats();
+    this.storage_0 = new Storage(this.fs);
+    this.httpServer.listenWebSocket_brdh44$('/ws/mapper', Pinky_init$lambda(this));
   }
   Object.defineProperty(Pinky.prototype, 'selectedShow_0', {
     get: function () {
@@ -3125,10 +3918,49 @@
       return Unit;
     };
   }
-  function Pinky$run$lambda_3(this$Pinky) {
-    return function () {
-      this$Pinky.drawNextFrame_8be2vx$();
-      return Unit;
+  function Coroutine$Pinky$run$lambda_0(this$Pinky_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$this$Pinky = this$Pinky_0;
+  }
+  Coroutine$Pinky$run$lambda_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Pinky$run$lambda_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Pinky$run$lambda_0.prototype.constructor = Coroutine$Pinky$run$lambda_0;
+  Coroutine$Pinky$run$lambda_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            return this.local$this$Pinky.drawNextFrame_8be2vx$(), Unit;
+          case 1:
+            throw this.exception_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Pinky$run$lambda_3(this$Pinky_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Pinky$run$lambda_0(this$Pinky_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
     };
   }
   function Coroutine$run_1($this, continuation_0) {
@@ -3189,15 +4021,21 @@
           case 4:
             this.$this.updateSurfaces_8be2vx$();
             this.$this.networkStats_0.reset_8be2vx$();
-            var elapsedMs = time(Pinky$run$lambda_3(this.$this));
-            this.$this.display.showFrameMs = elapsedMs.toInt();
-            this.$this.display.stats = this.$this.networkStats_0;
             this.state_0 = 5;
-            this.result_0 = delay(L100, this);
+            this.result_0 = time(Pinky$run$lambda_3(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 5:
+            var elapsedMs = this.result_0;
+            this.$this.display.showFrameMs = elapsedMs.toInt();
+            this.$this.display.stats = this.$this.networkStats_0;
+            this.state_0 = 6;
+            this.result_0 = delay(L100, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 6:
             this.state_0 = 2;
             continue;
           default:this.state_0 = 1;
@@ -3255,8 +4093,10 @@
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage))
       this.foundBrain_0(fromAddress, new BrainId(message.brainId), message.surfaceName);
-    else if (Kotlin.isType(message, MapperHelloMessage))
+    else if (Kotlin.isType(message, MapperHelloMessage)) {
+      println('Mapper isRunning=' + message.isRunning);
       this.mapperIsRunning_0 = message.isRunning;
+    }
   };
   Pinky.prototype.maybeSendMapping_0 = function (address, brainId) {
     var tmp$, tmp$_0;
@@ -3277,7 +4117,7 @@
        else
         tmp$_1 = null;
       var pixelVertices = (tmp$_0 = tmp$_1) != null ? tmp$_0 : emptyList();
-      var mappingMsg = new BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices);
+      var mappingMsg = new BrainMappingMessage(brainId, surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelVertices);
       this.udpSocket_0.sendUdp_wpmaqi$(address, 8003, mappingMsg);
     }
   };
@@ -3319,7 +4159,8 @@
   }
   Pinky.prototype.foundBrain_0 = function (brainAddress, brainId, surfaceName) {
     var tmp$, tmp$_0;
-    var surface = (tmp$ = surfaceName != null ? this.surfacesByName_0.get_11rb$(surfaceName) : null) != null ? tmp$ : new Pinky$UnknownSurface(brainId);
+    println('Heard from brain ' + brainId + ' at ' + brainAddress + ' for ' + toString_0(surfaceName));
+    var surface = (tmp$ = this.surfacesByName_0.get_11rb$(surfaceName != null ? surfaceName : '')) != null ? tmp$ : new Pinky$UnknownSurface(brainId);
     if (Kotlin.isType(surface, Pinky$UnknownSurface))
       this.maybeSendMapping_0(brainAddress, brainId);
     var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
@@ -3446,6 +4287,11 @@
     simpleName: 'NetworkStats',
     interfaces: []
   };
+  function Pinky_init$lambda(this$Pinky) {
+    return function (it) {
+      return new MapperEndpoint(this$Pinky.storage_0);
+    };
+  }
   Pinky.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Pinky',
@@ -5801,6 +6647,340 @@
   Slider.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue)))));
   };
+  function Matrix4(elements) {
+    Matrix4$Companion_getInstance();
+    this.elements = elements;
+  }
+  function Matrix4$Companion() {
+    Matrix4$Companion_instance = this;
+  }
+  Matrix4$Companion.prototype.serializer = function () {
+    return Matrix4$$serializer_getInstance();
+  };
+  Matrix4$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Matrix4$Companion_instance = null;
+  function Matrix4$Companion_getInstance() {
+    if (Matrix4$Companion_instance === null) {
+      new Matrix4$Companion();
+    }
+    return Matrix4$Companion_instance;
+  }
+  function Matrix4$$serializer() {
+    this.descriptor_cgumyy$_0 = new SerialClassDescImpl('baaahs.geom.Matrix4', this);
+    this.descriptor.addElement_ivxn3r$('elements', false);
+    Matrix4$$serializer_instance = this;
+  }
+  Object.defineProperty(Matrix4$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_cgumyy$_0;
+    }
+  });
+  Matrix4$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeSerializableElement_blecud$(this.descriptor, 0, new ReferenceArraySerializer(PrimitiveClasses$doubleClass, internal.DoubleSerializer), obj.elements);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Matrix4$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = (bitMask0 & 1) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 0, new ReferenceArraySerializer(PrimitiveClasses$doubleClass, internal.DoubleSerializer)) : input.updateSerializableElement_ehubvl$(this.descriptor, 0, new ReferenceArraySerializer(PrimitiveClasses$doubleClass, internal.DoubleSerializer), local0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Matrix4_init_0(bitMask0, local0, null);
+  };
+  Matrix4$$serializer.prototype.childSerializers = function () {
+    return [new ReferenceArraySerializer(PrimitiveClasses$doubleClass, internal.DoubleSerializer)];
+  };
+  Matrix4$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Matrix4$$serializer_instance = null;
+  function Matrix4$$serializer_getInstance() {
+    if (Matrix4$$serializer_instance === null) {
+      new Matrix4$$serializer();
+    }
+    return Matrix4$$serializer_instance;
+  }
+  function Matrix4_init_0(seen1, elements, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Matrix4.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('elements');
+    else
+      $this.elements = elements;
+    return $this;
+  }
+  Matrix4.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Matrix4',
+    interfaces: []
+  };
+  function Vector2F(x, y) {
+    Vector2F$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+  }
+  Vector2F.prototype.component1 = function () {
+    return this.x;
+  };
+  Vector2F.prototype.component2 = function () {
+    return this.y;
+  };
+  function Vector2F$Companion() {
+    Vector2F$Companion_instance = this;
+  }
+  Vector2F$Companion.prototype.serializer = function () {
+    return Vector2F$$serializer_getInstance();
+  };
+  Vector2F$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vector2F$Companion_instance = null;
+  function Vector2F$Companion_getInstance() {
+    if (Vector2F$Companion_instance === null) {
+      new Vector2F$Companion();
+    }
+    return Vector2F$Companion_instance;
+  }
+  function Vector2F$$serializer() {
+    this.descriptor_3d9kie$_0 = new SerialClassDescImpl('baaahs.geom.Vector2F', this);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    Vector2F$$serializer_instance = this;
+  }
+  Object.defineProperty(Vector2F$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_3d9kie$_0;
+    }
+  });
+  Vector2F$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, obj.x);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, obj.y);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vector2F$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vector2F_init(bitMask0, local0, local1, null);
+  };
+  Vector2F$$serializer.prototype.childSerializers = function () {
+    return [internal.FloatSerializer, internal.FloatSerializer];
+  };
+  Vector2F$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vector2F$$serializer_instance = null;
+  function Vector2F$$serializer_getInstance() {
+    if (Vector2F$$serializer_instance === null) {
+      new Vector2F$$serializer();
+    }
+    return Vector2F$$serializer_instance;
+  }
+  function Vector2F_init(seen1, x, y, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vector2F.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    return $this;
+  }
+  Vector2F.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vector2F',
+    interfaces: []
+  };
+  function Vector3F(x, y, z) {
+    Vector3F$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+  function Vector3F$Companion() {
+    Vector3F$Companion_instance = this;
+  }
+  Vector3F$Companion.prototype.serializer = function () {
+    return Vector3F$$serializer_getInstance();
+  };
+  Vector3F$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vector3F$Companion_instance = null;
+  function Vector3F$Companion_getInstance() {
+    if (Vector3F$Companion_instance === null) {
+      new Vector3F$Companion();
+    }
+    return Vector3F$Companion_instance;
+  }
+  function Vector3F$$serializer() {
+    this.descriptor_2usph3$_0 = new SerialClassDescImpl('baaahs.geom.Vector3F', this);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    this.descriptor.addElement_ivxn3r$('z', false);
+    Vector3F$$serializer_instance = this;
+  }
+  Object.defineProperty(Vector3F$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_2usph3$_0;
+    }
+  });
+  Vector3F$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, obj.x);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, obj.y);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 2, obj.z);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vector3F$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = input.decodeFloatElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vector3F_init(bitMask0, local0, local1, local2, null);
+  };
+  Vector3F$$serializer.prototype.childSerializers = function () {
+    return [internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer];
+  };
+  Vector3F$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vector3F$$serializer_instance = null;
+  function Vector3F$$serializer_getInstance() {
+    if (Vector3F$$serializer_instance === null) {
+      new Vector3F$$serializer();
+    }
+    return Vector3F$$serializer_instance;
+  }
+  function Vector3F_init(seen1, x, y, z, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vector3F.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('z');
+    else
+      $this.z = z;
+    return $this;
+  }
+  Vector3F.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vector3F',
+    interfaces: []
+  };
+  Vector3F.prototype.component1 = function () {
+    return this.x;
+  };
+  Vector3F.prototype.component2 = function () {
+    return this.y;
+  };
+  Vector3F.prototype.component3 = function () {
+    return this.z;
+  };
+  Vector3F.prototype.copy_y2kzbl$ = function (x, y, z) {
+    return new Vector3F(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z);
+  };
+  Vector3F.prototype.toString = function () {
+    return 'Vector3F(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + ')';
+  };
+  Vector3F.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    result = result * 31 + Kotlin.hashCode(this.z) | 0;
+    return result;
+  };
+  Vector3F.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
+  };
   function Image() {
   }
   Image.$metadata$ = {
@@ -5810,9 +6990,21 @@
   };
   function Bitmap() {
   }
+  Bitmap.prototype.withData_u0v8ny$ = function (region, fn, callback$default) {
+    if (region === void 0)
+      region = MediaDevices$Region$Companion_getInstance().containing_5151av$(this);
+    callback$default ? callback$default(region, fn) : this.withData_u0v8ny$$default(region, fn);
+  };
   Bitmap.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Bitmap',
+    interfaces: []
+  };
+  function UByteClampedArray() {
+  }
+  UByteClampedArray.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'UByteClampedArray',
     interfaces: []
   };
   function ByteArrayReader(bytes, offset) {
@@ -5977,6 +7169,846 @@
     ByteArrayWriter.call($this, new Int8Array(size));
     return $this;
   }
+  function Fs() {
+  }
+  Fs.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Fs',
+    interfaces: []
+  };
+  function DateTimeSerializer() {
+    DateTimeSerializer_instance = this;
+    this.descriptor_b8hcmr$_0 = withName(internal.StringDescriptor, 'DateTime');
+  }
+  Object.defineProperty(DateTimeSerializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_b8hcmr$_0;
+    }
+  });
+  DateTimeSerializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    return new DateTime(decoder.decodeDouble());
+  };
+  DateTimeSerializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    encoder.encodeDouble_14dthe$(obj.unixMillis);
+  };
+  DateTimeSerializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'DateTimeSerializer',
+    interfaces: [KSerializer]
+  };
+  var DateTimeSerializer_instance = null;
+  function DateTimeSerializer_getInstance() {
+    if (DateTimeSerializer_instance === null) {
+      new DateTimeSerializer();
+    }
+    return DateTimeSerializer_instance;
+  }
+  function ImageProcessing() {
+    ImageProcessing$Companion_getInstance();
+  }
+  function ImageProcessing$Histogram(data, total) {
+    this.data = data;
+    this.total = total;
+  }
+  ImageProcessing$Histogram.prototype.sumValues_n8acyv$ = function (range) {
+    var tmp$, tmp$_0, tmp$_1;
+    var total = 0;
+    tmp$ = range.first;
+    tmp$_0 = range.last;
+    tmp$_1 = range.step;
+    for (var i = tmp$; i <= tmp$_0; i += tmp$_1) {
+      total = total + this.data[i] | 0;
+    }
+    return total;
+  };
+  ImageProcessing$Histogram.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Histogram',
+    interfaces: []
+  };
+  function ImageProcessing$Companion() {
+    ImageProcessing$Companion_instance = this;
+  }
+  function ImageProcessing$Companion$channelHistogram$lambda(closure$channel, closure$hist) {
+    return function (it) {
+      var totalBytes = it.size;
+      for (var i = closure$channel; i < totalBytes; i += 4) {
+        var tmp$;
+        tmp$ = it.get_za3lpa$(i) & 255;
+        closure$hist[tmp$] = closure$hist[tmp$] + 1 | 0;
+      }
+      return false;
+    };
+  }
+  ImageProcessing$Companion.prototype.channelHistogram_7c0di7$ = function (channel, bitmap) {
+    var array = new Int32Array(256);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = 0;
+    }
+    var hist = array;
+    bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$channelHistogram$lambda(channel, hist));
+    return new ImageProcessing$Histogram(hist, Kotlin.imul(bitmap.width, bitmap.height));
+  };
+  ImageProcessing$Companion.prototype.findChanges_tlt7yx$ = function (newBitmap, baseBitmap, deltaBitmap, detector, withinRegion) {
+    if (withinRegion === void 0)
+      withinRegion = MediaDevices$Region$Companion_getInstance().containing_5151av$(baseBitmap);
+    deltaBitmap.copyFrom_5151av$(baseBitmap);
+    deltaBitmap.subtract_5151av$(newBitmap);
+    var changeRegion = this.detectChangeRegion_0(deltaBitmap, detector, withinRegion);
+    println('changeRegion = ' + changeRegion + ' ' + changeRegion.width + ' ' + changeRegion.height);
+    return changeRegion;
+  };
+  function ImageProcessing$Companion$detectChangeRegion$lambda(closure$withinRegion, closure$deltaBitmap, closure$detector, closure$minChangeToDetect, closure$changeRegion) {
+    return function (data) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14, tmp$_15, tmp$_16, tmp$_17, tmp$_18, tmp$_19, tmp$_20, tmp$_21, tmp$_22;
+      var array = new Int16Array(closure$withinRegion.width);
+      var tmp$_23;
+      tmp$_23 = array.length - 1 | 0;
+      for (var i = 0; i <= tmp$_23; i++) {
+        array[i] = 255;
+      }
+      var xMin = array;
+      var array_0 = new Int16Array(closure$withinRegion.width);
+      var tmp$_24;
+      tmp$_24 = array_0.length - 1 | 0;
+      for (var i_0 = 0; i_0 <= tmp$_24; i_0++) {
+        array_0[i_0] = 0;
+      }
+      var xMax = array_0;
+      var array_1 = new Int16Array(closure$withinRegion.height);
+      var tmp$_25;
+      tmp$_25 = array_1.length - 1 | 0;
+      for (var i_1 = 0; i_1 <= tmp$_25; i_1++) {
+        array_1[i_1] = 255;
+      }
+      var yMin = array_1;
+      var array_2 = new Int16Array(closure$withinRegion.height);
+      var tmp$_26;
+      tmp$_26 = array_2.length - 1 | 0;
+      for (var i_2 = 0; i_2 <= tmp$_26; i_2++) {
+        array_2[i_2] = 0;
+      }
+      var yMax = array_2;
+      tmp$ = closure$withinRegion.yRange;
+      tmp$_0 = tmp$.first;
+      tmp$_1 = tmp$.last;
+      tmp$_2 = tmp$.step;
+      for (var y = tmp$_0; y <= tmp$_1; y += tmp$_2) {
+        tmp$_3 = closure$withinRegion.xRange;
+        tmp$_4 = tmp$_3.first;
+        tmp$_5 = tmp$_3.last;
+        tmp$_6 = tmp$_3.step;
+        for (var x = tmp$_4; x <= tmp$_5; x += tmp$_6) {
+          var pixelByteIndex = (x + Kotlin.imul(y, closure$deltaBitmap.width) | 0) * 4 | 0;
+          var pixDiff = toShort(data.get_za3lpa$(pixelByteIndex + closure$detector.rgbaIndex | 0));
+          var rX = x - closure$withinRegion.x0 | 0;
+          var rY = y - closure$withinRegion.y0 | 0;
+          if (pixDiff < xMin[rX])
+            xMin[rX] = pixDiff;
+          if (pixDiff > xMax[rX])
+            xMax[rX] = pixDiff;
+          if (pixDiff < yMin[rY])
+            yMin[rY] = pixDiff;
+          if (pixDiff > yMax[rY])
+            yMax[rY] = pixDiff;
+        }
+      }
+      var xMinMin = (tmp$_7 = min(xMin)) != null ? tmp$_7 : 0;
+      var xMinMax = (tmp$_8 = max(xMin)) != null ? tmp$_8 : 0;
+      var xMaxMin = (tmp$_9 = min(xMax)) != null ? tmp$_9 : 0;
+      var xMaxMax = (tmp$_10 = max(xMax)) != null ? tmp$_10 : 0;
+      var yMinMin = (tmp$_11 = min(yMin)) != null ? tmp$_11 : 0;
+      var yMinMax = (tmp$_12 = max(yMin)) != null ? tmp$_12 : 0;
+      var yMaxMin = (tmp$_13 = min(yMax)) != null ? tmp$_13 : 0;
+      var yMaxMax = (tmp$_14 = max(yMax)) != null ? tmp$_14 : 0;
+      var x0 = -1;
+      var y0 = -1;
+      var x1 = -1;
+      var y1 = -1;
+      var a = closure$minChangeToDetect;
+      var b = xMaxMax - xMinMin;
+      var scale = Math_0.max(a, b);
+      var b255 = new UByte_init(toByte(255));
+      tmp$_15 = closure$withinRegion.yRange;
+      tmp$_16 = tmp$_15.first;
+      tmp$_17 = tmp$_15.last;
+      tmp$_18 = tmp$_15.step;
+      for (var y_0 = tmp$_16; y_0 <= tmp$_17; y_0 += tmp$_18) {
+        var yAnyDiff = false;
+        tmp$_19 = closure$withinRegion.xRange;
+        tmp$_20 = tmp$_19.first;
+        tmp$_21 = tmp$_19.last;
+        tmp$_22 = tmp$_19.step;
+        for (var x_0 = tmp$_20; x_0 <= tmp$_21; x_0 += tmp$_22) {
+          var pixelByteIndex_0 = (x_0 + Kotlin.imul(y_0, closure$deltaBitmap.width) | 0) * 4 | 0;
+          var pixDiff_0 = data.get_za3lpa$(pixelByteIndex_0 + closure$detector.rgbaIndex | 0);
+          var scaledPixDiff = (pixDiff_0 - xMinMin) / scale;
+          if (scaledPixDiff > 0.5) {
+            if (x0 === -1 || x0 > x_0)
+              x0 = x_0;
+            if (x_0 > x1)
+              x1 = x_0;
+            yAnyDiff = true;
+          }
+        }
+        if (yAnyDiff) {
+          if (y0 === -1)
+            y0 = y_0;
+          y1 = y_0;
+        }
+      }
+      closure$changeRegion.v = new MediaDevices$Region(x0, y0, x1, y1);
+      return true;
+    };
+  }
+  ImageProcessing$Companion.prototype.detectChangeRegion_0 = function (deltaBitmap, detector, withinRegion) {
+    if (withinRegion === void 0)
+      withinRegion = MediaDevices$Region$Companion_getInstance().containing_5151av$(deltaBitmap);
+    var changeRegion = {v: MediaDevices$Region$Companion_getInstance().EMPTY};
+    var minChangeToDetect = 10.0;
+    deltaBitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$detectChangeRegion$lambda(withinRegion, deltaBitmap, detector, minChangeToDetect, changeRegion));
+    return changeRegion.v;
+  };
+  ImageProcessing$Companion.prototype.histogram_jnr2u7$ = function ($receiver, range) {
+    var hist = new Int32Array(range.last - range.first | 0);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0;
+      tmp$_0 = element - range.first | 0;
+      hist[tmp$_0] = hist[tmp$_0] + 1 | 0;
+    }
+    return hist;
+  };
+  ImageProcessing$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var ImageProcessing$Companion_instance = null;
+  function ImageProcessing$Companion_getInstance() {
+    if (ImageProcessing$Companion_instance === null) {
+      new ImageProcessing$Companion();
+    }
+    return ImageProcessing$Companion_instance;
+  }
+  ImageProcessing.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ImageProcessing',
+    interfaces: []
+  };
+  function MapperClient(link, address) {
+    this.tcpConnection = link.connectWebSocket_t0j9bj$(address, 0, '/ws/mapper', this);
+  }
+  MapperClient.prototype.saveImage_39j694$ = function (sessionStartTime, name, bitmap) {
+    var filename = Storage$Companion_getInstance().formatDateTime_mw5vjr$(sessionStartTime) + '/' + name + '.webp';
+    var dataUrl = bitmap.toDataUrl();
+    var startOfData = ';base64,';
+    var i = indexOf(dataUrl, startOfData);
+    if (i > -1) {
+      var tmp$ = JsonPrimitive(filename);
+      var startIndex = i + startOfData.length | 0;
+      this.sendCommand_0('saveImage', [tmp$, JsonPrimitive(dataUrl.substring(startIndex))]);
+    }
+     else {
+      throw IllegalArgumentException_init('failed to save image ' + dataUrl);
+    }
+    return filename;
+  };
+  MapperClient.prototype.saveSession_x3z8ep$ = function (mappingSession) {
+    this.sendCommand_0('saveSession', [MapperEndpoint$Companion_getInstance().json.toJson_tf03ej$(MappingSession$Companion_getInstance().serializer(), mappingSession)]);
+  };
+  function MapperClient$sendCommand$lambda(closure$command, closure$args) {
+    return function ($receiver) {
+      $receiver.unaryPlus_5cw0du$(closure$command);
+      var $receiver_0 = closure$args;
+      var tmp$;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var element = $receiver_0[tmp$];
+        $receiver.unaryPlus_u3sd3g$(element);
+      }
+      return Unit;
+    };
+  }
+  MapperClient.prototype.sendCommand_0 = function (command, args) {
+    var content = jsonArray(MapperClient$sendCommand$lambda(command, args));
+    this.tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonArraySerializer, content)));
+  };
+  MapperClient.prototype.connected_67ozxy$ = function (tcpConnection) {
+    println('Mapper connected to Pinky!');
+  };
+  MapperClient.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
+    println('Received ' + decodeToString(bytes));
+  };
+  MapperClient.prototype.reset_67ozxy$ = function (tcpConnection) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'MapperClient.reset not implemented');
+  };
+  MapperClient.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MapperClient',
+    interfaces: [Network$WebSocketListener]
+  };
+  function MapperEndpoint(storage) {
+    MapperEndpoint$Companion_getInstance();
+    this.storage = storage;
+  }
+  function MapperEndpoint$Companion() {
+    MapperEndpoint$Companion_instance = this;
+    this.json = new Json(JsonConfiguration.Companion.Stable);
+  }
+  MapperEndpoint$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MapperEndpoint$Companion_instance = null;
+  function MapperEndpoint$Companion_getInstance() {
+    if (MapperEndpoint$Companion_instance === null) {
+      new MapperEndpoint$Companion();
+    }
+    return MapperEndpoint$Companion_instance;
+  }
+  MapperEndpoint.prototype.connected_67ozxy$ = function (tcpConnection) {
+    println('Received connection from ' + tcpConnection.fromAddress);
+  };
+  MapperEndpoint.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
+    var parts = MapperEndpoint$Companion_getInstance().json.parseJson_61zpoe$(decodeToString(bytes)).jsonArray;
+    var command = get_contentOrNull(first(parts));
+    println('Command: ' + parts);
+    switch (command) {
+      case 'saveImage':
+        var name = parts.get_za3lpa$(1).primitive.contentOrNull;
+        var imageDataBase64 = parts.get_za3lpa$(2).primitive.contentOrNull;
+        var imageData = decodeBase64(ensureNotNull(imageDataBase64));
+        this.storage.saveImage_yzgtim$(ensureNotNull(name), imageData);
+        break;
+      case 'saveSession':
+        var mappingSession = MapperEndpoint$Companion_getInstance().json.fromJson_htt2tq$(MappingSession$Companion_getInstance().serializer(), parts.get_za3lpa$(1));
+        this.storage.saveSession_x3z8ep$(mappingSession);
+        break;
+    }
+  };
+  MapperEndpoint.prototype.reset_67ozxy$ = function (tcpConnection) {
+  };
+  MapperEndpoint.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MapperEndpoint',
+    interfaces: [Network$WebSocketListener]
+  };
+  function MappingSession(startedAt, surfaces, cameraMatrix, baseImage, notes) {
+    MappingSession$Companion_getInstance();
+    if (notes === void 0)
+      notes = null;
+    this.startedAt = startedAt;
+    this.surfaces = surfaces;
+    this.cameraMatrix = cameraMatrix;
+    this.baseImage = baseImage;
+    this.notes = notes;
+  }
+  Object.defineProperty(MappingSession.prototype, 'startedAtDateTime', {
+    get: function () {
+      return new DateTime(this.startedAt);
+    }
+  });
+  function MappingSession$SurfaceData(brainId, panelName, pixels, deltaImage) {
+    MappingSession$SurfaceData$Companion_getInstance();
+    this.brainId = brainId;
+    this.panelName = panelName;
+    this.pixels = pixels;
+    this.deltaImage = deltaImage;
+  }
+  function MappingSession$SurfaceData$PixelData(modelPosition, screenPosition, deltaImage) {
+    MappingSession$SurfaceData$PixelData$Companion_getInstance();
+    this.modelPosition = modelPosition;
+    this.screenPosition = screenPosition;
+    this.deltaImage = deltaImage;
+  }
+  function MappingSession$SurfaceData$PixelData$Companion() {
+    MappingSession$SurfaceData$PixelData$Companion_instance = this;
+  }
+  MappingSession$SurfaceData$PixelData$Companion.prototype.serializer = function () {
+    return MappingSession$SurfaceData$PixelData$$serializer_getInstance();
+  };
+  MappingSession$SurfaceData$PixelData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MappingSession$SurfaceData$PixelData$Companion_instance = null;
+  function MappingSession$SurfaceData$PixelData$Companion_getInstance() {
+    if (MappingSession$SurfaceData$PixelData$Companion_instance === null) {
+      new MappingSession$SurfaceData$PixelData$Companion();
+    }
+    return MappingSession$SurfaceData$PixelData$Companion_instance;
+  }
+  function MappingSession$SurfaceData$PixelData$$serializer() {
+    this.descriptor_l6520x$_0 = new SerialClassDescImpl('baaahs.mapper.MappingSession.SurfaceData.PixelData', this);
+    this.descriptor.addElement_ivxn3r$('modelPosition', false);
+    this.descriptor.addElement_ivxn3r$('screenPosition', false);
+    this.descriptor.addElement_ivxn3r$('deltaImage', false);
+    MappingSession$SurfaceData$PixelData$$serializer_instance = this;
+  }
+  Object.defineProperty(MappingSession$SurfaceData$PixelData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_l6520x$_0;
+    }
+  });
+  MappingSession$SurfaceData$PixelData$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 0, Vector3F$$serializer_getInstance(), obj.modelPosition);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 1, Vector2F$$serializer_getInstance(), obj.screenPosition);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 2, internal.StringSerializer, obj.deltaImage);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  MappingSession$SurfaceData$PixelData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = (bitMask0 & 1) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 0, Vector3F$$serializer_getInstance()) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 0, Vector3F$$serializer_getInstance(), local0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = (bitMask0 & 2) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 1, Vector2F$$serializer_getInstance()) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 1, Vector2F$$serializer_getInstance(), local1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = (bitMask0 & 4) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 2, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 2, internal.StringSerializer, local2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return MappingSession$SurfaceData$MappingSession$SurfaceData$PixelData_init(bitMask0, local0, local1, local2, null);
+  };
+  MappingSession$SurfaceData$PixelData$$serializer.prototype.childSerializers = function () {
+    return [new NullableSerializer(Vector3F$$serializer_getInstance()), new NullableSerializer(Vector2F$$serializer_getInstance()), new NullableSerializer(internal.StringSerializer)];
+  };
+  MappingSession$SurfaceData$PixelData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var MappingSession$SurfaceData$PixelData$$serializer_instance = null;
+  function MappingSession$SurfaceData$PixelData$$serializer_getInstance() {
+    if (MappingSession$SurfaceData$PixelData$$serializer_instance === null) {
+      new MappingSession$SurfaceData$PixelData$$serializer();
+    }
+    return MappingSession$SurfaceData$PixelData$$serializer_instance;
+  }
+  function MappingSession$SurfaceData$MappingSession$SurfaceData$PixelData_init(seen1, modelPosition, screenPosition, deltaImage, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(MappingSession$SurfaceData$PixelData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('modelPosition');
+    else
+      $this.modelPosition = modelPosition;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('screenPosition');
+    else
+      $this.screenPosition = screenPosition;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('deltaImage');
+    else
+      $this.deltaImage = deltaImage;
+    return $this;
+  }
+  MappingSession$SurfaceData$PixelData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PixelData',
+    interfaces: []
+  };
+  MappingSession$SurfaceData$PixelData.prototype.component1 = function () {
+    return this.modelPosition;
+  };
+  MappingSession$SurfaceData$PixelData.prototype.component2 = function () {
+    return this.screenPosition;
+  };
+  MappingSession$SurfaceData$PixelData.prototype.component3 = function () {
+    return this.deltaImage;
+  };
+  MappingSession$SurfaceData$PixelData.prototype.copy_tuchvg$ = function (modelPosition, screenPosition, deltaImage) {
+    return new MappingSession$SurfaceData$PixelData(modelPosition === void 0 ? this.modelPosition : modelPosition, screenPosition === void 0 ? this.screenPosition : screenPosition, deltaImage === void 0 ? this.deltaImage : deltaImage);
+  };
+  MappingSession$SurfaceData$PixelData.prototype.toString = function () {
+    return 'PixelData(modelPosition=' + Kotlin.toString(this.modelPosition) + (', screenPosition=' + Kotlin.toString(this.screenPosition)) + (', deltaImage=' + Kotlin.toString(this.deltaImage)) + ')';
+  };
+  MappingSession$SurfaceData$PixelData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.modelPosition) | 0;
+    result = result * 31 + Kotlin.hashCode(this.screenPosition) | 0;
+    result = result * 31 + Kotlin.hashCode(this.deltaImage) | 0;
+    return result;
+  };
+  MappingSession$SurfaceData$PixelData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.modelPosition, other.modelPosition) && Kotlin.equals(this.screenPosition, other.screenPosition) && Kotlin.equals(this.deltaImage, other.deltaImage)))));
+  };
+  function MappingSession$SurfaceData$Companion() {
+    MappingSession$SurfaceData$Companion_instance = this;
+  }
+  MappingSession$SurfaceData$Companion.prototype.serializer = function () {
+    return MappingSession$SurfaceData$$serializer_getInstance();
+  };
+  MappingSession$SurfaceData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MappingSession$SurfaceData$Companion_instance = null;
+  function MappingSession$SurfaceData$Companion_getInstance() {
+    if (MappingSession$SurfaceData$Companion_instance === null) {
+      new MappingSession$SurfaceData$Companion();
+    }
+    return MappingSession$SurfaceData$Companion_instance;
+  }
+  function MappingSession$SurfaceData$$serializer() {
+    this.descriptor_7hc8jj$_0 = new SerialClassDescImpl('baaahs.mapper.MappingSession.SurfaceData', this);
+    this.descriptor.addElement_ivxn3r$('brainId', false);
+    this.descriptor.addElement_ivxn3r$('panelName', false);
+    this.descriptor.addElement_ivxn3r$('pixels', false);
+    this.descriptor.addElement_ivxn3r$('deltaImage', false);
+    MappingSession$SurfaceData$$serializer_instance = this;
+  }
+  Object.defineProperty(MappingSession$SurfaceData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_7hc8jj$_0;
+    }
+  });
+  MappingSession$SurfaceData$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.brainId);
+    output.encodeStringElement_bgm7zs$(this.descriptor, 1, obj.panelName);
+    output.encodeSerializableElement_blecud$(this.descriptor, 2, new ArrayListSerializer(new NullableSerializer(MappingSession$SurfaceData$PixelData$$serializer_getInstance())), obj.pixels);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 3, internal.StringSerializer, obj.deltaImage);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  MappingSession$SurfaceData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeStringElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = input.decodeStringElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = (bitMask0 & 4) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 2, new ArrayListSerializer(new NullableSerializer(MappingSession$SurfaceData$PixelData$$serializer_getInstance()))) : input.updateSerializableElement_ehubvl$(this.descriptor, 2, new ArrayListSerializer(new NullableSerializer(MappingSession$SurfaceData$PixelData$$serializer_getInstance())), local2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case 3:
+          local3 = (bitMask0 & 8) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 3, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 3, internal.StringSerializer, local3);
+          bitMask0 |= 8;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return MappingSession$MappingSession$SurfaceData_init(bitMask0, local0, local1, local2, local3, null);
+  };
+  MappingSession$SurfaceData$$serializer.prototype.childSerializers = function () {
+    return [internal.StringSerializer, internal.StringSerializer, new ArrayListSerializer(new NullableSerializer(MappingSession$SurfaceData$PixelData$$serializer_getInstance())), new NullableSerializer(internal.StringSerializer)];
+  };
+  MappingSession$SurfaceData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var MappingSession$SurfaceData$$serializer_instance = null;
+  function MappingSession$SurfaceData$$serializer_getInstance() {
+    if (MappingSession$SurfaceData$$serializer_instance === null) {
+      new MappingSession$SurfaceData$$serializer();
+    }
+    return MappingSession$SurfaceData$$serializer_instance;
+  }
+  function MappingSession$MappingSession$SurfaceData_init(seen1, brainId, panelName, pixels, deltaImage, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(MappingSession$SurfaceData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('brainId');
+    else
+      $this.brainId = brainId;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('panelName');
+    else
+      $this.panelName = panelName;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('pixels');
+    else
+      $this.pixels = pixels;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('deltaImage');
+    else
+      $this.deltaImage = deltaImage;
+    return $this;
+  }
+  MappingSession$SurfaceData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfaceData',
+    interfaces: []
+  };
+  MappingSession$SurfaceData.prototype.component1 = function () {
+    return this.brainId;
+  };
+  MappingSession$SurfaceData.prototype.component2 = function () {
+    return this.panelName;
+  };
+  MappingSession$SurfaceData.prototype.component3 = function () {
+    return this.pixels;
+  };
+  MappingSession$SurfaceData.prototype.component4 = function () {
+    return this.deltaImage;
+  };
+  MappingSession$SurfaceData.prototype.copy_kbeznp$ = function (brainId, panelName, pixels, deltaImage) {
+    return new MappingSession$SurfaceData(brainId === void 0 ? this.brainId : brainId, panelName === void 0 ? this.panelName : panelName, pixels === void 0 ? this.pixels : pixels, deltaImage === void 0 ? this.deltaImage : deltaImage);
+  };
+  MappingSession$SurfaceData.prototype.toString = function () {
+    return 'SurfaceData(brainId=' + Kotlin.toString(this.brainId) + (', panelName=' + Kotlin.toString(this.panelName)) + (', pixels=' + Kotlin.toString(this.pixels)) + (', deltaImage=' + Kotlin.toString(this.deltaImage)) + ')';
+  };
+  MappingSession$SurfaceData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.brainId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.panelName) | 0;
+    result = result * 31 + Kotlin.hashCode(this.pixels) | 0;
+    result = result * 31 + Kotlin.hashCode(this.deltaImage) | 0;
+    return result;
+  };
+  MappingSession$SurfaceData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.brainId, other.brainId) && Kotlin.equals(this.panelName, other.panelName) && Kotlin.equals(this.pixels, other.pixels) && Kotlin.equals(this.deltaImage, other.deltaImage)))));
+  };
+  function MappingSession$Companion() {
+    MappingSession$Companion_instance = this;
+  }
+  MappingSession$Companion.prototype.serializer = function () {
+    return MappingSession$$serializer_getInstance();
+  };
+  MappingSession$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MappingSession$Companion_instance = null;
+  function MappingSession$Companion_getInstance() {
+    if (MappingSession$Companion_instance === null) {
+      new MappingSession$Companion();
+    }
+    return MappingSession$Companion_instance;
+  }
+  function MappingSession$$serializer() {
+    this.descriptor_5u0ch6$_0 = new SerialClassDescImpl('baaahs.mapper.MappingSession', this);
+    this.descriptor.addElement_ivxn3r$('startedAt', false);
+    this.descriptor.addElement_ivxn3r$('surfaces', false);
+    this.descriptor.addElement_ivxn3r$('cameraMatrix', false);
+    this.descriptor.addElement_ivxn3r$('baseImage', false);
+    this.descriptor.addElement_ivxn3r$('notes', true);
+    MappingSession$$serializer_instance = this;
+  }
+  Object.defineProperty(MappingSession$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_5u0ch6$_0;
+    }
+  });
+  MappingSession$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeDoubleElement_imzr5k$(this.descriptor, 0, obj.startedAt);
+    output.encodeSerializableElement_blecud$(this.descriptor, 1, new ArrayListSerializer(MappingSession$SurfaceData$$serializer_getInstance()), obj.surfaces);
+    output.encodeSerializableElement_blecud$(this.descriptor, 2, Matrix4$$serializer_getInstance(), obj.cameraMatrix);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 3, internal.StringSerializer, obj.baseImage);
+    if (!equals(obj.notes, null) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 4))
+      output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 4, internal.StringSerializer, obj.notes);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  MappingSession$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3
+    , local4;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeDoubleElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, new ArrayListSerializer(MappingSession$SurfaceData$$serializer_getInstance())) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, new ArrayListSerializer(MappingSession$SurfaceData$$serializer_getInstance()), local1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = (bitMask0 & 4) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 2, Matrix4$$serializer_getInstance()) : input.updateSerializableElement_ehubvl$(this.descriptor, 2, Matrix4$$serializer_getInstance(), local2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case 3:
+          local3 = (bitMask0 & 8) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 3, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 3, internal.StringSerializer, local3);
+          bitMask0 |= 8;
+          if (!readAll)
+            break;
+        case 4:
+          local4 = (bitMask0 & 16) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 4, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 4, internal.StringSerializer, local4);
+          bitMask0 |= 16;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return MappingSession_init(bitMask0, local0, local1, local2, local3, local4, null);
+  };
+  MappingSession$$serializer.prototype.childSerializers = function () {
+    return [internal.DoubleSerializer, new ArrayListSerializer(MappingSession$SurfaceData$$serializer_getInstance()), Matrix4$$serializer_getInstance(), new NullableSerializer(internal.StringSerializer), new NullableSerializer(internal.StringSerializer)];
+  };
+  MappingSession$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var MappingSession$$serializer_instance = null;
+  function MappingSession$$serializer_getInstance() {
+    if (MappingSession$$serializer_instance === null) {
+      new MappingSession$$serializer();
+    }
+    return MappingSession$$serializer_instance;
+  }
+  function MappingSession_init(seen1, startedAt, surfaces, cameraMatrix, baseImage, notes, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(MappingSession.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('startedAt');
+    else
+      $this.startedAt = startedAt;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('surfaces');
+    else
+      $this.surfaces = surfaces;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('cameraMatrix');
+    else
+      $this.cameraMatrix = cameraMatrix;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('baseImage');
+    else
+      $this.baseImage = baseImage;
+    if ((seen1 & 16) === 0)
+      $this.notes = null;
+    else
+      $this.notes = notes;
+    return $this;
+  }
+  MappingSession.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MappingSession',
+    interfaces: []
+  };
+  MappingSession.prototype.component1 = function () {
+    return this.startedAt;
+  };
+  MappingSession.prototype.component2 = function () {
+    return this.surfaces;
+  };
+  MappingSession.prototype.component3 = function () {
+    return this.cameraMatrix;
+  };
+  MappingSession.prototype.component4 = function () {
+    return this.baseImage;
+  };
+  MappingSession.prototype.component5 = function () {
+    return this.notes;
+  };
+  MappingSession.prototype.copy_8sgsyw$ = function (startedAt, surfaces, cameraMatrix, baseImage, notes) {
+    return new MappingSession(startedAt === void 0 ? this.startedAt : startedAt, surfaces === void 0 ? this.surfaces : surfaces, cameraMatrix === void 0 ? this.cameraMatrix : cameraMatrix, baseImage === void 0 ? this.baseImage : baseImage, notes === void 0 ? this.notes : notes);
+  };
+  MappingSession.prototype.toString = function () {
+    return 'MappingSession(startedAt=' + Kotlin.toString(this.startedAt) + (', surfaces=' + Kotlin.toString(this.surfaces)) + (', cameraMatrix=' + Kotlin.toString(this.cameraMatrix)) + (', baseImage=' + Kotlin.toString(this.baseImage)) + (', notes=' + Kotlin.toString(this.notes)) + ')';
+  };
+  MappingSession.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.startedAt) | 0;
+    result = result * 31 + Kotlin.hashCode(this.surfaces) | 0;
+    result = result * 31 + Kotlin.hashCode(this.cameraMatrix) | 0;
+    result = result * 31 + Kotlin.hashCode(this.baseImage) | 0;
+    result = result * 31 + Kotlin.hashCode(this.notes) | 0;
+    return result;
+  };
+  MappingSession.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.startedAt, other.startedAt) && Kotlin.equals(this.surfaces, other.surfaces) && Kotlin.equals(this.cameraMatrix, other.cameraMatrix) && Kotlin.equals(this.baseImage, other.baseImage) && Kotlin.equals(this.notes, other.notes)))));
+  };
+  function Storage(fs) {
+    Storage$Companion_getInstance();
+    this.fs = fs;
+  }
+  function Storage$Companion() {
+    Storage$Companion_instance = this;
+    this.json = new Json(JsonConfiguration.Companion.Stable);
+    this.format_0 = DateFormat.Companion.invoke_61zpoe$("yyyy''MM''dd'-'HH''mm''ss");
+  }
+  Storage$Companion.prototype.formatDateTime_mw5vjr$ = function (dateTime) {
+    return dateTime.format_cgtbg3$(this.format_0);
+  };
+  Storage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Storage$Companion_instance = null;
+  function Storage$Companion_getInstance() {
+    if (Storage$Companion_instance === null) {
+      new Storage$Companion();
+    }
+    return Storage$Companion_instance;
+  }
+  Storage.prototype.saveSession_x3z8ep$ = function (mappingSession) {
+    this.fs.createFile_puj7f4$('mapping-sessions/' + Storage$Companion_getInstance().formatDateTime_mw5vjr$(mappingSession.startedAtDateTime) + '.json', Storage$Companion_getInstance().json.stringify_tf03ej$(MappingSession$Companion_getInstance().serializer(), mappingSession));
+  };
+  Storage.prototype.saveImage_yzgtim$ = function (name, imageData) {
+    this.fs.createFile_yzgtim$('mapping-sessions/images/' + name, imageData);
+  };
+  Storage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Storage',
+    interfaces: []
+  };
   function FragmentingUdpLink(wrappedLink) {
     FragmentingUdpLink$Companion_getInstance();
     this.wrappedLink_0 = wrappedLink;
@@ -6065,7 +8097,7 @@
         }
         var actualTotalSize = accumulator;
         if (actualTotalSize !== totalSize) {
-          IllegalArgumentException_init("can't reassemble packet, " + actualTotalSize + ' != ' + totalSize + ' for ' + messageId);
+          throw IllegalArgumentException_init("can't reassemble packet, " + actualTotalSize + ' != ' + totalSize + ' for ' + messageId);
         }
         var reassembleBytes = new Int8Array(totalSize);
         var tmp$_0;
@@ -6115,8 +8147,9 @@
   };
   FragmentingUdpLink$FragmentingUdpSocket.prototype.transmitMultipartUdp_0 = function (bytes, fn) {
     var tmp$;
-    if (bytes.length > 65535) {
-      IllegalArgumentException_init('buffer too big! ' + bytes.length + ' must be < 65536');
+    var maxSize = 131070;
+    if (bytes.length > maxSize) {
+      throw IllegalArgumentException_init('buffer too big! ' + bytes.length + ' must be < ' + maxSize);
     }
     var messageId = (tmp$ = this.$outer.nextMessageId_0, this.$outer.nextMessageId_0 = toShort(tmp$ + 1), tmp$);
     var messageCount = ((bytes.length - 1 | 0) / (this.$outer.mtu_0 - 12 | 0) | 0) + 1 | 0;
@@ -6200,6 +8233,14 @@
   };
   function Network$HttpServer() {
   }
+  function Network$HttpServer$listenWebSocket$lambda(closure$webSocketListener) {
+    return function (it) {
+      return closure$webSocketListener;
+    };
+  }
+  Network$HttpServer.prototype.listenWebSocket_w9i1ik$ = function (path, webSocketListener) {
+    this.listenWebSocket_brdh44$(path, Network$HttpServer$listenWebSocket$lambda(webSocketListener));
+  };
   Network$HttpServer.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'HttpServer',
@@ -6222,6 +8263,7 @@
     this.PINKY = 8002;
     this.BRAIN = 8003;
     this.PINKY_UI_TCP = 8004;
+    this.PINKY_MAPPER_TCP = 8005;
   }
   Ports.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6247,9 +8289,8 @@
     Type$BRAIN_PANEL_SHADE_instance = new Type('BRAIN_PANEL_SHADE', 1);
     Type$MAPPER_HELLO_instance = new Type('MAPPER_HELLO', 2);
     Type$BRAIN_ID_REQUEST_instance = new Type('BRAIN_ID_REQUEST', 3);
-    Type$BRAIN_ID_RESPONSE_instance = new Type('BRAIN_ID_RESPONSE', 4);
-    Type$BRAIN_MAPPING_instance = new Type('BRAIN_MAPPING', 5);
-    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 6);
+    Type$BRAIN_MAPPING_instance = new Type('BRAIN_MAPPING', 4);
+    Type$PINKY_PONG_instance = new Type('PINKY_PONG', 5);
     Type$Companion_getInstance();
   }
   var Type$BRAIN_HELLO_instance;
@@ -6271,11 +8312,6 @@
   function Type$BRAIN_ID_REQUEST_getInstance() {
     Type_initFields();
     return Type$BRAIN_ID_REQUEST_instance;
-  }
-  var Type$BRAIN_ID_RESPONSE_instance;
-  function Type$BRAIN_ID_RESPONSE_getInstance() {
-    Type_initFields();
-    return Type$BRAIN_ID_RESPONSE_instance;
   }
   var Type$BRAIN_MAPPING_instance;
   function Type$BRAIN_MAPPING_getInstance() {
@@ -6313,7 +8349,7 @@
     interfaces: [Enum]
   };
   function Type$values() {
-    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_ID_RESPONSE_getInstance(), Type$BRAIN_MAPPING_getInstance(), Type$PINKY_PONG_getInstance()];
+    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_MAPPING_getInstance(), Type$PINKY_PONG_getInstance()];
   }
   Type.values = Type$values;
   function Type$valueOf(name) {
@@ -6326,8 +8362,6 @@
         return Type$MAPPER_HELLO_getInstance();
       case 'BRAIN_ID_REQUEST':
         return Type$BRAIN_ID_REQUEST_getInstance();
-      case 'BRAIN_ID_RESPONSE':
-        return Type$BRAIN_ID_RESPONSE_getInstance();
       case 'BRAIN_MAPPING':
         return Type$BRAIN_MAPPING_getInstance();
       case 'PINKY_PONG':
@@ -6351,9 +8385,6 @@
         break;
       case 'BRAIN_ID_REQUEST':
         tmp$ = BrainIdRequest$Companion_getInstance().parse_100t80$(reader);
-        break;
-      case 'BRAIN_ID_RESPONSE':
-        tmp$ = BrainIdResponse$Companion_getInstance().parse_100t80$(reader);
         break;
       case 'BRAIN_MAPPING':
         tmp$ = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
@@ -6466,16 +8497,15 @@
     simpleName: 'MapperHelloMessage',
     interfaces: [Message]
   };
-  function BrainIdRequest(port) {
+  function BrainIdRequest() {
     BrainIdRequest$Companion_getInstance();
     Message.call(this, Type$BRAIN_ID_REQUEST_getInstance());
-    this.port = port;
   }
   function BrainIdRequest$Companion() {
     BrainIdRequest$Companion_instance = this;
   }
   BrainIdRequest$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainIdRequest(reader.readInt());
+    return new BrainIdRequest();
   };
   BrainIdRequest$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6490,58 +8520,37 @@
     return BrainIdRequest$Companion_instance;
   }
   BrainIdRequest.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeInt_za3lpa$(this.port);
   };
   BrainIdRequest.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrainIdRequest',
     interfaces: [Message]
   };
-  function BrainIdResponse(id, surfaceName) {
-    BrainIdResponse$Companion_getInstance();
-    Message.call(this, Type$BRAIN_ID_RESPONSE_getInstance());
-    this.id = id;
-    this.surfaceName = surfaceName;
-  }
-  function BrainIdResponse$Companion() {
-    BrainIdResponse$Companion_instance = this;
-  }
-  BrainIdResponse$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainIdResponse(reader.readString(), reader.readNullableString());
-  };
-  BrainIdResponse$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var BrainIdResponse$Companion_instance = null;
-  function BrainIdResponse$Companion_getInstance() {
-    if (BrainIdResponse$Companion_instance === null) {
-      new BrainIdResponse$Companion();
-    }
-    return BrainIdResponse$Companion_instance;
-  }
-  BrainIdResponse.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.id);
-    writer.writeNullableString_pdl1vj$(this.surfaceName);
-  };
-  BrainIdResponse.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrainIdResponse',
-    interfaces: [Message]
-  };
-  function BrainMappingMessage(brainId, surfaceName, pixelCount, pixelVertices) {
+  function BrainMappingMessage(brainId, surfaceName, uvMapName, panelUvTopLeft, panelUvBottomRight, pixelCount, pixelVertices) {
     BrainMappingMessage$Companion_getInstance();
     Message.call(this, Type$BRAIN_MAPPING_getInstance());
     this.brainId = brainId;
     this.surfaceName = surfaceName;
+    this.uvMapName = uvMapName;
+    this.panelUvTopLeft = panelUvTopLeft;
+    this.panelUvBottomRight = panelUvBottomRight;
     this.pixelCount = pixelCount;
     this.pixelVertices = pixelVertices;
   }
   function BrainMappingMessage$Companion() {
     BrainMappingMessage$Companion_instance = this;
   }
-  BrainMappingMessage$Companion.prototype.readListOfVertices_v0p5xb$ = function ($receiver) {
+  BrainMappingMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    return new BrainMappingMessage(new BrainId(reader.readString()), reader.readNullableString(), reader.readNullableString(), this.readVector2F_0(reader), this.readVector2F_0(reader), reader.readInt(), this.readRelativeVerticesList_0(reader));
+  };
+  BrainMappingMessage$Companion.prototype.readVector2F_0 = function ($receiver) {
+    return new Vector2F($receiver.readFloat(), $receiver.readFloat());
+  };
+  BrainMappingMessage$Companion.prototype.writeVector2F_0 = function ($receiver, v) {
+    $receiver.writeFloat_mx4ult$(v.x);
+    $receiver.writeFloat_mx4ult$(v.y);
+  };
+  BrainMappingMessage$Companion.prototype.readRelativeVerticesList_0 = function ($receiver) {
     var vertexCount = $receiver.readInt();
     var $receiver_0 = until(0, vertexCount);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
@@ -6549,12 +8558,22 @@
     tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(new Vector2F($receiver.readFloat(), $receiver.readFloat()));
+      destination.add_11rb$(new Vector2F($receiver.readShort() / 65536.0, $receiver.readShort() / 65536.0));
     }
     return destination;
   };
-  BrainMappingMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainMappingMessage(new BrainId(reader.readString()), reader.readNullableString(), reader.readInt(), this.readListOfVertices_v0p5xb$(reader));
+  BrainMappingMessage$Companion.prototype.writeRelativeVerticesList_0 = function ($receiver, pixelVertices) {
+    $receiver.writeInt_za3lpa$(pixelVertices.size);
+    var tmp$;
+    tmp$ = pixelVertices.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (element.x < 0 || element.x > 1 || element.y < 0 || element.y > 1) {
+        throw IllegalArgumentException_init('Pixel vertices must be [0..1], but ' + element + '!');
+      }
+      $receiver.writeShort_mq22fl$(toShort(numberToInt(element.x * 65536)));
+      $receiver.writeShort_mq22fl$(toShort(numberToInt(element.y * 65536)));
+    }
   };
   BrainMappingMessage$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -6571,36 +8590,18 @@
   BrainMappingMessage.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.brainId.uuid);
     writer.writeNullableString_pdl1vj$(this.surfaceName);
+    writer.writeNullableString_pdl1vj$(this.uvMapName);
+    BrainMappingMessage$Companion_getInstance().writeVector2F_0(writer, this.panelUvTopLeft);
+    BrainMappingMessage$Companion_getInstance().writeVector2F_0(writer, this.panelUvBottomRight);
     writer.writeInt_za3lpa$(this.pixelCount);
     var vertexCount = this.pixelVertices.size;
     writer.writeInt_za3lpa$(vertexCount);
-    var tmp$;
-    tmp$ = this.pixelVertices.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      writer.writeFloat_mx4ult$(element.x);
-      writer.writeFloat_mx4ult$(element.y);
-    }
+    BrainMappingMessage$Companion_getInstance().writeRelativeVerticesList_0(writer, this.pixelVertices);
   };
   BrainMappingMessage.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrainMappingMessage',
     interfaces: [Message]
-  };
-  function Vector2F(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  Vector2F.prototype.component1 = function () {
-    return this.x;
-  };
-  Vector2F.prototype.component2 = function () {
-    return this.y;
-  };
-  Vector2F.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Vector2F',
-    interfaces: []
   };
   function PinkyPongMessage(brainIds) {
     PinkyPongMessage$Companion_getInstance();
@@ -9036,7 +11037,7 @@
     this.updateListeners_0();
   };
   FakeDmxUniverse.prototype.allOff = function () {
-    for (var i = 0; i <= 512; i++)
+    for (var i = 0; i < 512; i++)
       this.channelsIn_0[i] = 0;
     this.updateListeners_0();
   };
@@ -9052,6 +11053,19 @@
     kind: Kind_CLASS,
     simpleName: 'FakeDmxUniverse',
     interfaces: [Dmx$Universe]
+  };
+  function FakeFs() {
+  }
+  FakeFs.prototype.createFile_yzgtim$ = function (name, content) {
+    logger$Companion_getInstance().debug_61zpoe$('FakeFs.createFile(' + name + ') -> ' + content);
+  };
+  FakeFs.prototype.createFile_puj7f4$ = function (name, content) {
+    logger$Companion_getInstance().debug_61zpoe$('FakeFs.createFile(' + name + ') -> ' + content);
+  };
+  FakeFs.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeFs',
+    interfaces: [Fs]
   };
   function FakeNetwork(networkDelay, display, coroutineContext) {
     if (networkDelay === void 0)
@@ -9726,10 +11740,56 @@
     simpleName: 'logger',
     interfaces: []
   };
-  function time(function_0) {
-    var now = getTimeMillis();
-    function_0();
-    return getTimeMillis().subtract(now);
+  function Coroutine$time(function_1, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$now = void 0;
+    this.local$function = function_1;
+  }
+  Coroutine$time.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$time.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$time.prototype.constructor = Coroutine$time;
+  Coroutine$time.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.local$now = getTimeMillis();
+            this.state_0 = 2;
+            this.result_0 = this.local$function(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return getTimeMillis().subtract(this.local$now);
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function time(function_1, continuation_0, suspended) {
+    var instance = new Coroutine$time(function_1, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
   }
   function JsDisplay() {
   }
@@ -10176,53 +12236,51 @@
     simpleName: 'JsVisualizerDisplay',
     interfaces: [VisualizerDisplay]
   };
-  function Comparator$ObjectLiteral(closure$comparison) {
-    this.closure$comparison = closure$comparison;
-  }
-  Comparator$ObjectLiteral.prototype.compare = function (a, b) {
-    return this.closure$comparison(a, b);
-  };
-  Comparator$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
-  var compareBy$lambda = wrapFunction(function () {
-    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
-    return function (closure$selector) {
-      return function (a, b) {
-        var selector = closure$selector;
-        return compareValues(selector(a), selector(b));
-      };
-    };
-  });
-  function JsMapperDisplay(visualizer) {
-    this.visualizer_0 = visualizer;
+  function JsMapperDisplay(statusListener) {
+    if (statusListener === void 0)
+      statusListener = null;
+    this.statusListener_0 = statusListener;
     this.listener_h0bbis$_0 = this.listener_h0bbis$_0;
     this.width_0 = 512;
     this.height_0 = 384;
+    this.uiWidth_0 = 512;
+    this.uiHeight_0 = 384;
+    this.haveCamDimensions_0 = false;
+    this.camWidth_0 = 0;
+    this.camHeight_0 = 0;
     this.clock_0 = new Clock();
     this.uiRenderer_0 = new WebGLRenderer_init({alpha: true});
     this.uiScene_0 = new Scene();
     this.uiCamera_0 = new PerspectiveCamera_init(45, this.width_0 / this.height_0, 1, 10000);
     this.uiControls_0 = null;
     this.wireframe_0 = new Object3D();
+    this.uiLocked_0 = false;
     this.screen_0 = div_0(get_create(document), 'mapperUi-screen', JsMapperDisplay$screen$lambda(this));
-    this.ui2dCanvas_0 = first_0(this.screen_0, 'mapperUi-2d-canvas');
+    this.ui2dCanvas_0 = first_1(this.screen_0, 'mapperUi-2d-canvas');
     this.ui2dCtx_0 = context2d(this.ui2dCanvas_0);
-    this.ui3dDiv_0 = first_0(this.screen_0, 'mapperUi-3d-div');
-    var tmp$;
+    this.ui3dDiv_0 = first_1(this.screen_0, 'mapperUi-3d-div');
+    var tmp$, tmp$_0;
     this.ui3dCanvas_0 = Kotlin.isType(tmp$ = this.uiRenderer_0.domElement, HTMLCanvasElement) ? tmp$ : throwCCE();
-    this.diffCanvas_0 = first_0(this.screen_0, 'mapperUi-diff-canvas');
+    this.diffCanvas_0 = first_1(this.screen_0, 'mapperUi-diff-canvas');
     this.diffCtx_0 = context2d(this.diffCanvas_0);
-    this.changeRegion_0 = null;
-    this.statsDiv_0 = first_0(this.screen_0, 'mapperUi-stats');
-    this.messageDiv_0 = first_0(this.screen_0, 'mapperUi-message');
-    this.message2Div_0 = first_0(this.screen_0, 'mapperUi-message2');
-    this.table_0 = first_0(this.screen_0, 'mapperUi-table');
-    this.visiblePanels_0 = ArrayList_init();
+    this.beforeCanvas_0 = first_1(this.screen_0, 'mapperUi-before-canvas');
+    this.afterCanvas_0 = first_1(this.screen_0, 'mapperUi-after-canvas');
+    this.statsDiv_0 = first_1(this.screen_0, 'mapperUi-stats');
+    this.messageDiv_0 = first_1(this.screen_0, 'mapperUi-message');
+    this.message2Div_0 = first_1(this.screen_0, 'mapperUi-message2');
+    this.table_0 = first_1(this.screen_0, 'mapperUi-table');
     this.panelInfos_0 = LinkedHashMap_init();
-    this.visualizer_0.mapperIsRunning = true;
+    this.commandProgress_0 = '';
+    this.cameraZRotation_0 = 0.0;
+    (tmp$_0 = this.statusListener_0) != null ? (tmp$_0.mapperStatusChanged_6taknv$(true), Unit) : null;
     this.ui3dDiv_0.appendChild(this.ui3dCanvas_0);
     this.uiCamera_0.position.z = 1000.0;
     this.uiScene_0.add(this.uiCamera_0);
     this.uiControls_0 = document.createCameraControls(this.uiCamera_0, this.uiRenderer_0.domElement);
+    this.screen_0.focus();
+    this.screen_0.addEventListener('keydown', JsMapperDisplay_init$lambda(this));
+    this.drawAnimationFrame_0();
+    this.diffCanvasScale_0 = 1 / 3.0;
   }
   Object.defineProperty(JsMapperDisplay.prototype, 'listener_0', {
     get: function () {
@@ -10237,39 +12295,120 @@
   JsMapperDisplay.prototype.listen_uasn0l$ = function (listener) {
     this.listener_0 = listener;
   };
+  JsMapperDisplay.prototype.gotUiKeypress_0 = function (event) {
+    if (equals(event.code, 'Enter')) {
+      var $receiver = this.commandProgress_0;
+      var tmp$;
+      this.processCommand_0(trim(Kotlin.isCharSequence(tmp$ = $receiver) ? tmp$ : throwCCE()).toString());
+      this.commandProgress_0 = '';
+    }
+     else if (equals(event.code, 'Backspace')) {
+      if (this.commandProgress_0.length > 0) {
+        this.commandProgress_0 = substring(this.commandProgress_0, new IntRange(0, this.commandProgress_0.length - 2 | 0));
+      }
+    }
+     else {
+      if (this.commandProgress_0.length === 0 && equals(event.code, 'KeyQ')) {
+        this.updateCameraRotation_0(event.shiftKey ? -0.025 : -0.1);
+      }
+       else {
+        if (this.commandProgress_0.length === 0 && equals(event.code, 'KeyW')) {
+          this.updateCameraRotation_0(event.shiftKey ? 0.025 : 0.1);
+        }
+         else {
+          if (this.commandProgress_0.length === 0 && equals(event.code, 'Digit0')) {
+            this.cameraZRotation_0 = 0.0;
+          }
+           else if (event.key.length === 1) {
+            this.commandProgress_0 += event.key;
+          }
+        }
+      }
+    }
+    this.showMessage2_61zpoe$(this.commandProgress_0);
+  };
+  JsMapperDisplay.prototype.resetCameraRotation_0 = function () {
+    this.cameraZRotation_0 = 0.0;
+    this.updateCameraRotation_0(0.0);
+  };
+  JsMapperDisplay.prototype.updateCameraRotation_0 = function (angle) {
+    this.cameraZRotation_0 += angle;
+    this.uiCamera_0.up.set(0, 1, 0);
+    this.uiCamera_0.up.applyMatrix4((new Matrix4_init()).makeRotationZ(this.cameraZRotation_0));
+  };
+  JsMapperDisplay.prototype.processCommand_0 = function (command) {
+    console.log(command);
+    if (startsWith(command, 'g', true)) {
+      var $receiver = command.substring(1);
+      var tmp$;
+      var surfaceName = trim(Kotlin.isCharSequence(tmp$ = $receiver) ? tmp$ : throwCCE()).toString();
+      this.goToSurface_0(surfaceName.toUpperCase());
+    }
+  };
+  function JsMapperDisplay$drawAnimationFrame$lambda(this$JsMapperDisplay) {
+    return function (it) {
+      this$JsMapperDisplay.drawAnimationFrame_0();
+      return Unit;
+    };
+  }
+  JsMapperDisplay.prototype.drawAnimationFrame_0 = function () {
+    if (!this.uiLocked_0) {
+      this.uiControls_0.update(this.clock_0.getDelta());
+    }
+    this.uiRenderer_0.render(this.uiScene_0, this.uiCamera_0);
+    window.requestAnimationFrame(JsMapperDisplay$drawAnimationFrame$lambda(this));
+  };
   function JsMapperDisplay$render$lambda(closure$parentNode, this$JsMapperDisplay) {
     return function (it) {
-      this$JsMapperDisplay.resizeTo_0(closure$parentNode.offsetWidth, closure$parentNode.offsetHeight);
+      this$JsMapperDisplay.resizeTo_0(closure$parentNode.offsetWidth, this$JsMapperDisplay.heightOrWindowHeight_0(closure$parentNode));
       return Unit;
     };
   }
   JsMapperDisplay.prototype.render = function (parentNode) {
     parentNode.appendChild(this.screen_0);
+    this.resizeTo_0(parentNode.offsetWidth, this.heightOrWindowHeight_0(parentNode));
     parentNode.onresize = JsMapperDisplay$render$lambda(parentNode, this);
-    this.resizeTo_0(this.width_0, this.height_0);
+  };
+  JsMapperDisplay.prototype.heightOrWindowHeight_0 = function (parentNode) {
+    return parentNode.offsetHeight === 0 ? window.innerHeight : parentNode.offsetHeight;
   };
   JsMapperDisplay.prototype.onClose = function () {
-    this.visualizer_0.mapperIsRunning = false;
+    var tmp$;
+    (tmp$ = this.statusListener_0) != null ? (tmp$.mapperStatusChanged_6taknv$(false), Unit) : null;
     this.listener_0.onClose();
   };
   JsMapperDisplay.prototype.resizeTo_0 = function (width, height) {
-    var tmp$, tmp$_0;
     this.width_0 = width;
     this.height_0 = height;
-    this.uiCamera_0.aspect = width / height;
+    if (!this.haveCamDimensions_0) {
+      this.camWidth_0 = width;
+      this.camHeight_0 = height;
+    }
+    var a = (width - 10 | 0) / this.camWidth_0;
+    var b = (height - 10 | 0) / this.camHeight_0;
+    var b_0 = Math_0.min(a, b);
+    var scale = Math_0.min(1.0, b_0);
+    this.uiWidth_0 = this.camWidth_0 - 10 | 0;
+    this.uiHeight_0 = this.camHeight_0 - 10 | 0;
+    this.uiCamera_0.aspect = this.uiWidth_0 / this.uiHeight_0;
     this.uiCamera_0.updateProjectionMatrix();
-    this.uiRenderer_0.setSize(width, height);
-    this.uiRenderer_0.setPixelRatio(width / height);
-    (Kotlin.isType(tmp$ = this.uiRenderer_0.domElement, HTMLCanvasElement) ? tmp$ : throwCCE()).width = width;
-    (Kotlin.isType(tmp$_0 = this.uiRenderer_0.domElement, HTMLCanvasElement) ? tmp$_0 : throwCCE()).height = height;
-    this.ui2dCanvas_0.width = width;
-    this.ui2dCanvas_0.height = height;
-    this.diffCanvas_0.width = width;
-    this.diffCanvas_0.height = height;
+    this.uiRenderer_0.setSize(this.uiWidth_0, this.uiHeight_0, true);
+    this.ui3dCanvas_0.width = this.uiWidth_0;
+    this.ui3dCanvas_0.height = this.uiHeight_0;
+    this.ui2dCanvas_0.width = this.uiWidth_0;
+    this.ui2dCanvas_0.height = this.uiHeight_0;
+    this.ui2dCanvas_0.style.transform = 'scale(' + scale + ')';
+    this.diffCanvas_0.width = numberToInt(this.uiWidth_0 * this.diffCanvasScale_0);
+    this.diffCanvas_0.height = numberToInt(this.uiHeight_0 * this.diffCanvasScale_0);
+    this.beforeCanvas_0.width = numberToInt(this.uiWidth_0 * this.diffCanvasScale_0);
+    this.beforeCanvas_0.height = numberToInt(this.uiHeight_0 * this.diffCanvasScale_0);
+    this.afterCanvas_0.width = numberToInt(this.uiWidth_0 * this.diffCanvasScale_0);
+    this.afterCanvas_0.height = numberToInt(this.uiHeight_0 * this.diffCanvasScale_0);
   };
   JsMapperDisplay.prototype.addWireframe_9u144y$ = function (sheepModel) {
     var $receiver = new LineBasicMaterial();
     $receiver.color = new Color_init(0.0, 1.0, 0.0);
+    $receiver.linewidth = 2.0;
     var lineMaterial = $receiver;
     var $receiver_0 = sheepModel.vertices;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
@@ -10280,7 +12419,6 @@
       destination.add_11rb$(new Vector3(item.x, item.y, item.z));
     }
     var vertices = copyToArray(destination);
-    var container = new Object3D();
     var tmp$_0;
     tmp$_0 = sheepModel.panels.iterator();
     while (tmp$_0.hasNext()) {
@@ -10305,6 +12443,7 @@
       $receiver_1.color = new Color_init(0, 0, 0);
       var panelMaterial = $receiver_1;
       var mesh = new Mesh_init(geom, panelMaterial);
+      mesh.name = element.name;
       this.uiScene_0.add(mesh);
       var tmp$_2;
       tmp$_2 = element.lines.iterator();
@@ -10326,7 +12465,7 @@
       geom.computeFaceNormals();
       geom.computeVertexNormals();
       var $receiver_3 = this.panelInfos_0;
-      var value = new PanelInfo(panelFaces, mesh, geom);
+      var value = new PanelInfo(element.name, panelFaces, mesh, geom);
       $receiver_3.put_xwzc9p$(element, value);
     }
     this.uiScene_0.add(this.wireframe_0);
@@ -10335,175 +12474,21 @@
     $receiver_4.color = new Color_init(16711680);
     var originMarker = new Mesh_init(tmp$_4, $receiver_4);
     this.uiScene_0.add(originMarker);
-    var boundingBox = (new Box3()).setFromObject(container);
-    var centerOfSheep = boundingBox.getCenter().clone();
-    this.uiCamera_0.lookAt(centerOfSheep);
+    var boundingBox = (new Box3()).setFromObject(this.wireframe_0);
+    this.uiControls_0.fitTo(boundingBox, false);
   };
-  function JsMapperDisplay$getCandidateSurfaces$lambda(closure$panelRects, closure$changeRegion) {
-    return function (f) {
-      var panel = f.component1();
-      return ensureNotNull(closure$panelRects.get_11rb$(panel)).distanceTo_gdgylh$(closure$changeRegion);
-    };
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda($receiver) {
-    $receiver.unaryPlus_pdl1vz$('Panel');
-    return Unit;
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_0($receiver) {
-    $receiver.unaryPlus_pdl1vz$('Centroid dist');
-    return Unit;
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda($receiver) {
-    th($receiver, void 0, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda);
-    th($receiver, void 0, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_0);
-    return Unit;
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda(closure$panel) {
-    return function ($receiver) {
-      $receiver.unaryPlus_pdl1vz$(closure$panel.name);
-      return Unit;
-    };
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda_0(closure$panelRects, closure$panel, closure$changeRegion) {
-    return function ($receiver) {
-      $receiver.unaryPlus_pdl1vz$(ensureNotNull(closure$panelRects.get_11rb$(closure$panel)).distanceTo_gdgylh$(closure$changeRegion).toString());
-      return Unit;
-    };
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_1(closure$panel, closure$panelRects, closure$changeRegion) {
-    return function ($receiver) {
-      td($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda(closure$panel));
-      td($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda$lambda_0(closure$panelRects, closure$panel, closure$changeRegion));
-      return Unit;
-    };
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda$lambda(closure$orderedPanels, closure$panelRects, closure$changeRegion) {
-    return function ($receiver) {
-      tr($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda);
-      var tmp$ = closure$orderedPanels;
-      var b = closure$orderedPanels.size;
-      var $receiver_0 = tmp$.subList_vux9f0$(0, Math_0.min(5, b));
-      var tmp$_0;
-      tmp$_0 = $receiver_0.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        var closure$panelRects_0 = closure$panelRects;
-        var closure$changeRegion_0 = closure$changeRegion;
-        var panel = element.component1();
-        tr($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda$lambda$lambda_1(panel, closure$panelRects_0, closure$changeRegion_0));
-      }
-      return Unit;
-    };
-  }
-  function JsMapperDisplay$getCandidateSurfaces$lambda_0(closure$orderedPanels, closure$panelRects, closure$changeRegion) {
-    return function ($receiver) {
-      table($receiver, void 0, JsMapperDisplay$getCandidateSurfaces$lambda$lambda(closure$orderedPanels, closure$panelRects, closure$changeRegion));
-      return Unit;
-    };
-  }
-  JsMapperDisplay.prototype.getCandidateSurfaces_gdgylh$ = function (changeRegion) {
-    var tmp$;
-    var $receiver = this.visiblePanels_0;
-    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
-    var destination = LinkedHashMap_init_0(capacity);
-    var tmp$_0;
-    tmp$_0 = $receiver.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      var panel = element.component1()
-      , panelInfo = element.component2();
-      var tmp$_1, tmp$_2, tmp$_3;
-      panelInfo.mesh.updateMatrixWorld();
-      var panelBasePosition = panelInfo.mesh.position;
-      var minX = 2147483647;
-      var maxX = -2147483648;
-      var minY = 2147483647;
-      var maxY = -2147483648;
-      var widthHalf = this.width_0 / 2.0;
-      var heightHalf = this.height_0 / 2.0;
-      tmp$_1 = panelInfo.faces.iterator();
-      while (tmp$_1.hasNext()) {
-        var face = tmp$_1.next();
-        tmp$_2 = [face.a, face.b, face.c];
-        for (tmp$_3 = 0; tmp$_3 !== tmp$_2.length; ++tmp$_3) {
-          var vertexI = tmp$_2[tmp$_3];
-          var v = plus_0(panelBasePosition.clone(), panelInfo.geom.vertices[vertexI]);
-          v.project(this.uiCamera_0);
-          var x = numberToInt(v.x * widthHalf + widthHalf);
-          var y = numberToInt(-(v.y * heightHalf) + heightHalf);
-          if (x < minX)
-            minX = x;
-          if (x > maxX)
-            maxX = x;
-          if (y < minY)
-            minY = y;
-          if (y > maxY)
-            maxY = y;
-        }
-      }
-      var pair = new Pair(panel, new MediaDevices$Region(minX, minY, maxX, maxY));
-      destination.put_xwzc9p$(pair.first, pair.second);
-    }
-    var panelRects = destination;
-    var orderedPanels = sortedWith(this.visiblePanels_0, new Comparator$ObjectLiteral(compareBy$lambda(JsMapperDisplay$getCandidateSurfaces$lambda(panelRects, changeRegion))));
-    var first_0 = first(orderedPanels);
-    (Kotlin.isType(tmp$ = first_0.second.mesh.material, MeshBasicMaterial) ? tmp$ : throwCCE()).color.r = (Kotlin.isType(tmp$ = first_0.second.mesh.material, MeshBasicMaterial) ? tmp$ : throwCCE()).color.r + 0.25;
-    clear(this.table_0);
-    append(this.table_0, JsMapperDisplay$getCandidateSurfaces$lambda_0(orderedPanels, panelRects, changeRegion));
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(orderedPanels, 10));
-    var tmp$_4;
-    tmp$_4 = orderedPanels.iterator();
-    while (tmp$_4.hasNext()) {
-      var item = tmp$_4.next();
-      var tmp$_5 = destination_0.add_11rb$;
-      var panel_0 = item.component1();
-      tmp$_5.call(destination_0, panel_0);
-    }
-    return destination_0;
+  JsMapperDisplay.prototype.lockUi = function () {
+    this.uiLocked_0 = true;
+    return new JsMapperDisplay$CameraOrientation(this);
   };
-  JsMapperDisplay.prototype.showCamImage_6tj0gx$ = function (image) {
-    var tmp$;
-    this.ui2dCtx_0.resetTransform();
-    var a = this.width_0 / image.width;
-    var b = this.height_0 / image.height;
-    var scale = Math_0.max(a, b);
-    var imgWidth = roundToInt(image.width * scale);
-    var imgHeight = roundToInt(image.height * scale);
-    var widthDiff = this.width_0 - imgWidth | 0;
-    var heightDiff = this.height_0 - imgHeight | 0;
-    var widthOff = widthDiff / 2.0;
-    var heightOff = heightDiff / 2.0;
-    (new CanvasBitmap(this.ui2dCanvas_0)).drawImage_daf0v5$(image, 0, 0, image.width, image.height, widthDiff / 2 | 0, heightDiff / 2 | 0, imgWidth, imgHeight);
-    this.ui2dCtx_0.strokeStyle = '#006600';
-    this.ui2dCtx_0.strokeRect(widthOff, heightOff, imgWidth, imgHeight);
-    if ((tmp$ = this.changeRegion_0) != null) {
-      this.ui2dCtx_0.strokeStyle = '#ff0000';
-      this.ui2dCtx_0.strokeRect(tmp$.x0 * scale + widthOff, tmp$.y0 * scale + heightOff, tmp$.width * scale, tmp$.height * scale);
-    }
-    this.uiControls_0.update(this.clock_0.getDelta());
-    this.uiRenderer_0.render(this.uiScene_0, this.uiCamera_0);
+  JsMapperDisplay.prototype.unlockUi = function () {
+    this.uiLocked_0 = false;
   };
-  JsMapperDisplay.prototype.showDiffImage_qpnjw8$ = function (deltaBitmap, changeRegion) {
-    this.changeRegion_0 = changeRegion;
-    (new CanvasBitmap(this.diffCanvas_0)).drawImage_6tj0gx$(deltaBitmap.asImage());
-    this.diffCtx_0.strokeStyle = '#ff0000';
-    this.diffCtx_0.strokeRect(changeRegion.x0, changeRegion.y0, changeRegion.width, changeRegion.height);
-  };
-  JsMapperDisplay.prototype.showMessage_61zpoe$ = function (message) {
-    this.messageDiv_0.innerText = message;
-  };
-  JsMapperDisplay.prototype.showMessage2_61zpoe$ = function (message) {
-    this.message2Div_0.innerText = message;
-  };
-  JsMapperDisplay.prototype.showStats_qt1dr2$ = function (total, mapped, visible) {
-    this.statsDiv_0.innerHTML = '<i class=' + '"' + 'fas fa-triangle' + '"' + '><\/i>Mapped: ' + mapped + ' / ' + total + '<br/>Visible: ' + visible;
-  };
-  JsMapperDisplay.prototype.go_0 = function () {
-    this.listener_0.onStart();
-    this.computeVisiblePanels_0();
-  };
-  JsMapperDisplay.prototype.computeVisiblePanels_0 = function () {
-    this.visiblePanels_0.clear();
+  JsMapperDisplay.prototype.getVisibleSurfaces = function () {
+    var visibleSurfaces = ArrayList_init();
+    var screenBox = this.getScreenBox_0();
+    var screenCenter = get_center(screenBox);
+    var cameraOrientation = new JsMapperDisplay$CameraOrientation(this, this.uiCamera_0);
     var tmp$;
     tmp$ = this.panelInfos_0.entries.iterator();
     while (tmp$.hasNext()) {
@@ -10514,13 +12499,313 @@
       var dirToCamera = this.uiCamera_0.position.clone().sub(panelPosition);
       dirToCamera.normalize();
       var angle = ensureNotNull(panelInfo.faces.get_za3lpa$(0).normal).dot(dirToCamera);
-      println('Angle for ' + panel.name + ' is ' + angle);
       if (angle > 0) {
-        this.visiblePanels_0.add_11rb$(new Pair(panel, panelInfo));
+        panelInfo.mesh.updateMatrixWorld();
+        var panelBoundingBox = project(panelInfo.boundingBox, this.uiCamera_0);
+        var panelBoxOnScreen = this.calcBoundingBoxOnScreen_0(panelBoundingBox, screenCenter);
+        panelInfo.boxOnScreen = panelBoxOnScreen;
+        if (panelBoxOnScreen.intersectsBox(screenBox)) {
+          var region = new MediaDevices$Region(roundToInt(panelBoxOnScreen.min.x), roundToInt(panelBoxOnScreen.min.y), roundToInt(panelBoxOnScreen.max.x), roundToInt(panelBoxOnScreen.max.y));
+          visibleSurfaces.add_11rb$(new JsMapperDisplay$VisibleSurface(this, panel, region, panelInfo, cameraOrientation));
+        }
       }
+    }
+    return visibleSurfaces;
+  };
+  function JsMapperDisplay$VisibleSurface($outer, surface, boxOnScreen, panelInfo, cameraOrientation) {
+    this.$outer = $outer;
+    this.surface_w7650a$_0 = surface;
+    this.boxOnScreen_1ykrkz$_0 = boxOnScreen;
+    this.panelInfo = panelInfo;
+    this.cameraOrientation = cameraOrientation;
+    this.geom_0 = new Geometry();
+    var $receiver = new PointsMaterial();
+    $receiver.color = new Color_init(65280);
+    $receiver.size = 5;
+    this.material_0 = $receiver;
+    var $receiver_0 = new Points();
+    $receiver_0.geometry = this.geom_0;
+    $receiver_0.material = this.material_0;
+    this.points_0 = $receiver_0;
+    this.pixels_0 = LinkedHashMap_init();
+  }
+  Object.defineProperty(JsMapperDisplay$VisibleSurface.prototype, 'surface', {
+    get: function () {
+      return this.surface_w7650a$_0;
+    }
+  });
+  Object.defineProperty(JsMapperDisplay$VisibleSurface.prototype, 'boxOnScreen', {
+    get: function () {
+      return this.boxOnScreen_1ykrkz$_0;
+    }
+  });
+  JsMapperDisplay$VisibleSurface.prototype.addPixel_nhq4am$ = function (pixelIndex, x, y) {
+    var tmp$ = this.pixels_0;
+    var $receiver = new JsMapperDisplay$VisibleSurface$VisiblePixel(this, pixelIndex, x, y);
+    $receiver.addToGeom();
+    tmp$.put_xwzc9p$(pixelIndex, $receiver);
+  };
+  JsMapperDisplay$VisibleSurface.prototype.translatePixelToPanelSpace_dleff0$ = function (screenX, screenY) {
+    var tmp$;
+    tmp$ = this.findIntersection_0(screenX, screenY);
+    if (tmp$ == null) {
+      return null;
+    }
+    var intersection = tmp$;
+    var point = this.panelInfo.toPanelSpace_as37vi$(intersection.point.clone());
+    console.log('   ---->', point.x, point.y, point.z);
+    return new Vector2F(point.x, point.y);
+  };
+  Object.defineProperty(JsMapperDisplay$VisibleSurface.prototype, 'pixelsInModelSpace', {
+    get: function () {
+      var tmp$, tmp$_0;
+      var vectors = ArrayList_init();
+      tmp$ = ensureNotNull(max_0(this.pixels_0.keys));
+      for (var i = 0; i <= tmp$; i++) {
+        var position = (tmp$_0 = this.pixels_0.get_11rb$(i)) != null ? tmp$_0.positionInModel : null;
+        vectors.add_11rb$(position != null ? new Vector3F(position.x, position.y, position.z) : null);
+      }
+      return vectors;
+    }
+  });
+  JsMapperDisplay$VisibleSurface.prototype.findIntersection_0 = function (x, y) {
+    var raycaster = new Raycaster_init();
+    var pixelVector = new Vector2(x / this.$outer.uiWidth_0 * 2 - 1, -(y / this.$outer.uiHeight_0 * 2 - 1));
+    raycaster.setFromCamera(pixelVector, this.cameraOrientation.camera);
+    var intersections = raycaster.intersectObject(this.panelInfo.mesh, false);
+    if (intersections.length === 0) {
+      intersections = raycaster.intersectObject(this.$outer.uiScene_0, true);
+      console.log("Couldn't find point in " + this.surface.name + '...', intersections);
+    }
+    if (!(intersections.length === 0)) {
+      return first_0(intersections);
+    }
+     else {
+      return null;
+    }
+  };
+  JsMapperDisplay$VisibleSurface.prototype.showPixels = function () {
+    this.$outer.uiScene_0.add(this.points_0);
+  };
+  JsMapperDisplay$VisibleSurface.prototype.hidePixels = function () {
+    this.$outer.uiScene_0.remove(this.points_0);
+  };
+  function JsMapperDisplay$VisibleSurface$VisiblePixel($outer, pixelIndex, cameraX, cameraY) {
+    this.$outer = $outer;
+    this.pixelIndex = pixelIndex;
+    this.cameraX = cameraX;
+    this.cameraY = cameraY;
+    this.intersect_grbltw$_0 = lazy(JsMapperDisplay$VisibleSurface$VisiblePixel$intersect$lambda(this, this.$outer));
+    var tmp$;
+    this.positionInModel = (tmp$ = this.intersect_0) != null ? tmp$.point : null;
+    this.panelSpaceCoords_g986yh$_0 = lazy(JsMapperDisplay$VisibleSurface$VisiblePixel$panelSpaceCoords$lambda(this, this.$outer));
+  }
+  Object.defineProperty(JsMapperDisplay$VisibleSurface$VisiblePixel.prototype, 'intersect_0', {
+    get: function () {
+      return this.intersect_grbltw$_0.value;
+    }
+  });
+  JsMapperDisplay$VisibleSurface$VisiblePixel.prototype.addToGeom = function () {
+    if (this.intersect_0 != null) {
+      while (this.$outer.geom_0.vertices.length < this.pixelIndex) {
+        this.$outer.geom_0.vertices[this.$outer.geom_0.vertices.length] = new Vector3(0, 0, 0);
+      }
+      this.$outer.geom_0.vertices[this.pixelIndex] = ensureNotNull(this.intersect_0).point;
+    }
+  };
+  Object.defineProperty(JsMapperDisplay$VisibleSurface$VisiblePixel.prototype, 'panelSpaceCoords', {
+    get: function () {
+      return this.panelSpaceCoords_g986yh$_0.value;
+    }
+  });
+  function JsMapperDisplay$VisibleSurface$VisiblePixel$intersect$lambda(this$VisiblePixel, this$VisibleSurface) {
+    return function () {
+      return this$VisibleSurface.findIntersection_0(this$VisiblePixel.cameraX, this$VisiblePixel.cameraY);
+    };
+  }
+  function JsMapperDisplay$VisibleSurface$VisiblePixel$panelSpaceCoords$lambda(this$VisiblePixel, this$VisibleSurface) {
+    return function () {
+      if (this$VisiblePixel.positionInModel == null) {
+        return null;
+      }
+       else {
+        this$VisibleSurface.panelInfo.toPanelSpace_as37vi$(this$VisiblePixel.positionInModel);
+        return to(this$VisiblePixel.positionInModel.x, this$VisiblePixel.positionInModel.y);
+      }
+    };
+  }
+  JsMapperDisplay$VisibleSurface$VisiblePixel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VisiblePixel',
+    interfaces: []
+  };
+  JsMapperDisplay$VisibleSurface.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VisibleSurface',
+    interfaces: [MapperDisplay$VisibleSurface]
+  };
+  function JsMapperDisplay$CameraOrientation($outer, camera) {
+    this.$outer = $outer;
+    if (camera === void 0)
+      camera = this.$outer.uiCamera_0.clone();
+    this.camera = camera;
+    this.rotator_0 = new Rotator(this.camera.up, new Vector3(0, 1, 0));
+  }
+  JsMapperDisplay$CameraOrientation.prototype.derotate_as37vi$ = function (vector) {
+    this.rotator_0.rotate_22wt45$([vector]);
+    return vector;
+  };
+  JsMapperDisplay$CameraOrientation.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CameraOrientation',
+    interfaces: [MapperDisplay$CameraOrientation]
+  };
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda($receiver) {
+    $receiver.unaryPlus_pdl1vz$('Panel');
+    return Unit;
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda_0($receiver) {
+    $receiver.unaryPlus_pdl1vz$('Centroid dist');
+    return Unit;
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda($receiver) {
+    th($receiver, void 0, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda);
+    th($receiver, void 0, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda_0);
+    return Unit;
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda$lambda(closure$visibleSurface) {
+    return function ($receiver) {
+      $receiver.unaryPlus_pdl1vz$(closure$visibleSurface.surface.name);
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda$lambda_0(closure$distance) {
+    return function ($receiver) {
+      $receiver.unaryPlus_pdl1vz$(closure$distance.toString());
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda_1(closure$visibleSurface, closure$distance) {
+    return function ($receiver) {
+      td($receiver, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda$lambda(closure$visibleSurface));
+      td($receiver, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda$lambda_0(closure$distance));
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$showCandidates$lambda$lambda(closure$orderedPanels) {
+    return function ($receiver) {
+      tr($receiver, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda);
+      var tmp$ = closure$orderedPanels;
+      var b = closure$orderedPanels.size;
+      var tmp$_0;
+      tmp$_0 = tmp$.subList_vux9f0$(0, Math_0.min(5, b)).iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        var visibleSurface = element.component1()
+        , distance = element.component2();
+        tr($receiver, void 0, JsMapperDisplay$showCandidates$lambda$lambda$lambda$lambda_1(visibleSurface, distance));
+      }
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$showCandidates$lambda(closure$orderedPanels) {
+    return function ($receiver) {
+      table($receiver, void 0, JsMapperDisplay$showCandidates$lambda$lambda(closure$orderedPanels));
+      return Unit;
+    };
+  }
+  JsMapperDisplay.prototype.showCandidates_k9wkp5$ = function (orderedPanels) {
+    var tmp$, tmp$_0;
+    Kotlin.isType(tmp$ = orderedPanels, List) ? tmp$ : throwCCE();
+    var firstGuess = first(orderedPanels);
+    (Kotlin.isType(tmp$_0 = firstGuess.first.panelInfo.mesh.material, MeshBasicMaterial) ? tmp$_0 : throwCCE()).color.r = (Kotlin.isType(tmp$_0 = firstGuess.first.panelInfo.mesh.material, MeshBasicMaterial) ? tmp$_0 : throwCCE()).color.r + 0.25;
+    clear(this.table_0);
+    append(this.table_0, JsMapperDisplay$showCandidates$lambda(orderedPanels));
+  };
+  JsMapperDisplay.prototype.getScreenBox_0 = function () {
+    return new Box2(new Vector2(0, 0), new Vector2(this.width_0, this.height_0));
+  };
+  JsMapperDisplay.prototype.calcBoundingBoxOnScreen_0 = function (box, screenCenter) {
+    var minX = numberToInt(box.min.x * screenCenter.x + screenCenter.x);
+    var maxX = numberToInt(box.max.x * screenCenter.x + screenCenter.x);
+    var minY = numberToInt(-box.max.y * screenCenter.y + screenCenter.y);
+    var maxY = numberToInt(-box.min.y * screenCenter.y + screenCenter.y);
+    return new Box2(new Vector2(minX, minY), new Vector2(maxX, maxY));
+  };
+  JsMapperDisplay.prototype.showCamImage_q5ica7$$default = function (image, changeRegion) {
+    if (!this.haveCamDimensions_0) {
+      this.camWidth_0 = image.width;
+      this.camHeight_0 = image.height;
+      this.haveCamDimensions_0 = true;
+      this.resizeTo_0(this.width_0, this.height_0);
+    }
+    this.ui2dCtx_0.resetTransform();
+    (new CanvasBitmap(this.ui2dCanvas_0)).drawImage_6tj0gx$(image);
+    if (changeRegion != null) {
+      this.ui2dCtx_0.lineWidth = 2.0;
+      this.ui2dCtx_0.strokeStyle = '#ff0000';
+      this.ui2dCtx_0.strokeRect(changeRegion.x0, changeRegion.y0, changeRegion.width, changeRegion.height);
+    }
+  };
+  JsMapperDisplay.prototype.showDiffImage_oa2j07$$default = function (deltaBitmap, changeRegion) {
+    this.diffCtx_0.resetTransform();
+    this.diffCtx_0.scale(this.diffCanvasScale_0, this.diffCanvasScale_0);
+    (new CanvasBitmap(this.diffCanvas_0)).drawImage_6tj0gx$(deltaBitmap.asImage());
+    if (changeRegion != null) {
+      this.diffCtx_0.strokeStyle = '#ff0000';
+      this.diffCtx_0.lineWidth = 1 / this.diffCanvasScale_0;
+      this.diffCtx_0.strokeRect(changeRegion.x0, changeRegion.y0, changeRegion.width, changeRegion.height);
+    }
+  };
+  JsMapperDisplay.prototype.showMessage_61zpoe$ = function (message) {
+    this.messageDiv_0.innerText = message;
+    console.log('Message:', message);
+  };
+  JsMapperDisplay.prototype.showMessage2_61zpoe$ = function (message) {
+    this.message2Div_0.innerText = message;
+  };
+  JsMapperDisplay.prototype.showStats_qt1dr2$ = function (total, mapped, visible) {
+    this.statsDiv_0.innerHTML = '<i class=' + '"' + 'fas fa-triangle' + '"' + '><\/i>Mapped: ' + mapped + ' / ' + total + '<br/>Visible: ' + visible;
+  };
+  JsMapperDisplay.prototype.go_0 = function () {
+    this.listener_0.onStart();
+  };
+  JsMapperDisplay.prototype.goToSurface_0 = function (name) {
+    var $receiver = this.panelInfos_0.keys;
+    var firstOrNull$result;
+    firstOrNull$break: do {
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (equals(element.name, name)) {
+          firstOrNull$result = element;
+          break firstOrNull$break;
+        }
+      }
+      firstOrNull$result = null;
+    }
+     while (false);
+    var surface = firstOrNull$result;
+    if (surface != null) {
+      var panelInfo = ensureNotNull(this.panelInfos_0.get_11rb$(surface));
+      panelInfo.geom.computeBoundingBox();
+      var surfaceCenter = panelInfo.center;
+      var surfaceNormal = panelInfo.surfaceNormal;
+      var newCamPosition = surfaceCenter.clone();
+      newCamPosition.add(surfaceNormal.clone().multiplyScalar(100));
+      this.resetCameraRotation_0();
+      this.uiControls_0.setLookAt(newCamPosition.x, newCamPosition.y, newCamPosition.z, surfaceCenter.x, surfaceCenter.y, surfaceCenter.z, true);
     }
   };
   JsMapperDisplay.prototype.close = function () {
+  };
+  function JsMapperDisplay$StatusListener() {
+  }
+  JsMapperDisplay$StatusListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'StatusListener',
+    interfaces: []
   };
   function JsMapperDisplay$screen$lambda$lambda$lambda$lambda(this$JsMapperDisplay) {
     return function (it) {
@@ -10584,7 +12869,26 @@
     return function ($receiver) {
       i($receiver, 'fas fa-stop');
       set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_3(this$JsMapperDisplay));
-      $receiver.disabled = true;
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda$lambda_4(this$JsMapperDisplay) {
+    return function (it) {
+      var surfaceName = window.prompt('Surface:');
+      var tmp$ = surfaceName != null;
+      if (tmp$) {
+        tmp$ = surfaceName.length > 0;
+      }
+      if (tmp$) {
+        this$JsMapperDisplay.goToSurface_0(surfaceName.toUpperCase());
+      }
+      return Unit;
+    };
+  }
+  function JsMapperDisplay$screen$lambda$lambda$lambda_4(this$JsMapperDisplay) {
+    return function ($receiver) {
+      i($receiver, 'fas fa-sign-in-alt');
+      set_onClickFunction($receiver, JsMapperDisplay$screen$lambda$lambda$lambda$lambda_4(this$JsMapperDisplay));
       return Unit;
     };
   }
@@ -10595,6 +12899,7 @@
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_1(this$JsMapperDisplay));
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_2(this$JsMapperDisplay));
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_3(this$JsMapperDisplay));
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperDisplay$screen$lambda$lambda$lambda_4(this$JsMapperDisplay));
       return Unit;
     };
   }
@@ -10615,11 +12920,19 @@
       return Unit;
     };
   }
-  function JsMapperDisplay$screen$lambda$lambda_3($receiver) {
-    return Unit;
+  function JsMapperDisplay$screen$lambda$lambda_3(this$JsMapperDisplay) {
+    return function ($receiver) {
+      $receiver.width = this$JsMapperDisplay.width_0.toString() + 'px';
+      $receiver.height = this$JsMapperDisplay.height_0.toString() + 'px';
+      return Unit;
+    };
   }
-  function JsMapperDisplay$screen$lambda$lambda_4($receiver) {
-    return Unit;
+  function JsMapperDisplay$screen$lambda$lambda_4(this$JsMapperDisplay) {
+    return function ($receiver) {
+      $receiver.width = this$JsMapperDisplay.width_0.toString() + 'px';
+      $receiver.height = this$JsMapperDisplay.height_0.toString() + 'px';
+      return Unit;
+    };
   }
   function JsMapperDisplay$screen$lambda$lambda_5($receiver) {
     return Unit;
@@ -10627,16 +12940,33 @@
   function JsMapperDisplay$screen$lambda$lambda_6($receiver) {
     return Unit;
   }
+  function JsMapperDisplay$screen$lambda$lambda_7($receiver) {
+    return Unit;
+  }
+  function JsMapperDisplay$screen$lambda$lambda_8($receiver) {
+    return Unit;
+  }
   function JsMapperDisplay$screen$lambda(this$JsMapperDisplay) {
     return function ($receiver) {
+      set_tabIndex($receiver, '-1');
       div($receiver, 'mapperUi-controls', JsMapperDisplay$screen$lambda$lambda(this$JsMapperDisplay));
       canvas($receiver, 'mapperUi-2d-canvas', JsMapperDisplay$screen$lambda$lambda_0(this$JsMapperDisplay));
       div($receiver, 'mapperUi-3d-div', JsMapperDisplay$screen$lambda$lambda_1);
       canvas($receiver, 'mapperUi-diff-canvas', JsMapperDisplay$screen$lambda$lambda_2(this$JsMapperDisplay));
-      div($receiver, 'mapperUi-stats', JsMapperDisplay$screen$lambda$lambda_3);
-      div($receiver, 'mapperUi-message', JsMapperDisplay$screen$lambda$lambda_4);
-      div($receiver, 'mapperUi-message2', JsMapperDisplay$screen$lambda$lambda_5);
-      div($receiver, 'mapperUi-table', JsMapperDisplay$screen$lambda$lambda_6);
+      canvas($receiver, 'mapperUi-before-canvas', JsMapperDisplay$screen$lambda$lambda_3(this$JsMapperDisplay));
+      canvas($receiver, 'mapperUi-after-canvas', JsMapperDisplay$screen$lambda$lambda_4(this$JsMapperDisplay));
+      div($receiver, 'mapperUi-stats', JsMapperDisplay$screen$lambda$lambda_5);
+      div($receiver, 'mapperUi-message', JsMapperDisplay$screen$lambda$lambda_6);
+      div($receiver, 'mapperUi-message2', JsMapperDisplay$screen$lambda$lambda_7);
+      div($receiver, 'mapperUi-table', JsMapperDisplay$screen$lambda$lambda_8);
+      return Unit;
+    };
+  }
+  function JsMapperDisplay_init$lambda(this$JsMapperDisplay) {
+    return function (event) {
+      var tmp$, tmp$_0;
+      tmp$_0 = Kotlin.isType(tmp$ = event, KeyboardEvent) ? tmp$ : throwCCE();
+      this$JsMapperDisplay.gotUiKeypress_0(tmp$_0);
       return Unit;
     };
   }
@@ -10645,10 +12975,161 @@
     simpleName: 'JsMapperDisplay',
     interfaces: [HostedWebApp, MapperDisplay]
   };
-  function PanelInfo(faces, mesh, geom) {
+  function get_center($receiver) {
+    return $receiver.max.clone().sub($receiver.min).divideScalar(2).add($receiver.min);
+  }
+  function project($receiver, camera) {
+    $receiver.min.project(camera);
+    $receiver.max.project(camera);
+    if ($receiver.min.x > $receiver.max.x) {
+      var temp = $receiver.min.x;
+      $receiver.min.x = $receiver.max.x;
+      $receiver.max.x = temp;
+    }
+    if ($receiver.min.y > $receiver.max.y) {
+      var temp_0 = $receiver.min.y;
+      $receiver.min.y = $receiver.max.y;
+      $receiver.max.y = temp_0;
+    }
+    if ($receiver.min.z > $receiver.max.z) {
+      var temp_1 = $receiver.min.z;
+      $receiver.min.z = $receiver.max.z;
+      $receiver.max.z = temp_1;
+    }
+    return $receiver;
+  }
+  function PanelInfo(name, faces, mesh, geom) {
+    this.name = name;
     this.faces = faces;
     this.mesh = mesh;
     this.geom = geom;
+    this._boundingBox_w1eeoe$_0 = lazy(PanelInfo$_boundingBox$lambda(this));
+    this.rotator_awqgkt$_0 = lazy(PanelInfo$rotator$lambda(this));
+    this.normalBoundingBox_5laili$_0 = lazy(PanelInfo$normalBoundingBox$lambda(this));
+    this.normalBoundingBoxVolume_u6vqlc$_0 = lazy(PanelInfo$normalBoundingBoxVolume$lambda(this));
+    this._surfaceNormal_xndh7f$_0 = lazy(PanelInfo$_surfaceNormal$lambda(this));
+    this.boxOnScreen = null;
+  }
+  Object.defineProperty(PanelInfo.prototype, 'vertices', {
+    get: function () {
+      var tmp$;
+      var v = LinkedHashSet_init();
+      tmp$ = this.faces.iterator();
+      while (tmp$.hasNext()) {
+        var face = tmp$.next();
+        v.add_11rb$(this.geom.vertices[face.a]);
+        v.add_11rb$(this.geom.vertices[face.b]);
+        v.add_11rb$(this.geom.vertices[face.c]);
+      }
+      return v;
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, '_boundingBox', {
+    get: function () {
+      return this._boundingBox_w1eeoe$_0.value;
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, 'boundingBox', {
+    get: function () {
+      return this._boundingBox.clone();
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, 'rotator_0', {
+    get: function () {
+      return this.rotator_awqgkt$_0.value;
+    }
+  });
+  PanelInfo.prototype.toSurfaceNormal_as37vi$ = function (point) {
+    this.rotator_0.rotate_22wt45$([point]);
+    return point;
+  };
+  Object.defineProperty(PanelInfo.prototype, 'normalBoundingBox_0', {
+    get: function () {
+      return this.normalBoundingBox_5laili$_0.value;
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, 'normalBoundingBoxVolume_0', {
+    get: function () {
+      return this.normalBoundingBoxVolume_u6vqlc$_0.value;
+    }
+  });
+  PanelInfo.prototype.toPanelSpace_as37vi$ = function (point) {
+    var pt = point.clone();
+    pt = this.toSurfaceNormal_as37vi$(pt);
+    pt.sub(this.normalBoundingBox_0.min);
+    pt.divide(this.normalBoundingBoxVolume_0);
+    return pt;
+  };
+  Object.defineProperty(PanelInfo.prototype, 'center', {
+    get: function () {
+      return this.boundingBox.getCenter();
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, 'isMultiFaced', {
+    get: function () {
+      return this.faces.size > 1;
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, '_surfaceNormal', {
+    get: function () {
+      return this._surfaceNormal_xndh7f$_0.value;
+    }
+  });
+  Object.defineProperty(PanelInfo.prototype, 'surfaceNormal', {
+    get: function () {
+      return this._surfaceNormal.clone();
+    }
+  });
+  function PanelInfo$_boundingBox$lambda(this$PanelInfo) {
+    return function () {
+      var tmp$;
+      var boundingBox = new Box3();
+      tmp$ = this$PanelInfo.vertices.iterator();
+      while (tmp$.hasNext()) {
+        var vertex = tmp$.next();
+        boundingBox.expandByPoint(vertex);
+      }
+      return boundingBox.translate(this$PanelInfo.mesh.getWorldPosition());
+    };
+  }
+  function PanelInfo$rotator$lambda(this$PanelInfo) {
+    return function () {
+      return new Rotator(this$PanelInfo.surfaceNormal, new Vector3(0, 0, 1));
+    };
+  }
+  function PanelInfo$normalBoundingBox$lambda(this$PanelInfo) {
+    return function () {
+      var tmp$;
+      var worldPos = this$PanelInfo.mesh.getWorldPosition();
+      var boundingBox = new Box3();
+      tmp$ = this$PanelInfo.vertices.iterator();
+      while (tmp$.hasNext()) {
+        var vertex = tmp$.next();
+        boundingBox.expandByPoint(this$PanelInfo.toSurfaceNormal_as37vi$(vertex).add(worldPos));
+      }
+      return boundingBox;
+    };
+  }
+  function PanelInfo$normalBoundingBoxVolume$lambda(this$PanelInfo) {
+    return function () {
+      return this$PanelInfo.normalBoundingBox_0.max.clone().sub(this$PanelInfo.normalBoundingBox_0.min);
+    };
+  }
+  function PanelInfo$_surfaceNormal$lambda(this$PanelInfo) {
+    return function () {
+      var tmp$, tmp$_0;
+      var faceNormalSum = new Vector3();
+      var totalArea = 0.0;
+      tmp$ = this$PanelInfo.faces.iterator();
+      while (tmp$.hasNext()) {
+        var face = tmp$.next();
+        var triangle = new Triangle(this$PanelInfo.geom.vertices[face.a], this$PanelInfo.geom.vertices[face.b], this$PanelInfo.geom.vertices[face.c]);
+        var faceArea = typeof (tmp$_0 = triangle.getArea()) === 'number' ? tmp$_0 : throwCCE();
+        faceNormalSum.addScaledVector(ensureNotNull(face.normal), faceArea);
+        totalArea += faceArea;
+      }
+      return faceNormalSum.divideScalar(totalArea);
+    };
   }
   PanelInfo.$metadata$ = {
     kind: Kind_CLASS,
@@ -10707,7 +13188,8 @@
     this.sheepModel_0 = $receiver;
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.sheepModel_0, this.display_0.forVisualizer());
-    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.display_0.forPinky());
+    this.fs_0 = new FakeFs();
+    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.fs_0, this.display_0.forPinky());
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -10822,7 +13304,8 @@
   function SheepSimulator$start$lambda$lambda_1(this$SheepSimulator) {
     return function () {
       var mapperDisplay = new JsMapperDisplay(this$SheepSimulator.visualizer_0);
-      var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.sheepModel_0, mapperDisplay, new FakeMediaDevices(this$SheepSimulator.visualizer_0));
+      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer_0);
+      var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.sheepModel_0, mapperDisplay, mediaDevices, this$SheepSimulator.pinky_0.address);
       launch(this$SheepSimulator.mapperScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda(mapper));
       return mapperDisplay;
     };
@@ -11090,7 +13573,7 @@
       $receiver.remove(ensureNotNull($receiver.item(0)));
     }
   }
-  function first_0($receiver, className) {
+  function first_1($receiver, className) {
     var tmp$;
     return ensureNotNull((tmp$ = $receiver.getElementsByClassName(className)[0]) == null || Kotlin.isType(tmp$, HTMLElement) ? tmp$ : throwCCE());
   }
@@ -11149,6 +13632,201 @@
     }
     return WebUi_instance;
   }
+  function RealMediaDevices() {
+    this.$delegate_ikujlt$_0 = MainScope();
+  }
+  function RealMediaDevices$getCamera$ObjectLiteral(this$RealMediaDevices) {
+    var tmp$ = window.navigator.mediaDevices;
+    var video = {width: {min: 1024, ideal: 1280, max: 1920}, height: {min: 776, ideal: 720, max: 1080}};
+    var o = {};
+    o['video'] = video;
+    o['audio'] = false;
+    this.camPromise = tmp$.getUserMedia(o);
+    this.videoTrack_k1tc6d$_0 = this.videoTrack_k1tc6d$_0;
+    var tmp$_0;
+    this.videoEl = Kotlin.isType(tmp$_0 = document.createElement('video'), HTMLVideoElement) ? tmp$_0 : throwCCE();
+    this.videoEl.autoplay = true;
+    this.camPromise.then(RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda(this, this$RealMediaDevices)).catch(RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda_0);
+    this.onImage_ocpcir$_0 = RealMediaDevices$getCamera$ObjectLiteral$onImage$lambda;
+  }
+  Object.defineProperty(RealMediaDevices$getCamera$ObjectLiteral.prototype, 'videoTrack', {
+    get: function () {
+      if (this.videoTrack_k1tc6d$_0 == null)
+        return throwUPAE('videoTrack');
+      return this.videoTrack_k1tc6d$_0;
+    },
+    set: function (videoTrack) {
+      this.videoTrack_k1tc6d$_0 = videoTrack;
+    }
+  });
+  Object.defineProperty(RealMediaDevices$getCamera$ObjectLiteral.prototype, 'onImage', {
+    get: function () {
+      return this.onImage_ocpcir$_0;
+    },
+    set: function (onImage) {
+      this.onImage_ocpcir$_0 = onImage;
+    }
+  });
+  RealMediaDevices$getCamera$ObjectLiteral.prototype.close = function () {
+  };
+  function Coroutine$capture($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$capture.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$capture.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$capture.prototype.constructor = Coroutine$capture;
+  Coroutine$capture.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.onImage(new VideoElementImage(this.$this.videoEl));
+            this.state_0 = 2;
+            this.result_0 = delay(L50, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.state_0 = 3;
+            this.result_0 = this.$this.capture(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  RealMediaDevices$getCamera$ObjectLiteral.prototype.capture = function (continuation_0, suspended) {
+    var instance = new Coroutine$capture(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda(this$_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$ = this$_0;
+  }
+  Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda.prototype.constructor = Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda;
+  Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$.capture(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda(this$_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda(this$_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda(this$, this$RealMediaDevices) {
+    return function (it) {
+      println('oncanplay');
+      return launch(this$RealMediaDevices, void 0, void 0, RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda$lambda(this$));
+    };
+  }
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda_0(it) {
+    println('onended');
+    return Unit;
+  }
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda_1(it) {
+    println('onloadeddata');
+    return Unit;
+  }
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda(this$, this$RealMediaDevices) {
+    return function (stream) {
+      this$.videoTrack = stream.getVideoTracks()[0];
+      this$.videoEl.srcObject = stream;
+      this$.videoEl.controls = true;
+      this$.videoEl.play();
+      this$.videoEl.oncanplay = RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda(this$, this$RealMediaDevices);
+      this$.videoEl.onended = RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda_0;
+      this$.videoEl.onloadeddata = RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda$lambda_1;
+      return Unit;
+    };
+  }
+  function RealMediaDevices$getCamera$RealMediaDevices$getCamera$ObjectLiteral_init$lambda_0(t) {
+    println('caught ' + t);
+    return Unit;
+  }
+  function RealMediaDevices$getCamera$ObjectLiteral$onImage$lambda(it) {
+    return Unit;
+  }
+  RealMediaDevices$getCamera$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [MediaDevices$Camera]
+  };
+  RealMediaDevices.prototype.getCamera = function () {
+    return new RealMediaDevices$getCamera$ObjectLiteral(this);
+  };
+  Object.defineProperty(RealMediaDevices.prototype, 'coroutineContext', {
+    get: function () {
+      return this.$delegate_ikujlt$_0.coroutineContext;
+    }
+  });
+  RealMediaDevices.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RealMediaDevices',
+    interfaces: [CoroutineScope, MediaDevices]
+  };
   function Vector2_0(x, y) {
     Vector2.call(this, x, y);
   }
@@ -11214,19 +13892,40 @@
   CanvasBitmap.prototype.copyFrom_5151av$ = function (other) {
     var tmp$;
     this.assertSameSizeAs_ffnq1x$_0(other);
+    this.ctx_8be2vx$.resetTransform();
     this.ctx_8be2vx$.globalCompositeOperation = 'source-over';
     this.ctx_8be2vx$.drawImage((Kotlin.isType(tmp$ = other, CanvasBitmap) ? tmp$ : throwCCE()).canvas_5fzy0b$_0, 0.0, 0.0);
+    this.ctx_8be2vx$.resetTransform();
   };
   CanvasBitmap.prototype.subtract_5151av$ = function (other) {
-    var tmp$;
+    var tmp$, tmp$_0, tmp$_1;
+    var beforeCanvas = first_1(ensureNotNull(document.body), 'mapperUi-before-canvas');
+    var afterCanvas = first_1(ensureNotNull(document.body), 'mapperUi-after-canvas');
+    var beforeCtx = Kotlin.isType(tmp$ = beforeCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    beforeCtx.resetTransform();
+    beforeCtx.scale(0.3, 0.3);
+    beforeCtx.drawImage(this.canvas_5fzy0b$_0, 0.0, 0.0);
+    var afterCtx = Kotlin.isType(tmp$_0 = afterCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
+    afterCtx.resetTransform();
+    afterCtx.scale(0.3, 0.3);
+    afterCtx.drawImage((Kotlin.isType(tmp$_1 = other, CanvasBitmap) ? tmp$_1 : throwCCE()).canvas_5fzy0b$_0, 0.0, 0.0);
     this.assertSameSizeAs_ffnq1x$_0(other);
+    this.ctx_8be2vx$.resetTransform();
     this.ctx_8be2vx$.globalCompositeOperation = 'difference';
-    this.ctx_8be2vx$.drawImage((Kotlin.isType(tmp$ = other, CanvasBitmap) ? tmp$ : throwCCE()).canvas_5fzy0b$_0, 0.0, 0.0);
+    this.ctx_8be2vx$.drawImage(other.canvas_5fzy0b$_0, 0.0, 0.0);
+    this.ctx_8be2vx$.resetTransform();
   };
-  CanvasBitmap.prototype.withData_c37y77$ = function (fn) {
-    var imageData = this.ctx_8be2vx$.getImageData(0.0, 0.0, this.width, this.height);
-    if (fn(imageData.data)) {
-      this.ctx_8be2vx$.putImageData(imageData, 0.0, 0.0);
+  CanvasBitmap.prototype.toDataUrl = function () {
+    return this.canvas_5fzy0b$_0.toDataURL('image/webp');
+  };
+  CanvasBitmap.prototype.withData_u0v8ny$$default = function (region, fn) {
+    var x = region.x0;
+    var y = region.y0;
+    var width = region.width;
+    var height = region.height;
+    var imageData = this.ctx_8be2vx$.getImageData(x, y, width, height);
+    if (fn(new JsUByteClampedArray(imageData.data))) {
+      this.ctx_8be2vx$.putImageData(imageData, x, y, x, y, width, height);
     }
   };
   function CanvasBitmap$asImage$ObjectLiteral(this$CanvasBitmap) {
@@ -11310,6 +14009,55 @@
     simpleName: 'ImageBitmapImage',
     interfaces: [JsImage]
   };
+  function VideoElementImage(videoEl) {
+    JsImage.call(this);
+    this.videoEl_0 = videoEl;
+  }
+  Object.defineProperty(VideoElementImage.prototype, 'width', {
+    get: function () {
+      return this.videoEl_0.videoWidth;
+    }
+  });
+  Object.defineProperty(VideoElementImage.prototype, 'height', {
+    get: function () {
+      return this.videoEl_0.videoHeight;
+    }
+  });
+  VideoElementImage.prototype.toBitmap = function () {
+    var bitmap = new NativeBitmap(this.videoEl_0.videoWidth, this.videoEl_0.videoHeight);
+    bitmap.drawImage_6tj0gx$(this);
+    return bitmap;
+  };
+  VideoElementImage.prototype.draw_as725m$ = function (ctx, x, y) {
+    ctx.drawImage(this.videoEl_0, 0.0, 0.0);
+  };
+  VideoElementImage.prototype.draw_wveyom$ = function (ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight) {
+    ctx.drawImage(this.videoEl_0, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+  };
+  VideoElementImage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VideoElementImage',
+    interfaces: [JsImage]
+  };
+  function JsUByteClampedArray(delegate) {
+    this.delegate = delegate;
+  }
+  Object.defineProperty(JsUByteClampedArray.prototype, 'size', {
+    get: function () {
+      return this.delegate.length;
+    }
+  });
+  JsUByteClampedArray.prototype.get_za3lpa$ = function (index) {
+    return this.delegate[index];
+  };
+  JsUByteClampedArray.prototype.set_2c6cbe$ = function (index, value) {
+    this.delegate[index] = value;
+  };
+  JsUByteClampedArray.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsUByteClampedArray',
+    interfaces: [UByteClampedArray]
+  };
   function Coroutine$doRunBlocking$lambda(closure$block_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -11378,10 +14126,24 @@
   function getTimeMillis() {
     return Kotlin.Long.fromNumber(Date.now());
   }
-  function BrowserNetwork() {
+  function decodeBase64(s) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'decodeBase64 not implemented');
   }
-  function BrowserNetwork$link$ObjectLiteral() {
+  function BrowserNetwork(udpProxyAddress, udpProxyPort) {
+    if (udpProxyAddress === void 0)
+      udpProxyAddress = null;
+    if (udpProxyPort === void 0)
+      udpProxyPort = 0;
+    this.udpProxyAddress_0 = udpProxyAddress;
+    this.udpProxyPort_0 = udpProxyPort;
+  }
+  function BrowserNetwork$link$ObjectLiteral(this$BrowserNetwork) {
     this.myAddress_4sgley$_0 = new BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral();
+    this.udpProxy = null;
+    var tmp$;
+    if ((tmp$ = this$BrowserNetwork.udpProxyAddress_0) != null) {
+      this.udpProxy = new BrowserNetwork$UdpProxy(this, tmp$, this$BrowserNetwork.udpProxyPort_0);
+    }
     this.udpMtu_1mlzjd$_0 = 1500;
   }
   Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'myAddress', {
@@ -11395,7 +14157,7 @@
     }
   });
   BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.listenUdp not implemented');
+    return ensureNotNull(this.udpProxy).listenUdp_a6m852$(port, udpListener);
   };
   BrowserNetwork$link$ObjectLiteral.prototype.startHttpServer_za3lpa$ = function (port) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.startHttpServer not implemented');
@@ -11479,7 +14241,7 @@
     interfaces: [Network$Link]
   };
   BrowserNetwork.prototype.link = function () {
-    return new BrowserNetwork$link$ObjectLiteral();
+    return new BrowserNetwork$link$ObjectLiteral(this);
   };
   function BrowserNetwork$BrowserAddress(urlString) {
     this.urlString = urlString;
@@ -11488,6 +14250,140 @@
     kind: Kind_CLASS,
     simpleName: 'BrowserAddress',
     interfaces: [Network$Address]
+  };
+  function BrowserNetwork$UdpProxy(link, address, port) {
+    this.udpListener_0 = null;
+    this.tcpConnection = link.connectWebSocket_t0j9bj$(address, port, '/sm/udpProxy', this);
+    this.connected = false;
+    this.toSend = ArrayList_init();
+  }
+  BrowserNetwork$UdpProxy.prototype.connected_67ozxy$ = function (tcpConnection) {
+    this.connected = true;
+    var tmp$;
+    tmp$ = this.toSend.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      tcpConnection.send_fqrh44$(element);
+    }
+    this.toSend.clear();
+  };
+  BrowserNetwork$UdpProxy.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
+    var $receiver = new ByteArrayReader(bytes);
+    var op = $receiver.readByte();
+    if (op === toByte(82 | 0)) {
+      var fromAddress = new BrowserNetwork$UdpProxy$UdpProxyAddress($receiver.readBytes());
+      var fromPort = $receiver.readInt();
+      var data = $receiver.readBytes();
+      this.log_0('UDP: Received ' + data.length + ' bytes from ' + fromAddress + ':' + fromPort);
+      ensureNotNull(this.udpListener_0).receive_ytpeqp$(fromAddress, fromPort, data);
+    }
+  };
+  BrowserNetwork$UdpProxy.prototype.reset_67ozxy$ = function (tcpConnection) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'UdpProxy.reset not implemented');
+  };
+  BrowserNetwork$UdpProxy.prototype.listenUdp_a6m852$ = function (port, udpListener) {
+    if (this.udpListener_0 != null) {
+      throw IllegalStateException_init('UDP proxy is already listening');
+    }
+    this.udpListener_0 = udpListener;
+    if (port !== 0) {
+      throw IllegalArgumentException_init("UDP proxy can't listen on a specific port, sorry!");
+    }
+    var $receiver = new ByteArrayWriter();
+    $receiver.writeByte_s8j3t7$(toByte(76 | 0));
+    this.log_0('UDP: Listen');
+    this.tcpConnectionSend_0($receiver.toBytes());
+    return new BrowserNetwork$UdpProxy$UdpSocketProxy(this, port);
+  };
+  function BrowserNetwork$UdpProxy$UdpSocketProxy($outer, requestedPort) {
+    this.$outer = $outer;
+    this.serverPort_806q28$_0 = requestedPort;
+  }
+  Object.defineProperty(BrowserNetwork$UdpProxy$UdpSocketProxy.prototype, 'serverPort', {
+    get: function () {
+      return this.serverPort_806q28$_0;
+    }
+  });
+  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    if (!Kotlin.isType(toAddress, BrowserNetwork$UdpProxy$UdpProxyAddress)) {
+      throw IllegalArgumentException_init("UDP proxy can't send to " + toAddress + '!');
+    }
+    var tmp$ = this.$outer;
+    var $receiver = new ByteArrayWriter();
+    this.$outer;
+    var this$UdpProxy = this.$outer;
+    $receiver.writeByte_s8j3t7$(toByte(83 | 0));
+    $receiver.writeBytes_mj6st8$(toAddress.bytes);
+    $receiver.writeInt_za3lpa$(port);
+    $receiver.writeBytes_mj6st8$(bytes);
+    this$UdpProxy.log_0('UDP: Sent ' + bytes.length + ' bytes to ' + toAddress + ':' + port);
+    tmp$.tcpConnectionSend_0($receiver.toBytes());
+  };
+  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+    var tmp$ = this.$outer;
+    var $receiver = new ByteArrayWriter();
+    this.$outer;
+    var this$UdpProxy = this.$outer;
+    $receiver.writeByte_s8j3t7$(toByte(66 | 0));
+    $receiver.writeInt_za3lpa$(port);
+    $receiver.writeBytes_mj6st8$(bytes);
+    this$UdpProxy.log_0('UDP: Broadcast ' + bytes.length + ' bytes to *:' + port);
+    tmp$.tcpConnectionSend_0($receiver.toBytes());
+  };
+  BrowserNetwork$UdpProxy$UdpSocketProxy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UdpSocketProxy',
+    interfaces: [Network$UdpSocket]
+  };
+  BrowserNetwork$UdpProxy.prototype.tcpConnectionSend_0 = function (bytes) {
+    if (this.connected) {
+      this.tcpConnection.send_fqrh44$(bytes);
+    }
+     else {
+      this.toSend.add_11rb$(bytes);
+    }
+  };
+  BrowserNetwork$UdpProxy.prototype.log_0 = function (s) {
+    println(s);
+  };
+  function BrowserNetwork$UdpProxy$UdpProxyAddress(bytes) {
+    this.bytes = bytes;
+  }
+  function BrowserNetwork$UdpProxy$UdpProxyAddress$toString$lambda(it) {
+    return (it & 255).toString();
+  }
+  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.toString = function () {
+    return joinToString_0(this.bytes, '.', void 0, void 0, void 0, void 0, BrowserNetwork$UdpProxy$UdpProxyAddress$toString$lambda);
+  };
+  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.equals = function (other) {
+    var tmp$;
+    if (this === other)
+      return true;
+    if (other == null || !equals(get_js(Kotlin.getKClassFromExpression(this)), get_js(Kotlin.getKClassFromExpression(other))))
+      return false;
+    Kotlin.isType(tmp$ = other, BrowserNetwork$UdpProxy$UdpProxyAddress) ? tmp$ : throwCCE();
+    if (!contentEquals(this.bytes, other.bytes))
+      return false;
+    return true;
+  };
+  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.hashCode = function () {
+    return contentHashCode(this.bytes);
+  };
+  BrowserNetwork$UdpProxy$UdpProxyAddress.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UdpProxyAddress',
+    interfaces: [Network$Address]
+  };
+  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.component1 = function () {
+    return this.bytes;
+  };
+  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.copy_fqrh44$ = function (bytes) {
+    return new BrowserNetwork$UdpProxy$UdpProxyAddress(bytes === void 0 ? this.bytes : bytes);
+  };
+  BrowserNetwork$UdpProxy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UdpProxy',
+    interfaces: [Network$WebSocketListener]
   };
   BrowserNetwork.$metadata$ = {
     kind: Kind_CLASS,
@@ -11501,8 +14397,8 @@
   FakeMediaDevices.prototype.getCurrentCam = function () {
     return this.currentCam;
   };
-  FakeMediaDevices.prototype.getCamera_vux9f0$ = function (width, height) {
-    var $receiver = new FakeMediaDevices$FakeCamera(this, width, height);
+  FakeMediaDevices.prototype.getCamera = function () {
+    var $receiver = new FakeMediaDevices$FakeCamera(this, 640, 480);
     this.visualizer_0.addFrameListener_imgev1$($receiver);
     return $receiver;
   };
@@ -12032,6 +14928,9 @@
     this.camera_0.updateProjectionMatrix();
     this.renderer_0.setSize(this.sheepView_0.offsetWidth, this.sheepView_0.offsetHeight);
   };
+  Visualizer.prototype.mapperStatusChanged_6taknv$ = function (isRunning) {
+    this.mapperIsRunning = isRunning;
+  };
   function Visualizer$FrameListener() {
   }
   Visualizer$FrameListener.$metadata$ = {
@@ -12066,7 +14965,7 @@
   Visualizer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Visualizer',
-    interfaces: []
+    interfaces: [JsMapperDisplay$StatusListener]
   };
   function VizPanel(panel, geom, scene) {
     VizPanel$Companion_getInstance();
@@ -12105,7 +15004,7 @@
         var item_0 = tmp$_2.next();
         var tmp$_3 = destination_0.add_11rb$;
         var v = this.geom_0.vertices[item_0];
-        var lvi = indexOf(panelVertices, v);
+        var lvi = indexOf_0(panelVertices, v);
         if (lvi === -1) {
           lvi = panelVertices.length;
           panelVertices.push(v);
@@ -12418,6 +15317,13 @@
       element.applyMatrix(this.matrix_0);
     }
   };
+  Rotator.prototype.rotate_22wt45$ = function (vectors) {
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== vectors.length; ++tmp$) {
+      var element = vectors[tmp$];
+      element.applyMatrix4(this.matrix_0);
+    }
+  };
   Rotator.prototype.invert = function () {
     return new Rotator(this.to, this.from);
   };
@@ -12477,11 +15383,27 @@
   package$baaahs.array_byae19$ = array;
   GadgetManager.GadgetInfo = GadgetManager$GadgetInfo;
   package$baaahs.GadgetManager = GadgetManager;
-  Mapper.BrainMapper = Mapper$BrainMapper;
+  Object.defineProperty(Mapper$Detector, 'RED', {
+    get: Mapper$Detector$RED_getInstance
+  });
+  Object.defineProperty(Mapper$Detector, 'GREEN', {
+    get: Mapper$Detector$GREEN_getInstance
+  });
+  Object.defineProperty(Mapper$Detector, 'BLUE', {
+    get: Mapper$Detector$BLUE_getInstance
+  });
+  Mapper.Detector = Mapper$Detector;
+  Mapper.BrainMapping = Mapper$BrainMapping;
+  Mapper.PixelMapData = Mapper$PixelMapData;
   package$baaahs.Mapper = Mapper;
   MapperDisplay.Listener = MapperDisplay$Listener;
+  MapperDisplay.VisibleSurface = MapperDisplay$VisibleSurface;
+  MapperDisplay.CameraOrientation = MapperDisplay$CameraOrientation;
   package$baaahs.MapperDisplay = MapperDisplay;
   MediaDevices.Camera = MediaDevices$Camera;
+  Object.defineProperty(MediaDevices$Region, 'Companion', {
+    get: MediaDevices$Region$Companion_getInstance
+  });
   MediaDevices.Region = MediaDevices$Region;
   package$baaahs.MediaDevices = MediaDevices;
   Object.defineProperty(MovingHead$ColorMode, 'ColorWheel', {
@@ -12744,13 +15666,76 @@
     get: Slider$$serializer_getInstance
   });
   package$gadgets.Slider = Slider;
+  Object.defineProperty(Matrix4, 'Companion', {
+    get: Matrix4$Companion_getInstance
+  });
+  Object.defineProperty(Matrix4, '$serializer', {
+    get: Matrix4$$serializer_getInstance
+  });
+  var package$geom = package$baaahs.geom || (package$baaahs.geom = {});
+  package$geom.Matrix4 = Matrix4;
+  Object.defineProperty(Vector2F, 'Companion', {
+    get: Vector2F$Companion_getInstance
+  });
+  Object.defineProperty(Vector2F, '$serializer', {
+    get: Vector2F$$serializer_getInstance
+  });
+  package$geom.Vector2F = Vector2F;
+  Object.defineProperty(Vector3F, 'Companion', {
+    get: Vector3F$Companion_getInstance
+  });
+  Object.defineProperty(Vector3F, '$serializer', {
+    get: Vector3F$$serializer_getInstance
+  });
+  package$geom.Vector3F = Vector3F;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
   package$imaging.Bitmap = Bitmap;
+  package$imaging.UByteClampedArray = UByteClampedArray;
   var package$io = package$baaahs.io || (package$baaahs.io = {});
   package$io.ByteArrayReader = ByteArrayReader;
   package$io.ByteArrayWriter_init_za3lpa$ = ByteArrayWriter_init;
   package$io.ByteArrayWriter = ByteArrayWriter;
+  package$io.Fs = Fs;
+  var package$mapper = package$baaahs.mapper || (package$baaahs.mapper = {});
+  Object.defineProperty(package$mapper, 'DateTimeSerializer', {
+    get: DateTimeSerializer_getInstance
+  });
+  ImageProcessing.Histogram = ImageProcessing$Histogram;
+  Object.defineProperty(ImageProcessing, 'Companion', {
+    get: ImageProcessing$Companion_getInstance
+  });
+  package$mapper.ImageProcessing = ImageProcessing;
+  package$mapper.MapperClient = MapperClient;
+  Object.defineProperty(MapperEndpoint, 'Companion', {
+    get: MapperEndpoint$Companion_getInstance
+  });
+  package$mapper.MapperEndpoint = MapperEndpoint;
+  Object.defineProperty(MappingSession$SurfaceData$PixelData, 'Companion', {
+    get: MappingSession$SurfaceData$PixelData$Companion_getInstance
+  });
+  Object.defineProperty(MappingSession$SurfaceData$PixelData, '$serializer', {
+    get: MappingSession$SurfaceData$PixelData$$serializer_getInstance
+  });
+  MappingSession$SurfaceData.PixelData = MappingSession$SurfaceData$PixelData;
+  Object.defineProperty(MappingSession$SurfaceData, 'Companion', {
+    get: MappingSession$SurfaceData$Companion_getInstance
+  });
+  Object.defineProperty(MappingSession$SurfaceData, '$serializer', {
+    get: MappingSession$SurfaceData$$serializer_getInstance
+  });
+  MappingSession.SurfaceData = MappingSession$SurfaceData;
+  Object.defineProperty(MappingSession, 'Companion', {
+    get: MappingSession$Companion_getInstance
+  });
+  Object.defineProperty(MappingSession, '$serializer', {
+    get: MappingSession$$serializer_getInstance
+  });
+  package$mapper.MappingSession = MappingSession;
+  Object.defineProperty(Storage, 'Companion', {
+    get: Storage$Companion_getInstance
+  });
+  package$mapper.Storage = Storage;
   Object.defineProperty(FragmentingUdpLink, 'Companion', {
     get: FragmentingUdpLink$Companion_getInstance
   });
@@ -12782,9 +15767,6 @@
   Object.defineProperty(Type, 'BRAIN_ID_REQUEST', {
     get: Type$BRAIN_ID_REQUEST_getInstance
   });
-  Object.defineProperty(Type, 'BRAIN_ID_RESPONSE', {
-    get: Type$BRAIN_ID_RESPONSE_getInstance
-  });
   Object.defineProperty(Type, 'BRAIN_MAPPING', {
     get: Type$BRAIN_MAPPING_getInstance
   });
@@ -12812,15 +15794,10 @@
     get: BrainIdRequest$Companion_getInstance
   });
   package$proto.BrainIdRequest = BrainIdRequest;
-  Object.defineProperty(BrainIdResponse, 'Companion', {
-    get: BrainIdResponse$Companion_getInstance
-  });
-  package$proto.BrainIdResponse = BrainIdResponse;
   Object.defineProperty(BrainMappingMessage, 'Companion', {
     get: BrainMappingMessage$Companion_getInstance
   });
   package$proto.BrainMappingMessage = BrainMappingMessage;
-  package$proto.Vector2F = Vector2F;
   Object.defineProperty(PinkyPongMessage, 'Companion', {
     get: PinkyPongMessage$Companion_getInstance
   });
@@ -12959,6 +15936,7 @@
   });
   var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
   package$sim.FakeDmxUniverse = FakeDmxUniverse;
+  package$sim.FakeFs = FakeFs;
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;
@@ -12969,12 +15947,16 @@
     get: logger$Companion_getInstance
   });
   package$baaahs.logger = logger;
-  package$baaahs.time_ls4sck$ = time;
+  package$baaahs.time_66u77s$ = time;
   package$baaahs.JsDisplay = JsDisplay;
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
   package$baaahs.JsBrainDisplay = JsBrainDisplay;
   package$baaahs.JsVisualizerDisplay = JsVisualizerDisplay;
+  JsMapperDisplay$VisibleSurface.VisiblePixel = JsMapperDisplay$VisibleSurface$VisiblePixel;
+  JsMapperDisplay.VisibleSurface = JsMapperDisplay$VisibleSurface;
+  JsMapperDisplay.CameraOrientation = JsMapperDisplay$CameraOrientation;
+  JsMapperDisplay.StatusListener = JsMapperDisplay$StatusListener;
   package$baaahs.JsMapperDisplay = JsMapperDisplay;
   package$baaahs.PanelInfo = PanelInfo;
   package$baaahs.Launcher = Launcher;
@@ -12986,7 +15968,7 @@
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.clear_u75qir$ = clear_0;
-  package$baaahs.first_m814eh$ = first_0;
+  package$baaahs.first_m814eh$ = first_1;
   package$baaahs.context2d_ng27xv$ = context2d;
   package$baaahs.HostedWebApp = HostedWebApp;
   DomContainer.Frame = DomContainer$Frame;
@@ -12995,16 +15977,20 @@
   Object.defineProperty(package$baaahs, 'WebUi', {
     get: WebUi_getInstance
   });
-  var package$geom = package$baaahs.geom || (package$baaahs.geom = {});
+  var package$browser = package$baaahs.browser || (package$baaahs.browser = {});
+  package$browser.RealMediaDevices = RealMediaDevices;
   package$geom.Vector2 = Vector2_0;
   package$imaging.NativeBitmap = NativeBitmap;
   package$imaging.createCanvas_vux9f0$ = createCanvas;
   package$imaging.CanvasBitmap = CanvasBitmap;
   package$imaging.JsImage = JsImage;
   package$imaging.ImageBitmapImage = ImageBitmapImage;
+  package$imaging.VideoElementImage = VideoElementImage;
+  package$imaging.JsUByteClampedArray = JsUByteClampedArray;
   package$baaahs.doRunBlocking_g2bo5h$ = doRunBlocking;
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getTimeMillis = getTimeMillis;
+  package$baaahs.decodeBase64_61zpoe$ = decodeBase64;
   BrowserNetwork.BrowserAddress = BrowserNetwork$BrowserAddress;
   package$net.BrowserNetwork = BrowserNetwork;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
@@ -13050,6 +16036,13 @@
   ColorPicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   PalettePicker$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Slider$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Matrix4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vector2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vector3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  DateTimeSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
+  MappingSession$SurfaceData$PixelData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  MappingSession$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  MappingSession$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   FragmentingUdpLink$FragmentingUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   GlslSandbox55301Shader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -13081,10 +16074,16 @@
   FakeNetwork$FakeLink$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
+  FakeNetwork$FakeLink$FakeHttpServer.prototype.listenWebSocket_w9i1ik$ = Network$HttpServer.prototype.listenWebSocket_w9i1ik$;
+  JsMapperDisplay.prototype.showCamImage_q5ica7$ = MapperDisplay.prototype.showCamImage_q5ica7$;
+  JsMapperDisplay.prototype.showDiffImage_oa2j07$ = MapperDisplay.prototype.showDiffImage_oa2j07$;
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
+  CanvasBitmap.prototype.withData_u0v8ny$ = Bitmap.prototype.withData_u0v8ny$;
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
+  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
+  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   VizPanel$VizPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
