@@ -338,14 +338,17 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
 
 esp_err_t
 MsgSlinger::sendMsg(Msg *pMsg) {
-    if (!pMsg) return ESP_FAIL;
+    if (!pMsg) {
+        ESP_LOGW(TAG, "sendMsg this=%p pMsg=%p len=%d dest=%s", this, pMsg, pMsg->used(), pMsg->dest.toString());
+        return ESP_FAIL;
+    }
 
     // We just fire an event so that the output pump will take care
     // of it later and the sending task doesn't block
 
     pMsg->addRef(); // Will be released on the other side of the event.
 
-    ESP_LOGW(TAG, "sendMsg this=%p pMsg=%p", this, pMsg);
+    ESP_LOGI(TAG, "sendMsg this=%p pMsg=%p len=%d dest=%s", this, pMsg, pMsg->used(), pMsg->dest.toString());
 
     esp_event_post_to(m_hOutputLoop, BRAIN_NETOUT, NETOUT_READY, &pMsg, sizeof(pMsg), pdMS_TO_TICKS(500));
 

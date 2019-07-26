@@ -3,17 +3,33 @@ package baaahs.sim
 import baaahs.io.Fs
 import baaahs.logger
 
+@UseExperimental(ExperimentalStdlibApi::class)
 class FakeFs : Fs {
-    override fun loadFile(name: String): String? {
-        logger.debug("FakeFs.loadFile($name)")
-        return null
+    private val files = mutableMapOf<String, ByteArray>()
+
+    override fun listFiles(path: String): List<String> {
+        logger.debug("FakeFs.listFiles($path)")
+        return files.keys.filter { it.startsWith("$path/") }
     }
 
-    override fun createFile(name: String, content: ByteArray, allowOverwrite: Boolean) {
-        logger.debug("FakeFs.createFile($name) -> $content")
+    override fun loadFile(path: String): String? {
+        logger.debug("FakeFs.loadFile($path)")
+        return files[path]?.decodeToString()
     }
 
-    override fun createFile(name: String, content: String, allowOverwrite: Boolean) {
-        logger.debug("FakeFs.createFile($name) -> $content")
+    override fun createFile(path: String, content: ByteArray, allowOverwrite: Boolean) {
+        logger.debug("FakeFs.createFile($path) -> ${content.size} bytes")
+        addFile(path, content)
+    }
+
+    override fun createFile(path: String, content: String, allowOverwrite: Boolean) {
+        createFile(path, content.encodeToByteArray(), allowOverwrite)
+    }
+
+    private fun addFile(path: String, content: ByteArray) {
+        if (files.containsKey(path)) {
+            throw Exception("$path already exists")
+        }
+        files[path] = content
     }
 }

@@ -12,6 +12,7 @@ actual class NativeBitmap actual constructor(width: Int, height: Int) : Bitmap {
 
     override val height: Int
         get() = TODO("NativeBitmap.height not implemented")
+
     override fun drawImage(image: Image) {
         TODO("NativeBitmap.drawImage not implemented")
     }
@@ -29,9 +30,16 @@ actual class NativeBitmap actual constructor(width: Int, height: Int) : Bitmap {
     ) {
         TODO("NativeBitmap.drawImage not implemented")
     }
-
     override fun copyFrom(other: Bitmap) {
         TODO("NativeBitmap.copyFrom not implemented")
+    }
+
+    override fun lighten(other: Bitmap) {
+        TODO("NativeBitmap.lighten not implemented")
+    }
+
+    override fun darken(other: Bitmap) {
+        TODO("NativeBitmap.darken not implemented")
     }
 
     override fun subtract(other: Bitmap) {
@@ -44,5 +52,9 @@ actual class NativeBitmap actual constructor(width: Int, height: Int) : Bitmap {
 
     override fun asImage(): Image {
         TODO("NativeBitmap.asImage not implemented")
+    }
+
+    override fun clone(): Bitmap {
+        TODO("NativeBitmap.clone not implemented")
     }
 }

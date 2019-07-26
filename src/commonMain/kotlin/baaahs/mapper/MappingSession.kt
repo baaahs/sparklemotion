@@ -12,6 +12,8 @@ data class MappingSession(
     val surfaces: List<SurfaceData>,
     val cameraMatrix: Matrix4,
     val baseImage: String?,
+    val version: Int = 0,
+    val savedAt: Double = DateTime.nowUnix(),
     val notes: String? = null
 ) {
     val startedAtDateTime: DateTime get() = DateTime(startedAt)
@@ -21,7 +23,9 @@ data class MappingSession(
         val brainId: String,
         val panelName: String,
         val pixels: List<PixelData?>,
-        val deltaImage: String?
+        val deltaImage: String?,
+        val screenAreaInSqPixels: Float?,
+        val screenAngle: Float?
     ) {
 
         @Serializable

@@ -43,9 +43,10 @@ private:
     void msgBrainPanelShade(Msg* pMsg);
     void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);
-    void msgPinkyPong(Msg* pMsg);
+    void msgPing(Msg* pMsg);
 
     void sendHello(const IpPort &port);
+    void sendPong(const IpPort &port, const uint8_t *data, size_t dataLen);
 };
 
 
