@@ -11,7 +11,10 @@ import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
+import java.nio.file.Files
 import java.nio.file.Paths
+import java.nio.file.attribute.FileAttribute
 
 fun main(args: Array<String>) {
     val sheepModel = SheepModel()
@@ -23,11 +26,14 @@ fun main(args: Array<String>) {
     println("jsResDir = ${jsResDir}")
 
     val network = JvmNetwork()
+    val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
+    Files.createDirectories(dataDir)
+    val fs = RealFs(dataDir)
 
     val dmxUniverse = findDmxUniverse()
 
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, object : StubPinkyDisplay() {
+        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, fs, object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }

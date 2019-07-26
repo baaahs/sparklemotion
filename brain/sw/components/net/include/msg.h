@@ -39,11 +39,10 @@ public:
     IpPort dest;
 
     enum class Type : uint8_t {
-        BRAIN_HELLO,
-        BRAIN_PANEL_SHADE,
-        MAPPER_HELLO,
-        BRAIN_ID_REQUEST,
-        BRAIN_ID_RESPONSE,
+        BRAIN_HELLO,       // Brain -> Pinky|Mapper
+        BRAIN_PANEL_SHADE, // Pinky -> Brain
+        MAPPER_HELLO,      // Mapper -> Pinky
+        BRAIN_ID_REQUEST,  // Mapper -> Brain
         BRAIN_MAPPING,
         PINKY_PONG,
     };
@@ -163,6 +162,11 @@ public:
 
     void writeFloat(float d) {
 
+    }
+
+    void writeNullableString(const char* sz) {
+        writeBoolean(sz);
+        writeString(sz);
     }
 
     void writeString(const char* sz) {
@@ -416,13 +420,12 @@ private:
 class BrainHelloMsg : public Msg {
 public:
     BrainHelloMsg(const char* brainId, const char* panelName) {
-        if (prepCapacity(capFor(brainId) + capFor(panelName) + 1)) {\
+        if (prepCapacity(capFor(brainId) + capFor(panelName) + 2)) {\
             writeByte(static_cast<int>(Msg::Type::BRAIN_HELLO));
 
             writeString(brainId);
-            writeString(panelName);
+            writeNullableString(panelName);
         }
-        rewind();
     }
 
     virtual void log(const char* name = "") {

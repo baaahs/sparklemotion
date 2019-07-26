@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.geom.Vector2F
 import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -103,8 +104,7 @@ class Brain(
             }
 
             Type.BRAIN_ID_REQUEST -> {
-                val message = BrainIdRequest.parse(reader)
-                udpSocket.sendUdp(fromAddress, message.port, BrainIdResponse(id, surfaceName))
+                udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, surfaceName))
             }
 
             Type.BRAIN_MAPPING -> {

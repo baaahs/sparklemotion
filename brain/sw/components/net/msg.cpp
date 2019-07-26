@@ -33,15 +33,16 @@ void Msg::injectFragmentingHeader() {
     static uint8_t messageId = 0;
 
     if (prepCapacity(m_used + 12)) {
-        memcpy(m_buf + 12, m_buf, m_used);
+        size_t msgUsed = m_used;
+        memmove(m_buf + 12, m_buf, msgUsed);
 
         rewind();
         writeShort(messageId++);
-        writeShort(m_used);
-        writeInt(m_used);
+        writeShort(msgUsed);
+        writeInt(msgUsed);
         writeInt(0);
 
-        m_used += 12;
+        m_used = msgUsed + 12;
     }
 }
 
