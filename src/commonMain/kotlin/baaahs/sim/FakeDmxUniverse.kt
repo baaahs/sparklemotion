@@ -21,7 +21,7 @@ class FakeDmxUniverse : Dmx.Universe() {
     }
 
     override fun allOff() {
-        for (i in 0..512) channelsIn[i] = 0
+        for (i in 0 until 512) channelsIn[i] = 0
         updateListeners()
     }
 

@@ -137,21 +137,44 @@ body {
 }
 
 .mapperUi-2d-canvas {
-    width: 100%;
-    height: 100%;
     position: absolute;
+    display: block;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
-.mapperUi-3d-div {
-    width: 100%;
-    height: 100%;
+.mapperUi-3d-div > canvas {
     position: absolute;
+    display: block;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     mix-blend-mode: lighten;
 }
 
 .mapperUi-diff-canvas {
     position: absolute;
-    left: 600px;
+    top: 10px;
+    right: 10px;
+    border: 1px groove white;
+}
+
+.mapperUi-before-canvas {
+    position: absolute;
+    top: 310px;
+    right: 10px;
+    border: 1px groove white;
+}
+
+.mapperUi-after-canvas {
+    position: absolute;
+    top: 610px;
+    right: 10px;
     border: 1px groove white;
 }
 
@@ -193,7 +216,7 @@ body {
 
 .mapperUi-table {
     position: absolute;
-    top: -300px;
+    top: 30px;
     padding: 20px;
     color: #00ff00;
     font-family: 'Press Start 2P', sans-serif;
@@ -209,4 +232,12 @@ body {
     bottom: auto;
     padding: 1em;
     right: 50%;
+}
+
+video {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10000;
 }

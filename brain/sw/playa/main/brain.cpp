@@ -16,6 +16,11 @@ static const char* TAG = "# brain";
 Brain::Brain() :
     m_ledRenderer(m_timeBase, m_pixelCount)
 {
+    uint8_t mac[6];
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+    if (-1 == snprintf((char*) &m_brainId, sizeof(m_brainId), "%02X%02X%02X", mac[3], mac[4], mac[5])) {
+        abort();
+    }
 }
 
 void
@@ -33,8 +38,8 @@ Brain::handleMsg(Msg* pMsg)
             msgBrainPanelShade(pMsg);
             break;
 
-        case static_cast<int>(Msg::Type::MAPPER_HELLO):
-            msgMapperHello(pMsg);
+        case static_cast<int>(Msg::Type::BRAIN_ID_REQUEST):
+            msgBrainIdRequest(pMsg);
             break;
 
         case static_cast<int>(Msg::Type::BRAIN_MAPPING):
@@ -67,10 +72,12 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
 }
 
 void
-Brain::msgMapperHello(Msg* pMsg) {
+Brain::msgBrainIdRequest(Msg* pMsg) {
     if (!pMsg) return;
 
-    ESP_LOGD(TAG, "MSG: MapperHello");
+    ESP_LOGE(TAG, "MSG: BrainIdRequest");
+
+    sendHello(pMsg->dest);
 }
 
 void
@@ -98,8 +105,13 @@ Brain::maybeSendHello()
 {
     ESP_LOGE(TAG, "Want to send a hello now...");
 
-    Msg* pHello = new BrainHelloMsg("esp", "33R");
-    pHello->dest = IpPort::BroadcastPinky;
+    sendHello(IpPort::BroadcastPinky);
+}
+
+void
+Brain::sendHello(const IpPort &port) {
+    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr);
+    pHello->dest = port;
 
     pHello->injectFragmentingHeader(); // Because hatefulness
     m_msgSlinger.sendMsg(pHello);
@@ -131,7 +143,7 @@ Brain::start()
     ESP_LOGE(TAG, "m_shadeTree started");
 
     m_timeBase.setFPS(30);
-    m_ledRenderer.setBrightness(10);
+    m_ledRenderer.setBrightness(255);
 
     m_ledRenderer.setShader(&m_shadeTree);
 
@@ -140,6 +152,7 @@ Brain::start()
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");
+    ESP_LOGE(TAG, "id = %s", m_brainId);
     ESP_LOGE(TAG, "xPortGetTickRateHz = %d", xPortGetTickRateHz());
     ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %d", pdMS_TO_TICKS(1000));
     ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());

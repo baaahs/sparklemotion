@@ -105,10 +105,8 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
             color.channel.b = m_dataBuf[bufOffset % m_dataBufSize];
             break;
 
-        case Encoding::INDEXED_2: {
-            const uint8_t p = paletteIndex(pixelIndex, 8, 1, 0x01);
-            color = m_palette[p];
-        }
+        case Encoding::INDEXED_2:
+            color = m_palette[paletteIndex(pixelIndex, 8, 1, 0x01)];
             break;
 
         case Encoding::INDEXED_4:
