@@ -39,114 +39,84 @@ class ImageProcessing {
          * @param deltaBitmap Bitmap to receive diff.
          * @param withinRegion Region within which to find changes.
          */
-        fun findChanges(
+        fun diff(
             newBitmap: Bitmap,
             baseBitmap: Bitmap,
             deltaBitmap: Bitmap,
             detector: Mapper.Detector,
+            maskBitmap: Bitmap? = null,
             withinRegion: MediaDevices.Region = MediaDevices.Region.containing(baseBitmap)
-        ): MediaDevices.Region {
+        ): Analysis {
             deltaBitmap.copyFrom(baseBitmap)
             deltaBitmap.subtract(newBitmap)
+            if (maskBitmap != null) {
+                deltaBitmap.darken(maskBitmap)
+            }
 
-            val changeRegion: MediaDevices.Region = detectChangeRegion(
-                deltaBitmap,
-                detector,
-                withinRegion
-            )
-
-            println("changeRegion = $changeRegion ${changeRegion.width} ${changeRegion.height}")
-            return changeRegion
+            return analyze(deltaBitmap, detector, withinRegion)
         }
 
         @UseExperimental(ExperimentalUnsignedTypes::class)
-        private fun detectChangeRegion(
-            deltaBitmap: Bitmap,
+        fun pixels(
+            bitmap: Bitmap,
             detector: Mapper.Detector,
-            withinRegion: MediaDevices.Region = MediaDevices.Region.containing(deltaBitmap)
-        ): MediaDevices.Region {
-            var changeRegion: MediaDevices.Region = MediaDevices.Region.EMPTY
-
-            val minChangeToDetect = 10f
-            deltaBitmap.withData { data ->
-                // First pass: get per-row and -column min and max diffs.
-                val xMin = ShortArray(withinRegion.width) { 0xFF }
-                val xMax = ShortArray(withinRegion.width) { 0x00 }
-                val yMin = ShortArray(withinRegion.height) { 0xFF }
-                val yMax = ShortArray(withinRegion.height) { 0x00 }
-
-                for (y in withinRegion.yRange) {
-                    for (x in withinRegion.xRange) {
-                        val pixelByteIndex = (x + y * deltaBitmap.width) * 4
-                        val pixDiff = data[pixelByteIndex + detector.rgbaIndex].toShort()
-
-                        val rX = x - withinRegion.x0
-                        val rY = y - withinRegion.y0
-                        if (pixDiff < xMin[rX]) xMin[rX] = pixDiff
-                        if (pixDiff > xMax[rX]) xMax[rX] = pixDiff
-                        if (pixDiff < yMin[rY]) yMin[rY] = pixDiff
-                        if (pixDiff > yMax[rY]) yMax[rY] = pixDiff
+            regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap),
+            fn: (x: Int, y: Int, value: Int) -> Unit
+        ) {
+            bitmap.withData { data ->
+                for (y in regionOfInterest.yRange) {
+                    for (x in regionOfInterest.xRange) {
+                        val pixelByteIndex = (x + y * bitmap.width) * 4
+                        val pixValue = data[pixelByteIndex + detector.rgbaIndex].toInt()
+                        fn(x, y, pixValue)
                     }
                 }
 
-//            println("xMin: ${xMin.joinToString("") { (it / 16).toString(16) }}")
-//            println("xMax: ${xMax.joinToString("") { (it / 16).toString(16) }}")
-//            println("yMin: ${yMin.joinToString("") { (it / 16).toString(16) }}")
-//            println("yMax: ${yMax.joinToString("") { (it / 16).toString(16) }}")
-//
-//            println("xMin: ${xMin.min()} <-> ${xMin.max()}")
-//            println("xMax: ${xMax.min()} <-> ${xMax.max()}")
-//            println("yMin: ${yMin.min()} <-> ${yMin.max()}")
-//            println("yMax: ${yMax.min()} <-> ${yMax.max()}")
-
-//            println("xMax hist: ${xMax.map { it / 16 }.histogram(0 until 15).joinToString(" ") { it.toString(16) }}")
-//            println("yMax hist: ${yMax.map { it / 16 }.histogram(0 until 15).joinToString(" ") { it.toString(16) }}")
-                val xMinMin = xMin.min() ?: 0
-                val xMinMax = xMin.max() ?: 0
-                val xMaxMin = xMax.min() ?: 0
-                val xMaxMax = xMax.max() ?: 0
-                val yMinMin = yMin.min() ?: 0
-                val yMinMax = yMin.max() ?: 0
-                val yMaxMin = yMax.min() ?: 0
-                val yMaxMax = yMax.max() ?: 0
-
-                // Second pass: do we need this?
-                var x0 = -1
-                var y0 = -1
-                var x1 = -1
-                var y1 = -1
-
-                val scale = max(minChangeToDetect, (xMaxMax - xMinMin).toFloat())
-                val b255 = 255.toUByte()
-
-                for (y in withinRegion.yRange) {
-                    var yAnyDiff = false
-
-                    for (x in withinRegion.xRange) {
-                        val pixelByteIndex = (x + y * deltaBitmap.width) * 4
-                        val pixDiff = data[pixelByteIndex + detector.rgbaIndex].toInt()
-                        val scaledPixDiff = (pixDiff - xMinMin) / scale
-
-                        if (scaledPixDiff > .5f) {
-                            if (x0 == -1 || x0 > x) x0 = x
-                            if (x > x1) x1 = x
-                            yAnyDiff = true
-
-//                            data[pixelByteIndex + 0] = b255
-//                            data[pixelByteIndex + 1] = -1
-//                            data[pixelByteIndex + 2] = -1
-                        }
-                    }
-
-                    if (yAnyDiff) {
-                        if (y0 == -1) y0 = y
-                        y1 = y
-                    }
-                }
-                changeRegion = MediaDevices.Region(x0, y0, x1, y1)
-                true
+                false
             }
-            return changeRegion
+        }
+
+        @UseExperimental(ExperimentalUnsignedTypes::class)
+        fun analyze(
+            bitmap: Bitmap,
+            detector: Mapper.Detector,
+            regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap)
+        ): Analysis {
+            val hist = IntArray(256) { 0 }
+            val xMin = ShortArray(bitmap.width) { if (regionOfInterest.xRange.contains(it)) 0xFF else 0 }
+            val xMax = ShortArray(bitmap.width) { 0x00 }
+            val yMin = ShortArray(bitmap.height) { if (regionOfInterest.yRange.contains(it)) 0xFF else 0 }
+            val yMax = ShortArray(bitmap.height) { 0x00 }
+
+            bitmap.withData { data ->
+                // Get histogram and per-row and -column min and max diffs.
+
+                for (y in regionOfInterest.yRange) {
+                    for (x in regionOfInterest.xRange) {
+                        val pixelByteIndex = (x + y * bitmap.width) * 4
+                        val pixValue = data[pixelByteIndex + detector.rgbaIndex].toShort()
+
+                        if (pixValue < xMin[x]) xMin[x] = pixValue
+                        if (pixValue > xMax[x]) xMax[x] = pixValue
+                        if (pixValue < yMin[y]) yMin[y] = pixValue
+                        if (pixValue > yMax[y]) yMax[y] = pixValue
+                        hist[pixValue.toInt()]++
+                    }
+                }
+
+                false
+            }
+
+            return Analysis(
+                bitmap.width,
+                bitmap.height,
+                regionOfInterest,
+                Histogram(hist, bitmap.width * bitmap.height),
+                xMin,
+                xMax,
+                yMin,
+                yMax
+            )
         }
 
         fun Collection<Int>.histogram(range: IntRange): IntArray {
@@ -155,4 +125,40 @@ class ImageProcessing {
             return hist
         }
     }
+
+    class Analysis(
+        val width: Int,
+        val height: Int,
+        val regionOfInterest: MediaDevices.Region,
+        val hist: Histogram,
+        val xMin: ShortArray,
+        val xMax: ShortArray,
+        val yMin: ShortArray,
+        val yMax: ShortArray
+    ) {
+        val minValue: Int by lazy { xMin.copyOfRange(regionOfInterest.xRange).min()!!.toInt() }
+        val maxValue: Int by lazy { xMax.copyOfRange(regionOfInterest.xRange).max()!!.toInt() }
+
+        val minChangeToDetect = 10f
+        val scale: Float by lazy { max(minChangeToDetect, (maxValue - minValue).toFloat()) }
+        fun thresholdValueFor(threshold: Float) = (threshold * scale).toShort() + minValue
+
+        fun detectChangeRegion(
+            threshold: Float
+        ): MediaDevices.Region {
+//            val b255 = 255.toUByte()
+
+            val thresholdValue = thresholdValueFor(threshold)
+            val minX = xMax.indexOfFirst { rowMaxValue -> rowMaxValue >= thresholdValue }
+            val minY = yMax.indexOfFirst { colMaxValue -> colMaxValue >= thresholdValue }
+            val maxX = xMax.indexOfLast { rowMaxValue -> rowMaxValue >= thresholdValue }
+            val maxY = yMax.indexOfLast { colMaxValue -> colMaxValue >= thresholdValue }
+            return MediaDevices.Region(minX, minY, maxX, maxY)
+        }
+
+        private fun ShortArray.copyOfRange(intRange: IntRange): ShortArray {
+            return copyOfRange(intRange.first, intRange.last)
+        }
+    }
 }
+

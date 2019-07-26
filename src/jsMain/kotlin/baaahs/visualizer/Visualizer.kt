@@ -31,7 +31,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay): JsMapperDisplay.StatusListener {
+class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay): JsMapperUi.StatusListener {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked

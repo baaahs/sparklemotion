@@ -41,10 +41,10 @@
   const sheepModel = new baaahs.SheepModel();
   sheepModel.load();
 
-  const mapperDisplay = new baaahs.JsMapperDisplay();
+  const mapperUi = new baaahs.JsMapperUi();
   const mediaDevices = new baaahs.browser.RealMediaDevices();
-  const mapper = new baaahs.Mapper(network, sheepModel, mapperDisplay, mediaDevices, pinkyAddress);
-  mapperDisplay.render(document.body);
+  const mapper = new baaahs.Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress);
+  mapperUi.render(document.body);
   mapper.start();
 </script>
 

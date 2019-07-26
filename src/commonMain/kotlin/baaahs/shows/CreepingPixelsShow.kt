@@ -24,7 +24,7 @@ object CreepingPixelsShow : Show("Creeping Pixels") {
                 shaderBuffers.forEach {
                     it.palette[1] = color
                     it.setAll(0)
-                    it[i % 60] = 1
+                    it[i % it.colors.size] = 1
                 }
                 i++
             }

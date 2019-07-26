@@ -36,19 +36,17 @@ class JvmNetwork : Network {
     override fun link(): RealLink = link
 
     inner class RealLink() : Network.Link {
-        private var defaultUdpSocket = DatagramSocket()
-        //        private var defaultUdpSocket = DatagramSocket(0, InetAddress.getByName("10.0.1.10"))
         private val networkScope = CoroutineScope(Dispatchers.IO)
 
         override val udpMtu = 1400
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
-            val socket = DatagramSocket(port)
+            val socket = JvmUdpSocket(port)
             Thread {
                 val data = ByteArray(MAX_UDP_SIZE)
                 while (true) {
                     val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
-                    socket.receive(packetIn)
+                    socket.udpSocket.receive(packetIn)
                     networkScope.launch {
                         udpListener.receive(
                             IpAddress(packetIn.address),
@@ -58,20 +56,20 @@ class JvmNetwork : Network {
                     }
                 }
             }.start()
-            return JvmUdpSocket(socket.localPort)
+            return socket
         }
 
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
+            internal var udpSocket = DatagramSocket(serverPort)
+
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-                // broadcastUdp(port, bytes);
-                // return
                 val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
-                defaultUdpSocket.send(packetOut)
+                udpSocket.send(packetOut)
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
-                defaultUdpSocket.send(packetOut)
+                udpSocket.send(packetOut)
             }
         }
 
@@ -182,14 +180,14 @@ class JvmNetwork : Network {
                                                 val data = readBytes()
                                                 val packet = DatagramPacket(data, 0, data.size, InetAddress.getByAddress(toAddress), toPort)
                                                 socket!!.send(packet)
-                                                println("UDP: Sent ${data.size} to $toAddress:$toPort")
+//                                                println("UDP: Sent ${data.size} to $toAddress:$toPort")
                                             }
                                             'B'.toByte() -> {
                                                 val toPort = readInt()
                                                 val data = readBytes()
                                                 val packet = DatagramPacket(data, 0, data.size, broadcastAddress, toPort)
                                                 socket!!.send(packet)
-                                                println("UDP: Broadcast ${data.size} to *:$toPort")
+//                                                println("UDP: Broadcast ${data.size} to *:$toPort")
                                             }
                                         }
                                     }
@@ -209,10 +207,14 @@ class JvmNetwork : Network {
 
     }
 
-    class IpAddress(val address: InetAddress) : Network.Address {
+    data class IpAddress(val address: InetAddress) : Network.Address {
         companion object {
             fun mine() = IpAddress(InetAddress.getLocalHost())
 //            fun mine() = IpAddress(InetAddress.getByName("10.0.1.10"))
+        }
+
+        override fun toString(): String {
+            return "IpAddress($address)"
         }
     }
 }

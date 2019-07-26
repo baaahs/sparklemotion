@@ -41,12 +41,12 @@ class SheepSimulator {
         }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
-            val mapperDisplay = JsMapperDisplay(visualizer)
+            val mapperUi = JsMapperUi(visualizer)
             val mediaDevices = FakeMediaDevices(visualizer)
-            val mapper = Mapper(network, sheepModel, mapperDisplay, mediaDevices, pinky.address)
+            val mapper = Mapper(network, sheepModel, mapperUi, mediaDevices, pinky.address)
             mapperScope.launch { mapper.start() }
 
-            mapperDisplay
+            mapperUi
         }
 
         val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()

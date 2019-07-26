@@ -32,7 +32,7 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
         }
 
         private val camCtx = (camRenderer.domElement as HTMLCanvasElement).getContext("webgl")!!
-        private val altCamera = PerspectiveCamera(45, 1.0, 1, 1000)
+        private val altCamera = PerspectiveCamera(45, 1.0, 1, 10000)
         private val pixelBuffer = Uint8ClampedArray(width * height * 4)
         private val imageData = ImageData(pixelBuffer, width, height)
 

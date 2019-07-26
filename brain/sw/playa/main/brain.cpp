@@ -46,8 +46,8 @@ Brain::handleMsg(Msg* pMsg)
             msgBrainMapping(pMsg);
             break;
 
-        case static_cast<int>(Msg::Type::PINKY_PONG):
-            msgPinkyPong(pMsg);
+        case static_cast<int>(Msg::Type::PING):
+            msgPing(pMsg);
             break;
 
         default:
@@ -62,6 +62,14 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
 
     ESP_LOGD(TAG, "MSG: BrainPanelShade");
 
+    bool havePongData = pMsg->readBoolean();
+    uint8_t *data = nullptr;
+    size_t dataLen = 0;
+    if (havePongData) {
+        dataLen = pMsg->copyBytes(&data);
+        ESP_LOGD(TAG, "Read %d bytes for pong", dataLen);
+    }
+
     m_shadeTree.handleMessage(pMsg);
 
     // Always force a render immediately after receipt of a panel shade message.
@@ -74,6 +82,12 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     m_ledRenderer.enableLocalRenderLoop(false);
     m_ledRenderer.render();
 
+    if (havePongData) {
+        sendPong(pMsg->dest, data, dataLen);
+    }
+    if (data) {
+        free(data);
+    }
 }
 
 void
@@ -93,10 +107,28 @@ Brain::msgBrainMapping(Msg* pMsg) {
 }
 
 void
-Brain::msgPinkyPong(Msg* pMsg) {
+Brain::msgPing(Msg* pMsg) {
     if (!pMsg) return;
 
-    ESP_LOGD(TAG, "MSG: PinkyPong");
+    ESP_LOGD(TAG, "MSG: Ping");
+
+    bool isPong = pMsg->readBoolean();
+    if (!isPong) {
+        uint8_t* data;
+        size_t dataLen = pMsg->copyBytes(&data);
+        sendPong(pMsg->dest, data, dataLen);
+        free(data);
+    }
+}
+
+void
+Brain::sendPong(const IpPort &port, const uint8_t *data, size_t dataLen) {
+    Msg *pong = new PingMsg(data, dataLen, true);
+    pong->dest = port;
+
+    pong->injectFragmentingHeader();
+    m_msgSlinger.sendMsg(pong);
+    pong->release();
 }
 
 

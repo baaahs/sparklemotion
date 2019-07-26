@@ -27,6 +27,10 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
             .or(bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff)
 
+    fun readLong(): Long =
+        (readInt().toLong() and 0xffffffff shl 32)
+            .or(readInt().toLong() and 0xffffffff)
+
     fun readFloat(): Float = Float.fromBits(readInt())
 
     @UseExperimental(ExperimentalStdlibApi::class)
