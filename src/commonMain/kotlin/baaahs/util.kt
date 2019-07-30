@@ -45,7 +45,9 @@ expect fun doRunBlocking(block: suspend () -> Unit)
 
 expect fun getResource(name: String): String
 
-internal fun time(function: () -> Unit): Long {
+expect fun decodeBase64(s: String): ByteArray
+
+internal suspend fun time(function: suspend () -> Unit): Long {
     val now = getTimeMillis()
     function.invoke()
     return getTimeMillis() - now

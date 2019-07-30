@@ -1,11 +1,8 @@
 package baaahs.visualizer
 
-import info.laht.threekt.core.BufferGeometry
-import info.laht.threekt.core.Face3
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.math.Matrix4
-import info.laht.threekt.math.Quaternion
-import info.laht.threekt.math.Vector3
+import info.laht.threekt.cameras.Camera
+import info.laht.threekt.core.*
+import info.laht.threekt.math.*
 
 fun Face3.segments() = arrayOf(arrayOf(a, b), arrayOf(b, c), arrayOf(c, a))
 fun Array<Int>.asKey() = sorted().joinToString("-")
@@ -25,6 +22,10 @@ class Rotator(val from: Vector3, val to: Vector3) {
 
     fun rotate(vararg geoms: BufferGeometry) {
         geoms.forEach { it.applyMatrix(matrix) }
+    }
+
+    fun rotate(vararg vectors: Vector3) {
+        vectors.forEach { it.applyMatrix4(matrix) }
     }
 
     fun invert(): Rotator = Rotator(to, from)

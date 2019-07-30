@@ -16,7 +16,7 @@ LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
 
     m_pixels.Begin();
 
-    m_nBrightness = 140;
+    m_nBrightness = 255;
 }
 
 void static glue_showTask(void* pvParameters) {

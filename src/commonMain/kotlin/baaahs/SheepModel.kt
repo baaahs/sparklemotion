@@ -21,7 +21,7 @@ class SheepModel {
         val panelsByEdge = mutableMapOf<List<Int>, MutableList<Panel>>()
         val edgesByPanel = mutableMapOf<Panel, MutableList<List<Int>>>()
 
-        getResource("newsheep_processed.obj")
+        getResource("baaahs-model.obj")
             .split("\n")
             .map { it.trim() }
             .forEach { line ->
@@ -34,12 +34,8 @@ class SheepModel {
                         val coords = args.map { it.toFloat() }
                         vertices.add(Point(coords[0], coords[1], coords[2]))
                     }
-                    "g" -> {
-                        var name = args.joinToString(" ")
-                        val match = Regex("^G_0?([^_]+).*?\$").matchEntire(name)
-                        if (match != null) {
-                            name = match.groups[1]!!.value
-                        }
+                    "o" -> {
+                        val name = args.joinToString(" ")
                         currentPanel = Panel(name)
                         panels.add(currentPanel)
                     }

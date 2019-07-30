@@ -1,6 +1,10 @@
 package baaahs
 
 import baaahs.geom.Vector2
+import baaahs.geom.Vector2F
+import baaahs.io.Fs
+import baaahs.mapper.MapperEndpoint
+import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -13,6 +17,7 @@ class Pinky(
     val shows: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
+    val fs: Fs,
     val display: PinkyDisplay
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
@@ -40,6 +45,12 @@ class Pinky(
 
     val address: Network.Address get() = link.myAddress
     private val networkStats = NetworkStats()
+
+    private val storage = Storage(fs)
+
+    init {
+        httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
+    }
 
     suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
@@ -112,7 +123,10 @@ class Pinky(
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> foundBrain(fromAddress, BrainId(message.brainId), message.surfaceName)
-            is MapperHelloMessage -> mapperIsRunning = message.isRunning
+            is MapperHelloMessage -> {
+                println("Mapper isRunning=${message.isRunning}")
+                mapperIsRunning = message.isRunning
+            }
         }
     }
 
@@ -123,7 +137,10 @@ class Pinky(
             val pixelCount = pixelLocations?.size ?: -1
             val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
                 ?: emptyList()
-            val mappingMsg = BrainMappingMessage(brainId, surface.name, pixelCount, pixelVertices)
+            val mappingMsg = BrainMappingMessage(
+                brainId, surface.name, null, Vector2F(0f, 0f),
+                Vector2F(0f, 0f), pixelCount, pixelVertices
+            )
             udpSocket.sendUdp(address, Ports.BRAIN, mappingMsg)
         }
     }
@@ -141,7 +158,8 @@ class Pinky(
         brainId: BrainId,
         surfaceName: String?
     ) {
-        val surface = surfaceName?.let { surfacesByName[surfaceName] } ?: UnknownSurface(brainId)
+        println("Heard from brain $brainId at $brainAddress for $surfaceName")
+        val surface = surfacesByName[surfaceName ?: ""] ?: UnknownSurface(brainId)
         if (surface is UnknownSurface) maybeSendMapping(brainAddress, brainId)
 
         val priorBrainInfo = brainInfos[brainId]

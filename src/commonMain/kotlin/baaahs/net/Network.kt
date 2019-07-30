@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.mapper.MappingSession
 import baaahs.proto.Message
 
 interface Network {
@@ -48,6 +49,10 @@ interface Network {
     }
 
     interface HttpServer {
+        fun listenWebSocket(path: String, webSocketListener: WebSocketListener) {
+            listenWebSocket(path) { webSocketListener }
+        }
+
         fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
     }
 
