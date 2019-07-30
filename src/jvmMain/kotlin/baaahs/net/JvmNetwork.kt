@@ -123,6 +123,7 @@ class JvmNetwork : Network {
 
                         println("Connection from ${this.call.request.host()}…")
                         val webSocketListener = onConnect(tcpConnection)
+                        webSocketListener.connected(tcpConnection)
 
                         try {
                             while (true) {

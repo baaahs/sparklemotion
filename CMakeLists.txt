@@ -1,0 +1,306 @@
+cmake_minimum_required(VERSION 3.14)
+project(sparklemotion)
+
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(brain/sw/components/brain-ui)
+include_directories(brain/sw/components/brain-ui/include)
+include_directories(brain/sw/components/led-renderer/include)
+include_directories(brain/sw/components/led-renderer/neopixel)
+include_directories(brain/sw/components/led-renderer/neopixel/internal)
+include_directories(brain/sw/components/net/include)
+include_directories(brain/sw/components/shaders)
+include_directories(brain/sw/components/shaders/include)
+include_directories(brain/sw/components/sysmon/include)
+include_directories(brain/sw/playa/build/bootloader/config)
+include_directories(brain/sw/playa/build/config)
+include_directories(brain/sw/playa/build/esp-idf)
+include_directories(brain/sw/playa/build/esp-idf/mbedtls)
+include_directories(brain/sw/playa/build/esp-idf/mbedtls/mbedtls)
+include_directories(brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include)
+include_directories(brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls)
+include_directories(brain/sw/playa/cmake-build-debug/config)
+include_directories(brain/sw/playa/cmake-build-debug/esp-idf)
+include_directories(brain/sw/playa/cmake-build-debug/esp-idf/mbedtls)
+include_directories(brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls)
+include_directories(brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include)
+include_directories(brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls)
+include_directories(brain/sw/playa/main)
+include_directories(brain/sw/playa/main/httpd)
+
+add_executable(sparklemotion
+        brain/sw/components/brain-ui/include/brain-button.h
+        brain/sw/components/brain-ui/include/brain-led.h
+        brain/sw/components/brain-ui/include/brain-ui.h
+        brain/sw/components/brain-ui/brain-button.cpp
+        brain/sw/components/brain-ui/brain-led.cpp
+        brain/sw/components/brain-ui/brain-ui-priv.h
+        brain/sw/components/brain-ui/brain-ui.cpp
+        brain/sw/components/led-renderer/include/Arduino.h
+        brain/sw/components/led-renderer/include/esp32-hal-gpio.h
+        brain/sw/components/led-renderer/include/esp32-hal.h
+        brain/sw/components/led-renderer/include/led-renderer.h
+        brain/sw/components/led-renderer/include/led-renderer_private.h
+        brain/sw/components/led-renderer/include/led-shader.h
+        brain/sw/components/led-renderer/include/pgmspace.h
+        brain/sw/components/led-renderer/include/SPI.h
+        brain/sw/components/led-renderer/include/time-base.h
+        brain/sw/components/led-renderer/neopixel/internal/DotStarAvrMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/DotStarColorFeatures.h
+        brain/sw/components/led-renderer/neopixel/internal/DotStarGenericMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/DotStarSpiMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/Esp32_i2s.c
+        brain/sw/components/led-renderer/neopixel/internal/Esp32_i2s.h
+        brain/sw/components/led-renderer/neopixel/internal/HsbColor.cpp
+        brain/sw/components/led-renderer/neopixel/internal/HsbColor.h
+        brain/sw/components/led-renderer/neopixel/internal/HslColor.cpp
+        brain/sw/components/led-renderer/neopixel/internal/HslColor.h
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColor.cpp
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColor.h
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColorNames.cpp
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColorNameStrings.cpp
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColorNameStrings.h
+        brain/sw/components/led-renderer/neopixel/internal/HtmlColorShortNames.cpp
+        brain/sw/components/led-renderer/neopixel/internal/Layouts.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoArmMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoAvrMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoBitmapFile.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoBuffer.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoBufferContext.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoBufferMethods.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoColorFeatures.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoDib.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoEase.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoEsp32I2sMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoEsp8266DmaMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoEsp8266UartMethod.cpp
+        brain/sw/components/led-renderer/neopixel/internal/NeoEsp8266UartMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoEspBitBangMethod.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoGamma.cpp
+        brain/sw/components/led-renderer/neopixel/internal/NeoGamma.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoHueBlend.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoMosaic.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoPixelAnimator.cpp
+        brain/sw/components/led-renderer/neopixel/internal/NeoPixelAvr.c
+        brain/sw/components/led-renderer/neopixel/internal/NeoPixelEsp.c
+        brain/sw/components/led-renderer/neopixel/internal/NeoRingTopology.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoSpriteSheet.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoTiles.h
+        brain/sw/components/led-renderer/neopixel/internal/NeoTopology.h
+        brain/sw/components/led-renderer/neopixel/internal/RgbColor.cpp
+        brain/sw/components/led-renderer/neopixel/internal/RgbColor.h
+        brain/sw/components/led-renderer/neopixel/internal/RgbwColor.cpp
+        brain/sw/components/led-renderer/neopixel/internal/RgbwColor.h
+        brain/sw/components/led-renderer/neopixel/NeoPixelAnimator.h
+        brain/sw/components/led-renderer/neopixel/NeoPixelBrightnessBus.h
+        brain/sw/components/led-renderer/neopixel/NeoPixelBus.h
+        brain/sw/components/led-renderer/esp32-hal-gpio.c
+        brain/sw/components/led-renderer/esp32-hal.c
+        brain/sw/components/led-renderer/led-renderer.cpp
+        brain/sw/components/net/include/ethernet.h
+        brain/sw/components/net/include/ip_port.h
+        brain/sw/components/net/include/msg.h
+        brain/sw/components/net/include/msg_handler.h
+        brain/sw/components/net/include/msg_slinger.h
+        brain/sw/components/net/include/net_priv.h
+        brain/sw/components/net/include/task_net.h
+        brain/sw/components/net/include/wifi.h
+        brain/sw/components/net/ethernet.cpp
+        brain/sw/components/net/ip_port.cpp
+        brain/sw/components/net/msg.cpp
+        brain/sw/components/net/msg_handler.cpp
+        brain/sw/components/net/msg_slinger.cpp
+        brain/sw/components/net/task_net.cpp
+        brain/sw/components/net/wifi.cpp
+        brain/sw/components/shaders/include/shade-tree.h
+        brain/sw/components/shaders/include/shader-desc.h
+        brain/sw/components/shaders/include/shader.h
+        brain/sw/components/shaders/compositor-shader.cpp
+        brain/sw/components/shaders/compositor-shader.h
+        brain/sw/components/shaders/default-shader.cpp
+        brain/sw/components/shaders/default-shader.h
+        brain/sw/components/shaders/pixel-shader.cpp
+        brain/sw/components/shaders/pixel-shader.h
+        brain/sw/components/shaders/rainbow-shader.cpp
+        brain/sw/components/shaders/rainbow-shader.h
+        brain/sw/components/shaders/shade-tree.cpp
+        brain/sw/components/shaders/shader.cpp
+        brain/sw/components/shaders/sine-wave-shader.cpp
+        brain/sw/components/shaders/sine-wave-shader.h
+        brain/sw/components/shaders/solid-shader.cpp
+        brain/sw/components/shaders/solid-shader.h
+        brain/sw/components/shaders/sparkle-shader.cpp
+        brain/sw/components/shaders/sparkle-shader.h
+        brain/sw/components/sysmon/include/sysmon.h
+        brain/sw/components/sysmon/sysmon.cpp
+        brain/sw/playa/build/bootloader/config/sdkconfig.h
+        brain/sw/playa/build/bootloader/project_elf_src.c
+        brain/sw/playa/build/config/sdkconfig.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/aes.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/aesni.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/arc4.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/aria.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/asn1.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/asn1write.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/base64.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/bignum.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/blowfish.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/bn_mul.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/camellia.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ccm.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/certs.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/chacha20.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/chachapoly.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/check_config.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/cipher.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/cipher_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/cmac.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/compat-1.3.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/config.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ctr_drbg.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/debug.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/des.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/dhm.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ecdh.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ecdsa.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ecjpake.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ecp.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ecp_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/entropy.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/entropy_poll.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/error.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/gcm.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/havege.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/hkdf.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/hmac_drbg.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/md.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/md2.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/md4.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/md5.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/md_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/memory_buffer_alloc.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/net.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/net_sockets.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/nist_kw.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/oid.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/padlock.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pem.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pk.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pk_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs11.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs12.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs5.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/platform.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/platform_time.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/platform_util.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/poly1305.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ripemd160.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/rsa.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/rsa_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/sha1.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/sha256.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/sha512.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_cache.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_ciphersuites.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_cookie.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_internal.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_ticket.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/threading.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/timing.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/version.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/x509.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_crl.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_crt.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_csr.h
+        brain/sw/playa/build/esp-idf/mbedtls/mbedtls/include/mbedtls/xtea.h
+        brain/sw/playa/build/project_elf_src.c
+        brain/sw/playa/cmake-build-debug/config/sdkconfig.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/aes.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/aesni.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/arc4.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/aria.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/asn1.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/asn1write.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/base64.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/bignum.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/blowfish.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/bn_mul.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/camellia.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ccm.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/certs.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/chacha20.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/chachapoly.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/check_config.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/cipher.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/cipher_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/cmac.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/compat-1.3.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/config.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ctr_drbg.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/debug.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/des.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/dhm.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ecdh.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ecdsa.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ecjpake.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ecp.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ecp_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/entropy.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/entropy_poll.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/error.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/gcm.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/havege.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/hkdf.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/hmac_drbg.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/md.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/md2.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/md4.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/md5.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/md_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/memory_buffer_alloc.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/net.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/net_sockets.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/nist_kw.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/oid.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/padlock.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pem.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pk.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pk_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs11.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs12.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/pkcs5.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/platform.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/platform_time.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/platform_util.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/poly1305.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ripemd160.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/rsa.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/rsa_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/sha1.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/sha256.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/sha512.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_cache.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_ciphersuites.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_cookie.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_internal.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/ssl_ticket.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/threading.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/timing.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/version.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/x509.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_crl.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_crt.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/x509_csr.h
+        brain/sw/playa/cmake-build-debug/esp-idf/mbedtls/mbedtls/include/mbedtls/xtea.h
+        brain/sw/playa/cmake-build-debug/project_elf_src.c
+        brain/sw/playa/main/httpd/http_server.cpp
+        brain/sw/playa/main/httpd/http_server.h
+        brain/sw/playa/main/httpd/spiffs_handler.cpp
+        brain/sw/playa/main/httpd/spiffs_handler.h
+        brain/sw/playa/main/httpd/task_httpd.cpp
+        brain/sw/playa/main/httpd/task_httpd.h
+        brain/sw/playa/main/brain.cpp
+        brain/sw/playa/main/brain.h
+        brain/sw/playa/main/main.cpp)
