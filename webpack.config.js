@@ -39,6 +39,7 @@ module.exports = {
   ],
   devServer: {
     hot: true,
+    // host: "0.0.0.0",
     port: 8000,
     open: true, // Opens page in browser
     contentBase: __dirname + '/build/processedResources/js/main/',

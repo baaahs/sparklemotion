@@ -60,7 +60,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                         val actualTotalSize = myFragments.map { it.bytes.size }.reduce { acc, i -> acc + i }
                         if (actualTotalSize != totalSize) {
                             // todo: this should probably be a warn, not an error...
-                            IllegalArgumentException("can't reassemble packet, $actualTotalSize != $totalSize for $messageId")
+                            throw IllegalArgumentException("can't reassemble packet, $actualTotalSize != $totalSize for $messageId")
                         }
 
                         val reassembleBytes = ByteArray(totalSize)
@@ -90,9 +90,11 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
 
         /** Sends payloads which might be larger than the network's MTU. */
         private fun transmitMultipartUdp(bytes: ByteArray, fn: (bytes: ByteArray) -> Unit) {
-            if (bytes.size > 65535) {
-                IllegalArgumentException("buffer too big! ${bytes.size} must be < 65536")
-            }
+            val maxSize = 65535 * 2 // arbitrary but probably sensible
+        if (bytes.size > maxSize) {
+                throw IllegalArgumentException("buffer too big! ${bytes.size} must be < $maxSize")
+        }
+
             val messageId = nextMessageId++
             val messageCount = (bytes.size - 1) / (mtu - headerSize) + 1
             val buf = ByteArray(mtu)

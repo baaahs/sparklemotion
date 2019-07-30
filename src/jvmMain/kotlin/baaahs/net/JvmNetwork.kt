@@ -1,5 +1,7 @@
 package baaahs.net
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -42,20 +44,20 @@ class JvmNetwork : Network {
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = DatagramSocket(port)
-
-            networkScope.launch {
+            Thread {
                 val data = ByteArray(MAX_UDP_SIZE)
-                val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
                 while (true) {
+                    val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
                     socket.receive(packetIn)
-                    udpListener.receive(
-                        IpAddress(packetIn.address),
-                        packetIn.port,
-                        data.copyOfRange(packetIn.offset, packetIn.length)
-                    )
+                    networkScope.launch {
+                        udpListener.receive(
+                            IpAddress(packetIn.address),
+                            packetIn.port,
+                            data.copyOfRange(packetIn.offset, packetIn.length)
+                        )
+                    }
                 }
-            }
-
+            }.start()
             return JvmUdpSocket(socket.localPort)
         }
 
@@ -121,6 +123,7 @@ class JvmNetwork : Network {
 
                         println("Connection from ${this.call.request.host()}…")
                         val webSocketListener = onConnect(tcpConnection)
+                        webSocketListener.connected(tcpConnection)
 
                         try {
                             while (true) {
@@ -137,6 +140,65 @@ class JvmNetwork : Network {
                             close(e)
                         } finally {
                             webSocketListener.reset(tcpConnection)
+                        }
+                    }
+
+                    webSocket("/sm/udpProxy") {
+                        try {
+                            var socket : DatagramSocket? = null
+                            while (true) {
+                                val listenThread = Thread {
+                                    val data = ByteArray(MAX_UDP_SIZE)
+                                    while (true) {
+                                        val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
+                                        socket!!.receive(packetIn)
+                                        val frame = Frame.Binary(true, ByteBuffer.wrap(ByteArrayWriter().apply {
+                                            writeByte('R'.toByte())
+                                            writeBytes(packetIn.address.address)
+                                            writeInt(packetIn.port)
+                                            writeBytes(data, packetIn.offset, packetIn.length)
+                                        }.toBytes()))
+                                        GlobalScope.launch {
+                                            outgoing.send(frame)
+                                        }
+                                    }
+                                }
+
+
+                                val frame = incoming.receive()
+                                if (frame is Frame.Binary) {
+                                    val bytes = frame.readBytes()
+                                    ByteArrayReader(bytes).apply {
+                                        val op = readByte()
+                                        when (op) {
+                                            'L'.toByte() -> {
+                                                socket = DatagramSocket() // We'll take any port the system gives us.
+                                                listenThread.start()
+                                                println("UDP: Listening on ${socket!!.localPort}")
+                                            }
+                                            'S'.toByte() -> {
+                                                val toAddress = readBytes()
+                                                val toPort = readInt()
+                                                val data = readBytes()
+                                                val packet = DatagramPacket(data, 0, data.size, InetAddress.getByAddress(toAddress), toPort)
+                                                socket!!.send(packet)
+                                                println("UDP: Sent ${data.size} to $toAddress:$toPort")
+                                            }
+                                            'B'.toByte() -> {
+                                                val toPort = readInt()
+                                                val data = readBytes()
+                                                val packet = DatagramPacket(data, 0, data.size, broadcastAddress, toPort)
+                                                socket!!.send(packet)
+                                                println("UDP: Broadcast ${data.size} to *:$toPort")
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    println("wait huh? received weird data: $frame")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
