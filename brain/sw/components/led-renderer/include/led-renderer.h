@@ -14,7 +14,8 @@
 #include "led-shader.h"
 
 // ws2812 & ws2815
-#define LED_RENDERER_COLORFEATURE NeoGrbFeature
+//#define LED_RENDERER_COLORFEATURE NeoGrbFeature
+#define LED_RENDERER_COLORFEATURE NeoRgbFeature
 
 // Something else?
 //#define LED_RENDERER_COLORFEATURE NeoRgbFeature
