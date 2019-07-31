@@ -3,6 +3,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include <esp_event_base.h>
 
 #include <msg.h>
 #include <led-shader.h>
@@ -28,6 +29,8 @@ public:
      * Advance to the next local shader
      */
     void nextLocalShader();
+
+    void _handleEvent(esp_event_base_t base, int32_t id, void* event_data);
 
 private:
     Surface *m_surface;
