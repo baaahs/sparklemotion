@@ -15,7 +15,8 @@
 #include "brain-ui.h"
 #include "http_server.h"
 
-#define DEFAULT_PIXEL_COUNT 128
+//#define DEFAULT_PIXEL_COUNT 128
+#define DEFAULT_PIXEL_COUNT 10
 
 class Brain : public MsgHandler {
 public:
