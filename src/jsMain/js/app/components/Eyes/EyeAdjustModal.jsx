@@ -4,17 +4,42 @@ import GridSlider from '../GridSlider';
 
 import s from './Eyes.scss';
 
+const baaahs = sparklemotion.baaahs;
+
 class EyeAdjustModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentEye: 'partyEye',
-      partyEye: [50, 50],
-      businessEye: [50, 50],
+      currentEye: 'leftEye',
+      leftEye: [50, 50],
+      rightEye: [50, 50],
       partEyeColor: 'white',
-      businessEyeColor: 'white',
+      rightEyeColor: 'white',
     };
+
+    this.pubSub = props.pubSub;
+  }
+
+  componentDidMount() {
+    this.subscribeToChannels();
+  }
+
+  subscribeToChannels() {
+    this.movingHeadDisplay = new baaahs.MovingHeadDisplay(this.props.pubSub);
+    this.leftEyeChannel = this.movingHeadDisplay.subscribe(
+      'leftEye',
+      ({ x, y }) => {
+        this.setState({ leftEye: [x, y] });
+      }
+    );
+
+    this.rightEyeChannel = this.movingHeadDisplay.subscribe(
+      'rightEye',
+      ({ x, y }) => {
+        this.setState({ rightEye: [x, y] });
+      }
+    );
   }
 
   handleSave = () => {
@@ -22,26 +47,31 @@ class EyeAdjustModal extends React.Component {
   };
 
   handlePanTiltChange = (eyeSide, { x, y }) => {
+    if (eyeSide === 'leftEye') {
+      this.leftEyeChannel.onChange({
+        x,
+        y,
+      });
+    }
     this.setState({ [eyeSide]: [x, y] });
   };
 
   handleEyeToggle = (e) => {
     this.setState({
-      currentEye: e.target.checked ? 'businessEye' : 'partyEye',
+      currentEye: e.target.checked ? 'rightEye' : 'leftEye',
     });
   };
 
   renderEyeControls = () => {
     const {
       currentEye,
-      partyEye,
-      businessEye,
+      leftEye,
+      rightEye,
       partEyeColor,
-      businessEyeColor,
+      rightEyeColor,
     } = this.state;
-    const [x, y] = currentEye === 'partyEye' ? partyEye : businessEye;
-    const eyeColor =
-      currentEye === 'partyEye' ? partEyeColor : businessEyeColor;
+    const [x, y] = currentEye === 'leftEye' ? leftEye : rightEye;
+    const eyeColor = currentEye === 'leftEye' ? partEyeColor : rightEyeColor;
 
     return (
       <Fragment>
@@ -52,6 +82,8 @@ class EyeAdjustModal extends React.Component {
           }}
           x={x}
           y={y}
+          height={255}
+          width={255}
         />
         <div>Eye Color: {eyeColor}</div>
       </Fragment>
@@ -62,17 +94,17 @@ class EyeAdjustModal extends React.Component {
     return (
       <div style={{ width: '100%' }}>
         <div className={s['toggle-switch__wrapper']}>
-          <span>Party</span>
+          <span>Left</span>
           <div className={s['toggle-switch']}>
             <input
               type="checkbox"
               id="toggle-switch"
-              checked={this.state.currentEye === 'businessEye'}
+              checked={this.state.currentEye === 'rightEye'}
               onChange={this.handleEyeToggle}
             />
             <label htmlFor="toggle-switch">Eye Toggle</label>
           </div>
-          <span>Business</span>
+          <span>Right</span>
         </div>
         {this.renderEyeControls()}
         <button onClick={this.handleSave}>SAVE</button>
@@ -83,6 +115,7 @@ class EyeAdjustModal extends React.Component {
 
 EyeAdjustModal.propTypes = {
   onSave: PropTypes.func.isRequired,
+  pubSub: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default EyeAdjustModal;
