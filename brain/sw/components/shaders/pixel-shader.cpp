@@ -22,18 +22,26 @@ PixelShader::PixelShader(Surface *surface, Msg *config) : Shader(surface, config
         if (m_dataBuf) {
             ESP_LOGE(TAG, "Failed to malloc %d bytes for data buffer", m_dataBufSize);
             free(m_dataBuf);
+            m_dataBuf = nullptr;
         }
         if (m_palette) {
             ESP_LOGE(TAG, "Failed to malloc %d bytes for palette", m_dataBufSize);
             free(m_palette);
+            m_palette = nullptr;
         }
         m_disabled = 1;
     }
 }
 
 PixelShader::~PixelShader() {
-    if (m_dataBuf) free(m_dataBuf);
-    if (m_palette) free(m_palette);
+    if (m_dataBuf) {
+        free(m_dataBuf);
+        m_dataBuf = nullptr;
+    }
+    if (m_palette) {
+        free(m_palette);
+        m_palette = nullptr;
+    }
 }
 
 void
