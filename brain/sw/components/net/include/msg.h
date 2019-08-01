@@ -420,7 +420,7 @@ private:
 class BrainHelloMsg : public Msg {
 public:
     BrainHelloMsg(const char* brainId, const char* panelName) {
-        if (prepCapacity(capFor(brainId) + capFor(panelName) + 2)) {\
+        if (prepCapacity(capFor(brainId) + capFor(panelName) + 2)) {
             writeByte(static_cast<int>(Msg::Type::BRAIN_HELLO));
 
             writeString(brainId);
