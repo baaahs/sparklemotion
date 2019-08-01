@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import EyeControls from '../EyeControls';
 import Modal from '../Modal';
@@ -25,6 +26,7 @@ class Eyes extends React.Component {
         onSave={(settings) => {
           this.handleSaveHeadlightPreset(preset, settings);
         }}
+        pubSub={this.props.pubSub}
       />
     );
 
@@ -97,6 +99,10 @@ class Eyes extends React.Component {
       </div>
     );
   }
+}
+
+Eyes.propTypes = {
+  pubSub: PropTypes.instanceOf(Object).isRequired,
 }
 
 export default Eyes;
