@@ -14,6 +14,10 @@ import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.JsonArraySerializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonArray
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -149,7 +153,7 @@ class Mapper(
 
         mapperDisplay.showMessage("CALIBRATING…")
         val visibleSurfaces = mapperDisplay.getVisibleSurfaces()
-        println("Visible surfaces: ${visibleSurfaces.map { it.modelSurface.name }.joinToString()}")
+        println("Visible surfaces: ${visibleSurfaces.map { (it.surface as SheepModel.Panel).name }.joinToString()}")
 
         // Blackout
         retry { udpSocket.broadcastUdp(Ports.BRAIN, solidColor(inactiveColor)); delay(250L) }
@@ -211,7 +215,7 @@ class Mapper(
                 mapperDisplay.showCandidates(orderedPanels)
 
                 val firstGuess = orderedPanels.first().first
-                val firstGuessSurface = firstGuess.modelSurface
+                val firstGuessSurface = firstGuess.surface as SheepModel.Panel
 
                 mapperDisplay.showMessage2(
                     "Candidate panels: ${orderedPanels.subList(
@@ -221,7 +225,7 @@ class Mapper(
                 )
 
                 println("Guessed panel ${firstGuessSurface.name} for ${brainMapper.brainId}")
-                brainMapper.guessedModelSurface = firstGuessSurface
+                brainMapper.guessedPanel = firstGuessSurface
                 brainMapper.guessedVisibleSurface = firstGuess
                 brainMapper.panelDeltaBitmap = deltaBitmap
                 brainMapper.deltaImageName =
@@ -358,7 +362,7 @@ class Mapper(
         val surfaces = mutableListOf<MappingSession.SurfaceData>()
         brainMappers.forEach { (address, brainMapper) ->
             println("Brain ID: ${brainMapper.brainId} at ${address}:")
-            println("  Surface: ${brainMapper.guessedModelSurface}")
+            println("  Surface: ${brainMapper.guessedPanel}")
             println("  Pixels:")
 
             val visibleSurface = brainMapper.guessedVisibleSurface
@@ -390,7 +394,7 @@ class Mapper(
                 surfaces.add(
                     MappingSession.SurfaceData(
                         brainMapper.brainId,
-                        visibleSurface.modelSurface.name,
+                        (visibleSurface.surface as SheepModel.Panel).name,
                         pixels,
                         brainMapper.deltaImageName
                     )
@@ -474,7 +478,7 @@ class Mapper(
 
     inner class BrainMapping(private val address: Network.Address, val brainId: String) {
         var changeRegion: MediaDevices.Region? = null
-        var guessedModelSurface: Model.Surface? = null
+        var guessedPanel: SheepModel.Panel? = null
         var guessedVisibleSurface: MapperDisplay.VisibleSurface? = null
         var panelDeltaBitmap: Bitmap? = null
         var deltaImageName: String? = null
@@ -511,7 +515,7 @@ interface MapperDisplay {
     }
 
     interface VisibleSurface {
-        val modelSurface: Model.Surface
+        val surface: Surface
         val boxOnScreen: MediaDevices.Region
         val pixelsInModelSpace: List<Vector3F?>
         fun translatePixelToPanelSpace(screenX: Float, screenY: Float): Vector2F?

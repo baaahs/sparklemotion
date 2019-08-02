@@ -2,22 +2,7 @@ package baaahs
 
 import kotlinx.serialization.Serializable
 
-abstract class Model<T : Model.Surface> {
-    abstract val movingHeads: List<MovingHead>
-    abstract val allSurfaces: List<T>
-
-    private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
-
-    fun findModelSurface(name: String) =
-        allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
-
-    interface Surface {
-        val name: String
-        val description: String
-    }
-}
-
-class SheepModel : Model<SheepModel.Panel>() {
+class SheepModel {
     lateinit var vertices: List<Point>
     lateinit var panels: List<Panel>
 
@@ -28,8 +13,6 @@ class SheepModel : Model<SheepModel.Panel>() {
     val partySide: List<Panel>
         get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
 
-    override val movingHeads: List<MovingHead> get() = eyes
-    override val allSurfaces get() = allPanels
     lateinit var panelNeighbors: Map<Panel, List<Panel>>
 
     fun load() {
@@ -102,7 +85,6 @@ class SheepModel : Model<SheepModel.Panel>() {
 
     @Serializable
     data class Point(val x: Float, val y: Float, val z: Float)
-
     data class Line(val points: List<Point>)
 
     class Face(val vertexIds: List<Int>)
@@ -112,11 +94,13 @@ class SheepModel : Model<SheepModel.Panel>() {
         val faces: MutableList<Face> = mutableListOf()
     }
 
-    class Panel(override val name: String) : Model.Surface {
+    class Panel(val name: String) : Surface {
+        override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
+
         val faces = Faces()
         val lines = mutableListOf<Line>()
 
-        override val description: String = "Panel $name"
+        override fun describe(): String = "Panel $name"
         override fun equals(other: Any?): Boolean = other is Panel && name == other.name
         override fun hashCode(): Int = name.hashCode()
     }

@@ -53,8 +53,6 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is MappedSurface }
-        expect(panel17.name) { (show.shaderBuffers.keys.only() as MappedSurface).name }
         expect(1) { pinkyLink.packetsToSend.size }
     }
 
@@ -68,7 +66,7 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(1) { pinkyLink.packetsToSend.size }
+        expect(0) { pinkyLink.packetsToSend.size }
     }
 
     @Test
@@ -82,7 +80,7 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is MappedSurface }
+        expect(true) { show.shaderBuffers.keys.only() is Pinky.UnknownSurface }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -90,8 +88,8 @@ class PinkyTest {
         pinky.drawNextFrame()
         expect(1) { show.shaderBuffers.size }
         val surface = show.shaderBuffers.keys.only()
-        expect(true) { surface is MappedSurface }
-        expect(panel17.name) { (surface as MappedSurface).name }
+        expect(true) { surface is SheepModel.Panel }
+        expect(panel17.name) { (surface as SheepModel.Panel).name }
     }
 
     @Test
@@ -118,7 +116,7 @@ class PinkyTest {
         pinky.drawNextFrame()
 
         expect(1) { show.shaderBuffers.size }
-        expect(true) { (show.shaderBuffers.keys.only() as MappedSurface).modelSurface == panel17 }
+        expect(true) { show.shaderBuffers.keys.only() == panel17 }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -126,15 +124,15 @@ class PinkyTest {
         pinky.drawNextFrame()
         expect(1) { show.shaderBuffers.size }
         val surface = show.shaderBuffers.keys.only()
-        expect(true) { surface is MappedSurface }
-        expect(panel17.name) { (surface as MappedSurface).name }
+        expect(true) { surface is SheepModel.Panel }
+        expect(panel17.name) { (surface as SheepModel.Panel).name }
     }
 
     class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+        override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
             return ShowRenderer(showRunner).also { createdShows.add(it) }
         }
 

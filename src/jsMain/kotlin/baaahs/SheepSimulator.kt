@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.browser.RealMediaDevices
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse

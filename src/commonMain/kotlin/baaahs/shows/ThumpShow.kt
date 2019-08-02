@@ -10,7 +10,7 @@ import kotlin.math.PI
 import kotlin.random.Random
 
 object ThumpShow : Show("Thump") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
         private val beatProvider = showRunner.getBeatProvider()
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
@@ -31,7 +31,7 @@ object ThumpShow : Show("Thump") {
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = model.movingHeads.map { showRunner.getMovingHeadBuffer(it) }
+        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
 
         init {
 //        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")

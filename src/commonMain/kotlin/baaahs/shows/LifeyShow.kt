@@ -6,20 +6,18 @@ import baaahs.shaders.SolidShader
 import kotlin.random.Random
 
 object LifeyShow : Show("Lifey") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        model as SheepModel
-
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val speedSlider = showRunner.getGadget("speed", Slider("Speed", .25f))
 
         val shader = SolidShader()
-        val shaderBuffers = showRunner.allSurfaces.associateWith {
+        val shaderBuffers = sheepModel.allPanels.associateWith {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
         val selectedPanels = mutableListOf<SheepModel.Panel>()
-        var lastUpdateMs: Long = 0
+        var lastUpdateMs : Long = 0
 
-        fun SheepModel.Panel.neighbors() = model.neighborsOf(this)
+        fun SheepModel.Panel.neighbors() = sheepModel.neighborsOf(this)
         fun SheepModel.Panel.isSelected() = selectedPanels.contains(this)
         fun SheepModel.Panel.neighborsSelected() = neighbors().filter { selectedPanels.contains(it) }.count()
 
@@ -29,7 +27,7 @@ object LifeyShow : Show("Lifey") {
                 val intervalMs = ((1f - speedSlider.value) * 1000).toLong()
                 if (nowMs > lastUpdateMs + intervalMs) {
                     if (selectedPanels.isEmpty()) {
-                        selectedPanels.addAll(model.allPanels.filter { Random.nextFloat() < .5 })
+                        selectedPanels.addAll(sheepModel.allPanels.filter { Random.nextFloat() < .5 })
                     } else {
                         val newSelectedPanels = mutableListOf<SheepModel.Panel>()
                         selectedPanels.forEach { panel ->
@@ -69,10 +67,8 @@ object LifeyShow : Show("Lifey") {
                     lastUpdateMs = nowMs
                 }
 
-                shaderBuffers.forEach { (surface, buffer) ->
-                    buffer.color =
-                        if (surface is MappedSurface
-                            && selectedPanels.contains(surface.modelSurface)) Color.WHITE else Color.BLACK
+                shaderBuffers.forEach { (panel, buffer) ->
+                    buffer.color = if (selectedPanels.contains(panel)) Color.WHITE else Color.BLACK
                 }
             }
         }
