@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.SheepModel.Panel
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
 import baaahs.net.TestNetwork
@@ -23,9 +22,11 @@ class ShowRunnerTest {
 
     private val testShow1 = TestShow1()
     private val surface1Messages = mutableListOf<Shader.Buffer>()
-    private val surface1Receiver = SurfaceReceiver(Panel("surface 1")) { buffer -> surface1Messages.add(buffer) }
+    private val surface1Receiver =
+        SurfaceReceiver(MappedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
     private val surface2Messages = mutableListOf<Shader.Buffer>()
-    private val surface2Receiver = SurfaceReceiver(Panel("surface 2")) { buffer -> surface2Messages.add(buffer) }
+    private val surface2Receiver =
+        SurfaceReceiver(MappedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel()
@@ -247,8 +248,12 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getMovingHeadBuffer(MovingHead("leftEye",
-                SheepModel.Point(-163.738f, 204.361f, 439.302f)))
+            showRunner.getMovingHeadBuffer(
+                MovingHead(
+                    "leftEye",
+                    SheepModel.Point(-163.738f, 204.361f, 439.302f)
+                )
+            )
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
@@ -278,7 +283,7 @@ class ShowRunnerTest {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
+        override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
             return ShowRenderer(showRunner).also { createdShows.add(it) }
         }
 
