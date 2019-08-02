@@ -20,7 +20,8 @@ class Pinky(
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val fs: Fs,
-    val display: PinkyDisplay
+    val display: PinkyDisplay,
+    private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
     private val link = FragmentingUdpLink(network.link())
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
@@ -49,8 +50,6 @@ class Pinky(
     private val networkStats = NetworkStats()
 
     private val storage = Storage(fs)
-
-    private val prerenderPixels = true
 
     init {
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
