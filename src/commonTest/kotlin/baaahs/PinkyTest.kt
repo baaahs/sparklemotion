@@ -18,7 +18,7 @@ class PinkyTest {
     private val clientPort = 1234
 
     private val panel17 = SheepModel.Panel("17")
-    private val model = SheepModel().apply { panels = listOf(panel17) }
+    private val model = SheepModel().apply { panels = listOf(panel17); eyes = emptyList() }
     private lateinit var testShow1: TestShow1
     private lateinit var pinky: Pinky
     private lateinit var pinkyLink: TestNetwork.Link
