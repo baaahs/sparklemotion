@@ -125,7 +125,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
     private val message2Div = screen.first<HTMLDivElement>("mapperUi-message2")
     private val table = screen.first<HTMLDivElement>("mapperUi-table")
 
-    private val panelInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
+    private val modelSurfaceInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
@@ -289,7 +289,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
             geom.computeFaceNormals()
             geom.computeVertexNormals()
 
-            panelInfos[panel] = PanelInfo(panel.name, panelFaces, mesh, geom)
+            modelSurfaceInfos[panel] = PanelInfo(panel.name, panelFaces, mesh, geom)
         }
 
         uiScene.add(wireframe)
@@ -318,7 +318,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
         val screenCenter = screenBox.center
         val cameraOrientation = CameraOrientation(uiCamera)
 
-        panelInfos.forEach { (panel, panelInfo) ->
+        modelSurfaceInfos.forEach { (panel, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
             val dirToCamera = uiCamera.position.clone().sub(panelPosition)
             dirToCamera.normalize()
@@ -345,7 +345,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
     }
 
     inner class VisibleSurface(
-        override val surface: SheepModel.Panel,
+        override val modelSurface: Model.Surface,
         override val boxOnScreen: MediaDevices.Region,
         val panelInfo: PanelInfo,
         val cameraOrientation: CameraOrientation
@@ -398,7 +398,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
             var intersections = raycaster.intersectObject(panelInfo.mesh, false)
             if (intersections.isEmpty()) {
                 intersections = raycaster.intersectObject(uiScene, true)
-                console.log("Couldn't find point in ${surface.name}...", intersections)
+                console.log("Couldn't find point in ${modelSurface.name}...", intersections)
             }
             if (intersections.isNotEmpty()) {
                 return intersections.first()
@@ -468,7 +468,7 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
 
                 orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
                     tr {
-                        td { +visibleSurface.surface.name }
+                        td { +visibleSurface.modelSurface.name }
                         td { +"$distance" }
                     }
                 }
@@ -543,9 +543,9 @@ class JsMapperDisplay(private val statusListener: StatusListener? = null) : Mapp
     }
 
     private fun goToSurface(name: String) {
-        val surface = panelInfos.keys.find { it.name == name }
+        val surface = modelSurfaceInfos.keys.find { it.name == name }
         if (surface != null) {
-            val panelInfo = panelInfos[surface]!!
+            val panelInfo = modelSurfaceInfos[surface]!!
             panelInfo.geom.computeBoundingBox()
             val surfaceCenter = panelInfo.center
             val surfaceNormal = panelInfo.surfaceNormal
