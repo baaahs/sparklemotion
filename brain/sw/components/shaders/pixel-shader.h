@@ -17,6 +17,7 @@ private:
     Color *m_palette;
     size_t m_dataBufSize;
     uint8_t *m_dataBuf;
+    size_t m_dataBufRead;
 
     /** Shader construction failed, we'll render nothing. */
     bool m_disabled = false;
