@@ -10,7 +10,7 @@ import kotlin.math.PI
 import kotlin.random.Random
 
 object CompositeShow : Show("Composite") {
-    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner) = object : Renderer {
+    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
@@ -31,7 +31,7 @@ object CompositeShow : Show("Composite") {
             return ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = sheepModel.eyes.map { showRunner.getMovingHeadBuffer(it) }
+        private val movingHeadBuffers = showRunner.allMovingHeads.map { showRunner.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
