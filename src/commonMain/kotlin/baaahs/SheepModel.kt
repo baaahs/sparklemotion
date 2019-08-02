@@ -1,5 +1,7 @@
 package baaahs
 
+import kotlinx.serialization.Serializable
+
 class SheepModel {
     lateinit var vertices: List<Point>
     lateinit var panels: List<Panel>
@@ -81,6 +83,7 @@ class SheepModel {
 
     fun neighborsOf(panel: Panel) = panelNeighbors[panel] ?: emptyList()
 
+    @Serializable
     data class Point(val x: Float, val y: Float, val z: Float)
     data class Line(val points: List<Point>)
 

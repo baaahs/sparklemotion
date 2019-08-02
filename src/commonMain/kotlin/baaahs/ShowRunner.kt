@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.dmx.Shenzarpy
+import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
@@ -9,7 +9,8 @@ class ShowRunner(
     initialShow: Show,
     private val gadgetManager: GadgetManager,
     private val beatProvider: Pinky.BeatProvider,
-    private val dmxUniverse: Dmx.Universe
+    private val dmxUniverse: Dmx.Universe,
+    private val movingHeadManager: MovingHeadManager
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
@@ -85,7 +86,15 @@ class ShowRunner(
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        return Shenzarpy(getDmxBuffer(baseChannel, 16))
+        val movingHeadBuffer = LixadaMiniMovingHead(getDmxBuffer(baseChannel, 16))
+
+        movingHeadManager.listen(movingHead) { updated ->
+            println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")
+            movingHeadBuffer.pan = updated.x / 255f
+            movingHeadBuffer.tilt = updated.y / 255f
+        }
+
+        return movingHeadBuffer
     }
 
     /**
@@ -129,8 +138,10 @@ class ShowRunner(
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
 
-                    logger.info("Show ${currentShow!!.name} updated; " +
-                            "${shaderBuffers.size} surfaces")
+                    logger.info(
+                        "Show ${currentShow!!.name} updated; " +
+                                "${shaderBuffers.size} surfaces"
+                    )
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow

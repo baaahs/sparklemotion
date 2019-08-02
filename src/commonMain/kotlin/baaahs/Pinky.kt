@@ -35,7 +35,9 @@ class Pinky(
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
-    private val showRunner = ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse)
+    private val movingHeadManager = MovingHeadManager(fs, pubSub, sheepModel.eyes)
+    private val showRunner =
+        ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
     private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
     private val surfaceMappingsByBrain = mutableMapOf<BrainId, Surface>()
