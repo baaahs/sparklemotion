@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class Pinky(
-    val sheepModel: SheepModel,
+    val model: Model<*>,
     val shows: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
@@ -35,12 +35,11 @@ class Pinky(
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
-    private val movingHeadManager = MovingHeadManager(fs, pubSub, sheepModel.eyes)
+    private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     private val showRunner =
-        ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
-    private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
-    private val pixelsBySurface = mutableMapOf<Surface, Array<Vector2>>()
-    private val surfaceMappingsByBrain = mutableMapOf<BrainId, Surface>()
+        ShowRunner(model, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
+    private val pixelsBySurface = mutableMapOf<Model.Surface, Array<Vector2>>()
+    private val surfaceMappingsByBrain = mutableMapOf<BrainId, Model.Surface>()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -132,37 +131,24 @@ class Pinky(
         }
     }
 
-    private fun maybeSendMapping(address: Network.Address, brainId: BrainId) {
-        val surface = surfaceMappingsByBrain[brainId]
-        if (surface != null && surface is SheepModel.Panel) {
-            val pixelLocations = pixelsBySurface[surface]
-            val pixelCount = pixelLocations?.size ?: -1
-            val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
-                ?: emptyList()
-            val mappingMsg = BrainMappingMessage(
-                brainId, surface.name, null, Vector2F(0f, 0f),
-                Vector2F(0f, 0f), pixelCount, pixelVertices
-            )
-            udpSocket.sendUdp(address, Ports.BRAIN, mappingMsg)
-        }
-    }
-
-    class UnknownSurface(val brainId: BrainId) : Surface {
-        override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
-
-        override fun describe(): String = "Unknown surface for $brainId"
-        override fun equals(other: Any?): Boolean = other is UnknownSurface && brainId.equals(other.brainId)
-        override fun hashCode(): Int = brainId.hashCode()
-    }
-
     private fun foundBrain(
         brainAddress: Network.Address,
         brainId: BrainId,
         surfaceName: String?
     ) {
         println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val surface = surfacesByName[surfaceName ?: ""] ?: UnknownSurface(brainId)
-        if (surface is UnknownSurface) maybeSendMapping(brainAddress, brainId)
+        val surface = findModelSurface(surfaceName, brainId)?.let { modelSurface ->
+            val pixelLocations = pixelsBySurface[modelSurface]
+            val pixelCount = pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
+            val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
+                ?: emptyList()
+            val mappingMsg = BrainMappingMessage(
+                brainId, modelSurface.name, null, Vector2F(0f, 0f),
+                Vector2F(0f, 0f), pixelCount, pixelVertices
+            )
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
+            MappedSurface(modelSurface, pixelCount)
+        } ?: UnmappedSurface(brainId)
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
@@ -195,11 +181,14 @@ class Pinky(
         pendingBrainInfos[brainId] = brainInfo
     }
 
-    fun providePanelMapping(brainId: BrainId, surface: Surface) {
+    private fun findModelSurface(surfaceName: String?, brainId: BrainId) =
+        surfaceName?.let { model.findModelSurface(surfaceName) } ?: surfaceMappingsByBrain[brainId]
+
+    fun providePanelMapping(brainId: BrainId, surface: Model.Surface) {
         surfaceMappingsByBrain[brainId] = surface
     }
 
-    fun providePixelMapping(surface: Surface, pixelLocations: Array<Vector2>) {
+    fun providePixelMapping(surface: Model.Surface, pixelLocations: Array<Vector2>) {
         pixelsBySurface[surface] = pixelLocations
     }
 

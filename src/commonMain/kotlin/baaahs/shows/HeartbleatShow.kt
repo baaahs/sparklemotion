@@ -1,9 +1,6 @@
 package baaahs.shows
 
-import baaahs.Color
-import baaahs.SheepModel
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.shaders.HeartShader
 import baaahs.shaders.SolidShader
@@ -12,10 +9,12 @@ import kotlin.math.abs
 import kotlin.math.sin
 
 object HeartbleatShow : Show("Heartbleat") {
-    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+        model as SheepModel
+
         return object : Renderer {
             val beatProvider = showRunner.getBeatProvider()
-            val hearts = sheepModel.allPanels.filter { it.number == 7 }
+            val hearts = showRunner.allSurfaces.filter { it is MappedSurface && it.number == 7 }
                 .map { showRunner.getShaderBuffer(it, HeartShader()) }
             val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
             val strokeSize = showRunner.getGadget("strokeSize", Slider("Stroke Size", .5f))
@@ -49,7 +48,7 @@ object HeartbleatShow : Show("Heartbleat") {
         }
     }
 
-    val SheepModel.Panel.number: Int
+    val MappedSurface.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 
 }

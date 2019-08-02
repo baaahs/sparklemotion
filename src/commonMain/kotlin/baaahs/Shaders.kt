@@ -26,12 +26,6 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     }
 }
 
-interface Surface {
-    val pixelCount: Int
-
-    fun describe(): String
-}
-
 interface ShaderReader<T : Shader<*>> {
     fun parse(reader: ByteArrayReader): T
 }
