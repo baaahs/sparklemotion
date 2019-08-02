@@ -8,9 +8,11 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import baaahs.shaders.PixelShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 class Pinky(
     val sheepModel: SheepModel,
@@ -47,6 +49,8 @@ class Pinky(
     private val networkStats = NetworkStats()
 
     private val storage = Storage(fs)
+
+    private val prerenderPixels = true
 
     init {
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
@@ -179,18 +183,22 @@ class Pinky(
 //            )
         }
 
-        val surfaceReceiver = ShowRunner.SurfaceReceiver(surface) { shaderBuffer ->
-            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
-
-            networkStats.packetsSent++
-            networkStats.bytesSent += message.size
+        val surfaceReceiver = PrerenderingSurfaceReceiver(surface) { shaderBuffer ->
+            sendBrainShaderMessage(brainAddress, shaderBuffer)
         }
 
 
         val brainInfo = BrainInfo(brainAddress, brainId, surface, surfaceReceiver)
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
         pendingBrainInfos[brainId] = brainInfo
+    }
+
+    private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
+        val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+        udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+
+        networkStats.packetsSent++
+        networkStats.bytesSent += message.size
     }
 
     fun providePanelMapping(brainId: BrainId, surface: Surface) {
@@ -237,6 +245,53 @@ class Pinky(
             bytesSent = 0
             packetsSent = 0
         }
+    }
+
+
+    private inner class PrerenderingSurfaceReceiver(surface: Surface, sendFn: (Shader.Buffer) -> Unit) :
+        ShowRunner.SurfaceReceiver(surface, sendFn) {
+        private var currentRenderTree: Brain.RenderTree<*>? = null
+        private var pixels: PixelsAdapter? = null
+
+        @Suppress("UNCHECKED_CAST")
+        override fun send(shaderBuffer: Shader.Buffer) {
+            if (prerenderPixels) {
+                val shader = shaderBuffer.shader as Shader<Shader.Buffer>
+                var renderTree = currentRenderTree
+                if (renderTree == null || renderTree.shader != shader) {
+                    val renderer = shader.createRenderer(surface)
+                    renderTree = Brain.RenderTree(shader, renderer, shaderBuffer)
+                    currentRenderTree = renderTree
+
+                    if (pixels == null) {
+                        val pixelBuffer = PixelShader(PixelShader.Encoding.DIRECT_RGB).createBuffer(surface)
+                        pixels = PixelsAdapter(pixelBuffer)
+                    }
+                }
+
+                renderTree.draw(pixels!!)
+                super.send(pixels!!.buffer)
+            } else {
+                super.send(shaderBuffer)
+            }
+        }
+    }
+
+    private class PixelsAdapter(internal val buffer: PixelShader.Buffer) : Pixels {
+        override val size: Int = buffer.colors.size
+
+        override fun get(i: Int): Color = buffer.colors[i]
+
+        override fun set(i: Int, color: Color) {
+            buffer.colors[i] = color
+        }
+
+        override fun set(colors: Array<Color>) {
+            for (i in 0 until min(colors.size, size)) {
+                buffer.colors[i] = colors[i]
+            }
+        }
+
     }
 }
 

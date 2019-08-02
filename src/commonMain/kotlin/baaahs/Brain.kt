@@ -20,7 +20,7 @@ class Brain(
     private var surface : Surface = UnmappedSurface()
         set(value) { field = value; display.surface = value }
     private var currentShaderDesc: ByteArray? = null
-    private var currentShaderBits: ShaderBits<*>? = null
+    private var currentRenderTree: RenderTree<*>? = null
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
@@ -41,7 +41,7 @@ class Brain(
         surfaceName = null
         surface = UnmappedSurface()
         currentShaderDesc = null
-        currentShaderBits = null
+        currentRenderTree = null
 
         for (i in pixels.indices) pixels[i] = Color.WHITE
 
@@ -89,14 +89,14 @@ class Brain(
 
                     @Suppress("UNCHECKED_CAST")
                     val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
-                    currentShaderBits = ShaderBits(
+                    currentRenderTree = RenderTree(
                         shader,
                         shader.createRenderer(surface),
                         shader.createBuffer(surface)
                     )
                 }
 
-                with(currentShaderBits!!) {
+                with(currentRenderTree!!) {
                     read(reader)
                     draw(pixels)
                 }
@@ -118,7 +118,7 @@ class Brain(
 
                 // next frame we'll need to recreate everything...
                 currentShaderDesc = null
-                currentShaderBits = null
+                currentRenderTree = null
 
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
@@ -130,7 +130,7 @@ class Brain(
         }
     }
 
-    class ShaderBits<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+    class RenderTree<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
         fun draw(pixels: Pixels) {
             renderer.beginFrame(buffer, pixels.size)

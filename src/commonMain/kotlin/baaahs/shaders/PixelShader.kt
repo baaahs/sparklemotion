@@ -116,7 +116,7 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun serialize(writer: ByteArrayWriter) {
-            writer.writeShort(colorsBuf.size)
+            writer.writeShort(pixelCount)
             colorsBuf.forEach { color -> writeColor(color, writer) }
         }
 
