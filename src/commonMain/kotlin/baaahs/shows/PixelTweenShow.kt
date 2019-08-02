@@ -5,7 +5,7 @@ import baaahs.shaders.PixelShader
 import kotlin.random.Random
 
 object PixelTweenShow : Show("PixelTweenShow") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),

@@ -5,7 +5,7 @@ import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
 class ShowRunner(
-    private val model: Model<*>,
+    private val model: SheepModel,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
     private val beatProvider: Pinky.BeatProvider,
@@ -20,8 +20,6 @@ class ShowRunner(
 
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
     val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
-
-    val allMovingHeads: List<MovingHead> get() = model.movingHeads
 
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
@@ -170,7 +168,7 @@ class ShowRunner(
         val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
 
         unlockShadersAndGadgets {
-            currentShowRenderer = startingShow.createRenderer(model as SheepModel, this)
+            currentShowRenderer = startingShow.createRenderer(model, this)
         }
 
         logger.info(
