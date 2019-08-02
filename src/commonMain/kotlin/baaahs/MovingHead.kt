@@ -1,8 +1,10 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
+import kotlinx.serialization.Serializable
 
-class MovingHead(val name: String, val origin: SheepModel.Point/*, val heading: Point*/) {
+@Serializable
+data class MovingHead(val name: String, val origin: SheepModel.Point/*, val heading: Point*/) {
     enum class ColorMode {
         ColorWheel,
         RGB,
@@ -82,4 +84,10 @@ class MovingHead(val name: String, val origin: SheepModel.Point/*, val heading: 
             buffer[fineChannel] = (scaled and 0xff).toByte()
         }
     }
+
+    @Serializable
+    data class MovingHeadPosition(
+        val x: Int,
+        val y: Int
+    )
 }
