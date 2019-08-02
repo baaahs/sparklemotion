@@ -10,7 +10,7 @@ class ShowRunner(
     private val gadgetManager: GadgetManager,
     private val beatProvider: Pinky.BeatProvider,
     private val dmxUniverse: Dmx.Universe,
-    private val pubSub: PubSub.Server
+    private val movingHeadManager: MovingHeadManager
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
@@ -87,12 +87,13 @@ class ShowRunner(
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         val movingHeadBuffer = LixadaMiniMovingHead(getDmxBuffer(baseChannel, 16))
-        val topic = PubSub.Topic("movingHead/${movingHead.name}", MovingHead.MovingHeadPosition.serializer())
-        pubSub.publish(topic, MovingHead.MovingHeadPosition(127, 127)) { updated ->
+
+        movingHeadManager.listen(movingHead) { updated ->
             println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")
             movingHeadBuffer.pan = updated.x / 255f
             movingHeadBuffer.tilt = updated.y / 255f
         }
+
         return movingHeadBuffer
     }
 

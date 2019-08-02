@@ -11,33 +11,17 @@ class EyeAdjustModal extends React.Component {
     super(props);
 
     this.state = {
-      currentEye: 'leftEye',
-      leftEye: [50, 50],
-      rightEye: [50, 50],
-      partEyeColor: 'white',
-      rightEyeColor: 'white',
+      movingHeads: [],
+      selected: [],
+      gridSliderPosition: [127, 127],
     };
 
     this.pubSub = props.pubSub;
-  }
 
-  componentDidMount() {
-    this.subscribeToChannels();
-  }
-
-  subscribeToChannels() {
-    this.movingHeadDisplay = new baaahs.MovingHeadDisplay(this.props.pubSub);
-    this.leftEyeChannel = this.movingHeadDisplay.subscribe(
-      'leftEye',
-      ({ x, y }) => {
-        this.setState({ leftEye: [x, y] });
-      }
-    );
-
-    this.rightEyeChannel = this.movingHeadDisplay.subscribe(
-      'rightEye',
-      ({ x, y }) => {
-        this.setState({ rightEye: [x, y] });
+    this.movingHeadDisplay = new baaahs.MovingHeadDisplay(
+      this.props.pubSub,
+      (movingHeads) => {
+        this.setState({ movingHeads, selected: [movingHeads[0]] });
       }
     );
   }
@@ -46,46 +30,70 @@ class EyeAdjustModal extends React.Component {
     this.props.onSave(this.state);
   };
 
-  handlePanTiltChange = (eyeSide, { x, y }) => {
-    if (eyeSide === 'leftEye') {
-      this.leftEyeChannel.onChange({
-        x,
-        y,
-      });
-    }
-    this.setState({ [eyeSide]: [x, y] });
+  handlePanTiltChange = ({ x, y }) => {
+    this.setState({ gridSliderPosition: [x, y] });
+    this.state.selected.forEach((movingHead) => {
+      movingHead.position = new baaahs.MovingHead.MovingHeadPosition(x, y);
+    });
   };
 
-  handleEyeToggle = (e) => {
-    this.setState({
-      currentEye: e.target.checked ? 'rightEye' : 'leftEye',
-    });
+  handleSelectMovingHead = (e) => {
+    const { selected } = this.state;
+    const toggledHead = this.state.movingHeads.find(
+      (head) => head.name === e.target.value
+    );
+    if (e.target.checked) {
+      this.setState({ selected: [...selected, toggledHead] });
+    } else {
+      this.setState({
+        selected: [
+          ...this.state.selected.filter((head) => head !== toggledHead),
+        ],
+      });
+    }
+  };
+
+  renderRadioButtons = () => {
+    const { movingHeads, selected } = this.state;
+    return (
+      <div>
+        {movingHeads.map((movingHead) => {
+          const { name } = movingHead;
+          return (
+            <Fragment key={name}>
+              <label htmlFor={name}>{name}</label>
+              <input
+                type="checkbox"
+                id={name}
+                value={name}
+                checked={selected.indexOf(movingHead) > -1}
+                onChange={this.handleSelectMovingHead}
+              />
+            </Fragment>
+          );
+        })}
+      </div>
+    );
   };
 
   renderEyeControls = () => {
     const {
-      currentEye,
-      leftEye,
-      rightEye,
-      partEyeColor,
-      rightEyeColor,
+      gridSliderPosition: [x, y],
     } = this.state;
-    const [x, y] = currentEye === 'leftEye' ? leftEye : rightEye;
-    const eyeColor = currentEye === 'leftEye' ? partEyeColor : rightEyeColor;
 
     return (
       <Fragment>
         <GridSlider
           className={s['grid-slider']}
           onChange={(e, data) => {
-            this.handlePanTiltChange(currentEye, data);
+            this.handlePanTiltChange(data);
           }}
           x={x}
           y={y}
           height={255}
           width={255}
         />
-        <div>Eye Color: {eyeColor}</div>
+        <div>Eye Color goes here</div>
       </Fragment>
     );
   };
@@ -93,19 +101,7 @@ class EyeAdjustModal extends React.Component {
   render() {
     return (
       <div style={{ width: '100%' }}>
-        <div className={s['toggle-switch__wrapper']}>
-          <span>Left</span>
-          <div className={s['toggle-switch']}>
-            <input
-              type="checkbox"
-              id="toggle-switch"
-              checked={this.state.currentEye === 'rightEye'}
-              onChange={this.handleEyeToggle}
-            />
-            <label htmlFor="toggle-switch">Eye Toggle</label>
-          </div>
-          <span>Right</span>
-        </div>
+        {this.renderRadioButtons()}
         {this.renderEyeControls()}
         <button onClick={this.handleSave}>SAVE</button>
       </div>

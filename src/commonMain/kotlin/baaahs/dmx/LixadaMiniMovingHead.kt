@@ -25,6 +25,9 @@ class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9),
     init {
         dimmer = 134 * 256 / 65535f
         buffer[Channel.WHITE] = 255.toByte()
+        buffer[Channel.RED] = 255.toByte()
+        buffer[Channel.GREEN] = 255.toByte()
+        buffer[Channel.BLUE] = 255.toByte()
     }
 
     enum class Channel: Dmx.Channel {
