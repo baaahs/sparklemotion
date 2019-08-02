@@ -27,7 +27,7 @@ class GlslSandbox55301Shader : Shader<GlslSandbox55301Shader.Buffer>(ShaderId.GL
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
-        private val pixelVertices = (surface as? Brain.MappedSurface)?.pixelVertices
+        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
             if (pixelVertices == null || pixelIndex >= pixelVertices.size) return Color.BLACK
