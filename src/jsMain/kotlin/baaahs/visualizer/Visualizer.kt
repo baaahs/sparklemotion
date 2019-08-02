@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.*
+import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
@@ -149,7 +150,7 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
 
     inner class VizMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
         private val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        private val device = Shenzarpy(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
+        private val device = LixadaMiniMovingHead(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
         private val geometry = ConeBufferGeometry(50, 1000)
         private val material = MeshBasicMaterial().apply { color.set(0xffff00) }
         private val cone = Mesh(geometry, material)
