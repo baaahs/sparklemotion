@@ -1,108 +1,211 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Dialog from '@material-ui/core/Dialog';
-import EyeControls from '../EyeControls';
+import GridSlider from '../GridSlider';
 import Modal from '../Modal';
-import { PRESET_HEADLIGHT_MODE, PRESET_DISCOBALL_MODE } from '../../constants';
-import EyeAdjustModal from './EyeAdjustModal';
+
+import s from './Eyes.scss';
+
+const baaahs = sparklemotion.baaahs;
 
 class Eyes extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isModalOpen: false,
-      modalToDisplay: null,
+      movingHeads: [],
+      selected: [],
+      gridSliderPosition: [127, 127],
+      presets: {},
+      showModal: '',
     };
+
+    this.pubSub = props.pubSub;
+
+    this.movingHeadDisplay = new baaahs.MovingHeadDisplay(
+      this.props.pubSub,
+      (movingHeads) => {
+        this.setState({ movingHeads, selected: [movingHeads[0]] });
+      }
+    );
+
+    this.movingHeadDisplay.addPresetsListener((presetsJson) => {
+      const presets = JSON.parse(presetsJson);
+      this.setState({ presets: presets });
+    });
   }
 
-  handleSelectHeadlightPreset = (preset) => {
-    console.log(`Should make server call to set preset to ${preset}`);
+  handlePanTiltChange = ({ x, y }) => {
+    this.setState({ gridSliderPosition: [x, y] });
+    this.state.selected.forEach((movingHead) => {
+      movingHead.position = new baaahs.MovingHead.MovingHeadPosition(x, y);
+    });
   };
 
-  handleEditHeadlightPreset = (preset) => {
-    const modalToOpen = (
-      <EyeAdjustModal
-        onSave={(settings) => {
-          this.handleSaveHeadlightPreset(preset, settings);
-        }}
-        pubSub={this.props.pubSub}
-      />
+  handleSelectMovingHead = (e) => {
+    const { selected } = this.state;
+    const toggledHead = this.state.movingHeads.find(
+      (head) => head.name === e.target.value
     );
-
-    this.setState({ isModalOpen: true, modalToDisplay: modalToOpen });
+    if (e.target.checked) {
+      this.setState({ selected: [...selected, toggledHead] });
+    } else {
+      this.setState({
+        selected: [
+          ...this.state.selected.filter((head) => head !== toggledHead),
+        ],
+      });
+    }
   };
 
-  handleSaveHeadlightPreset = (preset, settings) => {
-    console.log(
-      `Should make server call to set preset to ${preset}, with settings: ${JSON.stringify(
-        settings
-      )}`
+  handlePresetSelect = (presetName) => {
+    switch (this.state.showModal) {
+      case 'load':
+        this.loadPreset(presetName);
+        break;
+      case 'save':
+        this.savePreset(presetName);
+        break;
+    }
+    this.setState({ showModal: false });
+  };
+
+  loadPreset = (presetName) => {
+    const { x, y } = this.state.presets[presetName];
+    this.handlePanTiltChange({ x, y });
+  };
+
+  savePreset = (presetName) => {
+    const [x, y] = this.state.gridSliderPosition;
+
+    this.movingHeadDisplay.savePreset(
+      presetName,
+      new baaahs.MovingHead.MovingHeadPosition(x, y)
     );
   };
 
-  handleCloseModal = () => {
-    this.setState({ isModalOpen: false, modalToDisplay: null });
+  renderRadioButtons = () => {
+    const { movingHeads, selected } = this.state;
+    return (
+      <div>
+        {movingHeads.map((movingHead) => {
+          const { name } = movingHead;
+          return (
+            <Fragment key={name}>
+              <label htmlFor={name}>{name}</label>
+              <input
+                type="checkbox"
+                id={name}
+                value={name}
+                checked={selected.indexOf(movingHead) > -1}
+                onChange={this.handleSelectMovingHead}
+              />
+            </Fragment>
+          );
+        })}
+      </div>
+    );
+  };
+
+  renderEyeControls = () => {
+    const {
+      gridSliderPosition: [x, y],
+    } = this.state;
+
+    return (
+      <Fragment>
+        <GridSlider
+          className={s['grid-slider']}
+          onChange={(e, data) => {
+            this.handlePanTiltChange(data);
+          }}
+          x={x}
+          y={y}
+          height={255}
+          width={255}
+        />
+        <div>Eye Color goes here</div>
+      </Fragment>
+    );
+  };
+
+  renderLoadModal = () => {
+    return (
+      <Fragment>
+        {Object.keys(this.state.presets).map((presetName) => {
+          return (
+            <button onClick={() => this.handlePresetSelect(presetName)}>
+              {presetName}
+            </button>
+          );
+        })}
+      </Fragment>
+    );
   };
 
   render() {
-    const { pubSub } = this.props;
-
     return (
-      <div>
-        <span>Eye Controls</span>
-        <EyeControls side="party" pubSub={pubSub} />
-        <EyeControls side="business" pubSub={pubSub} />
-        <div>
-          <span>Eye Presets</span>
-          <div>
-            <button
-              onClick={() => {
-                this.handleSelectHeadlightPreset(PRESET_HEADLIGHT_MODE);
-              }}
-            >
-              Headlight Mode
-            </button>
-            <button
-              onClick={() => {
-                this.handleEditHeadlightPreset(PRESET_HEADLIGHT_MODE);
-              }}
-            >
-              Edit
-            </button>
+      <Fragment>
+        <div style={{ width: '100%' }}>
+          <div style={{ display: 'inline-block' }}>
+            {this.renderRadioButtons()}
+            {this.renderEyeControls()}
           </div>
-          <div>
+          <div style={{ display: 'inline-block' }}>
             <button
               onClick={() => {
-                this.handleSelectHeadlightPreset(PRESET_DISCOBALL_MODE);
+                this.setState({ showModal: 'save' });
               }}
             >
-              Discoball Mode
+              SAVE
             </button>
             <button
               onClick={() => {
-                this.handleEditHeadlightPreset(PRESET_DISCOBALL_MODE);
+                this.setState({ showModal: 'load' });
               }}
             >
-              Edit
+              LOAD
             </button>
           </div>
         </div>
 
         <Modal
-          isOpen={this.state.isModalOpen}
-          onClose={this.handleCloseModal}
-          size="large"
+          isOpen={!!this.state.showModal}
+          onClose={() => {
+            this.setState({ showModal: false });
+          }}
         >
-          {this.state.modalToDisplay}
+          {Object.keys(this.state.presets).map((presetName) => {
+            return (
+              <button
+                style={{ display: "block" }}
+                onClick={() => this.handlePresetSelect(presetName)}
+              >
+                {presetName}
+              </button>
+            );
+          })}
+          {this.state.showModal === 'save' && (
+            <input
+              style={{ display: "block" }}
+              onBlur={(e) => {
+                this.savePreset(e.target.value);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  this.savePreset(e.target.value);
+                  e.preventDefault();
+                }
+              }}
+            />
+          )}
         </Modal>
-      </div>
+      </Fragment>
     );
   }
 }
 
 Eyes.propTypes = {
   pubSub: PropTypes.instanceOf(Object).isRequired,
-}
+};
 
 export default Eyes;

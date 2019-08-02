@@ -1,12 +1,38 @@
 package baaahs
 
+import baaahs.io.Fs
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlin.js.JsName
 
-class MovingHeadManager(val pubSub: PubSub.Server, movingHeads: List<MovingHead>) {
+class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, movingHeads: List<MovingHead>) {
     private val movingHeadsChannel = pubSub.publish(Topics.movingHeads, movingHeads) { }
     private val defaultPosition = MovingHead.MovingHeadPosition(127, 127)
     private val currentPositions = mutableMapOf<MovingHead, MovingHead.MovingHeadPosition>()
     private val listeners = mutableMapOf<MovingHead, (MovingHead.MovingHeadPosition) -> Unit>()
+
+    private val movingHeadPresets = mutableMapOf<String, MovingHead.MovingHeadPosition>()
+    private val json = Json(JsonConfiguration.Stable)
+
+    private val presetsFileName = "presets/moving-head-positions.json"
+
+    init {
+        val presetsJson = fs.loadFile(presetsFileName)
+        if (presetsJson != null) {
+            val map = json.parse(Topics.movingHeadPresets.serializer, presetsJson)
+            movingHeadPresets.putAll(map)
+        }
+    }
+
+    private val movingHeadPresetsChannel =
+        pubSub.publish(
+            Topics.movingHeadPresets, mutableMapOf(
+                "Disco Balls" to MovingHead.MovingHeadPosition(123, 200)
+            )
+        ) { map ->
+            fs.createFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
+            println("Saved $map to disk!")
+        }
 
     init {
         movingHeads.map { movingHead ->
@@ -31,6 +57,38 @@ class MovingHeadDisplay(val pubSub: PubSub.Client, onUpdatedMovingHeads: (Array<
             val wrappers = movingHeads.map { movingHead -> Wrapper(movingHead, pubSub) }
             onUpdatedMovingHeads(wrappers.toTypedArray())
         }
+    }
+
+    private val presets = mutableMapOf<String, MovingHead.MovingHeadPosition>()
+    private val presetsListeners = mutableListOf<(String) -> Unit>()
+
+    private val movingHeadPresetsChannel =
+        pubSub.subscribe(Topics.movingHeadPresets) { map ->
+            presets.clear()
+            presets.putAll(map)
+            notifyPresetsListeners()
+        }
+
+    private fun notifyPresetsListeners() {
+        val json = Json.stringify(Topics.movingHeadPresets.serializer, presets)
+        presetsListeners.forEach { it.invoke(json) }
+    }
+
+    @JsName("savePreset")
+    fun savePreset(name: String, position: MovingHead.MovingHeadPosition) {
+        presets[name] = position
+        movingHeadPresetsChannel.onChange(presets)
+        notifyPresetsListeners()
+    }
+
+    @JsName("addPresetsListener")
+    fun addPresetsListener(callback: (String) -> Unit) {
+        presetsListeners.add(callback)
+    }
+
+    @JsName("removePresetsListener")
+    fun removePresetsListener(callback: (String) -> Unit) {
+        presetsListeners.remove(callback)
     }
 
     class Wrapper(val movingHead: MovingHead, pubSub: PubSub.Client) {

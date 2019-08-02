@@ -7,6 +7,7 @@ import baaahs.net.TestNetwork
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.*
 
@@ -17,6 +18,7 @@ class ShowRunnerTest {
     private val server = PubSub.listen(serverNetwork.startHttpServer(1234)).apply { install(gadgetModule) }
 
     private val gadgetManager = GadgetManager(server)
+    private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
     private lateinit var showRunner: ShowRunner
 
     private val testShow1 = TestShow1()
@@ -32,7 +34,7 @@ class ShowRunnerTest {
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, FakeBeatProvider, dmxUniverse)
+        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, FakeBeatProvider, dmxUniverse, movingHeadManager)
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()

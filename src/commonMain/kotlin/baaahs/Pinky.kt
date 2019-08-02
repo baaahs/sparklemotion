@@ -35,7 +35,7 @@ class Pinky(
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
-    private val movingHeadManager = MovingHeadManager(pubSub, sheepModel.eyes)
+    private val movingHeadManager = MovingHeadManager(fs, pubSub, sheepModel.eyes)
     private val showRunner =
         ShowRunner(sheepModel, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
     private val surfacesByName = sheepModel.allPanels.associateBy { it.name }
