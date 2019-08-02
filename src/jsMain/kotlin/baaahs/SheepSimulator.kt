@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.geom.Vector2F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
@@ -65,11 +66,11 @@ class SheepSimulator {
             document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
             // This part is cheating... TODO: don't cheat!
-            val pixelLocations = vizPanel.getPixelLocations()!!
-            pinky.providePixelMapping(panel, pixelLocations)
+            val pixelLocations = vizPanel.getPixelLocations()!!.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
+            pinky.providePixelMapping_CHEAT(panel, pixelLocations)
 
             val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
-            pinky.providePanelMapping(BrainId(brain.id), panel)
+            pinky.providePanelMapping_CHEAT(BrainId(brain.id), panel)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
 

@@ -140,7 +140,7 @@ class BrainMappingMessage(
             writeInt(pixelVertices.size)
             pixelVertices.forEach { vertex ->
                 if (vertex.x < 0 || vertex.x > 1 || vertex.y < 0 || vertex.y > 1) {
-                    throw IllegalArgumentException("Pixel vertices must be [0..1], but $vertex!")
+//                    throw IllegalArgumentException("Pixel vertices must be [0..1], but $vertex!")
                 }
 
                 writeShort((vertex.x * 65536).toShort())
