@@ -6,6 +6,9 @@ class SolidShader : public Shader {
     RgbColor m_color;
 
 public:
+    // Create a solid shader with a default color
+    SolidShader(RgbColor color);
+
     SolidShader(Surface *surface, Msg *msg);
     ~SolidShader();
 

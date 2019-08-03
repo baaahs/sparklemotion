@@ -1,12 +1,19 @@
 #include "shade-tree.h"
 
-#include "esp_log.h"
+#include <esp_event.h>
+#include <esp_log.h>
 
+#include "brain-ui-events.h"
 #include "default-shader.h"
 #include "solid-shader.h"
 #include "rainbow-shader.h"
 
 #define TAG "#shdtre"
+
+void glue_handleEvent(void* arg, esp_event_base_t base, int32_t id, void* data) {
+    ((ShadeTree*)arg)->_handleEvent(base, id, data);
+}
+
 
 ShadeTree::ShadeTree(Surface *surface) {
     m_surface = surface;
@@ -27,6 +34,8 @@ ShadeTree::start() {
     // Start with a local shader
     // Important to do AFTER the semaphore has been initialized!
     nextLocalShader();
+
+    esp_event_handler_register(BRAIN_UI_BASE, BrainUiEvent::KeyPress, glue_handleEvent, this);
 }
 
 void
@@ -197,15 +206,39 @@ ShadeTree::nextLocalShader() {
 
     m_localShaderIndex++;
 
-    switch (m_localShaderIndex % 2) {
-        case 0: // Boring Red
-            m_pLocalShader = new SolidShader(nullptr, nullptr);
+    switch (m_localShaderIndex % 3) {
+        case 0: // Everything is just white
+            m_pLocalShader = new SolidShader(RgbColor(255));
             break;
 
-        case 1: // Boring Red
+        case 1: // Rainbow!
             m_pLocalShader = new RainbowShader(nullptr, nullptr);
+            break;
+
+        case 2: // Red!
+            m_pLocalShader = new SolidShader(RgbColor(255, 0, 0));
             break;
     }
 
     xSemaphoreGive(m_hMsgAccess);
+}
+
+void
+ShadeTree::_handleEvent(esp_event_base_t base, int32_t id, void* data) {
+
+    if (!data) return;
+
+    auto evt = (BrainUiEvent*)data;
+
+    if (evt->id == BrainUiEvent::KeyPress) {
+        switch(evt->code) {
+            case BrainUiEvent::Left :
+                ESP_LOGI(TAG, "Key press: nextLocalShader()");
+                nextLocalShader();
+                break;
+
+            default:
+                break;
+        }
+    }
 }

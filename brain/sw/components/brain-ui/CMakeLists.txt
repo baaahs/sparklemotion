@@ -4,6 +4,7 @@ set(COMPONENT_SRCS
         "brain-ui.cpp"
         "brain-led.cpp"
         "brain-button.cpp"
+        "brain-ui-events.cpp"
         )
 
 
