@@ -1,8 +1,12 @@
+#include <esp_event.h>
 #include "brain-ui-priv.h"
 #include "brain-ui.h"
+#include "brain-ui-events.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
+ESP_EVENT_DEFINE_BASE(BRAIN_UI_BASE);
 
 BrainUI::BrainUI() :
     leftEye(LEDC_CHANNEL_1, 16), // Left Eye
@@ -105,8 +109,12 @@ BrainUI::buttonDown(BrainButton& sw, bool longPress) {
 
     if (isLeft) {
         leftEye.setValue(leftEye.getValue() ? 0 : 255);
+        BrainUiEvent evt(BrainUiEvent::KeyPress, BrainUiEvent::Left, longPress ? 0 : BrainUiEvent::Long);
+        evt.post();
     } else {
         rightEye.setValue(rightEye.getValue() ? 0 : 255);
+        BrainUiEvent evt(BrainUiEvent::KeyPress, BrainUiEvent::Right, longPress ? 0 : BrainUiEvent::Long);
+        evt.post();
     }
 };
 
