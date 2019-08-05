@@ -5,9 +5,9 @@
 #ifndef BRAIN_MSG_SLINGER_H
 #define BRAIN_MSG_SLINGER_H
 
-#include "esp_err.h"
+#include "brain_common.h"
+
 #include "esp_event.h"
-#include "freertos/FreeRTOS.h"
 
 #include "msg.h"
 #include "msg_handler.h"
@@ -18,7 +18,7 @@ class IpPort;
 
 class MsgSlinger {
 public:
-    void start(uint16_t port);
+    void start(uint16_t port, TaskDef input, TaskDef output);
 
     /**
      * Sends a message to a given address and port. A reference is added to the message.

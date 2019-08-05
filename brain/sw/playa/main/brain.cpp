@@ -3,6 +3,7 @@
 //
 
 #include "brain.h"
+#include "brain_common.h"
 
 #include "esp_log.h"
 
@@ -11,7 +12,7 @@
 
 static const uint16_t BRAIN_PORT = 8003;
 
-static const char* TAG = "# brain";
+static const char* TAG = TAG_BRAIN;
 
 Brain::Brain() :
     m_ledRenderer(m_timeBase, m_pixelCount)
@@ -130,8 +131,11 @@ Brain::start()
     gSysMon.start();
     m_brainUI.start();
 
+    m_netTransport.start(DefaultBrainTasks.net);
+    m_netTransport.reconfigure();
+
     m_msgSlinger.registerHandler(this);
-    m_msgSlinger.start(BRAIN_PORT);
+    m_msgSlinger.start(BRAIN_PORT, DefaultBrainTasks.netInput, DefaultBrainTasks.netOutput);
 
     TimerHandle_t hTimer = xTimerCreate("say hello", pdMS_TO_TICKS(5000), pdTRUE, this, maybe_send_hello);
     if (!hTimer) {
