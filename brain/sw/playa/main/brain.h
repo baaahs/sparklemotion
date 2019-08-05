@@ -5,6 +5,7 @@
 #ifndef PLAYA_BRAIN_H
 #define PLAYA_BRAIN_H
 
+#include "net_transport.h"
 #include "msg_handler.h"
 #include "msg_slinger.h"
 
@@ -28,6 +29,7 @@ public:
 private:
     char m_brainId[8];
 
+    NetTransport m_netTransport;
     MsgSlinger m_msgSlinger;
 
     TimeBase m_timeBase;

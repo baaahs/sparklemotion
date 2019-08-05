@@ -16,6 +16,7 @@
 #include "task_net.h"
 #include "httpd/task_httpd.h"
 
+#include "brain_common.h"
 #include "brain.h"
 
 static Brain brain;
@@ -63,7 +64,7 @@ extern "C" void app_main()
 //    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 //
 //    esp_log_level_set("# httpd", ESP_LOG_DEBUG);
-//    esp_log_level_set("#   net", ESP_LOG_INFO);
+    esp_log_level_set(TAG_NET, ESP_LOG_INFO);
 //    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shader", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shdtre", ESP_LOG_DEBUG);
@@ -71,11 +72,12 @@ extern "C" void app_main()
 
 
     // Configure the default event loop before anything else happens
+    ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetTaskName(nullptr));
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     // Start the various tasks
     // TODO: These network related things should happen AFTER system configuration from SPIFFS
-    task_net_create();
+    // task_net_create();
     task_httpd_create();
 
     // Start the brain task

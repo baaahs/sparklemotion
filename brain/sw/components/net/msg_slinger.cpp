@@ -35,7 +35,7 @@ void handle_net_out(void *arg, esp_event_base_t base, int32_t id, void *data) {
 }
 
 void
-MsgSlinger::start(uint16_t port) {
+MsgSlinger::start(uint16_t port, TaskDef input, TaskDef output) {
     m_port = port;
 
     ////////////////
@@ -49,16 +49,16 @@ MsgSlinger::start(uint16_t port) {
 
     ////////////////
     ESP_LOGD(TAG, "Creating input pump task");
-    BaseType_t r = xTaskCreate(msg_slinger_input_pump, "input", INPUT_STACK, (void*)this, INPUT_PRIO, nullptr);
-    if (r != pdPASS) {
-        ESP_LOGE(TAG, "Failure starting input pump task %d", r);
+    auto result = input.createTask(msg_slinger_input_pump, this, nullptr);
+    if (result != pdPASS) {
+        ESP_LOGE(TAG, "Failure starting input pump task %d", result);
     }
 
     ////////////////
     m_argsOutputLoop.queue_size = 10;
-    m_argsOutputLoop.task_name = "net output";
-    m_argsOutputLoop.task_priority = OUTPUT_PRIO;
-    m_argsOutputLoop.task_stack_size = OUTPUT_STACK;
+    m_argsOutputLoop.task_name = output.name;
+    m_argsOutputLoop.task_priority = output.priority;
+    m_argsOutputLoop.task_stack_size = output.stack;
     // Not setting a core id at this time...
 
     m_hOutputLoop = nullptr;
