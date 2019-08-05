@@ -18,6 +18,6 @@ public:
     void _ipHandler(esp_event_base_t evBase, int32_t evId, void *evData);
 
 private:
-    esp_eth_handle_t m_handle;
+    esp_eth_handle_t m_hDriver;
 
 };

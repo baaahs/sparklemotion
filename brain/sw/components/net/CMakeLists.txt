@@ -1,7 +1,7 @@
 set(COMPONENT_SRCS 
-        "task_net.cpp"
-        "ethernet.cpp"
-        "wifi.cpp"
+        "net_transport.cpp"
+        "eth_interface.cpp"
+        "wifi_sta_interface.cpp"
         "ip_port.cpp"
         "msg.cpp"
         "msg_handler.cpp"
@@ -9,6 +9,6 @@ set(COMPONENT_SRCS
         )
 set(COMPONENT_ADD_INCLUDEDIRS "include")
 
-set(COMPONENT_REQUIRES nvs_flash led-renderer)
+set(COMPONENT_REQUIRES brain-common nvs_flash led-renderer )
 
 register_component()

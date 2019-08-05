@@ -9,6 +9,7 @@
 #include "ethernet.h"
 #include "wifi.h"
 
+
 static Ethernet ethernet;
 
 void static task_net_main(void* pvParameters) {
