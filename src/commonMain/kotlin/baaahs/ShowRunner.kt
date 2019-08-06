@@ -216,7 +216,7 @@ class ShowRunner(
             val shaderBuffer = shaderBuffers.first()
 
             receiversFor(surface).forEach { receiver ->
-                receiver.sendFn(shaderBuffer)
+                receiver.send(shaderBuffer)
             }
         }
 
@@ -228,6 +228,9 @@ class ShowRunner(
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
-    class SurfaceReceiver(val surface: Surface, val sendFn: (Shader.Buffer) -> Unit)
+
+    open class SurfaceReceiver(val surface: Surface, private val sendFn: (Shader.Buffer) -> Unit) {
+        open fun send(shaderBuffer: Shader.Buffer) = sendFn(shaderBuffer)
+    }
 
 }
