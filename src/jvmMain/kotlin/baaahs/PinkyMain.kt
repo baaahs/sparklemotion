@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
 
             override var showFrameMs: Int = 0
                 set(value) { field = value; /* println("showFrameMs: ${value}") */ }
-        })
+        }, prerenderPixels = true)
 
     (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
         static {

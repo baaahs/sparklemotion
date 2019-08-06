@@ -11,23 +11,32 @@ PixelShader::PixelShader(Surface *surface, Msg *config) : Shader(surface, config
     }
 
     m_encoding = static_cast<Encoding>(config->readByte());
-    m_dataBufSize = bufferSizeFor(m_encoding, surface->pixelCount());
+    uint16_t pixelCount = surface->pixelCount();
+    m_dataBufSize = bufferSizeFor(m_encoding, pixelCount);
     m_dataBuf = static_cast<uint8_t *>(malloc(m_dataBufSize));
 
     uint8_t paletteCount = paletteCountFor(m_encoding);
     size_t paletteSize = sizeof(Color) * paletteCount;
     m_palette = paletteCount > 0 ? static_cast<Color*>(malloc(paletteSize)) : nullptr;
 
-    if (!m_dataBuf || !m_palette) {
+    ESP_LOGD(TAG, "PixelShader: encoding=%d pixelCount=%d paletteCount=%d",
+            static_cast<int>(m_encoding), pixelCount, paletteCount);
+
+    if (!m_dataBuf || (paletteSize > 0 && !m_palette)) {
         if (m_dataBuf) {
-            ESP_LOGE(TAG, "Failed to malloc %d bytes for data buffer", m_dataBufSize);
             free(m_dataBuf);
             m_dataBuf = nullptr;
+        } else {
+            ESP_LOGE(TAG, "Failed to malloc %d bytes for data buffer", m_dataBufSize);
         }
-        if (m_palette) {
-            ESP_LOGE(TAG, "Failed to malloc %d bytes for palette", m_dataBufSize);
-            free(m_palette);
-            m_palette = nullptr;
+
+        if (paletteSize > 0) {
+            if (m_palette) {
+                free(m_palette);
+                m_palette = nullptr;
+            } else {
+                ESP_LOGE(TAG, "Failed to malloc %d bytes for palette", paletteSize);
+            }
         }
         m_disabled = 1;
     }
@@ -46,18 +55,20 @@ PixelShader::~PixelShader() {
 
 void
 PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
-    pMsg->readShort(); // ignore pixel count
+    uint16_t pixelCount = pMsg->readShort();
 
     uint8_t paletteCount = paletteCountFor(m_encoding);
     for (int i = 0; i < paletteCount; i++) {
         const RgbColor color = pMsg->readColor();
-        m_palette[i].channel.a = 0xff;
-        m_palette[i].channel.r = color.R;
-        m_palette[i].channel.g = color.G;
-        m_palette[i].channel.b = color.B;
+        if (!m_disabled) {
+            m_palette[i].channel.a = 0xff;
+            m_palette[i].channel.r = color.R;
+            m_palette[i].channel.g = color.G;
+            m_palette[i].channel.b = color.B;
+        }
     }
 
-    size_t dataBufLen = pMsg->readInt();
+    size_t dataBufLen = bufferSizeFor(m_encoding, pixelCount);
     if (m_disabled) {
         // We still need to skip bytes in the buffer intended for us before bailing.
         pMsg->skip(dataBufLen);
@@ -65,18 +76,18 @@ PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     }
 
     size_t readLen = MIN(m_dataBufSize, dataBufLen);
-    m_dataBufSize = pMsg->readBytes(m_dataBuf, readLen);
+    m_dataBufRead = pMsg->readBytes(m_dataBuf, readLen);
 
     // If we received data for more pixels than we have, skip those bytes.
-    if (readLen < dataBufLen) {
-        pMsg->skip(dataBufLen - readLen);
+    if (readLen < m_dataBufRead) {
+        pMsg->skip(m_dataBufRead - readLen);
     }
 }
 
 uint8_t
 PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bitsPerPixel, uint8_t mask) {
-    // Offset is modulo m_dataBufSize so we wrap around and repeat any missing pixels.
-    size_t bufOffset = pixelIndex / pixelsPerByte % m_dataBufSize;
+    // Offset is modulo m_dataBufRead so we wrap around and repeat any missing pixels.
+    size_t bufOffset = pixelIndex / pixelsPerByte % m_dataBufRead;
     uint8_t positionInByte = pixelsPerByte - pixelIndex % pixelsPerByte - 1;
     uint8_t bitShift = positionInByte * bitsPerPixel;
     return m_dataBuf[bufOffset] >> bitShift & mask;
@@ -84,7 +95,7 @@ PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bi
 
 void
 PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
-    if (m_disabled) {
+    if (m_disabled || m_dataBufRead == 0) {
         // TODO: colorOut should have alpha channel set explicitly to zero.
         return;
     }
@@ -94,23 +105,23 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
 
     switch (m_encoding) {
         case Encoding::DIRECT_ARGB:
-            bufOffset = pixelIndex * 4;
+            // Offset is modulo m_dataBufRead so we wrap around and repeat any missing pixels.
+            bufOffset = pixelIndex * 4 % m_dataBufRead;
 
-            // Offset is modulo m_dataBufSize so we wrap around and repeat any missing pixels.
-            color.channel.a = m_dataBuf[bufOffset++ % m_dataBufSize];
-            color.channel.r = m_dataBuf[bufOffset++ % m_dataBufSize];
-            color.channel.g = m_dataBuf[bufOffset++ % m_dataBufSize];
-            color.channel.b = m_dataBuf[bufOffset % m_dataBufSize];
+            color.channel.a = m_dataBuf[bufOffset++];
+            color.channel.r = m_dataBuf[bufOffset++];
+            color.channel.g = m_dataBuf[bufOffset++];
+            color.channel.b = m_dataBuf[bufOffset];
             break;
 
         case Encoding::DIRECT_RGB:
-            bufOffset = pixelIndex * 3 + 1; // skip alpha
+            // Offset is modulo m_dataBufRead so we wrap around and repeat any missing pixels.
+            bufOffset = pixelIndex * 3 % m_dataBufRead;
 
-            // Offset is modulo m_dataBufSize so we wrap around and repeat any missing pixels.
             color.channel.a = 0xff;
-            color.channel.r = m_dataBuf[bufOffset++ % m_dataBufSize];
-            color.channel.g = m_dataBuf[bufOffset++ % m_dataBufSize];
-            color.channel.b = m_dataBuf[bufOffset % m_dataBufSize];
+            color.channel.r = m_dataBuf[bufOffset++];
+            color.channel.g = m_dataBuf[bufOffset++];
+            color.channel.b = m_dataBuf[bufOffset];
             break;
 
         case Encoding::INDEXED_2:
