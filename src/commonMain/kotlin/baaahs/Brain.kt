@@ -80,6 +80,7 @@ class Brain(
         // println("Got a message of type ${type}")
         when (type) {
             Type.BRAIN_PANEL_SHADE -> {
+                val pongData = if (reader.readBoolean()) { reader.readBytes() } else { null }
                 val shaderDesc = reader.readBytes()
 
                 // If possible, use the previously-built Shader stuff:
@@ -99,6 +100,10 @@ class Brain(
                 with(currentRenderTree!!) {
                     read(reader)
                     draw(pixels)
+                }
+
+                if (pongData != null) {
+                    udpSocket.sendUdp(fromAddress, fromPort, PingMessage(pongData, true))
                 }
 
             }
@@ -121,6 +126,13 @@ class Brain(
                 currentRenderTree = null
 
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
+            }
+
+            Type.PING -> {
+                val ping = PingMessage.parse(reader)
+                if (!ping.isPong) {
+                    udpSocket.sendUdp(fromAddress, fromPort, PingMessage(ping.data, isPong = true))
+                }
             }
 
             // Other message types are ignored by Brains.

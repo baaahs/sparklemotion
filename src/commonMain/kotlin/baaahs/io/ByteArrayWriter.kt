@@ -36,6 +36,12 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = i.and(0xff).toByte()
     }
 
+    fun writeLong(l: Long) {
+        growIfNecessary(8)
+        writeInt(l.shr(32).and(0xffffffff).toInt())
+        writeInt(l.and(0xffffffff).toInt())
+    }
+
     fun writeFloat(f: Float) {
         writeInt(f.toBits())
     }

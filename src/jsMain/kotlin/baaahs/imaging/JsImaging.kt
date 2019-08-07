@@ -14,7 +14,8 @@ import org.w3c.dom.ImageBitmap
 import kotlin.browser.document
 
 actual class NativeBitmap actual constructor(override val width: Int, override val height: Int) :
-    CanvasBitmap(createCanvas(width, height)), Bitmap
+    CanvasBitmap(createCanvas(width, height)), Bitmap {
+}
 
 fun createCanvas(width: Int, height: Int) =
     document.create.canvas {
@@ -22,7 +23,7 @@ fun createCanvas(width: Int, height: Int) =
         this.height = "${height}px"
     }
 
-open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
+open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     override val width = canvas.width
     override val height = canvas.height
 
@@ -45,24 +46,26 @@ open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
         ctx.resetTransform()
     }
 
-    override fun subtract(other: Bitmap) {
-        val beforeCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-before-canvas")
-        val afterCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-after-canvas")
-        val beforeCtx = beforeCanvas.getContext("2d") as CanvasRenderingContext2D
-        beforeCtx.resetTransform()
-        beforeCtx.scale(.3, .3)
-        beforeCtx.drawImage(canvas, 0.0, 0.0)
-        val afterCtx = afterCanvas.getContext("2d") as CanvasRenderingContext2D
-        afterCtx.resetTransform()
-        afterCtx.scale(.3, .3)
-        afterCtx.drawImage((other as CanvasBitmap).canvas, 0.0, 0.0)
-
+    private fun apply(other: Bitmap, operation: String) {
+        other as CanvasBitmap
         assertSameSizeAs(other)
 
         ctx.resetTransform()
-        ctx.globalCompositeOperation = "difference"
+        ctx.globalCompositeOperation = operation
         ctx.drawImage(other.canvas, 0.0, 0.0)
         ctx.resetTransform()
+    }
+
+    override fun lighten(other: Bitmap) {
+        apply(other, "lighten")
+    }
+
+    override fun darken(other: Bitmap) {
+        apply(other, "darken")
+    }
+
+    override fun subtract(other: Bitmap) {
+        apply(other, "difference")
     }
 
     override fun toDataUrl(): String = canvas.toDataURL("image/webp")
@@ -100,6 +103,15 @@ open class CanvasBitmap(private val canvas: HTMLCanvasElement) : Bitmap {
                 )
             }
         }
+    }
+
+    override fun clone(): Bitmap {
+        val newCanvas = document.createElement("canvas") as HTMLCanvasElement
+        newCanvas.width = canvas.width
+        newCanvas.height = canvas.height
+        val ctx = newCanvas.getContext("2d") as CanvasRenderingContext2D
+        ctx.drawImage(canvas, 0.0, 0.0)
+        return CanvasBitmap(newCanvas)
     }
 
     private fun assertSameSizeAs(other: Bitmap) {

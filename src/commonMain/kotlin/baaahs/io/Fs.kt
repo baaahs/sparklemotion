@@ -1,7 +1,8 @@
 package baaahs.io
 
 interface Fs {
-    fun createFile(name: String, content: ByteArray, allowOverwrite: Boolean = false)
-    fun createFile(name: String, content: String, allowOverwrite: Boolean = false)
-    fun loadFile(name: String): String?
+    fun listFiles(path: String): List<String>
+    fun loadFile(path: String): String?
+    fun createFile(path: String, content: ByteArray, allowOverwrite: Boolean = false)
+    fun createFile(path: String, content: String, allowOverwrite: Boolean = false)
 }

@@ -21,6 +21,7 @@
 
 class BrainHelloMsg;
 class BrainShaderMsg;
+class PingMsg;
 
 /**
  * A Msg is our base construct in the Pinky/Brain protocol. It is
@@ -44,7 +45,7 @@ public:
         MAPPER_HELLO,      // Mapper -> Pinky
         BRAIN_ID_REQUEST,  // Mapper -> Brain
         BRAIN_MAPPING,
-        PINKY_PONG,
+        PING,
     };
 
     /**
@@ -157,6 +158,16 @@ public:
             m_buf[m_cursor++] = (uint8_t)((ui >>  8) & 0x000000ff);
             m_buf[m_cursor++] = (uint8_t)((ui      ) & 0x000000ff);
             if (m_cursor > m_used) m_used = m_cursor;
+        }
+    }
+
+    void writeBytes(const uint8_t *bytes, size_t len) {
+        if (prepCapacity(4 + len)) {
+            writeInt(len);
+
+            for (int i = 0; i < len; i++) {
+                writeByte(bytes[i]);
+            }
         }
     }
 
@@ -430,6 +441,21 @@ public:
 
     virtual void log(const char* name = "") {
         Msg::log("BrainHelloMsg");
+    }
+};
+
+class PingMsg : public Msg {
+public:
+    PingMsg(const uint8_t* data, size_t dataLen, bool isPong = false) {
+        if (prepCapacity(1 + 4 + dataLen)) {
+            writeByte(static_cast<int>(Msg::Type::PING));
+            writeBoolean(isPong);
+            writeBytes(data, dataLen);
+        }
+    }
+
+    virtual void log(const char* name = "") {
+        Msg::log("PingMsg");
     }
 };
 

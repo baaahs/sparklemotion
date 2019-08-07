@@ -98,7 +98,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                         val fromAddress = UdpProxyAddress(readBytes())
                         val fromPort = readInt()
                         val data = readBytes()
-                        log("UDP: Received ${data.size} bytes from $fromAddress:$fromPort")
+//                        log("UDP: Received ${data.size} bytes from $fromAddress:$fromPort")
                         udpListener!!.receive(fromAddress, fromPort, data)
                     }
                 }
@@ -141,7 +141,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                     writeBytes(toAddress.bytes)
                     writeInt(port)
                     writeBytes(bytes)
-                    log("UDP: Sent ${bytes.size} bytes to $toAddress:$port")
+//                    log("UDP: Sent ${bytes.size} bytes to $toAddress:$port")
                 }.toBytes())
             }
 
@@ -150,7 +150,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                     writeByte('B'.toByte())
                     writeInt(port)
                     writeBytes(bytes)
-                    log("UDP: Broadcast ${bytes.size} bytes to *:$port")
+//                    log("UDP: Broadcast ${bytes.size} bytes to *:$port")
                 }.toBytes())
             }
 

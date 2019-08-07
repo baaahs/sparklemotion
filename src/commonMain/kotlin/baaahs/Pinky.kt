@@ -2,6 +2,8 @@ package baaahs
 
 import baaahs.geom.Vector2
 import baaahs.geom.Vector2F
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MapperEndpoint
 import baaahs.mapper.Storage
@@ -88,7 +90,7 @@ class Pinky(
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
 
-            delay(100)
+            delay(50)
         }
     }
 
@@ -131,6 +133,7 @@ class Pinky(
                 println("Mapper isRunning=${message.isRunning}")
                 mapperIsRunning = message.isRunning
             }
+            is PingMessage -> if (message.isPong) receivedPong(message, fromAddress)
         }
     }
 
@@ -181,7 +184,11 @@ class Pinky(
     }
 
     private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
-        val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+        val pongData = ByteArrayWriter().apply {
+                writeLong(getTimeMillis())
+            }.toBytes()
+
+            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
         udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
 
         networkStats.packetsSent++
@@ -191,6 +198,12 @@ class Pinky(
 
     private fun findModelSurface(surfaceName: String?, brainId: BrainId) =
         surfaceName?.let { model.findModelSurface(surfaceName) } ?: surfaceMappingsByBrain[brainId]
+
+    private fun receivedPong(message: PingMessage, fromAddress: Network.Address) {
+        val originalSentAt = ByteArrayReader(message.data).readLong()
+        val elapsedMs = getTimeMillis() - originalSentAt
+        logger.debug("Shader pong from $fromAddress took ${elapsedMs}ms")
+    }
 
     fun providePanelMapping(brainId: BrainId, surface: Model.Surface) {
         surfaceMappingsByBrain[brainId] = surface

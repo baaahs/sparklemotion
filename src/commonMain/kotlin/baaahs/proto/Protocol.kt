@@ -21,7 +21,7 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_MAPPING,
-    PINKY_PONG;
+    PING;
 
     companion object {
         val values = values()
@@ -37,7 +37,7 @@ fun parse(bytes: ByteArray): Message {
         Type.MAPPER_HELLO -> MapperHelloMessage.parse(reader)
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
-        Type.PINKY_PONG -> PinkyPongMessage.parse(reader)
+        Type.PING -> PingMessage.parse(reader)
     }
 }
 
@@ -57,20 +57,24 @@ class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message
     }
 }
 
-class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer) : Message(Type.BRAIN_PANEL_SHADE) {
+class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val pongData: ByteArray? = null) :
+    Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
         /**
          * Suboptimal parser; on the Brain we'll do better than this.
          */
         fun parse(reader: ByteArrayReader): BrainShaderMessage {
+            val pongData = if (reader.readBoolean()) reader.readBytes() else null
             val shaderDesc = reader.readBytes()
             val shader = Shader.parse(ByteArrayReader(shaderDesc))
             val buffer = shader.readBuffer(reader)
-            return BrainShaderMessage(shader, buffer)
+            return BrainShaderMessage(shader, buffer, pongData)
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
+        writer.writeBoolean(pongData != null)
+        if (pongData != null) writer.writeBytes(pongData)
         writer.writeBytes(shader.descriptorBytes)
         buffer.serialize(writer)
     }
@@ -159,21 +163,18 @@ class BrainMappingMessage(
     }
 }
 
-class PinkyPongMessage(val brainIds: List<String>) : Message(Type.PINKY_PONG) {
+class PingMessage(val data: ByteArray, val isPong: Boolean = false) : Message(Type.PING) {
     companion object {
-        fun parse(reader: ByteArrayReader): PinkyPongMessage {
-            val brainCount = reader.readInt();
-            val brainIds = mutableListOf<String>()
-            for (i in 0 until brainCount) {
-                brainIds.add(reader.readString())
-            }
-            return PinkyPongMessage(brainIds)
+        fun parse(reader: ByteArrayReader): PingMessage {
+            val isPong = reader.readBoolean()
+            val data = reader.readBytes()
+            return PingMessage(data, isPong)
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeInt(brainIds.size)
-        brainIds.forEach { writer.writeString(it) }
+        writer.writeBoolean(isPong)
+        writer.writeBytes(data)
     }
 }
 

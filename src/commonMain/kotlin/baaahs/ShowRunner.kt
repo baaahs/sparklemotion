@@ -170,7 +170,7 @@ class ShowRunner(
         val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
 
         unlockShadersAndGadgets {
-            currentShowRenderer = startingShow.createRenderer(model as SheepModel, this)
+            currentShowRenderer = startingShow.createRenderer(model, this)
         }
 
         logger.info(
