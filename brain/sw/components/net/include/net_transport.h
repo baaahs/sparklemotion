@@ -9,6 +9,7 @@
 #include "brain_common.h"
 #include "eth_interface.h"
 #include "wifi_sta_interface.h"
+#include "wifi_ap_interface.h"
 
 class NetTransport : public NetInterfaceListener {
 public:
@@ -55,6 +56,19 @@ public:
     }
 
     /**
+     * Get the wifi AP interface.
+     *
+     * @return
+     */
+    NetInterface* wifiAp() {
+        if (!m_pWifiAp) {
+            m_pWifiAp = new WifiApInterface();
+            m_pWifiAp->setListener(this);
+        }
+        return m_pWifiAp;
+    }
+
+    /**
      * Disables all interfaces.
      */
     void stopAll();
@@ -87,4 +101,5 @@ private:
 
     EthInterface* m_pEth = nullptr;
     WifiStaInterface* m_pWifiSta = nullptr;
+    WifiApInterface* m_pWifiAp = nullptr;
 };
