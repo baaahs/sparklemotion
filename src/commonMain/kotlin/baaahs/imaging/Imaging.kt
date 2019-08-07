@@ -23,6 +23,10 @@ public interface Bitmap {
 
     fun copyFrom(other: Bitmap)
 
+    fun lighten(other: Bitmap)
+
+    fun darken(other: Bitmap)
+
     fun subtract(other: Bitmap)
 
     fun withData(
@@ -32,6 +36,8 @@ public interface Bitmap {
 
     fun asImage(): Image
     fun toDataUrl(): String
+
+    fun clone(): Bitmap
 }
 
 interface UByteClampedArray {
