@@ -11,6 +11,7 @@ abstract class Model<T : Model.Surface> {
     fun findModelSurface(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
+    /** A named surface in the geometry model. */
     interface Surface {
         val name: String
         val description: String

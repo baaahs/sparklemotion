@@ -14,7 +14,7 @@ object HeartbleatShow : Show("Heartbleat") {
 
         return object : Renderer {
             val beatProvider = showRunner.getBeatProvider()
-            val hearts = showRunner.allSurfaces.filter { it is MappedSurface && it.number == 7 }
+            val hearts = showRunner.allSurfaces.filter { it is IdentifiedSurface && it.number == 7 }
                 .map { showRunner.getShaderBuffer(it, HeartShader()) }
             val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
             val strokeSize = showRunner.getGadget("strokeSize", Slider("Stroke Size", .5f))
@@ -48,7 +48,7 @@ object HeartbleatShow : Show("Heartbleat") {
         }
     }
 
-    val MappedSurface.number: Int
+    val IdentifiedSurface.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 
 }

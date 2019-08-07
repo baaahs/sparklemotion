@@ -71,7 +71,7 @@ object LifeyShow : Show("Lifey") {
 
                 shaderBuffers.forEach { (surface, buffer) ->
                     buffer.color =
-                        if (surface is MappedSurface
+                        if (surface is IdentifiedSurface
                             && selectedPanels.contains(surface.modelSurface)) Color.WHITE else Color.BLACK
                 }
             }
