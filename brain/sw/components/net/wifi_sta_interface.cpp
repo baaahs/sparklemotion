@@ -72,15 +72,29 @@ bool WifiStaInterface::init() {
 
 void WifiStaInterface::enableChanged() {
     if (m_isEnabled) {
-        // Presume that the credentials have been set
-
-        // TODO: Use a shared config I guess
-        auto result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_mode(WIFI_MODE_STA));
+        // Get the existing mode and add STA to it if necessary
+        wifi_mode_t mode;
+        auto result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_get_mode(&mode));
         if (result != ESP_OK) {
             m_isEnabled = false;
             return;
         }
 
+        if (mode != WIFI_MODE_STA && mode != WIFI_MODE_APSTA) {
+            if (mode == WIFI_MODE_AP) {
+                mode = WIFI_MODE_APSTA;
+            } else {
+                mode = WIFI_MODE_STA;
+            }
+
+            result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_mode(mode));
+            if (result != ESP_OK) {
+                m_isEnabled = false;
+                return;
+            }
+        }
+
+        // Presume that the credentials have been set
         result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(ESP_IF_WIFI_STA, &m_wifiConfig));
         if (result != ESP_OK) {
             m_isEnabled = false;
@@ -123,6 +137,7 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
                 tellListenerStart();
 
                 // Attempt to connect
+                m_numFailedConnects = 0;
                 esp_wifi_connect();
                 break;
 
@@ -133,17 +148,21 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
             case WIFI_EVENT_STA_DISCONNECTED:
                 tellListenerLinkDown();
 
-                // TODO: Add retry logic here. Record number of retries (if we want) but just call wifi connect again
-//                if (s_retry_num < MAXIMUM_RETRY) {
-//                    esp_wifi_connect();
-//                    xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-//                    s_retry_num++;
-//                    ESP_LOGI(TAG, "retry to connect to the AP");
-//                }
-//                ESP_LOGI(TAG,"connect to the AP fail");
+                m_numFailedConnects++;
+                // TODO: Add a maximum number of retries.
+                // The connect method itself should have take some time so it's "okay" to
+                // simply reconnect immediately. However, after some max number of retries
+                // we should probably backoff and add a non-trivial (30 seconds?) delay
+                // before we try to connect again so that we aren't always hammering the
+                // connect process. I think it will slow down a board more than we would like.
+
+                ESP_LOGE(TAG, "Failed to connect to wifi ssid '%s', Failure #%d. Retrying.", m_wifiConfig.sta.ssid, m_numFailedConnects);
+                esp_wifi_connect();
                 break;
 
             case WIFI_EVENT_STA_CONNECTED:
+                m_numFailedConnects = 0;
+
                 tellListenerIntLinkUp();
                 break;
 

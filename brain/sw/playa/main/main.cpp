@@ -13,7 +13,6 @@
 #include "driver/gpio.h"
 #include "driver/periph_ctrl.h"
 
-#include "task_net.h"
 #include "httpd/task_httpd.h"
 
 #include "brain_common.h"
@@ -64,21 +63,26 @@ extern "C" void app_main()
 //    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 //
 //    esp_log_level_set("# httpd", ESP_LOG_DEBUG);
-    esp_log_level_set(TAG_NET, ESP_LOG_INFO);
+//    esp_log_level_set(TAG_NET, ESP_LOG_INFO);
 //    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shader", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shdtre", ESP_LOG_DEBUG);
 //    esp_log_level_set("#    ui", ESP_LOG_DEBUG);
+
+//    esp_log_level_set(TAG_COMMON, ESP_LOG_DEBUG);
 
 
     // Configure the default event loop before anything else happens
     ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetTaskName(nullptr));
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
+    // Need SPIFFS
+    ESP_ERROR_CHECK(brain_init_spiffs());
+
     // Start the various tasks
     // TODO: These network related things should happen AFTER system configuration from SPIFFS
     // task_net_create();
-    task_httpd_create();
+    // task_httpd_create();
 
     // Start the brain task
     brain.start();
