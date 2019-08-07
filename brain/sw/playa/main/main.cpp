@@ -63,7 +63,7 @@ extern "C" void app_main()
 //    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 //
 //    esp_log_level_set("# httpd", ESP_LOG_DEBUG);
-//    esp_log_level_set(TAG_NET, ESP_LOG_INFO);
+    esp_log_level_set(TAG_NET, ESP_LOG_DEBUG);
 //    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shader", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shdtre", ESP_LOG_DEBUG);

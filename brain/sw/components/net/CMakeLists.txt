@@ -2,6 +2,7 @@ set(COMPONENT_SRCS
         "net_transport.cpp"
         "eth_interface.cpp"
         "wifi_sta_interface.cpp"
+        "wifi_ap_interface.cpp"
         "ip_port.cpp"
         "msg.cpp"
         "msg_handler.cpp"
