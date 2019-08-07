@@ -1,14 +1,11 @@
 package baaahs.shows
 
-import baaahs.Color
-import baaahs.SheepModel
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.SolidShader
 
 object SolidColorShow : Show("Solid Color") {
-    override fun createRenderer(sheepModel: SheepModel, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
 
         val shader = SolidShader()
@@ -16,7 +13,7 @@ object SolidColorShow : Show("Solid Color") {
             showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
-        val eyes = sheepModel.eyes.map { eye -> showRunner.getMovingHeadBuffer(eye) }
+        val eyes = model.movingHeads.map { eye -> showRunner.getMovingHeadBuffer(eye) }
 
         return object : Renderer {
             var priorColor = colorPicker.color
