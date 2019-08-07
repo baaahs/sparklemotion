@@ -150,8 +150,8 @@ class Pinky(
                 Vector2F(0f, 0f), pixelCount, pixelVertices
             )
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
-            MappedSurface(modelSurface, pixelCount)
-        } ?: UnmappedSurface(brainId)
+            IdentifiedSurface(modelSurface, pixelCount)
+        } ?: AnonymousSurface(brainId)
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {

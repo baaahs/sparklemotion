@@ -53,8 +53,8 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is MappedSurface }
-        expect(panel17.name) { (show.shaderBuffers.keys.only() as MappedSurface).name }
+        expect(true) { show.shaderBuffers.keys.only() is IdentifiedSurface }
+        expect(panel17.name) { (show.shaderBuffers.keys.only() as IdentifiedSurface).name }
         expect(1) { pinkyLink.packetsToSend.size }
     }
 
@@ -82,7 +82,7 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is MappedSurface }
+        expect(true) { show.shaderBuffers.keys.only() is IdentifiedSurface }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -90,8 +90,8 @@ class PinkyTest {
         pinky.drawNextFrame()
         expect(1) { show.shaderBuffers.size }
         val surface = show.shaderBuffers.keys.only()
-        expect(true) { surface is MappedSurface }
-        expect(panel17.name) { (surface as MappedSurface).name }
+        expect(true) { surface is IdentifiedSurface }
+        expect(panel17.name) { (surface as IdentifiedSurface).name }
     }
 
     @Test
@@ -118,7 +118,7 @@ class PinkyTest {
         pinky.drawNextFrame()
 
         expect(1) { show.shaderBuffers.size }
-        expect(true) { (show.shaderBuffers.keys.only() as MappedSurface).modelSurface == panel17 }
+        expect(true) { (show.shaderBuffers.keys.only() as IdentifiedSurface).modelSurface == panel17 }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -126,8 +126,8 @@ class PinkyTest {
         pinky.drawNextFrame()
         expect(1) { show.shaderBuffers.size }
         val surface = show.shaderBuffers.keys.only()
-        expect(true) { surface is MappedSurface }
-        expect(panel17.name) { (surface as MappedSurface).name }
+        expect(true) { surface is IdentifiedSurface }
+        expect(panel17.name) { (surface as IdentifiedSurface).name }
     }
 
     class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {

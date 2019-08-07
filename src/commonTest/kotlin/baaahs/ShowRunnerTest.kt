@@ -23,10 +23,10 @@ class ShowRunnerTest {
     private val testShow1 = TestShow1()
     private val surface1Messages = mutableListOf<Shader.Buffer>()
     private val surface1Receiver =
-        SurfaceReceiver(MappedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
+        SurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
     private val surface2Messages = mutableListOf<Shader.Buffer>()
     private val surface2Receiver =
-        SurfaceReceiver(MappedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
+        SurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel()
