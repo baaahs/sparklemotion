@@ -82,10 +82,14 @@ NetTransport::stopAll() {
     if (m_pWifiSta) {
         m_pWifiSta->setEnabled(false);
     }
+    if (m_pWifiAp) {
+        m_pWifiAp->setEnabled(false);
+    }
 }
 
 void
 NetTransport::reconfigure() {
+    ESP_LOGI(TAG, "Reconfiguring network");
     stopAll();
 
     eth();
@@ -94,4 +98,7 @@ NetTransport::reconfigure() {
     wifiSta();
     m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
     m_pWifiSta->setEnabled(true);
+
+    wifiAp();
+    m_pWifiAp->setEnabled(true);
 }
