@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.geom.Vector2F
+
 /**
  * Represents a surface whose lighting can be controlled.
  *
@@ -14,7 +16,11 @@ interface Surface {
 /**
  * A surface which has been associated with a specific [Model.Surface].
  */
-class IdentifiedSurface(val modelSurface: Model.Surface, override val pixelCount: Int) : Surface {
+class IdentifiedSurface(
+    val modelSurface: Model.Surface,
+    override val pixelCount: Int,
+    val pixelVertices: List<Vector2F>? = emptyList()
+) : Surface {
     val name: String = modelSurface.name
     override fun describe(): String = modelSurface.description
 
@@ -40,9 +46,9 @@ class IdentifiedSurface(val modelSurface: Model.Surface, override val pixelCount
  * A surface whose identity isn't known.
  */
 class AnonymousSurface(val brainId: BrainId) : Surface {
-    override val pixelCount = SparkleMotion.PIXEL_COUNT_UNKNOWN
+    override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
-    override fun describe(): String = "Unmapped surface at $brainId"
+    override fun describe(): String = "Anonymous surface at $brainId"
     override fun equals(other: Any?): Boolean = other is AnonymousSurface && brainId.equals(other.brainId)
     override fun hashCode(): Int = brainId.hashCode()
 }

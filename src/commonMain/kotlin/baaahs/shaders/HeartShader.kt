@@ -84,6 +84,6 @@ class HeartShader : Shader<HeartShader.Buffer>(ShaderId.HEART) {
             }
         }
 
-        private val pixelVertices = (surface as? Brain.MappedSurface)?.pixelVertices
+        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
     }
 }

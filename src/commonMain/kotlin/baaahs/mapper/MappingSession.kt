@@ -21,12 +21,13 @@ data class MappingSession(
     @Serializable
     data class SurfaceData(
         val brainId: String,
-        val panelName: String,
+        val panelName: String, // TODO: rename to surfaceName
         val pixels: List<PixelData?>,
         val deltaImage: String?,
         val screenAreaInSqPixels: Float?,
         val screenAngle: Float?
     ) {
+        val surfaceName: String get() = panelName
 
         @Serializable
         data class PixelData(

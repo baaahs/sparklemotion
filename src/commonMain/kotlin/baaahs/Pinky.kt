@@ -6,6 +6,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MapperEndpoint
+import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -25,8 +26,10 @@ class Pinky(
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
+    private val storage = Storage(fs)
+    private val mappingResults = storage.loadMappingData(model)
+
     private val link = FragmentingUdpLink(network.link())
-    private val udpSocket = link.listenUdp(Ports.PINKY, this)
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
     private val beatProvider = PinkyBeatProvider(120.0f)
@@ -43,8 +46,9 @@ class Pinky(
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     private val showRunner =
         ShowRunner(model, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
-    private val pixelsBySurface = mutableMapOf<Model.Surface, Array<Vector2>>()
-    private val surfaceMappingsByBrain = mutableMapOf<BrainId, Model.Surface>()
+
+    private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
+    private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector2F>>()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -52,7 +56,8 @@ class Pinky(
     val address: Network.Address get() = link.myAddress
     private val networkStats = NetworkStats()
 
-    private val storage = Storage(fs)
+    // This needs to go last-ish, otherwise we start getting network traffic too early.
+    private val udpSocket = link.listenUdp(Ports.PINKY, this)
 
     init {
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
@@ -143,17 +148,18 @@ class Pinky(
         surfaceName: String?
     ) {
         println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val surface = findModelSurface(surfaceName, brainId)?.let { modelSurface ->
-            val pixelLocations = pixelsBySurface[modelSurface]
-            val pixelCount = pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
-            val pixelVertices = pixelLocations?.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
-                ?: emptyList()
+        val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
+
+        val surface = dataFor?.let {
+            val pixelVertices = dataFor.pixelLocations
+            val pixelCount = pixelVertices?.size ?: SparkleMotion.MAX_PIXEL_COUNT
+
             val mappingMsg = BrainMappingMessage(
-                brainId, modelSurface.name, null, Vector2F(0f, 0f),
-                Vector2F(0f, 0f), pixelCount, pixelVertices
+                brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
+                Vector2F(0f, 0f), pixelCount, pixelVertices ?: emptyList()
             )
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
-            IdentifiedSurface(modelSurface, pixelCount)
+            IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
         } ?: AnonymousSurface(brainId)
 
         val priorBrainInfo = brainInfos[brainId]
@@ -196,8 +202,14 @@ class Pinky(
     }
 
 
-    private fun findModelSurface(surfaceName: String?, brainId: BrainId) =
-        surfaceName?.let { model.findModelSurface(surfaceName) } ?: surfaceMappingsByBrain[brainId]
+    private fun findMappingInfo_CHEAT(surfaceName: String?, brainId: BrainId): MappingResults.Info? {
+        val modelSurface = surfaceName?.let { model.findModelSurface(surfaceName) } ?: brainToSurfaceMap_CHEAT[brainId]
+        return if (modelSurface != null) {
+            MappingResults.Info(modelSurface, surfaceToPixelLocationMap_CHEAT[modelSurface])
+        } else {
+            null
+        }
+    }
 
     private fun receivedPong(message: PingMessage, fromAddress: Network.Address) {
         val originalSentAt = ByteArrayReader(message.data).readLong()
@@ -205,12 +217,12 @@ class Pinky(
         logger.debug("Shader pong from $fromAddress took ${elapsedMs}ms")
     }
 
-    fun providePanelMapping(brainId: BrainId, surface: Model.Surface) {
-        surfaceMappingsByBrain[brainId] = surface
+    fun providePanelMapping_CHEAT(brainId: BrainId, surface: Model.Surface) {
+        brainToSurfaceMap_CHEAT[brainId] = surface
     }
 
-    fun providePixelMapping(surface: Model.Surface, pixelLocations: Array<Vector2>) {
-        pixelsBySurface[surface] = pixelLocations
+    fun providePixelMapping_CHEAT(surface: Model.Surface, pixelLocations: List<Vector2F>) {
+        surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 
     interface BeatProvider {

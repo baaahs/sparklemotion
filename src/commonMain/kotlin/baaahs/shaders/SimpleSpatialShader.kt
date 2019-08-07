@@ -45,7 +45,7 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
-        private val pixelVertices = (surface as? Brain.MappedSurface)?.pixelVertices
+        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
             if (pixelVertices == null || pixelIndex >= pixelVertices.size) return Color.BLACK
