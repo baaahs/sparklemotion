@@ -45,7 +45,7 @@ class PinkyTest {
 
     @Test
     fun whenUnmappedBrainKnownToPinkyComesOnline_showShouldBeNotifiedAndBrainShouldReceiveMapping() {
-        pinky.providePanelMapping(BrainId("brain1"), panel17)
+        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
@@ -60,7 +60,7 @@ class PinkyTest {
 
     @Test
     fun whenMappedBrainComesOnline_showShouldBeNotified() {
-        pinky.providePanelMapping(BrainId("brain1"), panel17)
+        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -73,7 +73,7 @@ class PinkyTest {
 
     @Test
     fun asBrainsComeOnlineAndAreMapped_showShouldBeNotified() {
-        pinky.providePanelMapping(BrainId("brain1"), panel17)
+        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()

@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.geom.Vector2F
 import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -17,7 +16,7 @@ class Brain(
     private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAtMs: Long = 0
     private var surfaceName : String? = null
-    private var surface : Surface = UnmappedSurface()
+    private var surface : Surface = AnonymousSurface(BrainId(id))
         set(value) { field = value; display.surface = value }
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
@@ -39,7 +38,7 @@ class Brain(
     private suspend fun reset() {
         lastInstructionsReceivedAtMs = 0
         surfaceName = null
-        surface = UnmappedSurface()
+        surface = AnonymousSurface(BrainId(id))
         currentShaderDesc = null
         currentRenderTree = null
 
@@ -116,9 +115,10 @@ class Brain(
                 val message = BrainMappingMessage.parse(reader)
                 surfaceName = message.surfaceName
                 surface = if (message.surfaceName != null) {
-                    MappedSurface(message.pixelCount, message.pixelVertices, message.surfaceName)
+                    val fakeModelSurface = FakeModelSurface(message.surfaceName)
+                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelVertices)
                 } else {
-                    UnmappedSurface()
+                    AnonymousSurface(BrainId(id))
                 }
 
                 // next frame we'll need to recreate everything...
@@ -154,17 +154,5 @@ class Brain(
         }
     }
 
-    inner class UnmappedSurface : Surface {
-        override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
-
-        override fun describe(): String = "unmapped"
-    }
-
-    inner class MappedSurface(
-        override val pixelCount: Int,
-        var pixelVertices: List<Vector2F>? = null,
-        private val name: String
-    ) : Surface {
-        override fun describe(): String = name
-    }
+    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface
 }
