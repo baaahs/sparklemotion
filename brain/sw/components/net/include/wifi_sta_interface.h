@@ -34,4 +34,5 @@ protected:
 
 private:
     wifi_config_t m_wifiConfig;
+    int m_numFailedConnects;
 };

@@ -92,7 +92,6 @@ NetTransport::reconfigure() {
     m_pEth->setEnabled(true);
 
     wifiSta();
-    m_pWifiSta->setCredentials(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PASS);
-    m_pWifiSta->setCredentials("Haus", "GundamWing");
+    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
     m_pWifiSta->setEnabled(true);
 }

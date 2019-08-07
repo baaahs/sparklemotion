@@ -303,6 +303,7 @@ static void connect_handler(void* arg, esp_event_base_t event_base,
 */
 
 /* Function to initialize SPIFFS */
+/*
 static esp_err_t init_spiffs(void)
 {
     ESP_LOGI(TAG, "Initializing SPIFFS");
@@ -310,7 +311,7 @@ static esp_err_t init_spiffs(void)
     esp_vfs_spiffs_conf_t conf = {
             .base_path = "/spiffs",
             .partition_label = NULL,
-            .max_files = 5,   // This decides the maximum number of files that can be created on the storage
+            .max_files = 5,   // Maximum number of simultaneously open files
             .format_if_mount_failed = true
     };
 
@@ -336,6 +337,7 @@ static esp_err_t init_spiffs(void)
     ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     return ESP_OK;
 }
+ */
 
 
 static void task_httpd_main(void* pvParameters) {
@@ -345,7 +347,8 @@ static void task_httpd_main(void* pvParameters) {
 
     ESP_LOGW(TAG, "Task name in main: %s", pcTaskGetTaskName(NULL));
 
-    ESP_ERROR_CHECK(init_spiffs());
+    // Moved the init_spiffs call to main.cpp
+    // ESP_ERROR_CHECK(init_spiffs());
     ESP_ERROR_CHECK(httpServer.start());
 
     // Task actions
