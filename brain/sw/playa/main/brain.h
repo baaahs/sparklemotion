@@ -42,6 +42,8 @@ private:
 
     BrainUI m_brainUI;
 
+    void startSecondStageBoot();
+
     void msgBrainPanelShade(Msg* pMsg);
     void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);

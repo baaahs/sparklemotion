@@ -126,10 +126,17 @@ Brain::sendHello(const IpPort &port) {
 }
 
 void
-Brain::start()
-{
+Brain::start() {
     gSysMon.start();
     m_brainUI.start();
+
+    // TODO: Check with the UI to see if the user is holding down a button so that we enter config mode instead of regular boot
+
+    startSecondStageBoot();
+}
+
+void Brain::startSecondStageBoot() {
+    GlobalConfig.load();
 
     m_netTransport.start(DefaultBrainTasks.net);
     m_netTransport.reconfigure();

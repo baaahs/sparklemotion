@@ -4,6 +4,7 @@
 
 #pragma once
 
-#define TAG_NET   "#   net"
-#define TAG_MAIN  "#  main"
-#define TAG_BRAIN "#  main"
+#define TAG_NET     "#   net"
+#define TAG_MAIN    "#  main"
+#define TAG_BRAIN   "#  main"
+#define TAG_COMMON  "#common"

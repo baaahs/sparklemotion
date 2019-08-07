@@ -11,6 +11,16 @@
 
 #include "brain_tasks.h"
 #include "brain_tags.h"
+#include "brain_config.h"
 
-#define WIFI_DEFAULT_SSID "sparklemotion"
-#define WIFI_DEFAULT_PASS "sparklemotion"
+#define DEFAULT_STA_SSID "sparklemotion"
+#define DEFAULT_STA_PASS "sparklemotion"
+
+/**
+ * If using the configuration or the web server or anything else that
+ * needs files from SPIFFS this should be called first. Likely you want
+ * this to be called right after initializing logging in app_main()
+ *
+ * @return
+ */
+extern esp_err_t brain_init_spiffs();
