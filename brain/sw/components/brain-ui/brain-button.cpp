@@ -21,10 +21,10 @@ void glue_longPressTimer(TimerHandle_t xTimer) {
 }
 
 BrainButton::BrainButton(gpio_num_t gpioNum, bool pullUp, BrainButtonListener &listener) :
-    m_gpioNum(gpioNum),
-    m_listener(listener),
-    m_pullUp(pullUp),
-    m_Down(false)
+        m_gpioNum(gpioNum),
+        m_listener(listener),
+        m_pullUp(pullUp),
+        m_isDown(false)
 {
 }
 
@@ -53,11 +53,11 @@ BrainButton::start() {
             this,    // A timer ID equal to us
             glue_longPressTimer);
 
-    m_Down = readDown();
+    m_isDown = readDown();
     m_ChangeAt = esp_timer_get_time();
 
     gpio_isr_handler_add(m_gpioNum, glue_isr, this);
-    ESP_LOGI(TAG, "Button (%d) configured and m_Down=%s", m_gpioNum, m_Down ? "true" : "false");
+    ESP_LOGI(TAG, "Button (%d) configured and m_isDown=%s", m_gpioNum, m_isDown ? "true" : "false");
 }
 
 bool
@@ -71,12 +71,14 @@ BrainButton::readDown() {
 
 void BrainButton::_isr() {
     bool nextState = readDown();
-    if (nextState == m_Down) {
+    if (nextState == m_isDown) {
+        // It's the same state, so ignore this edge - which is odd that this would happen,
+        // but okay.
         return;
     }
 
     // State change!
-    m_Down = nextState;
+    m_isDown = nextState;
     m_ChangeAt = esp_timer_get_time();
 
     BaseType_t xHigherPriorityTaskWoken;
@@ -89,7 +91,8 @@ void BrainButton::_isr() {
 }
 
 void BrainButton::_callListener() {
-    if (m_Down) {
+    if (m_isDown) {
+        // Button went down
         if (m_longPressEnabled) {
             m_longPressPending = true;
             // Start the timer. The period is set when the timer was created. The 0 here
@@ -100,6 +103,7 @@ void BrainButton::_callListener() {
             m_listener.buttonDown(*this, false);
         }
     } else {
+        // Button came up
         if (m_longPressPending) {
             // Make sure the timer doesn't fire!
             m_longPressPending = false;
@@ -115,7 +119,7 @@ void BrainButton::_callListener() {
 void BrainButton::_longPressTimer() {
     // Oh hey we expired!
     m_longPressPending = false;
-    if (m_Down) {
+    if (m_isDown) {
         // Only send this if we are _still_ actually down
         m_listener.buttonDown(*this, true);
     }

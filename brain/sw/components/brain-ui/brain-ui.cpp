@@ -9,13 +9,15 @@
 ESP_EVENT_DEFINE_BASE(BRAIN_UI_BASE);
 
 BrainUI::BrainUI() :
-    leftEye(LEDC_CHANNEL_1, 16), // Left Eye
+    leftEye(LEDC_CHANNEL_1, 32), // Left Eye, 16 for Rev D/E, 32 For tester
     rightEye(LEDC_CHANNEL_0, 4), // Right Eye
-    rgbR(LEDC_CHANNEL_2, 12), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
+//    rgbR(LEDC_CHANNEL_2, 12), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
+    rgbR(LEDC_CHANNEL_2, 34), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
     rgbG(LEDC_CHANNEL_3, 33),
     rgbB(LEDC_CHANNEL_4, 14),
 
-    btnLeft(GPIO_NUM_0, true, *this),
+//    btnLeft(GPIO_NUM_0, true, *this),
+    btnLeft(GPIO_NUM_39, false, *this), // 0 for Rev D, 32 for tester, pullUp true for Rev D, false for Tester
     btnRight(GPIO_NUM_2, false, *this) // Rev D this is IO2, Rev E is IO34, both are low default
 {
 

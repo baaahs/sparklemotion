@@ -37,7 +37,7 @@ private:
     BrainButtonListener& m_listener;
 
     bool m_pullUp;
-    bool m_Down;
+    bool m_isDown;
     uint64_t m_ChangeAt;
 
     bool m_longPressEnabled = true;

@@ -13,7 +13,10 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 
-#define DEFAULT_PIXEL_COUNT 128
+// 960 is 16 * 60. The power supply in the tester boxes is 10A which can support
+// 16.6 strands, but for integer-ness we call that 16 and then say that is the
+// limit of the tester and only ever address that many pixels.
+#define DEFAULT_PIXEL_COUNT 960
 
 class Brain : public MsgHandler {
 public:
