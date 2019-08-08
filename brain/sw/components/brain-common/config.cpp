@@ -4,12 +4,8 @@
 
 #include "brain_common.h"
 
-#include <stdio.h>
 #include <string.h>
-#include <sys/unistd.h>
 #include <sys/stat.h>
-
-#include "jsmn.h"
 
 #define TAG TAG_COMMON
 
@@ -20,8 +16,7 @@ BrainConfig::BrainConfig() {
     setStaPass(DEFAULT_STA_PASS);
 }
 
-esp_err_t
-BrainConfig::load(const char* filename) {
+esp_err_t BrainConfig::load(const char* filename) {
     ESP_LOGI(TAG, "Loading config from %s", filename);
 
     struct stat st;
@@ -58,7 +53,7 @@ BrainConfig::load(const char* filename) {
 
     // Parse the data
 //    ESP_LOGD(TAG, "Parsing config content '%s'", contents);
-    auto ret = parseConfigFrom(contents, st.st_size);
+    auto ret = parseFrom(contents, st.st_size);
 
     free(contents);
     return ret;
@@ -66,8 +61,7 @@ BrainConfig::load(const char* filename) {
 
 #define TOKEN_COUNT 200
 
-esp_err_t
-BrainConfig::parseConfigFrom(char* szBuf, size_t len) {
+esp_err_t BrainConfig::parseFrom(char* szBuf, size_t len) {
     if (!szBuf) {
         return ESP_FAIL;
     }
@@ -127,8 +121,26 @@ BrainConfig::parseConfigFrom(char* szBuf, size_t len) {
     return ESP_OK;
 }
 
-void
-BrainConfig::handleValue(char *szBuf, jsmntok_t *pTokens, int ix) {
+esp_err_t BrainConfig::printTo(char* szBuf, size_t len) {
+    if (!szBuf) {
+        return ESP_ERR_NO_MEM;
+    }
+
+    if ( snprintf(szBuf, len,
+        "{"
+            "\"" KEY_STA_SSID "\":\"%s\","
+            "\"" KEY_STA_PASS "\":\"%s\""
+        "}",
+        m_staSsid,
+        m_staPass
+    ) < 0) {
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
+}
+
+void BrainConfig::handleValue(char *szBuf, jsmntok_t *pTokens, int ix) {
     // The key token is always ix-1
     jsmntok_t* pKey = pTokens + (ix-1);
     jsmntok_t* pVal = pTokens + ix;
@@ -158,9 +170,47 @@ BrainConfig::handleValue(char *szBuf, jsmntok_t *pTokens, int ix) {
 
 }
 
-esp_err_t
-BrainConfig::save(const char* filename) {
-    return ESP_OK;
+#define SAVE_BUF_SIZE 1024
+
+esp_err_t BrainConfig::save(const char* filename) {
+    ESP_LOGI(TAG, "Saving config to %s", filename);
+
+    // Get the config into a buffer
+    char* szBuf = (char*)malloc(SAVE_BUF_SIZE);
+    if (!szBuf) {
+        return ESP_ERR_NO_MEM;
+    }
+
+    esp_err_t result = ESP_OK;
+
+    result = printTo(szBuf, SAVE_BUF_SIZE);
+    if (result != ESP_OK) {
+        ESP_LOGE(TAG, "Printing the current config failed %d", result);
+        free(szBuf);
+        return result;
+    }
+
+    ESP_LOGD(TAG, "Saving config data: %s", szBuf);
+
+    FILE* f = fopen(filename, "w");
+    if (!f) {
+        ESP_LOGE(TAG, "Could not open config file %s", filename);
+        free(szBuf);
+        return ESP_FAIL;
+    }
+
+    auto toWrite = strlen(szBuf);
+    auto recordsWritten = fwrite(szBuf, toWrite, 1, f);
+
+    if (recordsWritten != 1) {
+        ESP_LOGE(TAG, "ERROR Writing to the config file: ferror = %d", ferror(f));
+        result = ESP_FAIL;
+    }
+
+    fclose(f);
+
+    free(szBuf);
+    return result;
 }
 
 void BrainConfig::setStaSsid(const char* val) {
@@ -175,8 +225,7 @@ void BrainConfig::setStaPass(const char* val) {
     setString(m_staPass, STA_PASS_MAX_LEN, val);
 }
 
-void
-BrainConfig::setString(char* szBuf, size_t size, const char* val) {
+void BrainConfig::setString(char* szBuf, size_t size, const char* val) {
     if (!szBuf) return;
 
     if (!val) {
@@ -185,4 +234,20 @@ BrainConfig::setString(char* szBuf, size_t size, const char* val) {
     }
 
     strncpy(szBuf, val, size);
+}
+
+uint8_t* BrainConfig::mac() {
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_efuse_mac_get_default(m_mac));
+
+    return m_mac;
+}
+
+const char* BrainConfig::macStr() {
+    if (!m_mac[0]) {
+        // Aack, we don't have the mac yet, so fetch it
+        mac();
+        sprintf(m_macStr, MACSTR, MAC2STR(m_mac));
+    } // else just give them what we already constructed
+
+    return m_macStr;
 }

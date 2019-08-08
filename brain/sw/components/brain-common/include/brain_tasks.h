@@ -13,9 +13,19 @@
  * these structures.
  */
 struct TaskDef {
+    /**
+     * No task should ever be defined with a priority higher than this. It's
+     * an arbitrary number but serves as documentation for the system more
+     * than anything else. We don't want it to be too large because of the
+     * memory allocation thing. Also, we only need a couple of priorities
+     * anyway.
+     */
+    static const UBaseType_t MAX_PRIORITY = 10;
+
     const char* name;
     uint32_t stack;
     UBaseType_t priority;
+    BaseType_t  coreId; // Generally should be tskNO_AFFINITY;
 
     BaseType_t createTask(TaskFunction_t fn, void * const parameters, TaskHandle_t * const taskHandle);
 };
@@ -50,6 +60,7 @@ struct BrainTasks {
             .name = "net",
             .stack = 10240,
             .priority = 0,
+            .coreId = tskNO_AFFINITY,
     };
 
     /**
@@ -60,6 +71,7 @@ struct BrainTasks {
             .name = "netInput",
             .stack = 10240,
             .priority = 2,
+            .coreId = tskNO_AFFINITY,
     };
 
     /**
@@ -70,6 +82,31 @@ struct BrainTasks {
             .name = "netOutput",
             .stack = 10240,
             .priority = 1,
+            .coreId = tskNO_AFFINITY,
+    };
+
+    /**
+     * The httpd server which is really only used for OTA configuration. The
+     * default priority is tskIDLE_PRIORITY+5 which seems really way to high.
+     * Default stack is 4096 with no core affinity.
+     */
+    TaskDef httpd = {
+            .name = "httpd",
+            .stack = 10240,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
+    };
+
+    /**
+     * SysMon hangs out in the background and periodically prints interesting
+     * data to the console like memory usage. It doesn't actually need much
+     * of a stack other than that it's going to do a lot printf stuff.
+     */
+    TaskDef sysmon = {
+            .name = "sysmon",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
     };
 };
 
