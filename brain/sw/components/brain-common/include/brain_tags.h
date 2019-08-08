@@ -8,3 +8,4 @@
 #define TAG_MAIN    "#  main"
 #define TAG_BRAIN   "#  main"
 #define TAG_COMMON  "#common"
+#define TAG_HTTPD   "# httpd"

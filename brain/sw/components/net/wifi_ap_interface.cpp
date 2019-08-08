@@ -77,8 +77,7 @@ void WifiApInterface::enableChanged() {
         // to make something like the IP range a configurable value in the future. For now
         // don't worry about it.
         m_wifiConfig = {};
-        uint8_t mac[6];
-        esp_wifi_get_mac(ESP_IF_WIFI_STA, mac);
+        uint8_t* mac = GlobalConfig.mac();
         snprintf((char*)m_wifiConfig.ap.ssid, sizeof(m_wifiConfig.ap.ssid)-1, "brain_%2x%2x%2x", mac[3], mac[4], mac[5]);
         m_wifiConfig.ap.ssid_len = strlen((char*)m_wifiConfig.ap.ssid);
         m_wifiConfig.ap.authmode = WIFI_AUTH_OPEN;

@@ -24,3 +24,15 @@
  * @return
  */
 extern esp_err_t brain_init_spiffs();
+
+/**
+ * Restart the whole show, optionally after a delay. It makes sense for
+ * a component which has received a restart request from the outside
+ * world to want to acknowledge that request and THEN restart the system.
+ * Thus this function.
+ *
+ * If you pass 0 this will immediately call esp_restart()
+ *
+ * @param delayMillis
+ */
+extern void brain_restart(uint32_t delayMillis);

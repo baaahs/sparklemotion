@@ -41,3 +41,34 @@ esp_err_t brain_init_spiffs() {
     ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     return ESP_OK;
 }
+
+static void restart_task(void* pParam) {
+    uint32_t millis = (uint32_t)pParam;
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    auto delayTime = pdMS_TO_TICKS(millis);
+
+    ESP_LOGE(TAG, "Delaying restart by %d ms", millis);
+    vTaskDelayUntil(&xLastWakeTime, delayTime);
+
+    ESP_LOGE(TAG, "Time is up! Restart!!!!");
+    esp_restart();
+
+    // Unnecessary but for completeness...
+    vTaskDelete(nullptr);
+}
+
+void brain_restart(uint32_t delayMillis) {
+    if (!delayMillis) {
+        ESP_LOGE(TAG, "Restarting without delay");
+        esp_restart();
+        return; // yeah right....
+    }
+
+    // If the task creation fails just restart right away. Oh well we tried!
+    auto result = xTaskCreate(restart_task, "restart", 4096, (void*)delayMillis, TaskDef::MAX_PRIORITY, nullptr);
+    if (result != pdPASS) {
+        ESP_LOGE(TAG, "Delayed restart task creation failed. Restarting immediately");
+        esp_restart();
+    }
+}

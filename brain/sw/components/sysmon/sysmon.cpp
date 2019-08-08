@@ -9,6 +9,7 @@
 
 #include "esp_log.h"
 #include "esp_heap_caps.h"
+#include "../../../../../../../Users/tseago/esp/esp-idf/components/app_update/include/esp_ota_ops.h"
 #include <string.h>
 #include <inttypes.h>
 
@@ -16,19 +17,18 @@
 
 SysMon gSysMon;
 
-static void task_sysmon(void* pvParameters) {
+static void glue_task(void* pvParameters) {
     ((SysMon*)pvParameters)->_task();
 }
 
 
 void
-SysMon::start() {
+SysMon::start(TaskDef taskDef) {
     for(uint8_t i = 0; i < TIMING_LAST; i++) {
         m_nextHistory[i] = m_firstHistory[i] = &(m_history[i][0]);
     }
 
-    auto tcResult  = xTaskCreate(task_sysmon, "sysmon", TASK_SYSMON_STACK_SIZE,
-                             (void*)this, TASK_SYSMON_PRIORITY, nullptr);
+    auto tcResult = taskDef.createTask(glue_task, this, nullptr);
 
     if (tcResult != pdPASS) {
         ESP_LOGE(TAG, "Failed to create sysmon task = %d", tcResult);
@@ -45,12 +45,12 @@ SysMon::_task() {
     const TickType_t xFrequency = SYSMON_INTERVAL_SECONDS * xPortGetTickRateHz();
 
     while(1) {
+        logStats();
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
-        ESP_LOGE(TAG, "================== Sys Mon ===================");
-        ESP_LOGE(TAG, "Memory: free=%d     largest block=%d", xPortGetFreeHeapSize(),
-                heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
-        logTimings();
-        ESP_LOGE(TAG, "==============================================");
+//        ESP_LOGE(TAG, "================= Sys Mon ==================");
+//        ESP_LOGE(TAG, "             %s", GlobalConfig.macStr());
+//        logTimings();
+//        ESP_LOGE(TAG, "============================================");
     }
 
     // Just in case we ever exit, we're supposed to do this.
@@ -143,9 +143,75 @@ SysMon::getInfo(uint8_t timing) {
 
 void
 SysMon::logTimings() {
-    ESP_LOGI(TAG, "Timer   Count Avg    Min    Max");
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "Timer   Count Avg    Min    Max\n");
+
     for(uint8_t i = 0; i < TIMING_LAST; i++) {
         TimingInfo info = getInfo(i);
-        ESP_LOGI(TAG, "%s  %d  %" PRId64 "uS  %" PRId64 "uS  %" PRId64 "uS", info.name, info.count, info.average, info.min, info.max);
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
+                "%s  %d  %lluS  %lluS  %lluS\n",
+                info.name, info.count, info.average, info.min, info.max);
     }
+}
+
+void SysMon::addMemInfo() {
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
+            "   Memory : free( %d )    largest( %d )\n",
+            xPortGetFreeHeapSize(),
+            heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
+
+}
+
+void SysMon::addAppDesc() {
+    auto desc = esp_ota_get_app_description();
+    if (!desc) {
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "Unable to get ota app description\n");
+    } else {
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  version = %s\n", desc->version);
+
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  name    = %s\n", desc->project_name);
+
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  time    = %s\n", desc->time);
+
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  date    = %s\n", desc->date);
+
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  idf_ver = %s\n", desc->idf_ver);
+    }
+}
+
+
+void SysMon::addMac() {
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
+            "            %s\n", GlobalConfig.macStr());
+}
+
+void SysMon::logStats() {
+    m_szTmp[0] = 0;
+    m_tmpRemaining = sizeof(m_szTmp) - 1;
+
+    m_tmpEnd = m_szTmp + m_tmpRemaining;
+
+    // Use the next two lines as the template for printing into the output buffer
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "\n"
+            "====================== SysMon ===================\n");
+
+    addMac();
+    addAppDesc();
+    addMemInfo();
+
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
+            "=================================================\n");
+
+    ESP_LOGE(TAG, "%s", m_szTmp);
 }
