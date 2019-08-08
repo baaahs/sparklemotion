@@ -6,3 +6,6 @@ sdkconfig.old
 # Ignore local config files. Defaults are in code so you can override
 # them by using this file if desired.
 spiffs/config.json
+
+# Local firmwares
+*.bin
