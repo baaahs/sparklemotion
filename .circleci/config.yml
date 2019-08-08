@@ -61,5 +61,7 @@ jobs:
 
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
+              
+              sudo chown -R $USER /usr/local/lib/node_modules
               gh-pages --dotfiles --message "Auto deploy" --dist build/gh-pages
             fi
