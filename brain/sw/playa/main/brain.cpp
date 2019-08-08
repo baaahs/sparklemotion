@@ -127,7 +127,7 @@ Brain::sendHello(const IpPort &port) {
 
 void
 Brain::start() {
-    gSysMon.start();
+    gSysMon.start(DefaultBrainTasks.sysmon);
     m_brainUI.start();
 
     // TODO: Check with the UI to see if the user is holding down a button so that we enter config mode instead of regular boot
@@ -176,6 +176,9 @@ void Brain::startSecondStageBoot() {
     ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %d", pdMS_TO_TICKS(1000));
     ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());
     ESP_LOGE(TAG, "getFrameDuration() = %d", m_timeBase.getFrameDuration());
+
+    // Do this last!
+    m_httpServer.start();
 }
 
 

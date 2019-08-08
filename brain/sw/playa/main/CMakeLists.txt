@@ -1,13 +1,10 @@
 set(COMPONENT_SRCS
         "main.cpp"
         "brain.cpp"
-        "httpd/task_httpd.cpp"
-        "httpd/spiffs_handler.cpp"
-        "httpd/http_server.cpp"
 )
 
 set(COMPONENT_ADD_INCLUDEDIRS ".")
-set(COMPONENT_REQUIRES brain-common led-renderer spiffs esp_http_server net shaders sysmon brain-ui)
+set(COMPONENT_REQUIRES brain-common led-renderer spiffs brain-httpd net shaders sysmon brain-ui)
 
 register_component()
 
