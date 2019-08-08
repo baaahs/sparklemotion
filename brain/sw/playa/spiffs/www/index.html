@@ -23,6 +23,8 @@
         #id {
             font-weight: bold;
         }
+
+
     </style>
 </head>
 
@@ -80,7 +82,10 @@
     <input id="newFirmware" type="file" />
 </div>
 
-<button id="setFirmware" type="button" onclick="putFirmware()">Upload Firmware</button>
+<button id="uploadFirmware" type="button" onclick="putFirmware()">Upload Firmware</button>
+
+<div id="upStatus">
+</div>
 
 </body>
 
@@ -125,15 +130,15 @@
         // TODO: Error checking on that file, like size
 
         // TODO: Disable inputs while uploading
+        document.getElementById("uploadFirmware").disabled = true;
 
         const file = fileInput[0];
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = () => {
             if (xhttp.readyState == DONE) {
                 if (xhttp.status == 200) {
-                    document.open();
-                    document.write(xhttp.responseText);
-                    document.close();
+                    document.getElementById("uploadFirmware").disabled = false;
+                    document.getElementById("upStatus").innerHTML = "<b>Complete!</b>";
                 } else if (xhttp.status == 0) {
                     alert("Server closed the connection abruptly!");
                     location.reload()
@@ -142,7 +147,17 @@
                     location.reload()
                 }
             }
-        }
+        };
+        xhttp.upload.onprogress = (evt) => {
+            const percent = evt.loaded / evt.total;
+            console.log("Progress = ", percent);
+
+            if (percent < 1.0) {
+                document.getElementById("upStatus").innerHTML = "<i>Sending...</i>";
+            } else {
+                document.getElementById("upStatus").innerHTML = "<i>Waiting...</i>";
+            }
+        };
         xhttp.open("POST", "/firmware", true);
         xhttp.send(file);
     }
