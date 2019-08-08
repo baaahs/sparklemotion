@@ -205,6 +205,10 @@ void SysMon::logStats() {
     m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "\n"
             "====================== SysMon ===================\n");
 
+    m_tmpHead = m_tmpEnd - m_tmpRemaining;
+    m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
+            "  Instereo \n");
+
     addMac();
     addAppDesc();
     addMemInfo();

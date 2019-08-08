@@ -169,12 +169,19 @@ esp_err_t FirmwareHandler::_putHandler(httpd_req_t *req) {
         remaining -= received;
     }
 
-    esp_ota_end(otaHandle);
+    auto endResult = esp_ota_end(otaHandle);
+    if (endResult == ESP_OK) {
+        ESP_LOGE(TAG, "==== Valid OTA received. Rebooting ====");
+        brain_restart(500);
 
-    ESP_LOGE(TAG, "==== Valid OTA received. Rebooting ====");
-    brain_restart(500);
+        /* Respond with an empty chunk to signal HTTP response completion */
+        httpd_resp_send_chunk(req, NULL, 0);
+        return ESP_OK;
+    }
 
-    /* Respond with an empty chunk to signal HTTP response completion */
-    httpd_resp_send_chunk(req, NULL, 0);
+    // Send back some data to the client. Maybe it can do something??
+    ESP_LOGE(TAG, "OTA Failed with %d", endResult);
+
+    httpd_resp_send_500(req);
     return ESP_OK;
 }
