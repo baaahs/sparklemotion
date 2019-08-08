@@ -5,6 +5,6 @@ set(COMPONENT_SRCS
         )
 
 
-# set(COMPONENT_REQUIRES net led-renderer)
+set(COMPONENT_REQUIRES brain-common app_update)
 
 register_component()

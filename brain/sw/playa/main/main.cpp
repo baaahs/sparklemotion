@@ -1,19 +1,8 @@
 #include <stdio.h>
-#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_system.h"
-#include "esp_event_loop.h"
-#include "esp_err.h"
 #include "esp_event.h"
 #include "esp_log.h"
-#include "esp_eth.h"
-#include "esp32/rom/gpio.h"
-#include "tcpip_adapter.h"
-#include "driver/gpio.h"
-#include "driver/periph_ctrl.h"
-
-#include "httpd/task_httpd.h"
 
 #include "brain_common.h"
 #include "brain.h"
@@ -58,18 +47,18 @@ extern "C" void app_main()
 //    esp_log_level_set("ledc", ESP_LOG_DEBUG);
 
     // Enable logging for our components
+    esp_log_level_set(TAG_COMMON, ESP_LOG_DEBUG);
 //    esp_log_level_set("#sysmon", ESP_LOG_DEBUG);
 //    esp_log_level_set("# brain", ESP_LOG_DEBUG);
 //    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
 //
-//    esp_log_level_set("# httpd", ESP_LOG_DEBUG);
     esp_log_level_set(TAG_NET, ESP_LOG_DEBUG);
+    esp_log_level_set(TAG_HTTPD, ESP_LOG_DEBUG);
 //    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shader", ESP_LOG_DEBUG);
 //    esp_log_level_set("#shdtre", ESP_LOG_DEBUG);
 //    esp_log_level_set("#    ui", ESP_LOG_DEBUG);
 
-//    esp_log_level_set(TAG_COMMON, ESP_LOG_DEBUG);
 
 
     // Configure the default event loop before anything else happens
@@ -78,11 +67,6 @@ extern "C" void app_main()
 
     // Need SPIFFS
     ESP_ERROR_CHECK(brain_init_spiffs());
-
-    // Start the various tasks
-    // TODO: These network related things should happen AFTER system configuration from SPIFFS
-    // task_net_create();
-    // task_httpd_create();
 
     // Start the brain task
     brain.start();

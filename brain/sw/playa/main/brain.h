@@ -13,6 +13,7 @@
 #include "shade-tree.h"
 #include "sysmon.h"
 #include "brain-ui.h"
+#include "http_server.h"
 
 #define DEFAULT_PIXEL_COUNT 128
 
@@ -41,6 +42,7 @@ private:
     ShadeTree m_shadeTree = ShadeTree(&m_surface);
 
     BrainUI m_brainUI;
+    HttpServer m_httpServer;
 
     void startSecondStageBoot();
 
