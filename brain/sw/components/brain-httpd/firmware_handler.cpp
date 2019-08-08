@@ -170,18 +170,27 @@ esp_err_t FirmwareHandler::_putHandler(httpd_req_t *req) {
     }
 
     auto endResult = esp_ota_end(otaHandle);
-    if (endResult == ESP_OK) {
-        ESP_LOGE(TAG, "==== Valid OTA received. Rebooting ====");
-        brain_restart(500);
+    if (endResult != ESP_OK) {
+        ESP_LOGE(TAG, "OTA Failed with %d", endResult);
 
         /* Respond with an empty chunk to signal HTTP response completion */
         httpd_resp_send_chunk(req, NULL, 0);
         return ESP_OK;
     }
 
-    // Send back some data to the client. Maybe it can do something??
-    ESP_LOGE(TAG, "OTA Failed with %d", endResult);
+    ESP_LOGE(TAG, "==== Valid OTA received ====");
+    auto setResult = esp_ota_set_boot_partition(updatePartition);
+    if (setResult != ESP_OK) {
+        ESP_LOGE(TAG, "Setting the OTA boot partition failed: %d", endResult);
 
-    httpd_resp_send_500(req);
+        /* Respond with an empty chunk to signal HTTP response completion */
+        httpd_resp_send_chunk(req, NULL, 0);
+        return ESP_OK;
+    }
+
+    ESP_LOGE(TAG, "Boot partition set, Triggering restart");
+    brain_restart(500);
+
+    httpd_resp_send_chunk(req, NULL, 0);
     return ESP_OK;
 }
