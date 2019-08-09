@@ -7,9 +7,6 @@
 
 #include <string.h>
 #include <sys/param.h>
-//#include <sys/unistd.h>
-//#include <sys/stat.h>
-#include "esp_log.h"
 #include "esp_spiffs.h"
 
 /* Max length a file path can have on storage */
@@ -17,8 +14,7 @@
 
 #define SCRATCH_BUFSIZE 8192
 
-
-static const char *TAG = "#SPIFSH";
+#define TAG TAG_HTTPD
 
 static esp_err_t sGetHandler(httpd_req_t *req) {
     if (!req) return ESP_ERR_INVALID_ARG;
@@ -29,8 +25,7 @@ static esp_err_t sGetHandler(httpd_req_t *req) {
 esp_err_t SpiffsHandler::registerHandlers(HttpServer &server) {
     // Also do the equivalent initialization stuff - maybe want to come up with
     // a scheme for doing this better elsewhere
-    strcpy(this->basePath, "/spiffs");
-
+    strcpy(this->basePath, "/spiffs/www");
 
     httpd_uri_t fileDownload = {
             .uri = "/*",
@@ -40,7 +35,7 @@ esp_err_t SpiffsHandler::registerHandlers(HttpServer &server) {
     };
 
     esp_err_t err;
-    err = httpd_register_uri_handler(server.server, &fileDownload);
+    err = httpd_register_uri_handler(server.m_hServer, &fileDownload);
     if (ESP_OK != err) {
         ESP_LOGE(TAG, "Failed to register GET uri handler %d", err);
         return err;
@@ -98,7 +93,7 @@ static const char* get_path_from_uri(char *dest, const char *base_path, const ch
     return dest + base_pathlen;
 }
 
-void logFree(void *ctx) {
+static void logFree(void *ctx) {
     ESP_LOGI(TAG, "Freeing a ctx");
     free(ctx);
 }
@@ -121,6 +116,10 @@ esp_err_t SpiffsHandler::getHandler(httpd_req_t *req) {
 //    if (filename[strlen(filename) - 1] == '/') {
 //        return http_resp_dir_html(req, filepath);
 //    }
+    // When the filename ends with a trailing / we append index.html
+    if (filename[strlen(filename) - 1] == '/') {
+        strcat(filepath, "index.html");
+    }
 
     if (stat(filepath, &file_stat) == -1) {
         /* If file not present on SPIFFS check if URI
