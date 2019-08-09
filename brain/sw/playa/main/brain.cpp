@@ -160,7 +160,7 @@ Brain::sendHello(const IpPort &port) {
 void
 Brain::start() {
     gSysMon.start(DefaultBrainTasks.sysmon);
-    m_brainUI.start();
+    m_brainUI.start(DefaultBrainTasks.ui);
 
     // TODO: Check with the UI to see if the user is holding down a button so that we enter config mode instead of regular boot
 
@@ -190,16 +190,12 @@ void Brain::startSecondStageBoot() {
     m_shadeTree.start();
     ESP_LOGE(TAG, "m_shadeTree started");
 
-    m_timeBase.setFPS(30);
-    m_ledRenderer.setBrightness(255);
-
-
     m_ledRenderer.setShader(&m_shadeTree);
 //    LEDShaderFiller* filler = new LEDShaderFiller();
 //    m_ledRenderer.setShader(filler);
 
     // Start talking to the pixels
-    m_ledRenderer.start();
+    m_ledRenderer.start(TaskDef(), TaskDef());
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");

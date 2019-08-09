@@ -1,4 +1,5 @@
 #include <esp_event.h>
+#include "brain_common.h"
 #include "brain-ui-priv.h"
 #include "brain-ui.h"
 #include "brain-ui-events.h"
@@ -9,22 +10,17 @@
 ESP_EVENT_DEFINE_BASE(BRAIN_UI_BASE);
 
 BrainUI::BrainUI() :
-    leftEye(LEDC_CHANNEL_1, 16), // Left Eye
-    rightEye(LEDC_CHANNEL_0, 4), // Right Eye
-    rgbR(LEDC_CHANNEL_2, 12), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
-    rgbG(LEDC_CHANNEL_3, 33),
-    rgbB(LEDC_CHANNEL_4, 14),
+    leftEye(LEDC_CHANNEL_1, BRAIN_GPIO_LED_LEFT_EYE), // Left Eye
+    rightEye(LEDC_CHANNEL_0, BRAIN_GPIO_LED_RIGHT_EYE), // Right Eye
+    rgbR(LEDC_CHANNEL_2, BRAIN_GPIO_LED_RED), // 34 is bad Rev D, 12 is Rev D rework, 13 is Rev E
+    rgbG(LEDC_CHANNEL_3, BRAIN_GPIO_LED_GREEN),
+    rgbB(LEDC_CHANNEL_4, BRAIN_GPIO_LED_BLUE),
 
-    btnLeft(GPIO_NUM_0, true, *this),
-    btnRight(GPIO_NUM_2, false, *this) // Rev D this is IO2, Rev E is IO34, both are low default
+    btnLeft(BRAIN_GPIO_BUTTON_LEFT, BRAIN_BUTTON_LEFT_ACTIVELOW, *this),
+    btnRight(BRAIN_GPIO_BUTTON_RIGHT, BRAIN_BUTTON_RIGHT_ACTIVELOW, *this) // Rev D this is IO2, Rev E is IO34, both are low default
 {
 
 }
-
-#define TASK_BRAINUI_STACK_SIZE 2048
-
-// Lower numbers are less important.
-#define TASK_BRAINUI_PRIORITY 0
 
 void static task_brainui(void* pvParameters) {
     ((BrainUI*)pvParameters)->_task();
@@ -64,7 +60,7 @@ BrainUI::_task() {
 }
 
 void
-BrainUI::start() {
+BrainUI::start(TaskDef taskDef) {
     // Start all the LEDs first
     leftEye.start();
     rightEye.start();
@@ -91,8 +87,7 @@ BrainUI::start() {
     ESP_LOGI(TAG, "Starting brainui task...");
     // vTaskDelay(5 * xPortGetTickRateHz());
 
-    tcResult  = xTaskCreate(task_brainui, "brainui", TASK_BRAINUI_STACK_SIZE,
-                            this, TASK_BRAINUI_PRIORITY, &tHandle);
+    tcResult = taskDef.createTask(task_brainui, this, &tHandle);
 
     if (tcResult != pdPASS) {
         ESP_LOGE(TAG, "Failed to create brainui task = %d", tcResult);

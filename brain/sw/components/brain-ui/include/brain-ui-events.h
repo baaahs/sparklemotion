@@ -4,7 +4,6 @@
 
 #include <stdint.h>
 #include <esp_event.h>
-//#include <esp_event_base.h>
 
 ESP_EVENT_DECLARE_BASE(BRAIN_UI_BASE);
 

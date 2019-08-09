@@ -9,6 +9,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
+#include "brain_hardware.h"
 #include "brain_tasks.h"
 #include "brain_tags.h"
 #include "brain_config.h"
