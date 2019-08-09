@@ -47,27 +47,26 @@ extern "C" void app_main()
 //    esp_log_level_set("ledc", ESP_LOG_DEBUG);
 
     // Enable logging for our components
-    esp_log_level_set(TAG_COMMON, ESP_LOG_DEBUG);
-//    esp_log_level_set("#sysmon", ESP_LOG_DEBUG);
-//    esp_log_level_set("# brain", ESP_LOG_DEBUG);
-//    esp_log_level_set("#ledren", ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_COMMON, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_SYSMON, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_BRAIN, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_LEDREN, ESP_LOG_DEBUG);
 //
-    esp_log_level_set(TAG_NET, ESP_LOG_DEBUG);
-    esp_log_level_set(TAG_HTTPD, ESP_LOG_DEBUG);
-//    esp_log_level_set("#   msg", ESP_LOG_DEBUG);
-//    esp_log_level_set("#shader", ESP_LOG_DEBUG);
-//    esp_log_level_set("#shdtre", ESP_LOG_DEBUG);
-//    esp_log_level_set("#    ui", ESP_LOG_DEBUG);
-
-
+//    esp_log_level_set(TAG_NET, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_HTTPD, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_MSG, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_SHADER, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_SHDTREE, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_UI, ESP_LOG_DEBUG);
 
     // Configure the default event loop before anything else happens
     ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetTaskName(nullptr));
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-    // Need SPIFFS
+    // SPIFFS is also a very basic thing
     ESP_ERROR_CHECK(brain_init_spiffs());
 
-    // Start the brain task
+    // And now we are ready to boot into our happy happy
+    // C++ componentized world.
     brain.start();
 }

@@ -8,7 +8,7 @@
 #include "solid-shader.h"
 #include "rainbow-shader.h"
 
-#define TAG "#shdtre"
+#define TAG TAG_SHDTREE
 
 void glue_handleEvent(void* arg, esp_event_base_t base, int32_t id, void* data) {
     ((ShadeTree*)arg)->_handleEvent(base, id, data);
