@@ -13,6 +13,15 @@
 <tbody>
 <tr>
 <td>
+<p><a href="-anonymous-surface/index.html">AnonymousSurface</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">AnonymousSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code>
+<p>A surface whose identity isn't known.</p>
+</td>
+</tr>
+<tr>
+<td>
 <p><a href="-brain/index.html">Brain</a></p>
 </td>
 <td>
@@ -129,6 +138,15 @@
 </tr>
 <tr>
 <td>
+<p><a href="-identified-surface/index.html">IdentifiedSurface</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">IdentifiedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code>
+<p>A surface which has been associated with a specific <a href="-model/-surface/index.html">Model.Surface</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
 <p><a href="-js-brain-display/index.html">JsBrainDisplay</a></p>
 </td>
 <td>
@@ -143,10 +161,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="-js-mapper-display/index.html">JsMapperDisplay</a></p>
+<p><a href="-js-mapper-ui/index.html">JsMapperUi</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">JsMapperDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a><span class="symbol">, </span><a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">JsMapperUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -195,14 +213,14 @@
 <p><a href="-mapper/index.html">Mapper</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">, </span><a href="-mapper-display/-listener/index.html"><span class="identifier">MapperDisplay.Listener</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">, </span><a href="-mapper-ui/-listener/index.html"><span class="identifier">MapperUi.Listener</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-mapper-display/index.html">MapperDisplay</a></p>
+<p><a href="-mapper-ui/index.html">MapperUi</a></p>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">MapperDisplay</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">MapperUi</span></code></td>
 </tr>
 <tr>
 <td>
@@ -213,10 +231,31 @@
 </tr>
 <tr>
 <td>
+<p><a href="-model/index.html">Model</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Model</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-moving-head/index.html">MovingHead</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">MovingHead</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">MovingHead</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-moving-head-display/index.html">MovingHeadDisplay</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadDisplay</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-moving-head-manager/index.html">MovingHeadManager</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadManager</span></code></td>
 </tr>
 <tr>
 <td>
@@ -300,7 +339,7 @@
 <p><a href="-sheep-model/index.html">SheepModel</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">SheepModel</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">SheepModel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><a href="-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -344,7 +383,9 @@
 <p><a href="-surface/index.html">Surface</a></p>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">Surface</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">Surface</span></code>
+<p>Represents a surface whose lighting can be controlled.</p>
+</td>
 </tr>
 <tr>
 <td>

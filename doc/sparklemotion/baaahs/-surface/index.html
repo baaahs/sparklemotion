@@ -9,6 +9,8 @@
 <br/>
 <h1>Surface</h1>
 <code><span class="keyword">interface </span><span class="identifier">Surface</span></code>
+<p>Represents a surface whose lighting can be controlled.</p>
+<p>May or may not be associated with a <a href="../-model/-surface/index.html">Model.Surface</a>.</p>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -38,31 +40,21 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../-brain/-mapped-surface/index.html">MappedSurface</a></p>
+<p><a href="../-anonymous-surface/index.html">AnonymousSurface</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">MappedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">AnonymousSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code>
+<p>A surface whose identity isn't known.</p>
+</td>
 </tr>
 <tr>
 <td>
-<p><a href="../-sheep-model/-panel/index.html">Panel</a></p>
+<p><a href="../-identified-surface/index.html">IdentifiedSurface</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Panel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../-pinky/-unknown-surface/index.html">UnknownSurface</a></p>
+<code><span class="keyword">class </span><span class="identifier">IdentifiedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code>
+<p>A surface which has been associated with a specific <a href="../-model/-surface/index.html">Model.Surface</a>.</p>
 </td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">UnknownSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../-brain/-unmapped-surface/index.html">UnmappedSurface</a></p>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">UnmappedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Surface</span></a></code></td>
 </tr>
 </tbody>
 </table>

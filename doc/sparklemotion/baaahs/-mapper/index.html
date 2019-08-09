@@ -8,16 +8,23 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Mapper</a><br/>
 <br/>
 <h1>Mapper</h1>
-<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">, </span><a href="../-mapper-display/-listener/index.html"><span class="identifier">MapperDisplay.Listener</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">, </span><a href="../-mapper-ui/-listener/index.html"><span class="identifier">MapperUi.Listener</span></a></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-brain-mapping/index.html">BrainMapping</a></p>
+<p><a href="-brain-to-map/index.html">BrainToMap</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainMapping</span></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainToMap</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-delivery-attempt/index.html">DeliveryAttempt</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">DeliveryAttempt</span></code></td>
 </tr>
 <tr>
 <td>
@@ -33,6 +40,25 @@
 <td>
 <code><span class="keyword">class </span><span class="identifier">PixelMapData</span></code></td>
 </tr>
+<tr>
+<td>
+<p><a href="-reliable-shader-message-deliverer/index.html">ReliableShaderMessageDeliverer</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ReliableShaderMessageDeliverer</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Exceptions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-timeout-exception/index.html">TimeoutException</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">TimeoutException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/lang/Exception.html"><span class="identifier">Exception</span></a></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Constructors</h3>
@@ -43,7 +69,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/mapperDisplay">mapperDisplay</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-display/index.html"><span class="identifier">MapperDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperDisplay, baaahs.MediaDevices, baaahs.net.Network.Address)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address)/sheepModel">sheepModel</span><span class="symbol">:</span>&nbsp;<a href="../-sheep-model/index.html"><span class="identifier">SheepModel</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address)/mapperUi">mapperUi</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.SheepModel, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -55,7 +81,7 @@
 <p><a href="camera.html">camera</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">camera</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">camera</span><span class="symbol">: </span><a href="../-media-devices/-camera/index.html"><span class="identifier">MediaDevices.Camera</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -103,13 +129,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromPort">fromPort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="run.html">run</a></p>
-</td>
-<td>
-<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">run</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
