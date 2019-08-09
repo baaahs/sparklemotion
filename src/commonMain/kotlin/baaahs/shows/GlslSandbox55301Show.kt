@@ -5,7 +5,7 @@ import baaahs.Show
 import baaahs.ShowRunner
 import baaahs.shaders.GlslSandbox55301Shader
 
-object GlslSandbox55301Show : Show("GlslSandbox 55301") {
+object GlslSandbox55301Show : Show("GlslSandbox 55301 (kt)") {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslSandbox55301Shader()
         showRunner.allSurfaces.map { showRunner.getShaderBuffer(it, shader) }
