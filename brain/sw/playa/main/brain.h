@@ -5,6 +5,7 @@
 #ifndef PLAYA_BRAIN_H
 #define PLAYA_BRAIN_H
 
+#include "net_transport.h"
 #include "msg_handler.h"
 #include "msg_slinger.h"
 
@@ -12,6 +13,7 @@
 #include "shade-tree.h"
 #include "sysmon.h"
 #include "brain-ui.h"
+#include "http_server.h"
 
 #define DEFAULT_PIXEL_COUNT 128
 
@@ -28,6 +30,7 @@ public:
 private:
     char m_brainId[8];
 
+    NetTransport m_netTransport;
     MsgSlinger m_msgSlinger;
 
     TimeBase m_timeBase;
@@ -39,6 +42,9 @@ private:
     ShadeTree m_shadeTree = ShadeTree(&m_surface);
 
     BrainUI m_brainUI;
+    HttpServer m_httpServer;
+
+    void startSecondStageBoot();
 
     void msgBrainPanelShade(Msg* pMsg);
     void msgBrainIdRequest(Msg* pMsg);

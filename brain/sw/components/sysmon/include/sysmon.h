@@ -1,15 +1,8 @@
 
 #pragma once
 
-#include "freertos/FreeRTOS.h"
+#include "brain_common.h"
 #include "freertos/semphr.h"
-
-// Totally making this up. For the ESP32 this is in bytes
-#define TASK_SYSMON_STACK_SIZE 3024
-
-// Lower numbers are less important. Causes memory allocation though
-// so don't want it higher than necessary
-#define TASK_SYSMON_PRIORITY 0
 
 #define TIMING_RENDER 0
 #define TIMING_SHOW_OUTPUTS 1
@@ -21,9 +14,7 @@
 
 class SysMon {
 public:
-    // SysMon();
-
-    void start();
+    void start(TaskDef taskDef);
 
     void _task();
 
@@ -48,6 +39,18 @@ private:
     int64_t m_history[TIMING_LAST][HISTORY_COUNT];
     int64_t* m_firstHistory[TIMING_LAST];
     int64_t* m_nextHistory[TIMING_LAST];
+
+    void addMemInfo();
+    void addAppDesc();
+    void addMac();
+
+    void logStats();
+
+    // A place to build up our log messages
+    char m_szTmp[2000];
+    char* m_tmpHead;
+    char* m_tmpEnd;
+    size_t m_tmpRemaining;
 };
 
 extern SysMon gSysMon;
