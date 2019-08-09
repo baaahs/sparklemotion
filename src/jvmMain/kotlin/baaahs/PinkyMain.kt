@@ -12,17 +12,25 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileNotFoundException
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.attribute.FileAttribute
 
 fun main(args: Array<String>) {
     val sheepModel = SheepModel()
     sheepModel.load()
 
-    val classesDir = Paths.get(Pinky::class.java.getResource(".").file)
-    val jsResDir = classesDir.parent.parent.parent.parent.parent.parent
-        .resolve("build/processedResources/js/main")
+    val resource = Pinky::class.java.classLoader.getResource("baaahs")
+    val classPathBaseDir = Paths.get(resource.file).parent
+    val jsResDir = if (resource.protocol == "jar") {
+        classPathBaseDir
+    } else {
+        classPathBaseDir.parent.parent.parent.parent.parent.parent
+            .resolve("build/processedResources/js/main")
+    }
+
+    testForIndexDotHtml(jsResDir)
     println("jsResDir = ${jsResDir}")
 
     val network = JvmNetwork()
@@ -55,6 +63,13 @@ fun main(args: Array<String>) {
 
     doRunBlocking {
         delay(200000L)
+    }
+}
+
+fun testForIndexDotHtml(jsResDir: Path) {
+    val indexHtml = jsResDir.resolve("index.html")
+    if (!Files.exists(indexHtml)) {
+        throw FileNotFoundException("$indexHtml doesn't exist and it really probably should!")
     }
 }
 
