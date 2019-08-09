@@ -5,7 +5,7 @@ import baaahs.Show
 import baaahs.ShowRunner
 import baaahs.shaders.GlslShader
 
-object GlslShow : Show("Glsl Native 55301") {
+object GlslShow : Show("GlslSandbox 55301 (OpenGL)") {
     val program = """
 #ifdef GL_ES
 precision mediump float;
