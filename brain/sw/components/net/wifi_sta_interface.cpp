@@ -149,15 +149,13 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
                 tellListenerLinkDown();
 
                 m_numFailedConnects++;
-                // TODO: Add a maximum number of retries.
-                // The connect method itself should have take some time so it's "okay" to
-                // simply reconnect immediately. However, after some max number of retries
-                // we should probably backoff and add a non-trivial (30 seconds?) delay
-                // before we try to connect again so that we aren't always hammering the
-                // connect process. I think it will slow down a board more than we would like.
-
                 ESP_LOGE(TAG, "Failed to connect to wifi ssid '%s', Failure #%d. Retrying.", m_wifiConfig.sta.ssid, m_numFailedConnects);
-                esp_wifi_connect();
+                if (m_numFailedConnects < 2) {
+                    ESP_LOGE(TAG, "Will try again...");
+                    esp_wifi_connect();
+                } else {
+                    ESP_LOGE(TAG, "That's it. No more trying. Need some better credentials");
+                }
                 break;
 
             case WIFI_EVENT_STA_CONNECTED:

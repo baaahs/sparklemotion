@@ -20,11 +20,11 @@ void glue_longPressTimer(TimerHandle_t xTimer) {
     ((BrainButton*)pArg)->_longPressTimer();
 }
 
-BrainButton::BrainButton(gpio_num_t gpioNum, bool pullUp, BrainButtonListener &listener) :
-    m_gpioNum(gpioNum),
-    m_listener(listener),
-    m_pullUp(pullUp),
-    m_Down(false)
+BrainButton::BrainButton(gpio_num_t gpioNum, bool activeLow, BrainButtonListener &listener) :
+        m_gpioNum(gpioNum),
+        m_listener(listener),
+        m_activeLow(activeLow),
+        m_Down(false)
 {
 }
 
@@ -37,8 +37,8 @@ BrainButton::start() {
     gpio_config_t config;
     config.pin_bit_mask = (uint64_t)1 << m_gpioNum;
     config.mode = GPIO_MODE_INPUT;
-    config.pull_up_en = m_pullUp ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE;
-    config.pull_down_en = m_pullUp ? GPIO_PULLDOWN_DISABLE: GPIO_PULLDOWN_ENABLE;
+    config.pull_up_en = m_activeLow ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE;
+    config.pull_down_en = m_activeLow ? GPIO_PULLDOWN_DISABLE : GPIO_PULLDOWN_ENABLE;
     config.intr_type = GPIO_INTR_ANYEDGE;
 
     if (ESP_OK != gpio_config(&config)) {
@@ -63,7 +63,7 @@ BrainButton::start() {
 bool
 BrainButton::readDown() {
     bool down = (bool)gpio_get_level(m_gpioNum);
-    if (m_pullUp) {
+    if (m_activeLow) {
         down = !down;
     }
     return down;

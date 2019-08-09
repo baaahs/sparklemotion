@@ -10,8 +10,6 @@
 
 #define HISTORY_COUNT 21
 
-#define SYSMON_INTERVAL_SECONDS 10
-
 class SysMon {
 public:
     void start(TaskDef taskDef);
