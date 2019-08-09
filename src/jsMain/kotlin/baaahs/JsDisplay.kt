@@ -44,7 +44,8 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
         }
 
     init {
-        packetLossRate = 0.05f
+//        packetLossRate = 0.05f
+        packetLossRate = 0.0f
     }
 
 
