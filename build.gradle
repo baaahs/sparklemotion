@@ -21,13 +21,18 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "com.github.salomonbrys.gradle.kotlin.js:kotlin-js-gradle-utils:1.2.0"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
     }
 }
-
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "kotlin-multiplatform"
 apply plugin: "kotlinx-serialization"
 apply plugin: "org.jetbrains.dokka"
 apply plugin: "com.github.salomonbrys.gradle.kotlin.js.mpp-assemble-web"
+
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 
 repositories {
     jcenter()
@@ -196,4 +201,12 @@ task runBrainJvm(type: JavaExec) {
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
+}
+
+task shadowJar(type: ShadowJar, dependsOn: [jvmJar]) {
+    from jvmJar.archiveFile
+    configurations = [project.configurations.jvmRuntimeClasspath]
+    manifest {
+        attributes 'Main-Class': 'baaahs.PinkyMainKt'
+    }
 }
