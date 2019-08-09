@@ -146,13 +146,13 @@
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
   var L4294967295 = new Kotlin.Long(-1, 0);
   var decodeToString = Kotlin.kotlin.text.decodeToString_964n91$;
   var copyOfRange = Kotlin.kotlin.collections.copyOfRange_ietg8x$;
-  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toBits = Kotlin.floatToBits;
   var encodeToByteArray = Kotlin.kotlin.text.encodeToByteArray_pdl1vz$;
   var copyOf = Kotlin.kotlin.collections.copyOf_mrm5p$;
@@ -182,6 +182,7 @@
   var Array_0 = Array;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
+  var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
@@ -242,10 +243,13 @@
   var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var L200000 = Kotlin.Long.fromInt(200000);
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
+  var L134217727 = Kotlin.Long.fromInt(134217727);
+  var replace = Kotlin.kotlin.text.replace_680rmw$;
+  var toTypedArray_0 = Kotlin.kotlin.collections.toTypedArray_rjqryz$;
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
-  var toTypedArray_0 = Kotlin.kotlin.collections.toTypedArray_964n91$;
+  var toTypedArray_1 = Kotlin.kotlin.collections.toTypedArray_964n91$;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var contentHashCode = Kotlin.arrayHashCode;
@@ -329,6 +333,8 @@
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
   GlslSandbox55301Shader.prototype = Object.create(Shader.prototype);
   GlslSandbox55301Shader.prototype.constructor = GlslSandbox55301Shader;
+  GlslShader.prototype = Object.create(Shader.prototype);
+  GlslShader.prototype.constructor = GlslShader;
   HeartShader.prototype = Object.create(Shader.prototype);
   HeartShader.prototype.constructor = HeartShader;
   PixelShader$Encoding.prototype = Object.create(Enum.prototype);
@@ -369,6 +375,8 @@
   CreepingPixelsShow.prototype.constructor = CreepingPixelsShow;
   GlslSandbox55301Show.prototype = Object.create(Show.prototype);
   GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
+  GlslShow.prototype = Object.create(Show.prototype);
+  GlslShow.prototype.constructor = GlslShow;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -391,6 +399,12 @@
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   Vector2_0.prototype = Object.create(Vector2.prototype);
   Vector2_0.prototype.constructor = Vector2_0;
+  JsGlslRenderer$SurfacePixels.prototype = Object.create(SurfacePixels.prototype);
+  JsGlslRenderer$SurfacePixels.prototype.constructor = JsGlslRenderer$SurfacePixels;
+  JsGlslRenderer$Instance.prototype = Object.create(GlslRenderer$Instance.prototype);
+  JsGlslRenderer$Instance.prototype.constructor = JsGlslRenderer$Instance;
+  JsGlslRenderer.prototype = Object.create(GlslRenderer.prototype);
+  JsGlslRenderer.prototype.constructor = JsGlslRenderer;
   NativeBitmap.prototype = Object.create(CanvasBitmap.prototype);
   NativeBitmap.prototype.constructor = NativeBitmap;
   CanvasBitmap$asImage$ObjectLiteral.prototype = Object.create(JsImage.prototype);
@@ -4499,6 +4513,8 @@
     this.networkStats_0 = new Pinky$NetworkStats();
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.httpServer.listenWebSocket_brdh44$('/ws/mapper', Pinky_init$lambda(this));
+    this.poolingRenderContext = new Pinky$PoolingRenderContext();
+    this.lastSentAt = L0;
   }
   Object.defineProperty(Pinky.prototype, 'selectedShow_0', {
     get: function () {
@@ -4764,8 +4780,14 @@
     }
     this.display.brainCount = this.brainInfos_0.size;
   };
+  function Pinky$drawNextFrame$lambda(this$Pinky) {
+    return function () {
+      this$Pinky.showRunner_0.nextFrame();
+      return Unit;
+    };
+  }
   Pinky.prototype.drawNextFrame_8be2vx$ = function () {
-    this.showRunner_0.nextFrame();
+    this.aroundNextFrame_0(Pinky$drawNextFrame$lambda(this));
   };
   Pinky.prototype.disableDmx_0 = function () {
     this.dmxUniverse.allOff();
@@ -4789,28 +4811,34 @@
     };
   }
   Pinky.prototype.foundBrain_0 = function (brainAddress, brainId, surfaceName) {
-    var tmp$, tmp$_0, tmp$_1;
-    println('Heard from brain ' + brainId + ' at ' + brainAddress + ' for ' + toString_0(surfaceName));
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var dataFor = (tmp$ = this.mappingResults_0.dataFor_77gxvx$(brainId)) != null ? tmp$ : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
-    var tmp$_2;
+    var tmp$_3;
     if (dataFor != null) {
-      var tmp$_3;
+      var tmp$_4;
       var pixelVertices = dataFor.pixelLocations;
-      var pixelCount = (tmp$_3 = pixelVertices != null ? pixelVertices.size : null) != null ? tmp$_3 : 2048;
+      var pixelCount = (tmp$_4 = pixelVertices != null ? pixelVertices.size : null) != null ? tmp$_4 : 2048;
       var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelVertices != null ? pixelVertices : emptyList());
       this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
-      tmp$_2 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
+      tmp$_3 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
     }
      else
-      tmp$_2 = null;
-    var surface = (tmp$_0 = tmp$_2) != null ? tmp$_0 : new AnonymousSurface(brainId);
+      tmp$_3 = null;
+    var surface = (tmp$_0 = tmp$_3) != null ? tmp$_0 : new AnonymousSurface(brainId);
     var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
     if (priorBrainInfo != null) {
       if (((tmp$_1 = priorBrainInfo.brainId) != null ? tmp$_1.equals(brainId) : null) && equals(priorBrainInfo.surface, surface)) {
         return;
       }
     }
-    var surfaceReceiver = new Pinky$PrerenderingSurfaceReceiver(this, surface, Pinky$foundBrain$lambda(brainAddress, this));
+    var sendFn = Pinky$foundBrain$lambda(brainAddress, this);
+    if (this.prerenderPixels_0) {
+      tmp$_2 = new Pinky$PrerenderingSurfaceReceiver(this, surface, sendFn);
+    }
+     else {
+      tmp$_2 = new ShowRunner$SurfaceReceiver(surface, sendFn);
+    }
+    var surfaceReceiver = tmp$_2;
     var brainInfo = new BrainInfo(brainAddress, brainId, surface, surfaceReceiver);
     this.pendingBrainInfos_0.put_xwzc9p$(brainId, brainInfo);
   };
@@ -4841,7 +4869,6 @@
   Pinky.prototype.receivedPong_0 = function (message, fromAddress) {
     var originalSentAt = (new ByteArrayReader(message.data)).readLong();
     var elapsedMs = getTimeMillis().subtract(originalSentAt);
-    logger$Companion_getInstance().debug_61zpoe$('Shader pong from ' + fromAddress + ' took ' + elapsedMs.toString() + 'ms');
   };
   Pinky.prototype.providePanelMapping_CHEAT_iegnfh$ = function (brainId, surface) {
     this.brainToSurfaceMap_CHEAT_0.put_xwzc9p$(brainId, surface);
@@ -4960,34 +4987,154 @@
   function Pinky$PrerenderingSurfaceReceiver($outer, surface, sendFn) {
     this.$outer = $outer;
     ShowRunner$SurfaceReceiver.call(this, surface, sendFn);
-    this.currentRenderTree_0 = null;
-    this.pixels_0 = null;
+    this.currentRenderTree = null;
+    this.currentPoolKey_0 = null;
+    this.pixels = null;
+    this.currentBuffer = null;
   }
+  function Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral(closure$newPoolKey, this$Pinky) {
+    this.closure$newPoolKey = closure$newPoolKey;
+    this.this$Pinky = this$Pinky;
+  }
+  Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral.prototype.registerPooled_7d3fln$ = function (key, fn) {
+    this.closure$newPoolKey.v = key;
+    return this.this$Pinky.poolingRenderContext.registerPooled_7d3fln$(key, fn);
+  };
+  Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [RenderContext]
+  };
   Pinky$PrerenderingSurfaceReceiver.prototype.send_i8eued$ = function (shaderBuffer) {
-    var tmp$;
-    if (this.$outer.prerenderPixels_0) {
-      var shader = Kotlin.isType(tmp$ = shaderBuffer.shader, Shader) ? tmp$ : throwCCE();
-      var renderTree = this.currentRenderTree_0;
-      if (renderTree == null || !equals(renderTree.shader, shader)) {
-        var renderer = shader.createRenderer_ppt8xj$(this.surface);
-        renderTree = new Brain$RenderTree(shader, renderer, shaderBuffer);
-        this.currentRenderTree_0 = renderTree;
-        if (this.pixels_0 == null) {
-          var pixelBuffer = (new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance())).createBuffer_ppt8xj$(this.surface);
-          this.pixels_0 = new Pinky$PixelsAdapter(pixelBuffer);
+    var tmp$, tmp$_0;
+    var shader = Kotlin.isType(tmp$ = shaderBuffer.shader, Shader) ? tmp$ : throwCCE();
+    var renderTree = this.currentRenderTree;
+    if (renderTree == null || !equals(renderTree.shader, shader)) {
+      var priorPoolKey = this.currentPoolKey_0;
+      var newPoolKey = {v: null};
+      var renderer = shader.createRenderer_omlfoo$(this.surface, new Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral(newPoolKey, this.$outer));
+      if (!equals(newPoolKey.v, priorPoolKey)) {
+        if (priorPoolKey != null) {
+          this.$outer.poolingRenderContext.decrement_za3rmp$(priorPoolKey);
         }
+        this.currentPoolKey_0 = newPoolKey.v;
       }
-      renderTree.draw_bbfl1t$(ensureNotNull(this.pixels_0));
-      ShowRunner$SurfaceReceiver.prototype.send_i8eued$.call(this, ensureNotNull(this.pixels_0).buffer_8be2vx$);
+      renderTree = new Brain$RenderTree(shader, renderer, shaderBuffer);
+      this.currentRenderTree = renderTree;
+      if (this.pixels == null) {
+        var pixelBuffer = (new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance())).createBuffer_ppt8xj$(this.surface);
+        this.pixels = new Pinky$PixelsAdapter(pixelBuffer);
+      }
     }
-     else {
-      ShowRunner$SurfaceReceiver.prototype.send_i8eued$.call(this, shaderBuffer);
+    var renderer_0 = Kotlin.isType(tmp$_0 = ensureNotNull(this.currentRenderTree).renderer, Shader$Renderer) ? tmp$_0 : throwCCE();
+    renderer_0.beginFrame_b23bvv$(shaderBuffer, ensureNotNull(this.pixels).size);
+    this.currentBuffer = shaderBuffer;
+  };
+  Pinky$PrerenderingSurfaceReceiver.prototype.actuallySend = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var renderTree = this.currentRenderTree;
+    if (renderTree != null) {
+      var renderer = Kotlin.isType(tmp$ = renderTree.renderer, Shader$Renderer) ? tmp$ : throwCCE();
+      var pixels = ensureNotNull(this.pixels);
+      var currentBuffer = ensureNotNull(this.currentBuffer);
+      tmp$_0 = pixels.indices;
+      tmp$_1 = tmp$_0.first;
+      tmp$_2 = tmp$_0.last;
+      tmp$_3 = tmp$_0.step;
+      for (var i = tmp$_1; i <= tmp$_2; i += tmp$_3) {
+        pixels.set_ibd5tj$(i, renderer.draw_b23bvv$(currentBuffer, i));
+      }
+      this.currentBuffer = null;
+      renderer.endFrame();
+      pixels.finishedFrame();
+      renderTree.draw_bbfl1t$(pixels);
+      ShowRunner$SurfaceReceiver.prototype.send_i8eued$.call(this, pixels.buffer_8be2vx$);
     }
   };
   Pinky$PrerenderingSurfaceReceiver.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'PrerenderingSurfaceReceiver',
     interfaces: [ShowRunner$SurfaceReceiver]
+  };
+  function Pinky$aroundNextFrame$lambda(this$Pinky) {
+    return function () {
+      this$Pinky.poolingRenderContext.preDraw();
+      return Unit;
+    };
+  }
+  function Pinky$aroundNextFrame$lambda_0(this$Pinky) {
+    return function () {
+      var tmp$;
+      tmp$ = this$Pinky.brainInfos_0.values.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var tmp$_0;
+        var surfaceReceiver = Kotlin.isType(tmp$_0 = element.surfaceReceiver, Pinky$PrerenderingSurfaceReceiver) ? tmp$_0 : throwCCE();
+        surfaceReceiver.actuallySend();
+      }
+      return Unit;
+    };
+  }
+  Pinky.prototype.aroundNextFrame_0 = function (callNextFrame) {
+    callNextFrame();
+    if (this.prerenderPixels_0) {
+      var preDrawElapsed = timeSync(Pinky$aroundNextFrame$lambda(this));
+      var sendElapsed = timeSync(Pinky$aroundNextFrame$lambda_0(this));
+    }
+    var now = getTimeMillis();
+    var elapsedMs = now.subtract(this.lastSentAt);
+    this.lastSentAt = now;
+  };
+  function Pinky$PoolingRenderContext() {
+    this.pooledRenderers_0 = HashMap_init();
+  }
+  Pinky$PoolingRenderContext.prototype.registerPooled_7d3fln$ = function (key, fn) {
+    var tmp$;
+    var $receiver = this.pooledRenderers_0;
+    var tmp$_0;
+    var value = $receiver.get_11rb$(key);
+    if (value == null) {
+      var answer = new Pinky$PoolingRenderContext$Holder(fn());
+      $receiver.put_xwzc9p$(key, answer);
+      tmp$_0 = answer;
+    }
+     else {
+      tmp$_0 = value;
+    }
+    var holder = tmp$_0;
+    holder.count = holder.count + 1 | 0;
+    return Kotlin.isType(tmp$ = holder.pooledRenderer, PooledRenderer) ? tmp$ : throwCCE();
+  };
+  Pinky$PoolingRenderContext.prototype.decrement_za3rmp$ = function (key) {
+    var holder = ensureNotNull(this.pooledRenderers_0.get_11rb$(key));
+    holder.count = holder.count - 1 | 0;
+    if (holder.count === 0) {
+      logger$Companion_getInstance().debug_61zpoe$('Removing pooled renderer for ' + key.toString());
+      this.pooledRenderers_0.remove_11rb$(key);
+    }
+  };
+  Pinky$PoolingRenderContext.prototype.preDraw = function () {
+    var tmp$;
+    tmp$ = this.pooledRenderers_0.values.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.pooledRenderer.preDraw();
+    }
+  };
+  function Pinky$PoolingRenderContext$Holder(pooledRenderer, count) {
+    if (count === void 0)
+      count = 0;
+    this.pooledRenderer = pooledRenderer;
+    this.count = count;
+  }
+  Pinky$PoolingRenderContext$Holder.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Holder',
+    interfaces: []
+  };
+  Pinky$PoolingRenderContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PoolingRenderContext',
+    interfaces: [RenderContext]
   };
   function Pinky$PixelsAdapter(buffer) {
     this.buffer_8be2vx$ = buffer;
@@ -5456,6 +5603,7 @@
     ShaderId$HEART_instance = new ShaderId('HEART', 6, HeartShader$Companion_getInstance());
     ShaderId$RANDOM_instance = new ShaderId('RANDOM', 7, RandomShader$Companion_getInstance());
     ShaderId$GLSL_SANDBOX_55301_instance = new ShaderId('GLSL_SANDBOX_55301', 8, GlslSandbox55301Shader$Companion_getInstance());
+    ShaderId$GLSL_SHADER_instance = new ShaderId('GLSL_SHADER', 9, GlslShader$Companion_getInstance());
     ShaderId$Companion_getInstance();
   }
   var ShaderId$SOLID_instance;
@@ -5503,6 +5651,11 @@
     ShaderId_initFields();
     return ShaderId$GLSL_SANDBOX_55301_instance;
   }
+  var ShaderId$GLSL_SHADER_instance;
+  function ShaderId$GLSL_SHADER_getInstance() {
+    ShaderId_initFields();
+    return ShaderId$GLSL_SHADER_instance;
+  }
   function ShaderId$Companion() {
     ShaderId$Companion_instance = this;
     this.values = ShaderId$values();
@@ -5532,7 +5685,7 @@
     interfaces: [Enum]
   };
   function ShaderId$values() {
-    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance(), ShaderId$GLSL_SANDBOX_55301_getInstance()];
+    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance(), ShaderId$GLSL_SANDBOX_55301_getInstance(), ShaderId$GLSL_SHADER_getInstance()];
   }
   ShaderId.values = ShaderId$values;
   function ShaderId$valueOf(name) {
@@ -5555,6 +5708,8 @@
         return ShaderId$RANDOM_getInstance();
       case 'GLSL_SANDBOX_55301':
         return ShaderId$GLSL_SANDBOX_55301_getInstance();
+      case 'GLSL_SHADER':
+        return ShaderId$GLSL_SHADER_getInstance();
       default:throwISE('No enum constant baaahs.ShaderId.' + name);
     }
   }
@@ -5566,11 +5721,21 @@
     simpleName: 'ShaderReader',
     interfaces: []
   };
+  function RenderContext() {
+  }
+  RenderContext.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'RenderContext',
+    interfaces: []
+  };
   function Shader(id) {
     Shader$Companion_getInstance();
     this.id = id;
     this.descriptorBytes_lr4403$_0 = lazy(Shader$descriptorBytes$lambda(this));
   }
+  Shader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
+    return this.createRenderer_ppt8xj$(surface);
+  };
   Object.defineProperty(Shader.prototype, 'descriptorBytes', {
     get: function () {
       return this.descriptorBytes_lr4403$_0.value;
@@ -5633,6 +5798,13 @@
   Shader.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Shader',
+    interfaces: []
+  };
+  function PooledRenderer() {
+  }
+  PooledRenderer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'PooledRenderer',
     interfaces: []
   };
   function Pixels() {
@@ -7954,6 +8126,162 @@
   };
   Vector3F.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
+  };
+  function GlslManager() {
+  }
+  GlslManager.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'GlslManager',
+    interfaces: []
+  };
+  function GlslRenderer() {
+    this.surfacePixelsToAdd = ArrayList_init();
+    this.pixelCount = 0;
+    this.nextPixelOffset = 0;
+    this.uvCoordTextureIndex = 0;
+    this.uvCoordsLocation_8be2vx$ = null;
+    this.matLocation_8be2vx$ = null;
+    this.resolutionLocation_8be2vx$ = null;
+    this.timeLocation_8be2vx$ = null;
+    this.instance_sgrkp0$_0 = this.instance_sgrkp0$_0;
+  }
+  Object.defineProperty(GlslRenderer.prototype, 'instance', {
+    get: function () {
+      if (this.instance_sgrkp0$_0 == null)
+        return throwUPAE('instance');
+      return this.instance_sgrkp0$_0;
+    },
+    set: function (instance) {
+      this.instance_sgrkp0$_0 = instance;
+    }
+  });
+  GlslRenderer.prototype.findUniforms = function () {
+    this.uvCoordsLocation_8be2vx$ = this.getUniformLocation_61zpoe$('sm_uvCoords');
+    this.matLocation_8be2vx$ = this.getUniformLocation_61zpoe$('viewProjMatrix');
+    this.resolutionLocation_8be2vx$ = this.getUniformLocation_61zpoe$('resolution');
+    this.timeLocation_8be2vx$ = this.getUniformLocation_61zpoe$('time');
+  };
+  function GlslRenderer$addSurface$ObjectLiteral() {
+  }
+  Object.defineProperty(GlslRenderer$addSurface$ObjectLiteral.prototype, 'size', {
+    get: function () {
+      return 0;
+    }
+  });
+  GlslRenderer$addSurface$ObjectLiteral.prototype.get_za3lpa$ = function (i) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'get not implemented');
+  };
+  GlslRenderer$addSurface$ObjectLiteral.prototype.set_ibd5tj$ = function (i, color) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  GlslRenderer$addSurface$ObjectLiteral.prototype.set_tmuqsv$ = function (colors) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  GlslRenderer$addSurface$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Pixels]
+  };
+  GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
+    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelVertices != null) {
+      var surfacePixels = this.createSurfacePixels_x0dork$(surface, this.nextPixelOffset);
+      this.surfacePixelsToAdd.add_11rb$(surfacePixels);
+      this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
+      return surfacePixels;
+    }
+    return new GlslRenderer$addSurface$ObjectLiteral();
+  };
+  function GlslRenderer$maybeAddSurfacePixels$lambda(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.instance.release();
+      return Unit;
+    };
+  }
+  function GlslRenderer$maybeAddSurfacePixels$lambda_0(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.instance = this$GlslRenderer.createInstance_i8oon4$(closure$newPixelCount, closure$newUvCoords);
+      this$GlslRenderer.instance.bindUvCoordTexture_msnecj$(this$GlslRenderer.uvCoordTextureIndex, ensureNotNull(this$GlslRenderer.uvCoordsLocation_8be2vx$));
+      return Unit;
+    };
+  }
+  GlslRenderer.prototype.maybeAddSurfacePixels = function () {
+    if (!this.surfacePixelsToAdd.isEmpty()) {
+      var oldUvCoords = this.instance.uvCoords;
+      var newPixelCount = this.nextPixelOffset;
+      this.withGlContext_klfg04$(GlslRenderer$maybeAddSurfacePixels$lambda(this));
+      var newUvCoords = new Float32Array(this.get_bufSize_s8ev3n$(newPixelCount) * 2 | 0);
+      arrayCopy(oldUvCoords, newUvCoords, 0, 0, oldUvCoords.length);
+      var tmp$;
+      tmp$ = this.surfacePixelsToAdd.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var tmp$_0;
+        var surface = element.surface;
+        var pixelVertices = ensureNotNull(surface.pixelVertices);
+        tmp$_0 = surface.pixelCount;
+        for (var i = 0; i < tmp$_0; i++) {
+          var uvOffset = (element.pixel0Index + i | 0) * 2 | 0;
+          newUvCoords[uvOffset] = pixelVertices.get_za3lpa$(i).x;
+          newUvCoords[uvOffset + 1 | 0] = pixelVertices.get_za3lpa$(i).y;
+        }
+      }
+      this.withGlContext_klfg04$(GlslRenderer$maybeAddSurfacePixels$lambda_0(newPixelCount, newUvCoords, this));
+      this.pixelCount = newPixelCount;
+      println('Now managing ' + this.pixelCount + ' pixels.');
+      this.surfacePixelsToAdd.clear();
+    }
+  };
+  function GlslRenderer$Instance(pixelCount, uvCoords) {
+    this.pixelCount = pixelCount;
+    this.uvCoords = uvCoords;
+  }
+  GlslRenderer$Instance.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Instance',
+    interfaces: []
+  };
+  function GlslRenderer$Uniform(locationInternal) {
+    this.locationInternal = locationInternal;
+  }
+  GlslRenderer$Uniform.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Uniform',
+    interfaces: []
+  };
+  GlslRenderer.prototype.get_bufWidth_s8ev3n$ = function ($receiver) {
+    var b = Math_0.min($receiver, 1024);
+    return Math_0.max(1, b);
+  };
+  GlslRenderer.prototype.get_bufHeight_s8ev3n$ = function ($receiver) {
+    return ($receiver / 1024 | 0) + 1 | 0;
+  };
+  GlslRenderer.prototype.get_bufSize_s8ev3n$ = function ($receiver) {
+    return Kotlin.imul(this.get_bufWidth_s8ev3n$($receiver), this.get_bufHeight_s8ev3n$($receiver));
+  };
+  GlslRenderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslRenderer',
+    interfaces: []
+  };
+  function SurfacePixels(surface, pixel0Index) {
+    this.surface = surface;
+    this.pixel0Index = pixel0Index;
+    this.size_l2kxw9$_0 = this.surface.pixelCount;
+  }
+  Object.defineProperty(SurfacePixels.prototype, 'size', {
+    get: function () {
+      return this.size_l2kxw9$_0;
+    }
+  });
+  SurfacePixels.prototype.set_ibd5tj$ = function (i, color) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.prototype.set_tmuqsv$ = function (colors) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixels',
+    interfaces: [Pixels]
   };
   function Image() {
   }
@@ -10287,8 +10615,15 @@
     this.aShader.serialize_3kjoo0$(writer);
     this.bShader.serialize_3kjoo0$(writer);
   };
+  CompositorShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
+    var rendererA = this.aShader.createRenderer_omlfoo$(surface, renderContext);
+    var rendererB = this.bShader.createRenderer_omlfoo$(surface, renderContext);
+    return new CompositorShader$Renderer(rendererA, rendererB);
+  };
   CompositorShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new CompositorShader$Renderer(surface, this.aShader, this.bShader);
+    var rendererA = this.aShader.createRenderer_ppt8xj$(surface);
+    var rendererB = this.bShader.createRenderer_ppt8xj$(surface);
+    return new CompositorShader$Renderer(rendererA, rendererB);
   };
   CompositorShader.prototype.readBuffer_100t80$ = function (reader) {
     return new CompositorShader$Buffer(this, this.aShader.readBuffer_100t80$(reader), this.bShader.readBuffer_100t80$(reader), CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte()), reader.readFloat());
@@ -10350,9 +10685,9 @@
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function CompositorShader$Renderer(surface, aShader, bShader) {
-    this.rendererA_0 = aShader.createRenderer_ppt8xj$(surface);
-    this.rendererB_0 = bShader.createRenderer_ppt8xj$(surface);
+  function CompositorShader$Renderer(rendererA, rendererB) {
+    this.rendererA_0 = rendererA;
+    this.rendererB_0 = rendererB;
   }
   CompositorShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
     var tmp$, tmp$_0;
@@ -10625,6 +10960,113 @@
     var length = Math_0.sqrt(x);
     return Color_init_0(r / length, g / length, b / length);
   }
+  function GlslShader(glslProgram) {
+    GlslShader$Companion_getInstance();
+    Shader.call(this, ShaderId$GLSL_SHADER_getInstance());
+    this.glslProgram = glslProgram;
+  }
+  function GlslShader$Companion() {
+    GlslShader$Companion_instance = this;
+  }
+  GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
+    return new GlslShader(reader.readString());
+  };
+  GlslShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: [ShaderReader]
+  };
+  var GlslShader$Companion_instance = null;
+  function GlslShader$Companion_getInstance() {
+    if (GlslShader$Companion_instance === null) {
+      new GlslShader$Companion();
+    }
+    return GlslShader$Companion_instance;
+  }
+  GlslShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.glslProgram);
+  };
+  function GlslShader$createRenderer$lambda(this$GlslShader) {
+    return function () {
+      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram);
+    };
+  }
+  function GlslShader$createRenderer$ObjectLiteral(closure$pixels) {
+    this.closure$pixels = closure$pixels;
+  }
+  GlslShader$createRenderer$ObjectLiteral.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+  };
+  GlslShader$createRenderer$ObjectLiteral.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return this.closure$pixels.get_za3lpa$(pixelIndex);
+  };
+  GlslShader$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Shader$Renderer]
+  };
+  GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
+    var poolKey = to(getKClass(GlslShader), this.glslProgram);
+    var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
+    var pixels = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
+    return new GlslShader$createRenderer$ObjectLiteral(pixels);
+  };
+  function GlslShader$PooledRenderer(glslProgram) {
+    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_61zpoe$(glslProgram);
+  }
+  GlslShader$PooledRenderer.prototype.preDraw = function () {
+    this.glslRenderer.draw();
+  };
+  GlslShader$PooledRenderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PooledRenderer',
+    interfaces: [PooledRenderer]
+  };
+  function GlslShader$createRenderer$ObjectLiteral_0(closure$pixels) {
+    this.closure$pixels = closure$pixels;
+  }
+  GlslShader$createRenderer$ObjectLiteral_0.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+  };
+  GlslShader$createRenderer$ObjectLiteral_0.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return this.closure$pixels.get_za3lpa$(pixelIndex);
+  };
+  GlslShader$createRenderer$ObjectLiteral_0.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Shader$Renderer]
+  };
+  GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_61zpoe$(this.glslProgram);
+    var pixels = glslRenderer.addSurface_ppt8xj$(surface);
+    return new GlslShader$createRenderer$ObjectLiteral_0(pixels);
+  };
+  GlslShader.prototype.createBuffer_ppt8xj$ = function (surface) {
+    return new GlslShader$Buffer(this);
+  };
+  GlslShader.prototype.readBuffer_100t80$ = function (reader) {
+    var $receiver = new GlslShader$Buffer(this);
+    $receiver.read_100t80$(reader);
+    return $receiver;
+  };
+  function GlslShader$Buffer($outer) {
+    this.$outer = $outer;
+  }
+  Object.defineProperty(GlslShader$Buffer.prototype, 'shader', {
+    get: function () {
+      return this.$outer;
+    }
+  });
+  GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+  };
+  GlslShader$Buffer.prototype.read_100t80$ = function (reader) {
+  };
+  GlslShader$Buffer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Buffer',
+    interfaces: [Shader$Buffer]
+  };
+  GlslShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslShader',
+    interfaces: [Shader]
+  };
   function HeartShader() {
     HeartShader$Companion_getInstance();
     Shader.call(this, ShaderId$HEART_getInstance());
@@ -11668,7 +12110,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301Show_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -11847,7 +12289,7 @@
   }
   function GlslSandbox55301Show() {
     GlslSandbox55301Show_instance = this;
-    Show.call(this, 'GlslSandbox 55301');
+    Show.call(this, 'GlslSandbox 55301 (kt)');
   }
   function GlslSandbox55301Show$createRenderer$ObjectLiteral() {
   }
@@ -11880,6 +12322,44 @@
       new GlslSandbox55301Show();
     }
     return GlslSandbox55301Show_instance;
+  }
+  function GlslShow() {
+    GlslShow_instance = this;
+    Show.call(this, 'GlslSandbox 55301 (OpenGL)');
+    this.program = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\n#define N 6\n\nvoid main( void ) {\n\tvec2 v=(gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*10.0;\n\tfloat t=time * 0.4,r=0.0;\n\tfor (int i=0;i<N;i++){\n\t\tfloat d=(3.14159265 / float(N))*(float(i)*5.0);\n\t\tr+=length(vec2(v.x,v.y))+0.01;\n\t\tv = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));\n\t}\n        r = (sin(r*0.1)*0.5)+0.5;\n\tr = pow(r, 128.0);\n\tgl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );\n//\tgl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);\n}\n';
+    this.program2 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n#define PI 3.14159265359\n\nvoid main(void)\n{\n\tvec2 uv = gl_FragCoord.xy / resolution.xy;\n\tgl_FragColor = vec4(0);\n    gl_FragColor.r = sin(88.*uv.x) + sin(55.*uv.y) + 0.5+2.*sin(time*2.);\n}\n    ');
+  }
+  function GlslShow$createRenderer$ObjectLiteral() {
+  }
+  GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+  };
+  GlslShow$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Show$Renderer]
+  };
+  GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
+    var shader = new GlslShader(this.program);
+    var $receiver = showRunner.allSurfaces;
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
+    }
+    return new GlslShow$createRenderer$ObjectLiteral();
+  };
+  GlslShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslShow',
+    interfaces: [Show]
+  };
+  var GlslShow_instance = null;
+  function GlslShow_getInstance() {
+    if (GlslShow_instance === null) {
+      new GlslShow();
+    }
+    return GlslShow_instance;
   }
   function HeartbleatShow() {
     HeartbleatShow_instance = this;
@@ -13431,6 +13911,11 @@
     else
       return instance.doResume(null);
   }
+  function timeSync(function_0) {
+    var now = getTimeMillis();
+    function_0();
+    return getTimeMillis().subtract(now);
+  }
   function JsDisplay() {
   }
   JsDisplay.prototype.forNetwork = function () {
@@ -13455,7 +13940,7 @@
     $receiver.addEventListener('click', JsNetworkDisplay$packetLossRateSpan$lambda$lambda(this));
     this.packetLossRateSpan_0 = $receiver;
     this.packetLossRate_q9z6ua$_0 = 0.05;
-    this.packetLossRate = 0.05;
+    this.packetLossRate = 0.0;
     this.packetsReceivedSpan_0 = ensureNotNull(document.getElementById('networkPacketsReceived'));
     this.packetsDroppedSpan_0 = ensureNotNull(document.getElementById('networkPacketsDropped'));
     this.packetsReceived_0 = 0;
@@ -15030,7 +15515,7 @@
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.sheepModel_0, this.display_0.forVisualizer());
     this.fs_0 = new FakeFs();
-    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.fs_0, this.display_0.forPinky());
+    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.fs_0, this.display_0.forPinky(), true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -15683,6 +16168,600 @@
     simpleName: 'Vector2',
     interfaces: []
   };
+  function GlslBase() {
+    GlslBase_instance = this;
+    this.manager_cd4dvk$_0 = lazy(GlslBase$manager$lambda);
+  }
+  Object.defineProperty(GlslBase.prototype, 'manager', {
+    get: function () {
+      return this.manager_cd4dvk$_0.value;
+    }
+  });
+  function GlslBase$manager$lambda() {
+    return new JsGlslManager();
+  }
+  GlslBase.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslBase',
+    interfaces: []
+  };
+  var GlslBase_instance = null;
+  function GlslBase_getInstance() {
+    if (GlslBase_instance === null) {
+      new GlslBase();
+    }
+    return GlslBase_instance;
+  }
+  function JsGlslManager() {
+  }
+  JsGlslManager.prototype.createRenderer_61zpoe$ = function (program) {
+    return new JsGlslRenderer(program);
+  };
+  JsGlslManager.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsGlslManager',
+    interfaces: [GlslManager]
+  };
+  function JsGlslRenderer(shader) {
+    JsGlslRenderer$Companion_getInstance();
+    GlslRenderer.call(this);
+    this.shader = shader;
+    var tmp$, tmp$_0;
+    this.canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
+    this.gl = Kotlin.isType(tmp$_0 = ensureNotNull(this.canvas.getContext('webgl2')), WebGL2RenderingContext) ? tmp$_0 : throwCCE();
+    this.program_0 = null;
+    this.quad_0 = null;
+    this.viewProjMatrix_8be2vx$ = (new Matrix4_init()).makeOrthographic(-0.5, 0.5, -0.5, 0.5, 1.0, 10.0).lookAt(new Vector3(0.0, 0.0, 1.0), new Vector3(0.0, 0.0, 0.0), new Vector3(0.0, 1.0, 0.0));
+    var $receiver = this.viewProjMatrix_8be2vx$.elements;
+    var destination = ArrayList_init_1($receiver.length);
+    var tmp$_1;
+    for (tmp$_1 = 0; tmp$_1 !== $receiver.length; ++tmp$_1) {
+      var item = $receiver[tmp$_1];
+      destination.add_11rb$(item);
+    }
+    this.viewMatrix = copyToArray(destination);
+    this.gl_klfg04$(JsGlslRenderer_init$lambda(this));
+    this.program_0 = this.createShaderProgram_0();
+    this.quad_0 = new JsGlslRenderer$Quad(this);
+    this.findUniforms();
+    this.instance = this.createInstance_i8oon4$(1, new Float32Array(2));
+  }
+  function JsGlslRenderer$getUniformLocation$lambda(this$JsGlslRenderer, closure$name) {
+    return function () {
+      return new GlslRenderer$Uniform(this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, closure$name));
+    };
+  }
+  JsGlslRenderer.prototype.getUniformLocation_61zpoe$ = function (name) {
+    return this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
+  };
+  function JsGlslRenderer$Quad($outer) {
+    this.$outer = $outer;
+    this.vertices_0 = [1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0];
+    this.quadVertexBuffer_0 = null;
+    this.quadVertexBuffer_0 = this.$outer.gl.createBuffer();
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_0(this.$outer, this));
+    var vertexAttr = this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_1(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_2(this.$outer, vertexAttr));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_3(this.$outer, vertexAttr));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_4(this.$outer));
+  }
+  function JsGlslRenderer$Quad$render$lambda(this$JsGlslRenderer, this$Quad) {
+    return function () {
+      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, this$Quad.quadVertexBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Quad$render$lambda_0(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.drawArrays(JsGlslRenderer$Companion_getInstance().GL.TRIANGLES, 0, 6);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Quad$render$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, null);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Quad.prototype.render_8be2vx$ = function () {
+    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda_0(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda_1(this.$outer));
+  };
+  function JsGlslRenderer$Quad$release$lambda(this$JsGlslRenderer, this$Quad) {
+    return function () {
+      this$JsGlslRenderer.gl.deleteBuffer(this$Quad.quadVertexBuffer_0);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Quad.prototype.release_0 = function () {
+    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$release$lambda(this.$outer, this));
+  };
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda(this$JsGlslRenderer, this$Quad) {
+    return function () {
+      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, this$Quad.quadVertexBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_0(this$JsGlslRenderer, this$Quad) {
+    return function () {
+      this$JsGlslRenderer.gl.bufferData(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, new Float32Array(this$Quad.vertices_0), JsGlslRenderer$Companion_getInstance().GL.STATIC_DRAW);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.getAttribLocation(this$JsGlslRenderer.program_0, 'Vertex');
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_2(this$JsGlslRenderer, closure$vertexAttr) {
+    return function () {
+      this$JsGlslRenderer.gl.vertexAttribPointer(closure$vertexAttr, 2, JsGlslRenderer$Companion_getInstance().GL.FLOAT, false, 0, 0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_3(this$JsGlslRenderer, closure$vertexAttr) {
+    return function () {
+      this$JsGlslRenderer.gl.enableVertexAttribArray(closure$vertexAttr);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_4(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, null);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Quad.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Quad',
+    interfaces: []
+  };
+  JsGlslRenderer.prototype.createSurfacePixels_x0dork$ = function (surface, pixelOffset) {
+    return new JsGlslRenderer$SurfacePixels(this, surface, pixelOffset);
+  };
+  JsGlslRenderer.prototype.createInstance_i8oon4$ = function (pixelCount, uvCoords) {
+    return new JsGlslRenderer$Instance(this, pixelCount, uvCoords);
+  };
+  function JsGlslRenderer$draw$lambda$lambda(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.maybeAddSurfacePixels();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$draw$lambda$lambda_0(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.instance.bindFramebuffer();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$draw$lambda$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.render_0();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$draw$lambda$lambda_2(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.instance.copyToPixelBuffer();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$draw$lambda$lambda_3(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.finish();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$draw$lambda(this$JsGlslRenderer) {
+    return function () {
+      var addSurfacesMs = timeSync(JsGlslRenderer$draw$lambda$lambda(this$JsGlslRenderer));
+      var bindFbMs = timeSync(JsGlslRenderer$draw$lambda$lambda_0(this$JsGlslRenderer));
+      var renderMs = timeSync(JsGlslRenderer$draw$lambda$lambda_1(this$JsGlslRenderer));
+      var readPxMs = timeSync(JsGlslRenderer$draw$lambda$lambda_2(this$JsGlslRenderer));
+      this$JsGlslRenderer.gl_klfg04$(JsGlslRenderer$draw$lambda$lambda_3(this$JsGlslRenderer));
+      return Unit;
+    };
+  }
+  JsGlslRenderer.prototype.draw = function () {
+    this.withGlContext_klfg04$(JsGlslRenderer$draw$lambda(this));
+  };
+  function JsGlslRenderer$render$lambda(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.uniformMatrix4fv(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.matLocation_8be2vx$), false, this$JsGlslRenderer.viewMatrix);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_0(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.uniform2f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.resolutionLocation_8be2vx$), 1.0, 1.0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_1(this$JsGlslRenderer, closure$thisTime) {
+    return function () {
+      this$JsGlslRenderer.gl.uniform1f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.timeLocation_8be2vx$), closure$thisTime);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_2(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.viewport(0, 0, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$JsGlslRenderer.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$JsGlslRenderer.pixelCount));
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_3(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.clear(JsGlslRenderer$Companion_getInstance().GL.COLOR_BUFFER_BIT | JsGlslRenderer$Companion_getInstance().GL.DEPTH_BUFFER_BIT);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_4(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.finish();
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$render$lambda_5(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.getProgramInfoLog(this$JsGlslRenderer.program_0);
+    };
+  }
+  JsGlslRenderer.prototype.render_0 = function () {
+    var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
+    this.gl_klfg04$(JsGlslRenderer$render$lambda(this));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_0(this));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_1(this, thisTime));
+    this.instance.bindUvCoordTexture_msnecj$(this.uvCoordTextureIndex, ensureNotNull(this.uvCoordsLocation_8be2vx$));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_2(this));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_3(this));
+    this.quad_0.render_8be2vx$();
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_4(this));
+    var programLog = this.gl_klfg04$(JsGlslRenderer$render$lambda_5(this));
+    var tmp$ = programLog != null;
+    if (tmp$) {
+      tmp$ = programLog.length > 0;
+    }
+    if (tmp$)
+      println('ProgramInfoLog: ' + toString_0(programLog));
+  };
+  function JsGlslRenderer$SurfacePixels($outer, surface, pixel0Index) {
+    this.$outer = $outer;
+    SurfacePixels.call(this, surface, pixel0Index);
+  }
+  JsGlslRenderer$SurfacePixels.prototype.get_za3lpa$ = function (i) {
+    return this.$outer.instance.getPixel_za3lpa$(this.pixel0Index + i | 0);
+  };
+  JsGlslRenderer$SurfacePixels.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixels',
+    interfaces: [SurfacePixels]
+  };
+  function JsGlslRenderer$createShaderProgram$lambda(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createProgram();
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_0(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createShader(JsGlslRenderer$Companion_getInstance().GL.VERTEX_SHADER);
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_1(this$JsGlslRenderer, closure$vs) {
+    return function () {
+      this$JsGlslRenderer.gl.shaderSource(closure$vs, '#version 300 es\n\nprecision lowp float;\n\n// xy = vertex position in normalized device coordinates ([-1,+1] range).\nin vec2 Vertex;\n\nconst vec2 scale = vec2(0.5, 0.5);\n\nvoid main()\n{\n    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range\n    gl_Position = vec4(Vertex, 0.0, 1.0);\n}\n');
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_2(this$JsGlslRenderer, closure$program, closure$vs) {
+    return function () {
+      this$JsGlslRenderer.gl.attachShader(closure$program, closure$vs);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_3(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createShader(JsGlslRenderer$Companion_getInstance().GL.FRAGMENT_SHADER);
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_4(this$JsGlslRenderer, closure$fs, closure$src) {
+    return function () {
+      this$JsGlslRenderer.gl.shaderSource(closure$fs, closure$src);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_5(this$JsGlslRenderer, closure$program, closure$fs) {
+    return function () {
+      this$JsGlslRenderer.gl.attachShader(closure$program, closure$fs);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_6(this$JsGlslRenderer, closure$program) {
+    return function () {
+      this$JsGlslRenderer.gl.linkProgram(closure$program);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$createShaderProgram$lambda_7(this$JsGlslRenderer, closure$program) {
+    return function () {
+      this$JsGlslRenderer.gl.useProgram(closure$program);
+      return Unit;
+    };
+  }
+  JsGlslRenderer.prototype.createShaderProgram_0 = function () {
+    var program = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda(this));
+    var vs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_0(this));
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_1(this, vs));
+    this.compileShader_0(vs);
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_2(this, program, vs));
+    var fs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_3(this));
+    var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
+    var $receiver = this.shader;
+    var regex = Regex_init('void main\\s*\\(\\s*void\\s*\\)');
+    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
+    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
+    println(src);
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_4(this, fs, src));
+    this.compileShader_0(fs);
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_5(this, program, fs));
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_6(this, program));
+    if (equals(this.gl.getProgramParameter(program, JsGlslRenderer$Companion_getInstance().GL.LINK_STATUS), false)) {
+      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(this.gl.getProgramInfoLog(program)));
+    }
+    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_7(this, program));
+    return program;
+  };
+  function JsGlslRenderer$compileShader$lambda(this$JsGlslRenderer, closure$shader) {
+    return function () {
+      this$JsGlslRenderer.gl.compileShader(closure$shader);
+      return Unit;
+    };
+  }
+  JsGlslRenderer.prototype.compileShader_0 = function (shader) {
+    this.gl_klfg04$(JsGlslRenderer$compileShader$lambda(this, shader));
+    if (equals(this.gl.getShaderParameter(shader, JsGlslRenderer$Companion_getInstance().GL.COMPILE_STATUS), false)) {
+      window.alert('Failed to compile shader: ' + toString_0(this.gl.getShaderInfoLog(shader)) + '\n' + ('Version: ' + toString_0(this.gl.getParameter(JsGlslRenderer$Companion_getInstance().GL.VERSION)) + '\n') + ('GLSL Version: ' + toString_0(this.gl.getParameter(JsGlslRenderer$Companion_getInstance().GL.SHADING_LANGUAGE_VERSION)) + '\n'));
+      throw RuntimeException_init('Failed to compile shader: ' + toString_0(this.gl.getShaderInfoLog(shader)));
+    }
+  };
+  JsGlslRenderer.prototype.gl_klfg04$ = function (fn) {
+    var result = fn();
+    JsGlslRenderer$Companion_getInstance().checkForGlError_tnk6ih$(this.gl);
+    return result;
+  };
+  JsGlslRenderer.prototype.withGlContext_klfg04$ = function (fn) {
+    return fn();
+  };
+  function JsGlslRenderer$Companion() {
+    JsGlslRenderer$Companion_instance = this;
+    this.GL = WebGLRenderingContext;
+    this.GL2 = WebGL2RenderingContext;
+  }
+  JsGlslRenderer$Companion.prototype.checkForGlError_tnk6ih$ = function (gl) {
+    var tmp$;
+    while (true) {
+      var error = gl.getError();
+      if (error === this.GL.INVALID_ENUM)
+        tmp$ = 'GL_INVALID_ENUM';
+      else if (error === this.GL.INVALID_VALUE)
+        tmp$ = 'GL_INVALID_VALUE';
+      else if (error === this.GL.INVALID_OPERATION)
+        tmp$ = 'GL_INVALID_OPERATION';
+      else if (error === this.GL.INVALID_FRAMEBUFFER_OPERATION)
+        tmp$ = 'GL_INVALID_FRAMEBUFFER_OPERATION';
+      else if (error === this.GL2.FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
+        tmp$ = 'FRAMEBUFFER_INCOMPLETE_ATTACHMENT';
+      else if (error === this.GL.CONTEXT_LOST_WEBGL)
+        tmp$ = 'GL_CONTEXT_LOST_WEBGL';
+      else if (error === this.GL.OUT_OF_MEMORY)
+        tmp$ = 'GL_OUT_OF_MEMORY';
+      else
+        tmp$ = 'unknown error ' + error;
+      var code = tmp$;
+      if (error !== 0)
+        throw RuntimeException_init('OpenGL Error: ' + code);
+      else
+        return;
+    }
+  };
+  JsGlslRenderer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var JsGlslRenderer$Companion_instance = null;
+  function JsGlslRenderer$Companion_getInstance() {
+    if (JsGlslRenderer$Companion_instance === null) {
+      new JsGlslRenderer$Companion();
+    }
+    return JsGlslRenderer$Companion_instance;
+  }
+  function JsGlslRenderer$Instance($outer, pixelCount, uvCoords) {
+    this.$outer = $outer;
+    GlslRenderer$Instance.call(this, pixelCount, uvCoords);
+    this.uvCoordTexture_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$uvCoordTexture$lambda(this.$outer));
+    this.frameBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$frameBuffer$lambda(this.$outer));
+    this.renderBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$renderBuffer$lambda(this.$outer));
+    this.pixelBuffer = new Uint8Array(this.$outer.get_bufSize_s8ev3n$(pixelCount) * 4 | 0);
+    this.uvCoordsFloat32_0 = new Float32Array(toTypedArray_0(uvCoords));
+  }
+  function JsGlslRenderer$Instance$bindFramebuffer$lambda(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.bindFramebuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, this$Instance.frameBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindFramebuffer$lambda_0(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.bindRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, this$Instance.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindFramebuffer$lambda_1(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.renderbufferStorage(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, JsGlslRenderer$Companion_getInstance().GL.RGBA4, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount));
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindFramebuffer$lambda_2(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.framebufferRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, JsGlslRenderer$Companion_getInstance().GL.COLOR_ATTACHMENT0, JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, this$Instance.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindFramebuffer$lambda_3(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.checkFramebufferStatus(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER);
+    };
+  }
+  JsGlslRenderer$Instance.prototype.bindFramebuffer = function () {
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_0(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_1(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_2(this.$outer, this));
+    var status = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_3(this.$outer));
+    if (status !== JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER_COMPLETE) {
+      throw RuntimeException_init('FrameBuffer huh? ' + status);
+    }
+  };
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda(this$JsGlslRenderer, closure$textureIndex) {
+    return function () {
+      this$JsGlslRenderer.gl.activeTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE0 + closure$textureIndex | 0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_0(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, this$Instance.uvCoordTexture_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MIN_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_2(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MAG_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_3(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.texImage2D(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, 0, JsGlslRenderer$Companion_getInstance().GL2.R32F, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount) * 2 | 0, this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount), 0, JsGlslRenderer$Companion_getInstance().GL2.RED, JsGlslRenderer$Companion_getInstance().GL.FLOAT, this$Instance.uvCoordsFloat32_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_4(this$JsGlslRenderer, closure$uvCoordsLocation, closure$textureIndex) {
+    return function () {
+      this$JsGlslRenderer.gl.uniform1i(this$JsGlslRenderer.get_location_0(closure$uvCoordsLocation), closure$textureIndex);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Instance.prototype.bindUvCoordTexture_msnecj$ = function (textureIndex, uvCoordsLocation) {
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda(this.$outer, textureIndex));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_0(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_1(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_2(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_3(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_4(this.$outer, uvCoordsLocation, textureIndex));
+  };
+  JsGlslRenderer$Instance.prototype.getPixel_za3lpa$ = function (pixelIndex) {
+    var offset = pixelIndex * 4 | 0;
+    return Color_init_2(this.pixelBuffer[offset], this.pixelBuffer[offset + 1 | 0], this.pixelBuffer[offset + 2 | 0], this.pixelBuffer[offset + 3 | 0]);
+  };
+  function JsGlslRenderer$Instance$copyToPixelBuffer$lambda(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.readPixels(0, 0, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount), JsGlslRenderer$Companion_getInstance().GL.RGBA, JsGlslRenderer$Companion_getInstance().GL.UNSIGNED_BYTE, this$Instance.pixelBuffer);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Instance.prototype.copyToPixelBuffer = function () {
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$copyToPixelBuffer$lambda(this.$outer, this));
+  };
+  function JsGlslRenderer$Instance$release$lambda(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.bindRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, null);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$release$lambda_0(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.bindFramebuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, null);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$release$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, null);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$release$lambda_2(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.deleteFramebuffer(this$Instance.frameBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$release$lambda_3(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.deleteRenderbuffer(this$Instance.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$Instance$release$lambda_4(this$JsGlslRenderer, this$Instance) {
+    return function () {
+      this$JsGlslRenderer.gl.deleteTexture(this$Instance.uvCoordTexture_0);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$Instance.prototype.release = function () {
+    println('Release ' + this + ' with ' + this.pixelCount + ' pixels and ' + this.uvCoords.length + ' uvs');
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_0(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_1(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_2(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_3(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_4(this.$outer, this));
+  };
+  function JsGlslRenderer$Instance$uvCoordTexture$lambda(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createTexture();
+    };
+  }
+  function JsGlslRenderer$Instance$frameBuffer$lambda(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createFramebuffer();
+    };
+  }
+  function JsGlslRenderer$Instance$renderBuffer$lambda(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createRenderbuffer();
+    };
+  }
+  JsGlslRenderer$Instance.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Instance',
+    interfaces: [GlslRenderer$Instance]
+  };
+  JsGlslRenderer.prototype.get_location_0 = function ($receiver) {
+    var tmp$;
+    return (tmp$ = $receiver != null ? $receiver.locationInternal : null) == null || Kotlin.isType(tmp$, WebGLUniformLocation) ? tmp$ : throwCCE();
+  };
+  function JsGlslRenderer_init$lambda(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.clearColor(0.0, 0.5, 0.0, 1.0);
+      return Unit;
+    };
+  }
+  JsGlslRenderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsGlslRenderer',
+    interfaces: [GlslRenderer]
+  };
   function NativeBitmap(width, height) {
     CanvasBitmap.call(this, createCanvas(width, height));
     this.width_geohfm$_0 = width;
@@ -16041,7 +17120,7 @@
     }
   });
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_fqrh44$ = function (bytes) {
-    this.closure$webSocket.send(new Int8Array(toTypedArray_0(bytes)));
+    this.closure$webSocket.send(new Int8Array(toTypedArray_1(bytes)));
   };
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -17289,6 +18368,8 @@
   Pinky.BeatProvider = Pinky$BeatProvider;
   Pinky.PinkyBeatProvider = Pinky$PinkyBeatProvider;
   Pinky.NetworkStats = Pinky$NetworkStats;
+  Pinky$PoolingRenderContext.Holder = Pinky$PoolingRenderContext$Holder;
+  Pinky.PoolingRenderContext = Pinky$PoolingRenderContext;
   package$baaahs.Pinky = Pinky;
   package$baaahs.BrainId = BrainId;
   package$baaahs.BrainInfo = BrainInfo;
@@ -17333,17 +18414,22 @@
   Object.defineProperty(ShaderId, 'GLSL_SANDBOX_55301', {
     get: ShaderId$GLSL_SANDBOX_55301_getInstance
   });
+  Object.defineProperty(ShaderId, 'GLSL_SHADER', {
+    get: ShaderId$GLSL_SHADER_getInstance
+  });
   Object.defineProperty(ShaderId, 'Companion', {
     get: ShaderId$Companion_getInstance
   });
   package$baaahs.ShaderId = ShaderId;
   package$baaahs.ShaderReader = ShaderReader;
+  package$baaahs.RenderContext = RenderContext;
   Object.defineProperty(Shader, 'Companion', {
     get: Shader$Companion_getInstance
   });
   Shader.Buffer = Shader$Buffer;
   Shader.Renderer = Shader$Renderer;
   package$baaahs.Shader = Shader;
+  package$baaahs.PooledRenderer = PooledRenderer;
   package$baaahs.Pixels = Pixels;
   Model.Surface = Model$Surface;
   package$baaahs.Model = Model;
@@ -17565,6 +18651,12 @@
     get: Vector3F$$serializer_getInstance
   });
   package$geom.Vector3F = Vector3F;
+  var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
+  package$glsl.GlslManager = GlslManager;
+  GlslRenderer.Instance = GlslRenderer$Instance;
+  GlslRenderer.Uniform = GlslRenderer$Uniform;
+  package$glsl.GlslRenderer = GlslRenderer;
+  package$glsl.SurfacePixels = SurfacePixels;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
   package$imaging.Bitmap = Bitmap;
@@ -17708,6 +18800,12 @@
   GlslSandbox55301Shader.Renderer = GlslSandbox55301Shader$Renderer;
   GlslSandbox55301Shader.Vector2 = GlslSandbox55301Shader$Vector2;
   package$shaders.GlslSandbox55301Shader = GlslSandbox55301Shader;
+  Object.defineProperty(GlslShader, 'Companion', {
+    get: GlslShader$Companion_getInstance
+  });
+  GlslShader.PooledRenderer = GlslShader$PooledRenderer;
+  GlslShader.Buffer = GlslShader$Buffer;
+  package$shaders.GlslShader = GlslShader;
   Object.defineProperty(HeartShader, 'Companion', {
     get: HeartShader$Companion_getInstance
   });
@@ -17786,6 +18884,9 @@
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
   });
+  Object.defineProperty(package$shows, 'GlslShow', {
+    get: GlslShow_getInstance
+  });
   Object.defineProperty(package$shows, 'HeartbleatShow', {
     get: HeartbleatShow_getInstance
   });
@@ -17829,6 +18930,7 @@
   });
   package$baaahs.logger = logger;
   package$baaahs.time_66u77s$ = time;
+  package$baaahs.timeSync_ls4sck$ = timeSync;
   package$baaahs.JsDisplay = JsDisplay;
   package$baaahs.JsNetworkDisplay = JsNetworkDisplay;
   package$baaahs.JsPinkyDisplay = JsPinkyDisplay;
@@ -17864,6 +18966,17 @@
   var package$browser = package$baaahs.browser || (package$baaahs.browser = {});
   package$browser.RealMediaDevices = RealMediaDevices;
   package$geom.Vector2 = Vector2_0;
+  Object.defineProperty(package$glsl, 'GlslBase', {
+    get: GlslBase_getInstance
+  });
+  package$glsl.JsGlslManager = JsGlslManager;
+  JsGlslRenderer.Quad = JsGlslRenderer$Quad;
+  JsGlslRenderer.SurfacePixels = JsGlslRenderer$SurfacePixels;
+  Object.defineProperty(JsGlslRenderer, 'Companion', {
+    get: JsGlslRenderer$Companion_getInstance
+  });
+  JsGlslRenderer.Instance = JsGlslRenderer$Instance;
+  package$glsl.JsGlslRenderer = JsGlslRenderer;
   package$imaging.NativeBitmap = NativeBitmap;
   package$imaging.createCanvas_vux9f0$ = createCanvas;
   package$imaging.CanvasBitmap = CanvasBitmap;
@@ -17929,6 +19042,12 @@
   Matrix4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Object.defineProperty(GlslRenderer$addSurface$ObjectLiteral.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  GlslRenderer$addSurface$ObjectLiteral.prototype.finishedFrame = Pixels.prototype.finishedFrame;
+  GlslRenderer$addSurface$ObjectLiteral.prototype.iterator = Pixels.prototype.iterator;
+  Object.defineProperty(SurfacePixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
+  SurfacePixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
+  SurfacePixels.prototype.iterator = Pixels.prototype.iterator;
   DateTimeSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$PixelData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
@@ -17937,6 +19056,8 @@
   FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   GlslSandbox55301Shader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   GlslSandbox55301Shader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  GlslShader$createRenderer$ObjectLiteral.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  GlslShader$createRenderer$ObjectLiteral_0.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -17952,6 +19073,7 @@
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;

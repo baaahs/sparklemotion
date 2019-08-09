@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslRenderer.Instance - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="../index.html">GlslRenderer</a>&nbsp;/&nbsp;<a href="./index.html">Instance</a><br/>
+<br/>
+<h1>Instance</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Instance</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Instance</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Instance$<init>(kotlin.Int, kotlin.FloatArray)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer.Instance$<init>(kotlin.Int, kotlin.FloatArray)/uvCoords">uvCoords</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="pixel-count.html">pixelCount</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="uv-coords.html">uvCoords</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uvCoords</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="bind-framebuffer.html">bindFramebuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">bindFramebuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="bind-uv-coord-texture.html">bindUvCoordTexture</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">bindUvCoordTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Instance$bindUvCoordTexture(kotlin.Int, baaahs.glsl.GlslRenderer.Uniform)/textureIndex">textureIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer.Instance$bindUvCoordTexture(kotlin.Int, baaahs.glsl.GlslRenderer.Uniform)/uvCoordsLocation">uvCoordsLocation</span><span class="symbol">:</span>&nbsp;<a href="../-uniform/index.html"><span class="identifier">GlslRenderer.Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="copy-to-pixel-buffer.html">copyToPixelBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">copyToPixelBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-pixel.html">getPixel</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Instance$getPixel(kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="release.html">release</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../-js-glsl-renderer/-instance/index.html">Instance</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Instance</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslRenderer.Instance</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../../-jvm-glsl-renderer/-instance/index.html">Instance</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Instance</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslRenderer.Instance</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

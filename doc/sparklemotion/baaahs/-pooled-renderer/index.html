@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PooledRenderer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">PooledRenderer</a><br/>
+<br/>
+<h1>PooledRenderer</h1>
+<code><span class="keyword">interface </span><span class="identifier">PooledRenderer</span></code>
+<p>If a <a href="../-shader/-renderer/index.html">Shader.Renderer</a> implements <a href="./index.html">PooledRenderer</a> and pixel prerendering is enabled on Pinky,
+then the drawing cycle will look like this:</p>
+<ul><li>shader.createRenderer()</li>
+<li>rendererN*.beginFrame()</li>
+<li>pooledRenderer.preDraw()</li>
+<li>rendererN*.draw()</li>
+<li>rendererN*.endFrame()</li>
+</ul>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="pre-draw.html">preDraw</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">preDraw</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../baaahs.shaders/-glsl-shader/-pooled-renderer/index.html">PooledRenderer</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PooledRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">PooledRenderer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Matrix4 - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three</a>&nbsp;/&nbsp;<a href="./index.html">Matrix4</a><br/>
+<br/>
+<h1>Matrix4</h1>
+<code><span class="keyword">open</span> <span class="keyword">external</span> <span class="keyword">class </span><span class="identifier">Matrix4</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Matrix4</span><span class="symbol">(</span><span class="symbol">)</span></code>
+<p>Creates and initializes the Matrix4 to the 4x4 identity matrix.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="elements.html">elements</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">elements</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html"><span class="identifier">DoubleArray</span></a></code>
+<p>A column-major list of matrix values.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="apply-to-buffer-attribute.html">applyToBufferAttribute</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">applyToBufferAttribute</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$applyToBufferAttribute()/attribute">attribute</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="clone.html">clone</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Creates a new Matrix4 with identical elements to this one.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="compose.html">compose</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compose</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$compose(, , )/position">position</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$compose(, , )/quaternion">quaternion</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$compose(, , )/scale">scale</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="copy.html">copy</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$copy(three.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Copies the elements of matrix m into this matrix.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="copy-position.html">copyPosition</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">copyPosition</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$copyPosition(three.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Copies the translation component of the supplied matrix m into this matrix's translation component.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="decompose.html">decompose</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">decompose</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$decompose(, , )/position">position</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$decompose(, , )/quaternion">quaternion</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$decompose(, , )/scale">scale</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="determinant.html">determinant</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">determinant</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="equals.html">equals</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$equals(three.Matrix4)/matrix">matrix</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="extract-basis.html">extractBasis</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">extractBasis</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$extractBasis(, , )/xAxis">xAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$extractBasis(, , )/yAxis">yAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$extractBasis(, , )/zAxis">zAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="extract-rotation.html">extractRotation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">extractRotation</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$extractRotation(three.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="from-array.html">fromArray</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">fromArray</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$fromArray(kotlin.DoubleArray, kotlin.Int)/array">array</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html"><span class="identifier">DoubleArray</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$fromArray(kotlin.DoubleArray, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-inverse.html">getInverse</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getInverse</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$getInverse(three.Matrix4, kotlin.Boolean)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$getInverse(three.Matrix4, kotlin.Boolean)/throwOnDegenerate">throwOnDegenerate</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Set this matrix to the inverse of the passed matrix m, using the method outlined here.
+If throwOnDegenerate is not set and the matrix is not invertible, set this to the 4x4 identity matrix.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="get-max-scale-on-axis.html">getMaxScaleOnAxis</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getMaxScaleOnAxis</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code>
+<p>Gets the maximum scale value of the 3 axes.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="identity.html">identity</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">identity</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Resets this matrix to the identity matrix.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="look-at.html">lookAt</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">lookAt</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$lookAt(, , )/eye">eye</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$lookAt(, , )/target">target</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$lookAt(, , )/up">up</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-basis.html">makeBasis</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeBasis</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeBasis(, , )/xAxis">xAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeBasis(, , )/yAxis">yAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeBasis(, , )/zAxis">zAxis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Set this to the basis matrix consisting of the three provided basis vectors</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="make-orthographic.html">makeOrthographic</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeOrthographic</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/left">left</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/right">right</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/top">top</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/bottom">bottom</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/near">near</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeOrthographic(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/far">far</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-perspective.html">makePerspective</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makePerspective</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/left">left</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/right">right</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/top">top</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/bottom">bottom</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/near">near</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makePerspective(kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double, kotlin.Double)/far">far</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-axis.html">makeRotationAxis</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationAxis</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationAxis(, kotlin.Double)/axis">axis</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeRotationAxis(, kotlin.Double)/angle">angle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-from-euler.html">makeRotationFromEuler</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationFromEuler</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationFromEuler()/euler">euler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-from-quaternion.html">makeRotationFromQuaternion</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationFromQuaternion</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationFromQuaternion()/q">q</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-x.html">makeRotationX</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationX</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationX(kotlin.Double)/theta">theta</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-y.html">makeRotationY</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationY</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationY(kotlin.Double)/theta">theta</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-rotation-z.html">makeRotationZ</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeRotationZ</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeRotationZ(kotlin.Double)/theta">theta</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-scale.html">makeScale</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeScale</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeScale(kotlin.Double, kotlin.Double, kotlin.Double)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeScale(kotlin.Double, kotlin.Double, kotlin.Double)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeScale(kotlin.Double, kotlin.Double, kotlin.Double)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-shear.html">makeShear</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeShear</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeShear(kotlin.Double, kotlin.Double, kotlin.Double)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeShear(kotlin.Double, kotlin.Double, kotlin.Double)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeShear(kotlin.Double, kotlin.Double, kotlin.Double)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="make-translation.html">makeTranslation</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">makeTranslation</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$makeTranslation(kotlin.Double, kotlin.Double, kotlin.Double)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeTranslation(kotlin.Double, kotlin.Double, kotlin.Double)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$makeTranslation(kotlin.Double, kotlin.Double, kotlin.Double)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="multiply.html">multiply</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">multiply</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$multiply(three.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Post-multiplies this matrix by m.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="multiply-matrices.html">multiplyMatrices</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">multiplyMatrices</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$multiplyMatrices(three.Matrix4, three.Matrix4)/a">a</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$multiplyMatrices(three.Matrix4, three.Matrix4)/b">b</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Sets this matrix to a x b.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="multiply-scalar.html">multiplyScalar</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">multiplyScalar</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$multiplyScalar(kotlin.Double)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Multiplies every component of the matrix by a scalar value s.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="premultiply.html">premultiply</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">premultiply</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$premultiply(three.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Pre-multiplies this matrix by m.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="scale.html">scale</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">scale</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$scale()/v">v</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code>
+<p>Multiplies the columns of this matrix by vector v.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="set.html">set</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n11">n11</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n12">n12</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n13">n13</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n14">n14</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n21">n21</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n22">n22</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n23">n23</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n24">n24</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n31">n31</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n32">n32</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n33">n33</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n34">n34</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n41">n41</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n42">n42</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n43">n43</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/n44">n44</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="set-position.html">setPosition</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setPosition</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$setPosition()/v">v</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="to-array.html">toArray</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toArray</span><span class="symbol">(</span><span class="identifier" id="three.Matrix4$toArray(kotlin.DoubleArray, kotlin.Int)/array">array</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html"><span class="identifier">DoubleArray</span></a><span class="symbol">, </span><span class="identifier" id="three.Matrix4$toArray(kotlin.DoubleArray, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html"><span class="identifier">DoubleArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="transpose.html">transpose</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">transpose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
