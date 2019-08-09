@@ -1,23 +1,17 @@
 
+// We need this not really ported to plain IDF library
+// so we pretend that we are in the arduino world
 #define ARDUINO_ARCH_ESP32
 #include "NeoPixelBus.h"
 
-
-#include "freertos/FreeRTOS.h"
+#include "brain_common.h"
 #include "freertos/semphr.h"
-
-// #include <stdint.h>
 
 #include "time-base.h"
 #include "esp_log.h"
 
 #include "led-shader.h"
 
-// ws2812 & ws2815
-#define LED_RENDERER_COLORFEATURE NeoGrbFeature
-
-// Something else?
-//#define LED_RENDERER_COLORFEATURE NeoRgbFeature
 
 class LEDShaderFiller : public LEDShader {
 public:
@@ -64,7 +58,7 @@ class LEDRenderer {
 public:
     LEDRenderer(TimeBase& timeBase, uint16_t pixelCount);
 
-    void start();
+    void start(TaskDef show, TaskDef render);
 
 //    /**
 //     * This task does not depend on network events to render. It should NOT
@@ -96,8 +90,8 @@ private:
     uint8_t m_nBrightness;
     bool m_localRenderEnabled = true;
 
-    NeoPixelBus<LED_RENDERER_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
-    NeoBuffer<NeoBufferMethod<LED_RENDERER_COLORFEATURE>> m_buffer;
+    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
+    NeoBuffer<NeoBufferMethod<BRAIN_NEO_COLORFEATURE>> m_buffer;
 
     SemaphoreHandle_t m_hPixelsAccess;
     LEDShader* m_shader;

@@ -92,8 +92,10 @@ NetTransport::reconfigure() {
     ESP_LOGI(TAG, "Reconfiguring network");
     stopAll();
 
+#if BRAIN_ETHERNET_ENABLED
     eth();
     m_pEth->setEnabled(true);
+#endif
 
     wifiSta();
     m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());

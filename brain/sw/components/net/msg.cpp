@@ -6,6 +6,9 @@
 
 #include "net_priv.h"
 
+#undef TAG
+#define TAG TAG_MSG
+
 bool
 Msg::prepCapacity(size_t atLeast) {
     if (!m_capacity || !m_buf) {

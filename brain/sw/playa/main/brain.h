@@ -2,8 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
-#ifndef PLAYA_BRAIN_H
-#define PLAYA_BRAIN_H
+#pragma once
 
 #include "net_transport.h"
 #include "msg_handler.h"
@@ -14,8 +13,6 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 #include "http_server.h"
-
-#define DEFAULT_PIXEL_COUNT 128
 
 class Brain : public MsgHandler {
 public:
@@ -35,7 +32,7 @@ private:
 
     TimeBase m_timeBase;
 
-    uint16_t m_pixelCount = DEFAULT_PIXEL_COUNT;
+    uint16_t m_pixelCount = BRAIN_DEFAULT_PIXEL_COUNT;
     LEDRenderer m_ledRenderer;
 
     Surface m_surface = Surface(m_pixelCount);
@@ -55,5 +52,3 @@ private:
     void sendPong(const IpPort &port, const uint8_t *data, size_t dataLen);
 };
 
-
-#endif //PLAYA_BRAIN_H

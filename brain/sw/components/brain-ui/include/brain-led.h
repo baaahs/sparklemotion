@@ -8,7 +8,7 @@
 
 class BrainLed {
 public:
-    BrainLed(ledc_channel_t channel, int gpio, ledc_mode_t speed = LEDC_HIGH_SPEED_MODE);
+    BrainLed(ledc_channel_t channel, gpio_num_t gpio, ledc_mode_t speed = LEDC_HIGH_SPEED_MODE);
 
     void start();
     void setValue(uint8_t val);

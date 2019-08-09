@@ -1,7 +1,7 @@
 #include "compositor-shader.h"
 
 #include "esp_log.h"
-#define TAG "#shader"
+#define TAG TAG_SHADER
 
 CompositorShader::CompositorShader(Surface *surface, Msg *config) : Shader(surface, config) {
     m_shaderA = Shader::createShaderFromDescrip(surface, config);
