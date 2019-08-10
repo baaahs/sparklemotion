@@ -5,7 +5,7 @@ import baaahs.IdentifiedSurface
 import baaahs.SheepModel
 import baaahs.geom.Vector2F
 import baaahs.shaders.GlslShader
-import baaahs.shows.GlslShow
+import baaahs.shows.GlslOtherShow
 import baaahs.timeSync
 import org.joml.Matrix4f
 import org.lwjgl.BufferUtils
@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 fun main() {
     // On a Mac, it's necessary to start the JVM with this arg: `-XstartOnFirstThread`
-    val renderer = GlslBase.manager.createRenderer(GlslShow.program, emptyList()) as JvmGlslRenderer
+    val renderer = GlslBase.manager.createRenderer(GlslOtherShow.program, emptyList()) as JvmGlslRenderer
 
     renderer.addSurface(
         IdentifiedSurface(
