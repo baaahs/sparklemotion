@@ -387,6 +387,8 @@
   GlslSandbox55301KotlinShow.prototype.constructor = GlslSandbox55301KotlinShow;
   GlslSandbox55301Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
+  GlslSandbox56555Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56555Show.prototype.constructor = GlslSandbox56555Show;
   GlslSandbox56594Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56594Show.prototype.constructor = GlslSandbox56594Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
@@ -12391,7 +12393,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -12647,6 +12649,28 @@
       new GlslSandbox55301Show();
     }
     return GlslSandbox55301Show_instance;
+  }
+  function GlslSandbox56555Show() {
+    GlslSandbox56555Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 56555 (OpenGL)');
+    this.program_jce69s$_0 = '\n/* lame-ass tunnel by kusma */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvoid main( void ) {\n\tvec2 position = (gl_FragCoord.xy - resolution * 0.5) / resolution.yy;\n\tfloat th = atan(position.y, position.x) / (2.0 * 3.1415926);\n\tth += mod(time*0.2, 1.0);\n\tfloat dd = length(position)+0.2*sin(th*2.0*3.1415926*6.0)*length(position);\n\tdd = pow(dd,1.0);\n\tfloat d = 0.5 / dd + 1.4*time;\n\n\tvec3 uv = vec3(th + d, th - d, th + sin(d));\n\tfloat a = 0.5 + cos(uv.x * 3.1415926 * 2.0) * 0.3;\n\tfloat b = 0.5 + cos(uv.y * 3.1415926 * 8.0) * 0.3;\n\tfloat c = 0.5 + cos(uv.z * 3.1415926 * 6.0) * 0.5;\n\tfloat f = abs(sin(time*2.0));\n\t\n\t\n\tvec3 color = mix(vec3(1.0, 0.8, 1.0-f), vec3(0.5*f, 0, 0), pow(a, 0.2)) * 3.;\n\tcolor += mix(vec3(0.8, 0.9, 1.0), vec3(0.1, 0.1, 0.2),  pow(b, 0.1)) * 0.75;\n\tcolor += mix(vec3(0.9, 0.8, 1.0), vec3(0.1, 0.2, 0.2),  pow(c, 0.1)) * 0.75;\n\tgl_FragColor = vec4(color * clamp(dd, 0.0, 1.0), 1.0);\n}\n';
+  }
+  Object.defineProperty(GlslSandbox56555Show.prototype, 'program', {
+    get: function () {
+      return this.program_jce69s$_0;
+    }
+  });
+  GlslSandbox56555Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56555Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56555Show_instance = null;
+  function GlslSandbox56555Show_getInstance() {
+    if (GlslSandbox56555Show_instance === null) {
+      new GlslSandbox56555Show();
+    }
+    return GlslSandbox56555Show_instance;
   }
   function GlslSandbox56594Show() {
     GlslSandbox56594Show_instance = this;
@@ -19464,6 +19488,9 @@
   });
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56555Show', {
+    get: GlslSandbox56555Show_getInstance
   });
   Object.defineProperty(package$shows, 'GlslSandbox56594Show', {
     get: GlslSandbox56594Show_getInstance
