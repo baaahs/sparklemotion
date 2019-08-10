@@ -75,6 +75,8 @@
 #define BRAIN_GPIO_DISP_CLK        GPIO_NUM_14
 #define BRAIN_GPIO_DISP_DATA       GPIO_NUM_27
 
+#define BRAIN_GPIO_PIXEL_CH1       GPIO_NUM_25
+#define BRAIN_DEFAULT_BRIGHTNESS   255
 
 #endif
 

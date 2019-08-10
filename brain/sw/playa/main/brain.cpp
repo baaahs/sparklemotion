@@ -195,7 +195,7 @@ void Brain::startSecondStageBoot() {
 //    m_ledRenderer.setShader(filler);
 
     // Start talking to the pixels
-    m_ledRenderer.start(TaskDef(), TaskDef());
+    m_ledRenderer.start(DefaultBrainTasks.show, DefaultBrainTasks.render);
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");
