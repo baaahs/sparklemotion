@@ -387,6 +387,8 @@
   GlslSandbox55301KotlinShow.prototype.constructor = GlslSandbox55301KotlinShow;
   GlslSandbox55301Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
+  GlslSandbox56594Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56594Show.prototype.constructor = GlslSandbox56594Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -12389,7 +12391,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -12645,6 +12647,28 @@
       new GlslSandbox55301Show();
     }
     return GlslSandbox55301Show_instance;
+  }
+  function GlslSandbox56594Show() {
+    GlslSandbox56594Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 56594 (OpenGL)');
+    this.program_hppwyt$_0 = '\n/*\n * Original shader from: https://www.shadertoy.com/view/wt2GWK\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\n#define t iTime\n\nvec2 hash22(vec2 p) \n{\n    return fract(sin(vec2(dot(p,vec2(263.135,198.742)),dot(p,vec2(624.235,321.217))))*13.635); \n}\n\nfloat vorohearts( vec2 x)\n{\n    vec2 n = floor(-x);\n    vec2 f = fract(-x);\n    \n\tfloat md = 1.0;\n    \n    for( int j=-1; j<=3; j++ )\n\t{\n    \tfor( int i=-1; i<=3; i++ )\n    \t{\n        \tvec2  g = vec2(float(i), float(j));\n        \tvec2  o = hash22( n + g );\n\t    \tvec2  r = g - f + (.5+.5*sin(t+o*6.28));\n    \t\tr.x *= .8*(1.+sin(.5+sin(6.*t))*.03);\n    \t\tr.y *= .95+sin(1.5+sin(3.*t))*.07;\n    \t\tr.y += 1.08;\n\t\t\tr.y -= sqrt(abs(r.x))*.52;\n    \t\tfloat d = length(r);\n        \tif( d < md ) {md = d;}\n    \t}\n    }\n    return md;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord - 10.5*iResolution.xy)/iResolution.y;\n    \n    //Heart uv\n    uv = uv*3.;\n\tfloat d = vorohearts(uv);\n    d = smoothstep(.8, 0.15, d);\n    \n    //Heart color\n    vec3 p = vec3(1.6*d*(.6+sin(.5+sin(6.*t))*.1), d*(1.8+sin(.5+sin(6.*t))*.3), 2.1*(1.+sin(.5+sin(6.*t))*.3));\n    vec3 col = vec3(d) * p;\n    \n    //Background\n    col += vorohearts(uv) * .35 * p;\n    \n    fragColor = vec4(col,1.);\n}\n// --------[ Original ShaderToy ends here ]---------- //\n\nvoid main(void)\n{\n    mainImage(gl_FragColor, gl_FragCoord.xy);\n}\n';
+  }
+  Object.defineProperty(GlslSandbox56594Show.prototype, 'program', {
+    get: function () {
+      return this.program_hppwyt$_0;
+    }
+  });
+  GlslSandbox56594Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56594Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56594Show_instance = null;
+  function GlslSandbox56594Show_getInstance() {
+    if (GlslSandbox56594Show_instance === null) {
+      new GlslSandbox56594Show();
+    }
+    return GlslSandbox56594Show_instance;
   }
   function GlslShow(name) {
     Show.call(this, name);
@@ -19440,6 +19464,9 @@
   });
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56594Show', {
+    get: GlslSandbox56594Show_getInstance
   });
   package$shows.GlslShow = GlslShow;
   Object.defineProperty(package$shows, 'HeartbleatShow', {
