@@ -14,8 +14,9 @@ class AllShows {
             SimpleSpatialShow,
             HeartbleatShow,
             CreepingPixelsShow,
+            GlslSandbox55301KotlinShow,
             GlslSandbox55301Show,
-            GlslShow
+            GlslOtherShow
         )
     }
 }

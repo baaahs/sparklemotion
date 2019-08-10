@@ -5,7 +5,6 @@ import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shows.GlslShow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
@@ -24,10 +23,14 @@ class GlslShader(
         }
 
         private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
+        private val gadgetPattern = Regex(
+            "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
+                    "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
+        )
 
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
             var i = 0
-            return GlslShow.gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
+            return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
                 val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
                 val configData = json.parseJson(configJson)
