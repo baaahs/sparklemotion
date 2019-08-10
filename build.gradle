@@ -203,6 +203,15 @@ task runBrainJvm(type: JavaExec) {
     args projectDir
 }
 
+task packageClientResources(type: Copy, dependsOn: [jsProcessResources]) {
+    from project.file("build/processedResources/js/main")
+    into "build/classes/kotlin/jvm/main/htdocs"
+}
+
+jvmJar {
+    dependsOn "packageClientResources"
+}
+
 task shadowJar(type: ShadowJar, dependsOn: [jvmJar]) {
     from jvmJar.archiveFile
     configurations = [project.configurations.jvmRuntimeClasspath]
