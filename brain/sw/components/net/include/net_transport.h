@@ -102,4 +102,7 @@ private:
     EthInterface* m_pEth = nullptr;
     WifiStaInterface* m_pWifiSta = nullptr;
     WifiApInterface* m_pWifiAp = nullptr;
+
+    bool m_ethUp = false;
+
 };

@@ -171,7 +171,7 @@ void Brain::startSecondStageBoot() {
     GlobalConfig.load();
 
     m_netTransport.start(DefaultBrainTasks.net);
-    m_netTransport.reconfigure();
+//    m_netTransport.reconfigure();
 
     m_msgSlinger.registerHandler(this);
     m_msgSlinger.start(BRAIN_PORT, DefaultBrainTasks.netInput, DefaultBrainTasks.netOutput);
