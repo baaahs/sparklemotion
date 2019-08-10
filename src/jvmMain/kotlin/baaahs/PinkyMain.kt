@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileNotFoundException
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -22,16 +23,17 @@ fun main(args: Array<String>) {
     sheepModel.load()
 
     val resource = Pinky::class.java.classLoader.getResource("baaahs")
-    val classPathBaseDir = Paths.get(resource.file).parent
     val jsResDir = if (resource.protocol == "jar") {
-        classPathBaseDir
+        val uri = resource.toURI()!!
+        FileSystems.newFileSystem(uri, mapOf("create" to "true"))
+        Paths.get(uri).parent.resolve("htdocs")
     } else {
+        val classPathBaseDir = Paths.get(resource.file).parent
         classPathBaseDir.parent.parent.parent.parent.parent.parent
             .resolve("build/processedResources/js/main")
     }
 
     testForIndexDotHtml(jsResDir)
-    println("jsResDir = ${jsResDir}")
 
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
