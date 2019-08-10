@@ -17,7 +17,8 @@ class AllShows {
             GlslSandbox55301KotlinShow,
             GlslSandbox55301Show,
             GlslOtherShow,
-            GlslSandbox56594Show
+            GlslSandbox56594Show,
+            GlslSandbox56555Show
         )
     }
 }
