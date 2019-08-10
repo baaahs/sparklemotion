@@ -8,7 +8,19 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.shows</a>&nbsp;/&nbsp;<a href="./index.html">GlslShow</a><br/>
 <br/>
 <h1>GlslShow</h1>
-<code><span class="keyword">object </span><span class="identifier">GlslShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show/index.html"><span class="identifier">Show</span></a></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show/index.html"><span class="identifier">Show</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">GlslShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$<init>(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -17,14 +29,7 @@
 <p><a href="program.html">program</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">program</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="program2.html">program2</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">program2</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">program</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,10 +50,36 @@
 <tbody>
 <tr>
 <td>
+<p><a href="create-gadget.html">createGadget</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="../../baaahs.shaders/-glsl-shader/-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">.</span><span class="identifier">createGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$createGadget(baaahs.shaders.GlslShader.AdjustableValue, baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="create-renderer.html">createRenderer</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.shows.GlslShow$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-show/-renderer/index.html"><span class="identifier">Show.Renderer</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.shows.GlslShow$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-show/-renderer/index.html"><span class="identifier">Show.Renderer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../-glsl-other-show/index.html">GlslOtherShow</a></p>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">GlslOtherShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslShow</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-glsl-sandbox55301-show/index.html">GlslSandbox55301Show</a></p>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">GlslSandbox55301Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslShow</span></a></code></td>
 </tr>
 </tbody>
 </table>

@@ -143,6 +143,7 @@
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
+  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
@@ -171,15 +172,18 @@
   var JsonParsingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonParsingException;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var json_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.json_s5o6vg$;
-  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
+  var until_0 = Kotlin.kotlin.ranges.until_c8b4g4$;
+  var map = Kotlin.kotlin.sequences.map_z5avom$;
+  var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
+  var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
+  var Array_0 = Array;
   var math = Kotlin.kotlin.math;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
-  var Array_0 = Array;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
@@ -333,6 +337,8 @@
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
   GlslSandbox55301Shader.prototype = Object.create(Shader.prototype);
   GlslSandbox55301Shader.prototype.constructor = GlslSandbox55301Shader;
+  GlslShader$AdjustableValue$Type.prototype = Object.create(Enum.prototype);
+  GlslShader$AdjustableValue$Type.prototype.constructor = GlslShader$AdjustableValue$Type;
   GlslShader.prototype = Object.create(Shader.prototype);
   GlslShader.prototype.constructor = GlslShader;
   HeartShader.prototype = Object.create(Shader.prototype);
@@ -373,10 +379,14 @@
   CompositeShow.prototype.constructor = CompositeShow;
   CreepingPixelsShow.prototype = Object.create(Show.prototype);
   CreepingPixelsShow.prototype.constructor = CreepingPixelsShow;
-  GlslSandbox55301Show.prototype = Object.create(Show.prototype);
-  GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
   GlslShow.prototype = Object.create(Show.prototype);
   GlslShow.prototype.constructor = GlslShow;
+  GlslOtherShow.prototype = Object.create(GlslShow.prototype);
+  GlslOtherShow.prototype.constructor = GlslOtherShow;
+  GlslSandbox55301KotlinShow.prototype = Object.create(Show.prototype);
+  GlslSandbox55301KotlinShow.prototype.constructor = GlslSandbox55301KotlinShow;
+  GlslSandbox55301Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -7652,13 +7662,19 @@
   PalettePicker.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialColors, other.initialColors)))));
   };
-  function Slider(name, initialValue) {
+  function Slider(name, initialValue, minValue, maxValue) {
     Slider$Companion_getInstance();
     if (initialValue === void 0)
       initialValue = 1.0;
+    if (minValue === void 0)
+      minValue = null;
+    if (maxValue === void 0)
+      maxValue = null;
     Gadget.call(this);
     this.name = name;
     this.initialValue = initialValue;
+    this.minValue = minValue;
+    this.maxValue = maxValue;
     this.value_2xmiz9$_0 = this.updatable_t7zvzq$('value', this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
   }
   var Slider$value_metadata = new PropertyMetadata('value');
@@ -7692,6 +7708,8 @@
     this.descriptor_htru8f$_0 = new SerialClassDescImpl('baaahs.gadgets.Slider', this);
     this.descriptor.addElement_ivxn3r$('name', false);
     this.descriptor.addElement_ivxn3r$('initialValue', true);
+    this.descriptor.addElement_ivxn3r$('minValue', true);
+    this.descriptor.addElement_ivxn3r$('maxValue', true);
     Slider$$serializer_instance = this;
   }
   Object.defineProperty(Slider$$serializer.prototype, 'descriptor', {
@@ -7704,13 +7722,19 @@
     output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.name);
     if (!equals(obj.initialValue, 1.0) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 1))
       output.encodeFloatElement_t7qhdx$(this.descriptor, 1, obj.initialValue);
+    if (!equals(obj.minValue, null) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 2))
+      output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 2, internal.FloatSerializer, obj.minValue);
+    if (!equals(obj.maxValue, null) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 3))
+      output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 3, internal.FloatSerializer, obj.maxValue);
     output.endStructure_qatsm0$(this.descriptor);
   };
   Slider$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
     var index, readAll = false;
     var bitMask0 = 0;
     var local0
-    , local1;
+    , local1
+    , local2
+    , local3;
     var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
     loopLabel: while (true) {
       index = input.decodeElementIndex_qatsm0$(this.descriptor);
@@ -7727,16 +7751,26 @@
           bitMask0 |= 2;
           if (!readAll)
             break;
+        case 2:
+          local2 = (bitMask0 & 4) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 2, internal.FloatSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 2, internal.FloatSerializer, local2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case 3:
+          local3 = (bitMask0 & 8) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 3, internal.FloatSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 3, internal.FloatSerializer, local3);
+          bitMask0 |= 8;
+          if (!readAll)
+            break;
         case -1:
           break loopLabel;
         default:throw new UnknownFieldException(index);
       }
     }
     input.endStructure_qatsm0$(this.descriptor);
-    return Slider_init(bitMask0, local0, local1, null);
+    return Slider_init(bitMask0, local0, local1, local2, local3, null);
   };
   Slider$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, internal.FloatSerializer];
+    return [internal.StringSerializer, internal.FloatSerializer, new NullableSerializer(internal.FloatSerializer), new NullableSerializer(internal.FloatSerializer)];
   };
   Slider$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -7750,7 +7784,7 @@
     }
     return Slider$$serializer_instance;
   }
-  function Slider_init(seen1, name, initialValue, serializationConstructorMarker) {
+  function Slider_init(seen1, name, initialValue, minValue, maxValue, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(Slider.prototype);
     Gadget.call($this);
     if ((seen1 & 1) === 0)
@@ -7761,6 +7795,14 @@
       $this.initialValue = 1.0;
     else
       $this.initialValue = initialValue;
+    if ((seen1 & 4) === 0)
+      $this.minValue = null;
+    else
+      $this.minValue = minValue;
+    if ((seen1 & 8) === 0)
+      $this.maxValue = null;
+    else
+      $this.maxValue = maxValue;
     $this.value_2xmiz9$_0 = $this.updatable_t7zvzq$('value', $this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
     return $this;
   }
@@ -7775,20 +7817,28 @@
   Slider.prototype.component2 = function () {
     return this.initialValue;
   };
-  Slider.prototype.copy_9sobi5$ = function (name, initialValue) {
-    return new Slider(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue);
+  Slider.prototype.component3 = function () {
+    return this.minValue;
+  };
+  Slider.prototype.component4 = function () {
+    return this.maxValue;
+  };
+  Slider.prototype.copy_553zi3$ = function (name, initialValue, minValue, maxValue) {
+    return new Slider(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue, minValue === void 0 ? this.minValue : minValue, maxValue === void 0 ? this.maxValue : maxValue);
   };
   Slider.prototype.toString = function () {
-    return 'Slider(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + ')';
+    return 'Slider(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + (', minValue=' + Kotlin.toString(this.minValue)) + (', maxValue=' + Kotlin.toString(this.maxValue)) + ')';
   };
   Slider.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.name) | 0;
     result = result * 31 + Kotlin.hashCode(this.initialValue) | 0;
+    result = result * 31 + Kotlin.hashCode(this.minValue) | 0;
+    result = result * 31 + Kotlin.hashCode(this.maxValue) | 0;
     return result;
   };
   Slider.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue) && Kotlin.equals(this.minValue, other.minValue) && Kotlin.equals(this.maxValue, other.maxValue)))));
   };
   function Matrix4(elements) {
     Matrix4$Companion_getInstance();
@@ -8134,11 +8184,27 @@
     simpleName: 'GlslManager',
     interfaces: []
   };
-  function GlslRenderer() {
-    this.surfacePixelsToAdd = ArrayList_init();
+  function GlslRenderer(fragShader, adjustableValues) {
+    this.fragShader = fragShader;
+    this.adjustableValues = adjustableValues;
+    this.surfacesToAdd = ArrayList_init();
     this.pixelCount = 0;
     this.nextPixelOffset = 0;
+    this.nextSurfaceOffset = 0;
+    this.glslSurfaces = ArrayList_init();
     this.uvCoordTextureIndex = 0;
+    this.surfaceOrdinalTextureIndex = 1;
+    this.nextTextureIndex = 2;
+    var $receiver = this.adjustableValues;
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0;
+      destination.add_11rb$((tmp$_0 = this.nextTextureIndex, this.nextTextureIndex = tmp$_0 + 1 | 0, tmp$_0));
+    }
+    this.adjustableValueUniformIndices = destination;
     this.uvCoordsLocation_8be2vx$ = null;
     this.matLocation_8be2vx$ = null;
     this.resolutionLocation_8be2vx$ = null;
@@ -8157,83 +8223,84 @@
   });
   GlslRenderer.prototype.findUniforms = function () {
     this.uvCoordsLocation_8be2vx$ = this.getUniformLocation_61zpoe$('sm_uvCoords');
-    this.matLocation_8be2vx$ = this.getUniformLocation_61zpoe$('viewProjMatrix');
     this.resolutionLocation_8be2vx$ = this.getUniformLocation_61zpoe$('resolution');
     this.timeLocation_8be2vx$ = this.getUniformLocation_61zpoe$('time');
   };
-  function GlslRenderer$addSurface$ObjectLiteral() {
-  }
-  Object.defineProperty(GlslRenderer$addSurface$ObjectLiteral.prototype, 'size', {
-    get: function () {
-      return 0;
-    }
-  });
-  GlslRenderer$addSurface$ObjectLiteral.prototype.get_za3lpa$ = function (i) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'get not implemented');
-  };
-  GlslRenderer$addSurface$ObjectLiteral.prototype.set_ibd5tj$ = function (i, color) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  GlslRenderer$addSurface$ObjectLiteral.prototype.set_tmuqsv$ = function (colors) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  GlslRenderer$addSurface$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Pixels]
-  };
   GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
+    var tmp$;
     if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelVertices != null) {
-      var surfacePixels = this.createSurfacePixels_x0dork$(surface, this.nextPixelOffset);
-      this.surfacePixelsToAdd.add_11rb$(surfacePixels);
+      var surfacePixels = new GlslSurface(this.createSurfacePixels_x0dork$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$ = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$ + 1 | 0, tmp$)));
+      this.surfacesToAdd.add_11rb$(surfacePixels);
       this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
       return surfacePixels;
     }
-    return new GlslRenderer$addSurface$ObjectLiteral();
+    return null;
   };
-  function GlslRenderer$maybeAddSurfacePixels$lambda(this$GlslRenderer) {
+  function GlslRenderer$incorporateNewSurfaces$lambda(this$GlslRenderer) {
     return function () {
       this$GlslRenderer.instance.release();
       return Unit;
     };
   }
-  function GlslRenderer$maybeAddSurfacePixels$lambda_0(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer) {
+  function GlslRenderer$incorporateNewSurfaces$lambda_0(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer) {
     return function () {
-      this$GlslRenderer.instance = this$GlslRenderer.createInstance_i8oon4$(closure$newPixelCount, closure$newUvCoords);
+      this$GlslRenderer.instance = this$GlslRenderer.createInstance_mfoo9a$(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer.nextSurfaceOffset);
       this$GlslRenderer.instance.bindUvCoordTexture_msnecj$(this$GlslRenderer.uvCoordTextureIndex, ensureNotNull(this$GlslRenderer.uvCoordsLocation_8be2vx$));
       return Unit;
     };
   }
-  GlslRenderer.prototype.maybeAddSurfacePixels = function () {
-    if (!this.surfacePixelsToAdd.isEmpty()) {
+  GlslRenderer.prototype.incorporateNewSurfaces = function () {
+    if (!this.surfacesToAdd.isEmpty()) {
       var oldUvCoords = this.instance.uvCoords;
       var newPixelCount = this.nextPixelOffset;
-      this.withGlContext_klfg04$(GlslRenderer$maybeAddSurfacePixels$lambda(this));
+      this.withGlContext_klfg04$(GlslRenderer$incorporateNewSurfaces$lambda(this));
       var newUvCoords = new Float32Array(this.get_bufSize_s8ev3n$(newPixelCount) * 2 | 0);
       arrayCopy(oldUvCoords, newUvCoords, 0, 0, oldUvCoords.length);
       var tmp$;
-      tmp$ = this.surfacePixelsToAdd.iterator();
+      tmp$ = this.surfacesToAdd.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         var tmp$_0;
-        var surface = element.surface;
+        var surface = element.pixels.surface;
         var pixelVertices = ensureNotNull(surface.pixelVertices);
         tmp$_0 = surface.pixelCount;
         for (var i = 0; i < tmp$_0; i++) {
-          var uvOffset = (element.pixel0Index + i | 0) * 2 | 0;
+          var uvOffset = (element.pixels.pixel0Index + i | 0) * 2 | 0;
           newUvCoords[uvOffset] = pixelVertices.get_za3lpa$(i).x;
           newUvCoords[uvOffset + 1 | 0] = pixelVertices.get_za3lpa$(i).y;
         }
       }
-      this.withGlContext_klfg04$(GlslRenderer$maybeAddSurfacePixels$lambda_0(newPixelCount, newUvCoords, this));
+      this.withGlContext_klfg04$(GlslRenderer$incorporateNewSurfaces$lambda_0(newPixelCount, newUvCoords, this));
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
-      this.surfacePixelsToAdd.clear();
+      this.glslSurfaces.addAll_brywnq$(this.surfacesToAdd);
+      this.surfacesToAdd.clear();
     }
   };
-  function GlslRenderer$Instance(pixelCount, uvCoords) {
+  function GlslRenderer$AdjustibleUniform() {
+  }
+  GlslRenderer$AdjustibleUniform.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'AdjustibleUniform',
+    interfaces: []
+  };
+  function GlslRenderer$Instance($outer, pixelCount, uvCoords, surfaceCount) {
+    this.$outer = $outer;
     this.pixelCount = pixelCount;
     this.uvCoords = uvCoords;
+    this.surfaceCount = surfaceCount;
   }
+  GlslRenderer$Instance.prototype.bindUniforms = function () {
+    var tmp$;
+    tmp$ = this.adjustableUniforms.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.bind();
+    }
+  };
+  GlslRenderer$Instance.prototype.setUniform_jv3efz$ = function (adjustableValue, surfaceOrdinal, value) {
+    this.adjustableUniforms.get_za3lpa$(adjustableValue.ordinal).setValue_6t2rgq$(surfaceOrdinal, value);
+  };
   GlslRenderer$Instance.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Instance',
@@ -8257,9 +8324,37 @@
   GlslRenderer.prototype.get_bufSize_s8ev3n$ = function ($receiver) {
     return Kotlin.imul(this.get_bufWidth_s8ev3n$($receiver), this.get_bufHeight_s8ev3n$($receiver));
   };
+  function GlslRenderer$Uniforms($outer, surfaceOrdinal) {
+    this.$outer = $outer;
+    this.surfaceOrdinal_8be2vx$ = surfaceOrdinal;
+  }
+  GlslRenderer$Uniforms.prototype.updateFrom_eg9ycu$ = function (values) {
+    var $receiver = this.$outer.adjustableValues;
+    this.$outer;
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.$outer.instance.setUniform_jv3efz$(element, this.surfaceOrdinal_8be2vx$, values[element.ordinal]);
+    }
+  };
+  GlslRenderer$Uniforms.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Uniforms',
+    interfaces: []
+  };
   GlslRenderer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslRenderer',
+    interfaces: []
+  };
+  function GlslSurface(pixels, uniforms) {
+    this.pixels = pixels;
+    this.uniforms = uniforms;
+  }
+  GlslSurface.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslSurface',
     interfaces: []
   };
   function SurfacePixels(surface, pixel0Index) {
@@ -10960,16 +11055,62 @@
     var length = Math_0.sqrt(x);
     return Color_init_0(r / length, g / length, b / length);
   }
-  function GlslShader(glslProgram) {
+  function GlslShader(glslProgram, adjustableValues) {
     GlslShader$Companion_getInstance();
+    if (adjustableValues === void 0)
+      adjustableValues = GlslShader$Companion_getInstance().findAdjustableValues_61zpoe$(glslProgram);
     Shader.call(this, ShaderId$GLSL_SHADER_getInstance());
     this.glslProgram = glslProgram;
+    this.adjustableValues = adjustableValues;
   }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_qyeq5q$(void 0, false));
+    this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new GlslShader(reader.readString());
+    var glslProgram = reader.readString();
+    var adjustableValueCount = reader.readShort();
+    var $receiver = until_0(0, adjustableValueCount);
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(GlslShader$AdjustableValue$Companion_getInstance().parse_kbpt9e$(reader, item));
+    }
+    var adjustableValues = destination;
+    return new GlslShader(glslProgram, adjustableValues);
+  };
+  function GlslShader$Companion$findAdjustableValues$lambda(this$GlslShader$, closure$i) {
+    return function (matchResult) {
+      var tmp$, tmp$_0;
+      println('matches: ' + matchResult.groupValues);
+      var tmp$_1 = matchResult.destructured;
+      var gadgetType = tmp$_1.match.groupValues.get_za3lpa$(1);
+      var configJson = tmp$_1.match.groupValues.get_za3lpa$(2);
+      var valueTypeName = tmp$_1.match.groupValues.get_za3lpa$(3);
+      var varName = tmp$_1.match.groupValues.get_za3lpa$(4);
+      var configData = this$GlslShader$.json_0.parseJson_61zpoe$(configJson);
+      switch (valueTypeName) {
+        case 'int':
+          tmp$ = GlslShader$AdjustableValue$Type$INT_getInstance();
+          break;
+        case 'float':
+          tmp$ = GlslShader$AdjustableValue$Type$FLOAT_getInstance();
+          break;
+        case 'vec3':
+          tmp$ = GlslShader$AdjustableValue$Type$VEC3_getInstance();
+          break;
+        default:throw IllegalArgumentException_init('unsupported type ' + valueTypeName);
+      }
+      var valueType = tmp$;
+      return new GlslShader$AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, (tmp$_0 = closure$i.v, closure$i.v = tmp$_0 + 1 | 0, tmp$_0));
+    };
+  }
+  GlslShader$Companion.prototype.findAdjustableValues_61zpoe$ = function (glslFragmentShader) {
+    var i = {v: 0};
+    return toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this, i)));
   };
   GlslShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -10985,32 +11126,48 @@
   }
   GlslShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.glslProgram);
+    writer.writeShort_za3lpa$(this.adjustableValues.size);
+    var tmp$;
+    tmp$ = this.adjustableValues.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.serializeConfig_3kjoo0$(writer);
+    }
   };
   function GlslShader$createRenderer$lambda(this$GlslShader) {
     return function () {
-      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram);
+      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram, this$GlslShader.adjustableValues);
     };
   }
-  function GlslShader$createRenderer$ObjectLiteral(closure$pixels) {
-    this.closure$pixels = closure$pixels;
-  }
-  GlslShader$createRenderer$ObjectLiteral.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-  };
-  GlslShader$createRenderer$ObjectLiteral.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return this.closure$pixels.get_za3lpa$(pixelIndex);
-  };
-  GlslShader$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Shader$Renderer]
-  };
   GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
     var poolKey = to(getKClass(GlslShader), this.glslProgram);
     var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
-    var pixels = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
-    return new GlslShader$createRenderer$ObjectLiteral(pixels);
+    var glslSurface = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
+    return new GlslShader$Renderer(glslSurface);
   };
-  function GlslShader$PooledRenderer(glslProgram) {
-    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_61zpoe$(glslProgram);
+  GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(this.glslProgram, this.adjustableValues);
+    var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
+    return new GlslShader$Renderer(glslSurface);
+  };
+  function GlslShader$Renderer(glslSurface) {
+    this.glslSurface_0 = glslSurface;
+  }
+  GlslShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
+    if (this.glslSurface_0 != null) {
+      this.glslSurface_0.uniforms.updateFrom_eg9ycu$(buffer.values);
+    }
+  };
+  GlslShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
+    return this.glslSurface_0 != null ? this.glslSurface_0.pixels.get_za3lpa$(pixelIndex) : Color$Companion_getInstance().BLACK;
+  };
+  GlslShader$Renderer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Renderer',
+    interfaces: [Shader$Renderer]
+  };
+  function GlslShader$PooledRenderer(glslProgram, adjustableValues) {
+    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(glslProgram, adjustableValues);
   }
   GlslShader$PooledRenderer.prototype.preDraw = function () {
     this.glslRenderer.draw();
@@ -11019,23 +11176,6 @@
     kind: Kind_CLASS,
     simpleName: 'PooledRenderer',
     interfaces: [PooledRenderer]
-  };
-  function GlslShader$createRenderer$ObjectLiteral_0(closure$pixels) {
-    this.closure$pixels = closure$pixels;
-  }
-  GlslShader$createRenderer$ObjectLiteral_0.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-  };
-  GlslShader$createRenderer$ObjectLiteral_0.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return this.closure$pixels.get_za3lpa$(pixelIndex);
-  };
-  GlslShader$createRenderer$ObjectLiteral_0.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Shader$Renderer]
-  };
-  GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_61zpoe$(this.glslProgram);
-    var pixels = glslRenderer.addSurface_ppt8xj$(surface);
-    return new GlslShader$createRenderer$ObjectLiteral_0(pixels);
   };
   GlslShader.prototype.createBuffer_ppt8xj$ = function (surface) {
     return new GlslShader$Buffer(this);
@@ -11047,20 +11187,159 @@
   };
   function GlslShader$Buffer($outer) {
     this.$outer = $outer;
+    var array = Array_0(this.$outer.adjustableValues.size);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = Unit;
+    }
+    this.values = array;
   }
   Object.defineProperty(GlslShader$Buffer.prototype, 'shader', {
     get: function () {
       return this.$outer;
     }
   });
+  GlslShader$Buffer.prototype.update_egvix6$ = function (adjustableValue, value) {
+    this.values[adjustableValue.ordinal] = value;
+  };
   GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+    var tmp$;
+    tmp$ = this.$outer.adjustableValues.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.serializeValue_8f9ar8$(this.values[element.ordinal], writer);
+    }
   };
   GlslShader$Buffer.prototype.read_100t80$ = function (reader) {
+    var tmp$;
+    tmp$ = this.$outer.adjustableValues.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.values[element.ordinal] = element.readValue_100t80$(reader);
+    }
   };
   GlslShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
+  };
+  function GlslShader$AdjustableValue(varName, gadgetType, valueType, config, ordinal) {
+    GlslShader$AdjustableValue$Companion_getInstance();
+    this.varName = varName;
+    this.gadgetType = gadgetType;
+    this.valueType = valueType;
+    this.config = config;
+    this.ordinal = ordinal;
+  }
+  function GlslShader$AdjustableValue$Type(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function GlslShader$AdjustableValue$Type_initFields() {
+    GlslShader$AdjustableValue$Type_initFields = function () {
+    };
+    GlslShader$AdjustableValue$Type$INT_instance = new GlslShader$AdjustableValue$Type('INT', 0);
+    GlslShader$AdjustableValue$Type$FLOAT_instance = new GlslShader$AdjustableValue$Type('FLOAT', 1);
+    GlslShader$AdjustableValue$Type$VEC3_instance = new GlslShader$AdjustableValue$Type('VEC3', 2);
+  }
+  var GlslShader$AdjustableValue$Type$INT_instance;
+  function GlslShader$AdjustableValue$Type$INT_getInstance() {
+    GlslShader$AdjustableValue$Type_initFields();
+    return GlslShader$AdjustableValue$Type$INT_instance;
+  }
+  var GlslShader$AdjustableValue$Type$FLOAT_instance;
+  function GlslShader$AdjustableValue$Type$FLOAT_getInstance() {
+    GlslShader$AdjustableValue$Type_initFields();
+    return GlslShader$AdjustableValue$Type$FLOAT_instance;
+  }
+  var GlslShader$AdjustableValue$Type$VEC3_instance;
+  function GlslShader$AdjustableValue$Type$VEC3_getInstance() {
+    GlslShader$AdjustableValue$Type_initFields();
+    return GlslShader$AdjustableValue$Type$VEC3_instance;
+  }
+  GlslShader$AdjustableValue$Type.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Type',
+    interfaces: [Enum]
+  };
+  function GlslShader$AdjustableValue$Type$values() {
+    return [GlslShader$AdjustableValue$Type$INT_getInstance(), GlslShader$AdjustableValue$Type$FLOAT_getInstance(), GlslShader$AdjustableValue$Type$VEC3_getInstance()];
+  }
+  GlslShader$AdjustableValue$Type.values = GlslShader$AdjustableValue$Type$values;
+  function GlslShader$AdjustableValue$Type$valueOf(name) {
+    switch (name) {
+      case 'INT':
+        return GlslShader$AdjustableValue$Type$INT_getInstance();
+      case 'FLOAT':
+        return GlslShader$AdjustableValue$Type$FLOAT_getInstance();
+      case 'VEC3':
+        return GlslShader$AdjustableValue$Type$VEC3_getInstance();
+      default:throwISE('No enum constant baaahs.shaders.GlslShader.AdjustableValue.Type.' + name);
+    }
+  }
+  GlslShader$AdjustableValue$Type.valueOf_61zpoe$ = GlslShader$AdjustableValue$Type$valueOf;
+  GlslShader$AdjustableValue.prototype.serializeConfig_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.varName);
+    writer.writeByte_s8j3t7$(toByte(this.valueType.ordinal));
+  };
+  GlslShader$AdjustableValue.prototype.serializeValue_8f9ar8$ = function (value, writer) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    switch (this.valueType.name) {
+      case 'INT':
+        writer.writeInt_za3lpa$((tmp$_0 = (tmp$ = value) == null || typeof tmp$ === 'number' ? tmp$ : throwCCE()) != null ? tmp$_0 : 0);
+        break;
+      case 'FLOAT':
+        writer.writeFloat_mx4ult$(typeof (tmp$_1 = value) === 'number' ? tmp$_1 : throwCCE());
+        break;
+      case 'VEC3':
+        writer.writeInt_za3lpa$(((tmp$_3 = (tmp$_2 = value) == null || Kotlin.isType(tmp$_2, Color) ? tmp$_2 : throwCCE()) != null ? tmp$_3 : Color$Companion_getInstance().WHITE).argb);
+        break;
+    }
+  };
+  GlslShader$AdjustableValue.prototype.readValue_100t80$ = function (reader) {
+    var tmp$;
+    switch (this.valueType.name) {
+      case 'INT':
+        tmp$ = reader.readInt();
+        break;
+      case 'FLOAT':
+        tmp$ = reader.readFloat();
+        break;
+      case 'VEC3':
+        tmp$ = new Color(reader.readInt());
+        break;
+      default:tmp$ = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    return tmp$;
+  };
+  function GlslShader$AdjustableValue$Companion() {
+    GlslShader$AdjustableValue$Companion_instance = this;
+    this.types_0 = GlslShader$AdjustableValue$Type$values();
+  }
+  GlslShader$AdjustableValue$Companion.prototype.parse_kbpt9e$ = function (reader, ordinal) {
+    var varName = reader.readString();
+    var valueType = this.types_0[reader.readByte()];
+    return new GlslShader$AdjustableValue(varName, '', valueType, new JsonObject(emptyMap()), ordinal);
+  };
+  GlslShader$AdjustableValue$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslShader$AdjustableValue$Companion_instance = null;
+  function GlslShader$AdjustableValue$Companion_getInstance() {
+    if (GlslShader$AdjustableValue$Companion_instance === null) {
+      new GlslShader$AdjustableValue$Companion();
+    }
+    return GlslShader$AdjustableValue$Companion_instance;
+  }
+  GlslShader$AdjustableValue.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'AdjustableValue',
+    interfaces: []
   };
   GlslShader.$metadata$ = {
     kind: Kind_CLASS,
@@ -12110,7 +12389,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -12287,19 +12566,41 @@
     }
     return CreepingPixelsShow_instance;
   }
-  function GlslSandbox55301Show() {
-    GlslSandbox55301Show_instance = this;
+  function GlslOtherShow() {
+    GlslOtherShow_instance = this;
+    GlslShow.call(this, 'GlslSandbox Some Other One (OpenGL)');
+    this.program_t4pxqn$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n#define PI 3.14159265359\n\nvoid main(void)\n{\n\tvec2 uv = gl_FragCoord.xy / resolution.xy;\n\tgl_FragColor = vec4(0);\n    gl_FragColor.r = sin(88.*uv.x) + sin(55.*uv.y) + 0.5+2.*sin(time*2.);\n}\n    ');
+  }
+  Object.defineProperty(GlslOtherShow.prototype, 'program', {
+    get: function () {
+      return this.program_t4pxqn$_0;
+    }
+  });
+  GlslOtherShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslOtherShow',
+    interfaces: [GlslShow]
+  };
+  var GlslOtherShow_instance = null;
+  function GlslOtherShow_getInstance() {
+    if (GlslOtherShow_instance === null) {
+      new GlslOtherShow();
+    }
+    return GlslOtherShow_instance;
+  }
+  function GlslSandbox55301KotlinShow() {
+    GlslSandbox55301KotlinShow_instance = this;
     Show.call(this, 'GlslSandbox 55301 (kt)');
   }
-  function GlslSandbox55301Show$createRenderer$ObjectLiteral() {
+  function GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral() {
   }
-  GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+  GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
   };
-  GlslSandbox55301Show$createRenderer$ObjectLiteral.$metadata$ = {
+  GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [Show$Renderer]
   };
-  GlslSandbox55301Show.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
+  GlslSandbox55301KotlinShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var shader = new GlslSandbox55301Shader();
     var $receiver = showRunner.allSurfaces;
     var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
@@ -12309,12 +12610,34 @@
       var item = tmp$.next();
       destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
     }
-    return new GlslSandbox55301Show$createRenderer$ObjectLiteral();
+    return new GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral();
   };
+  GlslSandbox55301KotlinShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox55301KotlinShow',
+    interfaces: [Show]
+  };
+  var GlslSandbox55301KotlinShow_instance = null;
+  function GlslSandbox55301KotlinShow_getInstance() {
+    if (GlslSandbox55301KotlinShow_instance === null) {
+      new GlslSandbox55301KotlinShow();
+    }
+    return GlslSandbox55301KotlinShow_instance;
+  }
+  function GlslSandbox55301Show() {
+    GlslSandbox55301Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 55301 (OpenGL)');
+    this.program_q080n4$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 10.0, minValue: 0.0, maxValue: 100.0}\nuniform float scale;\n\nuniform float time;\nuniform vec2 resolution;\n\n#define N 6\n\nvoid main( void ) {\n\tvec2 v= (gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*scale;\n\tfloat t=time * 0.4,r=0.0;\n\tfor (int i=0;i<N;i++){\n\t\tfloat d=(3.14159265 / float(N))*(float(i)*5.0);\n\t\tr+=length(vec2(v.x,v.y))+0.01;\n\t\tv = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));\n\t}\n        r = (sin(r*0.1)*0.5)+0.5;\n\tr = pow(r, 128.0);\n\tgl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );\n//\tgl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);\n}\n';
+  }
+  Object.defineProperty(GlslSandbox55301Show.prototype, 'program', {
+    get: function () {
+      return this.program_q080n4$_0;
+    }
+  });
   GlslSandbox55301Show.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'GlslSandbox55301Show',
-    interfaces: [Show]
+    interfaces: [GlslShow]
   };
   var GlslSandbox55301Show_instance = null;
   function GlslSandbox55301Show_getInstance() {
@@ -12323,15 +12646,37 @@
     }
     return GlslSandbox55301Show_instance;
   }
-  function GlslShow() {
-    GlslShow_instance = this;
-    Show.call(this, 'GlslSandbox 55301 (OpenGL)');
-    this.program = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\n#define N 6\n\nvoid main( void ) {\n\tvec2 v=(gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*10.0;\n\tfloat t=time * 0.4,r=0.0;\n\tfor (int i=0;i<N;i++){\n\t\tfloat d=(3.14159265 / float(N))*(float(i)*5.0);\n\t\tr+=length(vec2(v.x,v.y))+0.01;\n\t\tv = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));\n\t}\n        r = (sin(r*0.1)*0.5)+0.5;\n\tr = pow(r, 128.0);\n\tgl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );\n//\tgl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);\n}\n';
-    this.program2 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n#define PI 3.14159265359\n\nvoid main(void)\n{\n\tvec2 uv = gl_FragCoord.xy / resolution.xy;\n\tgl_FragColor = vec4(0);\n    gl_FragColor.r = sin(88.*uv.x) + sin(55.*uv.y) + 0.5+2.*sin(time*2.);\n}\n    ');
+  function GlslShow(name) {
+    Show.call(this, name);
   }
-  function GlslShow$createRenderer$ObjectLiteral() {
+  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToGadgets) {
+    this.closure$buffers = closure$buffers;
+    this.closure$adjustableValuesToGadgets = closure$adjustableValuesToGadgets;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
+    var $receiver = this.closure$buffers;
+    this.closure$adjustableValuesToGadgets;
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0;
+      tmp$_0 = this.closure$adjustableValuesToGadgets.entries.iterator();
+      while (tmp$_0.hasNext()) {
+        var element_0 = tmp$_0.next();
+        var adjustableValue = element_0.key;
+        var gadget = element_0.value;
+        var tmp$_1;
+        if (Kotlin.isType(gadget, Slider))
+          tmp$_1 = gadget.value;
+        else if (Kotlin.isType(gadget, ColorPicker))
+          tmp$_1 = gadget.color;
+        else
+          throw IllegalArgumentException_init('unsupported gadget ' + gadget);
+        var value = tmp$_1;
+        element.update_egvix6$(adjustableValue, value);
+      }
+    }
   };
   GlslShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -12339,28 +12684,47 @@
   };
   GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var shader = new GlslShader(this.program);
-    var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var $receiver = shader.adjustableValues;
+    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var item = tmp$.next();
+      var element = tmp$.next();
+      result.put_xwzc9p$(element, this.createGadget_j5u65$(element, showRunner));
+    }
+    var adjustableValuesToGadgets = result;
+    var $receiver_0 = showRunner.allSurfaces;
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
       destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
     }
-    return new GlslShow$createRenderer$ObjectLiteral();
+    var buffers = destination;
+    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets);
+  };
+  GlslShow.prototype.createGadget_j5u65$ = function ($receiver, showRunner) {
+    var tmp$, tmp$_0, tmp$_1;
+    var config = $receiver.config;
+    var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
+    switch ($receiver.gadgetType) {
+      case 'Slider':
+        tmp$_1 = new Slider(name, (tmp$_0 = config.getPrimitive_61zpoe$('initialValue').floatOrNull) != null ? tmp$_0 : 1.0, config.getPrimitive_61zpoe$('minValue').floatOrNull, config.getPrimitive_61zpoe$('maxValue').floatOrNull);
+        break;
+      case 'ColorPicker':
+        tmp$_1 = new ColorPicker(name);
+        break;
+      default:throw IllegalArgumentException_init('unknown gadget ' + $receiver.gadgetType);
+    }
+    var gadget = tmp$_1;
+    return showRunner.getGadget_vedre8$(name, gadget);
   };
   GlslShow.$metadata$ = {
-    kind: Kind_OBJECT,
+    kind: Kind_CLASS,
     simpleName: 'GlslShow',
     interfaces: [Show]
   };
-  var GlslShow_instance = null;
-  function GlslShow_getInstance() {
-    if (GlslShow_instance === null) {
-      new GlslShow();
-    }
-    return GlslShow_instance;
-  }
   function HeartbleatShow() {
     HeartbleatShow_instance = this;
     Show.call(this, 'Heartbleat');
@@ -16194,45 +16558,41 @@
   }
   function JsGlslManager() {
   }
-  JsGlslManager.prototype.createRenderer_61zpoe$ = function (program) {
-    return new JsGlslRenderer(program);
+  JsGlslManager.prototype.createRenderer_3kbl32$ = function (program, adjustableValues) {
+    return new JsGlslRenderer(program, adjustableValues);
   };
   JsGlslManager.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'JsGlslManager',
     interfaces: [GlslManager]
   };
-  function JsGlslRenderer(shader) {
+  function JsGlslRenderer(fragShader, adjustableValues) {
     JsGlslRenderer$Companion_getInstance();
-    GlslRenderer.call(this);
-    this.shader = shader;
+    GlslRenderer.call(this, fragShader, adjustableValues);
     var tmp$, tmp$_0;
     this.canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
     this.gl = Kotlin.isType(tmp$_0 = ensureNotNull(this.canvas.getContext('webgl2')), WebGL2RenderingContext) ? tmp$_0 : throwCCE();
     this.program_0 = null;
     this.quad_0 = null;
-    this.viewProjMatrix_8be2vx$ = (new Matrix4_init()).makeOrthographic(-0.5, 0.5, -0.5, 0.5, 1.0, 10.0).lookAt(new Vector3(0.0, 0.0, 1.0), new Vector3(0.0, 0.0, 0.0), new Vector3(0.0, 1.0, 0.0));
-    var $receiver = this.viewProjMatrix_8be2vx$.elements;
-    var destination = ArrayList_init_1($receiver.length);
-    var tmp$_1;
-    for (tmp$_1 = 0; tmp$_1 !== $receiver.length; ++tmp$_1) {
-      var item = $receiver[tmp$_1];
-      destination.add_11rb$(item);
-    }
-    this.viewMatrix = copyToArray(destination);
     this.gl_klfg04$(JsGlslRenderer_init$lambda(this));
     this.program_0 = this.createShaderProgram_0();
     this.quad_0 = new JsGlslRenderer$Quad(this);
     this.findUniforms();
-    this.instance = this.createInstance_i8oon4$(1, new Float32Array(2));
+    this.instance = this.createInstance_mfoo9a$(1, new Float32Array(2), this.nextSurfaceOffset);
   }
   function JsGlslRenderer$getUniformLocation$lambda(this$JsGlslRenderer, closure$name) {
     return function () {
-      return new GlslRenderer$Uniform(this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, closure$name));
+      return this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, closure$name);
     };
   }
   JsGlslRenderer.prototype.getUniformLocation_61zpoe$ = function (name) {
-    return this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
+    var tmp$;
+    tmp$ = this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
+    if (tmp$ == null) {
+      throw IllegalStateException_init("Couldn't find uniform " + name);
+    }
+    var loc = tmp$;
+    return new GlslRenderer$Uniform(loc);
   };
   function JsGlslRenderer$Quad($outer) {
     this.$outer = $outer;
@@ -16321,12 +16681,12 @@
   JsGlslRenderer.prototype.createSurfacePixels_x0dork$ = function (surface, pixelOffset) {
     return new JsGlslRenderer$SurfacePixels(this, surface, pixelOffset);
   };
-  JsGlslRenderer.prototype.createInstance_i8oon4$ = function (pixelCount, uvCoords) {
-    return new JsGlslRenderer$Instance(this, pixelCount, uvCoords);
+  JsGlslRenderer.prototype.createInstance_mfoo9a$ = function (pixelCount, uvCoords, surfaceCount) {
+    return new JsGlslRenderer$Instance(this, pixelCount, uvCoords, surfaceCount);
   };
   function JsGlslRenderer$draw$lambda$lambda(this$JsGlslRenderer) {
     return function () {
-      this$JsGlslRenderer.maybeAddSurfacePixels();
+      this$JsGlslRenderer.incorporateNewSurfaces();
       return Unit;
     };
   }
@@ -16369,41 +16729,35 @@
   };
   function JsGlslRenderer$render$lambda(this$JsGlslRenderer) {
     return function () {
-      this$JsGlslRenderer.gl.uniformMatrix4fv(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.matLocation_8be2vx$), false, this$JsGlslRenderer.viewMatrix);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_0(this$JsGlslRenderer) {
-    return function () {
       this$JsGlslRenderer.gl.uniform2f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.resolutionLocation_8be2vx$), 1.0, 1.0);
       return Unit;
     };
   }
-  function JsGlslRenderer$render$lambda_1(this$JsGlslRenderer, closure$thisTime) {
+  function JsGlslRenderer$render$lambda_0(this$JsGlslRenderer, closure$thisTime) {
     return function () {
       this$JsGlslRenderer.gl.uniform1f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.timeLocation_8be2vx$), closure$thisTime);
       return Unit;
     };
   }
-  function JsGlslRenderer$render$lambda_2(this$JsGlslRenderer) {
+  function JsGlslRenderer$render$lambda_1(this$JsGlslRenderer) {
     return function () {
       this$JsGlslRenderer.gl.viewport(0, 0, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$JsGlslRenderer.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$JsGlslRenderer.pixelCount));
       return Unit;
     };
   }
-  function JsGlslRenderer$render$lambda_3(this$JsGlslRenderer) {
+  function JsGlslRenderer$render$lambda_2(this$JsGlslRenderer) {
     return function () {
       this$JsGlslRenderer.gl.clear(JsGlslRenderer$Companion_getInstance().GL.COLOR_BUFFER_BIT | JsGlslRenderer$Companion_getInstance().GL.DEPTH_BUFFER_BIT);
       return Unit;
     };
   }
-  function JsGlslRenderer$render$lambda_4(this$JsGlslRenderer) {
+  function JsGlslRenderer$render$lambda_3(this$JsGlslRenderer) {
     return function () {
       this$JsGlslRenderer.gl.finish();
       return Unit;
     };
   }
-  function JsGlslRenderer$render$lambda_5(this$JsGlslRenderer) {
+  function JsGlslRenderer$render$lambda_4(this$JsGlslRenderer) {
     return function () {
       return this$JsGlslRenderer.gl.getProgramInfoLog(this$JsGlslRenderer.program_0);
     };
@@ -16411,14 +16765,14 @@
   JsGlslRenderer.prototype.render_0 = function () {
     var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
     this.gl_klfg04$(JsGlslRenderer$render$lambda(this));
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_0(this));
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_1(this, thisTime));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_0(this, thisTime));
     this.instance.bindUvCoordTexture_msnecj$(this.uvCoordTextureIndex, ensureNotNull(this.uvCoordsLocation_8be2vx$));
+    this.instance.bindUniforms();
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_1(this));
     this.gl_klfg04$(JsGlslRenderer$render$lambda_2(this));
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_3(this));
     this.quad_0.render_8be2vx$();
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_4(this));
-    var programLog = this.gl_klfg04$(JsGlslRenderer$render$lambda_5(this));
+    this.gl_klfg04$(JsGlslRenderer$render$lambda_3(this));
+    var programLog = this.gl_klfg04$(JsGlslRenderer$render$lambda_4(this));
     var tmp$ = programLog != null;
     if (tmp$) {
       tmp$ = programLog.length > 0;
@@ -16497,7 +16851,7 @@
     this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_2(this, program, vs));
     var fs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_3(this));
     var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
-    var $receiver = this.shader;
+    var $receiver = this.fragShader;
     var regex = Regex_init('void main\\s*\\(\\s*void\\s*\\)');
     var replacement = 'void sm_main(vec2 sm_pixelCoord)';
     var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
@@ -16577,15 +16931,194 @@
     }
     return JsGlslRenderer$Companion_instance;
   }
-  function JsGlslRenderer$Instance($outer, pixelCount, uvCoords) {
+  function JsGlslRenderer$UnifyingAdjustableUniform($outer, adjustableValue, surfaceCount) {
     this.$outer = $outer;
-    GlslRenderer$Instance.call(this, pixelCount, uvCoords);
+    this.adjustableValue = adjustableValue;
+    this.surfaceCount = surfaceCount;
+    this.uniformLocation = this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$uniformLocation$lambda(this, this.$outer));
+    this.buffer = null;
+  }
+  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda(this$JsGlslRenderer, closure$location, this$UnifyingAdjustableUniform) {
+    return function () {
+      var tmp$;
+      this$JsGlslRenderer.gl.uniform1i(closure$location, typeof (tmp$ = this$UnifyingAdjustableUniform.buffer) === 'number' ? tmp$ : throwCCE());
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_0(this$JsGlslRenderer, closure$location, this$UnifyingAdjustableUniform) {
+    return function () {
+      var tmp$;
+      this$JsGlslRenderer.gl.uniform1f(closure$location, typeof (tmp$ = this$UnifyingAdjustableUniform.buffer) === 'number' ? tmp$ : throwCCE());
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_1(this$JsGlslRenderer, closure$location, closure$color) {
+    return function () {
+      this$JsGlslRenderer.gl.uniform3f(closure$location, closure$color.redF, closure$color.greenF, closure$color.blueF);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$UnifyingAdjustableUniform.prototype.bind = function () {
+    var tmp$;
+    if (this.buffer != null) {
+      var location = this.$outer.get_location_0(this.uniformLocation);
+      switch (this.adjustableValue.valueType.name) {
+        case 'INT':
+          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda(this.$outer, location, this));
+          break;
+        case 'FLOAT':
+          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_0(this.$outer, location, this));
+          break;
+        case 'VEC3':
+          var color = Kotlin.isType(tmp$ = this.buffer, Color) ? tmp$ : throwCCE();
+          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_1(this.$outer, location, color));
+          break;
+      }
+    }
+  };
+  JsGlslRenderer$UnifyingAdjustableUniform.prototype.setValue_6t2rgq$ = function (surfaceOrdinal, value) {
+    this.buffer = value;
+  };
+  function JsGlslRenderer$UnifyingAdjustableUniform$uniformLocation$lambda(this$UnifyingAdjustableUniform, this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.getUniformLocation_61zpoe$(this$UnifyingAdjustableUniform.adjustableValue.varName);
+    };
+  }
+  JsGlslRenderer$UnifyingAdjustableUniform.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UnifyingAdjustableUniform',
+    interfaces: [GlslRenderer$AdjustibleUniform]
+  };
+  function JsGlslRenderer$AwesomerAdjustableUniform($outer, adjustableValue, surfaceCount) {
+    this.$outer = $outer;
+    this.adjustableValue = adjustableValue;
+    this.surfaceCount = surfaceCount;
+    var tmp$;
+    switch (this.adjustableValue.valueType.name) {
+      case 'INT':
+        tmp$ = new Uint32Array(this.elementCount);
+        break;
+      case 'FLOAT':
+        tmp$ = new Float32Array(this.elementCount);
+        break;
+      case 'VEC3':
+        tmp$ = new Float32Array(this.elementCount);
+        break;
+      default:tmp$ = Kotlin.noWhenBranchMatched();
+        break;
+    }
+    this.buffer = tmp$;
+    this.texture = this.$outer.gl_klfg04$(JsGlslRenderer$AwesomerAdjustableUniform$texture$lambda(this.$outer));
+    this.textureIndex = this.$outer.adjustableValueUniformIndices.get_za3lpa$(this.adjustableValue.ordinal);
+    this.uniformLocation = this.$outer.gl_klfg04$(JsGlslRenderer$AwesomerAdjustableUniform$uniformLocation$lambda(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_0(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_1(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_2(this.$outer));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_3(this.$outer, this));
+    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_4(this.$outer, this));
+  }
+  Object.defineProperty(JsGlslRenderer$AwesomerAdjustableUniform.prototype, 'elementCount', {
+    get: function () {
+      switch (this.adjustableValue.valueType.name) {
+        case 'INT':
+          return this.surfaceCount;
+        case 'FLOAT':
+          return this.surfaceCount;
+        case 'VEC3':
+          return this.surfaceCount * 3 | 0;
+        default:return Kotlin.noWhenBranchMatched();
+      }
+    }
+  });
+  Object.defineProperty(JsGlslRenderer$AwesomerAdjustableUniform.prototype, 'internalFormat', {
+    get: function () {
+      switch (this.adjustableValue.valueType.name) {
+        case 'INT':
+          return JsGlslRenderer$Companion_getInstance().GL.INT;
+        case 'FLOAT':
+          return JsGlslRenderer$Companion_getInstance().GL2.R32F;
+        case 'VEC3':
+          return JsGlslRenderer$Companion_getInstance().GL.RGB;
+        default:return Kotlin.noWhenBranchMatched();
+      }
+    }
+  });
+  function JsGlslRenderer$AwesomerAdjustableUniform$texture$lambda(this$JsGlslRenderer) {
+    return function () {
+      return this$JsGlslRenderer.gl.createTexture();
+    };
+  }
+  function JsGlslRenderer$AwesomerAdjustableUniform$uniformLocation$lambda(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
+    return function () {
+      return this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, this$AwesomerAdjustableUniform.adjustableValue.varName);
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
+    return function () {
+      this$JsGlslRenderer.gl.activeTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE0 + this$AwesomerAdjustableUniform.textureIndex | 0);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_0(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
+    return function () {
+      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, this$AwesomerAdjustableUniform.texture);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_1(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MIN_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_2(this$JsGlslRenderer) {
+    return function () {
+      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MAG_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_3(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
+    return function () {
+      this$JsGlslRenderer.gl.texImage2D(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, 0, JsGlslRenderer$Companion_getInstance().GL2.R32F, this$AwesomerAdjustableUniform.elementCount, 1, 0, JsGlslRenderer$Companion_getInstance().GL2.RED, JsGlslRenderer$Companion_getInstance().GL.FLOAT, null);
+      return Unit;
+    };
+  }
+  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_4(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
+    return function () {
+      this$JsGlslRenderer.gl.uniform1i(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.uvCoordsLocation_8be2vx$), this$AwesomerAdjustableUniform.textureIndex);
+      return Unit;
+    };
+  }
+  JsGlslRenderer$AwesomerAdjustableUniform.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'AwesomerAdjustableUniform',
+    interfaces: []
+  };
+  function JsGlslRenderer$Instance($outer, pixelCount, uvCoords, surfaceCount) {
+    this.$outer = $outer;
+    GlslRenderer$Instance.call(this, this.$outer, pixelCount, uvCoords, surfaceCount);
+    var $receiver = this.$outer.adjustableValues;
+    this.$outer;
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(new JsGlslRenderer$UnifyingAdjustableUniform(this.$outer, item, surfaceCount));
+    }
+    this.adjustableUniforms_edok6n$_0 = destination;
     this.uvCoordTexture_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$uvCoordTexture$lambda(this.$outer));
     this.frameBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$frameBuffer$lambda(this.$outer));
     this.renderBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$renderBuffer$lambda(this.$outer));
     this.pixelBuffer = new Uint8Array(this.$outer.get_bufSize_s8ev3n$(pixelCount) * 4 | 0);
     this.uvCoordsFloat32_0 = new Float32Array(toTypedArray_0(uvCoords));
   }
+  Object.defineProperty(JsGlslRenderer$Instance.prototype, 'adjustableUniforms', {
+    get: function () {
+      return this.adjustableUniforms_edok6n$_0;
+    }
+  });
   function JsGlslRenderer$Instance$bindFramebuffer$lambda(this$JsGlslRenderer, this$Instance) {
     return function () {
       this$JsGlslRenderer.gl.bindFramebuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, this$Instance.frameBuffer_0);
@@ -18653,9 +19186,12 @@
   package$geom.Vector3F = Vector3F;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
   package$glsl.GlslManager = GlslManager;
+  GlslRenderer.AdjustibleUniform = GlslRenderer$AdjustibleUniform;
   GlslRenderer.Instance = GlslRenderer$Instance;
   GlslRenderer.Uniform = GlslRenderer$Uniform;
+  GlslRenderer.Uniforms = GlslRenderer$Uniforms;
   package$glsl.GlslRenderer = GlslRenderer;
+  package$glsl.GlslSurface = GlslSurface;
   package$glsl.SurfacePixels = SurfacePixels;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
@@ -18803,8 +19339,23 @@
   Object.defineProperty(GlslShader, 'Companion', {
     get: GlslShader$Companion_getInstance
   });
+  GlslShader.Renderer = GlslShader$Renderer;
   GlslShader.PooledRenderer = GlslShader$PooledRenderer;
   GlslShader.Buffer = GlslShader$Buffer;
+  Object.defineProperty(GlslShader$AdjustableValue$Type, 'INT', {
+    get: GlslShader$AdjustableValue$Type$INT_getInstance
+  });
+  Object.defineProperty(GlslShader$AdjustableValue$Type, 'FLOAT', {
+    get: GlslShader$AdjustableValue$Type$FLOAT_getInstance
+  });
+  Object.defineProperty(GlslShader$AdjustableValue$Type, 'VEC3', {
+    get: GlslShader$AdjustableValue$Type$VEC3_getInstance
+  });
+  GlslShader$AdjustableValue.Type = GlslShader$AdjustableValue$Type;
+  Object.defineProperty(GlslShader$AdjustableValue, 'Companion', {
+    get: GlslShader$AdjustableValue$Companion_getInstance
+  });
+  GlslShader.AdjustableValue = GlslShader$AdjustableValue;
   package$shaders.GlslShader = GlslShader;
   Object.defineProperty(HeartShader, 'Companion', {
     get: HeartShader$Companion_getInstance
@@ -18881,12 +19432,16 @@
   Object.defineProperty(package$shows, 'CreepingPixelsShow', {
     get: CreepingPixelsShow_getInstance
   });
+  Object.defineProperty(package$shows, 'GlslOtherShow', {
+    get: GlslOtherShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox55301KotlinShow', {
+    get: GlslSandbox55301KotlinShow_getInstance
+  });
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
   });
-  Object.defineProperty(package$shows, 'GlslShow', {
-    get: GlslShow_getInstance
-  });
+  package$shows.GlslShow = GlslShow;
   Object.defineProperty(package$shows, 'HeartbleatShow', {
     get: HeartbleatShow_getInstance
   });
@@ -18975,6 +19530,8 @@
   Object.defineProperty(JsGlslRenderer, 'Companion', {
     get: JsGlslRenderer$Companion_getInstance
   });
+  JsGlslRenderer.UnifyingAdjustableUniform = JsGlslRenderer$UnifyingAdjustableUniform;
+  JsGlslRenderer.AwesomerAdjustableUniform = JsGlslRenderer$AwesomerAdjustableUniform;
   JsGlslRenderer.Instance = JsGlslRenderer$Instance;
   package$glsl.JsGlslRenderer = JsGlslRenderer;
   package$imaging.NativeBitmap = NativeBitmap;
@@ -19042,9 +19599,6 @@
   Matrix4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
-  Object.defineProperty(GlslRenderer$addSurface$ObjectLiteral.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
-  GlslRenderer$addSurface$ObjectLiteral.prototype.finishedFrame = Pixels.prototype.finishedFrame;
-  GlslRenderer$addSurface$ObjectLiteral.prototype.iterator = Pixels.prototype.iterator;
   Object.defineProperty(SurfacePixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SurfacePixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SurfacePixels.prototype.iterator = Pixels.prototype.iterator;
@@ -19056,8 +19610,7 @@
   FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   GlslSandbox55301Shader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   GlslSandbox55301Shader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  GlslShader$createRenderer$ObjectLiteral.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  GlslShader$createRenderer$ObjectLiteral_0.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  GlslShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
@@ -19072,7 +19625,7 @@
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  GlslSandbox55301Show$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
+  GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
