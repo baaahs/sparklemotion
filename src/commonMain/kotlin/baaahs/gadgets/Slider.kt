@@ -12,7 +12,13 @@ data class Slider(
     val name: String,
 
     /** The initial value for this slider. */
-    val initialValue: Float = 1f
+    val initialValue: Float = 1f,
+
+    /** The minimum value for this slider. */
+    val minValue: Float? = null,
+
+    /** The maximum value for this slider. */
+    val maxValue: Float? = null
 ) : Gadget() {
     /** The selected value. */
     @JsName("value")

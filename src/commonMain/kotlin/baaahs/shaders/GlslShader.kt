@@ -2,55 +2,83 @@ package baaahs.shaders
 
 import baaahs.*
 import baaahs.glsl.GlslBase
+import baaahs.glsl.GlslSurface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.shows.GlslShow
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonObject
 
-class GlslShader(val glslProgram: String) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
+class GlslShader(
+    val glslProgram: String,
+    val adjustableValues: List<AdjustableValue> = findAdjustableValues(glslProgram)
+) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
-    companion object: ShaderReader<GlslShader> {
-        override fun parse(reader: ByteArrayReader) = GlslShader(reader.readString())
+    companion object : ShaderReader<GlslShader> {
+        override fun parse(reader: ByteArrayReader): GlslShader {
+            val glslProgram = reader.readString()
+            val adjustableValueCount = reader.readShort()
+            val adjustableValues = (0 until adjustableValueCount).map { i -> AdjustableValue.parse(reader, i) }
+            return GlslShader(glslProgram, adjustableValues)
+        }
+
+        private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
+
+        fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
+            var i = 0
+            return GlslShow.gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
+                println("matches: ${matchResult.groupValues}")
+                val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
+                val configData = json.parseJson(configJson)
+                val valueType = when (valueTypeName) {
+                    "int" -> AdjustableValue.Type.INT
+                    "float" -> AdjustableValue.Type.FLOAT
+                    "vec3" -> AdjustableValue.Type.VEC3
+                    else -> throw IllegalArgumentException("unsupported type $valueTypeName")
+                }
+                AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, i++)
+            }.toList()
+        }
     }
 
     override fun serializeConfig(writer: ByteArrayWriter) {
         writer.writeString(glslProgram)
+        writer.writeShort(adjustableValues.size)
+        adjustableValues.forEach { it.serializeConfig(writer) }
     }
 
-    override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer<Buffer> {
+    override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
-        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram) }
-        val pixels = pooledRenderer.glslRenderer.addSurface(surface)
+        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
+        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
+        return Renderer(glslSurface)
+    }
 
-        return object : Renderer<Buffer> {
-            override fun beginFrame(buffer: Buffer, pixelCount: Int) {
-                // update uniforms from buffer...
-            }
+    override fun createRenderer(surface: Surface): Renderer {
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
+        val glslSurface = glslRenderer.addSurface(surface)
+        return Renderer(glslSurface)
+    }
 
-            override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-                return pixels[pixelIndex]
+    class Renderer(private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
+        override fun beginFrame(buffer: Buffer, pixelCount: Int) {
+            // update uniforms from buffer...
+            if (glslSurface != null) {
+                glslSurface.uniforms.updateFrom(buffer.values)
             }
+        }
+
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
+            return if (glslSurface != null) glslSurface.pixels[pixelIndex] else Color.BLACK
         }
     }
 
-    class PooledRenderer(glslProgram: String) : baaahs.PooledRenderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram)
+    class PooledRenderer(glslProgram: String, adjustableValues: List<AdjustableValue>) : baaahs.PooledRenderer {
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
 
         override fun preDraw() {
             glslRenderer.draw()
-        }
-    }
-
-    override fun createRenderer(surface: Surface): Renderer<Buffer> {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram)
-        val pixels = glslRenderer.addSurface(surface)
-
-        return object : Renderer<Buffer> {
-            override fun beginFrame(buffer: Buffer, pixelCount: Int) {
-                // update uniforms from buffer...
-            }
-
-            override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-                return pixels[pixelIndex]
-            }
         }
     }
 
@@ -61,12 +89,60 @@ class GlslShader(val glslProgram: String) : Shader<GlslShader.Buffer>(ShaderId.G
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
+        val values = Array<Any?>(adjustableValues.size) { }
+
+        fun update(adjustableValue: AdjustableValue, value: Any) {
+            values[adjustableValue.ordinal] = value
+        }
+
         override fun serialize(writer: ByteArrayWriter) {
+            adjustableValues.forEach { it.serializeValue(values[it.ordinal], writer) }
         }
 
         override fun read(reader: ByteArrayReader) {
+            adjustableValues.forEach { values[it.ordinal] = it.readValue(reader) }
         }
 
     }
 
+    class AdjustableValue(
+        val varName: String,
+        val gadgetType: String,
+        val valueType: Type,
+        val config: JsonObject,
+        val ordinal: Int
+    ) {
+        enum class Type { INT, FLOAT, VEC3 }
+
+        fun serializeConfig(writer: ByteArrayWriter) {
+            writer.writeString(varName)
+            writer.writeByte(valueType.ordinal.toByte())
+        }
+
+        fun serializeValue(value: Any?, writer: ByteArrayWriter) {
+            when (valueType) {
+                Type.INT -> writer.writeInt(value as Int? ?: 0)
+                Type.FLOAT -> writer.writeFloat(value as Float)
+                Type.VEC3 -> writer.writeInt((value as Color? ?: Color.WHITE).argb)
+            }
+        }
+
+        fun readValue(reader: ByteArrayReader): Any {
+            return when (valueType) {
+                Type.INT -> reader.readInt()
+                Type.FLOAT -> reader.readFloat()
+                Type.VEC3 -> Color(reader.readInt())
+            }
+        }
+
+        companion object {
+            private val types = Type.values()
+
+            fun parse(reader: ByteArrayReader, ordinal: Int): AdjustableValue {
+                val varName = reader.readString()
+                val valueType = types[reader.readByte().toInt()]
+                return AdjustableValue(varName, "", valueType, JsonObject(emptyMap()), ordinal)
+            }
+        }
+    }
 }

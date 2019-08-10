@@ -3,11 +3,11 @@ package baaahs.glsl
 import baaahs.Color
 import baaahs.IdentifiedSurface
 import baaahs.getTimeMillis
+import baaahs.shaders.GlslShader
+import baaahs.shaders.GlslShader.AdjustableValue.Type.*
 import baaahs.timeSync
-import info.laht.threekt.math.Vector3
 import org.khronos.webgl.*
 import org.w3c.dom.HTMLCanvasElement
-import three.Matrix4
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -16,7 +16,8 @@ actual object GlslBase {
 }
 
 class JsGlslManager : GlslManager {
-    override fun createRenderer(program: String) = JsGlslRenderer(program)
+    override fun createRenderer(program: String, adjustableValues: List<GlslShader.AdjustableValue>) =
+        JsGlslRenderer(program, adjustableValues)
 }
 
 public external abstract class WebGL2RenderingContext : WebGLRenderingContext {
@@ -30,21 +31,15 @@ public external abstract class WebGL2RenderingContext : WebGLRenderingContext {
 }
 
 
-class JsGlslRenderer(val shader: String) : GlslRenderer() {
+class JsGlslRenderer(
+    fragShader: String,
+    adjustableValues: List<GlslShader.AdjustableValue>
+) : GlslRenderer(fragShader, adjustableValues) {
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     var gl: WebGL2RenderingContext = canvas.getContext("webgl2")!! as WebGL2RenderingContext
 
     private val program: WebGLProgram?
     private val quad: Quad
-
-    internal var viewProjMatrix = Matrix4()
-        .makeOrthographic(-0.5, 0.5, -.5, .5, 1.0, 10.0)
-        .lookAt(
-            Vector3(0.0f, 0.0f, 1.0f),
-            Vector3(0.0f, 0.0f, 0.0f),
-            Vector3(0.0f, 1.0f, 0.0f)
-        )
-    val viewMatrix: Array<Float> = viewProjMatrix.elements.map { it.toFloat() }.toTypedArray()
 
     init {
         gl { gl.clearColor(0f, .5f, 0f, 1f) }
@@ -54,23 +49,25 @@ class JsGlslRenderer(val shader: String) : GlslRenderer() {
 
         findUniforms()
 
-        instance = createInstance(1, FloatArray(2))
+        instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
     }
 
     override fun getUniformLocation(name: String): Uniform {
-        return gl { Uniform(gl.getUniformLocation(program, name)) }
+        val loc = gl { gl.getUniformLocation(program, name) }
+            ?: throw IllegalStateException("Couldn't find uniform $name")
+        return Uniform(loc)
     }
 
     inner class Quad {
         private val vertices = arrayOf(
             // First triangle:
-            1.0f,  1.0f,
-            -1.0f,  1.0f,
+            1.0f, 1.0f,
+            -1.0f, 1.0f,
             -1.0f, -1.0f,
             // Second triangle:
             -1.0f, -1.0f,
             1.0f, -1.0f,
-            1.0f,  1.0f
+            1.0f, 1.0f
         )
 
         private var quadVertexBuffer: WebGLBuffer? = null
@@ -104,12 +101,12 @@ class JsGlslRenderer(val shader: String) : GlslRenderer() {
     override fun createSurfacePixels(surface: IdentifiedSurface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
         SurfacePixels(surface, pixelOffset)
 
-    override fun createInstance(pixelCount: Int, uvCoords: FloatArray): GlslRenderer.Instance =
-        Instance(pixelCount, uvCoords)
+    override fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): GlslRenderer.Instance =
+        Instance(pixelCount, uvCoords, surfaceCount)
 
     override fun draw() {
         withGlContext {
-            val addSurfacesMs = timeSync { maybeAddSurfacePixels() }
+            val addSurfacesMs = timeSync { incorporateNewSurfaces() }
 
             val bindFbMs = timeSync { instance.bindFramebuffer() }
             val renderMs = timeSync { render() }
@@ -133,11 +130,11 @@ class JsGlslRenderer(val shader: String) : GlslRenderer() {
     private fun render() {
         val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
 
-        gl { gl.uniformMatrix4fv(matLocation.location, false, viewMatrix) }
         gl { gl.uniform2f(resolutionLocation.location, 1f, 1f) }
         gl { gl.uniform1f(timeLocation.location, thisTime) }
 
         instance.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsLocation!!)
+        instance.bindUniforms()
 
         gl { gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight) }
         gl { gl.clear(GL.COLOR_BUFFER_BIT or GL.DEPTH_BUFFER_BIT) }
@@ -195,14 +192,14 @@ uniform sampler2D sm_uvCoords;
 
 out vec4 sm_fragColor;
 
-${shader
-    .replace(   
-        Regex("void main\\s*\\(\\s*void\\s*\\)"),
-        "void sm_main(vec2 sm_pixelCoord)"
-    )
-    .replace("gl_FragCoord", "sm_pixelCoord")
-    .replace("gl_FragColor", "sm_fragColor")
-}
+${fragShader
+            .replace(
+                Regex("void main\\s*\\(\\s*void\\s*\\)"),
+                "void sm_main(vec2 sm_pixelCoord)"
+            )
+            .replace("gl_FragCoord", "sm_pixelCoord")
+            .replace("gl_FragColor", "sm_fragColor")
+        }
 
 // Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.
 // We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and
@@ -238,9 +235,11 @@ void main(void) {
     private fun compileShader(shader: WebGLShader?) {
         gl { gl.compileShader(shader) }
         if (gl.getShaderParameter(shader, GL.COMPILE_STATUS) == false) {
-            window.alert("Failed to compile shader: ${gl.getShaderInfoLog(shader)}\n" +
-                    "Version: ${gl.getParameter(GL.VERSION)}\n" +
-                    "GLSL Version: ${gl.getParameter(GL.SHADING_LANGUAGE_VERSION)}\n")
+            window.alert(
+                "Failed to compile shader: ${gl.getShaderInfoLog(shader)}\n" +
+                        "Version: ${gl.getParameter(GL.VERSION)}\n" +
+                        "GLSL Version: ${gl.getParameter(GL.SHADING_LANGUAGE_VERSION)}\n"
+            )
             throw RuntimeException("Failed to compile shader: ${gl.getShaderInfoLog(shader)}")
         }
     }
@@ -275,11 +274,85 @@ void main(void) {
         }
     }
 
-    inner class Instance(pixelCount: Int, uvCoords: FloatArray) : GlslRenderer.Instance(pixelCount, uvCoords) {
+    inner class UnifyingAdjustableUniform(
+        val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int
+    ) : AdjustibleUniform {
+        val uniformLocation = gl { getUniformLocation(adjustableValue.varName) }
+        var buffer: Any? = null
+
+        override fun bind() {
+            if (buffer != null) {
+                val location = uniformLocation.location
+
+                when (adjustableValue.valueType) {
+                    INT -> gl { gl.uniform1i(location, buffer as Int) }
+                    FLOAT -> gl { gl.uniform1f(location, buffer as Float) }
+                    VEC3 -> {
+                        val color = buffer as Color
+                        gl { gl.uniform3f(location, color.redF, color.greenF, color.blueF) }
+                    }
+                }
+            }
+        }
+
+        // last one wins!
+        override fun setValue(surfaceOrdinal: Int, value: Any?) {
+            buffer = value
+        }
+    }
+
+    inner class AwesomerAdjustableUniform(val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int) {
+        // TODO: we should save these in an array, one for each surface, but let's keep it simple for now.
+        val elementCount: Int
+            get() = when (adjustableValue.valueType) {
+                INT -> surfaceCount
+                FLOAT -> surfaceCount
+                VEC3 -> surfaceCount * 3
+            }
+
+        val internalFormat: Int
+            get() = when (adjustableValue.valueType) {
+                INT -> GL.INT
+                FLOAT -> GL2.R32F
+                VEC3 -> GL.RGB
+            }
+
+        val buffer: ArrayBufferView = when (adjustableValue.valueType) {
+            INT -> Uint32Array(elementCount)
+            FLOAT -> Float32Array(elementCount)
+            VEC3 -> Float32Array(elementCount)
+        }
+
+        var texture = gl { gl.createTexture() }
+        val textureIndex = adjustableValueUniformIndices[adjustableValue.ordinal]
+        val uniformLocation = gl { gl.getUniformLocation(program, adjustableValue.varName) }
+
+        init {
+            gl { gl.activeTexture(GL.TEXTURE0 + textureIndex) }
+            gl { gl.bindTexture(GL.TEXTURE_2D, texture) }
+            gl { gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST) }
+            gl { gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST) }
+            gl {
+                gl.texImage2D(
+                    GL.TEXTURE_2D, 0, GL2.R32F, elementCount, 1, 0,
+                    GL2.RED, GL.FLOAT, null
+                )
+            }
+            gl { gl.uniform1i(uvCoordsLocation.location, textureIndex) }
+        }
+    }
+
+    inner class Instance(
+        pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int
+    ) : GlslRenderer.Instance(pixelCount, uvCoords, surfaceCount) {
+        override val adjustableUniforms: List<AdjustibleUniform> =
+            adjustableValues.map { adjustableValue -> UnifyingAdjustableUniform(adjustableValue, surfaceCount) }
+
         private var uvCoordTexture = gl { gl.createTexture() }
         private val frameBuffer = gl { gl.createFramebuffer() }
         private val renderBuffer = gl { gl.createRenderbuffer() }
         val pixelBuffer: Uint8Array = Uint8Array(pixelCount.bufSize * 4)
+
         private val uvCoordsFloat32 = Float32Array(uvCoords.toTypedArray())
 
         override fun bindFramebuffer() {
@@ -287,7 +360,7 @@ void main(void) {
 
             gl { gl.bindRenderbuffer(GL.RENDERBUFFER, renderBuffer) }
 //            console.error("pixel count: $pixelCount (${pixelCount.bufWidth} x ${pixelCount.bufHeight} = ${pixelCount.bufSize})")
-            gl { gl.renderbufferStorage(GL.RENDERBUFFER, GL.RGBA4, pixelCount.bufWidth, pixelCount.bufHeight)}
+            gl { gl.renderbufferStorage(GL.RENDERBUFFER, GL.RGBA4, pixelCount.bufWidth, pixelCount.bufHeight) }
             gl { gl.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, renderBuffer) }
 
             val status = gl { gl.checkFramebufferStatus(GL.FRAMEBUFFER) }
@@ -301,8 +374,12 @@ void main(void) {
             gl { gl.bindTexture(GL.TEXTURE_2D, uvCoordTexture) }
             gl { gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST) }
             gl { gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST) }
-            gl { gl.texImage2D(GL.TEXTURE_2D, 0, GL2.R32F, pixelCount.bufWidth * 2, pixelCount.bufHeight, 0,
-                GL2.RED, GL.FLOAT, uvCoordsFloat32) }
+            gl {
+                gl.texImage2D(
+                    GL.TEXTURE_2D, 0, GL2.R32F, pixelCount.bufWidth * 2, pixelCount.bufHeight, 0,
+                    GL2.RED, GL.FLOAT, uvCoordsFloat32
+                )
+            }
             gl { gl.uniform1i(uvCoordsLocation.location, textureIndex) }
         }
 
@@ -317,7 +394,17 @@ void main(void) {
         }
 
         override fun copyToPixelBuffer() {
-            gl { gl.readPixels(0, 0, pixelCount.bufWidth, pixelCount.bufHeight, GL.RGBA, GL.UNSIGNED_BYTE, pixelBuffer) }
+            gl {
+                gl.readPixels(
+                    0,
+                    0,
+                    pixelCount.bufWidth,
+                    pixelCount.bufHeight,
+                    GL.RGBA,
+                    GL.UNSIGNED_BYTE,
+                    pixelBuffer
+                )
+            }
         }
 
         override fun release() {
