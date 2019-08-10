@@ -16,7 +16,8 @@ class AllShows {
             CreepingPixelsShow,
             GlslSandbox55301KotlinShow,
             GlslSandbox55301Show,
-            GlslOtherShow
+            GlslOtherShow,
+            GlslSandbox56594Show
         )
     }
 }
