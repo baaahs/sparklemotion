@@ -32,25 +32,21 @@ bool EthInterface::init() {
     if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, glue_evtHandler, this)) != ESP_OK) return false;
     if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, glue_evtHandler, this)) != ESP_OK) return false;
 
-    eth_mac_config_t macConfig = ETH_MAC_DEFAULT_CONFIG();
+    //eth_mac_config_t macConfig = ETH_MAC_DEFAULT_CONFIG();
+    eth_mac_config_t macConfig = {};
+    macConfig.sw_reset_timeout_ms = 300;
+    macConfig.rx_task_stack_size = 4096;
+    macConfig.rx_task_prio = 15;
+    macConfig.queue_len = 100;
     esp_eth_mac_t *mac = esp_eth_mac_new_esp32(&macConfig);
+
     eth_phy_config_t phyConfig = ETH_PHY_DEFAULT_CONFIG();
 
     // Because the default example is assuming one of those 8720 breakout boards that
     // has the address set to 1 we have to be sure to set it to 0
     phyConfig.phy_addr = 0;
 
-    // We could remove these #if's for PHY's we aren't using but if someone uses
-    // our code on some other board they would just have to put them back
-#if CONFIG_PHY_IP101
-    esp_eth_phy_t *phy = esp_eth_phy_new_ip101(&phyConfig);
-#elif CONFIG_PHY_RTL8201
-    esp_eth_phy_t *phy = esp_eth_phy_new_rtl8201(&phyConfig);
-#elif CONFIG_PHY_LAN8720
     esp_eth_phy_t *phy = esp_eth_phy_new_lan8720(&phyConfig);
-#elif CONFIG_PHY_DP83848
-    esp_eth_phy_t *phy = esp_eth_phy_new_dp83848(&phyConfig);
-#endif
 
     m_config = ETH_DEFAULT_CONFIG(mac, phy);
 
