@@ -203,7 +203,7 @@ task runBrainJvm(type: JavaExec) {
     args projectDir
 }
 
-task packageClientResources(type: Copy, dependsOn: [jsProcessResources]) {
+task packageClientResources(type: Copy, dependsOn: [jsProcessResources, buildReactUI]) {
     from project.file("build/processedResources/js/main")
     into "build/classes/kotlin/jvm/main/htdocs"
 }

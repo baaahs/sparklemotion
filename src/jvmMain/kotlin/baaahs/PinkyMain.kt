@@ -4,9 +4,7 @@ import baaahs.dmx.DmxDevice
 import baaahs.net.JvmNetwork
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
-import io.ktor.http.content.default
-import io.ktor.http.content.files
-import io.ktor.http.content.static
+import io.ktor.http.content.*
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -23,11 +21,14 @@ fun main(args: Array<String>) {
     sheepModel.load()
 
     val resource = Pinky::class.java.classLoader.getResource("baaahs")
+    val useResources: Boolean
     val jsResDir = if (resource.protocol == "jar") {
+        useResources = true
         val uri = resource.toURI()!!
         FileSystems.newFileSystem(uri, mapOf("create" to "true"))
         Paths.get(uri).parent.resolve("htdocs")
     } else {
+        useResources = false
         val classPathBaseDir = Paths.get(resource.file).parent
         classPathBaseDir.parent.parent.parent.parent.parent.parent
             .resolve("build/processedResources/js/main")
@@ -56,8 +57,13 @@ fun main(args: Array<String>) {
 
     (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
         static {
-            files(jsResDir.toFile())
-            default(jsResDir.resolve("ui-index.html").toFile())
+            if (useResources) {
+                resources("htdocs")
+                defaultResource("htdocs/ui-index.html")
+            } else {
+                files(jsResDir.toFile())
+                default(jsResDir.resolve("ui-index.html").toFile())
+            }
         }
     }
 
