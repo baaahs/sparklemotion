@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
     } else {
         useResources = false
         val classPathBaseDir = Paths.get(resource.file).parent
-        classPathBaseDir.parent.parent.parent.parent.parent.parent
+        classPathBaseDir.parent.parent.parent.parent.parent
             .resolve("build/processedResources/js/main")
     }
 
@@ -43,6 +43,7 @@ fun main(args: Array<String>) {
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
     Files.createDirectories(dataDir)
+
     val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
 
     val fs = RealFs(dataDir)
