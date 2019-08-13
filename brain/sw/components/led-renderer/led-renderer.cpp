@@ -7,16 +7,16 @@
 #include <freertos/timers.h>
 
 LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
-    m_pixels(pixelCount, BRN01D_LED1_OUT),
+    m_pixels(pixelCount, BRAIN_GPIO_PIXEL_CH1),
     m_buffer(pixelCount, 1, nullptr),
     m_timeBase(timeBase)
 {
     // Start with an empty buffer
-    m_buffer.ClearTo(RgbColor(255, 255, 255));
+    m_buffer.ClearTo(BRAIN_POWER_ON_COLOR);
 
     m_pixels.Begin();
 
-    m_nBrightness = 255;
+    m_nBrightness = BRAIN_DEFAULT_BRIGHTNESS;
 }
 
 void static glue_showTask(void* pvParameters) {
@@ -29,7 +29,7 @@ void static glue_renderTask(void* pvParameters) {
 
 
 void
-LEDRenderer::start() {
+LEDRenderer::start(TaskDef show, TaskDef render) {
     TaskHandle_t tHandle = nullptr;
     BaseType_t tcResult;
 
@@ -46,8 +46,7 @@ LEDRenderer::start() {
 
     //////////////////////////////////////////
     // The show task
-    tcResult  = xTaskCreatePinnedToCore(glue_showTask, "show", TASK_SHOW_STACK_SIZE,
-                            this, TASK_SHOW_PRIORITY, &tHandle, TASK_SHOW_CORE);
+    tcResult = show.createTask(glue_showTask, this, &tHandle);
 
     if (tcResult != pdPASS) {
         ESP_LOGE(TAG, "Failed to create led show task = %d", tcResult);
@@ -57,8 +56,7 @@ LEDRenderer::start() {
 
     //////////////////////////////////////////
     // The render task
-    tcResult  = xTaskCreatePinnedToCore(glue_renderTask, "render", TASK_RENDER_STACK_SIZE,
-                                        this, TASK_RENDER_PRIORITY, &tHandle, TASK_RENDER_CORE);
+    tcResult = render.createTask(glue_renderTask, this, &tHandle);
 
     if (tcResult != pdPASS) {
         ESP_LOGE(TAG, "Failed to create led render task = %d", tcResult);
@@ -168,7 +166,7 @@ LEDRenderer::render() {
         // have to un-apply the feature since Rendering automatically applies it back. That's a waste
         // so we do this more efficient thing instead.
         if (m_nBrightness != 255) {
-            NeoBufferContext<LED_RENDERER_COLORFEATURE> context = m_buffer;
+            NeoBufferContext<BRAIN_NEO_COLORFEATURE> context = m_buffer;
             uint8_t* pCursor = context.Pixels;
             uint8_t* pEnd = pCursor + context.SizePixels;
             while(pCursor != pEnd) {

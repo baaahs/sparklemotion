@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.dmx.DmxDevice
+import baaahs.glsl.GlslBase
 import baaahs.net.JvmNetwork
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
@@ -17,6 +18,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {
+    GlslBase.manager // Need to wake up OpenGL on the main thread.
+
     val sheepModel = SheepModel()
     sheepModel.load()
 

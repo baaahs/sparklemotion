@@ -8,7 +8,7 @@
 #include "solid-shader.h"
 #include "rainbow-shader.h"
 
-#define TAG "#shdtre"
+#define TAG TAG_SHDTREE
 
 void glue_handleEvent(void* arg, esp_event_base_t base, int32_t id, void* data) {
     ((ShadeTree*)arg)->_handleEvent(base, id, data);
@@ -206,7 +206,7 @@ ShadeTree::nextLocalShader() {
 
     m_localShaderIndex++;
 
-    switch (m_localShaderIndex % 3) {
+    switch (m_localShaderIndex % 5) {
         case 0: // Everything is just white
             m_pLocalShader = new SolidShader(RgbColor(255));
             break;
@@ -217,6 +217,14 @@ ShadeTree::nextLocalShader() {
 
         case 2: // Red!
             m_pLocalShader = new SolidShader(RgbColor(255, 0, 0));
+            break;
+
+        case 3: // Green!
+            m_pLocalShader = new SolidShader(RgbColor(0, 255, 0));
+            break;
+
+        case 4: // Blue!
+            m_pLocalShader = new SolidShader(RgbColor(0, 0, 255));
             break;
     }
 

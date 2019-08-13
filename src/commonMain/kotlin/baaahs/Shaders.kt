@@ -13,7 +13,8 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SIMPLE_SPATIAL(SimpleSpatialShader),
     HEART(HeartShader),
     RANDOM(RandomShader),
-    GLSL_SANDBOX_55301(GlslSandbox55301Shader);
+    GLSL_SANDBOX_55301(GlslSandbox55301Shader),
+    GLSL_SHADER(GlslShader);
 
     companion object {
         val values = values()
@@ -30,7 +31,15 @@ interface ShaderReader<T : Shader<*>> {
     fun parse(reader: ByteArrayReader): T
 }
 
+interface RenderContext {
+    fun <T : PooledRenderer> registerPooled(key: Any, fn: () -> T): T
+}
+
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
+    open fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer<B> {
+        return createRenderer(surface)
+    }
+
     abstract fun createRenderer(surface: Surface): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
@@ -78,6 +87,20 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
         fun draw(buffer: B, pixelIndex: Int): Color
         fun endFrame() {}
     }
+}
+
+/**
+ * If a [Shader.Renderer] implements [PooledRenderer] and pixel prerendering is enabled on Pinky,
+ * then the drawing cycle will look like this:
+ *
+ * - shader.createRenderer()
+ * - rendererN*.beginFrame()
+ * - pooledRenderer.preDraw()
+ * - rendererN*.draw()
+ * - rendererN*.endFrame()
+ */
+interface PooledRenderer {
+    fun preDraw()
 }
 
 interface Pixels : Iterable<Color> {

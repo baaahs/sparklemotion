@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <brain_common.h>
 #include <sys/time.h>
 #include <freertos/FreeRTOS.h>
 
@@ -20,9 +21,6 @@ typedef int32_t braintime_t;
 #define BRAIN_TIME_EPOCH_SEC 1559347200
 
 #define USEC_IN_SEC 1000000
-
-#define DEFAULT_FPS 30
-// #define DEFAULT_FPS 1
 
 class TimeBase {
 public:
@@ -97,6 +95,6 @@ public:
     }
 
 private:
-    uint16_t m_fps = DEFAULT_FPS;
-    braintime_t m_frameDuration = (USEC_IN_SEC / (braintime_t)DEFAULT_FPS);
+    uint16_t m_fps = BRAIN_DEFAULT_FPS;
+    braintime_t m_frameDuration = (USEC_IN_SEC / (braintime_t)BRAIN_DEFAULT_FPS);
 };

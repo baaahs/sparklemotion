@@ -1,18 +1,33 @@
 package baaahs.shows
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-import baaahs.shaders.GlslSandbox55301Shader
+object GlslSandbox55301Show : GlslShow("GlslSandbox 55301 (OpenGL)") {
 
-object GlslSandbox55301Show : Show("GlslSandbox 55301") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val shader = GlslSandbox55301Shader()
-        showRunner.allSurfaces.map { showRunner.getShaderBuffer(it, shader) }
+    override val program = """
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-        return object : Renderer {
-            override fun nextFrame() {
-            }
-        }
-    }
+// SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 10.0, minValue: 0.0, maxValue: 100.0}
+uniform float scale;
+
+uniform float time;
+uniform vec2 resolution;
+
+#define N 6
+
+void main( void ) {
+	vec2 v= (gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*scale;
+	float t=time * 0.4,r=0.0;
+	for (int i=0;i<N;i++){
+		float d=(3.14159265 / float(N))*(float(i)*5.0);
+		r+=length(vec2(v.x,v.y))+0.01;
+		v = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));
+	}
+        r = (sin(r*0.1)*0.5)+0.5;
+	r = pow(r, 128.0);
+	gl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );
+//	gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);
+}
+"""
+
 }
