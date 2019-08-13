@@ -16,8 +16,12 @@ import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 fun main(args: Array<String>) {
+    val sheepModel = SheepModel()
+    sheepModel.load()
+
     val network = JvmNetwork()
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
         override var id: String? = null
@@ -28,7 +32,9 @@ fun main(args: Array<String>) {
         }
     }, JvmPixelsDisplay(2000))
 
-    brain.forcedSurfaceName("33R")
+    val myPanel = if (Random.nextBoolean()) { sheepModel.allPanels.random()!! } else { null }
+    println("I'll be ${myPanel?.name ?: "anonymous"}!")
+    myPanel?.let { brain.forcedSurfaceName(myPanel.name) }
 
     GlobalScope.launch { brain.run() }
 
