@@ -16,8 +16,7 @@
 #include <internal/RgbColor.h>
 
 #include "ip_port.h"
-
-#define MSG_TAG "#   msg"
+#include <brain_common.h>
 
 class BrainHelloMsg;
 class BrainShaderMsg;
@@ -409,9 +408,9 @@ public:
     // Msg* parse();
 
     virtual void log(const char* name = "Unknown") {
-        ESP_LOGI(MSG_TAG, "%s Msg cap=%d used=%d cursor=%d type=%d dest=%s", name, m_capacity, m_used,
+        ESP_LOGI(TAG_MSG, "%s Msg cap=%d used=%d cursor=%d type=%d dest=%s", name, m_capacity, m_used,
                 m_cursor, m_capacity > 13 ? m_buf[13] : -1, dest.toString());
-        ESP_LOG_BUFFER_HEXDUMP(MSG_TAG, m_buf, m_used, ESP_LOG_INFO);
+        ESP_LOG_BUFFER_HEXDUMP(TAG_MSG, m_buf, m_used, ESP_LOG_INFO);
     }
 
     virtual ~Msg() { }

@@ -3,6 +3,7 @@
 //
 
 #include "brain.h"
+#include "brain_common.h"
 
 #include "esp_log.h"
 
@@ -11,7 +12,7 @@
 
 static const uint16_t BRAIN_PORT = 8003;
 
-static const char* TAG = "# brain";
+static const char* TAG = TAG_BRAIN;
 
 Brain::Brain() :
     m_ledRenderer(m_timeBase, m_pixelCount)
@@ -157,13 +158,23 @@ Brain::sendHello(const IpPort &port) {
 }
 
 void
-Brain::start()
-{
-    gSysMon.start();
-    m_brainUI.start();
+Brain::start() {
+    gSysMon.start(DefaultBrainTasks.sysmon);
+    m_brainUI.start(DefaultBrainTasks.ui);
+
+    // TODO: Check with the UI to see if the user is holding down a button so that we enter config mode instead of regular boot
+
+    startSecondStageBoot();
+}
+
+void Brain::startSecondStageBoot() {
+    GlobalConfig.load();
+
+    m_netTransport.start(DefaultBrainTasks.net);
+//    m_netTransport.reconfigure();
 
     m_msgSlinger.registerHandler(this);
-    m_msgSlinger.start(BRAIN_PORT);
+    m_msgSlinger.start(BRAIN_PORT, DefaultBrainTasks.netInput, DefaultBrainTasks.netOutput);
 
     TimerHandle_t hTimer = xTimerCreate("say hello", pdMS_TO_TICKS(5000), pdTRUE, this, maybe_send_hello);
     if (!hTimer) {
@@ -179,16 +190,12 @@ Brain::start()
     m_shadeTree.start();
     ESP_LOGE(TAG, "m_shadeTree started");
 
-    m_timeBase.setFPS(30);
-    m_ledRenderer.setBrightness(255);
-
-
     m_ledRenderer.setShader(&m_shadeTree);
 //    LEDShaderFiller* filler = new LEDShaderFiller();
 //    m_ledRenderer.setShader(filler);
 
     // Start talking to the pixels
-    m_ledRenderer.start();
+    m_ledRenderer.start(DefaultBrainTasks.show, DefaultBrainTasks.render);
 
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");
@@ -197,6 +204,9 @@ Brain::start()
     ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %d", pdMS_TO_TICKS(1000));
     ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());
     ESP_LOGE(TAG, "getFrameDuration() = %d", m_timeBase.getFrameDuration());
+
+    // Do this last!
+    m_httpServer.start();
 }
 
 

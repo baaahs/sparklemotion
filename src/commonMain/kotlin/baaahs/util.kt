@@ -52,3 +52,9 @@ internal suspend fun time(function: suspend () -> Unit): Long {
     function.invoke()
     return getTimeMillis() - now
 }
+
+internal fun timeSync(function: () -> Unit): Long {
+    val now = getTimeMillis()
+    function.invoke()
+    return getTimeMillis() - now
+}

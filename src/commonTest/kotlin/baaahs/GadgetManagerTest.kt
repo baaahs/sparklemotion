@@ -27,9 +27,9 @@ class GadgetManagerTest {
 
         expect(
             "[" +
-                    "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"first\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/1\"}," +
-                    "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"second\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/2\"}," +
-                    "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"third\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/3\"}" +
+                    "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"first\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/1\"}," +
+                    "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"second\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/2\"}," +
+                    "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"third\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/3\"}" +
                     "]"
         ) { pubSub.getTopicInfo("activeGadgets")!!.data }
 
@@ -61,9 +61,9 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstB, "second" to secondB, "third" to thirdB))
 
         expect(listOf("[" +
-                "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"uno\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/4\"}," +
-                "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"dos\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/5\"}," +
-                "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"tres\",\"initialValue\":1.0},\"topicName\":\"/gadgets/Slider/6\"}" +
+                "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"uno\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/4\"}," +
+                "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"dos\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/5\"}," +
+                "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"tres\",\"initialValue\":1.0,\"minValue\":null,\"maxValue\":null},\"topicName\":\"/gadgets/Slider/6\"}" +
                 "]")) { activeGadgetsListener.events }
         expect("{}") { pubSub.getTopicInfo("/gadgets/Slider/4")!!.data }
         expect("{\"value\":0.123}") { pubSub.getTopicInfo("/gadgets/Slider/5")!!.data }

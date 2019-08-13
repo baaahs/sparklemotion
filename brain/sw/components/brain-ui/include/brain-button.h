@@ -19,7 +19,7 @@ public:
 
 class BrainButton {
 public:
-    BrainButton(gpio_num_t gpioNum, bool pullUp, BrainButtonListener& listener);
+    BrainButton(gpio_num_t gpioNum, bool activeLow, BrainButtonListener& listener);
 
     gpio_num_t gpioNum() { return m_gpioNum; }
     bool readDown();
@@ -36,7 +36,7 @@ private:
     gpio_num_t m_gpioNum;
     BrainButtonListener& m_listener;
 
-    bool m_pullUp;
+    bool m_activeLow;
     bool m_Down;
     uint64_t m_ChangeAt;
 

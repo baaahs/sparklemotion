@@ -5,9 +5,11 @@
 #include "brain-ui-priv.h"
 #include "brain-led.h"
 
+#define TAG TAG_UI
+
 bool BrainLed::initDone;
 
-BrainLed::BrainLed(ledc_channel_t channel, int gpio, ledc_mode_t speed) {
+BrainLed::BrainLed(ledc_channel_t channel, gpio_num_t gpio, ledc_mode_t speed) {
     m_config.channel = channel;
     m_config.gpio_num = gpio;
     m_config.speed_mode = speed;
@@ -20,6 +22,7 @@ void
 BrainLed::start() {
     BrainLed::checkInit();
 
+    ESP_LOGD(TAG, "BrainLed::Start gpio=%d", m_config.gpio_num);
     ledc_channel_config(&m_config);
 }
 

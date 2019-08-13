@@ -4,5 +4,6 @@
 
 #pragma once
 
-#include "esp_log.h"
-#define TAG "#    ui"
+#include <brain_common.h>
+
+#define TAG TAG_UI
