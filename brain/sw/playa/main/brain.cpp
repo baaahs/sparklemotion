@@ -183,16 +183,40 @@ Brain::msgUseFirmware(Msg *pMsg){
 
     ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
 
-    esp_http_client_config_t otaCfg;
-    otaCfg.url = szBuf;
-    otaCfg.event_handler = ota_event;
+    esp_http_client_config_t clientCfg = { 0 };
+    clientCfg.url = szBuf;
+    clientCfg.event_handler = ota_event;
 
-    auto result = esp_https_ota(&otaCfg);
-    if (result == ESP_OK) {
+    ESP_LOGE(TAG, "Starting the ota download...");
+
+    esp_https_ota_handle_t hOta;
+    esp_https_ota_config_t otaConfig;
+    otaConfig.http_config = &clientCfg;
+
+    auto err = esp_https_ota_begin(&otaConfig, &hOta);
+    if (err != ESP_OK || hOta == nullptr) {
+        ESP_LOGE(TAG, "Failed to start OTA: err=%d", err);
+        return;
+    }
+
+    while(1) {
+        err = esp_https_ota_perform(hOta);
+        if (err == ESP_OK) break;
+
+        if (err != ESP_ERR_HTTPS_OTA_IN_PROGRESS) {
+            ESP_LOGE(TAG, "Error during OTA %d", err);
+            break;
+        } else {
+            ESP_LOGE(TAG, "OTA chunk");
+        }
+    }
+
+    auto finishErr = esp_https_ota_finish(hOta);
+    if (finishErr != ESP_OK) {
+        ESP_LOGE(TAG, "Error at OTA finish %d", finishErr);
+    } else {
         ESP_LOGE(TAG, "Hey! That was a good OTA. We'll restart now");
         brain_restart(10);
-    } else {
-        ESP_LOGE(TAG, "OTA Failed. Error code %d", result);
     }
 
     free(szBuf);
