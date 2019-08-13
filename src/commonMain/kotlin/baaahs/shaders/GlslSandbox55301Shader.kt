@@ -1,6 +1,8 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.glsl.PanelSpaceUvTranslator
+import baaahs.glsl.UvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.*
@@ -27,12 +29,13 @@ class GlslSandbox55301Shader : Shader<GlslSandbox55301Shader.Buffer>(ShaderId.GL
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
-        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
+        private val uvTranslator =
+            if (surface is IdentifiedSurface) PanelSpaceUvTranslator.forSurface(surface) else null
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-            if (pixelVertices == null || pixelIndex >= pixelVertices.size) return Color.BLACK
+            if (uvTranslator == null) return Color.BLACK
 
-            val (pixX, pixY) = pixelVertices[pixelIndex]
+            val (pixX, pixY) = uvTranslator.getUV(pixelIndex)
             val time = getTimeMillis().toDouble() / 1000.0
             val resolution = Vector2(1f, 1f)
 
