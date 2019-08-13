@@ -10,6 +10,7 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -60,6 +61,8 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
+
+        GlslShader.model_CHEAT = model
     }
 
     suspend fun run(): Show.Renderer {

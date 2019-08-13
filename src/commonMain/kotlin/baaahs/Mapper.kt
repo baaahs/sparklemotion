@@ -6,7 +6,9 @@ import baaahs.geom.Vector3F
 import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
-import baaahs.mapper.*
+import baaahs.mapper.ImageProcessing
+import baaahs.mapper.MapperClient
+import baaahs.mapper.MappingSession
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -15,7 +17,6 @@ import baaahs.shaders.SolidShader
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlin.math.min
 import kotlin.random.Random
 
 class Mapper(
@@ -324,7 +325,7 @@ class Mapper(
                         mapperUi.showAfter(brainToMap.panelDeltaBitmap!!)
 
                         if (!pixelChangeRegion.isEmpty()) {
-                            val center = SheepModel.Point(
+                            val center = Vector3F(
                                 (pixelChangeRegion.centerX - surfaceChangeRegion.x0) / surfaceChangeRegion.width.toFloat(),
                                 (pixelChangeRegion.centerY - surfaceChangeRegion.y0) / surfaceChangeRegion.height.toFloat(),
                                 0f

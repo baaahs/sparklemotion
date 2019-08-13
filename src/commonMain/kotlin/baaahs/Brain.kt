@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -155,5 +156,7 @@ class Brain(
         }
     }
 
-    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface
+    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface {
+        override fun allVertices(): Collection<Vector3F> = emptyList()
+    }
 }

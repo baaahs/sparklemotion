@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.*
+import baaahs.geom.center
 import baaahs.shaders.GlslShader
 import kotlin.math.max
 import kotlin.math.min
@@ -170,14 +171,16 @@ object ScannerPixelCoordsUvTranslator : UvTranslator {
 }
 
 class ModelUvTranslator(val model: Model<*>) : UvTranslator {
+    val modelCenter = model.modelCenter
+
     override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
+        val pixelVertices = surface.pixelVertices!!
         return object : UvTranslator.SurfaceUvTranslator {
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
                 TODO("ModelUvTranslator.getUV not implemented")
             }
         }
     }
-
 }
 
 abstract class SurfacePixels(val surface: IdentifiedSurface, val pixel0Index: Int) : Pixels {

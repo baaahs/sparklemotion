@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.geom.Vector3F
-import kotlinx.serialization.Serializable
+import baaahs.geom.center
 
 abstract class Model<T : Model.Surface> {
     abstract val movingHeads: List<MovingHead>
@@ -12,10 +12,17 @@ abstract class Model<T : Model.Surface> {
     fun findModelSurface(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
+    val modelCenter by lazy {
+        val allVertices = hashSetOf<Vector3F>()
+        allSurfaces.map { allVertices.addAll(it.allVertices()) }
+        center(allVertices)
+    }
+
     /** A named surface in the geometry model. */
     interface Surface {
         val name: String
         val description: String
+        fun allVertices(): Collection<Vector3F>
     }
 }
 
@@ -114,6 +121,12 @@ class SheepModel : Model<SheepModel.Panel>() {
     class Panel(override val name: String) : Surface {
         val faces = Faces()
         val lines = mutableListOf<Line>()
+
+        override fun allVertices(): Collection<Vector3F> {
+            val vertices = hashSetOf<Vector3F>()
+            vertices.addAll(faces.vertices)
+            return vertices
+        }
 
         override val description: String = "Panel $name"
         override fun equals(other: Any?): Boolean = other is Panel && name == other.name
