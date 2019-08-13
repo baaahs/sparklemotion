@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.geom.Vector3F
 import kotlinx.serialization.Serializable
 
 abstract class Model<T : Model.Surface> {
@@ -19,7 +20,7 @@ abstract class Model<T : Model.Surface> {
 }
 
 class SheepModel : Model<SheepModel.Panel>() {
-    lateinit var vertices: List<Point>
+    lateinit var vertices: List<Vector3F>
     lateinit var panels: List<Panel>
 
     lateinit var eyes: List<MovingHead>
@@ -34,7 +35,7 @@ class SheepModel : Model<SheepModel.Panel>() {
     lateinit var panelNeighbors: Map<Panel, List<Panel>>
 
     fun load() {
-        val vertices: MutableList<Point> = mutableListOf()
+        val vertices: MutableList<Vector3F> = mutableListOf()
         val panels: MutableList<Panel> = mutableListOf()
         var currentPanel = Panel("initial")
 
@@ -52,7 +53,7 @@ class SheepModel : Model<SheepModel.Panel>() {
                     "v" -> {
                         if (args.size != 3) throw Exception("invalid vertex line: $line")
                         val coords = args.map { it.toFloat() }
-                        vertices.add(Point(coords[0], coords[1], coords[2]))
+                        vertices.add(Vector3F(coords[0], coords[1], coords[2]))
                     }
                     "o" -> {
                         val name = args.joinToString(" ")
@@ -65,7 +66,7 @@ class SheepModel : Model<SheepModel.Panel>() {
                     }
                     "l" -> {
                         val verts = args.map { it.toInt() - 1 }
-                        val points = mutableListOf<Point>()
+                        val points = mutableListOf<Vector3F>()
                         for (vi in verts) {
                             val v = vertices[vi]
                             points.add(v)
@@ -94,22 +95,19 @@ class SheepModel : Model<SheepModel.Panel>() {
         panelNeighbors = allPanels.associateWith { neighborsOf(it) }
 
         eyes = arrayListOf(
-            MovingHead("leftEye", Point(-163.738f, 204.361f, 439.302f)),
-            MovingHead("rightEye", Point(-103.738f, 204.361f, 439.302f))
+            MovingHead("leftEye", Vector3F(-163.738f, 204.361f, 439.302f)),
+            MovingHead("rightEye", Vector3F(-103.738f, 204.361f, 439.302f))
         )
     }
 
     fun neighborsOf(panel: Panel) = panelNeighbors[panel] ?: emptyList()
 
-    @Serializable
-    data class Point(val x: Float, val y: Float, val z: Float)
-
-    data class Line(val points: List<Point>)
+    data class Line(val vertices: List<Vector3F>)
 
     class Face(val vertexIds: List<Int>)
 
     class Faces {
-        val vertices: MutableList<Point> = mutableListOf()
+        val vertices: MutableList<Vector3F> = mutableListOf()
         val faces: MutableList<Face> = mutableListOf()
     }
 

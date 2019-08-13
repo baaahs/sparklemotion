@@ -120,7 +120,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
 
         val lines = panel.lines.map { line ->
             val lineGeo = Geometry()
-            lineGeo.vertices = line.points.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
+            lineGeo.vertices = line.vertices.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
             lineGeo
         }
 

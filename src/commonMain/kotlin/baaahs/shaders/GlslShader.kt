@@ -3,6 +3,7 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
+import baaahs.glsl.ScannerPixelCoordsUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.Json
@@ -54,13 +55,13 @@ class GlslShader(
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
-        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
+        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface, ScannerPixelCoordsUvTranslator)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
         val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
-        val glslSurface = glslRenderer.addSurface(surface)
+        val glslSurface = glslRenderer.addSurface(surface, ScannerPixelCoordsUvTranslator)
         return Renderer(glslSurface)
     }
 

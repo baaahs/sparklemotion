@@ -28,7 +28,8 @@ fun main() {
         IdentifiedSurface(
             SheepModel.Panel("Panel"),
             600,
-            List(600) { Vector2F(Random.nextFloat(), Random.nextFloat()) })
+            List(600) { Vector2F(Random.nextFloat(), Random.nextFloat()) }),
+        ScannerPixelCoordsUvTranslator
     )
 
     renderer.runStandalone()

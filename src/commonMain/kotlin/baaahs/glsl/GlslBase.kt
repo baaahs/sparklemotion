@@ -1,15 +1,12 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.Pixels
-import baaahs.Surface
+import baaahs.*
 import baaahs.shaders.GlslShader
 import kotlin.math.max
 import kotlin.math.min
 
 expect object GlslBase {
-    val manager : GlslManager
+    val manager: GlslManager
 }
 
 interface GlslManager {
@@ -47,15 +44,16 @@ abstract class GlslRenderer(
 
     }
 
-    fun addSurface(surface: Surface): GlslSurface? {
+    fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
         if (surface is IdentifiedSurface && surface.pixelVertices != null) {
-            val surfacePixels = GlslSurface(
+            val glslSurface = GlslSurface(
                 createSurfacePixels(surface, nextPixelOffset),
-                Uniforms(nextSurfaceOffset++)
+                Uniforms(nextSurfaceOffset++),
+                uvTranslator
             )
-            surfacesToAdd.add(surfacePixels)
+            surfacesToAdd.add(glslSurface)
             nextPixelOffset += surface.pixelCount
-            return surfacePixels
+            return glslSurface
         }
 
         return null
@@ -85,12 +83,13 @@ abstract class GlslRenderer(
 
             surfacesToAdd.forEach {
                 val surface = it.pixels.surface
-                val pixelVertices = surface.pixelVertices!!
+                val uvTranslator = it.uvTranslator.forSurface(surface)
 
                 for (i in 0 until surface.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
-                    newUvCoords[uvOffset] = pixelVertices[i].x     // u
-                    newUvCoords[uvOffset + 1] = pixelVertices[i].y // v
+                    val (u, v) = uvTranslator.getUV(i)
+                    newUvCoords[uvOffset] = u     // u
+                    newUvCoords[uvOffset + 1] = v // v
                 }
             }
 
@@ -145,7 +144,41 @@ abstract class GlslRenderer(
     }
 }
 
-class GlslSurface(val pixels: SurfacePixels, val uniforms: GlslRenderer.Uniforms)
+class GlslSurface(
+    val pixels: SurfacePixels,
+    val uniforms: GlslRenderer.Uniforms,
+    val uvTranslator: UvTranslator
+)
+
+interface UvTranslator {
+    fun forSurface(surface: IdentifiedSurface): SurfaceUvTranslator
+
+    interface SurfaceUvTranslator {
+        fun getUV(pixelIndex: Int): Pair<Float, Float>
+    }
+}
+
+object ScannerPixelCoordsUvTranslator : UvTranslator {
+    override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
+        val pixelVertices = surface.pixelVertices!!
+        return object : UvTranslator.SurfaceUvTranslator {
+            override fun getUV(pixelIndex: Int): Pair<Float, Float> {
+                return pixelVertices[pixelIndex].x to pixelVertices[pixelIndex].y
+            }
+        }
+    }
+}
+
+class ModelUvTranslator(val model: Model<*>) : UvTranslator {
+    override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
+        return object : UvTranslator.SurfaceUvTranslator {
+            override fun getUV(pixelIndex: Int): Pair<Float, Float> {
+                TODO("ModelUvTranslator.getUV not implemented")
+            }
+        }
+    }
+
+}
 
 abstract class SurfacePixels(val surface: IdentifiedSurface, val pixel0Index: Int) : Pixels {
     override val size: Int = surface.pixelCount
