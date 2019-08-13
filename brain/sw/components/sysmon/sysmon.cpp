@@ -13,7 +13,7 @@
 #include <string.h>
 #include <inttypes.h>
 
-#define TAG "#sysmon"
+#define TAG TAG_SYSMON
 
 SysMon gSysMon;
 
@@ -42,7 +42,7 @@ SysMon::_task() {
     // Initialization
     // Task actions
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = SYSMON_INTERVAL_SECONDS * xPortGetTickRateHz();
+    const TickType_t xFrequency = BRAIN_SYSMON_SECONDS * xPortGetTickRateHz();
 
     while(1) {
         logStats();

@@ -108,6 +108,43 @@ struct BrainTasks {
             .priority = 0,
             .coreId = tskNO_AFFINITY,
     };
+
+    /**
+     * The UI task processes button presses and turns them into key events.
+     * It also drives the on-board leds like the eyes and the tri-color
+     * led.
+     */
+    TaskDef ui = {
+            .name = "ui",
+            .stack = 3000,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
+    };
+
+    /**
+     * The show task takes the rendered pixel data and pushes it out to the
+     * pixels on a set schedule. It's pretty important thus a high priority.
+     */
+    TaskDef show = {
+            .name = "show",
+            .stack = 10240,
+            .priority = 4,
+            .coreId = APP_CPU_NUM,
+    };
+
+    /**
+     * The render task is responsible for parsing the "shade" messages,
+     * and doing what they say to do. It's decoupled from the act of
+     * actually pushing the pixels out to the strand for flexibility.
+     * Ultimately we may not need this much flexibility, but for the
+     * moment it's there.
+     */
+    TaskDef render = {
+            .name = "render",
+            .stack = 10240,
+            .priority = 5,
+            .coreId = APP_CPU_NUM,
+    };
 };
 
 /**
