@@ -3,6 +3,8 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
+import baaahs.glsl.ModelSpaceUvTranslator
+import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.Json
@@ -15,6 +17,8 @@ class GlslShader(
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
+        var model_CHEAT: Model<*>? = null
+
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
             val adjustableValueCount = reader.readShort()
@@ -54,13 +58,14 @@ class GlslShader(
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
-        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
+        val uvTranslator = ModelSpaceUvTranslator(model_CHEAT!!)
+        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface, uvTranslator)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
         val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
-        val glslSurface = glslRenderer.addSurface(surface)
+        val glslSurface = glslRenderer.addSurface(surface, PanelSpaceUvTranslator)
         return Renderer(glslSurface)
     }
 

@@ -1,10 +1,11 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
+import baaahs.geom.Vector3F
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovingHead(val name: String, val origin: SheepModel.Point/*, val heading: Point*/) {
+data class MovingHead(val name: String, val origin: Vector3F/*, val heading: Vector3F*/) {
     enum class ColorMode {
         ColorWheel,
         RGB,

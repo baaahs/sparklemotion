@@ -310,7 +310,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
             panel.lines.forEach { line ->
                 val lineGeom = BufferGeometry()
-                lineGeom.setFromPoints(line.points.map { pt ->
+                lineGeom.setFromPoints(line.vertices.map { pt ->
                     Vector3(
                         pt.x,
                         pt.y,
