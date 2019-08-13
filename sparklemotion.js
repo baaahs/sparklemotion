@@ -255,6 +255,7 @@
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
   var toTypedArray_1 = Kotlin.kotlin.collections.toTypedArray_964n91$;
+  var unboxChar = Kotlin.unboxChar;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var contentHashCode = Kotlin.arrayHashCode;
@@ -10352,6 +10353,25 @@
     simpleName: 'WebSocketListener',
     interfaces: []
   };
+  function Network$UdpProxy() {
+    Network$UdpProxy_instance = this;
+    this.BROADCAST_OP = toBoxedChar(66);
+    this.LISTEN_OP = toBoxedChar(76);
+    this.SEND_OP = toBoxedChar(83);
+    this.RECEIVE_OP = toBoxedChar(82);
+  }
+  Network$UdpProxy.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'UdpProxy',
+    interfaces: []
+  };
+  var Network$UdpProxy_instance = null;
+  function Network$UdpProxy_getInstance() {
+    if (Network$UdpProxy_instance === null) {
+      new Network$UdpProxy();
+    }
+    return Network$UdpProxy_instance;
+  }
   Network.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Network',
@@ -17720,7 +17740,7 @@
     this.udpProxy = null;
     var tmp$;
     if ((tmp$ = this$BrowserNetwork.udpProxyAddress_0) != null) {
-      this.udpProxy = new BrowserNetwork$UdpProxy(this, tmp$, this$BrowserNetwork.udpProxyPort_0);
+      this.udpProxy = new BrowserUdpProxy(this, tmp$, this$BrowserNetwork.udpProxyPort_0);
     }
     this.udpMtu_1mlzjd$_0 = 1500;
   }
@@ -17829,13 +17849,18 @@
     simpleName: 'BrowserAddress',
     interfaces: [Network$Address]
   };
-  function BrowserNetwork$UdpProxy(link, address, port) {
+  BrowserNetwork.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrowserNetwork',
+    interfaces: [Network]
+  };
+  function BrowserUdpProxy(link, address, port) {
     this.udpListener_0 = null;
     this.tcpConnection = link.connectWebSocket_t0j9bj$(address, port, '/sm/udpProxy', this);
     this.connected = false;
     this.toSend = ArrayList_init();
   }
-  BrowserNetwork$UdpProxy.prototype.connected_67ozxy$ = function (tcpConnection) {
+  BrowserUdpProxy.prototype.connected_67ozxy$ = function (tcpConnection) {
     this.connected = true;
     var tmp$;
     tmp$ = this.toSend.iterator();
@@ -17845,20 +17870,20 @@
     }
     this.toSend.clear();
   };
-  BrowserNetwork$UdpProxy.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
+  BrowserUdpProxy.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
     var $receiver = new ByteArrayReader(bytes);
     var op = $receiver.readByte();
-    if (op === toByte(82 | 0)) {
-      var fromAddress = new BrowserNetwork$UdpProxy$UdpProxyAddress($receiver.readBytes());
+    if (op === toByte(unboxChar(Network$UdpProxy_getInstance().RECEIVE_OP) | 0)) {
+      var fromAddress = new BrowserUdpProxy$UdpProxyAddress($receiver.readBytes());
       var fromPort = $receiver.readInt();
       var data = $receiver.readBytes();
       ensureNotNull(this.udpListener_0).receive_ytpeqp$(fromAddress, fromPort, data);
     }
   };
-  BrowserNetwork$UdpProxy.prototype.reset_67ozxy$ = function (tcpConnection) {
+  BrowserUdpProxy.prototype.reset_67ozxy$ = function (tcpConnection) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'UdpProxy.reset not implemented');
   };
-  BrowserNetwork$UdpProxy.prototype.listenUdp_a6m852$ = function (port, udpListener) {
+  BrowserUdpProxy.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     if (this.udpListener_0 != null) {
       throw IllegalStateException_init('UDP proxy is already listening');
     }
@@ -17867,46 +17892,46 @@
       throw IllegalArgumentException_init("UDP proxy can't listen on a specific port, sorry!");
     }
     var $receiver = new ByteArrayWriter();
-    $receiver.writeByte_s8j3t7$(toByte(76 | 0));
+    $receiver.writeByte_s8j3t7$(toByte(unboxChar(Network$UdpProxy_getInstance().LISTEN_OP) | 0));
     this.log_0('UDP: Listen');
     this.tcpConnectionSend_0($receiver.toBytes());
-    return new BrowserNetwork$UdpProxy$UdpSocketProxy(this, port);
+    return new BrowserUdpProxy$UdpSocketProxy(this, port);
   };
-  function BrowserNetwork$UdpProxy$UdpSocketProxy($outer, requestedPort) {
+  function BrowserUdpProxy$UdpSocketProxy($outer, requestedPort) {
     this.$outer = $outer;
-    this.serverPort_806q28$_0 = requestedPort;
+    this.serverPort_r2mu8g$_0 = requestedPort;
   }
-  Object.defineProperty(BrowserNetwork$UdpProxy$UdpSocketProxy.prototype, 'serverPort', {
+  Object.defineProperty(BrowserUdpProxy$UdpSocketProxy.prototype, 'serverPort', {
     get: function () {
-      return this.serverPort_806q28$_0;
+      return this.serverPort_r2mu8g$_0;
     }
   });
-  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
-    if (!Kotlin.isType(toAddress, BrowserNetwork$UdpProxy$UdpProxyAddress)) {
+  BrowserUdpProxy$UdpSocketProxy.prototype.sendUdp_ytpeqp$ = function (toAddress, port, bytes) {
+    if (!Kotlin.isType(toAddress, BrowserUdpProxy$UdpProxyAddress)) {
       throw IllegalArgumentException_init("UDP proxy can't send to " + toAddress + '!');
     }
     var tmp$ = this.$outer;
     var $receiver = new ByteArrayWriter();
-    $receiver.writeByte_s8j3t7$(toByte(83 | 0));
+    $receiver.writeByte_s8j3t7$(toByte(unboxChar(Network$UdpProxy_getInstance().SEND_OP) | 0));
     $receiver.writeBytes_mj6st8$(toAddress.bytes);
     $receiver.writeInt_za3lpa$(port);
     $receiver.writeBytes_mj6st8$(bytes);
     tmp$.tcpConnectionSend_0($receiver.toBytes());
   };
-  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
+  BrowserUdpProxy$UdpSocketProxy.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
     var tmp$ = this.$outer;
     var $receiver = new ByteArrayWriter();
-    $receiver.writeByte_s8j3t7$(toByte(66 | 0));
+    $receiver.writeByte_s8j3t7$(toByte(unboxChar(Network$UdpProxy_getInstance().BROADCAST_OP) | 0));
     $receiver.writeInt_za3lpa$(port);
     $receiver.writeBytes_mj6st8$(bytes);
     tmp$.tcpConnectionSend_0($receiver.toBytes());
   };
-  BrowserNetwork$UdpProxy$UdpSocketProxy.$metadata$ = {
+  BrowserUdpProxy$UdpSocketProxy.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'UdpSocketProxy',
     interfaces: [Network$UdpSocket]
   };
-  BrowserNetwork$UdpProxy.prototype.tcpConnectionSend_0 = function (bytes) {
+  BrowserUdpProxy.prototype.tcpConnectionSend_0 = function (bytes) {
     if (this.connected) {
       this.tcpConnection.send_fqrh44$(bytes);
     }
@@ -17914,52 +17939,47 @@
       this.toSend.add_11rb$(bytes);
     }
   };
-  BrowserNetwork$UdpProxy.prototype.log_0 = function (s) {
+  BrowserUdpProxy.prototype.log_0 = function (s) {
     println(s);
   };
-  function BrowserNetwork$UdpProxy$UdpProxyAddress(bytes) {
+  function BrowserUdpProxy$UdpProxyAddress(bytes) {
     this.bytes = bytes;
   }
-  function BrowserNetwork$UdpProxy$UdpProxyAddress$toString$lambda(it) {
+  function BrowserUdpProxy$UdpProxyAddress$toString$lambda(it) {
     return (it & 255).toString();
   }
-  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.toString = function () {
-    return joinToString_0(this.bytes, '.', void 0, void 0, void 0, void 0, BrowserNetwork$UdpProxy$UdpProxyAddress$toString$lambda);
+  BrowserUdpProxy$UdpProxyAddress.prototype.toString = function () {
+    return joinToString_0(this.bytes, '.', void 0, void 0, void 0, void 0, BrowserUdpProxy$UdpProxyAddress$toString$lambda);
   };
-  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.equals = function (other) {
+  BrowserUdpProxy$UdpProxyAddress.prototype.equals = function (other) {
     var tmp$;
     if (this === other)
       return true;
     if (other == null || !equals(get_js(Kotlin.getKClassFromExpression(this)), get_js(Kotlin.getKClassFromExpression(other))))
       return false;
-    Kotlin.isType(tmp$ = other, BrowserNetwork$UdpProxy$UdpProxyAddress) ? tmp$ : throwCCE();
+    Kotlin.isType(tmp$ = other, BrowserUdpProxy$UdpProxyAddress) ? tmp$ : throwCCE();
     if (!contentEquals(this.bytes, other.bytes))
       return false;
     return true;
   };
-  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.hashCode = function () {
+  BrowserUdpProxy$UdpProxyAddress.prototype.hashCode = function () {
     return contentHashCode(this.bytes);
   };
-  BrowserNetwork$UdpProxy$UdpProxyAddress.$metadata$ = {
+  BrowserUdpProxy$UdpProxyAddress.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'UdpProxyAddress',
     interfaces: [Network$Address]
   };
-  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.component1 = function () {
+  BrowserUdpProxy$UdpProxyAddress.prototype.component1 = function () {
     return this.bytes;
   };
-  BrowserNetwork$UdpProxy$UdpProxyAddress.prototype.copy_fqrh44$ = function (bytes) {
-    return new BrowserNetwork$UdpProxy$UdpProxyAddress(bytes === void 0 ? this.bytes : bytes);
+  BrowserUdpProxy$UdpProxyAddress.prototype.copy_fqrh44$ = function (bytes) {
+    return new BrowserUdpProxy$UdpProxyAddress(bytes === void 0 ? this.bytes : bytes);
   };
-  BrowserNetwork$UdpProxy.$metadata$ = {
+  BrowserUdpProxy.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'UdpProxy',
+    simpleName: 'BrowserUdpProxy',
     interfaces: [Network$WebSocketListener]
-  };
-  BrowserNetwork.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BrowserNetwork',
-    interfaces: [Network]
   };
   function FakeMediaDevices(visualizer) {
     this.visualizer_0 = visualizer;
@@ -19368,6 +19388,9 @@
   Network.TcpConnection = Network$TcpConnection;
   Network.HttpServer = Network$HttpServer;
   Network.WebSocketListener = Network$WebSocketListener;
+  Object.defineProperty(Network, 'UdpProxy', {
+    get: Network$UdpProxy_getInstance
+  });
   package$net.Network = Network;
   var package$proto = package$baaahs.proto || (package$baaahs.proto = {});
   Object.defineProperty(package$proto, 'Ports', {
@@ -19662,6 +19685,8 @@
   package$baaahs.decodeBase64_61zpoe$ = decodeBase64;
   BrowserNetwork.BrowserAddress = BrowserNetwork$BrowserAddress;
   package$net.BrowserNetwork = BrowserNetwork;
+  BrowserUdpProxy.UdpSocketProxy = BrowserUdpProxy$UdpSocketProxy;
+  package$net.BrowserUdpProxy = BrowserUdpProxy;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$sim.FakeMediaDevices = FakeMediaDevices;
   _.decodeQueryParams_h13imq$ = decodeQueryParams;
@@ -19764,8 +19789,8 @@
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
   CanvasBitmap.prototype.withData_u0v8ny$ = Bitmap.prototype.withData_u0v8ny$;
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
-  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
-  BrowserNetwork$UdpProxy$UdpSocketProxy.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
+  BrowserUdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
+  BrowserUdpProxy$UdpSocketProxy.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   Object.defineProperty(VizPanel$VizPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   VizPanel$VizPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   VizPanel$VizPixels.prototype.iterator = Pixels.prototype.iterator;
