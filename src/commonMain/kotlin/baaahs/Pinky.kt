@@ -153,6 +153,13 @@ class Pinky(
         val surfaceName = msg.surfaceName
 
         println("foundBrain($brainAddress, $msg)")
+        if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
+            // You need the new hotness bro
+            println("The firmware daddy doesn't like $brainId having ${msg.firmwareVersion} so we'll send ${firmwareDaddy.urlForPreferredVersion}")
+            val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
+        }
+
 
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
         val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
@@ -168,6 +175,7 @@ class Pinky(
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
         } ?: AnonymousSurface(brainId)
+
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
@@ -198,12 +206,6 @@ class Pinky(
         pendingBrainInfos[brainId] = brainInfo
 
         // Decide whether or not to tell this brain it should use a different firmware
-
-        if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
-            // You need the new hotness bro
-            val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
-        }
 
     }
 

@@ -10,6 +10,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "esp_https_ota.h"
 
 static const uint16_t BRAIN_PORT = 8003;
 
@@ -127,6 +128,34 @@ Brain::msgPing(Msg* pMsg) {
     }
 }
 
+esp_err_t ota_event(esp_http_client_event_t *evt)
+{
+    switch (evt->event_id) {
+        case HTTP_EVENT_ERROR:
+            ESP_LOGD(TAG, "HTTP_EVENT_ERROR");
+            break;
+        case HTTP_EVENT_ON_CONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_CONNECTED");
+            break;
+        case HTTP_EVENT_HEADER_SENT:
+            ESP_LOGD(TAG, "HTTP_EVENT_HEADER_SENT");
+            break;
+        case HTTP_EVENT_ON_HEADER:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+            break;
+        case HTTP_EVENT_ON_DATA:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
+            break;
+        case HTTP_EVENT_ON_FINISH:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_FINISH");
+            break;
+        case HTTP_EVENT_DISCONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_DISCONNECTED");
+            break;
+    }
+    return ESP_OK;
+}
+
 #define MAX_URL_SIZE 512
 
 void
@@ -143,14 +172,30 @@ Brain::msgUseFirmware(Msg *pMsg){
     // Start out nice just in case
     szBuf[0] = 0;
 
-    auto read = pMsg->readString(szBuf, MAX_URL_SIZE);
+    auto read = pMsg->readString(szBuf, MAX_URL_SIZE-1);
     if (!read) {
         ESP_LOGE(TAG, "Firmware URL was empty");
         free(szBuf);
         return;
     }
+    // Gotta keep 'er terminated
+    szBuf[read] = 0;
 
     ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
+
+    esp_http_client_config_t otaCfg;
+    otaCfg.url = szBuf;
+    otaCfg.event_handler = ota_event;
+
+    auto result = esp_https_ota(&otaCfg);
+    if (result == ESP_OK) {
+        ESP_LOGE(TAG, "Hey! That was a good OTA. We'll restart now");
+        brain_restart(10);
+    } else {
+        ESP_LOGE(TAG, "OTA Failed. Error code %d", result);
+    }
+
+    free(szBuf);
 }
 
 
