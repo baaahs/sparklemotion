@@ -9,7 +9,7 @@
 
 #include "esp_log.h"
 #include "esp_heap_caps.h"
-#include "../../../../../../../Users/tseago/esp/esp-idf/components/app_update/include/esp_ota_ops.h"
+#include "esp_ota_ops.h"
 #include <string.h>
 #include <inttypes.h>
 
