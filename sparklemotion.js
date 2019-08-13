@@ -175,6 +175,7 @@
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
+  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var until_0 = Kotlin.kotlin.ranges.until_c8b4g4$;
   var map = Kotlin.kotlin.sequences.map_z5avom$;
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
@@ -10047,6 +10048,22 @@
     simpleName: 'Storage',
     interfaces: []
   };
+  function Comparator$ObjectLiteral_0(closure$comparison) {
+    this.closure$comparison = closure$comparison;
+  }
+  Comparator$ObjectLiteral_0.prototype.compare = function (a, b) {
+    return this.closure$comparison(a, b);
+  };
+  Comparator$ObjectLiteral_0.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
+  var compareBy$lambda = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(a), selector(b));
+      };
+    };
+  });
   function FragmentingUdpLink(wrappedLink) {
     FragmentingUdpLink$Companion_getInstance();
     this.wrappedLink_0 = wrappedLink;
@@ -10085,6 +10102,9 @@
     this.offset = offset;
     this.bytes = bytes;
   }
+  FragmentingUdpLink$Fragment.prototype.toString = function () {
+    return 'Fragment(messageId=' + this.messageId + ', offset=' + this.offset + ', bytes=' + this.bytes.length + ')';
+  };
   FragmentingUdpLink$Fragment.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Fragment',
@@ -10094,31 +10114,27 @@
     this.closure$udpListener = closure$udpListener;
     this.this$FragmentingUdpLink = this$FragmentingUdpLink;
   }
-  function FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(closure$messageId, closure$myFragments) {
-    return function (fragment) {
-      var remove = fragment.messageId === closure$messageId;
-      if (remove)
-        closure$myFragments.add_11rb$(fragment);
-      return remove;
-    };
-  }
   FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var reader = new ByteArrayReader(bytes);
     var messageId = reader.readShort();
     var size = reader.readShort();
     var totalSize = reader.readInt();
     var offset = reader.readInt();
+    if ((size + 12 | 0) > bytes.length) {
+      logger$Companion_getInstance().debug_61zpoe$('Discarding short UDP message: ' + (size + 12 | 0) + ' > ' + bytes.length + ' available');
+      return;
+    }
     var frameBytes = reader.readNBytes_za3lpa$(size);
     if (offset === 0 && size === totalSize) {
       this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, frameBytes);
     }
      else {
       var thisFragment = new FragmentingUdpLink$Fragment(messageId, offset, frameBytes);
+      this.this$FragmentingUdpLink;
+      this.this$FragmentingUdpLink;
       this.this$FragmentingUdpLink.fragments_0.add_11rb$(thisFragment);
-      if (offset + size === totalSize) {
-        var myFragments = ArrayList_init();
-        removeAll(this.this$FragmentingUdpLink.fragments_0, FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(messageId, myFragments));
-        this.this$FragmentingUdpLink.fragments_0.isEmpty();
+      if ((offset + size | 0) === totalSize) {
+        var myFragments = this.this$FragmentingUdpLink.removeMessageId_0(messageId);
         var destination = ArrayList_init_1(collectionSizeOrDefault(myFragments, 10));
         var tmp$;
         tmp$ = myFragments.iterator();
@@ -10134,18 +10150,32 @@
           accumulator = accumulator + iterator.next() | 0;
         }
         var actualTotalSize = accumulator;
-        if (actualTotalSize !== totalSize) {
-          throw IllegalArgumentException_init("can't reassemble packet, " + actualTotalSize + ' != ' + totalSize + ' for ' + messageId);
+        if (actualTotalSize === totalSize) {
+          var reassembleBytes = new Int8Array(totalSize);
+          var tmp$_0;
+          tmp$_0 = myFragments.iterator();
+          while (tmp$_0.hasNext()) {
+            var element = tmp$_0.next();
+            var $receiver = element.bytes;
+            arrayCopy($receiver, reassembleBytes, element.offset, 0, $receiver.length);
+          }
+          this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, reassembleBytes);
         }
-        var reassembleBytes = new Int8Array(totalSize);
-        var tmp$_0;
-        tmp$_0 = myFragments.iterator();
-        while (tmp$_0.hasNext()) {
-          var element = tmp$_0.next();
-          var $receiver = element.bytes;
-          arrayCopy($receiver, reassembleBytes, element.offset, 0, $receiver.length);
+         else {
+          var tmp$_1 = logger$Companion_getInstance();
+          var tmp$_2 = 'incomplete fragmented UDP packet from ' + fromAddress + ':' + fromPort + ':' + (' actualTotalSize=' + actualTotalSize + ' != totalSize=' + totalSize) + (' for messageId=' + messageId);
+          var destination_0 = ArrayList_init_1(collectionSizeOrDefault(myFragments, 10));
+          var tmp$_3;
+          tmp$_3 = myFragments.iterator();
+          while (tmp$_3.hasNext()) {
+            var item_0 = tmp$_3.next();
+            destination_0.add_11rb$(item_0.bytes.length);
+          }
+          tmp$_1.warn_61zpoe$(tmp$_2 + (' (have ' + joinToString(destination_0, ',') + ')'));
+          this.this$FragmentingUdpLink;
+          this.this$FragmentingUdpLink;
+          this.this$FragmentingUdpLink.fragments_0.addAll_brywnq$(myFragments);
         }
-        this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, reassembleBytes);
       }
     }
   };
@@ -10155,6 +10185,37 @@
   };
   FragmentingUdpLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     return new FragmentingUdpLink$FragmentingUdpSocket(this, this.wrappedLink_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this)));
+  };
+  function FragmentingUdpLink$removeMessageId$lambda$lambda(closure$messageId, closure$myFragments) {
+    return function (fragment) {
+      var remove = fragment.messageId === closure$messageId;
+      if (remove)
+        closure$myFragments.add_11rb$(fragment);
+      return remove;
+    };
+  }
+  function FragmentingUdpLink$removeMessageId$lambda$lambda_0(closure$offsets, closure$myFragments) {
+    return function (fragment) {
+      var alreadyThere = !closure$offsets.add_11rb$(fragment.offset);
+      if (alreadyThere) {
+        println('already there: ' + fragment);
+        println('from: ' + closure$myFragments);
+      }
+      return alreadyThere;
+    };
+  }
+  function FragmentingUdpLink$removeMessageId$lambda(it) {
+    return it.offset;
+  }
+  FragmentingUdpLink.prototype.removeMessageId_0 = function (messageId) {
+    var myFragments = ArrayList_init();
+    removeAll(this.fragments_0, FragmentingUdpLink$removeMessageId$lambda$lambda(messageId, myFragments));
+    var offsets = HashSet_init();
+    removeAll(myFragments, FragmentingUdpLink$removeMessageId$lambda$lambda_0(offsets, myFragments));
+    if (myFragments.isEmpty()) {
+      println('remaining fragments = ' + this.fragments_0);
+    }
+    return sortedWith(myFragments, new Comparator$ObjectLiteral_0(compareBy$lambda(FragmentingUdpLink$removeMessageId$lambda)));
   };
   function FragmentingUdpLink$FragmentingUdpSocket($outer, delegate) {
     this.$outer = $outer;
@@ -15901,14 +15962,14 @@
     simpleName: 'Launcher',
     interfaces: []
   };
-  function Comparator$ObjectLiteral_0(closure$comparison) {
+  function Comparator$ObjectLiteral_1(closure$comparison) {
     this.closure$comparison = closure$comparison;
   }
-  Comparator$ObjectLiteral_0.prototype.compare = function (a, b) {
+  Comparator$ObjectLiteral_1.prototype.compare = function (a, b) {
     return this.closure$comparison(a, b);
   };
-  Comparator$ObjectLiteral_0.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
-  var compareBy$lambda = wrapFunction(function () {
+  Comparator$ObjectLiteral_1.$metadata$ = {kind: Kind_CLASS, interfaces: [Comparator]};
+  var compareBy$lambda_0 = wrapFunction(function () {
     var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
     return function (closure$selector) {
       return function (a, b) {
@@ -16198,7 +16259,7 @@
             var totalPixels = {v: 0};
             var tmp$_1, tmp$_0_0;
             var index = 0;
-            tmp$_1 = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_0(compareBy$lambda(getPropertyCallableRef('name', 1, function ($receiver) {
+            tmp$_1 = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_1(compareBy$lambda_0(getPropertyCallableRef('name', 1, function ($receiver) {
               return $receiver.name;
             })))).iterator();
             while (tmp$_1.hasNext()) {
