@@ -5,15 +5,16 @@ import baaahs.glsl.GlslBase
 import baaahs.net.JvmNetwork
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
-import io.ktor.http.content.default
-import io.ktor.http.content.files
-import io.ktor.http.content.static
+import io.ktor.http.content.*
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileNotFoundException
+import java.nio.file.FileSystems
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {
@@ -22,10 +23,21 @@ fun main(args: Array<String>) {
     val sheepModel = SheepModel()
     sheepModel.load()
 
-    val classesDir = Paths.get(Pinky::class.java.getResource(".").file)
-    val jsResDir = classesDir.parent.parent.parent.parent.parent.parent
-        .resolve("build/processedResources/js/main")
-    println("jsResDir = ${jsResDir}")
+    val resource = Pinky::class.java.classLoader.getResource("baaahs")
+    val useResources: Boolean
+    val jsResDir = if (resource.protocol == "jar") {
+        useResources = true
+        val uri = resource.toURI()!!
+        FileSystems.newFileSystem(uri, mapOf("create" to "true"))
+        Paths.get(uri).parent.resolve("htdocs")
+    } else {
+        useResources = false
+        val classPathBaseDir = Paths.get(resource.file).parent
+        classPathBaseDir.parent.parent.parent.parent.parent.parent
+            .resolve("build/processedResources/js/main")
+    }
+
+    testForIndexDotHtml(jsResDir)
 
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
@@ -48,8 +60,13 @@ fun main(args: Array<String>) {
 
     (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
         static {
-            files(jsResDir.toFile())
-            default(jsResDir.resolve("ui-index.html").toFile())
+            if (useResources) {
+                resources("htdocs")
+                defaultResource("htdocs/ui-index.html")
+            } else {
+                files(jsResDir.toFile())
+                default(jsResDir.resolve("ui-index.html").toFile())
+            }
         }
     }
 
@@ -57,6 +74,13 @@ fun main(args: Array<String>) {
 
     doRunBlocking {
         delay(200000L)
+    }
+}
+
+fun testForIndexDotHtml(jsResDir: Path) {
+    val indexHtml = jsResDir.resolve("index.html")
+    if (!Files.exists(indexHtml)) {
+        throw FileNotFoundException("$indexHtml doesn't exist and it really probably should!")
     }
 }
 
