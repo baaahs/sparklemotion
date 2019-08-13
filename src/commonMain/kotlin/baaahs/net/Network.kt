@@ -1,6 +1,5 @@
 package baaahs.net
 
-import baaahs.mapper.MappingSession
 import baaahs.proto.Message
 
 interface Network {
@@ -60,5 +59,12 @@ interface Network {
         fun connected(tcpConnection: TcpConnection)
         fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
         fun reset(tcpConnection: TcpConnection)
+    }
+
+    object UdpProxy {
+        val BROADCAST_OP = 'B'
+        val LISTEN_OP = 'L'
+        val SEND_OP = 'S'
+        val RECEIVE_OP = 'R'
     }
 }
