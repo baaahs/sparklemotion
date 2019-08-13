@@ -28,7 +28,15 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), FakeFs(), StubPinkyDisplay())
+        pinky = Pinky(
+            model,
+            listOf(testShow1),
+            network,
+            FakeDmxUniverse(),
+            FakeFs(),
+            StubPinkyDisplay(),
+            firmwareDaddy =
+        )
         pinkyLink = network.links.only()
     }
 

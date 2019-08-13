@@ -1,5 +1,8 @@
 package baaahs.net
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
+import baaahs.logger
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -13,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.RuntimeException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -27,8 +31,7 @@ class JvmNetwork : Network {
         const val MAX_UDP_SIZE = 2048
 
         val myAddress = InetAddress.getLocalHost()
-        //        val myAddress = InetAddress.getByName("10.0.1.10")
-        val broadcastAddress = InetAddress.getByName("255.255.255.255")
+        private val broadcastAddress = InetAddress.getByName("255.255.255.255")
     }
 
     override fun link(): RealLink = link
@@ -160,8 +163,13 @@ class JvmNetwork : Network {
 
     data class IpAddress(val address: InetAddress) : Network.Address {
         companion object {
-            fun mine() = IpAddress(InetAddress.getLocalHost())
-//            fun mine() = IpAddress(InetAddress.getByName("10.0.1.10"))
+            fun mine(): IpAddress {
+                val envIp: String? = System.getenv("sparklemotion_ip")
+                envIp?.let {
+                    return IpAddress(InetAddress.getByName(it))
+                }
+                return IpAddress(InetAddress.getLocalHost())
+            }
         }
 
         override fun toString(): String {

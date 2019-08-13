@@ -45,6 +45,7 @@ public:
         BRAIN_ID_REQUEST,  // Mapper -> Brain
         BRAIN_MAPPING,
         PING,
+        USE_FIRMWARE,
     };
 
     /**
@@ -207,6 +208,19 @@ public:
         if (!sz) return 0;
 
         return 4 + strlen(sz);
+    }
+
+
+    /**
+     * Returns the capacity required for a nullable C string
+     *
+     * @param sz
+     * @return
+     */
+    size_t capForNullable(const char* sz) {
+        if (!sz) return 1;
+
+        return 5 + strlen(sz);
     }
 
     inline bool available(size_t len) const { return m_cursor + len <= m_used; }
@@ -429,12 +443,29 @@ private:
 
 class BrainHelloMsg : public Msg {
 public:
-    BrainHelloMsg(const char* brainId, const char* panelName) {
-        if (prepCapacity(capFor(brainId) + capFor(panelName) + 2)) {
+    BrainHelloMsg(const char *brainId,
+            const char *panelName,
+            const char *firmwareVersion,
+            const char *idfVersion) {
+        // Need capacity for:
+        //      id byte
+        //      brainId string
+        //      panelName NullableString (adds 1 byte boolean)
+        //      firmwareVersion string
+        //      idfVersion string
+        if (prepCapacity(
+                1 +
+                capFor(brainId) +
+                capForNullable(panelName) +
+                capForNullable(firmwareVersion) +
+                capForNullable(idfVersion)
+                )) {
             writeByte(static_cast<int>(Msg::Type::BRAIN_HELLO));
 
             writeString(brainId);
             writeNullableString(panelName);
+            writeNullableString(firmwareVersion);
+            writeNullableString(idfVersion);
         }
     }
 
