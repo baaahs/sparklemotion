@@ -2,6 +2,7 @@ package baaahs.net
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.logger
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -15,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.RuntimeException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -48,11 +50,15 @@ class JvmNetwork : Network {
                     val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
                     socket.udpSocket.receive(packetIn)
                     networkScope.launch {
-                        udpListener.receive(
-                            IpAddress(packetIn.address),
-                            packetIn.port,
-                            data.copyOfRange(packetIn.offset, packetIn.length)
-                        )
+                        try {
+                            udpListener.receive(
+                                IpAddress(packetIn.address),
+                                packetIn.port,
+                                data.copyOfRange(packetIn.offset, packetIn.length)
+                            )
+                        } catch (e: Exception) {
+                            RuntimeException("Error handling UDP packet", e).printStackTrace()
+                        }
                     }
                 }
             }.start()
