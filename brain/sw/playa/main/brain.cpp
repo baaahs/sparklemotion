@@ -2,6 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
+#include <esp_ota_ops.h>
 #include "brain.h"
 #include "brain_common.h"
 
@@ -49,6 +50,10 @@ Brain::handleMsg(Msg* pMsg)
 
         case static_cast<int>(Msg::Type::PING):
             msgPing(pMsg);
+            break;
+
+        case static_cast<int>(Msg::Type::USE_FIRMWARE):
+            msgUseFirmware(pMsg);
             break;
 
         default:
@@ -122,6 +127,33 @@ Brain::msgPing(Msg* pMsg) {
     }
 }
 
+#define MAX_URL_SIZE 512
+
+void
+Brain::msgUseFirmware(Msg *pMsg){
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: Use Firmware");
+
+    char* szBuf = (char*)malloc(MAX_URL_SIZE);
+    if (!szBuf) {
+        ESP_LOGE(TAG, "Unable to allocate a scratch buffer for the url");
+        return;
+    }
+    // Start out nice just in case
+    szBuf[0] = 0;
+
+    auto read = pMsg->readString(szBuf, MAX_URL_SIZE);
+    if (!read) {
+        ESP_LOGE(TAG, "Firmware URL was empty");
+        free(szBuf);
+        return;
+    }
+
+    ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
+}
+
+
 void
 Brain::sendPong(const IpPort &port, const uint8_t *data, size_t dataLen) {
     Msg *pong = new PingMsg(data, dataLen, true);
@@ -148,7 +180,9 @@ Brain::maybeSendHello()
 
 void
 Brain::sendHello(const IpPort &port) {
-    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr);
+    auto desc = esp_ota_get_app_description();
+
+    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr, desc->version, desc->idf_ver);
     pHello->dest = port;
 
     pHello->injectFragmentingHeader(); // Because hatefulness

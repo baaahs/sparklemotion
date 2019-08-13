@@ -25,7 +25,16 @@ class SheepSimulator {
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel, display.forVisualizer())
     private val fs = FakeFs()
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, fs, display.forPinky(), prerenderPixels = true)
+    private val pinky = Pinky(
+        sheepModel,
+        shows,
+        network,
+        dmxUniverse,
+        fs,
+        PermissiveFirmwareDaddy(),
+        display.forPinky(),
+        prerenderPixels = true
+    )
 
     fun start() = doRunBlocking {
         val queryParams = decodeQueryParams(document.location!!)

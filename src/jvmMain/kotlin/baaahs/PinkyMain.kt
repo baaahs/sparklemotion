@@ -3,6 +3,7 @@ package baaahs
 import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
 import baaahs.net.JvmNetwork
+import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import io.ktor.http.content.*
@@ -42,12 +43,15 @@ fun main(args: Array<String>) {
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
     Files.createDirectories(dataDir)
+    val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
+
     val fs = RealFs(dataDir)
 
     val dmxUniverse = findDmxUniverse()
 
+    val daddy = DirectoryDaddy(RealFs(fwDir), "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw")
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, fs, object : StubPinkyDisplay() {
+        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, fs, daddy, object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
             }
@@ -58,7 +62,8 @@ fun main(args: Array<String>) {
                 set(value) { field = value; /* println("showFrameMs: ${value}") */ }
         }, prerenderPixels = true)
 
-    (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
+    val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
+    ktor.application.routing {
         static {
             if (useResources) {
                 resources("htdocs")
@@ -68,7 +73,14 @@ fun main(args: Array<String>) {
                 default(jsResDir.resolve("ui-index.html").toFile())
             }
         }
+
+        static("fw") {
+            files(fwDir.toFile())
+        }
     }
+
+
+
 
     GlobalScope.launch { pinky.run() }
 
