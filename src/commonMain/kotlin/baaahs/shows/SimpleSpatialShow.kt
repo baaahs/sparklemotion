@@ -10,9 +10,9 @@ import baaahs.shaders.SimpleSpatialShader
 object SimpleSpatialShow : Show("Spatial") {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
-        val centerXSlider = showRunner.getGadget("centerX", Slider("center X", 0.5f))
-        val centerYSlider = showRunner.getGadget("centerY", Slider("center Y", 0.5f))
-        val radiusSlider = showRunner.getGadget("radius", Slider("radius", 0.25f))
+        val centerXSlider = showRunner.getGadget("centerX", Slider("center X", 0.5f, 0f, 1f, 0.01f))
+        val centerYSlider = showRunner.getGadget("centerY", Slider("center Y", 0.5f, 0f, 1f, 0.01f))
+        val radiusSlider = showRunner.getGadget("radius", Slider("radius", 0.25f, 0f, 1f, 0.01f))
 
         val shader = SimpleSpatialShader()
         val shaderBuffers = showRunner.allSurfaces.map {
