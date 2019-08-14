@@ -10,6 +10,7 @@ import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.json
 
 class GlslShader(
     val glslProgram: String,
@@ -32,8 +33,17 @@ class GlslShader(
                     "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
         )
 
+        val extraAdjustables = listOf(
+            AdjustableValue("sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }, 0),
+
+            AdjustableValue("sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }, 1)
+        )
+
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
-            var i = 0
+            var i = extraAdjustables.map { it.ordinal }.max() ?: 0
+
             return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
                 val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
@@ -45,7 +55,7 @@ class GlslShader(
                     else -> throw IllegalArgumentException("unsupported type $valueTypeName")
                 }
                 AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, i++)
-            }.toList()
+            }.toList() + extraAdjustables
         }
     }
 
