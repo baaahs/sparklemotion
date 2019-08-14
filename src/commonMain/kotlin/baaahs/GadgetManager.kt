@@ -46,10 +46,8 @@ class GadgetManager(private val pubSub: PubSub.Server) {
             )
             activeGadgets.clear()
             requestedGadgets.forEach { (name, gadget) ->
-                val gadgetId = nextGadgetId++
-
                 val topic =
-                    PubSub.Topic("/gadgets/${gadget::class.simpleName}/$gadgetId", GadgetDataSerializer)
+                    PubSub.Topic("/gadgets/$name", GadgetDataSerializer)
 
                 val channel = pubSub.publish(topic, gadget.state) { updated -> gadget.state.putAll(updated) }
                 val gadgetData = GadgetData(name, gadget, topic.name)

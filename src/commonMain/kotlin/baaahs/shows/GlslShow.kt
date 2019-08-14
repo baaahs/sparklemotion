@@ -41,9 +41,9 @@ abstract class GlslShow(name: String) : Show(name) {
             "Slider" -> {
                 Slider(
                     name,
-                    initialValue = config.getPrimitive("initialValue").floatOrNull ?: 1f,
-                    minValue = config.getPrimitive("minValue").floatOrNull,
-                    maxValue = config.getPrimitive("maxValue").floatOrNull
+                    initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
+                    minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
+                    maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
                 )
             }
             "ColorPicker" -> {
@@ -52,7 +52,7 @@ abstract class GlslShow(name: String) : Show(name) {
             else -> throw IllegalArgumentException("unknown gadget ${gadgetType}")
         }
 
-        return showRunner.getGadget(name, gadget)
+        return showRunner.getGadget("glsl_${varName}", gadget)
     }
 
 }
