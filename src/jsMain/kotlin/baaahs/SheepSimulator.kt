@@ -31,7 +31,8 @@ class SheepSimulator {
     private val visualizer = Visualizer(sheepModel, display.forVisualizer())
     private val fs = FakeFs()
     private val beatSource: BeatSource = BridgedBeatSource("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, beatSource, JsClock(), fs, display.forPinky(),
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, beatSource, JsClock(), fs,
+        PermissiveFirmwareDaddy(), display.forPinky(),
         prerenderPixels = true)
 
     fun start() = doRunBlocking {

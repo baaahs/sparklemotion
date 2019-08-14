@@ -7,9 +7,7 @@ import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import io.ktor.application.install
-import io.ktor.http.content.default
-import io.ktor.http.content.files
-import io.ktor.http.content.static
+import io.ktor.http.content.*
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -17,7 +15,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileNotFoundException
+import java.nio.file.FileSystems
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
 
@@ -27,10 +28,21 @@ fun main(args: Array<String>) {
     val sheepModel = SheepModel()
     sheepModel.load()
 
-    val classesDir = Paths.get(Pinky::class.java.getResource(".").file)
-    val jsResDir = classesDir.parent.parent.parent.parent.parent.parent
-        .resolve("build/processedResources/js/main")
-    println("jsResDir = ${jsResDir}")
+    val resource = Pinky::class.java.classLoader.getResource("baaahs")
+    val useResources: Boolean
+    val jsResDir = if (resource.protocol == "jar") {
+        useResources = true
+        val uri = resource.toURI()!!
+        FileSystems.newFileSystem(uri, mapOf("create" to "true"))
+        Paths.get(uri).parent.resolve("htdocs")
+    } else {
+        useResources = false
+        val classPathBaseDir = Paths.get(resource.file).parent
+        classPathBaseDir.parent.parent.parent.parent.parent
+            .resolve("build/processedResources/js/main")
+    }
+
+    testForIndexDotHtml(jsResDir)
 
     val httpServer = embeddedServer(Netty, Ports.PINKY_UI_TCP) {
         install(io.ktor.websocket.WebSockets) {
@@ -51,14 +63,18 @@ fun main(args: Array<String>) {
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
     Files.createDirectories(dataDir)
+
+    val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
+
     val fs = RealFs(dataDir)
 
     val dmxUniverse = findDmxUniverse()
 
+    val daddy = DirectoryDaddy(RealFs(fwDir), "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw")
     val pinky =
         Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, BeatLinkBeatSource(SystemClock()), SystemClock(),
             fs,
-            object :
+           daddy, object :
             StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
                 println("shows = ${shows}")
@@ -73,12 +89,25 @@ fun main(args: Array<String>) {
                 set(value) { field = value; /* println("showFrameMs: ${value}") */ }
         }, prerenderPixels = true)
 
-    (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer).application.routing {
+    val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
+    ktor.application.routing {
         static {
-            files(jsResDir.toFile())
-            default(jsResDir.resolve("ui-index.html").toFile())
+            if (useResources) {
+                resources("htdocs")
+                defaultResource("htdocs/ui-index.html")
+            } else {
+                files(jsResDir.toFile())
+                default(jsResDir.resolve("ui-index.html").toFile())
+            }
+        }
+
+        static("fw") {
+            files(fwDir.toFile())
         }
     }
+
+
+
 
     GlobalScope.launch {
         val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
@@ -89,6 +118,13 @@ fun main(args: Array<String>) {
 
     doRunBlocking {
         delay(200000L)
+    }
+}
+
+fun testForIndexDotHtml(jsResDir: Path) {
+    val indexHtml = jsResDir.resolve("index.html")
+    if (!Files.exists(indexHtml)) {
+        throw FileNotFoundException("$indexHtml doesn't exist and it really probably should!")
     }
 }
 

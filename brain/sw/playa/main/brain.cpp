@@ -2,6 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
+#include <esp_ota_ops.h>
 #include "brain.h"
 #include "brain_common.h"
 
@@ -9,6 +10,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "esp_https_ota.h"
 
 static const uint16_t BRAIN_PORT = 8003;
 
@@ -49,6 +51,10 @@ Brain::handleMsg(Msg* pMsg)
 
         case static_cast<int>(Msg::Type::PING):
             msgPing(pMsg);
+            break;
+
+        case static_cast<int>(Msg::Type::USE_FIRMWARE):
+            msgUseFirmware(pMsg);
             break;
 
         default:
@@ -122,6 +128,101 @@ Brain::msgPing(Msg* pMsg) {
     }
 }
 
+esp_err_t ota_event(esp_http_client_event_t *evt)
+{
+    switch (evt->event_id) {
+        case HTTP_EVENT_ERROR:
+            ESP_LOGD(TAG, "HTTP_EVENT_ERROR");
+            break;
+        case HTTP_EVENT_ON_CONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_CONNECTED");
+            break;
+        case HTTP_EVENT_HEADER_SENT:
+            ESP_LOGD(TAG, "HTTP_EVENT_HEADER_SENT");
+            break;
+        case HTTP_EVENT_ON_HEADER:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+            break;
+        case HTTP_EVENT_ON_DATA:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
+            break;
+        case HTTP_EVENT_ON_FINISH:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_FINISH");
+            break;
+        case HTTP_EVENT_DISCONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_DISCONNECTED");
+            break;
+    }
+    return ESP_OK;
+}
+
+#define MAX_URL_SIZE 512
+
+void
+Brain::msgUseFirmware(Msg *pMsg){
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: Use Firmware");
+
+    char* szBuf = (char*)malloc(MAX_URL_SIZE);
+    if (!szBuf) {
+        ESP_LOGE(TAG, "Unable to allocate a scratch buffer for the url");
+        return;
+    }
+    // Start out nice just in case
+    szBuf[0] = 0;
+
+    auto read = pMsg->readString(szBuf, MAX_URL_SIZE-1);
+    if (!read) {
+        ESP_LOGE(TAG, "Firmware URL was empty");
+        free(szBuf);
+        return;
+    }
+    // Gotta keep 'er terminated
+    szBuf[read] = 0;
+
+    ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
+
+    esp_http_client_config_t clientCfg = { 0 };
+    clientCfg.url = szBuf;
+    clientCfg.event_handler = ota_event;
+
+    ESP_LOGE(TAG, "Starting the ota download...");
+
+    esp_https_ota_handle_t hOta;
+    esp_https_ota_config_t otaConfig;
+    otaConfig.http_config = &clientCfg;
+
+    auto err = esp_https_ota_begin(&otaConfig, &hOta);
+    if (err != ESP_OK || hOta == nullptr) {
+        ESP_LOGE(TAG, "Failed to start OTA: err=%d", err);
+        return;
+    }
+
+    while(1) {
+        err = esp_https_ota_perform(hOta);
+        if (err == ESP_OK) break;
+
+        if (err != ESP_ERR_HTTPS_OTA_IN_PROGRESS) {
+            ESP_LOGE(TAG, "Error during OTA %d", err);
+            break;
+        } else {
+            ESP_LOGE(TAG, "OTA chunk");
+        }
+    }
+
+    auto finishErr = esp_https_ota_finish(hOta);
+    if (finishErr != ESP_OK) {
+        ESP_LOGE(TAG, "Error at OTA finish %d", finishErr);
+    } else {
+        ESP_LOGE(TAG, "Hey! That was a good OTA. We'll restart now");
+        brain_restart(10);
+    }
+
+    free(szBuf);
+}
+
+
 void
 Brain::sendPong(const IpPort &port, const uint8_t *data, size_t dataLen) {
     Msg *pong = new PingMsg(data, dataLen, true);
@@ -148,7 +249,9 @@ Brain::maybeSendHello()
 
 void
 Brain::sendHello(const IpPort &port) {
-    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr);
+    auto desc = esp_ota_get_app_description();
+
+    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr, desc->version, desc->idf_ver);
     pHello->dest = port;
 
     pHello->injectFragmentingHeader(); // Because hatefulness
