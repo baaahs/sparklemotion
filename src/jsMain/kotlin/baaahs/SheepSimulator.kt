@@ -132,7 +132,10 @@ class BridgedBeatSource(url: String) : BeatSource {
             null
         }
 
-        webSocket.onerror = { console.log("WebSocket error!", it) }
+        webSocket.onerror = {
+            beatData = BeatData(0.0, 500, 4)
+            console.log("WebSocket error!", it)
+        }
         webSocket.onclose = { console.log("WebSocket close!", it) }
     }
 }
