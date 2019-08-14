@@ -1,17 +1,17 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-coroutines-core', 'kotlinx-serialization-kotlinx-serialization-runtime', 'klock-root-klock', 'kotlinx-html-js', 'threejs-wrapper'], factory);
+    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-runtime', 'kotlinx-coroutines-core', 'klock-root-klock', 'kotlinx-html-js', 'threejs-wrapper'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-coroutines-core'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('klock-root-klock'), require('kotlinx-html-js'), require('threejs-wrapper'));
+    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('kotlinx-coroutines-core'), require('klock-root-klock'), require('kotlinx-html-js'), require('threejs-wrapper'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'sparklemotion'.");
     }
-    if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
-      throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'sparklemotion'.");
-    }
     if (typeof this['kotlinx-serialization-kotlinx-serialization-runtime'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-serialization-kotlinx-serialization-runtime' was not found. Please, check whether 'kotlinx-serialization-kotlinx-serialization-runtime' is loaded prior to 'sparklemotion'.");
+    }
+    if (typeof this['kotlinx-coroutines-core'] === 'undefined') {
+      throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-coroutines-core' was not found. Please, check whether 'kotlinx-coroutines-core' is loaded prior to 'sparklemotion'.");
     }
     if (typeof this['klock-root-klock'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'klock-root-klock' was not found. Please, check whether 'klock-root-klock' is loaded prior to 'sparklemotion'.");
@@ -22,22 +22,29 @@
     if (typeof this['threejs-wrapper'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'threejs-wrapper' was not found. Please, check whether 'threejs-wrapper' is loaded prior to 'sparklemotion'.");
     }
-    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-coroutines-core'], this['kotlinx-serialization-kotlinx-serialization-runtime'], this['klock-root-klock'], this['kotlinx-html-js'], this['threejs-wrapper']);
+    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-serialization-kotlinx-serialization-runtime'], this['kotlinx-coroutines-core'], this['klock-root-klock'], this['kotlinx-html-js'], this['threejs-wrapper']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_coroutines_core, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$klock_root_klock, $module$kotlinx_html_js, $module$threejs_wrapper) {
+}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kotlinx_html_js, $module$threejs_wrapper) {
   'use strict';
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var SerialClassDescImpl = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
+  var equals = Kotlin.equals;
+  var UnknownFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
+  var internal = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal;
+  var GeneratedSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
+  var MissingFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
+  var Kind_CLASS = Kotlin.Kind.CLASS;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var L0 = Kotlin.Long.ZERO;
-  var equals = Kotlin.equals;
   var L5000 = Kotlin.Long.fromInt(5000);
   var delay = $module$kotlinx_coroutines_core.kotlinx.coroutines.delay_s8cxhz$;
   var contentEquals = Kotlin.arrayEquals;
   var throwCCE = Kotlin.throwCCE;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var Kind_CLASS = Kotlin.Kind.CLASS;
   var toByte = Kotlin.toByte;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
@@ -46,23 +53,16 @@
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var numberToInt = Kotlin.numberToInt;
-  var internal = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal;
   var withName = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var KSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
   var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var Unit = Kotlin.kotlin.Unit;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var ReadWriteProperty = Kotlin.kotlin.properties.ReadWriteProperty;
-  var SerialClassDescImpl = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
   var getKClass = Kotlin.getKClass;
   var PolymorphicSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.PolymorphicSerializer;
-  var UnknownFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.UnknownFieldException;
-  var GeneratedSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.GeneratedSerializer;
-  var MissingFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
   var kotlin_js_internal_StringCompanionObject = Kotlin.kotlin.js.internal.StringCompanionObject;
   var serializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_6eet4j$;
   var JsonElement = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonElement;
@@ -191,11 +191,13 @@
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
   var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
+  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
+  var removeSuffix = Kotlin.kotlin.text.removeSuffix_gsj5wt$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
@@ -215,7 +217,6 @@
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var Box3 = THREE.Box3;
-  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var max_0 = Kotlin.kotlin.collections.max_exjks8$;
   var Raycaster_init = THREE.Raycaster;
   var Vector2 = THREE.Vector2;
@@ -321,6 +322,8 @@
   BrainHelloMessage.prototype.constructor = BrainHelloMessage;
   BrainShaderMessage.prototype = Object.create(Message.prototype);
   BrainShaderMessage.prototype.constructor = BrainShaderMessage;
+  UseFirmwareMessage.prototype = Object.create(Message.prototype);
+  UseFirmwareMessage.prototype.constructor = UseFirmwareMessage;
   MapperHelloMessage.prototype = Object.create(Message.prototype);
   MapperHelloMessage.prototype.constructor = MapperHelloMessage;
   BrainIdRequest.prototype = Object.create(Message.prototype);
@@ -429,6 +432,191 @@
   ImageBitmapImage.prototype.constructor = ImageBitmapImage;
   VideoElementImage.prototype = Object.create(JsImage.prototype);
   VideoElementImage.prototype.constructor = VideoElementImage;
+  function BeatData(measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence) {
+    BeatData$Companion_getInstance();
+    if (beatsPerMeasure === void 0)
+      beatsPerMeasure = 4;
+    if (confidence === void 0)
+      confidence = 1.0;
+    this.measureStartTimeMs = measureStartTimeMs;
+    this.beatIntervalMs = beatIntervalMs;
+    this.beatsPerMeasure = beatsPerMeasure;
+    this.confidence = confidence;
+  }
+  Object.defineProperty(BeatData.prototype, 'bpm', {
+    get: function () {
+      return 60000 / this.beatIntervalMs | 0;
+    }
+  });
+  BeatData.prototype.beatWithinMeasure_rnw5ii$ = function (clock) {
+    var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
+    return elapsedSinceStartOfMeasure / this.beatIntervalMs % this.beatsPerMeasure;
+  };
+  function BeatData$Companion() {
+    BeatData$Companion_instance = this;
+  }
+  BeatData$Companion.prototype.serializer = function () {
+    return BeatData$$serializer_getInstance();
+  };
+  BeatData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BeatData$Companion_instance = null;
+  function BeatData$Companion_getInstance() {
+    if (BeatData$Companion_instance === null) {
+      new BeatData$Companion();
+    }
+    return BeatData$Companion_instance;
+  }
+  function BeatData$$serializer() {
+    this.descriptor_7q0ok7$_0 = new SerialClassDescImpl('baaahs.BeatData', this);
+    this.descriptor.addElement_ivxn3r$('measureStartTimeMs', false);
+    this.descriptor.addElement_ivxn3r$('beatIntervalMs', false);
+    this.descriptor.addElement_ivxn3r$('beatsPerMeasure', true);
+    this.descriptor.addElement_ivxn3r$('confidence', true);
+    BeatData$$serializer_instance = this;
+  }
+  Object.defineProperty(BeatData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_7q0ok7$_0;
+    }
+  });
+  BeatData$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeDoubleElement_imzr5k$(this.descriptor, 0, obj.measureStartTimeMs);
+    output.encodeIntElement_4wpqag$(this.descriptor, 1, obj.beatIntervalMs);
+    if (!equals(obj.beatsPerMeasure, 4) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 2))
+      output.encodeIntElement_4wpqag$(this.descriptor, 2, obj.beatsPerMeasure);
+    if (!equals(obj.confidence, 1.0) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 3))
+      output.encodeFloatElement_t7qhdx$(this.descriptor, 3, obj.confidence);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  BeatData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index, readAll = false;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case -2:
+          readAll = true;
+        case 0:
+          local0 = input.decodeDoubleElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          if (!readAll)
+            break;
+        case 1:
+          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          if (!readAll)
+            break;
+        case 2:
+          local2 = input.decodeIntElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          if (!readAll)
+            break;
+        case 3:
+          local3 = input.decodeFloatElement_3zr2iy$(this.descriptor, 3);
+          bitMask0 |= 8;
+          if (!readAll)
+            break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return BeatData_init(bitMask0, local0, local1, local2, local3, null);
+  };
+  BeatData$$serializer.prototype.childSerializers = function () {
+    return [internal.DoubleSerializer, internal.IntSerializer, internal.IntSerializer, internal.FloatSerializer];
+  };
+  BeatData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var BeatData$$serializer_instance = null;
+  function BeatData$$serializer_getInstance() {
+    if (BeatData$$serializer_instance === null) {
+      new BeatData$$serializer();
+    }
+    return BeatData$$serializer_instance;
+  }
+  function BeatData_init(seen1, measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(BeatData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('measureStartTimeMs');
+    else
+      $this.measureStartTimeMs = measureStartTimeMs;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('beatIntervalMs');
+    else
+      $this.beatIntervalMs = beatIntervalMs;
+    if ((seen1 & 4) === 0)
+      $this.beatsPerMeasure = 4;
+    else
+      $this.beatsPerMeasure = beatsPerMeasure;
+    if ((seen1 & 8) === 0)
+      $this.confidence = 1.0;
+    else
+      $this.confidence = confidence;
+    return $this;
+  }
+  BeatData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BeatData',
+    interfaces: []
+  };
+  BeatData.prototype.component1 = function () {
+    return this.measureStartTimeMs;
+  };
+  BeatData.prototype.component2 = function () {
+    return this.beatIntervalMs;
+  };
+  BeatData.prototype.component3 = function () {
+    return this.beatsPerMeasure;
+  };
+  BeatData.prototype.component4 = function () {
+    return this.confidence;
+  };
+  BeatData.prototype.copy_vie62r$ = function (measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence) {
+    return new BeatData(measureStartTimeMs === void 0 ? this.measureStartTimeMs : measureStartTimeMs, beatIntervalMs === void 0 ? this.beatIntervalMs : beatIntervalMs, beatsPerMeasure === void 0 ? this.beatsPerMeasure : beatsPerMeasure, confidence === void 0 ? this.confidence : confidence);
+  };
+  BeatData.prototype.toString = function () {
+    return 'BeatData(measureStartTimeMs=' + Kotlin.toString(this.measureStartTimeMs) + (', beatIntervalMs=' + Kotlin.toString(this.beatIntervalMs)) + (', beatsPerMeasure=' + Kotlin.toString(this.beatsPerMeasure)) + (', confidence=' + Kotlin.toString(this.confidence)) + ')';
+  };
+  BeatData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.measureStartTimeMs) | 0;
+    result = result * 31 + Kotlin.hashCode(this.beatIntervalMs) | 0;
+    result = result * 31 + Kotlin.hashCode(this.beatsPerMeasure) | 0;
+    result = result * 31 + Kotlin.hashCode(this.confidence) | 0;
+    return result;
+  };
+  BeatData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.measureStartTimeMs, other.measureStartTimeMs) && Kotlin.equals(this.beatIntervalMs, other.beatIntervalMs) && Kotlin.equals(this.beatsPerMeasure, other.beatsPerMeasure) && Kotlin.equals(this.confidence, other.confidence)))));
+  };
+  function BeatSource() {
+  }
+  BeatSource.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'BeatSource',
+    interfaces: []
+  };
+  function Clock_0() {
+  }
+  Clock_0.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Clock',
+    interfaces: []
+  };
   function Brain(id, network, display, pixels) {
     this.id = id;
     this.network_0 = network;
@@ -1143,6 +1331,7 @@
   function StubPinkyDisplay() {
     this.brainCount_cnxvq4$_0 = 0;
     this.beat_6xdvy1$_0 = 0;
+    this.bpm_ijxrzc$_0 = 0;
     this.onShowChange_33sz01$_0 = StubPinkyDisplay$onShowChange$lambda;
     this.selectedShow_fwpmt$_0 = null;
     this.showFrameMs_1he7j5$_0 = 0;
@@ -1164,6 +1353,14 @@
     },
     set: function (beat) {
       this.beat_6xdvy1$_0 = beat;
+    }
+  });
+  Object.defineProperty(StubPinkyDisplay.prototype, 'bpm', {
+    get: function () {
+      return this.bpm_ijxrzc$_0;
+    },
+    set: function (bpm) {
+      this.bpm_ijxrzc$_0 = bpm;
     }
   });
   Object.defineProperty(StubPinkyDisplay.prototype, 'onShowChange', {
@@ -1277,6 +1474,45 @@
     kind: Kind_INTERFACE,
     simpleName: 'Dmx',
     interfaces: []
+  };
+  function FirmwareDaddy() {
+  }
+  FirmwareDaddy.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'FirmwareDaddy',
+    interfaces: []
+  };
+  function PermissiveFirmwareDaddy() {
+  }
+  PermissiveFirmwareDaddy.prototype.doesntLikeThisVersion_pdl1vj$ = function (firmwareVersion) {
+    return false;
+  };
+  Object.defineProperty(PermissiveFirmwareDaddy.prototype, 'urlForPreferredVersion', {
+    get: function () {
+      return '';
+    }
+  });
+  PermissiveFirmwareDaddy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PermissiveFirmwareDaddy',
+    interfaces: [FirmwareDaddy]
+  };
+  function StrictFirmwareDaddy(version, url) {
+    this.version_0 = version;
+    this.url_0 = url;
+  }
+  StrictFirmwareDaddy.prototype.doesntLikeThisVersion_pdl1vj$ = function (firmwareVersion) {
+    return equals(this.version_0, firmwareVersion);
+  };
+  Object.defineProperty(StrictFirmwareDaddy.prototype, 'urlForPreferredVersion', {
+    get: function () {
+      return this.url_0;
+    }
+  });
+  StrictFirmwareDaddy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'StrictFirmwareDaddy',
+    interfaces: [FirmwareDaddy]
   };
   function Gadget() {
     this.listeners_zg49rb$_0 = LinkedHashSet_init();
@@ -4499,21 +4735,24 @@
     simpleName: 'MovingHeadDisplay',
     interfaces: []
   };
-  function Pinky(model, shows, network, dmxUniverse, fs, display, prerenderPixels) {
+  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, prerenderPixels) {
     if (prerenderPixels === void 0)
       prerenderPixels = false;
     this.model = model;
     this.shows = shows;
     this.network = network;
     this.dmxUniverse = dmxUniverse;
+    this.beatSource = beatSource;
+    this.clock = clock;
     this.fs = fs;
+    this.firmwareDaddy = firmwareDaddy;
     this.display = display;
     this.prerenderPixels_0 = prerenderPixels;
     this.storage_0 = new Storage(this.fs);
     this.mappingResults_0 = this.storage_0.loadMappingData_ld9ij$(this.model);
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.httpServer = this.link_0.startHttpServer_za3lpa$(8004);
-    this.beatProvider_0 = new Pinky$PinkyBeatProvider(this, 120.0);
+    this.beatProvider_0 = new Pinky$PinkyBeatDisplayer(this, this.beatSource);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = first(this.shows);
     var $receiver = new PubSub$Server(this.httpServer);
@@ -4521,7 +4760,7 @@
     this.pubSub_0 = $receiver;
     this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
     this.movingHeadManager_0 = new MovingHeadManager(this.fs, this.pubSub_0, this.model.movingHeads);
-    this.showRunner_0 = new ShowRunner(this.model, this.selectedShow_0, this.gadgetManager_0, this.beatProvider_0, this.dmxUniverse, this.movingHeadManager_0);
+    this.showRunner_0 = new ShowRunner(this.model, this.selectedShow_0, this.gadgetManager_0, this.beatSource, this.dmxUniverse, this.movingHeadManager_0, this.clock);
     this.brainToSurfaceMap_CHEAT_0 = LinkedHashMap_init();
     this.surfaceToPixelLocationMap_CHEAT_0 = LinkedHashMap_init();
     this.brainInfos_0 = LinkedHashMap_init();
@@ -4811,7 +5050,7 @@
   Pinky.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage))
-      this.foundBrain_0(fromAddress, new BrainId(message.brainId), message.surfaceName);
+      this.foundBrain_0(fromAddress, message);
     else if (Kotlin.isType(message, MapperHelloMessage)) {
       println('Mapper isRunning=' + message.isRunning);
       this.mapperIsRunning_0 = message.isRunning;
@@ -4826,8 +5065,16 @@
       return Unit;
     };
   }
-  Pinky.prototype.foundBrain_0 = function (brainAddress, brainId, surfaceName) {
+  Pinky.prototype.foundBrain_0 = function (brainAddress, msg) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var brainId = new BrainId(msg.brainId);
+    var surfaceName = msg.surfaceName;
+    println('foundBrain(' + brainAddress + ', ' + msg + ')');
+    if (this.firmwareDaddy.doesntLikeThisVersion_pdl1vj$(msg.firmwareVersion)) {
+      println("The firmware daddy doesn't like " + brainId + ' having ' + toString_0(msg.firmwareVersion) + " so we'll send " + this.firmwareDaddy.urlForPreferredVersion);
+      var newHotness = new UseFirmwareMessage(this.firmwareDaddy.urlForPreferredVersion);
+      this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, newHotness);
+    }
     var dataFor = (tmp$ = this.mappingResults_0.dataFor_77gxvx$(brainId)) != null ? tmp$ : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
     var tmp$_3;
     if (dataFor != null) {
@@ -4855,7 +5102,7 @@
       tmp$_2 = new ShowRunner$SurfaceReceiver(surface, sendFn);
     }
     var surfaceReceiver = tmp$_2;
-    var brainInfo = new BrainInfo(brainAddress, brainId, surface, surfaceReceiver);
+    var brainInfo = new BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver);
     this.pendingBrainInfos_0.put_xwzc9p$(brainId, brainInfo);
   };
   Pinky.prototype.sendBrainShaderMessage_0 = function (brainAddress, shaderBuffer) {
@@ -4892,34 +5139,10 @@
   Pinky.prototype.providePixelMapping_CHEAT_cafowi$ = function (surface, pixelLocations) {
     this.surfaceToPixelLocationMap_CHEAT_0.put_xwzc9p$(surface, pixelLocations);
   };
-  function Pinky$BeatProvider() {
-  }
-  Pinky$BeatProvider.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'BeatProvider',
-    interfaces: []
-  };
-  function Pinky$PinkyBeatProvider($outer, bpm) {
+  function Pinky$PinkyBeatDisplayer($outer, beatSource) {
     this.$outer = $outer;
-    this.bpm_gkcixa$_0 = bpm;
-    this.startTimeMillis_0 = L0;
-    this.beatsPerMeasure_0 = 4;
-    this.millisPerBeat_0 = 1000 / (this.bpm / 60);
+    this.beatSource = beatSource;
   }
-  Object.defineProperty(Pinky$PinkyBeatProvider.prototype, 'bpm', {
-    get: function () {
-      return this.bpm_gkcixa$_0;
-    },
-    set: function (bpm) {
-      this.bpm_gkcixa$_0 = bpm;
-    }
-  });
-  Object.defineProperty(Pinky$PinkyBeatProvider.prototype, 'beat', {
-    get: function () {
-      var now = getTimeMillis();
-      return now.subtract(this.startTimeMillis_0).toNumber() / this.millisPerBeat_0 % this.beatsPerMeasure_0;
-    }
-  });
   function Coroutine$run_1($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -4937,18 +5160,16 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.startTimeMillis_0 = getTimeMillis();
             this.state_0 = 2;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
-            this.$this.$outer.display.beat = numberToInt(this.$this.beat);
-            var offsetMillis = getTimeMillis().subtract(this.$this.startTimeMillis_0);
-            var millsPer = this.$this.millisPerBeat_0;
-            var delayTimeMillis = millsPer - offsetMillis.toNumber() % millsPer;
+            var beatData = this.$this.beatSource.getBeatData();
+            this.$this.$outer.display.beat = numberToInt(beatData.beatWithinMeasure_rnw5ii$(this.$this.$outer.clock));
+            this.$this.$outer.display.bpm = numberToInt(beatData.bpm);
             this.state_0 = 3;
-            this.result_0 = delay(Kotlin.Long.fromNumber(delayTimeMillis), this);
+            this.result_0 = delay(L10, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -4971,17 +5192,17 @@
       }
      while (true);
   };
-  Pinky$PinkyBeatProvider.prototype.run = function (continuation_0, suspended) {
+  Pinky$PinkyBeatDisplayer.prototype.run = function (continuation_0, suspended) {
     var instance = new Coroutine$run_1(this, continuation_0);
     if (suspended)
       return instance;
     else
       return instance.doResume(null);
   };
-  Pinky$PinkyBeatProvider.$metadata$ = {
+  Pinky$PinkyBeatDisplayer.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'PinkyBeatProvider',
-    interfaces: [Pinky$BeatProvider]
+    simpleName: 'PinkyBeatDisplayer',
+    interfaces: []
   };
   function Pinky$NetworkStats(bytesSent, packetsSent) {
     if (bytesSent === void 0)
@@ -5215,10 +5436,12 @@
   BrainId.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.uuid, other.uuid))));
   };
-  function BrainInfo(address, brainId, surface, surfaceReceiver) {
+  function BrainInfo(address, brainId, surface, firmwareVersion, idfVersion, surfaceReceiver) {
     this.address = address;
     this.brainId = brainId;
     this.surface = surface;
+    this.firmwareVersion = firmwareVersion;
+    this.idfVersion = idfVersion;
     this.surfaceReceiver = surfaceReceiver;
   }
   BrainInfo.$metadata$ = {
@@ -6370,12 +6593,13 @@
     simpleName: 'Show',
     interfaces: []
   };
-  function ShowRunner(model, initialShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager) {
+  function ShowRunner(model, initialShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock) {
     this.model_0 = model;
     this.gadgetManager_0 = gadgetManager;
-    this.beatProvider_0 = beatProvider;
+    this.beatSource_0 = beatSource;
     this.dmxUniverse_0 = dmxUniverse;
     this.movingHeadManager_0 = movingHeadManager;
+    this.clock_0 = clock;
     this.nextShow = initialShow;
     this.currentShow_0 = null;
     this.currentShowRenderer_0 = null;
@@ -6402,8 +6626,13 @@
       return this.model_0.movingHeads;
     }
   });
-  ShowRunner.prototype.getBeatProvider = function () {
-    return this.beatProvider_0;
+  Object.defineProperty(ShowRunner.prototype, 'currentBeat', {
+    get: function () {
+      return this.beatSource_0.getBeatData().beatWithinMeasure_rnw5ii$(this.clock_0);
+    }
+  });
+  ShowRunner.prototype.getBeatSource = function () {
+    return this.beatSource_0;
   };
   ShowRunner.prototype.recordShader_0 = function (surface, shaderBuffer) {
     var $receiver = this.shaderBuffers_0;
@@ -10383,6 +10612,7 @@
     this.BRAIN = 8003;
     this.PINKY_UI_TCP = 8004;
     this.PINKY_MAPPER_TCP = 8005;
+    this.SIMULATOR_BRIDGE_TCP = 8006;
   }
   Ports.$metadata$ = {
     kind: Kind_OBJECT,
@@ -10410,6 +10640,7 @@
     Type$BRAIN_ID_REQUEST_instance = new Type('BRAIN_ID_REQUEST', 3);
     Type$BRAIN_MAPPING_instance = new Type('BRAIN_MAPPING', 4);
     Type$PING_instance = new Type('PING', 5);
+    Type$USE_FIRMWARE_instance = new Type('USE_FIRMWARE', 6);
     Type$Companion_getInstance();
   }
   var Type$BRAIN_HELLO_instance;
@@ -10442,6 +10673,11 @@
     Type_initFields();
     return Type$PING_instance;
   }
+  var Type$USE_FIRMWARE_instance;
+  function Type$USE_FIRMWARE_getInstance() {
+    Type_initFields();
+    return Type$USE_FIRMWARE_instance;
+  }
   function Type$Companion() {
     Type$Companion_instance = this;
     this.values = Type$values();
@@ -10468,7 +10704,7 @@
     interfaces: [Enum]
   };
   function Type$values() {
-    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_MAPPING_getInstance(), Type$PING_getInstance()];
+    return [Type$BRAIN_HELLO_getInstance(), Type$BRAIN_PANEL_SHADE_getInstance(), Type$MAPPER_HELLO_getInstance(), Type$BRAIN_ID_REQUEST_getInstance(), Type$BRAIN_MAPPING_getInstance(), Type$PING_getInstance(), Type$USE_FIRMWARE_getInstance()];
   }
   Type.values = Type$values;
   function Type$valueOf(name) {
@@ -10485,6 +10721,8 @@
         return Type$BRAIN_MAPPING_getInstance();
       case 'PING':
         return Type$PING_getInstance();
+      case 'USE_FIRMWARE':
+        return Type$USE_FIRMWARE_getInstance();
       default:throwISE('No enum constant baaahs.proto.Type.' + name);
     }
   }
@@ -10511,22 +10749,31 @@
       case 'PING':
         tmp$ = PingMessage$Companion_getInstance().parse_100t80$(reader);
         break;
+      case 'USE_FIRMWARE':
+        tmp$ = UseFirmwareMessage$Companion_getInstance().parse_100t80$(reader);
+        break;
       default:tmp$ = Kotlin.noWhenBranchMatched();
         break;
     }
     return tmp$;
   }
-  function BrainHelloMessage(brainId, surfaceName) {
+  function BrainHelloMessage(brainId, surfaceName, firmwareVersion, idfVersion) {
     BrainHelloMessage$Companion_getInstance();
+    if (firmwareVersion === void 0)
+      firmwareVersion = null;
+    if (idfVersion === void 0)
+      idfVersion = null;
     Message.call(this, Type$BRAIN_HELLO_getInstance());
     this.brainId = brainId;
     this.surfaceName = surfaceName;
+    this.firmwareVersion = firmwareVersion;
+    this.idfVersion = idfVersion;
   }
   function BrainHelloMessage$Companion() {
     BrainHelloMessage$Companion_instance = this;
   }
   BrainHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainHelloMessage(reader.readString(), reader.readNullableString());
+    return new BrainHelloMessage(reader.readString(), reader.readNullableString(), reader.readNullableString(), reader.readNullableString());
   };
   BrainHelloMessage$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -10543,6 +10790,11 @@
   BrainHelloMessage.prototype.serialize_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.brainId);
     writer.writeNullableString_pdl1vj$(this.surfaceName);
+    writer.writeNullableString_pdl1vj$(this.firmwareVersion);
+    writer.writeNullableString_pdl1vj$(this.idfVersion);
+  };
+  BrainHelloMessage.prototype.toString = function () {
+    return 'BrainHello ' + this.brainId + ', ' + toString_0(this.surfaceName) + ', ' + toString_0(this.firmwareVersion) + ', ' + toString_0(this.idfVersion);
   };
   BrainHelloMessage.$metadata$ = {
     kind: Kind_CLASS,
@@ -10590,6 +10842,37 @@
   BrainShaderMessage.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrainShaderMessage',
+    interfaces: [Message]
+  };
+  function UseFirmwareMessage(url) {
+    UseFirmwareMessage$Companion_getInstance();
+    Message.call(this, Type$USE_FIRMWARE_getInstance());
+    this.url = url;
+  }
+  function UseFirmwareMessage$Companion() {
+    UseFirmwareMessage$Companion_instance = this;
+  }
+  UseFirmwareMessage$Companion.prototype.parse_100t80$ = function (reader) {
+    return new UseFirmwareMessage(reader.readString());
+  };
+  UseFirmwareMessage$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var UseFirmwareMessage$Companion_instance = null;
+  function UseFirmwareMessage$Companion_getInstance() {
+    if (UseFirmwareMessage$Companion_instance === null) {
+      new UseFirmwareMessage$Companion();
+    }
+    return UseFirmwareMessage$Companion_instance;
+  }
+  UseFirmwareMessage.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeString_61zpoe$(this.url);
+  };
+  UseFirmwareMessage.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UseFirmwareMessage',
     interfaces: [Message]
   };
   function MapperHelloMessage(isRunning) {
@@ -12859,7 +13142,7 @@
     Show.call(this, 'Heartbleat');
   }
   function HeartbleatShow$createRenderer$ObjectLiteral(closure$showRunner) {
-    this.beatProvider = closure$showRunner.getBeatProvider();
+    this.closure$showRunner = closure$showRunner;
     var $receiver = closure$showRunner.allSurfaces;
     var destination = ArrayList_init();
     var tmp$;
@@ -12893,7 +13176,8 @@
   }
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var tmp$, tmp$_0;
-    var phase = this.beatProvider.beat % 1.0 * 3.0;
+    var currentBeat = this.closure$showRunner.currentBeat;
+    var phase = currentBeat % 1.0 * 3.0;
     tmp$_0 = this.heartSizeGadget.value;
     if (phase > 1.5 && phase < 2.5) {
       var x = phase - 2;
@@ -12923,7 +13207,7 @@
       var element_0 = tmp$_2.next();
       var tmp$_3 = Color_init_0(0.25, 0.25, 0.25);
       var tmp$_4 = Color_init_0(0.75, 0.3, 0.3);
-      var x_0 = this.beatProvider.beat / 4.0 * math.PI;
+      var x_0 = currentBeat / 4.0 * math.PI;
       element_0.color = tmp$_3.fade_6zkv30$(tmp$_4, Math_0.sin(x_0));
     }
   };
@@ -13522,7 +13806,8 @@
     Show.call(this, 'Thump');
   }
   function ThumpShow$createRenderer$ObjectLiteral(closure$showRunner, closure$model) {
-    this.beatProvider_0 = closure$showRunner.getBeatProvider();
+    this.closure$showRunner = closure$showRunner;
+    this.beatSource_0 = closure$showRunner.getBeatSource();
     this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     this.solidShader = new SolidShader();
     this.sineWaveShader = new SineWaveShader();
@@ -13553,27 +13838,25 @@
     this.movingHeadBuffers_0 = destination_0;
   }
   ThumpShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var theta = getTimeMillis().toNumber() / 1000.0 % (2 * math.PI);
-    var beat = this.beatProvider_0.beat;
-    var i = {v: 0};
+    var beat = this.closure$showRunner.currentBeat;
+    var i = 0;
+    var beatColor = Color$Companion_getInstance().WHITE.fade_6zkv30$(this.colorPicker.color, beat % 1);
     var tmp$;
     tmp$ = this.shaderBufs_0.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var tmp$_0;
-      element.solidShaderBuffer.color = Color$Companion_getInstance().BLACK.fade_6zkv30$(this.colorPicker.color, beat % 1.0);
-      element.sineWaveShaderBuffer.color = beat < 0.2 ? Color$Companion_getInstance().WHITE : Color$Companion_getInstance().ORANGE;
-      element.sineWaveShaderBuffer.theta = theta + (tmp$_0 = i.v, i.v = tmp$_0 + 1 | 0, tmp$_0);
+      element.solidShaderBuffer.color = beatColor;
+      element.sineWaveShaderBuffer.color = beatColor;
       element.compositorShaderBuffer.mode = CompositingMode$ADD_getInstance();
       element.compositorShaderBuffer.fade = 1.0;
     }
-    var tmp$_1;
-    tmp$_1 = this.movingHeadBuffers_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var element_0 = tmp$_1.next();
-      element_0.color = this.colorPicker.color;
-      element_0.pan = math.PI / 2;
-      element_0.tilt = beat / math.PI;
+    var tmp$_0;
+    tmp$_0 = this.movingHeadBuffers_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      element_0.color = beatColor;
+      element_0.pan = roundToInt(beat) / 2;
+      element_0.tilt = roundToInt(beat) / 2;
     }
   };
   ThumpShow$createRenderer$ObjectLiteral.$metadata$ = {
@@ -14478,6 +14761,7 @@
     this.beat3_0 = null;
     this.beat4_0 = null;
     this.beats_0 = null;
+    this.bpmSpan_0 = null;
     this.showList_0 = emptyList();
     this.showListInput_0 = null;
     this.showFramerate_0 = ensureNotNull(document.getElementById('showFramerate'));
@@ -14487,19 +14771,22 @@
     appendText(element, 'Brains online: ');
     this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
     var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_0);
-    this.beat1_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_1);
-    this.beat2_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_2);
-    this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
-    this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
+    this.bpmSpan_0 = appendElement(beatsDiv, 'h1', JsPinkyDisplay_init$lambda_1);
+    this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
+    this.beat1_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_2);
+    this.beat2_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
+    this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
+    this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_5);
     this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    appendElement(element, 'b', JsPinkyDisplay_init$lambda_5);
-    this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda_6), HTMLSelectElement) ? tmp$ : throwCCE();
-    this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_7(this);
-    appendElement(element, 'br', JsPinkyDisplay_init$lambda_8);
-    appendElement(element, 'b', JsPinkyDisplay_init$lambda_9);
-    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_10);
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_6);
+    this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda_7), HTMLSelectElement) ? tmp$ : throwCCE();
+    this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_8(this);
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_9);
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_10);
+    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_11);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
+    this.bpm_32dxyb$_0 = 0;
   }
   Object.defineProperty(JsPinkyDisplay.prototype, 'onShowChange', {
     get: function () {
@@ -14575,9 +14862,36 @@
       return this.beat_o13evy$_0;
     },
     set: function (value) {
-      clear_0(this.beats_0.get_za3lpa$(this.beat_o13evy$_0).classList);
-      this.beats_0.get_za3lpa$(value).classList.add('selected');
+      var tmp$;
+      try {
+        clear_0(this.beats_0.get_za3lpa$(this.beat_o13evy$_0).classList);
+        this.beats_0.get_za3lpa$(value).classList.add('selected');
+        if (value % 2 === 1) {
+          this.bpmSpan_0.classList.add('bpmDisplay-beatOn');
+          this.bpmSpan_0.textContent = this.bpmSpan_0.textContent + ' !!';
+        }
+         else {
+          this.bpmSpan_0.classList.remove('bpmDisplay-beatOn');
+          (tmp$ = this.bpmSpan_0.textContent) != null ? removeSuffix(tmp$, ' !!') : null;
+        }
+      }
+       catch (e) {
+        if (Kotlin.isType(e, Exception)) {
+          println('durrr error ' + e);
+        }
+         else
+          throw e;
+      }
       this.beat_o13evy$_0 = value;
+    }
+  });
+  Object.defineProperty(JsPinkyDisplay.prototype, 'bpm', {
+    get: function () {
+      return this.bpm_32dxyb$_0;
+    },
+    set: function (value) {
+      this.bpmSpan_0.textContent = value.toString() + ' BPM !!';
+      this.bpm_32dxyb$_0 = value;
     }
   });
   function JsPinkyDisplay$onShowChange$lambda() {
@@ -14600,30 +14914,34 @@
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_1($receiver) {
-    appendText($receiver, '1');
+    appendText($receiver, '\u2026BPM !!');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_2($receiver) {
-    appendText($receiver, '2');
+    appendText($receiver, '1');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_3($receiver) {
-    appendText($receiver, '3');
+    appendText($receiver, '2');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_4($receiver) {
-    appendText($receiver, '4');
+    appendText($receiver, '3');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_5($receiver) {
-    appendText($receiver, 'Renderer: ');
+    appendText($receiver, '4');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_6($receiver) {
+    appendText($receiver, 'Renderer: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_7($receiver) {
     $receiver.className = 'showsDiv';
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_7(this$JsPinkyDisplay) {
+  function JsPinkyDisplay_init$lambda_8(this$JsPinkyDisplay) {
     return function (it) {
       var tmp$ = this$JsPinkyDisplay;
       var $receiver = this$JsPinkyDisplay.showList_0;
@@ -14647,14 +14965,14 @@
       return Unit;
     };
   }
-  function JsPinkyDisplay_init$lambda_8($receiver) {
-    return Unit;
-  }
   function JsPinkyDisplay_init$lambda_9($receiver) {
-    appendText($receiver, 'Data to Brains: ');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_10($receiver) {
+    appendText($receiver, 'Data to Brains: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_11($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
@@ -16008,7 +16326,8 @@
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.sheepModel_0, this.display_0.forVisualizer());
     this.fs_0 = new FakeFs();
-    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.fs_0, this.display_0.forPinky(), true);
+    this.beatSource_0 = new BridgedBeatSource(window.location.hostname + ':' + '8006');
+    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.beatSource_0, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -16375,6 +16694,57 @@
     kind: Kind_CLASS,
     simpleName: 'SheepSimulator',
     interfaces: []
+  };
+  function JsClock() {
+  }
+  JsClock.prototype.now = function () {
+    return Date.now();
+  };
+  JsClock.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsClock',
+    interfaces: [Clock_0]
+  };
+  function BridgedBeatSource(url) {
+    this.beatData_0 = new BeatData(0.0, 0, void 0, 0.0);
+    this.webSocket_0 = new WebSocket('ws://' + url + '/bridge/beatSource');
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable);
+    this.webSocket_0.onopen = BridgedBeatSource_init$lambda;
+    this.webSocket_0.onmessage = BridgedBeatSource_init$lambda_0(this);
+    this.webSocket_0.onerror = BridgedBeatSource_init$lambda_1(this);
+    this.webSocket_0.onclose = BridgedBeatSource_init$lambda_2;
+  }
+  BridgedBeatSource.prototype.getBeatData = function () {
+    return this.beatData_0;
+  };
+  function BridgedBeatSource_init$lambda(it) {
+    console.log('WebSocket open!', it);
+    return Unit;
+  }
+  function BridgedBeatSource_init$lambda_0(this$BridgedBeatSource) {
+    return function (it) {
+      var tmp$;
+      var buf = typeof (tmp$ = it.data) === 'string' ? tmp$ : throwCCE();
+      println('buf is ' + buf);
+      this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.json_0.parse_awif5v$(BeatData$Companion_getInstance().serializer(), buf);
+      return null;
+    };
+  }
+  function BridgedBeatSource_init$lambda_1(this$BridgedBeatSource) {
+    return function (it) {
+      this$BridgedBeatSource.beatData_0 = new BeatData(0.0, 500, 4);
+      console.log('WebSocket error!', it);
+      return Unit;
+    };
+  }
+  function BridgedBeatSource_init$lambda_2(it) {
+    console.log('WebSocket close!', it);
+    return Unit;
+  }
+  BridgedBeatSource.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BridgedBeatSource',
+    interfaces: [BeatSource]
   };
   function get_disabled($receiver) {
     return equals($receiver.getAttribute('disabled'), 'disabled');
@@ -18923,9 +19293,18 @@
     simpleName: 'Rotator',
     interfaces: []
   };
+  Object.defineProperty(BeatData, 'Companion', {
+    get: BeatData$Companion_getInstance
+  });
+  Object.defineProperty(BeatData, '$serializer', {
+    get: BeatData$$serializer_getInstance
+  });
+  var package$baaahs = _.baaahs || (_.baaahs = {});
+  package$baaahs.BeatData = BeatData;
+  package$baaahs.BeatSource = BeatSource;
+  package$baaahs.Clock = Clock_0;
   Brain.RenderTree = Brain$RenderTree;
   Brain.FakeModelSurface = Brain$FakeModelSurface;
-  var package$baaahs = _.baaahs || (_.baaahs = {});
   package$baaahs.Brain = Brain;
   Object.defineProperty(Color, 'Companion', {
     get: Color$Companion_getInstance
@@ -18950,6 +19329,9 @@
   Dmx.Channel = Dmx$Channel;
   Dmx.DeviceType = Dmx$DeviceType;
   package$baaahs.Dmx = Dmx;
+  package$baaahs.FirmwareDaddy = FirmwareDaddy;
+  package$baaahs.PermissiveFirmwareDaddy = PermissiveFirmwareDaddy;
+  package$baaahs.StrictFirmwareDaddy = StrictFirmwareDaddy;
   package$baaahs.Gadget = Gadget;
   package$baaahs.GadgetValueObserver = GadgetValueObserver;
   Object.defineProperty(GadgetData, 'Companion', {
@@ -19027,8 +19409,7 @@
   package$baaahs.MovingHeadManager = MovingHeadManager;
   MovingHeadDisplay.Wrapper = MovingHeadDisplay$Wrapper;
   package$baaahs.MovingHeadDisplay = MovingHeadDisplay;
-  Pinky.BeatProvider = Pinky$BeatProvider;
-  Pinky.PinkyBeatProvider = Pinky$PinkyBeatProvider;
+  Pinky.PinkyBeatDisplayer = Pinky$PinkyBeatDisplayer;
   Pinky.NetworkStats = Pinky$NetworkStats;
   Pinky$PoolingRenderContext.Holder = Pinky$PoolingRenderContext$Holder;
   Pinky.PoolingRenderContext = Pinky$PoolingRenderContext;
@@ -19414,6 +19795,9 @@
   Object.defineProperty(Type, 'PING', {
     get: Type$PING_getInstance
   });
+  Object.defineProperty(Type, 'USE_FIRMWARE', {
+    get: Type$USE_FIRMWARE_getInstance
+  });
   Object.defineProperty(Type, 'Companion', {
     get: Type$Companion_getInstance
   });
@@ -19427,6 +19811,10 @@
     get: BrainShaderMessage$Companion_getInstance
   });
   package$proto.BrainShaderMessage = BrainShaderMessage;
+  Object.defineProperty(UseFirmwareMessage, 'Companion', {
+    get: UseFirmwareMessage$Companion_getInstance
+  });
+  package$proto.UseFirmwareMessage = UseFirmwareMessage;
   Object.defineProperty(MapperHelloMessage, 'Companion', {
     get: MapperHelloMessage$Companion_getInstance
   });
@@ -19643,6 +20031,8 @@
     get: SheepSimulator$NullPixels_getInstance
   });
   package$baaahs.SheepSimulator = SheepSimulator;
+  package$baaahs.JsClock = JsClock;
+  package$baaahs.BridgedBeatSource = BridgedBeatSource;
   package$baaahs.get_disabled_ejp6nk$ = get_disabled;
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
@@ -19707,6 +20097,7 @@
   package$visualizer.segments_182k4$ = segments;
   package$visualizer.asKey_eko7cz$ = asKey;
   package$visualizer.Rotator = Rotator;
+  BeatData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Color$Companion.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MovingHead$MovingHeadPosition$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;

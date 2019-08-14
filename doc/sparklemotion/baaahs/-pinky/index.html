@@ -14,13 +14,6 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-beat-provider/index.html">BeatProvider</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">BeatProvider</span></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="-network-stats/index.html">NetworkStats</a></p>
 </td>
 <td>
@@ -28,10 +21,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="-pinky-beat-provider/index.html">PinkyBeatProvider</a></p>
+<p><a href="-pinky-beat-displayer/index.html">PinkyBeatDisplayer</a></p>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PinkyBeatProvider</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-provider/index.html"><span class="identifier">Pinky.BeatProvider</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PinkyBeatDisplayer</span></code></td>
 </tr>
 <tr>
 <td>
@@ -50,7 +43,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Pinky</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/shows">shows</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-show/index.html"><span class="identifier">Show</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.io.Fs, baaahs.PinkyDisplay, kotlin.Boolean)/prerenderPixels">prerenderPixels</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span></code></td>
+<code><span class="identifier">Pinky</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/shows">shows</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-show/index.html"><span class="identifier">Show</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/beatSource">beatSource</span><span class="symbol">:</span>&nbsp;<a href="../-beat-source/index.html"><span class="identifier">BeatSource</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/firmwareDaddy">firmwareDaddy</span><span class="symbol">:</span>&nbsp;<a href="../-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.Model((baaahs.Model.Surface)), kotlin.collections.List((baaahs.Show)), baaahs.net.Network, baaahs.Dmx.Universe, baaahs.BeatSource, baaahs.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.PinkyDisplay, kotlin.Boolean)/prerenderPixels">prerenderPixels</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -66,6 +59,20 @@
 </tr>
 <tr>
 <td>
+<p><a href="beat-source.html">beatSource</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">beatSource</span><span class="symbol">: </span><a href="../-beat-source/index.html"><span class="identifier">BeatSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="clock.html">clock</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">clock</span><span class="symbol">: </span><a href="../-clock/index.html"><span class="identifier">Clock</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="display.html">display</a></p>
 </td>
 <td>
@@ -77,6 +84,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">dmxUniverse</span><span class="symbol">: </span><a href="../-dmx/-universe/index.html"><span class="identifier">Dmx.Universe</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="firmware-daddy.html">firmwareDaddy</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">firmwareDaddy</span><span class="symbol">: </span><a href="../-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
 </tr>
 <tr>
 <td>

@@ -22,6 +22,29 @@
 </tr>
 <tr>
 <td>
+<p><a href="-beat-data/index.html">BeatData</a></p>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">BeatData</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-beat-link-beat-source/index.html">BeatLinkBeatSource</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-source/index.html"><span class="identifier">BeatSource</span></a></code>
+<p>Listens to the current Master CDJ's beat and tempo updates.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="-beat-source/index.html">BeatSource</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">BeatSource</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-brain/index.html">Brain</a></p>
 </td>
 <td>
@@ -50,6 +73,20 @@
 </tr>
 <tr>
 <td>
+<p><a href="-bridged-beat-source/index.html">BridgedBeatSource</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">BridgedBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-source/index.html"><span class="identifier">BeatSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-clock/index.html">Clock</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Clock</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-color/index.html">Color</a></p>
 </td>
 <td>
@@ -63,6 +100,13 @@
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">Config</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-directory-daddy/index.html">DirectoryDaddy</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">DirectoryDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -91,6 +135,13 @@
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">FakeDomContainer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-dom-container/index.html"><span class="identifier">DomContainer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-firmware-daddy/index.html">FirmwareDaddy</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">FirmwareDaddy</span></code></td>
 </tr>
 <tr>
 <td>
@@ -151,6 +202,13 @@
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">JsBrainDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-brain-display/index.html"><span class="identifier">BrainDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-js-clock/index.html">JsClock</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -273,6 +331,13 @@
 </tr>
 <tr>
 <td>
+<p><a href="-permissive-firmware-daddy/index.html">PermissiveFirmwareDaddy</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PermissiveFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-pinky/index.html">Pinky</a></p>
 </td>
 <td>
@@ -383,10 +448,24 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
+<p><a href="-simulator-bridge/index.html">SimulatorBridge</a></p>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">SimulatorBridge</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-sparkle-motion/index.html">SparkleMotion</a></p>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SparkleMotion</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-strict-firmware-daddy/index.html">StrictFirmwareDaddy</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">StrictFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -403,6 +482,13 @@ then the drawing cycle will look like this:</p>
 <code><span class="keyword">interface </span><span class="identifier">Surface</span></code>
 <p>Represents a surface whose lighting can be controlled.</p>
 </td>
+</tr>
+<tr>
+<td>
+<p><a href="-system-clock/index.html">SystemClock</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SystemClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -436,6 +522,13 @@ then the drawing cycle will look like this:</p>
 </td>
 <td>
 <code><span class="keyword">typealias </span><span class="identifier">GadgetListener</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><a href="-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-time.html">Time</a></p>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">Time</span>&nbsp;<span class="symbol">=</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -555,7 +648,8 @@ then the drawing cycle will look like this:</p>
 <p><a href="main.html">main</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="identifier" id="baaahs$main(kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="identifier" id="baaahs$main(kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
