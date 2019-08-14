@@ -155,7 +155,7 @@ class Eyes extends React.Component {
     return (
       <Fragment>
         <div style={{ width: '100%' }}>
-          <div style={{ display: 'inline-block' }}>
+          <div className={s['moving-heads__wrapper']}>
             {this.renderRadioButtons()}
             {this.renderEyeControls()}
           </div>

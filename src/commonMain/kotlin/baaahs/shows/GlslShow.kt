@@ -42,8 +42,8 @@ abstract class GlslShow(name: String) : Show(name) {
                 Slider(
                     name,
                     initialValue = config.getPrimitive("initialValue").floatOrNull ?: 1f,
-                    minValue = config.getPrimitive("minValue").floatOrNull,
-                    maxValue = config.getPrimitive("maxValue").floatOrNull
+                    minValue = config.getPrimitive("minValue").floatOrNull ?: 0f,
+                    maxValue = config.getPrimitive("maxValue").floatOrNull ?: 1f
                 )
             }
             "ColorPicker" -> {
