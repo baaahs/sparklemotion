@@ -3,7 +3,7 @@ package baaahs.glsl
 import baaahs.Color
 import baaahs.IdentifiedSurface
 import baaahs.SheepModel
-import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
 import baaahs.shows.GlslOtherShow
 import baaahs.timeSync
@@ -28,7 +28,7 @@ fun main() {
         IdentifiedSurface(
             SheepModel.Panel("Panel"),
             600,
-            List(600) { Vector2F(Random.nextFloat(), Random.nextFloat()) }),
+            List(600) { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }),
         PanelSpaceUvTranslator
     )
 
