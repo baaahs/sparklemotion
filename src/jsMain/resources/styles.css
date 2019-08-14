@@ -14,7 +14,7 @@
 
 body {
     color: #ffffff;
-    background-color: #000000;
+    background-color: #4F4F4F;
     margin: 0;
     overflow: hidden;
 }
@@ -246,6 +246,7 @@ body {
     bottom: auto;
     padding: 1em;
     right: 50%;
+    background-color: #4F4F4F;
 }
 
 video {

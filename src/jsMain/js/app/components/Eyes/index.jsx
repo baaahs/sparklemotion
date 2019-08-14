@@ -18,20 +18,29 @@ class Eyes extends React.Component {
       presets: {},
       showModal: '',
     };
+  }
 
-    this.pubSub = props.pubSub;
-
+  componentDidMount() {
     this.movingHeadDisplay = new baaahs.MovingHeadDisplay(
       this.props.pubSub,
-      (movingHeads) => {
+        (movingHeads) => {
         this.setState({ movingHeads, selected: [movingHeads[0]] });
       }
     );
 
-    this.movingHeadDisplay.addPresetsListener((presetsJson) => {
-      const presets = JSON.parse(presetsJson);
-      this.setState({ presets: presets });
-    });
+    this.movingHeadDisplay.addPresetsListener(this.presetListenerFn);
+  }
+
+  componentWillUnmount() {
+    if (this.movingHeadDisplay) {
+      this.movingHeadDisplay.removePresetsListener(this.presetListenerFn);
+    }
+  }
+
+  presetListenerFn = (presetsJson) => {
+    const presets = JSON.parse(presetsJson);
+
+    this.setState({ presets: presets });
   }
 
   handlePanTiltChange = ({ x, y }) => {
@@ -133,7 +142,7 @@ class Eyes extends React.Component {
       <Fragment>
         {Object.keys(this.state.presets).map((presetName) => {
           return (
-            <button onClick={() => this.handlePresetSelect(presetName)}>
+            <button key={presetName} onClick={() => this.handlePresetSelect(presetName)}>
               {presetName}
             </button>
           );
@@ -177,6 +186,7 @@ class Eyes extends React.Component {
           {Object.keys(this.state.presets).map((presetName) => {
             return (
               <button
+                key={presetName}
                 style={{ display: "block" }}
                 onClick={() => this.handlePresetSelect(presetName)}
               >
