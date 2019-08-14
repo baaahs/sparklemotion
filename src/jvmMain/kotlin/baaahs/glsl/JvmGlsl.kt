@@ -29,7 +29,7 @@ fun main() {
             SheepModel.Panel("Panel"),
             600,
             List(600) { Vector2F(Random.nextFloat(), Random.nextFloat()) }),
-        ScannerPixelCoordsUvTranslator
+        PanelSpaceUvTranslator
     )
 
     renderer.runStandalone()

@@ -3,6 +3,7 @@ package baaahs.proto
 import baaahs.BrainId
 import baaahs.Shader
 import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -108,7 +109,7 @@ class BrainMappingMessage(
     val panelUvTopLeft: Vector2F,
     val panelUvBottomRight: Vector2F,
     val pixelCount: Int,
-    val pixelVertices: List<Vector2F>
+    val pixelLocations: List<Vector3F>
 ) : Message(Type.BRAIN_MAPPING) {
 
     companion object {
@@ -129,22 +130,19 @@ class BrainMappingMessage(
             writeFloat(v.y)
         }
 
-        private fun ByteArrayReader.readRelativeVerticesList(): List<Vector2F> {
+        private fun ByteArrayReader.readRelativeVerticesList(): List<Vector3F> {
             val vertexCount = readInt()
             return (0 until vertexCount).map {
-                Vector2F(readShort() / 65536.0f, readShort() / 65536.0f)
+                Vector3F(readFloat(), readFloat(), readFloat())
             }
         }
 
-        private fun ByteArrayWriter.writeRelativeVerticesList(pixelVertices: List<Vector2F>) {
-            writeInt(pixelVertices.size)
-            pixelVertices.forEach { vertex ->
-                if (vertex.x < 0 || vertex.x > 1 || vertex.y < 0 || vertex.y > 1) {
-//                    throw IllegalArgumentException("Pixel vertices must be [0..1], but $vertex!")
-                }
-
-                writeShort((vertex.x * 65536).toShort())
-                writeShort((vertex.y * 65536).toShort())
+        private fun ByteArrayWriter.writeRelativeVerticesList(pixelLocations: List<Vector3F>) {
+            writeInt(pixelLocations.size)
+            pixelLocations.forEach { vertex ->
+                writeFloat(vertex.x)
+                writeFloat(vertex.y)
+                writeFloat(vertex.z)
             }
         }
     }
@@ -157,9 +155,9 @@ class BrainMappingMessage(
         writer.writeVector2F(panelUvBottomRight)
         writer.writeInt(pixelCount)
 
-        val vertexCount = pixelVertices.size
+        val vertexCount = pixelLocations.size
         writer.writeInt(vertexCount)
-        writer.writeRelativeVerticesList(pixelVertices)
+        writer.writeRelativeVerticesList(pixelLocations)
     }
 }
 

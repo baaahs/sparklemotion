@@ -114,7 +114,6 @@ class SheepModel : Model<SheepModel.Panel>() {
     class Face(val vertexIds: List<Int>)
 
     class Faces {
-        val vertices: MutableList<Vector3F> = mutableListOf()
         val faces: MutableList<Face> = mutableListOf()
     }
 
@@ -124,7 +123,7 @@ class SheepModel : Model<SheepModel.Panel>() {
 
         override fun allVertices(): Collection<Vector3F> {
             val vertices = hashSetOf<Vector3F>()
-            vertices.addAll(faces.vertices)
+            vertices.addAll(lines.flatMap { it.vertices })
             return vertices
         }
 

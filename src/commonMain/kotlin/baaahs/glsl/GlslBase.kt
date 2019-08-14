@@ -1,8 +1,10 @@
 package baaahs.glsl
 
 import baaahs.*
-import baaahs.geom.center
+import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
+import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,7 +48,7 @@ abstract class GlslRenderer(
     }
 
     fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
-        if (surface is IdentifiedSurface && surface.pixelVertices != null) {
+        if (surface is IdentifiedSurface && surface.pixelLocations != null) {
             val glslSurface = GlslSurface(
                 createSurfacePixels(surface, nextPixelOffset),
                 Uniforms(nextSurfaceOffset++),
@@ -159,25 +161,31 @@ interface UvTranslator {
     }
 }
 
-object ScannerPixelCoordsUvTranslator : UvTranslator {
+object PanelSpaceUvTranslator : UvTranslator {
     override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
-        val pixelVertices = surface.pixelVertices!!
+        val pixelLocations = surface.pixelLocations!!
         return object : UvTranslator.SurfaceUvTranslator {
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
-                return pixelVertices[pixelIndex].x to pixelVertices[pixelIndex].y
+                val vector3F = pixelLocations[pixelIndex]
+                return (vector3F?.x ?: 0f) to (vector3F?.y ?: 0f)
             }
         }
     }
 }
 
-class ModelUvTranslator(val model: Model<*>) : UvTranslator {
+class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
     val modelCenter = model.modelCenter
 
     override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
-        val pixelVertices = surface.pixelVertices!!
+        val pixelLocations = surface.pixelLocations!!
         return object : UvTranslator.SurfaceUvTranslator {
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
-                TODO("ModelUvTranslator.getUV not implemented")
+                val pixelLocation = pixelLocations[pixelIndex] ?: modelCenter
+
+                val normalDelta = pixelLocation.minus(modelCenter).normalize()
+                val u = atan2(normalDelta.x, normalDelta.z) / (2 * PI.toFloat()) - 0.5f
+                val v = normalDelta.y * 0.5f - 0.5f
+                return (u * 2) to v
             }
         }
     }

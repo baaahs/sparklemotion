@@ -117,7 +117,7 @@ class Brain(
                 surfaceName = message.surfaceName
                 surface = if (message.surfaceName != null) {
                     val fakeModelSurface = FakeModelSurface(message.surfaceName)
-                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelVertices)
+                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations)
                 } else {
                     AnonymousSurface(BrainId(id))
                 }

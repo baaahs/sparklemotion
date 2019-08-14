@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -48,7 +49,7 @@ class Pinky(
         ShowRunner(model, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
 
     private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
-    private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector2F>>()
+    private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector3F>>()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -155,12 +156,12 @@ class Pinky(
         val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
-            val pixelVertices = dataFor.pixelLocations
-            val pixelCount = pixelVertices?.size ?: SparkleMotion.MAX_PIXEL_COUNT
+            val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
+            val pixelCount = dataFor.pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
 
             val mappingMsg = BrainMappingMessage(
                 brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
-                Vector2F(0f, 0f), pixelCount, pixelVertices ?: emptyList()
+                Vector2F(0f, 0f), pixelCount, pixelLocations
             )
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
@@ -227,7 +228,7 @@ class Pinky(
         brainToSurfaceMap_CHEAT[brainId] = surface
     }
 
-    fun providePixelMapping_CHEAT(surface: Model.Surface, pixelLocations: List<Vector2F>) {
+    fun providePixelMapping_CHEAT(surface: Model.Surface, pixelLocations: List<Vector3F>) {
         surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 

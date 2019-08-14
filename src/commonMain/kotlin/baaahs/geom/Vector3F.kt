@@ -2,6 +2,7 @@ package baaahs.geom
 
 import kotlinx.serialization.Serializable
 import kotlin.math.min
+import kotlin.math.sqrt
 
 @Serializable
 data class Vector3F(val x: Float, val y: Float, val z: Float) {
@@ -14,6 +15,20 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
     fun minus(other: Vector3F): Vector3F = Vector3F(x - other.x, y - other.y, z - other.z)
 
     fun times(scalar: Float): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
+
+    fun normalize(): Vector3F {
+        val invLength = 1.0f / length()
+        return Vector3F(x * invLength, y * invLength, z * invLength)
+    }
+
+    fun length(): Float {
+        return sqrt(lengthSquared().toDouble()).toFloat()
+    }
+
+    private fun lengthSquared(): Float {
+        return x * x + y * y + z * z
+    }
+
 }
 
 fun center(vectors: Collection<Vector3F>): Vector3F {

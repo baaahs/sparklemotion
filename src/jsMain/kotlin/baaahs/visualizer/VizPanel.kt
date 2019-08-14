@@ -149,7 +149,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
     }
 
 
-    class VizPixels(vizPanel: VizPanel, positions: Array<Vector3>) : Pixels {
+    class VizPixels(vizPanel: VizPanel, val positions: Array<Vector3>) : Pixels {
         override val size = positions.size
         private val pixGeometry = BufferGeometry()
         private val planeGeometry: BufferGeometry
@@ -233,6 +233,8 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
             vertexColorBufferAttr.needsUpdate = true
         }
 
+        fun getPixelLocationsInModelSpace(vizPanel: VizPanel): Array<Vector3> = positions
+
         fun getPixelLocationsInPanelSpace(vizPanel: VizPanel): Array<Vector2> {
             val panelGeom = vizPanel.geometry.clone()
             val pixGeom = pixGeometry.clone()
@@ -272,7 +274,11 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         fun clamp(f: Float): Float = min(1f, max(f, 0f))
     }
 
-    fun getPixelLocations(): Array<Vector2>? {
+    fun getPixelLocationsInPanelSpace(): Array<Vector2>? {
         return vizPixels?.getPixelLocationsInPanelSpace(this)
+    }
+
+    fun getPixelLocationsInModelSpace(): Array<Vector3>? {
+        return vizPixels?.getPixelLocationsInModelSpace(this)
     }
 }
