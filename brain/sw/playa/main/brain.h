@@ -47,6 +47,7 @@ private:
     void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);
     void msgPing(Msg* pMsg);
+    void msgUseFirmware(Msg* pMsg);
 
     void sendHello(const IpPort &port);
     void sendPong(const IpPort &port, const uint8_t *data, size_t dataLen);

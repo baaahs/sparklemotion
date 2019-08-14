@@ -22,7 +22,8 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_MAPPING,
-    PING;
+    PING,
+    USE_FIRMWARE;
 
     companion object {
         val values = values()
@@ -39,14 +40,18 @@ fun parse(bytes: ByteArray): Message {
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
         Type.PING -> PingMessage.parse(reader)
+        Type.USE_FIRMWARE -> UseFirmwareMessage.parse(reader)
     }
 }
 
-class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message(Type.BRAIN_HELLO) {
+class BrainHelloMessage(val brainId: String, val surfaceName: String?, val firmwareVersion: String? = null,
+                        val idfVersion: String? = null) : Message(Type.BRAIN_HELLO) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainHelloMessage {
             return BrainHelloMessage(
                 reader.readString(),
+                reader.readNullableString(),
+                reader.readNullableString(),
                 reader.readNullableString()
             )
         }
@@ -55,6 +60,12 @@ class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(brainId)
         writer.writeNullableString(surfaceName)
+        writer.writeNullableString(firmwareVersion)
+        writer.writeNullableString(idfVersion)
+    }
+
+    override fun toString(): String {
+        return "BrainHello $brainId, $surfaceName, $firmwareVersion, $idfVersion"
     }
 }
 
@@ -78,6 +89,27 @@ class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val p
         if (pongData != null) writer.writeBytes(pongData)
         writer.writeBytes(shader.descriptorBytes)
         buffer.serialize(writer)
+    }
+}
+
+/**
+ * The message that Pinky will send to a brain when Pinky has decided that
+ * the Brain should use a particular firmware. The url can point anywhere,
+ * either self hosted by Pinky or out into the nether reaches of the Interwebs.
+ * What could possibly go wrong? Pinky would __never__ tell a brain to go
+ * download a wikipedia article and use that as a firmware. It just won't
+ * be nice.
+ */
+class UseFirmwareMessage(val url: String) :
+    Message(Type.USE_FIRMWARE) {
+    companion object {
+        fun parse(reader: ByteArrayReader): UseFirmwareMessage {
+            return UseFirmwareMessage(reader.readString())
+        }
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeString(url)
     }
 }
 

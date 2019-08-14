@@ -9,13 +9,7 @@ import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.BrainHelloMessage
-import baaahs.proto.BrainMappingMessage
-import baaahs.proto.BrainShaderMessage
-import baaahs.proto.MapperHelloMessage
-import baaahs.proto.PingMessage
-import baaahs.proto.Ports
-import baaahs.proto.parse
+import baaahs.proto.*
 import baaahs.shaders.PixelShader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -30,6 +24,7 @@ class Pinky(
     val beatSource: BeatSource,
     val clock: Clock,
     val fs: Fs,
+    val firmwareDaddy: FirmwareDaddy,
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
@@ -38,6 +33,7 @@ class Pinky(
 
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
+
 
     private val beatProvider = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
@@ -142,7 +138,7 @@ class Pinky(
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
-            is BrainHelloMessage -> foundBrain(fromAddress, BrainId(message.brainId), message.surfaceName)
+            is BrainHelloMessage -> foundBrain(fromAddress, message)
             is MapperHelloMessage -> {
                 println("Mapper isRunning=${message.isRunning}")
                 mapperIsRunning = message.isRunning
@@ -153,10 +149,21 @@ class Pinky(
 
     private fun foundBrain(
         brainAddress: Network.Address,
-        brainId: BrainId,
-        surfaceName: String?
+        msg: BrainHelloMessage
     ) {
-//        println("Heard from brain $brainId at $brainAddress for $surfaceName")
+        val brainId = BrainId(msg.brainId)
+        val surfaceName = msg.surfaceName
+
+        println("foundBrain($brainAddress, $msg)")
+        if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
+            // You need the new hotness bro
+            println("The firmware daddy doesn't like $brainId having ${msg.firmwareVersion} so we'll send ${firmwareDaddy.urlForPreferredVersion}")
+            val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
+        }
+
+
+        // println("Heard from brain $brainId at $brainAddress for $surfaceName")
         val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
@@ -170,6 +177,7 @@ class Pinky(
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
         } ?: AnonymousSurface(brainId)
+
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
@@ -195,9 +203,12 @@ class Pinky(
             ShowRunner.SurfaceReceiver(surface, sendFn)
         }
 
-        val brainInfo = BrainInfo(brainAddress, brainId, surface, surfaceReceiver)
+        val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
         pendingBrainInfos[brainId] = brainInfo
+
+        // Decide whether or not to tell this brain it should use a different firmware
+
     }
 
     private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
@@ -405,5 +416,7 @@ class BrainInfo(
     val address: Network.Address,
     val brainId: BrainId,
     val surface: Surface,
+    val firmwareVersion: String?,
+    val idfVersion: String?,
     val surfaceReceiver: ShowRunner.SurfaceReceiver
 )
