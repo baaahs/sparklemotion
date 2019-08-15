@@ -4,6 +4,8 @@ class AllShows {
     companion object {
         val allShows = listOf(
             SolidColorShow,
+            GlslSandbox56688Show,
+            GlslSandbox56718Show,
             SomeDumbShow,
             RandomShow,
             CompositeShow,
