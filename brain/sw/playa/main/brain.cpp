@@ -202,6 +202,9 @@ Brain::msgUseFirmware(Msg *pMsg){
 
     ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
 
+    m_otaFetcher.fetchFromUrl(szBuf);
+
+    /*
     esp_http_client_config_t clientCfg{};
     clientCfg.url = szBuf;
     clientCfg.event_handler = ota_event;
@@ -236,23 +239,22 @@ Brain::msgUseFirmware(Msg *pMsg){
     } else {
         ESP_LOGE(TAG, "Hey! That was a good OTA");
     }
-    /*
-    auto err = esp_https_ota(&clientCfg);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to do OTA %d", err);
-    } else {
-        ESP_LOGE(TAG, "OTA Success!!!!!!");
-    }
-     */
+//    auto err = esp_https_ota(&clientCfg);
+//    if (err != ESP_OK) {
+//        ESP_LOGE(TAG, "Failed to do OTA %d", err);
+//    } else {
+//        ESP_LOGE(TAG, "OTA Success!!!!!!");
+//    }
 
     // Always restart after OTA because we stopped everything so
     // that nothing else interferred with the OTA process
-    ESP_LOGE(TAG, "Always reboot at the end of OTA");
-    brain_restart(10);
-
-    // Important in case the OTA failed so that we can try again.
-    m_otaStartedAt.tv_sec = 0;
-    m_otaStartedAt.tv_usec = 0;
+//    ESP_LOGE(TAG, "Always reboot at the end of OTA");
+//    brain_restart(10);
+//
+//    // Important in case the OTA failed so that we can try again.
+//    m_otaStartedAt.tv_sec = 0;
+//    m_otaStartedAt.tv_usec = 0;
+     */
 
     free(szBuf);
 }

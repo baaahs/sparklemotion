@@ -7,9 +7,10 @@ set(COMPONENT_SRCS
         "msg.cpp"
         "msg_handler.cpp"
         "msg_slinger.cpp"
+        "ota_fetcher.cpp"
         )
 set(COMPONENT_ADD_INCLUDEDIRS "include")
 
-set(COMPONENT_REQUIRES brain-common nvs_flash led-renderer )
+set(COMPONENT_REQUIRES brain-common nvs_flash led-renderer app_update esp_http_client)
 
 register_component()

@@ -41,3 +41,4 @@
 #define TAG_SHADER  "#shader"
 #define TAG_SHDTREE "#shdtre"
 #define TAG_UI      "#    ui"
+#define TAG_OTA     "#   ota"

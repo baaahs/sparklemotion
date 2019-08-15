@@ -15,6 +15,7 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 #include "http_server.h"
+#include "ota_fetcher.h"
 
 class Brain : public MsgHandler {
 public:
@@ -42,6 +43,8 @@ private:
 
     BrainUI m_brainUI;
     HttpServer m_httpServer;
+
+    OtaFetcher m_otaFetcher;
 
     timeval m_otaStartedAt{};
 
