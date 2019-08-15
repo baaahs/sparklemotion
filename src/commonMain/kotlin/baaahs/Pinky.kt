@@ -218,10 +218,11 @@ class Pinky(
             networkStats.bytesSent += message.size
         }
 
+        val directSurfaceReceiver = DirectSurfaceReceiver(surface, sendFn, link.udpMtu)
         val surfaceReceiver = if (prerenderPixels) {
-            PrerenderingSurfaceReceiver(surface, sendFn)
+            PrerenderingSurfaceReceiver(surface, directSurfaceReceiver)
         } else {
-            ShowRunner.SurfaceReceiver(surface, sendFn)
+            directSurfaceReceiver
         }
 
         val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
@@ -280,8 +281,20 @@ class Pinky(
         }
     }
 
-    private inner class PrerenderingSurfaceReceiver(surface: Surface, sendFn: (Shader.Buffer) -> Unit) :
-        ShowRunner.SurfaceReceiver(surface, sendFn) {
+    private class DirectSurfaceReceiver(
+        override val surface: Surface,
+        val sendFn: (Shader.Buffer) -> Unit,
+        val udpMtu: Int
+    ) : ShowRunner.SurfaceReceiver {
+        override fun send(shaderBuffer: Shader.Buffer) {
+            shaderBuffer.segmentableSend(sendFn, udpMtu)
+        }
+    }
+
+    private inner class PrerenderingSurfaceReceiver(
+        override val surface: Surface,
+        private val delegate: ShowRunner.SurfaceReceiver
+    ) : ShowRunner.SurfaceReceiver {
         var currentRenderTree: Brain.RenderTree<*>? = null
         private var currentPoolKey: Any? = null
         var pixels: PixelsAdapter? = null
@@ -343,7 +356,7 @@ class Pinky(
 
                 renderTree.draw(pixels)
 
-                super.send(pixels.buffer)
+                delegate.send(pixels.buffer)
             }
         }
     }
@@ -421,7 +434,6 @@ class Pinky(
                 buffer.colors[i] = colors[i]
             }
         }
-
     }
 }
 

@@ -117,21 +117,26 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeShort(pixelCount)
+            writer.writeShort(0) // bufferOffset
             colorsBuf.forEach { color -> writeColor(color, writer) }
         }
 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
+            val bufferOffset = reader.readShort().toInt() and 0xffff
+            val pixelOffset = if (bufferOffset == 0) 0 else (bufferOffset / if (rgb24BitMode) 3 else 4)
+
             // if there are more colors in the buffer than pixels, drop from the end
-            val countFromBuffer = min(colorsBuf.size, incomingPixelCount)
-            for (i in 0 until countFromBuffer) {
+            val countFromBuffer = min(colorsBuf.size, pixelOffset + incomingPixelCount)
+            for (i in pixelOffset until countFromBuffer) {
                 colorsBuf[i] = readColor(reader)
             }
 
-            // if there are more pixels than colors in the buffer, repeat
-            for (i in countFromBuffer until colorsBuf.size) {
-                colorsBuf[i] = colorsBuf[i % countFromBuffer]
-            }
+            // Naw, actually just leave them be.
+//            // if there are more pixels than colors in the buffer, repeat
+//            for (i in countFromBuffer until colorsBuf.size) {
+//                colorsBuf[i] = colorsBuf[i % countFromBuffer]
+//            }
         }
 
         private fun writeColor(color: Color, writer: ByteArrayWriter) {
@@ -168,6 +173,32 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
             throw UnsupportedOperationException("Indexed colors aren't available in this mode")
 
         override val indices = colorsBuf.indices
+
+        override fun segmentableSend(sendFn: (Shader.Buffer) -> Unit, preferredMaxByteSize: Int) {
+            val bytesPerPixel = if (rgb24BitMode) 3 else 4
+            val pixelsPerPacket = (preferredMaxByteSize - 40) / bytesPerPixel
+            var pixelOffset = 0
+            val segmentingWrapper = object : Shader.Buffer {
+                override val shader: Shader<*> = this@PixelShader
+
+                override fun serialize(writer: ByteArrayWriter) {
+                    val pixelEndOffset = min(pixelCount, pixelOffset + pixelsPerPacket)
+                    writer.writeShort(pixelEndOffset - pixelOffset)
+                    writer.writeShort(pixelOffset * bytesPerPixel) // bufferOffset
+                    for (i in pixelOffset until pixelEndOffset) {
+                        writeColor(colorsBuf[i], writer)
+                    }
+
+                    pixelOffset = pixelEndOffset
+                }
+
+                override fun read(reader: ByteArrayReader): Unit = TODO("read not implemented")
+            }
+
+            while (pixelOffset < pixelCount) {
+                sendFn(segmentingWrapper)
+            }
+        }
     }
 
     inner class IndexedBuffer(private val bitsPerPixel: Int, private val pixelCount: Int) : Buffer() {
@@ -226,14 +257,20 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeShort(pixelCount)
+            writer.writeShort(0) // bufferOffset
             palette.forEach { paletteColor -> writer.writeInt(paletteColor.argb) }
             writer.writeBytes(dataBuf)
         }
 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
+            val bufferOffset = reader.readShort().toInt() and 0xffff
+            if (bufferOffset != 0) {
+                throw IllegalStateException("bufferOffset not supported yet")
+            }
+
             palette.indices.forEach { i -> palette[i] = Color.from(reader.readInt()) }
-            reader.readBytes(dataBuf)
+            reader.readBytes(dataBuf, bufferOffset)
         }
 
         override fun setAll(color: Color): Unit =

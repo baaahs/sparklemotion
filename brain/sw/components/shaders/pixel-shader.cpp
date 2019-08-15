@@ -56,7 +56,8 @@ PixelShader::~PixelShader() {
 
 void
 PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
-    uint16_t pixelCount = pMsg->readShort();
+    uint16_t pixelCount = pMsg->readShort(); // TODO: This should probably be byteCount instead probably.
+    uint16_t bufferOffset = pMsg->readShort();
 
     uint8_t paletteCount = paletteCountFor(m_encoding);
     for (int i = 0; i < paletteCount; i++) {
@@ -77,10 +78,17 @@ PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     }
 
     size_t readLen = MIN(m_dataBufSize, dataBufLen);
-    m_dataBufRead = pMsg->readBytes(m_dataBuf, readLen);
 
-    ESP_LOGI(TAG, "PixelShader::begin m_dataBufSize=%d dataBufLen=%d m_dataBufRead=%d readLen=%d",
-            m_dataBufSize, dataBufLen, m_dataBufRead, readLen);
+    ESP_LOGI(TAG, "PixelShader::begin m_dataBufSize=%d dataBufLen=%d readLen=%d bufferOffset=%d",
+             m_dataBufSize, dataBufLen, readLen, bufferOffset);
+    if (bufferOffset + readLen > m_dataBufSize) {
+        ESP_LOGE(TAG, "PixelShader::begin so you want to trash the heap do you? Not today!");
+        pMsg->skip(readLen);
+        return;
+    }
+
+    m_dataBufRead = pMsg->readBytes(m_dataBuf + bufferOffset, readLen);
+
     // If we received data for more pixels than we have, skip those bytes.
     if (readLen < m_dataBufRead) {
         pMsg->skip(m_dataBufRead - readLen);

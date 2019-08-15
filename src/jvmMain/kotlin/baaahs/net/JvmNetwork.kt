@@ -53,7 +53,8 @@ class JvmNetwork : Network {
                                 data.copyOfRange(packetIn.offset, packetIn.length)
                             )
                         } catch (e: Exception) {
-                            RuntimeException("Error handling UDP packet", e).printStackTrace()
+                            RuntimeException("Error handling UDP packet" +
+                                    " from ${packetIn.address}:${packetIn.port}", e).printStackTrace()
                         }
                     }
                 }

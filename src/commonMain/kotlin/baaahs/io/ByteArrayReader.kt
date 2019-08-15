@@ -53,10 +53,10 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
      * Reads up to as many bytes as are present in `buffer`, or as many bytes are available in the incoming byte array,
      * and returns the number of bytes actually read. Any unread incoming bytes are skipped.
      */
-    fun readBytes(buffer: ByteArray): Int {
+    fun readBytes(buffer: ByteArray, bufferOffset: Int = 0): Int {
         val count = readInt()
         val toCopy = min(buffer.size, count)
-        bytes.copyInto(buffer, 0, offset, offset + toCopy)
+        bytes.copyInto(buffer, 0, offset + bufferOffset, offset + bufferOffset + toCopy)
         offset += count
         return toCopy
     }

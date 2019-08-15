@@ -80,6 +80,13 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
          * Read new data into an existing buffer (as efficiently as possible).
          */
         fun read(reader: ByteArrayReader)
+
+        /**
+         * Send data, breaking up into MTU-sized chunks if possible.
+         */
+        fun segmentableSend(sendFn: (Buffer) -> Unit, preferredMaxByteSize: Int) {
+            sendFn(this)
+        }
     }
 
     interface Renderer<B : Buffer> {
