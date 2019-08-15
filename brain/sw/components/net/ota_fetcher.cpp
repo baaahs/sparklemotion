@@ -146,7 +146,7 @@ void OtaFetcher::_fetchTask() {
             }
             total += readLen;
         } else if (readLen == 0) {
-            ESP_LOGE(TAG, "Got readLen=0, errno=%d", errno);
+            ESP_LOGE(TAG, "Got readLen=0, errno=%d %s", errno, strerror(errno));
             if (errno != 0) {
                 err = ESP_FAIL;
             }
