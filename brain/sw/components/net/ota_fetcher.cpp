@@ -129,6 +129,9 @@ void OtaFetcher::_fetchTask() {
                 ESP_LOGE(TAG, "OTA Write error %s", esp_err_to_name(err));
             }
             total += readLen;
+        } else {
+            ESP_LOGE(TAG, "Seems like the server closed the connection. readLen was 0.");
+            err = ESP_FAIL;
         }
     }
 
@@ -177,7 +180,7 @@ void OtaFetcher::cleanup() {
 esp_err_t OtaFetcher::_httpEvent(esp_http_client_event_t* evt) {
     switch(evt->event_id) {
         case HTTP_EVENT_ERROR:
-            ESP_LOGE(TAG, "OTA Error");
+            ESP_LOGE(TAG, "OTA HTTP_EVENT_ERROR");
             break;
 
         case HTTP_EVENT_ON_CONNECTED:
