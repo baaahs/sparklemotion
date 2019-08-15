@@ -5028,13 +5028,18 @@
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         var brainId = element.key;
-        var brainInfo = element.value;
+        var incomingBrainInfo = element.value;
         var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
         if (priorBrainInfo != null) {
           brainSurfacesToRemove.add_11rb$(priorBrainInfo.surfaceReceiver);
         }
-        brainSurfacesToAdd.add_11rb$(brainInfo.surfaceReceiver);
-        this.brainInfos_0.put_xwzc9p$(brainId, brainInfo);
+        if (incomingBrainInfo.hadException) {
+          this.brainInfos_0.remove_11rb$(brainId);
+        }
+         else {
+          brainSurfacesToAdd.add_11rb$(incomingBrainInfo.surfaceReceiver);
+          this.brainInfos_0.put_xwzc9p$(brainId, incomingBrainInfo);
+        }
       }
       this.showRunner_0.surfacesChanged_ji9tfc$(brainSurfacesToAdd, brainSurfacesToRemove);
       this.pendingBrainInfos_0.clear();
@@ -5065,9 +5070,30 @@
       if (message.isPong)
         this.receivedPong_0(message, fromAddress);
   };
-  function Pinky$foundBrain$lambda(closure$brainAddress, this$Pinky) {
+  function Pinky$foundBrain$lambda(this$Pinky, closure$brainAddress, closure$brainId) {
     return function (shaderBuffer) {
-      this$Pinky.sendBrainShaderMessage_0(closure$brainAddress, shaderBuffer);
+      var tmp$;
+      var message = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer)).toBytes();
+      try {
+        this$Pinky.udpSocket_0.sendUdp_ytpeqp$(closure$brainAddress, 8003, message);
+      }
+       catch (e) {
+        if (Kotlin.isType(e, Exception)) {
+          var brainInfo = ensureNotNull(this$Pinky.brainInfos_0.get_11rb$(closure$brainId));
+          brainInfo.hadException = true;
+          var $receiver = this$Pinky.pendingBrainInfos_0;
+          var key = closure$brainId;
+          $receiver.put_xwzc9p$(key, brainInfo);
+          logger$Companion_getInstance().error_nwdkmo$('Error sending to ' + closure$brainId + ', will take offline', e);
+        }
+         else
+          throw e;
+      }
+      var tmp$_0;
+      tmp$_0 = this$Pinky.networkStats_0;
+      tmp$_0.packetsSent = tmp$_0.packetsSent + 1 | 0;
+      tmp$ = this$Pinky.networkStats_0;
+      tmp$.bytesSent = tmp$.bytesSent + message.length | 0;
       return Unit;
     };
   }
@@ -5100,7 +5126,7 @@
         return;
       }
     }
-    var sendFn = Pinky$foundBrain$lambda(brainAddress, this);
+    var sendFn = Pinky$foundBrain$lambda(this, brainAddress, brainId);
     if (this.prerenderPixels_0) {
       tmp$_2 = new Pinky$PrerenderingSurfaceReceiver(this, surface, sendFn);
     }
@@ -5110,19 +5136,6 @@
     var surfaceReceiver = tmp$_2;
     var brainInfo = new BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver);
     this.pendingBrainInfos_0.put_xwzc9p$(brainId, brainInfo);
-  };
-  Pinky.prototype.sendBrainShaderMessage_0 = function (brainAddress, shaderBuffer) {
-    var tmp$;
-    var $receiver = new ByteArrayWriter();
-    $receiver.writeLong_s8cxhz$(getTimeMillis());
-    var pongData = $receiver.toBytes();
-    var message = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData)).toBytes();
-    this.udpSocket_0.sendUdp_ytpeqp$(brainAddress, 8003, message);
-    var tmp$_0;
-    tmp$_0 = this.networkStats_0;
-    tmp$_0.packetsSent = tmp$_0.packetsSent + 1 | 0;
-    tmp$ = this.networkStats_0;
-    tmp$.bytesSent = tmp$.bytesSent + message.length | 0;
   };
   Pinky.prototype.findMappingInfo_CHEAT_0 = function (surfaceName, brainId) {
     var tmp$, tmp$_0;
@@ -5135,9 +5148,15 @@
     }
     return tmp$_0;
   };
+  Pinky.prototype.generatePongPayload_0 = function () {
+    var $receiver = new ByteArrayWriter();
+    $receiver.writeLong_s8cxhz$(getTimeMillis());
+    return $receiver.toBytes();
+  };
   Pinky.prototype.receivedPong_0 = function (message, fromAddress) {
     var originalSentAt = (new ByteArrayReader(message.data)).readLong();
     var elapsedMs = getTimeMillis().subtract(originalSentAt);
+    logger$Companion_getInstance().debug_61zpoe$('Shader pong from ' + fromAddress + ' took ' + elapsedMs.toString() + 'ms');
   };
   Pinky.prototype.providePanelMapping_CHEAT_iegnfh$ = function (brainId, surface) {
     this.brainToSurfaceMap_CHEAT_0.put_xwzc9p$(brainId, surface);
@@ -5442,13 +5461,16 @@
   BrainId.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.uuid, other.uuid))));
   };
-  function BrainInfo(address, brainId, surface, firmwareVersion, idfVersion, surfaceReceiver) {
+  function BrainInfo(address, brainId, surface, firmwareVersion, idfVersion, surfaceReceiver, hadException) {
+    if (hadException === void 0)
+      hadException = false;
     this.address = address;
     this.brainId = brainId;
     this.surface = surface;
     this.firmwareVersion = firmwareVersion;
     this.idfVersion = idfVersion;
     this.surfaceReceiver = surfaceReceiver;
+    this.hadException = hadException;
   }
   BrainInfo.$metadata$ = {
     kind: Kind_CLASS,
@@ -14695,6 +14717,9 @@
   };
   logger$Companion.prototype.error_61zpoe$ = function (message) {
     println('ERROR: ' + message);
+  };
+  logger$Companion.prototype.error_nwdkmo$ = function (message, exception) {
+    println('ERROR: ' + message + ': ' + toString_0(exception.message));
   };
   logger$Companion.$metadata$ = {
     kind: Kind_OBJECT,
