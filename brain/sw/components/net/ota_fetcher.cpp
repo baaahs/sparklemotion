@@ -29,9 +29,13 @@ esp_err_t glue_httpEvent(esp_http_client_event_t *evt) {
 ////////////////////////////////////////////////////////////
 
 
-void OtaFetcher::fetchFromUrl(const char *szBuf) {
+void OtaFetcher::fetchFromUrl(const char *szBuf, bool fakeWrites) {
+
+    gettimeofday(&m_startTime, nullptr);
+
     if (!szBuf || strlen(szBuf) == 0) {
         ESP_LOGE(TAG, "No buffer supplied");
+        return;
     }
 
     if (m_szUrl) {
@@ -44,6 +48,8 @@ void OtaFetcher::fetchFromUrl(const char *szBuf) {
         ESP_LOGE(TAG, "Unable to duplicate szBuf. No ota");
         return;
     }
+
+    m_fakeWrites = fakeWrites;
 
     TaskDef def = DefaultBrainTasks.otaFetcher;
     auto tcResult = def.createTask(glue_fetchTask, this, nullptr);
@@ -73,24 +79,28 @@ void OtaFetcher::_fetchTask() {
         return;
     }
 
-    m_updatePartition = esp_ota_get_next_update_partition(nullptr);
-    if (!m_updatePartition) {
-        ESP_LOGE(TAG, "Unable to get a next ota update partition");
-        cleanup();
-        return;
-    }
+    if (m_fakeWrites) {
+        ESP_LOGE(TAG, "Fake writes are enabled. Not starting OTA api");
+    } else {
+        m_updatePartition = esp_ota_get_next_update_partition(nullptr);
+        if (!m_updatePartition) {
+            ESP_LOGE(TAG, "Unable to get a next ota update partition");
+            cleanup();
+            return;
+        }
 
-    if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_ota_begin(m_updatePartition, OTA_SIZE_UNKNOWN, &m_otaHandle)) != ESP_OK) {
-        cleanup();
-        return;
-    }
-    ESP_LOGE(TAG, "ota_begin() call succeeded.");
+        if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_ota_begin(m_updatePartition, OTA_SIZE_UNKNOWN, &m_otaHandle)) != ESP_OK) {
+            cleanup();
+            return;
+        }
+        ESP_LOGE(TAG, "ota_begin() call succeeded.");
 
-    ESP_LOGI(TAG, "      type = %d", m_updatePartition->type);
-    ESP_LOGI(TAG, "   subtype = %d", m_updatePartition->subtype);
-    ESP_LOGI(TAG, "   address = 0x%x", m_updatePartition->address);
-    ESP_LOGI(TAG, "      size = %d", m_updatePartition->size);
-    ESP_LOGI(TAG, "     label = %s", m_updatePartition->label);
+        ESP_LOGI(TAG, "      type = %d", m_updatePartition->type);
+        ESP_LOGI(TAG, "   subtype = %d", m_updatePartition->subtype);
+        ESP_LOGI(TAG, "   address = 0x%x", m_updatePartition->address);
+        ESP_LOGI(TAG, "      size = %d", m_updatePartition->size);
+        ESP_LOGI(TAG, "     label = %s", m_updatePartition->label);
+    }
 
     // Get our http client setup
     httpCfg.url = m_szUrl;
@@ -128,9 +138,11 @@ void OtaFetcher::_fetchTask() {
                 toRead, total, m_contentLength, readLen);
         if (readLen > 0) {
             // Write this to ota
-            err = esp_ota_write(m_otaHandle, m_scratch, readLen);
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "OTA Write error %s", esp_err_to_name(err));
+            if (!m_fakeWrites) {
+                err = esp_ota_write(m_otaHandle, m_scratch, readLen);
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG, "OTA Write error %s", esp_err_to_name(err));
+                }
             }
             total += readLen;
         } else if (readLen == 0) {
@@ -145,7 +157,11 @@ void OtaFetcher::_fetchTask() {
         }
     }
 
-    ESP_LOGI(TAG, "OTA Read complete, total=%d", total);
+    gettimeofday(&m_endTime, nullptr);
+
+    time_t elapsed = m_endTime.tv_sec - m_startTime.tv_sec;
+    ESP_LOGE(TAG, "Read complete. %d bytes in %ld seconds = %ld bytes/sec",
+            total, elapsed, total / elapsed);
 
     esp_http_client_close(m_httpHandle);
     esp_http_client_cleanup(m_httpHandle);
