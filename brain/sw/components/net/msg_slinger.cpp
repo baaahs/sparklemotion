@@ -162,7 +162,7 @@ void
 MsgSlinger::_inputPump() {
     ESP_LOGI(TAG, "_inputPump starting");
 
-    while(true) {
+    while(!m_timeToDie) {
         ESP_LOGD(TAG, "Waiting for data in _inputPump m_sock=%d", m_sock);
 
         // Get a new input buffer message and make sure it has a reasonable
@@ -180,26 +180,31 @@ MsgSlinger::_inputPump() {
         int len = recvfrom(m_sock, pMsg->buffer(), pMsg->capacity() - 1, 0,
                            pMsg->dest.addr(), &socklen);
 
-        if (len < 0) {
-            ESP_LOGE(TAG, "recvfrom failed: %d %s", errno, strerror(errno));
-            // Delay at least a little bit so the rest of the system isn't horribly
-            // gunked up on an endless error scenario. Presumably the socket
-            // will get re-bound at some point because an interface comes back up.
-            vTaskDelay(pdMS_TO_TICKS(100));
-            break;
-        } else {
-            pMsg->setUsed(len);
+        if (!m_timeToDie) {
+            if (len < 0) {
+                ESP_LOGE(TAG, "recvfrom failed: %d %s", errno, strerror(errno));
+                // Delay at least a little bit so the rest of the system isn't horribly
+                // gunked up on an endless error scenario. Presumably the socket
+                // will get re-bound at some point because an interface comes back up.
+                vTaskDelay(pdMS_TO_TICKS(100));
+                break;
+            } else {
+                pMsg->setUsed(len);
 
-            // inet_ntoa_r(pMsg->dest.addr_in()->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
+                // inet_ntoa_r(pMsg->dest.addr_in()->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
 
-            //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
-            ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
-            gSysMon.increment(COUNTER_UDP_RECV);
+                //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
+                ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
+                gSysMon.increment(COUNTER_UDP_RECV);
 
-            handleNetIn(pMsg);
+                handleNetIn(pMsg);
+            }
         }
         pMsg->release();
     }
+
+    // Delete ourself!
+    vTaskDelete(nullptr);
 }
 
 void
@@ -290,6 +295,8 @@ void
 MsgSlinger::_handleNetOut(Msg *pMsg) {
     if (!pMsg) return;
 
+    if (m_timeToDie) return;
+
     ESP_LOGI(TAG, "Sending this message");
     pMsg->log();
 
@@ -352,6 +359,8 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
 
 esp_err_t
 MsgSlinger::sendMsg(Msg *pMsg) {
+    if (m_timeToDie) return ESP_FAIL;
+
     if (!pMsg) {
         ESP_LOGW(TAG, "sendMsg this=%p pMsg=%p len=%d dest=%s", this, pMsg, pMsg->used(), pMsg->dest.toString());
         return ESP_FAIL;

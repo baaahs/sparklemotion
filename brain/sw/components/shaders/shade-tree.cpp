@@ -40,6 +40,8 @@ ShadeTree::start() {
 
 void
 ShadeTree::beginShade(LEDShaderContext* pCtx) {
+    if (m_timeToDie) return;
+
     xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
     // Assume success
     ESP_LOGD(TAG, "beginShade got semaphore");
@@ -56,6 +58,8 @@ ShadeTree::beginShade(LEDShaderContext* pCtx) {
 
 void
 ShadeTree::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
+    if (m_timeToDie) return;
+
     // If we don't have a pNextMsg set, we don't want to change anything
     // about the pixels
     if (!(m_pCurrentShader || m_pLocalShader)) {
@@ -101,6 +105,7 @@ void
 ShadeTree::handleMessage(Msg* pMsg){
     // ESP_LOGW(TAG, "handleMessage pMsg=%p", pMsg);
     if (!pMsg) return;
+    if (m_timeToDie) return;
 
     // Wait, but not forever so that the network task keeps running just in
     // case rendering explodes somehow.
@@ -235,6 +240,7 @@ void
 ShadeTree::_handleEvent(esp_event_base_t base, int32_t id, void* data) {
 
     if (!data) return;
+    if (m_timeToDie) return;
 
     auto evt = (BrainUiEvent*)data;
 

@@ -55,5 +55,8 @@ private:
 
     void sendHello(const IpPort &port);
     void sendPong(const IpPort &port, const uint8_t *data, size_t dataLen);
+
+    bool otaStarted();
+    void stopEverythingForOTA();
 };
 

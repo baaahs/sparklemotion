@@ -93,7 +93,7 @@ LEDRenderer::start(TaskDef show, TaskDef render) {
  */
 void
 LEDRenderer::_showTask() {
-    while(true) {
+    while(!m_timeToDie) {
         TickType_t toDelay = m_timeBase.ticksToNextFrame();
         if (!toDelay) {
             // We presumably _JUST_ did this frame, so delay by 1 tick
@@ -126,7 +126,7 @@ LEDRenderer::_showTask() {
     }
 
     // Just in case we ever exit, we're supposed to do this
-    ESP_LOGE(TAG, "Aaaackk!!! LED Render main task exited");
+    ESP_LOGE(TAG, "LEDRenderer::_showTask exiting");
     vTaskDelete(nullptr);
 }
 
@@ -206,7 +206,7 @@ LEDRenderer::render() {
  */
 void
 LEDRenderer::_renderTask() {
-    while(true) {
+    while(!m_timeToDie) {
         // Render a frame
         if (m_localRenderEnabled) {
             render();
@@ -222,6 +222,7 @@ LEDRenderer::_renderTask() {
     }
 
     // Just in case we ever exit, we're supposed to do this
+    ESP_LOGE(TAG, "LEDRenderer::_renderTask exiting");
     vTaskDelete(nullptr);
 }
 
