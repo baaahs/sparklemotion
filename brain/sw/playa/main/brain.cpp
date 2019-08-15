@@ -183,7 +183,7 @@ Brain::msgUseFirmware(Msg *pMsg){
 
     ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
 
-    esp_http_client_config_t clientCfg = { 0 };
+    esp_http_client_config_t clientCfg{};
     clientCfg.url = szBuf;
     clientCfg.event_handler = ota_event;
 
