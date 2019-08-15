@@ -45,6 +45,9 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
     }
 
     override fun doesntLikeThisVersion(firmwareVersion: String?): Boolean {
+        // If we didn't find a firmware, don't hassle people. Accept anything.
+        if (preferredVersion.isEmpty()) return false
+
         return  firmwareVersion != preferredVersion
     }
 
