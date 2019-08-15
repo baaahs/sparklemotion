@@ -14,6 +14,7 @@ public:
     void setValue(uint8_t val);
     uint8_t getValue() { return m_val; }
 
+    uint8_t incrementBy(uint8_t val);
 private:
     ledc_channel_config_t m_config;
     uint8_t m_val;

@@ -7,6 +7,9 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "esp_ota_ops.h"
+
+
 #define TAG TAG_COMMON
 
 BrainConfig GlobalConfig;
@@ -250,4 +253,38 @@ const char* BrainConfig::macStr() {
     } // else just give them what we already constructed
 
     return m_macStr;
+}
+
+// Some stupid thing I found at https://stackoverflow.com/questions/8317508/hash-function-for-a-string
+#define A 54059 /* a prime */
+#define B 76963 /* another prime */
+#define C 86969 /* yet another prime */
+#define FIRSTH 37 /* also prime */
+
+uint32_t hashStr(const char* s) {
+    uint32_t h = FIRSTH;
+
+    while (*s) {
+        h = (h * A) ^ (s[0] * B);
+        s++;
+    }
+    return h; // or return h % C;
+}
+
+uint32_t BrainConfig::versionHash() {
+    auto desc = esp_ota_get_app_description();
+    if (!desc) {
+        ESP_LOGE(TAG, "Couldn't get a real version hash. Odd");
+        return 0xFEEDFACE;
+    }
+
+    // desc->secure_version is 0 so we have to do
+    // our own hash. We just want entropy!
+
+    uint32_t ret = hashStr(desc->idf_ver);
+    ret += hashStr(desc->version);
+    ret += hashStr(desc->date);
+    ret += hashStr(desc->time);
+
+    return ret;
 }

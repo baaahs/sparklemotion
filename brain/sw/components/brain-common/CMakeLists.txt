@@ -6,6 +6,6 @@ set(COMPONENT_SRCS
         "config.cpp"
         )
 
-set(COMPONENT_REQUIRES spiffs jsmn driver)
+set(COMPONENT_REQUIRES spiffs jsmn driver app_update)
 
 register_component()

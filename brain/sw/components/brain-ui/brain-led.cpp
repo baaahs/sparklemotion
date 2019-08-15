@@ -62,3 +62,12 @@ BrainLed::checkInit() {
 
     BrainLed::initDone = true;
 }
+
+uint8_t BrainLed::incrementBy(uint8_t val) {
+    uint16_t next = (uint16_t)val + (uint16_t)m_val;
+    if (next > 255) {
+        next -= 255;
+    }
+    setValue(next);
+    return m_val;
+}
