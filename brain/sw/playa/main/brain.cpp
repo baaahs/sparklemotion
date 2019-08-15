@@ -237,6 +237,10 @@ Brain::msgUseFirmware(Msg *pMsg){
         brain_restart(10);
     }
 
+    // Important in case the OTA failed so that we can try again.
+    m_otaStartedAt.tv_sec = 0;
+    m_otaStartedAt.tv_usec = 0;
+
     free(szBuf);
 }
 
