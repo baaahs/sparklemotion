@@ -15,13 +15,17 @@ data class BeatData(
     val confidence: Float = 1f
 ) {
     @Transient val bpm: Float
-        get() = (60_000 / beatIntervalMs).toFloat()
+        get() {
+            if (beatIntervalMs==0) return 0.0.toFloat()
+            return (60_000 / beatIntervalMs).toFloat()
+        }
 
     fun beatWithinMeasure(clock: Clock): Float {
         val elapsedSinceStartOfMeasure = clock.now() - measureStartTimeMs
         return ((elapsedSinceStartOfMeasure / beatIntervalMs).toFloat()) % beatsPerMeasure
     }
 }
+
 
 interface BeatSource {
     fun getBeatData(): BeatData
