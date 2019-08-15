@@ -422,9 +422,9 @@ public:
     // Msg* parse();
 
     virtual void log(const char* name = "Unknown") {
-        ESP_LOGI(TAG_MSG, "%s Msg cap=%d used=%d cursor=%d type=%d dest=%s", name, m_capacity, m_used,
+        ESP_LOGD(TAG_MSG, "%s Msg cap=%d used=%d cursor=%d type=%d dest=%s", name, m_capacity, m_used,
                 m_cursor, m_capacity > 13 ? m_buf[13] : -1, dest.toString());
-        ESP_LOG_BUFFER_HEXDUMP(TAG_MSG, m_buf, m_used, ESP_LOG_INFO);
+        ESP_LOG_BUFFER_HEXDUMP(TAG_MSG, m_buf, m_used, ESP_LOG_VERBOSE);
     }
 
     virtual ~Msg() { }

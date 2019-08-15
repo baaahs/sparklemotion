@@ -2,6 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
+#include <sysmon.h>
 #include "msg_slinger.h"
 
 #include "net_priv.h"
@@ -193,6 +194,7 @@ MsgSlinger::_inputPump() {
 
             //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
             ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
+            gSysMon.increment(COUNTER_UDP_RECV);
 
             handleNetIn(pMsg);
         }
@@ -208,13 +210,15 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
     auto header = pMsg->readHeader();
     ESP_LOGD(TAG, "Read a msg header");
 
-    ESP_LOGD(TAG, "frameOffset=%d frameSize=%d id=%d msgSize=%d", header.frameOffset, header.frameSize, header.id, header.msgSize);
+    ESP_LOGD(TAG, "id=( %d ).size=%d  frameOffset=%d frameSize=%d",
+            header.id, header.msgSize, header.frameOffset, header.frameSize);
 
     if (header.frameOffset == 0) {
         // It is a new message
         if (header.frameSize == header.msgSize) {
             // It is a single message so we can dispatch it as is
             ESP_LOGD(TAG, "Dispatching single fragment message");
+            gSysMon.increment(COUNTER_MSG_SINGLE_OK);
             dispatch(pMsg);
             ESP_LOGD(TAG, "Dispatch complete for single fragment message");
         } else {
@@ -224,6 +228,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
             // Allocate space for the whole message
             if (!pMsg->prepCapacity(header.msgSize + Msg::HEADER_SIZE)) {
                 ESP_LOGE(TAG, "Unable to prep a fragged message of size %d, dropping it", header.msgSize);
+                gSysMon.increment(COUNTER_MSG_LOST);
                 return;
             }
             ESP_LOGD(TAG, "Got first segment of a fragmented message");
@@ -231,6 +236,9 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
             // Cool, we hold onto this message then (making sure not to leak
             // anything that was previously hanging around)
             if (m_pFraggedMsg) {
+                ESP_LOGW(TAG, "Dropping old message ( %d ) and replacing with new one ( %d)",
+                         m_nFraggedMsgId, header.id);
+                gSysMon.increment(COUNTER_MSG_LOST);
                 m_pFraggedMsg->release();
             }
             m_pFraggedMsg = pMsg;
@@ -241,12 +249,14 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
     } else {
         // It is a continuing fragment of an old message
         if (!m_pFraggedMsg) {
-            ESP_LOGW(TAG, "Got continuation fragment for %d but do not have that message waiting.", header.id);
+            ESP_LOGW(TAG, "Got continuation fragment for ( %d ) but am waiting for ( %d )", header.id, m_nFraggedMsgId);
+            gSysMon.increment(COUNTER_MSG_BAD_ID);
             return;
         }
 
         if (header.id != m_nFraggedMsgId) {
             ESP_LOGW(TAG, "Got continuation of %d but have %d, dropping both", header.id, m_nFraggedMsgId);
+            gSysMon.increment(COUNTER_MSG_BAD_ID);
             m_pFraggedMsg->release();
             m_pFraggedMsg = nullptr;
             return;
@@ -258,6 +268,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
         if (m_pFraggedMsg->addFragment(pMsg)) {
             // Oh hey, we should dispatch it!
             ESP_LOGD(TAG, "Dispatching fragmented message");
+            gSysMon.increment(COUNTER_MSG_FRAG_OK);
             dispatch(m_pFraggedMsg);
             m_pFraggedMsg->release();
             m_pFraggedMsg = nullptr;
@@ -331,6 +342,7 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
             ESP_LOGE(TAG, "Error occurred sending to %s : m_sock=%d %d %s",
                      pMsg->dest.toString(), m_sock, errno, strerror(errno));
         } else {
+            gSysMon.increment(COUNTER_MSG_SENT);
             ESP_LOGD(TAG, "Message sent to %s", pMsg->dest.toString() );
         }
 //    }
