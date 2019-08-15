@@ -42,8 +42,8 @@ abstract class GlslRenderer(
 
     fun findUniforms() {
         uvCoordsLocation = getUniformLocation("sm_uvCoords")
-        resolutionLocation = getUniformLocation("resolution")
-        timeLocation = getUniformLocation("time")
+        resolutionLocation = getUniformLocation("resolution", true)
+        timeLocation = getUniformLocation("time", true)
 
     }
 
@@ -70,7 +70,7 @@ abstract class GlslRenderer(
 
     abstract fun <T> withGlContext(fn: () -> T): T
 
-    abstract fun getUniformLocation(name: String): Uniform
+    abstract fun getUniformLocation(name: String, optional: Boolean = false): Uniform
 
     protected fun incorporateNewSurfaces() {
         if (surfacesToAdd.isNotEmpty()) {

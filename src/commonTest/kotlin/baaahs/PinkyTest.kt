@@ -28,7 +28,8 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), FakeFs(), StubPinkyDisplay())
+        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
+            PermissiveFirmwareDaddy(), StubPinkyDisplay())
         pinkyLink = network.links.only()
     }
 
@@ -156,5 +157,8 @@ class PinkyTest {
             }
         }
     }
+}
 
+class StubBeatSource : BeatSource {
+    override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
 }

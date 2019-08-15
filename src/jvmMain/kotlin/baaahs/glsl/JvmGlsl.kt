@@ -154,7 +154,7 @@ class JvmGlslRenderer(
 
             program = createShaderProgram()
             findUniforms()
-            matLocation = getUniformLocation("viewProjMatrix")
+            matLocation = getUniformLocation("viewProjMatrix", false)
 
             instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
         }
@@ -162,7 +162,7 @@ class JvmGlslRenderer(
         quad = withGlContext { Quad() }
     }
 
-    override fun getUniformLocation(name: String): Uniform {
+    override fun getUniformLocation(name: String, optional: Boolean): Uniform {
         val loc = gl { glGetUniformLocation(program, name) }
         if (loc < 0) {
             throw IllegalStateException("Couldn't find uniform $name")
@@ -452,7 +452,7 @@ void main(void) {
     inner class UnifyingAdjustableUniform(
         val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int
     ) : AdjustibleUniform {
-        val uniformLocation = gl { getUniformLocation(adjustableValue.varName) }
+        val uniformLocation = gl { getUniformLocation(adjustableValue.varName, false) }
         var buffer: Any? = null
 
         override fun bind() {

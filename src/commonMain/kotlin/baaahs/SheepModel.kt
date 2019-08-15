@@ -102,8 +102,8 @@ class SheepModel : Model<SheepModel.Panel>() {
         panelNeighbors = allPanels.associateWith { neighborsOf(it) }
 
         eyes = arrayListOf(
-            MovingHead("leftEye", Vector3F(-163.738f, 204.361f, 439.302f)),
-            MovingHead("rightEye", Vector3F(-103.738f, 204.361f, 439.302f))
+            MovingHead("leftEye", Vector3F(0f, 204.361f, 48.738f)),
+            MovingHead("rightEye", Vector3F(0f, 204.361f, -153.738f))
         )
     }
 

@@ -23,7 +23,10 @@ class Pinky(
     val shows: List<Show>,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
+    val beatSource: BeatSource,
+    val clock: Clock,
     val fs: Fs,
+    val firmwareDaddy: FirmwareDaddy,
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
@@ -33,7 +36,8 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
-    private val beatProvider = PinkyBeatProvider(120.0f)
+
+    private val beatProvider = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
     private var selectedShow = shows.first()
         set(value) {
@@ -46,7 +50,7 @@ class Pinky(
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     private val showRunner =
-        ShowRunner(model, selectedShow, gadgetManager, beatProvider, dmxUniverse, movingHeadManager)
+        ShowRunner(model, selectedShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock)
 
     private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
     private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector3F>>()
@@ -138,7 +142,7 @@ class Pinky(
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         val message = parse(bytes)
         when (message) {
-            is BrainHelloMessage -> foundBrain(fromAddress, BrainId(message.brainId), message.surfaceName)
+            is BrainHelloMessage -> foundBrain(fromAddress, message)
             is MapperHelloMessage -> {
                 println("Mapper isRunning=${message.isRunning}")
                 mapperIsRunning = message.isRunning
@@ -149,10 +153,21 @@ class Pinky(
 
     private fun foundBrain(
         brainAddress: Network.Address,
-        brainId: BrainId,
-        surfaceName: String?
+        msg: BrainHelloMessage
     ) {
-//        println("Heard from brain $brainId at $brainAddress for $surfaceName")
+        val brainId = BrainId(msg.brainId)
+        val surfaceName = msg.surfaceName
+
+        println("foundBrain($brainAddress, $msg)")
+        if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
+            // You need the new hotness bro
+            println("The firmware daddy doesn't like $brainId having ${msg.firmwareVersion} so we'll send ${firmwareDaddy.urlForPreferredVersion}")
+            val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
+        }
+
+
+        // println("Heard from brain $brainId at $brainAddress for $surfaceName")
         val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
@@ -166,6 +181,7 @@ class Pinky(
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
         } ?: AnonymousSurface(brainId)
+
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
@@ -191,9 +207,12 @@ class Pinky(
             ShowRunner.SurfaceReceiver(surface, sendFn)
         }
 
-        val brainInfo = BrainInfo(brainAddress, brainId, surface, surfaceReceiver)
+        val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
         pendingBrainInfos[brainId] = brainInfo
+
+        // Decide whether or not to tell this brain it should use a different firmware
+
     }
 
     private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
@@ -232,33 +251,13 @@ class Pinky(
         surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 
-    interface BeatProvider {
-        var bpm: Float
-        val beat: Float
-    }
-
-    inner class PinkyBeatProvider(override var bpm: Float) : BeatProvider {
-        private var startTimeMillis = 0L
-        private var beatsPerMeasure = 4
-
-        private val millisPerBeat = 1000 / (bpm / 60)
-
-        override val beat: Float
-            get() {
-                val now = getTimeMillis()
-                return (now - startTimeMillis) / millisPerBeat % beatsPerMeasure
-            }
-
+    inner class PinkyBeatDisplayer(val beatSource: BeatSource) {
         suspend fun run() {
-            startTimeMillis = getTimeMillis()
-
             while (true) {
-                display.beat = beat.toInt()
-
-                val offsetMillis = getTimeMillis() - startTimeMillis
-                val millsPer = millisPerBeat
-                val delayTimeMillis = millsPer - offsetMillis % millsPer
-                delay(delayTimeMillis.toLong())
+               val beatData = beatSource.getBeatData()
+                display.beat = beatData.beatWithinMeasure(clock).toInt()
+                display.bpm = beatData.bpm.toInt() //TODO: show fractions of bpm
+                delay(10)
             }
         }
     }
@@ -421,5 +420,7 @@ class BrainInfo(
     val address: Network.Address,
     val brainId: BrainId,
     val surface: Surface,
+    val firmwareVersion: String?,
+    val idfVersion: String?,
     val surfaceReceiver: ShowRunner.SurfaceReceiver
 )

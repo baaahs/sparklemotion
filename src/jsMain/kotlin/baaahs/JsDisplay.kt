@@ -48,7 +48,6 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
         packetLossRate = 0.0f
     }
 
-
     private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
     private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
 
@@ -94,6 +93,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
+    private val bpmSpan: Element
     private var showList = emptyList<Show>()
     private val showListInput: HTMLSelectElement
     private var showFramerate: Element = document.getElementById("showFramerate")!!
@@ -109,6 +109,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             appendElement("b") { appendText("Beats: ") }
             appendElement("br") {}
         }
+        bpmSpan = beatsDiv.appendElement("h1") { appendText("…BPM !!") }
+        bpmSpan.classList.add("bpmDisplay-beatOff")
         beat1 = beatsDiv.appendElement("span") { appendText("1") }
         beat2 = beatsDiv.appendElement("span") { appendText("2") }
         beat3 = beatsDiv.appendElement("span") { appendText("3") }
@@ -144,9 +146,26 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
     override var beat: Int = 0
         set (value) {
-            beats[field].classList.clear()
-            beats[value].classList.add("selected")
+            try {
+                beats[field].classList.clear()
+                beats[value].classList.add("selected")
+                if (value % 2 == 1) {
+                    bpmSpan.classList.add("bpmDisplay-beatOn")
+                    bpmSpan.textContent = bpmSpan.textContent + " !!"
+                } else {
+                    bpmSpan.classList.remove("bpmDisplay-beatOn")
+                    bpmSpan.textContent?.removeSuffix(" !!")
+                }
+            } catch (e: Exception) {
+                println("durrr error $e")
+            }
 
+            field = value
+        }
+
+    override var bpm: Int = 0
+        set (value) {
+            bpmSpan.textContent = "$value BPM !!"
             field = value
         }
 }

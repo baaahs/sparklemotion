@@ -18,7 +18,10 @@ data class Slider(
     val minValue: Float = 0f,
 
     /** The maximum value for this slider. */
-    val maxValue: Float = 1f
+    val maxValue: Float = 1f,
+
+    /** The step value for the slider. Only used if minValue and maxValue are used. */
+    val stepValue: Float = 0.01f
 ) : Gadget() {
     /** The selected value. */
     @JsName("value")

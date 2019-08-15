@@ -23,10 +23,10 @@ void got_ip_address(void *arg, esp_event_base_t base, int32_t id, void *data) {
 
 // Glue function FTW
 void handle_net_out(void *arg, esp_event_base_t base, int32_t id, void *data) {
-    ESP_LOGW(TAG, "handle_net_out arg=%p data=%p", arg, data);
+    ESP_LOGD(TAG, "handle_net_out arg=%p data=%p", arg, data);
     if (data) {
         Msg** ppMsg = (Msg**)data;
-        ESP_LOGW(TAG, "  *ppMsg=%p  ", *ppMsg);
+        ESP_LOGD(TAG, "  *ppMsg=%p  ", *ppMsg);
 
         ((MsgSlinger *) arg)->_handleNetOut(*ppMsg);
     } else {

@@ -52,9 +52,11 @@ class JsGlslRenderer(
         instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
     }
 
-    override fun getUniformLocation(name: String): Uniform {
+    override fun getUniformLocation(name: String, optional: Boolean): Uniform {
         val loc = gl { gl.getUniformLocation(program, name) }
-            ?: throw IllegalStateException("Couldn't find uniform $name")
+        if (loc == null && !optional)
+            throw IllegalStateException("Couldn't find uniform $name")
+
         return Uniform(loc)
     }
 
@@ -196,7 +198,7 @@ out vec4 sm_fragColor;
 
 ${fragShader
             .replace(
-                Regex("void main\\s*\\(\\s*void\\s*\\)"),
+                Regex("void main\\s*\\(\\s*(void\\s*)?\\)"),
                 "void sm_main(vec2 sm_pixelCoord)"
             )
             .replace("gl_FragCoord", "sm_pixelCoord")
@@ -279,7 +281,7 @@ void main(void) {
     inner class UnifyingAdjustableUniform(
         val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int
     ) : AdjustibleUniform {
-        val uniformLocation = gl { getUniformLocation(adjustableValue.varName) }
+        val uniformLocation = gl { getUniformLocation(adjustableValue.varName, false) }
         var buffer: Any? = null
 
         override fun bind() {
