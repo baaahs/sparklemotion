@@ -157,12 +157,29 @@ esp_err_t ota_event(esp_http_client_event_t *evt)
 }
 
 #define MAX_URL_SIZE 512
+#define MAX_OTA_SECONDS 300
 
 void
 Brain::msgUseFirmware(Msg *pMsg){
     if (!pMsg) return;
 
     ESP_LOGD(TAG, "MSG: Use Firmware");
+
+    timeval now;
+    gettimeofday(&now, nullptr);
+
+    if (m_otaStartedAt.tv_sec > 0) {
+        auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
+        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %d secs", diff);
+
+        if (diff < MAX_OTA_SECONDS) {
+            ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will ignore this new request", MAX_OTA_SECONDS);
+            return;
+        }
+
+        ESP_LOGW(TAG, "It's been more than %d seconds, so we will start a new OTA process...", MAX_OTA_SECONDS);
+    }
+    m_otaStartedAt = now;
 
     char* szBuf = (char*)malloc(MAX_URL_SIZE);
     if (!szBuf) {

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <sys/time.h>
+
 #include "net_transport.h"
 #include "msg_handler.h"
 #include "msg_slinger.h"
@@ -40,6 +42,8 @@ private:
 
     BrainUI m_brainUI;
     HttpServer m_httpServer;
+
+    timeval m_otaStartedAt{};
 
     void startSecondStageBoot();
 
