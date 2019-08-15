@@ -79,7 +79,7 @@ BrainUI::start(TaskDef taskDef) {
 
     // Then we can do stuff
     leftEye.setValue(255);
-    rightEye.setValue(255);
+    rightEye.setValue(128);
 
     rgbR.setValue(0);
     rgbG.setValue(0);
