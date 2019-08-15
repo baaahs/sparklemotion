@@ -28,7 +28,8 @@ class JvmNetwork : Network {
     private val link = RealLink()
 
     companion object {
-        const val MAX_UDP_SIZE = 2048
+        const val MAX_UDP_SIZE = 1450
+        //const val MAX_UDP_SIZE = 4096
 
         val myAddress = InetAddress.getLocalHost()
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
@@ -39,7 +40,7 @@ class JvmNetwork : Network {
     inner class RealLink() : Network.Link {
         private val networkScope = CoroutineScope(Dispatchers.IO)
 
-        override val udpMtu = 1400
+        override val udpMtu = MAX_UDP_SIZE
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = JvmUdpSocket(port)
@@ -67,7 +68,14 @@ class JvmNetwork : Network {
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
 
+            init {
+//                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
+//                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
+                println("Send buffer size is ${udpSocket.sendBufferSize}")
+            }
+
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                // println("Sending ${bytes.size} bytes to ${toAddress}")
                 val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
                 udpSocket.send(packetOut)
             }
