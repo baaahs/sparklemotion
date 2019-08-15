@@ -7,6 +7,8 @@
 
 #include <string.h>
 #include <sys/param.h>
+#include "errno.h"
+
 
 #define SCRATCH_BUFSIZE 8192
 
@@ -122,7 +124,7 @@ void OtaFetcher::_fetchTask() {
         // Read some more...]
         int toRead = MIN(SCRATCH_BUFSIZE, m_contentLength - total);
         readLen = esp_http_client_read(m_httpHandle, m_scratch, toRead);
-        ESP_LOGD(TAG, "toRead=%d  total=%d  m_contentLength=%d  readLen=%d",
+        ESP_LOGW(TAG, "toRead=%d  total=%d  m_contentLength=%d  readLen=%d",
                 toRead, total, m_contentLength, readLen);
         if (readLen > 0) {
             // Write this to ota
@@ -131,8 +133,14 @@ void OtaFetcher::_fetchTask() {
                 ESP_LOGE(TAG, "OTA Write error %s", esp_err_to_name(err));
             }
             total += readLen;
+        } else if (readLen == 0) {
+            ESP_LOGE(TAG, "Got readLen=0, errno=%d", errno);
+            if (errno != 0) {
+                err = ESP_FAIL;
+            }
         } else {
-            ESP_LOGE(TAG, "Seems like the server closed the connection. readLen was 0.");
+            ESP_LOGE(TAG, "Seems like the server closed the connection. readLen was 0. errno=%d : %s",
+                    errno, strerror(errno));
             err = ESP_FAIL;
         }
     }
