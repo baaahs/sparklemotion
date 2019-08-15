@@ -1,8 +1,9 @@
 #include "pixel-shader.h"
 
 #include "esp_log.h"
+#include "brain_common.h"
 
-#define TAG "#shPixl"
+#define TAG TAG_SHADER
 
 PixelShader::PixelShader(Surface *surface, Msg *config) : Shader(surface, config) {
     if (!config->available(1)) {
