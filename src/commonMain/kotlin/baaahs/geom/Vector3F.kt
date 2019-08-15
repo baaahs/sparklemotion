@@ -2,13 +2,14 @@ package baaahs.geom
 
 import kotlinx.serialization.Serializable
 import kotlin.math.min
+import kotlin.math.max
 import kotlin.math.sqrt
 
 @Serializable
 data class Vector3F(val x: Float, val y: Float, val z: Float) {
     fun min(other: Vector3F): Vector3F = Vector3F(min(x, other.x), min(y, other.y), min(z, other.z))
 
-    fun max(other: Vector3F): Vector3F = Vector3F(min(x, other.x), min(y, other.y), min(z, other.z))
+    fun max(other: Vector3F): Vector3F = Vector3F(max(x, other.x), max(y, other.y), max(z, other.z))
 
     fun plus(other: Vector3F): Vector3F = Vector3F(x + other.x, y + other.y, z + other.z)
 
@@ -32,8 +33,18 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 }
 
 fun center(vectors: Collection<Vector3F>): Vector3F {
-    val min = vectors.reduce { acc, vector3F -> acc.min(vector3F) }
-    val max = vectors.reduce { acc, vector3F -> acc.max(vector3F) }
+    val (min, max) = boundingBox(vectors)
     val diff = max.minus(min)
     return diff.times(0.5f).plus(min)
+}
+
+fun extents(vectors: Collection<Vector3F>): Vector3F {
+    val (min, max) = boundingBox(vectors)
+    return max.minus(min)
+}
+
+private fun boundingBox(vectors: Collection<Vector3F>): Pair<Vector3F, Vector3F> {
+    val min = vectors.reduce { acc, vector3F -> acc.min(vector3F) }
+    val max = vectors.reduce { acc, vector3F -> acc.max(vector3F) }
+    return Pair(min, max)
 }

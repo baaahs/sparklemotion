@@ -27,7 +27,8 @@ class AllShows {
             GlslSandbox55301Show,
             GlslOtherShow,
             GlslSandbox56594Show,
-            GlslSandbox56555Show
+            GlslSandbox56555Show,
+            GlslSandboxDebugShow
         )
     }
 }

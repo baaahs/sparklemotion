@@ -3,10 +3,7 @@ package baaahs.glsl
 import baaahs.*
 import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
-import kotlin.math.PI
-import kotlin.math.atan2
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
 
 expect object GlslBase {
     val manager: GlslManager
@@ -175,6 +172,7 @@ object PanelSpaceUvTranslator : UvTranslator {
 
 class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
     val modelCenter = model.modelCenter
+    val modelExtents = model.modelExtents
 
     override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
         val pixelLocations = surface.pixelLocations!!
@@ -183,9 +181,11 @@ class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
                 val pixelLocation = pixelLocations[pixelIndex] ?: modelCenter
 
                 val normalDelta = pixelLocation.minus(modelCenter).normalize()
-                val u = atan2(normalDelta.x, normalDelta.z) / (2 * PI.toFloat()) - 0.5f
-                val v = normalDelta.y * 0.5f - 0.5f
-                return (u * 2) to v
+                var theta = atan2(abs(normalDelta.z), normalDelta.x) // theta in range [-π,π]
+                if (theta < 0.0f) theta += (2.0f * PI.toFloat()) // theta in range [0,2π)
+                val u = theta  / (2.0f * PI.toFloat()) // u in range [0,1)
+                val v = (pixelLocation.minus(modelCenter).y + modelExtents.y / 2.0f) / modelExtents.y
+                return u to v
             }
         }
     }
