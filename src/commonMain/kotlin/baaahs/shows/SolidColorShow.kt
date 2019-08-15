@@ -16,15 +16,10 @@ object SolidColorShow : Show("Solid Color") {
         val eyes = model.movingHeads.map { eye -> showRunner.getMovingHeadBuffer(eye) }
 
         return object : Renderer {
-            var priorColor = colorPicker.color
-
             override fun nextFrame() {
                 val color = colorPicker.color
-                if (color != priorColor) {
-                    shaderBuffers.forEach { it.color = color }
-                    eyes.forEach { it.color = color }
-                    priorColor = color
-                }
+                shaderBuffers.forEach { it.color = color }
+                eyes.forEach { it.color = color }
             }
         }
     }
