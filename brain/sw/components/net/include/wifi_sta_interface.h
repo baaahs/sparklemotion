@@ -25,6 +25,8 @@ public:
 
     void setCredentials(const char* ssid, const char* password);
 
+    void _taskLongPoll();
+
 protected:
     bool init() override;
 
@@ -32,7 +34,14 @@ protected:
 
     void addressingChanged() override;
 
+    void startLongTermPoll();
+
 private:
     wifi_config_t m_wifiConfig;
+    bool m_started = false;
+    bool m_connected = false;
     int m_numFailedConnects;
+
+    bool m_haveLTPTask = false;
+    TaskHandle_t m_hLTPTask;
 };
