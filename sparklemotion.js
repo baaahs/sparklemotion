@@ -143,7 +143,6 @@
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
-  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
@@ -172,6 +171,7 @@
   var JsonParsingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonParsingException;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var json_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.json_s5o6vg$;
+  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
@@ -396,6 +396,10 @@
   GlslSandbox56555Show.prototype.constructor = GlslSandbox56555Show;
   GlslSandbox56594Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56594Show.prototype.constructor = GlslSandbox56594Show;
+  GlslSandbox56688Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56688Show.prototype.constructor = GlslSandbox56688Show;
+  GlslSandbox56718Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56718Show.prototype.constructor = GlslSandbox56718Show;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -445,6 +449,8 @@
   }
   Object.defineProperty(BeatData.prototype, 'bpm', {
     get: function () {
+      if (this.beatIntervalMs === 0)
+        return 0.0;
       return 60000 / this.beatIntervalMs | 0;
     }
   });
@@ -6347,7 +6353,7 @@
       result.put_xwzc9p$(element_0, neighborsOf(element_0));
     }
     this.panelNeighbors = result;
-    this.eyes = arrayListOf([new MovingHead('leftEye', new SheepModel$Point(-163.738, 204.361, 439.302)), new MovingHead('rightEye', new SheepModel$Point(-103.738, 204.361, 439.302))]);
+    this.eyes = arrayListOf([new MovingHead('leftEye', new SheepModel$Point(0.0, 204.361, 48.738)), new MovingHead('rightEye', new SheepModel$Point(0.0, 204.361, -153.738))]);
   };
   SheepModel.prototype.neighborsOf_jfju1k$ = function (panel) {
     var tmp$;
@@ -7897,19 +7903,22 @@
   PalettePicker.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialColors, other.initialColors)))));
   };
-  function Slider(name, initialValue, minValue, maxValue) {
+  function Slider(name, initialValue, minValue, maxValue, stepValue) {
     Slider$Companion_getInstance();
     if (initialValue === void 0)
       initialValue = 1.0;
     if (minValue === void 0)
-      minValue = null;
+      minValue = 0.0;
     if (maxValue === void 0)
-      maxValue = null;
+      maxValue = 1.0;
+    if (stepValue === void 0)
+      stepValue = 0.01;
     Gadget.call(this);
     this.name = name;
     this.initialValue = initialValue;
     this.minValue = minValue;
     this.maxValue = maxValue;
+    this.stepValue = stepValue;
     this.value_2xmiz9$_0 = this.updatable_t7zvzq$('value', this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
   }
   var Slider$value_metadata = new PropertyMetadata('value');
@@ -7945,6 +7954,7 @@
     this.descriptor.addElement_ivxn3r$('initialValue', true);
     this.descriptor.addElement_ivxn3r$('minValue', true);
     this.descriptor.addElement_ivxn3r$('maxValue', true);
+    this.descriptor.addElement_ivxn3r$('stepValue', true);
     Slider$$serializer_instance = this;
   }
   Object.defineProperty(Slider$$serializer.prototype, 'descriptor', {
@@ -7957,10 +7967,12 @@
     output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.name);
     if (!equals(obj.initialValue, 1.0) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 1))
       output.encodeFloatElement_t7qhdx$(this.descriptor, 1, obj.initialValue);
-    if (!equals(obj.minValue, null) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 2))
-      output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 2, internal.FloatSerializer, obj.minValue);
-    if (!equals(obj.maxValue, null) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 3))
-      output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 3, internal.FloatSerializer, obj.maxValue);
+    if (!equals(obj.minValue, 0.0) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 2))
+      output.encodeFloatElement_t7qhdx$(this.descriptor, 2, obj.minValue);
+    if (!equals(obj.maxValue, 1.0) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 3))
+      output.encodeFloatElement_t7qhdx$(this.descriptor, 3, obj.maxValue);
+    if (!equals(obj.stepValue, 0.01) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 4))
+      output.encodeFloatElement_t7qhdx$(this.descriptor, 4, obj.stepValue);
     output.endStructure_qatsm0$(this.descriptor);
   };
   Slider$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
@@ -7969,7 +7981,8 @@
     var local0
     , local1
     , local2
-    , local3;
+    , local3
+    , local4;
     var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
     loopLabel: while (true) {
       index = input.decodeElementIndex_qatsm0$(this.descriptor);
@@ -7987,13 +8000,18 @@
           if (!readAll)
             break;
         case 2:
-          local2 = (bitMask0 & 4) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 2, internal.FloatSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 2, internal.FloatSerializer, local2);
+          local2 = input.decodeFloatElement_3zr2iy$(this.descriptor, 2);
           bitMask0 |= 4;
           if (!readAll)
             break;
         case 3:
-          local3 = (bitMask0 & 8) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 3, internal.FloatSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 3, internal.FloatSerializer, local3);
+          local3 = input.decodeFloatElement_3zr2iy$(this.descriptor, 3);
           bitMask0 |= 8;
+          if (!readAll)
+            break;
+        case 4:
+          local4 = input.decodeFloatElement_3zr2iy$(this.descriptor, 4);
+          bitMask0 |= 16;
           if (!readAll)
             break;
         case -1:
@@ -8002,10 +8020,10 @@
       }
     }
     input.endStructure_qatsm0$(this.descriptor);
-    return Slider_init(bitMask0, local0, local1, local2, local3, null);
+    return Slider_init(bitMask0, local0, local1, local2, local3, local4, null);
   };
   Slider$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, internal.FloatSerializer, new NullableSerializer(internal.FloatSerializer), new NullableSerializer(internal.FloatSerializer)];
+    return [internal.StringSerializer, internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer];
   };
   Slider$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -8019,7 +8037,7 @@
     }
     return Slider$$serializer_instance;
   }
-  function Slider_init(seen1, name, initialValue, minValue, maxValue, serializationConstructorMarker) {
+  function Slider_init(seen1, name, initialValue, minValue, maxValue, stepValue, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(Slider.prototype);
     Gadget.call($this);
     if ((seen1 & 1) === 0)
@@ -8031,13 +8049,17 @@
     else
       $this.initialValue = initialValue;
     if ((seen1 & 4) === 0)
-      $this.minValue = null;
+      $this.minValue = 0.0;
     else
       $this.minValue = minValue;
     if ((seen1 & 8) === 0)
-      $this.maxValue = null;
+      $this.maxValue = 1.0;
     else
       $this.maxValue = maxValue;
+    if ((seen1 & 16) === 0)
+      $this.stepValue = 0.01;
+    else
+      $this.stepValue = stepValue;
     $this.value_2xmiz9$_0 = $this.updatable_t7zvzq$('value', $this.initialValue, serializer_0(kotlin_js_internal_FloatCompanionObject));
     return $this;
   }
@@ -8058,11 +8080,14 @@
   Slider.prototype.component4 = function () {
     return this.maxValue;
   };
-  Slider.prototype.copy_553zi3$ = function (name, initialValue, minValue, maxValue) {
-    return new Slider(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue, minValue === void 0 ? this.minValue : minValue, maxValue === void 0 ? this.maxValue : maxValue);
+  Slider.prototype.component5 = function () {
+    return this.stepValue;
+  };
+  Slider.prototype.copy_kjn4ou$ = function (name, initialValue, minValue, maxValue, stepValue) {
+    return new Slider(name === void 0 ? this.name : name, initialValue === void 0 ? this.initialValue : initialValue, minValue === void 0 ? this.minValue : minValue, maxValue === void 0 ? this.maxValue : maxValue, stepValue === void 0 ? this.stepValue : stepValue);
   };
   Slider.prototype.toString = function () {
-    return 'Slider(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + (', minValue=' + Kotlin.toString(this.minValue)) + (', maxValue=' + Kotlin.toString(this.maxValue)) + ')';
+    return 'Slider(name=' + Kotlin.toString(this.name) + (', initialValue=' + Kotlin.toString(this.initialValue)) + (', minValue=' + Kotlin.toString(this.minValue)) + (', maxValue=' + Kotlin.toString(this.maxValue)) + (', stepValue=' + Kotlin.toString(this.stepValue)) + ')';
   };
   Slider.prototype.hashCode = function () {
     var result = 0;
@@ -8070,10 +8095,11 @@
     result = result * 31 + Kotlin.hashCode(this.initialValue) | 0;
     result = result * 31 + Kotlin.hashCode(this.minValue) | 0;
     result = result * 31 + Kotlin.hashCode(this.maxValue) | 0;
+    result = result * 31 + Kotlin.hashCode(this.stepValue) | 0;
     return result;
   };
   Slider.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue) && Kotlin.equals(this.minValue, other.minValue) && Kotlin.equals(this.maxValue, other.maxValue)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.initialValue, other.initialValue) && Kotlin.equals(this.minValue, other.minValue) && Kotlin.equals(this.maxValue, other.maxValue) && Kotlin.equals(this.stepValue, other.stepValue)))));
   };
   function Matrix4(elements) {
     Matrix4$Companion_getInstance();
@@ -8457,9 +8483,9 @@
     }
   });
   GlslRenderer.prototype.findUniforms = function () {
-    this.uvCoordsLocation_8be2vx$ = this.getUniformLocation_61zpoe$('sm_uvCoords');
-    this.resolutionLocation_8be2vx$ = this.getUniformLocation_61zpoe$('resolution');
-    this.timeLocation_8be2vx$ = this.getUniformLocation_61zpoe$('time');
+    this.uvCoordsLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('sm_uvCoords');
+    this.resolutionLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('resolution', true);
+    this.timeLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('time', true);
   };
   GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
     var tmp$;
@@ -8470,6 +8496,11 @@
       return surfacePixels;
     }
     return null;
+  };
+  GlslRenderer.prototype.getUniformLocation_ivxn3r$ = function (name, optional, callback$default) {
+    if (optional === void 0)
+      optional = false;
+    return callback$default ? callback$default(name, optional) : this.getUniformLocation_ivxn3r$$default(name, optional);
   };
   function GlslRenderer$incorporateNewSurfaces$lambda(this$GlslRenderer) {
     return function () {
@@ -8703,6 +8734,9 @@
     arrayCopy(this.bytes, buffer, 0, this.offset, this.offset + toCopy | 0);
     this.offset = this.offset + count | 0;
     return toCopy;
+  };
+  ByteArrayReader.prototype.hasMoreBytes = function () {
+    return this.offset < this.bytes.length;
   };
   ByteArrayReader.$metadata$ = {
     kind: Kind_CLASS,
@@ -10773,7 +10807,11 @@
     BrainHelloMessage$Companion_instance = this;
   }
   BrainHelloMessage$Companion.prototype.parse_100t80$ = function (reader) {
-    return new BrainHelloMessage(reader.readString(), reader.readNullableString(), reader.readNullableString(), reader.readNullableString());
+    var brainId = reader.readString();
+    var surfaceName = reader.readNullableString();
+    var firmwareVersion = reader.hasMoreBytes() ? reader.readNullableString() : null;
+    var idfVersion = reader.hasMoreBytes() ? reader.readNullableString() : null;
+    return new BrainHelloMessage(brainId, surfaceName, firmwareVersion, idfVersion);
   };
   BrainHelloMessage$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -12757,7 +12795,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox56688Show_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -13058,6 +13096,50 @@
     }
     return GlslSandbox56594Show_instance;
   }
+  function GlslSandbox56688Show() {
+    GlslSandbox56688Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 56688 (OpenGL)');
+    this.program_lxbvpb$_0 = trimIndent("\n//Vlad's fractal canyon. 11/17/2016\n\nprecision mediump float;\n\nuniform float time;\nuniform vec2 resolution;\n//varying vec2 surfacePosition;\n\n#define FREQ 0.2\nvec4 color(float marker) {\n\tfloat r = (1.0 + sin(FREQ * marker + 1.0)) / 2.0;\n\tfloat g = (1.0 + sin(FREQ * marker + 2.0)) / 2.0;\n\tfloat b = (1.0 + sin(FREQ * marker + 4.0)) / 2.0;\n\t\n\treturn vec4(r, g, b, 1.0);\n}\n\n#define ITERATIONS                                                          70\n#define SCALING .0002\nvoid main() {\n\tvec2 coord = vec2(gl_FragCoord.xy);\n\tvec2 z, z0, zT;\n\n\tz0.x = coord.x / (SCALING * time) / (time * 20.0) - (0.702985 + (time * 0.00000005));\n\tz0.y = coord.y / (SCALING * time) / (time * 20.0) - (.299 + (time * 0.00000005));\n\n\tfloat F;\n\tfor(int i = 0; i < ITERATIONS; i++) {\n\t\tif(dot(z,z) > 16.0) break;\n\t\tzT.x = (z.x * z.x - z.y * z.y) + z0.x;\n\t\tzT.y = (z.y * z.x + z.x * z.y) + z0.y;\n\t\tz = zT;\n\t\tF++;\n\t}\n\tgl_FragColor = (F == float(ITERATIONS)) ? vec4(0.0, 0.0, 0.0, 1) : color(.5*time*F - log2(log2(dot(sin(z),(z)))));\n}\n    ");
+  }
+  Object.defineProperty(GlslSandbox56688Show.prototype, 'program', {
+    get: function () {
+      return this.program_lxbvpb$_0;
+    }
+  });
+  GlslSandbox56688Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56688Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56688Show_instance = null;
+  function GlslSandbox56688Show_getInstance() {
+    if (GlslSandbox56688Show_instance === null) {
+      new GlslSandbox56688Show();
+    }
+    return GlslSandbox56688Show_instance;
+  }
+  function GlslSandbox56718Show() {
+    GlslSandbox56718Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 56718 (OpenGL)');
+    this.program_izazzd$_0 = trimIndent('\nprecision mediump float;\n\nuniform float time;\n//uniform vec2 resolution;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}\nuniform float mouseY;\n\n//uniform vec2 mouse;\n//varying vec2 surfacePosition;\n\nvoid main( void ) {\n\tvec2 p = gl_FragCoord;\n\tfloat speed = 0.25;\n\tvec3 color = vec3(1.,0.5,.25);\n\tvec2 loc = vec2(\n\t\tcos(time/4.0*speed)/1.9-cos(time/2.0*speed)/3.8,\n\t\tsin(time/4.0*speed)/1.9-sin(time/2.0*speed)/3.8\n\t);\n\tfloat depth;\n\tfor(int i = 0; i < 50; i+=1){\n\t\tp = vec2(p.x*p.x-p.y*p.y, 2.0*p.x*p.y)+loc;\n\t\tdepth = float(i);\n\t\tif((p.x*p.x+p.y*p.y) >= mouseY*4.0) break;\n\t}\n\tgl_FragColor = vec4(clamp( (mouseX+.5)*color*depth*0.05, 0.0, 1.0), 1.0 );\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56718Show.prototype, 'program', {
+    get: function () {
+      return this.program_izazzd$_0;
+    }
+  });
+  GlslSandbox56718Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56718Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56718Show_instance = null;
+  function GlslSandbox56718Show_getInstance() {
+    if (GlslSandbox56718Show_instance === null) {
+      new GlslSandbox56718Show();
+    }
+    return GlslSandbox56718Show_instance;
+  }
   function GlslShow(name) {
     Show.call(this, name);
   }
@@ -13117,19 +13199,19 @@
     return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets);
   };
   GlslShow.prototype.createGadget_j5u65$ = function ($receiver, showRunner) {
-    var tmp$, tmp$_0, tmp$_1;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     var config = $receiver.config;
     var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
     switch ($receiver.gadgetType) {
       case 'Slider':
-        tmp$_1 = new Slider(name, (tmp$_0 = config.getPrimitive_61zpoe$('initialValue').floatOrNull) != null ? tmp$_0 : 1.0, config.getPrimitive_61zpoe$('minValue').floatOrNull, config.getPrimitive_61zpoe$('maxValue').floatOrNull);
+        tmp$_3 = new Slider(name, (tmp$_0 = config.getPrimitive_61zpoe$('initialValue').floatOrNull) != null ? tmp$_0 : 1.0, (tmp$_1 = config.getPrimitive_61zpoe$('minValue').floatOrNull) != null ? tmp$_1 : 0.0, (tmp$_2 = config.getPrimitive_61zpoe$('maxValue').floatOrNull) != null ? tmp$_2 : 1.0);
         break;
       case 'ColorPicker':
-        tmp$_1 = new ColorPicker(name);
+        tmp$_3 = new ColorPicker(name);
         break;
       default:throw IllegalArgumentException_init('unknown gadget ' + $receiver.gadgetType);
     }
-    var gadget = tmp$_1;
+    var gadget = tmp$_3;
     return showRunner.getGadget_vedre8$(name, gadget);
   };
   GlslShow.$metadata$ = {
@@ -13393,7 +13475,7 @@
   }
   function PanelTweenShow$createRenderer$ObjectLiteral(closure$showRunner, closure$initialColors) {
     this.palettePicker = closure$showRunner.getGadget_vedre8$('palette', new PalettePicker('Palette', closure$initialColors));
-    this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.0));
+    this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.0, 0.0, 1.0, 0.01));
     this.solidShader = new SolidShader();
     this.sparkleShader = new SparkleShader();
     var $receiver = closure$showRunner.allSurfaces;
@@ -13622,9 +13704,9 @@
   };
   SimpleSpatialShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    var centerXSlider = showRunner.getGadget_vedre8$('centerX', new Slider('center X', 0.5));
-    var centerYSlider = showRunner.getGadget_vedre8$('centerY', new Slider('center Y', 0.5));
-    var radiusSlider = showRunner.getGadget_vedre8$('radius', new Slider('radius', 0.25));
+    var centerXSlider = showRunner.getGadget_vedre8$('centerX', new Slider('center X', 0.5, 0.0, 1.0, 0.01));
+    var centerYSlider = showRunner.getGadget_vedre8$('centerY', new Slider('center Y', 0.5, 0.0, 1.0, 0.01));
+    var radiusSlider = showRunner.getGadget_vedre8$('radius', new Slider('radius', 0.25, 0.0, 1.0, 0.01));
     var shader = new SimpleSpatialShader();
     var $receiver = showRunner.allSurfaces;
     var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
@@ -13657,25 +13739,20 @@
     this.closure$colorPicker = closure$colorPicker;
     this.closure$shaderBuffers = closure$shaderBuffers;
     this.closure$eyes = closure$eyes;
-    this.priorColor = closure$colorPicker.color;
   }
   SolidColorShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var tmp$;
     var color = {v: this.closure$colorPicker.color};
-    if (!((tmp$ = color.v) != null ? tmp$.equals(this.priorColor) : null)) {
-      var tmp$_0;
-      tmp$_0 = this.closure$shaderBuffers.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        element.color = color.v;
-      }
-      var tmp$_1;
-      tmp$_1 = this.closure$eyes.iterator();
-      while (tmp$_1.hasNext()) {
-        var element_0 = tmp$_1.next();
-        element_0.color = color.v;
-      }
-      this.priorColor = color.v;
+    var tmp$;
+    tmp$ = this.closure$shaderBuffers.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.color = color.v;
+    }
+    var tmp$_0;
+    tmp$_0 = this.closure$eyes.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      element_0.color = color.v;
     }
   };
   SolidColorShow$createRenderer$ObjectLiteral.$metadata$ = {
@@ -17084,13 +17161,10 @@
       return this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, closure$name);
     };
   }
-  JsGlslRenderer.prototype.getUniformLocation_61zpoe$ = function (name) {
-    var tmp$;
-    tmp$ = this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
-    if (tmp$ == null) {
+  JsGlslRenderer.prototype.getUniformLocation_ivxn3r$$default = function (name, optional) {
+    var loc = this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
+    if (loc == null && !optional)
       throw IllegalStateException_init("Couldn't find uniform " + name);
-    }
-    var loc = tmp$;
     return new GlslRenderer$Uniform(loc);
   };
   function JsGlslRenderer$Quad($outer) {
@@ -17351,7 +17425,7 @@
     var fs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_3(this));
     var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
     var $receiver = this.fragShader;
-    var regex = Regex_init('void main\\s*\\(\\s*void\\s*\\)');
+    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
     var replacement = 'void sm_main(vec2 sm_pixelCoord)';
     var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
     println(src);
@@ -17480,7 +17554,7 @@
   };
   function JsGlslRenderer$UnifyingAdjustableUniform$uniformLocation$lambda(this$UnifyingAdjustableUniform, this$JsGlslRenderer) {
     return function () {
-      return this$JsGlslRenderer.getUniformLocation_61zpoe$(this$UnifyingAdjustableUniform.adjustableValue.varName);
+      return this$JsGlslRenderer.getUniformLocation_ivxn3r$(this$UnifyingAdjustableUniform.adjustableValue.varName, false);
     };
   }
   JsGlslRenderer$UnifyingAdjustableUniform.$metadata$ = {
@@ -18785,18 +18859,24 @@
     $receiver.color.set(16776960);
     this.material_0 = $receiver;
     this.cone_0 = new Mesh_init(this.geometry_0, this.material_0);
+    this.baseXRotation_0 = math.PI;
+    this.baseYRotation_0 = 0.0;
+    this.baseZRotation_0 = 0.0;
     this.geometry_0.applyMatrix((new Matrix4_init()).makeTranslation(0.0, -500.0, 0.0));
     this.material_0.transparent = true;
     this.material_0.opacity = 0.75;
     this.cone_0.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z);
-    this.cone_0.rotation.x = -math.PI / 2;
+    this.cone_0.rotation.x = this.baseXRotation_0;
+    this.cone_0.rotation.y = this.baseYRotation_0;
+    this.cone_0.rotation.z = this.baseZRotation_0;
     this.$outer.scene_0.add(this.cone_0);
   }
   Visualizer$VizMovingHead.prototype.receivedDmxFrame_0 = function () {
     this.material_0.color.set(this.device_0.color.rgb);
     this.material_0.visible = this.device_0.dimmer > 0.1;
-    this.cone_0.rotation.x = -math.PI / 2 + this.device_0.tilt;
-    this.cone_0.rotation.z = this.device_0.pan;
+    this.cone_0.rotation.x = this.baseXRotation_0 + this.device_0.tilt;
+    this.cone_0.rotation.y = this.baseYRotation_0;
+    this.cone_0.rotation.z = this.baseZRotation_0;
   };
   function Visualizer$VizMovingHead$device$lambda(this$VizMovingHead) {
     return function () {
@@ -19966,6 +20046,12 @@
   });
   Object.defineProperty(package$shows, 'GlslSandbox56594Show', {
     get: GlslSandbox56594Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56688Show', {
+    get: GlslSandbox56688Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56718Show', {
+    get: GlslSandbox56718Show_getInstance
   });
   package$shows.GlslShow = GlslShow;
   Object.defineProperty(package$shows, 'HeartbleatShow', {

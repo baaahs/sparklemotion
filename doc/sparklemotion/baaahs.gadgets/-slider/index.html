@@ -18,7 +18,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">Slider</span><span class="symbol">(</span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1f<span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float)/minValue">minValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float)/maxValue">maxValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code>
+<code><span class="identifier">Slider</span><span class="symbol">(</span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1f<span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/minValue">minValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0f<span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/maxValue">maxValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1f<span class="symbol">, </span><span class="identifier" id="baaahs.gadgets.Slider$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/stepValue">stepValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0.01f<span class="symbol">)</span></code>
 <p>A gadget for adjusting a value using a slider.</p>
 </td>
 </tr>
@@ -41,7 +41,7 @@
 <p><a href="max-value.html">maxValue</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">maxValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span></code>
+<code><span class="keyword">val </span><span class="identifier">maxValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code>
 <p>The maximum value for this slider.</p>
 </td>
 </tr>
@@ -50,7 +50,7 @@
 <p><a href="min-value.html">minValue</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">minValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span></code>
+<code><span class="keyword">val </span><span class="identifier">minValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code>
 <p>The minimum value for this slider.</p>
 </td>
 </tr>
@@ -61,6 +61,15 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
 <p>The name for this slider.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="step-value.html">stepValue</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">stepValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code>
+<p>The step value for the slider. Only used if minValue and maxValue are used.</p>
 </td>
 </tr>
 <tr>
