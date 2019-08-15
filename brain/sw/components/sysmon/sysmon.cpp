@@ -298,6 +298,10 @@ void SysMon::addAppDesc() {
         m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "    built = %s %s\n",
                 desc->time, desc->date);
 
+        m_tmpHead = m_tmpEnd - m_tmpRemaining;
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, " ver hash = 0x%08x\n",
+                                   GlobalConfig.versionHash());
+
         //        m_tmpHead = m_tmpEnd - m_tmpRemaining;
 //        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "  name    = %s\n", desc->project_name);
 //

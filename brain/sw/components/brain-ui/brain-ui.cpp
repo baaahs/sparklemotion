@@ -30,9 +30,9 @@ void static task_brainui(void* pvParameters) {
 void
 BrainUI::_task() {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = pdMS_TO_TICKS(250);
+    const TickType_t xFrequency = pdMS_TO_TICKS(500);
 
-    uint8_t val = 0;
+    uint8_t val = 32;
     while(1) {
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
@@ -48,9 +48,14 @@ BrainUI::_task() {
 //        leftEye.setValue(val);
 //        rightEye.setValue((uint8_t)255-val);
 
-        rgbR.setValue(val);
-        rgbG.setValue(val);
-        rgbB.setValue((uint8_t)255-val);
+//        rgbR.setValue(val);
+//        rgbG.setValue(val);
+//        rgbB.setValue((uint8_t)255-val);
+//        rgbR.incrementBy(val);
+//        rgbG.incrementBy(val);
+//        rgbB.incrementBy(val);
+
+        // TODO: Start showing status using the RGB leds, at least until a user interaction
     }
 
     // Just in case we ever exit, we're supposed to do this.
@@ -79,6 +84,16 @@ BrainUI::start(TaskDef taskDef) {
     rgbR.setValue(0);
     rgbG.setValue(0);
     rgbB.setValue(0);
+
+    // Let's go nuts balls and try to create a unique UI state
+    // based on the build string plus date and time.
+    auto verNum = GlobalConfig.versionHash();
+
+    leftEye.setValue((verNum >> 24) & 0x00ff);
+    rightEye.setValue((verNum >> 16) & 0x00ff);
+    rgbR.setValue((verNum >> 7) & 0x00ff);
+    rgbG.setValue((verNum >> 15) & 0x00ff);
+    rgbB.setValue((verNum >> 23) & 0x00ff);
 
     TaskHandle_t tHandle = NULL;
 
