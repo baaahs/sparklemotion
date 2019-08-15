@@ -170,7 +170,7 @@ Brain::msgUseFirmware(Msg *pMsg){
 
     if (m_otaStartedAt.tv_sec > 0) {
         auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
-        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %d secs", diff);
+        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %ld secs", diff);
 
         if (diff < MAX_OTA_SECONDS) {
             ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will ignore this new request", MAX_OTA_SECONDS);
