@@ -3,8 +3,9 @@
 }
 
 .current-show__label {
+  float: right;
   padding: 5px;
-  font-size: 12px;
+  font-size: 28px;
 }
 
 .show-picker__wrapper {
@@ -16,4 +17,11 @@
   color: #00CCC0;
   border: none;
   background: none;
+}
+
+.show-controls__wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }

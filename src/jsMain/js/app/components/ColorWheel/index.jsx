@@ -6,6 +6,7 @@ import chroma from 'chroma-js';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import { rgb2xy, xy2polar, xy2rgb } from '../../../utils/colorUtils';
+import { enableScroll, disableScroll } from '../utils';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -155,7 +156,9 @@ class ColorWheel extends Component {
         onDrag={(e, data) => {
           return this._onPickerDragged(e, data, index);
         }}
+        onStart={disableScroll}
         onStop={(e, data) => {
+          enableScroll();
           return this._onPickerMouseUp(e, data, index);
         }}
         bounds={{ top: 0, left: 0, right: radius * 2, bottom: radius * 2 }}
