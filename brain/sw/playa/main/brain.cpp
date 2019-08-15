@@ -12,6 +12,9 @@
 #include "freertos/timers.h"
 #include "esp_https_ota.h"
 
+#define MAX_URL_SIZE 512
+#define MAX_OTA_SECONDS 300
+
 static const uint16_t BRAIN_PORT = 8003;
 
 static const char* TAG = TAG_BRAIN;
@@ -156,8 +159,6 @@ esp_err_t ota_event(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-#define MAX_URL_SIZE 512
-#define MAX_OTA_SECONDS 300
 
 void
 Brain::msgUseFirmware(Msg *pMsg){
@@ -259,7 +260,22 @@ void maybe_send_hello(TimerHandle_t hTimer)
 void
 Brain::maybeSendHello()
 {
-    ESP_LOGE(TAG, "Want to send a hello now...");
+    timeval now;
+    gettimeofday(&now, nullptr);
+
+    ESP_LOGW(TAG, "Want to send a hello now...");
+
+    if (m_otaStartedAt.tv_sec > 0) {
+        auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
+        ESP_LOGW(TAG, "Have been doing OTA for %ld secs", diff);
+
+        if (diff < MAX_OTA_SECONDS) {
+            ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will NOT send a hello", MAX_OTA_SECONDS);
+            return;
+        }
+
+        ESP_LOGW(TAG, "It's been more than %d seconds, so we will go ahead and hello.", MAX_OTA_SECONDS);
+    }
 
     sendHello(IpPort::BroadcastPinky);
 }
