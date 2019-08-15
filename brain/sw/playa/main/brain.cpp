@@ -181,6 +181,7 @@ Brain::msgUseFirmware(Msg *pMsg){
         ESP_LOGW(TAG, "It's been more than %d seconds, so we will start a new OTA process...", MAX_OTA_SECONDS);
     }
     m_otaStartedAt = now;
+    stopEverythingForOTA();
 
     char* szBuf = (char*)malloc(MAX_URL_SIZE);
     if (!szBuf) {
@@ -233,9 +234,13 @@ Brain::msgUseFirmware(Msg *pMsg){
     if (finishErr != ESP_OK) {
         ESP_LOGE(TAG, "Error at OTA finish %d", finishErr);
     } else {
-        ESP_LOGE(TAG, "Hey! That was a good OTA. We'll restart now");
-        brain_restart(10);
+        ESP_LOGE(TAG, "Hey! That was a good OTA");
     }
+
+    // Always restart after OTA because we stopped everything so
+    // that nothing else interferred with the OTA process
+    ESP_LOGE(TAG, "Always reboot at the end of OTA");
+    brain_restart(10);
 
     // Important in case the OTA failed so that we can try again.
     m_otaStartedAt.tv_sec = 0;
@@ -264,21 +269,9 @@ void maybe_send_hello(TimerHandle_t hTimer)
 void
 Brain::maybeSendHello()
 {
-    timeval now;
-    gettimeofday(&now, nullptr);
-
-    ESP_LOGW(TAG, "Want to send a hello now...");
-
-    if (m_otaStartedAt.tv_sec > 0) {
-        auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
-        ESP_LOGW(TAG, "Have been doing OTA for %ld secs", diff);
-
-        if (diff < MAX_OTA_SECONDS) {
-            ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will NOT send a hello", MAX_OTA_SECONDS);
-            return;
-        }
-
-        ESP_LOGW(TAG, "It's been more than %d seconds, so we will go ahead and hello.", MAX_OTA_SECONDS);
+    if (otaStarted()) {
+        ESP_LOGW(TAG, "No more hello because OTA started");
+        return;
     }
 
     sendHello(IpPort::BroadcastPinky);
@@ -349,5 +342,16 @@ void Brain::startSecondStageBoot() {
     m_httpServer.start();
 }
 
+bool Brain::otaStarted() {
+    return m_otaStartedAt.tv_sec != 0;
+}
+
+void Brain::stopEverythingForOTA() {
+    m_msgSlinger.stop();
+    m_shadeTree.stop();
+    m_ledRenderer.stop();
+    // m_httpServer.stop();
+
+}
 
 

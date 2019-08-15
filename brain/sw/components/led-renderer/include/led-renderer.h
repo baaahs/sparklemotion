@@ -59,7 +59,7 @@ public:
     LEDRenderer(TimeBase& timeBase, uint16_t pixelCount);
 
     void start(TaskDef show, TaskDef render);
-
+    void stop() { m_timeToDie = true; }
 //    /**
 //     * This task does not depend on network events to render. It should NOT
 //     * be used if the network is going to be driving the rendering.
@@ -87,6 +87,8 @@ public:
     void logPixels();
 
 private:
+    bool m_timeToDie = false;
+
     uint8_t m_nBrightness;
     bool m_localRenderEnabled = true;
 
