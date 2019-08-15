@@ -226,7 +226,7 @@ Brain::msgUseFirmware(Msg *pMsg){
             ESP_LOGE(TAG, "Error during OTA %d", err);
             break;
         } else {
-            ESP_LOGE(TAG, "OTA chunk");
+            // ESP_LOGE(TAG, "OTA chunk");
         }
     }
 
@@ -236,6 +236,14 @@ Brain::msgUseFirmware(Msg *pMsg){
     } else {
         ESP_LOGE(TAG, "Hey! That was a good OTA");
     }
+    /*
+    auto err = esp_https_ota(&clientCfg);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to do OTA %d", err);
+    } else {
+        ESP_LOGE(TAG, "OTA Success!!!!!!");
+    }
+     */
 
     // Always restart after OTA because we stopped everything so
     // that nothing else interferred with the OTA process
