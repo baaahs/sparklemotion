@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.geom.center
+import baaahs.geom.extents
 
 abstract class Model<T : Model.Surface> {
     abstract val movingHeads: List<MovingHead>
@@ -12,9 +13,16 @@ abstract class Model<T : Model.Surface> {
     fun findModelSurface(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
-    val modelCenter by lazy {
+    val allVertices by lazy {
         val allVertices = hashSetOf<Vector3F>()
         allSurfaces.map { allVertices.addAll(it.allVertices()) }
+        allVertices
+    }
+    val modelExtents by lazy {
+        extents(allVertices)
+    }
+
+    val modelCenter by lazy {
         center(allVertices)
     }
 
