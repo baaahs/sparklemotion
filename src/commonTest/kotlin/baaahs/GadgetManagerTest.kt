@@ -3,6 +3,7 @@ package baaahs
 import baaahs.gadgets.Slider
 import baaahs.net.Network
 import baaahs.net.TestNetwork
+import kotlinx.serialization.json.JsonElement
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
@@ -116,7 +117,7 @@ class GadgetManagerTest {
     class Listener : PubSub.Listener(PubSub.Origin()) {
         val events = mutableListOf<String>()
 
-        override fun onUpdate(data: String) {
+        override fun onUpdate(data: JsonElement) {
             events.add(data)
         }
     }

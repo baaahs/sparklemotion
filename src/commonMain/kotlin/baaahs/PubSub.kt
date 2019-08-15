@@ -3,11 +3,8 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.plus
@@ -16,6 +13,8 @@ import kotlin.js.JsName
 abstract class PubSub {
 
     companion object {
+        var json = Json(JsonConfiguration.Stable, serialModule)
+
         fun listen(httpServer: Network.HttpServer): Server {
             return Server(httpServer)
         }
@@ -42,19 +41,19 @@ abstract class PubSub {
     )
 
     abstract class Listener(private val origin: Origin) {
-        fun onUpdate(data: String, fromOrigin: Origin) {
+        fun onUpdate(data: JsonElement, fromOrigin: Origin) {
             if (origin !== fromOrigin) {
                 onUpdate(data)
             }
         }
 
-        abstract fun onUpdate(data: String)
+        abstract fun onUpdate(data: JsonElement)
     }
 
-    class TopicInfo(val name: String, var data: String? = null) {
+    class TopicInfo(val name: String, var data: JsonElement = JsonNull) {
         val listeners: MutableList<Listener> = mutableListOf()
 
-        fun notify(jsonData: String, origin: Origin) {
+        fun notify(jsonData: JsonElement, origin: Origin) {
             data = jsonData
             listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
         }
@@ -79,9 +78,11 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
+                    val topicInfo = topics[topicName] ?:
+                            throw IllegalArgumentException("Unknown topic $topicName")
+
                     val listener = object : Listener(this) {
-                        override fun onUpdate(data: String) = sendTopicUpdate(topicName, data)
+                        override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
                     }
                     topicInfo.listeners.add(listener)
 
@@ -104,13 +105,13 @@ abstract class PubSub {
             }
         }
 
-        fun sendTopicUpdate(name: String, data: String) {
+        fun sendTopicUpdate(name: String, data: JsonElement) {
             debug("update $name $data")
 
             val writer = ByteArrayWriter()
             writer.writeString("update")
             writer.writeString(name)
-            writer.writeString(data)
+            writer.writeString(json.stringify(JsonElementSerializer, data))
             sendCommand(writer.toBytes())
         }
 
@@ -143,7 +144,6 @@ abstract class PubSub {
 
     open class Endpoint {
         var serialModule: SerialModule = EmptyModule
-        var json = Json(JsonConfiguration.Stable, serialModule)
 
         fun install(toInstall: SerialModule) {
             serialModule = serialModule.plus(toInstall)
@@ -191,7 +191,7 @@ abstract class PubSub {
             origin: Origin,
             var onUpdate: (T) -> Unit
         ) : Listener(origin) {
-            override fun onUpdate(data: String) {
+            override fun onUpdate(data: JsonElement) {
                 onUpdate(json.parse(topic.serializer, data))
             }
         }
@@ -214,14 +214,14 @@ abstract class PubSub {
                 TopicInfo(topicName)
                     .apply {
                         listeners.add(object : Listener(server) {
-                            override fun onUpdate(data: String) = server.sendTopicUpdate(topicName, data)
+                            override fun onUpdate(data: JsonElement) = server.sendTopicUpdate(topicName, data)
                         })
                     }
                     .also { server.sendTopicSub(topicName) }
             }
 
             val listener = object : Listener(subscriber) {
-                override fun onUpdate(data: String) = onUpdate(json.parse(topic.serializer, data))
+                override fun onUpdate(data: JsonElement) = onUpdate(json.parse(topic.serializer, data))
             }
             topicInfo.listeners.add(listener)
             val data = topicInfo.data
