@@ -7,7 +7,7 @@ import kotlin.math.min
 
 class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
     override val myAddress: Network.Address get() = wrappedLink.myAddress
-    override val udpMtu: Int get() = 65000
+    override val udpMtu: Int get() = wrappedLink.udpMtu
 
     /**
      * Header is 12 bytes long; format is:
@@ -20,6 +20,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         const val headerSize = 12
     }
 
+    private val mtu = wrappedLink.udpMtu
     private var nextMessageId: Short = 0
 
     private var fragments = arrayListOf<Fragment>()
@@ -138,12 +139,12 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
             }
 
             val messageId = nextMessageId++
-            val messageCount = (bytes.size - 1) / (udpMtu - headerSize) + 1
-            val buf = ByteArray(udpMtu)
+            val messageCount = (bytes.size - 1) / (mtu - headerSize) + 1
+            val buf = ByteArray(mtu)
             var offset = 0
             for (i in 0 until messageCount) {
                 val writer = ByteArrayWriter(buf)
-                val thisFrameSize = min((udpMtu - headerSize), bytes.size - offset)
+                val thisFrameSize = min((mtu - headerSize), bytes.size - offset)
                 writer.writeShort(messageId)
                 writer.writeShort(thisFrameSize.toShort())
                 writer.writeInt(bytes.size)
