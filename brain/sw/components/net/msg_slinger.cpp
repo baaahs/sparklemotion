@@ -208,6 +208,8 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
     auto header = pMsg->readHeader();
     ESP_LOGD(TAG, "Read a msg header");
 
+    ESP_LOGD(TAG, "frameOffset=%d frameSize=%d id=%d msgSize=%d", header.frameOffset, header.frameSize, header.id, header.msgSize);
+
     if (header.frameOffset == 0) {
         // It is a new message
         if (header.frameSize == header.msgSize) {

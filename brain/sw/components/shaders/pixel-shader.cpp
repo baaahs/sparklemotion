@@ -79,6 +79,8 @@ PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     size_t readLen = MIN(m_dataBufSize, dataBufLen);
     m_dataBufRead = pMsg->readBytes(m_dataBuf, readLen);
 
+    ESP_LOGI(TAG, "PixelShader::begin m_dataBufSize=%d dataBufLen=%d m_dataBufRead=%d readLen=%d",
+            m_dataBufSize, dataBufLen, m_dataBufRead, readLen);
     // If we received data for more pixels than we have, skip those bytes.
     if (readLen < m_dataBufRead) {
         pMsg->skip(m_dataBufRead - readLen);
@@ -102,27 +104,31 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
     }
 
     uint16_t bufOffset;
-    Color color;
+    Color color = {0};
+    color.channel.r = 255;
+    color.channel.b = 255;
 
     switch (m_encoding) {
         case Encoding::DIRECT_ARGB:
             // Offset is modulo m_dataBufRead so we wrap around and repeat any missing pixels.
-            bufOffset = pixelIndex * 4 % m_dataBufRead;
-
-            color.channel.a = m_dataBuf[bufOffset++];
-            color.channel.r = m_dataBuf[bufOffset++];
-            color.channel.g = m_dataBuf[bufOffset++];
-            color.channel.b = m_dataBuf[bufOffset];
+            bufOffset = pixelIndex * 4;
+            if (bufOffset + 3 < m_dataBufRead) {
+                color.channel.a = m_dataBuf[bufOffset++];
+                color.channel.r = m_dataBuf[bufOffset++];
+                color.channel.g = m_dataBuf[bufOffset++];
+                color.channel.b = m_dataBuf[bufOffset];
+            }
             break;
 
         case Encoding::DIRECT_RGB:
             // Offset is modulo m_dataBufRead so we wrap around and repeat any missing pixels.
-            bufOffset = pixelIndex * 3 % m_dataBufRead;
-
-            color.channel.a = 0xff;
-            color.channel.r = m_dataBuf[bufOffset++];
-            color.channel.g = m_dataBuf[bufOffset++];
-            color.channel.b = m_dataBuf[bufOffset];
+            bufOffset = pixelIndex * 3;
+            if (bufOffset + 2 < m_dataBufRead) {
+                color.channel.a = 0xff;
+                color.channel.r = m_dataBuf[bufOffset++];
+                color.channel.g = m_dataBuf[bufOffset++];
+                color.channel.b = m_dataBuf[bufOffset];
+            }
             break;
 
         case Encoding::INDEXED_2:

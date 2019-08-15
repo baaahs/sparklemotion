@@ -48,12 +48,11 @@ class BrainHelloMessage(val brainId: String, val surfaceName: String?, val firmw
                         val idfVersion: String? = null) : Message(Type.BRAIN_HELLO) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainHelloMessage {
-            return BrainHelloMessage(
-                reader.readString(),
-                reader.readNullableString(),
-                reader.readNullableString(),
-                reader.readNullableString()
-            )
+            val brainId = reader.readString()
+            val surfaceName = reader.readNullableString()
+            val firmwareVersion = if (reader.hasMoreBytes()) reader.readNullableString() else null
+            val idfVersion = if (reader.hasMoreBytes()) reader.readNullableString() else null
+            return BrainHelloMessage(brainId, surfaceName, firmwareVersion, idfVersion)
         }
     }
 

@@ -60,4 +60,6 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         offset += count
         return toCopy
     }
+
+    fun hasMoreBytes(): Boolean = offset < bytes.size
 }

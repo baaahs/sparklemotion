@@ -30,7 +30,7 @@
  * additional variant following this pattern. These can be
  * safely stored on the master branch without conflict.
  */
-//#define BRAIN_VARIANT_REV_E
+#define BRAIN_VARIANT_REV_E
 //#define BRAIN_VARIANT_REV_D_REWORKED
 //#define BRAIN_VARIANT_PANEL_TESTER
 //#define BRAIN_VARIANT_GLAMSIGN
