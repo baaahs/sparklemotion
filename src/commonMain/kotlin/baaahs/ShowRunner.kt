@@ -223,6 +223,9 @@ class ShowRunner(
             val shaderBuffer = shaderBuffers.first()
 
             receiversFor(surface).forEach { receiver ->
+                // TODO: The send might return an error, at which point this receiver should be nuked
+                // from the list of receivers for this surface. I'm not quite sure the best way to do
+                // that so I'm leaving this note.
                 receiver.send(shaderBuffer)
             }
         }

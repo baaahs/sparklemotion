@@ -212,20 +212,22 @@ class Pinky(
     }
 
     private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
-        // Don't want an issue here to blow up outside of this function
-        try {
-            val pongData = ByteArrayWriter().apply {
-                writeLong(getTimeMillis())
-            }.toBytes()
+        // If any of this network stuff blows up, we let that propagate
+        // so that a caller knows not to try again. The common occurrence is
+        // that Pinky learns of a Brain, but then that brain goes away. Well
+        // Pinky needs to stop sending messages in that case and the way
+        // to detect that seems to be via an excpetion thrown from the network
+        // layer that we call here. So over in ShowRunner is where the list of
+        // surface receivers needs to be cleaned up.
+        val pongData = ByteArrayWriter().apply {
+            writeLong(getTimeMillis())
+        }.toBytes()
 
-            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+        val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
+        udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
 
-            networkStats.packetsSent++
-            networkStats.bytesSent += message.size
-        } catch (e: Exception) {
-            println("Exception in sendBrainShaderMessage $e");
-        }
+        networkStats.packetsSent++
+        networkStats.bytesSent += message.size
     }
 
 
