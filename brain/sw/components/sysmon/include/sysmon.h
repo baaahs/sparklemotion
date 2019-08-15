@@ -24,8 +24,10 @@
 
 #define TIMING_RENDER           COUNTER_LAST
 #define TIMING_SHOW_OUTPUTS     (COUNTER_LAST + 1)
+#define TIMING_OTA_HTTP_READ    (COUNTER_LAST + 2)
+#define TIMING_OTA_WRITE        (COUNTER_LAST + 3)
 
-#define TIMING_LAST             (COUNTER_LAST + 2)
+#define TIMING_LAST             (COUNTER_LAST + 4)
 
 #define HISTORY_COUNT 21
 
@@ -93,6 +95,13 @@ public:
     uint64_t increment(uint8_t counter);
 
     // TODO: Reset counters?
+
+    /**
+     * Outputs to the log immediately. Useful if you are about to reboot
+     * or something like that and you want the latest data.
+     */
+    void outputToLog();
+
 private:
     // Timing stuff
     int64_t m_starts[TIMING_LAST];
@@ -110,7 +119,6 @@ private:
     void addTimeValue(int64_t t, const char* spacing);
     void addMetrics();
 
-    void outputToLog();
 
     void addTestVal(int64_t v);
     void outputTestVals();

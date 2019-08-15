@@ -138,6 +138,14 @@ SysMon::getInfo(uint8_t timing) {
             strncpy(info.name, "ShowOut", sizeof(info.name)-1);
                 break;
 
+        case TIMING_OTA_HTTP_READ:
+            strncpy(info.name, "OtaRead", sizeof(info.name)-1);
+            break;
+
+        case TIMING_OTA_WRITE:
+            strncpy(info.name, "OtaWrte", sizeof(info.name)-1);
+            break;
+
         default:
             strncpy(info.name, "Unknown", sizeof(info.name)-1);
             break;

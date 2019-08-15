@@ -8,9 +8,11 @@
 #include <string.h>
 #include <sys/param.h>
 #include "errno.h"
+#include <sysmon.h>
 
 
-#define SCRATCH_BUFSIZE 8192
+//#define SCRATCH_BUFSIZE 8192
+#define SCRATCH_BUFSIZE 1024
 
 #define TAG TAG_OTA
 
@@ -133,13 +135,20 @@ void OtaFetcher::_fetchTask() {
     while (err == ESP_OK && total < m_contentLength) {
         // Read some more...]
         int toRead = MIN(SCRATCH_BUFSIZE, m_contentLength - total);
+
+        gSysMon.startTiming(TIMING_OTA_HTTP_READ);
         readLen = esp_http_client_read(m_httpHandle, m_scratch, toRead);
+        gSysMon.endTiming(TIMING_OTA_HTTP_READ);
+
         ESP_LOGW(TAG, "toRead=%d  total=%d  m_contentLength=%d  readLen=%d",
                 toRead, total, m_contentLength, readLen);
         if (readLen > 0) {
             // Write this to ota
             if (!m_fakeWrites) {
+                gSysMon.startTiming(TIMING_OTA_WRITE);
                 err = esp_ota_write(m_otaHandle, m_scratch, readLen);
+                gSysMon.endTiming(TIMING_OTA_WRITE);
+
                 if (err != ESP_OK) {
                     ESP_LOGE(TAG, "OTA Write error %s", esp_err_to_name(err));
                 }
@@ -197,6 +206,7 @@ void OtaFetcher::cleanup() {
     }
 
     // Always restart here
+    gSysMon.outputToLog(); // Make sure we get our log
     ESP_LOGE(TAG, "Always restart after OTA stuff");
     brain_restart(100);
 

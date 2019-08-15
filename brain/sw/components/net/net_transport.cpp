@@ -123,6 +123,7 @@ NetTransport::_interfaceTask() {
     vTaskDelete(NULL);
 }
 
+
 void
 NetTransport::netIntLinkUp(NetInterface *interface) {
     ESP_LOGI(TAG, "(task=%s) (%s) Link up", pcTaskGetTaskName(nullptr), interface->name());
@@ -185,6 +186,6 @@ NetTransport::reconfigure() {
     m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
     m_pWifiSta->setEnabled(true);
 
-    wifiAp();
-    m_pWifiAp->setEnabled(true);
+//    wifiAp();
+//    m_pWifiAp->setEnabled(true);
 }
