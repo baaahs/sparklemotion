@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <sys/time.h>
+
 #include "brain_common.h"
 #include <esp_ota_ops.h>
 #include <esp_http_client.h>
@@ -17,17 +19,20 @@
  */
 class OtaFetcher {
 public:
-    void fetchFromUrl(const char* szBuf);
+    void fetchFromUrl(const char* szBuf, bool fakeWrites = false);
 
     void _fetchTask();
     esp_err_t _httpEvent(esp_http_client_event_t* evt);
 
 private:
+    bool m_fakeWrites;
     char *m_szUrl;
     char *m_scratch;
     int m_contentLength;
     const esp_partition_t* m_updatePartition;
 
+    timeval m_startTime;
+    timeval m_endTime;
 
     esp_ota_handle_t m_otaHandle;
     esp_http_client_handle_t m_httpHandle;
