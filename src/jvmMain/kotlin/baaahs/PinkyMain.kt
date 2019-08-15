@@ -44,22 +44,6 @@ fun main(args: Array<String>) {
 
     testForIndexDotHtml(jsResDir)
 
-    val httpServer = embeddedServer(Netty, Ports.PINKY_UI_TCP) {
-        install(io.ktor.websocket.WebSockets) {
-            pingPeriod = Duration.ofSeconds(15)
-            timeout = Duration.ofSeconds(15)
-            maxFrameSize = Long.MAX_VALUE
-            masking = false
-        }
-
-        routing {
-            static {
-                files(jsResDir.toFile())
-                default(jsResDir.resolve("ui-index.html").toFile())
-            }
-        }
-    }.start(false)
-
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
     Files.createDirectories(dataDir)
