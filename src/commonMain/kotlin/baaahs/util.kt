@@ -36,6 +36,10 @@ class logger {
         fun error(message: String) {
             println("ERROR: $message")
         }
+
+        fun error(message: String, exception: Exception) {
+            println("ERROR: $message: ${exception.message}")
+        }
     }
 }
 

@@ -107,14 +107,19 @@ class Pinky(
             val brainSurfacesToRemove = mutableListOf<ShowRunner.SurfaceReceiver>()
             val brainSurfacesToAdd = mutableListOf<ShowRunner.SurfaceReceiver>()
 
-            pendingBrainInfos.forEach { (brainId, brainInfo) ->
+            pendingBrainInfos.forEach { (brainId, incomingBrainInfo) ->
                 val priorBrainInfo = brainInfos[brainId]
                 if (priorBrainInfo != null) {
                     brainSurfacesToRemove.add(priorBrainInfo.surfaceReceiver)
                 }
-                brainSurfacesToAdd.add(brainInfo.surfaceReceiver)
 
-                brainInfos[brainId] = brainInfo
+                if (incomingBrainInfo.hadException) {
+                    // Existing Brain has had exceptions so we're forgetting about it.
+                    brainInfos.remove(brainId)
+                } else {
+                    brainSurfacesToAdd.add(incomingBrainInfo.surfaceReceiver)
+                    brainInfos[brainId] = incomingBrainInfo
+                }
             }
 
             showRunner.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
@@ -196,7 +201,23 @@ class Pinky(
 //            )
         }
 
-        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer -> sendBrainShaderMessage(brainAddress, shaderBuffer) }
+        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer ->
+            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+            try {
+                udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+            } catch (e: Exception) {
+                // Couldn't send to Brain? Schedule to remove it.
+                val brainInfo = brainInfos[brainId]!!
+                brainInfo.hadException = true
+                pendingBrainInfos[brainId] = brainInfo
+
+                logger.error("Error sending to $brainId, will take offline", e)
+            }
+
+            networkStats.packetsSent++
+            networkStats.bytesSent += message.size
+        }
+
         val surfaceReceiver = if (prerenderPixels) {
             PrerenderingSurfaceReceiver(surface, sendFn)
         } else {
@@ -211,26 +232,6 @@ class Pinky(
 
     }
 
-    private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
-        // If any of this network stuff blows up, we let that propagate
-        // so that a caller knows not to try again. The common occurrence is
-        // that Pinky learns of a Brain, but then that brain goes away. Well
-        // Pinky needs to stop sending messages in that case and the way
-        // to detect that seems to be via an excpetion thrown from the network
-        // layer that we call here. So over in ShowRunner is where the list of
-        // surface receivers needs to be cleaned up.
-        val pongData = ByteArrayWriter().apply {
-            writeLong(getTimeMillis())
-        }.toBytes()
-
-        val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
-        udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
-
-        networkStats.packetsSent++
-        networkStats.bytesSent += message.size
-    }
-
-
     private fun findMappingInfo_CHEAT(surfaceName: String?, brainId: BrainId): MappingResults.Info? {
         val modelSurface = surfaceName?.let { model.findModelSurface(surfaceName) } ?: brainToSurfaceMap_CHEAT[brainId]
         return if (modelSurface != null) {
@@ -240,10 +241,17 @@ class Pinky(
         }
     }
 
+    /** If we want a pong back from a [BrainShaderMessage], send this. */
+    private fun generatePongPayload(): ByteArray {
+        return ByteArrayWriter().apply {
+            writeLong(getTimeMillis())
+        }.toBytes()
+    }
+
     private fun receivedPong(message: PingMessage, fromAddress: Network.Address) {
         val originalSentAt = ByteArrayReader(message.data).readLong()
         val elapsedMs = getTimeMillis() - originalSentAt
-//        logger.debug("Shader pong from $fromAddress took ${elapsedMs}ms")
+        logger.debug("Shader pong from $fromAddress took ${elapsedMs}ms")
     }
 
     fun providePanelMapping_CHEAT(brainId: BrainId, surface: Model.Surface) {
@@ -425,5 +433,6 @@ class BrainInfo(
     val surface: Surface,
     val firmwareVersion: String?,
     val idfVersion: String?,
-    val surfaceReceiver: ShowRunner.SurfaceReceiver
+    val surfaceReceiver: ShowRunner.SurfaceReceiver,
+    var hadException: Boolean = false
 )
