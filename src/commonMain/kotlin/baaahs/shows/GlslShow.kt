@@ -1,9 +1,6 @@
 package baaahs.shows
 
-import baaahs.Gadget
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
 import baaahs.shaders.GlslShader
@@ -15,11 +12,11 @@ abstract class GlslShow(name: String) : Show(name) {
         val shader = GlslShader(program)
 
         val adjustableValuesToGadgets = shader.adjustableValues.associateWith { it.createGadget(showRunner) }
-        val buffers = showRunner.allSurfaces.map { showRunner.getShaderBuffer(it, shader) }
+        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
-                buffers.forEach { buffer ->
+                buffers.values.forEach { buffer ->
                     adjustableValuesToGadgets.forEach { (adjustableValue, gadget) ->
                         val value: Any = when (gadget) {
                             is Slider -> gadget.value
@@ -29,6 +26,11 @@ abstract class GlslShow(name: String) : Show(name) {
                         buffer.update(adjustableValue, value)
                     }
                 }
+            }
+
+            override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
+                removedSurfaces.forEach { buffers.remove(it) }
+                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
             }
         }
     }
