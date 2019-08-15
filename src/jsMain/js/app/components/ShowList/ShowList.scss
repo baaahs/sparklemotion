@@ -11,16 +11,18 @@
   list-style: none;
   padding-left: 0;
   margin-top: 0;
+
 }
 
 .show-list--title {
   padding: 10px;
-  font-size: 24px;
+  font-size: 60px;
   font-weight: bold;
 }
 
 .show-list--item {
   padding: 5px 0 5px 10px;
+  font-size: 50px;
   cursor: pointer;
 
   &:hover {
