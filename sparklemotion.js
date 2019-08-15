@@ -13165,12 +13165,14 @@
   function GlslShow(name) {
     Show.call(this, name);
   }
-  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToGadgets) {
+  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToGadgets, closure$showRunner, closure$shader) {
     this.closure$buffers = closure$buffers;
     this.closure$adjustableValuesToGadgets = closure$adjustableValuesToGadgets;
+    this.closure$showRunner = closure$showRunner;
+    this.closure$shader = closure$shader;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var $receiver = this.closure$buffers;
+    var $receiver = this.closure$buffers.values;
     this.closure$adjustableValuesToGadgets;
     var tmp$;
     tmp$ = $receiver.iterator();
@@ -13194,6 +13196,28 @@
       }
     }
   };
+  GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
+    this.closure$buffers;
+    var tmp$;
+    tmp$ = removedSurfaces.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.closure$buffers.remove_11rb$(element);
+    }
+    this.closure$showRunner;
+    this.closure$shader;
+    this.closure$buffers;
+    var tmp$_0;
+    tmp$_0 = newSurfaces.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      var closure$showRunner = this.closure$showRunner;
+      var closure$shader = this.closure$shader;
+      var $receiver = this.closure$buffers;
+      var value = closure$showRunner.getShaderBuffer_9rhubp$(element_0, closure$shader);
+      $receiver.put_xwzc9p$(element_0, value);
+    }
+  };
   GlslShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [Show$Renderer]
@@ -13209,16 +13233,16 @@
       result.put_xwzc9p$(element, this.createGadget_j5u65$(element, showRunner));
     }
     var adjustableValuesToGadgets = result;
-    var $receiver_0 = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
+    var tmp$_0 = showRunner.allSurfaces;
+    var destination = HashMap_init();
+    var tmp$_1;
+    tmp$_1 = tmp$_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      destination.put_xwzc9p$(element_0, showRunner.getShaderBuffer_9rhubp$(element_0, shader));
     }
     var buffers = destination;
-    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets);
+    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets, showRunner, shader);
   };
   GlslShow.prototype.createGadget_j5u65$ = function ($receiver, showRunner) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
@@ -20268,7 +20292,6 @@
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   GlslSandbox55301KotlinShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
