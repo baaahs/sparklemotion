@@ -1,8 +1,5 @@
 package baaahs.net
 
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
-import baaahs.logger
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -16,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.RuntimeException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -99,7 +95,10 @@ class JvmNetwork : Network {
         }
 
         inner class KtorHttpServer(val port: Int) : Network.HttpServer {
-            val httpServer = embeddedServer(Netty, port) {
+            val httpServer = embeddedServer(Netty, port, configure = {
+                // Let's give brains lots of time for OTA download:
+                responseWriteTimeoutSeconds = 120
+            }) {
                 install(io.ktor.websocket.WebSockets) {
                     pingPeriod = Duration.ofSeconds(15)
                     timeout = Duration.ofSeconds(15)
