@@ -111,6 +111,8 @@ void OtaFetcher::_fetchTask() {
 
     int m_contentLength = esp_http_client_fetch_headers(m_httpHandle);
 
+    // I feel like we should be looking for a 200 status code at this point...
+
     int total = 0;
     int readLen = 0;
     err = ESP_OK;
