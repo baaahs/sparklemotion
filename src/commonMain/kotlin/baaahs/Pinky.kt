@@ -212,15 +212,20 @@ class Pinky(
     }
 
     private fun sendBrainShaderMessage(brainAddress: Network.Address, shaderBuffer: Shader.Buffer) {
-        val pongData = ByteArrayWriter().apply {
-            writeLong(getTimeMillis())
-        }.toBytes()
+        // Don't want an issue here to blow up outside of this function
+        try {
+            val pongData = ByteArrayWriter().apply {
+                writeLong(getTimeMillis())
+            }.toBytes()
 
-        val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
-        udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer, pongData).toBytes()
+            udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
 
-        networkStats.packetsSent++
-        networkStats.bytesSent += message.size
+            networkStats.packetsSent++
+            networkStats.bytesSent += message.size
+        } catch (e: Exception) {
+            println("Exception in sendBrainShaderMessage $e");
+        }
     }
 
 
