@@ -45,6 +45,7 @@
   var contentEquals = Kotlin.arrayEquals;
   var throwCCE = Kotlin.throwCCE;
   var ensureNotNull = Kotlin.ensureNotNull;
+  var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var toByte = Kotlin.toByte;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
@@ -78,7 +79,6 @@
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var emptyMap = Kotlin.kotlin.collections.emptyMap_q3lmfv$;
   var zip = Kotlin.kotlin.collections.zip_45mdf7$;
-  var toString_0 = Kotlin.toString;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
@@ -93,6 +93,7 @@
   var cancelAndJoin = $module$kotlinx_coroutines_core.kotlinx.coroutines.cancelAndJoin_5dx9u$;
   var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
+  var toString_0 = Kotlin.toString;
   var L1 = Kotlin.Long.ONE;
   var L50 = Kotlin.Long.fromInt(50);
   var L10 = Kotlin.Long.fromInt(10);
@@ -115,7 +116,6 @@
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var mutableMapOf = Kotlin.kotlin.collections.mutableMapOf_qfcya0$;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
-  var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
   var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
@@ -131,6 +131,7 @@
   var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var hashCode = Kotlin.hashCode;
+  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
@@ -146,6 +147,8 @@
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
+  var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
+  var math = Kotlin.kotlin.math;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -169,23 +172,22 @@
   var getValue = Kotlin.kotlin.collections.getValue_t9ocha$;
   var get_contentOrNull = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.get_contentOrNull_u3sd3g$;
   var JsonParsingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonParsingException;
-  var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
   var json_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.json_s5o6vg$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
   var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
-  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var until_0 = Kotlin.kotlin.ranges.until_c8b4g4$;
+  var max_0 = Kotlin.kotlin.collections.max_exjks8$;
   var map = Kotlin.kotlin.sequences.map_z5avom$;
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
+  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
   var Array_0 = Array;
-  var math = Kotlin.kotlin.math;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
@@ -213,11 +215,10 @@
   var Mesh_init = THREE.Mesh;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var BufferGeometry = THREE.BufferGeometry;
-  var plus_0 = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
+  var plus_1 = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var Box3 = THREE.Box3;
-  var max_0 = Kotlin.kotlin.collections.max_exjks8$;
   var Raycaster_init = THREE.Raycaster;
   var Vector2 = THREE.Vector2;
   var first_0 = Kotlin.kotlin.collections.first_us0mfu$;
@@ -392,14 +393,32 @@
   GlslSandbox55301KotlinShow.prototype.constructor = GlslSandbox55301KotlinShow;
   GlslSandbox55301Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox55301Show.prototype.constructor = GlslSandbox55301Show;
+  GlslSandbox56418Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56418Show.prototype.constructor = GlslSandbox56418Show;
+  GlslSandbox56433Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56433Show.prototype.constructor = GlslSandbox56433Show;
+  GlslSandbox56479Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56479Show.prototype.constructor = GlslSandbox56479Show;
+  GlslSandbox56499Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56499Show.prototype.constructor = GlslSandbox56499Show;
+  GlslSandbox56511Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56511Show.prototype.constructor = GlslSandbox56511Show;
   GlslSandbox56555Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56555Show.prototype.constructor = GlslSandbox56555Show;
+  GlslSandbox56573Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56573Show.prototype.constructor = GlslSandbox56573Show;
+  GlslSandbox56592Show.prototype = Object.create(GlslShow.prototype);
+  GlslSandbox56592Show.prototype.constructor = GlslSandbox56592Show;
   GlslSandbox56594Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56594Show.prototype.constructor = GlslSandbox56594Show;
   GlslSandbox56688Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56688Show.prototype.constructor = GlslSandbox56688Show;
   GlslSandbox56718Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56718Show.prototype.constructor = GlslSandbox56718Show;
+  GlslSandboxDebugShow.prototype = Object.create(GlslShow.prototype);
+  GlslSandboxDebugShow.prototype.constructor = GlslSandboxDebugShow;
+  GlslSandboxShowTemplate.prototype = Object.create(GlslShow.prototype);
+  GlslSandboxShowTemplate.prototype.constructor = GlslSandboxShowTemplate;
   HeartbleatShow.prototype = Object.create(Show.prototype);
   HeartbleatShow.prototype.constructor = HeartbleatShow;
   LifeyShow.prototype = Object.create(Show.prototype);
@@ -624,6 +643,7 @@
     interfaces: []
   };
   function Brain(id, network, display, pixels) {
+    Brain$Companion_getInstance();
     this.id = id;
     this.network_0 = network;
     this.display_0 = display;
@@ -835,6 +855,11 @@
   Brain.prototype.forcedSurfaceName_61zpoe$ = function (name) {
     this.surfaceName_0 = name;
   };
+  function Brain$sendHello$lambda(this$Brain, closure$elapsedSinceMessageMs) {
+    return function () {
+      return this$Brain.id + ": haven't heard from Pinky in " + closure$elapsedSinceMessageMs.toString() + 'ms';
+    };
+  }
   function Coroutine$sendHello_0($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -860,7 +885,7 @@
             var elapsedSinceMessageMs = getTimeMillis().subtract(this.$this.lastInstructionsReceivedAtMs_0);
             if (elapsedSinceMessageMs.toNumber() > 10000) {
               if (!equals(this.$this.lastInstructionsReceivedAtMs_0, L0)) {
-                logger$Companion_getInstance().info_61zpoe$(this.$this.id + ": haven't heard from Pinky in " + elapsedSinceMessageMs.toString() + 'ms');
+                Brain$Companion_getInstance().logger.info_h4ejuu$(Brain$sendHello$lambda(this.$this, elapsedSinceMessageMs));
               }
               this.$this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.$this.id, this.$this.surfaceName_0));
             }
@@ -936,7 +961,7 @@
         this.surfaceName_0 = message.surfaceName;
         if (message.surfaceName != null) {
           var fakeModelSurface = new Brain$FakeModelSurface(message.surfaceName);
-          tmp$_1 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelVertices);
+          tmp$_1 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations);
         }
          else {
           tmp$_1 = new AnonymousSurface(new BrainId(this.id));
@@ -999,11 +1024,30 @@
       return this.description_487evr$_0;
     }
   });
+  Brain$FakeModelSurface.prototype.allVertices = function () {
+    return emptyList();
+  };
   Brain$FakeModelSurface.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'FakeModelSurface',
     interfaces: [Model$Surface]
   };
+  function Brain$Companion() {
+    Brain$Companion_instance = this;
+    this.logger = new Logger('Brain');
+  }
+  Brain$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Brain$Companion_instance = null;
+  function Brain$Companion_getInstance() {
+    if (Brain$Companion_instance === null) {
+      new Brain$Companion();
+    }
+    return Brain$Companion_instance;
+  }
   Brain.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Brain',
@@ -1790,6 +1834,7 @@
     return new ReferenceArraySerializer(kKlass, $receiver);
   }
   function GadgetManager(pubSub) {
+    GadgetManager$Companion_getInstance();
     this.pubSub_0 = pubSub;
     this.activeGadgets_0 = ArrayList_init();
     this.activeGadgetChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().activeGadgets, this.activeGadgets_0, GadgetManager$activeGadgetChannel$lambda);
@@ -1811,6 +1856,11 @@
     return function (updated) {
       closure$newGadget.state.putAll_a2k3zr$(updated);
       return Unit;
+    };
+  }
+  function GadgetManager$sync$lambda(this$GadgetManager, closure$requestedGadgets) {
+    return function () {
+      return "Gadgets don't match!\n" + ('old: ' + this$GadgetManager.priorRequestedGadgets_0 + '\n') + ('new: ' + closure$requestedGadgets);
     };
   }
   function GadgetManager$sync$lambda$lambda_0(closure$gadget) {
@@ -1852,7 +1902,7 @@
       }
     }
      else {
-      logger$Companion_getInstance().debug_61zpoe$("Gadgets don't match!\n" + ('old: ' + this.priorRequestedGadgets_0 + '\n') + ('new: ' + requestedGadgets));
+      GadgetManager$Companion_getInstance().logger.debug_h4ejuu$(GadgetManager$sync$lambda(this, requestedGadgets));
       this.activeGadgets_0.clear();
       var tmp$_2;
       tmp$_2 = requestedGadgets.iterator();
@@ -1860,9 +1910,7 @@
         var element_1 = tmp$_2.next();
         var name_1 = element_1.component1()
         , gadget_0 = element_1.component2();
-        var tmp$_3;
-        var gadgetId = (tmp$_3 = this.nextGadgetId_0, this.nextGadgetId_0 = tmp$_3 + 1 | 0, tmp$_3);
-        var topic = new PubSub$Topic('/gadgets/' + toString_0(Kotlin.getKClassFromExpression(gadget_0).simpleName) + '/' + gadgetId, GadgetDataSerializer);
+        var topic = new PubSub$Topic('/gadgets/' + name_1, GadgetDataSerializer);
         var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0));
         var gadgetData = new GadgetData(name_1, gadget_0, topic.name);
         this.activeGadgets_0.add_11rb$(gadgetData);
@@ -1905,6 +1953,22 @@
     simpleName: 'GadgetInfo',
     interfaces: []
   };
+  function GadgetManager$Companion() {
+    GadgetManager$Companion_instance = this;
+    this.logger = new Logger('GadgetManager');
+  }
+  GadgetManager$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GadgetManager$Companion_instance = null;
+  function GadgetManager$Companion_getInstance() {
+    if (GadgetManager$Companion_instance === null) {
+      new GadgetManager$Companion();
+    }
+    return GadgetManager$Companion_instance;
+  }
   function GadgetManager$activeGadgetChannel$lambda(it) {
     return Unit;
   }
@@ -1930,6 +1994,7 @@
     };
   });
   function Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress) {
+    Mapper$Companion_getInstance();
     this.network_0 = network;
     this.mapperUi_0 = mapperUi;
     this.mediaDevices_0 = mediaDevices;
@@ -2919,7 +2984,7 @@
               this.$this.mapperUi_0.showBefore_5151av$(this.local$pixelOnBitmap);
               this.$this.mapperUi_0.showAfter_5151av$(ensureNotNull(element.panelDeltaBitmap));
               if (!pixelChangeRegion.isEmpty()) {
-                var center = new SheepModel$Point((pixelChangeRegion.centerX - surfaceChangeRegion_0.x0 | 0) / surfaceChangeRegion_0.width, (pixelChangeRegion.centerY - surfaceChangeRegion_0.y0 | 0) / surfaceChangeRegion_0.height, 0.0);
+                var center = new Vector3F((pixelChangeRegion.centerX - surfaceChangeRegion_0.x0 | 0) / surfaceChangeRegion_0.width, (pixelChangeRegion.centerY - surfaceChangeRegion_0.y0 | 0) / surfaceChangeRegion_0.height, 0.0);
                 visibleSurface_0.addPixel_nhq4am$(this.local$pixelIndex, pixelChangeRegion.centerX, pixelChangeRegion.centerY);
                 var $receiver_0 = element.pixelMapData;
                 var value = new Mapper$PixelMapData(pixelChangeRegion, this.local$pixelOnImageName);
@@ -2979,7 +3044,7 @@
             var e = this.exception_0;
             if (Kotlin.isType(e, Mapper$TimeoutException)) {
               this.$this.mapperUi_0.showMessage_61zpoe$('Failed: ' + toString_0(e.message));
-              logger$Companion_getInstance().error_61zpoe$(ensureNotNull(e.message));
+              Mapper$Companion_getInstance().logger.error_nwdkmo$('Timed out', e);
             }
              else
               throw e;
@@ -3499,6 +3564,19 @@
     $receiver.put_xwzc9p$(key, deliveryAttempt);
     deliveryAttempt.attemptDelivery();
   };
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer) {
+    return function () {
+      var $receiver = this$ReliableShaderMessageDeliverer.outstanding.values;
+      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(item.brainToMap.brainId);
+      }
+      return 'Waiting for pongs from ' + destination + '...';
+    };
+  }
   function Coroutine$Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -3559,13 +3637,18 @@
       }
      while (true);
   };
-  function Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0) {
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this$ReliableShaderMessageDeliverer_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0, $receiver_0, this, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
+    };
+  }
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$it, closure$retryAfterMillis) {
+    return function () {
+      return "Didn't hear from " + closure$it.brainToMap.brainId + ' after ' + closure$retryAfterMillis.toString() + ', retrying...';
     };
   }
   function Coroutine$await_yhmem3$($this, retryAfterMillis_0, tries_0, continuation_0) {
@@ -3591,33 +3674,23 @@
               this.local$retryAfterMillis = L2000;
             if (this.local$tries === void 0)
               this.local$tries = 3;
-            var tmp$ = logger$Companion_getInstance();
-            var $receiver = this.$this.outstanding.values;
-            var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
-            var tmp$_0;
-            tmp$_0 = $receiver.iterator();
-            while (tmp$_0.hasNext()) {
-              var item = tmp$_0.next();
-              destination.add_11rb$(item.brainToMap.brainId);
-            }
-
-            tmp$.debug_61zpoe$('Waiting for pongs from ' + destination + '...');
+            Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda(this.$this));
             if (this.local$tries === 0) {
-              var $receiver_0 = this.$this.outstanding.values;
-              var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
-              var tmp$_1;
-              tmp$_1 = $receiver_0.iterator();
-              while (tmp$_1.hasNext()) {
-                var item_0 = tmp$_1.next();
-                destination_0.add_11rb$(item_0.brainToMap.brainId);
+              var $receiver = this.$this.outstanding.values;
+              var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+              var tmp$;
+              tmp$ = $receiver.iterator();
+              while (tmp$.hasNext()) {
+                var item = tmp$.next();
+                destination.add_11rb$(item.brainToMap.brainId);
               }
-              var remaining = ArrayList_init_0(destination_0);
+              var remaining = ArrayList_init_0(destination);
               this.$this.outstanding.clear();
               throw new Mapper$TimeoutException('Timed out waiting for ' + remaining);
             }
 
             this.state_0 = 2;
-            this.result_0 = withTimeoutOrNull(this.local$retryAfterMillis, Mapper$ReliableShaderMessageDeliverer$await$lambda(this.$this), this);
+            this.result_0 = withTimeoutOrNull(this.local$retryAfterMillis, Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -3635,11 +3708,11 @@
           case 3:
             var retry = ArrayList_init_0(this.$this.outstanding.values);
             this.$this.outstanding.clear();
-            var tmp$_2;
-            tmp$_2 = retry.iterator();
-            while (tmp$_2.hasNext()) {
-              var element = tmp$_2.next();
-              logger$Companion_getInstance().warn_61zpoe$("Didn't hear from " + element.brainToMap.brainId + ' after ' + this.local$retryAfterMillis.toString() + ', retrying...');
+            var tmp$_0;
+            tmp$_0 = retry.iterator();
+            while (tmp$_0.hasNext()) {
+              var element = tmp$_0.next();
+              Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(element, this.local$retryAfterMillis));
               this.$this.send_b2qy7x$(element.brainToMap, element.buffer);
             }
 
@@ -3758,8 +3831,13 @@
   Mapper$DeliveryAttempt.prototype.attemptDelivery = function () {
     this.$outer.udpSocket_0.sendUdp_wpmaqi$(this.brainToMap.address, this.brainToMap.port, new BrainShaderMessage(this.buffer.shader, this.buffer, this.tag_0));
   };
+  function Mapper$DeliveryAttempt$succeeded$lambda(this$DeliveryAttempt) {
+    return function () {
+      return this$DeliveryAttempt.brainToMap.brainId + ' shader message pong after ' + (getTimeMillis().toNumber() - this$DeliveryAttempt.sentAt_0) + 'ms';
+    };
+  }
   Mapper$DeliveryAttempt.prototype.succeeded = function () {
-    logger$Companion_getInstance().debug_61zpoe$(this.brainToMap.brainId + ' shader message pong after ' + (getTimeMillis().toNumber() - this.sentAt_0) + 'ms');
+    Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$DeliveryAttempt$succeeded$lambda(this));
   };
   Mapper$DeliveryAttempt.$metadata$ = {
     kind: Kind_CLASS,
@@ -4041,6 +4119,22 @@
     simpleName: 'Ballot',
     interfaces: []
   };
+  function Mapper$Companion() {
+    Mapper$Companion_instance = this;
+    this.logger = new Logger('Mapper');
+  }
+  Mapper$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Mapper$Companion_instance = null;
+  function Mapper$Companion_getInstance() {
+    if (Mapper$Companion_instance === null) {
+      new Mapper$Companion();
+    }
+    return Mapper$Companion_instance;
+  }
   Object.defineProperty(Mapper.prototype, 'coroutineContext', {
     get: function () {
       return this.$delegate_9rrh7p$_0.coroutineContext;
@@ -4496,7 +4590,7 @@
   MovingHead$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
     var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
     output.encodeStringElement_bgm7zs$(this.descriptor, 0, obj.name);
-    output.encodeSerializableElement_blecud$(this.descriptor, 1, SheepModel$Point$$serializer_getInstance(), obj.origin);
+    output.encodeSerializableElement_blecud$(this.descriptor, 1, Vector3F$$serializer_getInstance(), obj.origin);
     output.endStructure_qatsm0$(this.descriptor);
   };
   MovingHead$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
@@ -4516,7 +4610,7 @@
           if (!readAll)
             break;
         case 1:
-          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, SheepModel$Point$$serializer_getInstance()) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, SheepModel$Point$$serializer_getInstance(), local1);
+          local1 = (bitMask0 & 2) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 1, Vector3F$$serializer_getInstance()) : input.updateSerializableElement_ehubvl$(this.descriptor, 1, Vector3F$$serializer_getInstance(), local1);
           bitMask0 |= 2;
           if (!readAll)
             break;
@@ -4529,7 +4623,7 @@
     return MovingHead_init(bitMask0, local0, local1, null);
   };
   MovingHead$$serializer.prototype.childSerializers = function () {
-    return [internal.StringSerializer, SheepModel$Point$$serializer_getInstance()];
+    return [internal.StringSerializer, Vector3F$$serializer_getInstance()];
   };
   MovingHead$$serializer.$metadata$ = {
     kind: Kind_OBJECT,
@@ -4566,7 +4660,7 @@
   MovingHead.prototype.component2 = function () {
     return this.origin;
   };
-  MovingHead.prototype.copy_s2rku2$ = function (name, origin) {
+  MovingHead.prototype.copy_o29qha$ = function (name, origin) {
     return new MovingHead(name === void 0 ? this.name : name, origin === void 0 ? this.origin : origin);
   };
   MovingHead.prototype.toString = function () {
@@ -4742,6 +4836,7 @@
     interfaces: []
   };
   function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, prerenderPixels) {
+    Pinky$Companion_getInstance();
     if (prerenderPixels === void 0)
       prerenderPixels = false;
     this.model = model;
@@ -4774,6 +4869,7 @@
     this.networkStats_0 = new Pinky$NetworkStats();
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.httpServer.listenWebSocket_brdh44$('/ws/mapper', Pinky_init$lambda(this));
+    GlslShader$Companion_getInstance().model_CHEAT = this.model;
     this.poolingRenderContext = new Pinky$PoolingRenderContext();
     this.lastSentAt = L0;
   }
@@ -5084,7 +5180,7 @@
           var $receiver = this$Pinky.pendingBrainInfos_0;
           var key = closure$brainId;
           $receiver.put_xwzc9p$(key, brainInfo);
-          logger$Companion_getInstance().error_nwdkmo$('Error sending to ' + closure$brainId + ', will take offline', e);
+          Pinky$Companion_getInstance().logger.error_nwdkmo$('Error sending to ' + closure$brainId + ', will take offline', e);
         }
          else
           throw e;
@@ -5110,10 +5206,23 @@
     var dataFor = (tmp$ = this.mappingResults_0.dataFor_77gxvx$(brainId)) != null ? tmp$ : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
     var tmp$_3;
     if (dataFor != null) {
-      var tmp$_4;
-      var pixelVertices = dataFor.pixelLocations;
-      var pixelCount = (tmp$_4 = pixelVertices != null ? pixelVertices.size : null) != null ? tmp$_4 : 2048;
-      var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelVertices != null ? pixelVertices : emptyList());
+      var tmp$_4, tmp$_5, tmp$_6, tmp$_7;
+      var tmp$_8;
+      if ((tmp$_4 = dataFor.pixelLocations) != null) {
+        var destination = ArrayList_init_1(collectionSizeOrDefault(tmp$_4, 10));
+        var tmp$_9;
+        tmp$_9 = tmp$_4.iterator();
+        while (tmp$_9.hasNext()) {
+          var item = tmp$_9.next();
+          destination.add_11rb$(item != null ? item : new Vector3F(0.0, 0.0, 0.0));
+        }
+        tmp$_8 = destination;
+      }
+       else
+        tmp$_8 = null;
+      var pixelLocations = (tmp$_5 = tmp$_8) != null ? tmp$_5 : emptyList();
+      var pixelCount = (tmp$_7 = (tmp$_6 = dataFor.pixelLocations) != null ? tmp$_6.size : null) != null ? tmp$_7 : 2048;
+      var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelLocations);
       this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
       tmp$_3 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
     }
@@ -5153,15 +5262,20 @@
     $receiver.writeLong_s8cxhz$(getTimeMillis());
     return $receiver.toBytes();
   };
+  function Pinky$receivedPong$lambda(closure$fromAddress, closure$elapsedMs) {
+    return function () {
+      return 'Shader pong from ' + closure$fromAddress + ' took ' + closure$elapsedMs.toString() + 'ms';
+    };
+  }
   Pinky.prototype.receivedPong_0 = function (message, fromAddress) {
     var originalSentAt = (new ByteArrayReader(message.data)).readLong();
     var elapsedMs = getTimeMillis().subtract(originalSentAt);
-    logger$Companion_getInstance().debug_61zpoe$('Shader pong from ' + fromAddress + ' took ' + elapsedMs.toString() + 'ms');
+    Pinky$Companion_getInstance().logger.debug_h4ejuu$(Pinky$receivedPong$lambda(fromAddress, elapsedMs));
   };
   Pinky.prototype.providePanelMapping_CHEAT_iegnfh$ = function (brainId, surface) {
     this.brainToSurfaceMap_CHEAT_0.put_xwzc9p$(brainId, surface);
   };
-  Pinky.prototype.providePixelMapping_CHEAT_cafowi$ = function (surface, pixelLocations) {
+  Pinky.prototype.providePixelMapping_CHEAT_cafo5t$ = function (surface, pixelLocations) {
     this.surfaceToPixelLocationMap_CHEAT_0.put_xwzc9p$(surface, pixelLocations);
   };
   function Pinky$PinkyBeatDisplayer($outer, beatSource) {
@@ -5366,11 +5480,16 @@
     holder.count = holder.count + 1 | 0;
     return Kotlin.isType(tmp$ = holder.pooledRenderer, PooledRenderer) ? tmp$ : throwCCE();
   };
+  function Pinky$PoolingRenderContext$decrement$lambda(closure$key) {
+    return function () {
+      return 'Removing pooled renderer for ' + closure$key.toString();
+    };
+  }
   Pinky$PoolingRenderContext.prototype.decrement_za3rmp$ = function (key) {
     var holder = ensureNotNull(this.pooledRenderers_0.get_11rb$(key));
     holder.count = holder.count - 1 | 0;
     if (holder.count === 0) {
-      logger$Companion_getInstance().debug_61zpoe$('Removing pooled renderer for ' + key.toString());
+      Pinky$Companion_getInstance().logger.debug_h4ejuu$(Pinky$PoolingRenderContext$decrement$lambda(key));
       this.pooledRenderers_0.remove_11rb$(key);
     }
   };
@@ -5426,6 +5545,22 @@
     simpleName: 'PixelsAdapter',
     interfaces: [Pixels]
   };
+  function Pinky$Companion() {
+    Pinky$Companion_instance = this;
+    this.logger = new Logger('Pinky');
+  }
+  Pinky$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Pinky$Companion_instance = null;
+  function Pinky$Companion_getInstance() {
+    if (Pinky$Companion_instance === null) {
+      new Pinky$Companion();
+    }
+    return Pinky$Companion_instance;
+  }
   function Pinky_init$lambda(this$Pinky) {
     return function (it) {
       return new MapperEndpoint(this$Pinky.storage_0);
@@ -5482,6 +5617,7 @@
   }
   function PubSub$Companion() {
     PubSub$Companion_instance = this;
+    this.logger = new Logger('PubSub');
   }
   PubSub$Companion.prototype.listen_76wx40$ = function (httpServer) {
     return new PubSub$Server(httpServer);
@@ -5668,8 +5804,13 @@
     writer.writeString_61zpoe$(topicName);
     this.sendCommand_su7uv8$_0(writer.toBytes());
   };
+  function PubSub$Connection$reset$lambda(this$Connection) {
+    return function () {
+      return 'PubSub client ' + this$Connection.name_qs3czq$_0 + ' disconnected.';
+    };
+  }
   PubSub$Connection.prototype.reset_67ozxy$ = function (tcpConnection) {
-    logger$Companion_getInstance().info_61zpoe$('PubSub client ' + this.name_qs3czq$_0 + ' disconnected.');
+    PubSub$Companion_getInstance().logger.info_h4ejuu$(PubSub$Connection$reset$lambda(this));
     var tmp$;
     tmp$ = this.cleanup_mgq9j5$_0.iterator();
     while (tmp$.hasNext()) {
@@ -5686,9 +5827,14 @@
       tcpConnection.send_fqrh44$(bytes);
     }
   };
+  function PubSub$Connection$debug$lambda(this$Connection, closure$message) {
+    return function () {
+      var tmp$, tmp$_0;
+      return '[PubSub ' + this$Connection.name_qs3czq$_0 + ' -> ' + ((tmp$_0 = (tmp$ = this$Connection.connection) != null ? tmp$.toAddress : null) != null ? tmp$_0 : '(deferred)').toString() + ']: ' + closure$message;
+    };
+  }
   PubSub$Connection.prototype.debug_6bynea$_0 = function (message) {
-    var tmp$, tmp$_0;
-    logger$Companion_getInstance().debug_61zpoe$('[PubSub ' + this.name_qs3czq$_0 + ' -> ' + ((tmp$_0 = (tmp$ = this.connection) != null ? tmp$.toAddress : null) != null ? tmp$_0 : '(deferred)').toString() + ']: ' + message);
+    PubSub$Companion_getInstance().logger.debug_h4ejuu$(PubSub$Connection$debug$lambda(this, message));
   };
   PubSub$Connection.$metadata$ = {
     kind: Kind_CLASS,
@@ -6123,6 +6269,9 @@
   };
   function Model() {
     this.allSurfacesByName_x6q8q$_2ixtr1$_0 = lazy(Model$allSurfacesByName$lambda(this));
+    this.allVertices_344fm1$_0 = lazy(Model$allVertices$lambda(this));
+    this.modelExtents_12knpr$_0 = lazy(Model$modelExtents$lambda(this));
+    this.modelCenter_girn8l$_0 = lazy(Model$modelCenter$lambda(this));
   }
   Object.defineProperty(Model.prototype, 'allSurfacesByName_x6q8q$_0', {
     get: function () {
@@ -6137,6 +6286,21 @@
     }
     return tmp$;
   };
+  Object.defineProperty(Model.prototype, 'allVertices', {
+    get: function () {
+      return this.allVertices_344fm1$_0.value;
+    }
+  });
+  Object.defineProperty(Model.prototype, 'modelExtents', {
+    get: function () {
+      return this.modelExtents_12knpr$_0.value;
+    }
+  });
+  Object.defineProperty(Model.prototype, 'modelCenter', {
+    get: function () {
+      return this.modelCenter_girn8l$_0.value;
+    }
+  });
   function Model$Surface() {
   }
   Model$Surface.$metadata$ = {
@@ -6156,6 +6320,30 @@
         destination.put_xwzc9p$(element.name, element);
       }
       return destination;
+    };
+  }
+  function Model$allVertices$lambda(this$Model) {
+    return function () {
+      var allVertices = HashSet_init();
+      var $receiver = this$Model.allSurfaces;
+      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(allVertices.addAll_brywnq$(item.allVertices()));
+      }
+      return allVertices;
+    };
+  }
+  function Model$modelExtents$lambda(this$Model) {
+    return function () {
+      return extents(this$Model.allVertices);
+    };
+  }
+  function Model$modelCenter$lambda(this$Model) {
+    return function () {
+      return center(this$Model.allVertices);
     };
   }
   Model.$metadata$ = {
@@ -6309,7 +6497,7 @@
           }
 
           var coords = destination_0;
-          vertices.add_11rb$(new SheepModel$Point(coords.get_za3lpa$(0), coords.get_za3lpa$(1), coords.get_za3lpa$(2)));
+          vertices.add_11rb$(new Vector3F(coords.get_za3lpa$(0), coords.get_za3lpa$(1), coords.get_za3lpa$(2)));
           break;
         case 'o':
           var name = joinToString(args, ' ');
@@ -6389,153 +6577,14 @@
       result.put_xwzc9p$(element_0, neighborsOf(element_0));
     }
     this.panelNeighbors = result;
-    this.eyes = arrayListOf([new MovingHead('leftEye', new SheepModel$Point(0.0, 204.361, 48.738)), new MovingHead('rightEye', new SheepModel$Point(0.0, 204.361, -153.738))]);
+    this.eyes = arrayListOf([new MovingHead('leftEye', new Vector3F(0.0, 204.361, 48.738)), new MovingHead('rightEye', new Vector3F(0.0, 204.361, -153.738))]);
   };
   SheepModel.prototype.neighborsOf_jfju1k$ = function (panel) {
     var tmp$;
     return (tmp$ = this.panelNeighbors.get_11rb$(panel)) != null ? tmp$ : emptyList();
   };
-  function SheepModel$Point(x, y, z) {
-    SheepModel$Point$Companion_getInstance();
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-  function SheepModel$Point$Companion() {
-    SheepModel$Point$Companion_instance = this;
-  }
-  SheepModel$Point$Companion.prototype.serializer = function () {
-    return SheepModel$Point$$serializer_getInstance();
-  };
-  SheepModel$Point$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var SheepModel$Point$Companion_instance = null;
-  function SheepModel$Point$Companion_getInstance() {
-    if (SheepModel$Point$Companion_instance === null) {
-      new SheepModel$Point$Companion();
-    }
-    return SheepModel$Point$Companion_instance;
-  }
-  function SheepModel$Point$$serializer() {
-    this.descriptor_6sorev$_0 = new SerialClassDescImpl('baaahs.SheepModel.Point', this);
-    this.descriptor.addElement_ivxn3r$('x', false);
-    this.descriptor.addElement_ivxn3r$('y', false);
-    this.descriptor.addElement_ivxn3r$('z', false);
-    SheepModel$Point$$serializer_instance = this;
-  }
-  Object.defineProperty(SheepModel$Point$$serializer.prototype, 'descriptor', {
-    get: function () {
-      return this.descriptor_6sorev$_0;
-    }
-  });
-  SheepModel$Point$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
-    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
-    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, obj.x);
-    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, obj.y);
-    output.encodeFloatElement_t7qhdx$(this.descriptor, 2, obj.z);
-    output.endStructure_qatsm0$(this.descriptor);
-  };
-  SheepModel$Point$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
-    var index, readAll = false;
-    var bitMask0 = 0;
-    var local0
-    , local1
-    , local2;
-    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
-    loopLabel: while (true) {
-      index = input.decodeElementIndex_qatsm0$(this.descriptor);
-      switch (index) {
-        case -2:
-          readAll = true;
-        case 0:
-          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
-          bitMask0 |= 1;
-          if (!readAll)
-            break;
-        case 1:
-          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
-          bitMask0 |= 2;
-          if (!readAll)
-            break;
-        case 2:
-          local2 = input.decodeFloatElement_3zr2iy$(this.descriptor, 2);
-          bitMask0 |= 4;
-          if (!readAll)
-            break;
-        case -1:
-          break loopLabel;
-        default:throw new UnknownFieldException(index);
-      }
-    }
-    input.endStructure_qatsm0$(this.descriptor);
-    return SheepModel$SheepModel$Point_init(bitMask0, local0, local1, local2, null);
-  };
-  SheepModel$Point$$serializer.prototype.childSerializers = function () {
-    return [internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer];
-  };
-  SheepModel$Point$$serializer.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: '$serializer',
-    interfaces: [GeneratedSerializer]
-  };
-  var SheepModel$Point$$serializer_instance = null;
-  function SheepModel$Point$$serializer_getInstance() {
-    if (SheepModel$Point$$serializer_instance === null) {
-      new SheepModel$Point$$serializer();
-    }
-    return SheepModel$Point$$serializer_instance;
-  }
-  function SheepModel$SheepModel$Point_init(seen1, x, y, z, serializationConstructorMarker) {
-    var $this = serializationConstructorMarker || Object.create(SheepModel$Point.prototype);
-    if ((seen1 & 1) === 0)
-      throw new MissingFieldException('x');
-    else
-      $this.x = x;
-    if ((seen1 & 2) === 0)
-      throw new MissingFieldException('y');
-    else
-      $this.y = y;
-    if ((seen1 & 4) === 0)
-      throw new MissingFieldException('z');
-    else
-      $this.z = z;
-    return $this;
-  }
-  SheepModel$Point.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Point',
-    interfaces: []
-  };
-  SheepModel$Point.prototype.component1 = function () {
-    return this.x;
-  };
-  SheepModel$Point.prototype.component2 = function () {
-    return this.y;
-  };
-  SheepModel$Point.prototype.component3 = function () {
-    return this.z;
-  };
-  SheepModel$Point.prototype.copy_y2kzbl$ = function (x, y, z) {
-    return new SheepModel$Point(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z);
-  };
-  SheepModel$Point.prototype.toString = function () {
-    return 'Point(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + ')';
-  };
-  SheepModel$Point.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.x) | 0;
-    result = result * 31 + Kotlin.hashCode(this.y) | 0;
-    result = result * 31 + Kotlin.hashCode(this.z) | 0;
-    return result;
-  };
-  SheepModel$Point.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
-  };
-  function SheepModel$Line(points) {
-    this.points = points;
+  function SheepModel$Line(vertices) {
+    this.vertices = vertices;
   }
   SheepModel$Line.$metadata$ = {
     kind: Kind_CLASS,
@@ -6543,21 +6592,21 @@
     interfaces: []
   };
   SheepModel$Line.prototype.component1 = function () {
-    return this.points;
+    return this.vertices;
   };
-  SheepModel$Line.prototype.copy_5otmf7$ = function (points) {
-    return new SheepModel$Line(points === void 0 ? this.points : points);
+  SheepModel$Line.prototype.copy_yvrc2v$ = function (vertices) {
+    return new SheepModel$Line(vertices === void 0 ? this.vertices : vertices);
   };
   SheepModel$Line.prototype.toString = function () {
-    return 'Line(points=' + Kotlin.toString(this.points) + ')';
+    return 'Line(vertices=' + Kotlin.toString(this.vertices) + ')';
   };
   SheepModel$Line.prototype.hashCode = function () {
     var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.points) | 0;
+    result = result * 31 + Kotlin.hashCode(this.vertices) | 0;
     return result;
   };
   SheepModel$Line.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.points, other.points))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.vertices, other.vertices))));
   };
   function SheepModel$Face(vertexIds) {
     this.vertexIds = vertexIds;
@@ -6568,7 +6617,6 @@
     interfaces: []
   };
   function SheepModel$Faces() {
-    this.vertices = ArrayList_init();
     this.faces = ArrayList_init();
   }
   SheepModel$Faces.$metadata$ = {
@@ -6587,6 +6635,20 @@
       return this.name_lqwv93$_0;
     }
   });
+  SheepModel$Panel.prototype.allVertices = function () {
+    var vertices = HashSet_init();
+    var $receiver = this.lines;
+    var destination = ArrayList_init();
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var list = element.vertices;
+      addAll(destination, list);
+    }
+    vertices.addAll_brywnq$(destination);
+    return vertices;
+  };
   Object.defineProperty(SheepModel$Panel.prototype, 'description', {
     get: function () {
       return this.description_fh6eyk$_0;
@@ -6636,6 +6698,7 @@
     interfaces: []
   };
   function ShowRunner(model, initialShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock) {
+    ShowRunner$Companion_getInstance();
     this.model_0 = model;
     this.gadgetManager_0 = gadgetManager;
     this.beatSource_0 = beatSource;
@@ -6754,6 +6817,11 @@
     }
     this.housekeeping_0();
   };
+  function ShowRunner$housekeeping$lambda(this$ShowRunner) {
+    return function () {
+      return 'Show ' + ensureNotNull(this$ShowRunner.currentShow_0).name + ' updated; ' + (this$ShowRunner.shaderBuffers_0.size.toString() + ' surfaces');
+    };
+  }
   ShowRunner.prototype.housekeeping_0 = function () {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
     tmp$ = this.changedSurfaces_0.iterator();
@@ -6792,7 +6860,7 @@
             }
             tmp$_2.surfacesChanged_yroyvo$(destination, destination_0);
           }
-          logger$Companion_getInstance().info_61zpoe$('Show ' + ensureNotNull(this.currentShow_0).name + ' updated; ' + (this.shaderBuffers_0.size.toString() + ' surfaces'));
+          ShowRunner$Companion_getInstance().logger.info_h4ejuu$(ShowRunner$housekeeping$lambda(this));
         }
          catch (e) {
           if (Kotlin.isType(e, Show$RestartShowException)) {
@@ -6819,12 +6887,17 @@
       return Unit;
     };
   }
+  function ShowRunner$createShowRenderer$lambda_0(closure$startingShow, this$ShowRunner) {
+    return function () {
+      return 'New show ' + closure$startingShow.name + ' created; ' + (this$ShowRunner.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this$ShowRunner.requestedGadgets_0.size + ' gadgets');
+    };
+  }
   ShowRunner.prototype.createShowRenderer_0 = function (startingShow) {
     this.shaderBuffers_0.clear();
     var restartingSameShow = equals(this.nextShow, this.currentShow_0);
     var gadgetsState = restartingSameShow ? this.gadgetManager_0.getGadgetsState() : emptyMap();
     this.unlockShadersAndGadgets_0(ShowRunner$createShowRenderer$lambda(startingShow, this));
-    logger$Companion_getInstance().info_61zpoe$('New show ' + startingShow.name + ' created; ' + (this.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this.requestedGadgets_0.size + ' gadgets'));
+    ShowRunner$Companion_getInstance().logger.info_h4ejuu$(ShowRunner$createShowRenderer$lambda_0(startingShow, this));
     this.gadgetManager_0.sync_7kvwdj$(toList_1(this.requestedGadgets_0), gadgetsState);
     this.requestedGadgets_0.clear();
   };
@@ -6927,6 +7000,22 @@
     simpleName: 'SurfaceReceiver',
     interfaces: []
   };
+  function ShowRunner$Companion() {
+    ShowRunner$Companion_instance = this;
+    this.logger = new Logger('ShowRunner');
+  }
+  ShowRunner$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var ShowRunner$Companion_instance = null;
+  function ShowRunner$Companion_getInstance() {
+    if (ShowRunner$Companion_instance === null) {
+      new ShowRunner$Companion();
+    }
+    return ShowRunner$Companion_instance;
+  }
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShowRunner',
@@ -6957,12 +7046,12 @@
     simpleName: 'Surface',
     interfaces: []
   };
-  function IdentifiedSurface(modelSurface, pixelCount, pixelVertices) {
-    if (pixelVertices === void 0)
-      pixelVertices = emptyList();
+  function IdentifiedSurface(modelSurface, pixelCount, pixelLocations) {
+    if (pixelLocations === void 0)
+      pixelLocations = emptyList();
     this.modelSurface = modelSurface;
     this.pixelCount_o665an$_0 = pixelCount;
-    this.pixelVertices = pixelVertices;
+    this.pixelLocations = pixelLocations;
     this.name = this.modelSurface.name;
   }
   Object.defineProperty(IdentifiedSurface.prototype, 'pixelCount', {
@@ -8341,6 +8430,48 @@
     this.y = y;
     this.z = z;
   }
+  Vector3F.prototype.min_7423r0$ = function (other) {
+    var a = this.x;
+    var b = other.x;
+    var tmp$ = Math_0.min(a, b);
+    var a_0 = this.y;
+    var b_0 = other.y;
+    var tmp$_0 = Math_0.min(a_0, b_0);
+    var a_1 = this.z;
+    var b_1 = other.z;
+    return new Vector3F(tmp$, tmp$_0, Math_0.min(a_1, b_1));
+  };
+  Vector3F.prototype.max_7423r0$ = function (other) {
+    var a = this.x;
+    var b = other.x;
+    var tmp$ = Math_0.max(a, b);
+    var a_0 = this.y;
+    var b_0 = other.y;
+    var tmp$_0 = Math_0.max(a_0, b_0);
+    var a_1 = this.z;
+    var b_1 = other.z;
+    return new Vector3F(tmp$, tmp$_0, Math_0.max(a_1, b_1));
+  };
+  Vector3F.prototype.plus_7423r0$ = function (other) {
+    return new Vector3F(this.x + other.x, this.y + other.y, this.z + other.z);
+  };
+  Vector3F.prototype.minus_7423r0$ = function (other) {
+    return new Vector3F(this.x - other.x, this.y - other.y, this.z - other.z);
+  };
+  Vector3F.prototype.times_mx4ult$ = function (scalar) {
+    return new Vector3F(this.x * scalar, this.y * scalar, this.z * scalar);
+  };
+  Vector3F.prototype.normalize = function () {
+    var invLength = 1.0 / this.length();
+    return new Vector3F(this.x * invLength, this.y * invLength, this.z * invLength);
+  };
+  Vector3F.prototype.length = function () {
+    var x = this.lengthSquared_0();
+    return Math_0.sqrt(x);
+  };
+  Vector3F.prototype.lengthSquared_0 = function () {
+    return this.x * this.x + this.y * this.y + this.z * this.z;
+  };
   function Vector3F$Companion() {
     Vector3F$Companion_instance = this;
   }
@@ -8474,6 +8605,38 @@
   Vector3F.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
   };
+  function center(vectors) {
+    var tmp$ = boundingBox(vectors);
+    var min = tmp$.component1()
+    , max = tmp$.component2();
+    var diff = max.minus_7423r0$(min);
+    return diff.times_mx4ult$(0.5).plus_7423r0$(min);
+  }
+  function extents(vectors) {
+    var tmp$ = boundingBox(vectors);
+    var min = tmp$.component1()
+    , max = tmp$.component2();
+    return max.minus_7423r0$(min);
+  }
+  function boundingBox(vectors) {
+    var iterator = vectors.iterator();
+    if (!iterator.hasNext())
+      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
+    var accumulator = iterator.next();
+    while (iterator.hasNext()) {
+      accumulator = accumulator.min_7423r0$(iterator.next());
+    }
+    var min = accumulator;
+    var iterator_0 = vectors.iterator();
+    if (!iterator_0.hasNext())
+      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
+    var accumulator_0 = iterator_0.next();
+    while (iterator_0.hasNext()) {
+      accumulator_0 = accumulator_0.max_7423r0$(iterator_0.next());
+    }
+    var max = accumulator_0;
+    return new Pair(min, max);
+  }
   function GlslManager() {
   }
   GlslManager.$metadata$ = {
@@ -8523,13 +8686,13 @@
     this.resolutionLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('resolution', true);
     this.timeLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('time', true);
   };
-  GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
+  GlslRenderer.prototype.addSurface_173pey$ = function (surface, uvTranslator) {
     var tmp$;
-    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelVertices != null) {
-      var surfacePixels = new GlslSurface(this.createSurfacePixels_x0dork$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$ = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$ + 1 | 0, tmp$)));
-      this.surfacesToAdd.add_11rb$(surfacePixels);
+    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null) {
+      var glslSurface = new GlslSurface(this.createSurfacePixels_x0dork$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$ = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$ + 1 | 0, tmp$)), uvTranslator);
+      this.surfacesToAdd.add_11rb$(glslSurface);
       this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
-      return surfacePixels;
+      return glslSurface;
     }
     return null;
   };
@@ -8564,12 +8727,15 @@
         var element = tmp$.next();
         var tmp$_0;
         var surface = element.pixels.surface;
-        var pixelVertices = ensureNotNull(surface.pixelVertices);
+        var uvTranslator = element.uvTranslator.forSurface_wqpn6a$(surface);
         tmp$_0 = surface.pixelCount;
         for (var i = 0; i < tmp$_0; i++) {
           var uvOffset = (element.pixels.pixel0Index + i | 0) * 2 | 0;
-          newUvCoords[uvOffset] = pixelVertices.get_za3lpa$(i).x;
-          newUvCoords[uvOffset + 1 | 0] = pixelVertices.get_za3lpa$(i).y;
+          var tmp$_1 = uvTranslator.getUV_za3lpa$(i);
+          var u = tmp$_1.component1()
+          , v = tmp$_1.component2();
+          newUvCoords[uvOffset] = u;
+          newUvCoords[uvOffset + 1 | 0] = v;
         }
       }
       this.withGlContext_klfg04$(GlslRenderer$incorporateNewSurfaces$lambda_0(newPixelCount, newUvCoords, this));
@@ -8650,14 +8816,96 @@
     simpleName: 'GlslRenderer',
     interfaces: []
   };
-  function GlslSurface(pixels, uniforms) {
+  function GlslSurface(pixels, uniforms, uvTranslator) {
     this.pixels = pixels;
     this.uniforms = uniforms;
+    this.uvTranslator = uvTranslator;
   }
   GlslSurface.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslSurface',
     interfaces: []
+  };
+  function UvTranslator() {
+  }
+  function UvTranslator$SurfaceUvTranslator() {
+  }
+  UvTranslator$SurfaceUvTranslator.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'SurfaceUvTranslator',
+    interfaces: []
+  };
+  UvTranslator.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'UvTranslator',
+    interfaces: []
+  };
+  function PanelSpaceUvTranslator() {
+    PanelSpaceUvTranslator_instance = this;
+  }
+  function PanelSpaceUvTranslator$forSurface$ObjectLiteral(closure$pixelLocations) {
+    this.closure$pixelLocations = closure$pixelLocations;
+  }
+  PanelSpaceUvTranslator$forSurface$ObjectLiteral.prototype.getUV_za3lpa$ = function (pixelIndex) {
+    var tmp$, tmp$_0;
+    var vector3F = this.closure$pixelLocations.get_za3lpa$(pixelIndex);
+    return to((tmp$ = vector3F != null ? vector3F.x : null) != null ? tmp$ : 0.0, (tmp$_0 = vector3F != null ? vector3F.y : null) != null ? tmp$_0 : 0.0);
+  };
+  PanelSpaceUvTranslator$forSurface$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [UvTranslator$SurfaceUvTranslator]
+  };
+  PanelSpaceUvTranslator.prototype.forSurface_wqpn6a$ = function (surface) {
+    var pixelLocations = ensureNotNull(surface.pixelLocations);
+    return new PanelSpaceUvTranslator$forSurface$ObjectLiteral(pixelLocations);
+  };
+  PanelSpaceUvTranslator.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'PanelSpaceUvTranslator',
+    interfaces: [UvTranslator]
+  };
+  var PanelSpaceUvTranslator_instance = null;
+  function PanelSpaceUvTranslator_getInstance() {
+    if (PanelSpaceUvTranslator_instance === null) {
+      new PanelSpaceUvTranslator();
+    }
+    return PanelSpaceUvTranslator_instance;
+  }
+  function ModelSpaceUvTranslator(model) {
+    this.model = model;
+    this.modelCenter = this.model.modelCenter;
+    this.modelExtents = this.model.modelExtents;
+  }
+  function ModelSpaceUvTranslator$forSurface$ObjectLiteral(closure$pixelLocations, this$ModelSpaceUvTranslator) {
+    this.closure$pixelLocations = closure$pixelLocations;
+    this.this$ModelSpaceUvTranslator = this$ModelSpaceUvTranslator;
+  }
+  ModelSpaceUvTranslator$forSurface$ObjectLiteral.prototype.getUV_za3lpa$ = function (pixelIndex) {
+    var tmp$;
+    var pixelLocation = (tmp$ = this.closure$pixelLocations.get_za3lpa$(pixelIndex)) != null ? tmp$ : this.this$ModelSpaceUvTranslator.modelCenter;
+    var normalDelta = pixelLocation.minus_7423r0$(this.this$ModelSpaceUvTranslator.modelCenter).normalize();
+    var x = normalDelta.z;
+    var y = Math_0.abs(x);
+    var x_0 = normalDelta.x;
+    var theta = Math_0.atan2(y, x_0);
+    if (theta < 0.0)
+      theta += 2.0 * math.PI;
+    var u = theta / (2.0 * math.PI);
+    var v = (pixelLocation.minus_7423r0$(this.this$ModelSpaceUvTranslator.modelCenter).y + this.this$ModelSpaceUvTranslator.modelExtents.y / 2.0) / this.this$ModelSpaceUvTranslator.modelExtents.y;
+    return to(u, v);
+  };
+  ModelSpaceUvTranslator$forSurface$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [UvTranslator$SurfaceUvTranslator]
+  };
+  ModelSpaceUvTranslator.prototype.forSurface_wqpn6a$ = function (surface) {
+    var pixelLocations = ensureNotNull(surface.pixelLocations);
+    return new ModelSpaceUvTranslator$forSurface$ObjectLiteral(pixelLocations, this);
+  };
+  ModelSpaceUvTranslator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ModelSpaceUvTranslator',
+    interfaces: [UvTranslator]
   };
   function SurfacePixels(surface, pixel0Index) {
     this.surface = surface;
@@ -9228,6 +9476,7 @@
     interfaces: []
   };
   function MapperClient(link, address) {
+    MapperClient$Companion_getInstance();
     this.$delegate_jh0n3f$_0 = MainScope();
     this.tcpConnection_co05n0$_0 = this.tcpConnection_co05n0$_0;
     this.connected_0 = false;
@@ -9432,6 +9681,11 @@
       return Unit;
     };
   }
+  function MapperClient$sendCommand$lambda_0(closure$command, closure$args, closure$responseJsonStr) {
+    return function () {
+      return "can't parse response to " + closure$command + ' ' + closure$args + ': ' + closure$responseJsonStr;
+    };
+  }
   function Coroutine$sendCommand_0($this, command_0, args_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 7;
@@ -9494,7 +9748,7 @@
             this.exceptionState_0 = 7;
             var e = this.exception_0;
             if (Kotlin.isType(e, JsonParsingException)) {
-              logger$Companion_getInstance().error_61zpoe$("can't parse response to " + this.local$command + ' ' + this.local$args + ': ' + this.local$responseJsonStr);
+              MapperClient$Companion_getInstance().logger.error_h4ejuu$(MapperClient$sendCommand$lambda_0(this.local$command, this.local$args, this.local$responseJsonStr));
               throw e;
             }
              else
@@ -9593,6 +9847,22 @@
     this.responses_0.close_dbl4no$();
     println('Mapper disconnected from Pinky!');
   };
+  function MapperClient$Companion() {
+    MapperClient$Companion_instance = this;
+    this.logger = new Logger('MapperClient');
+  }
+  MapperClient$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MapperClient$Companion_instance = null;
+  function MapperClient$Companion_getInstance() {
+    if (MapperClient$Companion_instance === null) {
+      new MapperClient$Companion();
+    }
+    return MapperClient$Companion_instance;
+  }
   Object.defineProperty(MapperClient.prototype, 'coroutineContext', {
     get: function () {
       return this.$delegate_jh0n3f$_0.coroutineContext;
@@ -9610,6 +9880,7 @@
   function MapperEndpoint$Companion() {
     MapperEndpoint$Companion_instance = this;
     this.json = new Json(JsonConfiguration.Companion.Stable);
+    this.logger = new Logger('MapperEndpoint');
   }
   MapperEndpoint$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -9626,7 +9897,17 @@
   MapperEndpoint.prototype.connected_67ozxy$ = function (tcpConnection) {
     println('Received connection from ' + tcpConnection.fromAddress);
   };
-  function MapperEndpoint$receive$lambda(closure$status, closure$response) {
+  function MapperEndpoint$receive$lambda(closure$parts) {
+    return function () {
+      return 'Command failed: ' + closure$parts;
+    };
+  }
+  function MapperEndpoint$receive$lambda_0(closure$e) {
+    return function () {
+      return closure$e.toString();
+    };
+  }
+  function MapperEndpoint$receive$lambda_1(closure$status, closure$response) {
     return function ($receiver) {
       $receiver.to_npuxma$('status', closure$status.v);
       $receiver.to_ahl3kc$('response', closure$response.v);
@@ -9662,14 +9943,14 @@
       if (Kotlin.isType(e, Exception)) {
         status.v = 'error';
         response.v = JsonPrimitive(e.toString());
-        logger$Companion_getInstance().error_61zpoe$('Command failed: ' + parts);
-        logger$Companion_getInstance().error_61zpoe$(e.toString());
+        MapperEndpoint$Companion_getInstance().logger.error_h4ejuu$(MapperEndpoint$receive$lambda(parts));
+        MapperEndpoint$Companion_getInstance().logger.error_h4ejuu$(MapperEndpoint$receive$lambda_0(e));
       }
        else
         throw e;
     }
     println('Command: ' + parts + ' -> ' + status.v + ' ' + response.v);
-    tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonElementSerializer, json_0(MapperEndpoint$receive$lambda(status, response)))));
+    tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonElementSerializer, json_0(MapperEndpoint$receive$lambda_1(status, response)))));
   };
   MapperEndpoint.prototype.reset_67ozxy$ = function (tcpConnection) {
     println('MapperEndpoint client disconnected from Pinky!');
@@ -9704,26 +9985,16 @@
         var element = tmp$.next();
         var brainId = new BrainId(element.brainId);
         var surfaceName = element.surfaceName;
+        var modelSurface = model.findModelSurface_61zpoe$(surfaceName);
         var $receiver = element.pixels;
         var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
         var tmp$_0;
         tmp$_0 = $receiver.iterator();
         while (tmp$_0.hasNext()) {
           var item = tmp$_0.next();
-          var tmp$_1 = destination.add_11rb$;
-          var tmp$_2, tmp$_3;
-          var tmp$_4;
-          if ((tmp$_2 = item != null ? item.screenPosition : null) != null) {
-            var x = tmp$_2.component1()
-            , y = tmp$_2.component2();
-            tmp$_4 = new Vector2F(x, y);
-          }
-           else
-            tmp$_4 = null;
-          tmp$_1.call(destination, (tmp$_3 = tmp$_4) != null ? tmp$_3 : new Vector2F(0.0, 0.0));
+          destination.add_11rb$(item != null ? item.modelPosition : null);
         }
         var pixelLocations = destination;
-        var modelSurface = model.findModelSurface_61zpoe$(surfaceName);
         var $receiver_0 = this.brainData;
         var value = new MappingResults$Info(modelSurface, pixelLocations);
         $receiver_0.put_xwzc9p$(brainId, value);
@@ -10385,6 +10656,7 @@
   function FragmentingUdpLink$Companion() {
     FragmentingUdpLink$Companion_instance = this;
     this.headerSize = 12;
+    this.logger = new Logger('FragmentingUdpLink');
   }
   FragmentingUdpLink$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -10415,6 +10687,25 @@
     this.closure$udpListener = closure$udpListener;
     this.this$FragmentingUdpLink = this$FragmentingUdpLink;
   }
+  function FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(closure$size, closure$bytes) {
+    return function () {
+      return 'Discarding short UDP message: ' + (closure$size + 12 | 0) + ' > ' + closure$bytes.length + ' available';
+    };
+  }
+  function FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda_0(closure$fromAddress, closure$fromPort, closure$actualTotalSize, closure$totalSize, closure$messageId, closure$myFragments) {
+    return function () {
+      var tmp$ = 'incomplete fragmented UDP packet from ' + closure$fromAddress + ':' + closure$fromPort + ':' + (' actualTotalSize=' + closure$actualTotalSize + ' != totalSize=' + closure$totalSize) + (' for messageId=' + closure$messageId);
+      var $receiver = closure$myFragments;
+      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        destination.add_11rb$(item.bytes.length);
+      }
+      return tmp$ + (' (have ' + joinToString(destination, ',') + ')');
+    };
+  }
   FragmentingUdpLink$listenUdp$ObjectLiteral.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var reader = new ByteArrayReader(bytes);
     var messageId = reader.readShort();
@@ -10422,7 +10713,7 @@
     var totalSize = reader.readInt();
     var offset = reader.readInt();
     if ((size + 12 | 0) > bytes.length) {
-      logger$Companion_getInstance().debug_61zpoe$('Discarding short UDP message: ' + (size + 12 | 0) + ' > ' + bytes.length + ' available');
+      FragmentingUdpLink$Companion_getInstance().logger.debug_h4ejuu$(FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda(size, bytes));
       return;
     }
     var frameBytes = reader.readNBytes_za3lpa$(size);
@@ -10463,16 +10754,7 @@
           this.closure$udpListener.receive_ytpeqp$(fromAddress, fromPort, reassembleBytes);
         }
          else {
-          var tmp$_1 = logger$Companion_getInstance();
-          var tmp$_2 = 'incomplete fragmented UDP packet from ' + fromAddress + ':' + fromPort + ':' + (' actualTotalSize=' + actualTotalSize + ' != totalSize=' + totalSize) + (' for messageId=' + messageId);
-          var destination_0 = ArrayList_init_1(collectionSizeOrDefault(myFragments, 10));
-          var tmp$_3;
-          tmp$_3 = myFragments.iterator();
-          while (tmp$_3.hasNext()) {
-            var item_0 = tmp$_3.next();
-            destination_0.add_11rb$(item_0.bytes.length);
-          }
-          tmp$_1.warn_61zpoe$(tmp$_2 + (' (have ' + joinToString(destination_0, ',') + ')'));
+          FragmentingUdpLink$Companion_getInstance().logger.warn_h4ejuu$(FragmentingUdpLink$listenUdp$ObjectLiteral$receive$lambda_0(fromAddress, fromPort, actualTotalSize, totalSize, messageId, myFragments));
           this.this$FragmentingUdpLink;
           this.this$FragmentingUdpLink;
           this.this$FragmentingUdpLink.fragments_0.addAll_brywnq$(myFragments);
@@ -11010,7 +11292,7 @@
     simpleName: 'BrainIdRequest',
     interfaces: [Message]
   };
-  function BrainMappingMessage(brainId, surfaceName, uvMapName, panelUvTopLeft, panelUvBottomRight, pixelCount, pixelVertices) {
+  function BrainMappingMessage(brainId, surfaceName, uvMapName, panelUvTopLeft, panelUvBottomRight, pixelCount, pixelLocations) {
     BrainMappingMessage$Companion_getInstance();
     Message.call(this, Type$BRAIN_MAPPING_getInstance());
     this.brainId = brainId;
@@ -11019,7 +11301,7 @@
     this.panelUvTopLeft = panelUvTopLeft;
     this.panelUvBottomRight = panelUvBottomRight;
     this.pixelCount = pixelCount;
-    this.pixelVertices = pixelVertices;
+    this.pixelLocations = pixelLocations;
   }
   function BrainMappingMessage$Companion() {
     BrainMappingMessage$Companion_instance = this;
@@ -11042,18 +11324,19 @@
     tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(new Vector2F($receiver.readShort() / 65536.0, $receiver.readShort() / 65536.0));
+      destination.add_11rb$(new Vector3F($receiver.readFloat(), $receiver.readFloat(), $receiver.readFloat()));
     }
     return destination;
   };
-  BrainMappingMessage$Companion.prototype.writeRelativeVerticesList_0 = function ($receiver, pixelVertices) {
-    $receiver.writeInt_za3lpa$(pixelVertices.size);
+  BrainMappingMessage$Companion.prototype.writeRelativeVerticesList_0 = function ($receiver, pixelLocations) {
+    $receiver.writeInt_za3lpa$(pixelLocations.size);
     var tmp$;
-    tmp$ = pixelVertices.iterator();
+    tmp$ = pixelLocations.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      $receiver.writeShort_mq22fl$(toShort(numberToInt(element.x * 65536)));
-      $receiver.writeShort_mq22fl$(toShort(numberToInt(element.y * 65536)));
+      $receiver.writeFloat_mx4ult$(element.x);
+      $receiver.writeFloat_mx4ult$(element.y);
+      $receiver.writeFloat_mx4ult$(element.z);
     }
   };
   BrainMappingMessage$Companion.$metadata$ = {
@@ -11075,9 +11358,9 @@
     BrainMappingMessage$Companion_getInstance().writeVector2F_0(writer, this.panelUvTopLeft);
     BrainMappingMessage$Companion_getInstance().writeVector2F_0(writer, this.panelUvBottomRight);
     writer.writeInt_za3lpa$(this.pixelCount);
-    var vertexCount = this.pixelVertices.size;
+    var vertexCount = this.pixelLocations.size;
     writer.writeInt_za3lpa$(vertexCount);
-    BrainMappingMessage$Companion_getInstance().writeRelativeVerticesList_0(writer, this.pixelVertices);
+    BrainMappingMessage$Companion_getInstance().writeRelativeVerticesList_0(writer, this.pixelLocations);
   };
   BrainMappingMessage.$metadata$ = {
     kind: Kind_CLASS,
@@ -11388,13 +11671,12 @@
     interfaces: [Shader$Buffer]
   };
   function GlslSandbox55301Shader$Renderer(surface) {
-    var tmp$, tmp$_0;
-    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, IdentifiedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
+    this.uvTranslator_0 = Kotlin.isType(surface, IdentifiedSurface) ? PanelSpaceUvTranslator_getInstance().forSurface_wqpn6a$(surface) : null;
   }
   GlslSandbox55301Shader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    if (this.pixelVertices_0 == null || pixelIndex >= this.pixelVertices_0.size)
+    if (this.uvTranslator_0 == null)
       return Color$Companion_getInstance().BLACK;
-    var tmp$ = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var tmp$ = this.uvTranslator_0.getUV_za3lpa$(pixelIndex);
     var pixX = tmp$.component1()
     , pixY = tmp$.component2();
     var time = getTimeMillis().toNumber() / 1000.0;
@@ -11508,8 +11790,10 @@
   }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
+    this.model_CHEAT = null;
     this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_qyeq5q$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
+    this.extraAdjustables = listOf([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda), 0), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0), 1)]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
@@ -11552,9 +11836,30 @@
     };
   }
   GlslShader$Companion.prototype.findAdjustableValues_61zpoe$ = function (glslFragmentShader) {
-    var i = {v: 0};
-    return toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this, i)));
+    var tmp$;
+    var $receiver = this.extraAdjustables;
+    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination.add_11rb$(item.ordinal);
+    }
+    var i = {v: (tmp$ = max_0(destination)) != null ? tmp$ : 0};
+    return plus_0(toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this, i))), this.extraAdjustables);
   };
+  function GlslShader$Companion$extraAdjustables$lambda($receiver) {
+    $receiver.to_npuxma$('name', 'u scale');
+    $receiver.to_lr5kl6$('minValue', 0.0);
+    $receiver.to_lr5kl6$('maxValue', 3.0);
+    return Unit;
+  }
+  function GlslShader$Companion$extraAdjustables$lambda_0($receiver) {
+    $receiver.to_npuxma$('name', 'v scale');
+    $receiver.to_lr5kl6$('minValue', 0.0);
+    $receiver.to_lr5kl6$('maxValue', 3.0);
+    return Unit;
+  }
   GlslShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
@@ -11585,12 +11890,13 @@
   GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
     var poolKey = to(getKClass(GlslShader), this.glslProgram);
     var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
-    var glslSurface = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
+    var uvTranslator = new ModelSpaceUvTranslator(ensureNotNull(GlslShader$Companion_getInstance().model_CHEAT));
+    var glslSurface = pooledRenderer.glslRenderer.addSurface_173pey$(surface, uvTranslator);
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
     var glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(this.glslProgram, this.adjustableValues);
-    var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
+    var glslSurface = glslRenderer.addSurface_173pey$(surface, PanelSpaceUvTranslator_getInstance());
     return new GlslShader$Renderer(glslSurface);
   };
   function GlslShader$Renderer(glslSurface) {
@@ -11854,15 +12160,13 @@
     interfaces: [Shader$Buffer]
   };
   function HeartShader$Renderer(surface) {
-    var tmp$, tmp$_0;
-    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, IdentifiedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
+    this.uvTranslator_0 = Kotlin.isType(surface, IdentifiedSurface) ? PanelSpaceUvTranslator_getInstance().forSurface_wqpn6a$(surface) : null;
   }
   HeartShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     var tmp$, tmp$_0;
-    if (this.pixelVertices_0 == null) {
+    if (this.uvTranslator_0 == null)
       return Color$Companion_getInstance().BLACK;
-    }
-    var tmp$_1 = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var tmp$_1 = this.uvTranslator_0.getUV_za3lpa$(pixelIndex);
     var x = tmp$_1.component1()
     , y = tmp$_1.component2();
     x -= 0.5 + buffer.xOff - 0.5;
@@ -12566,14 +12870,13 @@
     interfaces: [Shader$Buffer]
   };
   function SimpleSpatialShader$Renderer(surface) {
-    var tmp$, tmp$_0;
-    this.pixelVertices_0 = (tmp$_0 = Kotlin.isType(tmp$ = surface, IdentifiedSurface) ? tmp$ : null) != null ? tmp$_0.pixelVertices : null;
+    this.uvTranslator_0 = Kotlin.isType(surface, IdentifiedSurface) ? PanelSpaceUvTranslator_getInstance().forSurface_wqpn6a$(surface) : null;
   }
   SimpleSpatialShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     var tmp$;
-    if (this.pixelVertices_0 == null || pixelIndex >= this.pixelVertices_0.size)
+    if (this.uvTranslator_0 == null)
       return Color$Companion_getInstance().BLACK;
-    var tmp$_0 = this.pixelVertices_0.get_za3lpa$(pixelIndex);
+    var tmp$_0 = this.uvTranslator_0.getUV_za3lpa$(pixelIndex);
     var pixX = tmp$_0.component1()
     , pixY = tmp$_0.component2();
     var distX = pixX - buffer.centerX;
@@ -12832,7 +13135,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox56688Show_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox56418Show_getInstance(), GlslSandbox56433Show_getInstance(), GlslSandbox56479Show_getInstance(), GlslSandbox56511Show_getInstance(), GlslSandbox56499Show_getInstance(), GlslSandbox56573Show_getInstance(), GlslSandbox56592Show_getInstance(), GlslSandbox56688Show_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance(), GlslSandboxDebugShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -13089,6 +13392,116 @@
     }
     return GlslSandbox55301Show_instance;
   }
+  function GlslSandbox56418Show() {
+    GlslSandbox56418Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56418');
+    this.program_6ckk3e$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\nvoid main( void ) {\n\tvec2 position = (gl_FragCoord.xy - resolution * 0.5) / resolution.yy;\n\tfloat th = atan(position.y, position.x) / (2.0 * 3.1415926) + 10.0;\n\tfloat dd = length(position);\n\tfloat d = 0.5 / dd + time;\n\n\tvec3 uv = vec3(th + d, th - d, th + sin(d));\n\tfloat a = 0.5 + cos(uv.x * 3.1415926 * 2.0) * 0.3;\n\tfloat b = 0.5 + cos(uv.y * 3.1415926 * 8.0) * 0.3;\n\tfloat c = 0.5 + cos(uv.z * 3.1415926 * 6.0) * 0.5;\n\tfloat f = abs(sin(time*2.0));\n\t\n\t\n\tvec3 color = mix(vec3(1.0, 0.8, 1.0-f), vec3(0.5*f, 0, 0), pow(a, 0.2)) * 3.;\n\tcolor += mix(vec3(0.8, 0.9, 1.0), vec3(0.1, 0.1, 0.2),  pow(b, 0.1)) * 0.75;\n\tcolor += mix(vec3(0.9, 0.8, 1.0), vec3(0.1, 0.2, 0.2),  pow(c, 0.1)) * 0.75;\n\tgl_FragColor = vec4(color * clamp(dd, 0.0, 1.0), 1.0);\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56418Show.prototype, 'program', {
+    get: function () {
+      return this.program_6ckk3e$_0;
+    }
+  });
+  GlslSandbox56418Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56418Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56418Show_instance = null;
+  function GlslSandbox56418Show_getInstance() {
+    if (GlslSandbox56418Show_instance === null) {
+      new GlslSandbox56418Show();
+    }
+    return GlslSandbox56418Show_instance;
+  }
+  function GlslSandbox56433Show() {
+    GlslSandbox56433Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56433');
+    this.program_qzk0m9$_0 = trimIndent('\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n\n#define PI 3.14159265\n\nfloat rcos(float x,float phase){\n\treturn (cos((x+phase)*2.*PI)+.5);\t\n\n}\nhighp float rand(vec2 co)\n{\n    highp float a = 12.9898;\n    highp float b = 78.233;\n    highp float c = 43758.5453;\n    highp float dt= dot(co.xy ,vec2(a,b));\n    highp float sn= mod(dt,3.14);\n    return fract(sin(sn) * c);\n}\n\nvec3 rain(float x){\n\treturn vec3(rcos(x,0.),rcos(x,2./3.),rcos(x,1./3.));\n}\n\nvoid main() {\n\tvec2 st = gl_FragCoord.xy/resolution;\n\t\t\n\tfor(float i=0.;i<20.0;i++){\n\t\tvec2 pos=vec2(rand(vec2(i,i)),rand(vec2(i+1.,i+2.)));\n\t\t\n\t\tvec2 sst=st-vec2(mod(pos+mod(time,1.),1.));\n\t\n\t\tgl_FragColor.rgb+=(rain(rand(pos))*.4)/(length(sst)*60.0);\n\t}\n\t\n\tgl_FragColor.a=1.0;\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56433Show.prototype, 'program', {
+    get: function () {
+      return this.program_qzk0m9$_0;
+    }
+  });
+  GlslSandbox56433Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56433Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56433Show_instance = null;
+  function GlslSandbox56433Show_getInstance() {
+    if (GlslSandbox56433Show_instance === null) {
+      new GlslSandbox56433Show();
+    }
+    return GlslSandbox56433Show_instance;
+  }
+  function GlslSandbox56479Show() {
+    GlslSandbox56479Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56479');
+    this.program_5ioz4v$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n// 1\u6B21\u5143\u306E\u4E71\u6570\nfloat rand(float n)\n{\n\tfloat fl = floor(n);\n\tfloat fc = fract(n);\n\treturn mix(fract(sin(fl)), fract(sin(fl + 1.0)), fc);\n}\n\n// 2\u6B21\u5143\u306E\u4E71\u6570\nvec2 rand2(in vec2 p)\n{\n\treturn fract(\n\t\tvec2(\n\t\t\tsin(p.x * 1.32 + p.y * 54.077),\n\t\t\tcos(p.x * 91.32 + p.y * 9.077)\n\t\t)\n\t);\n}\n\n// iq\u6C0F\u306E\u30A6\u30A7\u30D6\u30DA\u30FC\u30B8\u3092\u53C2\u8003\u306B,\u30DC\u30ED\u30CE\u30A4\u30A8\u30C3\u30C2\u3092\u751F\u6210\u3059\u308B\n// https://www.iquilezles.org/www/articles/voronoilines/voronoilines.htm\nfloat voronoi(in vec2 v, in float e)\n{\n\tvec2 p = floor(v);\n\tvec2 f = fract(v);\n\t\n\tvec2 res = vec2(8.0);\n\t\n\tfor(int j = -1; j <= 1; ++j)\n\t\tfor(int i = -1; i <= 1; ++i)\n\t\t{\n\t\t\tvec2 b = vec2(i, j);\n\t\t\tvec2 r = b - f + rand2(p + b);\n\t\t\t\n\t\t\t// \u57FA\u76E4\u611F\u3092\u51FA\u3059\u305F\u3081,\u30C1\u30A7\u30D3\u30B7\u30D5\u8DDD\u96E2\u3092\u7528\u3044\u308B\n\t\t\tfloat d = max(abs(r.x), abs(r.y));\n\t\t\t\n\t\t\tif(d < res.x)\n\t\t\t{\n\t\t\t\tres.y = res.x;\n\t\t\t\tres.x = d;\n\t\t\t}\n\t\t\t\n\t\t\telse if(d < res.y)\n\t\t\t{\n\t\t\t\tres.y = d;\n\t\t\t}\n\t\t}\n\t\n\tvec2 c = sqrt(res);\n\tfloat dist = c.y - c.x;\n\t\n\t// \u6700\u7D42\u7684\u306B\u51FA\u529B\u3055\u308C\u308B\u306E\u306F,\u6307\u5B9A\u3055\u308C\u305F\u6FC3\u3055\u306E\u30A8\u30C3\u30C2\n\treturn 1.0 - smoothstep(0.0, e, dist);\n}\n\n// \u5E73\u9762\u4E0A\u306B\u304A\u3051\u308B\u56DE\u8EE2\nmat2 rotate(in float a)\n{\n\treturn mat2(cos(a), -sin(a), sin(a), cos(a));\n}\n\nvoid main(void)\n{\n\t// \u5EA7\u6A19\u3092\u6B63\u898F\u5316\u3059\u308B\n\tvec2 uv =  gl_FragCoord.xy / resolution * 4.0 - 2.0;\n\tuv.y *= resolution.y / resolution.x;\n\tuv *= rotate(0.3);\n\t\n\t// \u6700\u7D42\u7684\u306B\u51FA\u529B\u3059\u308B\u8272\u306E\u5024\n\tfloat value = 0.0;     \n\tfloat light = 0.0;\n\t\n\tfloat f = 1.5;    // UV\u5EA7\u6A19\u306B\u304B\u3051\u308B\u5024\n\tfloat a = 0.7;    // value\u306B\u52A0\u3048\u308B\u5024\u306E\u4FC2\u6570\n\t\n\t\n\tfor(int i = 0; i < 1; ++i)\n\t{\n\t\t// \u5C0E\u7DDA\u304C\u901A\u3063\u3066\u3044\u308B\u3088\u3046\u306B\u898B\u305B\u308B\u3084\u3064\n\t\tfloat v1 = voronoi(uv * f + 1.0 + time * 0.2 , 0.1);\n\t\tv1 = pow(v1, 2.0);\n\t\tvalue += a * rand(v1 * 5.5 + 0.1);\n\t\t\n\t\t// \u96FB\u6C17\u304C\u901A\u3063\u3066\u308B\u611F\u3058\u306B\u898B\u305B\u308B\u3084\u3064\n\t\tfloat v2 = voronoi(uv * f * 1.5 + 5.0 + time, 0.2) * 1.1;\n\t\tv2 = pow(v2, 5.0);\n\t\tlight += pow(v1 * (0.5 * v2), 1.5);\n\t\t\n\t\t// \u4FC2\u6570\u8AF8\u3005\u3092\u5909\u66F4\n\t\t//f *= 2.0;\n\t\t//a *= 0.6;\n\t}\n\t\n\t// \u51FA\u529B\u3059\u308B\u8272\u306E\u6C7A\u5B9A\n\tvec3 color;\n\tcolor += vec3(0.0, 0.5, 1.0) * value;\n\tcolor += vec3(0.4, 0.7, 1.0) * light;\n\t\n\t// \u8272\u3092\u51FA\u529B\u3059\u308B\n\tgl_FragColor = vec4(color, 1.0);\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56479Show.prototype, 'program', {
+    get: function () {
+      return this.program_5ioz4v$_0;
+    }
+  });
+  GlslSandbox56479Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56479Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56479Show_instance = null;
+  function GlslSandbox56479Show_getInstance() {
+    if (GlslSandbox56479Show_instance === null) {
+      new GlslSandbox56479Show();
+    }
+    return GlslSandbox56479Show_instance;
+  }
+  function GlslSandbox56499Show() {
+    GlslSandbox56499Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56499');
+    this.program_fnaxzz$_0 = trimIndent('\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\nconst float n_circles = 800.0;\nconst float max_radius = 1.0;\nconst float min_radius = 0.5;\nconst float seed1 = 69.7;\nconst float seed2 = 82.4;\nconst float seed3 = 62.5;\n\nfloat rand(float x, float seed) {\n    return fract(sin(x) * seed);\n}\n\nfloat randFromTo(float x, float seed, float min, float max){\n\treturn rand(x, seed) * (max - min) + min;\n}\n\nbool drawCircle(vec2 pos, vec2 center, float radius, inout vec3 color) {\n\tvec2 translatedCenter = vec2(sin(time) * randFromTo(center.x, seed1, -1.8, 1.8) + center.x, sin(time) * randFromTo(center.y, seed1, -1., 1.) + center.y);\n\tfloat distance = distance(pos, translatedCenter);\n\tbool ret =  distance <= radius;\n\tif (ret) {\n\t\tfloat m = max (0.2, smoothstep(radius, radius / 3., distance));\n\t\tcolor = vec3(rand(center.x, seed1) * m,rand(center.y, seed2) * m, rand(center.x + center.y, seed3) * m);\n\t}\n\treturn ret;\n}\n\nvoid drawCircles(vec2 pos, float radiusMultiplier, inout vec3 color) {\n\tfor (float i=0.; i<n_circles; i++){\n\t\tif (drawCircle(pos, vec2(randFromTo(i, seed1, -1.8, 1.8), randFromTo(i, seed2, -1., 1.)), randFromTo(i, seed3, min_radius, max_radius) * radiusMultiplier, color)) {\n\t\t\tbreak;\n\t\t}\n\t}\n}\n\nvoid main( void ) {\n\tfloat minRes = min(resolution.x, resolution.y);\n\tvec2 pos = (gl_FragCoord.xy * 2. - resolution) / minRes;\n\tfloat radiusMultiplier = abs(sin(time + 4. * (pos.x * pos.y)));\n\tvec3 color = vec3(pos.y, pos.y, pos.y);\n\tdrawCircles(pos, radiusMultiplier, color);\n\tgl_FragColor = vec4(color, 1);\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56499Show.prototype, 'program', {
+    get: function () {
+      return this.program_fnaxzz$_0;
+    }
+  });
+  GlslSandbox56499Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56499Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56499Show_instance = null;
+  function GlslSandbox56499Show_getInstance() {
+    if (GlslSandbox56499Show_instance === null) {
+      new GlslSandbox56499Show();
+    }
+    return GlslSandbox56499Show_instance;
+  }
+  function GlslSandbox56511Show() {
+    GlslSandbox56511Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56511');
+    this.program_elivuo$_0 = trimIndent('\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvec4 circle(vec2 p, vec2 c)\n{\n\tp-=c;\n    if (p.x*p.x+p.y*p.y<0.001) return vec4(1.0,1.0,1.0,1.0);\n    return vec4(0.0,0.0,0.0,0.0);\n}\n\n\nvec2 md(vec2 p) {\n  p.x = mod(p.x,0.2);\n  p.y = mod(p.y,0.2);\n  return p;\n}\nvec4 map0(vec2 p, float z)\n{\n   p.x/=z;\n   p.y/=z;\n   p = md(p);\n   return circle(p,vec2(0.1,0.1));\t\n}\nvec4 map1(vec2 p,float d, float m) {\n   d = mod(d,1.3);\n   \n   vec4 ca = map0(p,m*0.1+d);\n   vec4 c0 = map0(p,m*0.3+d);\n   vec4 c1 = map0(p,m*0.5+d);\n   vec4 c2 = map0(p,m*0.7+d);\n   vec4 c3 = map0(p,m*0.9+d);\n   vec4 c4 = map0(p,m*1.1+d);\n   vec4 c5 = map0(p,m*1.3+d);\n   return ca+c0+c1+c2+c3+c4+c5;\n}\nvec4 map2(vec2 p, float d)\n{\n\tvec4 c0 = map1(p,d,0.1);\n\tvec4 c1 = map1(p,d,0.2);\n\tvec4 c2 = map1(p,d,0.3);\n\tvec4 c3 = map1(p,d,0.4);\n\tvec4 c4 = map1(p,d,0.5);\n\treturn c0+c1+c2+c3+c4;\n}\n\nvoid main( void ) {\n\n\tvec2 position = ( gl_FragCoord.xy / resolution.yy ) ;\n\tposition.x-=0.6;\n\tposition.y-=0.5;\n\t\n\tfloat color = 0.0;\n\tcolor += sin( position.x * cos( time / 15.0 ) * 80.0 ) + cos( position.y * cos( time / 15.0 ) * 10.0 );\n\tcolor += sin( position.y * sin( time / 10.0 ) * 40.0 ) + cos( position.x * sin( time / 25.0 ) * 40.0 );\n\tcolor += sin( position.x * sin( time / 5.0 ) * 10.0 ) + sin( position.y * sin( time / 35.0 ) * 80.0 );\n\tcolor *= sin( time / 10.0 ) * 0.5;\n\n\t//position = md(position);\n\tgl_FragColor = map2(position, time/1.0); //circle(position,vec2(0.1,0.1));\n\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56511Show.prototype, 'program', {
+    get: function () {
+      return this.program_elivuo$_0;
+    }
+  });
+  GlslSandbox56511Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56511Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56511Show_instance = null;
+  function GlslSandbox56511Show_getInstance() {
+    if (GlslSandbox56511Show_instance === null) {
+      new GlslSandbox56511Show();
+    }
+    return GlslSandbox56511Show_instance;
+  }
   function GlslSandbox56555Show() {
     GlslSandbox56555Show_instance = this;
     GlslShow.call(this, 'GlslSandbox 56555 (OpenGL)');
@@ -13110,6 +13523,50 @@
       new GlslSandbox56555Show();
     }
     return GlslSandbox56555Show_instance;
+  }
+  function GlslSandbox56573Show() {
+    GlslSandbox56573Show_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox 56573');
+    this.program_nseccc$_0 = trimIndent('\n        // Fireball\n// Awd\n// @AlexWDunn\n//mod by an+\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform vec2 resolution;\nuniform float time;\n//uniform vec2 mouse;\nuniform float zoom;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseY;\n\n#define saturate(oo) clamp(oo, 0.0, 1.0)\n\n// Quality Settings\n#define MarchSteps 6\n\n// Scene Settings\n#define ExpPosition vec3(0.0)\n#define Radius 2.0\n#define Background vec4(0.1, 0.0, 0.0, 1.0)\n\n// Noise Settings\n#define NoiseSteps 4\n#define NoiseAmplitude 0.1\n#define NoiseFrequency 2.2\n#define Animation vec3(0.0, .0, 0.5)\n\n// Colour Gradient\n#define Color1 vec4(0.0, 0.0, 0.0, 1.0)\n#define Color2 vec4(.0, .0, 1.0, 1.0)\n#define Color3 vec4(1.0, .0, 0., 1.0)\n#define Color4 vec4(0.4, 0.8, 0., 1.0)\n\n\n\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }\nvec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }\n\nfloat snoise(vec3 v)\n{\n\tconst vec2  C = vec2(1.0/6.0, 1.0/3.0);\n\tconst vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n\t// First corner\n\tvec3 i  = floor(v + dot(v, C.yyy));\n\tvec3 x0 = v - i + dot(i, C.xxx);\n\n\t// Other corners\n\tvec3 g = step(x0.yzx, x0.xyz);\n\tvec3 l = 1.0 - g;\n\tvec3 i1 = min(g.xyz, l.zxy);\n\tvec3 i2 = max(g.xyz, l.zxy);\n\tvec3 x1 = x0 - i1 + C.xxx;\n\tvec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n\tvec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n\t// Permutations\n\ti = mod289(i);\n\tvec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n\t// Gradients: 7x7 points over a square, mapped onto an octahedron.\n\t// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n\tfloat n_ = 0.142857142857; // 1.0/7.0\n\tvec3  ns = n_ * D.wyz - D.xzx;\n\tvec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n\tvec4 x_ = floor(j * ns.z);\n\tvec4 y_ = floor(j - 7.0 * x_);    // mod(j,N)\n\n\tvec4 x = x_ *ns.x + ns.yyyy;\n\tvec4 y = y_ *ns.x + ns.yyyy;\n\n\tvec4 h = 1.0 - abs(x) - abs(y);\n\tvec4 b0 = vec4(x.xy, y.xy);\n\tvec4 b1 = vec4(x.zw, y.zw);\n\n\tvec4 s0 = floor(b0) * 2.0 + 1.0;\n\tvec4 s1 = floor(b1) * 2.0 + 1.0;\n\tvec4 sh = -step(h, vec4(0.0));\n\n\tvec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;\n\tvec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;\n\n\tvec3 p0 = vec3(a0.xy, h.x);\n\tvec3 p1 = vec3(a0.zw, h.y);\n\tvec3 p2 = vec3(a1.xy, h.z);\n\tvec3 p3 = vec3(a1.zw, h.w);\n\n\t//Normalise gradients\n\tvec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n\n\tp0 *= norm.x;\n\tp1 *= norm.y;\n\tp2 *= norm.z;\n\tp3 *= norm.w;\n\n\t// Mix final noise value\n\tvec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n\tm = m * m;\n\n\treturn 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));\n}\n\nfloat Turbulence(vec3 position, float minFreq, float maxFreq, float qWidth)\n{\n\tfloat value = 0.0;\n\tfloat cutoff = clamp(0.5/qWidth, 0.0, maxFreq);\n\tfloat fade;\n\tfloat fOut = minFreq;\n\n\tfor(int i=NoiseSteps ; i>=0 ; i++)\n\t{\n\t\tif(fOut >= 0.5 * cutoff) break;\n\n\t\tfOut *= 2.0;\n\t\tvalue += abs(snoise(position * fOut))/fOut;\n\t}\n\n\tfade = clamp(2.0 * (cutoff-fOut)/cutoff, 0.0, 1.0);\n\tvalue += fade * abs(snoise(position * fOut))/fOut;\n\n\treturn 1.0-value;\n}\n\nfloat SphereDist(vec3 position)\n{\n\treturn length(position - ExpPosition) - Radius;\n}\n\nvec4 Shade(float distance)\n{\n\tfloat c1 = saturate(distance*5.0 + 0.5);\n\tfloat c2 = saturate(distance*5.0);\n\tfloat c3 = saturate(distance*3.4 - 0.5);\n\t\n\tvec4 a = mix(Color1,Color2, c1);\n\tvec4 b = mix(a,     Color3, c2);\n\treturn \t mix(b,     Color4, c3);\n}\n\n\n// Draws the scene\nfloat RenderScene(vec3 position, out float distance)\n{\n\tfloat noise = Turbulence(position * NoiseFrequency + Animation*time, 0.1, 1.5, 0.03) * NoiseAmplitude;\n\tnoise = saturate(abs(noise));\n\tdistance = SphereDist(position) - noise;\n\t\t\n\treturn noise;\n}\n\n// Basic ray marching method.\nvec4 March(vec3 rayOrigin, vec3 rayStep)\n{\n\tvec3 position = rayOrigin;\n\t\n\tfloat distance;\n\tfloat displacement;\n\t\n\tfor(int step = MarchSteps; step >=0  ; --step)\n\t{\n\t\tdisplacement = RenderScene(position, distance);\n\t\n\t\tif(distance < 0.05) break;\n\t\t\n\t\tposition += rayStep * distance;\n\t}\n\treturn mix(Shade(displacement), Background, float(distance >= 0.5));\n}\n\nbool IntersectSphere(vec3 ro, vec3 rd, vec3 pos, float radius, out vec3 intersectPoint)\n{\n\tvec3 relDistance = (ro - pos);\n\t\n\tfloat b = dot(relDistance, rd);\n\tfloat c = dot(relDistance, relDistance) - radius*radius;\n\tfloat d = b*b - c;\n\t\n\tintersectPoint = ro + rd*(-b - sqrt(d));\n\t\n\treturn d >= 0.0;\n}\n\nvoid main(void)\n{\n\tvec2 p = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;\n\t\n\tp.x *= resolution.x/resolution.y;\n\n\tfloat rotx = mouseY * 4.0;\n\tfloat roty = -mouseX * 4.0;\n\tfloat zoom = 5.0;\n\n\t// camera\n\tvec3 ro = zoom * normalize(vec3(cos(roty), cos(rotx), sin(roty)));\n\tvec3 ww = normalize(vec3(0.0, 0.0, 0.0) - ro);\n\tvec3 uu = normalize(cross( vec3(0.0, 1.0, 0.0), ww));\n\tvec3 vv = normalize(cross(ww, uu));\n\tvec3 rd = normalize(p.x*uu + p.y*vv + 4.5*ww);\n\n\tvec4 col = Background;\n\n\tvec3 origin;\n\t\n\tif(IntersectSphere(ro, rd, ExpPosition, Radius + NoiseAmplitude*6.0, origin))\n\t{\n\t\tcol = March(origin, rd);\n\t}\n\t\n\tgl_FragColor = col;\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56573Show.prototype, 'program', {
+    get: function () {
+      return this.program_nseccc$_0;
+    }
+  });
+  GlslSandbox56573Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56573Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56573Show_instance = null;
+  function GlslSandbox56573Show_getInstance() {
+    if (GlslSandbox56573Show_instance === null) {
+      new GlslSandbox56573Show();
+    }
+    return GlslSandbox56573Show_instance;
+  }
+  function GlslSandbox56592Show() {
+    GlslSandbox56592Show_instance = this;
+    GlslShow.call(this, 'GlslSandbox 56592');
+    this.program_yfpo13$_0 = trimIndent('\n        \n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\n// Sphere tracer by mzeo\n//\n// inspired by http://www.youtube.com/watch?v=kuesTvUYsSc#t=377\n//\n// waves by @hintz\n\n#ifdef GL_ES\nprecision mediump float;\nconst vec3 df = vec3(0.10, 0.0, 0.0);\n#else\nconst vec3 df = vec3(0.01, 0.0, 0.0);\n#endif\n\n\n#define AUTO_CAMERA\n\n// input\n\n// Constants\n// Camera\nconst vec3 origin = vec3(0, 0, 0);\nconst int steps = 128;\nconst vec3 sun = vec3(1.0, .5, -1.0);\n\nconst int miterations = 32;\n\n// Ball\nstruct Ball \n{\n\tvec3 pos;\n\tfloat size;\n};\n\nconst Ball ball = Ball(vec3(0, 0, 5), 0.5);\n\nstruct Balls\n{\n\tvec3 dir;\n\tvec3 p;\n\tfloat dist;\n};\n\t\nconst Balls balls = Balls(vec3(1, 0, 0), vec3(0, 0, 0), 1.0);\n\n// Floor\n\nstruct Plane \n{\n\tvec3 n;\n\tfloat d;\n};\n\t\nconst Plane plane = Plane(vec3(0, 1, 0), -1.0);\n\n// Distance\nstruct Dist\n{\n\tfloat dist;\n\tint id;\n};\n\n\t\nDist and(Dist a, Dist b)\n{\n\tif (a.dist < b.dist) \n\t{\n\t\treturn a;\n\t}\n\t\n\treturn b;\n}\n\nDist fBall(Ball ball, vec3 p) \n{\n\treturn Dist(length(ball.pos - p) - ball.size, 0);\n}\n\nBall get(Balls balls, float t) \n{\n\tfloat a = abs(mod(t, 6.0) - 3.0);\n\tvec3 p = balls.p + balls.dir * t * balls.dist + a * a * vec3(0, -0.15, 0);\n\treturn Ball(p, ball.size);\n}\n\nDist fBalls(Balls balls, vec3 p) \n{\n\tfloat t = dot(p - balls.p, balls.dir) / balls.dist;\n\tfloat t0 = t - fract(t + fract(iTime) * 2.0);\n\tfloat t1 = t0 + 1.0;\n\n\treturn and(\n\t\tfBall(get(balls, t0), p),\n\t\tfBall(get(balls, t1), p));\n}\n\nDist fPlane(Plane plane, vec3 p)\n{\n\treturn Dist(dot(plane.n, p) - plane.d - 0.4*cos(length(p.xz) - iTime), 1);\n}\n\nDist f(vec3 p) \n{\n\treturn and(\n\t\tfBalls(balls, p),\n\t\tfPlane(plane, p));\n}\n\nvec3 grad(vec3 p) \n{\n\tfloat f0 = f(p).dist;\n\n\treturn normalize(vec3(\n\t\tf(p + df.xyz).dist,\n\t\tf(p + df.yxz).dist,\n\t\tf(p + df.yzx).dist) - f0);\n}\n\nfloat mandel(vec2 c)\n{\n\tvec2 z = c;\n\n\tfor(int i = 0; i < miterations; ++i)\n\t{\n\t\tz = vec2(z.x*z.x - z.y*z.y, 1.5*z.x*z.y) + c;\n\t\tif (length(z) > 40.0) return float(i) / float(miterations);\n\t}\n\t\n\treturn 0.0;\n}\n\nvec3 floorTexture(vec3 p) \n{\n\tmat2 rot = mat2(vec2(1, 1), vec2(1, -1));\n\tvec2 c = rot * (p.xz + vec2(-0.7, -1.0)) * 0.2;\n\tfloat i = mandel(c);\n\treturn clamp(vec3(i * 10.0, i * i *10.0, i*i*i*5.0).zyx, vec3(0,0,0), vec3(2,2,2));\n}\n\n\nvec4 shade(vec3 p, vec3 ray, int id) \n{\n\tvec3 n = grad(p);\n\tfloat diffuse = clamp(dot(normalize(sun), n), 0.0, 1.0);\n\n\tvec3 color;\n\tfloat ref;\n\n\tif (id == 0) \n\t{\n\t\tcolor = vec3(0,1,0);\n\t\tref = 0.1;\n\t} \n\telse \n\t{\n\t\tcolor = floorTexture(p);\n\t\tref = 0.5;\n\t}\n\n\treturn vec4(color * diffuse, 1) * ref;\n}\n\nvec4 combine(vec4 a, vec4 b) \n{\n\treturn a + b * (1.0 - a.w); \n}\n\nvec4 sky(vec3 ray) \n{\n\tfloat sun = dot(ray, normalize(sun));\n\tsun = (sun > 0.0) ? pow(sun, 150.0) * 3.0 : 0.0;\n\tfloat horizon = 1.0 - abs(ray.y);\n\tvec3 blue = vec3(0.1, 0.3, 0.6);\n\tvec3 red = vec3(0.6, 0.3, 0.) * 2.0;\n\treturn vec4(vec3(0.9, 0.8, 0.5) * sun + blue * horizon + red * pow(horizon, 8.0), 1);\n}\n\nvec4 trace(vec3 origin, vec3 ray) \n{\n\tvec3 p = origin;\n\tDist dist = Dist(10.0, 2);\n\tvec4 result = vec4(0, 0, 0, 0);\n\n\tfor(int i = 0; i < steps; ++i) \n\t{\n\t\tdist = f(p);\n\t\tif (dist.dist > 0.01) \n\t\t{ \n\t\t\tp += ray * dist.dist;\n\t\t\tfloat absorb = exp(-dist.dist * 0.05);\n\t\t\tvec4 s = sky(ray) * (1.0 - absorb);\n\t\t\t\n\t\t\tresult = combine(result, s);\n\t\t}\n\t\telse if (result.w < 0.99) \n\t\t{\n\t\t\tvec3 n = grad(p);\n\t\t\tvec4 s = shade(p, ray, dist.id);\n\t\t\tray = reflect(ray, n);\n\t\t\tp += n * 0.01;\n\t\t\t\n\t\t\tresult = combine(result, s);\n\t\t} \n\t\telse \n\t\t{\n\t\t\tbreak;\n\t\t}\n\t}\n\n\treturn combine(result, sky(ray));\n}\nvoid mainImage(out vec4 fragColor,in vec2 fragCoord)\n{\n\tfloat scale = 2.0 / max(iResolution.x, iResolution.y);\n\tvec3 ray = vec3((fragCoord.xy - iResolution.xy / 2.0) * scale, 1);\n\n//#ifdef AUTO_CAMERA\n\tfloat yaw = cos(iTime) * -0.25 + 0.1;\n\tfloat angle = iTime * 0.5;\n//#else\n\t//float yaw = iMouse.y - 0.15;\n\t//float angle = iMouse.x * 8.0;\n//#endif\n\t\n\tvec3 from = (vec3(sin(angle), 0, cos(angle)) * cos(yaw) + vec3(0, sin(yaw) * 1.0, 0)) * 5.0; \n\t//vec3 from = origin + vec3((iMouse.xy - vec2(0.5,0.0)) * vec2(15.0, 3.0), -5);\n\tvec3 to = vec3(0, -1, 0);\n\tvec3 up = vec3(0, 1, 0);\n\tvec3 dir = normalize(to - from);\n\tvec3 left = normalize(cross(up, dir));\n\tmat3 rot = mat3(left, cross(dir, left), dir);\n\n\tfragColor = trace(from, rot * normalize(ray));\n}\n// --------[ Original ShaderToy ends here ]---------- //\n\nvoid main(void)\n{\n    mainImage(gl_FragColor, gl_FragCoord.xy);\n    gl_FragColor.a = 1.0;\n}\n    ');
+  }
+  Object.defineProperty(GlslSandbox56592Show.prototype, 'program', {
+    get: function () {
+      return this.program_yfpo13$_0;
+    }
+  });
+  GlslSandbox56592Show.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandbox56592Show',
+    interfaces: [GlslShow]
+  };
+  var GlslSandbox56592Show_instance = null;
+  function GlslSandbox56592Show_getInstance() {
+    if (GlslSandbox56592Show_instance === null) {
+      new GlslSandbox56592Show();
+    }
+    return GlslSandbox56592Show_instance;
   }
   function GlslSandbox56594Show() {
     GlslSandbox56594Show_instance = this;
@@ -13157,7 +13614,7 @@
   }
   function GlslSandbox56718Show() {
     GlslSandbox56718Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56718 (OpenGL)');
+    GlslShow.call(this, 'GLSL Sandbox 56718');
     this.program_izazzd$_0 = trimIndent('\nprecision mediump float;\n\nuniform float time;\n//uniform vec2 resolution;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}\nuniform float mouseY;\n\n//uniform vec2 mouse;\n//varying vec2 surfacePosition;\n\nvoid main( void ) {\n\tvec2 p = gl_FragCoord;\n\tfloat speed = 0.25;\n\tvec3 color = vec3(1.,0.5,.25);\n\tvec2 loc = vec2(\n\t\tcos(time/4.0*speed)/1.9-cos(time/2.0*speed)/3.8,\n\t\tsin(time/4.0*speed)/1.9-sin(time/2.0*speed)/3.8\n\t);\n\tfloat depth;\n\tfor(int i = 0; i < 50; i+=1){\n\t\tp = vec2(p.x*p.x-p.y*p.y, 2.0*p.x*p.y)+loc;\n\t\tdepth = float(i);\n\t\tif((p.x*p.x+p.y*p.y) >= mouseY*4.0) break;\n\t}\n\tgl_FragColor = vec4(clamp( (mouseX+.5)*color*depth*0.05, 0.0, 1.0), 1.0 );\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56718Show.prototype, 'program', {
@@ -13176,6 +13633,50 @@
       new GlslSandbox56718Show();
     }
     return GlslSandbox56718Show_instance;
+  }
+  function GlslSandboxDebugShow() {
+    GlslSandboxDebugShow_instance = this;
+    GlslShow.call(this, 'GlslSandbox Debug (OpenGL)');
+    this.program_k7gr41$_0 = '\n/*\n * Original shader from: https://www.shadertoy.com/view/wt2GWK\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n#define t iTime\n\nvoid main(void)\n{\n\n    gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, 0.0, 1.0);\n\n}\n\n\n\n\n';
+  }
+  Object.defineProperty(GlslSandboxDebugShow.prototype, 'program', {
+    get: function () {
+      return this.program_k7gr41$_0;
+    }
+  });
+  GlslSandboxDebugShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandboxDebugShow',
+    interfaces: [GlslShow]
+  };
+  var GlslSandboxDebugShow_instance = null;
+  function GlslSandboxDebugShow_getInstance() {
+    if (GlslSandboxDebugShow_instance === null) {
+      new GlslSandboxDebugShow();
+    }
+    return GlslSandboxDebugShow_instance;
+  }
+  function GlslSandboxShowTemplate() {
+    GlslSandboxShowTemplate_instance = this;
+    GlslShow.call(this, 'GLSL Sandbox ');
+    this.program_sez9vk$_0 = trimIndent('\n    ');
+  }
+  Object.defineProperty(GlslSandboxShowTemplate.prototype, 'program', {
+    get: function () {
+      return this.program_sez9vk$_0;
+    }
+  });
+  GlslSandboxShowTemplate.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandboxShowTemplate',
+    interfaces: [GlslShow]
+  };
+  var GlslSandboxShowTemplate_instance = null;
+  function GlslSandboxShowTemplate_getInstance() {
+    if (GlslSandboxShowTemplate_instance === null) {
+      new GlslSandboxShowTemplate();
+    }
+    return GlslSandboxShowTemplate_instance;
   }
   function GlslShow(name) {
     Show.call(this, name);
@@ -13260,20 +13761,20 @@
     return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets, showRunner, shader);
   };
   GlslShow.prototype.createGadget_j5u65$ = function ($receiver, showRunner) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     var config = $receiver.config;
     var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
     switch ($receiver.gadgetType) {
       case 'Slider':
-        tmp$_3 = new Slider(name, (tmp$_0 = config.getPrimitive_61zpoe$('initialValue').floatOrNull) != null ? tmp$_0 : 1.0, (tmp$_1 = config.getPrimitive_61zpoe$('minValue').floatOrNull) != null ? tmp$_1 : 0.0, (tmp$_2 = config.getPrimitive_61zpoe$('maxValue').floatOrNull) != null ? tmp$_2 : 1.0);
+        tmp$_6 = new Slider(name, (tmp$_1 = (tmp$_0 = config.getPrimitiveOrNull_61zpoe$('initialValue')) != null ? tmp$_0.float : null) != null ? tmp$_1 : 1.0, (tmp$_3 = (tmp$_2 = config.getPrimitiveOrNull_61zpoe$('minValue')) != null ? tmp$_2.float : null) != null ? tmp$_3 : 0.0, (tmp$_5 = (tmp$_4 = config.getPrimitiveOrNull_61zpoe$('maxValue')) != null ? tmp$_4.float : null) != null ? tmp$_5 : 1.0);
         break;
       case 'ColorPicker':
-        tmp$_3 = new ColorPicker(name);
+        tmp$_6 = new ColorPicker(name);
         break;
       default:throw IllegalArgumentException_init('unknown gadget ' + $receiver.gadgetType);
     }
-    var gadget = tmp$_3;
-    return showRunner.getGadget_vedre8$(name, gadget);
+    var gadget = tmp$_6;
+    return showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, gadget);
   };
   GlslShow.$metadata$ = {
     kind: Kind_CLASS,
@@ -14063,10 +14564,16 @@
     interfaces: [Dmx$Universe]
   };
   function FakeFs() {
+    FakeFs$Companion_getInstance();
     this.files_0 = LinkedHashMap_init();
   }
+  function FakeFs$listFiles$lambda(closure$path) {
+    return function () {
+      return 'FakeFs.listFiles(' + closure$path + ')';
+    };
+  }
   FakeFs.prototype.listFiles_61zpoe$ = function (path) {
-    logger$Companion_getInstance().debug_61zpoe$('FakeFs.listFiles(' + path + ')');
+    FakeFs$Companion_getInstance().logger.debug_h4ejuu$(FakeFs$listFiles$lambda(path));
     var $receiver = this.files_0.keys;
     var destination = ArrayList_init();
     var tmp$;
@@ -14078,13 +14585,23 @@
     }
     return destination;
   };
+  function FakeFs$loadFile$lambda(closure$path) {
+    return function () {
+      return 'FakeFs.loadFile(' + closure$path + ')';
+    };
+  }
   FakeFs.prototype.loadFile_61zpoe$ = function (path) {
     var tmp$;
-    logger$Companion_getInstance().debug_61zpoe$('FakeFs.loadFile(' + path + ')');
+    FakeFs$Companion_getInstance().logger.debug_h4ejuu$(FakeFs$loadFile$lambda(path));
     return (tmp$ = this.files_0.get_11rb$(path)) != null ? decodeToString(tmp$) : null;
   };
+  function FakeFs$createFile$lambda(closure$path, closure$content) {
+    return function () {
+      return 'FakeFs.createFile(' + closure$path + ') -> ' + closure$content.length + ' bytes';
+    };
+  }
   FakeFs.prototype.createFile_7x97xx$$default = function (path, content, allowOverwrite) {
-    logger$Companion_getInstance().debug_61zpoe$('FakeFs.createFile(' + path + ') -> ' + content.length + ' bytes');
+    FakeFs$Companion_getInstance().logger.debug_h4ejuu$(FakeFs$createFile$lambda(path, content));
     this.addFile_0(path, content);
   };
   FakeFs.prototype.createFile_qz9155$$default = function (path, content, allowOverwrite) {
@@ -14096,6 +14613,22 @@
     }
     this.files_0.put_xwzc9p$(path, content);
   };
+  function FakeFs$Companion() {
+    FakeFs$Companion_instance = this;
+    this.logger = new Logger('FakeFs');
+  }
+  FakeFs$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var FakeFs$Companion_instance = null;
+  function FakeFs$Companion_getInstance() {
+    if (FakeFs$Companion_instance === null) {
+      new FakeFs$Companion();
+    }
+    return FakeFs$Companion_instance;
+  }
   FakeFs.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'FakeFs',
@@ -14739,42 +15272,64 @@
     else
       return instance.doResume(null);
   }
-  function logger() {
-    logger$Companion_getInstance();
+  function Logger(id) {
+    Logger$Companion_getInstance();
+    this.id = id;
   }
-  function logger$Companion() {
-    logger$Companion_instance = this;
+  Logger.prototype.log_0 = function (level, message) {
+    println(Logger$Companion_getInstance().ts() + ' [] ' + level + '  ' + this.id + ' - ' + message);
+  };
+  Logger.prototype.log_1 = function (level, message, exception) {
+    println(Logger$Companion_getInstance().ts() + ' [] ' + level + '  ' + this.id + ' - ' + message + ': ' + toString_0(exception.message));
+  };
+  Logger.prototype.debug_h4ejuu$ = function (message) {
+    this.log_0('DEBUG', message());
+  };
+  Logger.prototype.info_h4ejuu$ = function (message) {
+    this.log_0('INFO', message());
+  };
+  Logger.prototype.warn_h4ejuu$ = function (message) {
+    this.log_0('WARN', message());
+  };
+  Logger.prototype.error_h4ejuu$ = function (message) {
+    this.log_0('ERROR', message());
+  };
+  Logger.prototype.error_nwdkmo$ = function (message, exception) {
+    this.log_1('ERROR', message, exception);
+  };
+  Logger.prototype.error_p5ysqc$ = function (message, exception) {
+    this.log_1('ERROR', message(), exception);
+  };
+  function Logger$Companion() {
+    Logger$Companion_instance = this;
+    this.FORMAT_wb04rd$_0 = lazy(Logger$Companion$FORMAT$lambda);
   }
-  logger$Companion.prototype.debug_61zpoe$ = function (message) {
-    println('DEBUG: ' + message);
+  Object.defineProperty(Logger$Companion.prototype, 'FORMAT_0', {
+    get: function () {
+      return this.FORMAT_wb04rd$_0.value;
+    }
+  });
+  Logger$Companion.prototype.ts = function () {
+    return DateTime.Companion.now().format_cgtbg3$(this.FORMAT_0);
   };
-  logger$Companion.prototype.info_61zpoe$ = function (message) {
-    println('INFO: ' + message);
-  };
-  logger$Companion.prototype.warn_61zpoe$ = function (message) {
-    println('WARN: ' + message);
-  };
-  logger$Companion.prototype.error_61zpoe$ = function (message) {
-    println('ERROR: ' + message);
-  };
-  logger$Companion.prototype.error_nwdkmo$ = function (message, exception) {
-    println('ERROR: ' + message + ': ' + toString_0(exception.message));
-  };
-  logger$Companion.$metadata$ = {
+  function Logger$Companion$FORMAT$lambda() {
+    return DateFormat.Companion.invoke_61zpoe$('yyyy-MM-dd HH:mm:ss.SSS');
+  }
+  Logger$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
     interfaces: []
   };
-  var logger$Companion_instance = null;
-  function logger$Companion_getInstance() {
-    if (logger$Companion_instance === null) {
-      new logger$Companion();
+  var Logger$Companion_instance = null;
+  function Logger$Companion_getInstance() {
+    if (Logger$Companion_instance === null) {
+      new Logger$Companion();
     }
-    return logger$Companion_instance;
+    return Logger$Companion_instance;
   }
-  logger.$metadata$ = {
+  Logger.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'logger',
+    simpleName: 'Logger',
     interfaces: []
   };
   function Coroutine$time(function_1, continuation_0) {
@@ -15593,13 +16148,13 @@
       while (tmp$_2.hasNext()) {
         var element_1 = tmp$_2.next();
         var lineGeom = new BufferGeometry();
-        var $receiver_2 = element_1.points;
+        var $receiver_2 = element_1.vertices;
         var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_2, 10));
         var tmp$_3;
         tmp$_3 = $receiver_2.iterator();
         while (tmp$_3.hasNext()) {
           var item_0 = tmp$_3.next();
-          destination_0.add_11rb$(plus_0(new Vector3(item_0.x, item_0.y, item_0.z), surfaceNormal));
+          destination_0.add_11rb$(plus_1(new Vector3(item_0.x, item_0.y, item_0.z), surfaceNormal));
         }
         lineGeom.setFromPoints(copyToArray(destination_0));
         this.wireframe_0.add(new Line_init(lineGeom, lineMaterial));
@@ -16752,15 +17307,15 @@
               vizPanel.vizPixels = new VizPanel$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
               document.getElementById('visualizerPixelCount').innerText = totalPixels.v.toString();
-              var $receiver = ensureNotNull(vizPanel.getPixelLocations());
+              var $receiver = ensureNotNull(vizPanel.getPixelLocationsInModelSpace());
               var destination = ArrayList_init_1($receiver.length);
               var tmp$_3;
               for (tmp$_3 = 0; tmp$_3 !== $receiver.length; ++tmp$_3) {
                 var item_0 = $receiver[tmp$_3];
-                destination.add_11rb$(new Vector2F(item_0.x, item_0.y));
+                destination.add_11rb$(new Vector3F(item_0.x, item_0.y, item_0.z));
               }
               var pixelLocations = destination;
-              this$SheepSimulator.pinky_0.providePixelMapping_CHEAT_cafowi$(item, pixelLocations);
+              this$SheepSimulator.pinky_0.providePixelMapping_CHEAT_cafo5t$(item, pixelLocations);
               var brain = new Brain('brain//' + index_0, this$SheepSimulator.network_0, this$SheepSimulator.display_0.forBrain(), (tmp$_2 = vizPanel.vizPixels) != null ? tmp$_2 : SheepSimulator$NullPixels_getInstance());
               this$SheepSimulator.pinky_0.providePanelMapping_CHEAT_iegnfh$(new BrainId(brain.id), item);
               launch(this$SheepSimulator.brainScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda_0(brain));
@@ -17487,11 +18042,11 @@
     this.compileShader_0(vs);
     this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_2(this, program, vs));
     var fs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_3(this));
-    var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
+    var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
     var $receiver = this.fragShader;
     var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
     var replacement = 'void sm_main(vec2 sm_pixelCoord)';
-    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
+    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
     println(src);
     this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_4(this, fs, src));
     this.compileShader_0(fs);
@@ -19171,7 +19726,7 @@
       var item_2 = tmp$_8.next();
       var tmp$_9 = destination_1.add_11rb$;
       var lineGeo = new Geometry();
-      var $receiver_6 = item_2.points;
+      var $receiver_6 = item_2.vertices;
       var destination_2 = ArrayList_init_1(collectionSizeOrDefault($receiver_6, 10));
       var tmp$_10;
       tmp$_10 = $receiver_6.iterator();
@@ -19266,16 +19821,18 @@
     interfaces: []
   };
   function VizPanel$VizPixels(vizPanel, positions) {
-    this.size_cgbufu$_0 = positions.length;
+    this.positions = positions;
+    this.size_cgbufu$_0 = this.positions.length;
     this.pixGeometry_0 = new BufferGeometry();
     this.planeGeometry_0 = null;
     this.vertexColorBufferAttr_0 = null;
     this.colorsAsInts_0 = new Int32Array(this.size);
     var positionsArray = new Float32Array(this.size * 3 | 0);
+    var $receiver = this.positions;
     var tmp$, tmp$_0;
     var index = 0;
-    for (tmp$ = 0; tmp$ !== positions.length; ++tmp$) {
-      var item = positions[tmp$];
+    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
+      var item = $receiver[tmp$];
       var i = (tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0);
       positionsArray[i * 3 | 0] = item.x;
       positionsArray[(i * 3 | 0) + 1 | 0] = item.y;
@@ -19286,10 +19843,11 @@
     this.vertexColorBufferAttr_0 = new Float32BufferAttribute(new Float32Array((this.size * 3 | 0) * 4 | 0), 3);
     this.vertexColorBufferAttr_0.dynamic = true;
     var rotator = new Rotator(new Vector3(0, 0, 1), vizPanel.panelNormal_0);
-    var destination = ArrayList_init_1(positions.length);
+    var $receiver_0 = this.positions;
+    var destination = ArrayList_init_1($receiver_0.length);
     var tmp$_1;
-    for (tmp$_1 = 0; tmp$_1 !== positions.length; ++tmp$_1) {
-      var item_0 = positions[tmp$_1];
+    for (tmp$_1 = 0; tmp$_1 !== $receiver_0.length; ++tmp$_1) {
+      var item_0 = $receiver_0[tmp$_1];
       var tmp$_2 = destination.add_11rb$;
       var geometry = new PlaneBufferGeometry(2 + Random.Default.nextFloat() * 8, 2 + Random.Default.nextFloat() * 8);
       rotator.rotate_lbyolm$([geometry]);
@@ -19299,15 +19857,15 @@
     this.planeGeometry_0 = BufferGeometryUtils$Companion.mergeBufferGeometries(copyToArray(destination));
     this.planeGeometry_0.addAttribute('color', this.vertexColorBufferAttr_0);
     var tmp$_3 = this.planeGeometry_0;
-    var $receiver = new MeshBasicMaterial();
-    $receiver.side = THREE.FrontSide;
-    $receiver.transparent = true;
-    $receiver.blending = THREE.AdditiveBlending;
-    $receiver.depthTest = false;
-    $receiver.depthWrite = false;
-    $receiver.vertexColors = THREE.VertexColors;
-    $receiver.map = VizPanel$Companion_getInstance().roundLightTx_0;
-    this.pixelsMesh_0 = new Mesh_init(tmp$_3, $receiver);
+    var $receiver_1 = new MeshBasicMaterial();
+    $receiver_1.side = THREE.FrontSide;
+    $receiver_1.transparent = true;
+    $receiver_1.blending = THREE.AdditiveBlending;
+    $receiver_1.depthTest = false;
+    $receiver_1.depthWrite = false;
+    $receiver_1.vertexColors = THREE.VertexColors;
+    $receiver_1.map = VizPanel$Companion_getInstance().roundLightTx_0;
+    this.pixelsMesh_0 = new Mesh_init(tmp$_3, $receiver_1);
   }
   Object.defineProperty(VizPanel$VizPixels.prototype, 'size', {
     get: function () {
@@ -19348,6 +19906,9 @@
     }
     this.vertexColorBufferAttr_0.needsUpdate = true;
   };
+  VizPanel$VizPixels.prototype.getPixelLocationsInModelSpace_zdreix$ = function (vizPanel) {
+    return this.positions;
+  };
   VizPanel$VizPixels.prototype.getPixelLocationsInPanelSpace_zdreix$ = function (vizPanel) {
     var tmp$, tmp$_0;
     var panelGeom = vizPanel.geometry_8be2vx$.clone();
@@ -19385,9 +19946,13 @@
     simpleName: 'VizPixels',
     interfaces: [Pixels]
   };
-  VizPanel.prototype.getPixelLocations = function () {
+  VizPanel.prototype.getPixelLocationsInPanelSpace = function () {
     var tmp$;
     return (tmp$ = this.vizPixels) != null ? tmp$.getPixelLocationsInPanelSpace_zdreix$(this) : null;
+  };
+  VizPanel.prototype.getPixelLocationsInModelSpace = function () {
+    var tmp$;
+    return (tmp$ = this.vizPixels) != null ? tmp$.getPixelLocationsInModelSpace_zdreix$(this) : null;
   };
   VizPanel.$metadata$ = {
     kind: Kind_CLASS,
@@ -19449,6 +20014,9 @@
   package$baaahs.Clock = Clock_0;
   Brain.RenderTree = Brain$RenderTree;
   Brain.FakeModelSurface = Brain$FakeModelSurface;
+  Object.defineProperty(Brain, 'Companion', {
+    get: Brain$Companion_getInstance
+  });
   package$baaahs.Brain = Brain;
   Object.defineProperty(Color, 'Companion', {
     get: Color$Companion_getInstance
@@ -19498,6 +20066,9 @@
   });
   package$baaahs.array_byae19$ = array;
   GadgetManager.GadgetInfo = GadgetManager$GadgetInfo;
+  Object.defineProperty(GadgetManager, 'Companion', {
+    get: GadgetManager$Companion_getInstance
+  });
   package$baaahs.GadgetManager = GadgetManager;
   Object.defineProperty(Mapper$Detector, 'RED', {
     get: Mapper$Detector$RED_getInstance
@@ -19514,6 +20085,9 @@
   Mapper.DeliveryAttempt = Mapper$DeliveryAttempt;
   Mapper.BrainToMap = Mapper$BrainToMap;
   Mapper.PixelMapData = Mapper$PixelMapData;
+  Object.defineProperty(Mapper, 'Companion', {
+    get: Mapper$Companion_getInstance
+  });
   package$baaahs.Mapper = Mapper;
   MapperUi.Listener = MapperUi$Listener;
   MapperUi.VisibleSurface = MapperUi$VisibleSurface;
@@ -19557,6 +20131,9 @@
   Pinky.NetworkStats = Pinky$NetworkStats;
   Pinky$PoolingRenderContext.Holder = Pinky$PoolingRenderContext$Holder;
   Pinky.PoolingRenderContext = Pinky$PoolingRenderContext;
+  Object.defineProperty(Pinky, 'Companion', {
+    get: Pinky$Companion_getInstance
+  });
   package$baaahs.Pinky = Pinky;
   package$baaahs.BrainId = BrainId;
   package$baaahs.BrainInfo = BrainInfo;
@@ -19620,13 +20197,6 @@
   package$baaahs.Pixels = Pixels;
   Model.Surface = Model$Surface;
   package$baaahs.Model = Model;
-  Object.defineProperty(SheepModel$Point, 'Companion', {
-    get: SheepModel$Point$Companion_getInstance
-  });
-  Object.defineProperty(SheepModel$Point, '$serializer', {
-    get: SheepModel$Point$$serializer_getInstance
-  });
-  SheepModel.Point = SheepModel$Point;
   SheepModel.Line = SheepModel$Line;
   SheepModel.Face = SheepModel$Face;
   SheepModel.Faces = SheepModel$Faces;
@@ -19637,6 +20207,9 @@
   package$baaahs.Show = Show;
   ShowRunner.SurfacesChanges = ShowRunner$SurfacesChanges;
   ShowRunner.SurfaceReceiver = ShowRunner$SurfaceReceiver;
+  Object.defineProperty(ShowRunner, 'Companion', {
+    get: ShowRunner$Companion_getInstance
+  });
   package$baaahs.ShowRunner = ShowRunner;
   Object.defineProperty(package$baaahs, 'SparkleMotion', {
     get: SparkleMotion_getInstance
@@ -19838,6 +20411,8 @@
     get: Vector3F$$serializer_getInstance
   });
   package$geom.Vector3F = Vector3F;
+  package$geom.center_21sjvd$ = center;
+  package$geom.extents_21sjvd$ = extents;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
   package$glsl.GlslManager = GlslManager;
   GlslRenderer.AdjustibleUniform = GlslRenderer$AdjustibleUniform;
@@ -19846,6 +20421,12 @@
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
   package$glsl.GlslRenderer = GlslRenderer;
   package$glsl.GlslSurface = GlslSurface;
+  UvTranslator.SurfaceUvTranslator = UvTranslator$SurfaceUvTranslator;
+  package$glsl.UvTranslator = UvTranslator;
+  Object.defineProperty(package$glsl, 'PanelSpaceUvTranslator', {
+    get: PanelSpaceUvTranslator_getInstance
+  });
+  package$glsl.ModelSpaceUvTranslator = ModelSpaceUvTranslator;
   package$glsl.SurfacePixels = SurfacePixels;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
@@ -19866,6 +20447,9 @@
   });
   ImageProcessing.Analysis = ImageProcessing$Analysis;
   package$mapper.ImageProcessing = ImageProcessing;
+  Object.defineProperty(MapperClient, 'Companion', {
+    get: MapperClient$Companion_getInstance
+  });
   package$mapper.MapperClient = MapperClient;
   Object.defineProperty(MapperEndpoint, 'Companion', {
     get: MapperEndpoint$Companion_getInstance
@@ -20105,8 +20689,29 @@
   Object.defineProperty(package$shows, 'GlslSandbox55301Show', {
     get: GlslSandbox55301Show_getInstance
   });
+  Object.defineProperty(package$shows, 'GlslSandbox56418Show', {
+    get: GlslSandbox56418Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56433Show', {
+    get: GlslSandbox56433Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56479Show', {
+    get: GlslSandbox56479Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56499Show', {
+    get: GlslSandbox56499Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56511Show', {
+    get: GlslSandbox56511Show_getInstance
+  });
   Object.defineProperty(package$shows, 'GlslSandbox56555Show', {
     get: GlslSandbox56555Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56573Show', {
+    get: GlslSandbox56573Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandbox56592Show', {
+    get: GlslSandbox56592Show_getInstance
   });
   Object.defineProperty(package$shows, 'GlslSandbox56594Show', {
     get: GlslSandbox56594Show_getInstance
@@ -20116,6 +20721,12 @@
   });
   Object.defineProperty(package$shows, 'GlslSandbox56718Show', {
     get: GlslSandbox56718Show_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandboxDebugShow', {
+    get: GlslSandboxDebugShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandboxShowTemplate', {
+    get: GlslSandboxShowTemplate_getInstance
   });
   package$shows.GlslShow = GlslShow;
   Object.defineProperty(package$shows, 'HeartbleatShow', {
@@ -20149,6 +20760,9 @@
   });
   var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
   package$sim.FakeDmxUniverse = FakeDmxUniverse;
+  Object.defineProperty(FakeFs, 'Companion', {
+    get: FakeFs$Companion_getInstance
+  });
   package$sim.FakeFs = FakeFs;
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
@@ -20156,10 +20770,10 @@
   package$baaahs.only_hxlr6s$ = only;
   package$baaahs.toRadians_mx4ult$ = toRadians;
   package$baaahs.randomDelay_za3lpa$ = randomDelay;
-  Object.defineProperty(logger, 'Companion', {
-    get: logger$Companion_getInstance
+  Object.defineProperty(Logger, 'Companion', {
+    get: Logger$Companion_getInstance
   });
-  package$baaahs.logger = logger;
+  package$baaahs.Logger = Logger;
   package$baaahs.time_66u77s$ = time;
   package$baaahs.timeSync_ls4sck$ = timeSync;
   package$baaahs.JsDisplay = JsDisplay;
@@ -20255,7 +20869,6 @@
   Object.defineProperty(Pinky$PixelsAdapter.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   Pinky$PixelsAdapter.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   Pinky$PixelsAdapter.prototype.iterator = Pixels.prototype.iterator;
-  SheepModel$Point$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'supportsFinePositioning', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'supportsFinePositioning'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'pan', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'pan'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'tilt', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'tilt'));
