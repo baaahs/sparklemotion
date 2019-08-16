@@ -27,15 +27,15 @@ class GadgetManagerTest {
 
         expect(
             "[" +
-                    "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"first\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/1\"}," +
-                    "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"second\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/2\"}," +
-                    "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"third\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/3\"}" +
+                    "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"first\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/first\"}," +
+                    "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"second\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/second\"}," +
+                    "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"third\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/third\"}" +
                     "]"
         ) { pubSub.getTopicInfo("activeGadgets")!!.data }
 
-        expect("{}") { pubSub.getTopicInfo("/gadgets/Slider/1")!!.data }
-        expect("{\"value\":0.234}") { pubSub.getTopicInfo("/gadgets/Slider/2")!!.data }
-        expect("{\"value\":0.345}") { pubSub.getTopicInfo("/gadgets/Slider/3")!!.data }
+        expect("{}") { pubSub.getTopicInfo("/gadgets/first")!!.data }
+        expect("{\"value\":0.234}") { pubSub.getTopicInfo("/gadgets/second")!!.data }
+        expect("{\"value\":0.345}") { pubSub.getTopicInfo("/gadgets/third")!!.data }
 
         expect("{first={}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
@@ -61,13 +61,13 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstB, "second" to secondB, "third" to thirdB))
 
         expect(listOf("[" +
-                "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"uno\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/4\"}," +
-                "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"dos\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/5\"}," +
-                "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"tres\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/Slider/6\"}" +
+                "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"uno\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/first\"}," +
+                "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"dos\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/second\"}," +
+                "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"tres\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/third\"}" +
                 "]")) { activeGadgetsListener.events }
-        expect("{}") { pubSub.getTopicInfo("/gadgets/Slider/4")!!.data }
-        expect("{\"value\":0.123}") { pubSub.getTopicInfo("/gadgets/Slider/5")!!.data }
-        expect("{}") { pubSub.getTopicInfo("/gadgets/Slider/6")!!.data }
+        expect("{}") { pubSub.getTopicInfo("/gadgets/first")!!.data }
+        expect("{\"value\":0.123}") { pubSub.getTopicInfo("/gadgets/second")!!.data }
+        expect("{}") { pubSub.getTopicInfo("/gadgets/third")!!.data }
     }
 
     @Test
@@ -83,11 +83,11 @@ class GadgetManagerTest {
         val activeGadgetsListener = Listener()
         pubSub.getTopicInfo("activeGadgets")!!.listeners.add(activeGadgetsListener)
         val firstListener = Listener()
-        pubSub.getTopicInfo("/gadgets/Slider/1")!!.listeners.add(firstListener)
+        pubSub.getTopicInfo("/gadgets/first")!!.listeners.add(firstListener)
         val secondListener = Listener()
-        pubSub.getTopicInfo("/gadgets/Slider/2")!!.listeners.add(secondListener)
+        pubSub.getTopicInfo("/gadgets/second")!!.listeners.add(secondListener)
         val thirdListener = Listener()
-        pubSub.getTopicInfo("/gadgets/Slider/3")!!.listeners.add(thirdListener)
+        pubSub.getTopicInfo("/gadgets/third")!!.listeners.add(thirdListener)
 
         val firstB = Slider("first").apply { value = .123f }
         val secondB = Slider("second").apply { value = .234f }
@@ -100,16 +100,16 @@ class GadgetManagerTest {
         expect(listOf("{\"value\":0.234}")) { secondListener.events }
         expect(emptyList<String>()) { thirdListener.events }
 
-        expect("{\"value\":0.123}") { pubSub.getTopicInfo("/gadgets/Slider/1")!!.data }
-        expect("{\"value\":0.234}") { pubSub.getTopicInfo("/gadgets/Slider/2")!!.data }
-        expect("{\"value\":0.345}") { pubSub.getTopicInfo("/gadgets/Slider/3")!!.data }
+        expect("{\"value\":0.123}") { pubSub.getTopicInfo("/gadgets/first")!!.data }
+        expect("{\"value\":0.234}") { pubSub.getTopicInfo("/gadgets/second")!!.data }
+        expect("{\"value\":0.345}") { pubSub.getTopicInfo("/gadgets/third")!!.data }
 
         expect("{first={value=0.123}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
         }
 
         // New gadget should receive updates from PubSub.
-        pubSub.getTopicInfo("/gadgets/Slider/3")!!.listeners.first().onUpdate("{value: .987}")
+        pubSub.getTopicInfo("/gadgets/third")!!.listeners.first().onUpdate("{value: .987}")
         expect(0.987f) { thirdB.value }
     }
 

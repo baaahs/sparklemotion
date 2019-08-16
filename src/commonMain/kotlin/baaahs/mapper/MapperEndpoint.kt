@@ -1,7 +1,7 @@
 package baaahs.mapper
 
+import baaahs.Logger
 import baaahs.decodeBase64
-import baaahs.logger
 import baaahs.net.Network
 import kotlinx.serialization.json.*
 import kotlinx.serialization.list
@@ -10,6 +10,8 @@ import kotlinx.serialization.serializer
 class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
     companion object {
         val json = Json(JsonConfiguration.Stable)
+
+        val logger = Logger("MapperEndpoint")
     }
 
     override fun connected(tcpConnection: Network.TcpConnection) {
@@ -45,8 +47,8 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
         } catch (e: Exception) {
             status = "error"
             response = JsonPrimitive(e.toString())
-            logger.error("Command failed: $parts")
-            logger.error(e.toString())
+            logger.error { "Command failed: $parts" }
+            logger.error { e.toString() }
         }
 
         println("Command: $parts -> $status $response")

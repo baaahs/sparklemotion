@@ -255,7 +255,7 @@ class Pinky(
     private fun receivedPong(message: PingMessage, fromAddress: Network.Address) {
         val originalSentAt = ByteArrayReader(message.data).readLong()
         val elapsedMs = getTimeMillis() - originalSentAt
-        logger.debug("Shader pong from $fromAddress took ${elapsedMs}ms")
+        logger.debug { "Shader pong from $fromAddress took ${elapsedMs}ms" }
     }
 
     fun providePanelMapping_CHEAT(brainId: BrainId, surface: Model.Surface) {
@@ -397,7 +397,7 @@ class Pinky(
             val holder = pooledRenderers[key]!!
             holder.count--
             if (holder.count == 0) {
-                logger.debug("Removing pooled renderer for $key")
+                logger.debug { "Removing pooled renderer for $key" }
                 pooledRenderers.remove(key)
             }
         }
@@ -425,7 +425,10 @@ class Pinky(
                 buffer.colors[i] = colors[i]
             }
         }
+    }
 
+    companion object {
+        val logger = Logger("Pinky")
     }
 }
 
