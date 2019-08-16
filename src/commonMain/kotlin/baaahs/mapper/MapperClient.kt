@@ -90,6 +90,6 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
 
     override fun reset(tcpConnection: Network.TcpConnection) {
         responses.close()
-        TODO("MapperClient.reset not implemented")
+        println("Mapper disconnected from Pinky!")
     }
 }

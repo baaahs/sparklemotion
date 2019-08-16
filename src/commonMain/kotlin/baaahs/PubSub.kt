@@ -66,6 +66,7 @@ abstract class PubSub {
     ) : Origin(), Network.WebSocketListener {
         protected var connection: Network.TcpConnection? = null
         private val toSend: MutableList<ByteArray> = mutableListOf()
+        private val cleanup: MutableList<() -> Unit> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $this established")
@@ -84,6 +85,9 @@ abstract class PubSub {
                         override fun onUpdate(data: String) = sendTopicUpdate(topicName, data)
                     }
                     topicInfo.listeners.add(listener)
+                    cleanup.add {
+                        topicInfo.listeners.remove(listener)
+                    }
 
                     val topicData = topicInfo.data
                     if (topicData != null) {
@@ -124,7 +128,8 @@ abstract class PubSub {
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
-            TODO("PubSub.Connection.reset not implemented")
+            logger.info("PubSub client $name disconnected.")
+            cleanup.forEach { it.invoke() }
         }
 
         private fun sendCommand(bytes: ByteArray) {
@@ -197,7 +202,7 @@ abstract class PubSub {
         }
     }
 
-    class Client(link: Network.Link, serverAddress: Network.Address, port: Int): Endpoint() {
+    class Client(link: Network.Link, serverAddress: Network.Address, port: Int) : Endpoint() {
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
         private var server: Connection = Connection("client at ${link.myAddress}", topics)
 
