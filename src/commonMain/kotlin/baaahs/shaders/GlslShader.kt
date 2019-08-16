@@ -3,11 +3,14 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
+import baaahs.glsl.ModelSpaceUvTranslator
+import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.json
 
 class GlslShader(
     val glslProgram: String,
@@ -15,6 +18,8 @@ class GlslShader(
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
+        var model_CHEAT: Model<*>? = null
+
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
             val adjustableValueCount = reader.readShort()
@@ -28,8 +33,17 @@ class GlslShader(
                     "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
         )
 
+        val extraAdjustables = listOf(
+            AdjustableValue("sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }, 0),
+
+            AdjustableValue("sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }, 1)
+        )
+
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
-            var i = 0
+            var i = extraAdjustables.map { it.ordinal }.max() ?: 0
+
             return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
                 val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
@@ -41,7 +55,7 @@ class GlslShader(
                     else -> throw IllegalArgumentException("unsupported type $valueTypeName")
                 }
                 AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, i++)
-            }.toList()
+            }.toList() + extraAdjustables
         }
     }
 
@@ -54,13 +68,14 @@ class GlslShader(
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
-        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
+        val uvTranslator = ModelSpaceUvTranslator(model_CHEAT!!)
+        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface, uvTranslator)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
         val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
-        val glslSurface = glslRenderer.addSurface(surface)
+        val glslSurface = glslRenderer.addSurface(surface, PanelSpaceUvTranslator)
         return Renderer(glslSurface)
     }
 

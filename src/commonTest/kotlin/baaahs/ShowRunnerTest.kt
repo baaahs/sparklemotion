@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
+import baaahs.geom.Vector3F
 import baaahs.net.TestNetwork
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
@@ -257,7 +258,7 @@ class ShowRunnerTest {
             showRunner.getMovingHeadBuffer(
                 MovingHead(
                     "leftEye",
-                    SheepModel.Point(-163.738f, 204.361f, 439.302f)
+                    Vector3F(-163.738f, 204.361f, 439.302f)
                 )
             )
         }
