@@ -2,7 +2,7 @@
 
 set -e
 
-IDF_REV=138c941fad431d3ef2ccbe3eaabf08b96cdc4d0b
+IDF_REV=1271008dd80a75dd564e425bc76f3e6684692830
 
 if [ "x${IDF_PATH}x" == "xx" ]; then
   echo 'IDF_PATH isn'\''t set. Fix it!'
@@ -11,6 +11,9 @@ fi
 
 set -x
 
-cd $IDF_PATH
-git fetch
-git checkout --recurse-submodules $IDF_REV
+(
+    cd $IDF_PATH
+    git fetch
+    git checkout $IDF_REV
+    git submodule update --init
+)
