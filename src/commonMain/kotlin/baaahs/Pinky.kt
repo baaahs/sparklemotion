@@ -149,7 +149,7 @@ class Pinky(
         when (message) {
             is BrainHelloMessage -> foundBrain(fromAddress, message)
             is MapperHelloMessage -> {
-                println("Mapper isRunning=${message.isRunning}")
+                logger.debug { "Mapper isRunning=${message.isRunning}" }
                 mapperIsRunning = message.isRunning
             }
             is PingMessage -> if (message.isPong) receivedPong(message, fromAddress)
@@ -163,10 +163,11 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        println("foundBrain($brainAddress, $msg)")
+        logger.info { "Hello from ${brainId.uuid} at $brainAddress: $msg" }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            println("The firmware daddy doesn't like $brainId having ${msg.firmwareVersion} so we'll send ${firmwareDaddy.urlForPreferredVersion}")
+            logger.info { "The firmware daddy doesn't like $brainId having ${msg.firmwareVersion}" +
+                    " so we'll send ${firmwareDaddy.urlForPreferredVersion}" }
             val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
         }
