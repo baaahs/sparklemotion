@@ -3,8 +3,6 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -23,6 +21,8 @@ abstract class PubSub {
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
             return Client(networkLink, address, port)
         }
+
+        val logger = Logger("PubSub")
     }
 
     open class Origin
@@ -128,7 +128,7 @@ abstract class PubSub {
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
-            logger.info("PubSub client $name disconnected.")
+            logger.info { "PubSub client $name disconnected." }
             cleanup.forEach { it.invoke() }
         }
 
@@ -142,7 +142,7 @@ abstract class PubSub {
         }
 
         private fun debug(message: String) {
-            logger.debug("[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message")
+            logger.debug { "[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message" }
         }
     }
 

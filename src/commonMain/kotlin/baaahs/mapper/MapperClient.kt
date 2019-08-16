@@ -1,7 +1,7 @@
 package baaahs.mapper
 
+import baaahs.Logger
 import baaahs.imaging.Bitmap
-import baaahs.logger
 import baaahs.net.Network
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +71,7 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
             }
             return responseJson
         } catch (e: JsonParsingException) {
-            logger.error("can't parse response to $command $args: $responseJsonStr")
+            logger.error { "can't parse response to $command $args: $responseJsonStr" }
             throw e
         }
     }
@@ -91,5 +91,9 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
     override fun reset(tcpConnection: Network.TcpConnection) {
         responses.close()
         println("Mapper disconnected from Pinky!")
+    }
+
+    companion object {
+        val logger = Logger("MapperClient")
     }
 }

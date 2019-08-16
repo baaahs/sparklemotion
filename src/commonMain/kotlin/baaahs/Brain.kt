@@ -60,7 +60,7 @@ class Brain(
             val elapsedSinceMessageMs = getTimeMillis() - lastInstructionsReceivedAtMs
             if (elapsedSinceMessageMs > 10000) {
                 if (lastInstructionsReceivedAtMs != 0L) {
-                    logger.info("$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms")
+                    logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms" }
                 }
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
@@ -158,5 +158,9 @@ class Brain(
 
     class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface {
         override fun allVertices(): Collection<Vector3F> = emptyList()
+    }
+
+    companion object {
+        val logger = Logger("Brain")
     }
 }

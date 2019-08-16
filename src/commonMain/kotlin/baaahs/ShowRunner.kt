@@ -145,10 +145,10 @@ class ShowRunner(
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
 
-                    logger.info(
+                    logger.info {
                         "Show ${currentShow!!.name} updated; " +
                                 "${shaderBuffers.size} surfaces"
-                    )
+                    }
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
@@ -178,11 +178,11 @@ class ShowRunner(
             currentShowRenderer = startingShow.createRenderer(model, this)
         }
 
-        logger.info(
+        logger.info {
             "New show ${startingShow.name} created; " +
                     "${shaderBuffers.size} surfaces " +
                     "and ${requestedGadgets.size} gadgets"
-        )
+        }
 
         gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
         requestedGadgets.clear()
@@ -243,4 +243,7 @@ class ShowRunner(
         open fun send(shaderBuffer: Shader.Buffer) = sendFn(shaderBuffer)
     }
 
+    companion object {
+        val logger = Logger("ShowRunner")
+    }
 }
