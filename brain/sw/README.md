@@ -31,6 +31,12 @@ On an earlier version of the v4 master branch the `storage.bin` file which conta
 Updating the IDF
 ================
 
+**NEW INSTRUCTIONS!** Run this:
+
+    ./brain/sw/sync-idf.sh
+
+**OLD INSTRUCTIONS** are below:
+
 If you are updating from a version of the IDF prior to about July 1 you will have installed the xtensa toolchain manually in something like `~/esp/xtensa-esp32-elf` and will have likely added it to your path. *You need to remove this old method of installing the toolchain.* Renaming or deleting this directory should be fine. You may also want to cleanup your `.profile` or `.bashrc` script.
 
 The IDF now includes a `install.sh` script which installs and updates the toolchain. This script also generates an `export.sh` file which should be sourced to setup appropriate paths. As a result of these changes my `.profile` now contains the following lines related to the IDF:
@@ -82,3 +88,14 @@ That should/maybe/might get the firmware down to the board. If that step works, 
 to get the serial console back from the board. This console is going to include debuggging output from both our code and the Espressif IDF code. Look at `main.cpp` in the `playa/main` directory to adjust how much debugging output you want to see on the console.
 
 From here you hopefully have a working board in front of you. Do magic with it!
+
+OTA with Pinky
+==============
+
+Brain should've been flashed once already with `idf.py flash`.
+
+Run:
+
+    cd brain/sw/playa
+    idf.py app
+    ./deploy_firmware.sh

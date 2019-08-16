@@ -52,6 +52,11 @@ Note that this is different from the URL above (it doesn't have the `index.html`
 load the index page you'll be loading a full local simulation into your browser and won't be talking
 to the Pinky instance which is actually (presumably) talking to the Brains.
 
+## Flashing Brains & OTA
+
+    cd brain/sw/playa
+    idf.py
+
 ## CI & Deployment
 
 Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
