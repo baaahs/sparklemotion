@@ -5585,6 +5585,7 @@
     this.topics_okivn7$_0 = topics;
     this.connection = null;
     this.toSend_p0j902$_0 = ArrayList_init();
+    this.cleanup_mgq9j5$_0 = ArrayList_init();
   }
   PubSub$Connection.prototype.connected_67ozxy$ = function (tcpConnection) {
     this.debug_6bynea$_0('connection ' + this + ' established');
@@ -5609,6 +5610,12 @@
     kind: Kind_CLASS,
     interfaces: [PubSub$Listener]
   };
+  function PubSub$Connection$receive$lambda(closure$topicInfo, closure$listener) {
+    return function () {
+      closure$topicInfo.listeners.remove_11rb$(closure$listener);
+      return Unit;
+    };
+  }
   PubSub$Connection.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
     var reader = new ByteArrayReader(bytes);
     var command = reader.readString();
@@ -5630,6 +5637,7 @@
         var topicInfo = tmp$;
         var listener = new PubSub$Connection$receive$ObjectLiteral(topicName, this, this);
         topicInfo.listeners.add_11rb$(listener);
+        this.cleanup_mgq9j5$_0.add_11rb$(PubSub$Connection$receive$lambda(topicInfo, listener));
         var topicData = topicInfo.data;
         if (topicData != null) {
           listener.onUpdate_61zpoe$(topicData);
@@ -5661,7 +5669,13 @@
     this.sendCommand_su7uv8$_0(writer.toBytes());
   };
   PubSub$Connection.prototype.reset_67ozxy$ = function (tcpConnection) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'PubSub.Connection.reset not implemented');
+    logger$Companion_getInstance().info_61zpoe$('PubSub client ' + this.name_qs3czq$_0 + ' disconnected.');
+    var tmp$;
+    tmp$ = this.cleanup_mgq9j5$_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element();
+    }
   };
   PubSub$Connection.prototype.sendCommand_su7uv8$_0 = function (bytes) {
     var tcpConnection = this.connection;
@@ -9577,7 +9591,7 @@
   };
   MapperClient.prototype.reset_67ozxy$ = function (tcpConnection) {
     this.responses_0.close_dbl4no$();
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'MapperClient.reset not implemented');
+    println('Mapper disconnected from Pinky!');
   };
   Object.defineProperty(MapperClient.prototype, 'coroutineContext', {
     get: function () {
@@ -9658,6 +9672,7 @@
     tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonElementSerializer, json_0(MapperEndpoint$receive$lambda(status, response)))));
   };
   MapperEndpoint.prototype.reset_67ozxy$ = function (tcpConnection) {
+    println('MapperEndpoint client disconnected from Pinky!');
   };
   MapperEndpoint.$metadata$ = {
     kind: Kind_CLASS,
