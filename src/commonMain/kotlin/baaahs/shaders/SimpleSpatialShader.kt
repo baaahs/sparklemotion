@@ -1,9 +1,9 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -45,12 +45,13 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
-        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
+        private val uvTranslator =
+            if (surface is IdentifiedSurface) PanelSpaceUvTranslator.forSurface(surface) else null
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-            if (pixelVertices == null || pixelIndex >= pixelVertices.size) return Color.BLACK
+            if (uvTranslator == null) return Color.BLACK
 
-            val (pixX, pixY) = pixelVertices[pixelIndex]
+            val (pixX, pixY) = uvTranslator.getUV(pixelIndex)
 
             val distX = pixX - buffer.centerX
             val distY = pixY - buffer.centerY
