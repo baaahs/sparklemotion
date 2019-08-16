@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.Brain.Companion.logger
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -357,7 +358,7 @@ class Mapper(
             delay(1000L)
         } catch (e: TimeoutException) {
             mapperUi.showMessage("Failed: ${e.message}")
-            logger.error(e.message!!)
+            logger.error("Timed out", e)
         }
 
         isRunning = false
@@ -493,7 +494,7 @@ class Mapper(
         }
 
         suspend fun await(retryAfterMillis: Long = 2000, tries: Int = 3) {
-            logger.debug("Waiting for pongs from ${outstanding.values.map { it.brainToMap.brainId }}...")
+            logger.debug { "Waiting for pongs from ${outstanding.values.map { it.brainToMap.brainId }}..." }
             if (tries == 0) {
                 val remaining = ArrayList(outstanding.values.map { it.brainToMap.brainId })
                 outstanding.clear()
@@ -517,7 +518,7 @@ class Mapper(
             val retry = ArrayList(outstanding.values)
             outstanding.clear()
             retry.forEach {
-                logger.warn("Didn't hear from ${it.brainToMap.brainId} after $retryAfterMillis, retrying...")
+                logger.warn { "Didn't hear from ${it.brainToMap.brainId} after $retryAfterMillis, retrying..." }
                 send(it.brainToMap, it.buffer)
             }
             await(retryAfterMillis, tries - 1)
@@ -540,7 +541,7 @@ class Mapper(
         }
 
         fun succeeded() {
-            logger.debug("${brainToMap.brainId} shader message pong after ${getTimeMillis() - sentAt}ms")
+            logger.debug { "${brainToMap.brainId} shader message pong after ${getTimeMillis() - sentAt}ms" }
         }
     }
 
@@ -634,6 +635,10 @@ class Mapper(
         private class Vote<T>(val item: T) {
             var votes = 0
         }
+    }
+
+    companion object {
+        val logger = Logger("Mapper")
     }
 }
 

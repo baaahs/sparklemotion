@@ -39,11 +39,11 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 }
             }
         } else {
-            logger.debug(
+            logger.debug {
                 "Gadgets don't match!\n" +
                         "old: ${priorRequestedGadgets}\n" +
                         "new: ${requestedGadgets}"
-            )
+            }
             activeGadgets.clear()
             requestedGadgets.forEach { (name, gadget) ->
                 val topic =
@@ -75,4 +75,8 @@ class GadgetManager(private val pubSub: PubSub.Server) {
         val channel: PubSub.Channel<Map<String, JsonElement>>,
         val gadgetData: GadgetData
     )
+
+    companion object {
+        val logger = Logger("GadgetManager")
+    }
 }
