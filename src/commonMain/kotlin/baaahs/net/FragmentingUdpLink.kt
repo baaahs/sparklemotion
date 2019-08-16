@@ -1,8 +1,8 @@
 package baaahs.net
 
+import baaahs.Logger
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.logger
 import kotlin.math.min
 
 class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
@@ -18,6 +18,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
      */
     companion object {
         const val headerSize = 12
+
+        val logger = Logger("FragmentingUdpLink")
     }
 
     private val mtu = wrappedLink.udpMtu
@@ -43,7 +45,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
 //                println("Received UDP: messageId=$messageId thisFrameSize=${size} totalSize=${totalSize} offset=${offset} packetSize=${bytes.size}")
 
                 if (size + headerSize > bytes.size) {
-                    logger.debug("Discarding short UDP message: ${size + headerSize} > ${bytes.size} available")
+                    logger.debug { "Discarding short UDP message: ${size + headerSize} > ${bytes.size} available" }
                     return
                 }
 
@@ -72,12 +74,12 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                             udpListener.receive(fromAddress, fromPort, reassembleBytes)
                         } else {
                             // todo: this should probably be a warn, not an error...
-                            logger.warn(
+                            logger.warn {
                                 "incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
                                         " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
                                         " for messageId=$messageId" +
                                         " (have ${myFragments.map { it.bytes.size }.joinToString(",")})"
-                            )
+                            }
 
                             synchronized(fragments) {
                                 fragments.addAll(myFragments)
@@ -111,7 +113,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
             }
 
             if (myFragments.isEmpty()) {
-                 println("remaining fragments = ${fragments}")
+                println("remaining fragments = ${fragments}")
             }
         }
 

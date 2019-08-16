@@ -1,24 +1,24 @@
 package baaahs.sim
 
+import baaahs.Logger
 import baaahs.io.Fs
-import baaahs.logger
 
 @UseExperimental(ExperimentalStdlibApi::class)
 class FakeFs : Fs {
     private val files = mutableMapOf<String, ByteArray>()
 
     override fun listFiles(path: String): List<String> {
-        logger.debug("FakeFs.listFiles($path)")
+        logger.debug { "FakeFs.listFiles($path)" }
         return files.keys.filter { it.startsWith("$path/") }
     }
 
     override fun loadFile(path: String): String? {
-        logger.debug("FakeFs.loadFile($path)")
+        logger.debug { "FakeFs.loadFile($path)" }
         return files[path]?.decodeToString()
     }
 
     override fun createFile(path: String, content: ByteArray, allowOverwrite: Boolean) {
-        logger.debug("FakeFs.createFile($path) -> ${content.size} bytes")
+        logger.debug { "FakeFs.createFile($path) -> ${content.size} bytes" }
         addFile(path, content)
     }
 
@@ -31,5 +31,9 @@ class FakeFs : Fs {
             throw Exception("$path already exists")
         }
         files[path] = content
+    }
+
+    companion object {
+        val logger = Logger("FakeFs")
     }
 }

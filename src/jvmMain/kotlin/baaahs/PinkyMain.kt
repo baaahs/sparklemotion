@@ -6,11 +6,8 @@ import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
-import io.ktor.application.install
 import io.ktor.http.content.*
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,7 +17,6 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.time.Duration
 
 fun main(args: Array<String>) {
     GlslBase.manager // Need to wake up OpenGL on the main thread.
@@ -116,19 +112,21 @@ private fun findDmxUniverse(): Dmx.Universe {
     val dmxDevices = try {
         DmxDevice.listDevices()
     } catch (e: UnsatisfiedLinkError) {
-        logger.warn("DMX driver not found, DMX will be disabled.")
+        logger.warn { "DMX driver not found, DMX will be disabled." }
         e.printStackTrace()
         return FakeDmxUniverse()
     }
 
     if (dmxDevices.isNotEmpty()) {
         if (dmxDevices.size > 1) {
-            logger.warn("Multiple DMX USB devices found, using ${dmxDevices.first()}.")
+            logger.warn { "Multiple DMX USB devices found, using ${dmxDevices.first()}." }
         }
 
         return dmxDevices.first()
     }
 
-    logger.warn("No DMX USB devices found, DMX will be disabled.")
+    logger.warn { "No DMX USB devices found, DMX will be disabled." }
     return FakeDmxUniverse()
 }
+
+val logger = Logger("PinkyMain")
