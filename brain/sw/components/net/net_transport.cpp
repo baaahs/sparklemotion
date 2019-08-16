@@ -97,7 +97,9 @@ NetTransport::_interfaceTask() {
     ESP_LOGE(TAG, "Checking for ethernet link up");
     if (!m_ethUp) {
         ESP_LOGE(TAG, "Ethernet link not up, restarting");
-        brain_restart(10);
+
+        ESP_LOGE(TAG, "=========  Ethernet restart disabled for testing wifi  ===========");
+        // brain_restart(10);
     } else {
         ESP_LOGE(TAG, "Ethernet up - cool");
     }
@@ -182,9 +184,9 @@ NetTransport::reconfigure() {
     m_pEth->setEnabled(true);
 #endif
 
-    wifiSta();
-    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
-    m_pWifiSta->setEnabled(true);
+//    wifiSta();
+//    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
+//    m_pWifiSta->setEnabled(true);
 
 //    wifiAp();
 //    m_pWifiAp->setEnabled(true);

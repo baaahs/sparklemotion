@@ -97,7 +97,7 @@ class JvmNetwork : Network {
         inner class KtorHttpServer(val port: Int) : Network.HttpServer {
             val httpServer = embeddedServer(Netty, port, configure = {
                 // Let's give brains lots of time for OTA download:
-                responseWriteTimeoutSeconds = 120
+                responseWriteTimeoutSeconds = 3000
             }) {
                 install(io.ktor.websocket.WebSockets) {
                     pingPeriod = Duration.ofSeconds(15)
