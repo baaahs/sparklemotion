@@ -129,10 +129,11 @@ class Eyes extends React.Component {
           }}
           x={x}
           y={y}
-          height={255}
-          width={255}
+          minValue={0}
+          maxValue={255}
+          height={500}
+          width={500}
         />
-        <div>Eye Color goes here</div>
       </Fragment>
     );
   };

@@ -4,6 +4,7 @@ import throttle from 'lodash/throttle';
 import sass from './Slider.scss';
 import { Handles, Rail, Slider, Ticks, Tracks } from 'react-compound-slider';
 import { Handle, SliderRail, Tick, Track } from './slider-parts';
+import { enableScroll, disableScroll } from '../../utils';
 
 const sliderStyle = {
   position: 'relative',
@@ -85,6 +86,8 @@ class RangeSlider extends React.Component {
           step={this.stepValue}
           domain={this.domain}
           rootStyle={sliderStyle}
+          onSlideStart={disableScroll}
+          onSlideEnd={enableScroll}
           onUpdate={(values) => {
             this.onUpdate(values[0]);
           }}
