@@ -5154,19 +5154,34 @@
   Pinky.prototype.disableDmx_0 = function () {
     this.dmxUniverse.allOff();
   };
+  function Pinky$receive$lambda(closure$message) {
+    return function () {
+      return 'Mapper isRunning=' + closure$message.isRunning;
+    };
+  }
   Pinky.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage))
       this.foundBrain_0(fromAddress, message);
     else if (Kotlin.isType(message, MapperHelloMessage)) {
-      println('Mapper isRunning=' + message.isRunning);
+      Pinky$Companion_getInstance().logger.debug_h4ejuu$(Pinky$receive$lambda(message));
       this.mapperIsRunning_0 = message.isRunning;
     }
      else if (Kotlin.isType(message, PingMessage))
       if (message.isPong)
         this.receivedPong_0(message, fromAddress);
   };
-  function Pinky$foundBrain$lambda(this$Pinky, closure$brainAddress, closure$brainId) {
+  function Pinky$foundBrain$lambda(closure$brainId, closure$brainAddress, closure$msg) {
+    return function () {
+      return 'Hello from ' + closure$brainId.uuid + ' at ' + closure$brainAddress + ': ' + closure$msg;
+    };
+  }
+  function Pinky$foundBrain$lambda_0(closure$brainId, closure$msg, this$Pinky) {
+    return function () {
+      return "The firmware daddy doesn't like " + closure$brainId + ' having ' + toString_0(closure$msg.firmwareVersion) + (" so we'll send " + this$Pinky.firmwareDaddy.urlForPreferredVersion);
+    };
+  }
+  function Pinky$foundBrain$lambda_1(this$Pinky, closure$brainAddress, closure$brainId) {
     return function (shaderBuffer) {
       var tmp$;
       var message = (new BrainShaderMessage(shaderBuffer.shader, shaderBuffer)).toBytes();
@@ -5197,9 +5212,9 @@
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var brainId = new BrainId(msg.brainId);
     var surfaceName = msg.surfaceName;
-    println('foundBrain(' + brainAddress + ', ' + msg + ')');
+    Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$foundBrain$lambda(brainId, brainAddress, msg));
     if (this.firmwareDaddy.doesntLikeThisVersion_pdl1vj$(msg.firmwareVersion)) {
-      println("The firmware daddy doesn't like " + brainId + ' having ' + toString_0(msg.firmwareVersion) + " so we'll send " + this.firmwareDaddy.urlForPreferredVersion);
+      Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$foundBrain$lambda_0(brainId, msg, this));
       var newHotness = new UseFirmwareMessage(this.firmwareDaddy.urlForPreferredVersion);
       this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, newHotness);
     }
@@ -5235,7 +5250,7 @@
         return;
       }
     }
-    var sendFn = Pinky$foundBrain$lambda(this, brainAddress, brainId);
+    var sendFn = Pinky$foundBrain$lambda_1(this, brainAddress, brainId);
     if (this.prerenderPixels_0) {
       tmp$_2 = new Pinky$PrerenderingSurfaceReceiver(this, surface, sendFn);
     }
