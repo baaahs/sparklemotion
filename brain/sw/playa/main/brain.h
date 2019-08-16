@@ -47,6 +47,7 @@ private:
     OtaFetcher m_otaFetcher;
 
     timeval m_otaStartedAt{};
+    timeval m_lastPinkyMessage{};
 
     void startSecondStageBoot();
 

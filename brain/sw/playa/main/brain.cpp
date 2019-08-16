@@ -11,6 +11,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
 #include "esp_https_ota.h"
+#include "sys/time.h"
+#include "../../../../../../../esp/xtensa-esp32-elf/xtensa-esp32-elf/sys-include/sys/_timeval.h"
 
 #define MAX_URL_SIZE 512
 #define MAX_OTA_SECONDS 300
@@ -35,6 +37,8 @@ Brain::handleMsg(Msg* pMsg)
     if (!pMsg) return;
 
     ESP_LOGD(TAG, "Brain::handleMsg with length=%d", pMsg->used());
+
+    gettimeofday(&m_lastPinkyMessage, nullptr);
 
     // The first byte of the message tells us the type
     auto nMsgType = pMsg->readByte();
@@ -279,6 +283,15 @@ void maybe_send_hello(TimerHandle_t hTimer)
 void
 Brain::maybeSendHello()
 {
+    timeval now{};
+    gettimeofday(&now, nullptr);
+
+    auto elapsed = now.tv_sec - m_lastPinkyMessage.tv_sec;
+
+    if (elapsed < 10) {
+        return;
+    }
+
     if (otaStarted()) {
         ESP_LOGW(TAG, "No more hello because OTA started");
         return;
