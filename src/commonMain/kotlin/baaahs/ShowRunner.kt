@@ -11,7 +11,7 @@ class ShowRunner(
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
-    private val clock: Clock
+    internal val clock: Clock
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null

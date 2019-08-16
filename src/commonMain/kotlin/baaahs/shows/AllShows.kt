@@ -11,7 +11,7 @@ class AllShows {
             GlslSandbox56499Show,
             GlslSandbox56573Show,
             GlslSandbox56592Show,
-            GlslSandbox56688Show,
+            GlslRedBeatShow,
             GlslSandbox56718Show,
             SomeDumbShow,
             RandomShow,

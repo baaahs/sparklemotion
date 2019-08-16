@@ -1,6 +1,12 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Model
+import baaahs.RenderContext
+import baaahs.Shader
+import baaahs.ShaderId
+import baaahs.ShaderReader
+import baaahs.Surface
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
 import baaahs.glsl.ModelSpaceUvTranslator
@@ -42,7 +48,7 @@ class GlslShader(
         )
 
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
-            var i = extraAdjustables.map { it.ordinal }.max() ?: 0
+            var i = (extraAdjustables.map { it.ordinal }.max() ?: -1) + 1
 
             return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
