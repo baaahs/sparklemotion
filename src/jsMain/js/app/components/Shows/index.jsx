@@ -69,7 +69,7 @@ class Shows extends React.Component {
         ref={this.drawerContainerRef}
         className={styles['drawer__container']}
       >
-        <div className={styles['current-show__label']}>Now Playing: {selectedShow}</div>
+        <div className={styles['current-show__label']}>Current Show: {selectedShow}</div>
         <div className={styles['show-picker__wrapper']}>
           <button
             className={styles['show-picker__button']}
@@ -106,13 +106,7 @@ class Shows extends React.Component {
           />
         </SwipeableDrawer>
 
-        <div
-          style={{
-            marginLeft: '2em',
-            backgroundImage:
-              'linear-gradient(to bottom right, #3F3F3F, #575f5f)',
-          }}
-        >
+        <div className={styles['show-controls__wrapper']}>
           <ShowControls gadgets={gadgets} />
         </div>
       </div>

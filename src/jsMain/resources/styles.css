@@ -17,6 +17,16 @@ body {
     background-color: #4F4F4F;
     margin: 0;
     overflow: hidden;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+/* disable the body scroll on mobile devices */
+body.noScroll {
+  overflow: hidden;
 }
 
 #sheepView {
