@@ -57,5 +57,6 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
     }
 
     override fun reset(tcpConnection: Network.TcpConnection) {
+        println("MapperEndpoint client disconnected from Pinky!")
     }
 }
