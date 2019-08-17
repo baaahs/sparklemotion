@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.Brain.Companion.logger
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -27,8 +26,7 @@ class Mapper(
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address
 ) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
-    //    private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
-    private val maxPixelsPerBrain = 120
+    private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
 
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
@@ -45,20 +43,6 @@ class Mapper(
 
     private val activeColor = Color(0x07, 0xFF, 0x07)
     private val inactiveColor = Color(0x01, 0x00, 0x01)
-
-    enum class Detector(val rgbaIndex: Int, val color: Color, val alternateColor: Color) {
-        RED(0, Color.RED, Color.CYAN),
-        GREEN(1, Color(0x01, 0xFF, 0x01), Color(0x01, 0x00, 0x01)),
-        BLUE(2, Color.BLUE, Color.YELLOW)
-    }
-
-    val detectors = arrayOf(Detector.GREEN, Detector.GREEN, Detector.GREEN)
-
-    private val redRgbaIndex = 0
-    private val greenRgbaIndex = 1
-    private val blueRgbaIndex = 2
-    private val signalRgbaIndex = blueRgbaIndex
-    private val indicatorRgbaIndex = greenRgbaIndex
 
     init {
         mapperUi.listen(this)
@@ -152,26 +136,21 @@ class Mapper(
         val visibleSurfaces = mapperUi.getVisibleSurfaces()
         private var baseBitmap: Bitmap? = null
         val cameraOrientation = mapperUi.lockUi()
-        val surfaceScheme = Detector.GREEN
         lateinit var deltaBitmap: Bitmap
 
-        val whitePaletteIndex = 3
-
-        val pixelShader = PixelShader(PixelShader.Encoding.INDEXED_4)
+        val pixelShader = PixelShader(PixelShader.Encoding.INDEXED_2)
         val pixelShaderBuffer = pixelShader.createBuffer(object : Surface {
             override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
             override fun describe(): String = "Mapper surface"
         }).apply {
-            palette[0] = detectors[0].alternateColor
-            palette[1] = detectors[1].alternateColor
-            palette[2] = detectors[2].alternateColor
-            palette[3] = Color.WHITE
+            palette[0] = Color.BLACK
+            palette[1] = Color.WHITE
             setAll(0)
         }
 
         fun resetToBase() {
-            pixelShaderBuffer.indices.forEach { pixelShaderBuffer[it] = it % 3 }
+            pixelShaderBuffer.setAll(0)
         }
 
         suspend fun allPixelsOff() {
@@ -181,7 +160,7 @@ class Mapper(
 
         suspend fun turnOnPixel(pixelIndex: Int) {
             resetToBase()
-            pixelShaderBuffer[pixelIndex] = whitePaletteIndex
+            pixelShaderBuffer[pixelIndex] = 1
             sendToAllReliably(pixelShaderBuffer)
         }
 
@@ -321,7 +300,6 @@ class Mapper(
         }
 
         private suspend fun identifyPixel(pixelIndex: Int, nextPixelIndex: Int) {
-            val detector = detectors[pixelIndex % detectors.size]
             mapperUi.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelsPerBrain…")
 
             if (pixelIndex % 128 == 0) logger.debug { "pixel $pixelIndex... isRunning is $isRunning" }
@@ -329,20 +307,25 @@ class Mapper(
 
             slowCamDelay()
             val pixelOnBitmap = getBrightImageBitmap(2)
-            ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap, detector)
+
+            // turn off pixel now so it doesn't leak into next frame...
+            resetToBase()
+            sendToAll(pixelShaderBuffer) // we won't block here yet...
+
+            ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
             mapperUi.showDiffImage(deltaBitmap)
             val pixelOnImageName =
                 mapperClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
 
-            if (nextPixelIndex < maxPixelsPerBrain) turnOnPixel(pixelIndex)
-
             brainsToMap.values.forEach { brainToMap ->
-                identifyBrainPixel(pixelIndex, brainToMap, pixelOnBitmap, deltaBitmap, detector, pixelOnImageName)
+                identifyBrainPixel(pixelIndex, brainToMap, pixelOnBitmap, deltaBitmap, pixelOnImageName)
 
                 delay(1)
                 //                    pauseForUserInteraction()
                 waitUntilUnpaused()
             }
+
+            waitForDelivery() // ... of resetting to black above.
         }
 
         suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
@@ -353,7 +336,7 @@ class Mapper(
             slowCamDelay()
 
             val surfaceOnBitmap = getBrightImageBitmap(3)
-            val surfaceAnalysis = ImageProcessing.diff(surfaceOnBitmap, baseBitmap!!, deltaBitmap, surfaceScheme)
+            val surfaceAnalysis = ImageProcessing.diff(surfaceOnBitmap, baseBitmap!!, deltaBitmap)
             val surfaceChangeRegion = surfaceAnalysis.detectChangeRegion(.25f)
             logger.debug {
                 "surfaceChangeRegion(${brainToMap.brainId}) =" +
@@ -367,7 +350,7 @@ class Mapper(
             val thresholdValue = surfaceAnalysis.thresholdValueFor(.25f)
             //                val pxAboveThreshold = surfaceAnalysis.hist.sumValues(thresholdValue..255)
             val sampleLocations = mutableListOf<Pair<Int, Int>>()
-            ImageProcessing.pixels(surfaceOnBitmap, surfaceScheme, surfaceChangeRegion) { x, y, value ->
+            ImageProcessing.pixels(surfaceOnBitmap, surfaceChangeRegion) { x, y, value ->
                 if (value >= thresholdValue && Random.nextFloat() < .05f) {
                     sampleLocations.add(x to y)
                 }
@@ -409,7 +392,6 @@ class Mapper(
             brainToMap: BrainToMap,
             pixelOnBitmap: Bitmap,
             deltaBitmap: Bitmap,
-            detector: Detector,
             pixelOnImageName: String
         ) {
             mapperUi.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelsPerBrain (${brainToMap.brainId})…")
@@ -423,7 +405,6 @@ class Mapper(
                     pixelOnBitmap,
                     baseBitmap!!,
                     deltaBitmap,
-                    detector,
                     brainToMap.panelDeltaBitmap!!,
                     surfaceChangeRegion
                 )
@@ -437,7 +418,7 @@ class Mapper(
                 mapperUi.showBefore(pixelOnBitmap)
                 mapperUi.showAfter(brainToMap.panelDeltaBitmap!!)
 
-                if (!pixelChangeRegion.isEmpty()) {
+                if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
                     val center = Vector3F(
                         (pixelChangeRegion.centerX - surfaceChangeRegion.x0) / surfaceChangeRegion.width.toFloat(),
                         (pixelChangeRegion.centerY - surfaceChangeRegion.y0) / surfaceChangeRegion.height.toFloat(),
@@ -451,6 +432,8 @@ class Mapper(
                     )
                     brainToMap.pixelMapData[pixelIndex] = PixelMapData(pixelChangeRegion, pixelOnImageName)
                     logger.debug { "$pixelIndex/${brainToMap.brainId}: center = $center" }
+                } else {
+                    mapperUi.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
                 }
             }
         }
@@ -482,10 +465,18 @@ class Mapper(
     }
 
     private suspend fun sendToAllReliably(buffer: Shader.Buffer) {
+        sendToAll(buffer)
+        waitForDelivery()
+    }
+
+    private suspend fun waitForDelivery() {
+        deliverer.await()
+    }
+
+    private fun sendToAll(buffer: Shader.Buffer) {
         brainsToMap.values.forEach {
             deliverer.send(it, buffer)
         }
-        deliverer.await()
     }
 
     private suspend fun retry(fn: suspend () -> Unit) {
