@@ -227,13 +227,13 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeShort(pixelCount)
             palette.forEach { paletteColor -> writer.writeInt(paletteColor.argb) }
-            writer.writeBytes(dataBuf)
+            writer.writeNBytes(dataBuf)
         }
 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
             palette.indices.forEach { i -> palette[i] = Color.from(reader.readInt()) }
-            reader.readBytes(dataBuf)
+            reader.readNBytes(dataBuf)
         }
 
         override fun setAll(color: Color): Unit =
