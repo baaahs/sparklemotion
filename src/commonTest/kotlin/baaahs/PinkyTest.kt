@@ -60,10 +60,23 @@ class PinkyTest {
     }
 
     @Test
-    fun whenMappedBrainComesOnline_showShouldBeNotified() {
+    fun whenPinkySideMappedBrainComesOnline_showShouldBeNotified() {
         pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
+        pinky.updateSurfaces()
+        pinky.drawNextFrame()
+
+        val show = testShow1.createdShows.only()
+        expect(1) { show.shaderBuffers.size }
+        expect(1) { pinkyLink.packetsToSend.size }
+    }
+
+    @Test
+    fun whenBrainSideMappedBrainComesOnline_showShouldBeNotified() {
+        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+
+        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
