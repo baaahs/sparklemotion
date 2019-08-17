@@ -10,6 +10,7 @@ import baaahs.visualizer.Rotator
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.*
+import info.laht.threekt.core.Clock
 import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
@@ -633,9 +634,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         if (fn == null) {
             redoFn = null
         } else {
-            redoFn = null
-            redoButton.enabled(false)
-            GlobalScope.launch { fn() }
+            redoFn = {
+                GlobalScope.launch { fn() }
+                redoButton.enabled(false)
+            }
         }
         redoButton.enabled(fn != null)
     }
