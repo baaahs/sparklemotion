@@ -1,5 +1,7 @@
 package baaahs.net
 
+import baaahs.Logger
+import baaahs.getTimeMillis
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -20,17 +22,27 @@ internal class BrowserUdpProxy(
     }
 
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-        ByteArrayReader(bytes).apply {
-            val op = readByte()
-            when (op) {
-                Network.UdpProxy.RECEIVE_OP.toByte() -> {
-                    val fromAddress = UdpProxyAddress(readBytes())
-                    val fromPort = readInt()
-                    val data = readBytes()
-//                        log("UDP: Received ${data.size} bytes from $fromAddress:$fromPort")
-                    udpListener!!.receive(fromAddress, fromPort, data)
+        try {
+            if (bytes.isEmpty()) return
+
+            ByteArrayReader(bytes).apply {
+                val op = readByte()
+                when (op) {
+                    Network.UdpProxy.RECEIVE_OP.toByte() -> {
+                        val fromAddress = UdpProxyAddress(readBytes())
+                        val fromPort = readInt()
+                        val data = readBytes()
+                        log("UDP: Received ${data.size} bytes ${msgId(data)} from $fromAddress:$fromPort")
+                        udpListener!!.receive(fromAddress, fromPort, data)
+                    }
+                    else -> {
+                        log("UDP: Huh? unknown op $op: $bytes")
+                    }
                 }
             }
+        } catch (e: Exception) {
+            logger.error("Error receiving WebSocket command", e)
+            throw e
         }
     }
 
@@ -70,7 +82,7 @@ internal class BrowserUdpProxy(
                 writeBytes(toAddress.bytes)
                 writeInt(port)
                 writeBytes(bytes)
-//                    log("UDP: Sent ${bytes.size} bytes to $toAddress:$port")
+                log("UDP: Sent ${bytes.size} bytes ${msgId(bytes)} to $toAddress:$port")
             }.toBytes())
         }
 
@@ -79,7 +91,7 @@ internal class BrowserUdpProxy(
                 writeByte(Network.UdpProxy.BROADCAST_OP.toByte())
                 writeInt(port)
                 writeBytes(bytes)
-//                    log("UDP: Broadcast ${bytes.size} bytes to *:$port")
+                log("UDP: Broadcast ${bytes.size} bytes ${msgId(bytes)} to *:$port")
             }.toBytes())
         }
 
@@ -94,7 +106,11 @@ internal class BrowserUdpProxy(
     }
 
     private fun log(s: String) {
-        println(s)
+        println("[${getTimeMillis()}] $s")
+    }
+
+    private fun msgId(data: ByteArray): String {
+        return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"
     }
 
     private data class UdpProxyAddress(val bytes: ByteArray) : Network.Address {
@@ -116,5 +132,9 @@ internal class BrowserUdpProxy(
         override fun hashCode(): Int {
             return bytes.contentHashCode()
         }
+    }
+
+    companion object {
+        val logger = Logger("BrowserUdpProxy")
     }
 }

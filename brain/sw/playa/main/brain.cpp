@@ -74,10 +74,10 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
 
     bool havePongData = pMsg->readBoolean();
     uint8_t *data = nullptr;
-    size_t dataLen = 0;
+    size_t pongDataLen = 0;
     if (havePongData) {
-        dataLen = pMsg->copyBytes(&data);
-        ESP_LOGD(TAG, "Read %d bytes for pong", dataLen);
+        pongDataLen = pMsg->copyBytes(&data);
+        ESP_LOGD(TAG, "Read %d bytes for pong", pongDataLen);
     }
 
     m_shadeTree.handleMessage(pMsg);
@@ -93,7 +93,7 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     m_ledRenderer.render();
 
     if (havePongData) {
-        sendPong(pMsg->dest, data, dataLen);
+        sendPong(pMsg->dest, data, pongDataLen);
     }
     if (data) {
         free(data);
@@ -125,8 +125,8 @@ Brain::msgPing(Msg* pMsg) {
     bool isPong = pMsg->readBoolean();
     if (!isPong) {
         uint8_t* data;
-        size_t dataLen = pMsg->copyBytes(&data);
-        sendPong(pMsg->dest, data, dataLen);
+        size_t pongDataLen = pMsg->copyBytes(&data);
+        sendPong(pMsg->dest, data, pongDataLen);
         free(data);
     }
 }
