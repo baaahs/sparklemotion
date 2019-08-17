@@ -117,6 +117,7 @@
   var throwISE = Kotlin.throwISE;
   var mutableMapOf = Kotlin.kotlin.collections.mutableMapOf_qfcya0$;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
+  var json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
   var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
@@ -170,7 +171,6 @@
   var JsonPrimitive = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_pdl1vj$;
   var jsonArray = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.jsonArray_mb52fq$;
   var L5 = Kotlin.Long.fromInt(5);
-  var json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json;
   var getValue = Kotlin.kotlin.collections.getValue_t9ocha$;
   var get_contentOrNull = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.get_contentOrNull_u3sd3g$;
   var JsonParsingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonParsingException;
@@ -5569,8 +5569,10 @@
         tmp$_8 = null;
       var pixelLocations = (tmp$_5 = tmp$_8) != null ? tmp$_5 : emptyList();
       var pixelCount = (tmp$_7 = (tmp$_6 = dataFor.pixelLocations) != null ? tmp$_6.size : null) != null ? tmp$_7 : 2048;
-      var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelLocations);
-      this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
+      if (!equals(msg.surfaceName, dataFor.surface.name)) {
+        var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelLocations);
+        this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
+      }
       tmp$_3 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
     }
      else
@@ -6031,9 +6033,9 @@
   function PubSub$Listener(origin_0) {
     this.origin_fg10in$_0 = origin_0;
   }
-  PubSub$Listener.prototype.onUpdate_btyzc5$ = function (data, fromOrigin) {
+  PubSub$Listener.prototype.onUpdate_hlqsza$ = function (data, fromOrigin) {
     if (this.origin_fg10in$_0 !== fromOrigin) {
-      this.onUpdate_61zpoe$(data);
+      this.onUpdate_qiw0cd$(data);
     }
   };
   PubSub$Listener.$metadata$ = {
@@ -6043,18 +6045,20 @@
   };
   function PubSub$TopicInfo(name, data) {
     if (data === void 0)
-      data = null;
+      data = json.JsonNull;
     this.name = name;
     this.data = data;
     this.listeners = ArrayList_init();
   }
-  PubSub$TopicInfo.prototype.notify_btyzc5$ = function (jsonData, origin) {
-    this.data = jsonData;
-    var tmp$;
-    tmp$ = this.listeners.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.onUpdate_btyzc5$(jsonData, origin);
+  PubSub$TopicInfo.prototype.notify_hlqsza$ = function (jsonData, origin) {
+    if (!equals(jsonData, this.data)) {
+      this.data = jsonData;
+      var tmp$;
+      tmp$ = this.listeners.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        element.onUpdate_hlqsza$(jsonData, origin);
+      }
     }
   };
   PubSub$TopicInfo.$metadata$ = {
@@ -6062,10 +6066,11 @@
     simpleName: 'TopicInfo',
     interfaces: []
   };
-  function PubSub$Connection(name, topics) {
+  function PubSub$Connection(name, topics, json) {
     PubSub$Origin.call(this);
     this.name_qs3czq$_0 = name;
     this.topics_okivn7$_0 = topics;
+    this.json_qq7q2x$_0 = json;
     this.connection = null;
     this.toSend_p0j902$_0 = ArrayList_init();
     this.cleanup_mgq9j5$_0 = ArrayList_init();
@@ -6086,8 +6091,8 @@
     this.this$Connection = this$Connection;
     PubSub$Listener.call(this, origin_0);
   }
-  PubSub$Connection$receive$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
-    this.this$Connection.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
+  PubSub$Connection$receive$ObjectLiteral.prototype.onUpdate_qiw0cd$ = function (data) {
+    this.this$Connection.sendTopicUpdate_zafu29$(this.closure$topicName, data);
   };
   PubSub$Connection$receive$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -6100,21 +6105,15 @@
     };
   }
   PubSub$Connection.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
+    var tmp$;
     var reader = new ByteArrayReader(bytes);
     var command = reader.readString();
     switch (command) {
       case 'sub':
         var topicName = reader.readString();
-        var $receiver = this.topics_okivn7$_0;
-        var tmp$;
-        var value = $receiver.get_11rb$(topicName);
-        if (value == null) {
-          var answer = new PubSub$TopicInfo(topicName);
-          $receiver.put_xwzc9p$(topicName, answer);
-          tmp$ = answer;
-        }
-         else {
-          tmp$ = value;
+        tmp$ = this.topics_okivn7$_0.get_11rb$(topicName);
+        if (tmp$ == null) {
+          throw IllegalArgumentException_init('Unknown topic ' + topicName);
         }
 
         var topicInfo = tmp$;
@@ -6122,26 +6121,26 @@
         topicInfo.listeners.add_11rb$(listener);
         this.cleanup_mgq9j5$_0.add_11rb$(PubSub$Connection$receive$lambda(topicInfo, listener));
         var topicData = topicInfo.data;
-        if (topicData != null) {
-          listener.onUpdate_61zpoe$(topicData);
+        if (!equals(topicData, json.JsonNull)) {
+          listener.onUpdate_qiw0cd$(topicData);
         }
 
         break;
       case 'update':
         var topicName_0 = reader.readString();
-        var data = reader.readString();
+        var data = this.json_qq7q2x$_0.parseJson_61zpoe$(reader.readString());
         var topicInfo_0 = this.topics_okivn7$_0.get_11rb$(topicName_0);
-        topicInfo_0 != null ? (topicInfo_0.notify_btyzc5$(data, this), Unit) : null;
+        topicInfo_0 != null ? (topicInfo_0.notify_hlqsza$(data, this), Unit) : null;
         break;
       default:throw IllegalArgumentException_init("huh? don't know what to do with " + command);
     }
   };
-  PubSub$Connection.prototype.sendTopicUpdate_puj7f4$ = function (name, data) {
+  PubSub$Connection.prototype.sendTopicUpdate_zafu29$ = function (name, data) {
     this.debug_6bynea$_0('update ' + name + ' ' + data);
     var writer = new ByteArrayWriter();
     writer.writeString_61zpoe$('update');
     writer.writeString_61zpoe$(name);
-    writer.writeString_61zpoe$(data);
+    writer.writeString_61zpoe$(this.json_qq7q2x$_0.stringify_tf03ej$(json.JsonElementSerializer, data));
     this.sendCommand_su7uv8$_0(writer.toBytes());
   };
   PubSub$Connection.prototype.sendTopicSub_61zpoe$ = function (topicName) {
@@ -6214,7 +6213,7 @@
     this.closure$listener = closure$listener;
   }
   PubSub$Server$publish$ObjectLiteral.prototype.onChange = function (t) {
-    this.closure$topicInfo.notify_btyzc5$(this.this$Server.json.stringify_tf03ej$(this.closure$topic.serializer, t), this.closure$publisher);
+    this.closure$topicInfo.notify_hlqsza$(this.this$Server.json.toJson_tf03ej$(this.closure$topic.serializer, t), this.closure$publisher);
   };
   PubSub$Server$publish$ObjectLiteral.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
     this.closure$listener.onUpdate = onUpdate;
@@ -6228,7 +6227,7 @@
   PubSub$Server.prototype.publish_oiz02e$ = function (topic, data, onUpdate) {
     var publisher = new PubSub$Origin();
     var topicName = topic.name;
-    var jsonData = this.json.stringify_tf03ej$(topic.serializer, data);
+    var jsonData = this.json.toJson_tf03ej$(topic.serializer, data);
     var $receiver = this.topics_0;
     var tmp$;
     var value = $receiver.get_11rb$(topicName);
@@ -6243,7 +6242,7 @@
     var topicInfo = tmp$;
     var listener = new PubSub$Server$PublisherListener(this, topic, publisher, onUpdate);
     topicInfo.listeners.add_11rb$(listener);
-    topicInfo.notify_btyzc5$(jsonData, publisher);
+    topicInfo.notify_hlqsza$(jsonData, publisher);
     return new PubSub$Server$publish$ObjectLiteral(topicInfo, this, topic, publisher, listener);
   };
   PubSub$Server.prototype.getTopicInfo_y4putb$ = function (topicName) {
@@ -6255,8 +6254,8 @@
     this.topic_0 = topic;
     this.onUpdate = onUpdate;
   }
-  PubSub$Server$PublisherListener.prototype.onUpdate_61zpoe$ = function (data) {
-    this.onUpdate(this.$outer.json.parse_awif5v$(this.topic_0.serializer, data));
+  PubSub$Server$PublisherListener.prototype.onUpdate_qiw0cd$ = function (data) {
+    this.onUpdate(this.$outer.json.fromJson_htt2tq$(this.topic_0.serializer, data));
   };
   PubSub$Server$PublisherListener.$metadata$ = {
     kind: Kind_CLASS,
@@ -6265,7 +6264,7 @@
   };
   function PubSub$PubSub$Server_init$lambda(this$Server) {
     return function (incomingConnection) {
-      return new PubSub$Connection('server at ' + incomingConnection.toAddress, this$Server.topics_0);
+      return new PubSub$Connection('server at ' + incomingConnection.toAddress, this$Server.topics_0, this$Server.json);
     };
   }
   PubSub$Server.$metadata$ = {
@@ -6276,7 +6275,7 @@
   function PubSub$Client(link, serverAddress, port) {
     PubSub$Endpoint.call(this);
     this.topics_0 = HashMap_init();
-    this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0);
+    this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0, this.json);
     link.connectWebSocket_t0j9bj$(serverAddress, port, '/sm/ws', this.server_0);
   }
   function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin_0) {
@@ -6284,8 +6283,8 @@
     this.closure$topicName = closure$topicName;
     PubSub$Listener.call(this, origin_0);
   }
-  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
-    this.this$Client.server_0.sendTopicUpdate_puj7f4$(this.closure$topicName, data);
+  PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.onUpdate_qiw0cd$ = function (data) {
+    this.this$Client.server_0.sendTopicUpdate_zafu29$(this.closure$topicName, data);
   };
   PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -6297,8 +6296,8 @@
     this.closure$topic = closure$topic;
     PubSub$Listener.call(this, origin_0);
   }
-  PubSub$Client$subscribe$ObjectLiteral.prototype.onUpdate_61zpoe$ = function (data) {
-    this.closure$onUpdate(this.this$Client.json.parse_awif5v$(this.closure$topic.serializer, data));
+  PubSub$Client$subscribe$ObjectLiteral.prototype.onUpdate_qiw0cd$ = function (data) {
+    this.closure$onUpdate(this.this$Client.json.fromJson_htt2tq$(this.closure$topic.serializer, data));
   };
   PubSub$Client$subscribe$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -6311,8 +6310,8 @@
     this.closure$subscriber = closure$subscriber;
   }
   PubSub$Client$subscribe$ObjectLiteral_0.prototype.onChange = function (t) {
-    var jsonData = this.this$Client.json.stringify_tf03ej$(this.closure$topic.serializer, t);
-    this.closure$topicInfo.notify_btyzc5$(jsonData, this.closure$subscriber);
+    var jsonData = this.this$Client.json.toJson_tf03ej$(this.closure$topic.serializer, t);
+    this.closure$topicInfo.notify_hlqsza$(jsonData, this.closure$subscriber);
   };
   PubSub$Client$subscribe$ObjectLiteral_0.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Client.channel.replaceOnUpdate not implemented');
@@ -6344,8 +6343,8 @@
     var listener = new PubSub$Client$subscribe$ObjectLiteral(onUpdate, this, topic, subscriber);
     topicInfo.listeners.add_11rb$(listener);
     var data = topicInfo.data;
-    if (data != null) {
-      listener.onUpdate_61zpoe$(data);
+    if (!equals(data, json.JsonNull)) {
+      listener.onUpdate_qiw0cd$(data);
     }
     return new PubSub$Client$subscribe$ObjectLiteral_0(this, topic, topicInfo, subscriber);
   };
