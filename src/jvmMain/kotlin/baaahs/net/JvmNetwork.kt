@@ -1,5 +1,7 @@
 package baaahs.net
 
+import baaahs.Logger
+import baaahs.getTimeMillis
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -8,6 +10,7 @@ import io.ktor.request.host
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.websocket.DefaultWebSocketServerSession
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +30,21 @@ class JvmNetwork : Network {
         const val MAX_UDP_SIZE = 1450
         //const val MAX_UDP_SIZE = 4096
 
+        val logger = Logger("JvmNetwork")
         val myAddress = InetAddress.getLocalHost()
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
+
+        val networkScope = CoroutineScope(Dispatchers.IO)
+
+        fun msgId(data: ByteArray): String {
+            return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"
+        }
+
     }
 
     override fun link(): RealLink = link
 
     inner class RealLink() : Network.Link {
-        private val networkScope = CoroutineScope(Dispatchers.IO)
 
         override val udpMtu = MAX_UDP_SIZE
 
@@ -127,6 +137,7 @@ class JvmNetwork : Network {
                                 val frame = Frame.Binary(true, ByteBuffer.wrap(bytes.clone()))
                                 GlobalScope.launch {
                                     this@webSocket.send(frame)
+                                    this@webSocket.flush()
                                 }
                             }
                         }
@@ -155,7 +166,7 @@ class JvmNetwork : Network {
 
                     webSocket("/sm/udpProxy") {
                         try {
-                            JvmUdpProxy().handle(incoming, outgoing)
+                            JvmUdpProxy().handle(this)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
