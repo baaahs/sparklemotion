@@ -213,7 +213,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
 
     // This message contains a header, so let's parse it
     auto header = pMsg->readHeader();
-    ESP_LOGD(TAG, "Read a msg header");
+    ESP_LOGD(TAG, "Read a msg header msgId=%d", header.id);
 
     ESP_LOGD(TAG, "id=( %d ).size=%d  frameOffset=%d frameSize=%d",
             header.id, header.msgSize, header.frameOffset, header.frameSize);
@@ -297,7 +297,7 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
 
     if (m_timeToDie) return;
 
-    ESP_LOGI(TAG, "Sending this message");
+    ESP_LOGI(TAG, "Sending this message msgId=%d", (((int) pMsg->buffer()[0]) & 0xff) * 256 + ((int) pMsg->buffer()[1] & 0xff));
     pMsg->log();
 
     if (m_sock < 0) {
