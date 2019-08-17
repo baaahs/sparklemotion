@@ -50,7 +50,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
     }
 
     fun readNBytes(dest: ByteArray): ByteArray {
-        val bytes = bytes.copyInto(dest, offset, offset + dest.size)
+        val bytes = bytes.copyInto(dest,
+            destinationOffset = 0, startIndex = offset, endIndex = offset + dest.size)
         offset += dest.size
         return bytes
     }
