@@ -4,9 +4,20 @@ import baaahs.Color
 import baaahs.IdentifiedSurface
 import baaahs.getTimeMillis
 import baaahs.shaders.GlslShader
-import baaahs.shaders.GlslShader.AdjustableValue.Type.*
+import baaahs.shaders.GlslShader.AdjustableValue.Type.FLOAT
+import baaahs.shaders.GlslShader.AdjustableValue.Type.INT
+import baaahs.shaders.GlslShader.AdjustableValue.Type.VEC3
 import baaahs.timeSync
-import org.khronos.webgl.*
+import org.khronos.webgl.ArrayBufferView
+import org.khronos.webgl.Float32Array
+import org.khronos.webgl.Uint32Array
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.WebGLBuffer
+import org.khronos.webgl.WebGLProgram
+import org.khronos.webgl.WebGLRenderingContext
+import org.khronos.webgl.WebGLShader
+import org.khronos.webgl.WebGLUniformLocation
+import org.khronos.webgl.get
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
@@ -349,8 +360,10 @@ void main(void) {
     inner class Instance(
         pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int
     ) : GlslRenderer.Instance(pixelCount, uvCoords, surfaceCount) {
-        override val adjustableUniforms: List<AdjustibleUniform> =
-            adjustableValues.map { adjustableValue -> UnifyingAdjustableUniform(adjustableValue, surfaceCount) }
+        override val adjustableUniforms: Map<Int, AdjustibleUniform> =
+            adjustableValues.associate { adjustableValue ->
+                adjustableValue.ordinal to UnifyingAdjustableUniform(adjustableValue, surfaceCount)
+            }
 
         private var uvCoordTexture = gl { gl.createTexture() }
         private val frameBuffer = gl { gl.createFramebuffer() }
