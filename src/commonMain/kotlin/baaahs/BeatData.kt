@@ -16,7 +16,7 @@ data class BeatData(
 ) {
     @Transient val bpm: Float
         get() {
-            if (beatIntervalMs==0) return 0.0.toFloat()
+            if (beatIntervalMs == 0) return 0.0.toFloat()
             return (60_000 / beatIntervalMs).toFloat()
         }
 
@@ -24,8 +24,12 @@ data class BeatData(
         val elapsedSinceStartOfMeasure = clock.now() - measureStartTimeMs
         return ((elapsedSinceStartOfMeasure / beatIntervalMs).toFloat()) % beatsPerMeasure
     }
-}
 
+    /** Returns 1.0 if we're on a beat, 0.0 when we're furthest from a beat,
+     * and anywhere in between otherwise. */
+    fun fractionTilNextBeat(clock: Clock): Float =
+        1 - beatWithinMeasure(clock) % 1.0f
+}
 
 interface BeatSource {
     fun getBeatData(): BeatData

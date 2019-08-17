@@ -1,9 +1,16 @@
 package baaahs.glsl
 
-import baaahs.*
-import baaahs.geom.Vector3F
+import baaahs.Color
+import baaahs.IdentifiedSurface
+import baaahs.Model
+import baaahs.Pixels
+import baaahs.Surface
 import baaahs.shaders.GlslShader
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.max
+import kotlin.math.min
 
 expect object GlslBase {
     val manager: GlslManager
@@ -41,7 +48,6 @@ abstract class GlslRenderer(
         uvCoordsLocation = getUniformLocation("sm_uvCoords")
         resolutionLocation = getUniformLocation("resolution", true)
         timeLocation = getUniformLocation("time", true)
-
     }
 
     fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
@@ -112,7 +118,7 @@ abstract class GlslRenderer(
     }
 
     abstract inner class Instance(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
-        abstract val adjustableUniforms: List<AdjustibleUniform>
+        abstract val adjustableUniforms: Map<Int, AdjustibleUniform>
 
         abstract fun bindFramebuffer()
         abstract fun bindUvCoordTexture(textureIndex: Int, uvCoordsLocation: Uniform)
@@ -121,11 +127,11 @@ abstract class GlslRenderer(
         abstract fun release()
 
         fun bindUniforms() {
-            adjustableUniforms.forEach { it.bind() }
+            adjustableUniforms.forEach { (key, value) -> value.bind() }
         }
 
         fun setUniform(adjustableValue: GlslShader.AdjustableValue, surfaceOrdinal: Int, value: Any?) {
-            adjustableUniforms[adjustableValue.ordinal].setValue(surfaceOrdinal, value)
+            adjustableUniforms[adjustableValue.ordinal]!!.setValue(surfaceOrdinal, value)
         }
     }
 
@@ -183,7 +189,7 @@ class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
                 val normalDelta = pixelLocation.minus(modelCenter).normalize()
                 var theta = atan2(abs(normalDelta.z), normalDelta.x) // theta in range [-π,π]
                 if (theta < 0.0f) theta += (2.0f * PI.toFloat()) // theta in range [0,2π)
-                val u = theta  / (2.0f * PI.toFloat()) // u in range [0,1)
+                val u = theta / (2.0f * PI.toFloat()) // u in range [0,1)
                 val v = (pixelLocation.minus(modelCenter).y + modelExtents.y / 2.0f) / modelExtents.y
                 return u to v
             }
