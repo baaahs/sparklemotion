@@ -9,6 +9,32 @@
 <br/>
 <h1>GlslShow</h1>
 <code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show/index.html"><span class="identifier">Show</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-beat-data-source/index.html">BeatDataSource</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">BeatDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-data-source/index.html"><span class="identifier">GlslShow.DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-data-source/index.html">DataSource</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">DataSource</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-gadget-data-source/index.html">GadgetDataSource</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">GadgetDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-data-source/index.html"><span class="identifier">GlslShow.DataSource</span></a></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -50,10 +76,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="create-gadget.html">createGadget</a></p>
+<p><a href="create-data-source.html">createDataSource</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><a href="../../baaahs.shaders/-glsl-shader/-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">.</span><span class="identifier">createGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$createGadget(baaahs.shaders.GlslShader.AdjustableValue, baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a></code></td>
+<code><span class="keyword">fun </span><a href="../../baaahs.shaders/-glsl-shader/-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">.</span><span class="identifier">createDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.shows.GlslShow$createDataSource(baaahs.shaders.GlslShader.AdjustableValue, baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-data-source/index.html"><span class="identifier">GlslShow.DataSource</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -73,6 +99,13 @@
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">GlslOtherShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslShow</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-glsl-red-beat-show/index.html">GlslRedBeatShow</a></p>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">GlslRedBeatShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslShow</span></a></code></td>
 </tr>
 <tr>
 <td>

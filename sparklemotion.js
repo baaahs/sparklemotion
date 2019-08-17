@@ -84,36 +84,37 @@
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
-  var Enum = Kotlin.kotlin.Enum;
-  var throwISE = Kotlin.throwISE;
   var launch = $module$kotlinx_coroutines_core.kotlinx.coroutines.launch_s496o7$;
   var L1000 = Kotlin.Long.fromInt(1000);
-  var L2000 = Kotlin.Long.fromInt(2000);
   var coroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.coroutineScope_awg8ri$;
   var cancelAndJoin = $module$kotlinx_coroutines_core.kotlinx.coroutines.cancelAndJoin_5dx9u$;
-  var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toString_0 = Kotlin.toString;
   var L1 = Kotlin.Long.ONE;
+  var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
   var L50 = Kotlin.Long.fromInt(50);
   var L10 = Kotlin.Long.fromInt(10);
   var CoroutineName = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineName;
   var L10000 = Kotlin.Long.fromInt(10000);
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
-  var toList = Kotlin.kotlin.collections.toList_964n91$;
+  var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
+  var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var withTimeoutOrNull = $module$kotlinx_coroutines_core.kotlinx.coroutines.withTimeoutOrNull_ms3uf5$;
+  var toList = Kotlin.kotlin.collections.toList_964n91$;
   var Channel = $module$kotlinx_coroutines_core.kotlinx.coroutines.channels.Channel_ww73n8$;
   var Exception = Kotlin.kotlin.Exception;
   var L2 = Kotlin.Long.fromInt(2);
   var first = Kotlin.kotlin.collections.first_2p1efm$;
+  var padStart = Kotlin.kotlin.text.padStart_vrc1nu$;
   var MainScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.MainScope;
   var CoroutineScope = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope;
-  var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var wrapFunction = Kotlin.wrapFunction;
   var Comparator = Kotlin.kotlin.Comparator;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
+  var Enum = Kotlin.kotlin.Enum;
+  var throwISE = Kotlin.throwISE;
   var mutableMapOf = Kotlin.kotlin.collections.mutableMapOf_qfcya0$;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
@@ -127,7 +128,6 @@
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var hashCode = Kotlin.hashCode;
@@ -137,6 +137,7 @@
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var Exception_init_0 = Kotlin.kotlin.Exception_init;
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
+  var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
   var toList_1 = Kotlin.kotlin.collections.toList_abgq59$;
   var get_list = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.get_list_gekvwj$;
   var UnsupportedOperationException_init = Kotlin.kotlin.UnsupportedOperationException_init;
@@ -164,6 +165,7 @@
   var max = Kotlin.kotlin.collections.max_i2lc79$;
   var get_indices = Kotlin.kotlin.collections.get_indices_i2lc79$;
   var reversed = Kotlin.kotlin.ranges.reversed_zf1xzc$;
+  var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_tmsbgo$;
   var indexOf = Kotlin.kotlin.text.indexOf_l5u8uk$;
   var JsonPrimitive = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_pdl1vj$;
   var jsonArray = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.jsonArray_mb52fq$;
@@ -273,8 +275,6 @@
   var PlaneBufferGeometry = THREE.PlaneBufferGeometry;
   var indexOf_0 = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
-  Mapper$Detector.prototype = Object.create(Enum.prototype);
-  Mapper$Detector.prototype.constructor = Mapper$Detector;
   Mapper$TimeoutException.prototype = Object.create(Exception.prototype);
   Mapper$TimeoutException.prototype.constructor = Mapper$TimeoutException;
   MovingHead$ColorMode.prototype = Object.create(Enum.prototype);
@@ -389,6 +389,8 @@
   GlslShow.prototype.constructor = GlslShow;
   GlslOtherShow.prototype = Object.create(GlslShow.prototype);
   GlslOtherShow.prototype.constructor = GlslOtherShow;
+  GlslRedBeatShow.prototype = Object.create(GlslShow.prototype);
+  GlslRedBeatShow.prototype.constructor = GlslRedBeatShow;
   GlslSandbox45963Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox45963Show.prototype.constructor = GlslSandbox45963Show;
   GlslSandbox46102Show.prototype = Object.create(GlslShow.prototype);
@@ -498,6 +500,9 @@
   BeatData.prototype.beatWithinMeasure_rnw5ii$ = function (clock) {
     var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
     return elapsedSinceStartOfMeasure / this.beatIntervalMs % this.beatsPerMeasure;
+  };
+  BeatData.prototype.fractionTilNextBeat_rnw5ii$ = function (clock) {
+    return 1 - this.beatWithinMeasure_rnw5ii$(clock) % 1.0;
   };
   function BeatData$Companion() {
     BeatData$Companion_instance = this;
@@ -2022,9 +2027,8 @@
     this.mediaDevices_0 = mediaDevices;
     this.pinkyAddress_0 = pinkyAddress;
     this.$delegate_9rrh7p$_0 = MainScope();
-    this.maxPixelsPerBrain_0 = 120;
+    this.maxPixelsPerBrain_0 = 2048;
     this.camera_iftyng$_0 = this.camera_iftyng$_0;
-    this.baseBitmap_0 = null;
     this.link_tktc8n$_0 = this.link_tktc8n$_0;
     this.udpSocket_eiksen$_0 = this.udpSocket_eiksen$_0;
     this.mapperClient_pocmit$_0 = this.mapperClient_pocmit$_0;
@@ -2034,13 +2038,7 @@
     this.suppressShowsJob_0 = null;
     this.brainsToMap_0 = LinkedHashMap_init();
     this.activeColor_0 = Color_init_1(7, 255, 7);
-    this.inactiveColor_0 = Color_init_1(7, 0, 7);
-    this.detectors = [Mapper$Detector$GREEN_getInstance(), Mapper$Detector$GREEN_getInstance(), Mapper$Detector$GREEN_getInstance()];
-    this.redRgbaIndex_0 = 0;
-    this.greenRgbaIndex_0 = 1;
-    this.blueRgbaIndex_0 = 2;
-    this.signalRgbaIndex_0 = this.blueRgbaIndex_0;
-    this.indicatorRgbaIndex_0 = this.greenRgbaIndex_0;
+    this.inactiveColor_0 = Color_init_1(1, 0, 1);
     this.mapperUi_0.listen_97503t$(this);
     this.mapperUi_0.addWireframe_9u144y$(sheepModel);
     this.deliverer_0 = new Mapper$ReliableShaderMessageDeliverer(this);
@@ -2085,57 +2083,6 @@
       this.mapperClient_pocmit$_0 = mapperClient;
     }
   });
-  function Mapper$Detector(name, ordinal, rgbaIndex, color, alternateColor) {
-    Enum.call(this);
-    this.rgbaIndex = rgbaIndex;
-    this.color = color;
-    this.alternateColor = alternateColor;
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function Mapper$Detector_initFields() {
-    Mapper$Detector_initFields = function () {
-    };
-    Mapper$Detector$RED_instance = new Mapper$Detector('RED', 0, 0, Color$Companion_getInstance().RED, Color$Companion_getInstance().CYAN);
-    Mapper$Detector$GREEN_instance = new Mapper$Detector('GREEN', 1, 1, Color_init_1(1, 255, 1), Color_init_1(1, 0, 1));
-    Mapper$Detector$BLUE_instance = new Mapper$Detector('BLUE', 2, 2, Color$Companion_getInstance().BLUE, Color$Companion_getInstance().YELLOW);
-  }
-  var Mapper$Detector$RED_instance;
-  function Mapper$Detector$RED_getInstance() {
-    Mapper$Detector_initFields();
-    return Mapper$Detector$RED_instance;
-  }
-  var Mapper$Detector$GREEN_instance;
-  function Mapper$Detector$GREEN_getInstance() {
-    Mapper$Detector_initFields();
-    return Mapper$Detector$GREEN_instance;
-  }
-  var Mapper$Detector$BLUE_instance;
-  function Mapper$Detector$BLUE_getInstance() {
-    Mapper$Detector_initFields();
-    return Mapper$Detector$BLUE_instance;
-  }
-  Mapper$Detector.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Detector',
-    interfaces: [Enum]
-  };
-  function Mapper$Detector$values() {
-    return [Mapper$Detector$RED_getInstance(), Mapper$Detector$GREEN_getInstance(), Mapper$Detector$BLUE_getInstance()];
-  }
-  Mapper$Detector.values = Mapper$Detector$values;
-  function Mapper$Detector$valueOf(name) {
-    switch (name) {
-      case 'RED':
-        return Mapper$Detector$RED_getInstance();
-      case 'GREEN':
-        return Mapper$Detector$GREEN_getInstance();
-      case 'BLUE':
-        return Mapper$Detector$BLUE_getInstance();
-      default:throwISE('No enum constant baaahs.Mapper.Detector.' + name);
-    }
-  }
-  Mapper$Detector.valueOf_61zpoe$ = Mapper$Detector$valueOf;
   function Coroutine$Mapper$start$lambda$lambda(this$Mapper_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -2271,7 +2218,7 @@
         switch (this.state_0) {
           case 0:
             this.state_0 = 2;
-            this.result_0 = this.local$this$Mapper.startNewSession_0(this);
+            this.result_0 = this.local$this$Mapper.startNewSession(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -2320,9 +2267,12 @@
   Mapper.prototype.onStop = function () {
     this.onClose();
   };
+  function Mapper$onClose$lambda() {
+    return 'Shutting down Mapper...';
+  }
   Mapper.prototype.onClose = function () {
     var tmp$;
-    println('Shutting down Mapper...');
+    Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$onClose$lambda);
     this.isRunning_0 = false;
     this.camera.close();
     (tmp$ = this.suppressShowsJob_0) != null ? (tmp$.cancel_m4sck1$(), Unit) : null;
@@ -2399,16 +2349,27 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest());
             this.state_0 = 2;
-            this.result_0 = delay(L2000, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
-            return this.result_0;
+            if (!this.local$this$Mapper.isPaused_0) {
+              this.state_0 = 4;
+              continue;
+            }
+
+            this.local$this$Mapper.udpSocket_0.broadcastUdp_68hu5j$(8003, new BrainIdRequest());
+            this.state_0 = 3;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 2;
+            continue;
+          case 4:
+            return Unit;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -2481,172 +2442,327 @@
         return instance.doResume(null);
     };
   }
-  function Mapper$startNewSession$lambda_1(it) {
-    return it.modelSurface.name;
+  function Coroutine$startNewSession($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+    this.local$brainIdRequestJob = void 0;
   }
-  function Mapper$startNewSession$lambda$lambda_0(closure$thresholdValue, closure$sampleLocations) {
-    return function (x, y, value) {
-      if (value >= closure$thresholdValue && Random.Default.nextFloat() < 0.05) {
-        closure$sampleLocations.add_11rb$(to(x, y));
+  Coroutine$startNewSession.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$startNewSession.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$startNewSession.prototype.constructor = Coroutine$startNewSession;
+  Coroutine$startNewSession.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.mapperUi_0.showMessage_61zpoe$('ESTABLISHING UPLINK\u2026');
+            this.state_0 = 2;
+            this.result_0 = this.$this.retry_0(Mapper$startNewSession$lambda(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.$this.suppressShows_0();
+            this.$this.pauseForUserInteraction_0('PRESS PLAY WHEN ALL SURFACES ARE GREEN');
+            this.state_0 = 3;
+            this.result_0 = coroutineScope(Mapper$startNewSession$lambda_0(this.$this), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.local$brainIdRequestJob = this.result_0;
+            this.$this.mapperUi_0.showMessage_61zpoe$(this.$this.brainsToMap_0.size.toString() + ' SURFACES DISCOVERED!');
+            this.state_0 = 4;
+            this.result_0 = this.$this.waitUntilUnpaused_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 4:
+            this.state_0 = 5;
+            this.result_0 = cancelAndJoin(this.local$brainIdRequestJob, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
+            if (this.$this.brainsToMap_0.isEmpty()) {
+              this.$this.mapperUi_0.showMessage_61zpoe$('NO SURFACES DISCOVERED! TRY AGAIN!');
+              this.$this.isRunning_0 = false;
+              return;
+            }
+             else {
+              this.state_0 = 6;
+              continue;
+            }
+
+          case 6:
+            this.$this.mapperUi_0.showMessage_61zpoe$('READY PLAYER ONE\u2026');
+            this.$this.pauseForUserInteraction_0('ALIGN MODEL AND PRESS PLAY WHEN READY');
+            this.state_0 = 7;
+            this.result_0 = this.$this.waitUntilUnpaused_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 7:
+            this.state_0 = 8;
+            this.result_0 = (new Mapper$Session(this.$this)).start(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 8:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
       }
-      return Unit;
-    };
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper.prototype.startNewSession = function (continuation_0, suspended) {
+    var instance = new Coroutine$startNewSession(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Mapper$Session($outer) {
+    this.$outer = $outer;
+    this.sessionStartTime = DateTime.Companion.now();
+    this.visibleSurfaces = this.$outer.mapperUi_0.getVisibleSurfaces();
+    this.baseBitmap_0 = null;
+    this.cameraOrientation = this.$outer.mapperUi_0.lockUi();
+    this.deltaBitmap_4b1pf8$_0 = this.deltaBitmap_4b1pf8$_0;
+    this.pixelShader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
+    var $receiver = this.pixelShader.createBuffer_ppt8xj$(new Mapper$Session$pixelShaderBuffer$ObjectLiteral());
+    $receiver.palette[0] = Color$Companion_getInstance().BLACK;
+    $receiver.palette[1] = Color$Companion_getInstance().WHITE;
+    $receiver.setAll_za3lpa$(0);
+    this.pixelShaderBuffer = $receiver;
   }
-  function Mapper$startNewSession$ObjectLiteral() {
-    this.pixelCount_r4rxw5$_0 = 2048;
-  }
-  Object.defineProperty(Mapper$startNewSession$ObjectLiteral.prototype, 'pixelCount', {
+  Object.defineProperty(Mapper$Session.prototype, 'deltaBitmap', {
     get: function () {
-      return this.pixelCount_r4rxw5$_0;
+      if (this.deltaBitmap_4b1pf8$_0 == null)
+        return throwUPAE('deltaBitmap');
+      return this.deltaBitmap_4b1pf8$_0;
+    },
+    set: function (deltaBitmap) {
+      this.deltaBitmap_4b1pf8$_0 = deltaBitmap;
     }
   });
-  Mapper$startNewSession$ObjectLiteral.prototype.describe = function () {
-    return 'Mapper surface';
+  Mapper$Session.prototype.resetToBase = function () {
+    this.pixelShaderBuffer.setAll_za3lpa$(0);
   };
-  Mapper$startNewSession$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Surface]
+  function Coroutine$allPixelsOff($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$allPixelsOff.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
   };
-  function Mapper$startNewSession$resetToBase(closure$buffer) {
-    return function () {
-      var $receiver = closure$buffer.indices;
-      var tmp$;
-      tmp$ = $receiver.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        closure$buffer.set_vux9f0$(element, element % 3);
+  Coroutine$allPixelsOff.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$allPixelsOff.prototype.constructor = Coroutine$allPixelsOff;
+  Coroutine$allPixelsOff.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.resetToBase();
+            this.state_0 = 2;
+            this.result_0 = this.$this.$outer.sendToAllReliably_0(this.$this.pixelShaderBuffer, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
       }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper$Session.prototype.allPixelsOff = function (continuation_0, suspended) {
+    var instance = new Coroutine$allPixelsOff(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Coroutine$turnOnPixel_za3lpa$($this, pixelIndex_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+    this.local$pixelIndex = pixelIndex_0;
+  }
+  Coroutine$turnOnPixel_za3lpa$.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$turnOnPixel_za3lpa$.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$turnOnPixel_za3lpa$.prototype.constructor = Coroutine$turnOnPixel_za3lpa$;
+  Coroutine$turnOnPixel_za3lpa$.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.resetToBase();
+            this.$this.pixelShaderBuffer.set_vux9f0$(this.local$pixelIndex, 1);
+            this.state_0 = 2;
+            this.result_0 = this.$this.$outer.sendToAllReliably_0(this.$this.pixelShaderBuffer, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper$Session.prototype.turnOnPixel_za3lpa$ = function (pixelIndex_0, continuation_0, suspended) {
+    var instance = new Coroutine$turnOnPixel_za3lpa$(this, pixelIndex_0, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Mapper$Session$start$lambda$lambda(it) {
+    return it.modelSurface.name;
+  }
+  function Mapper$Session$start$lambda(this$Session) {
+    return function () {
+      return 'Visible surfaces: ' + joinToString(this$Session.visibleSurfaces, void 0, void 0, void 0, void 0, void 0, Mapper$Session$start$lambda$lambda);
     };
   }
-  function Mapper$startNewSession$actualPixelIndex(closure$pixelStep, this$Mapper) {
+  function Mapper$Session$start$lambda_0() {
+    return 'identify surfaces...';
+  }
+  function Coroutine$Mapper$Session$start$lambda$lambda(closure$index_0, closure$brainToMap_0, closure$retryCount_0, this$Session_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.local$closure$index = closure$index_0;
+    this.local$closure$brainToMap = closure$brainToMap_0;
+    this.local$closure$retryCount = closure$retryCount_0;
+    this.local$this$Session = this$Session_0;
+  }
+  Coroutine$Mapper$Session$start$lambda$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$Mapper$Session$start$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$Session$start$lambda$lambda.prototype.constructor = Coroutine$Mapper$Session$start$lambda$lambda;
+  Coroutine$Mapper$Session$start$lambda$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$this$Session.identifyBrain_v30byo$(this.local$closure$index, this.local$closure$brainToMap, (this.local$closure$retryCount.v = this.local$closure$retryCount.v + 1 | 0, this.local$closure$retryCount.v), this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function Mapper$Session$start$lambda$lambda_0(closure$index_0, closure$brainToMap_0, closure$retryCount_0, this$Session_0) {
+    return function (continuation_0, suspended) {
+      var instance = new Coroutine$Mapper$Session$start$lambda$lambda(closure$index_0, closure$brainToMap_0, closure$retryCount_0, this$Session_0, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function Mapper$Session$start$lambda_1() {
+    return 'identify pixels...';
+  }
+  function Mapper$Session$start$actualPixelIndex(closure$pixelStep, this$Mapper) {
     return function (pixelIndexX) {
       return Kotlin.imul(pixelIndexX, closure$pixelStep) % this$Mapper.maxPixelsPerBrain_0 + (Kotlin.imul(pixelIndexX, closure$pixelStep) / this$Mapper.maxPixelsPerBrain_0 | 0) | 0;
     };
   }
-  function Coroutine$Mapper$startNewSession$allPixelsOff(closure$resetToBase_0, closure$buffer_0, this$Mapper_0, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-    this.local$closure$resetToBase = closure$resetToBase_0;
-    this.local$closure$buffer = closure$buffer_0;
-    this.local$this$Mapper = this$Mapper_0;
+  function Mapper$Session$start$lambda_2() {
+    return 'done identifying pixels...';
   }
-  Coroutine$Mapper$startNewSession$allPixelsOff.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$Mapper$startNewSession$allPixelsOff.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Mapper$startNewSession$allPixelsOff.prototype.constructor = Coroutine$Mapper$startNewSession$allPixelsOff;
-  Coroutine$Mapper$startNewSession$allPixelsOff.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.local$closure$resetToBase();
-            this.state_0 = 2;
-            this.result_0 = this.local$this$Mapper.sendToAllReliably_0(this.local$closure$buffer, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function Mapper$startNewSession$allPixelsOff(closure$resetToBase_0, closure$buffer_0, this$Mapper_0) {
-    return function (continuation_0, suspended) {
-      var instance = new Coroutine$Mapper$startNewSession$allPixelsOff(closure$resetToBase_0, closure$buffer_0, this$Mapper_0, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
+  function Mapper$Session$start$lambda_3(this$Mapper) {
+    return function () {
+      return 'done identifying things... ' + this$Mapper.isRunning_0;
     };
   }
-  function Coroutine$Mapper$startNewSession$turnOnPixel(closure$resetToBase_0, closure$whitePaletteIndex_0, closure$buffer_0, this$Mapper_0, pixelIndex_0, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
-    this.local$closure$resetToBase = closure$resetToBase_0;
-    this.local$closure$whitePaletteIndex = closure$whitePaletteIndex_0;
-    this.local$closure$buffer = closure$buffer_0;
-    this.local$this$Mapper = this$Mapper_0;
-    this.local$pixelIndex = pixelIndex_0;
-  }
-  Coroutine$Mapper$startNewSession$turnOnPixel.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$Mapper$startNewSession$turnOnPixel.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Mapper$startNewSession$turnOnPixel.prototype.constructor = Coroutine$Mapper$startNewSession$turnOnPixel;
-  Coroutine$Mapper$startNewSession$turnOnPixel.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.local$closure$resetToBase();
-            this.local$closure$buffer.set_vux9f0$(this.local$pixelIndex, this.local$closure$whitePaletteIndex);
-            this.state_0 = 2;
-            this.result_0 = this.local$this$Mapper.sendToAllReliably_0(this.local$closure$buffer, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            return;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function Mapper$startNewSession$turnOnPixel(closure$resetToBase_0, closure$whitePaletteIndex_0, closure$buffer_0, this$Mapper_0) {
-    return function (pixelIndex_0, continuation_0, suspended) {
-      var instance = new Coroutine$Mapper$startNewSession$turnOnPixel(closure$resetToBase_0, closure$whitePaletteIndex_0, closure$buffer_0, this$Mapper_0, pixelIndex_0, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function Coroutine$Mapper$startNewSession$lambda_1(this$Mapper_0, continuation_0) {
+  function Coroutine$Mapper$Session$start$lambda(this$Mapper_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.local$this$Mapper = this$Mapper_0;
   }
-  Coroutine$Mapper$startNewSession$lambda_1.$metadata$ = {
+  Coroutine$Mapper$Session$start$lambda.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$Mapper$startNewSession$lambda_1.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$Mapper$startNewSession$lambda_1.prototype.constructor = Coroutine$Mapper$startNewSession$lambda_1;
-  Coroutine$Mapper$startNewSession$lambda_1.prototype.doResume = function () {
+  Coroutine$Mapper$Session$start$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$Mapper$Session$start$lambda.prototype.constructor = Coroutine$Mapper$Session$start$lambda;
+  Coroutine$Mapper$Session$start$lambda.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
@@ -2670,476 +2786,287 @@
       }
      while (true);
   };
-  function Mapper$startNewSession$lambda_2(this$Mapper_0) {
+  function Mapper$Session$start$lambda_4(this$Mapper_0) {
     return function (continuation_0, suspended) {
-      var instance = new Coroutine$Mapper$startNewSession$lambda_1(this$Mapper_0, continuation_0);
+      var instance = new Coroutine$Mapper$Session$start$lambda(this$Mapper_0, continuation_0);
       if (suspended)
         return instance;
       else
         return instance.doResume(null);
     };
   }
-  function Coroutine$startNewSession_0($this, continuation_0) {
+  function Mapper$Session$start$lambda_5() {
+    return "Here's what we learned!";
+  }
+  function Mapper$Session$start$lambda$lambda_1(closure$brainToMap, closure$address) {
+    return function () {
+      return 'Brain ID: ' + closure$brainToMap.brainId + ' at ' + closure$address + ':';
+    };
+  }
+  function Mapper$Session$start$lambda$lambda_2(closure$brainToMap) {
+    return function () {
+      return '  Surface: ' + toString_0(closure$brainToMap.guessedModelSurface);
+    };
+  }
+  function Mapper$Session$start$lambda$lambda_3() {
+    return '  Pixels:';
+  }
+  function Mapper$Session$start$lambda$lambda$lambda(closure$pixelIndex, closure$position) {
+    return function () {
+      return '    ' + closure$pixelIndex + ' -> ' + toString_0(closure$position != null ? closure$position.x : null) + ',' + toString_0(closure$position != null ? closure$position.y : null);
+    };
+  }
+  function Coroutine$start($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 42;
+    this.exceptionState_0 = 24;
     this.$this = $this;
     this.local$tmp$ = void 0;
-    this.local$brainIdRequestJob = void 0;
-    this.local$sessionStartTime = void 0;
-    this.local$visibleSurfaces = void 0;
-    this.local$bitmap = void 0;
     this.local$baseImageName = void 0;
-    this.local$deltaBitmap = void 0;
-    this.local$surfaceScheme = void 0;
     this.local$tmp$_0 = void 0;
     this.local$index = void 0;
     this.local$item = void 0;
-    this.local$buffer = void 0;
-    this.local$whitePaletteIndex = void 0;
-    this.local$resetToBase = void 0;
+    this.local$this$Mapper = void 0;
+    this.local$index_0 = void 0;
     this.local$actualPixelIndex = void 0;
-    this.local$allPixelsOff = void 0;
-    this.local$turnOnPixel = void 0;
     this.local$pixelIndexX = void 0;
-    this.local$pixelIndex = void 0;
-    this.local$detector = void 0;
-    this.local$pixelOnBitmap = void 0;
-    this.local$pixelOnImageName = void 0;
-    this.local$tmp$_1 = void 0;
   }
-  Coroutine$startNewSession_0.$metadata$ = {
+  Coroutine$start.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$startNewSession_0.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$startNewSession_0.prototype.constructor = Coroutine$startNewSession_0;
-  Coroutine$startNewSession_0.prototype.doResume = function () {
+  Coroutine$start.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$start.prototype.constructor = Coroutine$start;
+  Coroutine$start.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
-            this.$this.mapperUi_0.showMessage_61zpoe$('ESTABLISHING UPLINK\u2026');
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$('CALIBRATING\u2026');
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda(this.$this));
             this.state_0 = 1;
-            this.result_0 = this.$this.retry_0(Mapper$startNewSession$lambda(this.$this), this);
+            this.result_0 = this.$this.$outer.sendToAllReliably_0(this.$this.$outer.solidColorBuffer_0(this.$this.$outer.inactiveColor_0), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 1:
-            this.$this.suppressShows_0();
             this.state_0 = 2;
-            this.result_0 = coroutineScope(Mapper$startNewSession$lambda_0(this.$this), this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 2:
-            this.local$brainIdRequestJob = this.result_0;
-            this.$this.pauseForUserInteraction_0('PRESS PLAY WHEN READY');
-            this.$this.mapperUi_0.showMessage_61zpoe$(this.$this.brainsToMap_0.size.toString() + ' SURFACES DISCOVERED!');
-            this.state_0 = 3;
-            this.result_0 = this.$this.waitUntilUnpaused_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 3:
-            this.state_0 = 4;
-            this.result_0 = cancelAndJoin(this.local$brainIdRequestJob, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 4:
-            if (this.$this.brainsToMap_0.isEmpty()) {
-              this.$this.mapperUi_0.showMessage_61zpoe$('NO SURFACES DISCOVERED! TRY AGAIN!');
-              this.$this.isRunning_0 = false;
-              return;
-            }
-             else {
-              this.state_0 = 5;
-              continue;
-            }
-
-          case 5:
-            this.$this.mapperUi_0.showMessage_61zpoe$('READY PLAYER ONE\u2026');
-            this.$this.pauseForUserInteraction_0('ALIGN MODEL AND PRESS PLAY WHEN READY');
-            this.state_0 = 6;
-            this.result_0 = this.$this.waitUntilUnpaused_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 6:
-            this.local$sessionStartTime = DateTime.Companion.now();
-            this.$this.mapperUi_0.showMessage_61zpoe$('CALIBRATING\u2026');
-            this.local$visibleSurfaces = this.$this.mapperUi_0.getVisibleSurfaces();
-            println('Visible surfaces: ' + joinToString(this.local$visibleSurfaces, void 0, void 0, void 0, void 0, void 0, Mapper$startNewSession$lambda_1));
-            this.state_0 = 7;
-            this.result_0 = this.$this.sendToAllReliably_0(this.$this.solidColorBuffer_0(this.$this.inactiveColor_0), this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 7:
-            this.state_0 = 8;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 8:
-            this.state_0 = 9;
-            this.result_0 = this.$this.getBrightImageBitmap_0(5, this);
+          case 2:
+            this.state_0 = 3;
+            this.result_0 = this.$this.$outer.getBrightImageBitmap_0(5, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 9:
-            this.local$bitmap = this.result_0;
-            this.$this.baseBitmap_0 = this.local$bitmap;
-            this.state_0 = 10;
-            this.result_0 = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'base', this.local$bitmap, this);
+          case 3:
+            var bitmap = this.result_0;
+            this.$this.baseBitmap_0 = bitmap;
+            this.$this.deltaBitmap = new NativeBitmap(bitmap.width, bitmap.height);
+            this.state_0 = 4;
+            this.result_0 = this.$this.$outer.mapperClient_0.saveImage_39j694$(this.$this.sessionStartTime, 'base', bitmap, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 10:
+          case 4:
             this.local$baseImageName = this.result_0;
-            this.local$deltaBitmap = new NativeBitmap(this.local$bitmap.width, this.local$bitmap.height);
-            var cameraOrientation = this.$this.mapperUi_0.lockUi();
-            this.$this.mapperUi_0.showMessage_61zpoe$('MAPPING\u2026');
-            this.$this.mapperUi_0.showStats_qt1dr2$(this.$this.brainsToMap_0.size, 0, -1);
-            this.local$surfaceScheme = Mapper$Detector$GREEN_getInstance();
-            this.exceptionState_0 = 38;
-            println('identify surfaces...');
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$('MAPPING\u2026');
+            this.$this.$outer.mapperUi_0.showStats_qt1dr2$(this.$this.$outer.brainsToMap_0.size, 0, -1);
+            this.exceptionState_0 = 20;
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda_0);
+            var $receiver = this.$this.$outer.brainsToMap_0.values;
+            this.$this.$outer;
             var tmp$_0;
             this.local$index = 0;
-            this.local$tmp$_0 = this.$this.brainsToMap_0.values.iterator();
-            this.state_0 = 11;
+            this.local$tmp$_0 = $receiver.iterator();
+            this.state_0 = 5;
             continue;
-          case 11:
+          case 5:
             if (!this.local$tmp$_0.hasNext()) {
-              this.state_0 = 18;
+              this.state_0 = 9;
               continue;
             }
 
             this.local$item = this.local$tmp$_0.next();
-            this.$this.mapperUi_0.showMessage_61zpoe$('MAPPING SURFACE ' + checkIndexOverflow((tmp$_0 = this.local$index, this.local$index = tmp$_0 + 1 | 0, tmp$_0)) + ' / ' + this.$this.brainsToMap_0.size + ' (' + this.local$item.brainId + ')\u2026');
-            this.$this.deliverer_0.send_b2qy7x$(this.local$item, this.$this.solidColorBuffer_0(this.$this.activeColor_0));
+            this.local$this$Mapper = this.$this.$outer;
+            this.local$index_0 = checkIndexOverflow((tmp$_0 = this.local$index, this.local$index = tmp$_0 + 1 | 0, tmp$_0));
+            this.state_0 = 6;
+            this.result_0 = this.$this.identifyBrain_v30byo$(this.local$index_0, this.local$item, void 0, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 6:
+            this.local$this$Mapper.pauseForUserInteraction_0();
+            var retryCount = {v: 0};
+            this.local$this$Mapper.mapperUi_0.setRedo_s9exm$(Mapper$Session$start$lambda$lambda_0(this.local$index_0, this.local$item, retryCount, this.$this));
+            this.state_0 = 7;
+            this.result_0 = this.local$this$Mapper.waitUntilUnpaused_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 7:
+            this.local$this$Mapper.mapperUi_0.setRedo_s9exm$(null);
+            this.local$this$Mapper.deliverer_0.send_b2qy7x$(this.local$item, this.local$this$Mapper.solidColorBuffer_0(this.local$this$Mapper.inactiveColor_0));
+            this.state_0 = 8;
+            this.result_0 = this.local$this$Mapper.deliverer_0.await_lu1900$(void 0, void 0, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 8:
+            this.state_0 = 5;
+            continue;
+          case 9:
+            this.state_0 = 10;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 10:
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda_1);
+            this.$this.resetToBase();
+            this.state_0 = 11;
+            this.result_0 = this.$this.$outer.sendToAllReliably_0(this.$this.pixelShaderBuffer, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 11:
             this.state_0 = 12;
-            this.result_0 = this.$this.deliverer_0.await_yhmem3$(void 0, void 0, this);
+            this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 12:
+            var pixelStep = 4;
+            this.local$actualPixelIndex = Mapper$Session$start$actualPixelIndex(pixelStep, this.$this.$outer);
+            this.local$tmp$ = this.$this.$outer.maxPixelsPerBrain_0;
+            this.local$pixelIndexX = 0;
             this.state_0 = 13;
-            this.result_0 = this.$this.slowCamDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
             continue;
           case 13:
+            if (this.local$pixelIndexX >= this.local$tmp$) {
+              this.state_0 = 18;
+              continue;
+            }
+
+            var pixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX);
+            var nextPixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX + 1 | 0);
             this.state_0 = 14;
-            this.result_0 = this.$this.getBrightImageBitmap_0(3, this);
+            this.result_0 = this.$this.identifyPixel_0(pixelIndex, nextPixelIndex, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 14:
-            var surfaceOnBitmap = this.result_0;
-            var surfaceAnalysis = ImageProcessing$Companion_getInstance().diff_pkkjvd$(surfaceOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$surfaceScheme);
-            var surfaceChangeRegion = surfaceAnalysis.detectChangeRegion_mx4ult$(0.25);
-            println('surfaceChangeRegion(' + this.local$item.brainId + ') =' + (' ' + surfaceChangeRegion + ' ' + surfaceChangeRegion.width + 'x' + surfaceChangeRegion.height));
-            this.$this.mapperUi_0.showDiffImage_oa2j07$(this.local$deltaBitmap, surfaceChangeRegion);
-            this.local$item.changeRegion = surfaceChangeRegion;
-            var thresholdValue = surfaceAnalysis.thresholdValueFor_mx4ult$(0.25);
-            var sampleLocations = ArrayList_init();
-            ImageProcessing$Companion_getInstance().pixels_jkgb9c$(surfaceOnBitmap, this.local$surfaceScheme, surfaceChangeRegion, Mapper$startNewSession$lambda$lambda_0(thresholdValue, sampleLocations));
-            var surfaceBallot = new Mapper$Ballot();
-            while (surfaceBallot.totalVotes < 10) {
-              var tmp$ = ensureNotNull(random(sampleLocations));
-              var x = tmp$.component1()
-              , y = tmp$.component2();
-              var visibleSurface = this.$this.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.local$visibleSurfaces);
-              var surface = visibleSurface != null ? visibleSurface.modelSurface : null;
-              if (surface != null) {
-                surfaceBallot.cast_yuqcw7$(surface.name, visibleSurface);
-              }
-            }
-
-            var firstGuess = surfaceBallot.winner();
-            var firstGuessSurface = firstGuess.modelSurface;
-            this.$this.mapperUi_0.showMessage2_61zpoe$('Candidate panels: ' + surfaceBallot.summarize());
-            println('Guessed panel ' + firstGuessSurface.name + ' for ' + this.local$item.brainId);
-            this.local$item.guessedModelSurface = firstGuessSurface;
-            this.local$item.guessedVisibleSurface = firstGuess;
-            this.local$item.panelDeltaBitmap = this.local$deltaBitmap.clone();
             this.state_0 = 15;
-            this.result_0 = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'brain-' + this.local$item.brainId, this.local$deltaBitmap, this);
+            this.result_0 = this.$this.$outer.waitUntilUnpaused_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 15:
-            this.local$item.deltaImageName = this.result_0;
-            this.$this.pauseForUserInteraction_0();
             this.state_0 = 16;
-            this.result_0 = this.$this.waitUntilUnpaused_0(this);
+            this.result_0 = this.$this.allPixelsOff(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 16:
-            this.$this.deliverer_0.send_b2qy7x$(this.local$item, this.$this.solidColorBuffer_0(this.$this.inactiveColor_0));
             this.state_0 = 17;
-            this.result_0 = this.$this.deliverer_0.await_yhmem3$(void 0, void 0, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
             continue;
           case 17:
-            this.state_0 = 11;
+            this.local$pixelIndexX++;
+            this.state_0 = 13;
             continue;
           case 18:
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda_2);
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda_3(this.$this.$outer));
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$('++LEVEL UNLOCKED++');
             this.state_0 = 19;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
           case 19:
-            println('identify pixels...');
-            var pixelShader = new PixelShader(PixelShader$Encoding$INDEXED_4_getInstance());
-            var $receiver = pixelShader.createBuffer_ppt8xj$(new Mapper$startNewSession$ObjectLiteral());
-            $receiver.palette[0] = this.$this.detectors[0].alternateColor;
-            $receiver.palette[1] = this.$this.detectors[1].alternateColor;
-            $receiver.palette[2] = this.$this.detectors[2].alternateColor;
-            $receiver.palette[3] = Color$Companion_getInstance().WHITE;
-            $receiver.setAll_za3lpa$(0);
-            this.local$buffer = $receiver;
-            this.local$whitePaletteIndex = 3;
-            this.local$resetToBase = Mapper$startNewSession$resetToBase(this.local$buffer);
-            this.local$resetToBase();
-            this.state_0 = 20;
-            this.result_0 = this.$this.sendToAllReliably_0(this.local$buffer, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
+            this.exceptionState_0 = 24;
+            this.state_0 = 21;
             continue;
           case 20:
-            this.state_0 = 21;
-            this.result_0 = delay(L1000, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 21:
-            var pixelStep = 4;
-            this.local$actualPixelIndex = Mapper$startNewSession$actualPixelIndex(pixelStep, this.$this);
-            this.local$allPixelsOff = Mapper$startNewSession$allPixelsOff(this.local$resetToBase, this.local$buffer, this.$this);
-            this.local$turnOnPixel = Mapper$startNewSession$turnOnPixel(this.local$resetToBase, this.local$whitePaletteIndex, this.local$buffer, this.$this);
-            this.local$tmp$ = this.$this.maxPixelsPerBrain_0;
-            this.local$pixelIndexX = 0;
-            this.state_0 = 22;
-            continue;
-          case 22:
-            if (this.local$pixelIndexX >= this.local$tmp$) {
-              this.state_0 = 36;
-              continue;
-            }
-
-            this.local$pixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX);
-            this.local$detector = this.$this.detectors[this.local$pixelIndex % this.$this.detectors.length];
-            this.$this.mapperUi_0.showMessage_61zpoe$('MAPPING PIXEL ' + this.local$pixelIndex + ' / ' + this.$this.maxPixelsPerBrain_0 + '\u2026');
-            if (this.local$pixelIndex % 128 === 0)
-              println('pixel ' + this.local$pixelIndex + '... isRunning is ' + this.$this.isRunning_0);
-            this.state_0 = 23;
-            this.result_0 = this.local$turnOnPixel(this.local$pixelIndex, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 23:
-            this.state_0 = 24;
-            this.result_0 = this.$this.slowCamDelay_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 24:
-            this.state_0 = 25;
-            this.result_0 = this.$this.getBrightImageBitmap_0(2, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 25:
-            this.local$pixelOnBitmap = this.result_0;
-            ImageProcessing$Companion_getInstance().diff_pkkjvd$(this.local$pixelOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$detector);
-            this.$this.mapperUi_0.showDiffImage_oa2j07$(this.local$deltaBitmap);
-            this.state_0 = 26;
-            this.result_0 = this.$this.mapperClient_0.saveImage_39j694$(this.local$sessionStartTime, 'pixel-' + this.local$pixelIndex, this.local$deltaBitmap, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 26:
-            this.local$pixelOnImageName = this.result_0;
-            var nextPixelIndex = this.local$actualPixelIndex(this.local$pixelIndexX + 1 | 0);
-            if (nextPixelIndex < this.$this.maxPixelsPerBrain_0) {
-              this.state_0 = 27;
-              this.result_0 = this.local$turnOnPixel(this.local$pixelIndex, this);
-              if (this.result_0 === COROUTINE_SUSPENDED)
-                return COROUTINE_SUSPENDED;
-              continue;
-            }
-             else {
-              this.state_0 = 28;
-              continue;
-            }
-
-          case 27:
-            this.state_0 = 28;
-            continue;
-          case 28:
-            this.local$tmp$_1 = this.$this.brainsToMap_0.values.iterator();
-            this.state_0 = 29;
-            continue;
-          case 29:
-            if (!this.local$tmp$_1.hasNext()) {
-              this.state_0 = 32;
-              continue;
-            }
-
-            var element = this.local$tmp$_1.next();
-            var tmp$_1;
-            this.$this.mapperUi_0.showMessage_61zpoe$('MAPPING PIXEL ' + this.local$pixelIndex + ' / ' + this.$this.maxPixelsPerBrain_0 + ' (' + element.brainId + ')\u2026');
-            var surfaceChangeRegion_0 = element.changeRegion;
-            var visibleSurface_0 = element.guessedVisibleSurface;
-            if (surfaceChangeRegion_0 != null && surfaceChangeRegion_0.sqPix() > 0 && visibleSurface_0 != null) {
-              this.$this.mapperUi_0.showAfter_5151av$(ensureNotNull(element.panelDeltaBitmap));
-              var analysis = ImageProcessing$Companion_getInstance().diff_pkkjvd$(this.local$pixelOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.local$deltaBitmap, this.local$detector, ensureNotNull(element.panelDeltaBitmap), surfaceChangeRegion_0);
-              var pixelChangeRegion = analysis.detectChangeRegion_mx4ult$(0.5);
-              println('pixelChangeRegion(' + this.local$pixelIndex + ',' + toString_0((tmp$_1 = element.guessedModelSurface) != null ? tmp$_1.name : null) + ' =' + (' ' + pixelChangeRegion + ' ' + pixelChangeRegion.width + 'x' + pixelChangeRegion.height));
-              this.$this.mapperUi_0.showDiffImage_oa2j07$(this.local$deltaBitmap, pixelChangeRegion);
-              this.$this.mapperUi_0.showBefore_5151av$(this.local$pixelOnBitmap);
-              this.$this.mapperUi_0.showAfter_5151av$(ensureNotNull(element.panelDeltaBitmap));
-              if (!pixelChangeRegion.isEmpty()) {
-                var center = new Vector3F((pixelChangeRegion.centerX - surfaceChangeRegion_0.x0 | 0) / surfaceChangeRegion_0.width, (pixelChangeRegion.centerY - surfaceChangeRegion_0.y0 | 0) / surfaceChangeRegion_0.height, 0.0);
-                visibleSurface_0.addPixel_nhq4am$(this.local$pixelIndex, pixelChangeRegion.centerX, pixelChangeRegion.centerY);
-                var $receiver_0 = element.pixelMapData;
-                var value = new Mapper$PixelMapData(pixelChangeRegion, this.local$pixelOnImageName);
-                $receiver_0.put_xwzc9p$(this.local$pixelIndex, value);
-                println(this.local$pixelIndex.toString() + '/' + element.brainId + ': center = ' + center);
-              }
-            }
-
-            this.state_0 = 30;
-            this.result_0 = delay(L1, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 30:
-            this.state_0 = 31;
-            this.result_0 = this.$this.waitUntilUnpaused_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 31:
-            this.state_0 = 29;
-            continue;
-          case 32:
-            this.state_0 = 33;
-            this.result_0 = this.$this.waitUntilUnpaused_0(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 33:
-            this.state_0 = 34;
-            this.result_0 = this.local$allPixelsOff(this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 34:
-            this.state_0 = 35;
-            continue;
-          case 35:
-            this.local$pixelIndexX++;
-            this.state_0 = 22;
-            continue;
-          case 36:
-            println('done identifying pixels...');
-            println('done identifying things... ' + this.$this.isRunning_0);
-            this.$this.mapperUi_0.showMessage_61zpoe$('++LEVEL UNLOCKED++');
-            this.state_0 = 37;
-            this.result_0 = delay(L1000, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 37:
-            this.exceptionState_0 = 42;
-            this.state_0 = 39;
-            continue;
-          case 38:
-            this.exceptionState_0 = 42;
+            this.exceptionState_0 = 24;
             var e = this.exception_0;
             if (Kotlin.isType(e, Mapper$TimeoutException)) {
-              this.$this.mapperUi_0.showMessage_61zpoe$('Failed: ' + toString_0(e.message));
+              this.$this.$outer.mapperUi_0.showMessage_61zpoe$('Timed out: ' + toString_0(e.message));
               Mapper$Companion_getInstance().logger.error_nwdkmo$('Timed out', e);
             }
              else
               throw e;
-            this.state_0 = 39;
+            this.state_0 = 21;
             continue;
-          case 39:
-            this.$this.isRunning_0 = false;
-            this.$this.mapperUi_0.unlockUi();
-            this.state_0 = 40;
-            this.result_0 = this.$this.retry_0(Mapper$startNewSession$lambda_2(this.$this), this);
+          case 21:
+            this.$this.$outer.isRunning_0 = false;
+            this.$this.$outer.mapperUi_0.unlockUi();
+            this.state_0 = 22;
+            this.result_0 = this.$this.$outer.retry_0(Mapper$Session$start$lambda_4(this.$this.$outer), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 40:
-            println("Here's what we learned!");
+          case 22:
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda_5);
             var surfaces = ArrayList_init();
-            var tmp$_2;
-            tmp$_2 = this.$this.brainsToMap_0.entries.iterator();
-            while (tmp$_2.hasNext()) {
-              var element_0 = tmp$_2.next();
-              var address = element_0.key;
-              var brainToMap = element_0.value;
-              println('Brain ID: ' + brainToMap.brainId + ' at ' + address + ':');
-              println('  Surface: ' + toString_0(brainToMap.guessedModelSurface));
-              println('  Pixels:');
-              var visibleSurface_1 = brainToMap.guessedVisibleSurface;
-              if (visibleSurface_1 != null) {
-                visibleSurface_1.showPixels();
-                var tmp$_3;
-                tmp$_3 = brainToMap.pixelMapData.entries.iterator();
-                while (tmp$_3.hasNext()) {
-                  var element_1 = tmp$_3.next();
-                  var pixelIndex = element_1.key;
-                  var mapData = element_1.value;
+            var tmp$;
+            tmp$ = this.$this.$outer.brainsToMap_0.entries.iterator();
+            while (tmp$.hasNext()) {
+              var element = tmp$.next();
+              var address = element.key;
+              var brainToMap = element.value;
+              Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda$lambda_1(brainToMap, address));
+              Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$start$lambda$lambda_2(brainToMap));
+              Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$start$lambda$lambda_3);
+              var visibleSurface = brainToMap.guessedVisibleSurface;
+              if (visibleSurface != null) {
+                visibleSurface.showPixels();
+                var tmp$_1;
+                tmp$_1 = brainToMap.pixelMapData.entries.iterator();
+                while (tmp$_1.hasNext()) {
+                  var element_0 = tmp$_1.next();
+                  var pixelIndex_0 = element_0.key;
+                  var mapData = element_0.value;
                   var changeRegion = mapData.pixelChangeRegion;
-                  var position = visibleSurface_1.translatePixelToPanelSpace_dleff0$(changeRegion.centerX, changeRegion.centerY);
-                  println('    ' + pixelIndex + ' -> ' + toString_0(position != null ? position.x : null) + ',' + toString_0(position != null ? position.y : null));
+                  var position = visibleSurface.translatePixelToPanelSpace_dleff0$(changeRegion.centerX, changeRegion.centerY);
+                  Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$start$lambda$lambda$lambda(pixelIndex_0, position));
                 }
-                var $receiver_1 = visibleSurface_1.pixelsInModelSpace;
-                var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_1, 10));
-                var tmp$_4, tmp$_0_0;
+                var $receiver_0 = visibleSurface.pixelsInModelSpace;
+                var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+                var tmp$_2, tmp$_0_0;
                 var index = 0;
-                tmp$_4 = $receiver_1.iterator();
-                while (tmp$_4.hasNext()) {
-                  var item = tmp$_4.next();
-                  var tmp$_5 = destination.add_11rb$;
+                tmp$_2 = $receiver_0.iterator();
+                while (tmp$_2.hasNext()) {
+                  var item = tmp$_2.next();
+                  var tmp$_3 = destination.add_11rb$;
                   var pixelMapData = brainToMap.pixelMapData.get_11rb$(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)));
-                  var pixelChangeRegion_0 = pixelMapData != null ? pixelMapData.pixelChangeRegion : null;
-                  var screenPosition = pixelChangeRegion_0 != null ? visibleSurface_1.translatePixelToPanelSpace_dleff0$(pixelChangeRegion_0.centerX, pixelChangeRegion_0.centerY) : null;
-                  tmp$_5.call(destination, new MappingSession$SurfaceData$PixelData(item, screenPosition, pixelMapData != null ? pixelMapData.deltaImageName : null));
+                  var pixelChangeRegion = pixelMapData != null ? pixelMapData.pixelChangeRegion : null;
+                  var screenPosition = pixelChangeRegion != null ? visibleSurface.translatePixelToPanelSpace_dleff0$(pixelChangeRegion.centerX, pixelChangeRegion.centerY) : null;
+                  tmp$_3.call(destination, new MappingSession$SurfaceData$PixelData(item, screenPosition, pixelMapData != null ? pixelMapData.deltaImageName : null));
                 }
                 var pixels = destination;
-                surfaces.add_11rb$(new MappingSession$SurfaceData(brainToMap.brainId, visibleSurface_1.modelSurface.name, pixels, brainToMap.deltaImageName, null, null));
+                surfaces.add_11rb$(new MappingSession$SurfaceData(brainToMap.brainId, visibleSurface.modelSurface.name, pixels, brainToMap.deltaImageName, null, null));
               }
             }
 
-            var cameraMatrix = new Matrix4([]);
-            var mappingSession = new MappingSession(this.local$sessionStartTime.unixMillis, surfaces, cameraMatrix, this.local$baseImageName);
-            this.state_0 = 41;
-            this.result_0 = this.$this.mapperClient_0.saveSession_x3z8ep$(mappingSession, this);
+            var mappingSession = new MappingSession(this.$this.sessionStartTime.unixMillis, surfaces, this.$this.cameraOrientation.cameraMatrix, this.local$baseImageName);
+            this.state_0 = 23;
+            this.result_0 = this.$this.$outer.mapperClient_0.saveSession_x3z8ep$(mappingSession, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 41:
+          case 23:
             return;
-          case 42:
+          case 24:
             throw this.exception_0;
-          default:this.state_0 = 42;
+          default:this.state_0 = 24;
             throw new Error('State Machine Unreachable execution');
         }
       }
        catch (e) {
-        if (this.state_0 === 42) {
+        if (this.state_0 === 24) {
           this.exceptionState_0 = this.state_0;
           throw e;
         }
@@ -3150,12 +3077,311 @@
       }
      while (true);
   };
-  Mapper.prototype.startNewSession_0 = function (continuation_0, suspended) {
-    var instance = new Coroutine$startNewSession_0(this, continuation_0);
+  Mapper$Session.prototype.start = function (continuation_0, suspended) {
+    var instance = new Coroutine$start(this, continuation_0);
     if (suspended)
       return instance;
     else
       return instance.doResume(null);
+  };
+  function Mapper$Session$identifyPixel$lambda(closure$pixelIndex, this$Mapper) {
+    return function () {
+      return 'pixel ' + closure$pixelIndex + '... isRunning is ' + this$Mapper.isRunning_0;
+    };
+  }
+  function Coroutine$identifyPixel_0($this, pixelIndex_0, nextPixelIndex_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+    this.local$pixelOnBitmap = void 0;
+    this.local$pixelOnImageName = void 0;
+    this.local$tmp$ = void 0;
+    this.local$this$Mapper = void 0;
+    this.local$pixelIndex = pixelIndex_0;
+  }
+  Coroutine$identifyPixel_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$identifyPixel_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$identifyPixel_0.prototype.constructor = Coroutine$identifyPixel_0;
+  Coroutine$identifyPixel_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$('MAPPING PIXEL ' + this.local$pixelIndex + ' / ' + this.$this.$outer.maxPixelsPerBrain_0 + '\u2026');
+            if (this.local$pixelIndex % 128 === 0)
+              Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$identifyPixel$lambda(this.local$pixelIndex, this.$this.$outer));
+            this.state_0 = 2;
+            this.result_0 = this.$this.turnOnPixel_za3lpa$(this.local$pixelIndex, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.state_0 = 3;
+            this.result_0 = this.$this.$outer.slowCamDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 4;
+            this.result_0 = this.$this.$outer.getBrightImageBitmap_0(2, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 4:
+            this.local$pixelOnBitmap = this.result_0;
+            this.$this.resetToBase();
+            this.$this.$outer.sendToAll_0(this.$this.pixelShaderBuffer);
+            ImageProcessing$Companion_getInstance().diff_57ho0i$(this.local$pixelOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.$this.deltaBitmap);
+            this.$this.$outer.mapperUi_0.showDiffImage_oa2j07$(this.$this.deltaBitmap);
+            this.state_0 = 5;
+            this.result_0 = this.$this.$outer.mapperClient_0.saveImage_39j694$(this.$this.sessionStartTime, 'pixel-' + this.local$pixelIndex, this.$this.deltaBitmap, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
+            this.local$pixelOnImageName = this.result_0;
+            var $receiver = this.$this.$outer.brainsToMap_0.values;
+            this.$this.$outer;
+            this.local$tmp$ = $receiver.iterator();
+            this.state_0 = 6;
+            continue;
+          case 6:
+            if (!this.local$tmp$.hasNext()) {
+              this.state_0 = 9;
+              continue;
+            }
+
+            var element = this.local$tmp$.next();
+            this.local$this$Mapper = this.$this.$outer;
+            this.$this.identifyBrainPixel_0(this.local$pixelIndex, element, this.local$pixelOnBitmap, this.$this.deltaBitmap, this.local$pixelOnImageName);
+            this.state_0 = 7;
+            this.result_0 = delay(L1, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 7:
+            this.state_0 = 8;
+            this.result_0 = this.local$this$Mapper.waitUntilUnpaused_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 8:
+            this.state_0 = 6;
+            continue;
+          case 9:
+            this.state_0 = 10;
+            this.result_0 = this.$this.$outer.waitForDelivery_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 10:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper$Session.prototype.identifyPixel_0 = function (pixelIndex_0, nextPixelIndex_0, continuation_0, suspended) {
+    var instance = new Coroutine$identifyPixel_0(this, pixelIndex_0, nextPixelIndex_0, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Mapper$Session$identifyBrain$lambda(closure$brainToMap, closure$surfaceChangeRegion) {
+    return function () {
+      return 'surfaceChangeRegion(' + closure$brainToMap.brainId + ') =' + (' ' + closure$surfaceChangeRegion + ' ' + closure$surfaceChangeRegion.width + 'x' + closure$surfaceChangeRegion.height);
+    };
+  }
+  function Mapper$Session$identifyBrain$lambda_0(closure$thresholdValue, closure$sampleLocations) {
+    return function (x, y, value) {
+      if (value >= closure$thresholdValue && Random.Default.nextFloat() < 0.05) {
+        closure$sampleLocations.add_11rb$(to(x, y));
+      }
+      return Unit;
+    };
+  }
+  function Mapper$Session$identifyBrain$lambda_1(closure$firstGuessSurface, closure$brainToMap) {
+    return function () {
+      return 'Guessed panel ' + closure$firstGuessSurface.name + ' for ' + closure$brainToMap.brainId;
+    };
+  }
+  function Coroutine$identifyBrain_v30byo$($this, index_0, brainToMap_0, retryCount_0, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+    this.local$index = index_0;
+    this.local$brainToMap = brainToMap_0;
+    this.local$retryCount = retryCount_0;
+  }
+  Coroutine$identifyBrain_v30byo$.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$identifyBrain_v30byo$.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$identifyBrain_v30byo$.prototype.constructor = Coroutine$identifyBrain_v30byo$;
+  Coroutine$identifyBrain_v30byo$.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            if (this.local$retryCount === void 0)
+              this.local$retryCount = 0;
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$('MAPPING SURFACE ' + this.local$index + ' / ' + this.$this.$outer.brainsToMap_0.size + ' (' + this.local$brainToMap.brainId + ')\u2026');
+            this.$this.$outer.deliverer_0.send_b2qy7x$(this.local$brainToMap, this.$this.$outer.solidColorBuffer_0(this.$this.$outer.activeColor_0));
+            this.state_0 = 2;
+            this.result_0 = this.$this.$outer.deliverer_0.await_lu1900$(void 0, void 0, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.state_0 = 3;
+            this.result_0 = this.$this.$outer.slowCamDelay_0(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            this.state_0 = 4;
+            this.result_0 = this.$this.$outer.getBrightImageBitmap_0(3, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 4:
+            var surfaceOnBitmap = this.result_0;
+            var surfaceAnalysis = ImageProcessing$Companion_getInstance().diff_57ho0i$(surfaceOnBitmap, ensureNotNull(this.$this.baseBitmap_0), this.$this.deltaBitmap);
+            var surfaceChangeRegion = surfaceAnalysis.detectChangeRegion_mx4ult$(0.25);
+            Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$identifyBrain$lambda(this.local$brainToMap, surfaceChangeRegion));
+            this.$this.$outer.mapperUi_0.showDiffImage_oa2j07$(this.$this.deltaBitmap, surfaceChangeRegion);
+            this.local$brainToMap.changeRegion = surfaceChangeRegion;
+            var thresholdValue = surfaceAnalysis.thresholdValueFor_mx4ult$(0.25);
+            var sampleLocations = ArrayList_init();
+            ImageProcessing$Companion_getInstance().pixels_oh9quv$(surfaceOnBitmap, surfaceChangeRegion, Mapper$Session$identifyBrain$lambda_0(thresholdValue, sampleLocations));
+            var surfaceBallot = new Mapper$Ballot();
+            while (surfaceBallot.totalVotes < 10) {
+              var tmp$ = ensureNotNull(random(sampleLocations));
+              var x = tmp$.component1()
+              , y = tmp$.component2();
+              var visibleSurface = this.$this.$outer.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.$this.visibleSurfaces);
+              var surface = visibleSurface != null ? visibleSurface.modelSurface : null;
+              if (surface != null) {
+                surfaceBallot.cast_yuqcw7$(surface.name, visibleSurface);
+              }
+            }
+
+            var firstGuess = surfaceBallot.winner();
+            var firstGuessSurface = firstGuess.modelSurface;
+            this.$this.$outer.mapperUi_0.showMessage_61zpoe$(this.local$index.toString() + ' / ' + this.$this.$outer.brainsToMap_0.size + ': ' + this.local$brainToMap.brainId + ' \u2014\xA0surface is ' + firstGuessSurface.name + '?');
+            this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Candidate panels: ' + surfaceBallot.summarize());
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$identifyBrain$lambda_1(firstGuessSurface, this.local$brainToMap));
+            this.local$brainToMap.guessedModelSurface = firstGuessSurface;
+            this.local$brainToMap.guessedVisibleSurface = firstGuess;
+            this.local$brainToMap.panelDeltaBitmap = this.$this.deltaBitmap.clone();
+            this.state_0 = 5;
+            this.result_0 = this.$this.$outer.mapperClient_0.saveImage_39j694$(this.$this.sessionStartTime, 'brain-' + this.local$brainToMap.brainId + '-' + this.local$retryCount, this.$this.deltaBitmap, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 5:
+            this.local$brainToMap.deltaImageName = this.result_0;
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper$Session.prototype.identifyBrain_v30byo$ = function (index_0, brainToMap_0, retryCount_0, continuation_0, suspended) {
+    var instance = new Coroutine$identifyBrain_v30byo$(this, index_0, brainToMap_0, retryCount_0, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  function Mapper$Session$identifyBrainPixel$lambda(closure$pixelIndex, closure$brainToMap, closure$pixelChangeRegion) {
+    return function () {
+      var tmp$;
+      return 'pixelChangeRegion(' + closure$pixelIndex + ',' + toString_0((tmp$ = closure$brainToMap.guessedModelSurface) != null ? tmp$.name : null) + ' =' + (' ' + closure$pixelChangeRegion + ' ' + closure$pixelChangeRegion.width + 'x' + closure$pixelChangeRegion.height);
+    };
+  }
+  function Mapper$Session$identifyBrainPixel$lambda_0(closure$pixelIndex, closure$brainToMap, closure$center) {
+    return function () {
+      return closure$pixelIndex.toString() + '/' + closure$brainToMap.brainId + ': center = ' + closure$center;
+    };
+  }
+  Mapper$Session.prototype.identifyBrainPixel_0 = function (pixelIndex, brainToMap, pixelOnBitmap, deltaBitmap, pixelOnImageName) {
+    this.$outer.mapperUi_0.showMessage_61zpoe$('MAPPING PIXEL ' + pixelIndex + ' / ' + this.$outer.maxPixelsPerBrain_0 + ' (' + brainToMap.brainId + ')\u2026');
+    var surfaceChangeRegion = brainToMap.changeRegion;
+    var visibleSurface = brainToMap.guessedVisibleSurface;
+    if (surfaceChangeRegion != null && surfaceChangeRegion.sqPix() > 0 && visibleSurface != null) {
+      this.$outer.mapperUi_0.showAfter_5151av$(ensureNotNull(brainToMap.panelDeltaBitmap));
+      var analysis = ImageProcessing$Companion_getInstance().diff_57ho0i$(pixelOnBitmap, ensureNotNull(this.baseBitmap_0), deltaBitmap, ensureNotNull(brainToMap.panelDeltaBitmap), surfaceChangeRegion);
+      var pixelChangeRegion = analysis.detectChangeRegion_mx4ult$(0.5);
+      Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$identifyBrainPixel$lambda(pixelIndex, brainToMap, pixelChangeRegion));
+      this.$outer.mapperUi_0.showDiffImage_oa2j07$(deltaBitmap, pixelChangeRegion);
+      this.$outer.mapperUi_0.showBefore_5151av$(pixelOnBitmap);
+      this.$outer.mapperUi_0.showAfter_5151av$(ensureNotNull(brainToMap.panelDeltaBitmap));
+      if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
+        var center = new Vector3F((pixelChangeRegion.centerX - surfaceChangeRegion.x0 | 0) / surfaceChangeRegion.width, (pixelChangeRegion.centerY - surfaceChangeRegion.y0 | 0) / surfaceChangeRegion.height, 0.0);
+        visibleSurface.addPixel_nhq4am$(pixelIndex, pixelChangeRegion.centerX, pixelChangeRegion.centerY);
+        var $receiver = brainToMap.pixelMapData;
+        var value = new Mapper$PixelMapData(pixelChangeRegion, pixelOnImageName);
+        $receiver.put_xwzc9p$(pixelIndex, value);
+        Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$Session$identifyBrainPixel$lambda_0(pixelIndex, brainToMap, center));
+      }
+       else {
+        this.$outer.mapperUi_0.showMessage2_61zpoe$('looks like no pixel ' + pixelIndex + ' for ' + brainToMap.brainId + '\u2026');
+      }
+    }
+  };
+  function Mapper$Session$pixelShaderBuffer$ObjectLiteral() {
+    this.pixelCount_n04zzk$_0 = 2048;
+  }
+  Object.defineProperty(Mapper$Session$pixelShaderBuffer$ObjectLiteral.prototype, 'pixelCount', {
+    get: function () {
+      return this.pixelCount_n04zzk$_0;
+    }
+  });
+  Mapper$Session$pixelShaderBuffer$ObjectLiteral.prototype.describe = function () {
+    return 'Mapper surface';
+  };
+  Mapper$Session$pixelShaderBuffer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [Surface]
+  };
+  Mapper$Session.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Session',
+    interfaces: []
   };
   function Coroutine$slowCamDelay_0($this, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -3380,15 +3606,9 @@
       try {
         switch (this.state_0) {
           case 0:
-            var tmp$;
-            tmp$ = this.$this.brainsToMap_0.values.iterator();
-            while (tmp$.hasNext()) {
-              var element = tmp$.next();
-              this.$this.deliverer_0.send_b2qy7x$(element, this.local$buffer);
-            }
-
+            this.$this.sendToAll_0(this.local$buffer);
             this.state_0 = 2;
-            this.result_0 = this.$this.deliverer_0.await_yhmem3$(L5000, void 0, this);
+            this.result_0 = this.$this.waitForDelivery_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -3418,6 +3638,63 @@
       return instance;
     else
       return instance.doResume(null);
+  };
+  function Coroutine$waitForDelivery_0($this, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.exceptionState_0 = 1;
+    this.$this = $this;
+  }
+  Coroutine$waitForDelivery_0.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$waitForDelivery_0.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$waitForDelivery_0.prototype.constructor = Coroutine$waitForDelivery_0;
+  Coroutine$waitForDelivery_0.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.$this.deliverer_0.await_lu1900$(void 0, void 0, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  Mapper.prototype.waitForDelivery_0 = function (continuation_0, suspended) {
+    var instance = new Coroutine$waitForDelivery_0(this, continuation_0);
+    if (suspended)
+      return instance;
+    else
+      return instance.doResume(null);
+  };
+  Mapper.prototype.sendToAll_0 = function (buffer) {
+    var tmp$;
+    tmp$ = this.brainsToMap_0.values.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.deliverer_0.send_b2qy7x$(element, buffer);
+    }
   };
   function Coroutine$retry_0($this, fn_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -3589,14 +3866,19 @@
   function Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer) {
     return function () {
       var $receiver = this$ReliableShaderMessageDeliverer.outstanding.values;
-      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
       var tmp$;
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
         destination.add_11rb$(item.brainToMap.brainId);
       }
-      return 'Waiting for pongs from ' + destination + '...';
+      return 'Waiting pongs from ' + destination + '...';
+    };
+  }
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$it, closure$nowMs) {
+    return function () {
+      return "Haven't heard from " + closure$it.brainToMap.brainId + ' after ' + (closure$nowMs - closure$it.retryAt) + ',' + (' retrying (attempt ' + (closure$it.retryCount = closure$it.retryCount + 1 | 0, closure$it.retryCount) + ')...');
     };
   }
   function Coroutine$Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0, $receiver_0, controller, continuation_0) {
@@ -3618,31 +3900,14 @@
         switch (this.state_0) {
           case 0:
             this.state_0 = 2;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            if (this.local$this$ReliableShaderMessageDeliverer.outstanding.isEmpty()) {
-              this.state_0 = 4;
-              continue;
-            }
-
-            this.state_0 = 3;
             this.result_0 = this.local$this$ReliableShaderMessageDeliverer.pongs.receive(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 3:
-            var pingMessage = this.result_0;
-            var deliveryAttempt = this.local$this$ReliableShaderMessageDeliverer.outstanding.remove_11rb$(toList(pingMessage.data));
-            if (deliveryAttempt != null) {
-              deliveryAttempt.succeeded();
-            }
-
-            this.state_0 = 2;
-            continue;
-          case 4:
-            return Unit;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
           default:this.state_0 = 1;
             throw new Error('State Machine Unreachable execution');
         }
@@ -3668,80 +3933,109 @@
         return instance.doResume(null);
     };
   }
-  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$it, closure$retryAfterMillis) {
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda_1(closure$pongTag, this$Mapper) {
     return function () {
-      return "Didn't hear from " + closure$it.brainToMap.brainId + ' after ' + closure$retryAfterMillis.toString() + ', retrying...';
+      return 'huh? no such pong tag ' + this$Mapper.stringify_fo0d1v$(closure$pongTag) + '!';
     };
   }
-  function Coroutine$await_yhmem3$($this, retryAfterMillis_0, tries_0, continuation_0) {
+  function Coroutine$await_lu1900$($this, retryAfterMillis_0, failAfterMillis_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
     this.local$retryAfterMillis = retryAfterMillis_0;
-    this.local$tries = tries_0;
+    this.local$failAfterMillis = failAfterMillis_0;
   }
-  Coroutine$await_yhmem3$.$metadata$ = {
+  Coroutine$await_lu1900$.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: null,
     interfaces: [CoroutineImpl]
   };
-  Coroutine$await_yhmem3$.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$await_yhmem3$.prototype.constructor = Coroutine$await_yhmem3$;
-  Coroutine$await_yhmem3$.prototype.doResume = function () {
+  Coroutine$await_lu1900$.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$await_lu1900$.prototype.constructor = Coroutine$await_lu1900$;
+  Coroutine$await_lu1900$.prototype.doResume = function () {
     do
       try {
         switch (this.state_0) {
           case 0:
             if (this.local$retryAfterMillis === void 0)
-              this.local$retryAfterMillis = L2000;
-            if (this.local$tries === void 0)
-              this.local$tries = 3;
+              this.local$retryAfterMillis = 200.0;
+            if (this.local$failAfterMillis === void 0)
+              this.local$failAfterMillis = 10000.0;
             Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda(this.$this));
-            if (this.local$tries === 0) {
-              var $receiver = this.$this.outstanding.values;
-              var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
-              var tmp$;
-              tmp$ = $receiver.iterator();
-              while (tmp$.hasNext()) {
-                var item = tmp$.next();
-                destination.add_11rb$(item.brainToMap.brainId);
-              }
-              var remaining = ArrayList_init_0(destination);
-              this.$this.outstanding.clear();
-              throw new Mapper$TimeoutException('Timed out waiting for ' + remaining);
+            var tmp$;
+            tmp$ = this.$this.outstanding.values.iterator();
+            while (tmp$.hasNext()) {
+              var element = tmp$.next();
+              element.retryAt = element.sentAt + this.local$retryAfterMillis;
+              element.failAt = element.sentAt + this.local$failAfterMillis;
             }
 
             this.state_0 = 2;
-            this.result_0 = withTimeoutOrNull(this.local$retryAfterMillis, Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this.$this), this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
             continue;
           case 1:
             throw this.exception_0;
           case 2:
             if (this.$this.outstanding.isEmpty()) {
-              return;
-            }
-             else {
-              this.state_0 = 3;
+              this.state_0 = 4;
               continue;
             }
 
-          case 3:
-            var retry = ArrayList_init_0(this.$this.outstanding.values);
-            this.$this.outstanding.clear();
+            var $receiver = this.$this.outstanding.values;
+            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
             var tmp$_0;
-            tmp$_0 = retry.iterator();
+            tmp$_0 = $receiver.iterator();
             while (tmp$_0.hasNext()) {
-              var element = tmp$_0.next();
-              Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(element, this.local$retryAfterMillis));
-              this.$this.send_b2qy7x$(element.brainToMap, element.buffer);
+              var item = tmp$_0.next();
+              var tmp$_1, tmp$_2;
+              destination.add_11rb$((tmp$_2 = (tmp$_1 = item.brainToMap.guessedModelSurface) != null ? tmp$_1.name : null) != null ? tmp$_2 : item.brainToMap.brainId);
             }
 
-            this.state_0 = 4;
-            this.result_0 = this.$this.await_yhmem3$(this.local$retryAfterMillis, this.local$tries - 1 | 0, this);
+            var waitingFor = sorted(destination);
+            this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Waiting for PONG from ' + joinToString(waitingFor, ','));
+            var sleepUntil = {v: kotlin_js_internal_DoubleCompanionObject.MAX_VALUE};
+            var nowMs = getTimeMillis().toNumber();
+            var $receiver_0 = this.$this.outstanding.values;
+            this.$this.$outer;
+            var tmp$_3;
+            tmp$_3 = $receiver_0.iterator();
+            while (tmp$_3.hasNext()) {
+              var element_0 = tmp$_3.next();
+              var this$Mapper = this.$this.$outer;
+              if (element_0.failAt < nowMs) {
+                throw new Mapper$TimeoutException('Timed out waiting for ' + element_0.brainToMap.brainId + ' pong ' + this$Mapper.stringify_fo0d1v$(element_0.key));
+              }
+              if (sleepUntil.v > element_0.failAt)
+                sleepUntil.v = element_0.failAt;
+              if (element_0.retryAt < nowMs) {
+                Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(element_0, nowMs));
+                element_0.attemptDelivery();
+                element_0.retryAt = nowMs + this.local$retryAfterMillis;
+              }
+              if (sleepUntil.v > element_0.retryAt)
+                sleepUntil.v = element_0.retryAt;
+            }
+
+            var timeoutMs = sleepUntil.v - nowMs;
+            this.state_0 = 3;
+            this.result_0 = withTimeoutOrNull(Kotlin.Long.fromNumber(timeoutMs), Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
+            continue;
+          case 3:
+            var pong = this.result_0;
+            if (pong != null) {
+              var pongTag = toList(pong.data);
+              var deliveryAttempt = this.$this.outstanding.remove_11rb$(pongTag);
+              if (deliveryAttempt != null) {
+                deliveryAttempt.succeeded();
+              }
+               else {
+                Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda_1(pongTag, this.$this.$outer));
+              }
+            }
+
+            this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('');
+            this.state_0 = 2;
             continue;
           case 4:
             return;
@@ -3761,8 +4055,8 @@
       }
      while (true);
   };
-  Mapper$ReliableShaderMessageDeliverer.prototype.await_yhmem3$ = function (retryAfterMillis_0, tries_0, continuation_0, suspended) {
-    var instance = new Coroutine$await_yhmem3$(this, retryAfterMillis_0, tries_0, continuation_0);
+  Mapper$ReliableShaderMessageDeliverer.prototype.await_lu1900$ = function (retryAfterMillis_0, failAfterMillis_0, continuation_0, suspended) {
+    var instance = new Coroutine$await_lu1900$(this, retryAfterMillis_0, failAfterMillis_0, continuation_0);
     if (suspended)
       return instance;
     else
@@ -3843,7 +4137,10 @@
     this.brainToMap = brainToMap;
     this.buffer = buffer;
     this.tag_0 = Random.Default.nextBytes_za3lpa$(8);
-    this.sentAt_0 = getTimeMillis().toNumber();
+    this.sentAt = getTimeMillis().toNumber();
+    this.retryAt = 0.0;
+    this.failAt = 0.0;
+    this.retryCount = 0;
   }
   Object.defineProperty(Mapper$DeliveryAttempt.prototype, 'key', {
     get: function () {
@@ -3855,7 +4152,7 @@
   };
   function Mapper$DeliveryAttempt$succeeded$lambda(this$DeliveryAttempt) {
     return function () {
-      return this$DeliveryAttempt.brainToMap.brainId + ' shader message pong after ' + (getTimeMillis().toNumber() - this$DeliveryAttempt.sentAt_0) + 'ms';
+      return this$DeliveryAttempt.brainToMap.brainId + ' shader message pong after ' + (getTimeMillis().toNumber() - this$DeliveryAttempt.sentAt) + 'ms';
     };
   }
   Mapper$DeliveryAttempt.prototype.succeeded = function () {
@@ -3866,31 +4163,35 @@
     simpleName: 'DeliveryAttempt',
     interfaces: []
   };
-  function Mapper$receive$lambda(this$Mapper) {
+  function Mapper$receive$lambda(closure$message) {
+    return function () {
+      var tmp$;
+      return 'Heard from Brain ' + closure$message.brainId + ' surface=' + ((tmp$ = closure$message.surfaceName) != null ? tmp$ : 'unknown');
+    };
+  }
+  function Mapper$receive$lambda_0(this$Mapper) {
     return function () {
       return this$Mapper.solidColor_0(Color$Companion_getInstance().GREEN);
     };
   }
   Mapper.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
-    var tmp$;
-    println('Mapper received message from ' + fromAddress + ':' + fromPort + ' ' + bytes[0]);
     var message = parse(bytes);
     if (Kotlin.isType(message, BrainHelloMessage)) {
-      println('Heard from Brain ' + message.brainId + ' surface=' + ((tmp$ = message.surfaceName) != null ? tmp$ : 'unknown'));
+      Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$receive$lambda(message));
       var $receiver = this.brainsToMap_0;
-      var tmp$_0;
+      var tmp$;
       var value = $receiver.get_11rb$(fromAddress);
       if (value == null) {
         var answer = new Mapper$BrainToMap(this, fromAddress, message.brainId);
         $receiver.put_xwzc9p$(fromAddress, answer);
-        tmp$_0 = answer;
+        tmp$ = answer;
       }
        else {
-        tmp$_0 = value;
+        tmp$ = value;
       }
-      var brainToMap = tmp$_0;
+      var brainToMap = tmp$;
       this.mapperUi_0.showMessage_61zpoe$(this.brainsToMap_0.size.toString() + ' SURFACES DISCOVERED!');
-      brainToMap.shade_s74fr6$(Mapper$receive$lambda(this));
+      brainToMap.shade_s74fr6$(Mapper$receive$lambda_0(this));
     }
      else if (Kotlin.isType(message, PingMessage))
       if (message.isPong) {
@@ -4109,13 +4410,12 @@
     return first(sortedWith(this.box_0.values, new Comparator$ObjectLiteral(compareByDescending$lambda(Mapper$Ballot$winner$lambda)))).item;
   };
   function Mapper$Ballot$summarize$lambda(f) {
-    var k = f.key;
     var v = f.value;
     return v.votes;
   }
   Mapper$Ballot.prototype.summarize = function () {
     var $receiver = sortedWith(this.box_0.entries, new Comparator$ObjectLiteral(compareByDescending$lambda(Mapper$Ballot$summarize$lambda)));
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -4123,7 +4423,7 @@
       var tmp$_0 = destination.add_11rb$;
       var k = item.key;
       var v = item.value;
-      tmp$_0.call(destination, k + '=' + v + '.votes');
+      tmp$_0.call(destination, k + '=' + v.votes);
     }
     return joinToString(destination, ', ');
   };
@@ -4157,6 +4457,16 @@
     }
     return Mapper$Companion_instance;
   }
+  Mapper.prototype.stringify_fo0d1v$ = function ($receiver) {
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(padStart(toString(item & 255, 16), 2, 48));
+    }
+    return joinToString(destination, '');
+  };
   Object.defineProperty(Mapper.prototype, 'coroutineContext', {
     get: function () {
       return this.$delegate_9rrh7p$_0.coroutineContext;
@@ -4713,7 +5023,7 @@
       this.movingHeadPresets_0.putAll_a2k3zr$(map);
     }
     this.movingHeadPresetsChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().movingHeadPresets, mutableMapOf([to('Disco Balls', new MovingHead$MovingHeadPosition(123, 200))]), MovingHeadManager$movingHeadPresetsChannel$lambda(this));
-    var destination = ArrayList_init_1(collectionSizeOrDefault(movingHeads, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault(movingHeads, 10));
     var tmp$;
     tmp$ = movingHeads.iterator();
     while (tmp$.hasNext()) {
@@ -4832,7 +5142,7 @@
   };
   function MovingHeadDisplay_init$lambda(this$MovingHeadDisplay, closure$onUpdatedMovingHeads) {
     return function (movingHeads) {
-      var destination = ArrayList_init_1(collectionSizeOrDefault(movingHeads, 10));
+      var destination = ArrayList_init_0(collectionSizeOrDefault(movingHeads, 10));
       var tmp$;
       tmp$ = movingHeads.iterator();
       while (tmp$.hasNext()) {
@@ -5062,7 +5372,7 @@
             var tmp$ = this.$this.pubSub_0;
             var tmp$_0 = Topics_getInstance().availableShows;
             var $receiver = this.$this.shows;
-            var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
             var tmp$_1;
             tmp$_1 = $receiver.iterator();
             while (tmp$_1.hasNext()) {
@@ -5246,7 +5556,7 @@
       var tmp$_4, tmp$_5, tmp$_6, tmp$_7;
       var tmp$_8;
       if ((tmp$_4 = dataFor.pixelLocations) != null) {
-        var destination = ArrayList_init_1(collectionSizeOrDefault(tmp$_4, 10));
+        var destination = ArrayList_init_0(collectionSizeOrDefault(tmp$_4, 10));
         var tmp$_9;
         tmp$_9 = tmp$_4.iterator();
         while (tmp$_9.hasNext()) {
@@ -6363,7 +6673,7 @@
     return function () {
       var allVertices = HashSet_init();
       var $receiver = this$Model.allSurfaces;
-      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
       var tmp$;
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
@@ -6506,7 +6816,7 @@
     var panelsByEdge = LinkedHashMap_init();
     var edgesByPanel = LinkedHashMap_init();
     var $receiver = split(getResource('baaahs-model.obj'), ['\n']);
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -6525,7 +6835,7 @@
         case 'v':
           if (args.size !== 3)
             throw Exception_init('invalid vertex line: ' + element);
-          var destination_0 = ArrayList_init_1(collectionSizeOrDefault(args, 10));
+          var destination_0 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_3;
           tmp$_3 = args.iterator();
           while (tmp$_3.hasNext()) {
@@ -6542,7 +6852,7 @@
           panels.add_11rb$(currentPanel.v);
           break;
         case 'f':
-          var destination_1 = ArrayList_init_1(collectionSizeOrDefault(args, 10));
+          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_4;
           tmp$_4 = args.iterator();
           while (tmp$_4.hasNext()) {
@@ -6554,7 +6864,7 @@
           currentPanel.v.faces.faces.add_11rb$(new SheepModel$Face(verts));
           break;
         case 'l':
-          var destination_2 = ArrayList_init_1(collectionSizeOrDefault(args, 10));
+          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
           var tmp$_5;
           tmp$_5 = args.iterator();
           while (tmp$_5.hasNext()) {
@@ -6741,7 +7051,7 @@
     this.beatSource_0 = beatSource;
     this.dmxUniverse_0 = dmxUniverse;
     this.movingHeadManager_0 = movingHeadManager;
-    this.clock_0 = clock;
+    this.clock_8be2vx$ = clock;
     this.nextShow = initialShow;
     this.currentShow_0 = null;
     this.currentShowRenderer_0 = null;
@@ -6770,7 +7080,7 @@
   });
   Object.defineProperty(ShowRunner.prototype, 'currentBeat', {
     get: function () {
-      return this.beatSource_0.getBeatData().beatWithinMeasure_rnw5ii$(this.clock_0);
+      return this.beatSource_0.getBeatData().beatWithinMeasure_rnw5ii$(this.clock_8be2vx$);
     }
   });
   ShowRunner.prototype.getBeatSource = function () {
@@ -6844,7 +7154,7 @@
     return gadget;
   };
   ShowRunner.prototype.surfacesChanged_ji9tfc$ = function (addedSurfaces, removedSurfaces) {
-    this.changedSurfaces_0.add_11rb$(new ShowRunner$SurfacesChanges(ArrayList_init_0(addedSurfaces), ArrayList_init_0(removedSurfaces)));
+    this.changedSurfaces_0.add_11rb$(new ShowRunner$SurfacesChanges(ArrayList_init_1(addedSurfaces), ArrayList_init_1(removedSurfaces)));
   };
   ShowRunner.prototype.nextFrame = function () {
     var tmp$;
@@ -6881,14 +7191,14 @@
         this.shadersLocked_0 = false;
         try {
           if ((tmp$_2 = this.currentShowRenderer_0) != null) {
-            var destination = ArrayList_init_1(collectionSizeOrDefault(added, 10));
+            var destination = ArrayList_init_0(collectionSizeOrDefault(added, 10));
             var tmp$_6;
             tmp$_6 = added.iterator();
             while (tmp$_6.hasNext()) {
               var item = tmp$_6.next();
               destination.add_11rb$(item.surface);
             }
-            var destination_0 = ArrayList_init_1(collectionSizeOrDefault(removed, 10));
+            var destination_0 = ArrayList_init_0(collectionSizeOrDefault(removed, 10));
             var tmp$_7;
             tmp$_7 = removed.iterator();
             while (tmp$_7.hasNext()) {
@@ -8693,7 +9003,7 @@
     this.surfaceOrdinalTextureIndex = 1;
     this.nextTextureIndex = 2;
     var $receiver = this.adjustableValues;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -8797,14 +9107,16 @@
   }
   GlslRenderer$Instance.prototype.bindUniforms = function () {
     var tmp$;
-    tmp$ = this.adjustableUniforms.iterator();
+    tmp$ = this.adjustableUniforms.entries.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      element.bind();
+      var key = element.key;
+      var value = element.value;
+      value.bind();
     }
   };
   GlslRenderer$Instance.prototype.setUniform_jv3efz$ = function (adjustableValue, surfaceOrdinal, value) {
-    this.adjustableUniforms.get_za3lpa$(adjustableValue.ordinal).setValue_6t2rgq$(surfaceOrdinal, value);
+    ensureNotNull(this.adjustableUniforms.get_11rb$(adjustableValue.ordinal)).setValue_6t2rgq$(surfaceOrdinal, value);
   };
   GlslRenderer$Instance.$metadata$ = {
     kind: Kind_CLASS,
@@ -9239,6 +9551,7 @@
   };
   function ImageProcessing$Companion() {
     ImageProcessing$Companion_instance = this;
+    this.rgbaPixelDetectionIndex = 1;
   }
   function ImageProcessing$Companion$channelHistogram$lambda(closure$channel, closure$hist) {
     return function (it) {
@@ -9262,7 +9575,7 @@
     bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$channelHistogram$lambda(channel, hist));
     return new ImageProcessing$Histogram(hist, Kotlin.imul(bitmap.width, bitmap.height));
   };
-  ImageProcessing$Companion.prototype.diff_pkkjvd$ = function (newBitmap, baseBitmap, deltaBitmap, detector, maskBitmap, withinRegion) {
+  ImageProcessing$Companion.prototype.diff_57ho0i$ = function (newBitmap, baseBitmap, deltaBitmap, maskBitmap, withinRegion) {
     if (maskBitmap === void 0)
       maskBitmap = null;
     if (withinRegion === void 0)
@@ -9272,9 +9585,9 @@
     if (maskBitmap != null) {
       deltaBitmap.darken_5151av$(maskBitmap);
     }
-    return this.analyze_cpx17j$(deltaBitmap, detector, withinRegion);
+    return this.analyze_qpnjw8$(deltaBitmap, withinRegion);
   };
-  function ImageProcessing$Companion$pixels$lambda(closure$regionOfInterest, closure$bitmap, closure$detector, closure$fn) {
+  function ImageProcessing$Companion$pixels$lambda(closure$regionOfInterest, closure$bitmap, this$ImageProcessing$, closure$fn) {
     return function (data) {
       var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
       tmp$ = closure$regionOfInterest.yRange;
@@ -9288,19 +9601,19 @@
         tmp$_6 = tmp$_3.step;
         for (var x = tmp$_4; x <= tmp$_5; x += tmp$_6) {
           var pixelByteIndex = (x + Kotlin.imul(y, closure$bitmap.width) | 0) * 4 | 0;
-          var pixValue = data.get_za3lpa$(pixelByteIndex + closure$detector.rgbaIndex | 0);
+          var pixValue = data.get_za3lpa$(pixelByteIndex + this$ImageProcessing$.rgbaPixelDetectionIndex | 0);
           closure$fn(x, y, pixValue);
         }
       }
       return false;
     };
   }
-  ImageProcessing$Companion.prototype.pixels_jkgb9c$ = function (bitmap, detector, regionOfInterest, fn) {
+  ImageProcessing$Companion.prototype.pixels_oh9quv$ = function (bitmap, regionOfInterest, fn) {
     if (regionOfInterest === void 0)
       regionOfInterest = MediaDevices$Region$Companion_getInstance().containing_5151av$(bitmap);
-    bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$pixels$lambda(regionOfInterest, bitmap, detector, fn));
+    bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$pixels$lambda(regionOfInterest, bitmap, this, fn));
   };
-  function ImageProcessing$Companion$analyze$lambda(closure$regionOfInterest, closure$bitmap, closure$detector, closure$xMin, closure$xMax, closure$yMin, closure$yMax, closure$hist) {
+  function ImageProcessing$Companion$analyze$lambda(closure$regionOfInterest, closure$bitmap, this$ImageProcessing$, closure$xMin, closure$xMax, closure$yMin, closure$yMax, closure$hist) {
     return function (data) {
       var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
       tmp$ = closure$regionOfInterest.yRange;
@@ -9314,7 +9627,7 @@
         tmp$_6 = tmp$_3.step;
         for (var x = tmp$_4; x <= tmp$_5; x += tmp$_6) {
           var pixelByteIndex = (x + Kotlin.imul(y, closure$bitmap.width) | 0) * 4 | 0;
-          var pixValue = toShort(data.get_za3lpa$(pixelByteIndex + closure$detector.rgbaIndex | 0));
+          var pixValue = toShort(data.get_za3lpa$(pixelByteIndex + this$ImageProcessing$.rgbaPixelDetectionIndex | 0));
           if (pixValue < closure$xMin[x])
             closure$xMin[x] = pixValue;
           if (pixValue > closure$xMax[x])
@@ -9329,7 +9642,7 @@
       return false;
     };
   }
-  ImageProcessing$Companion.prototype.analyze_cpx17j$ = function (bitmap, detector, regionOfInterest) {
+  ImageProcessing$Companion.prototype.analyze_qpnjw8$ = function (bitmap, regionOfInterest) {
     if (regionOfInterest === void 0)
       regionOfInterest = MediaDevices$Region$Companion_getInstance().containing_5151av$(bitmap);
     var array = new Int32Array(256);
@@ -9367,7 +9680,7 @@
       array_3[i_3] = 0;
     }
     var yMax = array_3;
-    bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$analyze$lambda(regionOfInterest, bitmap, detector, xMin, xMax, yMin, yMax, hist));
+    bitmap.withData_u0v8ny$(void 0, ImageProcessing$Companion$analyze$lambda(regionOfInterest, bitmap, this, xMin, xMax, yMin, yMax, hist));
     return new ImageProcessing$Analysis(bitmap.width, bitmap.height, regionOfInterest, new ImageProcessing$Histogram(hist, Kotlin.imul(bitmap.width, bitmap.height)), xMin, xMax, yMin, yMax);
   };
   ImageProcessing$Companion.prototype.histogram_jnr2u7$ = function ($receiver, range) {
@@ -9490,6 +9803,23 @@
   };
   ImageProcessing$Analysis.prototype.copyOfRange_0 = function ($receiver, intRange) {
     return copyOfRange_0($receiver, intRange.first, intRange.last);
+  };
+  ImageProcessing$Analysis.prototype.hasBrightSpots = function () {
+    var $receiver = this.hist.data;
+    var tmp$;
+    if ($receiver.length === 0)
+      throw UnsupportedOperationException_init_0("Empty array can't be reduced.");
+    var accumulator = $receiver[0];
+    tmp$ = get_lastIndex($receiver);
+    for (var index = 1; index <= tmp$; index++) {
+      var acc = accumulator;
+      var i = $receiver[index];
+      if ((i - acc | 0) > 3) {
+        return true;
+      }
+      accumulator = i;
+    }
+    return false;
   };
   function ImageProcessing$Analysis$minValue$lambda(this$Analysis) {
     return function () {
@@ -10030,7 +10360,7 @@
         var surfaceName = element.surfaceName;
         var modelSurface = model.findModelSurface_61zpoe$(surfaceName);
         var $receiver = element.pixels;
-        var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+        var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
         var tmp$_0;
         tmp$_0 = $receiver.iterator();
         while (tmp$_0.hasNext()) {
@@ -10739,7 +11069,7 @@
     return function () {
       var tmp$ = 'incomplete fragmented UDP packet from ' + closure$fromAddress + ':' + closure$fromPort + ':' + (' actualTotalSize=' + closure$actualTotalSize + ' != totalSize=' + closure$totalSize) + (' for messageId=' + closure$messageId);
       var $receiver = closure$myFragments;
-      var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
       var tmp$_0;
       tmp$_0 = $receiver.iterator();
       while (tmp$_0.hasNext()) {
@@ -10770,7 +11100,7 @@
       this.this$FragmentingUdpLink.fragments_0.add_11rb$(thisFragment);
       if ((offset + size | 0) === totalSize) {
         var myFragments = this.this$FragmentingUdpLink.removeMessageId_0(messageId);
-        var destination = ArrayList_init_1(collectionSizeOrDefault(myFragments, 10));
+        var destination = ArrayList_init_0(collectionSizeOrDefault(myFragments, 10));
         var tmp$;
         tmp$ = myFragments.iterator();
         while (tmp$.hasNext()) {
@@ -11362,7 +11692,7 @@
   BrainMappingMessage$Companion.prototype.readRelativeVerticesList_0 = function ($receiver) {
     var vertexCount = $receiver.readInt();
     var $receiver_0 = until(0, vertexCount);
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
     tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
@@ -11842,7 +12172,7 @@
     var glslProgram = reader.readString();
     var adjustableValueCount = reader.readShort();
     var $receiver = until_0(0, adjustableValueCount);
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -11881,14 +12211,14 @@
   GlslShader$Companion.prototype.findAdjustableValues_61zpoe$ = function (glslFragmentShader) {
     var tmp$;
     var $receiver = this.extraAdjustables;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$_0;
     tmp$_0 = $receiver.iterator();
     while (tmp$_0.hasNext()) {
       var item = tmp$_0.next();
       destination.add_11rb$(item.ordinal);
     }
-    var i = {v: (tmp$ = max_0(destination)) != null ? tmp$ : 0};
+    var i = {v: ((tmp$ = max_0(destination)) != null ? tmp$ : -1) + 1 | 0};
     return plus_0(toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this, i))), this.extraAdjustables);
   };
   function GlslShader$Companion$extraAdjustables$lambda($receiver) {
@@ -13178,7 +13508,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox46400Show_getInstance(), GlslSandbox46315Show_getInstance(), GlslSandbox46292Show_getInstance(), GlslSandbox46102Show_getInstance(), GlslSandbox45963Show_getInstance(), GlslSandbox46723Show_getInstance(), GlslSandbox46597Show_getInstance(), GlslSandbox46613Show_getInstance(), GlslSandbox56705Show_getInstance(), GlslSandbox56418Show_getInstance(), GlslSandbox56433Show_getInstance(), GlslSandbox56479Show_getInstance(), GlslSandbox56511Show_getInstance(), GlslSandbox56499Show_getInstance(), GlslSandbox56573Show_getInstance(), GlslSandbox56592Show_getInstance(), GlslSandbox56688Show_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslSandbox46744Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance(), GlslSandboxDebugShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox46400Show_getInstance(), GlslSandbox46315Show_getInstance(), GlslSandbox46292Show_getInstance(), GlslSandbox46102Show_getInstance(), GlslSandbox45963Show_getInstance(), GlslSandbox46723Show_getInstance(), GlslSandbox46597Show_getInstance(), GlslSandbox46613Show_getInstance(), GlslSandbox56705Show_getInstance(), GlslSandbox56418Show_getInstance(), GlslSandbox56433Show_getInstance(), GlslSandbox56479Show_getInstance(), GlslSandbox56511Show_getInstance(), GlslSandbox56499Show_getInstance(), GlslSandbox56573Show_getInstance(), GlslSandbox56592Show_getInstance(), GlslRedBeatShow_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslSandbox46744Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance(), GlslSandboxDebugShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -13216,7 +13546,7 @@
     }
     this.shaderBufs_0 = toMutableMap(result);
     var $receiver_0 = closure$showRunner.allMovingHeads;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
@@ -13330,7 +13660,7 @@
     var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     var shader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
     var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -13376,6 +13706,28 @@
       new GlslOtherShow();
     }
     return GlslOtherShow_instance;
+  }
+  function GlslRedBeatShow() {
+    GlslRedBeatShow_instance = this;
+    GlslShow.call(this, 'GlslRedBeatShow');
+    this.program_km0d8m$_0 = trimIndent('\n\n// SPARKLEMOTION GADGET: MeasureStartTimeMs {name: "measureStartTime" }\n//uniform float measureStartTimeMs;\n\n// SPARKLEMOTION GADGET: Beat {name: "beat" }\nuniform float beat;\n\nvec4 color(float marker) {\n\tfloat r = (1.0 + sin(beat  + 1.0)) / 2.0;\n\tfloat g = (1.0 + sin(beat  + 2.0)) / 2.0;\n\tfloat b = (1.0 + sin(beat  + 4.0)) / 2.0;\n\t\n\treturn vec4(r, g, b, 1.0);\n}\n\n#define ITERATIONS                                                          70\n#define SCALING .0002\nvoid main() {\n    gl_FragColor = vec4(beat, 0., 0., 1.);\n}\n    ');
+  }
+  Object.defineProperty(GlslRedBeatShow.prototype, 'program', {
+    get: function () {
+      return this.program_km0d8m$_0;
+    }
+  });
+  GlslRedBeatShow.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslRedBeatShow',
+    interfaces: [GlslShow]
+  };
+  var GlslRedBeatShow_instance = null;
+  function GlslRedBeatShow_getInstance() {
+    if (GlslRedBeatShow_instance === null) {
+      new GlslRedBeatShow();
+    }
+    return GlslRedBeatShow_instance;
   }
   function GlslSandbox45963Show() {
     GlslSandbox45963Show_instance = this;
@@ -13590,7 +13942,7 @@
   GlslSandbox55301KotlinShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var shader = new GlslSandbox55301Shader();
     var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -13966,33 +14318,26 @@
   function GlslShow(name) {
     Show.call(this, name);
   }
-  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToGadgets, closure$showRunner, closure$shader) {
+  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToDataSources, closure$showRunner, closure$shader) {
     this.closure$buffers = closure$buffers;
-    this.closure$adjustableValuesToGadgets = closure$adjustableValuesToGadgets;
+    this.closure$adjustableValuesToDataSources = closure$adjustableValuesToDataSources;
     this.closure$showRunner = closure$showRunner;
     this.closure$shader = closure$shader;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.closure$buffers.values;
-    this.closure$adjustableValuesToGadgets;
+    this.closure$adjustableValuesToDataSources;
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       var tmp$_0;
-      tmp$_0 = this.closure$adjustableValuesToGadgets.entries.iterator();
+      tmp$_0 = this.closure$adjustableValuesToDataSources.entries.iterator();
       while (tmp$_0.hasNext()) {
         var element_0 = tmp$_0.next();
         var adjustableValue = element_0.key;
-        var gadget = element_0.value;
-        var tmp$_1;
-        if (Kotlin.isType(gadget, Slider))
-          tmp$_1 = gadget.value;
-        else if (Kotlin.isType(gadget, ColorPicker))
-          tmp$_1 = gadget.color;
-        else
-          throw IllegalArgumentException_init('unsupported gadget ' + gadget);
-        var value = tmp$_1;
+        var dataSource = element_0.value;
+        var value = dataSource.getValue();
         element.update_egvix6$(adjustableValue, value);
       }
     }
@@ -14031,9 +14376,9 @@
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      result.put_xwzc9p$(element, this.createGadget_j5u65$(element, showRunner));
+      result.put_xwzc9p$(element, this.createDataSource_j5u65$(element, showRunner));
     }
-    var adjustableValuesToGadgets = result;
+    var adjustableValuesToDataSources = result;
     var tmp$_0 = showRunner.allSurfaces;
     var destination = HashMap_init();
     var tmp$_1;
@@ -14043,23 +14388,63 @@
       destination.put_xwzc9p$(element_0, showRunner.getShaderBuffer_9rhubp$(element_0, shader));
     }
     var buffers = destination;
-    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToGadgets, showRunner, shader);
+    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToDataSources, showRunner, shader);
   };
-  GlslShow.prototype.createGadget_j5u65$ = function ($receiver, showRunner) {
+  GlslShow.prototype.createDataSource_j5u65$ = function ($receiver, showRunner) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     var config = $receiver.config;
     var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
     switch ($receiver.gadgetType) {
       case 'Slider':
-        tmp$_6 = new Slider(name, (tmp$_1 = (tmp$_0 = config.getPrimitiveOrNull_61zpoe$('initialValue')) != null ? tmp$_0.float : null) != null ? tmp$_1 : 1.0, (tmp$_3 = (tmp$_2 = config.getPrimitiveOrNull_61zpoe$('minValue')) != null ? tmp$_2.float : null) != null ? tmp$_3 : 0.0, (tmp$_5 = (tmp$_4 = config.getPrimitiveOrNull_61zpoe$('maxValue')) != null ? tmp$_4.float : null) != null ? tmp$_5 : 1.0);
+        tmp$_6 = new GlslShow$GadgetDataSource(showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, new Slider(name, (tmp$_1 = (tmp$_0 = config.getPrimitiveOrNull_61zpoe$('initialValue')) != null ? tmp$_0.float : null) != null ? tmp$_1 : 1.0, (tmp$_3 = (tmp$_2 = config.getPrimitiveOrNull_61zpoe$('minValue')) != null ? tmp$_2.float : null) != null ? tmp$_3 : 0.0, (tmp$_5 = (tmp$_4 = config.getPrimitiveOrNull_61zpoe$('maxValue')) != null ? tmp$_4.float : null) != null ? tmp$_5 : 1.0)));
         break;
       case 'ColorPicker':
-        tmp$_6 = new ColorPicker(name);
+        tmp$_6 = new GlslShow$GadgetDataSource(showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, new ColorPicker(name)));
+        break;
+      case 'Beat':
+        tmp$_6 = new GlslShow$BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock_8be2vx$);
         break;
       default:throw IllegalArgumentException_init('unknown gadget ' + $receiver.gadgetType);
     }
-    var gadget = tmp$_6;
-    return showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, gadget);
+    return tmp$_6;
+  };
+  function GlslShow$DataSource() {
+  }
+  GlslShow$DataSource.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'DataSource',
+    interfaces: []
+  };
+  function GlslShow$GadgetDataSource(gadget) {
+    this.gadget = gadget;
+  }
+  GlslShow$GadgetDataSource.prototype.getValue = function () {
+    var tmp$, tmp$_0;
+    tmp$ = this.gadget;
+    if (Kotlin.isType(tmp$, Slider))
+      tmp$_0 = this.gadget.value;
+    else if (Kotlin.isType(tmp$, ColorPicker))
+      tmp$_0 = this.gadget.color;
+    else
+      throw IllegalArgumentException_init('unsupported gadget ' + this.gadget);
+    return tmp$_0;
+  };
+  GlslShow$GadgetDataSource.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GadgetDataSource',
+    interfaces: [GlslShow$DataSource]
+  };
+  function GlslShow$BeatDataSource(beatData, clock) {
+    this.beatData = beatData;
+    this.clock = clock;
+  }
+  GlslShow$BeatDataSource.prototype.getValue = function () {
+    return this.beatData.fractionTilNextBeat_rnw5ii$(this.clock);
+  };
+  GlslShow$BeatDataSource.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BeatDataSource',
+    interfaces: [GlslShow$DataSource]
   };
   GlslShow.$metadata$ = {
     kind: Kind_CLASS,
@@ -14081,7 +14466,7 @@
       if (Kotlin.isType(element, IdentifiedSurface) && HeartbleatShow_getInstance().get_number_kki6pr$(element) === 7)
         destination.add_11rb$(element);
     }
-    var destination_0 = ArrayList_init_1(collectionSizeOrDefault(destination, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
     var tmp$_0;
     tmp$_0 = destination.iterator();
     while (tmp$_0.hasNext()) {
@@ -14094,7 +14479,7 @@
     this.xOff = closure$showRunner.getGadget_vedre8$('xOff', new Slider('X Offset', 0.4));
     this.yOff = closure$showRunner.getGadget_vedre8$('yOff', new Slider('Y Offset', 0.67));
     var $receiver_0 = closure$showRunner.allUnusedSurfaces;
-    var destination_1 = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_1;
     tmp$_1 = $receiver_0.iterator();
     while (tmp$_1.hasNext()) {
@@ -14326,7 +14711,7 @@
     this.solidShader = new SolidShader();
     this.sparkleShader = new SparkleShader();
     var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14398,7 +14783,7 @@
   function PixelTweenShow$createRenderer$ObjectLiteral(closure$colorArray, closure$showRunner) {
     this.closure$colorArray = closure$colorArray;
     var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14468,7 +14853,7 @@
   }
   function RandomShow$createRenderer$ObjectLiteral(closure$showRunner, closure$model) {
     var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14476,7 +14861,7 @@
       destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new RandomShader()));
     }
     var $receiver_0 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
@@ -14556,7 +14941,7 @@
     var radiusSlider = showRunner.getGadget_vedre8$('radius', new Slider('radius', 0.25, 0.0, 1.0, 0.01));
     var shader = new SimpleSpatialShader();
     var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14610,7 +14995,7 @@
     var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     var shader = new SolidShader();
     var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14622,7 +15007,7 @@
     }
     var shaderBuffers = destination;
     var $receiver_1 = model.movingHeads;
-    var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_1, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
     var tmp$_1;
     tmp$_1 = $receiver_1.iterator();
     while (tmp$_1.hasNext()) {
@@ -14652,7 +15037,7 @@
     this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
     this.pixelShader = new PixelShader();
     var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14661,7 +15046,7 @@
     }
     this.pixelShaderBuffers = destination;
     var $receiver_0 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$_0;
     tmp$_0 = $receiver_0.iterator();
     while (tmp$_0.hasNext()) {
@@ -14737,7 +15122,7 @@
     this.sineWaveShader = new SineWaveShader();
     this.compositorShader = new CompositorShader(this.solidShader, this.sineWaveShader);
     var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -14752,7 +15137,7 @@
     }
     this.shaderBufs_0 = destination;
     var $receiver_1 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_1, 10));
+    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
     var tmp$_1;
     tmp$_1 = $receiver_1.iterator();
     while (tmp$_1.hasNext()) {
@@ -16190,9 +16575,11 @@
     this.sessionSelector_0 = first_1(this.screen_0, 'mapperUi-sessionSelector');
     this.playButton_0 = first_1(this.screen_0, 'fa-play');
     this.pauseButton_0 = first_1(this.screen_0, 'fa-pause');
+    this.redoButton_0 = first_1(this.screen_0, 'fa-redo');
     this.modelSurfaceInfos_0 = LinkedHashMap_init();
     this.commandProgress_0 = '';
     this.cameraZRotation_0 = 0.0;
+    this.redoFn_0 = null;
     (tmp$_0 = this.statusListener_0) != null ? (tmp$_0.mapperStatusChanged_6taknv$(true), Unit) : null;
     this.ui3dDiv_0.appendChild(this.ui3dCanvas_0);
     this.uiCamera_0.position.z = 1000.0;
@@ -16231,11 +16618,11 @@
     }
      else {
       if (this.commandProgress_0.length === 0 && equals(event.code, 'KeyQ')) {
-        this.updateCameraRotation_0(event.shiftKey ? -0.025 : -0.1);
+        this.updateCameraRotation_0(event.shiftKey ? 0.025 : 0.1);
       }
        else {
         if (this.commandProgress_0.length === 0 && equals(event.code, 'KeyW')) {
-          this.updateCameraRotation_0(event.shiftKey ? 0.025 : 0.1);
+          this.updateCameraRotation_0(event.shiftKey ? -0.025 : -0.1);
         }
          else {
           if (this.commandProgress_0.length === 0 && equals(event.code, 'Digit0')) {
@@ -16389,7 +16776,7 @@
   };
   JsMapperUi.prototype.addWireframe_9u144y$ = function (sheepModel) {
     var $receiver = sheepModel.vertices;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
@@ -16434,7 +16821,7 @@
         var element_1 = tmp$_2.next();
         var lineGeom = new BufferGeometry();
         var $receiver_2 = element_1.vertices;
-        var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_2, 10));
+        var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
         var tmp$_3;
         tmp$_3 = $receiver_2.iterator();
         while (tmp$_3.hasNext()) {
@@ -16854,6 +17241,74 @@
     var renderBitmap = tmp$_0;
     afterCtx.drawImage(renderBitmap, 0.0, 0.0);
   };
+  function Coroutine$JsMapperUi$setRedo$lambda$lambda(closure$fn_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$closure$fn = closure$fn_0;
+  }
+  Coroutine$JsMapperUi$setRedo$lambda$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$JsMapperUi$setRedo$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$JsMapperUi$setRedo$lambda$lambda.prototype.constructor = Coroutine$JsMapperUi$setRedo$lambda$lambda;
+  Coroutine$JsMapperUi$setRedo$lambda$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = this.local$closure$fn(this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.result_0;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function JsMapperUi$setRedo$lambda$lambda(closure$fn_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$JsMapperUi$setRedo$lambda$lambda(closure$fn_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function JsMapperUi$setRedo$lambda(closure$fn, this$JsMapperUi) {
+    return function () {
+      launch(coroutines.GlobalScope, void 0, void 0, JsMapperUi$setRedo$lambda$lambda(closure$fn));
+      this$JsMapperUi.enabled_0(this$JsMapperUi.redoButton_0, false);
+      return Unit;
+    };
+  }
+  JsMapperUi.prototype.setRedo_s9exm$ = function (fn) {
+    if (fn == null) {
+      this.redoFn_0 = null;
+    }
+     else {
+      this.redoFn_0 = JsMapperUi$setRedo$lambda(fn, this);
+    }
+    this.enabled_0(this.redoButton_0, fn != null);
+  };
   JsMapperUi.prototype.showStats_qt1dr2$ = function (total, mapped, visible) {
     this.statsDiv_0.innerHTML = '<i class=' + '"' + 'fas fa-triangle' + '"' + '><\/i>Mapped: ' + mapped + ' / ' + total + '<br/>Visible: ' + visible;
   };
@@ -16869,8 +17324,11 @@
     this.listener_0.onPause();
   };
   JsMapperUi.prototype.showPauseMode_0 = function (isPaused) {
-    this.pauseButton_0.style.opacity = isPaused ? '.5' : '1';
-    this.playButton_0.style.opacity = !isPaused ? '.5' : '1';
+    this.enabled_0(this.pauseButton_0, !isPaused);
+    this.enabled_0(this.playButton_0, isPaused);
+  };
+  JsMapperUi.prototype.enabled_0 = function ($receiver, isEnabled) {
+    $receiver.style.opacity = isEnabled ? '1' : '.5';
   };
   JsMapperUi.prototype.clickedStop_0 = function () {
     this.listener_0.onStop();
@@ -16966,18 +17424,32 @@
   }
   function JsMapperUi$screen$lambda$lambda$lambda$lambda_3(this$JsMapperUi) {
     return function (it) {
-      this$JsMapperUi.clickedStop_0();
+      var tmp$;
+      (tmp$ = this$JsMapperUi.redoFn_0) != null ? tmp$() : null;
       return Unit;
     };
   }
   function JsMapperUi$screen$lambda$lambda$lambda_3(this$JsMapperUi) {
     return function ($receiver) {
-      i($receiver, 'fas fa-stop');
+      i($receiver, 'fas fa-redo');
       set_onClickFunction($receiver, JsMapperUi$screen$lambda$lambda$lambda$lambda_3(this$JsMapperUi));
       return Unit;
     };
   }
   function JsMapperUi$screen$lambda$lambda$lambda$lambda_4(this$JsMapperUi) {
+    return function (it) {
+      this$JsMapperUi.clickedStop_0();
+      return Unit;
+    };
+  }
+  function JsMapperUi$screen$lambda$lambda$lambda_4(this$JsMapperUi) {
+    return function ($receiver) {
+      i($receiver, 'fas fa-stop');
+      set_onClickFunction($receiver, JsMapperUi$screen$lambda$lambda$lambda$lambda_4(this$JsMapperUi));
+      return Unit;
+    };
+  }
+  function JsMapperUi$screen$lambda$lambda$lambda$lambda_5(this$JsMapperUi) {
     return function (it) {
       var surfaceName = window.prompt('Surface:');
       var tmp$ = surfaceName != null;
@@ -16990,14 +17462,14 @@
       return Unit;
     };
   }
-  function JsMapperUi$screen$lambda$lambda$lambda_4(this$JsMapperUi) {
+  function JsMapperUi$screen$lambda$lambda$lambda_5(this$JsMapperUi) {
     return function ($receiver) {
       i($receiver, 'fas fa-sign-in-alt');
-      set_onClickFunction($receiver, JsMapperUi$screen$lambda$lambda$lambda$lambda_4(this$JsMapperUi));
+      set_onClickFunction($receiver, JsMapperUi$screen$lambda$lambda$lambda$lambda_5(this$JsMapperUi));
       return Unit;
     };
   }
-  function JsMapperUi$screen$lambda$lambda$lambda_5($receiver) {
+  function JsMapperUi$screen$lambda$lambda$lambda_6($receiver) {
     return Unit;
   }
   function JsMapperUi$screen$lambda$lambda(this$JsMapperUi) {
@@ -17008,7 +17480,8 @@
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperUi$screen$lambda$lambda$lambda_2(this$JsMapperUi));
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperUi$screen$lambda$lambda$lambda_3(this$JsMapperUi));
       button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperUi$screen$lambda$lambda$lambda_4(this$JsMapperUi));
-      select($receiver, 'mapperUi-sessionSelector', JsMapperUi$screen$lambda$lambda$lambda_5);
+      button($receiver, void 0, void 0, void 0, void 0, void 0, JsMapperUi$screen$lambda$lambda$lambda_5(this$JsMapperUi));
+      select($receiver, 'mapperUi-sessionSelector', JsMapperUi$screen$lambda$lambda$lambda_6);
       return Unit;
     };
   }
@@ -17593,7 +18066,7 @@
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
               document.getElementById('visualizerPixelCount').innerText = totalPixels.v.toString();
               var $receiver = ensureNotNull(vizPanel.getPixelLocationsInModelSpace());
-              var destination = ArrayList_init_1($receiver.length);
+              var destination = ArrayList_init_0($receiver.length);
               var tmp$_3;
               for (tmp$_3 = 0; tmp$_3 !== $receiver.length; ++tmp$_3) {
                 var item_0 = $receiver[tmp$_3];
@@ -18577,12 +19050,14 @@
     GlslRenderer$Instance.call(this, this.$outer, pixelCount, uvCoords, surfaceCount);
     var $receiver = this.$outer.adjustableValues;
     this.$outer;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver, 10));
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(new JsGlslRenderer$UnifyingAdjustableUniform(this.$outer, item, surfaceCount));
+      var element = tmp$.next();
+      var pair = to(element.ordinal, new JsGlslRenderer$UnifyingAdjustableUniform(this.$outer, element, surfaceCount));
+      destination.put_xwzc9p$(pair.first, pair.second);
     }
     this.adjustableUniforms_edok6n$_0 = destination;
     this.uvCoordTexture_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$uvCoordTexture$lambda(this.$outer));
@@ -19158,11 +19633,11 @@
     };
   }
   function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_1(it) {
-    console.log('WebSocket error!', it);
+    console.error('WebSocket error!', it);
     return Unit;
   }
   function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2(it) {
-    console.log('WebSocket close!', it);
+    console.error('WebSocket close!', it);
     return Unit;
   }
   BrowserNetwork$link$ObjectLiteral.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
@@ -19203,6 +19678,7 @@
     interfaces: [Network]
   };
   function BrowserUdpProxy(link, address, port) {
+    BrowserUdpProxy$Companion_getInstance();
     this.udpListener_0 = null;
     this.tcpConnection = link.connectWebSocket_t0j9bj$(address, port, '/sm/udpProxy', this);
     this.connected = false;
@@ -19219,13 +19695,29 @@
     this.toSend.clear();
   };
   BrowserUdpProxy.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
-    var $receiver = new ByteArrayReader(bytes);
-    var op = $receiver.readByte();
-    if (op === toByte(unboxChar(Network$UdpProxy_getInstance().RECEIVE_OP) | 0)) {
-      var fromAddress = new BrowserUdpProxy$UdpProxyAddress($receiver.readBytes());
-      var fromPort = $receiver.readInt();
-      var data = $receiver.readBytes();
-      ensureNotNull(this.udpListener_0).receive_ytpeqp$(fromAddress, fromPort, data);
+    try {
+      if (bytes.length === 0)
+        return;
+      var $receiver = new ByteArrayReader(bytes);
+      var op = $receiver.readByte();
+      if (op === toByte(unboxChar(Network$UdpProxy_getInstance().RECEIVE_OP) | 0)) {
+        var fromAddress = new BrowserUdpProxy$UdpProxyAddress($receiver.readBytes());
+        var fromPort = $receiver.readInt();
+        var data = $receiver.readBytes();
+        this.log_0('UDP: Received ' + data.length + ' bytes ' + this.msgId_0(data) + ' from ' + fromAddress + ':' + fromPort);
+        ensureNotNull(this.udpListener_0).receive_ytpeqp$(fromAddress, fromPort, data);
+      }
+       else {
+        this.log_0('UDP: Huh? unknown op ' + op + ': ' + bytes);
+      }
+    }
+     catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        BrowserUdpProxy$Companion_getInstance().logger.error_nwdkmo$('Error receiving WebSocket command', e);
+        throw e;
+      }
+       else
+        throw e;
     }
   };
   BrowserUdpProxy.prototype.reset_67ozxy$ = function (tcpConnection) {
@@ -19260,18 +19752,24 @@
     }
     var tmp$ = this.$outer;
     var $receiver = new ByteArrayWriter();
+    this.$outer;
+    var this$BrowserUdpProxy = this.$outer;
     $receiver.writeByte_s8j3t7$(toByte(unboxChar(Network$UdpProxy_getInstance().SEND_OP) | 0));
     $receiver.writeBytes_mj6st8$(toAddress.bytes);
     $receiver.writeInt_za3lpa$(port);
     $receiver.writeBytes_mj6st8$(bytes);
+    this$BrowserUdpProxy.log_0('UDP: Sent ' + bytes.length + ' bytes ' + this$BrowserUdpProxy.msgId_0(bytes) + ' to ' + toAddress + ':' + port);
     tmp$.tcpConnectionSend_0($receiver.toBytes());
   };
   BrowserUdpProxy$UdpSocketProxy.prototype.broadcastUdp_3fbn1q$ = function (port, bytes) {
     var tmp$ = this.$outer;
     var $receiver = new ByteArrayWriter();
+    this.$outer;
+    var this$BrowserUdpProxy = this.$outer;
     $receiver.writeByte_s8j3t7$(toByte(unboxChar(Network$UdpProxy_getInstance().BROADCAST_OP) | 0));
     $receiver.writeInt_za3lpa$(port);
     $receiver.writeBytes_mj6st8$(bytes);
+    this$BrowserUdpProxy.log_0('UDP: Broadcast ' + bytes.length + ' bytes ' + this$BrowserUdpProxy.msgId_0(bytes) + ' to *:' + port);
     tmp$.tcpConnectionSend_0($receiver.toBytes());
   };
   BrowserUdpProxy$UdpSocketProxy.$metadata$ = {
@@ -19288,7 +19786,10 @@
     }
   };
   BrowserUdpProxy.prototype.log_0 = function (s) {
-    println(s);
+    println('[' + getTimeMillis().toString() + '] ' + s);
+  };
+  BrowserUdpProxy.prototype.msgId_0 = function (data) {
+    return 'msgId=' + ((data[0] & 255) * 256 | 0 | data[1] & 255);
   };
   function BrowserUdpProxy$UdpProxyAddress(bytes) {
     this.bytes = bytes;
@@ -19324,6 +19825,22 @@
   BrowserUdpProxy$UdpProxyAddress.prototype.copy_fqrh44$ = function (bytes) {
     return new BrowserUdpProxy$UdpProxyAddress(bytes === void 0 ? this.bytes : bytes);
   };
+  function BrowserUdpProxy$Companion() {
+    BrowserUdpProxy$Companion_instance = this;
+    this.logger = new Logger('BrowserUdpProxy');
+  }
+  BrowserUdpProxy$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrowserUdpProxy$Companion_instance = null;
+  function BrowserUdpProxy$Companion_getInstance() {
+    if (BrowserUdpProxy$Companion_instance === null) {
+      new BrowserUdpProxy$Companion();
+    }
+    return BrowserUdpProxy$Companion_instance;
+  }
   BrowserUdpProxy.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrowserUdpProxy',
@@ -19449,7 +19966,7 @@
   }
   function decodeQueryParams_0($receiver) {
     var $receiver_0 = split($receiver, ['&']);
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
     tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
@@ -19934,7 +20451,7 @@
     var triangle = new Triangle();
     var faceAreas = ArrayList_init();
     var $receiver_0 = panel.faces.faces;
-    var destination = ArrayList_init_1(collectionSizeOrDefault($receiver_0, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
     tmp$ = $receiver_0.iterator();
     while (tmp$.hasNext()) {
@@ -19942,7 +20459,7 @@
       var tmp$_0 = destination.add_11rb$;
       var tmp$_1;
       var $receiver_1 = item.vertexIds;
-      var destination_0 = ArrayList_init_1(collectionSizeOrDefault($receiver_1, 10));
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
       var tmp$_2;
       tmp$_2 = $receiver_1.iterator();
       while (tmp$_2.hasNext()) {
@@ -20004,7 +20521,7 @@
     this.edgeNeighbors_8be2vx$ = edgeNeighbors;
     this.geom_0.computeVertexNormals();
     var $receiver_5 = panel.lines;
-    var destination_1 = ArrayList_init_1(collectionSizeOrDefault($receiver_5, 10));
+    var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_5, 10));
     var tmp$_8;
     tmp$_8 = $receiver_5.iterator();
     while (tmp$_8.hasNext()) {
@@ -20012,7 +20529,7 @@
       var tmp$_9 = destination_1.add_11rb$;
       var lineGeo = new Geometry();
       var $receiver_6 = item_2.vertices;
-      var destination_2 = ArrayList_init_1(collectionSizeOrDefault($receiver_6, 10));
+      var destination_2 = ArrayList_init_0(collectionSizeOrDefault($receiver_6, 10));
       var tmp$_10;
       tmp$_10 = $receiver_6.iterator();
       while (tmp$_10.hasNext()) {
@@ -20032,7 +20549,7 @@
     this.mesh_0.name = 'Surface: ' + this.name;
     this.mesh_0.userData['VizPanel'] = this;
     this.scene_0.add(this.mesh_0);
-    var destination_3 = ArrayList_init_1(collectionSizeOrDefault(lines, 10));
+    var destination_3 = ArrayList_init_0(collectionSizeOrDefault(lines, 10));
     var tmp$_11;
     tmp$_11 = lines.iterator();
     while (tmp$_11.hasNext()) {
@@ -20129,7 +20646,7 @@
     this.vertexColorBufferAttr_0.dynamic = true;
     var rotator = new Rotator(new Vector3(0, 0, 1), vizPanel.panelNormal_0);
     var $receiver_0 = this.positions;
-    var destination = ArrayList_init_1($receiver_0.length);
+    var destination = ArrayList_init_0($receiver_0.length);
     var tmp$_1;
     for (tmp$_1 = 0; tmp$_1 !== $receiver_0.length; ++tmp$_1) {
       var item_0 = $receiver_0[tmp$_1];
@@ -20355,16 +20872,7 @@
     get: GadgetManager$Companion_getInstance
   });
   package$baaahs.GadgetManager = GadgetManager;
-  Object.defineProperty(Mapper$Detector, 'RED', {
-    get: Mapper$Detector$RED_getInstance
-  });
-  Object.defineProperty(Mapper$Detector, 'GREEN', {
-    get: Mapper$Detector$GREEN_getInstance
-  });
-  Object.defineProperty(Mapper$Detector, 'BLUE', {
-    get: Mapper$Detector$BLUE_getInstance
-  });
-  Mapper.Detector = Mapper$Detector;
+  Mapper.Session = Mapper$Session;
   Mapper.ReliableShaderMessageDeliverer = Mapper$ReliableShaderMessageDeliverer;
   Mapper.TimeoutException = Mapper$TimeoutException;
   Mapper.DeliveryAttempt = Mapper$DeliveryAttempt;
@@ -20968,6 +21476,9 @@
   Object.defineProperty(package$shows, 'GlslOtherShow', {
     get: GlslOtherShow_getInstance
   });
+  Object.defineProperty(package$shows, 'GlslRedBeatShow', {
+    get: GlslRedBeatShow_getInstance
+  });
   Object.defineProperty(package$shows, 'GlslSandbox45963Show', {
     get: GlslSandbox45963Show_getInstance
   });
@@ -21046,6 +21557,9 @@
   Object.defineProperty(package$shows, 'GlslSandboxShowTemplate', {
     get: GlslSandboxShowTemplate_getInstance
   });
+  GlslShow.DataSource = GlslShow$DataSource;
+  GlslShow.GadgetDataSource = GlslShow$GadgetDataSource;
+  GlslShow.BeatDataSource = GlslShow$BeatDataSource;
   package$shows.GlslShow = GlslShow;
   Object.defineProperty(package$shows, 'HeartbleatShow', {
     get: HeartbleatShow_getInstance
@@ -21158,6 +21672,9 @@
   BrowserNetwork.BrowserAddress = BrowserNetwork$BrowserAddress;
   package$net.BrowserNetwork = BrowserNetwork;
   BrowserUdpProxy.UdpSocketProxy = BrowserUdpProxy$UdpSocketProxy;
+  Object.defineProperty(BrowserUdpProxy, 'Companion', {
+    get: BrowserUdpProxy$Companion_getInstance
+  });
   package$net.BrowserUdpProxy = BrowserUdpProxy;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$sim.FakeMediaDevices = FakeMediaDevices;
