@@ -49,6 +49,12 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return bytes
     }
 
+    fun readNBytes(dest: ByteArray): ByteArray {
+        val bytes = bytes.copyInto(dest, offset, offset + dest.size)
+        offset += dest.size
+        return bytes
+    }
+
     /**
      * Reads up to as many bytes as are present in `buffer`, or as many bytes are available in the incoming byte array,
      * and returns the number of bytes actually read. Any unread incoming bytes are skipped.
