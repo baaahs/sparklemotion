@@ -8,10 +8,10 @@ precision mediump float;
 uniform float time;
 //uniform vec2 resolution;
 
-// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}
+// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 0.5, minValue: 0.0, maxValue: 1.0}
 uniform float mouseX;
 
-// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 1.0, minValue: 0.0, maxValue: 10.0}
+// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 0.5, minValue: 0.0, maxValue: 1.0}
 uniform float mouseY;
 
 //uniform vec2 mouse;
