@@ -54,8 +54,10 @@ abstract class PubSub {
         val listeners: MutableList<Listener> = mutableListOf()
 
         fun notify(jsonData: JsonElement, origin: Origin) {
-            data = jsonData
-            listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
+            if (jsonData != data) {
+                data = jsonData
+                listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
+            }
         }
     }
 
