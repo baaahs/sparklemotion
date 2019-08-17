@@ -21,6 +21,8 @@ import info.laht.threekt.objects.Mesh
 import info.laht.threekt.objects.Points
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.create
@@ -75,6 +77,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
 //            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
             button { i(classes = "fas fa-play"); onClickFunction = { clickedPlay() } }
             button { i(classes = "fas fa-pause"); onClickFunction = { clickedPause() } }
+            button { i(classes = "fas fa-redo"); onClickFunction = { redoFn?.invoke() } }
             button { i(classes = "fas fa-stop"); onClickFunction = { clickedStop() } }
             button {
                 i(classes = "fas fa-sign-in-alt")
@@ -130,11 +133,14 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
 
     private val playButton = screen.first<HTMLButtonElement>("fa-play")
     private val pauseButton = screen.first<HTMLButtonElement>("fa-pause")
+    private val redoButton = screen.first<HTMLButtonElement>("fa-redo")
 
     private val modelSurfaceInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
+
+    private var redoFn: (() -> Unit)? = null
 
     init {
         statusListener?.mapperStatusChanged(true)
@@ -162,9 +168,9 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             }
             checkProgress()
         } else if (commandProgress.isEmpty() && event.code == "KeyQ") {
-            updateCameraRotation(if (event.shiftKey) -0.025f else -0.1f)
-        } else if (commandProgress.isEmpty() && event.code == "KeyW") {
             updateCameraRotation(if (event.shiftKey) 0.025f else 0.1f)
+        } else if (commandProgress.isEmpty() && event.code == "KeyW") {
+            updateCameraRotation(if (event.shiftKey) -0.025f else -0.1f)
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
             cameraZRotation = 0f
         } else if (event.key.length == 1) {
@@ -623,6 +629,17 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         afterCtx.drawImage(renderBitmap, 0.0, 0.0)
     }
 
+    override fun setRedo(fn: (suspend () -> Unit)?) {
+        if (fn == null) {
+            redoFn = null
+        } else {
+            redoFn = null
+            redoButton.enabled(false)
+            GlobalScope.launch { fn() }
+        }
+        redoButton.enabled(fn != null)
+    }
+
     override fun showStats(total: Int, mapped: Int, visible: Int) {
         statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
     }
@@ -642,8 +659,12 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     private fun showPauseMode(isPaused: Boolean) {
-        pauseButton.style.opacity = if (isPaused) ".5" else "1"
-        playButton.style.opacity = if (!isPaused) ".5" else "1"
+        pauseButton.enabled(!isPaused)
+        playButton.enabled(isPaused)
+    }
+
+    private fun HTMLButtonElement.enabled(isEnabled: Boolean) {
+        style.opacity = if (isEnabled) "1" else ".5"
     }
 
     private fun clickedStop() {

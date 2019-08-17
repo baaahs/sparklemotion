@@ -65,8 +65,8 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 webSocketListener.receive(tcpConnection, bytes)
             }
 
-            webSocket.onerror = { console.log("WebSocket error!", it) }
-            webSocket.onclose = { console.log("WebSocket close!", it) }
+            webSocket.onerror = { console.error("WebSocket error!", it) }
+            webSocket.onclose = { console.error("WebSocket close!", it) }
 
             return tcpConnection
         }
