@@ -180,11 +180,14 @@ class Pinky(
             val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
             val pixelCount = dataFor.pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
 
-            val mappingMsg = BrainMappingMessage(
-                brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
-                Vector2F(0f, 0f), pixelCount, pixelLocations
-            )
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
+            if (msg.surfaceName != dataFor.surface.name) {
+                val mappingMsg = BrainMappingMessage(
+                    brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
+                    Vector2F(0f, 0f), pixelCount, pixelLocations
+                )
+                udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
+            }
+
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
         } ?: AnonymousSurface(brainId)
 
