@@ -4,7 +4,7 @@ import baaahs.Model
 import baaahs.Show
 import baaahs.ShowRunner
 
-object GlslSandbox56592Show : GlslShow("GlslSandbox 56592") {
+object GlslSandbox56592Show : GlslShow("Blue's Clues") {
     override val program = """
         
 
