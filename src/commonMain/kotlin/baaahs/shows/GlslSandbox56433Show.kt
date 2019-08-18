@@ -4,7 +4,7 @@ import baaahs.Model
 import baaahs.Show
 import baaahs.ShowRunner
 
-object GlslSandbox56433Show : GlslShow("GLSL Sandbox 56433") {
+object GlslSandbox56433Show : GlslShow("Spastic Rainbow") {
     override val program = """
 uniform float time;
 uniform vec2 mouse;

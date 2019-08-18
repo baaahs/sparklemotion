@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandboxDebugShow : GlslShow("GlslSandbox Debug (OpenGL)") {
+object GlslSandboxDebugShow : GlslShow("GLSL Hue Test Pattern") {
 
     override val program = """
 /*

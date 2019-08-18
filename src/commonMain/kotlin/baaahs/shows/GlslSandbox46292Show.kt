@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandbox46292Show : GlslShow("GlslSandbox 46292") {
+object GlslSandbox46292Show : GlslShow("Hypno-Swirl") {
 
     override val program = """
 

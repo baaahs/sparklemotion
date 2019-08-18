@@ -4,7 +4,7 @@ import baaahs.Model
 import baaahs.Show
 import baaahs.ShowRunner
 
-object GlslSandbox56479Show : GlslShow("GLSL Sandbox 56479") {
+object GlslSandbox56479Show : GlslShow("Poolside Delight") {
     override val program = """
 uniform float time;
 uniform vec2 resolution;

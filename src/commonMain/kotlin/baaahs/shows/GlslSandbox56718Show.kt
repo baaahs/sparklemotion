@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandbox56718Show : GlslShow("GLSL Sandbox 56718") {
+object GlslSandbox56718Show : GlslShow("Orange Tang") {
 
     override val program = """
 precision mediump float;

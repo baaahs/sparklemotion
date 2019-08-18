@@ -4,7 +4,7 @@ import baaahs.Model
 import baaahs.Show
 import baaahs.ShowRunner
 
-object GlslSandbox56573Show : GlslShow("GLSL Sandbox 56573") {
+object GlslSandbox56573Show : GlslShow("Sunset Delight") {
     override val program = """
         // Fireball
 // Awd
