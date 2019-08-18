@@ -10,7 +10,14 @@ import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.*
+import baaahs.proto.BrainHelloMessage
+import baaahs.proto.BrainMappingMessage
+import baaahs.proto.BrainShaderMessage
+import baaahs.proto.MapperHelloMessage
+import baaahs.proto.PingMessage
+import baaahs.proto.Ports
+import baaahs.proto.UseFirmwareMessage
+import baaahs.proto.parse
 import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import kotlinx.coroutines.GlobalScope
@@ -275,7 +282,8 @@ class Pinky(
             while (true) {
                val beatData = beatSource.getBeatData()
                 display.beat = beatData.beatWithinMeasure(clock).toInt()
-                display.bpm = beatData.bpm.toInt() //TODO: show fractions of bpm
+                display.bpm = beatData.bpm
+                display.beatConfidence = beatData.confidence
                 delay(10)
             }
         }
