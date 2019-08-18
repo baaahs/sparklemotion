@@ -10,16 +10,10 @@ import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
-import baaahs.proto.BrainHelloMessage
-import baaahs.proto.BrainMappingMessage
-import baaahs.proto.BrainShaderMessage
-import baaahs.proto.MapperHelloMessage
-import baaahs.proto.PingMessage
-import baaahs.proto.Ports
-import baaahs.proto.UseFirmwareMessage
-import baaahs.proto.parse
+import baaahs.proto.*
 import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
+import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,6 +31,9 @@ class Pinky(
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
+    val newShowAfterIdleSeconds = 300
+    val adjustShowAfterIdleSeconds = 120
+
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
 
@@ -59,6 +56,9 @@ class Pinky(
     private val showRunner =
         ShowRunner(model, selectedShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock)
 
+    private val selectedShowChannel: PubSub.Channel<String>
+    private var selectedNewShowAt = DateTime.now()
+
     private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
     private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector3F>>()
 
@@ -75,6 +75,11 @@ class Pinky(
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
 
         GlslShader.model_CHEAT = model
+
+        pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
+        selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
+            this.selectedShow = shows.find { it.name == selectedShow }!!
+        }
     }
 
     suspend fun run(): Show.Renderer {
@@ -83,15 +88,7 @@ class Pinky(
         display.listShows(shows)
         display.selectedShow = selectedShow
 
-        pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
-        val selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
-            this.selectedShow = shows.find { it.name == selectedShow }!!
-        }
-
-        display.onShowChange = {
-            this.selectedShow = display.selectedShow!!
-            selectedShowChannel.onChange(this.selectedShow.name)
-        }
+        display.onShowChange = { switchToShow(display.selectedShow!!) }
 
         while (true) {
             if (mapperIsRunning) {
@@ -109,8 +106,30 @@ class Pinky(
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
 
-            delay(50)
+            maybeChangeThingsIfUsersAreIdle()
+
+            delay(30)
         }
+    }
+
+    private fun maybeChangeThingsIfUsersAreIdle() {
+        val now = DateTime.now()
+        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
+        if (now.minus(selectedNewShowAt).seconds > newShowAfterIdleSeconds
+            && secondsSinceUserInteraction > newShowAfterIdleSeconds
+        ) {
+            switchToShow(shows.random()!!)
+            selectedNewShowAt = now
+        }
+
+        if (secondsSinceUserInteraction > adjustShowAfterIdleSeconds) {
+            gadgetManager.adjustSomething()
+        }
+    }
+
+    private fun switchToShow(nextShow: Show) {
+        this.selectedShow = nextShow
+        selectedShowChannel.onChange(nextShow.name)
     }
 
     internal fun updateSurfaces() {

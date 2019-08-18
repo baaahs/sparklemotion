@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.Gadget
 import kotlinx.serialization.Serializable
 import kotlin.js.JsName
+import kotlin.random.Random
 
 /** A gadget for picking a single color for a color palette. */
 @Serializable
@@ -18,4 +19,9 @@ data class ColorPicker(
     /** The selected color. */
     @JsName("color")
     var color: Color by updatable("color", initialValue, Color.serializer())
+
+    override fun adjustALittleBit() {
+        fun randomAmount() = Random.nextFloat() * .1f - .05f
+        color = Color(color.redF + randomAmount(), color.greenF + randomAmount(), color.blueF + randomAmount())
+    }
 }
