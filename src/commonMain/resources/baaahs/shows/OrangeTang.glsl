@@ -1,8 +1,6 @@
-package baaahs.shows
+// Orange Tang
+// From http://glslsandbox.com/e#56718
 
-object GlslSandbox56718Show : GlslShow("Orange Tang") {
-
-    override val program = """
 precision mediump float;
 
 uniform float time;
@@ -32,7 +30,4 @@ void main( void ) {
 		if((p.x*p.x+p.y*p.y) >= mouseY*4.0) break;
 	}
 	gl_FragColor = vec4(clamp( (mouseX+.5)*color*depth*0.05, 0.0, 1.0), 1.0 );
-}
-    """.trimIndent()
-
 }

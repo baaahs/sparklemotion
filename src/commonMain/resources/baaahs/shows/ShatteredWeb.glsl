@@ -1,8 +1,6 @@
-package baaahs.shows
+// Shattered Web
+// From http://glslsandbox.com/e#46315
 
-object GlslSandbox46315Show : GlslShow("Shattered Web") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -62,7 +60,4 @@ void main() {
     color.r += step(.98, f_st.x) + step(.98, f_st.y);
 
     gl_FragColor = vec4(color,1.0);
-}
-"""
-
 }

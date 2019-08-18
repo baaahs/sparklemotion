@@ -1,11 +1,6 @@
 package baaahs.shows
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.Model
-import baaahs.SheepModel
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.shaders.HeartShader
 import baaahs.shaders.SolidShader

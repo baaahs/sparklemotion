@@ -1,8 +1,6 @@
-package baaahs.shows
+// Gaia's Orgasm
+// From http://glslsandbox.com/e#46597
 
-object GlslSandbox46597Show : GlslShow("Gaia's Orgasm") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -44,7 +42,4 @@ void main( void ) {
 	color *= sqrt(1.5-0.5*length(uv));
 
 	gl_FragColor = vec4(color,1.0);
-}
-"""
-
 }

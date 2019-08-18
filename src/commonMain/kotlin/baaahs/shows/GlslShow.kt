@@ -1,12 +1,6 @@
 package baaahs.shows
 
-import baaahs.BeatData
-import baaahs.Clock
-import baaahs.Gadget
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-import baaahs.Surface
+import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
 import baaahs.shaders.GlslShader

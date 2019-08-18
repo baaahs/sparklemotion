@@ -1,8 +1,6 @@
-package baaahs.shows
+// Fire Dancer
+// From http://glslsandbox.com/e#55301
 
-object GlslSandbox55301Show : GlslShow("Fire Dancer") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -27,7 +25,4 @@ void main( void ) {
 	r = pow(r, 128.0);
 	gl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );
 //	gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);
-}
-"""
-
 }

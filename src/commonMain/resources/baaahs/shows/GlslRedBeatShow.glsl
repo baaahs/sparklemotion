@@ -1,8 +1,4 @@
-package baaahs.shows
-
-object GlslRedBeatShow : GlslShow("GlslRedBeatShow") {
-
-    override val program = """
+// GlslRedBeatShow
 
 // SPARKLEMOTION GADGET: MeasureStartTimeMs {name: "measureStartTime" }
 //uniform float measureStartTimeMs;
@@ -22,6 +18,4 @@ vec4 color(float marker) {
 #define SCALING .0002
 void main() {
     gl_FragColor = vec4(beat, 0., 0., 1.);
-}
-    """.trimIndent()
 }

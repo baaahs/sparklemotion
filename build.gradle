@@ -162,6 +162,7 @@ kotlin {
 compileKotlinJvm {
     dependsOn ":copySheepModel"
 }
+
 task copySheepModel(type: Copy) {
     from('src/commonMain/resources')
     into 'build/classes/kotlin/jvm/main'
@@ -193,6 +194,27 @@ jsProcessResources { t ->
 
     t.from('build/web/kotlin')
     t.from('node_modules/three/build') { include 'three.js' }
+
+    doLast {
+        createResourceFilesList(new File(buildDir, "processedResources/js/main"))
+    }
+}
+
+jvmProcessResources {
+    doLast {
+        createResourceFilesList(new File(buildDir, "processedResources/jvm/main"))
+    }
+}
+
+private static void createResourceFilesList(File baseDir) {
+    def list = []
+    baseDir.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+        def path = baseDir.relativePath(file)
+        if (path != "_RESOURCE_FILES_") {
+            list << path
+        }
+    }
+    new File(baseDir, "_RESOURCE_FILES_").text = list.sort().join("\n")
 }
 
 task installReactUImodules(type: Exec) {

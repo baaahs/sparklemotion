@@ -1,11 +1,6 @@
-package baaahs.shows
+// Zebra Madness
+// From http://glslsandbox.com/e#56511
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56511Show : GlslShow("Zebra Madness") {
-    override val program = """
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
@@ -67,6 +62,4 @@ void main( void ) {
 	//position = md(position);
 	gl_FragColor = map2(position, time/1.0); //circle(position,vec2(0.1,0.1));
 
-}
-    """.trimIndent()
 }

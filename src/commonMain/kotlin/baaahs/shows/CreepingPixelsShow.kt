@@ -1,6 +1,9 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Model
+import baaahs.Show
+import baaahs.ShowRunner
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.PixelShader
 

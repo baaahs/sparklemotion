@@ -1,12 +1,5 @@
-package baaahs.shows
-
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56592Show : GlslShow("Blue's Clues") {
-    override val program = """
-        
+// Blue's Clues
+// From http://glslsandbox.com/e#56592
 
 #ifdef GL_ES
 precision mediump float;
@@ -260,6 +253,4 @@ void main(void)
 {
     mainImage(gl_FragColor, gl_FragCoord.xy);
     gl_FragColor.a = 1.0;
-}
-    """.trimIndent()
 }
