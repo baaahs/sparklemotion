@@ -1,13 +1,6 @@
 package baaahs
 
-import org.deepsymmetry.beatlink.Beat
-import org.deepsymmetry.beatlink.BeatFinder
-import org.deepsymmetry.beatlink.DeviceAnnouncement
-import org.deepsymmetry.beatlink.DeviceAnnouncementListener
-import org.deepsymmetry.beatlink.DeviceFinder
-import org.deepsymmetry.beatlink.DeviceUpdate
-import org.deepsymmetry.beatlink.MasterListener
-import org.deepsymmetry.beatlink.VirtualCdj
+import org.deepsymmetry.beatlink.*
 
 /** Listens to the current Master CDJ's beat and tempo updates. */
 class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener {
