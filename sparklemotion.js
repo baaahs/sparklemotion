@@ -79,6 +79,7 @@
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var emptyMap = Kotlin.kotlin.collections.emptyMap_q3lmfv$;
   var zip = Kotlin.kotlin.collections.zip_45mdf7$;
+  var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
   var mapCapacity = Kotlin.kotlin.collections.mapCapacity_za3lpa$;
@@ -91,7 +92,6 @@
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toString_0 = Kotlin.toString;
   var L1 = Kotlin.Long.ONE;
-  var DateTime = $module$klock_root_klock.com.soywiz.klock.DateTime;
   var L50 = Kotlin.Long.fromInt(50);
   var L10 = Kotlin.Long.fromInt(10);
   var CoroutineName = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineName;
@@ -117,6 +117,7 @@
   var throwISE = Kotlin.throwISE;
   var mutableMapOf = Kotlin.kotlin.collections.mutableMapOf_qfcya0$;
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
+  var L30 = Kotlin.Long.fromInt(30);
   var json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
   var modules = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules;
@@ -1590,6 +1591,8 @@
   Gadget.prototype.updatable_t7zvzq$ = function (name, initialValue, serializer) {
     return new GadgetValueObserver(name, initialValue, serializer, this.state, Gadget$updatable$lambda(this));
   };
+  Gadget.prototype.adjustALittleBit = function () {
+  };
   Gadget.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Gadget',
@@ -1828,7 +1831,7 @@
     this.activeGadgetChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().activeGadgets, this.activeGadgets_0, GadgetManager$activeGadgetChannel$lambda);
     this.gadgets_0 = LinkedHashMap_init();
     this.priorRequestedGadgets_0 = ArrayList_init();
-    this.nextGadgetId_0 = 1;
+    this.lastUserInteraction = DateTime.Companion.now();
   }
   GadgetManager.prototype.clear = function () {
     var tmp$;
@@ -1854,6 +1857,12 @@
   function GadgetManager$sync$lambda$lambda_0(closure$gadget) {
     return function (updated) {
       closure$gadget.state.putAll_a2k3zr$(updated);
+      return Unit;
+    };
+  }
+  function GadgetManager$sync$lambda$lambda_1(closure$channel) {
+    return function (gadget1) {
+      closure$channel.onChange(gadget1.state);
       return Unit;
     };
   }
@@ -1883,7 +1892,9 @@
         var newGadget = new_0.second;
         var gadgetInfo = ensureNotNull(this.gadgets_0.get_11rb$(name_0));
         gadgetInfo.channel.replaceOnUpdate_qlkmfe$(GadgetManager$sync$lambda$lambda(newGadget));
+        gadgetInfo.gadgetData.gadget.unlisten(gadgetInfo.gadgetChannelListener);
         gadgetInfo.gadgetData.gadget = newGadget;
+        newGadget.listen(gadgetInfo.gadgetChannelListener);
         if (!equals(oldGadget.state, newGadget.state)) {
           gadgetInfo.channel.onChange(newGadget.state);
         }
@@ -1902,9 +1913,11 @@
         var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0));
         var gadgetData = new GadgetData(name_1, gadget_0, topic.name);
         this.activeGadgets_0.add_11rb$(gadgetData);
+        var gadgetChannelListener = GadgetManager$sync$lambda$lambda_1(channel);
         var $receiver = this.gadgets_0;
-        var value = new GadgetManager$GadgetInfo(topic, channel, gadgetData);
+        var value = new GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener);
         $receiver.put_xwzc9p$(name_1, value);
+        gadget_0.listen(gadgetChannelListener);
       }
       this.activeGadgetChannel_0.onChange(this.activeGadgets_0);
     }
@@ -1931,10 +1944,22 @@
   GadgetManager.prototype.findGadgetInfo_y4putb$ = function (name) {
     return this.gadgets_0.get_11rb$(name);
   };
-  function GadgetManager$GadgetInfo(topic, channel, gadgetData) {
+  GadgetManager.prototype.adjustSomething = function () {
+    var tmp$;
+    tmp$ = this.activeGadgets_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (Random.Default.nextFloat() < 0.1) {
+        element.gadget.adjustALittleBit();
+        element.gadget.changed();
+      }
+    }
+  };
+  function GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener) {
     this.topic = topic;
     this.channel = channel;
     this.gadgetData = gadgetData;
+    this.gadgetChannelListener = gadgetChannelListener;
   }
   GadgetManager$GadgetInfo.$metadata$ = {
     kind: Kind_CLASS,
@@ -5142,6 +5167,8 @@
     this.firmwareDaddy = firmwareDaddy;
     this.display = display;
     this.prerenderPixels_0 = prerenderPixels;
+    this.newShowAfterIdleSeconds = 300;
+    this.adjustShowAfterIdleSeconds = 120;
     this.storage_0 = new Storage(this.fs);
     this.mappingResults_0 = this.storage_0.loadMappingData_ld9ij$(this.model);
     this.link_0 = new FragmentingUdpLink(this.network.link());
@@ -5155,6 +5182,8 @@
     this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
     this.movingHeadManager_0 = new MovingHeadManager(this.fs, this.pubSub_0, this.model.movingHeads);
     this.showRunner_0 = new ShowRunner(this.model, this.selectedShow_0, this.gadgetManager_0, this.beatSource, this.dmxUniverse, this.movingHeadManager_0, this.clock);
+    this.selectedShowChannel_0 = null;
+    this.selectedNewShowAt_0 = DateTime.Companion.now();
     this.brainToSurfaceMap_CHEAT_0 = LinkedHashMap_init();
     this.surfaceToPixelLocationMap_CHEAT_0 = LinkedHashMap_init();
     this.brainInfos_0 = LinkedHashMap_init();
@@ -5163,6 +5192,18 @@
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.httpServer.listenWebSocket_brdh44$('/ws/mapper', Pinky_init$lambda(this));
     GlslShader$Companion_getInstance().model_CHEAT = this.model;
+    var tmp$ = this.pubSub_0;
+    var tmp$_0 = Topics_getInstance().availableShows;
+    var $receiver_0 = this.shows;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_1;
+    tmp$_1 = $receiver_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var item = tmp$_1.next();
+      destination.add_11rb$(item.name);
+    }
+    tmp$.publish_oiz02e$(tmp$_0, destination, Pinky_init$lambda_0);
+    this.selectedShowChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.shows.get_za3lpa$(0).name, Pinky_init$lambda_1(this));
     this.poolingRenderContext = new Pinky$PoolingRenderContext();
     this.lastSentAt = L0;
   }
@@ -5233,35 +5274,9 @@
         return instance.doResume(null);
     };
   }
-  function Pinky$run$lambda_0(it) {
-    return Unit;
-  }
-  function Pinky$run$lambda_1(this$Pinky) {
-    return function (selectedShow) {
-      var tmp$ = this$Pinky;
-      var $receiver = this$Pinky.shows;
-      var firstOrNull$result;
-      firstOrNull$break: do {
-        var tmp$_0;
-        tmp$_0 = $receiver.iterator();
-        while (tmp$_0.hasNext()) {
-          var element = tmp$_0.next();
-          if (equals(element.name, selectedShow)) {
-            firstOrNull$result = element;
-            break firstOrNull$break;
-          }
-        }
-        firstOrNull$result = null;
-      }
-       while (false);
-      tmp$.selectedShow_0 = ensureNotNull(firstOrNull$result);
-      return Unit;
-    };
-  }
-  function Pinky$run$lambda_2(this$Pinky, closure$selectedShowChannel) {
+  function Pinky$run$lambda_0(this$Pinky) {
     return function () {
-      this$Pinky.selectedShow_0 = ensureNotNull(this$Pinky.display.selectedShow);
-      closure$selectedShowChannel.onChange(this$Pinky.selectedShow_0.name);
+      this$Pinky.switchToShow_0(ensureNotNull(this$Pinky.display.selectedShow));
       return Unit;
     };
   }
@@ -5301,7 +5316,7 @@
       }
      while (true);
   };
-  function Pinky$run$lambda_3(this$Pinky_0) {
+  function Pinky$run$lambda_1(this$Pinky_0) {
     return function (continuation_0, suspended) {
       var instance = new Coroutine$Pinky$run$lambda_0(this$Pinky_0, continuation_0);
       if (suspended)
@@ -5330,20 +5345,7 @@
             launch(coroutines.GlobalScope, void 0, void 0, Pinky$run$lambda(this.$this));
             this.$this.display.listShows_3lsa6o$(this.$this.shows);
             this.$this.display.selectedShow = this.$this.selectedShow_0;
-            var tmp$ = this.$this.pubSub_0;
-            var tmp$_0 = Topics_getInstance().availableShows;
-            var $receiver = this.$this.shows;
-            var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-            var tmp$_1;
-            tmp$_1 = $receiver.iterator();
-            while (tmp$_1.hasNext()) {
-              var item = tmp$_1.next();
-              destination.add_11rb$(item.name);
-            }
-
-            tmp$.publish_oiz02e$(tmp$_0, destination, Pinky$run$lambda_0);
-            var selectedShowChannel = this.$this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.$this.shows.get_za3lpa$(0).name, Pinky$run$lambda_1(this.$this));
-            this.$this.display.onShowChange = Pinky$run$lambda_2(this.$this, selectedShowChannel);
+            this.$this.display.onShowChange = Pinky$run$lambda_0(this.$this);
             this.state_0 = 2;
             continue;
           case 1:
@@ -5369,7 +5371,7 @@
             this.$this.updateSurfaces_8be2vx$();
             this.$this.networkStats_0.reset_8be2vx$();
             this.state_0 = 5;
-            this.result_0 = time(Pinky$run$lambda_3(this.$this), this);
+            this.result_0 = time(Pinky$run$lambda_1(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -5377,8 +5379,9 @@
             var elapsedMs = this.result_0;
             this.$this.display.showFrameMs = elapsedMs.toInt();
             this.$this.display.stats = this.$this.networkStats_0;
+            this.$this.maybeChangeThingsIfUsersAreIdle_0();
             this.state_0 = 6;
-            this.result_0 = delay(L50, this);
+            this.result_0 = delay(L30, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -5407,6 +5410,21 @@
       return instance;
     else
       return instance.doResume(null);
+  };
+  Pinky.prototype.maybeChangeThingsIfUsersAreIdle_0 = function () {
+    var now = DateTime.Companion.now();
+    var secondsSinceUserInteraction = now.minus_mw5vjr$(this.gadgetManager_0.lastUserInteraction).seconds;
+    if (now.minus_mw5vjr$(this.selectedNewShowAt_0).seconds > this.newShowAfterIdleSeconds && secondsSinceUserInteraction > this.newShowAfterIdleSeconds) {
+      this.switchToShow_0(ensureNotNull(random(this.shows)));
+      this.selectedNewShowAt_0 = now;
+    }
+    if (secondsSinceUserInteraction > this.adjustShowAfterIdleSeconds) {
+      this.gadgetManager_0.adjustSomething();
+    }
+  };
+  Pinky.prototype.switchToShow_0 = function (nextShow) {
+    this.selectedShow_0 = nextShow;
+    this.selectedShowChannel_0.onChange(nextShow.name);
   };
   Pinky.prototype.updateSurfaces_8be2vx$ = function () {
     if (!this.pendingBrainInfos_0.isEmpty()) {
@@ -5875,6 +5893,31 @@
   function Pinky_init$lambda(this$Pinky) {
     return function (it) {
       return new MapperEndpoint(this$Pinky.storage_0);
+    };
+  }
+  function Pinky_init$lambda_0(it) {
+    return Unit;
+  }
+  function Pinky_init$lambda_1(this$Pinky) {
+    return function (selectedShow) {
+      var tmp$ = this$Pinky;
+      var $receiver = this$Pinky.shows;
+      var firstOrNull$result;
+      firstOrNull$break: do {
+        var tmp$_0;
+        tmp$_0 = $receiver.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          if (equals(element.name, selectedShow)) {
+            firstOrNull$result = element;
+            break firstOrNull$break;
+          }
+        }
+        firstOrNull$result = null;
+      }
+       while (false);
+      tmp$.selectedShow_0 = ensureNotNull(firstOrNull$result);
+      return Unit;
     };
   }
   Pinky.$metadata$ = {
@@ -8070,6 +8113,13 @@
       this.color_u6ly2p$_0.setValue_9rddgb$(this, ColorPicker$color_metadata, color);
     }
   });
+  function ColorPicker$adjustALittleBit$randomAmount() {
+    return Random.Default.nextFloat() * 0.1 - 0.05;
+  }
+  ColorPicker.prototype.adjustALittleBit = function () {
+    var randomAmount = ColorPicker$adjustALittleBit$randomAmount;
+    this.color = Color_init_0(this.color.redF + randomAmount(), this.color.greenF + randomAmount(), this.color.blueF + randomAmount());
+  };
   function ColorPicker$Companion() {
     ColorPicker$Companion_instance = this;
   }
@@ -8355,6 +8405,11 @@
       this.value_2xmiz9$_0.setValue_9rddgb$(this, Slider$value_metadata, value);
     }
   });
+  Slider.prototype.adjustALittleBit = function () {
+    var spread = this.maxValue - this.minValue;
+    var amount = Random.Default.nextFloat() * spread * 0.25 - spread * 0.125;
+    this.value = constrain(this.value + amount, this.minValue, this.maxValue);
+  };
   function Slider$Companion() {
     Slider$Companion_instance = this;
   }
@@ -15142,6 +15197,10 @@
   function toRadians(degrees) {
     return degrees * math.PI / 180;
   }
+  function constrain(value, minValue, maxValue) {
+    var a = Math_0.min(value, maxValue);
+    return Math_0.max(a, minValue);
+  }
   function Coroutine$randomDelay(timeMs_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -20787,6 +20846,7 @@
   package$baaahs.random_hhb8gh$ = random_0;
   package$baaahs.only_hxlr6s$ = only;
   package$baaahs.toRadians_mx4ult$ = toRadians;
+  package$baaahs.constrain_y2kzbl$ = constrain;
   package$baaahs.randomDelay_za3lpa$ = randomDelay;
   Object.defineProperty(Logger, 'Companion', {
     get: Logger$Companion_getInstance
