@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
@@ -119,7 +118,8 @@ class BridgedBeatSource(url: String) : BeatSource {
 
     override fun getBeatData(): BeatData = beatData
 
-    private val webSocket = WebSocket("ws://${url}/bridge/beatSource")
+    val l = window.location;
+    private val webSocket = WebSocket("${if (l.protocol == "https:") "wss:" else "ws:"}//$url/bridge/beatSource")
     private val json = Json(JsonConfiguration.Stable)
 
     init {

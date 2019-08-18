@@ -36,15 +36,18 @@ class GlslShader(
         private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
         private val gadgetPattern = Regex(
             "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
-                    "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
+                "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
         )
 
         val extraAdjustables = listOf(
             AdjustableValue("sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
                 json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }, 0),
-
             AdjustableValue("sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }, 1)
+                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }, 1),
+            AdjustableValue("sm_beat", "Beat", AdjustableValue.Type.FLOAT,
+                json { "name" to "beat" }, 2),
+            AdjustableValue("sm_startOfMeasure", "StartOfMeasure", AdjustableValue.Type.FLOAT,
+                json { "name" to "startOfMeasure"; }, 3)
         )
 
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
@@ -126,7 +129,6 @@ class GlslShader(
         override fun read(reader: ByteArrayReader) {
             adjustableValues.forEach { values[it.ordinal] = it.readValue(reader) }
         }
-
     }
 
     class AdjustableValue(
