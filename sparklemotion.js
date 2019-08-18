@@ -431,8 +431,6 @@
   GlslSandbox56592Show.prototype.constructor = GlslSandbox56592Show;
   GlslSandbox56594Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56594Show.prototype.constructor = GlslSandbox56594Show;
-  GlslSandbox56654Show.prototype = Object.create(GlslShow.prototype);
-  GlslSandbox56654Show.prototype.constructor = GlslSandbox56654Show;
   GlslSandbox56688Show.prototype = Object.create(GlslShow.prototype);
   GlslSandbox56688Show.prototype.constructor = GlslSandbox56688Show;
   GlslSandbox56705Show.prototype = Object.create(GlslShow.prototype);
@@ -441,6 +439,12 @@
   GlslSandbox56718Show.prototype.constructor = GlslSandbox56718Show;
   GlslSandboxDebugShow.prototype = Object.create(GlslShow.prototype);
   GlslSandboxDebugShow.prototype.constructor = GlslSandboxDebugShow;
+  GlslSandboxShow41496.prototype = Object.create(GlslShow.prototype);
+  GlslSandboxShow41496.prototype.constructor = GlslSandboxShow41496;
+  GlslSandboxShow41516.prototype = Object.create(GlslShow.prototype);
+  GlslSandboxShow41516.prototype.constructor = GlslSandboxShow41516;
+  GlslSandboxShow45693.prototype = Object.create(GlslShow.prototype);
+  GlslSandboxShow45693.prototype.constructor = GlslSandboxShow45693;
   GlslSandboxShowTemplate.prototype = Object.create(GlslShow.prototype);
   GlslSandboxShowTemplate.prototype.constructor = GlslSandboxShowTemplate;
   HeartbleatShow.prototype = Object.create(Show.prototype);
@@ -13507,7 +13511,7 @@
   }
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
-    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox46400Show_getInstance(), GlslSandbox46315Show_getInstance(), GlslSandbox46292Show_getInstance(), GlslSandbox46102Show_getInstance(), GlslSandbox45963Show_getInstance(), GlslSandbox46723Show_getInstance(), GlslSandbox46597Show_getInstance(), GlslSandbox46613Show_getInstance(), GlslSandbox56705Show_getInstance(), GlslSandbox56418Show_getInstance(), GlslSandbox56433Show_getInstance(), GlslSandbox56479Show_getInstance(), GlslSandbox56511Show_getInstance(), GlslSandbox56499Show_getInstance(), GlslSandbox56573Show_getInstance(), GlslSandbox56592Show_getInstance(), GlslRedBeatShow_getInstance(), GlslSandbox56718Show_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslSandbox46744Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance(), GlslSandboxDebugShow_getInstance()]);
+    this.allShows = listOf([SolidColorShow_getInstance(), GlslSandbox46400Show_getInstance(), GlslSandbox46315Show_getInstance(), GlslSandbox46292Show_getInstance(), GlslSandbox46102Show_getInstance(), GlslSandbox45963Show_getInstance(), GlslSandbox46723Show_getInstance(), GlslSandbox46597Show_getInstance(), GlslSandbox46613Show_getInstance(), GlslSandbox56705Show_getInstance(), GlslSandbox56418Show_getInstance(), GlslSandbox56433Show_getInstance(), GlslSandbox56479Show_getInstance(), GlslSandbox56511Show_getInstance(), GlslSandbox56499Show_getInstance(), GlslSandbox56573Show_getInstance(), GlslSandbox56592Show_getInstance(), GlslRedBeatShow_getInstance(), GlslSandbox56718Show_getInstance(), GlslSandboxShow41516_getInstance(), GlslSandboxShow41496_getInstance(), GlslSandboxShow45693_getInstance(), SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), LifeyShow_getInstance(), SimpleSpatialShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance(), GlslSandbox55301KotlinShow_getInstance(), GlslSandbox55301Show_getInstance(), GlslSandbox46744Show_getInstance(), GlslOtherShow_getInstance(), GlslSandbox56594Show_getInstance(), GlslSandbox56555Show_getInstance(), GlslSandboxDebugShow_getInstance()]);
   }
   AllShows$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -13686,7 +13690,7 @@
   }
   function GlslOtherShow() {
     GlslOtherShow_instance = this;
-    GlslShow.call(this, 'GlslSandbox Some Other One (OpenGL)');
+    GlslShow.call(this, "Devil's Playground");
     this.program_t4pxqn$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n#define PI 3.14159265359\n\nvoid main(void)\n{\n\tvec2 uv = gl_FragCoord.xy / resolution.xy;\n\tgl_FragColor = vec4(0);\n    gl_FragColor.r = sin(88.*uv.x) + sin(55.*uv.y) + 0.5+2.*sin(time*2.);\n}\n    ');
   }
   Object.defineProperty(GlslOtherShow.prototype, 'program', {
@@ -13730,7 +13734,7 @@
   }
   function GlslSandbox45963Show() {
     GlslSandbox45963Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 45963');
+    GlslShow.call(this, 'Evolution of Acid');
     this.program_hcru1t$_0 = '\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n#define time (time + 100.0)\n#define PI 3.14159265358979323846\n\nfloat box(vec2 _st, vec2 _size, float _smoothEdges){\n    _size = vec2(1.75)-_size*0.75;\n    vec2 aa = vec2(_smoothEdges*0.5);\n    vec2 uv = smoothstep(_size,_size+aa,_st);\n    uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);\n    return uv.x*uv.y;\n}\n\nvec2 tile(vec2 _st, float _zoom){\n    _st *= _zoom;\n    return fract(_st);\n}\n\nvec2 rotate2D(vec2 _st, float _angle, vec2 shift){\n    _st -= 0.5 + shift.x;\n    _st =  mat2(cos(_angle),-sin(_angle),\n                sin(_angle),cos(_angle)) * _st;\n    _st += 0.5 + shift.y;\n    return _st;\n}\n\nvoid main(void){\n\tvec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 5.0;\n\tvec2 vv = v; vec2 vvv = v;\n\tfloat tm = time*0.02;\n\tvec2 mspt = (vec2(\n\t\t\tsin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),\n\t\t\tcos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)\n\t\t\t)+15.0)*0.03;\n\n\n\tvec2 simple = (vec2(sin(tm), cos(tm)) + 1.5) * 0.15;\n\tfloat R = 0.0;\n\tfloat RR = 0.0;\n\tfloat RRR = 0.0;\n\tfloat a = (.6-simple.x)*6.2;\n\tfloat C = cos(a);\n\tfloat S = sin(a);\n\tvec2 xa=vec2(C, -S);\n\tvec2 ya=vec2(S, C);\n\tvec2 shift = vec2( 1.2, 1.62);\n\tfloat Z = 1.0 + simple.y*6.0;\n\tfloat ZZ = 1.0 + (simple.y)*6.2;\n\tfloat ZZZ = 1.0 + (simple.y)*6.9;\n\n\tvec2 b = gl_FragCoord.xy/(resolution);\n\tb = rotate2D(b, PI*Z, 0.05*xa);\n\t//b = vec2(box(b,vec2(1.1),0.95));\n\n\tfor ( int i = 0; i < 25; i++ ){\n\t\tfloat br = dot(b,b);\n\t\tfloat r = dot(v,v);\n\t\tif ( r > sin(tm) + 3.0 )\n\t\t{\n\t\t\tr = (sin(tm) + 3.0)/r ;\n\t\t\tv.x = v.x * r + 0.;\n\t\t\tv.y = v.y * r + 0.;\n\t\t}\n\t\tif ( br > 0.75 )\n\t\t{\n\t\t\tbr = (0.56)/br ;\n\t\t\t//v.x = v.x * r + 0.;\n\t\t\t//v.y = v.y * r + 0.;\n\t\t}\n\n\t\tR *= 1.05;\n\t\tR += br;//b.x;\n\t\tif(i < 24){\n\t\t\tRR *= 1.05;\n\t\t\tRR += br;//b.x;\n\t\t\tif(i <23){\n\t\t\t\tRRR *= 1.05;\n\t\t\t\tRRR += br;//b.x;\n\t\t\t}\n\t\t}\n\n\t\tv = vec2( dot(v, xa), dot(v, ya)) * Z + shift;\n\t\t//b = vec2( dot(b.xy, xa), dot(b.xy, ya)) * Z + shift;\n\t\t//b = rotate2D(vec2( dot(v, xa), dot(v, ya)), PI*Z, ya);\n\t\t//b = vec2( dot(b, xa), dot(b, ya));\n\t\tb = vec2(box(v,vec2(5.),0.9)) + shift * 0.42;\n\t}\n\tfloat c = ((mod(R,2.0)>1.0)?1.0-fract(R):fract(R));\n\tfloat cc = ((mod(RR,2.0)>1.0)?1.0-fract(RR):fract(RR));\n\tfloat ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));\n\tgl_FragColor = vec4(ccc,cc,c, 1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox45963Show.prototype, 'program', {
@@ -13752,7 +13756,7 @@
   }
   function GlslSandbox46102Show() {
     GlslSandbox46102Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46102');
+    GlslShow.call(this, 'Aquatic Flood');
     this.program_2ddywz$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nvoid main(void)\n{\n    vec2 uv = gl_FragCoord.xy / resolution.xy;\n    //uv.x *= resolution.x/resolution.y;\n    float dist = 0.;\n    uv.x = -2.+4.*uv.x;\n    uv.y = -1.+2.*uv.y;\n    // comment the next line to see the fully zoomed out view\n    uv *=pow(.1,4.+cos(.1*time));\n    uv.x += .275015;//;\n    uv.y += .0060445;//\n    //uv /= 5.;\n    //vec4 col =vec4(1.);\n    vec2 z = vec2(0.0);\n\n    int trap=0;\n    for(int i = 0; i < 400; i++){\n        if(dot(z,z)>4.){trap = i;break;}\n        dist = min( 1e20, dot(z,z))+cos(float(i)*12.+3.*time);\n        z = mat2(z,-z.y,z.x)*z + uv;\n    }\n    dist = sqrt(dist);\n\tfloat orb = sqrt(float(trap))/64.;\n    gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.);\n    //if(orb == 0.){gl_FragColor = vec4(0.);}\n    //gl_FragColor = (orb!=0. ? 1.-orb*vec4(9.,5.,3.,0.):vec4(0.));\n}\n';
   }
   Object.defineProperty(GlslSandbox46102Show.prototype, 'program', {
@@ -13774,7 +13778,7 @@
   }
   function GlslSandbox46292Show() {
     GlslSandbox46292Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46292');
+    GlslShow.call(this, 'Hypno-Swirl');
     this.program_583w2z$_0 = '\n\n#ifdef GL_ES\n    precision mediump float;\n#endif\n\n// System functions to define needed vars and such stuff\n#define COLORS(num) int colors = num; float segment = 1.0 / float(num); float offset = segment / 2.0;\n#define COLOR_START(col) color = gradient(col, col, 0.0, offset, value); vec3 start_col = col; vec3 last_col = col;\n#define COLOR_END() BLEED(last_col, start_col);\n#define COLOR_ACTUAL(col, step) color = gradient(color, col, offset + bleed, offset + segment - bleed, value); offset=offset+step; last_col = col;\n\n// User facing functions\n#define COLORL(col, length) BLEED(last_col, col); COLOR_ACTUAL(col, length);\n#define BLEED(col_l, col_r) color = gradient(color, col_l, offset - bleed, offset, value); color = gradient(color, col_r, offset, offset + bleed, value);\n#define COLOR(col) COLORL(col, segment);\nuniform float time;\nuniform vec2 resolution;\n\nvec3 hsv2rgb(vec3);\nvec4 gradient(vec4 base, vec3 stop, float start, float end, float grayscale);\nvec4 gradient(vec3 base, vec3 stop, float start, float end, float grayscale);\n\nconst float pi = 3.141592654;\n\n// Spiral settings\nconst int segments = 4;\nconst float fold = 6.0;\nconst float fold_k = 0.1;\nconst float delay = 15.0; // In seconds (?)\nconst float bleed_base = 0.01;\nconst float brightness = 0.5;\n\n// Colors are HSV\n// Some tips: V (third param) controls how much the color "glows"\n//   basically. This allows to, for example, mute other color\'s\n//   value, and make a nice effect of glow for one color.\nconst vec3 col1 = vec3(0.65, 0.8, 1.0); // Rich blue\nconst vec3 col2 = vec3(0.85, 1.0, 0.9); // Pink cotton\nconst vec3 col3 = vec3(1.00, 1.0, 0.8); // Red\nconst vec3 col4 = vec3(0.15, 1.0, 0.9); // Banana yellow\nconst vec3 col5 = vec3(0.45, 1.0, 0.9); // Minty green\n\nvoid main(void) {\n    vec2 uv = (gl_FragCoord.xy - 0.5 * resolution.xy) / resolution.yy;\n    float r = length(uv);           // Distance\n    float theta = atan(uv.y, uv.x); // Radial coord\n    float value = float(fract(\n        float(segments) / 2.0 * theta / pi +\n        fold * pow(r, fold_k) - float(segments) * time / delay\n    ));\n    vec4 color;\n    // c2 - bleed - c1 - bleed - c2\n    float bleed = bleed_base * (1.0 - r);\n    bleed = clamp(bleed, 0.0, bleed_base);\n\n    // COLORS(N) defines the amount of gradient segments for every segment.\n    // Mismatch of N and amount of COLOR() (including start) statements is undefined.\n\n    // To "enable" a preset, remove / after active one, and add it to one you want to use\n    /* Cotton candy "preset" */\n    COLORS(2);\n    COLOR_START(col1);\n    COLOR(col2);\n    /**/\n\n    /* Something I dunno *\n    COLORS(5);\n    COLOR_START(col1);\n    COLOR(col2);\n    COLOR(col3);\n    COLOR(col4);\n    COLOR(col5);\n    /**/\n\n    /* Black and yellow *\n    COLORS(2);\n    COLOR_START(vec3(0.0, 0.0, 0.1));\n    COLOR(vec3(0.121, 1.0, 1.0));\n    /**/\n\n    /* Glowing blue *\n    COLORS(4);\n    COLOR_START(vec3(0.5, 1.0, 1.0));\n    COLOR(vec3(0.5, 0.5, 0.2));\n    COLOR(vec3(0.55, 1.0, 0.8));\n    COLOR(vec3(0.5, 0.5, 0.2));\n    /**/\n\n\n    COLOR_END();\n    //\n\n    //MAYBE not needed idk\n    //color = gradient(color, col2, 0.75 + bleed, 1.00, value);/**/\n    gl_FragColor = color;\n}\n\nvec3 hsv2rgb(vec3 c) {\n    c.z = c.z * brightness;\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nvec4 gradient(vec4 base, vec3 stop, float start, float end, float grayscale) {\n    return mix(base, vec4(hsv2rgb(stop), 1.0), smoothstep(start, end, grayscale));\n}\n\nvec4 gradient(vec3 base, vec3 stop, float start, float end, float grayscale) {\n    return gradient(vec4(hsv2rgb(base), 1.0), stop, start, end, grayscale);\n}\n\n';
   }
   Object.defineProperty(GlslSandbox46292Show.prototype, 'program', {
@@ -13796,7 +13800,7 @@
   }
   function GlslSandbox46315Show() {
     GlslSandbox46315Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46315');
+    GlslShow.call(this, 'Shattered Web');
     this.program_enymn5$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvec2 random2( vec2 p ) {\n    return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);\n}\n\nvoid main() {\n    vec2 st = gl_FragCoord.xy/resolution.xy;\n    st.x *= resolution.x/resolution.y;\n    vec3 color = vec3(.0);\n\n    // Scale\n    st *= 5.;\n\n    // Tile the space\n    vec2 i_st = floor(st);\n    vec2 f_st = fract(st);\n\n    float m_dist = 10.;  // minimun distance\n    vec2 m_point;        // minimum point\n\n    for (int j=-1; j<=1; j++ ) {\n        for (int i=-1; i<=1; i++ ) {\n            vec2 neighbor = vec2(float(i),float(j));\n            vec2 point = random2(i_st + neighbor);\n            point = 0.5 + 0.5*sin(time + 6.2831*point);\n            vec2 diff = neighbor + point - f_st;\n            float dist = length(diff);\n\n            if( dist < m_dist ) {\n                m_dist = dist;\n                m_point = point;\n            }\n        }\n    }\n\n    // Assign a color using the closest point position\n    color += dot(m_point,vec2(.3,.6));\n\n    // Add distance field to closest point center\n    // color.g = m_dist;\n\n    // Show isolines\n    color -= abs(sin(40.0*m_dist))*0.07;\n\n    // Draw cell center\n    color += 1.-step(.05, m_dist);\n\n    // Draw grid\n    color.r += step(.98, f_st.x) + step(.98, f_st.y);\n\n    gl_FragColor = vec4(color,1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox46315Show.prototype, 'program', {
@@ -13818,7 +13822,7 @@
   }
   function GlslSandbox46400Show() {
     GlslSandbox46400Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46400');
+    GlslShow.call(this, 'Huearthquake');
     this.program_68hu3i$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n#define PI 3.14159265358\n#define TWO_PI 6.28318530718\n\nuniform vec2 resolution;\nuniform float time;\n\nvec3 colorA = vec3(0.149, 0.141, 0.912);\nvec3 colorB = vec3(1.000, 0.833, 0.224);\n\nvec3 rgb2hsb( in vec3 c ){\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz),\n                 vec4(c.gb, K.xy),\n                 step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r),\n                 vec4(c.r, p.yzx),\n                 step(p.x, c.r));\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)),\n                d / (q.x + e),\n                q.x);\n}\n\n//  Function from I\xF1igo Quiles\n//  https://www.shadertoy.com/view/MsS3Wc\nvec3 hsb2rgb( in vec3 c ){\n    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),\n                             6.0)-3.0)-1.0,\n                     0.0,\n                     1.0 );\n    rgb = rgb*rgb*(3.0-2.0*rgb);\n    return c.z * mix(vec3(1.0), rgb, c.y);\n}\n\n/* Coordinate and unit utils */\nvec2 coord(in vec2 p) {\n    p = p / resolution.xy;\n    // correct aspect ratio\n    if (resolution.x > resolution.y) {\n        p.x *= resolution.x / resolution.y;\n        p.x += (resolution.y - resolution.x) / resolution.y / 2.0;\n    } else {\n        p.y *= resolution.y / resolution.x;\n        p.y += (resolution.x - resolution.y) / resolution.x / 2.0;\n    }\n    // centering\n    p -= 0.5;\n    p *= vec2(-1.0, 1.0);\n    return p;\n}\n#define rx 1.0 / min(resolution.x, resolution.y)\n#define uv gl_FragCoord.xy / resolution.xy\n#define st coord(gl_FragCoord.xy)\n#define mx coord(u_mouse)\n\nmat2 rot(in float angle) {\n    return mat2(cos(angle), -sin(angle),\n                sin(angle),  cos(angle));\n}\n\nfloat wave(in vec2 pt, in float f, in float v) {\n    float r = length(pt);\n    float a = atan(pt.y, pt.x);\n    return sin(r * TWO_PI * f - v * time);\n}\n\nvoid main() {\n    vec2 pt = st;\n\n    float f = 10.0 * abs(sin(0.1 * time));\n    float v = 10.0;\n    float g = wave(pt, f, v);\n\n    for (float k = 0.0; k < 8.0; k++) {\n        float t = PI / 4.0 * k;\n        vec2 offset = 0.5 * vec2(cos(t), sin(t));\n        g += wave(pt + offset, f, v);\n    }\n\n    g *= 0.5;\n    g = step(g, 0.0);\n\n    vec3 rgb = mix(colorA, colorB, g);\n\n    gl_FragColor = vec4(rgb, 1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox46400Show.prototype, 'program', {
@@ -13840,7 +13844,7 @@
   }
   function GlslSandbox46597Show() {
     GlslSandbox46597Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46597');
+    GlslShow.call(this, "Gaia's Orgasm");
     this.program_94d0bn$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n//from https://www.shadertoy.com/view/4dl3zn\n\nvoid main( void ) {\n\n\tvec2 uv = -1.0 + 2.0*gl_FragCoord.xy / resolution.xy;\n\tuv.x *=  resolution.x / resolution.y;\n\n    // background\n\tvec3 color = vec3(0.8 + 0.2*uv.y);\n\n    // bubbles\n\tfor( int i=0; i<40; i++ )\n\t{\n        // bubble seeds\n\t\tfloat pha =      sin(float(i)*546.13+1.0)*0.5 + 0.5;\n\t\tfloat siz = pow( sin(float(i)*651.74+5.0)*0.5 + 0.5, 4.0 );\n\t\tfloat pox =      sin(float(i)*321.55+4.1) * resolution.x / resolution.y;\n\n        // buble size, position and color\n\t\tfloat rad = 0.1 + 0.5*siz;\n\t\tvec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*time*(0.2+0.8*siz),1.0));\n\t\tfloat dis = length( uv - pos );\n\t\tvec3  col = mix( vec3(0.94,0.3,0.0), vec3(0.1,0.4,0.8), 0.5+0.5*sin(float(i)*1.2+1.9));\n\t\t//    col+= 8.0*smoothstep( rad*0.95, rad, dis );\n\n        // render\n\t\tfloat f = length(uv-pos)/rad;\n\t\tf = sqrt(clamp(1.0-f*f,0.0,1.0));\n\t\tcolor -= col.zyx *(1.0-smoothstep( rad*0.95, rad, dis )) * f;\n\t}\n\n    // vigneting\n\tcolor *= sqrt(1.5-0.5*length(uv));\n\n\tgl_FragColor = vec4(color,1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox46597Show.prototype, 'program', {
@@ -13862,7 +13866,7 @@
   }
   function GlslSandbox46613Show() {
     GlslSandbox46613Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46613');
+    GlslShow.call(this, 'Yas Queen');
     this.program_n9ufnm$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n// EXAMPLE FROM https://www.shadertoy.com/view/lstfRH\n#define PI 3.141592653589793\n\nvec3 hsv2rgb(vec3 c) {\n  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\nvoid main( void ) {\n\n    vec3 col;\n    float x = gl_FragCoord.x + sin(time/PI) * resolution.x / 4.0;\n    float y = gl_FragCoord.y + cos(time/PI) * resolution.y / 2.0;\n    float hue = sin(x / resolution.x) + cos(y / resolution.y) + sin((x + y) / 500.0) + cos(sqrt(x * x + y * y) / 100.0);\n\n    col = hsv2rgb(vec3(hue + time/8.0, 1.0, mod(time, 1000.0)));\n\n    gl_FragColor = vec4(col, 1);\n}\n';
   }
   Object.defineProperty(GlslSandbox46613Show.prototype, 'program', {
@@ -13884,7 +13888,7 @@
   }
   function GlslSandbox46723Show() {
     GlslSandbox46723Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46723');
+    GlslShow.call(this, 'Farie Pulse');
     this.program_6s8vxe$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nfloat rand(int seed, float ray) {\n  return mod(sin(float(seed)*1.0+ray*1.0)*1.0, 1.0);\n}\n\nmat2 rotate2d(float _angle) {\n  return mat2(cos(_angle), -sin(_angle), sin(_angle), cos(_angle));\n}\n\nvoid main() {\n  vec2 uv = gl_FragCoord.xy / resolution.xy;\n  vec3 uv3 = vec3(sin(time*0.1), uv);\n  vec2 center = resolution / max(resolution.x, resolution.y) * 0.5;\n\n  //float a = rand(5234, uv.x)*6.2+time*5.0*(rand(2534, uv.y)-rand(3545, uv.x));\n  float a = distance(uv, center)*rand(5234, uv.x)-6.2*(rand(2534, uv.y));\n\n  float ac = cos(time*0.1-a);\n  float as = sin(time*0.1+a);\n  uv3 *= mat3(\n  ac, as, 0.0, -as, ac, 0.0, 0.0, 0.0, 1.0);\n  uv.x = uv3.x;\n  uv.y = uv3.y;\n  //uv = rotate2d(time*0.1)*uv;\n  uv = mod(uv, 0.5) * 2.0;\n  //uv.x = cos(time-a);\n  //uv.y = sin(time+a);\n  gl_FragColor = vec4(uv, cos(distance(uv, center)), 1.0);\n}\n\n';
   }
   Object.defineProperty(GlslSandbox46723Show.prototype, 'program', {
@@ -13906,7 +13910,7 @@
   }
   function GlslSandbox46744Show() {
     GlslSandbox46744Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 46744');
+    GlslShow.call(this, 'TV Test Pattern');
     this.program_ypvddr$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nfloat sq(float x) {\n\treturn x*x;\n}\n\nvoid main() {\n    vec2 p = gl_FragCoord.xy / resolution.x * 0.7;\n    vec3 col;\n    for(float j = 0.0; j < 3.0; j++){\n        for(float i = 1.0; i < 10.0; i++){\n            p.x += 0.1 / (i + j) * sin(i * 7.0 * p.y + time + cos((time / (1. * i)) * i + j));\n            p.y += 0.1 / (i + j)* cos(i * 1.0 * p.x + time + sin((time / (2. * i)) * i + j));\n        }\n        col[int(j)] = sin(75.0*sq(p.x)) + sin(75.0*sq(p.y));\n    }\n    gl_FragColor = vec4(col, 1.);\n}\n';
   }
   Object.defineProperty(GlslSandbox46744Show.prototype, 'program', {
@@ -13964,7 +13968,7 @@
   }
   function GlslSandbox55301Show() {
     GlslSandbox55301Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 55301 (OpenGL)');
+    GlslShow.call(this, 'Fire Dancer');
     this.program_q080n4$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 10.0, minValue: 0.0, maxValue: 100.0}\nuniform float scale;\n\nuniform float time;\nuniform vec2 resolution;\n\n#define N 6\n\nvoid main( void ) {\n\tvec2 v= (gl_FragCoord.xy-(resolution*0.5))/min(resolution.y,resolution.x)*scale;\n\tfloat t=time * 0.4,r=0.0;\n\tfor (int i=0;i<N;i++){\n\t\tfloat d=(3.14159265 / float(N))*(float(i)*5.0);\n\t\tr+=length(vec2(v.x,v.y))+0.01;\n\t\tv = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));\n\t}\n        r = (sin(r*0.1)*0.5)+0.5;\n\tr = pow(r, 128.0);\n\tgl_FragColor = vec4(r,pow(max(r-0.75,0.0)*4.0,2.0),pow(max(r-0.875,0.0)*8.0,4.0), 1.0 );\n//\tgl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, r, 1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox55301Show.prototype, 'program', {
@@ -13986,7 +13990,7 @@
   }
   function GlslSandbox56418Show() {
     GlslSandbox56418Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56418');
+    GlslShow.call(this, 'Fire Pulsation');
     this.program_6ckk3e$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\nvoid main( void ) {\n\tvec2 position = (gl_FragCoord.xy - resolution * 0.5) / resolution.yy;\n\tfloat th = atan(position.y, position.x) / (2.0 * 3.1415926) + 10.0;\n\tfloat dd = length(position);\n\tfloat d = 0.5 / dd + time;\n\n\tvec3 uv = vec3(th + d, th - d, th + sin(d));\n\tfloat a = 0.5 + cos(uv.x * 3.1415926 * 2.0) * 0.3;\n\tfloat b = 0.5 + cos(uv.y * 3.1415926 * 8.0) * 0.3;\n\tfloat c = 0.5 + cos(uv.z * 3.1415926 * 6.0) * 0.5;\n\tfloat f = abs(sin(time*2.0));\n\t\n\t\n\tvec3 color = mix(vec3(1.0, 0.8, 1.0-f), vec3(0.5*f, 0, 0), pow(a, 0.2)) * 3.;\n\tcolor += mix(vec3(0.8, 0.9, 1.0), vec3(0.1, 0.1, 0.2),  pow(b, 0.1)) * 0.75;\n\tcolor += mix(vec3(0.9, 0.8, 1.0), vec3(0.1, 0.2, 0.2),  pow(c, 0.1)) * 0.75;\n\tgl_FragColor = vec4(color * clamp(dd, 0.0, 1.0), 1.0);\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56418Show.prototype, 'program', {
@@ -14008,7 +14012,7 @@
   }
   function GlslSandbox56433Show() {
     GlslSandbox56433Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56433');
+    GlslShow.call(this, 'Spastic Rainbow');
     this.program_qzk0m9$_0 = trimIndent('\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n\n#define PI 3.14159265\n\nfloat rcos(float x,float phase){\n\treturn (cos((x+phase)*2.*PI)+.5);\t\n\n}\nhighp float rand(vec2 co)\n{\n    highp float a = 12.9898;\n    highp float b = 78.233;\n    highp float c = 43758.5453;\n    highp float dt= dot(co.xy ,vec2(a,b));\n    highp float sn= mod(dt,3.14);\n    return fract(sin(sn) * c);\n}\n\nvec3 rain(float x){\n\treturn vec3(rcos(x,0.),rcos(x,2./3.),rcos(x,1./3.));\n}\n\nvoid main() {\n\tvec2 st = gl_FragCoord.xy/resolution;\n\t\t\n\tfor(float i=0.;i<20.0;i++){\n\t\tvec2 pos=vec2(rand(vec2(i,i)),rand(vec2(i+1.,i+2.)));\n\t\t\n\t\tvec2 sst=st-vec2(mod(pos+mod(time,1.),1.));\n\t\n\t\tgl_FragColor.rgb+=(rain(rand(pos))*.4)/(length(sst)*60.0);\n\t}\n\t\n\tgl_FragColor.a=1.0;\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56433Show.prototype, 'program', {
@@ -14030,7 +14034,7 @@
   }
   function GlslSandbox56479Show() {
     GlslSandbox56479Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56479');
+    GlslShow.call(this, 'Poolside Delight');
     this.program_5ioz4v$_0 = trimIndent('\nuniform float time;\nuniform vec2 resolution;\n\n// 1\u6B21\u5143\u306E\u4E71\u6570\nfloat rand(float n)\n{\n\tfloat fl = floor(n);\n\tfloat fc = fract(n);\n\treturn mix(fract(sin(fl)), fract(sin(fl + 1.0)), fc);\n}\n\n// 2\u6B21\u5143\u306E\u4E71\u6570\nvec2 rand2(in vec2 p)\n{\n\treturn fract(\n\t\tvec2(\n\t\t\tsin(p.x * 1.32 + p.y * 54.077),\n\t\t\tcos(p.x * 91.32 + p.y * 9.077)\n\t\t)\n\t);\n}\n\n// iq\u6C0F\u306E\u30A6\u30A7\u30D6\u30DA\u30FC\u30B8\u3092\u53C2\u8003\u306B,\u30DC\u30ED\u30CE\u30A4\u30A8\u30C3\u30C2\u3092\u751F\u6210\u3059\u308B\n// https://www.iquilezles.org/www/articles/voronoilines/voronoilines.htm\nfloat voronoi(in vec2 v, in float e)\n{\n\tvec2 p = floor(v);\n\tvec2 f = fract(v);\n\t\n\tvec2 res = vec2(8.0);\n\t\n\tfor(int j = -1; j <= 1; ++j)\n\t\tfor(int i = -1; i <= 1; ++i)\n\t\t{\n\t\t\tvec2 b = vec2(i, j);\n\t\t\tvec2 r = b - f + rand2(p + b);\n\t\t\t\n\t\t\t// \u57FA\u76E4\u611F\u3092\u51FA\u3059\u305F\u3081,\u30C1\u30A7\u30D3\u30B7\u30D5\u8DDD\u96E2\u3092\u7528\u3044\u308B\n\t\t\tfloat d = max(abs(r.x), abs(r.y));\n\t\t\t\n\t\t\tif(d < res.x)\n\t\t\t{\n\t\t\t\tres.y = res.x;\n\t\t\t\tres.x = d;\n\t\t\t}\n\t\t\t\n\t\t\telse if(d < res.y)\n\t\t\t{\n\t\t\t\tres.y = d;\n\t\t\t}\n\t\t}\n\t\n\tvec2 c = sqrt(res);\n\tfloat dist = c.y - c.x;\n\t\n\t// \u6700\u7D42\u7684\u306B\u51FA\u529B\u3055\u308C\u308B\u306E\u306F,\u6307\u5B9A\u3055\u308C\u305F\u6FC3\u3055\u306E\u30A8\u30C3\u30C2\n\treturn 1.0 - smoothstep(0.0, e, dist);\n}\n\n// \u5E73\u9762\u4E0A\u306B\u304A\u3051\u308B\u56DE\u8EE2\nmat2 rotate(in float a)\n{\n\treturn mat2(cos(a), -sin(a), sin(a), cos(a));\n}\n\nvoid main(void)\n{\n\t// \u5EA7\u6A19\u3092\u6B63\u898F\u5316\u3059\u308B\n\tvec2 uv =  gl_FragCoord.xy / resolution * 4.0 - 2.0;\n\tuv.y *= resolution.y / resolution.x;\n\tuv *= rotate(0.3);\n\t\n\t// \u6700\u7D42\u7684\u306B\u51FA\u529B\u3059\u308B\u8272\u306E\u5024\n\tfloat value = 0.0;     \n\tfloat light = 0.0;\n\t\n\tfloat f = 1.5;    // UV\u5EA7\u6A19\u306B\u304B\u3051\u308B\u5024\n\tfloat a = 0.7;    // value\u306B\u52A0\u3048\u308B\u5024\u306E\u4FC2\u6570\n\t\n\t\n\tfor(int i = 0; i < 1; ++i)\n\t{\n\t\t// \u5C0E\u7DDA\u304C\u901A\u3063\u3066\u3044\u308B\u3088\u3046\u306B\u898B\u305B\u308B\u3084\u3064\n\t\tfloat v1 = voronoi(uv * f + 1.0 + time * 0.2 , 0.1);\n\t\tv1 = pow(v1, 2.0);\n\t\tvalue += a * rand(v1 * 5.5 + 0.1);\n\t\t\n\t\t// \u96FB\u6C17\u304C\u901A\u3063\u3066\u308B\u611F\u3058\u306B\u898B\u305B\u308B\u3084\u3064\n\t\tfloat v2 = voronoi(uv * f * 1.5 + 5.0 + time, 0.2) * 1.1;\n\t\tv2 = pow(v2, 5.0);\n\t\tlight += pow(v1 * (0.5 * v2), 1.5);\n\t\t\n\t\t// \u4FC2\u6570\u8AF8\u3005\u3092\u5909\u66F4\n\t\t//f *= 2.0;\n\t\t//a *= 0.6;\n\t}\n\t\n\t// \u51FA\u529B\u3059\u308B\u8272\u306E\u6C7A\u5B9A\n\tvec3 color;\n\tcolor += vec3(0.0, 0.5, 1.0) * value;\n\tcolor += vec3(0.4, 0.7, 1.0) * light;\n\t\n\t// \u8272\u3092\u51FA\u529B\u3059\u308B\n\tgl_FragColor = vec4(color, 1.0);\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56479Show.prototype, 'program', {
@@ -14052,7 +14056,7 @@
   }
   function GlslSandbox56499Show() {
     GlslSandbox56499Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56499');
+    GlslShow.call(this, "Picasso's Nightmare");
     this.program_fnaxzz$_0 = trimIndent('\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\nconst float n_circles = 800.0;\nconst float max_radius = 1.0;\nconst float min_radius = 0.5;\nconst float seed1 = 69.7;\nconst float seed2 = 82.4;\nconst float seed3 = 62.5;\n\nfloat rand(float x, float seed) {\n    return fract(sin(x) * seed);\n}\n\nfloat randFromTo(float x, float seed, float min, float max){\n\treturn rand(x, seed) * (max - min) + min;\n}\n\nbool drawCircle(vec2 pos, vec2 center, float radius, inout vec3 color) {\n\tvec2 translatedCenter = vec2(sin(time) * randFromTo(center.x, seed1, -1.8, 1.8) + center.x, sin(time) * randFromTo(center.y, seed1, -1., 1.) + center.y);\n\tfloat distance = distance(pos, translatedCenter);\n\tbool ret =  distance <= radius;\n\tif (ret) {\n\t\tfloat m = max (0.2, smoothstep(radius, radius / 3., distance));\n\t\tcolor = vec3(rand(center.x, seed1) * m,rand(center.y, seed2) * m, rand(center.x + center.y, seed3) * m);\n\t}\n\treturn ret;\n}\n\nvoid drawCircles(vec2 pos, float radiusMultiplier, inout vec3 color) {\n\tfor (float i=0.; i<n_circles; i++){\n\t\tif (drawCircle(pos, vec2(randFromTo(i, seed1, -1.8, 1.8), randFromTo(i, seed2, -1., 1.)), randFromTo(i, seed3, min_radius, max_radius) * radiusMultiplier, color)) {\n\t\t\tbreak;\n\t\t}\n\t}\n}\n\nvoid main( void ) {\n\tfloat minRes = min(resolution.x, resolution.y);\n\tvec2 pos = (gl_FragCoord.xy * 2. - resolution) / minRes;\n\tfloat radiusMultiplier = abs(sin(time + 4. * (pos.x * pos.y)));\n\tvec3 color = vec3(pos.y, pos.y, pos.y);\n\tdrawCircles(pos, radiusMultiplier, color);\n\tgl_FragColor = vec4(color, 1);\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56499Show.prototype, 'program', {
@@ -14074,7 +14078,7 @@
   }
   function GlslSandbox56511Show() {
     GlslSandbox56511Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56511');
+    GlslShow.call(this, 'Zebra Madness');
     this.program_elivuo$_0 = trimIndent('\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvec4 circle(vec2 p, vec2 c)\n{\n\tp-=c;\n    if (p.x*p.x+p.y*p.y<0.001) return vec4(1.0,1.0,1.0,1.0);\n    return vec4(0.0,0.0,0.0,0.0);\n}\n\n\nvec2 md(vec2 p) {\n  p.x = mod(p.x,0.2);\n  p.y = mod(p.y,0.2);\n  return p;\n}\nvec4 map0(vec2 p, float z)\n{\n   p.x/=z;\n   p.y/=z;\n   p = md(p);\n   return circle(p,vec2(0.1,0.1));\t\n}\nvec4 map1(vec2 p,float d, float m) {\n   d = mod(d,1.3);\n   \n   vec4 ca = map0(p,m*0.1+d);\n   vec4 c0 = map0(p,m*0.3+d);\n   vec4 c1 = map0(p,m*0.5+d);\n   vec4 c2 = map0(p,m*0.7+d);\n   vec4 c3 = map0(p,m*0.9+d);\n   vec4 c4 = map0(p,m*1.1+d);\n   vec4 c5 = map0(p,m*1.3+d);\n   return ca+c0+c1+c2+c3+c4+c5;\n}\nvec4 map2(vec2 p, float d)\n{\n\tvec4 c0 = map1(p,d,0.1);\n\tvec4 c1 = map1(p,d,0.2);\n\tvec4 c2 = map1(p,d,0.3);\n\tvec4 c3 = map1(p,d,0.4);\n\tvec4 c4 = map1(p,d,0.5);\n\treturn c0+c1+c2+c3+c4;\n}\n\nvoid main( void ) {\n\n\tvec2 position = ( gl_FragCoord.xy / resolution.yy ) ;\n\tposition.x-=0.6;\n\tposition.y-=0.5;\n\t\n\tfloat color = 0.0;\n\tcolor += sin( position.x * cos( time / 15.0 ) * 80.0 ) + cos( position.y * cos( time / 15.0 ) * 10.0 );\n\tcolor += sin( position.y * sin( time / 10.0 ) * 40.0 ) + cos( position.x * sin( time / 25.0 ) * 40.0 );\n\tcolor += sin( position.x * sin( time / 5.0 ) * 10.0 ) + sin( position.y * sin( time / 35.0 ) * 80.0 );\n\tcolor *= sin( time / 10.0 ) * 0.5;\n\n\t//position = md(position);\n\tgl_FragColor = map2(position, time/1.0); //circle(position,vec2(0.1,0.1));\n\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56511Show.prototype, 'program', {
@@ -14096,7 +14100,7 @@
   }
   function GlslSandbox56555Show() {
     GlslSandbox56555Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56555 (OpenGL)');
+    GlslShow.call(this, 'Garden Party');
     this.program_jce69s$_0 = '\n/* lame-ass tunnel by kusma */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvoid main( void ) {\n\tvec2 position = (gl_FragCoord.xy - resolution * 0.5) / resolution.yy;\n\tfloat th = atan(position.y, position.x) / (2.0 * 3.1415926);\n\tth += mod(time*0.2, 1.0);\n\tfloat dd = length(position)+0.2*sin(th*2.0*3.1415926*6.0)*length(position);\n\tdd = pow(dd,1.0);\n\tfloat d = 0.5 / dd + 1.4*time;\n\n\tvec3 uv = vec3(th + d, th - d, th + sin(d));\n\tfloat a = 0.5 + cos(uv.x * 3.1415926 * 2.0) * 0.3;\n\tfloat b = 0.5 + cos(uv.y * 3.1415926 * 8.0) * 0.3;\n\tfloat c = 0.5 + cos(uv.z * 3.1415926 * 6.0) * 0.5;\n\tfloat f = abs(sin(time*2.0));\n\t\n\t\n\tvec3 color = mix(vec3(1.0, 0.8, 1.0-f), vec3(0.5*f, 0, 0), pow(a, 0.2)) * 3.;\n\tcolor += mix(vec3(0.8, 0.9, 1.0), vec3(0.1, 0.1, 0.2),  pow(b, 0.1)) * 0.75;\n\tcolor += mix(vec3(0.9, 0.8, 1.0), vec3(0.1, 0.2, 0.2),  pow(c, 0.1)) * 0.75;\n\tgl_FragColor = vec4(color * clamp(dd, 0.0, 1.0), 1.0);\n}\n';
   }
   Object.defineProperty(GlslSandbox56555Show.prototype, 'program', {
@@ -14118,7 +14122,7 @@
   }
   function GlslSandbox56573Show() {
     GlslSandbox56573Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56573');
+    GlslShow.call(this, 'Sunset Delight');
     this.program_nseccc$_0 = trimIndent('\n        // Fireball\n// Awd\n// @AlexWDunn\n//mod by an+\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform vec2 resolution;\nuniform float time;\n//uniform vec2 mouse;\nuniform float zoom;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseY;\n\n#define saturate(oo) clamp(oo, 0.0, 1.0)\n\n// Quality Settings\n#define MarchSteps 6\n\n// Scene Settings\n#define ExpPosition vec3(0.0)\n#define Radius 2.0\n#define Background vec4(0.1, 0.0, 0.0, 1.0)\n\n// Noise Settings\n#define NoiseSteps 4\n#define NoiseAmplitude 0.1\n#define NoiseFrequency 2.2\n#define Animation vec3(0.0, .0, 0.5)\n\n// Colour Gradient\n#define Color1 vec4(0.0, 0.0, 0.0, 1.0)\n#define Color2 vec4(.0, .0, 1.0, 1.0)\n#define Color3 vec4(1.0, .0, 0., 1.0)\n#define Color4 vec4(0.4, 0.8, 0., 1.0)\n\n\n\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }\nvec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }\n\nfloat snoise(vec3 v)\n{\n\tconst vec2  C = vec2(1.0/6.0, 1.0/3.0);\n\tconst vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n\t// First corner\n\tvec3 i  = floor(v + dot(v, C.yyy));\n\tvec3 x0 = v - i + dot(i, C.xxx);\n\n\t// Other corners\n\tvec3 g = step(x0.yzx, x0.xyz);\n\tvec3 l = 1.0 - g;\n\tvec3 i1 = min(g.xyz, l.zxy);\n\tvec3 i2 = max(g.xyz, l.zxy);\n\tvec3 x1 = x0 - i1 + C.xxx;\n\tvec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n\tvec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n\t// Permutations\n\ti = mod289(i);\n\tvec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n\t// Gradients: 7x7 points over a square, mapped onto an octahedron.\n\t// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n\tfloat n_ = 0.142857142857; // 1.0/7.0\n\tvec3  ns = n_ * D.wyz - D.xzx;\n\tvec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n\tvec4 x_ = floor(j * ns.z);\n\tvec4 y_ = floor(j - 7.0 * x_);    // mod(j,N)\n\n\tvec4 x = x_ *ns.x + ns.yyyy;\n\tvec4 y = y_ *ns.x + ns.yyyy;\n\n\tvec4 h = 1.0 - abs(x) - abs(y);\n\tvec4 b0 = vec4(x.xy, y.xy);\n\tvec4 b1 = vec4(x.zw, y.zw);\n\n\tvec4 s0 = floor(b0) * 2.0 + 1.0;\n\tvec4 s1 = floor(b1) * 2.0 + 1.0;\n\tvec4 sh = -step(h, vec4(0.0));\n\n\tvec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;\n\tvec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;\n\n\tvec3 p0 = vec3(a0.xy, h.x);\n\tvec3 p1 = vec3(a0.zw, h.y);\n\tvec3 p2 = vec3(a1.xy, h.z);\n\tvec3 p3 = vec3(a1.zw, h.w);\n\n\t//Normalise gradients\n\tvec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n\n\tp0 *= norm.x;\n\tp1 *= norm.y;\n\tp2 *= norm.z;\n\tp3 *= norm.w;\n\n\t// Mix final noise value\n\tvec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n\tm = m * m;\n\n\treturn 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));\n}\n\nfloat Turbulence(vec3 position, float minFreq, float maxFreq, float qWidth)\n{\n\tfloat value = 0.0;\n\tfloat cutoff = clamp(0.5/qWidth, 0.0, maxFreq);\n\tfloat fade;\n\tfloat fOut = minFreq;\n\n\tfor(int i=NoiseSteps ; i>=0 ; i++)\n\t{\n\t\tif(fOut >= 0.5 * cutoff) break;\n\n\t\tfOut *= 2.0;\n\t\tvalue += abs(snoise(position * fOut))/fOut;\n\t}\n\n\tfade = clamp(2.0 * (cutoff-fOut)/cutoff, 0.0, 1.0);\n\tvalue += fade * abs(snoise(position * fOut))/fOut;\n\n\treturn 1.0-value;\n}\n\nfloat SphereDist(vec3 position)\n{\n\treturn length(position - ExpPosition) - Radius;\n}\n\nvec4 Shade(float distance)\n{\n\tfloat c1 = saturate(distance*5.0 + 0.5);\n\tfloat c2 = saturate(distance*5.0);\n\tfloat c3 = saturate(distance*3.4 - 0.5);\n\t\n\tvec4 a = mix(Color1,Color2, c1);\n\tvec4 b = mix(a,     Color3, c2);\n\treturn \t mix(b,     Color4, c3);\n}\n\n\n// Draws the scene\nfloat RenderScene(vec3 position, out float distance)\n{\n\tfloat noise = Turbulence(position * NoiseFrequency + Animation*time, 0.1, 1.5, 0.03) * NoiseAmplitude;\n\tnoise = saturate(abs(noise));\n\tdistance = SphereDist(position) - noise;\n\t\t\n\treturn noise;\n}\n\n// Basic ray marching method.\nvec4 March(vec3 rayOrigin, vec3 rayStep)\n{\n\tvec3 position = rayOrigin;\n\t\n\tfloat distance;\n\tfloat displacement;\n\t\n\tfor(int step = MarchSteps; step >=0  ; --step)\n\t{\n\t\tdisplacement = RenderScene(position, distance);\n\t\n\t\tif(distance < 0.05) break;\n\t\t\n\t\tposition += rayStep * distance;\n\t}\n\treturn mix(Shade(displacement), Background, float(distance >= 0.5));\n}\n\nbool IntersectSphere(vec3 ro, vec3 rd, vec3 pos, float radius, out vec3 intersectPoint)\n{\n\tvec3 relDistance = (ro - pos);\n\t\n\tfloat b = dot(relDistance, rd);\n\tfloat c = dot(relDistance, relDistance) - radius*radius;\n\tfloat d = b*b - c;\n\t\n\tintersectPoint = ro + rd*(-b - sqrt(d));\n\t\n\treturn d >= 0.0;\n}\n\nvoid main(void)\n{\n\tvec2 p = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;\n\t\n\tp.x *= resolution.x/resolution.y;\n\n\tfloat rotx = mouseY * 4.0;\n\tfloat roty = -mouseX * 4.0;\n\tfloat zoom = 5.0;\n\n\t// camera\n\tvec3 ro = zoom * normalize(vec3(cos(roty), cos(rotx), sin(roty)));\n\tvec3 ww = normalize(vec3(0.0, 0.0, 0.0) - ro);\n\tvec3 uu = normalize(cross( vec3(0.0, 1.0, 0.0), ww));\n\tvec3 vv = normalize(cross(ww, uu));\n\tvec3 rd = normalize(p.x*uu + p.y*vv + 4.5*ww);\n\n\tvec4 col = Background;\n\n\tvec3 origin;\n\t\n\tif(IntersectSphere(ro, rd, ExpPosition, Radius + NoiseAmplitude*6.0, origin))\n\t{\n\t\tcol = March(origin, rd);\n\t}\n\t\n\tgl_FragColor = col;\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56573Show.prototype, 'program', {
@@ -14140,7 +14144,7 @@
   }
   function GlslSandbox56592Show() {
     GlslSandbox56592Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56592');
+    GlslShow.call(this, "Blue's Clues");
     this.program_yfpo13$_0 = trimIndent('\n        \n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\n// Sphere tracer by mzeo\n//\n// inspired by http://www.youtube.com/watch?v=kuesTvUYsSc#t=377\n//\n// waves by @hintz\n\n#ifdef GL_ES\nprecision mediump float;\nconst vec3 df = vec3(0.10, 0.0, 0.0);\n#else\nconst vec3 df = vec3(0.01, 0.0, 0.0);\n#endif\n\n\n#define AUTO_CAMERA\n\n// input\n\n// Constants\n// Camera\nconst vec3 origin = vec3(0, 0, 0);\nconst int steps = 128;\nconst vec3 sun = vec3(1.0, .5, -1.0);\n\nconst int miterations = 32;\n\n// Ball\nstruct Ball \n{\n\tvec3 pos;\n\tfloat size;\n};\n\nconst Ball ball = Ball(vec3(0, 0, 5), 0.5);\n\nstruct Balls\n{\n\tvec3 dir;\n\tvec3 p;\n\tfloat dist;\n};\n\t\nconst Balls balls = Balls(vec3(1, 0, 0), vec3(0, 0, 0), 1.0);\n\n// Floor\n\nstruct Plane \n{\n\tvec3 n;\n\tfloat d;\n};\n\t\nconst Plane plane = Plane(vec3(0, 1, 0), -1.0);\n\n// Distance\nstruct Dist\n{\n\tfloat dist;\n\tint id;\n};\n\n\t\nDist and(Dist a, Dist b)\n{\n\tif (a.dist < b.dist) \n\t{\n\t\treturn a;\n\t}\n\t\n\treturn b;\n}\n\nDist fBall(Ball ball, vec3 p) \n{\n\treturn Dist(length(ball.pos - p) - ball.size, 0);\n}\n\nBall get(Balls balls, float t) \n{\n\tfloat a = abs(mod(t, 6.0) - 3.0);\n\tvec3 p = balls.p + balls.dir * t * balls.dist + a * a * vec3(0, -0.15, 0);\n\treturn Ball(p, ball.size);\n}\n\nDist fBalls(Balls balls, vec3 p) \n{\n\tfloat t = dot(p - balls.p, balls.dir) / balls.dist;\n\tfloat t0 = t - fract(t + fract(iTime) * 2.0);\n\tfloat t1 = t0 + 1.0;\n\n\treturn and(\n\t\tfBall(get(balls, t0), p),\n\t\tfBall(get(balls, t1), p));\n}\n\nDist fPlane(Plane plane, vec3 p)\n{\n\treturn Dist(dot(plane.n, p) - plane.d - 0.4*cos(length(p.xz) - iTime), 1);\n}\n\nDist f(vec3 p) \n{\n\treturn and(\n\t\tfBalls(balls, p),\n\t\tfPlane(plane, p));\n}\n\nvec3 grad(vec3 p) \n{\n\tfloat f0 = f(p).dist;\n\n\treturn normalize(vec3(\n\t\tf(p + df.xyz).dist,\n\t\tf(p + df.yxz).dist,\n\t\tf(p + df.yzx).dist) - f0);\n}\n\nfloat mandel(vec2 c)\n{\n\tvec2 z = c;\n\n\tfor(int i = 0; i < miterations; ++i)\n\t{\n\t\tz = vec2(z.x*z.x - z.y*z.y, 1.5*z.x*z.y) + c;\n\t\tif (length(z) > 40.0) return float(i) / float(miterations);\n\t}\n\t\n\treturn 0.0;\n}\n\nvec3 floorTexture(vec3 p) \n{\n\tmat2 rot = mat2(vec2(1, 1), vec2(1, -1));\n\tvec2 c = rot * (p.xz + vec2(-0.7, -1.0)) * 0.2;\n\tfloat i = mandel(c);\n\treturn clamp(vec3(i * 10.0, i * i *10.0, i*i*i*5.0).zyx, vec3(0,0,0), vec3(2,2,2));\n}\n\n\nvec4 shade(vec3 p, vec3 ray, int id) \n{\n\tvec3 n = grad(p);\n\tfloat diffuse = clamp(dot(normalize(sun), n), 0.0, 1.0);\n\n\tvec3 color;\n\tfloat ref;\n\n\tif (id == 0) \n\t{\n\t\tcolor = vec3(0,1,0);\n\t\tref = 0.1;\n\t} \n\telse \n\t{\n\t\tcolor = floorTexture(p);\n\t\tref = 0.5;\n\t}\n\n\treturn vec4(color * diffuse, 1) * ref;\n}\n\nvec4 combine(vec4 a, vec4 b) \n{\n\treturn a + b * (1.0 - a.w); \n}\n\nvec4 sky(vec3 ray) \n{\n\tfloat sun = dot(ray, normalize(sun));\n\tsun = (sun > 0.0) ? pow(sun, 150.0) * 3.0 : 0.0;\n\tfloat horizon = 1.0 - abs(ray.y);\n\tvec3 blue = vec3(0.1, 0.3, 0.6);\n\tvec3 red = vec3(0.6, 0.3, 0.) * 2.0;\n\treturn vec4(vec3(0.9, 0.8, 0.5) * sun + blue * horizon + red * pow(horizon, 8.0), 1);\n}\n\nvec4 trace(vec3 origin, vec3 ray) \n{\n\tvec3 p = origin;\n\tDist dist = Dist(10.0, 2);\n\tvec4 result = vec4(0, 0, 0, 0);\n\n\tfor(int i = 0; i < steps; ++i) \n\t{\n\t\tdist = f(p);\n\t\tif (dist.dist > 0.01) \n\t\t{ \n\t\t\tp += ray * dist.dist;\n\t\t\tfloat absorb = exp(-dist.dist * 0.05);\n\t\t\tvec4 s = sky(ray) * (1.0 - absorb);\n\t\t\t\n\t\t\tresult = combine(result, s);\n\t\t}\n\t\telse if (result.w < 0.99) \n\t\t{\n\t\t\tvec3 n = grad(p);\n\t\t\tvec4 s = shade(p, ray, dist.id);\n\t\t\tray = reflect(ray, n);\n\t\t\tp += n * 0.01;\n\t\t\t\n\t\t\tresult = combine(result, s);\n\t\t} \n\t\telse \n\t\t{\n\t\t\tbreak;\n\t\t}\n\t}\n\n\treturn combine(result, sky(ray));\n}\nvoid mainImage(out vec4 fragColor,in vec2 fragCoord)\n{\n\tfloat scale = 2.0 / max(iResolution.x, iResolution.y);\n\tvec3 ray = vec3((fragCoord.xy - iResolution.xy / 2.0) * scale, 1);\n\n//#ifdef AUTO_CAMERA\n\tfloat yaw = cos(iTime) * -0.25 + 0.1;\n\tfloat angle = iTime * 0.5;\n//#else\n\t//float yaw = iMouse.y - 0.15;\n\t//float angle = iMouse.x * 8.0;\n//#endif\n\t\n\tvec3 from = (vec3(sin(angle), 0, cos(angle)) * cos(yaw) + vec3(0, sin(yaw) * 1.0, 0)) * 5.0; \n\t//vec3 from = origin + vec3((iMouse.xy - vec2(0.5,0.0)) * vec2(15.0, 3.0), -5);\n\tvec3 to = vec3(0, -1, 0);\n\tvec3 up = vec3(0, 1, 0);\n\tvec3 dir = normalize(to - from);\n\tvec3 left = normalize(cross(up, dir));\n\tmat3 rot = mat3(left, cross(dir, left), dir);\n\n\tfragColor = trace(from, rot * normalize(ray));\n}\n// --------[ Original ShaderToy ends here ]---------- //\n\nvoid main(void)\n{\n    mainImage(gl_FragColor, gl_FragCoord.xy);\n    gl_FragColor.a = 1.0;\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56592Show.prototype, 'program', {
@@ -14162,7 +14166,7 @@
   }
   function GlslSandbox56594Show() {
     GlslSandbox56594Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56594 (OpenGL)');
+    GlslShow.call(this, 'Blue Steel');
     this.program_hppwyt$_0 = '\n/*\n * Original shader from: https://www.shadertoy.com/view/wt2GWK\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\n#define t iTime\n\nvec2 hash22(vec2 p) \n{\n    return fract(sin(vec2(dot(p,vec2(263.135,198.742)),dot(p,vec2(624.235,321.217))))*13.635); \n}\n\nfloat vorohearts( vec2 x)\n{\n    vec2 n = floor(-x);\n    vec2 f = fract(-x);\n    \n\tfloat md = 1.0;\n    \n    for( int j=-1; j<=3; j++ )\n\t{\n    \tfor( int i=-1; i<=3; i++ )\n    \t{\n        \tvec2  g = vec2(float(i), float(j));\n        \tvec2  o = hash22( n + g );\n\t    \tvec2  r = g - f + (.5+.5*sin(t+o*6.28));\n    \t\tr.x *= .8*(1.+sin(.5+sin(6.*t))*.03);\n    \t\tr.y *= .95+sin(1.5+sin(3.*t))*.07;\n    \t\tr.y += 1.08;\n\t\t\tr.y -= sqrt(abs(r.x))*.52;\n    \t\tfloat d = length(r);\n        \tif( d < md ) {md = d;}\n    \t}\n    }\n    return md;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord - 10.5*iResolution.xy)/iResolution.y;\n    \n    //Heart uv\n    uv = uv*3.;\n\tfloat d = vorohearts(uv);\n    d = smoothstep(.8, 0.15, d);\n    \n    //Heart color\n    vec3 p = vec3(1.6*d*(.6+sin(.5+sin(6.*t))*.1), d*(1.8+sin(.5+sin(6.*t))*.3), 2.1*(1.+sin(.5+sin(6.*t))*.3));\n    vec3 col = vec3(d) * p;\n    \n    //Background\n    col += vorohearts(uv) * .35 * p;\n    \n    fragColor = vec4(col,1.);\n}\n// --------[ Original ShaderToy ends here ]---------- //\n\nvoid main(void)\n{\n    mainImage(gl_FragColor, gl_FragCoord.xy);\n}\n';
   }
   Object.defineProperty(GlslSandbox56594Show.prototype, 'program', {
@@ -14181,28 +14185,6 @@
       new GlslSandbox56594Show();
     }
     return GlslSandbox56594Show_instance;
-  }
-  function GlslSandbox56654Show() {
-    GlslSandbox56654Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56654');
-    this.program_jfctfk$_0 = '\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n#define N 12.0\n#define FADESPEED 2.0\n\n#define EPSILON (0.001)\n#define EQUAL1(a,b) (((a - EPSILON) < b) && ((a + EPSILON) > b))\n#define EQUAL3(a,b) (EQUAL1(a.x, b.x) && EQUAL1(a.y, b.y) && EQUAL1(a.z, b.z))\n\nvec2 rec2hex(vec2 rec)\n{\n\tfloat temp = floor(rec.x + sqrt(3.0) * rec.y + 1.0);\n\tfloat q = floor((floor(2.0 * rec.x + 1.0) + temp) / 3.0);\n\tfloat r = floor((temp + floor(-rec.x + sqrt(3.0) * rec.y + 1.0)) / 3.0);\n\treturn vec2(q,r);\n}\n\nvec3 axial_to_cube(vec2 hex)\n{\n\treturn vec3(hex.x, hex.y, -hex.x+hex.y);\n}\n\nfloat hex_length(vec3 hex) {\n    return floor((abs(hex.x) + abs(hex.y) + abs(hex.z)) / 2.0);\n}\n\nfloat hex_distance(vec3 a, vec3 b) {\n    return hex_length(a - b);\n}\n\nvec3 hex_round(vec3 h) {\n    float q = floor(h.x);\n    float r = floor(h.y);\n    float s = floor(h.z);\n    float q_diff = abs(q - h.x);\n    float r_diff = abs(r - h.y);\n    float s_diff = abs(s - h.z);\n    if ((q_diff > r_diff) && (q_diff > s_diff)) {\n        q = -r - s;\n    } else if (r_diff > s_diff) {\n        r = -q - s;\n    } else {\n        s = -q - r;\n    }\n    return vec3 (q, r, s);\n}\n\nvec2 rotate(in vec2 point, in float rads)\n{\n\tfloat cs = cos(rads);\n\tfloat sn = sin(rads);\n\treturn point * mat2(cs, -sn, sn, cs);\n}\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec2 mod289(vec2 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec3 permute(vec3 x) {\n  return mod289(((x*34.0)+1.0)*x);\n}\n\nfloat snoise(vec2 v)\n  {\n  const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0\n                      0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)\n                     -0.577350269189626,  // -1.0 + 2.0 * C.x\n                      0.024390243902439); // 1.0 / 41.0\n// First corner\n  vec2 i  = floor(v + dot(v, C.yy) );\n  vec2 x0 = v -   i + dot(i, C.xx);\n\n// Other corners\n  vec2 i1;\n  //i1.x = step( x0.y, x0.x ); // x0.x > x0.y ? 1.0 : 0.0\n  //i1.y = 1.0 - i1.x;\n  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n  // x0 = x0 - 0.0 + 0.0 * C.xx ;\n  // x1 = x0 - i1 + 1.0 * C.xx ;\n  // x2 = x0 - 1.0 + 2.0 * C.xx ;\n  vec4 x12 = x0.xyxy + C.xxzz;\n  x12.xy -= i1;\n\n// Permutations\n  i = mod289(i); // Avoid truncation effects in permutation\n  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n\t\t+ i.x + vec3(0.0, i1.x, 1.0 ));\n\n  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);\n  m = m*m ;\n  m = m*m ;\n\n// Gradients: 41 points uniformly over a line, mapped onto a diamond.\n// The ring size 17*17 = 289 is close to a multiple of 41 (41*7 = 287)\n\n  vec3 x = 2.0 * fract(p * C.www) - 1.0;\n  vec3 h = abs(x) - 0.5;\n  vec3 ox = floor(x + 0.5);\n  vec3 a0 = x - ox;\n\n// Normalise gradients implicitly by scaling m\n// Approximation of: m *= inversesqrt( a0*a0 + h*h );\n  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );\n\n// Compute final noise value at P\n  vec3 g;\n  g.x  = a0.x  * x0.x  + h.x  * x0.y;\n  g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n  return 130.0 * dot(m, g);\n}\n\nvec2 rand_loc(highp float i,  highp float t)\n{\n\thighp float offset = i * 11.0;\n\thighp float seed = t + (offset * 200.0);\n\n\treturn vec2(snoise(vec2(seed, 11.0)),\n\t\t    snoise(vec2(seed, 88.765433)));\n\n}\n\nvoid main( void )\n{\n\tvec2 position = ((gl_FragCoord.xy / resolution.xy) * 2.0) - 1.0;\n\tposition.y *= resolution.y/resolution.x;\n\n\tfloat n = 7.0;\n\tvec2 pos = position * n;\n\n\tvec2 hpos = rec2hex(pos);\n\tvec3 orig_cube = axial_to_cube(hpos);\n\tvec3 orig_icube = hex_round(orig_cube);\n\n\tvec2 rhpos = rotate(hpos, time);\n\tvec3 cube = axial_to_cube(rhpos);\n\tvec3 h = abs(cube);\n\tfloat d = length(cube);\n\n\tvec3 color = vec3(0.0);\n\n\tcolor.rb = 1.0 - h.xz/n;\n\tfloat gfade = (cos(time) + 1.0) / 2.0;\n\tcolor.g = gfade * (1.0 - d/n);\n\n\tfloat bright = 0.0;\n\n\tfor (highp float i = 0.0; i < 1.0; i += (1.0/N)) {\n\t\tfloat t = time + i;\n\t\tfloat fadetime = t * FADESPEED;\n\t\tfloat steptime = floor(fadetime);\n\t\tfloat stepfract = fract(fadetime);\n\t\tfloat stepprog = sin(stepfract * 3.14159265);\n\t\tstepprog = stepprog * stepprog;\n\n\n\t\tvec2 loc = rand_loc(i, steptime);\n\t\tvec2 loc_axial = rec2hex(loc * n);\n\t\tvec3 loc_hex = axial_to_cube(loc_axial);\n\t\tvec3 loc_ihex = hex_round(loc_hex);\n\t\tif (EQUAL3(loc_ihex, orig_icube)) {\n\t\t\tbright += stepprog;\n\t\t}\n\t}\n\tfloat cbright = clamp(bright, 0.0, 1.0);\n\n#define R_SIZE  3.7\n#define R_MOD   1.0\n#define R_SPEED 1.666\n#define R_WIDE  1.3\n#define R_MARGIN (R_WIDE / 2.0)\n\n\tfloat r = R_SIZE + (R_MOD * sin(time * R_SPEED));\n\tif ((d > (r - R_MARGIN)) && (d < (r + R_MARGIN))) {\n\t\tvec3 grey = vec3((color.r + color.g + color.b) / 3.0);\n\t\tgrey *= 1.1;\n\t\tcolor = mix(grey, color, gfade);\n\t\t//color.rb /= 3.0;\n\t\t//color = vec3(0.0);\n\t}\n\n\tcolor += vec3(cbright);\n\n\tgl_FragColor = vec4(color, 1.0);\n}\n';
-  }
-  Object.defineProperty(GlslSandbox56654Show.prototype, 'program', {
-    get: function () {
-      return this.program_jfctfk$_0;
-    }
-  });
-  GlslSandbox56654Show.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'GlslSandbox56654Show',
-    interfaces: [GlslShow]
-  };
-  var GlslSandbox56654Show_instance = null;
-  function GlslSandbox56654Show_getInstance() {
-    if (GlslSandbox56654Show_instance === null) {
-      new GlslSandbox56654Show();
-    }
-    return GlslSandbox56654Show_instance;
   }
   function GlslSandbox56688Show() {
     GlslSandbox56688Show_instance = this;
@@ -14228,7 +14210,7 @@
   }
   function GlslSandbox56705Show() {
     GlslSandbox56705Show_instance = this;
-    GlslShow.call(this, 'GlslSandbox 56705');
+    GlslShow.call(this, 'Circular Dependency');
     this.program_itvft3$_0 = '\n/*\n * Original shader from: https://www.shadertoy.com/view/Wtf3zl\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\nuniform vec2 mouse;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv-=.5;\n    uv.x*= iResolution.x/iResolution.y;\n\n    vec3 col = vec3(0.5);\n    float d =length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+iTime, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+iTime*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(iTime*.5)*2.)*d-iTime));\n    col.rg = mix(1.-col.rg, col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n// --------[ Original ShaderToy ends here ]---------- //\n\nvoid main(void)\n{\n    mainImage(gl_FragColor, gl_FragCoord.xy);\n}\n';
   }
   Object.defineProperty(GlslSandbox56705Show.prototype, 'program', {
@@ -14250,7 +14232,7 @@
   }
   function GlslSandbox56718Show() {
     GlslSandbox56718Show_instance = this;
-    GlslShow.call(this, 'GLSL Sandbox 56718');
+    GlslShow.call(this, 'Orange Tang');
     this.program_izazzd$_0 = trimIndent('\nprecision mediump float;\n\nuniform float time;\n//uniform vec2 resolution;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 0.5, minValue: 0.0, maxValue: 1.0}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: "MouseY", initialValue: 0.5, minValue: 0.0, maxValue: 1.0}\nuniform float mouseY;\n\n//uniform vec2 mouse;\n//varying vec2 surfacePosition;\n\nvoid main( void ) {\n\tvec2 p = gl_FragCoord;\n\tfloat speed = 0.25;\n\tvec3 color = vec3(1.,0.5,.25);\n\tvec2 loc = vec2(\n\t\tcos(time/4.0*speed)/1.9-cos(time/2.0*speed)/3.8,\n\t\tsin(time/4.0*speed)/1.9-sin(time/2.0*speed)/3.8\n\t);\n\tfloat depth;\n\tfor(int i = 0; i < 50; i+=1){\n\t\tp = vec2(p.x*p.x-p.y*p.y, 2.0*p.x*p.y)+loc;\n\t\tdepth = float(i);\n\t\tif((p.x*p.x+p.y*p.y) >= mouseY*4.0) break;\n\t}\n\tgl_FragColor = vec4(clamp( (mouseX+.5)*color*depth*0.05, 0.0, 1.0), 1.0 );\n}\n    ');
   }
   Object.defineProperty(GlslSandbox56718Show.prototype, 'program', {
@@ -14272,7 +14254,7 @@
   }
   function GlslSandboxDebugShow() {
     GlslSandboxDebugShow_instance = this;
-    GlslShow.call(this, 'GlslSandbox Debug (OpenGL)');
+    GlslShow.call(this, 'GLSL Hue Test Pattern');
     this.program_k7gr41$_0 = '\n/*\n * Original shader from: https://www.shadertoy.com/view/wt2GWK\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n#define t iTime\n\nvoid main(void)\n{\n\n    gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, 0.0, 1.0);\n\n}\n\n\n\n\n';
   }
   Object.defineProperty(GlslSandboxDebugShow.prototype, 'program', {
@@ -14291,6 +14273,72 @@
       new GlslSandboxDebugShow();
     }
     return GlslSandboxDebugShow_instance;
+  }
+  function GlslSandboxShow41496() {
+    GlslSandboxShow41496_instance = this;
+    GlslShow.call(this, 'Rainbow Trianglez');
+    this.program_gmmere$_0 = '\n// Referenced from https://www.shadertoy.com/view/Mtj3Rh\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n#define PI 3.14159265359\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nfloat random(float n) {\n\treturn fract(abs(sin(n * 55.753) * 367.34));   \n}\n\nfloat random(vec2 n) {\n\treturn random(dot(n, vec2(2.46, -1.21)));\n}\n\nfloat cycle(float n) {\n\treturn cos(fract(n) * 2.0 * PI) * 0.5 + 0.5;\n}\n\n//HSB Color to rgb\nvec3 hsbToRGB(float h,float s,float b){\n\treturn b*(1.0-s)+(b-b*(1.0-s))*clamp(abs(abs(6.0*(h-vec3(0,1,2)/3.0))-3.0)-1.0,0.0,1.0);\n}\n\nvoid main( void ) {\n\tvec2 st = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);\n\t\n\tfloat radian = radians(60.0);\n\tfloat scale = 2.0;\n\t\n\tst = (st + vec2(st.y, 0.0) * cos(radian)) + vec2(floor(4.0 * (st.x - st.y * cos(radian))), 0.0);\n\t\n\tst *= scale;\n\t\n \tfloat n = cycle(random(floor(st * 4.0)) * 0.2 + random(floor(st * 2.0)) * 0.3 + random(floor(st)) * 0.5 + time * 0.125);\n\t\n\n\tvec3 color = hsbToRGB(fract(time*0.05 + random(n*0.00001)), 1.0, 1.0);\n\t\n\tgl_FragColor = vec4(color, 1.0);\n}\n\n';
+  }
+  Object.defineProperty(GlslSandboxShow41496.prototype, 'program', {
+    get: function () {
+      return this.program_gmmere$_0;
+    }
+  });
+  GlslSandboxShow41496.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandboxShow41496',
+    interfaces: [GlslShow]
+  };
+  var GlslSandboxShow41496_instance = null;
+  function GlslSandboxShow41496_getInstance() {
+    if (GlslSandboxShow41496_instance === null) {
+      new GlslSandboxShow41496();
+    }
+    return GlslSandboxShow41496_instance;
+  }
+  function GlslSandboxShow41516() {
+    GlslSandboxShow41516_instance = this;
+    GlslShow.call(this, 'Purple Lightning');
+    this.program_rm3vxr$_0 = '\n// Lightning\n// By: Brandon Fogerty\n// bfogerty at gmail dot com \n// xdpixel.com\n\n\n#ifdef GL_ES\nprecision lowp float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n\nfloat Hash( vec2 p)\n{\n     vec3 p2 = vec3(p.xy,1.0);\n    return fract(sin(dot(p2,vec3(37.1,61.7, 12.4)))*3758.5453123);\n}\n\nfloat noise(in vec2 p)\n{\n    vec2 i = floor(p);\n     vec2 f = fract(p);\n     f *= f * (3.0-2.0*f);\n\n    return mix(mix(Hash(i + vec2(0.,0.)), Hash(i + vec2(1.,0.)),f.x),\n               mix(Hash(i + vec2(0.,1.)), Hash(i + vec2(1.,1.)),f.x),\n               f.y);\n}\n\nfloat fbm(vec2 p)\n{\n     float v = 0.0;\n     v += noise(p*1.0)*.5;\n     v += noise(p*2.)*.25;\n     v += noise(p*4.)*.125;\n     return v * 1.0;\n}\n\nvoid main( void ) \n{\n\n\tvec2 uv = ( gl_FragCoord.xy / resolution.xy ) * 2.0 - 1.0;\n\tfloat limit = resolution.x/resolution.y;\n\tuv.x *= limit;\n\t\n\tfloat t = time*0.125;\n\t\n\t\t\n\tvec3 finalColor = vec3( 0.0 );\n\tfor( int i=1; i < 15; ++i )\n\t{\n\t\tfloat offset = 0.0;//noise(vec2(time*float(i))) / float(i);\n\t\tfloat hh = float(i) * 0.1;\n\t\tfloat t = abs(1.0 / ((-0.5 + fbm( vec2(uv.x + offset - 15.0*t/float(i), uv.y + offset + 10.0*t/float(i))))*475.));\n\t\tfinalColor +=  t * vec3( hh+0.1, 0.5, 2.0 );\n\t}\n\t\n\tgl_FragColor = vec4( finalColor, 1.0 );\n\n}\n';
+  }
+  Object.defineProperty(GlslSandboxShow41516.prototype, 'program', {
+    get: function () {
+      return this.program_rm3vxr$_0;
+    }
+  });
+  GlslSandboxShow41516.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandboxShow41516',
+    interfaces: [GlslShow]
+  };
+  var GlslSandboxShow41516_instance = null;
+  function GlslSandboxShow41516_getInstance() {
+    if (GlslSandboxShow41516_instance === null) {
+      new GlslSandboxShow41516();
+    }
+    return GlslSandboxShow41516_instance;
+  }
+  function GlslSandboxShow45693() {
+    GlslSandboxShow45693_instance = this;
+    GlslShow.call(this, 'Geometric Biology');
+    this.program_b8l40v$_0 = '\n//Modified from: https://www.shadertoy.com/view/MslGD8\n\n// Created by inigo quilez - iq/2013\n// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\nvec2 hash( vec2 p ) { p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))); return fract(sin(p)*18.5453); }\n\n// return distance, and cell id\nvec2 voronoi( in vec2 x )\n{\n    vec2 n = floor( x );\n    vec2 f = fract( x );\n\n\tvec3 m = vec3( 8.0 );\n    for( int j=-1; j<=1; j++ )\n    for( int i=-1; i<=1; i++ )\n    {\n        vec2  g = vec2( float(i), float(j) );\n        vec2  o = hash( n + g );\n        vec2  r = g - f + (0.5+0.5*sin(time+6.2831*o));\n\tfloat d = dot( r, r );\n        if( d<m.x )\n            m = vec3( d, o );\n    }\n\n    return vec2( sqrt(m.x), m.y+m.z );\n}\n\nvoid main()\n{\n    vec2 p = gl_FragCoord.xy/max(resolution.x,resolution.y);\n    \n    // computer voronoi patterm\n    vec2 c = voronoi( (14.0+6.0*sin(0.2*time))*p );\n\n    // colorize\n    vec3 col = 0.5 + 0.5*cos( c.y*6.2831 + vec3(1.0,29.0,13.0) );\t\n\t\n    gl_FragColor = vec4( col, 1.0 );\n}\n';
+  }
+  Object.defineProperty(GlslSandboxShow45693.prototype, 'program', {
+    get: function () {
+      return this.program_b8l40v$_0;
+    }
+  });
+  GlslSandboxShow45693.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlslSandboxShow45693',
+    interfaces: [GlslShow]
+  };
+  var GlslSandboxShow45693_instance = null;
+  function GlslSandboxShow45693_getInstance() {
+    if (GlslSandboxShow45693_instance === null) {
+      new GlslSandboxShow45693();
+    }
+    return GlslSandboxShow45693_instance;
   }
   function GlslSandboxShowTemplate() {
     GlslSandboxShowTemplate_instance = this;
@@ -21538,9 +21586,6 @@
   Object.defineProperty(package$shows, 'GlslSandbox56594Show', {
     get: GlslSandbox56594Show_getInstance
   });
-  Object.defineProperty(package$shows, 'GlslSandbox56654Show', {
-    get: GlslSandbox56654Show_getInstance
-  });
   Object.defineProperty(package$shows, 'GlslSandbox56688Show', {
     get: GlslSandbox56688Show_getInstance
   });
@@ -21552,6 +21597,15 @@
   });
   Object.defineProperty(package$shows, 'GlslSandboxDebugShow', {
     get: GlslSandboxDebugShow_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandboxShow41496', {
+    get: GlslSandboxShow41496_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandboxShow41516', {
+    get: GlslSandboxShow41516_getInstance
+  });
+  Object.defineProperty(package$shows, 'GlslSandboxShow45693', {
+    get: GlslSandboxShow45693_getInstance
   });
   Object.defineProperty(package$shows, 'GlslSandboxShowTemplate', {
     get: GlslSandboxShowTemplate_getInstance
