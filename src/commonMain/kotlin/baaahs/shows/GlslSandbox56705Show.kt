@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandbox56705Show : GlslShow("GlslSandbox 56705") {
+object GlslSandbox56705Show : GlslShow("Circular Dependency") {
 
     override val program = """
 /*

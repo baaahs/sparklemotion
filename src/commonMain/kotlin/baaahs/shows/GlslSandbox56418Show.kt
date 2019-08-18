@@ -4,7 +4,7 @@ import baaahs.Model
 import baaahs.Show
 import baaahs.ShowRunner
 
-object GlslSandbox56418Show : GlslShow("GLSL Sandbox 56418") {
+object GlslSandbox56418Show : GlslShow("Fire Pulsation") {
 
     override val program = """
 uniform float time;

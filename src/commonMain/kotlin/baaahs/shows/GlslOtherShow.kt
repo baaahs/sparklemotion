@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslOtherShow : GlslShow("GlslSandbox Some Other One (OpenGL)") {
+object GlslOtherShow : GlslShow("Devil's Playground") {
 
     override val program = """
 uniform float time;
