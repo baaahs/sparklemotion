@@ -1,8 +1,5 @@
-package baaahs.shows
+// Rainbow Trianglez
 
-object GlslSandboxShow41496 : GlslShow("Rainbow Trianglez") {
-
-    override val program = """
 // Referenced from https://www.shadertoy.com/view/Mtj3Rh
 
 #ifdef GL_ES
@@ -48,8 +45,4 @@ void main( void ) {
 	vec3 color = hsbToRGB(fract(time*0.05 + random(n*0.00001)), 1.0, 1.0);
 	
 	gl_FragColor = vec4(color, 1.0);
-}
-
-"""
-
 }

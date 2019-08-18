@@ -1,12 +1,6 @@
-package baaahs.shows
+// Fire Pulsation
+// From http://glslsandbox.com/e#56418
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56418Show : GlslShow("Fire Pulsation") {
-
-    override val program = """
 uniform float time;
 uniform vec2 resolution;
 
@@ -27,6 +21,4 @@ void main( void ) {
 	color += mix(vec3(0.8, 0.9, 1.0), vec3(0.1, 0.1, 0.2),  pow(b, 0.1)) * 0.75;
 	color += mix(vec3(0.9, 0.8, 1.0), vec3(0.1, 0.2, 0.2),  pow(c, 0.1)) * 0.75;
 	gl_FragColor = vec4(color * clamp(dd, 0.0, 1.0), 1.0);
-}
-    """.trimIndent()
 }

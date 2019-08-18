@@ -1,11 +1,5 @@
-package baaahs.shows
-
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56499Show : GlslShow("Picasso's Nightmare") {
-    override val program = """
+// Picasso's Nightmare
+// From http://glslsandbox.com/e#56499
 
 uniform float time;
 uniform vec2 mouse;
@@ -51,6 +45,4 @@ void main( void ) {
 	vec3 color = vec3(pos.y, pos.y, pos.y);
 	drawCircles(pos, radiusMultiplier, color);
 	gl_FragColor = vec4(color, 1);
-}
-    """.trimIndent()
 }

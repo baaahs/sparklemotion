@@ -1,8 +1,6 @@
-package baaahs.shows
+// Aquatic Flood
+// From http://glslsandbox.com/e#46102
 
-object GlslSandbox46102Show : GlslShow("Aquatic Flood") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -36,7 +34,4 @@ void main(void)
     gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.);
     //if(orb == 0.){gl_FragColor = vec4(0.);}
     //gl_FragColor = (orb!=0. ? 1.-orb*vec4(9.,5.,3.,0.):vec4(0.));
-}
-"""
-
 }

@@ -1,8 +1,5 @@
-package baaahs.shows
+// Purple Lightning
 
-object GlslSandboxShow41516 : GlslShow("Purple Lightning") {
-
-    override val program = """
 // Lightning
 // By: Brandon Fogerty
 // bfogerty at gmail dot com 
@@ -64,8 +61,5 @@ void main( void )
 	}
 	
 	gl_FragColor = vec4( finalColor, 1.0 );
-
-}
-"""
 
 }

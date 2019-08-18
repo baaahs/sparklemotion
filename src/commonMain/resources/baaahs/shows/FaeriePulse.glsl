@@ -1,8 +1,6 @@
-package baaahs.shows
+// Færie Pulse
+// From http://glslsandbox.com/e#46723
 
-object GlslSandbox46723Show : GlslShow("Farie Pulse") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -37,8 +35,4 @@ void main() {
   //uv.x = cos(time-a);
   //uv.y = sin(time+a);
   gl_FragColor = vec4(uv, cos(distance(uv, center)), 1.0);
-}
-
-"""
-
 }

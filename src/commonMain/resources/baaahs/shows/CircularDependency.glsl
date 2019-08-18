@@ -1,8 +1,6 @@
-package baaahs.shows
+// Circular Dependency
+// From http://glslsandbox.com/e#56705
 
-object GlslSandbox56705Show : GlslShow("Circular Dependency") {
-
-    override val program = """
 /*
  * Original shader from: https://www.shadertoy.com/view/Wtf3zl
  */
@@ -43,7 +41,4 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 void main(void)
 {
     mainImage(gl_FragColor, gl_FragCoord.xy);
-}
-"""
-
 }

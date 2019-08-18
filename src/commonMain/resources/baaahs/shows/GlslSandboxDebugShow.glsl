@@ -1,11 +1,4 @@
-package baaahs.shows
-
-object GlslSandboxDebugShow : GlslShow("GLSL Hue Test Pattern") {
-
-    override val program = """
-/*
- * Original shader from: https://www.shadertoy.com/view/wt2GWK
- */
+// GLSL Hue Test Pattern
 
 #ifdef GL_ES
 precision mediump float;
@@ -28,9 +21,3 @@ void main(void)
 
 }
 
-
-
-
-"""
-
-}

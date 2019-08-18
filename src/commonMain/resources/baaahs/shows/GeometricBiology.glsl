@@ -1,8 +1,6 @@
-package baaahs.shows
+// Geometric Biology
+// From http://glslsandbox.com/e#45693
 
-object GlslSandboxShow45693 : GlslShow("Geometric Biology") {
-
-    override val program = """
 //Modified from: https://www.shadertoy.com/view/MslGD8
 
 // Created by inigo quilez - iq/2013
@@ -50,7 +48,4 @@ void main()
     vec3 col = 0.5 + 0.5*cos( c.y*6.2831 + vec3(1.0,29.0,13.0) );	
 	
     gl_FragColor = vec4( col, 1.0 );
-}
-"""
-
 }

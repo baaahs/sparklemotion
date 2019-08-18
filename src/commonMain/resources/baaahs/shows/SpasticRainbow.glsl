@@ -1,11 +1,6 @@
-package baaahs.shows
+// Spastic Rainbow
+// From http://glslsandbox.com/e#56433
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56433Show : GlslShow("Spastic Rainbow") {
-    override val program = """
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
@@ -43,6 +38,4 @@ void main() {
 	}
 	
 	gl_FragColor.a=1.0;
-}
-    """.trimIndent()
 }
