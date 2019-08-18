@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandbox46102Show : GlslShow("GlslSandbox 46102") {
+object GlslSandbox46102Show : GlslShow("Aquatic Flood") {
 
     override val program = """
 #ifdef GL_ES

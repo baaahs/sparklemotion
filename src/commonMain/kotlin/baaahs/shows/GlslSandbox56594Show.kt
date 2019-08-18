@@ -1,6 +1,6 @@
 package baaahs.shows
 
-object GlslSandbox56594Show : GlslShow("GlslSandbox 56594 (OpenGL)") {
+object GlslSandbox56594Show : GlslShow("Blue Steel") {
 
     override val program = """
 /*
