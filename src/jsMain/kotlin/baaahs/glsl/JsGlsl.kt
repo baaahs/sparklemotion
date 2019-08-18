@@ -63,9 +63,9 @@ class JsGlslRenderer(
         instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
     }
 
-    override fun getUniformLocation(name: String, optional: Boolean): Uniform {
+    override fun getUniformLocation(name: String, required: Boolean): Uniform {
         val loc = gl { gl.getUniformLocation(program, name) }
-        if (loc == null && !optional)
+        if (loc == null && required)
             throw IllegalStateException("Couldn't find uniform $name")
 
         return Uniform(loc)
@@ -294,7 +294,7 @@ void main(void) {
     inner class UnifyingAdjustableUniform(
         val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int
     ) : AdjustibleUniform {
-        val uniformLocation = gl { getUniformLocation(adjustableValue.varName, false) }
+        val uniformLocation = gl { getUniformLocation(adjustableValue.varName) }
         var buffer: Any? = null
 
         override fun bind() {
