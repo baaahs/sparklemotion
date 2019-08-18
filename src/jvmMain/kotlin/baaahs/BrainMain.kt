@@ -2,8 +2,6 @@ package baaahs
 
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
-import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.engine.ApplicationEngineEnvironment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -11,7 +9,6 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
-import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt

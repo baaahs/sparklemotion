@@ -1,7 +1,5 @@
 package baaahs
 
-import java.lang.Exception
-
 class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
     private var preferredVersion = ""
 
