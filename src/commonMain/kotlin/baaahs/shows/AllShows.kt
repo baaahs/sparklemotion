@@ -35,7 +35,6 @@ class AllShows {
             SimpleSpatialShow,
             HeartbleatShow,
             CreepingPixelsShow,
-            GlslSandbox55301KotlinShow,
             GlslSandbox55301Show,
             GlslSandbox46744Show,
             GlslOtherShow,
