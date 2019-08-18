@@ -1,8 +1,6 @@
-package baaahs.shows
+// TV Test Pattern
+// From http://glslsandbox.com/e#46744
 
-object GlslSandbox46744Show : GlslShow("GlslSandbox 46744") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -25,7 +23,4 @@ void main() {
         col[int(j)] = sin(75.0*sq(p.x)) + sin(75.0*sq(p.y));
     }
     gl_FragColor = vec4(col, 1.);
-}
-"""
-
 }

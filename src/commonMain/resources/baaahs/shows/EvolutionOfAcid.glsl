@@ -1,8 +1,6 @@
-package baaahs.shows
+// Evolution of Acid
+// From http://glslsandbox.com/e#45963
 
-object GlslSandbox45963Show : GlslShow("GlslSandbox 45963") {
-
-    override val program = """
 #ifdef GL_ES
 precision highp float;
 #endif
@@ -100,7 +98,4 @@ void main(void){
 	float cc = ((mod(RR,2.0)>1.0)?1.0-fract(RR):fract(RR));
 	float ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));
 	gl_FragColor = vec4(ccc,cc,c, 1.0);
-}
-"""
-
 }

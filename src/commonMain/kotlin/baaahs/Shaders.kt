@@ -13,7 +13,6 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     SIMPLE_SPATIAL(SimpleSpatialShader),
     HEART(HeartShader),
     RANDOM(RandomShader),
-    GLSL_SANDBOX_55301(GlslSandbox55301Shader),
     GLSL_SHADER(GlslShader);
 
     companion object {

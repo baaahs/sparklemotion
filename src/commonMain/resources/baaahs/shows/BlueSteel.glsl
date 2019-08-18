@@ -1,8 +1,6 @@
-package baaahs.shows
+// Blue Steel
+// From http://glslsandbox.com/e#56594
 
-object GlslSandbox56594Show : GlslShow("GlslSandbox 56594 (OpenGL)") {
-
-    override val program = """
 /*
  * Original shader from: https://www.shadertoy.com/view/wt2GWK
  */
@@ -75,7 +73,4 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 void main(void)
 {
     mainImage(gl_FragColor, gl_FragCoord.xy);
-}
-"""
-
 }

@@ -1,12 +1,7 @@
-package baaahs.shows
+// Sunset Delight
+// From http://glslsandbox.com/e#56573
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56573Show : GlslShow("GLSL Sandbox 56573") {
-    override val program = """
-        // Fireball
+// Fireball
 // Awd
 // @AlexWDunn
 //mod by an+
@@ -237,6 +232,4 @@ void main(void)
 	}
 	
 	gl_FragColor = col;
-}
-    """.trimIndent()
 }

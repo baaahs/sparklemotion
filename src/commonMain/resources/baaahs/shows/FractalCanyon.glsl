@@ -1,8 +1,6 @@
-package baaahs.shows
+// Fractal Canyon
+// From http://glslsandbox.com/e#56688
 
-object GlslSandbox56688Show : GlslShow("GlslSandbox 56688 (OpenGL)") {
-
-    override val program = """
 //Vlad's fractal canyon. 11/17/2016
 
 precision mediump float;
@@ -38,7 +36,4 @@ void main() {
 		F++;
 	}
 	gl_FragColor = (F == float(ITERATIONS)) ? vec4(0.0, 0.0, 0.0, 1) : color(.5*time*F - log2(log2(dot(sin(z),(z)))));
-}
-    """.trimIndent()
-
 }
