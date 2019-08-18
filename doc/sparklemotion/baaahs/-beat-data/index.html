@@ -79,9 +79,26 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">fractionTilNextBeat</span><span class="symbol">(</span><span class="identifier" id="baaahs.BeatData$fractionTilNextBeat(baaahs.Clock)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code>
-<p>Returns 1.0 if we're on a beat, 0.0 when we're furthest from a beat,
+<p>Returns 1.0 if we're on a beat, 0.0 when we're furthest from the last beat,
 and anywhere in between otherwise.</p>
 </td>
+</tr>
+<tr>
+<td>
+<p><a href="fraction-til-next-measure.html">fractionTilNextMeasure</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">fractionTilNextMeasure</span><span class="symbol">(</span><span class="identifier" id="baaahs.BeatData$fractionTilNextMeasure(baaahs.Clock)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code>
+<p>Returns 1.0 if we're on the start of the measure, 0.0 when we're furthest from the start of the measure,
+and anywhere in between otherwise.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="time-since-measure.html">timeSinceMeasure</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">timeSinceMeasure</span><span class="symbol">(</span><span class="identifier" id="baaahs.BeatData$timeSinceMeasure(baaahs.Clock)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
 </tr>
 </tbody>
 </table>
