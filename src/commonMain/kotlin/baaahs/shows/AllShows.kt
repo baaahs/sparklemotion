@@ -36,6 +36,6 @@ class AllShows {
 
         val allShows = listOf(
             SolidColorShow
-        ) + (nonGlslShows + allGlslShows).sortedBy { it.name }
+        ) + (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() }
     }
 }
