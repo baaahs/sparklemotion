@@ -4,6 +4,8 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.delay
 import kotlin.math.PI
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 fun <E> List<E>.random(): E? = if (size > 0) get(Random.nextInt(size)) else null
@@ -16,6 +18,10 @@ fun <E> Collection<E>.only(description: String = "item"): E {
 }
 
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
+
+fun constrain(value: Float, minValue: Float, maxValue: Float): Float {
+    return max(min(value, maxValue), minValue)
+}
 
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
