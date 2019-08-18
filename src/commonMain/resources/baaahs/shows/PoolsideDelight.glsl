@@ -1,11 +1,6 @@
-package baaahs.shows
+// Poolside Delight
+// From http://glslsandbox.com/e#56479
 
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
-
-object GlslSandbox56479Show : GlslShow("GLSL Sandbox 56479") {
-    override val program = """
 uniform float time;
 uniform vec2 resolution;
 
@@ -110,6 +105,4 @@ void main(void)
 	
 	// 色を出力する
 	gl_FragColor = vec4(color, 1.0);
-}
-    """.trimIndent()
 }

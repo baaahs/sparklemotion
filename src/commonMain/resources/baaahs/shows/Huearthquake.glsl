@@ -1,8 +1,6 @@
-package baaahs.shows
+// Huearthquake
+// From http://glslsandbox.com/e#46400
 
-object GlslSandbox46400Show : GlslShow("GlslSandbox 46400") {
-
-    override val program = """
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -93,7 +91,4 @@ void main() {
     vec3 rgb = mix(colorA, colorB, g);
 
     gl_FragColor = vec4(rgb, 1.0);
-}
-"""
-
 }

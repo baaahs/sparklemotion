@@ -1,8 +1,5 @@
-package baaahs.shows
-
-object GlslSandbox46292Show : GlslShow("GlslSandbox 46292") {
-
-    override val program = """
+// Hypno-Swirl
+// From http://glslsandbox.com/e#46292
 
 #ifdef GL_ES
     precision mediump float;
@@ -113,8 +110,4 @@ vec4 gradient(vec4 base, vec3 stop, float start, float end, float grayscale) {
 
 vec4 gradient(vec3 base, vec3 stop, float start, float end, float grayscale) {
     return gradient(vec4(hsv2rgb(base), 1.0), stop, start, end, grayscale);
-}
-
-"""
-
 }

@@ -1,27 +1,27 @@
 package baaahs.shows
 
+import baaahs.getResource
+
 class AllShows {
     companion object {
-        val allShows = listOf(
-            SolidColorShow,
-            GlslSandbox46400Show,
-            GlslSandbox46315Show,
-            GlslSandbox46292Show,
-            GlslSandbox46102Show,
-            GlslSandbox45963Show,
-            GlslSandbox46723Show,
-            GlslSandbox46597Show,
-            GlslSandbox46613Show,
-            GlslSandbox56705Show,
-            GlslSandbox56418Show,
-            GlslSandbox56433Show,
-            GlslSandbox56479Show,
-            GlslSandbox56511Show,
-            GlslSandbox56499Show,
-            GlslSandbox56573Show,
-            GlslSandbox56592Show,
-            GlslRedBeatShow,
-            GlslSandbox56718Show,
+        val allGlslShows: List<GlslShow> by lazy {
+            getResource("_RESOURCE_FILES_")
+                .split("\n")
+                .filter { it.startsWith("baaahs/shows/") }
+                .map { fileName ->
+                    val shaderSource = getResource(fileName)
+                    val nameFromGlsl = Regex("^// (.*)").find(shaderSource)?.groupValues?.get(1)
+                    val name = nameFromGlsl ?: fileName
+                        .split("/").last()
+                        .replace(".glsl", "")
+                        .replace("_", " ")
+                    object : GlslShow(name) {
+                        override val program = shaderSource
+                    }
+                }
+        }
+
+        private val nonGlslShows = listOf(
             SomeDumbShow,
             RandomShow,
             CompositeShow,
@@ -31,14 +31,11 @@ class AllShows {
             LifeyShow,
             SimpleSpatialShow,
             HeartbleatShow,
-            CreepingPixelsShow,
-            GlslSandbox55301KotlinShow,
-            GlslSandbox55301Show,
-            GlslSandbox46744Show,
-            GlslOtherShow,
-            GlslSandbox56594Show,
-            GlslSandbox56555Show,
-            GlslSandboxDebugShow
+            CreepingPixelsShow
         )
+
+        val allShows = listOf(
+            SolidColorShow
+        ) + (nonGlslShows + allGlslShows).sortedBy { it.name }
     }
 }
