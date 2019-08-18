@@ -56,6 +56,9 @@ abstract class GlslShow(name: String) : Show(name) {
             "Beat" -> {
                 BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
             }
+            "StartOfMeasure" -> {
+                StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+            }
             else -> throw IllegalArgumentException("unknown gadget ${gadgetType}")
         }
     }
@@ -77,6 +80,12 @@ abstract class GlslShow(name: String) : Show(name) {
     class BeatDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
         override fun getValue(): Any {
             return beatData.fractionTilNextBeat(clock)
+        }
+    }
+
+    class StartOfMeasureDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
+        override fun getValue(): Any {
+            return beatData.fractionTilNextMeasure(clock)
         }
     }
 }

@@ -204,6 +204,8 @@ precision mediump float;
 uniform sampler2D sm_uvCoords;
 uniform float sm_uScale;
 uniform float sm_vScale;
+uniform float sm_startOfMeasure;
+uniform float sm_beat;
 
 out vec4 sm_fragColor;
 
