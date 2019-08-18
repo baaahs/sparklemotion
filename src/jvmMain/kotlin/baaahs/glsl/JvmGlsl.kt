@@ -399,6 +399,10 @@ void main(void) {
         val src = """
     #version 330
     uniform sampler2D sm_uvCoords;
+    uniform float sm_uScale;
+    uniform float sm_vScale;
+    uniform float sm_startOfMeasure;
+    uniform float sm_beat;
 
     out vec4 sm_fragColor;
     
@@ -419,8 +423,8 @@ void main(void) {
         int uvY = int(gl_FragCoord.y);
 
         vec2 pixelCoord = vec2(
-            texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r,    // u
-            texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r // v
+            texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u
+            texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v
         );
     
         sm_main(pixelCoord);
