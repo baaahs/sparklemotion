@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
@@ -15,7 +15,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import org.w3c.dom.WebSocket
 import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.js.Date
 
 class SheepSimulator {
     private val display = JsDisplay()
@@ -25,7 +30,10 @@ class SheepSimulator {
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(sheepModel, display.forVisualizer())
     private val fs = FakeFs()
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, fs, display.forPinky())
+    private val beatSource: BeatSource = BridgedBeatSource("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
+    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, beatSource, JsClock(), fs,
+        PermissiveFirmwareDaddy(), display.forPinky(),
+        prerenderPixels = true)
 
     fun start() = doRunBlocking {
         val queryParams = decodeQueryParams(document.location!!)
@@ -66,7 +74,9 @@ class SheepSimulator {
             document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
             // This part is cheating... TODO: don't cheat!
-            val pixelLocations = vizPanel.getPixelLocations()!!.map { Vector2F(it.x.toFloat(), it.y.toFloat()) }
+            val pixelLocations = vizPanel.getPixelLocationsInModelSpace()!!.map {
+                Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
+            }
             pinky.providePixelMapping_CHEAT(panel, pixelLocations)
 
             val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
@@ -97,4 +107,38 @@ class SheepSimulator {
     private val pinkyScope = CoroutineScope(Dispatchers.Main)
     private val brainScope = CoroutineScope(Dispatchers.Main)
     private val mapperScope = CoroutineScope(Dispatchers.Main)
+}
+
+class JsClock : Clock {
+    override fun now(): Time = Date.now()
+}
+
+class BridgedBeatSource(url: String) : BeatSource {
+    private var beatData = BeatData(0.0, 0, confidence = 0f)
+
+    override fun getBeatData(): BeatData = beatData
+
+    val l = window.location;
+    private val webSocket = WebSocket("${if (l.protocol == "https:") "wss:" else "ws:"}//$url/bridge/beatSource")
+    private val json = Json(JsonConfiguration.Stable)
+
+    init {
+        webSocket.onopen = {
+            console.log("WebSocket open!", it)
+        }
+
+        webSocket.onmessage = {
+            // TODO: be less woefully inefficient...
+            val buf = it.data as String
+            println("buf is $buf")
+            beatData = json.parse(BeatData.serializer(), buf)
+            null
+        }
+
+        webSocket.onerror = {
+            beatData = BeatData(0.0, 500, 4, 0.0f)
+            console.log("WebSocket error!", it)
+        }
+        webSocket.onclose = { console.log("WebSocket close!", it) }
+    }
 }

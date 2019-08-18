@@ -2,8 +2,6 @@ package baaahs
 
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
-import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.engine.ApplicationEngineEnvironment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -11,13 +9,16 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
-import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 fun main(args: Array<String>) {
+    val sheepModel = SheepModel()
+    sheepModel.load()
+
     val network = JvmNetwork()
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
         override var id: String? = null
@@ -28,7 +29,9 @@ fun main(args: Array<String>) {
         }
     }, JvmPixelsDisplay(2000))
 
-    brain.forcedSurfaceName("33R")
+    val myPanel = if (Random.nextBoolean()) { sheepModel.allPanels.random()!! } else { null }
+    println("I'll be ${myPanel?.name ?: "anonymous"}!")
+    myPanel?.let { brain.forcedSurfaceName(myPanel.name) }
 
     GlobalScope.launch { brain.run() }
 

@@ -4,8 +4,12 @@
 
 #include "wifi_sta_interface.h"
 #include <string.h>
+#include <freertos/timers.h>
 
 #define TAG TAG_NET
+
+#define MAX_IMMEDIATE_RECONNECTS        2
+#define LONG_TERM_POLL_INTERVAL_SECS    30
 
 ////////////////////////////////////////////////////////////
 // Glue functions that let us use C++ functions with the IDF
@@ -13,6 +17,10 @@
 
 static void glue_evtHandler(void* pArg, esp_event_base_t evBase, int32_t evId, void* evData) {
     ((WifiStaInterface *) pArg)->_evtHandler(evBase, evId, evData);
+}
+
+static void glue_longPoll(void* pArg) {
+    ((WifiStaInterface*)pArg)->_taskLongPoll();
 }
 
 ////////////////////////////////////////////////////////////
@@ -138,28 +146,40 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
 
                 // Attempt to connect
                 m_numFailedConnects = 0;
+                m_connected = false;
+                m_started = true;
                 esp_wifi_connect();
                 break;
 
             case WIFI_EVENT_STA_STOP:
+                m_connected = false;
+                m_started = false;
                 tellListenerStop();
                 break;
 
             case WIFI_EVENT_STA_DISCONNECTED:
+                m_connected = false;
                 tellListenerLinkDown();
 
                 m_numFailedConnects++;
                 ESP_LOGE(TAG, "Failed to connect to wifi ssid '%s', Failure #%d. Retrying.", m_wifiConfig.sta.ssid, m_numFailedConnects);
-                if (m_numFailedConnects < 2) {
+                if (m_numFailedConnects < MAX_IMMEDIATE_RECONNECTS) {
                     ESP_LOGE(TAG, "Will try again...");
                     esp_wifi_connect();
                 } else {
-                    ESP_LOGE(TAG, "That's it. No more trying. Need some better credentials");
+                    if (!m_haveLTPTask) {
+                        ESP_LOGE(TAG, "That's it. No more immediate retries. Need some better credentials");
+                        ESP_LOGW(TAG, "Starting the long term poll task.");
+                        startLongTermPoll();
+                    } else {
+                        ESP_LOGW(TAG, "Wifi long term poll task is running. It will manage the connect attempt");
+                    }
                 }
                 break;
 
             case WIFI_EVENT_STA_CONNECTED:
                 m_numFailedConnects = 0;
+                m_connected = true;
 
                 tellListenerIntLinkUp();
                 break;
@@ -173,4 +193,53 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
 
         tellListenerGotAddr(ip_info);
     }
+}
+
+void WifiStaInterface::startLongTermPoll() {
+
+    if (m_haveLTPTask) {
+        ESP_LOGE(TAG, "Attempting to start LTP task when it already exists (supposedly). Not starting");
+        return;
+    }
+
+    auto def = DefaultBrainTasks.longTermSTAPoll;
+    auto tcResult =def.createTask(glue_longPoll, this, &m_hLTPTask);
+    if (tcResult != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create long term poll task %d", tcResult);
+        return;
+    }
+    m_haveLTPTask = true;
+}
+
+void WifiStaInterface::_taskLongPoll() {
+
+    m_haveLTPTask = false;
+
+    // m_connected and m_started should really be semaphores but whatever
+
+    while(true) {
+        vTaskDelay(pdMS_TO_TICKS(LONG_TERM_POLL_INTERVAL_SECS * 1000));
+
+        if (m_connected) {
+            ESP_LOGW(TAG, "Wifi STA long poll task expired and we are connected. Exiting task");
+            break;
+        }
+
+        if (!m_started) {
+            ESP_LOGW(TAG, "Wifi STA long poll task, not started. Exiting");
+            break;
+        }
+
+        // We are started but not connected
+
+        // We can go ahead and start a connect attempt
+        ESP_LOGW(TAG, "Wifi STA long poll task starting a connect to '%s', Failure #%d.", m_wifiConfig.sta.ssid, m_numFailedConnects);
+        esp_wifi_connect();
+
+        // Just loop, which will be some sort of long delay.
+    }
+
+    // Clean up when we exit
+    m_haveLTPTask = false;
+    vTaskDelete(nullptr);
 }

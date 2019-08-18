@@ -145,6 +145,34 @@ struct BrainTasks {
             .priority = 5,
             .coreId = APP_CPU_NUM,
     };
+
+    /**
+     * The long term poll task is started by the STA interface when it
+     * hits it's max number of immediate reconnects. We don't want to
+     * keep reconnecting ALL the time, so this lets us drop from an
+     * immediate attempt to a slow poll. It comes and goes in the system
+     * based on how connections go.
+     *
+     * Since it's about networking we put it on the protocol CPU.
+     */
+     TaskDef longTermSTAPoll = {
+             .name = "staLTP",
+             .stack = 4096,
+             .priority = 1,
+             .coreId = PRO_CPU_NUM,
+     };
+
+    /**
+     * The ota fetcher will go download stuff from a URL and write it
+     * to the next ota partition. It seems to conflict with other
+     * things so it gets a nice high priority.
+     */
+    TaskDef otaFetcher = {
+            .name = "otaFetcher",
+            .stack = 10240,
+            .priority = 10,
+            .coreId = APP_CPU_NUM,
+    };
 };
 
 /**

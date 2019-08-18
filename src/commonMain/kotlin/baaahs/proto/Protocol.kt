@@ -3,6 +3,7 @@ package baaahs.proto
 import baaahs.BrainId
 import baaahs.Shader
 import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -12,6 +13,7 @@ object Ports {
 
     const val PINKY_UI_TCP = 8004
     const val PINKY_MAPPER_TCP = 8005
+    const val SIMULATOR_BRIDGE_TCP = 8006
 }
 
 enum class Type {
@@ -21,7 +23,8 @@ enum class Type {
     MAPPER_HELLO,
     BRAIN_ID_REQUEST,
     BRAIN_MAPPING,
-    PING;
+    PING,
+    USE_FIRMWARE;
 
     companion object {
         val values = values()
@@ -38,22 +41,31 @@ fun parse(bytes: ByteArray): Message {
         Type.BRAIN_ID_REQUEST -> BrainIdRequest.parse(reader)
         Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
         Type.PING -> PingMessage.parse(reader)
+        Type.USE_FIRMWARE -> UseFirmwareMessage.parse(reader)
     }
 }
 
-class BrainHelloMessage(val brainId: String, val surfaceName: String?) : Message(Type.BRAIN_HELLO) {
+class BrainHelloMessage(val brainId: String, val surfaceName: String?, val firmwareVersion: String? = null,
+                        val idfVersion: String? = null) : Message(Type.BRAIN_HELLO) {
     companion object {
         fun parse(reader: ByteArrayReader): BrainHelloMessage {
-            return BrainHelloMessage(
-                reader.readString(),
-                reader.readNullableString()
-            )
+            val brainId = reader.readString()
+            val surfaceName = reader.readNullableString()
+            val firmwareVersion = if (reader.hasMoreBytes()) reader.readNullableString() else null
+            val idfVersion = if (reader.hasMoreBytes()) reader.readNullableString() else null
+            return BrainHelloMessage(brainId, surfaceName, firmwareVersion, idfVersion)
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(brainId)
         writer.writeNullableString(surfaceName)
+        writer.writeNullableString(firmwareVersion)
+        writer.writeNullableString(idfVersion)
+    }
+
+    override fun toString(): String {
+        return "BrainHello $brainId, $surfaceName, $firmwareVersion, $idfVersion"
     }
 }
 
@@ -77,6 +89,27 @@ class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val p
         if (pongData != null) writer.writeBytes(pongData)
         writer.writeBytes(shader.descriptorBytes)
         buffer.serialize(writer)
+    }
+}
+
+/**
+ * The message that Pinky will send to a brain when Pinky has decided that
+ * the Brain should use a particular firmware. The url can point anywhere,
+ * either self hosted by Pinky or out into the nether reaches of the Interwebs.
+ * What could possibly go wrong? Pinky would __never__ tell a brain to go
+ * download a wikipedia article and use that as a firmware. It just won't
+ * be nice.
+ */
+class UseFirmwareMessage(val url: String) :
+    Message(Type.USE_FIRMWARE) {
+    companion object {
+        fun parse(reader: ByteArrayReader): UseFirmwareMessage {
+            return UseFirmwareMessage(reader.readString())
+        }
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
+        writer.writeString(url)
     }
 }
 
@@ -108,7 +141,7 @@ class BrainMappingMessage(
     val panelUvTopLeft: Vector2F,
     val panelUvBottomRight: Vector2F,
     val pixelCount: Int,
-    val pixelVertices: List<Vector2F>
+    val pixelLocations: List<Vector3F>
 ) : Message(Type.BRAIN_MAPPING) {
 
     companion object {
@@ -129,22 +162,19 @@ class BrainMappingMessage(
             writeFloat(v.y)
         }
 
-        private fun ByteArrayReader.readRelativeVerticesList(): List<Vector2F> {
+        private fun ByteArrayReader.readRelativeVerticesList(): List<Vector3F> {
             val vertexCount = readInt()
             return (0 until vertexCount).map {
-                Vector2F(readShort() / 65536.0f, readShort() / 65536.0f)
+                Vector3F(readFloat(), readFloat(), readFloat())
             }
         }
 
-        private fun ByteArrayWriter.writeRelativeVerticesList(pixelVertices: List<Vector2F>) {
-            writeInt(pixelVertices.size)
-            pixelVertices.forEach { vertex ->
-                if (vertex.x < 0 || vertex.x > 1 || vertex.y < 0 || vertex.y > 1) {
-//                    throw IllegalArgumentException("Pixel vertices must be [0..1], but $vertex!")
-                }
-
-                writeShort((vertex.x * 65536).toShort())
-                writeShort((vertex.y * 65536).toShort())
+        private fun ByteArrayWriter.writeRelativeVerticesList(pixelLocations: List<Vector3F>) {
+            writeInt(pixelLocations.size)
+            pixelLocations.forEach { vertex ->
+                writeFloat(vertex.x)
+                writeFloat(vertex.y)
+                writeFloat(vertex.z)
             }
         }
     }
@@ -157,9 +187,9 @@ class BrainMappingMessage(
         writer.writeVector2F(panelUvBottomRight)
         writer.writeInt(pixelCount)
 
-        val vertexCount = pixelVertices.size
+        val vertexCount = pixelLocations.size
         writer.writeInt(vertexCount)
-        writer.writeRelativeVerticesList(pixelVertices)
+        writer.writeRelativeVerticesList(pixelLocations)
     }
 }
 

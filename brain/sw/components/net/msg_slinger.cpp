@@ -2,6 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
+#include <sysmon.h>
 #include "msg_slinger.h"
 
 #include "net_priv.h"
@@ -23,10 +24,10 @@ void got_ip_address(void *arg, esp_event_base_t base, int32_t id, void *data) {
 
 // Glue function FTW
 void handle_net_out(void *arg, esp_event_base_t base, int32_t id, void *data) {
-    ESP_LOGW(TAG, "handle_net_out arg=%p data=%p", arg, data);
+    ESP_LOGD(TAG, "handle_net_out arg=%p data=%p", arg, data);
     if (data) {
         Msg** ppMsg = (Msg**)data;
-        ESP_LOGW(TAG, "  *ppMsg=%p  ", *ppMsg);
+        ESP_LOGD(TAG, "  *ppMsg=%p  ", *ppMsg);
 
         ((MsgSlinger *) arg)->_handleNetOut(*ppMsg);
     } else {
@@ -161,7 +162,7 @@ void
 MsgSlinger::_inputPump() {
     ESP_LOGI(TAG, "_inputPump starting");
 
-    while(true) {
+    while(!m_timeToDie) {
         ESP_LOGD(TAG, "Waiting for data in _inputPump m_sock=%d", m_sock);
 
         // Get a new input buffer message and make sure it has a reasonable
@@ -179,25 +180,31 @@ MsgSlinger::_inputPump() {
         int len = recvfrom(m_sock, pMsg->buffer(), pMsg->capacity() - 1, 0,
                            pMsg->dest.addr(), &socklen);
 
-        if (len < 0) {
-            ESP_LOGE(TAG, "recvfrom failed: %d %s", errno, strerror(errno));
-            // Delay at least a little bit so the rest of the system isn't horribly
-            // gunked up on an endless error scenario. Presumably the socket
-            // will get re-bound at some point because an interface comes back up.
-            vTaskDelay(pdMS_TO_TICKS(100));
-            break;
-        } else {
-            pMsg->setUsed(len);
+        if (!m_timeToDie) {
+            if (len < 0) {
+                ESP_LOGE(TAG, "recvfrom failed: %d %s", errno, strerror(errno));
+                // Delay at least a little bit so the rest of the system isn't horribly
+                // gunked up on an endless error scenario. Presumably the socket
+                // will get re-bound at some point because an interface comes back up.
+                vTaskDelay(pdMS_TO_TICKS(100));
+                break;
+            } else {
+                pMsg->setUsed(len);
 
-            // inet_ntoa_r(pMsg->dest.addr_in()->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
+                // inet_ntoa_r(pMsg->dest.addr_in()->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
 
-            //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
-            ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
+                //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
+                ESP_LOGI(TAG, "Received %d bytes from %s:", len, pMsg->dest.toString());
+                gSysMon.increment(COUNTER_UDP_RECV);
 
-            handleNetIn(pMsg);
+                handleNetIn(pMsg);
+            }
         }
         pMsg->release();
     }
+
+    // Delete ourself!
+    vTaskDelete(nullptr);
 }
 
 void
@@ -206,13 +213,17 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
 
     // This message contains a header, so let's parse it
     auto header = pMsg->readHeader();
-    ESP_LOGD(TAG, "Read a msg header");
+    ESP_LOGD(TAG, "Read a msg header msgId=%d", header.id);
+
+    ESP_LOGD(TAG, "id=( %d ).size=%d  frameOffset=%d frameSize=%d",
+            header.id, header.msgSize, header.frameOffset, header.frameSize);
 
     if (header.frameOffset == 0) {
         // It is a new message
         if (header.frameSize == header.msgSize) {
             // It is a single message so we can dispatch it as is
             ESP_LOGD(TAG, "Dispatching single fragment message");
+            gSysMon.increment(COUNTER_MSG_SINGLE_OK);
             dispatch(pMsg);
             ESP_LOGD(TAG, "Dispatch complete for single fragment message");
         } else {
@@ -222,6 +233,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
             // Allocate space for the whole message
             if (!pMsg->prepCapacity(header.msgSize + Msg::HEADER_SIZE)) {
                 ESP_LOGE(TAG, "Unable to prep a fragged message of size %d, dropping it", header.msgSize);
+                gSysMon.increment(COUNTER_MSG_LOST);
                 return;
             }
             ESP_LOGD(TAG, "Got first segment of a fragmented message");
@@ -229,6 +241,9 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
             // Cool, we hold onto this message then (making sure not to leak
             // anything that was previously hanging around)
             if (m_pFraggedMsg) {
+                ESP_LOGW(TAG, "Dropping old message ( %d ) and replacing with new one ( %d)",
+                         m_nFraggedMsgId, header.id);
+                gSysMon.increment(COUNTER_MSG_LOST);
                 m_pFraggedMsg->release();
             }
             m_pFraggedMsg = pMsg;
@@ -239,12 +254,14 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
     } else {
         // It is a continuing fragment of an old message
         if (!m_pFraggedMsg) {
-            ESP_LOGW(TAG, "Got continuation fragment for %d but do not have that message waiting.", header.id);
+            ESP_LOGW(TAG, "Got continuation fragment for ( %d ) but am waiting for ( %d )", header.id, m_nFraggedMsgId);
+            gSysMon.increment(COUNTER_MSG_BAD_ID);
             return;
         }
 
         if (header.id != m_nFraggedMsgId) {
             ESP_LOGW(TAG, "Got continuation of %d but have %d, dropping both", header.id, m_nFraggedMsgId);
+            gSysMon.increment(COUNTER_MSG_BAD_ID);
             m_pFraggedMsg->release();
             m_pFraggedMsg = nullptr;
             return;
@@ -256,6 +273,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
         if (m_pFraggedMsg->addFragment(pMsg)) {
             // Oh hey, we should dispatch it!
             ESP_LOGD(TAG, "Dispatching fragmented message");
+            gSysMon.increment(COUNTER_MSG_FRAG_OK);
             dispatch(m_pFraggedMsg);
             m_pFraggedMsg->release();
             m_pFraggedMsg = nullptr;
@@ -277,7 +295,9 @@ void
 MsgSlinger::_handleNetOut(Msg *pMsg) {
     if (!pMsg) return;
 
-    ESP_LOGI(TAG, "Sending this message");
+    if (m_timeToDie) return;
+
+    ESP_LOGI(TAG, "Sending this message msgId=%d", (((int) pMsg->buffer()[0]) & 0xff) * 256 + ((int) pMsg->buffer()[1] & 0xff));
     pMsg->log();
 
     if (m_sock < 0) {
@@ -329,6 +349,7 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
             ESP_LOGE(TAG, "Error occurred sending to %s : m_sock=%d %d %s",
                      pMsg->dest.toString(), m_sock, errno, strerror(errno));
         } else {
+            gSysMon.increment(COUNTER_MSG_SENT);
             ESP_LOGD(TAG, "Message sent to %s", pMsg->dest.toString() );
         }
 //    }
@@ -338,6 +359,8 @@ MsgSlinger::_handleNetOut(Msg *pMsg) {
 
 esp_err_t
 MsgSlinger::sendMsg(Msg *pMsg) {
+    if (m_timeToDie) return ESP_FAIL;
+
     if (!pMsg) {
         ESP_LOGW(TAG, "sendMsg this=%p pMsg=%p len=%d dest=%s", this, pMsg, pMsg->used(), pMsg->dest.toString());
         return ESP_FAIL;

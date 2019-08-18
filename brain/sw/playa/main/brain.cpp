@@ -2,6 +2,7 @@
 // Created by Tom Seago on 2019-06-02.
 //
 
+#include <esp_ota_ops.h>
 #include "brain.h"
 #include "brain_common.h"
 
@@ -9,6 +10,10 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "esp_https_ota.h"
+
+#define MAX_URL_SIZE 512
+#define MAX_OTA_SECONDS 300
 
 static const uint16_t BRAIN_PORT = 8003;
 
@@ -51,6 +56,10 @@ Brain::handleMsg(Msg* pMsg)
             msgPing(pMsg);
             break;
 
+        case static_cast<int>(Msg::Type::USE_FIRMWARE):
+            msgUseFirmware(pMsg);
+            break;
+
         default:
             ESP_LOGW(TAG, "Unknown message type %d", nMsgType);
             break;
@@ -65,10 +74,10 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
 
     bool havePongData = pMsg->readBoolean();
     uint8_t *data = nullptr;
-    size_t dataLen = 0;
+    size_t pongDataLen = 0;
     if (havePongData) {
-        dataLen = pMsg->copyBytes(&data);
-        ESP_LOGD(TAG, "Read %d bytes for pong", dataLen);
+        pongDataLen = pMsg->copyBytes(&data);
+        ESP_LOGD(TAG, "Read %d bytes for pong", pongDataLen);
     }
 
     m_shadeTree.handleMessage(pMsg);
@@ -84,7 +93,7 @@ Brain::msgBrainPanelShade(Msg* pMsg) {
     m_ledRenderer.render();
 
     if (havePongData) {
-        sendPong(pMsg->dest, data, dataLen);
+        sendPong(pMsg->dest, data, pongDataLen);
     }
     if (data) {
         free(data);
@@ -116,11 +125,140 @@ Brain::msgPing(Msg* pMsg) {
     bool isPong = pMsg->readBoolean();
     if (!isPong) {
         uint8_t* data;
-        size_t dataLen = pMsg->copyBytes(&data);
-        sendPong(pMsg->dest, data, dataLen);
+        size_t pongDataLen = pMsg->copyBytes(&data);
+        sendPong(pMsg->dest, data, pongDataLen);
         free(data);
     }
 }
+
+esp_err_t ota_event(esp_http_client_event_t *evt)
+{
+    switch (evt->event_id) {
+        case HTTP_EVENT_ERROR:
+            ESP_LOGD(TAG, "HTTP_EVENT_ERROR");
+            break;
+        case HTTP_EVENT_ON_CONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_CONNECTED");
+            break;
+        case HTTP_EVENT_HEADER_SENT:
+            ESP_LOGD(TAG, "HTTP_EVENT_HEADER_SENT");
+            break;
+        case HTTP_EVENT_ON_HEADER:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+            break;
+        case HTTP_EVENT_ON_DATA:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
+            break;
+        case HTTP_EVENT_ON_FINISH:
+            ESP_LOGD(TAG, "HTTP_EVENT_ON_FINISH");
+            break;
+        case HTTP_EVENT_DISCONNECTED:
+            ESP_LOGD(TAG, "HTTP_EVENT_DISCONNECTED");
+            break;
+    }
+    return ESP_OK;
+}
+
+
+void
+Brain::msgUseFirmware(Msg *pMsg){
+    if (!pMsg) return;
+
+    ESP_LOGD(TAG, "MSG: Use Firmware");
+
+    timeval now;
+    gettimeofday(&now, nullptr);
+
+    if (m_otaStartedAt.tv_sec > 0) {
+        auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
+        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %ld secs", diff);
+
+        if (diff < MAX_OTA_SECONDS) {
+            ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will ignore this new request", MAX_OTA_SECONDS);
+            return;
+        }
+
+        ESP_LOGW(TAG, "It's been more than %d seconds, so we will start a new OTA process...", MAX_OTA_SECONDS);
+    }
+    m_otaStartedAt = now;
+    stopEverythingForOTA();
+
+    char* szBuf = (char*)malloc(MAX_URL_SIZE);
+    if (!szBuf) {
+        ESP_LOGE(TAG, "Unable to allocate a scratch buffer for the url");
+        return;
+    }
+    // Start out nice just in case
+    szBuf[0] = 0;
+
+    auto read = pMsg->readString(szBuf, MAX_URL_SIZE-1);
+    if (!read) {
+        ESP_LOGE(TAG, "Firmware URL was empty");
+        free(szBuf);
+        return;
+    }
+    // Gotta keep 'er terminated
+    szBuf[read] = 0;
+
+    ESP_LOGE(TAG, "Was told to use a new firmware %s", szBuf);
+
+    m_otaFetcher.fetchFromUrl(szBuf);
+
+    /*
+    esp_http_client_config_t clientCfg{};
+    clientCfg.url = szBuf;
+    clientCfg.event_handler = ota_event;
+
+    ESP_LOGE(TAG, "Starting the ota download...");
+
+    esp_https_ota_handle_t hOta;
+    esp_https_ota_config_t otaConfig;
+    otaConfig.http_config = &clientCfg;
+
+    auto err = esp_https_ota_begin(&otaConfig, &hOta);
+    if (err != ESP_OK || hOta == nullptr) {
+        ESP_LOGE(TAG, "Failed to start OTA: err=%d", err);
+        return;
+    }
+
+    while(1) {
+        err = esp_https_ota_perform(hOta);
+        if (err == ESP_OK) break;
+
+        if (err != ESP_ERR_HTTPS_OTA_IN_PROGRESS) {
+            ESP_LOGE(TAG, "Error during OTA %d", err);
+            break;
+        } else {
+            // ESP_LOGE(TAG, "OTA chunk");
+        }
+    }
+
+    auto finishErr = esp_https_ota_finish(hOta);
+    if (finishErr != ESP_OK) {
+        ESP_LOGE(TAG, "Error at OTA finish %d", finishErr);
+    } else {
+        ESP_LOGE(TAG, "Hey! That was a good OTA");
+    }
+//    auto err = esp_https_ota(&clientCfg);
+//    if (err != ESP_OK) {
+//        ESP_LOGE(TAG, "Failed to do OTA %d", err);
+//    } else {
+//        ESP_LOGE(TAG, "OTA Success!!!!!!");
+//    }
+
+    // Always restart after OTA because we stopped everything so
+    // that nothing else interferred with the OTA process
+//    ESP_LOGE(TAG, "Always reboot at the end of OTA");
+//    brain_restart(10);
+//
+//    // Important in case the OTA failed so that we can try again.
+//    m_otaStartedAt.tv_sec = 0;
+//    m_otaStartedAt.tv_usec = 0;
+     */
+
+    free(szBuf);
+}
+
 
 void
 Brain::sendPong(const IpPort &port, const uint8_t *data, size_t dataLen) {
@@ -141,14 +279,19 @@ void maybe_send_hello(TimerHandle_t hTimer)
 void
 Brain::maybeSendHello()
 {
-    ESP_LOGE(TAG, "Want to send a hello now...");
+    if (otaStarted()) {
+        ESP_LOGW(TAG, "No more hello because OTA started");
+        return;
+    }
 
     sendHello(IpPort::BroadcastPinky);
 }
 
 void
 Brain::sendHello(const IpPort &port) {
-    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr);
+    auto desc = esp_ota_get_app_description();
+
+    Msg *pHello = new BrainHelloMsg(m_brainId, nullptr, desc->version, desc->idf_ver);
     pHello->dest = port;
 
     pHello->injectFragmentingHeader(); // Because hatefulness
@@ -171,7 +314,7 @@ void Brain::startSecondStageBoot() {
     GlobalConfig.load();
 
     m_netTransport.start(DefaultBrainTasks.net);
-    m_netTransport.reconfigure();
+//    m_netTransport.reconfigure();
 
     m_msgSlinger.registerHandler(this);
     m_msgSlinger.start(BRAIN_PORT, DefaultBrainTasks.netInput, DefaultBrainTasks.netOutput);
@@ -209,5 +352,16 @@ void Brain::startSecondStageBoot() {
     m_httpServer.start();
 }
 
+bool Brain::otaStarted() {
+    return m_otaStartedAt.tv_sec != 0;
+}
+
+void Brain::stopEverythingForOTA() {
+    m_msgSlinger.stop();
+    m_shadeTree.stop();
+    m_ledRenderer.stop();
+    // m_httpServer.stop();
+
+}
 
 

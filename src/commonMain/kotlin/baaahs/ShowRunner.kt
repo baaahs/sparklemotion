@@ -8,9 +8,10 @@ class ShowRunner(
     private val model: Model<*>,
     initialShow: Show,
     private val gadgetManager: GadgetManager,
-    private val beatProvider: Pinky.BeatProvider,
+    private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
-    private val movingHeadManager: MovingHeadManager
+    private val movingHeadManager: MovingHeadManager,
+    internal val clock: Clock
 ) {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
@@ -30,7 +31,11 @@ class ShowRunner(
     private var shadersLocked = true
     private var gadgetsLocked = true
 
-    fun getBeatProvider(): Pinky.BeatProvider = beatProvider
+    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
+    val currentBeat: Float
+        get() = beatSource.getBeatData().beatWithinMeasure(clock)
+
+    fun getBeatSource(): BeatSource = beatSource
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
@@ -140,10 +145,10 @@ class ShowRunner(
                 try {
                     currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
 
-                    logger.info(
+                    logger.info {
                         "Show ${currentShow!!.name} updated; " +
                                 "${shaderBuffers.size} surfaces"
-                    )
+                    }
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
                     nextShow = currentShow ?: nextShow
@@ -173,11 +178,11 @@ class ShowRunner(
             currentShowRenderer = startingShow.createRenderer(model, this)
         }
 
-        logger.info(
+        logger.info {
             "New show ${startingShow.name} created; " +
                     "${shaderBuffers.size} surfaces " +
                     "and ${requestedGadgets.size} gadgets"
-        )
+        }
 
         gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
         requestedGadgets.clear()
@@ -218,6 +223,9 @@ class ShowRunner(
             val shaderBuffer = shaderBuffers.first()
 
             receiversFor(surface).forEach { receiver ->
+                // TODO: The send might return an error, at which point this receiver should be nuked
+                // from the list of receivers for this surface. I'm not quite sure the best way to do
+                // that so I'm leaving this note.
                 receiver.send(shaderBuffer)
             }
         }
@@ -235,4 +243,7 @@ class ShowRunner(
         open fun send(shaderBuffer: Shader.Buffer) = sendFn(shaderBuffer)
     }
 
+    companion object {
+        val logger = Logger("ShowRunner")
+    }
 }

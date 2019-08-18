@@ -2,13 +2,19 @@ package baaahs
 
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
+import baaahs.geom.Vector3F
 import baaahs.net.TestNetwork
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.test.expect
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
@@ -35,7 +41,8 @@ class ShowRunnerTest {
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, FakeBeatProvider, dmxUniverse, movingHeadManager)
+        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse,
+            movingHeadManager, FakeClock())
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -251,7 +258,7 @@ class ShowRunnerTest {
             showRunner.getMovingHeadBuffer(
                 MovingHead(
                     "leftEye",
-                    SheepModel.Point(-163.738f, 204.361f, 439.302f)
+                    Vector3F(-163.738f, 204.361f, 439.302f)
                 )
             )
         }
@@ -312,10 +319,5 @@ class ShowRunnerTest {
                 onSurfacesChanged(newSurfaces, removedSurfaces)
             }
         }
-    }
-
-    object FakeBeatProvider : Pinky.BeatProvider {
-        override var bpm = 120f
-        override val beat = 0f
     }
 }

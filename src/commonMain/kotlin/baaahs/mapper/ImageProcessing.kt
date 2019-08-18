@@ -18,6 +18,8 @@ class ImageProcessing {
     }
 
     companion object {
+        val rgbaPixelDetectionIndex = 1 // green
+
         fun channelHistogram(
             channel: Int,
             bitmap: Bitmap
@@ -43,7 +45,6 @@ class ImageProcessing {
             newBitmap: Bitmap,
             baseBitmap: Bitmap,
             deltaBitmap: Bitmap,
-            detector: Mapper.Detector,
             maskBitmap: Bitmap? = null,
             withinRegion: MediaDevices.Region = MediaDevices.Region.containing(baseBitmap)
         ): Analysis {
@@ -53,13 +54,12 @@ class ImageProcessing {
                 deltaBitmap.darken(maskBitmap)
             }
 
-            return analyze(deltaBitmap, detector, withinRegion)
+            return analyze(deltaBitmap, withinRegion)
         }
 
         @UseExperimental(ExperimentalUnsignedTypes::class)
         fun pixels(
             bitmap: Bitmap,
-            detector: Mapper.Detector,
             regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap),
             fn: (x: Int, y: Int, value: Int) -> Unit
         ) {
@@ -67,7 +67,7 @@ class ImageProcessing {
                 for (y in regionOfInterest.yRange) {
                     for (x in regionOfInterest.xRange) {
                         val pixelByteIndex = (x + y * bitmap.width) * 4
-                        val pixValue = data[pixelByteIndex + detector.rgbaIndex].toInt()
+                        val pixValue = data[pixelByteIndex + rgbaPixelDetectionIndex].toInt()
                         fn(x, y, pixValue)
                     }
                 }
@@ -79,7 +79,6 @@ class ImageProcessing {
         @UseExperimental(ExperimentalUnsignedTypes::class)
         fun analyze(
             bitmap: Bitmap,
-            detector: Mapper.Detector,
             regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap)
         ): Analysis {
             val hist = IntArray(256) { 0 }
@@ -94,7 +93,7 @@ class ImageProcessing {
                 for (y in regionOfInterest.yRange) {
                     for (x in regionOfInterest.xRange) {
                         val pixelByteIndex = (x + y * bitmap.width) * 4
-                        val pixValue = data[pixelByteIndex + detector.rgbaIndex].toShort()
+                        val pixValue = data[pixelByteIndex + rgbaPixelDetectionIndex].toShort()
 
                         if (pixValue < xMin[x]) xMin[x] = pixValue
                         if (pixValue > xMax[x]) xMax[x] = pixValue
@@ -158,6 +157,16 @@ class ImageProcessing {
 
         private fun ShortArray.copyOfRange(intRange: IntRange): ShortArray {
             return copyOfRange(intRange.first, intRange.last)
+        }
+
+        fun hasBrightSpots(): Boolean {
+            this.hist.data.reduce { acc, i ->
+                if (i - acc > 3) { // one or two brigher pixels don't count
+                    return true
+                }
+                i
+            }
+            return false
         }
     }
 }

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -59,7 +60,7 @@ class Brain(
             val elapsedSinceMessageMs = getTimeMillis() - lastInstructionsReceivedAtMs
             if (elapsedSinceMessageMs > 10000) {
                 if (lastInstructionsReceivedAtMs != 0L) {
-                    logger.info("$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms")
+                    logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms" }
                 }
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
             }
@@ -116,7 +117,7 @@ class Brain(
                 surfaceName = message.surfaceName
                 surface = if (message.surfaceName != null) {
                     val fakeModelSurface = FakeModelSurface(message.surfaceName)
-                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelVertices)
+                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations)
                 } else {
                     AnonymousSurface(BrainId(id))
                 }
@@ -144,6 +145,7 @@ class Brain(
 
     class RenderTree<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
+
         fun draw(pixels: Pixels) {
             renderer.beginFrame(buffer, pixels.size)
             for (i in pixels.indices) {
@@ -154,5 +156,11 @@ class Brain(
         }
     }
 
-    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface
+    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface {
+        override fun allVertices(): Collection<Vector3F> = emptyList()
+    }
+
+    companion object {
+        val logger = Logger("Brain")
+    }
 }

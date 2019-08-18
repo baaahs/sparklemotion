@@ -44,9 +44,9 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
         }
 
     init {
-        packetLossRate = 0.05f
+//        packetLossRate = 0.05f
+        packetLossRate = 0.0f
     }
-
 
     private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
     private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
@@ -93,6 +93,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val beat3: Element
     private val beat4: Element
     private val beats: List<Element>
+    private val bpmSpan: Element
+    private val beatConfidenceElement: Element
     private var showList = emptyList<Show>()
     private val showListInput: HTMLSelectElement
     private var showFramerate: Element = document.getElementById("showFramerate")!!
@@ -106,8 +108,13 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         val beatsDiv = element.appendElement("div") {
             id = "beatsDiv"
             appendElement("b") { appendText("Beats: ") }
+        }
+        beatConfidenceElement = beatsDiv.appendElement("b") {
+            appendText("[confidence: ?]")
             appendElement("br") {}
         }
+        bpmSpan = beatsDiv.appendElement("h1") { appendText("…BPM !!") }
+        bpmSpan.classList.add("bpmDisplay-beatOff")
         beat1 = beatsDiv.appendElement("span") { appendText("1") }
         beat2 = beatsDiv.appendElement("span") { appendText("2") }
         beat3 = beatsDiv.appendElement("span") { appendText("3") }
@@ -142,10 +149,40 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         }
 
     override var beat: Int = 0
-        set (value) {
-            beats[field].classList.clear()
-            beats[value].classList.add("selected")
+        set(value) {
+            try {
+                beats[field].classList.clear()
+                beats[value].classList.add("selected")
+                if (value % 2 == 1) {
+                    bpmSpan.classList.add("bpmDisplay-beatOn")
+                    bpmSpan.textContent = bpmSpan.textContent + "!!"
+                } else {
+                    bpmSpan.classList.remove("bpmDisplay-beatOn")
+                    bpmSpan.textContent = bpmSpan.textContent?.removeSuffix(" !!")
+                }
+            } catch (e: Exception) {
+                println("durrr error $e")
+            }
 
+            field = value
+        }
+
+    fun Double.format(digits: Int): String = this.asDynamic().toFixed(digits) as String
+    fun Float.format(digits: Int): String = this.asDynamic().toFixed(digits) as String
+
+    override var bpm: Float = 0.0f
+        set(value) {
+            if (beat % 2 == 0) {
+                bpmSpan.textContent = "${value.format(1)} BPM !!"
+            } else {
+                bpmSpan.textContent = "${value.format(1)} BPM"
+            }
+            field = value
+        }
+
+    override var beatConfidence: Float = 1.0f
+        set(value) {
+            beatConfidenceElement.textContent = "[confidence: ${value * 100}%]"
             field = value
         }
 }

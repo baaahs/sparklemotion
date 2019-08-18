@@ -52,12 +52,15 @@ extern "C" void app_main()
 //    esp_log_level_set(TAG_BRAIN, ESP_LOG_DEBUG);
 //    esp_log_level_set(TAG_LEDREN, ESP_LOG_DEBUG);
 //
-//    esp_log_level_set(TAG_NET, ESP_LOG_DEBUG);
+//    esp_log_level_set(TAG_NET, ESP_LOG_INFO);
 //    esp_log_level_set(TAG_HTTPD, ESP_LOG_DEBUG);
 //    esp_log_level_set(TAG_MSG, ESP_LOG_DEBUG);
 //    esp_log_level_set(TAG_SHADER, ESP_LOG_DEBUG);
 //    esp_log_level_set(TAG_SHDTREE, ESP_LOG_DEBUG);
 //    esp_log_level_set(TAG_UI, ESP_LOG_DEBUG);
+
+    esp_log_level_set(TAG_OTA, ESP_LOG_DEBUG);
+//     esp_log_level_set("HTTP_CLIENT", ESP_LOG_DEBUG);
 
     // Configure the default event loop before anything else happens
     ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetTaskName(nullptr));

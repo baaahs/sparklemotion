@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
 
 /**
  * Represents a surface whose lighting can be controlled.
@@ -19,7 +19,8 @@ interface Surface {
 class IdentifiedSurface(
     val modelSurface: Model.Surface,
     override val pixelCount: Int,
-    val pixelVertices: List<Vector2F>? = emptyList()
+    /** Each pixel's location in the global 3d model. */
+    val pixelLocations: List<Vector3F?>? = emptyList()
 ) : Surface {
     val name: String = modelSurface.name
     override fun describe(): String = modelSurface.description

@@ -16,6 +16,7 @@ public:
     ShadeTree(Surface *surface);
 
     void start();
+    void stop() { m_timeToDie = true; }
 
     void beginShade(LEDShaderContext* pCtx) override;
 
@@ -33,6 +34,8 @@ public:
     void _handleEvent(esp_event_base_t base, int32_t id, void* event_data);
 
 private:
+    bool m_timeToDie = false;
+
     Surface *m_surface;
 
     SemaphoreHandle_t m_hMsgAccess;

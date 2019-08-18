@@ -4,6 +4,7 @@ import throttle from 'lodash/throttle';
 import sass from './Slider.scss';
 import { Handles, Rail, Slider, Ticks, Tracks } from 'react-compound-slider';
 import { Handle, SliderRail, Tick, Track } from './slider-parts';
+import { enableScroll, disableScroll } from '../../utils';
 
 const sliderStyle = {
   position: 'relative',
@@ -33,6 +34,30 @@ class RangeSlider extends React.Component {
     }
   }
 
+  get domain() {
+    const { gadget } = this.props;
+    const { minValue, maxValue } = gadget;
+
+    let domain = [0, 1];
+
+    if (minValue !== null && maxValue !== null) {
+      domain = [minValue, maxValue];
+    }
+
+    return domain;
+  }
+
+  get stepValue() {
+    const { gadget } = this.props;
+    const { stepValue } = gadget;
+
+    if (stepValue !== null) {
+      return stepValue;
+    }
+
+    return 0.01;
+  }
+
   _handleChangeFromServer = () => {
     this.setState({ value: this.props.gadget.value });
   };
@@ -58,9 +83,11 @@ class RangeSlider extends React.Component {
           vertical
           reversed
           mode={2}
-          step={0.01}
-          domain={domain}
+          step={this.stepValue}
+          domain={this.domain}
           rootStyle={sliderStyle}
+          onSlideStart={disableScroll}
+          onSlideEnd={enableScroll}
           onUpdate={(values) => {
             this.onUpdate(values[0]);
           }}
@@ -117,12 +144,12 @@ class RangeSlider extends React.Component {
 
 RangeSlider.propTypes = {
   pubSub: PropTypes.object,
-  //   gadget: PropTypes.object,
+  gadget: PropTypes.object,
 };
 
 RangeSlider.defaultProps = {
   pubSub: {},
-  //   gadget: {},
+  gadget: {},
 };
 
 export default RangeSlider;

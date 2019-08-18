@@ -18,20 +18,29 @@ class Eyes extends React.Component {
       presets: {},
       showModal: '',
     };
+  }
 
-    this.pubSub = props.pubSub;
-
+  componentDidMount() {
     this.movingHeadDisplay = new baaahs.MovingHeadDisplay(
       this.props.pubSub,
-      (movingHeads) => {
+        (movingHeads) => {
         this.setState({ movingHeads, selected: [movingHeads[0]] });
       }
     );
 
-    this.movingHeadDisplay.addPresetsListener((presetsJson) => {
-      const presets = JSON.parse(presetsJson);
-      this.setState({ presets: presets });
-    });
+    this.movingHeadDisplay.addPresetsListener(this.presetListenerFn);
+  }
+
+  componentWillUnmount() {
+    if (this.movingHeadDisplay) {
+      this.movingHeadDisplay.removePresetsListener(this.presetListenerFn);
+    }
+  }
+
+  presetListenerFn = (presetsJson) => {
+    const presets = JSON.parse(presetsJson);
+
+    this.setState({ presets: presets });
   }
 
   handlePanTiltChange = ({ x, y }) => {
@@ -120,10 +129,11 @@ class Eyes extends React.Component {
           }}
           x={x}
           y={y}
-          height={255}
-          width={255}
+          minValue={0}
+          maxValue={255}
+          height={500}
+          width={500}
         />
-        <div>Eye Color goes here</div>
       </Fragment>
     );
   };
@@ -133,7 +143,7 @@ class Eyes extends React.Component {
       <Fragment>
         {Object.keys(this.state.presets).map((presetName) => {
           return (
-            <button onClick={() => this.handlePresetSelect(presetName)}>
+            <button key={presetName} onClick={() => this.handlePresetSelect(presetName)}>
               {presetName}
             </button>
           );
@@ -146,7 +156,7 @@ class Eyes extends React.Component {
     return (
       <Fragment>
         <div style={{ width: '100%' }}>
-          <div style={{ display: 'inline-block' }}>
+          <div className={s['moving-heads__wrapper']}>
             {this.renderRadioButtons()}
             {this.renderEyeControls()}
           </div>
@@ -177,6 +187,7 @@ class Eyes extends React.Component {
           {Object.keys(this.state.presets).map((presetName) => {
             return (
               <button
+                key={presetName}
                 style={{ display: "block" }}
                 onClick={() => this.handlePresetSelect(presetName)}
               >

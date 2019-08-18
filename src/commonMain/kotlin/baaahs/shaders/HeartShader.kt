@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
@@ -46,12 +47,13 @@ class HeartShader : Shader<HeartShader.Buffer>(ShaderId.HEART) {
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-            if (pixelVertices == null) {
-                return Color.BLACK
-            }
+        private val uvTranslator =
+            if (surface is IdentifiedSurface) PanelSpaceUvTranslator.forSurface(surface) else null
 
-            var (x, y) = pixelVertices[pixelIndex]
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
+            if (uvTranslator == null) return Color.BLACK
+
+            var (x, y) = uvTranslator.getUV(pixelIndex)
             x -= .5f + buffer.xOff - .5f
             x *= 1.1f
             y -= .5f + buffer.yOff - .5f
@@ -83,7 +85,5 @@ class HeartShader : Shader<HeartShader.Buffer>(ShaderId.HEART) {
                 return Color.TRANSPARENT
             }
         }
-
-        private val pixelVertices = (surface as? IdentifiedSurface)?.pixelVertices
     }
 }

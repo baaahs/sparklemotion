@@ -154,14 +154,18 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         private val geometry = ConeBufferGeometry(50, 1000)
         private val material = MeshBasicMaterial().apply { color.set(0xffff00) }
         private val cone = Mesh(geometry, material)
-
+        private val baseXRotation = PI
+        private val baseYRotation = 0.0
+        private val baseZRotation = 0.0
 
         init {
             geometry.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0))
             material.transparent = true
             material.opacity = .75
             cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z)
-            cone.rotation.x = -PI / 2
+            cone.rotation.x = baseXRotation
+            cone.rotation.y = baseYRotation
+            cone.rotation.z = baseZRotation
             scene.add(cone)
         }
 
@@ -169,8 +173,9 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
             material.color.set(device.color.rgb)
             material.visible = device.dimmer > .1
 
-            cone.rotation.x = -PI / 2 + device.tilt
-            cone.rotation.z = device.pan.toDouble()
+            cone.rotation.x = baseXRotation + device.tilt
+            cone.rotation.y = baseYRotation
+            cone.rotation.z = baseZRotation
         }
     }
 

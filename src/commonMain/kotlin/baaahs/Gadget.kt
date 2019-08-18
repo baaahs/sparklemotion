@@ -4,7 +4,6 @@ import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import kotlinx.serialization.*
-import kotlinx.serialization.internal.ArrayListSerializer
 import kotlinx.serialization.internal.ReferenceArraySerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -63,6 +62,12 @@ open class Gadget {
 
     protected fun <T> updatable(name: String, initialValue: T, serializer: KSerializer<T>) =
         GadgetValueObserver(name, initialValue, serializer, state) { changed() }
+
+    /**
+     * Implementing child classes should change their state a little bit in some valid way, as if a user had done it.
+     */
+    open fun adjustALittleBit() {
+    }
 
     val state: MutableMap<String, JsonElement> = hashMapOf()
 }

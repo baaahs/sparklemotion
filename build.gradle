@@ -7,6 +7,9 @@ buildscript {
     ext.serialization_version = '1.3.40'
     ext.serialization_runtime_version = '0.11.1'
     ext.klockVersion = "1.5.0"
+    ext.lwjglVersion = "3.2.2"
+    ext.mockk_version = '1.9.3'
+    ext.beatlink_version = '0.5.1'
 
     repositories {
         jcenter()
@@ -21,13 +24,29 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "com.github.salomonbrys.gradle.kotlin.js:kotlin-js-gradle-utils:1.2.0"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
     }
 }
 
+import org.gradle.internal.os.OperatingSystem
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "kotlin-multiplatform"
 apply plugin: "kotlinx-serialization"
 apply plugin: "org.jetbrains.dokka"
 apply plugin: "com.github.salomonbrys.gradle.kotlin.js.mpp-assemble-web"
+
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 
 repositories {
     jcenter()
@@ -83,8 +102,27 @@ kotlin {
                 implementation "io.ktor:ktor-server-host-common:$ktor_version"
                 implementation "io.ktor:ktor-websockets:$ktor_version"
                 implementation "ch.qos.logback:logback-classic:$logback_version"
+                implementation "org.deepsymmetry:beat-link:$beatlink_version"
+
                 implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
                 implementation files("src/jvmMain/lib/javax.util.property-2_0.jar") // required by ftd2xxj
+
+                implementation "org.joml:joml:1.9.16"
+
+                // GLSL support via LWJGL:
+                implementation "org.lwjgl:lwjgl:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-assimp:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-jawt:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-openal:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+                runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-assimp:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
             }
         }
         jvmTest {
@@ -93,6 +131,7 @@ kotlin {
                 implementation kotlin('test-junit')
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+                implementation "io.mockk:mockk:$mockk_version"
             }
         }
 
@@ -123,6 +162,7 @@ kotlin {
 compileKotlinJvm {
     dependsOn ":copySheepModel"
 }
+
 task copySheepModel(type: Copy) {
     from('src/commonMain/resources')
     into 'build/classes/kotlin/jvm/main'
@@ -154,6 +194,27 @@ jsProcessResources { t ->
 
     t.from('build/web/kotlin')
     t.from('node_modules/three/build') { include 'three.js' }
+
+    doLast {
+        createResourceFilesList(new File(buildDir, "processedResources/js/main"))
+    }
+}
+
+jvmProcessResources {
+    doLast {
+        createResourceFilesList(new File(buildDir, "processedResources/jvm/main"))
+    }
+}
+
+private static void createResourceFilesList(File baseDir) {
+    def list = []
+    baseDir.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+        def path = baseDir.relativePath(file)
+        if (path != "_RESOURCE_FILES_") {
+            list << path
+        }
+    }
+    new File(baseDir, "_RESOURCE_FILES_").text = list.sort().join("\n")
 }
 
 task installReactUImodules(type: Exec) {
@@ -188,6 +249,7 @@ task runPinkyJvm(type: JavaExec) {
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
+    jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
 }
 
 task runBrainJvm(type: JavaExec) {
@@ -196,4 +258,21 @@ task runBrainJvm(type: JavaExec) {
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
+}
+
+task packageClientResources(type: Copy, dependsOn: [jsProcessResources, buildReactUI]) {
+    from project.file("build/processedResources/js/main")
+    into "build/classes/kotlin/jvm/main/htdocs"
+}
+
+jvmJar {
+    dependsOn "packageClientResources"
+}
+
+task shadowJar(type: ShadowJar, dependsOn: [jvmJar]) {
+    from jvmJar.archiveFile
+    configurations = [project.configurations.jvmRuntimeClasspath]
+    manifest {
+        attributes 'Main-Class': 'baaahs.PinkyMainKt'
+    }
 }

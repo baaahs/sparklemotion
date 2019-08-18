@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.Logger
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min
@@ -17,6 +18,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
      */
     companion object {
         const val headerSize = 12
+
+        val logger = Logger("FragmentingUdpLink")
     }
 
     private val mtu = wrappedLink.udpMtu
@@ -24,7 +27,11 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
 
     private var fragments = arrayListOf<Fragment>()
 
-    class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray)
+    class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray) {
+        override fun toString(): String {
+            return "Fragment(messageId=$messageId, offset=$offset, bytes=${bytes.size})"
+        }
+    }
 
     override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
         return FragmentingUdpSocket(wrappedLink.listenUdp(port, object : Network.UdpListener {
@@ -32,47 +39,85 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                 // reassemble fragmented payloads...
                 val reader = ByteArrayReader(bytes)
                 val messageId = reader.readShort()
-                val size = reader.readShort()
+                val size = reader.readShort().toInt()
                 val totalSize = reader.readInt()
                 val offset = reader.readInt()
-                val frameBytes = reader.readNBytes(size.toInt())
-                if (offset == 0 && size.toInt() == totalSize) {
+//                println("Received UDP: messageId=$messageId thisFrameSize=${size} totalSize=${totalSize} offset=${offset} packetSize=${bytes.size}")
+
+                if (size + headerSize > bytes.size) {
+                    logger.debug { "Discarding short UDP message: ${size + headerSize} > ${bytes.size} available" }
+                    return
+                }
+
+                val frameBytes = reader.readNBytes(size)
+                if (offset == 0 && size == totalSize) {
                     udpListener.receive(fromAddress, fromPort, frameBytes)
                 } else {
                     val thisFragment = Fragment(messageId, offset, frameBytes)
-                    fragments.add(thisFragment)
+                    synchronized(fragments) {
+                        fragments.add(thisFragment)
+                    }
 
 //                        println("received fragment: ${thisFragment}")
                     if (offset + size == totalSize) {
                         // final fragment, try to reassemble…
 
-                        val myFragments = arrayListOf<Fragment>()
-                        fragments.removeAll { fragment ->
-                            val remove = fragment.messageId == messageId
-                            if (remove) myFragments.add(fragment)
-                            remove
-                        }
-
-                        if (!fragments.isEmpty()) {
-                            // println("remaining fragments = ${fragments}")
-                        }
+                        val myFragments = removeMessageId(messageId)
 
                         val actualTotalSize = myFragments.map { it.bytes.size }.reduce { acc, i -> acc + i }
-                        if (actualTotalSize != totalSize) {
+                        if (actualTotalSize == totalSize) {
+                            val reassembleBytes = ByteArray(totalSize)
+                            myFragments.forEach {
+                                it.bytes.copyInto(reassembleBytes, it.offset)
+                            }
+
+                            udpListener.receive(fromAddress, fromPort, reassembleBytes)
+                        } else {
                             // todo: this should probably be a warn, not an error...
-                            throw IllegalArgumentException("can't reassemble packet, $actualTotalSize != $totalSize for $messageId")
+                            logger.warn {
+                                "incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
+                                        " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
+                                        " for messageId=$messageId" +
+                                        " (have ${myFragments.map { it.bytes.size }.joinToString(",")})"
+                            }
+
+                            synchronized(fragments) {
+                                fragments.addAll(myFragments)
+                            }
                         }
 
-                        val reassembleBytes = ByteArray(totalSize)
-                        myFragments.forEach {
-                            it.bytes.copyInto(reassembleBytes, it.offset)
-                        }
-
-                        udpListener.receive(fromAddress, fromPort, reassembleBytes)
                     }
                 }
             }
         }))
+    }
+
+    private fun removeMessageId(messageId: Short): List<Fragment> {
+        val myFragments = arrayListOf<Fragment>()
+
+        synchronized(fragments) {
+            fragments.removeAll { fragment ->
+                val remove = fragment.messageId == messageId
+                if (remove) myFragments.add(fragment)
+                remove
+            }
+
+            val offsets = hashSetOf<Int>()
+            myFragments.removeAll { fragment ->
+                val alreadyThere = !offsets.add(fragment.offset)
+                if (alreadyThere) {
+                    println("already there: ${fragment}")
+                    println("from: $myFragments")
+                }
+                alreadyThere // duplicate, ignore
+            }
+
+            if (myFragments.isEmpty()) {
+                println("remaining fragments = ${fragments}")
+            }
+        }
+
+        return myFragments.sortedBy { it.offset }
     }
 
     inner class FragmentingUdpSocket(private val delegate: Network.UdpSocket) : Network.UdpSocket {
@@ -91,9 +136,9 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         /** Sends payloads which might be larger than the network's MTU. */
         private fun transmitMultipartUdp(bytes: ByteArray, fn: (bytes: ByteArray) -> Unit) {
             val maxSize = 65535 * 2 // arbitrary but probably sensible
-        if (bytes.size > maxSize) {
+            if (bytes.size > maxSize) {
                 throw IllegalArgumentException("buffer too big! ${bytes.size} must be < $maxSize")
-        }
+            }
 
             val messageId = nextMessageId++
             val messageCount = (bytes.size - 1) / (mtu - headerSize) + 1
@@ -108,6 +153,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                 writer.writeInt(offset)
                 writer.writeNBytes(bytes, offset, offset + thisFrameSize)
                 fn(writer.toBytes())
+
+//                println("Sending UDP: messageId=$messageId thisFrameSize=${thisFrameSize.toShort()} totalSize=${bytes.size} offset=${offset}")
 
                 offset += thisFrameSize
             }

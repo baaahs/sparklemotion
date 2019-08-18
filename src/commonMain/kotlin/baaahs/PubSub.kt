@@ -3,11 +3,8 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.plus
@@ -23,6 +20,8 @@ abstract class PubSub {
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
             return Client(networkLink, address, port)
         }
+
+        val logger = Logger("PubSub")
     }
 
     open class Origin
@@ -42,30 +41,34 @@ abstract class PubSub {
     )
 
     abstract class Listener(private val origin: Origin) {
-        fun onUpdate(data: String, fromOrigin: Origin) {
+        fun onUpdate(data: JsonElement, fromOrigin: Origin) {
             if (origin !== fromOrigin) {
                 onUpdate(data)
             }
         }
 
-        abstract fun onUpdate(data: String)
+        abstract fun onUpdate(data: JsonElement)
     }
 
-    class TopicInfo(val name: String, var data: String? = null) {
+    class TopicInfo(val name: String, var data: JsonElement = JsonNull) {
         val listeners: MutableList<Listener> = mutableListOf()
 
-        fun notify(jsonData: String, origin: Origin) {
-            data = jsonData
-            listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
+        fun notify(jsonData: JsonElement, origin: Origin) {
+            if (jsonData != data) {
+                data = jsonData
+                listeners.forEach { listener -> listener.onUpdate(jsonData, origin) }
+            }
         }
     }
 
     open class Connection(
         private val name: String,
-        private val topics: MutableMap<String, TopicInfo>
+        private val topics: MutableMap<String, TopicInfo>,
+        private val json: Json
     ) : Origin(), Network.WebSocketListener {
         protected var connection: Network.TcpConnection? = null
         private val toSend: MutableList<ByteArray> = mutableListOf()
+        private val cleanup: MutableList<() -> Unit> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $this established")
@@ -79,21 +82,26 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
+                    val topicInfo = topics[topicName] ?:
+                            throw IllegalArgumentException("Unknown topic $topicName")
+
                     val listener = object : Listener(this) {
-                        override fun onUpdate(data: String) = sendTopicUpdate(topicName, data)
+                        override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
                     }
                     topicInfo.listeners.add(listener)
+                    cleanup.add {
+                        topicInfo.listeners.remove(listener)
+                    }
 
                     val topicData = topicInfo.data
-                    if (topicData != null) {
+                    if (topicData != JsonNull) {
                         listener.onUpdate(topicData)
                     }
                 }
 
                 "update" -> {
                     val topicName = reader.readString()
-                    val data = reader.readString()
+                    val data = json.parseJson(reader.readString())
                     val topicInfo = topics[topicName]
                     topicInfo?.notify(data, this)
                 }
@@ -104,13 +112,13 @@ abstract class PubSub {
             }
         }
 
-        fun sendTopicUpdate(name: String, data: String) {
+        fun sendTopicUpdate(name: String, data: JsonElement) {
             debug("update $name $data")
 
             val writer = ByteArrayWriter()
             writer.writeString("update")
             writer.writeString(name)
-            writer.writeString(data)
+            writer.writeString(json.stringify(JsonElementSerializer, data))
             sendCommand(writer.toBytes())
         }
 
@@ -124,7 +132,8 @@ abstract class PubSub {
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
-            TODO("PubSub.Connection.reset not implemented")
+            logger.info { "PubSub client $name disconnected." }
+            cleanup.forEach { it.invoke() }
         }
 
         private fun sendCommand(bytes: ByteArray) {
@@ -137,7 +146,7 @@ abstract class PubSub {
         }
 
         private fun debug(message: String) {
-            logger.debug("[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message")
+            logger.debug { "[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message" }
         }
     }
 
@@ -156,14 +165,14 @@ abstract class PubSub {
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
-                Connection("server at ${incomingConnection.toAddress}", topics)
+                Connection("server at ${incomingConnection.toAddress}", topics, json)
             }
         }
 
         fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
             val publisher = Origin()
             val topicName = topic.name
-            val jsonData = json.stringify(topic.serializer, data)
+            val jsonData = json.toJson(topic.serializer, data)
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
             val listener = PublisherListener(topic, publisher, onUpdate)
             topicInfo.listeners.add(listener)
@@ -171,7 +180,7 @@ abstract class PubSub {
 
             return object : Channel<T> {
                 override fun onChange(t: T) {
-                    topicInfo.notify(json.stringify(topic.serializer, t), publisher)
+                    topicInfo.notify(json.toJson(topic.serializer, t), publisher)
                 }
 
                 override fun replaceOnUpdate(onUpdate: (T) -> Unit) {
@@ -191,15 +200,15 @@ abstract class PubSub {
             origin: Origin,
             var onUpdate: (T) -> Unit
         ) : Listener(origin) {
-            override fun onUpdate(data: String) {
-                onUpdate(json.parse(topic.serializer, data))
+            override fun onUpdate(data: JsonElement) {
+                onUpdate(json.fromJson(topic.serializer, data))
             }
         }
     }
 
-    class Client(link: Network.Link, serverAddress: Network.Address, port: Int): Endpoint() {
+    class Client(link: Network.Link, serverAddress: Network.Address, port: Int) : Endpoint() {
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
-        private var server: Connection = Connection("client at ${link.myAddress}", topics)
+        private var server: Connection = Connection("client at ${link.myAddress}", topics, json)
 
         init {
             link.connectWebSocket(serverAddress, port, "/sm/ws", server)
@@ -214,24 +223,24 @@ abstract class PubSub {
                 TopicInfo(topicName)
                     .apply {
                         listeners.add(object : Listener(server) {
-                            override fun onUpdate(data: String) = server.sendTopicUpdate(topicName, data)
+                            override fun onUpdate(data: JsonElement) = server.sendTopicUpdate(topicName, data)
                         })
                     }
                     .also { server.sendTopicSub(topicName) }
             }
 
             val listener = object : Listener(subscriber) {
-                override fun onUpdate(data: String) = onUpdate(json.parse(topic.serializer, data))
+                override fun onUpdate(data: JsonElement) = onUpdate(json.fromJson(topic.serializer, data))
             }
             topicInfo.listeners.add(listener)
             val data = topicInfo.data
-            if (data != null) {
+            if (data != JsonNull) {
                 listener.onUpdate(data)
             }
 
             return object : Channel<T> {
                 override fun onChange(t: T) {
-                    val jsonData = json.stringify(topic.serializer, t)
+                    val jsonData = json.toJson(topic.serializer, t)
                     topicInfo.notify(jsonData, subscriber)
                 }
 

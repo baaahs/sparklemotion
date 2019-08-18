@@ -28,7 +28,8 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), FakeFs(), StubPinkyDisplay())
+        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
+            PermissiveFirmwareDaddy(), StubPinkyDisplay())
         pinkyLink = network.links.only()
     }
 
@@ -59,7 +60,20 @@ class PinkyTest {
     }
 
     @Test
-    fun whenMappedBrainComesOnline_showShouldBeNotified() {
+    fun whenPinkySideMappedBrainComesOnline_showShouldBeNotified() {
+        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+
+        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
+        pinky.updateSurfaces()
+        pinky.drawNextFrame()
+
+        val show = testShow1.createdShows.only()
+        expect(1) { show.shaderBuffers.size }
+        expect(1) { pinkyLink.packetsToSend.size }
+    }
+
+    @Test
+    fun whenBrainSideMappedBrainComesOnline_showShouldBeNotified() {
         pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
@@ -68,7 +82,7 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(1) { pinkyLink.packetsToSend.size }
+        expect(0) { pinkyLink.packetsToSend.size }
     }
 
     @Test
@@ -156,5 +170,8 @@ class PinkyTest {
             }
         }
     }
+}
 
+class StubBeatSource : BeatSource {
+    override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
 }

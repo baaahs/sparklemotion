@@ -13,7 +13,6 @@ object HeartbleatShow : Show("Heartbleat") {
         model as SheepModel
 
         return object : Renderer {
-            val beatProvider = showRunner.getBeatProvider()
             val hearts = showRunner.allSurfaces.filter { it is IdentifiedSurface && it.number == 7 }
                 .map { showRunner.getShaderBuffer(it, HeartShader()) }
             val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
@@ -23,7 +22,8 @@ object HeartbleatShow : Show("Heartbleat") {
             val otherSurfaces = showRunner.allUnusedSurfaces.map { showRunner.getShaderBuffer(it, SolidShader()) }
 
             override fun nextFrame() {
-                var phase = (beatProvider.beat % 1.0) * 3.0f
+                val currentBeat = showRunner.currentBeat
+                var phase = (currentBeat % 1.0) * 3.0f
                 val heartSize = heartSizeGadget.value * if (phase > 1.5 && phase < 2.5f) {
                     1f + ((.5f - abs(phase - 2)) / 4).toFloat()
                 } else if (phase > 2.5f || phase < 0.5f) {
@@ -42,7 +42,7 @@ object HeartbleatShow : Show("Heartbleat") {
 
                 otherSurfaces.forEach {
                     it.color = Color(.25f, .25f, .25f)
-                        .fade(Color(.75f, .3f, .3f), sin(beatProvider.beat / 4.0f * PI).toFloat())
+                        .fade(Color(.75f, .3f, .3f), sin(currentBeat / 4.0f * PI).toFloat())
                 }
             }
         }
@@ -50,5 +50,4 @@ object HeartbleatShow : Show("Heartbleat") {
 
     val IdentifiedSurface.number: Int
         get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
-
 }

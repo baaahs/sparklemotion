@@ -21,6 +21,11 @@ public:
     void start(uint16_t port, TaskDef input, TaskDef output);
 
     /**
+     * Will cause all tasks to exit. They can't be restarted.
+     */
+    void stop() { m_timeToDie = true; }
+
+    /**
      * Sends a message to a given address and port. A reference is added to the message.
      *
      * @param ipPort
@@ -41,6 +46,8 @@ public:
     void _handleNetOut(Msg *pMsg);
 
 private:
+    bool m_timeToDie = false;
+
     uint16_t m_port;
     int m_sock = -1;
 

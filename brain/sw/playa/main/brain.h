@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <sys/time.h>
+
 #include "net_transport.h"
 #include "msg_handler.h"
 #include "msg_slinger.h"
@@ -13,6 +15,7 @@
 #include "sysmon.h"
 #include "brain-ui.h"
 #include "http_server.h"
+#include "ota_fetcher.h"
 
 class Brain : public MsgHandler {
 public:
@@ -41,14 +44,22 @@ private:
     BrainUI m_brainUI;
     HttpServer m_httpServer;
 
+    OtaFetcher m_otaFetcher;
+
+    timeval m_otaStartedAt{};
+
     void startSecondStageBoot();
 
     void msgBrainPanelShade(Msg* pMsg);
     void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);
     void msgPing(Msg* pMsg);
+    void msgUseFirmware(Msg* pMsg);
 
     void sendHello(const IpPort &port);
     void sendPong(const IpPort &port, const uint8_t *data, size_t dataLen);
+
+    bool otaStarted();
+    void stopEverythingForOTA();
 };
 

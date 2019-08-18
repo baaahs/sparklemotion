@@ -23,7 +23,7 @@ jobs:
           name: Prefetch Dependencies
           command: |
             npm install
-            sudo npm install -g --silent gh-pages # ugh why sudo?
+            sudo npm install -g --silent gh-pages@2.0.1 # ugh why sudo?; later versions busted
             ./gradlew model
 
       - save_cache:
@@ -62,5 +62,5 @@ jobs:
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
               
-              sudo gh-pages --dotfiles --message "Auto deploy" --dist build/gh-pages
+              gh-pages --dotfiles --message "Auto deploy" --dist build/gh-pages
             fi

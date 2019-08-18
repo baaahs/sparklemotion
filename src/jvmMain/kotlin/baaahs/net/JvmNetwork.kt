@@ -1,7 +1,6 @@
 package baaahs.net
 
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
+import baaahs.Logger
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
@@ -26,19 +25,26 @@ class JvmNetwork : Network {
     private val link = RealLink()
 
     companion object {
-        private const val MAX_UDP_SIZE = 2048
+        const val MAX_UDP_SIZE = 1450
+        //const val MAX_UDP_SIZE = 4096
 
+        val logger = Logger("JvmNetwork")
         val myAddress = InetAddress.getLocalHost()
-        //        val myAddress = InetAddress.getByName("10.0.1.10")
-        private val broadcastAddress = InetAddress.getByName("255.255.255.255")
+        val broadcastAddress = InetAddress.getByName("255.255.255.255")
+
+        val networkScope = CoroutineScope(Dispatchers.IO)
+
+        fun msgId(data: ByteArray): String {
+            return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"
+        }
+
     }
 
     override fun link(): RealLink = link
 
     inner class RealLink() : Network.Link {
-        private val networkScope = CoroutineScope(Dispatchers.IO)
 
-        override val udpMtu = 1400
+        override val udpMtu = MAX_UDP_SIZE
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = JvmUdpSocket(port)
@@ -48,11 +54,15 @@ class JvmNetwork : Network {
                     val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
                     socket.udpSocket.receive(packetIn)
                     networkScope.launch {
-                        udpListener.receive(
-                            IpAddress(packetIn.address),
-                            packetIn.port,
-                            data.copyOfRange(packetIn.offset, packetIn.length)
-                        )
+                        try {
+                            udpListener.receive(
+                                IpAddress(packetIn.address),
+                                packetIn.port,
+                                data.copyOfRange(packetIn.offset, packetIn.length)
+                            )
+                        } catch (e: Exception) {
+                            RuntimeException("Error handling UDP packet", e).printStackTrace()
+                        }
                     }
                 }
             }.start()
@@ -62,7 +72,14 @@ class JvmNetwork : Network {
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
 
+            init {
+//                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
+//                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
+                println("Send buffer size is ${udpSocket.sendBufferSize}")
+            }
+
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                // println("Sending ${bytes.size} bytes to ${toAddress}")
                 val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
                 udpSocket.send(packetOut)
             }
@@ -86,7 +103,10 @@ class JvmNetwork : Network {
         }
 
         inner class KtorHttpServer(val port: Int) : Network.HttpServer {
-            val httpServer = embeddedServer(Netty, port) {
+            val httpServer = embeddedServer(Netty, port, configure = {
+                // Let's give brains lots of time for OTA download:
+                responseWriteTimeoutSeconds = 3000
+            }) {
                 install(io.ktor.websocket.WebSockets) {
                     pingPeriod = Duration.ofSeconds(15)
                     timeout = Duration.ofSeconds(15)
@@ -115,6 +135,7 @@ class JvmNetwork : Network {
                                 val frame = Frame.Binary(true, ByteBuffer.wrap(bytes.clone()))
                                 GlobalScope.launch {
                                     this@webSocket.send(frame)
+                                    this@webSocket.flush()
                                 }
                             }
                         }
@@ -143,58 +164,7 @@ class JvmNetwork : Network {
 
                     webSocket("/sm/udpProxy") {
                         try {
-                            var socket : DatagramSocket? = null
-                            while (true) {
-                                val listenThread = Thread {
-                                    val data = ByteArray(MAX_UDP_SIZE)
-                                    while (true) {
-                                        val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
-                                        socket!!.receive(packetIn)
-                                        val frame = Frame.Binary(true, ByteBuffer.wrap(ByteArrayWriter().apply {
-                                            writeByte('R'.toByte())
-                                            writeBytes(packetIn.address.address)
-                                            writeInt(packetIn.port)
-                                            writeBytes(data, packetIn.offset, packetIn.length)
-                                        }.toBytes()))
-                                        GlobalScope.launch {
-                                            outgoing.send(frame)
-                                        }
-                                    }
-                                }
-
-
-                                val frame = incoming.receive()
-                                if (frame is Frame.Binary) {
-                                    val bytes = frame.readBytes()
-                                    ByteArrayReader(bytes).apply {
-                                        val op = readByte()
-                                        when (op) {
-                                            'L'.toByte() -> {
-                                                socket = DatagramSocket() // We'll take any port the system gives us.
-                                                listenThread.start()
-                                                println("UDP: Listening on ${socket!!.localPort}")
-                                            }
-                                            'S'.toByte() -> {
-                                                val toAddress = readBytes()
-                                                val toPort = readInt()
-                                                val data = readBytes()
-                                                val packet = DatagramPacket(data, 0, data.size, InetAddress.getByAddress(toAddress), toPort)
-                                                socket!!.send(packet)
-//                                                println("UDP: Sent ${data.size} to $toAddress:$toPort")
-                                            }
-                                            'B'.toByte() -> {
-                                                val toPort = readInt()
-                                                val data = readBytes()
-                                                val packet = DatagramPacket(data, 0, data.size, broadcastAddress, toPort)
-                                                socket!!.send(packet)
-//                                                println("UDP: Broadcast ${data.size} to *:$toPort")
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    println("wait huh? received weird data: $frame")
-                                }
-                            }
+                            JvmUdpProxy().handle(this)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -209,8 +179,13 @@ class JvmNetwork : Network {
 
     data class IpAddress(val address: InetAddress) : Network.Address {
         companion object {
-            fun mine() = IpAddress(InetAddress.getLocalHost())
-//            fun mine() = IpAddress(InetAddress.getByName("10.0.1.10"))
+            fun mine(): IpAddress {
+                val envIp: String? = System.getenv("sparklemotion_ip")
+                envIp?.let {
+                    return IpAddress(InetAddress.getByName(it))
+                }
+                return IpAddress(InetAddress.getLocalHost())
+            }
         }
 
         override fun toString(): String {

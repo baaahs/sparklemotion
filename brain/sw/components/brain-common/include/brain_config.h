@@ -94,6 +94,16 @@ public:
     const char* macStr();
 
     /**
+     * A integer based on the system version string plus build
+     * date and time strings. This is an attempt at creating
+     * not a monotonically increasing but a kind of hash code
+     * of this changing date. The idea is to then use this
+     * to identify one firmware from another for things like
+     * the UI state.
+     */
+    uint32_t versionHash();
+
+    /**
      * Parse this configuration from a buffer containing valid
      * JSON configuration data. This **WILL** modify the buffer
      * passed to it by inserting convenient nulls as it reads
