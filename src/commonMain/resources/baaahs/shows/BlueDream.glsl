@@ -8,6 +8,9 @@ uniform vec2      resolution;
 uniform float     time;
 
 
+// SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 5.0, minValue: 1.0, maxValue: 10.0}
+uniform float scale;
+
 float rand(vec2 n) {
     return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
 }
@@ -36,10 +39,12 @@ void main() {
     const vec3 c5 = vec3(0.1);
     const vec3 c6 = vec3(0.3, 0.4, 0.2);
 
-    vec2 p = abs(gl_FragCoord.xy) * 5.0 / (resolution.xx);
+    vec2 p = abs(gl_FragCoord.xy) * (scale + sin(sm_beat*2.*3.141)) / (resolution.xx);
     float q =abs(exp2(fbm(p - time * 0.08)));
     vec2 r = abs(vec2(fbm(p + q + time * 0.125 - p.x - p.y), fbm(p + q - time * 1.0)));
     vec3 c = mix(c1, c2, fbm(p + r)) + mix(c3, c4, r.x) - mix(c5, c6, r.y);
+
+
     gl_FragColor = abs(vec4((c )* sqrt(1.), 1.0));
     gl_FragColor.xyz *= 1.;
     gl_FragColor.w = 1.1;

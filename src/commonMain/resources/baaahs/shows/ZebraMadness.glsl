@@ -52,14 +52,14 @@ void main( void ) {
 	vec2 position = ( gl_FragCoord.xy / resolution.yy ) ;
 	position.x-=0.6;
 	position.y-=0.5;
-	
+
 	float color = 0.0;
 	color += sin( position.x * cos( time / 15.0 ) * 80.0 ) + cos( position.y * cos( time / 15.0 ) * 10.0 );
 	color += sin( position.y * sin( time / 10.0 ) * 40.0 ) + cos( position.x * sin( time / 25.0 ) * 40.0 );
 	color += sin( position.x * sin( time / 5.0 ) * 10.0 ) + sin( position.y * sin( time / 35.0 ) * 80.0 );
-	color *= sin( time / 10.0 ) * 0.5;
+	color *= sin( sm_beat / 10.0 ) * 0.5;
 
 	//position = md(position);
-	gl_FragColor = map2(position, time/1.0); //circle(position,vec2(0.1,0.1));
+	gl_FragColor = map2(position, sm_beat/1.0); //circle(position,vec2(0.1,0.1));
 
 }

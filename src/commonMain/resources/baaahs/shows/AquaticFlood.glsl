@@ -23,6 +23,10 @@ void main(void)
     //vec4 col =vec4(1.);
     vec2 z = vec2(0.0);
 
+    float warp_factor = 1.;
+    float time_warp = sm_beat / (1. / warp_factor) - (warp_factor / 2.) + 1.;
+    vec4 beat_flash = vec4(time_warp);
+
     int trap=0;
     for(int i = 0; i < 400; i++){
         if(dot(z,z)>4.){trap = i;break;}
@@ -31,7 +35,7 @@ void main(void)
     }
     dist = sqrt(dist);
 	float orb = sqrt(float(trap))/64.;
-    gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.);
+    gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.)*beat_flash;
     //if(orb == 0.){gl_FragColor = vec4(0.);}
     //gl_FragColor = (orb!=0. ? 1.-orb*vec4(9.,5.,3.,0.):vec4(0.));
 }
