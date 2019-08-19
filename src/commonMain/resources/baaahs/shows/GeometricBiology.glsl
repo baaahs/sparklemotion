@@ -45,7 +45,7 @@ void main()
     vec2 c = voronoi( (14.0+6.0*sin(0.2*time))*p );
 
     // colorize
-    vec3 col = 0.5 + 0.5*cos( c.y*6.2831 + vec3(1.0,29.0,13.0) );	
+    vec3 col = 0.5 + 0.5*cos( c.y*6.2831 + vec3(1.0,29.0,13.0)+sin(sm_beat*2.*3.141)/2.+0.5 );
 	
     gl_FragColor = vec4( col, 1.0 );
 }
