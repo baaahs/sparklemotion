@@ -1860,8 +1860,9 @@
       return Unit;
     };
   }
-  function GadgetManager$sync$lambda$lambda_1(closure$channel) {
+  function GadgetManager$sync$lambda$lambda_1(this$GadgetManager, closure$channel) {
     return function (gadget1) {
+      this$GadgetManager.lastUserInteraction = DateTime.Companion.now();
       closure$channel.onChange(gadget1.state);
       return Unit;
     };
@@ -1913,7 +1914,7 @@
         var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0));
         var gadgetData = new GadgetData(name_1, gadget_0, topic.name);
         this.activeGadgets_0.add_11rb$(gadgetData);
-        var gadgetChannelListener = GadgetManager$sync$lambda$lambda_1(channel);
+        var gadgetChannelListener = GadgetManager$sync$lambda$lambda_1(this, channel);
         var $receiver = this.gadgets_0;
         var value = new GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener);
         $receiver.put_xwzc9p$(name_1, value);
