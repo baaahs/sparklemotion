@@ -1,14 +1,19 @@
 .nojekyll
 baaahs-model.obj
+baaahs/shows/AcidAtTheDisco.glsl
 baaahs/shows/AquaticFlood.glsl
+baaahs/shows/BlueDream.glsl
 baaahs/shows/BlueSteel.glsl
 baaahs/shows/BluesClues.glsl
 baaahs/shows/CircularDependency.glsl
+baaahs/shows/Colorgasm.glsl
 baaahs/shows/EvolutionOfAcid.glsl
 baaahs/shows/FaeriePulse.glsl
 baaahs/shows/FireDancer.glsl
 baaahs/shows/FirePulsation.glsl
 baaahs/shows/FractalCanyon.glsl
+baaahs/shows/GSpot.glsl
+baaahs/shows/Gadzooks.glsl
 baaahs/shows/GaiasOrgasm.glsl
 baaahs/shows/GardenParty.glsl
 baaahs/shows/GeometricBiology.glsl
@@ -16,6 +21,7 @@ baaahs/shows/GlslOtherShow.glsl
 baaahs/shows/GlslRedBeatShow.glsl
 baaahs/shows/GlslSandboxDebugShow.glsl
 baaahs/shows/Huearthquake.glsl
+baaahs/shows/Huenami.glsl
 baaahs/shows/HypnoSwirl.glsl
 baaahs/shows/OrangeTang.glsl
 baaahs/shows/PicassosNightmareShow.glsl
