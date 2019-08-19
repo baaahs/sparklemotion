@@ -81,12 +81,14 @@ class GadgetManager(private val pubSub: PubSub.Server) {
     internal fun findGadgetInfo(name: String) = gadgets[name]
 
     fun adjustSomething() {
+        val priorLastUserInteraction = lastUserInteraction
         activeGadgets.forEach { gadgetData ->
             if (Random.nextFloat() < .1) {
                 gadgetData.gadget.adjustALittleBit()
                 gadgetData.gadget.changed()
             }
         }
+        lastUserInteraction = priorLastUserInteraction
     }
 
     class GadgetInfo(
