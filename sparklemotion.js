@@ -1946,6 +1946,7 @@
     return this.gadgets_0.get_11rb$(name);
   };
   GadgetManager.prototype.adjustSomething = function () {
+    var priorLastUserInteraction = this.lastUserInteraction;
     var tmp$;
     tmp$ = this.activeGadgets_0.iterator();
     while (tmp$.hasNext()) {
@@ -1955,6 +1956,7 @@
         element.gadget.changed();
       }
     }
+    this.lastUserInteraction = priorLastUserInteraction;
   };
   function GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener) {
     this.topic = topic;
