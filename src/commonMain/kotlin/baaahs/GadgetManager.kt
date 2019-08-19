@@ -57,7 +57,10 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 val gadgetData = GadgetData(name, gadget, topic.name)
 
                 activeGadgets.add(gadgetData)
-                val gadgetChannelListener: (Gadget) -> Unit = { gadget1 -> channel.onChange(gadget1.state) }
+                val gadgetChannelListener: (Gadget) -> Unit = { gadget1 ->
+                    lastUserInteraction = DateTime.now()
+                    channel.onChange(gadget1.state)
+                }
                 gadgets[name] = GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
                 gadget.listen(gadgetChannelListener)
             }
