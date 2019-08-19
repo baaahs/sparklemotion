@@ -53,11 +53,13 @@ void main() {
     // Show isolines
     color -= abs(sin(40.0*m_dist))*0.07;
 
+    color *= vec3(sm_beat*0.4+0.6);
+
     // Draw cell center
     color += 1.-step(.05, m_dist);
 
     // Draw grid
-    color.r += step(.98, f_st.x) + step(.98, f_st.y);
+//    color.r += step(.98, f_st.x) + step(.98, f_st.y);
 
     gl_FragColor = vec4(color,1.0);
 }
