@@ -1843,9 +1843,9 @@
     this.gadgets_0.clear();
     this.activeGadgets_0.clear();
   };
-  function GadgetManager$sync$lambda$lambda(closure$newGadget) {
+  function GadgetManager$sync$lambda$lambda(closure$newGadget, this$GadgetManager) {
     return function (updated) {
-      closure$newGadget.state.putAll_a2k3zr$(updated);
+      this$GadgetManager.incomingGadgetChange_0(closure$newGadget, updated);
       return Unit;
     };
   }
@@ -1854,15 +1854,14 @@
       return "Gadgets don't match!\n" + ('old: ' + this$GadgetManager.priorRequestedGadgets_0 + '\n') + ('new: ' + closure$requestedGadgets);
     };
   }
-  function GadgetManager$sync$lambda$lambda_0(closure$gadget) {
+  function GadgetManager$sync$lambda$lambda_0(closure$gadget, this$GadgetManager) {
     return function (updated) {
-      closure$gadget.state.putAll_a2k3zr$(updated);
+      this$GadgetManager.incomingGadgetChange_0(closure$gadget, updated);
       return Unit;
     };
   }
-  function GadgetManager$sync$lambda$lambda_1(this$GadgetManager, closure$channel) {
+  function GadgetManager$sync$lambda$lambda_1(closure$channel) {
     return function (gadget1) {
-      this$GadgetManager.lastUserInteraction = DateTime.Companion.now();
       closure$channel.onChange(gadget1.state);
       return Unit;
     };
@@ -1892,7 +1891,7 @@
         , oldGadget = old.component2();
         var newGadget = new_0.second;
         var gadgetInfo = ensureNotNull(this.gadgets_0.get_11rb$(name_0));
-        gadgetInfo.channel.replaceOnUpdate_qlkmfe$(GadgetManager$sync$lambda$lambda(newGadget));
+        gadgetInfo.channel.replaceOnUpdate_qlkmfe$(GadgetManager$sync$lambda$lambda(newGadget, this));
         gadgetInfo.gadgetData.gadget.unlisten(gadgetInfo.gadgetChannelListener);
         gadgetInfo.gadgetData.gadget = newGadget;
         newGadget.listen(gadgetInfo.gadgetChannelListener);
@@ -1911,10 +1910,10 @@
         var name_1 = element_1.component1()
         , gadget_0 = element_1.component2();
         var topic = new PubSub$Topic('/gadgets/' + name_1, GadgetDataSerializer);
-        var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0));
+        var channel = this.pubSub_0.publish_oiz02e$(topic, gadget_0.state, GadgetManager$sync$lambda$lambda_0(gadget_0, this));
         var gadgetData = new GadgetData(name_1, gadget_0, topic.name);
         this.activeGadgets_0.add_11rb$(gadgetData);
-        var gadgetChannelListener = GadgetManager$sync$lambda$lambda_1(this, channel);
+        var gadgetChannelListener = GadgetManager$sync$lambda$lambda_1(channel);
         var $receiver = this.gadgets_0;
         var value = new GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener);
         $receiver.put_xwzc9p$(name_1, value);
@@ -1924,6 +1923,10 @@
     }
     this.priorRequestedGadgets_0.clear();
     this.priorRequestedGadgets_0.addAll_brywnq$(requestedGadgets);
+  };
+  GadgetManager.prototype.incomingGadgetChange_0 = function (gadget, updatedData) {
+    gadget.state.putAll_a2k3zr$(updatedData);
+    this.lastUserInteraction = DateTime.Companion.now();
   };
   GadgetManager.prototype.getGadgetsState = function () {
     var $receiver = this.activeGadgets_0;
@@ -1946,7 +1949,6 @@
     return this.gadgets_0.get_11rb$(name);
   };
   GadgetManager.prototype.adjustSomething = function () {
-    var priorLastUserInteraction = this.lastUserInteraction;
     var tmp$;
     tmp$ = this.activeGadgets_0.iterator();
     while (tmp$.hasNext()) {
@@ -1956,7 +1958,6 @@
         element.gadget.changed();
       }
     }
-    this.lastUserInteraction = priorLastUserInteraction;
   };
   function GadgetManager$GadgetInfo(topic, channel, gadgetData, gadgetChannelListener) {
     this.topic = topic;
