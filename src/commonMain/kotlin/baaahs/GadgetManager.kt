@@ -33,7 +33,9 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 val newGadget = new.second
 
                 val gadgetInfo = gadgets[name]!!
-                gadgetInfo.channel.replaceOnUpdate { updated -> newGadget.state.putAll(updated) }
+                gadgetInfo.channel.replaceOnUpdate { updated ->
+                    incomingGadgetChange(newGadget, updated)
+                }
                 gadgetInfo.gadgetData.gadget.unlisten(gadgetInfo.gadgetChannelListener)
                 gadgetInfo.gadgetData.gadget = newGadget
                 newGadget.listen(gadgetInfo.gadgetChannelListener)
@@ -53,12 +55,13 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 val topic =
                     PubSub.Topic("/gadgets/$name", GadgetDataSerializer)
 
-                val channel = pubSub.publish(topic, gadget.state) { updated -> gadget.state.putAll(updated) }
+                val channel = pubSub.publish(topic, gadget.state) { updated ->
+                    incomingGadgetChange(gadget, updated)
+                }
                 val gadgetData = GadgetData(name, gadget, topic.name)
 
                 activeGadgets.add(gadgetData)
                 val gadgetChannelListener: (Gadget) -> Unit = { gadget1 ->
-                    lastUserInteraction = DateTime.now()
                     channel.onChange(gadget1.state)
                 }
                 gadgets[name] = GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
@@ -71,6 +74,14 @@ class GadgetManager(private val pubSub: PubSub.Server) {
         priorRequestedGadgets.addAll(requestedGadgets)
     }
 
+    private fun incomingGadgetChange(
+        gadget: Gadget,
+        updatedData: Map<String, JsonElement>
+    ) {
+        gadget.state.putAll(updatedData)
+        lastUserInteraction = DateTime.now()
+    }
+
     fun getGadgetsState(): Map<String, Map<String, JsonElement>> {
         return activeGadgets.associate { gadgetData ->
             gadgetData.name to gadgetData.gadget.state
@@ -81,14 +92,12 @@ class GadgetManager(private val pubSub: PubSub.Server) {
     internal fun findGadgetInfo(name: String) = gadgets[name]
 
     fun adjustSomething() {
-        val priorLastUserInteraction = lastUserInteraction
         activeGadgets.forEach { gadgetData ->
             if (Random.nextFloat() < .1) {
                 gadgetData.gadget.adjustALittleBit()
                 gadgetData.gadget.changed()
             }
         }
-        lastUserInteraction = priorLastUserInteraction
     }
 
     class GadgetInfo(
