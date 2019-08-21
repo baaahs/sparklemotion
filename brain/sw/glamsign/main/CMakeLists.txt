@@ -4,8 +4,17 @@ set(COMPONENT_SRCS
 )
 
 set(COMPONENT_ADD_INCLUDEDIRS ".")
-set(COMPONENT_REQUIRES brain-common led-renderer
-        spiffs brain-httpd net shaders sysmon brain-ui esp_https_ota
+set(COMPONENT_REQUIRES
+        brain-common
+        led-renderer
+        spiffs
+        brain-httpd
+        net
+        shaders
+        sysmon
+        brain-ui
+        esp_https_ota
+        artnet
         )
 
 register_component()

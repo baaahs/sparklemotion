@@ -98,12 +98,12 @@ void WifiApInterface::enableChanged() {
         }
 
         // I think we also need to set the static info after the start?
-        ESP_LOGI(TAG, "Calling addressingChanged to set the static IP info after the wifi start call");
+        ESP_LOGI(TAG, "AP: Calling addressingChanged to set the static IP info after the wifi start call");
         addressingChanged();
 
     } else {
         // TODO: Implement this better
-        ESP_LOGE(TAG, "Disabling wifi probably isn't really implemented properly yet");
+        ESP_LOGE(TAG, "AP: Disabling wifi probably isn't really implemented properly yet");
         esp_wifi_stop();
     }
 }
@@ -113,12 +113,12 @@ void WifiApInterface::addressingChanged() {
 //        if (ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcpc_start(TCPIP_ADAPTER_IF_STA)) != ESP_OK) {
 //            m_dhcpEnabled = false;
 //        }
-        ESP_LOGE(TAG, "Can not enable DHCP on the AP interface. Ignoring");
+        ESP_LOGE(TAG, "AP: Can not enable DHCP on the AP interface. Ignoring");
         m_dhcpEnabled = false;
     } else {
         tcpip_adapter_dhcp_status_t status;
         ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcps_get_status(TCPIP_ADAPTER_IF_AP, &status));
-        ESP_LOGI(TAG, "AP dhcps status = %d", status);
+        ESP_LOGI(TAG, "AP: dhcps status = %d", status);
 
         // Stop DHCP server first or else you can't set the static ip
         ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP));
@@ -147,19 +147,19 @@ WifiApInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evData
                 break;
 
             case WIFI_EVENT_AP_PROBEREQRECVED:
-                ESP_LOGI(TAG, "AP probe req received");
+                ESP_LOGI(TAG, "AP: probe req received");
                 break;
 
             case WIFI_EVENT_AP_STACONNECTED: {
                     wifi_event_ap_staconnected_t *event = (wifi_event_ap_staconnected_t *) evData;
-                    ESP_LOGI(TAG, "Station connected to AP " MACSTR " join, AID=%d",
+                    ESP_LOGI(TAG, "AP: Station connected to AP " MACSTR " join, AID=%d",
                              MAC2STR(event->mac), event->aid);
                 }
                 break;
 
             case WIFI_EVENT_AP_STADISCONNECTED: {
                     wifi_event_ap_stadisconnected_t *event = (wifi_event_ap_stadisconnected_t *) evData;
-                    ESP_LOGI(TAG, "Station disconnected from AP " MACSTR " leave, AID=%d",
+                    ESP_LOGI(TAG, "AP: Station disconnected from AP " MACSTR " leave, AID=%d",
                              MAC2STR(event->mac), event->aid);
                 }
                 break;

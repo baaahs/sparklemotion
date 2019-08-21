@@ -142,6 +142,7 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
     if (evBase == WIFI_EVENT) {
         switch (evId) {
             case WIFI_EVENT_STA_START:
+                ESP_LOGD(TAG, "WIFI_EVENT_STA_START");
                 tellListenerStart();
 
                 // Attempt to connect
@@ -152,12 +153,14 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
                 break;
 
             case WIFI_EVENT_STA_STOP:
+                ESP_LOGD(TAG, "WIFI_EVENT_STA_STOP");
                 m_connected = false;
                 m_started = false;
                 tellListenerStop();
                 break;
 
             case WIFI_EVENT_STA_DISCONNECTED:
+                ESP_LOGD(TAG, "WIFI_EVENT_STA_DISCONNECTED");
                 m_connected = false;
                 tellListenerLinkDown();
 
@@ -178,6 +181,7 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
                 break;
 
             case WIFI_EVENT_STA_CONNECTED:
+                ESP_LOGD(TAG, "WIFI_EVENT_STA_CONNECTED");
                 m_numFailedConnects = 0;
                 m_connected = true;
 
@@ -203,7 +207,7 @@ void WifiStaInterface::startLongTermPoll() {
     }
 
     auto def = DefaultBrainTasks.longTermSTAPoll;
-    auto tcResult =def.createTask(glue_longPoll, this, &m_hLTPTask);
+    auto tcResult = def.createTask(glue_longPoll, this, &m_hLTPTask);
     if (tcResult != pdPASS) {
         ESP_LOGE(TAG, "Failed to create long term poll task %d", tcResult);
         return;
@@ -213,7 +217,7 @@ void WifiStaInterface::startLongTermPoll() {
 
 void WifiStaInterface::_taskLongPoll() {
 
-    m_haveLTPTask = false;
+    m_haveLTPTask = true;
 
     // m_connected and m_started should really be semaphores but whatever
 
