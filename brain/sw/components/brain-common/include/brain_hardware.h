@@ -60,7 +60,7 @@
 #ifdef BRAIN_VARIANT_GLAMSIGN
 
 // Using some different pixels
-#define BRAIN_NEO_COLORFEATURE     NeoGrbFeature
+#define BRAIN_NEO_COLORFEATURE     NeoRgbFeature
 
 #define BRAIN_VARIANT_REV_E
 #endif

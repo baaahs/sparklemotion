@@ -75,7 +75,8 @@ RainbowShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
 void
 RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
 //    memcpy((void*)colorOut, (void*)&m_color, 3);
-    float paletteProgress = m_pCtx->progress + (pixelIndex / 32.0f);
+    float numPixels = m_pCtx->numPixels;
+    float paletteProgress = m_pCtx->progress + (pixelIndex / numPixels);
     if (paletteProgress > 1.0f) {
         paletteProgress -= 1.0f;
     }
@@ -83,9 +84,10 @@ RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
     RgbColor color = colorInPalette(paletteProgress);
 
     if (m_pastel) {
-        uint8_t t = color.R;
-        color.R = color.G;
-        color.G = t;
+//        uint8_t t = color.R;
+//        color.R = color.G;
+//        color.G = t;
+        color = RgbColor(color.G, color.R, color.B);
     }
     memcpy((void*)colorOut, (void*)&color, 3);
 
