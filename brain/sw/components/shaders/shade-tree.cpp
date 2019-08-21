@@ -211,7 +211,7 @@ ShadeTree::nextLocalShader() {
 
     m_localShaderIndex++;
 
-    switch (m_localShaderIndex % 5) {
+    switch (m_localShaderIndex % 6) {
         case 0: // Everything is just white
             m_pLocalShader = new SolidShader(RgbColor(255));
             break;
@@ -220,15 +220,20 @@ ShadeTree::nextLocalShader() {
             m_pLocalShader = new RainbowShader(nullptr, nullptr);
             break;
 
-        case 2: // Red!
+        case 2: // Pastel Rainbow!
+            m_pLocalShader = new RainbowShader(nullptr, nullptr);
+            ((RainbowShader*)m_pLocalShader)->m_pastel = true;
+            break;
+
+        case 3: // Red!
             m_pLocalShader = new SolidShader(RgbColor(255, 0, 0));
             break;
 
-        case 3: // Green!
+        case 4: // Green!
             m_pLocalShader = new SolidShader(RgbColor(0, 255, 0));
             break;
 
-        case 4: // Blue!
+        case 5: // Blue!
             m_pLocalShader = new SolidShader(RgbColor(0, 0, 255));
             break;
     }

@@ -7,14 +7,16 @@
 #include <freertos/timers.h>
 
 LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
-    m_pixels(pixelCount, BRAIN_GPIO_PIXEL_CH1),
-    m_buffer(pixelCount, 1, nullptr),
-    m_timeBase(timeBase)
+        m_chan1(pixelCount, BRAIN_GPIO_PIXEL_CH1),
+        m_chan2(pixelCount, BRAIN_GPIO_PIXEL_CH2),
+        m_buffer(pixelCount, 1, nullptr),
+        m_timeBase(timeBase)
 {
     // Start with an empty buffer
     m_buffer.ClearTo(BRAIN_POWER_ON_COLOR);
 
-    m_pixels.Begin();
+    m_chan1.Begin();
+    m_chan2.Begin();
 
     m_nBrightness = BRAIN_DEFAULT_BRIGHTNESS;
 }
@@ -120,7 +122,8 @@ LEDRenderer::_showTask() {
         // ESP_LOGI(TAG, "Show!");
         gSysMon.endTiming(TIMING_SHOW_OUTPUTS);
         gSysMon.startTiming(TIMING_SHOW_OUTPUTS);
-        m_pixels.Show();
+        m_chan1.Show();
+        m_chan2.Show();
 
         xSemaphoreGive(m_hPixelsAccess);
     }
@@ -190,7 +193,8 @@ LEDRenderer::render() {
     }
 
     // ESP_LOGI(TAG, "Doing Blt");
-    m_buffer.Blt(m_pixels, 0);
+    m_buffer.Blt(m_chan1, 0);
+    m_buffer.Blt(m_chan2, 0);
     // logPixels();
     xSemaphoreGive(m_hPixelsAccess);
 }
@@ -228,6 +232,6 @@ LEDRenderer::_renderTask() {
 
 void
 LEDRenderer::logPixels() {
-    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), 6, ESP_LOG_INFO);
-    // ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), m_pixels.PixelsSize(), ESP_LOG_INFO);
+    ESP_LOG_BUFFER_HEXDUMP(TAG, m_chan1.Pixels(), 6, ESP_LOG_INFO);
+    // ESP_LOG_BUFFER_HEXDUMP(TAG, m_chan1.Pixels(), m_chan1.PixelsSize(), ESP_LOG_INFO);
 }

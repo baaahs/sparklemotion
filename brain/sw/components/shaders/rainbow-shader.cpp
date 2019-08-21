@@ -82,7 +82,13 @@ RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
     // ESP_LOGW(TAG, "progress=%f  paletteProgress=%f", m_progress, paletteProgress);
     RgbColor color = colorInPalette(paletteProgress);
 
+    if (m_pastel) {
+        uint8_t t = color.R;
+        color.R = color.G;
+        color.G = t;
+    }
     memcpy((void*)colorOut, (void*)&color, 3);
+
 }
 
 void

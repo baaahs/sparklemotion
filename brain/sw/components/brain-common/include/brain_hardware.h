@@ -33,8 +33,8 @@
 //#define BRAIN_VARIANT_REV_E
 //#define BRAIN_VARIANT_REV_D_REWORKED
 //#define BRAIN_VARIANT_PANEL_TESTER
-//#define BRAIN_VARIANT_GLAMSIGN
-#define BRAIN_VARIANT_GLAMSIGN_MINI
+#define BRAIN_VARIANT_GLAMSIGN
+//#define BRAIN_VARIANT_GLAMSIGN_MINI
 
 //#define BRAIN_DEFAULT_BRIGHTNESS   16
 
@@ -52,10 +52,25 @@
 #define BRAIN_VARIANT_REV_D
 #endif
 
+
 /********************************************************************
- * The Panel Testers are two boxes built by Tom S. that have
- * Rev D boards in them with an additional external button and an
- * I2C connected display.
+ * The Glamsign is really just a Rev E board but it uses both output
+ * channels and does other things that normal brains won't do.
+ ********************************************************************/
+#ifdef BRAIN_VARIANT_GLAMSIGN
+
+// Using some different pixels
+#define BRAIN_NEO_COLORFEATURE     NeoGrbFeature
+
+#define BRAIN_VARIANT_REV_E
+#endif
+
+
+/********************************************************************
+ * The Glamsign mini is a prototype unit used to test animations for
+ * the glamsign. It is built on a Pico board using Ton's 4way interface
+ * board. It might serve as an example for other projects using that
+ * hardware configuration.
  ********************************************************************/
 #ifdef BRAIN_VARIANT_GLAMSIGN_MINI
 

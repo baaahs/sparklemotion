@@ -72,7 +72,7 @@ public:
     void enableLocalRenderLoop(bool enable) { m_localRenderEnabled = enable; }
 
     void setBrightness(uint8_t brightness) { m_nBrightness = brightness; }
-    uint16_t getNumPixels() { return m_pixels.PixelCount(); }
+    uint16_t getNumPixels() { return m_chan1.PixelCount(); }
 
     /**
      * Private function to be called only be a the local glue function
@@ -92,7 +92,8 @@ private:
     uint8_t m_nBrightness;
     bool m_localRenderEnabled = true;
 
-    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
+    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_chan1;
+    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s1Ws2812xMethod> m_chan2;
     NeoBuffer<NeoBufferMethod<BRAIN_NEO_COLORFEATURE>> m_buffer;
 
     SemaphoreHandle_t m_hPixelsAccess;
