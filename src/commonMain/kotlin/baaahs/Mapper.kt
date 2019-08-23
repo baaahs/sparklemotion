@@ -299,6 +299,22 @@ class Mapper(
             }
 
             // Show mapping diagnostic test pattern!
+//            showTestPattern()
+
+            // Save data.
+            val mappingSession =
+                MappingSession(sessionStartTime.unixMillis, surfaces, cameraOrientation.cameraMatrix, baseImageName)
+            mapperClient.saveSession(mappingSession)
+
+            // We're done!
+
+            isRunning = false
+            mapperUi.unlockUi()
+
+            retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
+        }
+
+        private suspend fun showTestPattern() {
             brainsToMap.forEach { (_, brainToMap) ->
                 isPaused = true
 
@@ -313,8 +329,10 @@ class Mapper(
 
                 suspend fun drawPixels(isLit: (screenPosition: Vector2F) -> Boolean) {
                     buffer.indices.forEach { i ->
-                        val screenPosition = pixels[i]?.screenPosition
-                        buffer[i] = if (screenPosition != null && isLit(screenPosition)) 1 else 0
+                        if (i < pixels.size) {
+                            val screenPosition = pixels[i]?.screenPosition
+                            buffer[i] = if (screenPosition != null && isLit(screenPosition)) 1 else 0
+                        }
                     }
                     brainToMap.shade { BrainShaderMessage(buffer.shader, buffer) }
                     delay(30)
@@ -355,18 +373,6 @@ class Mapper(
                     buffer.palette[1] = Color.WHITE
                 }
             }
-
-            // Save data.
-            val mappingSession =
-                MappingSession(sessionStartTime.unixMillis, surfaces, cameraOrientation.cameraMatrix, baseImageName)
-            mapperClient.saveSession(mappingSession)
-
-            // We're done!
-
-            isRunning = false
-            mapperUi.unlockUi()
-
-            retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
         }
 
         private suspend fun identifyPixel(pixelIndex: Int, maxPixelForTheseBrains: Int) {
@@ -385,8 +391,8 @@ class Mapper(
 
             ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
             mapperUi.showDiffImage(deltaBitmap)
-            val pixelOnImageName =
-                mapperClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
+            val pixelOnImageName = "not-really-an-image.png"
+//                mapperClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
 
             brainsToMap.values.forEach { brainToMap ->
                 identifyBrainPixel(pixelIndex, brainToMap, pixelOnBitmap, deltaBitmap, pixelOnImageName)
@@ -514,7 +520,7 @@ class Mapper(
     private suspend fun slowCamDelay() {
         getImage()
         getImage()
-        getImage()
+//        getImage()
     }
 
     private suspend fun getBrightImageBitmap(samples: Int): Bitmap {
