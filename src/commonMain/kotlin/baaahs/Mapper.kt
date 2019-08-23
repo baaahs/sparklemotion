@@ -453,6 +453,7 @@ class Mapper(
             logger.info { "Guessed panel ${firstGuessSurface.name} for ${brainToMap.brainId}" }
             brainToMap.guessedModelSurface = firstGuessSurface
             brainToMap.guessedVisibleSurface = firstGuess
+            brainToMap.expectedPixelCount = firstGuessSurface.expectedPixelCount
             brainToMap.panelDeltaBitmap = deltaBitmap.clone()
             brainToMap.deltaImageName =
                 mapperClient.saveImage(sessionStartTime, "brain-${brainToMap.brainId}-$retryCount", deltaBitmap)
@@ -737,7 +738,7 @@ class Mapper(
     inner class BrainToMap(val address: Network.Address, val brainId: String) {
         val port get() = Ports.BRAIN
 
-        val expectedPixelCount: Int = 120 // TODO: FIX THIS!!!
+        var expectedPixelCount: Int? = null
 
         var changeRegion: MediaDevices.Region? = null
         var guessedModelSurface: Model.Surface? = null
