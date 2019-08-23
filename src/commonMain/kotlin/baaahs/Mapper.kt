@@ -153,7 +153,7 @@ class Mapper(
         }
 
         fun brainsWithPixel(pixelIndex: Int) =
-            brainsToMap.values.filter { pixelIndex < it.expectedPixelCount }
+            brainsToMap.values.filter { pixelIndex < it.expectedPixelCountOrDefault }
 
         suspend fun turnOnPixel(pixelIndex: Int) {
             resetToBase()
@@ -218,7 +218,7 @@ class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                val maxPixelForTheseBrains = brainsToMap.values.map { it.expectedPixelCount }.max()!!
+                val maxPixelForTheseBrains = brainsToMap.values.map { it.expectedPixelCountOrDefault }.max()!!
                 val pixelStep = 4
                 fun actualPixelIndex(pixelIndexX: Int) =
                     pixelIndexX * pixelStep % maxPixelForTheseBrains + pixelIndexX * pixelStep / maxPixelForTheseBrains
@@ -739,6 +739,8 @@ class Mapper(
         val port get() = Ports.BRAIN
 
         var expectedPixelCount: Int? = null
+        val expectedPixelCountOrDefault: Int
+            get() = expectedPixelCount ?: SparkleMotion.DEFAULT_PIXEL_COUNT
 
         var changeRegion: MediaDevices.Region? = null
         var guessedModelSurface: Model.Surface? = null
