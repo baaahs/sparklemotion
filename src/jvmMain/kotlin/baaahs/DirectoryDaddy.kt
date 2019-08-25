@@ -1,29 +1,33 @@
 package baaahs
 
-class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
+class DirectoryDaddy(fs: RealFs, val urlBase: String) : FirmwareDaddy {
     private var preferredVersion = ""
 
     init {
         // TODO: Watch the directory for changes instead of just scanning once at startup
         try {
             val files = fs.listFiles("")
-            println("Found the following firmware files:")
+            logger.info { "Found the following firmware files:" }
 
-            var currentNum = 0
+            var currentNum = 0L
             var currentFile: String? = null
 
             for (f in files) {
-                if (!f.endsWith(".bin")) continue
+                try {
+                    if (!f.endsWith(".bin")) continue
 
-                println("  $f");
+                    logger.info { "  $f" }
 
-                val tokens = f.split("-");
-                if (tokens.size > 2) {
-                    val num = tokens[1].toInt()
-                    if (num > currentNum) {
-                        currentNum = num
-                        currentFile = f
+                    val tokens = f.split("-")
+                    if (tokens.size > 1) {
+                        val num = tokens[0].toLong()
+                        if (num > currentNum) {
+                            currentNum = num
+                            currentFile = f
+                        }
                     }
+                } catch (e: Exception) {
+                    logger.error("for $f", e)
                 }
             }
 
@@ -32,13 +36,13 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
             } else {
                 println("Selected firmware ====> $currentFile")
 
-                preferredVersion = currentFile.substring(0, currentFile.length - 4);
+                preferredVersion = currentFile.substring(0, currentFile.length - 4)
 
-                println("Full URL is ${urlForPreferredVersion}")
+                logger.info { "Full URL is $urlForPreferredVersion" }
             }
         } catch (e: Exception) {
             // Probably the directory doesn't exist
-            println("Exception encountered looking for a firmware to vend. No firmware will be distributed.")
+            logger.error("Exception encountered looking for a firmware to vend. No firmware will be distributed.", e)
         }
     }
 
@@ -46,7 +50,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
         // If we didn't find a firmware, don't hassle people. Accept anything.
         if (preferredVersion.isEmpty()) return false
 
-        return  firmwareVersion != preferredVersion
+        return firmwareVersion != preferredVersion
     }
 
     override val urlForPreferredVersion: String

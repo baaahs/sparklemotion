@@ -1,17 +1,10 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.Model
-import baaahs.Pixels
-import baaahs.Surface
+import baaahs.*
 import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
+import kotlin.random.Random
 
 expect object GlslBase {
     val manager: GlslManager
@@ -176,14 +169,15 @@ class GlslSurface(
 
 interface UvTranslator {
     fun forSurface(surface: Surface): SurfaceUvTranslator {
-        if (surface is IdentifiedSurface) {
+        return if (surface is IdentifiedSurface) {
             if (surface.pixelLocations != null) {
-                return forPixels(surface.pixelLocations)
+                forPixels(surface.pixelLocations)
             } else {
-                return forPixels(listOf(Vector3F(0f, 0f, 1f)))
+                val center = surface.modelSurface.allVertices().average()
+                forPixels(listOf(center))
             }
         } else {
-            return forPixels(listOf(Vector3F(0f, 0f, 1f)))
+            forPixels(listOf(Vector3F(Random.nextFloat() - .5f, Random.nextFloat() - .5f, 1f)))
         }
     }
 
@@ -193,6 +187,10 @@ interface UvTranslator {
         val pixelCount: Int
         fun getUV(pixelIndex: Int): Pair<Float, Float>
     }
+}
+
+private fun Collection<Vector3F>.average(): Vector3F {
+    return reduce { acc, vector3F -> acc.plus(vector3F) }.dividedByScalar(size.toFloat())
 }
 
 object PanelSpaceUvTranslator : UvTranslator {

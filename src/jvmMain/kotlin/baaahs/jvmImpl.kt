@@ -49,3 +49,16 @@ class RealFs(private val basePath: Path) : Fs {
         return basePath.resolve(safeName)
     }
 }
+
+actual fun logMessage(level: String, message: String, exception: Exception?) {
+    when (level) {
+        "ERROR" -> println("$level: $message")
+        "WARN" -> println("$level: $message")
+        "INFO" -> println("$level: $message")
+        "DEBUG" -> println("$level: $message")
+        else -> println("$level: $message")
+    }
+    if (exception != null) {
+        exception.printStackTrace()
+    }
+}
