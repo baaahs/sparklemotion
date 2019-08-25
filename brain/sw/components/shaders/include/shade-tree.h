@@ -45,7 +45,7 @@ private:
     Shader* m_pCurrentShader;
     Shader* m_pLocalShader;
 
-    uint8_t m_localShaderIndex;
+    uint8_t m_localShaderIndex = -1;
 
     void checkForShaderChanges();
     void buildNewTree();

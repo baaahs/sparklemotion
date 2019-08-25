@@ -289,6 +289,7 @@ Brain::maybeSendHello()
 
 void
 Brain::sendHello(const IpPort &port) {
+    ESP_LOGW(TAG, "Send hello from %s", m_brainId);
     auto desc = esp_ota_get_app_description();
 
     Msg *pHello = new BrainHelloMsg(m_brainId, nullptr, desc->version, desc->idf_ver);

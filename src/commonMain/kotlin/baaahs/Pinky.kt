@@ -13,6 +13,7 @@ import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
+import baaahs.shows.SolidColorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -101,7 +102,12 @@ class Pinky(
 
             networkStats.reset()
             val elapsedMs = time {
-                drawNextFrame()
+                try {
+                    drawNextFrame()
+                } catch (e: Exception) {
+                    logger.error("Error rendering frame for $selectedShow", e)
+                    switchToShow(SolidColorShow)
+                }
             }
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats

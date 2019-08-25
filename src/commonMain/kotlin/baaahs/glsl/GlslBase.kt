@@ -1,16 +1,10 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.Model
-import baaahs.Pixels
-import baaahs.Surface
+import baaahs.*
+import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
+import kotlin.random.Random
 
 expect object GlslBase {
     val manager: GlslManager
@@ -24,7 +18,7 @@ abstract class GlslRenderer(
     val fragShader: String,
     val adjustableValues: List<GlslShader.AdjustableValue>
 ) {
-    val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
+    private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
     var nextSurfaceOffset: Int = 0
@@ -51,21 +45,38 @@ abstract class GlslRenderer(
     }
 
     fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
-        if (surface is IdentifiedSurface && surface.pixelLocations != null) {
-            val glslSurface = GlslSurface(
-                createSurfacePixels(surface, nextPixelOffset),
+        val glslSurface: GlslSurface
+        if (surface is IdentifiedSurface) {
+            if (surface.pixelLocations != null) {
+                glslSurface = GlslSurface(
+                    createSurfacePixels(surface, nextPixelOffset),
+                    Uniforms(nextSurfaceOffset++),
+                    uvTranslator
+                )
+                nextPixelOffset += surface.pixelCount
+            } else {
+                glslSurface = GlslSurface(
+                    createSurfaceMonoPixel(surface, nextPixelOffset),
+                    Uniforms(nextSurfaceOffset++),
+                    uvTranslator
+                )
+                nextPixelOffset += 1
+            }
+        } else {
+            glslSurface = GlslSurface(
+                createSurfaceMonoPixel(surface, nextPixelOffset),
                 Uniforms(nextSurfaceOffset++),
                 uvTranslator
             )
-            surfacesToAdd.add(glslSurface)
-            nextPixelOffset += surface.pixelCount
-            return glslSurface
+            nextPixelOffset += 1
         }
 
-        return null
+        surfacesToAdd.add(glslSurface)
+        return glslSurface
     }
 
-    abstract fun createSurfacePixels(surface: IdentifiedSurface, pixelOffset: Int): SurfacePixels
+    abstract fun createSurfacePixels(surface: Surface, pixelOffset: Int): SurfacePixels
+    abstract fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): SurfacePixels
 
     abstract fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Instance
 
@@ -91,7 +102,7 @@ abstract class GlslRenderer(
                 val surface = it.pixels.surface
                 val uvTranslator = it.uvTranslator.forSurface(surface)
 
-                for (i in 0 until surface.pixelCount) {
+                for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
                     val (u, v) = uvTranslator.getUV(i)
                     newUvCoords[uvOffset] = u     // u
@@ -157,17 +168,36 @@ class GlslSurface(
 )
 
 interface UvTranslator {
-    fun forSurface(surface: IdentifiedSurface): SurfaceUvTranslator
+    fun forSurface(surface: Surface): SurfaceUvTranslator {
+        return if (surface is IdentifiedSurface) {
+            if (surface.pixelLocations != null) {
+                forPixels(surface.pixelLocations)
+            } else {
+                val center = surface.modelSurface.allVertices().average()
+                forPixels(listOf(center))
+            }
+        } else {
+            forPixels(listOf(Vector3F(Random.nextFloat() - .5f, Random.nextFloat() - .5f, 1f)))
+        }
+    }
+
+    fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator
 
     interface SurfaceUvTranslator {
+        val pixelCount: Int
         fun getUV(pixelIndex: Int): Pair<Float, Float>
     }
 }
 
+private fun Collection<Vector3F>.average(): Vector3F {
+    return reduce { acc, vector3F -> acc.plus(vector3F) }.dividedByScalar(size.toFloat())
+}
+
 object PanelSpaceUvTranslator : UvTranslator {
-    override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
-        val pixelLocations = surface.pixelLocations!!
+    override fun forPixels(pixelLocations: List<Vector3F?>): UvTranslator.SurfaceUvTranslator {
         return object : UvTranslator.SurfaceUvTranslator {
+            override val pixelCount: Int = pixelLocations.size
+
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
                 val vector3F = pixelLocations[pixelIndex]
                 return (vector3F?.x ?: 0f) to (vector3F?.y ?: 0f)
@@ -180,9 +210,10 @@ class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
     val modelCenter = model.modelCenter
     val modelExtents = model.modelExtents
 
-    override fun forSurface(surface: IdentifiedSurface): UvTranslator.SurfaceUvTranslator {
-        val pixelLocations = surface.pixelLocations!!
+    override fun forPixels(pixelLocations: List<Vector3F?>): UvTranslator.SurfaceUvTranslator {
         return object : UvTranslator.SurfaceUvTranslator {
+            override val pixelCount: Int = pixelLocations.size
+
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
                 val pixelLocation = pixelLocations[pixelIndex] ?: modelCenter
 
@@ -197,7 +228,7 @@ class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
     }
 }
 
-abstract class SurfacePixels(val surface: IdentifiedSurface, val pixel0Index: Int) : Pixels {
+abstract class SurfacePixels(val surface: Surface, val pixel0Index: Int) : Pixels {
     override val size: Int = surface.pixelCount
     override fun set(i: Int, color: Color): Unit = TODO("set not implemented")
     override fun set(colors: Array<Color>): Unit = TODO("set not implemented")

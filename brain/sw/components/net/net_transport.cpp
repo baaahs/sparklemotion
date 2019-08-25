@@ -98,8 +98,8 @@ NetTransport::_interfaceTask() {
     if (!m_ethUp) {
         ESP_LOGE(TAG, "Ethernet link not up, restarting");
 
-        ESP_LOGE(TAG, "=========  Ethernet restart disabled for testing wifi  ===========");
-        // brain_restart(10);
+//        ESP_LOGE(TAG, "=========  Ethernet restart disabled for testing wifi  ===========");
+        brain_restart(30);
     } else {
         ESP_LOGE(TAG, "Ethernet up - cool");
     }
