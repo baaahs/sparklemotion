@@ -27,13 +27,15 @@ suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
 
+expect fun logMessage(level: String, message: String, exception: Exception? = null)
+
 class Logger(val id: String) {
     private fun log(level: String, message: String) {
-        println("${ts()} [] $level  $id - $message")
+        logMessage(level, "${ts()} [] $level  $id - $message")
     }
 
     private fun log(level: String, message: String, exception: Exception) {
-        println("${ts()} [] $level  $id - $message: ${exception.message}")
+        logMessage(level, "${ts()} [] $level  $id - $message", exception)
     }
 
     fun debug(message: () -> String) {

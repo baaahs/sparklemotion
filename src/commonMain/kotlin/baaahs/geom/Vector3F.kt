@@ -1,8 +1,8 @@
 package baaahs.geom
 
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 @Serializable
@@ -28,6 +28,10 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     private fun lengthSquared(): Float {
         return x * x + y * y + z * z
+    }
+
+    fun dividedByScalar(scalar: Float): Vector3F {
+        return Vector3F(x / scalar, y / scalar, z / scalar)
     }
 
 }
