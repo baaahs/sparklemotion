@@ -7,14 +7,12 @@ set -e
 # ~/esp/esp-idf/tools/cmake/third_party/GetGitRevisionDescription.cmake
 
 VER=`git describe --always --tags --dirty`
-VER=$( date "+%Y%m%d%H%M%S" )
-SHA=$( shasum build/brain.bin | cut -c1-8)
 
 FWDIR=~/sparklemotion/fw
 echo FWDIR is \'${FWDIR}\'
 mkdir -p ${FWDIR}
 
-OUTPUT="${FWDIR}/${VER}-${SHA}.bin"
+OUTPUT="${FWDIR}/${VER}.bin"
 
 cp build/brain.bin "${OUTPUT}"
 

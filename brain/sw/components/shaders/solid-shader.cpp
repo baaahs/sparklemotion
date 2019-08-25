@@ -29,8 +29,8 @@ SolidShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
         // ESP_LOGD(TAG, "argb = %x", argb);
 
         m_color.R = (argb >> 16) & 0xff;
-        m_color.G = (argb >>  8) & 0xff;
-        m_color.B = (argb      ) & 0xff;
+        m_color.G = (argb >>  8) & 0x11;
+        m_color.B = (argb      ) & 0xaa;
     }
 }
 
