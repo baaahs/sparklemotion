@@ -1,8 +1,6 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.getTimeMillis
+import baaahs.*
 import baaahs.shaders.GlslShader
 import baaahs.shaders.GlslShader.AdjustableValue.Type.FLOAT
 import baaahs.shaders.GlslShader.AdjustableValue.Type.INT
@@ -111,8 +109,23 @@ class JsGlslRenderer(
         }
     }
 
-    override fun createSurfacePixels(surface: IdentifiedSurface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
+    override fun createSurfacePixels(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
         SurfacePixels(surface, pixelOffset)
+
+    inner class SurfacePixels(
+        surface: Surface, pixel0Index: Int
+    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
+        override fun get(i: Int): Color = instance.getPixel(pixel0Index + i)
+    }
+
+    override fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
+        SurfaceMonoPixel(surface, pixelOffset)
+
+    inner class SurfaceMonoPixel(
+        surface: Surface, pixel0Index: Int
+    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
+        override fun get(i: Int): Color = instance.getPixel(pixel0Index)
+    }
 
     override fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): GlslRenderer.Instance =
         Instance(pixelCount, uvCoords, surfaceCount)
@@ -158,12 +171,6 @@ class JsGlslRenderer(
 
         val programLog = gl { gl.getProgramInfoLog(program) }
         if (programLog != null && programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
-    }
-
-    inner class SurfacePixels(
-        surface: IdentifiedSurface, pixel0Index: Int
-    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
-        override fun get(i: Int): Color = instance.getPixel(pixel0Index + i)
     }
 
     private fun createShaderProgram(): WebGLProgram? {
