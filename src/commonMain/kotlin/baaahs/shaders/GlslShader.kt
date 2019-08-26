@@ -1,12 +1,6 @@
 package baaahs.shaders
 
-import baaahs.Color
-import baaahs.Model
-import baaahs.RenderContext
-import baaahs.Shader
-import baaahs.ShaderId
-import baaahs.ShaderReader
-import baaahs.Surface
+import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
 import baaahs.glsl.ModelSpaceUvTranslator
@@ -47,7 +41,14 @@ class GlslShader(
             AdjustableValue("sm_beat", "Beat", AdjustableValue.Type.FLOAT,
                 json { "name" to "beat" }, 2),
             AdjustableValue("sm_startOfMeasure", "StartOfMeasure", AdjustableValue.Type.FLOAT,
-                json { "name" to "startOfMeasure"; }, 3)
+                json { "name" to "startOfMeasure"; }, 3
+            ),
+            AdjustableValue("sm_brightness", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }, 4
+            ),
+            AdjustableValue("sm_saturation", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f }, 4
+            )
         )
 
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
