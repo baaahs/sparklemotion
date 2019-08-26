@@ -177,7 +177,7 @@ interface UvTranslator {
                 forPixels(listOf(center))
             }
         } else {
-            forPixels(listOf(Vector3F(Random.nextFloat() - .5f, Random.nextFloat() - .5f, 1f)))
+            forPixels(listOf(Vector3F(Random.nextFloat() * 100f, Random.nextFloat() * 100f, 1f)))
         }
     }
 

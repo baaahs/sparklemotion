@@ -314,40 +314,44 @@ void main(void) {
 
         gl { glAttachShader(program, vs) }
         val fs = gl { glCreateShader(GL_FRAGMENT_SHADER) }
-        val src = """
-    #version 330
-    uniform sampler2D sm_uvCoords;
-    uniform float sm_uScale;
-    uniform float sm_vScale;
-    uniform float sm_startOfMeasure;
-    uniform float sm_beat;
+        val src = """#version 330
 
-    out vec4 sm_fragColor;
-    
-    ${fragShader
-            .replace(
-                Regex("void main\\s*\\(\\s*void\\s*\\)"),
-                "void sm_main(vec2 sm_pixelCoord)"
-            )
-            .replace("gl_FragCoord", "sm_pixelCoord")
-            .replace("gl_FragColor", "sm_fragColor")
-        }
-    
-    // Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.
-    // We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and
-    // pass them to the shader's original `main()` method.
-    void main(void) {
-        int uvX = int(gl_FragCoord.x);
-        int uvY = int(gl_FragCoord.y);
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-        vec2 pixelCoord = vec2(
-            texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u
-            texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v
-        );
-    
-        sm_main(pixelCoord);
+uniform sampler2D sm_uvCoords;
+uniform float sm_uScale;
+uniform float sm_vScale;
+uniform float sm_startOfMeasure;
+uniform float sm_beat;
+
+out vec4 sm_fragColor;
+
+${fragShader
+        .replace(
+            Regex("void main\\s*\\(\\s*(void\\s*)?\\)"),
+            "void sm_main(vec2 sm_pixelCoord)"
+        )
+        .replace("gl_FragCoord", "sm_pixelCoord")
+        .replace("gl_FragColor", "sm_fragColor")
     }
-    """
+
+// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.
+// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and
+// pass them to the shader's original `main()` method.
+void main(void) {
+    int uvX = int(gl_FragCoord.x);
+    int uvY = int(gl_FragCoord.y);
+
+    vec2 pixelCoord = vec2(
+        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u
+        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v
+    );
+
+    sm_main(pixelCoord);
+}
+"""
         println(src)
         gl { glShaderSource(fs, src) }
 
