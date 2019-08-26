@@ -9,7 +9,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
             val files = fs.listFiles("")
             println("Found the following firmware files:")
 
-            var currentNum = 0L
+            var currentNum = 0
             var currentFile: String? = null
 
             for (f in files) {
@@ -18,8 +18,8 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
                 println("  $f");
 
                 val tokens = f.split("-")
-                if (tokens.size > 1) {
-                    val num = tokens[0].toLong()
+                if (tokens.size > 2) {
+                    val num = tokens[1].toInt()
                     if (num > currentNum) {
                         currentNum = num
                         currentFile = f
