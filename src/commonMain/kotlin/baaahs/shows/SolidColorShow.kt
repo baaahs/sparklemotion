@@ -13,7 +13,7 @@ object SolidColorShow : Show("Solid Color") {
 
         val shader = SolidShader()
         val shaderBuffers = showRunner.allSurfaces.map {
-            showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
+            showRunner.getShaderBuffer(it, shader).apply { color = Color.ORANGE }
         }
 
         val eyes = model.movingHeads.map { eye -> showRunner.getMovingHeadBuffer(eye) }
