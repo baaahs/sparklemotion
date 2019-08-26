@@ -103,6 +103,15 @@ data class Color(val argb: Int) {
         )
     }
 
+    fun withBrightness(brightness: Float): Color {
+        return Color(
+            redF * brightness,
+            greenF * brightness,
+            blueF * brightness,
+            alphaF
+        )
+    }
+
     fun distanceTo(other: Color): Float {
         val dist = square(other.redF - redF) + square(other.greenF - greenF) + square(other.blueF - blueF)
         return sqrt(dist / 3)
