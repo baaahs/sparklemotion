@@ -2,6 +2,7 @@
 
 #include "esp_log.h"
 #include "brain_common.h"
+#include "sysmon.h""
 
 #define TAG TAG_SHADER
 
@@ -85,6 +86,9 @@ PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     if (readLen < m_dataBufRead) {
         pMsg->skip(m_dataBufRead - readLen);
     }
+
+    m_pixelsToShade = pCtx->numPixels;
+    m_pixelsShaded = 0;
 }
 
 uint8_t
@@ -117,6 +121,8 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
                 color.channel.r = m_dataBuf[bufOffset++];
                 color.channel.g = m_dataBuf[bufOffset++];
                 color.channel.b = m_dataBuf[bufOffset];
+            } else {
+                gSysMon.increment(COUNTER_PIXEL_UNDERFLOW);
             }
             break;
 
@@ -128,6 +134,11 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
                 color.channel.r = m_dataBuf[bufOffset++];
                 color.channel.g = m_dataBuf[bufOffset++];
                 color.channel.b = m_dataBuf[bufOffset];
+            } else {
+                ESP_LOGD(TAG, "Asked to shade pixel %d but my buffer only has up to %d",
+                         pixelIndex,
+                         (m_dataBufRead-2) / 3);
+                gSysMon.increment(COUNTER_PIXEL_UNDERFLOW);
             }
             break;
 
@@ -147,10 +158,16 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
     *colorOut++ = color.channel.r;
     *colorOut++ = color.channel.g;
     *colorOut = color.channel.b;
+
+    m_pixelsShaded++;
 }
 
 void
 PixelShader::end() {
+//    if (m_pixelsShaded < m_pixelsToShade) {
+//        gSysMon.increment(COUNTER_PIXEL_UNDERFLOW);
+//        ESP_LOGE(TAG, "Pixel underflow needed to shade %d but only shaded %d", m_pixelsToShade, m_pixelsShaded);
+//    }
 }
 
 size_t PixelShader::bufferSizeFor(PixelShader::Encoding encoding, uint16_t pixelCount) {
