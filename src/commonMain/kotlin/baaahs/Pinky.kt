@@ -85,6 +85,12 @@ class Pinky(
 
     suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
+        GlobalScope.launch {
+            while (true) {
+                logger.info { "Sending to ${brainInfos.size} brains" }
+                delay(1000)
+            }
+        }
 
         display.listShows(shows)
         display.selectedShow = selectedShow
@@ -195,10 +201,14 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        logger.info { "Hello from ${brainId.uuid} at $brainAddress: $msg" }
+        logger.info { "Hello from ${brainId.uuid}" +
+                " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                " at $brainAddress: $msg" }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.info { "The firmware daddy doesn't like $brainId having ${msg.firmwareVersion}" +
+            logger.info { "The firmware daddy doesn't like $brainId" +
+                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                    " having ${msg.firmwareVersion}" +
                     " so we'll send ${firmwareDaddy.urlForPreferredVersion}" }
             val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
