@@ -38,4 +38,7 @@ public:
     void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) override;
 
     void end() override;
+
+    uint16_t m_pixelsToShade;
+    uint16_t m_pixelsShaded;
 };

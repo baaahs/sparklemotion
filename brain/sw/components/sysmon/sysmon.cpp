@@ -130,6 +130,10 @@ SysMon::getInfo(uint8_t timing) {
             strncpy(info.name, "MsgSent", sizeof(info.name)-1);
             break;
 
+        case COUNTER_PIXEL_UNDERFLOW:
+            strncpy(info.name, "PxUndFl", sizeof(info.name)-1);
+            break;
+
         case TIMING_RENDER:
             strncpy(info.name, "Render ", sizeof(info.name)-1);
             break;

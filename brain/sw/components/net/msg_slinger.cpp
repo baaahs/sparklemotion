@@ -272,7 +272,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
         ESP_LOGD(TAG, "Adding a fragment to an existing message");
         if (m_pFraggedMsg->addFragment(pMsg)) {
             // Oh hey, we should dispatch it!
-            ESP_LOGD(TAG, "Dispatching fragmented message");
+            ESP_LOGD(TAG, "Dispatching fragmented message %d", m_pFraggedMsg->used());
             gSysMon.increment(COUNTER_MSG_FRAG_OK);
             dispatch(m_pFraggedMsg);
             m_pFraggedMsg->release();
