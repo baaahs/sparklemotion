@@ -75,15 +75,12 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         div("mapperUi-controls") {
             button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
             button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-            button { +"<"; onClickFunction = { wireframe.position.x += 10 } }
-            button { +">"; onClickFunction = { wireframe.position.x -= 10 } }
 //            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
-            button { +"Play"; i(classes = "fas fa-play"); onClickFunction = { clickedPlay() } }
-            button { +"Pause"; i(classes = "fas fa-pause"); onClickFunction = { clickedPause() } }
-            button { +"Redo"; i(classes = "fas fa-redo"); onClickFunction = { redoFn?.invoke() } }
-            button { +"Stop"; i(classes = "fas fa-stop"); onClickFunction = { clickedStop() } }
+            button { i(classes = "fas fa-play"); onClickFunction = { clickedPlay() } }
+            button { i(classes = "fas fa-pause"); onClickFunction = { clickedPause() } }
+            button { i(classes = "fas fa-redo"); onClickFunction = { redoFn?.invoke() } }
+            button { i(classes = "fas fa-stop"); onClickFunction = { clickedStop() } }
             button {
-                +"Go"
                 i(classes = "fas fa-sign-in-alt")
                 onClickFunction = {
                     val surfaceName = window.prompt("Surface:")
