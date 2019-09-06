@@ -32,8 +32,8 @@ class Pinky(
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
-    val newShowAfterIdleSeconds = 300
-    val adjustShowAfterIdleSeconds = 120
+    val newShowAfterIdleSeconds = 600
+    val adjustShowAfterIdleSeconds = 6000
 
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
