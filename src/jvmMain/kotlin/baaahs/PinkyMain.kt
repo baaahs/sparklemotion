@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
 
     val network = JvmNetwork()
     val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
-    Files.createDirectories(dataDir)
+//    Files.createDirectories(dataDir)
 
     val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
 

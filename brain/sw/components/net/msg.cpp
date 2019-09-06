@@ -71,6 +71,13 @@ bool Msg::addFragment(Msg* pFragment) {
     pFragment->m_cursor = 0;
     auto head = pFragment->readHeader();
 
+    size_t newCap = m_used + pFragment->m_used + 1;
+    if (!prepCapacity(newCap)) {
+        ESP_LOGE(TAG, "Unable to increase message cap for new fragment from %d to %d",
+                m_capacity, newCap);
+        return false;
+    }
+
     // A little bit of safety never hurts
     if (head.frameOffset < 0 ||
             head.frameOffset + head.frameSize > m_capacity) {
@@ -88,6 +95,7 @@ bool Msg::addFragment(Msg* pFragment) {
     size_t len = pFragment->m_used - pFragment->m_cursor;
 
     memcpy(dest, src, len);
+    m_used += len;
 
     // Now does that packet represent itself as the last?
     if (head.frameOffset + head.frameSize == head.msgSize) {

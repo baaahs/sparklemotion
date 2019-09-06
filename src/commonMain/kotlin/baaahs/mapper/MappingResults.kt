@@ -15,11 +15,11 @@ interface MappingResults {
     )
 }
 
-class SessionMappingResults(model: Model<*>, mappingSession: MappingSession?) : MappingResults {
+class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSession>) : MappingResults {
     val brainData = mutableMapOf<BrainId, MappingResults.Info>()
 
     init {
-        if (mappingSession != null) {
+        mappingSessions.forEach { mappingSession ->
             mappingSession.surfaces.forEach { surfaceData ->
                 val brainId = BrainId(surfaceData.brainId)
                 val surfaceName = surfaceData.surfaceName

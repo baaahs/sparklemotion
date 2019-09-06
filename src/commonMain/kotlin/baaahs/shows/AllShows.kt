@@ -28,8 +28,8 @@ class AllShows {
             ThumpShow,
             PanelTweenShow,
             PixelTweenShow,
-            LifeyShow,
-            SimpleSpatialShow,
+//            LifeyShow,
+//            SimpleSpatialShow,
             HeartbleatShow,
             CreepingPixelsShow
         )

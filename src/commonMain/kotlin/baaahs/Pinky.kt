@@ -13,6 +13,7 @@ import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
+import baaahs.shows.SolidColorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -31,8 +32,8 @@ class Pinky(
     val display: PinkyDisplay,
     private val prerenderPixels: Boolean = false
 ) : Network.UdpListener {
-    val newShowAfterIdleSeconds = 300
-    val adjustShowAfterIdleSeconds = 120
+    val newShowAfterIdleSeconds = 600
+    val adjustShowAfterIdleSeconds = 6000
 
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
@@ -84,6 +85,12 @@ class Pinky(
 
     suspend fun run(): Show.Renderer {
         GlobalScope.launch { beatProvider.run() }
+        GlobalScope.launch {
+            while (true) {
+                logger.info { "Sending to ${brainInfos.size} brains" }
+                delay(1000)
+            }
+        }
 
         display.listShows(shows)
         display.selectedShow = selectedShow
@@ -101,7 +108,12 @@ class Pinky(
 
             networkStats.reset()
             val elapsedMs = time {
-                drawNextFrame()
+                try {
+                    drawNextFrame()
+                } catch (e: Exception) {
+                    logger.error("Error rendering frame for $selectedShow", e)
+                    switchToShow(SolidColorShow)
+                }
             }
             display.showFrameMs = elapsedMs.toInt()
             display.stats = networkStats
@@ -189,10 +201,14 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        logger.info { "Hello from ${brainId.uuid} at $brainAddress: $msg" }
+        logger.info { "Hello from ${brainId.uuid}" +
+                " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                " at $brainAddress: $msg" }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.info { "The firmware daddy doesn't like $brainId having ${msg.firmwareVersion}" +
+            logger.info { "The firmware daddy doesn't like $brainId" +
+                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                    " having ${msg.firmwareVersion}" +
                     " so we'll send ${firmwareDaddy.urlForPreferredVersion}" }
             val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)

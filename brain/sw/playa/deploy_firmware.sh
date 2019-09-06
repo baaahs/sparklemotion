@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # This _should_ be what the idf does but pay attention in case
 # they change it. To see what they are doing look in
 # ~/esp/esp-idf/tools/cmake/third_party/GetGitRevisionDescription.cmake

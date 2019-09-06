@@ -29,7 +29,8 @@ class JvmNetwork : Network {
         //const val MAX_UDP_SIZE = 4096
 
         val logger = Logger("JvmNetwork")
-        val myAddress = InetAddress.getLocalHost()
+//        val myAddress = InetAddress.getLocalHost()
+        val myAddress = InetAddress.getByName("127.0.0.1")
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
 
         val networkScope = CoroutineScope(Dispatchers.IO)

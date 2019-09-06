@@ -17,7 +17,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
 
                 println("  $f");
 
-                val tokens = f.split("-");
+                val tokens = f.split("-")
                 if (tokens.size > 2) {
                     val num = tokens[1].toInt()
                     if (num > currentNum) {

@@ -27,3 +27,13 @@ actual fun getTimeMillis(): Long = Date.now().toLong()
 actual fun decodeBase64(s: String): ByteArray {
     TODO("decodeBase64 not implemented")
 }
+
+actual fun logMessage(level: String, message: String, exception: Exception?) {
+    when (level) {
+        "ERROR" -> console.error(message, exception)
+        "WARN" -> console.warn(message, exception)
+        "INFO" -> console.info(message, exception)
+        "DEBUG" -> console.log(message, exception)
+        else -> console.log(message, exception)
+    }
+}

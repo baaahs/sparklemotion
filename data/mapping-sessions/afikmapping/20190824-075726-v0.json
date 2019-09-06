@@ -1,0 +1,6287 @@
+{
+  "startedAt": 1.566633446661E12,
+  "surfaces": [
+    {
+      "brainId": "C78370",
+      "panelName": "3D",
+      "pixels": [
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -24.239208,
+            "y": 83.05481,
+            "z": -72.64703
+          },
+          "screenPosition": {
+            "x": 0.2149893,
+            "y": 0.8917517
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -25.8439,
+            "y": 82.02546,
+            "z": -74.01032
+          },
+          "screenPosition": {
+            "x": 0.2479707,
+            "y": 0.87032807
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.770704,
+            "y": 81.49228,
+            "z": -75.89812
+          },
+          "screenPosition": {
+            "x": 0.2912748,
+            "y": 0.84729713
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -29.288786,
+            "y": 80.082954,
+            "z": -77.03238
+          },
+          "screenPosition": {
+            "x": 0.30963734,
+            "y": 0.819869
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.737291,
+            "y": 79.01027,
+            "z": -78.21175
+          },
+          "screenPosition": {
+            "x": 0.3314911,
+            "y": 0.79625064
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -33.567158,
+            "y": 77.3039,
+            "z": -80.65477
+          },
+          "screenPosition": {
+            "x": 0.38038582,
+            "y": 0.75376165
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.09254,
+            "y": 76.20169,
+            "z": -81.90652
+          },
+          "screenPosition": {
+            "x": 0.4038361,
+            "y": 0.7291471
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.377556,
+            "y": 74.77854,
+            "z": -82.78448
+          },
+          "screenPosition": {
+            "x": 0.41571325,
+            "y": 0.7037698
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.73945,
+            "y": 73.32588,
+            "z": -83.73481
+          },
+          "screenPosition": {
+            "x": 0.42918688,
+            "y": 0.6773963
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.026897,
+            "y": 72.005104,
+            "z": -84.65193
+          },
+          "screenPosition": {
+            "x": 0.44264802,
+            "y": 0.65280026
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.78048,
+            "y": 70.711975,
+            "z": -86.08166
+          },
+          "screenPosition": {
+            "x": 0.4691728,
+            "y": 0.6242929
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.286392,
+            "y": 68.79078,
+            "z": -87.02009
+          },
+          "screenPosition": {
+            "x": 0.47918677,
+            "y": 0.59229815
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -43.531483,
+            "y": 62.424202,
+            "z": -86.09053
+          },
+          "screenPosition": {
+            "x": 0.41123846,
+            "y": 0.5209009
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.958084,
+            "y": 60.430153,
+            "z": -86.91742
+          },
+          "screenPosition": {
+            "x": 0.41784728,
+            "y": 0.48884824
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.57008,
+            "y": 59.70792,
+            "z": -88.39821
+          },
+          "screenPosition": {
+            "x": 0.44967768,
+            "y": 0.4669888
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.953873,
+            "y": 59.176617,
+            "z": -89.70102
+          },
+          "screenPosition": {
+            "x": 0.4784145,
+            "y": 0.44905603
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.467087,
+            "y": 57.562542,
+            "z": -90.75695
+          },
+          "screenPosition": {
+            "x": 0.4932711,
+            "y": 0.41980138
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.52291,
+            "y": 53.024857,
+            "z": -90.27605
+          },
+          "screenPosition": {
+            "x": 0.44949615,
+            "y": 0.36729372
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.80727,
+            "y": 52.650497,
+            "z": -88.292076
+          },
+          "screenPosition": {
+            "x": 0.3973892,
+            "y": 0.3798728
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -49.058365,
+            "y": 56.686398,
+            "z": -90.00341
+          },
+          "screenPosition": {
+            "x": 0.46844366,
+            "y": 0.41535485
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.648457,
+            "y": 55.042805,
+            "z": -91.13172
+          },
+          "screenPosition": {
+            "x": 0.48501086,
+            "y": 0.38505468
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.60163,
+            "y": 52.713993,
+            "z": -91.328514
+          },
+          "screenPosition": {
+            "x": 0.47354293,
+            "y": 0.35428387
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.971016,
+            "y": 49.03043,
+            "z": -89.33361
+          },
+          "screenPosition": {
+            "x": 0.39792287,
+            "y": 0.325619
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.614838,
+            "y": 47.101032,
+            "z": -88.26081
+          },
+          "screenPosition": {
+            "x": 0.35759404,
+            "y": 0.310994
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.80594,
+            "y": 44.990788,
+            "z": -88.79224
+          },
+          "screenPosition": {
+            "x": 0.35602725,
+            "y": 0.2799064
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.648567,
+            "y": 44.180004,
+            "z": -90.49016
+          },
+          "screenPosition": {
+            "x": 0.39256176,
+            "y": 0.2553644
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.855263,
+            "y": 45.989464,
+            "z": -92.437454
+          },
+          "screenPosition": {
+            "x": 0.45390528,
+            "y": 0.2607416
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.752613,
+            "y": 48.198334,
+            "z": -93.11515
+          },
+          "screenPosition": {
+            "x": 0.48632643,
+            "y": 0.2824292
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.419327,
+            "y": 50.495758,
+            "z": -93.575714
+          },
+          "screenPosition": {
+            "x": 0.513904,
+            "y": 0.30715904
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.5333,
+            "y": 52.385563,
+            "z": -93.29464
+          },
+          "screenPosition": {
+            "x": 0.52009606,
+            "y": 0.3332459
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.33733,
+            "y": 54.29106,
+            "z": -92.68488
+          },
+          "screenPosition": {
+            "x": 0.5182929,
+            "y": 0.36229694
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.290245,
+            "y": 55.932777,
+            "z": -92.141556
+          },
+          "screenPosition": {
+            "x": 0.5164136,
+            "y": 0.38741434
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.928352,
+            "y": 57.38544,
+            "z": -91.19122
+          },
+          "screenPosition": {
+            "x": 0.5028507,
+            "y": 0.41382468
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.219444,
+            "y": 66.69177,
+            "z": -84.04164
+          },
+          "screenPosition": {
+            "x": 0.39019248,
+            "y": 0.59194094
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.02385,
+            "y": 61.76172,
+            "z": -91.77771
+          },
+          "screenPosition": {
+            "x": 0.54835033,
+            "y": 0.46330255
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.877586,
+            "y": 59.589855,
+            "z": -88.68772
+          },
+          "screenPosition": {
+            "x": 0.45603186,
+            "y": 0.46301076
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.29689,
+            "y": 57.288685,
+            "z": -89.39712
+          },
+          "screenPosition": {
+            "x": 0.45753652,
+            "y": 0.42814565
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.06264,
+            "y": 56.507423,
+            "z": -91.02266
+          },
+          "screenPosition": {
+            "x": 0.49255353,
+            "y": 0.40429828
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.213367,
+            "y": 55.962296,
+            "z": -92.069176
+          },
+          "screenPosition": {
+            "x": 0.5148413,
+            "y": 0.38839728
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.508118,
+            "y": 54.94864,
+            "z": -93.10379
+          },
+          "screenPosition": {
+            "x": 0.53329176,
+            "y": 0.3668987
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.175087,
+            "y": 53.27553,
+            "z": -94.304474
+          },
+          "screenPosition": {
+            "x": 0.55166584,
+            "y": 0.33547503
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.34975,
+            "y": 50.832397,
+            "z": -93.62083
+          },
+          "screenPosition": {
+            "x": 0.5174493,
+            "y": 0.31091544
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.006332,
+            "y": 49.798584,
+            "z": -91.802925
+          },
+          "screenPosition": {
+            "x": 0.46487033,
+            "y": 0.31378403
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.617672,
+            "y": 50.125145,
+            "z": -90.42178
+          },
+          "screenPosition": {
+            "x": 0.43261424,
+            "y": 0.33003643
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.470562,
+            "y": 51.54009,
+            "z": -87.532585
+          },
+          "screenPosition": {
+            "x": 0.37067735,
+            "y": 0.37256366
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.36408,
+            "y": 47.419384,
+            "z": -84.86843
+          },
+          "screenPosition": {
+            "x": 0.27530286,
+            "y": 0.34424925
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.718674,
+            "y": 45.6596,
+            "z": -85.70127
+          },
+          "screenPosition": {
+            "x": 0.28368878,
+            "y": 0.31506214
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.355656,
+            "y": 44.91231,
+            "z": -90.43563
+          },
+          "screenPosition": {
+            "x": 0.39643738,
+            "y": 0.26466486
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.796013,
+            "y": 47.119312,
+            "z": -91.69831
+          },
+          "screenPosition": {
+            "x": 0.44342577,
+            "y": 0.28125432
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.56024,
+            "y": 42.97587,
+            "z": -82.41545
+          },
+          "screenPosition": {
+            "x": 0.18300726,
+            "y": 0.3101804
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.27766,
+            "y": 44.50139,
+            "z": -81.57666
+          },
+          "screenPosition": {
+            "x": 0.17274131,
+            "y": 0.33638915
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.235443,
+            "y": 46.34785,
+            "z": -81.111664
+          },
+          "screenPosition": {
+            "x": 0.17413318,
+            "y": 0.36346692
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -44.116753,
+            "y": 51.145573,
+            "z": -82.69609
+          },
+          "screenPosition": {
+            "x": 0.24735561,
+            "y": 0.4095973
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.62182,
+            "y": 52.81119,
+            "z": -83.83533
+          },
+          "screenPosition": {
+            "x": 0.2874792,
+            "y": 0.4205336
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.859562,
+            "y": 55.56778,
+            "z": -87.23268
+          },
+          "screenPosition": {
+            "x": 0.3915196,
+            "y": 0.42543092
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.581505,
+            "y": 52.943798,
+            "z": -88.15327
+          },
+          "screenPosition": {
+            "x": 0.3960166,
+            "y": 0.38469747
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.318645,
+            "y": 51.317776,
+            "z": -88.36792
+          },
+          "screenPosition": {
+            "x": 0.38988426,
+            "y": 0.36264637
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.156006,
+            "y": 47.380505,
+            "z": -87.8657
+          },
+          "screenPosition": {
+            "x": 0.34973568,
+            "y": 0.31776232
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.873676,
+            "y": 44.935497,
+            "z": -87.76704
+          },
+          "screenPosition": {
+            "x": 0.33008456,
+            "y": 0.28824508
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.30758,
+            "y": 43.24857,
+            "z": -88.71142
+          },
+          "screenPosition": {
+            "x": 0.34176475,
+            "y": 0.2588591
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.256287,
+            "y": 43.63675,
+            "z": -90.9517
+          },
+          "screenPosition": {
+            "x": 0.40020666,
+            "y": 0.24469365
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.21775,
+            "y": 44.920517,
+            "z": -92.44687
+          },
+          "screenPosition": {
+            "x": 0.44662452,
+            "y": 0.24731952
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.50192,
+            "y": 47.08418,
+            "z": -93.52563
+          },
+          "screenPosition": {
+            "x": 0.48872405,
+            "y": 0.26496366
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.706776,
+            "y": 49.174984,
+            "z": -94.492836
+          },
+          "screenPosition": {
+            "x": 0.52753115,
+            "y": 0.2826662
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.291748,
+            "y": 51.29718,
+            "z": -94.80269
+          },
+          "screenPosition": {
+            "x": 0.55006266,
+            "y": 0.30655602
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.39658,
+            "y": 53.16121,
+            "z": -93.424034
+          },
+          "screenPosition": {
+            "x": 0.52891725,
+            "y": 0.34168625
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.827396,
+            "y": 52.420696,
+            "z": -91.46732
+          },
+          "screenPosition": {
+            "x": 0.47487152,
+            "y": 0.3494858
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.925774,
+            "y": 50.390797,
+            "z": -89.77037
+          },
+          "screenPosition": {
+            "x": 0.41830662,
+            "y": 0.33891916
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.3335,
+            "y": 47.961483,
+            "z": -89.343025
+          },
+          "screenPosition": {
+            "x": 0.39064214,
+            "y": 0.31219694
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.609375,
+            "y": 46.51256,
+            "z": -89.123405
+          },
+          "screenPosition": {
+            "x": 0.37498125,
+            "y": 0.2960197
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.20512,
+            "y": 42.919422,
+            "z": -86.326385
+          },
+          "screenPosition": {
+            "x": 0.28001958,
+            "y": 0.27551073
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.645668,
+            "y": 42.5884,
+            "z": -84.52634
+          },
+          "screenPosition": {
+            "x": 0.23282242,
+            "y": 0.28695005
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.188618,
+            "y": 44.01904,
+            "z": -81.308464
+          },
+          "screenPosition": {
+            "x": 0.16278197,
+            "y": 0.3328086
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.05492,
+            "y": 45.28078,
+            "z": -80.536095
+          },
+          "screenPosition": {
+            "x": 0.15238412,
+            "y": 0.35522
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.17376,
+            "y": 47.375328,
+            "z": -80.33335
+          },
+          "screenPosition": {
+            "x": 0.16195777,
+            "y": 0.3830418
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.225456,
+            "y": 49.90889,
+            "z": -80.21488
+          },
+          "screenPosition": {
+            "x": 0.17681752,
+            "y": 0.4156883
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.038628,
+            "y": 51.84016,
+            "z": -80.702705
+          },
+          "screenPosition": {
+            "x": 0.20260772,
+            "y": 0.43558246
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.08486,
+            "y": 53.78525,
+            "z": -81.44683
+          },
+          "screenPosition": {
+            "x": 0.23478863,
+            "y": 0.45338282
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.44104,
+            "y": 55.71465,
+            "z": -82.51964
+          },
+          "screenPosition": {
+            "x": 0.27508092,
+            "y": 0.4681501
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.79479,
+            "y": 57.54167,
+            "z": -83.553276
+          },
+          "screenPosition": {
+            "x": 0.3136892,
+            "y": 0.4819844
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.4542,
+            "y": 59.531975,
+            "z": -83.89634
+          },
+          "screenPosition": {
+            "x": 0.33623314,
+            "y": 0.50384724
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.587643,
+            "y": 62.240765,
+            "z": -83.92858
+          },
+          "screenPosition": {
+            "x": 0.3560769,
+            "y": 0.53736633
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.01215,
+            "y": 64.4986,
+            "z": -83.03526
+          },
+          "screenPosition": {
+            "x": 0.34968945,
+            "y": 0.57330054
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.08778,
+            "y": 65.13415,
+            "z": -81.18663
+          },
+          "screenPosition": {
+            "x": 0.30808127,
+            "y": 0.5972693
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -35.32019,
+            "y": 66.196754,
+            "z": -78.581
+          },
+          "screenPosition": {
+            "x": 0.25066274,
+            "y": 0.633033
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.686295,
+            "y": 65.99763,
+            "z": -76.747734
+          },
+          "screenPosition": {
+            "x": 0.20353091,
+            "y": 0.6465323
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.16335,
+            "y": 67.20221,
+            "z": -75.53515
+          },
+          "screenPosition": {
+            "x": 0.18175963,
+            "y": 0.67210597
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.128431,
+            "y": 69.35579,
+            "z": -75.187645
+          },
+          "screenPosition": {
+            "x": 0.16919076,
+            "y": 0.70178455
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.093515,
+            "y": 71.50938,
+            "z": -74.84014
+          },
+          "screenPosition": {
+            "x": 0.17631651,
+            "y": 0.73134136
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -29.133045,
+            "y": 73.53107,
+            "z": -74.52585
+          },
+          "screenPosition": {
+            "x": 0.18298778,
+            "y": 0.759013
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -29.319427,
+            "y": 78.108345,
+            "z": -76.36063
+          },
+          "screenPosition": {
+            "x": 0.27901152,
+            "y": 0.80105335
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.821468,
+            "y": 79.28787,
+            "z": -78.40162
+          },
+          "screenPosition": {
+            "x": 0.33817163,
+            "y": 0.7979626
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.50304,
+            "y": 78.229004,
+            "z": -79.837296
+          },
+          "screenPosition": {
+            "x": 0.36647904,
+            "y": 0.77214414
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.367165,
+            "y": 75.41784,
+            "z": -79.765884
+          },
+          "screenPosition": {
+            "x": 0.34497052,
+            "y": 0.7379348
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.852959,
+            "y": 73.726456,
+            "z": -77.529076
+          },
+          "screenPosition": {
+            "x": 0.27732715,
+            "y": 0.7362309
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.084776,
+            "y": 74.40534,
+            "z": -75.864365
+          },
+          "screenPosition": {
+            "x": 0.24066564,
+            "y": 0.7589667
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -28.27135,
+            "y": 76.4446,
+            "z": -74.63642
+          },
+          "screenPosition": {
+            "x": 0.22455445,
+            "y": 0.79461193
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.378023,
+            "y": 78.02728,
+            "z": -74.23785
+          },
+          "screenPosition": {
+            "x": 0.22553195,
+            "y": 0.81845707
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -26.246761,
+            "y": 79.3914,
+            "z": -73.50465
+          },
+          "screenPosition": {
+            "x": 0.20248646,
+            "y": 0.8398913
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -24.90677,
+            "y": 81.76543,
+            "z": -72.90679
+          },
+          "screenPosition": {
+            "x": 0.21065104,
+            "y": 0.87375706
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -23.07068,
+            "y": 83.3919,
+            "z": -73.02054
+          },
+          "screenPosition": {
+            "x": 0.21809718,
+            "y": 0.9046428
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -23.007729,
+            "y": 86.73017,
+            "z": -72.63069
+          },
+          "screenPosition": {
+            "x": 0.24666092,
+            "y": 0.94101125
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -24.579346,
+            "y": 87.57306,
+            "z": -74.62657
+          },
+          "screenPosition": {
+            "x": 0.3023335,
+            "y": 0.934216
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -26.27065,
+            "y": 86.92368,
+            "z": -76.2189
+          },
+          "screenPosition": {
+            "x": 0.3374516,
+            "y": 0.9121023
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.625244,
+            "y": 85.163895,
+            "z": -77.05174
+          },
+          "screenPosition": {
+            "x": 0.3458422,
+            "y": 0.88311106
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -30.594263,
+            "y": 82.784256,
+            "z": -79.40453
+          },
+          "screenPosition": {
+            "x": 0.38769877,
+            "y": 0.8326876
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.555984,
+            "y": 80.097496,
+            "z": -81.63983
+          },
+          "screenPosition": {
+            "x": 0.42457893,
+            "y": 0.78008014
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.340797,
+            "y": 77.21348,
+            "z": -81.45689
+          },
+          "screenPosition": {
+            "x": 0.39974254,
+            "y": 0.7456747
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -34.632713,
+            "y": 73.175705,
+            "z": -80.33053
+          },
+          "screenPosition": {
+            "x": 0.3432804,
+            "y": 0.7050547
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.57431,
+            "y": 70.71875,
+            "z": -79.39058
+          },
+          "screenPosition": {
+            "x": 0.30261073,
+            "y": 0.68229777
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.920357,
+            "y": 69.31691,
+            "z": -78.18492
+          },
+          "screenPosition": {
+            "x": 0.26268002,
+            "y": 0.67548764
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.11692,
+            "y": 67.795135,
+            "z": -77.85375
+          },
+          "screenPosition": {
+            "x": 0.24371874,
+            "y": 0.6593915
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.763172,
+            "y": 65.96811,
+            "z": -76.820114
+          },
+          "screenPosition": {
+            "x": 0.20511048,
+            "y": 0.6455572
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -34.826298,
+            "y": 61.737545,
+            "z": -76.45671
+          },
+          "screenPosition": {
+            "x": 0.16646133,
+            "y": 0.5958137
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.863647,
+            "y": 59.686337,
+            "z": -76.843376
+          },
+          "screenPosition": {
+            "x": 0.16152544,
+            "y": 0.56695896
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.90343,
+            "y": 57.7375,
+            "z": -77.26921
+          },
+          "screenPosition": {
+            "x": 0.15843765,
+            "y": 0.53894335
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.18358,
+            "y": 56.109604,
+            "z": -78.06884
+          },
+          "screenPosition": {
+            "x": 0.16692299,
+            "y": 0.5116904
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.699226,
+            "y": 54.597904,
+            "z": -79.16393
+          },
+          "screenPosition": {
+            "x": 0.18358961,
+            "y": 0.4833243
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.243484,
+            "y": 53.93096,
+            "z": -81.669914
+          },
+          "screenPosition": {
+            "x": 0.24136154,
+            "y": 0.45326114
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.56172,
+            "y": 57.52785,
+            "z": -83.296974
+          },
+          "screenPosition": {
+            "x": 0.3072042,
+            "y": 0.48403546
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.99294,
+            "y": 59.70908,
+            "z": -83.462074
+          },
+          "screenPosition": {
+            "x": 0.32665426,
+            "y": 0.5098235
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.568768,
+            "y": 61.8055,
+            "z": -82.67435
+          },
+          "screenPosition": {
+            "x": 0.32175952,
+            "y": 0.54282176
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.822487,
+            "y": 63.40575,
+            "z": -81.362114
+          },
+          "screenPosition": {
+            "x": 0.30031922,
+            "y": 0.5741283
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.65959,
+            "y": 63.43901,
+            "z": -80.11978
+          },
+          "screenPosition": {
+            "x": 0.2695724,
+            "y": 0.5853691
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.8048,
+            "y": 63.737926,
+            "z": -78.226036
+          },
+          "screenPosition": {
+            "x": 0.22447298,
+            "y": 0.60552806
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.44862,
+            "y": 61.80853,
+            "z": -77.15323
+          },
+          "screenPosition": {
+            "x": 0.1841688,
+            "y": 0.5907559
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -40.65826,
+            "y": 55.7793,
+            "z": -80.61994
+          },
+          "screenPosition": {
+            "x": 0.22818616,
+            "y": 0.48543704
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.0433,
+            "y": 54.582924,
+            "z": -83.843765
+          },
+          "screenPosition": {
+            "x": 0.30012769,
+            "y": 0.44253924
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.696663,
+            "y": 55.60104,
+            "z": -85.99035
+          },
+          "screenPosition": {
+            "x": 0.36078858,
+            "y": 0.43662345
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.628674,
+            "y": 59.62686,
+            "z": -86.27542
+          },
+          "screenPosition": {
+            "x": 0.3961981,
+            "y": 0.48439255
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.57245,
+            "y": 61.242805,
+            "z": -84.63452
+          },
+          "screenPosition": {
+            "x": 0.36666012,
+            "y": 0.5187946
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.72699,
+            "y": 59.029472,
+            "z": -80.77563
+          },
+          "screenPosition": {
+            "x": 0.2549173,
+            "y": 0.5246486
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.741188,
+            "y": 56.72197,
+            "z": -78.8888
+          },
+          "screenPosition": {
+            "x": 0.19166571,
+            "y": 0.51221937
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.848114,
+            "y": 54.33412,
+            "z": -79.23036
+          },
+          "screenPosition": {
+            "x": 0.1833958,
+            "y": 0.47945645
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.349163,
+            "y": 52.208183,
+            "z": -80.09046
+          },
+          "screenPosition": {
+            "x": 0.18994494,
+            "y": 0.4454839
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.261364,
+            "y": 51.06077,
+            "z": -81.74327
+          },
+          "screenPosition": {
+            "x": 0.22301057,
+            "y": 0.41680476
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.20317,
+            "y": 54.06357,
+            "z": -85.98786
+          },
+          "screenPosition": {
+            "x": 0.34991717,
+            "y": 0.4174574
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.10052,
+            "y": 56.27244,
+            "z": -86.66556
+          },
+          "screenPosition": {
+            "x": 0.38233274,
+            "y": 0.4391503
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.738373,
+            "y": 61.695637,
+            "z": -84.9751
+          },
+          "screenPosition": {
+            "x": 0.37832355,
+            "y": 0.521486
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.211994,
+            "y": 59.492382,
+            "z": -82.542465
+          },
+          "screenPosition": {
+            "x": 0.30220973,
+            "y": 0.51509815
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.925392,
+            "y": 57.22635,
+            "z": -81.424545
+          },
+          "screenPosition": {
+            "x": 0.2584143,
+            "y": 0.49651614
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.148388,
+            "y": 52.476425,
+            "z": -83.20523
+          },
+          "screenPosition": {
+            "x": 0.26941225,
+            "y": 0.42180127
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.876194,
+            "y": 53.36265,
+            "z": -85.38503
+          },
+          "screenPosition": {
+            "x": 0.3299635,
+            "y": 0.41395184
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.162205,
+            "y": 55.244965,
+            "z": -87.44387
+          },
+          "screenPosition": {
+            "x": 0.39449325,
+            "y": 0.41959205
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.533577,
+            "y": 58.17232,
+            "z": -87.81074
+          },
+          "screenPosition": {
+            "x": 0.424239,
+            "y": 0.45292088
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.667015,
+            "y": 60.88111,
+            "z": -87.84298
+          },
+          "screenPosition": {
+            "x": 0.4440341,
+            "y": 0.48644912
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.920734,
+            "y": 62.48136,
+            "z": -86.530754
+          },
+          "screenPosition": {
+            "x": 0.42261362,
+            "y": 0.51779693
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.53419,
+            "y": 68.31333,
+            "z": -80.64579
+          },
+          "screenPosition": {
+            "x": 0.31695274,
+            "y": 0.6416374
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.51195,
+            "y": 63.037724,
+            "z": -81.97436
+          },
+          "screenPosition": {
+            "x": 0.3129826,
+            "y": 0.5642386
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -43.73768,
+            "y": 44.989353,
+            "z": -80.08993
+          },
+          "screenPosition": {
+            "x": 0.13932036,
+            "y": 0.3555246
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.472385,
+            "y": 43.26096,
+            "z": -80.26541
+          },
+          "screenPosition": {
+            "x": 0.13133773,
+            "y": 0.33228388
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.889847,
+            "y": 41.24114,
+            "z": -79.99472
+          },
+          "screenPosition": {
+            "x": 0.110390276,
+            "y": 0.30942482
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.93936,
+            "y": 39.701794,
+            "z": -80.57721
+          },
+          "screenPosition": {
+            "x": 0.114086136,
+            "y": 0.28516063
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.6692,
+            "y": 37.768654,
+            "z": -80.67436
+          },
+          "screenPosition": {
+            "x": 0.10291647,
+            "y": 0.26019222
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.44369,
+            "y": 34.09142,
+            "z": -81.27568
+          },
+          "screenPosition": {
+            "x": 0.09205084,
+            "y": 0.20908388
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.478607,
+            "y": 31.937836,
+            "z": -81.623184
+          },
+          "screenPosition": {
+            "x": 0.08557123,
+            "y": 0.17919254
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.3261,
+            "y": 31.331802,
+            "z": -83.39944
+          },
+          "screenPosition": {
+            "x": 0.12558293,
+            "y": 0.15622005
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.851482,
+            "y": 30.229595,
+            "z": -84.65119
+          },
+          "screenPosition": {
+            "x": 0.14950183,
+            "y": 0.13255103
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.48051,
+            "y": 30.223978,
+            "z": -86.40613
+          },
+          "screenPosition": {
+            "x": 0.19292967,
+            "y": 0.11685353
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.005047,
+            "y": 32.708584,
+            "z": -87.85867
+          },
+          "screenPosition": {
+            "x": 0.25796315,
+            "y": 0.13028197
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.43626,
+            "y": 34.88981,
+            "z": -88.02377
+          },
+          "screenPosition": {
+            "x": 0.265858,
+            "y": 0.1605073
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.85347,
+            "y": 36.84052,
+            "z": -87.01296
+          },
+          "screenPosition": {
+            "x": 0.25437853,
+            "y": 0.19362105
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.313488,
+            "y": 37.328487,
+            "z": -85.52622
+          },
+          "screenPosition": {
+            "x": 0.22075279,
+            "y": 0.2126085
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.05628,
+            "y": 33.75291,
+            "z": -81.815544
+          },
+          "screenPosition": {
+            "x": 0.10335564,
+            "y": 0.20047306
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.33156,
+            "y": 31.920269,
+            "z": -82.53684
+          },
+          "screenPosition": {
+            "x": 0.10822037,
+            "y": 0.17104721
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.13584,
+            "y": 29.855236,
+            "z": -82.66721
+          },
+          "screenPosition": {
+            "x": 0.09695128,
+            "y": 0.14414465
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.208702,
+            "y": 26.034164,
+            "z": -82.460464
+          },
+          "screenPosition": {
+            "x": 0.06493359,
+            "y": 0.09825128
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.81096,
+            "y": 24.902441,
+            "z": -83.78459
+          },
+          "screenPosition": {
+            "x": 0.090218216,
+            "y": 0.07306005
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.448875,
+            "y": 28.893126,
+            "z": -85.89699
+          },
+          "screenPosition": {
+            "x": 0.1710913,
+            "y": 0.10511553
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.9448,
+            "y": 30.53297,
+            "z": -85.938644
+          },
+          "screenPosition": {
+            "x": 0.18325545,
+            "y": 0.124222755
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.05634,
+            "y": 32.3204,
+            "z": -85.6184
+          },
+          "screenPosition": {
+            "x": 0.18784031,
+            "y": 0.14930798
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.708454,
+            "y": 34.003586,
+            "z": -85.84397
+          },
+          "screenPosition": {
+            "x": 0.20545794,
+            "y": 0.16878445
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.444748,
+            "y": 35.96437,
+            "z": -86.25942
+          },
+          "screenPosition": {
+            "x": 0.22963528,
+            "y": 0.18983583
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.875965,
+            "y": 38.1456,
+            "z": -86.424515
+          },
+          "screenPosition": {
+            "x": 0.24888733,
+            "y": 0.21501325
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.915493,
+            "y": 40.167294,
+            "z": -86.11023
+          },
+          "screenPosition": {
+            "x": 0.25526753,
+            "y": 0.24297047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.39741,
+            "y": 41.57662,
+            "z": -84.97597
+          },
+          "screenPosition": {
+            "x": 0.23698011,
+            "y": 0.27058223
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.996155,
+            "y": 57.657154,
+            "z": -79.49758
+          },
+          "screenPosition": {
+            "x": 0.2134143,
+            "y": 0.51860917
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.380566,
+            "y": 38.321987,
+            "z": -81.63909
+          },
+          "screenPosition": {
+            "x": 0.13117506,
+            "y": 0.25911105
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.956203,
+            "y": 71.9013,
+            "z": -75.91045
+          },
+          "screenPosition": {
+            "x": 0.22417979,
+            "y": 0.72743034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.2368,
+            "y": 34.819984,
+            "z": -82.39111
+          },
+          "screenPosition": {
+            "x": 0.12497486,
+            "y": 0.20849983
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -50.496487,
+            "y": 29.06764,
+            "z": -81.69654
+          },
+          "screenPosition": {
+            "x": 0.06722025,
+            "y": 0.14273617
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.377647,
+            "y": 26.973091,
+            "z": -81.89929
+          },
+          "screenPosition": {
+            "x": 0.057547655,
+            "y": 0.11483736
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.05376,
+            "y": 25.325756,
+            "z": -84.197556
+          },
+          "screenPosition": {
+            "x": 0.10324938,
+            "y": 0.07434092
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.25375,
+            "y": 27.211815,
+            "z": -85.08643
+          },
+          "screenPosition": {
+            "x": 0.13866468,
+            "y": 0.090167746
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.002213,
+            "y": 29.684467,
+            "z": -85.6977
+          },
+          "screenPosition": {
+            "x": 0.1716269,
+            "y": 0.11654746
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.56344,
+            "y": 31.16665,
+            "z": -84.67499
+          },
+          "screenPosition": {
+            "x": 0.15621452,
+            "y": 0.14309338
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.588367,
+            "y": 32.574104,
+            "z": -84.12571
+          },
+          "screenPosition": {
+            "x": 0.15241925,
+            "y": 0.16542344
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.78165,
+            "y": 34.536762,
+            "z": -83.95618
+          },
+          "screenPosition": {
+            "x": 0.16199242,
+            "y": 0.19138813
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.66884,
+            "y": 52.601982,
+            "z": -80.5758
+          },
+          "screenPosition": {
+            "x": 0.20474745,
+            "y": 0.44616708
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -46.933903,
+            "y": 39.113327,
+            "z": -81.439804
+          },
+          "screenPosition": {
+            "x": 0.1314487,
+            "y": 0.27033347
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.28094,
+            "y": 41.016953,
+            "z": -81.41503
+          },
+          "screenPosition": {
+            "x": 0.14421485,
+            "y": 0.29430562
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.024536,
+            "y": 43.28486,
+            "z": -81.94797
+          },
+          "screenPosition": {
+            "x": 0.17344302,
+            "y": 0.31798574
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.15008,
+            "y": 45.302807,
+            "z": -82.803635
+          },
+          "screenPosition": {
+            "x": 0.20895773,
+            "y": 0.3357467
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.73446,
+            "y": 47.04128,
+            "z": -84.05441
+          },
+          "screenPosition": {
+            "x": 0.2523555,
+            "y": 0.3465922
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.698357,
+            "y": 48.42742,
+            "z": -85.58875
+          },
+          "screenPosition": {
+            "x": 0.30034384,
+            "y": 0.35058066
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.10892,
+            "y": 49.022224,
+            "z": -87.32237
+          },
+          "screenPosition": {
+            "x": 0.34773573,
+            "y": 0.34296435
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.820286,
+            "y": 49.575558,
+            "z": -88.2871
+          },
+          "screenPosition": {
+            "x": 0.37567142,
+            "y": 0.34150085
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.6499,
+            "y": 51.839718,
+            "z": -89.99
+          },
+          "screenPosition": {
+            "x": 0.4340341,
+            "y": 0.35498473
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.08414,
+            "y": 54.507042,
+            "z": -89.253334
+          },
+          "screenPosition": {
+            "x": 0.434426,
+            "y": 0.3946635
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.580257,
+            "y": 53.608864,
+            "z": -86.23226
+          },
+          "screenPosition": {
+            "x": 0.3528014,
+            "y": 0.4096962
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.54606,
+            "y": 53.28115,
+            "z": -92.54954
+          },
+          "screenPosition": {
+            "x": 0.507964,
+            "y": 0.35076943
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.969975,
+            "y": 55.15526,
+            "z": -92.597145
+          },
+          "screenPosition": {
+            "x": 0.52232665,
+            "y": 0.37374532
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.908886,
+            "y": 56.566456,
+            "z": -90.87791
+          },
+          "screenPosition": {
+            "x": 0.48939687,
+            "y": 0.40627164
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.128536,
+            "y": 56.73348,
+            "z": -89.01737
+          },
+          "screenPosition": {
+            "x": 0.44419804,
+            "y": 0.42449644
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.290375,
+            "y": 54.827267,
+            "z": -85.27597
+          },
+          "screenPosition": {
+            "x": 0.33754292,
+            "y": 0.43316403
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.32891,
+            "y": 53.5435,
+            "z": -83.7808
+          },
+          "screenPosition": {
+            "x": 0.29125047,
+            "y": 0.43011343
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.31634,
+            "y": 50.10989,
+            "z": -81.46317
+          },
+          "screenPosition": {
+            "x": 0.20944265,
+            "y": 0.40743813
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -44.064655,
+            "y": 45.690273,
+            "z": -80.69276
+          },
+          "screenPosition": {
+            "x": 0.1592219,
+            "y": 0.35901496
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.344803,
+            "y": 44.062378,
+            "z": -81.492386
+          },
+          "screenPosition": {
+            "x": 0.16765626,
+            "y": 0.33174354
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.18743,
+            "y": 43.2516,
+            "z": -83.19031
+          },
+          "screenPosition": {
+            "x": 0.20417403,
+            "y": 0.3067932
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.80429,
+            "y": 42.734116,
+            "z": -84.74942
+          },
+          "screenPosition": {
+            "x": 0.23939626,
+            "y": 0.2868095
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.001255,
+            "y": 44.13408,
+            "z": -86.54006
+          },
+          "screenPosition": {
+            "x": 0.29387003,
+            "y": 0.28874704
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -50.03875,
+            "y": 48.97514,
+            "z": -88.30841
+          },
+          "screenPosition": {
+            "x": 0.3719497,
+            "y": 0.33393452
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.602413,
+            "y": 50.559692,
+            "z": -87.32487
+          },
+          "screenPosition": {
+            "x": 0.3586071,
+            "y": 0.3621304
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.421043,
+            "y": 53.07943,
+            "z": -86.950096
+          },
+          "screenPosition": {
+            "x": 0.36698148,
+            "y": 0.39682785
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.868893,
+            "y": 53.05553,
+            "z": -85.26753
+          },
+          "screenPosition": {
+            "x": 0.32487655,
+            "y": 0.4111375
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.530933,
+            "y": 52.610188,
+            "z": -82.587036
+          },
+          "screenPosition": {
+            "x": 0.2549346,
+            "y": 0.42882174
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.095444,
+            "y": 50.607933,
+            "z": -81.402695
+          },
+          "screenPosition": {
+            "x": 0.2113867,
+            "y": 0.41414043
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.734398,
+            "y": 48.47379,
+            "z": -80.25156
+          },
+          "screenPosition": {
+            "x": 0.16764203,
+            "y": 0.39746013
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.993237,
+            "y": 46.308258,
+            "z": -79.75778
+          },
+          "screenPosition": {
+            "x": 0.14010976,
+            "y": 0.37471786
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.78779,
+            "y": 43.833733,
+            "z": -79.73149
+          },
+          "screenPosition": {
+            "x": 0.12205704,
+            "y": 0.34406385
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.310738,
+            "y": 42.629154,
+            "z": -80.94408
+          },
+          "screenPosition": {
+            "x": 0.1438114,
+            "y": 0.3185114
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -48.728855,
+            "y": 39.560543,
+            "z": -83.535324
+          },
+          "screenPosition": {
+            "x": 0.18682301,
+            "y": 0.25773585
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.968628,
+            "y": 39.497765,
+            "z": -84.85004
+          },
+          "screenPosition": {
+            "x": 0.21915051,
+            "y": 0.24554704
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.547546,
+            "y": 40.64777,
+            "z": -86.96341
+          },
+          "screenPosition": {
+            "x": 0.2799949,
+            "y": 0.24200816
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -50.88828,
+            "y": 45.549736,
+            "z": -88.00202
+          },
+          "screenPosition": {
+            "x": 0.3402619,
+            "y": 0.29373175
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -49.01789,
+            "y": 41.92895,
+            "z": -84.692406
+          },
+          "screenPosition": {
+            "x": 0.23244563,
+            "y": 0.2775515
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.10308,
+            "y": 55.269306,
+            "z": -79.83914
+          },
+          "screenPosition": {
+            "x": 0.2051898,
+            "y": 0.48584816
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.08588,
+            "y": 37.90313,
+            "z": -84.407326
+          },
+          "screenPosition": {
+            "x": 0.19690484,
+            "y": 0.2294866
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.264816,
+            "y": 35.28102,
+            "z": -84.742935
+          },
+          "screenPosition": {
+            "x": 0.18683457,
+            "y": 0.19385128
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.36768,
+            "y": 38.53191,
+            "z": -89.24977
+          },
+          "screenPosition": {
+            "x": 0.3220219,
+            "y": 0.19532496
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.48895,
+            "y": 40.728832,
+            "z": -89.08619
+          },
+          "screenPosition": {
+            "x": 0.33338684,
+            "y": 0.22431964
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.77818,
+            "y": 40.55922,
+            "z": -87.18054
+          },
+          "screenPosition": {
+            "x": 0.28471786,
+            "y": 0.23868062
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.739834,
+            "y": 39.304966,
+            "z": -85.61299
+          },
+          "screenPosition": {
+            "x": 0.23684132,
+            "y": 0.23660663
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.918774,
+            "y": 36.682858,
+            "z": -85.94859
+          },
+          "screenPosition": {
+            "x": 0.22693162,
+            "y": 0.20143713
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.843143,
+            "y": 36.047306,
+            "z": -87.797226
+          },
+          "screenPosition": {
+            "x": 0.26847294,
+            "y": 0.17757733
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.399315,
+            "y": 39.862762,
+            "z": -89.75891
+          },
+          "screenPosition": {
+            "x": 0.34406874,
+            "y": 0.20751715
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.967842,
+            "y": 41.65206,
+            "z": -88.85369
+          },
+          "screenPosition": {
+            "x": 0.3340785,
+            "y": 0.23799607
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.18019,
+            "y": 41.511967,
+            "z": -86.87566
+          },
+          "screenPosition": {
+            "x": 0.28379974,
+            "y": 0.25311172
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.194393,
+            "y": 39.204468,
+            "z": -84.988846
+          },
+          "screenPosition": {
+            "x": 0.220623,
+            "y": 0.2408582
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.648525,
+            "y": 55.369804,
+            "z": -80.46328
+          },
+          "screenPosition": {
+            "x": 0.22142132,
+            "y": 0.4816873
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.487556,
+            "y": 34.50163,
+            "z": -85.78349
+          },
+          "screenPosition": {
+            "x": 0.2072907,
+            "y": 0.17509745
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.237858,
+            "y": 36.692936,
+            "z": -87.374855
+          },
+          "screenPosition": {
+            "x": 0.26241198,
+            "y": 0.18887734
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.974148,
+            "y": 38.65372,
+            "z": -87.7903
+          },
+          "screenPosition": {
+            "x": 0.2865014,
+            "y": 0.20950629
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.008217,
+            "y": 40.08695,
+            "z": -88.3386
+          },
+          "screenPosition": {
+            "x": 0.31024417,
+            "y": 0.22263633
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.74938,
+            "y": 42.25248,
+            "z": -88.832375
+          },
+          "screenPosition": {
+            "x": 0.33777642,
+            "y": 0.24537861
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.40695,
+            "y": 44.52413,
+            "z": -88.19536
+          },
+          "screenPosition": {
+            "x": 0.33785787,
+            "y": 0.27950072
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.895176,
+            "y": 42.935116,
+            "z": -85.99771
+          },
+          "screenPosition": {
+            "x": 0.2719226,
+            "y": 0.27848896
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.53051,
+            "y": 39.931156,
+            "z": -86.689255
+          },
+          "screenPosition": {
+            "x": 0.26810798,
+            "y": 0.23529656
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.498684,
+            "y": 41.138325,
+            "z": -89.24284
+          },
+          "screenPosition": {
+            "x": 0.34015405,
+            "y": 0.22832425
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.85772,
+            "y": 55.84913,
+            "z": -86.2526
+          },
+          "screenPosition": {
+            "x": 0.36906734,
+            "y": 0.437447
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.239483,
+            "y": 58.137188,
+            "z": -89.638054
+          },
+          "screenPosition": {
+            "x": 0.46952555,
+            "y": 0.43663475
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.022263,
+            "y": 58.072536,
+            "z": -91.53775
+          },
+          "screenPosition": {
+            "x": 0.51637626,
+            "y": 0.41936457
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.9369,
+            "y": 57.027493,
+            "z": -93.22972
+          },
+          "screenPosition": {
+            "x": 0.5512566,
+            "y": 0.39162308
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -53.377113,
+            "y": 52.342224,
+            "z": -93.11072
+          },
+          "screenPosition": {
+            "x": 0.5152689,
+            "y": 0.33425114
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.17528,
+            "y": 50.73751,
+            "z": -91.241745
+          },
+          "screenPosition": {
+            "x": 0.4574844,
+            "y": 0.33037013
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.546253,
+            "y": 50.74313,
+            "z": -89.48681
+          },
+          "screenPosition": {
+            "x": 0.4137826,
+            "y": 0.34566453
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.703625,
+            "y": 51.55391,
+            "z": -87.78889
+          },
+          "screenPosition": {
+            "x": 0.37715164,
+            "y": 0.37053964
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.06099,
+            "y": 54.250748,
+            "z": -86.97984
+          },
+          "screenPosition": {
+            "x": 0.37595814,
+            "y": 0.4111878
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.429337,
+            "y": 56.692013,
+            "z": -88.248474
+          },
+          "screenPosition": {
+            "x": 0.42474186,
+            "y": 0.43064925
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.162605,
+            "y": 58.166706,
+            "z": -89.565674
+          },
+          "screenPosition": {
+            "x": 0.46794078,
+            "y": 0.43762648
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.66767,
+            "y": 59.83232,
+            "z": -90.70491
+          },
+          "screenPosition": {
+            "x": 0.50804615,
+            "y": 0.4485304
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.105595,
+            "y": 61.93695,
+            "z": -91.92842
+          },
+          "screenPosition": {
+            "x": 0.5532877,
+            "y": 0.46418816
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.44474,
+            "y": 63.149734,
+            "z": -92.72707
+          },
+          "screenPosition": {
+            "x": 0.5815602,
+            "y": 0.47240493
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.329327,
+            "y": 64.46302,
+            "z": -94.14987
+          },
+          "screenPosition": {
+            "x": 0.6263528,
+            "y": 0.47644174
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.828682,
+            "y": 69.5107,
+            "z": -95.411575
+          },
+          "screenPosition": {
+            "x": 0.693291,
+            "y": 0.5284742
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.74082,
+            "y": 69.79579,
+            "z": -93.26153
+          },
+          "screenPosition": {
+            "x": 0.64181846,
+            "y": 0.5506954
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.392536,
+            "y": 68.557236,
+            "z": -91.365295
+          },
+          "screenPosition": {
+            "x": 0.5858476,
+            "y": 0.5516883
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.42049,
+            "y": 70.45078,
+            "z": -89.91426
+          },
+          "screenPosition": {
+            "x": 0.5629939,
+            "y": 0.5879077
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.563072,
+            "y": 73.18534,
+            "z": -91.044075
+          },
+          "screenPosition": {
+            "x": 0.6103329,
+            "y": 0.61221355
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.2359,
+            "y": 75.022446,
+            "z": -93.503975
+          },
+          "screenPosition": {
+            "x": 0.68460816,
+            "y": 0.61382073
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.16027,
+            "y": 74.386894,
+            "z": -95.35261
+          },
+          "screenPosition": {
+            "x": 0.72591364,
+            "y": 0.58977723
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.945087,
+            "y": 71.50288,
+            "z": -95.16966
+          },
+          "screenPosition": {
+            "x": 0.70137995,
+            "y": 0.5554465
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.886684,
+            "y": 69.04591,
+            "z": -94.22971
+          },
+          "screenPosition": {
+            "x": 0.6606781,
+            "y": 0.5329379
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.755676,
+            "y": 66.4395,
+            "z": -94.23664
+          },
+          "screenPosition": {
+            "x": 0.642526,
+            "y": 0.50034976
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.932583,
+            "y": 66.63676,
+            "z": -96.654884
+          },
+          "screenPosition": {
+            "x": 0.704038,
+            "y": 0.4818367
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.677166,
+            "y": 72.21013,
+            "z": -98.368706
+          },
+          "screenPosition": {
+            "x": 0.78608763,
+            "y": 0.5365209
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.034534,
+            "y": 74.90697,
+            "z": -97.55967
+          },
+          "screenPosition": {
+            "x": 0.7848831,
+            "y": 0.57719594
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.98015,
+            "y": 76.24156,
+            "z": -96.89885
+          },
+          "screenPosition": {
+            "x": 0.7777954,
+            "y": 0.5995844
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -45.93182,
+            "y": 78.54835,
+            "z": -94.43451
+          },
+          "screenPosition": {
+            "x": 0.73259073,
+            "y": 0.6497514
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.550457,
+            "y": 79.18203,
+            "z": -93.17086
+          },
+          "screenPosition": {
+            "x": 0.70513546,
+            "y": 0.66842794
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.940895,
+            "y": 80.00663,
+            "z": -91.72924
+          },
+          "screenPosition": {
+            "x": 0.6749328,
+            "y": 0.6911421
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.095837,
+            "y": 80.71504,
+            "z": -89.99215
+          },
+          "screenPosition": {
+            "x": 0.63709956,
+            "y": 0.7153297
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.454643,
+            "y": 80.208786,
+            "z": -88.04139
+          },
+          "screenPosition": {
+            "x": 0.5849182,
+            "y": 0.7259348
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.698883,
+            "y": 77.429016,
+            "z": -87.31263
+          },
+          "screenPosition": {
+            "x": 0.5470897,
+            "y": 0.6974521
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -41.999344,
+            "y": 73.033295,
+            "z": -88.22478
+          },
+          "screenPosition": {
+            "x": 0.53880346,
+            "y": 0.6346332
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.19269,
+            "y": 73.563446,
+            "z": -91.85809
+          },
+          "screenPosition": {
+            "x": 0.63289607,
+            "y": 0.6097237
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.76892,
+            "y": 78.58161,
+            "z": -93.19218
+          },
+          "screenPosition": {
+            "x": 0.7018598,
+            "y": 0.660944
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.77254,
+            "y": 79.45142,
+            "z": -91.349495
+          },
+          "screenPosition": {
+            "x": 0.6620469,
+            "y": 0.68778473
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.57458,
+            "y": 74.746,
+            "z": -88.37797
+          },
+          "screenPosition": {
+            "x": 0.55490047,
+            "y": 0.6548394
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.251286,
+            "y": 73.48238,
+            "z": -89.73531
+          },
+          "screenPosition": {
+            "x": 0.5795085,
+            "y": 0.6271118
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.173225,
+            "y": 72.74446,
+            "z": -91.54478
+          },
+          "screenPosition": {
+            "x": 0.6197601,
+            "y": 0.6023878
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.781937,
+            "y": 75.50667,
+            "z": -93.1872
+          },
+          "screenPosition": {
+            "x": 0.6799881,
+            "y": 0.62256396
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.656136,
+            "y": 77.45925,
+            "z": -91.59141
+          },
+          "screenPosition": {
+            "x": 0.6540702,
+            "y": 0.66082376
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.534206,
+            "y": 76.31112,
+            "z": -88.89306
+          },
+          "screenPosition": {
+            "x": 0.5783782,
+            "y": 0.66964483
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.15494,
+            "y": 72.69292,
+            "z": -89.34962
+          },
+          "screenPosition": {
+            "x": 0.56468403,
+            "y": 0.6207878
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.14159,
+            "y": 71.41361,
+            "z": -91.03564
+          },
+          "screenPosition": {
+            "x": 0.59771323,
+            "y": 0.5901956
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.509342,
+            "y": 73.47115,
+            "z": -93.245186
+          },
+          "screenPosition": {
+            "x": 0.66725135,
+            "y": 0.5967056
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.77161,
+            "y": 74.713455,
+            "z": -93.971466
+          },
+          "screenPosition": {
+            "x": 0.6940228,
+            "y": 0.6058887
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.066822,
+            "y": 75.189026,
+            "z": -100.93074
+          },
+          "screenPosition": {
+            "x": 0.87088895,
+            "y": 0.55147165
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.678818,
+            "y": 74.4668,
+            "z": -102.41152
+          },
+          "screenPosition": {
+            "x": 0.9027194,
+            "y": 0.5296122
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.182297,
+            "y": 72.44324,
+            "z": -103.31079
+          },
+          "screenPosition": {
+            "x": 0.91090643,
+            "y": 0.49655685
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.74135,
+            "y": 69.852516,
+            "z": -102.98904
+          },
+          "screenPosition": {
+            "x": 0.8846724,
+            "y": 0.46701595
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.61337,
+            "y": 67.73219,
+            "z": -102.09421
+          },
+          "screenPosition": {
+            "x": 0.8465718,
+            "y": 0.4483909
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.8655,
+            "y": 65.64326,
+            "z": -100.542015
+          },
+          "screenPosition": {
+            "x": 0.7940874,
+            "y": 0.43571272
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.592842,
+            "y": 65.04025,
+            "z": -96.79715
+          },
+          "screenPosition": {
+            "x": 0.6965084,
+            "y": 0.46067435
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.6135,
+            "y": 66.62668,
+            "z": -95.22862
+          },
+          "screenPosition": {
+            "x": 0.66856694,
+            "y": 0.49408013
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.001904,
+            "y": 70.27065,
+            "z": -95.869644
+          },
+          "screenPosition": {
+            "x": 0.70959646,
+            "y": 0.53393286
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.462383,
+            "y": 72.24785,
+            "z": -100.30757
+          },
+          "screenPosition": {
+            "x": 0.83467835,
+            "y": 0.5201718
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.7109,
+            "y": 69.2891,
+            "z": -100.59806
+          },
+          "screenPosition": {
+            "x": 0.8211168,
+            "y": 0.48072666
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -54.731804,
+            "y": 66.905,
+            "z": -99.76965
+          },
+          "screenPosition": {
+            "x": 0.7837074,
+            "y": 0.4581596
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.839916,
+            "y": 65.28459,
+            "z": -98.22936
+          },
+          "screenPosition": {
+            "x": 0.7339237,
+            "y": 0.45129913
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.950462,
+            "y": 63.766563,
+            "z": -96.72824
+          },
+          "screenPosition": {
+            "x": 0.68583584,
+            "y": 0.44537657
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.54233,
+            "y": 63.274136,
+            "z": -95.033775
+          },
+          "screenPosition": {
+            "x": 0.640074,
+            "y": 0.45393863
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -48.625854,
+            "y": 64.600525,
+            "z": -92.36172
+          },
+          "screenPosition": {
+            "x": 0.58286506,
+            "y": 0.49366453
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.90575,
+            "y": 66.94316,
+            "z": -92.42122
+          },
+          "screenPosition": {
+            "x": 0.60081834,
+            "y": 0.5223844
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.255222,
+            "y": 68.94916,
+            "z": -92.43561
+          },
+          "screenPosition": {
+            "x": 0.61528045,
+            "y": 0.5472944
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.00855,
+            "y": 71.626564,
+            "z": -93.125206
+          },
+          "screenPosition": {
+            "x": 0.6512922,
+            "y": 0.574726
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.37874,
+            "y": 73.786476,
+            "z": -95.373924
+          },
+          "screenPosition": {
+            "x": 0.72252625,
+            "y": 0.5821739
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.849144,
+            "y": 73.63515,
+            "z": -96.90577
+          },
+          "screenPosition": {
+            "x": 0.75964326,
+            "y": 0.5669963
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.1506,
+            "y": 72.54489,
+            "z": -98.9988
+          },
+          "screenPosition": {
+            "x": 0.8033194,
+            "y": 0.5351566
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.428314,
+            "y": 70.81462,
+            "z": -99.75926
+          },
+          "screenPosition": {
+            "x": 0.81093556,
+            "y": 0.50704175
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.291256,
+            "y": 67.23602,
+            "z": -101.5697
+          },
+          "screenPosition": {
+            "x": 0.8309004,
+            "y": 0.44667503
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.384174,
+            "y": 64.61765,
+            "z": -100.73535
+          },
+          "screenPosition": {
+            "x": 0.7916956,
+            "y": 0.42123598
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.414818,
+            "y": 62.643044,
+            "z": -100.06361
+          },
+          "screenPosition": {
+            "x": 0.7610698,
+            "y": 0.40242037
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.205685,
+            "y": 60.731213,
+            "z": -98.07714
+          },
+          "screenPosition": {
+            "x": 0.6981164,
+            "y": 0.39579353
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.59126,
+            "y": 61.35107,
+            "z": -96.55719
+          },
+          "screenPosition": {
+            "x": 0.6644823,
+            "y": 0.416739
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.830376,
+            "y": 62.337082,
+            "z": -95.00998
+          },
+          "screenPosition": {
+            "x": 0.6329586,
+            "y": 0.44244277
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.39404,
+            "y": 63.92164,
+            "z": -94.02643
+          },
+          "screenPosition": {
+            "x": 0.61957866,
+            "y": 0.47075084
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -49.1786,
+            "y": 65.00815,
+            "z": -93.103355
+          },
+          "screenPosition": {
+            "x": 0.604216,
+            "y": 0.49231783
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.25463,
+            "y": 68.56544,
+            "z": -93.37653
+          },
+          "screenPosition": {
+            "x": 0.6360348,
+            "y": 0.53434294
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.275345,
+            "y": 68.71936,
+            "z": -95.610855
+          },
+          "screenPosition": {
+            "x": 0.6928068,
+            "y": 0.5168808
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.70195,
+            "y": 66.72531,
+            "z": -96.43775
+          },
+          "screenPosition": {
+            "x": 0.6993974,
+            "y": 0.48482174
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.644794,
+            "y": 63.603283,
+            "z": -97.41881
+          },
+          "screenPosition": {
+            "x": 0.70133096,
+            "y": 0.43743023
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.891468,
+            "y": 60.925884,
+            "z": -96.72921
+          },
+          "screenPosition": {
+            "x": 0.6656282,
+            "y": 0.4099791
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.38153,
+            "y": 59.05552,
+            "z": -95.51165
+          },
+          "screenPosition": {
+            "x": 0.6223912,
+            "y": 0.39713684
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -52.256577,
+            "y": 57.42129,
+            "z": -93.71506
+          },
+          "screenPosition": {
+            "x": 0.5659529,
+            "y": 0.39239755
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -51.007072,
+            "y": 57.074577,
+            "z": -92.24368
+          },
+          "screenPosition": {
+            "x": 0.527011,
+            "y": 0.40076467
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.931377,
+            "y": 57.871536,
+            "z": -90.28947
+          },
+          "screenPosition": {
+            "x": 0.48377487,
+            "y": 0.42771712
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.31492,
+            "y": 61.31076,
+            "z": -90.85216
+          },
+          "screenPosition": {
+            "x": 0.5221105,
+            "y": 0.4657039
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -48.976173,
+            "y": 63.01972,
+            "z": -92.17531
+          },
+          "screenPosition": {
+            "x": 0.56710476,
+            "y": 0.47555315
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -50.68938,
+            "y": 63.291702,
+            "z": -94.12012
+          },
+          "screenPosition": {
+            "x": 0.6174828,
+            "y": 0.46207687
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -52.561653,
+            "y": 57.20085,
+            "z": -93.96541
+          },
+          "screenPosition": {
+            "x": 0.57050157,
+            "y": 0.38753712
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.141613,
+            "y": 52.22603,
+            "z": -92.815254
+          },
+          "screenPosition": {
+            "x": 0.50716865,
+            "y": 0.33529642
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.15016,
+            "y": 51.86808,
+            "z": -94.85375
+          },
+          "screenPosition": {
+            "x": 0.5554611,
+            "y": 0.31314498
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -56.118927,
+            "y": 53.458965,
+            "z": -96.46642
+          },
+          "screenPosition": {
+            "x": 0.6172573,
+            "y": 0.31174025
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.033081,
+            "y": 71.87178,
+            "z": -75.982834
+          },
+          "screenPosition": {
+            "x": 0.22575797,
+            "y": 0.7264757
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -55.442623,
+            "y": 57.64432,
+            "z": -97.23089
+          },
+          "screenPosition": {
+            "x": 0.655321,
+            "y": 0.36461052
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.36549,
+            "y": 61.644367,
+            "z": -96.41838
+          },
+          "screenPosition": {
+            "x": 0.6631925,
+            "y": 0.42157963
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -53.176228,
+            "y": 63.473267,
+            "z": -96.86704
+          },
+          "screenPosition": {
+            "x": 0.6871415,
+            "y": 0.44052505
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.05919,
+            "y": 72.28717,
+            "z": -88.023
+          },
+          "screenPosition": {
+            "x": 0.52876586,
+            "y": 0.6272326
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.762005,
+            "y": 73.19845,
+            "z": -86.94923
+          },
+          "screenPosition": {
+            "x": 0.50840914,
+            "y": 0.64792055
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.390377,
+            "y": 74.24162,
+            "z": -85.84223
+          },
+          "screenPosition": {
+            "x": 0.48815188,
+            "y": 0.67054266
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.70394,
+            "y": 75.09574,
+            "z": -84.32823
+          },
+          "screenPosition": {
+            "x": 0.45642087,
+            "y": 0.6943362
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.930893,
+            "y": 75.569885,
+            "z": -82.58519
+          },
+          "screenPosition": {
+            "x": 0.41616896,
+            "y": 0.71502006
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.27996,
+            "y": 74.654144,
+            "z": -80.477776
+          },
+          "screenPosition": {
+            "x": 0.3573147,
+            "y": 0.7219968
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.68585,
+            "y": 72.50618,
+            "z": -79.07034
+          },
+          "screenPosition": {
+            "x": 0.3071634,
+            "y": 0.7076313
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.798237,
+            "y": 70.706795,
+            "z": -78.5493
+          },
+          "screenPosition": {
+            "x": 0.28155166,
+            "y": 0.68958354
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.785076,
+            "y": 66.88947,
+            "z": -77.17259
+          },
+          "screenPosition": {
+            "x": 0.22042672,
+            "y": 0.6539174
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.53379,
+            "y": 65.391594,
+            "z": -78.52399
+          },
+          "screenPosition": {
+            "x": 0.24352568,
+            "y": 0.623581
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -38.86286,
+            "y": 61.840633,
+            "z": -80.84703
+          },
+          "screenPosition": {
+            "x": 0.27646124,
+            "y": 0.5591124
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -41.55114,
+            "y": 60.705166,
+            "z": -83.34112
+          },
+          "screenPosition": {
+            "x": 0.33064255,
+            "y": 0.5233053
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.948944,
+            "y": 60.40438,
+            "z": -85.81984
+          },
+          "screenPosition": {
+            "x": 0.39029527,
+            "y": 0.49804676
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.215485,
+            "y": 61.46771,
+            "z": -87.56536
+          },
+          "screenPosition": {
+            "x": 0.44129175,
+            "y": 0.49617592
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.90897,
+            "y": 64.891235,
+            "z": -88.45673
+          },
+          "screenPosition": {
+            "x": 0.48757845,
+            "y": 0.53116876
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.9558,
+            "y": 67.22005,
+            "z": -88.25994
+          },
+          "screenPosition": {
+            "x": 0.49899027,
+            "y": 0.56191653
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.911148,
+            "y": 68.96414,
+            "z": -87.755775
+          },
+          "screenPosition": {
+            "x": 0.49866313,
+            "y": 0.5880348
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.32349,
+            "y": 70.710106,
+            "z": -86.66663
+          },
+          "screenPosition": {
+            "x": 0.4838303,
+            "y": 0.6192842
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.018944,
+            "y": 72.74677,
+            "z": -81.67251
+          },
+          "screenPosition": {
+            "x": 0.37371314,
+            "y": 0.6880598
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.18203,
+            "y": 70.17549,
+            "z": -79.85212
+          },
+          "screenPosition": {
+            "x": 0.31026274,
+            "y": 0.67176235
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.65447,
+            "y": 67.204796,
+            "z": -79.30132
+          },
+          "screenPosition": {
+            "x": 0.27564856,
+            "y": 0.6394662
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.37523,
+            "y": 63.81337,
+            "z": -82.10375
+          },
+          "screenPosition": {
+            "x": 0.32165673,
+            "y": 0.5727955
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.93995,
+            "y": 67.27088,
+            "z": -86.10394
+          },
+          "screenPosition": {
+            "x": 0.44566622,
+            "y": 0.58127743
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.1454,
+            "y": 69.74541,
+            "z": -86.13023
+          },
+          "screenPosition": {
+            "x": 0.46371895,
+            "y": 0.61193144
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.399117,
+            "y": 71.34566,
+            "z": -84.818
+          },
+          "screenPosition": {
+            "x": 0.44225335,
+            "y": 0.6432737
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -35.83112,
+            "y": 71.37258,
+            "z": -80.97945
+          },
+          "screenPosition": {
+            "x": 0.3467774,
+            "y": 0.67692226
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.616528,
+            "y": 68.872284,
+            "z": -79.855576
+          },
+          "screenPosition": {
+            "x": 0.30118665,
+            "y": 0.6554683
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.334198,
+            "y": 66.42728,
+            "z": -79.75691
+          },
+          "screenPosition": {
+            "x": 0.28153744,
+            "y": 0.62581056
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -39.673008,
+            "y": 63.28581,
+            "z": -82.23661
+          },
+          "screenPosition": {
+            "x": 0.32125962,
+            "y": 0.56505775
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.232456,
+            "y": 63.61683,
+            "z": -84.03667
+          },
+          "screenPosition": {
+            "x": 0.3684497,
+            "y": 0.55360883
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.89312,
+            "y": 64.94206,
+            "z": -86.30074
+          },
+          "screenPosition": {
+            "x": 0.4341983,
+            "y": 0.55050665
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.41154,
+            "y": 67.88699,
+            "z": -85.75395
+          },
+          "screenPosition": {
+            "x": 0.4412105,
+            "y": 0.5919463
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.53038,
+            "y": 69.98154,
+            "z": -85.5512
+          },
+          "screenPosition": {
+            "x": 0.4509105,
+            "y": 0.61986357
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.774364,
+            "y": 71.172295,
+            "z": -84.08231
+          },
+          "screenPosition": {
+            "x": 0.4227064,
+            "y": 0.6475035
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.87577,
+            "y": 69.628494,
+            "z": -81.48361
+          },
+          "screenPosition": {
+            "x": 0.34708145,
+            "y": 0.65078235
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.43482,
+            "y": 67.03777,
+            "z": -81.16186
+          },
+          "screenPosition": {
+            "x": 0.32084742,
+            "y": 0.62124145
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.240032,
+            "y": 69.71071,
+            "z": -78.67026
+          },
+          "screenPosition": {
+            "x": 0.27753755,
+            "y": 0.67621464
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.97808,
+            "y": 63.06537,
+            "z": -82.48696
+          },
+          "screenPosition": {
+            "x": 0.32594705,
+            "y": 0.5601539
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.046474,
+            "y": 61.96129,
+            "z": -84.32369
+          },
+          "screenPosition": {
+            "x": 0.3639546,
+            "y": 0.5304475
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.307556,
+            "y": 62.43615,
+            "z": -86.93181
+          },
+          "screenPosition": {
+            "x": 0.4322923,
+            "y": 0.5137546
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33591,
+            "y": 67.25144,
+            "z": -87.60258
+          },
+          "screenPosition": {
+            "x": 0.48288262,
+            "y": 0.568034
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.613564,
+            "y": 66.95368,
+            "z": -84.56019
+          },
+          "screenPosition": {
+            "x": 0.40494543,
+            "y": 0.59069425
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.922512,
+            "y": 63.632523,
+            "z": -83.707985
+          },
+          "screenPosition": {
+            "x": 0.3603656,
+            "y": 0.5566517
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.98604,
+            "y": 62.3237,
+            "z": -85.466385
+          },
+          "screenPosition": {
+            "x": 0.39497203,
+            "y": 0.5250569
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.569824,
+            "y": 63.67845,
+            "z": -87.65808
+          },
+          "screenPosition": {
+            "x": 0.45914564,
+            "y": 0.5229616
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.171238,
+            "y": 66.13354,
+            "z": -89.18301
+          },
+          "screenPosition": {
+            "x": 0.5144148,
+            "y": 0.5403722
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -44.45113,
+            "y": 68.47617,
+            "z": -89.242516
+          },
+          "screenPosition": {
+            "x": 0.53236806,
+            "y": 0.56909204
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.272194,
+            "y": 71.09828,
+            "z": -88.906906
+          },
+          "screenPosition": {
+            "x": 0.5424383,
+            "y": 0.6047273
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.318623,
+            "y": 70.505356,
+            "z": -86.5883
+          },
+          "screenPosition": {
+            "x": 0.4803303,
+            "y": 0.6173192
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.509327,
+            "y": 65.47337,
+            "z": -84.997925
+          },
+          "screenPosition": {
+            "x": 0.40546146,
+            "y": 0.5684394
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.859646,
+            "y": 63.89256,
+            "z": -84.811516
+          },
+          "screenPosition": {
+            "x": 0.38970116,
+            "y": 0.550328
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.693214,
+            "y": 71.38079,
+            "z": -82.990685
+          },
+          "screenPosition": {
+            "x": 0.39696458,
+            "y": 0.65957695
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.53906,
+            "y": 68.51808,
+            "z": -80.72412
+          },
+          "screenPosition": {
+            "x": 0.32034576,
+            "y": 0.64348716
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.405617,
+            "y": 65.80929,
+            "z": -80.69189
+          },
+          "screenPosition": {
+            "x": 0.3004965,
+            "y": 0.60998714
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.676033,
+            "y": 63.771904,
+            "z": -81.334854
+          },
+          "screenPosition": {
+            "x": 0.30220452,
+            "y": 0.5789607
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.042793,
+            "y": 62.523987,
+            "z": -82.36352
+          },
+          "screenPosition": {
+            "x": 0.31906748,
+            "y": 0.5544557
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.666954,
+            "y": 62.31362,
+            "z": -84.04012
+          },
+          "screenPosition": {
+            "x": 0.35936832,
+            "y": 0.5373072
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.552387,
+            "y": 60.040096,
+            "z": -85.26212
+          },
+          "screenPosition": {
+            "x": 0.37384722,
+            "y": 0.49834025
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.26803,
+            "y": 60.414455,
+            "z": -87.2461
+          },
+          "screenPosition": {
+            "x": 0.4259112,
+            "y": 0.48580205
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.616314,
+            "y": 61.653015,
+            "z": -89.142334
+          },
+          "screenPosition": {
+            "x": 0.48189998,
+            "y": 0.48480815
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -47.210426,
+            "y": 63.80098,
+            "z": -90.54977
+          },
+          "screenPosition": {
+            "x": 0.53208137,
+            "y": 0.4994051
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -46.47428,
+            "y": 68.73247,
+            "z": -91.516
+          },
+          "screenPosition": {
+            "x": 0.59075385,
+            "y": 0.5525487
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -45.040375,
+            "y": 70.419395,
+            "z": -90.57162
+          },
+          "screenPosition": {
+            "x": 0.5790258,
+            "y": 0.58176595
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.837105,
+            "y": 72.01777,
+            "z": -89.84437
+          },
+          "screenPosition": {
+            "x": 0.5722688,
+            "y": 0.60806996
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -42.713142,
+            "y": 73.689,
+            "z": -89.22866
+          },
+          "screenPosition": {
+            "x": 0.5686627,
+            "y": 0.63426256
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -41.584316,
+            "y": 75.155495,
+            "z": -88.53463
+          },
+          "screenPosition": {
+            "x": 0.5615169,
+            "y": 0.6584715
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.23459,
+            "y": 77.120026,
+            "z": -87.78011
+          },
+          "screenPosition": {
+            "x": 0.55669004,
+            "y": 0.6896537
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -39.415707,
+            "y": 78.570816,
+            "z": -87.41476
+          },
+          "screenPosition": {
+            "x": 0.55778366,
+            "y": 0.71092904
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -37.259262,
+            "y": 82.49801,
+            "z": -86.490715
+          },
+          "screenPosition": {
+            "x": 0.56236273,
+            "y": 0.76795655
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.030647,
+            "y": 71.76941,
+            "z": -75.94367
+          },
+          "screenPosition": {
+            "x": 0.2240522,
+            "y": 0.72556067
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.865334,
+            "y": 79.69808,
+            "z": -82.90943
+          },
+          "screenPosition": {
+            "x": 0.4534152,
+            "y": 0.76408154
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -36.847115,
+            "y": 78.21403,
+            "z": -84.51713
+          },
+          "screenPosition": {
+            "x": 0.48305258,
+            "y": 0.7316136
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -38.099056,
+            "y": 78.66311,
+            "z": -86.027664
+          },
+          "screenPosition": {
+            "x": 0.5238596,
+            "y": 0.7241141
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -41.284107,
+            "y": 75.58068,
+            "z": -88.36261
+          },
+          "screenPosition": {
+            "x": 0.5600643,
+            "y": 0.6651494
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -40.30074,
+            "y": 73.37555,
+            "z": -86.51495
+          },
+          "screenPosition": {
+            "x": 0.49878785,
+            "y": 0.653858
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -43.33005,
+            "y": 63.74123,
+            "z": -86.34337
+          },
+          "screenPosition": {
+            "x": 0.42681813,
+            "y": 0.53515047
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -36.15765,
+            "y": 78.582054,
+            "z": -83.904884
+          },
+          "screenPosition": {
+            "x": 0.47022152,
+            "y": 0.7412406
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -35.194744,
+            "y": 80.50137,
+            "z": -83.55143
+          },
+          "screenPosition": {
+            "x": 0.47506437,
+            "y": 0.7685372
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.712574,
+            "y": 83.06258,
+            "z": -83.945564
+          },
+          "screenPosition": {
+            "x": 0.5028949,
+            "y": 0.7970819
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.958992,
+            "y": 84.355705,
+            "z": -82.51584
+          },
+          "screenPosition": {
+            "x": 0.47635102,
+            "y": 0.8256231
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.89934,
+            "y": 82.56381,
+            "z": -79.654884
+          },
+          "screenPosition": {
+            "x": 0.3924445,
+            "y": 0.82807946
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.15759,
+            "y": 80.014565,
+            "z": -80.10203
+          },
+          "screenPosition": {
+            "x": 0.3856666,
+            "y": 0.79238576
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.043617,
+            "y": 78.124756,
+            "z": -80.38311
+          },
+          "screenPosition": {
+            "x": 0.37927893,
+            "y": 0.7657977
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -33.8479,
+            "y": 76.05972,
+            "z": -80.51347
+          },
+          "screenPosition": {
+            "x": 0.36811677,
+            "y": 0.7394601
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.183617,
+            "y": 73.86468,
+            "z": -80.09208
+          },
+          "screenPosition": {
+            "x": 0.34215957,
+            "y": 0.7153973
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -34.34611,
+            "y": 70.909676,
+            "z": -79.21261
+          },
+          "screenPosition": {
+            "x": 0.2994985,
+            "y": 0.686378
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.14731,
+            "y": 69.79105,
+            "z": -76.44188
+          },
+          "screenPosition": {
+            "x": 0.22256091,
+            "y": 0.69654876
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.177694,
+            "y": 71.78698,
+            "z": -75.030014
+          },
+          "screenPosition": {
+            "x": 0.2014144,
+            "y": 0.7336842
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.478897,
+            "y": 74.66725,
+            "z": -76.38292
+          },
+          "screenPosition": {
+            "x": 0.25539297,
+            "y": 0.7578448
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -31.980938,
+            "y": 75.84677,
+            "z": -78.423904
+          },
+          "screenPosition": {
+            "x": 0.3145378,
+            "y": 0.7549297
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.44851,
+            "y": 72.67133,
+            "z": -77.79479
+          },
+          "screenPosition": {
+            "x": 0.27653182,
+            "y": 0.7207579
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.15192,
+            "y": 73.96633,
+            "z": -75.78009
+          },
+          "screenPosition": {
+            "x": 0.2354207,
+            "y": 0.75439733
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -28.87907,
+            "y": 75.901344,
+            "z": -75.09795
+          },
+          "screenPosition": {
+            "x": 0.2320231,
+            "y": 0.7844639
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -28.146797,
+            "y": 77.73212,
+            "z": -74.96163
+          },
+          "screenPosition": {
+            "x": 0.24149686,
+            "y": 0.80849445
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.895258,
+            "y": 80.20477,
+            "z": -75.57291
+          },
+          "screenPosition": {
+            "x": 0.27411684,
+            "y": 0.8340503
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.014097,
+            "y": 82.29932,
+            "z": -75.370155
+          },
+          "screenPosition": {
+            "x": 0.28378946,
+            "y": 0.8619491
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -26.447746,
+            "y": 84.58292,
+            "z": -75.57442
+          },
+          "screenPosition": {
+            "x": 0.30493572,
+            "y": 0.88867646
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -26.424406,
+            "y": 86.86465,
+            "z": -76.363655
+          },
+          "screenPosition": {
+            "x": 0.34064928,
+            "y": 0.9103056
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": null,
+          "screenPosition": null,
+          "deltaImage": null
+        },
+        {
+          "modelPosition": {
+            "x": -30.362192,
+            "y": 86.0759,
+            "z": -80.32912
+          },
+          "screenPosition": {
+            "x": 0.44310847,
+            "y": 0.86824244
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -32.247627,
+            "y": 83.80237,
+            "z": -81.55112
+          },
+          "screenPosition": {
+            "x": 0.44841534,
+            "y": 0.8270866
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -30.329563,
+            "y": 81.43958,
+            "z": -78.63909
+          },
+          "screenPosition": {
+            "x": 0.3592222,
+            "y": 0.82286114
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -28.412493,
+            "y": 82.382256,
+            "z": -76.90796
+          },
+          "screenPosition": {
+            "x": 0.32270175,
+            "y": 0.8496435
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -27.12261,
+            "y": 83.600655,
+            "z": -75.951675
+          },
+          "screenPosition": {
+            "x": 0.30743277,
+            "y": 0.87314504
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -25.604528,
+            "y": 85.00998,
+            "z": -74.81741
+          },
+          "screenPosition": {
+            "x": 0.28907025,
+            "y": 0.9005732
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -24.235334,
+            "y": 86.155525,
+            "z": -73.74959
+          },
+          "screenPosition": {
+            "x": 0.27050886,
+            "y": 0.9241332
+          },
+          "deltaImage": "not-really-an-image.png"
+        },
+        {
+          "modelPosition": {
+            "x": -22.467152,
+            "y": 86.83442,
+            "z": -72.08488
+          },
+          "screenPosition": {
+            "x": 0.22741748,
+            "y": 0.9433024
+          },
+          "deltaImage": "not-really-an-image.png"
+        }
+      ],
+      "deltaImage": "20190824-075726/brain-C78370-0.webp",
+      "screenAreaInSqPixels": null,
+      "screenAngle": null
+    }
+  ],
+  "cameraMatrix": {
+    "elements": [
+      0.7012061815594721,
+      0.269226977456727,
+      0.6601717394377765,
+      0.0,
+      0.02219589566095713,
+      -0.9337555071580186,
+      0.3572226127611178,
+      0.0,
+      0.7126129616829829,
+      -0.23583360121404787,
+      -0.6607308675851469,
+      0.0,
+      29.500829120487587,
+      34.585082682326885,
+      -150.81450664593328,
+      1.0
+    ]
+  },
+  "baseImage": "20190824-075726/base.webp",
+  "version": 0,
+  "savedAt": 1.56663367687E12,
+  "notes": null
+}
