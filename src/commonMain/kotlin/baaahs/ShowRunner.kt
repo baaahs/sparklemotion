@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.dmx.LixadaMiniMovingHead
+import baaahs.dmx.Shenzarpy
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
@@ -93,7 +94,7 @@ class ShowRunner(
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        val movingHeadBuffer = LixadaMiniMovingHead(getDmxBuffer(baseChannel, 16))
+        val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
 
         movingHeadManager.listen(movingHead) { updated ->
             println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")

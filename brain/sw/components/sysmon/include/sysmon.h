@@ -19,8 +19,9 @@
 #define COUNTER_MSG_FRAG_OK     3
 #define COUNTER_MSG_SINGLE_OK   4
 #define COUNTER_MSG_SENT        5
+#define COUNTER_PIXEL_UNDERFLOW 6
 
-#define COUNTER_LAST            6
+#define COUNTER_LAST            7
 
 #define TIMING_RENDER           COUNTER_LAST
 #define TIMING_SHOW_OUTPUTS     (COUNTER_LAST + 1)

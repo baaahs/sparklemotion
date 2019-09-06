@@ -157,6 +157,8 @@ class Brain(
     }
 
     class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface {
+        override val expectedPixelCount: Int? = null
+
         override fun allVertices(): Collection<Vector3F> = emptyList()
     }
 

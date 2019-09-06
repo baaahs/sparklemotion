@@ -35,11 +35,14 @@ class Storage(val fs: Fs) {
     }
 
     fun loadMappingData(model: Model<*>): MappingResults {
-        val mappingJson = fs.loadFile("mapping-presets.json")
-        if (mappingJson != null) {
-            return SessionMappingResults(model, json.parse(MappingSession.serializer(), mappingJson))
-        } else {
-            return SessionMappingResults(model, null)
+        val sessions = arrayListOf<MappingSession>()
+        fs.listFiles("mapping-sessions").forEach { dir ->
+            fs.listFiles("mapping-sessions/$dir").sorted().filter { it.endsWith(".json") }.forEach { f ->
+                val mappingJson = fs.loadFile("mapping-sessions/$dir/$f")
+                val mappingSession = json.parse(MappingSession.serializer(), mappingJson!!)
+                sessions.add(mappingSession)
+            }
         }
+        return SessionMappingResults(model, sessions)
     }
 }

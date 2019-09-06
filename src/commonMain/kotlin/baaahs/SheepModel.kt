@@ -30,6 +30,7 @@ abstract class Model<T : Model.Surface> {
     interface Surface {
         val name: String
         val description: String
+        val expectedPixelCount: Int?
         fun allVertices(): Collection<Vector3F>
     }
 }
@@ -57,6 +58,13 @@ class SheepModel : Model<SheepModel.Panel>() {
         val panelsByEdge = mutableMapOf<List<Int>, MutableList<Panel>>()
         val edgesByPanel = mutableMapOf<Panel, MutableList<List<Int>>>()
 
+        val pixelsPerPanel = hashMapOf<String, Int>()
+        getResource("baaahs-panel-info.txt")
+            .split("\n")
+            .map { it.split(Regex("\\s+")) }
+            .forEach { pixelsPerPanel[it[0]] = it[1].toInt() * 60 }
+
+
         getResource("baaahs-model.obj")
             .split("\n")
             .map { it.trim() }
@@ -72,7 +80,11 @@ class SheepModel : Model<SheepModel.Panel>() {
                     }
                     "o" -> {
                         val name = args.joinToString(" ")
-                        currentPanel = Panel(name)
+                        val expectedPixelCount = pixelsPerPanel[name]
+                        if (expectedPixelCount == null) {
+                            logger.warn { "No pixel count found for $name" }
+                        }
+                        currentPanel = Panel(name, expectedPixelCount)
                         panels.add(currentPanel)
                     }
                     "f" -> {
@@ -125,7 +137,7 @@ class SheepModel : Model<SheepModel.Panel>() {
         val faces: MutableList<Face> = mutableListOf()
     }
 
-    class Panel(override val name: String) : Surface {
+    class Panel(override val name: String, override val expectedPixelCount: Int? = null) : Surface {
         val faces = Faces()
         val lines = mutableListOf<Line>()
 
@@ -140,5 +152,8 @@ class SheepModel : Model<SheepModel.Panel>() {
         override fun hashCode(): Int = name.hashCode()
     }
 
+    companion object {
+        val logger = Logger("SheepModel")
+    }
 }
 

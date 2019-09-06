@@ -22,7 +22,12 @@ actual fun decodeBase64(s: String): ByteArray = Base64.getDecoder().decode(s)
 class RealFs(private val basePath: Path) : Fs {
 
     override fun listFiles(path: String): List<String> {
-        return Files.list(resolve(path)).map { it.fileName.toString() }.toList()
+        val dir = resolve(path)
+        if (Files.isDirectory(dir)) {
+            return Files.list(dir).map { it.fileName.toString() }.toList()
+        } else {
+            return emptyList()
+        }
     }
 
     override fun loadFile(path: String): String? {
@@ -47,5 +52,18 @@ class RealFs(private val basePath: Path) : Fs {
     private fun resolve(path: String): Path {
         val safeName = path.replace(Regex("^(\\.?\\.?/)*"), "")
         return basePath.resolve(safeName)
+    }
+}
+
+actual fun logMessage(level: String, message: String, exception: Exception?) {
+    when (level) {
+        "ERROR" -> println("$level: $message")
+        "WARN" -> println("$level: $message")
+        "INFO" -> println("$level: $message")
+        "DEBUG" -> println("$level: $message")
+        else -> println("$level: $message")
+    }
+    if (exception != null) {
+        exception.printStackTrace()
     }
 }
