@@ -13,7 +13,6 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.list
 import kotlinx.serialization.serializer
 
-@UseExperimental(ExperimentalStdlibApi::class)
 class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
     CoroutineScope by MainScope() {
     private lateinit var tcpConnection: Network.TcpConnection
