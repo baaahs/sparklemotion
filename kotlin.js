@@ -243,7 +243,7 @@
     return obj;
   };
   Kotlin.Long.fromNumber = function (value) {
-    if (isNaN(value) || !isFinite(value)) {
+    if (isNaN(value)) {
       return Kotlin.Long.ZERO;
     }
      else if (value <= -Kotlin.Long.TWO_PWR_63_DBL_) {
@@ -1016,9 +1016,40 @@
       return Math.log(x) * Math.LOG2E;
     };
   }
+  if (typeof Math.clz32 === 'undefined') {
+    Math.clz32 = function (log, LN2) {
+      return function (x) {
+        var asUint = x >>> 0;
+        if (asUint === 0) {
+          return 32;
+        }
+        return 31 - (log(asUint) / LN2 | 0) | 0;
+      };
+    }(Math.log, Math.LN2);
+  }
   if (typeof ArrayBuffer.isView === 'undefined') {
     ArrayBuffer.isView = function (a) {
       return a != null && a.__proto__ != null && a.__proto__.__proto__ === Int8Array.prototype.__proto__;
+    };
+  }
+  if (typeof Array.prototype.fill === 'undefined') {
+    Array.prototype.fill = function () {
+      if (this == null) {
+        throw new TypeError('this is null or not defined');
+      }
+      var O = Object(this);
+      var len = O.length >>> 0;
+      var start = arguments[1];
+      var relativeStart = start >> 0;
+      var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+      var end = arguments[2];
+      var relativeEnd = end === undefined ? len : end >> 0;
+      var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+      while (k < final) {
+        O[k] = value;
+        k++;
+      }
+      return O;
     };
   }
   (function () {
@@ -1038,6 +1069,9 @@
     var arrays = [Int8Array, Int16Array, Uint16Array, Int32Array, Float32Array, Float64Array];
     for (var i = 0; i < arrays.length; ++i) {
       var TypedArray = arrays[i];
+      if (typeof TypedArray.prototype.fill === 'undefined') {
+        TypedArray.prototype.fill = Array.prototype.fill;
+      }
       if (typeof TypedArray.prototype.slice === 'undefined') {
         Object.defineProperty(TypedArray.prototype, 'slice', {value: typedArraySlice});
       }
@@ -1707,6 +1741,14 @@
     findNext$ObjectLiteral$groups$ObjectLiteral.prototype.constructor = findNext$ObjectLiteral$groups$ObjectLiteral;
     CharacterCodingException.prototype = Object.create(Exception.prototype);
     CharacterCodingException.prototype.constructor = CharacterCodingException;
+    DurationUnit.prototype = Object.create(Enum.prototype);
+    DurationUnit.prototype.constructor = DurationUnit;
+    HrTimeClock$markNow$ObjectLiteral.prototype = Object.create(ClockMark.prototype);
+    HrTimeClock$markNow$ObjectLiteral.prototype.constructor = HrTimeClock$markNow$ObjectLiteral;
+    PerformanceClock.prototype = Object.create(AbstractDoubleClock.prototype);
+    PerformanceClock.prototype.constructor = PerformanceClock;
+    DateNowClock.prototype = Object.create(AbstractDoubleClock.prototype);
+    DateNowClock.prototype.constructor = DateNowClock;
     Experimental$Level.prototype = Object.create(Enum.prototype);
     Experimental$Level.prototype.constructor = Experimental$Level;
     State.prototype = Object.create(Enum.prototype);
@@ -1749,6 +1791,14 @@
     XorWowRandom.prototype.constructor = XorWowRandom;
     iterator$ObjectLiteral.prototype = Object.create(CharIterator.prototype);
     iterator$ObjectLiteral.prototype.constructor = iterator$ObjectLiteral;
+    AdjustedClockMark.prototype = Object.create(ClockMark.prototype);
+    AdjustedClockMark.prototype.constructor = AdjustedClockMark;
+    AbstractLongClock$LongClockMark.prototype = Object.create(ClockMark.prototype);
+    AbstractLongClock$LongClockMark.prototype.constructor = AbstractLongClock$LongClockMark;
+    AbstractDoubleClock$DoubleClockMark.prototype = Object.create(ClockMark.prototype);
+    AbstractDoubleClock$DoubleClockMark.prototype.constructor = AbstractDoubleClock$DoubleClockMark;
+    TestClock.prototype = Object.create(AbstractLongClock.prototype);
+    TestClock.prototype.constructor = TestClock;
     LazyThreadSafetyMode.prototype = Object.create(Enum.prototype);
     LazyThreadSafetyMode.prototype.constructor = LazyThreadSafetyMode;
     NotImplementedError.prototype = Object.create(Error_0.prototype);
@@ -23675,6 +23725,34 @@
         return new UShortArray_init(copyOfRange($receiver.storage, fromIndex, toIndex));
       };
     }));
+    function fill($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.size;
+      fill_6($receiver.storage, element.data, fromIndex, toIndex);
+    }
+    function fill_0($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.size;
+      fill_7($receiver.storage, element.data, fromIndex, toIndex);
+    }
+    function fill_1($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.size;
+      fill_4($receiver.storage, element.data, fromIndex, toIndex);
+    }
+    function fill_2($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.size;
+      fill_5($receiver.storage, element.data, fromIndex, toIndex);
+    }
     var get_indices_8 = defineInlineFunction('kotlin.kotlin.collections.get_indices_9hsmwz$', wrapFunction(function () {
       var get_indices = _.kotlin.collections.get_indices_tmsbgo$;
       return function ($receiver) {
@@ -28090,6 +28168,9 @@
         return new createCoroutineFromSuspendFunction$ObjectLiteral(block, Kotlin.isType(tmp$ = completion, Continuation) ? tmp$ : throwCCE_0());
       };
     });
+    var isArrayish = defineInlineFunction('kotlin.kotlin.js.isArrayish_kcmwxo$', function (o) {
+      return Kotlin.isArrayish(o);
+    });
     var jsDeleteProperty = defineInlineFunction('kotlin.kotlin.js.jsDeleteProperty_dgzutr$', function (obj, property) {
       delete obj[property];
     });
@@ -28169,6 +28250,29 @@
     var jsIsType = defineInlineFunction('kotlin.kotlin.jsIsType_dgzutr$', function (obj, jsClass) {
       return Kotlin.isType(obj, jsClass);
     });
+    function withSign($receiver, sign) {
+      var thisSignBit = Kotlin.doubleSignBit($receiver);
+      var newSignBit = Kotlin.doubleSignBit(sign);
+      return thisSignBit === newSignBit ? $receiver : -$receiver;
+    }
+    var fromBits = defineInlineFunction('kotlin.kotlin.fromBits_pkt8ie$', function ($receiver, bits) {
+      return Kotlin.doubleFromBits(bits);
+    });
+    var fromBits_0 = defineInlineFunction('kotlin.kotlin.fromBits_4ql4v8$', function ($receiver, bits) {
+      return Kotlin.floatFromBits(bits);
+    });
+    var Long = defineInlineFunction('kotlin.kotlin.Long_6xvm5r$', function (low, high) {
+      return Kotlin.Long.fromBits(low, high);
+    });
+    var get_low = defineInlineFunction('kotlin.kotlin.get_low_nzsbcz$', function ($receiver) {
+      return $receiver.getLowBits();
+    });
+    var get_high = defineInlineFunction('kotlin.kotlin.get_high_nzsbcz$', function ($receiver) {
+      return $receiver.getHighBits();
+    });
+    function toString_0($receiver, radix) {
+      return $receiver.toString(checkRadix(radix));
+    }
     function elementAt_2($receiver, index) {
       var tmp$;
       if (index >= 0 && index <= get_lastIndex($receiver))
@@ -28597,6 +28701,78 @@
       var array = $receiver.slice(fromIndex, toIndex);
       array.$type$ = type;
       return array;
+    }
+    function fill_3($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_4($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_5($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_6($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_7($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_8($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_9($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_10($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
+    }
+    function fill_11($receiver, element, fromIndex, toIndex) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = $receiver.length;
+      AbstractList$Companion_getInstance().checkRangeIndexes_cub51b$(fromIndex, toIndex, $receiver.length);
+      $receiver.fill(element, fromIndex, toIndex);
     }
     var plus_27 = defineInlineFunction('kotlin.kotlin.collections.plus_mjy6jw$', function ($receiver, element) {
       return $receiver.concat([element]);
@@ -29237,6 +29413,9 @@
       this.value = value;
     }
     JsQualifier.$metadata$ = {kind: Kind_CLASS, simpleName: 'JsQualifier', interfaces: [Annotation]};
+    function JsExport() {
+    }
+    JsExport.$metadata$ = {kind: Kind_CLASS, simpleName: 'JsExport', interfaces: [Annotation]};
     function Volatile() {
     }
     Volatile.$metadata$ = {kind: Kind_CLASS, simpleName: 'Volatile', interfaces: [Annotation]};
@@ -29286,7 +29465,7 @@
     function mapOf(pair) {
       return hashMapOf_0([pair]);
     }
-    function fill($receiver, value) {
+    function fill_12($receiver, value) {
       var tmp$;
       tmp$ = get_lastIndex_12($receiver);
       for (var index = 0; index <= tmp$; index++) {
@@ -30006,19 +30185,21 @@
         var element = $receiver[tmp$];
         if (element == null)
           tmp$_0 = 0;
-        else if (Kotlin.isArrayish(element)) {
-          tmp$_0 = contentDeepHashCodeImpl(element);
+        else {
+          if (Kotlin.isArrayish(element)) {
+            tmp$_0 = contentDeepHashCodeImpl(element);
+          }
+           else if (Kotlin.isType(element, UByteArray))
+            tmp$_0 = contentHashCode_2(element);
+          else if (Kotlin.isType(element, UShortArray))
+            tmp$_0 = contentHashCode_3(element);
+          else if (Kotlin.isType(element, UIntArray))
+            tmp$_0 = contentHashCode_0(element);
+          else if (Kotlin.isType(element, ULongArray))
+            tmp$_0 = contentHashCode_1(element);
+          else
+            tmp$_0 = hashCode(element);
         }
-         else if (Kotlin.isType(element, UByteArray))
-          tmp$_0 = contentHashCode_2(element);
-        else if (Kotlin.isType(element, UShortArray))
-          tmp$_0 = contentHashCode_3(element);
-        else if (Kotlin.isType(element, UIntArray))
-          tmp$_0 = contentHashCode_0(element);
-        else if (Kotlin.isType(element, ULongArray))
-          tmp$_0 = contentHashCode_1(element);
-        else
-          tmp$_0 = hashCode(element);
         var elementHash = tmp$_0;
         result = (31 * result | 0) + elementHash | 0;
       }
@@ -31075,11 +31256,13 @@
       var r = $receiver;
       if ($receiver['iterator'] != null)
         tmp$_0 = $receiver['iterator']();
-      else if (Kotlin.isArrayish(r)) {
-        tmp$_0 = Kotlin.arrayIterator(r);
+      else {
+        if (Kotlin.isArrayish(r)) {
+          tmp$_0 = Kotlin.arrayIterator(r);
+        }
+         else
+          tmp$_0 = (Kotlin.isType(tmp$ = r, Iterable) ? tmp$ : throwCCE_0()).iterator();
       }
-       else
-        tmp$_0 = (Kotlin.isType(tmp$ = r, Iterable) ? tmp$ : throwCCE_0()).iterator();
       return tmp$_0;
     }
     function throwNPE(message) {
@@ -31630,11 +31813,6 @@
         return Math_0.sign($receiver);
       };
     }));
-    function withSign($receiver, sign) {
-      var thisSignBit = Kotlin.doubleSignBit($receiver);
-      var newSignBit = Kotlin.doubleSignBit(sign);
-      return thisSignBit === newSignBit ? $receiver : -$receiver;
-    }
     var withSign_0 = defineInlineFunction('kotlin.kotlin.math.withSign_j6vyb1$', wrapFunction(function () {
       var withSign = _.kotlin.math.withSign_38ydlf$;
       return function ($receiver, sign) {
@@ -32001,12 +32179,104 @@
     function isFinite_0($receiver) {
       return !isInfinite_0($receiver) && !isNaN_1($receiver);
     }
-    var fromBits = defineInlineFunction('kotlin.kotlin.fromBits_pkt8ie$', function ($receiver, bits) {
-      return Kotlin.doubleFromBits(bits);
-    });
-    var fromBits_0 = defineInlineFunction('kotlin.kotlin.fromBits_4ql4v8$', function ($receiver, bits) {
-      return Kotlin.floatFromBits(bits);
-    });
+    function countOneBits($receiver) {
+      var v = $receiver;
+      v = (v & 1431655765) + (v >>> 1 & 1431655765) | 0;
+      v = (v & 858993459) + (v >>> 2 & 858993459) | 0;
+      v = (v & 252645135) + (v >>> 4 & 252645135) | 0;
+      v = (v & 16711935) + (v >>> 8 & 16711935) | 0;
+      v = (v & 65535) + (v >>> 16) | 0;
+      return v;
+    }
+    var countLeadingZeroBits = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_s8ev3n$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver);
+      };
+    }));
+    function countTrailingZeroBits($receiver) {
+      return 32 - Math_0.clz32(~($receiver | (-$receiver | 0))) | 0;
+    }
+    function takeHighestOneBit($receiver) {
+      return $receiver === 0 ? 0 : 1 << 31 - Math_0.clz32($receiver);
+    }
+    function takeLowestOneBit($receiver) {
+      return $receiver & (-$receiver | 0);
+    }
+    function rotateLeft($receiver, bitCount) {
+      return $receiver << bitCount | $receiver >>> 32 - bitCount;
+    }
+    function rotateRight($receiver, bitCount) {
+      return $receiver << 32 - bitCount | $receiver >>> bitCount;
+    }
+    function countOneBits_0($receiver) {
+      return countOneBits($receiver.getHighBits()) + countOneBits($receiver.getLowBits()) | 0;
+    }
+    function countLeadingZeroBits_0($receiver) {
+      var high = $receiver.getHighBits();
+      if (high === 0) {
+        return 32 + Math_0.clz32($receiver.getLowBits()) | 0;
+      }
+       else {
+        return Math_0.clz32(high);
+      }
+    }
+    function countTrailingZeroBits_0($receiver) {
+      var low = $receiver.getLowBits();
+      if (low === 0) {
+        return 32 + countTrailingZeroBits($receiver.getHighBits()) | 0;
+      }
+       else
+        return countTrailingZeroBits(low);
+    }
+    function takeHighestOneBit_0($receiver) {
+      var high = $receiver.getHighBits();
+      if (high === 0) {
+        var low = takeHighestOneBit($receiver.getLowBits());
+        return Kotlin.Long.fromBits(low, 0);
+      }
+       else {
+        var high_0 = takeHighestOneBit(high);
+        return Kotlin.Long.fromBits(0, high_0);
+      }
+    }
+    function takeLowestOneBit_0($receiver) {
+      var low = $receiver.getLowBits();
+      if (low === 0) {
+        var high = takeLowestOneBit($receiver.getHighBits());
+        return Kotlin.Long.fromBits(0, high);
+      }
+       else {
+        var low_0 = takeLowestOneBit(low);
+        return Kotlin.Long.fromBits(low_0, 0);
+      }
+    }
+    function rotateLeft_0($receiver, bitCount) {
+      if ((bitCount & 31) !== 0) {
+        var low = $receiver.getLowBits();
+        var high = $receiver.getHighBits();
+        var newLow = low << bitCount | high >>> (-bitCount | 0);
+        var newHigh = high << bitCount | low >>> (-bitCount | 0);
+        return (bitCount & 32) === 0 ? Kotlin.Long.fromBits(newLow, newHigh) : Kotlin.Long.fromBits(newHigh, newLow);
+      }
+       else {
+        var tmp$;
+        if ((bitCount & 32) === 0)
+          tmp$ = $receiver;
+        else {
+          var tmp$_0 = $receiver.getHighBits();
+          var high_0 = $receiver.getLowBits();
+          tmp$ = Kotlin.Long.fromBits(tmp$_0, high_0);
+        }
+        return tmp$;
+      }
+    }
+    var rotateRight_0 = defineInlineFunction('kotlin.kotlin.rotateRight_if0zpk$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_if0zpk$;
+      return function ($receiver, bitCount) {
+        return rotateLeft($receiver, -bitCount | 0);
+      };
+    }));
     var then = defineInlineFunction('kotlin.kotlin.js.then_eyvp0y$', function ($receiver, onFulfilled) {
       return $receiver.then(onFulfilled);
     });
@@ -32015,15 +32285,6 @@
     });
     function defaultPlatformRandom() {
       return Random_0(Math.random() * Math.pow(2, 32) | 0);
-    }
-    function fastLog2(value) {
-      var v = value;
-      var log = -1;
-      while (v !== 0) {
-        v = v >>> 1;
-        log = log + 1 | 0;
-      }
-      return log;
     }
     var INV_2_26;
     var INV_2_53;
@@ -32462,21 +32723,18 @@
         return toDoubleOrNull($receiver);
       };
     }));
-    var toString_0 = defineInlineFunction('kotlin.kotlin.text.toString_798l30$', wrapFunction(function () {
+    var toString_1 = defineInlineFunction('kotlin.kotlin.text.toString_798l30$', wrapFunction(function () {
       var toString = _.kotlin.text.toString_dqglrj$;
       return function ($receiver, radix) {
         return toString($receiver, radix);
       };
     }));
-    var toString_1 = defineInlineFunction('kotlin.kotlin.text.toString_di2vk2$', wrapFunction(function () {
+    var toString_2 = defineInlineFunction('kotlin.kotlin.text.toString_di2vk2$', wrapFunction(function () {
       var toString = _.kotlin.text.toString_dqglrj$;
       return function ($receiver, radix) {
         return toString($receiver, radix);
       };
     }));
-    function toString_2($receiver, radix) {
-      return $receiver.toString(checkRadix(radix));
-    }
     function toString_3($receiver, radix) {
       return $receiver.toString(checkRadix(radix));
     }
@@ -33344,6 +33602,180 @@
         }
       }
       return stringBuilder.toString();
+    }
+    function DurationUnit(name, ordinal, scale) {
+      Enum.call(this);
+      this.scale_8be2vx$ = scale;
+      this.name$ = name;
+      this.ordinal$ = ordinal;
+    }
+    function DurationUnit_initFields() {
+      DurationUnit_initFields = function () {
+      };
+      DurationUnit$NANOSECONDS_instance = new DurationUnit('NANOSECONDS', 0, 1.0);
+      DurationUnit$MICROSECONDS_instance = new DurationUnit('MICROSECONDS', 1, 1000.0);
+      DurationUnit$MILLISECONDS_instance = new DurationUnit('MILLISECONDS', 2, 1000000.0);
+      DurationUnit$SECONDS_instance = new DurationUnit('SECONDS', 3, 1.0E9);
+      DurationUnit$MINUTES_instance = new DurationUnit('MINUTES', 4, 6.0E10);
+      DurationUnit$HOURS_instance = new DurationUnit('HOURS', 5, 3.6E12);
+      DurationUnit$DAYS_instance = new DurationUnit('DAYS', 6, 8.64E13);
+    }
+    var DurationUnit$NANOSECONDS_instance;
+    function DurationUnit$NANOSECONDS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$NANOSECONDS_instance;
+    }
+    var DurationUnit$MICROSECONDS_instance;
+    function DurationUnit$MICROSECONDS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$MICROSECONDS_instance;
+    }
+    var DurationUnit$MILLISECONDS_instance;
+    function DurationUnit$MILLISECONDS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$MILLISECONDS_instance;
+    }
+    var DurationUnit$SECONDS_instance;
+    function DurationUnit$SECONDS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$SECONDS_instance;
+    }
+    var DurationUnit$MINUTES_instance;
+    function DurationUnit$MINUTES_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$MINUTES_instance;
+    }
+    var DurationUnit$HOURS_instance;
+    function DurationUnit$HOURS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$HOURS_instance;
+    }
+    var DurationUnit$DAYS_instance;
+    function DurationUnit$DAYS_getInstance() {
+      DurationUnit_initFields();
+      return DurationUnit$DAYS_instance;
+    }
+    DurationUnit.$metadata$ = {kind: Kind_CLASS, simpleName: 'DurationUnit', interfaces: [Enum]};
+    function DurationUnit$values() {
+      return [DurationUnit$NANOSECONDS_getInstance(), DurationUnit$MICROSECONDS_getInstance(), DurationUnit$MILLISECONDS_getInstance(), DurationUnit$SECONDS_getInstance(), DurationUnit$MINUTES_getInstance(), DurationUnit$HOURS_getInstance(), DurationUnit$DAYS_getInstance()];
+    }
+    DurationUnit.values = DurationUnit$values;
+    function DurationUnit$valueOf(name) {
+      switch (name) {
+        case 'NANOSECONDS':
+          return DurationUnit$NANOSECONDS_getInstance();
+        case 'MICROSECONDS':
+          return DurationUnit$MICROSECONDS_getInstance();
+        case 'MILLISECONDS':
+          return DurationUnit$MILLISECONDS_getInstance();
+        case 'SECONDS':
+          return DurationUnit$SECONDS_getInstance();
+        case 'MINUTES':
+          return DurationUnit$MINUTES_getInstance();
+        case 'HOURS':
+          return DurationUnit$HOURS_getInstance();
+        case 'DAYS':
+          return DurationUnit$DAYS_getInstance();
+        default:throwISE('No enum constant kotlin.time.DurationUnit.' + name);
+      }
+    }
+    DurationUnit.valueOf_61zpoe$ = DurationUnit$valueOf;
+    function convertDurationUnit(value, sourceUnit, targetUnit) {
+      var tmp$;
+      var sourceCompareTarget = Kotlin.compareTo(sourceUnit.scale_8be2vx$, targetUnit.scale_8be2vx$);
+      if (sourceCompareTarget > 0)
+        tmp$ = value * (sourceUnit.scale_8be2vx$ / targetUnit.scale_8be2vx$);
+      else if (sourceCompareTarget < 0)
+        tmp$ = value / (targetUnit.scale_8be2vx$ / sourceUnit.scale_8be2vx$);
+      else
+        tmp$ = value;
+      return tmp$;
+    }
+    function MonoClock() {
+      MonoClock_instance = this;
+      var tmp$, tmp$_0, tmp$_1;
+      var isNode = typeof process !== 'undefined' && process.versions && !!process.versions.node;
+      this.actualClock_0 = isNode ? new HrTimeClock(process) : (tmp$_1 = (tmp$_0 = (tmp$ = self) != null ? tmp$.performance : null) != null ? new PerformanceClock(tmp$_0) : null) != null ? tmp$_1 : DateNowClock_getInstance();
+    }
+    MonoClock.prototype.markNow = function () {
+      return this.actualClock_0.markNow();
+    };
+    MonoClock.$metadata$ = {kind: Kind_OBJECT, simpleName: 'MonoClock', interfaces: [Clock]};
+    var MonoClock_instance = null;
+    function MonoClock_getInstance() {
+      if (MonoClock_instance === null) {
+        new MonoClock();
+      }
+      return MonoClock_instance;
+    }
+    function HrTimeClock(process) {
+      this.process = process;
+    }
+    function HrTimeClock$markNow$ObjectLiteral(this$HrTimeClock) {
+      this.this$HrTimeClock = this$HrTimeClock;
+      ClockMark.call(this);
+      this.startedAt = this$HrTimeClock.process.hrtime();
+    }
+    HrTimeClock$markNow$ObjectLiteral.prototype.elapsedNow = function () {
+      var f = this.this$HrTimeClock.process.hrtime(this.startedAt);
+      var seconds = f[0];
+      var nanos = f[1];
+      return get_seconds_1(seconds).plus_cgako$(get_nanoseconds_1(nanos));
+    };
+    HrTimeClock$markNow$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [ClockMark]};
+    HrTimeClock.prototype.markNow = function () {
+      return new HrTimeClock$markNow$ObjectLiteral(this);
+    };
+    HrTimeClock.prototype.toString = function () {
+      return 'Clock(process.hrtime())';
+    };
+    HrTimeClock.$metadata$ = {kind: Kind_CLASS, simpleName: 'HrTimeClock', interfaces: [Clock]};
+    function PerformanceClock(performance) {
+      AbstractDoubleClock.call(this, DurationUnit$MILLISECONDS_getInstance());
+      this.performance = performance;
+    }
+    PerformanceClock.prototype.read = function () {
+      return this.performance.now();
+    };
+    PerformanceClock.prototype.toString = function () {
+      return 'Clock(self.performance.now())';
+    };
+    PerformanceClock.$metadata$ = {kind: Kind_CLASS, simpleName: 'PerformanceClock', interfaces: [AbstractDoubleClock]};
+    function DateNowClock() {
+      DateNowClock_instance = this;
+      AbstractDoubleClock.call(this, DurationUnit$MILLISECONDS_getInstance());
+    }
+    DateNowClock.prototype.read = function () {
+      return Date.now();
+    };
+    DateNowClock.prototype.toString = function () {
+      return 'Clock(Date.now())';
+    };
+    DateNowClock.$metadata$ = {kind: Kind_OBJECT, simpleName: 'DateNowClock', interfaces: [AbstractDoubleClock]};
+    var DateNowClock_instance = null;
+    function DateNowClock_getInstance() {
+      if (DateNowClock_instance === null) {
+        new DateNowClock();
+      }
+      return DateNowClock_instance;
+    }
+    function formatToExactDecimals(value, decimals) {
+      var tmp$;
+      if (decimals === 0) {
+        tmp$ = value;
+      }
+       else {
+        var pow = Math_0.pow(10.0, decimals);
+        tmp$ = Math.round(Math_0.abs(value) * pow) / pow * Math_0.sign(value);
+      }
+      var rounded = tmp$;
+      return rounded.toFixed(decimals);
+    }
+    function formatUpToDecimals(value, decimals) {
+      return value.toLocaleString('en-us', json([to('maximumFractionDigits', decimals)]));
+    }
+    function formatScientific(value) {
+      return value.toExponential(2);
     }
     var WebGLContextAttributes = defineInlineFunction('kotlin.org.khronos.webgl.WebGLContextAttributes_2tn698$', function (alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer, preferLowPowerToHighPerformance, failIfMajorPerformanceCaveat) {
       if (alpha === void 0)
@@ -39549,11 +39981,11 @@
         var start = this.startIndex_0;
         var end = (start + n | 0) % this.capacity;
         if (start > end) {
-          this.fill_0(this.buffer_0, null, start, this.capacity);
-          this.fill_0(this.buffer_0, null, 0, end);
+          fill_3(this.buffer_0, null, start, this.capacity);
+          fill_3(this.buffer_0, null, 0, end);
         }
          else {
-          this.fill_0(this.buffer_0, null, start, end);
+          fill_3(this.buffer_0, null, start, end);
         }
         this.startIndex_0 = end;
         this.size = this.size - n | 0;
@@ -39561,15 +39993,6 @@
     };
     RingBuffer.prototype.forward_0 = function ($receiver, n) {
       return ($receiver + n | 0) % this.capacity;
-    };
-    RingBuffer.prototype.fill_0 = function ($receiver, element, fromIndex, toIndex) {
-      if (fromIndex === void 0)
-        fromIndex = 0;
-      if (toIndex === void 0)
-        toIndex = $receiver.length;
-      for (var idx = fromIndex; idx < toIndex; idx++) {
-        $receiver[idx] = element;
-      }
     };
     RingBuffer.$metadata$ = {kind: Kind_CLASS, simpleName: 'RingBuffer', interfaces: [RandomAccess, AbstractList]};
     function partition_12(array, left, right) {
@@ -41033,6 +41456,9 @@
         return $receiver.nextLong_3pjtqy$(range.start.subtract(Kotlin.Long.fromInt(1)), range.endInclusive).add(Kotlin.Long.fromInt(1));
       else
         return $receiver.nextLong();
+    }
+    function fastLog2(value) {
+      return 31 - Math_0.clz32(value) | 0;
     }
     function takeUpperBits($receiver, bitCount) {
       return $receiver >>> 32 - bitCount & (-bitCount | 0) >> 31;
@@ -42989,6 +43415,532 @@
         return new Regex_init($receiver, options);
       };
     }));
+    function Clock() {
+    }
+    Clock.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Clock', interfaces: []};
+    function ClockMark() {
+    }
+    ClockMark.prototype.plus_cgako$ = function (duration) {
+      return new AdjustedClockMark(this, duration);
+    };
+    ClockMark.prototype.minus_cgako$ = function (duration) {
+      return this.plus_cgako$(duration.unaryMinus());
+    };
+    ClockMark.prototype.hasPassedNow = function () {
+      return !this.elapsedNow().isNegative();
+    };
+    ClockMark.prototype.hasNotPassedNow = function () {
+      return this.elapsedNow().isNegative();
+    };
+    ClockMark.$metadata$ = {kind: Kind_CLASS, simpleName: 'ClockMark', interfaces: []};
+    var minus_15 = defineInlineFunction('kotlin.kotlin.time.minus_4ib7y9$', wrapFunction(function () {
+      var Error_init = _.kotlin.Error_init_pdl1vj$;
+      return function ($receiver, other) {
+        throw Error_init('Operation is disallowed.');
+      };
+    }));
+    var compareTo_0 = defineInlineFunction('kotlin.kotlin.time.compareTo_4ib7y9$', wrapFunction(function () {
+      var Error_init = _.kotlin.Error_init_pdl1vj$;
+      return function ($receiver, other) {
+        throw Error_init('Operation is disallowed.');
+      };
+    }));
+    function AdjustedClockMark(mark, adjustment) {
+      ClockMark.call(this);
+      this.mark = mark;
+      this.adjustment = adjustment;
+    }
+    AdjustedClockMark.prototype.elapsedNow = function () {
+      return this.mark.elapsedNow().minus_cgako$(this.adjustment);
+    };
+    AdjustedClockMark.prototype.plus_cgako$ = function (duration) {
+      return new AdjustedClockMark(this.mark, this.adjustment.plus_cgako$(duration));
+    };
+    AdjustedClockMark.$metadata$ = {kind: Kind_CLASS, simpleName: 'AdjustedClockMark', interfaces: [ClockMark]};
+    function AbstractLongClock(unit) {
+      this.unit = unit;
+    }
+    function AbstractLongClock$LongClockMark(startedAt, clock, offset) {
+      ClockMark.call(this);
+      this.startedAt_0 = startedAt;
+      this.clock_0 = clock;
+      this.offset_0 = offset;
+    }
+    AbstractLongClock$LongClockMark.prototype.elapsedNow = function () {
+      return toDuration_0(this.clock_0.read().subtract(this.startedAt_0), this.clock_0.unit).minus_cgako$(this.offset_0);
+    };
+    AbstractLongClock$LongClockMark.prototype.plus_cgako$ = function (duration) {
+      return new AbstractLongClock$LongClockMark(this.startedAt_0, this.clock_0, this.offset_0.plus_cgako$(duration));
+    };
+    AbstractLongClock$LongClockMark.$metadata$ = {kind: Kind_CLASS, simpleName: 'LongClockMark', interfaces: [ClockMark]};
+    AbstractLongClock.prototype.markNow = function () {
+      return new AbstractLongClock$LongClockMark(this.read(), this, Duration$Companion_getInstance().ZERO);
+    };
+    AbstractLongClock.$metadata$ = {kind: Kind_CLASS, simpleName: 'AbstractLongClock', interfaces: [Clock]};
+    function AbstractDoubleClock(unit) {
+      this.unit = unit;
+    }
+    function AbstractDoubleClock$DoubleClockMark(startedAt, clock, offset) {
+      ClockMark.call(this);
+      this.startedAt_0 = startedAt;
+      this.clock_0 = clock;
+      this.offset_0 = offset;
+    }
+    AbstractDoubleClock$DoubleClockMark.prototype.elapsedNow = function () {
+      return toDuration_1(this.clock_0.read() - this.startedAt_0, this.clock_0.unit).minus_cgako$(this.offset_0);
+    };
+    AbstractDoubleClock$DoubleClockMark.prototype.plus_cgako$ = function (duration) {
+      return new AbstractDoubleClock$DoubleClockMark(this.startedAt_0, this.clock_0, this.offset_0.plus_cgako$(duration));
+    };
+    AbstractDoubleClock$DoubleClockMark.$metadata$ = {kind: Kind_CLASS, simpleName: 'DoubleClockMark', interfaces: [ClockMark]};
+    AbstractDoubleClock.prototype.markNow = function () {
+      return new AbstractDoubleClock$DoubleClockMark(this.read(), this, Duration$Companion_getInstance().ZERO);
+    };
+    AbstractDoubleClock.$metadata$ = {kind: Kind_CLASS, simpleName: 'AbstractDoubleClock', interfaces: [Clock]};
+    function TestClock() {
+      AbstractLongClock.call(this, DurationUnit$NANOSECONDS_getInstance());
+      this.reading_0 = L0;
+    }
+    TestClock.prototype.read = function () {
+      return this.reading_0;
+    };
+    TestClock.prototype.plusAssign_cgako$ = function (duration) {
+      var tmp$;
+      var delta = duration.toDouble_p6uejw$(this.unit);
+      var longDelta = Kotlin.Long.fromNumber(delta);
+      if (!equals(longDelta, Long$Companion$MIN_VALUE) && !equals(longDelta, Long$Companion$MAX_VALUE)) {
+        var newReading = this.reading_0.add(longDelta);
+        if (this.reading_0.xor(longDelta).toNumber() >= 0 && this.reading_0.xor(newReading).toNumber() < 0)
+          this.overflow_0(duration);
+        tmp$ = newReading;
+      }
+       else {
+        var newReading_0 = this.reading_0.toNumber() + delta;
+        if (newReading_0 > Long$Companion$MAX_VALUE.toNumber() || newReading_0 < Long$Companion$MIN_VALUE.toNumber())
+          this.overflow_0(duration);
+        tmp$ = Kotlin.Long.fromNumber(newReading_0);
+      }
+      this.reading_0 = tmp$;
+    };
+    TestClock.prototype.overflow_0 = function (duration) {
+      throw IllegalStateException_init_0('TestClock will overflow if its reading ' + this.reading_0.toString() + 'ns is advanced by ' + duration + '.');
+    };
+    TestClock.$metadata$ = {kind: Kind_CLASS, simpleName: 'TestClock', interfaces: [AbstractLongClock]};
+    function get_storageUnit() {
+      return DurationUnit$NANOSECONDS_getInstance();
+    }
+    function Duration(value) {
+      Duration$Companion_getInstance();
+      this.value_8be2vx$ = value;
+    }
+    function Duration$Companion() {
+      Duration$Companion_instance = this;
+      this.ZERO = new Duration(0.0);
+      this.INFINITE = new Duration(kotlin_js_internal_DoubleCompanionObject.POSITIVE_INFINITY);
+    }
+    Duration$Companion.prototype.convert_d8pp1e$ = function (value, sourceUnit, targetUnit) {
+      return convertDurationUnit(value, sourceUnit, targetUnit);
+    };
+    Duration$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
+    var Duration$Companion_instance = null;
+    function Duration$Companion_getInstance() {
+      if (Duration$Companion_instance === null) {
+        new Duration$Companion();
+      }
+      return Duration$Companion_instance;
+    }
+    Duration.prototype.unaryMinus = function () {
+      return new Duration(-this.value_8be2vx$);
+    };
+    Duration.prototype.plus_cgako$ = function (other) {
+      return new Duration(this.value_8be2vx$ + other.value_8be2vx$);
+    };
+    Duration.prototype.minus_cgako$ = function (other) {
+      return new Duration(this.value_8be2vx$ - other.value_8be2vx$);
+    };
+    Duration.prototype.times_za3lpa$ = function (scale) {
+      return new Duration(this.value_8be2vx$ * scale);
+    };
+    Duration.prototype.times_14dthe$ = function (scale) {
+      return new Duration(this.value_8be2vx$ * scale);
+    };
+    Duration.prototype.div_za3lpa$ = function (scale) {
+      return new Duration(this.value_8be2vx$ / scale);
+    };
+    Duration.prototype.div_14dthe$ = function (scale) {
+      return new Duration(this.value_8be2vx$ / scale);
+    };
+    Duration.prototype.div_cgako$ = function (other) {
+      return this.value_8be2vx$ / other.value_8be2vx$;
+    };
+    Duration.prototype.isNegative = function () {
+      return this.value_8be2vx$ < 0;
+    };
+    Duration.prototype.isPositive = function () {
+      return this.value_8be2vx$ > 0;
+    };
+    Duration.prototype.isInfinite = function () {
+      return isInfinite(this.value_8be2vx$);
+    };
+    Duration.prototype.isFinite = function () {
+      return isFinite(this.value_8be2vx$);
+    };
+    Object.defineProperty(Duration.prototype, 'absoluteValue', {get: function () {
+      return this.isNegative() ? this.unaryMinus() : this;
+    }});
+    Duration.prototype.compareTo_11rb$ = function (other) {
+      return Kotlin.compareTo(this.value_8be2vx$, other.value_8be2vx$);
+    };
+    Duration.prototype.toComponents_fnu26o$ = defineInlineFunction('kotlin.kotlin.time.Duration.toComponents_fnu26o$', wrapFunction(function () {
+      var numberToInt = Kotlin.numberToInt;
+      return function (action) {
+        return action(numberToInt(this.inDays), this.hoursComponent, this.minutesComponent, this.secondsComponent, this.nanosecondsComponent);
+      };
+    }));
+    Duration.prototype.toComponents_v6nad0$ = defineInlineFunction('kotlin.kotlin.time.Duration.toComponents_v6nad0$', wrapFunction(function () {
+      var numberToInt = Kotlin.numberToInt;
+      return function (action) {
+        return action(numberToInt(this.inHours), this.minutesComponent, this.secondsComponent, this.nanosecondsComponent);
+      };
+    }));
+    Duration.prototype.toComponents_sg9n6w$ = defineInlineFunction('kotlin.kotlin.time.Duration.toComponents_sg9n6w$', wrapFunction(function () {
+      var numberToInt = Kotlin.numberToInt;
+      return function (action) {
+        return action(numberToInt(this.inMinutes), this.secondsComponent, this.nanosecondsComponent);
+      };
+    }));
+    Duration.prototype.toComponents_obfv9r$ = defineInlineFunction('kotlin.kotlin.time.Duration.toComponents_obfv9r$', function (action) {
+      return action(Kotlin.Long.fromNumber(this.inSeconds), this.nanosecondsComponent);
+    });
+    Object.defineProperty(Duration.prototype, 'hoursComponent', {get: function () {
+      return numberToInt(this.inHours % 24);
+    }});
+    Object.defineProperty(Duration.prototype, 'minutesComponent', {get: function () {
+      return numberToInt(this.inMinutes % 60);
+    }});
+    Object.defineProperty(Duration.prototype, 'secondsComponent', {get: function () {
+      return numberToInt(this.inSeconds % 60);
+    }});
+    Object.defineProperty(Duration.prototype, 'nanosecondsComponent', {get: function () {
+      return numberToInt(this.inNanoseconds % 1.0E9);
+    }});
+    Duration.prototype.toDouble_p6uejw$ = function (unit) {
+      return convertDurationUnit(this.value_8be2vx$, DurationUnit$NANOSECONDS_getInstance(), unit);
+    };
+    Duration.prototype.toLong_p6uejw$ = function (unit) {
+      return Kotlin.Long.fromNumber(this.toDouble_p6uejw$(unit));
+    };
+    Duration.prototype.toInt_p6uejw$ = function (unit) {
+      return numberToInt(this.toDouble_p6uejw$(unit));
+    };
+    Object.defineProperty(Duration.prototype, 'inDays', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$DAYS_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inHours', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$HOURS_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inMinutes', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$MINUTES_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inSeconds', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$SECONDS_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inMilliseconds', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$MILLISECONDS_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inMicroseconds', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$MICROSECONDS_getInstance());
+    }});
+    Object.defineProperty(Duration.prototype, 'inNanoseconds', {get: function () {
+      return this.toDouble_p6uejw$(DurationUnit$NANOSECONDS_getInstance());
+    }});
+    Duration.prototype.toLongNanoseconds = function () {
+      return this.toLong_p6uejw$(DurationUnit$NANOSECONDS_getInstance());
+    };
+    Duration.prototype.toLongMilliseconds = function () {
+      return this.toLong_p6uejw$(DurationUnit$MILLISECONDS_getInstance());
+    };
+    Duration.prototype.toString = function () {
+      var tmp$, tmp$_0;
+      if (this.isInfinite())
+        return this.value_8be2vx$.toString();
+      else if (this.value_8be2vx$ === 0.0)
+        return '0s';
+      else {
+        var absNs = this.absoluteValue.inNanoseconds;
+        var scientific = {v: false};
+        var maxDecimals = {v: 0};
+        if (absNs < 1.0E-6) {
+          var $receiver = DurationUnit$SECONDS_getInstance();
+          scientific.v = true;
+          tmp$ = $receiver;
+        }
+         else if (absNs < 1) {
+          var $receiver_0 = DurationUnit$NANOSECONDS_getInstance();
+          maxDecimals.v = 7;
+          tmp$ = $receiver_0;
+        }
+         else if (absNs < 1000.0)
+          tmp$ = DurationUnit$NANOSECONDS_getInstance();
+        else if (absNs < 1000000.0)
+          tmp$ = DurationUnit$MICROSECONDS_getInstance();
+        else if (absNs < 1.0E9)
+          tmp$ = DurationUnit$MILLISECONDS_getInstance();
+        else if (absNs < 1.0E12)
+          tmp$ = DurationUnit$SECONDS_getInstance();
+        else if (absNs < 6.0E13)
+          tmp$ = DurationUnit$MINUTES_getInstance();
+        else if (absNs < 3.6E15)
+          tmp$ = DurationUnit$HOURS_getInstance();
+        else if (absNs < 8.64E13 * 1.0E7)
+          tmp$ = DurationUnit$DAYS_getInstance();
+        else {
+          var $receiver_1 = DurationUnit$DAYS_getInstance();
+          scientific.v = true;
+          tmp$ = $receiver_1;
+        }
+        var unit = tmp$;
+        var value = this.toDouble_p6uejw$(unit);
+        if (scientific.v)
+          tmp$_0 = formatScientific(value);
+        else if (maxDecimals.v > 0)
+          tmp$_0 = formatUpToDecimals(value, maxDecimals.v);
+        else {
+          tmp$_0 = formatToExactDecimals(value, this.precision_0(Math_0.abs(value)));
+        }
+        return tmp$_0 + shortName(unit);
+      }
+    };
+    Duration.prototype.precision_0 = function (value) {
+      if (value < 1)
+        return 3;
+      else if (value < 10)
+        return 2;
+      else if (value < 100)
+        return 1;
+      else
+        return 0;
+    };
+    Duration.prototype.toString_mha1pa$ = function (unit, decimals) {
+      if (decimals === void 0)
+        decimals = 0;
+      var tmp$;
+      if (!(decimals >= 0)) {
+        var message = 'decimals must be not negative, but was ' + decimals;
+        throw IllegalArgumentException_init_0(message.toString());
+      }
+      if (this.isInfinite())
+        return this.value_8be2vx$.toString();
+      var number = this.toDouble_p6uejw$(unit);
+      if (Math_0.abs(number) < 1.0E14)
+        tmp$ = formatToExactDecimals(number, coerceAtMost_2(decimals, 12));
+      else
+        tmp$ = formatScientific(number);
+      return tmp$ + shortName(unit);
+    };
+    Duration.prototype.toIsoString = function () {
+      var $receiver = StringBuilder_init_1();
+      if (this.isNegative())
+        $receiver.append_s8itvh$(45);
+      $receiver.append_gw00v9$('PT');
+      var $this = this.absoluteValue;
+      var hours = numberToInt($this.inHours);
+      var minutes = $this.minutesComponent;
+      var seconds = $this.secondsComponent;
+      var nanoseconds = $this.nanosecondsComponent;
+      var hasHours = hours !== 0;
+      var hasSeconds = seconds !== 0 || nanoseconds !== 0;
+      var hasMinutes = minutes !== 0 || (hasSeconds && hasHours);
+      if (hasHours) {
+        $receiver.append_s8jyv4$(hours).append_s8itvh$(72);
+      }
+      if (hasMinutes) {
+        $receiver.append_s8jyv4$(minutes).append_s8itvh$(77);
+      }
+      if (hasSeconds || (!hasHours && !hasMinutes)) {
+        $receiver.append_s8jyv4$(seconds);
+        if (nanoseconds !== 0) {
+          $receiver.append_s8itvh$(46);
+          var nss = padStart_0(nanoseconds.toString(), 9, 48);
+          if (nanoseconds % 1000000 === 0)
+            $receiver.append_ezbsdh$(nss, 0, 3);
+          else if (nanoseconds % 1000 === 0)
+            $receiver.append_ezbsdh$(nss, 0, 6);
+          else
+            $receiver.append_gw00v9$(nss);
+        }
+        $receiver.append_s8itvh$(83);
+      }
+      return $receiver.toString();
+    };
+    Duration.$metadata$ = {kind: Kind_CLASS, simpleName: 'Duration', interfaces: [Comparable]};
+    Duration.prototype.unbox = function () {
+      return this.value_8be2vx$;
+    };
+    Duration.prototype.hashCode = function () {
+      var result = 0;
+      result = result * 31 + Kotlin.hashCode(this.value_8be2vx$) | 0;
+      return result;
+    };
+    Duration.prototype.equals = function (other) {
+      return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.value_8be2vx$, other.value_8be2vx$))));
+    };
+    function toDuration($receiver, unit) {
+      return toDuration_1($receiver, unit);
+    }
+    function toDuration_0($receiver, unit) {
+      return toDuration_1($receiver.toNumber(), unit);
+    }
+    function toDuration_1($receiver, unit) {
+      return new Duration(convertDurationUnit($receiver, unit, DurationUnit$NANOSECONDS_getInstance()));
+    }
+    function get_nanoseconds($receiver) {
+      return toDuration($receiver, DurationUnit$NANOSECONDS_getInstance());
+    }
+    function get_nanoseconds_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$NANOSECONDS_getInstance());
+    }
+    function get_nanoseconds_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$NANOSECONDS_getInstance());
+    }
+    function get_microseconds($receiver) {
+      return toDuration($receiver, DurationUnit$MICROSECONDS_getInstance());
+    }
+    function get_microseconds_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$MICROSECONDS_getInstance());
+    }
+    function get_microseconds_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$MICROSECONDS_getInstance());
+    }
+    function get_milliseconds($receiver) {
+      return toDuration($receiver, DurationUnit$MILLISECONDS_getInstance());
+    }
+    function get_milliseconds_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$MILLISECONDS_getInstance());
+    }
+    function get_milliseconds_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$MILLISECONDS_getInstance());
+    }
+    function get_seconds($receiver) {
+      return toDuration($receiver, DurationUnit$SECONDS_getInstance());
+    }
+    function get_seconds_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$SECONDS_getInstance());
+    }
+    function get_seconds_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$SECONDS_getInstance());
+    }
+    function get_minutes($receiver) {
+      return toDuration($receiver, DurationUnit$MINUTES_getInstance());
+    }
+    function get_minutes_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$MINUTES_getInstance());
+    }
+    function get_minutes_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$MINUTES_getInstance());
+    }
+    function get_hours($receiver) {
+      return toDuration($receiver, DurationUnit$HOURS_getInstance());
+    }
+    function get_hours_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$HOURS_getInstance());
+    }
+    function get_hours_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$HOURS_getInstance());
+    }
+    function get_days($receiver) {
+      return toDuration($receiver, DurationUnit$DAYS_getInstance());
+    }
+    function get_days_0($receiver) {
+      return toDuration_0($receiver, DurationUnit$DAYS_getInstance());
+    }
+    function get_days_1($receiver) {
+      return toDuration_1($receiver, DurationUnit$DAYS_getInstance());
+    }
+    var times = defineInlineFunction('kotlin.kotlin.time.times_tk7led$', function ($receiver, duration) {
+      return duration.times_za3lpa$($receiver);
+    });
+    var times_0 = defineInlineFunction('kotlin.kotlin.time.times_w68h3b$', function ($receiver, duration) {
+      return duration.times_14dthe$($receiver);
+    });
+    function shortName($receiver) {
+      switch ($receiver.name) {
+        case 'NANOSECONDS':
+          return 'ns';
+        case 'MICROSECONDS':
+          return 'us';
+        case 'MILLISECONDS':
+          return 'ms';
+        case 'SECONDS':
+          return 's';
+        case 'MINUTES':
+          return 'm';
+        case 'HOURS':
+          return 'h';
+        case 'DAYS':
+          return 'd';
+        default:return Kotlin.noWhenBranchMatched();
+      }
+    }
+    function ExperimentalTime() {
+    }
+    ExperimentalTime.$metadata$ = {kind: Kind_CLASS, simpleName: 'ExperimentalTime', interfaces: [Annotation]};
+    var measureTime = defineInlineFunction('kotlin.kotlin.time.measureTime_o14v8n$', wrapFunction(function () {
+      var time = _.kotlin.time;
+      return function (block) {
+        var mark = time.MonoClock.markNow();
+        block();
+        return mark.elapsedNow();
+      };
+    }));
+    var measureTime_0 = defineInlineFunction('kotlin.kotlin.time.measureTime_e1td18$', function ($receiver, block) {
+      var mark = $receiver.markNow();
+      block();
+      return mark.elapsedNow();
+    });
+    function TimedValue(value, duration) {
+      this.value = value;
+      this.duration = duration;
+    }
+    TimedValue.$metadata$ = {kind: Kind_CLASS, simpleName: 'TimedValue', interfaces: []};
+    TimedValue.prototype.component1 = function () {
+      return this.value;
+    };
+    TimedValue.prototype.component2 = function () {
+      return this.duration;
+    };
+    TimedValue.prototype.copy_v4727h$ = function (value, duration) {
+      return new TimedValue(value === void 0 ? this.value : value, duration === void 0 ? this.duration : duration);
+    };
+    TimedValue.prototype.toString = function () {
+      return 'TimedValue(value=' + Kotlin.toString(this.value) + (', duration=' + Kotlin.toString(this.duration)) + ')';
+    };
+    TimedValue.prototype.hashCode = function () {
+      var result = 0;
+      result = result * 31 + Kotlin.hashCode(this.value) | 0;
+      result = result * 31 + Kotlin.hashCode(this.duration) | 0;
+      return result;
+    };
+    TimedValue.prototype.equals = function (other) {
+      return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.value, other.value) && Kotlin.equals(this.duration, other.duration)))));
+    };
+    var measureTimedValue = defineInlineFunction('kotlin.kotlin.time.measureTimedValue_klfg04$', wrapFunction(function () {
+      var time = _.kotlin.time;
+      var TimedValue_init = _.kotlin.time.TimedValue;
+      return function (block) {
+        var mark = time.MonoClock.markNow();
+        var result = block();
+        return new TimedValue_init(result, mark.elapsedNow());
+      };
+    }));
+    var measureTimedValue_0 = defineInlineFunction('kotlin.kotlin.time.measureTimedValue_9m8ien$', wrapFunction(function () {
+      var TimedValue_init = _.kotlin.time.TimedValue;
+      return function ($receiver, block) {
+        var mark = $receiver.markNow();
+        var result = block();
+        return new TimedValue_init(result, mark.elapsedNow());
+      };
+    }));
     var hashCode_0 = defineInlineFunction('kotlin.kotlin.hashCode_mzud1t$', wrapFunction(function () {
       var hashCode = Kotlin.hashCode;
       return function ($receiver) {
@@ -43039,7 +43991,7 @@
     function KotlinVersion$Companion() {
       KotlinVersion$Companion_instance = this;
       this.MAX_COMPONENT_VALUE = 255;
-      this.CURRENT = new KotlinVersion(1, 3, 40);
+      this.CURRENT = new KotlinVersion(1, 3, 50);
     }
     KotlinVersion$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
     var KotlinVersion$Companion_instance = null;
@@ -43160,6 +44112,82 @@
       return toString(this.value);
     };
     InitializedLazyImpl.$metadata$ = {kind: Kind_CLASS, simpleName: 'InitializedLazyImpl', interfaces: [Serializable, Lazy]};
+    var countOneBits_1 = defineInlineFunction('kotlin.kotlin.countOneBits_mz3mee$', wrapFunction(function () {
+      var countOneBits = _.kotlin.countOneBits_s8ev3n$;
+      return function ($receiver) {
+        return countOneBits($receiver & 255);
+      };
+    }));
+    var countLeadingZeroBits_1 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_mz3mee$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver & 255) - 24 | 0;
+      };
+    }));
+    var countTrailingZeroBits_1 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_mz3mee$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_s8ev3n$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver | 256);
+      };
+    }));
+    var takeHighestOneBit_1 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_mz3mee$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_s8ev3n$;
+      var toByte = Kotlin.toByte;
+      return function ($receiver) {
+        return toByte(takeHighestOneBit($receiver & 255));
+      };
+    }));
+    var takeLowestOneBit_1 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_mz3mee$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_s8ev3n$;
+      var toByte = Kotlin.toByte;
+      return function ($receiver) {
+        return toByte(takeLowestOneBit($receiver));
+      };
+    }));
+    function rotateLeft_1($receiver, bitCount) {
+      return toByte($receiver << (bitCount & 7) | ($receiver & 255) >>> 8 - (bitCount & 7));
+    }
+    function rotateRight_1($receiver, bitCount) {
+      return toByte($receiver << 8 - (bitCount & 7) | ($receiver & 255) >>> (bitCount & 7));
+    }
+    var countOneBits_2 = defineInlineFunction('kotlin.kotlin.countOneBits_5vcgdc$', wrapFunction(function () {
+      var countOneBits = _.kotlin.countOneBits_s8ev3n$;
+      return function ($receiver) {
+        return countOneBits($receiver & 65535);
+      };
+    }));
+    var countLeadingZeroBits_2 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_5vcgdc$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver & 65535) - 16 | 0;
+      };
+    }));
+    var countTrailingZeroBits_2 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_5vcgdc$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_s8ev3n$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver | 65536);
+      };
+    }));
+    var takeHighestOneBit_2 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_5vcgdc$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_s8ev3n$;
+      var toShort = Kotlin.toShort;
+      return function ($receiver) {
+        return toShort(takeHighestOneBit($receiver & 65535));
+      };
+    }));
+    var takeLowestOneBit_2 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_5vcgdc$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_s8ev3n$;
+      var toShort = Kotlin.toShort;
+      return function ($receiver) {
+        return toShort(takeLowestOneBit($receiver));
+      };
+    }));
+    function rotateLeft_2($receiver, bitCount) {
+      return toShort($receiver << (bitCount & 15) | ($receiver & 65535) >>> 16 - (bitCount & 15));
+    }
+    function rotateRight_2($receiver, bitCount) {
+      return toShort($receiver << 16 - (bitCount & 15) | ($receiver & 65535) >>> (bitCount & 15));
+    }
     var require_0 = defineInlineFunction('kotlin.kotlin.require_6taknv$', wrapFunction(function () {
       var IllegalArgumentException_init = _.kotlin.IllegalArgumentException_init_pdl1vj$;
       return function (value) {
@@ -45216,6 +46244,196 @@
         return maxOf(a, b);
       };
     }));
+    var countOneBits_3 = defineInlineFunction('kotlin.kotlin.countOneBits_mpial4$', wrapFunction(function () {
+      var countOneBits = _.kotlin.countOneBits_s8ev3n$;
+      return function ($receiver) {
+        return countOneBits($receiver.data);
+      };
+    }));
+    var countLeadingZeroBits_3 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_mpial4$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver.data);
+      };
+    }));
+    var countTrailingZeroBits_3 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_mpial4$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_s8ev3n$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver.data);
+      };
+    }));
+    var takeHighestOneBit_3 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_mpial4$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_s8ev3n$;
+      var UInt_init = _.kotlin.UInt;
+      return function ($receiver) {
+        return new UInt_init(takeHighestOneBit($receiver.data));
+      };
+    }));
+    var takeLowestOneBit_3 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_mpial4$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_s8ev3n$;
+      var UInt_init = _.kotlin.UInt;
+      return function ($receiver) {
+        return new UInt_init(takeLowestOneBit($receiver.data));
+      };
+    }));
+    var rotateLeft_3 = defineInlineFunction('kotlin.kotlin.rotateLeft_k13f4a$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_dqglrj$;
+      var UInt_init = _.kotlin.UInt;
+      return function ($receiver, bitCount) {
+        return new UInt_init(rotateLeft($receiver.data, bitCount));
+      };
+    }));
+    var rotateRight_3 = defineInlineFunction('kotlin.kotlin.rotateRight_k13f4a$', wrapFunction(function () {
+      var rotateRight = _.kotlin.rotateRight_dqglrj$;
+      var UInt_init = _.kotlin.UInt;
+      return function ($receiver, bitCount) {
+        return new UInt_init(rotateRight($receiver.data, bitCount));
+      };
+    }));
+    var countOneBits_4 = defineInlineFunction('kotlin.kotlin.countOneBits_6e1d9n$', wrapFunction(function () {
+      var countOneBits = _.kotlin.countOneBits_mts6qi$;
+      return function ($receiver) {
+        return countOneBits($receiver.data);
+      };
+    }));
+    var countLeadingZeroBits_4 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_6e1d9n$', wrapFunction(function () {
+      var countLeadingZeroBits = _.kotlin.countLeadingZeroBits_mts6qi$;
+      return function ($receiver) {
+        return countLeadingZeroBits($receiver.data);
+      };
+    }));
+    var countTrailingZeroBits_4 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_6e1d9n$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_mts6qi$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver.data);
+      };
+    }));
+    var takeHighestOneBit_4 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_6e1d9n$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_mts6qi$;
+      var ULong_init = _.kotlin.ULong;
+      return function ($receiver) {
+        return new ULong_init(takeHighestOneBit($receiver.data));
+      };
+    }));
+    var takeLowestOneBit_4 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_6e1d9n$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_mts6qi$;
+      var ULong_init = _.kotlin.ULong;
+      return function ($receiver) {
+        return new ULong_init(takeLowestOneBit($receiver.data));
+      };
+    }));
+    var rotateLeft_4 = defineInlineFunction('kotlin.kotlin.rotateLeft_hc3rh$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_if0zpk$;
+      var ULong_init = _.kotlin.ULong;
+      return function ($receiver, bitCount) {
+        return new ULong_init(rotateLeft($receiver.data, bitCount));
+      };
+    }));
+    var rotateRight_4 = defineInlineFunction('kotlin.kotlin.rotateRight_hc3rh$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_if0zpk$;
+      var ULong_init = _.kotlin.ULong;
+      return function ($receiver, bitCount) {
+        return new ULong_init(rotateLeft($receiver.data, -bitCount | 0));
+      };
+    }));
+    var countOneBits_5 = defineInlineFunction('kotlin.kotlin.countOneBits_68pxlr$', wrapFunction(function () {
+      var UInt_init = _.kotlin.UInt;
+      var countOneBits = _.kotlin.countOneBits_s8ev3n$;
+      return function ($receiver) {
+        return countOneBits((new UInt_init($receiver.data & 255)).data);
+      };
+    }));
+    var countLeadingZeroBits_5 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_68pxlr$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver.data & 255) - 24 | 0;
+      };
+    }));
+    var countTrailingZeroBits_5 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_68pxlr$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_s8ev3n$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver.data | 256);
+      };
+    }));
+    var takeHighestOneBit_5 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_68pxlr$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_s8ev3n$;
+      var toByte = Kotlin.toByte;
+      var UByte_init = _.kotlin.UByte;
+      return function ($receiver) {
+        return new UByte_init(toByte(takeHighestOneBit($receiver.data & 255)));
+      };
+    }));
+    var takeLowestOneBit_5 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_68pxlr$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_s8ev3n$;
+      var toByte = Kotlin.toByte;
+      var UByte_init = _.kotlin.UByte;
+      return function ($receiver) {
+        return new UByte_init(toByte(takeLowestOneBit($receiver.data & 255)));
+      };
+    }));
+    var rotateLeft_5 = defineInlineFunction('kotlin.kotlin.rotateLeft_aogav3$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_798l30$;
+      var UByte_init = _.kotlin.UByte;
+      return function ($receiver, bitCount) {
+        return new UByte_init(rotateLeft($receiver.data, bitCount));
+      };
+    }));
+    var rotateRight_5 = defineInlineFunction('kotlin.kotlin.rotateRight_aogav3$', wrapFunction(function () {
+      var rotateRight = _.kotlin.rotateRight_798l30$;
+      var UByte_init = _.kotlin.UByte;
+      return function ($receiver, bitCount) {
+        return new UByte_init(rotateRight($receiver.data, bitCount));
+      };
+    }));
+    var countOneBits_6 = defineInlineFunction('kotlin.kotlin.countOneBits_bso16t$', wrapFunction(function () {
+      var UInt_init = _.kotlin.UInt;
+      var countOneBits = _.kotlin.countOneBits_s8ev3n$;
+      return function ($receiver) {
+        return countOneBits((new UInt_init($receiver.data & 65535)).data);
+      };
+    }));
+    var countLeadingZeroBits_6 = defineInlineFunction('kotlin.kotlin.countLeadingZeroBits_bso16t$', wrapFunction(function () {
+      var Math_0 = Math;
+      return function ($receiver) {
+        return Math_0.clz32($receiver.data & 65535) - 16 | 0;
+      };
+    }));
+    var countTrailingZeroBits_6 = defineInlineFunction('kotlin.kotlin.countTrailingZeroBits_bso16t$', wrapFunction(function () {
+      var countTrailingZeroBits = _.kotlin.countTrailingZeroBits_s8ev3n$;
+      return function ($receiver) {
+        return countTrailingZeroBits($receiver.data | 65536);
+      };
+    }));
+    var takeHighestOneBit_6 = defineInlineFunction('kotlin.kotlin.takeHighestOneBit_bso16t$', wrapFunction(function () {
+      var takeHighestOneBit = _.kotlin.takeHighestOneBit_s8ev3n$;
+      var toShort = Kotlin.toShort;
+      var UShort_init = _.kotlin.UShort;
+      return function ($receiver) {
+        return new UShort_init(toShort(takeHighestOneBit($receiver.data & 65535)));
+      };
+    }));
+    var takeLowestOneBit_6 = defineInlineFunction('kotlin.kotlin.takeLowestOneBit_bso16t$', wrapFunction(function () {
+      var takeLowestOneBit = _.kotlin.takeLowestOneBit_s8ev3n$;
+      var toShort = Kotlin.toShort;
+      var UShort_init = _.kotlin.UShort;
+      return function ($receiver) {
+        return new UShort_init(toShort(takeLowestOneBit($receiver.data & 65535)));
+      };
+    }));
+    var rotateLeft_6 = defineInlineFunction('kotlin.kotlin.rotateLeft_pqjt0d$', wrapFunction(function () {
+      var rotateLeft = _.kotlin.rotateLeft_di2vk2$;
+      var UShort_init = _.kotlin.UShort;
+      return function ($receiver, bitCount) {
+        return new UShort_init(rotateLeft($receiver.data, bitCount));
+      };
+    }));
+    var rotateRight_6 = defineInlineFunction('kotlin.kotlin.rotateRight_pqjt0d$', wrapFunction(function () {
+      var rotateRight = _.kotlin.rotateRight_di2vk2$;
+      var UShort_init = _.kotlin.UShort;
+      return function ($receiver, bitCount) {
+        return new UShort_init(rotateRight($receiver.data, bitCount));
+      };
+    }));
     function differenceModulo_1(a, b, c) {
       var ac = uintRemainder(a, c);
       var bc = uintRemainder(b, c);
@@ -45665,7 +46883,7 @@
       return toString_3($receiver.data & 65535, radix);
     }
     function toString_6($receiver, radix) {
-      return toString_2(Kotlin.Long.fromInt($receiver.data).and(L4294967295), radix);
+      return toString_0(Kotlin.Long.fromInt($receiver.data).and(L4294967295), radix);
     }
     function toString_7($receiver, radix) {
       return ulongToString_0($receiver.data, checkRadix(radix));
@@ -45894,14 +47112,14 @@
     }
     function ulongToString_0(v, base) {
       if (v.toNumber() >= 0)
-        return toString_2(v, base);
+        return toString_0(v, base);
       var quotient = v.shiftRightUnsigned(1).div(Kotlin.Long.fromInt(base)).shiftLeft(1);
       var rem = v.subtract(quotient.multiply(Kotlin.Long.fromInt(base)));
       if (rem.toNumber() >= base) {
         rem = rem.subtract(Kotlin.Long.fromInt(base));
         quotient = quotient.add(Kotlin.Long.fromInt(1));
       }
-      return toString_2(quotient, base) + toString_2(rem, base);
+      return toString_0(quotient, base) + toString_0(rem, base);
     }
     function ExperimentalUnsignedTypes() {
     }
@@ -47666,6 +48884,10 @@
     package$collections.copyOfRange_2n8m0j$ = copyOfRange_7;
     package$collections.copyOfRange_ietg8x$ = copyOfRange_4;
     package$collections.copyOfRange_qxueih$ = copyOfRange_5;
+    package$collections.fill_9p0cei$ = fill;
+    package$collections.fill_u0vwim$ = fill_0;
+    package$collections.fill_i88zna$ = fill_1;
+    package$collections.fill_ujo1re$ = fill_2;
     package$collections.plus_c03ot6$ = plus_30;
     package$collections.plus_uxdaoa$ = plus_31;
     package$collections.plus_jlnu8a$ = plus_28;
@@ -47929,6 +49151,8 @@
     package$intrinsics.createCoroutineUnintercepted_x18nsh$ = createCoroutineUnintercepted;
     package$intrinsics.createCoroutineUnintercepted_3a617i$ = createCoroutineUnintercepted_0;
     package$intrinsics.intercepted_f9mg25$ = intercepted;
+    var package$js = package$kotlin.js || (package$kotlin.js = {});
+    package$js.isArrayish_kcmwxo$ = isArrayish;
     package$kotlin.emptyArray_287e2$ = emptyArray;
     package$kotlin.lazy_klfg04$ = lazy;
     package$kotlin.lazy_kls4a0$ = lazy_0;
@@ -47939,6 +49163,11 @@
     package$kotlin.fillFromCollection_40q1uj$ = fillFromCollection;
     package$kotlin.copyArrayType_dgzutr$ = copyArrayType;
     package$kotlin.jsIsType_dgzutr$ = jsIsType;
+    package$math.withSign_38ydlf$ = withSign;
+    package$kotlin.Long_6xvm5r$ = Long;
+    package$kotlin.get_low_nzsbcz$ = get_low;
+    package$kotlin.get_high_nzsbcz$ = get_high;
+    package$text.toString_if0zpk$ = toString_0;
     package$collections.elementAt_8ujjk8$ = elementAt_2;
     package$collections.elementAt_mrm5p$ = elementAt_3;
     package$collections.elementAt_m2jy6x$ = elementAt_4;
@@ -47966,6 +49195,15 @@
     package$collections.copyOfRange_yfnal4$ = copyOfRange_9;
     package$collections.copyOfRange_ke2ov9$ = copyOfRange_10;
     package$collections.copyOfRange_wlitf7$ = copyOfRange_11;
+    package$collections.fill_jfbbbd$ = fill_3;
+    package$collections.fill_6mk3ue$ = fill_4;
+    package$collections.fill_htcctw$ = fill_5;
+    package$collections.fill_tpuxuu$ = fill_6;
+    package$collections.fill_wp4zxy$ = fill_7;
+    package$collections.fill_nwy378$ = fill_8;
+    package$collections.fill_x4f2cq$ = fill_9;
+    package$collections.fill_py0txo$ = fill_10;
+    package$collections.fill_t1iw8m$ = fill_11;
     package$collections.plus_mjy6jw$ = plus_27;
     package$collections.plus_tec1tx$ = plus_50;
     package$collections.plus_omthmc$ = plus_32;
@@ -48027,7 +49265,6 @@
     package$ui.selectable_vwohdt$ = selectable;
     package$kotlin.Comparator = Comparator;
     package$kotlin.Comparator_x4fedy$ = Comparator_0;
-    var package$js = package$kotlin.js || (package$kotlin.js = {});
     package$js.native = native;
     package$js.nativeGetter = nativeGetter;
     package$js.nativeSetter = nativeSetter;
@@ -48038,6 +49275,7 @@
     package$js.JsModule = JsModule;
     package$js.JsNonModule = JsNonModule;
     package$js.JsQualifier = JsQualifier;
+    package$js.JsExport = JsExport;
     var package$jvm = package$kotlin.jvm || (package$kotlin.jvm = {});
     package$jvm.Volatile = Volatile;
     package$jvm.Synchronized = Synchronized;
@@ -48047,7 +49285,7 @@
     package$collections.listOf_mh5how$ = listOf;
     package$collections.setOf_mh5how$ = setOf;
     package$collections.mapOf_x2b85n$ = mapOf;
-    package$collections.fill_dwdffb$ = fill;
+    package$collections.fill_dwdffb$ = fill_12;
     package$collections.shuffle_vvxzk3$ = shuffle;
     package$collections.shuffled_7wnvza$ = shuffled;
     package$collections.sort_4wi501$ = sort_14;
@@ -48202,7 +49440,6 @@
     package$js.add_g26eq9$ = add;
     package$math.log_lu1900$ = log;
     package$math.round_14dthe$ = round;
-    package$math.withSign_38ydlf$ = withSign;
     package$math.get_ulp_yrwdxr$ = get_ulp;
     package$math.nextUp_yrwdxr$ = nextUp;
     package$math.nextDown_yrwdxr$ = nextDown;
@@ -48221,10 +49458,21 @@
     package$kotlin.isInfinite_81szk$ = isInfinite_0;
     package$kotlin.isFinite_yrwdxr$ = isFinite;
     package$kotlin.isFinite_81szk$ = isFinite_0;
+    package$kotlin.countOneBits_s8ev3n$ = countOneBits;
+    package$kotlin.countTrailingZeroBits_s8ev3n$ = countTrailingZeroBits;
+    package$kotlin.takeHighestOneBit_s8ev3n$ = takeHighestOneBit;
+    package$kotlin.takeLowestOneBit_s8ev3n$ = takeLowestOneBit;
+    package$kotlin.rotateLeft_dqglrj$ = rotateLeft;
+    package$kotlin.rotateRight_dqglrj$ = rotateRight;
+    package$kotlin.countOneBits_mts6qi$ = countOneBits_0;
+    package$kotlin.countLeadingZeroBits_mts6qi$ = countLeadingZeroBits_0;
+    package$kotlin.countTrailingZeroBits_mts6qi$ = countTrailingZeroBits_0;
+    package$kotlin.takeHighestOneBit_mts6qi$ = takeHighestOneBit_0;
+    package$kotlin.takeLowestOneBit_mts6qi$ = takeLowestOneBit_0;
+    package$kotlin.rotateLeft_if0zpk$ = rotateLeft_0;
     package$js.then_eyvp0y$ = then;
     package$js.then_a5sxob$ = then_0;
     package$random.defaultPlatformRandom_8be2vx$ = defaultPlatformRandom;
-    package$random.fastLog2_kcn2v3$ = fastLog2;
     package$random.doubleFromParts_6xvm5r$ = doubleFromParts;
     package$ranges.rangeTo_38ydlf$ = rangeTo_1;
     package$js.get_jsClass_irb06o$ = get_jsClass;
@@ -48258,7 +49506,6 @@
     package$text.toDouble_pdl1vz$ = toDouble;
     package$text.toDoubleOrNull_pdl1vz$ = toDoubleOrNull;
     package$text.toString_dqglrj$ = toString_3;
-    package$text.toString_if0zpk$ = toString_2;
     package$text.checkRadix_za3lpa$ = checkRadix;
     package$text.digitOf_xvg9q0$ = digitOf;
     Object.defineProperty(RegexOption, 'IGNORE_CASE', {get: RegexOption$IGNORE_CASE_getInstance});
@@ -48306,6 +49553,23 @@
     package$text.CharacterCodingException = CharacterCodingException;
     package$text.encodeUtf8_eq9l2e$ = encodeUtf8;
     package$text.decodeUtf8_bndkiu$ = decodeUtf8;
+    Object.defineProperty(DurationUnit, 'NANOSECONDS', {get: DurationUnit$NANOSECONDS_getInstance});
+    Object.defineProperty(DurationUnit, 'MICROSECONDS', {get: DurationUnit$MICROSECONDS_getInstance});
+    Object.defineProperty(DurationUnit, 'MILLISECONDS', {get: DurationUnit$MILLISECONDS_getInstance});
+    Object.defineProperty(DurationUnit, 'SECONDS', {get: DurationUnit$SECONDS_getInstance});
+    Object.defineProperty(DurationUnit, 'MINUTES', {get: DurationUnit$MINUTES_getInstance});
+    Object.defineProperty(DurationUnit, 'HOURS', {get: DurationUnit$HOURS_getInstance});
+    Object.defineProperty(DurationUnit, 'DAYS', {get: DurationUnit$DAYS_getInstance});
+    var package$time = package$kotlin.time || (package$kotlin.time = {});
+    package$time.DurationUnit = DurationUnit;
+    package$time.convertDurationUnit_sgln0f$ = convertDurationUnit;
+    Object.defineProperty(package$time, 'MonoClock', {get: MonoClock_getInstance});
+    package$time.HrTimeClock = HrTimeClock;
+    package$time.PerformanceClock = PerformanceClock;
+    Object.defineProperty(package$time, 'DateNowClock', {get: DateNowClock_getInstance});
+    package$time.formatToExactDecimals_coldnx$ = formatToExactDecimals;
+    package$time.formatUpToDecimals_coldnx$ = formatUpToDecimals;
+    package$time.formatScientific_tq0o01$ = formatScientific;
     package$dom_0.get_NONZERO_mhbikd$ = get_NONZERO;
     package$dom_0.get_NONE_xgljrz$ = get_NONE;
     package$dom_0.get_DEFAULT_b5608t$ = get_DEFAULT;
@@ -48691,6 +49955,7 @@
     package$random.Random_s8cxhz$ = Random_1;
     package$random.nextInt_ixthlz$ = nextInt;
     package$random.nextLong_lq3jag$ = nextLong;
+    package$random.fastLog2_kcn2v3$ = fastLog2;
     package$random.takeUpperBits_b6l1hq$ = takeUpperBits;
     package$random.checkRangeBounds_6xvm5r$ = checkRangeBounds;
     package$random.checkRangeBounds_cfj5zr$ = checkRangeBounds_0;
@@ -48816,6 +50081,44 @@
     package$text.MatchNamedGroupCollection = MatchNamedGroupCollection;
     MatchResult.Destructured = MatchResult$Destructured;
     package$text.MatchResult = MatchResult;
+    package$time.Clock = Clock;
+    package$time.ClockMark = ClockMark;
+    package$time.AbstractLongClock = AbstractLongClock;
+    package$time.AbstractDoubleClock = AbstractDoubleClock;
+    package$time.TestClock = TestClock;
+    Object.defineProperty(Duration, 'Companion', {get: Duration$Companion_getInstance});
+    package$time.Duration = Duration;
+    package$time.toDuration_14orw9$ = toDuration;
+    package$time.toDuration_rrkdm6$ = toDuration_0;
+    package$time.toDuration_n769wd$ = toDuration_1;
+    package$time.get_nanoseconds_s8ev3n$ = get_nanoseconds;
+    package$time.get_nanoseconds_mts6qi$ = get_nanoseconds_0;
+    package$time.get_nanoseconds_yrwdxr$ = get_nanoseconds_1;
+    package$time.get_microseconds_s8ev3n$ = get_microseconds;
+    package$time.get_microseconds_mts6qi$ = get_microseconds_0;
+    package$time.get_microseconds_yrwdxr$ = get_microseconds_1;
+    package$time.get_milliseconds_s8ev3n$ = get_milliseconds;
+    package$time.get_milliseconds_mts6qi$ = get_milliseconds_0;
+    package$time.get_milliseconds_yrwdxr$ = get_milliseconds_1;
+    package$time.get_seconds_s8ev3n$ = get_seconds;
+    package$time.get_seconds_mts6qi$ = get_seconds_0;
+    package$time.get_seconds_yrwdxr$ = get_seconds_1;
+    package$time.get_minutes_s8ev3n$ = get_minutes;
+    package$time.get_minutes_mts6qi$ = get_minutes_0;
+    package$time.get_minutes_yrwdxr$ = get_minutes_1;
+    package$time.get_hours_s8ev3n$ = get_hours;
+    package$time.get_hours_mts6qi$ = get_hours_0;
+    package$time.get_hours_yrwdxr$ = get_hours_1;
+    package$time.get_days_s8ev3n$ = get_days;
+    package$time.get_days_mts6qi$ = get_days_0;
+    package$time.get_days_yrwdxr$ = get_days_1;
+    package$time.shortName_d5gje$ = shortName;
+    package$time.ExperimentalTime = ExperimentalTime;
+    package$time.measureTime_e1td18$ = measureTime_0;
+    package$time.measureTime_o14v8n$ = measureTime;
+    package$time.TimedValue = TimedValue;
+    package$time.measureTimedValue_9m8ien$ = measureTimedValue_0;
+    package$time.measureTimedValue_klfg04$ = measureTimedValue;
     Object.defineProperty(KotlinVersion, 'Companion', {get: KotlinVersion$Companion_getInstance});
     package$kotlin.KotlinVersion_init_vux9f0$ = KotlinVersion_init;
     package$kotlin.KotlinVersion = KotlinVersion;
@@ -48828,6 +50131,10 @@
     Object.defineProperty(package$kotlin, 'UNINITIALIZED_VALUE', {get: UNINITIALIZED_VALUE_getInstance});
     package$kotlin.UnsafeLazyImpl = UnsafeLazyImpl;
     package$kotlin.InitializedLazyImpl = InitializedLazyImpl;
+    package$kotlin.rotateLeft_798l30$ = rotateLeft_1;
+    package$kotlin.rotateRight_798l30$ = rotateRight_1;
+    package$kotlin.rotateLeft_di2vk2$ = rotateLeft_2;
+    package$kotlin.rotateRight_di2vk2$ = rotateRight_2;
     package$kotlin.createFailure_tcv7n7$ = createFailure;
     Object.defineProperty(Result, 'Companion', {get: Result$Companion_getInstance});
     Result.Failure = Result$Failure;
@@ -49529,6 +50836,7 @@
     package$experimental.startCoroutine_xtwlez$ = startCoroutine_0;
     package$experimental.createCoroutine_uao1qo$ = createCoroutine;
     package$experimental.createCoroutine_xtwlez$ = createCoroutine_0;
+    package$experimental.suspendCoroutine_z3e1t3$ = suspendCoroutine;
     Object.defineProperty(package$experimental, 'coroutineContext', {get: get_coroutineContext});
     package$experimental.buildSequence_of7nec$ = buildSequence;
     package$experimental.buildIterator_of7nec$ = buildIterator;

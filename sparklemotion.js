@@ -183,7 +183,7 @@
   var L5 = Kotlin.Long.fromInt(5);
   var getValue = Kotlin.kotlin.collections.getValue_t9ocha$;
   var get_contentOrNull = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.get_contentOrNull_u3sd3g$;
-  var JsonParsingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonParsingException;
+  var JsonDecodingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonDecodingException;
   var json_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.json_s5o6vg$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
@@ -10782,7 +10782,7 @@
           case 5:
             this.exceptionState_0 = 7;
             var e = this.exception_0;
-            if (Kotlin.isType(e, JsonParsingException)) {
+            if (Kotlin.isType(e, JsonDecodingException)) {
               MapperClient$Companion_getInstance().logger.error_h4ejuu$(MapperClient$sendCommand$lambda_0(this.local$command, this.local$args, this.local$responseJsonStr));
               throw e;
             }
@@ -11608,7 +11608,7 @@
   }
   function Storage$Companion() {
     Storage$Companion_instance = this;
-    this.json = new Json(JsonConfiguration.Companion.Stable.copy_qyeq5q$(void 0, false));
+    this.json = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.format_0 = DateFormat.Companion.invoke_61zpoe$("yyyy''MM''dd'-'HH''mm''ss");
   }
   Storage$Companion.prototype.formatDateTime_mw5vjr$ = function (dateTime) {
@@ -12686,7 +12686,7 @@
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
     this.model_CHEAT = null;
-    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_qyeq5q$(void 0, false));
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
     this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda), 0), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0), 1), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1), 2), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2), 3), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3), 4), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4), 4)]);
   }
@@ -20879,6 +20879,7 @@
     get: BeatData$$serializer_getInstance
   });
   var package$baaahs = _.baaahs || (_.baaahs = {});
+  package$baaahs.BeatData_init_vdtwv5$ = BeatData_init;
   package$baaahs.BeatData = BeatData;
   package$baaahs.BeatSource = BeatSource;
   package$baaahs.Clock = Clock_0;
@@ -20922,6 +20923,7 @@
   Object.defineProperty(GadgetData, '$serializer', {
     get: GadgetData$$serializer_getInstance
   });
+  package$baaahs.GadgetData_init_v0g3t$ = GadgetData_init;
   package$baaahs.GadgetData = GadgetData;
   Object.defineProperty(package$baaahs, 'GadgetDataSerializer', {
     get: function () {
@@ -20977,6 +20979,7 @@
   Object.defineProperty(MovingHead$MovingHeadPosition, '$serializer', {
     get: MovingHead$MovingHeadPosition$$serializer_getInstance
   });
+  MovingHead.MovingHeadPosition_init_y4apw$ = MovingHead$MovingHead$MovingHeadPosition_init;
   MovingHead.MovingHeadPosition = MovingHead$MovingHeadPosition;
   Object.defineProperty(MovingHead, 'Companion', {
     get: MovingHead$Companion_getInstance
@@ -20984,6 +20987,7 @@
   Object.defineProperty(MovingHead, '$serializer', {
     get: MovingHead$$serializer_getInstance
   });
+  package$baaahs.MovingHead_init_jn9ufg$ = MovingHead_init;
   package$baaahs.MovingHead = MovingHead;
   package$baaahs.MovingHeadManager = MovingHeadManager;
   MovingHeadDisplay.Wrapper = MovingHeadDisplay$Wrapper;
@@ -21235,6 +21239,7 @@
     get: ColorPicker$$serializer_getInstance
   });
   var package$gadgets = package$baaahs.gadgets || (package$baaahs.gadgets = {});
+  package$gadgets.ColorPicker_init_yty6c9$ = ColorPicker_init;
   package$gadgets.ColorPicker = ColorPicker;
   Object.defineProperty(PalettePicker, 'Companion', {
     get: PalettePicker$Companion_getInstance
@@ -21242,6 +21247,7 @@
   Object.defineProperty(PalettePicker, '$serializer', {
     get: PalettePicker$$serializer_getInstance
   });
+  package$gadgets.PalettePicker_init_iwlgk4$ = PalettePicker_init;
   package$gadgets.PalettePicker = PalettePicker;
   Object.defineProperty(Slider, 'Companion', {
     get: Slider$Companion_getInstance
@@ -21249,6 +21255,7 @@
   Object.defineProperty(Slider, '$serializer', {
     get: Slider$$serializer_getInstance
   });
+  package$gadgets.Slider_init_ho0nx7$ = Slider_init;
   package$gadgets.Slider = Slider;
   Object.defineProperty(Matrix4, 'Companion', {
     get: Matrix4$Companion_getInstance
@@ -21257,6 +21264,7 @@
     get: Matrix4$$serializer_getInstance
   });
   var package$geom = package$baaahs.geom || (package$baaahs.geom = {});
+  package$geom.Matrix4_init_quvrf1$ = Matrix4_init_0;
   package$geom.Matrix4 = Matrix4;
   Object.defineProperty(Vector2F, 'Companion', {
     get: Vector2F$Companion_getInstance
@@ -21264,6 +21272,7 @@
   Object.defineProperty(Vector2F, '$serializer', {
     get: Vector2F$$serializer_getInstance
   });
+  package$geom.Vector2F_init_y4axo$ = Vector2F_init;
   package$geom.Vector2F = Vector2F;
   Object.defineProperty(Vector3F, 'Companion', {
     get: Vector3F$Companion_getInstance
@@ -21271,6 +21280,7 @@
   Object.defineProperty(Vector3F, '$serializer', {
     get: Vector3F$$serializer_getInstance
   });
+  package$geom.Vector3F_init_vvq1nx$ = Vector3F_init;
   package$geom.Vector3F = Vector3F;
   package$geom.center_21sjvd$ = center;
   package$geom.extents_21sjvd$ = extents;
@@ -21325,6 +21335,7 @@
   Object.defineProperty(MappingSession$SurfaceData$PixelData, '$serializer', {
     get: MappingSession$SurfaceData$PixelData$$serializer_getInstance
   });
+  MappingSession$SurfaceData.PixelData_init_byknfs$ = MappingSession$SurfaceData$MappingSession$SurfaceData$PixelData_init;
   MappingSession$SurfaceData.PixelData = MappingSession$SurfaceData$PixelData;
   Object.defineProperty(MappingSession$SurfaceData, 'Companion', {
     get: MappingSession$SurfaceData$Companion_getInstance
@@ -21332,6 +21343,7 @@
   Object.defineProperty(MappingSession$SurfaceData, '$serializer', {
     get: MappingSession$SurfaceData$$serializer_getInstance
   });
+  MappingSession.SurfaceData_init_nwrln8$ = MappingSession$MappingSession$SurfaceData_init;
   MappingSession.SurfaceData = MappingSession$SurfaceData;
   Object.defineProperty(MappingSession, 'Companion', {
     get: MappingSession$Companion_getInstance
@@ -21339,6 +21351,7 @@
   Object.defineProperty(MappingSession, '$serializer', {
     get: MappingSession$$serializer_getInstance
   });
+  package$mapper.MappingSession_init_4yxxfg$ = MappingSession_init;
   package$mapper.MappingSession = MappingSession;
   Object.defineProperty(Storage, 'Companion', {
     get: Storage$Companion_getInstance
