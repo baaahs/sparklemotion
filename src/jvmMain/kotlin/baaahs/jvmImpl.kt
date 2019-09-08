@@ -18,7 +18,6 @@ actual fun getTimeMillis(): Long = System.currentTimeMillis()
 
 actual fun decodeBase64(s: String): ByteArray = Base64.getDecoder().decode(s)
 
-@UseExperimental(ExperimentalStdlibApi::class)
 class RealFs(private val basePath: Path) : Fs {
 
     override fun listFiles(path: String): List<String> {
