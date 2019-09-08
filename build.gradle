@@ -151,6 +151,13 @@ kotlin {
             }
         }
 
+        sourceSets.all {
+            languageSettings {
+                progressiveMode = true
+                useExperimentalAnnotation('kotlin.ExperimentalStdlibApi')
+            }
+        }
+
 //        linuxMain {
 //        }
 //        linuxTest {
