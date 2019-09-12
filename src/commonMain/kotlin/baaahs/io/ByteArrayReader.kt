@@ -33,7 +33,6 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
 
     fun readFloat(): Float = Float.fromBits(readInt())
 
-    @UseExperimental(ExperimentalStdlibApi::class)
     fun readString(): String = readBytes().decodeToString()
 
     fun readNullableString(): String? = if (readBoolean()) readString() else null

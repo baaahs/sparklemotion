@@ -46,7 +46,6 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         writeInt(f.toBits())
     }
 
-    @UseExperimental(ExperimentalStdlibApi::class)
     fun writeString(s: String) {
         writeBytes(s.encodeToByteArray())
     }
