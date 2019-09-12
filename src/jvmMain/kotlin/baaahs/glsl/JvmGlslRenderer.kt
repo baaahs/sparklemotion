@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.Surface
 import baaahs.shaders.GlslShader
 import baaahs.timeSync
+import de.fabmax.kool.createContext
 import org.joml.Matrix4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW
@@ -18,7 +19,7 @@ class JvmGlslRenderer(
     fragShader: String,
     adjustableValues: List<GlslShader.AdjustableValue>,
     private var window: Long
-) : GlslRenderer(fragShader, adjustableValues) {
+) : GlslRenderer(createContext(), fragShader, adjustableValues) {
     internal lateinit var keyCallback: GLFWKeyCallback
     internal lateinit var fbCallback: GLFWFramebufferSizeCallback
 
@@ -107,6 +108,7 @@ class JvmGlslRenderer(
     }
 
     override fun getUniformLocation(name: String, required: Boolean): Uniform {
+        ctx.scenes
         val loc = gl { glGetUniformLocation(program, name) }
         if (loc < 0 && required) {
             throw IllegalStateException("Couldn't find uniform $name")

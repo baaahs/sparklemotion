@@ -5,6 +5,12 @@ import baaahs.Surface
 import baaahs.getTimeMillis
 import baaahs.shaders.GlslShader
 import baaahs.timeSync
+import de.fabmax.kool.TextureProps
+import de.fabmax.kool.createContext
+import de.fabmax.kool.defaultProps
+import de.fabmax.kool.gl.*
+import de.fabmax.kool.util.Float32Buffer
+import de.fabmax.kool.util.createFloat32Buffer
 import org.khronos.webgl.*
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
@@ -13,15 +19,15 @@ import kotlin.browser.window
 class JsGlslRenderer(
     fragShader: String,
     adjustableValues: List<GlslShader.AdjustableValue>
-) : GlslRenderer(fragShader, adjustableValues) {
+) : GlslRenderer(createContext(), fragShader, adjustableValues) {
     val canvas = document.createElement("canvas") as HTMLCanvasElement
-    var gl: WebGL2RenderingContext = canvas.getContext("webgl2")!! as WebGL2RenderingContext
+//    var gl: WebGL2RenderingContext = canvas.getContext("webgl2")!! as WebGL2RenderingContext
 
-    private val program: WebGLProgram?
+    private val program: ProgramResource
     private val quad: Quad
 
     init {
-        gl { gl.clearColor(0f, .5f, 0f, 1f) }
+        gl { glClearColor(0f, .5f, 0f, 1f) }
 
         program = createShaderProgram()
         quad = Quad()
@@ -29,14 +35,6 @@ class JsGlslRenderer(
         findUniforms()
 
         instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
-    }
-
-    override fun getUniformLocation(name: String, required: Boolean): Uniform {
-        val loc = gl { gl.getUniformLocation(program, name) }
-        if (loc == null && required)
-            throw IllegalStateException("Couldn't find uniform $name")
-
-        return Uniform(loc)
     }
 
     inner class Quad {
@@ -51,36 +49,31 @@ class JsGlslRenderer(
             1.0f, 1.0f
         )
 
-        private var quadVertexBuffer: WebGLBuffer? = null
+        private var quadVertexBuffer: BufferResource = BufferResource.create(GL_ARRAY_BUFFER, ctx)
 
         init {
-            quadVertexBuffer = gl.createBuffer()
-            gl { gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, quadVertexBuffer) }
-            gl { gl.bufferData(
-                WebGLRenderingContext.ARRAY_BUFFER,
-                Float32Array(vertices),
-                WebGLRenderingContext.STATIC_DRAW
-            ); }
+            val verticesBuffer = createFloat32Buffer(vertices.size).put(vertices.toFloatArray())
+            quadVertexBuffer.setData(verticesBuffer, GL_STATIC_DRAW, ctx)
 
-            val vertexAttr = gl { gl.getAttribLocation(program, "Vertex") }
-            gl { gl.vertexAttribPointer(vertexAttr, 2,
+            val vertexAttr = gl { glGetAttribLocation(program, "Vertex") }
+            gl { glVertexAttribPointer(vertexAttr, 2,
                 WebGLRenderingContext.FLOAT, false, 0, 0) }
-            gl { gl.enableVertexAttribArray(vertexAttr) }
+            gl { glEnableVertexAttribArray(vertexAttr) }
 
-            gl { gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null) }
+            gl { glBindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null) }
         }
 
         internal fun render() {
-            gl { gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, quadVertexBuffer) }
+            gl { glBindBuffer(WebGLRenderingContext.ARRAY_BUFFER, quadVertexBuffer) }
 
             // Draw the triangles
             gl { gl.drawArrays(WebGLRenderingContext.TRIANGLES, 0, 6) }
 
-            gl { gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null) }
+            gl { glBindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null) }
         }
 
         private fun release() {
-            gl { gl.deleteBuffer(quadVertexBuffer) }
+            gl { glDeleteBuffer(quadVertexBuffer) }
         }
     }
 
@@ -131,31 +124,29 @@ class JsGlslRenderer(
     private fun render() {
         val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
 
-        gl { gl.uniform2f(resolutionLocation.location, 1f, 1f) }
-        gl { gl.uniform1f(timeLocation.location, thisTime) }
+        gl { glUniform2f(resolutionLocation.location, 1f, 1f) }
+        gl { glUniform1f(timeLocation.location, thisTime) }
 
-        instance.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsLocation!!)
+        instance.bindUvCoordTexture(0, uvCoordsLocation!!)
         instance.bindUniforms()
 
-        gl { gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight) }
-        gl { gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT or WebGLRenderingContext.DEPTH_BUFFER_BIT) }
+        gl { glViewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight) }
+        gl { glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         quad.render()
 
         gl { gl.finish() }
 
-        val programLog = gl { gl.getProgramInfoLog(program) }
-        if (programLog != null && programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
+        val programLog = program.getInfoLog(ctx)
+        if (programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
     }
 
-    private fun createShaderProgram(): WebGLProgram? {
+    private fun createShaderProgram(): ProgramResource {
         // Create a simple shader program
-        val program = gl { gl.createProgram() }
-        val vs = gl { gl.createShader(WebGLRenderingContext.VERTEX_SHADER) }
-        gl {
-            gl.shaderSource(
-                vs,
-                """#version 300 es
+        val program = ProgramResource.create(ctx)
+
+        val vertexShader = ShaderResource.createVertexShader(ctx)
+        vertexShader.shaderSource("""#version 300 es
 
 precision lowp float;
 
@@ -169,14 +160,11 @@ void main()
     vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
     gl_Position = vec4(Vertex, 0.0, 1.0);
 }
-"""
-            )
-        }
-        compileShader(vs)
+""", ctx)
+        compileShader(vertexShader)
+        program.attachShader(vertexShader, ctx)
 
-        gl { gl.attachShader(program, vs) }
-        val fs = gl { gl.createShader(WebGLRenderingContext.FRAGMENT_SHADER) }
-
+        val fragmentShader = ShaderResource.createFragmentShader(ctx)
         val src = """#version 300 es
 
 #ifdef GL_ES
@@ -217,35 +205,35 @@ void main(void) {
 """
 
         println(src)
-        gl { gl.shaderSource(fs, src) }
+        fragmentShader.shaderSource(src, ctx)
+        compileShader(fragmentShader)
+        program.attachShader(fragmentShader, ctx)
 
-        compileShader(fs)
-
-        gl { gl.attachShader(program, fs) }
-        gl { gl.linkProgram(program) }
-        if (gl.getProgramParameter(program, WebGLRenderingContext.LINK_STATUS) == false) {
-            throw RuntimeException("ProgramInfoLog: ${gl.getProgramInfoLog(program)}")
+        if (!program.link(ctx)) {
+            val infoLog = program.getInfoLog(ctx)
+            throw RuntimeException("ProgramInfoLog: $infoLog")
         }
 
-        gl { gl.useProgram(program) }
+        gl { glUseProgram(program) }
+
         return program
     }
 
-    private fun compileShader(shader: WebGLShader?) {
-        gl { gl.compileShader(shader) }
-        if (gl.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS) == false) {
+    private fun compileShader(shader: ShaderResource) {
+        if (!shader.compile(ctx)) {
+            val infoLog = shader.getInfoLog(ctx)
             window.alert(
-                "Failed to compile shader: ${gl.getShaderInfoLog(shader)}\n" +
+                "Failed to compile shader: $infoLog\n" +
                         "Version: ${gl.getParameter(WebGLRenderingContext.VERSION)}\n" +
                         "GLSL Version: ${gl.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION)}\n"
             )
-            throw RuntimeException("Failed to compile shader: ${gl.getShaderInfoLog(shader)}")
+            throw RuntimeException("Failed to compile shader: ${infoLog}")
         }
     }
 
     fun <T> gl(fn: () -> T): T {
         val result = fn.invoke()
-        checkForGlError(gl)
+        checkForGlError()
         return result
     }
 
@@ -255,9 +243,9 @@ void main(void) {
         val GL = WebGLRenderingContext
         val GL2 = WebGL2RenderingContext
 
-        fun checkForGlError(gl: WebGLRenderingContext) {
+        fun checkForGlError() {
             while (true) {
-                val error = gl.getError()
+                val error = glGetError()
                 val code = when (error) {
                     WebGLRenderingContext.INVALID_ENUM -> "GL_INVALID_ENUM"
                     WebGLRenderingContext.INVALID_VALUE -> "GL_INVALID_VALUE"
@@ -284,11 +272,11 @@ void main(void) {
                 val location = uniformLocation.location
 
                 when (adjustableValue.valueType) {
-                    GlslShader.AdjustableValue.Type.INT -> gl { gl.uniform1i(location, buffer as Int) }
-                    GlslShader.AdjustableValue.Type.FLOAT -> gl { gl.uniform1f(location, buffer as Float) }
+                    GlslShader.AdjustableValue.Type.INT -> gl { glUniform1i(location, buffer as Int) }
+                    GlslShader.AdjustableValue.Type.FLOAT -> gl { glUniform1f(location, buffer as Float) }
                     GlslShader.AdjustableValue.Type.VEC3 -> {
                         val color = buffer as Color
-                        gl { gl.uniform3f(location, color.redF, color.greenF, color.blueF) }
+                        gl { glUniform3f(location, color.redF, color.greenF, color.blueF) }
                     }
                 }
             }
@@ -322,32 +310,33 @@ void main(void) {
             GlslShader.AdjustableValue.Type.VEC3 -> Float32Array(elementCount)
         }
 
-        var texture = gl { gl.createTexture() }
         val textureIndex = adjustableValueUniformIndices[adjustableValue.ordinal]
-        val uniformLocation = gl { gl.getUniformLocation(program, adjustableValue.varName) }
+        var texture = TextureResource.create(GL_TEXTURE0 + textureIndex,
+            TextureProps("", GL_NEAREST, GL_NEAREST), ctx)
+        val uniformLocation = gl { glGetUniformLocation(program, adjustableValue.varName) }
 
         init {
-            gl { gl.activeTexture(WebGLRenderingContext.TEXTURE0 + textureIndex) }
-            gl { gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture) }
-            gl { gl.texParameteri(
+            gl { glActiveTexture(texture.target) }
+            gl { glBindTexture(WebGLRenderingContext.TEXTURE_2D, texture) }
+            gl { glTexParameteri(
                 WebGLRenderingContext.TEXTURE_2D,
                 WebGLRenderingContext.TEXTURE_MIN_FILTER,
                 WebGLRenderingContext.NEAREST
             ) }
-            gl { gl.texParameteri(
+            gl { glTexParameteri(
                 WebGLRenderingContext.TEXTURE_2D,
                 WebGLRenderingContext.TEXTURE_MAG_FILTER,
                 WebGLRenderingContext.NEAREST
             ) }
             gl {
-                gl.texImage2D(
+                glTexImage2D(
                     WebGLRenderingContext.TEXTURE_2D, 0,
                     WebGL2RenderingContext.R32F, elementCount, 1, 0,
                     WebGL2RenderingContext.RED,
                     WebGLRenderingContext.FLOAT, null
                 )
             }
-            gl { gl.uniform1i(uvCoordsLocation.location, textureIndex) }
+            gl { glUniform1i(uvCoordsLocation.location, textureIndex) }
         }
     }
 
@@ -359,22 +348,23 @@ void main(void) {
                 adjustableValue.ordinal to UnifyingAdjustableUniform(adjustableValue, surfaceCount)
             }
 
-        private var uvCoordTexture = gl { gl.createTexture() }
-        private val frameBuffer = gl { gl.createFramebuffer() }
-        private val renderBuffer = gl { gl.createRenderbuffer() }
+        private var uvCoordTexture = TextureResource.create(GL_TEXTURE0 + uvCoordTextureIndex,
+            TextureProps("", GL_NEAREST, GL_NEAREST), ctx)
+        private val frameBuffer = gl { FramebufferResource.create(pixelCount.bufWidth, pixelCount.bufHeight, ctx) }
+        private val renderBuffer = gl { RenderbufferResource.create(ctx) }
         val pixelBuffer: Uint8Array = Uint8Array(pixelCount.bufSize * 4)
 
         private val uvCoordsFloat32 = Float32Array(uvCoords.toTypedArray())
 
         override fun bindFramebuffer() {
-            gl { gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frameBuffer) }
+            gl { glBindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frameBuffer) }
 
-            gl { gl.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderBuffer) }
+            gl { glBindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderBuffer) }
 //            console.error("pixel count: $pixelCount (${pixelCount.bufWidth} x ${pixelCount.bufHeight} = ${pixelCount.bufSize})")
-            gl { gl.renderbufferStorage(
+            gl { glRenderbufferStorage(
                 WebGLRenderingContext.RENDERBUFFER,
                 WebGLRenderingContext.RGBA4, pixelCount.bufWidth, pixelCount.bufHeight) }
-            gl { gl.framebufferRenderbuffer(
+            gl { glFramebufferRenderbuffer(
                 WebGLRenderingContext.FRAMEBUFFER,
                 WebGLRenderingContext.COLOR_ATTACHMENT0,
                 WebGLRenderingContext.RENDERBUFFER, renderBuffer) }
@@ -386,14 +376,14 @@ void main(void) {
         }
 
         override fun bindUvCoordTexture(textureIndex: Int, uvCoordsLocation: Uniform) {
-            gl { gl.activeTexture(WebGLRenderingContext.TEXTURE0 + textureIndex) }
-            gl { gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, uvCoordTexture) }
-            gl { gl.texParameteri(
+            gl { glActiveTexture(uvCoordTexture.target) }
+            gl { glBindTexture(WebGLRenderingContext.TEXTURE_2D, uvCoordTexture) }
+            gl { glTexParameteri(
                 WebGLRenderingContext.TEXTURE_2D,
                 WebGLRenderingContext.TEXTURE_MIN_FILTER,
                 WebGLRenderingContext.NEAREST
             ) }
-            gl { gl.texParameteri(
+            gl { glTexParameteri(
                 WebGLRenderingContext.TEXTURE_2D,
                 WebGLRenderingContext.TEXTURE_MAG_FILTER,
                 WebGLRenderingContext.NEAREST
@@ -436,13 +426,13 @@ void main(void) {
         override fun release() {
             println("Release $this with $pixelCount pixels and ${uvCoords.size} uvs")
 
-            gl { gl.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, null) }
-            gl { gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null) }
-            gl { gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null) }
+            gl { glBindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, null) }
+            gl { glBindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null) }
+            gl { glBindTexture(WebGLRenderingContext.TEXTURE_2D, null) }
 
-            gl { gl.deleteFramebuffer(frameBuffer) }
-            gl { gl.deleteRenderbuffer(renderBuffer) }
-            gl { gl.deleteTexture(uvCoordTexture) }
+            gl { glDeleteFramebuffer(frameBuffer) }
+            gl { glDeleteRenderbuffer(renderBuffer) }
+            gl { glDeleteTexture(uvCoordTexture) }
         }
     }
 

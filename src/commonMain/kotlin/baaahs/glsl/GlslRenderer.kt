@@ -4,10 +4,13 @@ import baaahs.Color
 import baaahs.IdentifiedSurface
 import baaahs.Surface
 import baaahs.shaders.GlslShader
+import de.fabmax.kool.KoolContext
+import de.fabmax.kool.gl.glGetUniformLocation
 import kotlin.math.max
 import kotlin.math.min
 
 abstract class GlslRenderer(
+    val ctx: KoolContext,
     val fragShader: String,
     val adjustableValues: List<GlslShader.AdjustableValue>
 ) {
@@ -77,7 +80,12 @@ abstract class GlslRenderer(
 
     abstract fun <T> withGlContext(fn: () -> T): T
 
-    abstract fun getUniformLocation(name: String, required: Boolean = false): Uniform
+    fun getUniformLocation(name: String, required: Boolean = false): Uniform {
+        val loc = Uniform(glGetUniformLocation(program, name))
+        if (loc == null && required)
+            throw IllegalStateException("Couldn't find uniform $name")
+        return Uniform(loc)
+    }
 
     protected fun incorporateNewSurfaces() {
         if (surfacesToAdd.isNotEmpty()) {
