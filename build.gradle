@@ -8,7 +8,8 @@ buildscript {
     ext.serialization_runtime_version = '0.12.0'
     ext.klockVersion = "1.5.0"
     ext.koolVersion = "0.1.2" // https://github.com/fabmax/kool
-    ext.lwjglVersion = "3.2.2"
+//    ext.lwjglVersion = "3.2.2"
+    ext.lwjglVersion = "3.1.5"
     ext.mockk_version = '1.9.3'
     ext.beatlink_version = '0.5.1'
 
@@ -27,16 +28,18 @@ buildscript {
         classpath "com.github.salomonbrys.gradle.kotlin.js:kotlin-js-gradle-utils:1.2.0"
         classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
     }
-}
 
-import org.gradle.internal.os.OperatingSystem
-switch (OperatingSystem.current()) {
-    case OperatingSystem.LINUX:
-        project.ext.lwjglNatives = "natives-linux"
-        break
-    case OperatingSystem.MAC_OS:
-        project.ext.lwjglNatives = "natives-macos"
-        break
+    switch (org.gradle.internal.os.OperatingSystem.current()) {
+        case org.gradle.internal.os.OperatingSystem.WINDOWS:
+            ext.lwjglNatives = "natives-windows"
+            break
+        case org.gradle.internal.os.OperatingSystem.LINUX:
+            ext.lwjglNatives = "natives-linux"
+            break
+        case org.gradle.internal.os.OperatingSystem.MAC_OS:
+            ext.lwjglNatives = "natives-macos"
+            break
+    }
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
@@ -113,17 +116,19 @@ kotlin {
                 implementation "org.joml:joml:1.9.16"
 
                 // GLSL support via LWJGL:
-                implementation "org.lwjgl:lwjgl:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-assimp:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-jawt:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-openal:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-assimp:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-jawt:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-openal:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+//                implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+
                 runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
                 runtimeOnly "org.lwjgl:lwjgl-assimp:$lwjglVersion:$lwjglNatives"
                 runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
-                runtimeOnly "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-jemalloc:$lwjglVersion:$lwjglNatives"
+//                runtimeOnly "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
                 runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
                 runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
             

@@ -10,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.expect
 
 class GlslRendererTest {
-    @Ignore @Test // TODO: requires `-XstartOnFirstThread` jvmargs or jvm will crash
+    @Test // TODO: requires `-XstartOnFirstThread` jvmargs or jvm will crash
     fun testSimpleRendering() {
         val renderer = GlslBase.manager.createRenderer("""
 uniform float time;

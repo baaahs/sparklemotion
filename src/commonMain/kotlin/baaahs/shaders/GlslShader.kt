@@ -7,6 +7,10 @@ import baaahs.glsl.ModelSpaceUvTranslator
 import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import de.fabmax.kool.shading.Uniform
+import de.fabmax.kool.shading.Uniform1f
+import de.fabmax.kool.shading.Uniform1i
+import de.fabmax.kool.shading.Uniform3f
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
@@ -139,7 +143,19 @@ class GlslShader(
         val config: JsonObject,
         val ordinal: Int
     ) {
-        enum class Type { INT, FLOAT, VEC3 }
+        enum class Type {
+            INT {
+                override fun getUniform(varName: String): Uniform<*> = Uniform1i(varName)
+            },
+            FLOAT {
+                override fun getUniform(varName: String): Uniform<*> = Uniform1f(varName)
+            },
+            VEC3 {
+                override fun getUniform(varName: String): Uniform<*> = Uniform3f(varName)
+            };
+
+            abstract fun getUniform(varName: String): Uniform<*>
+        }
 
         fun serializeConfig(writer: ByteArrayWriter) {
             writer.writeString(varName)
@@ -160,6 +176,10 @@ class GlslShader(
                 Type.FLOAT -> reader.readFloat()
                 Type.VEC3 -> Color(reader.readInt())
             }
+        }
+
+        fun getUniform(): Uniform<*> {
+            return valueType.getUniform(varName)
         }
 
         companion object {
