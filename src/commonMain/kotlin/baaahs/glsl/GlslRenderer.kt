@@ -1,15 +1,17 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.IdentifiedSurface
-import baaahs.Surface
+import baaahs.*
 import baaahs.shaders.GlslShader
+import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
 
-abstract class GlslRenderer(
+open class GlslRenderer(
+    val gl: Kgl,
+    private val contextSwitcher: ContextSwitcher,
     val fragShader: String,
-    val adjustableValues: List<GlslShader.AdjustableValue>
+    val adjustableValues: List<GlslShader.AdjustableValue>,
+    private val glslVersion: String
 ) {
     private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
     var pixelCount: Int = 0
@@ -21,20 +23,95 @@ abstract class GlslRenderer(
     val uvCoordTextureIndex = 0
     var surfaceOrdinalTextureIndex = 1
     var nextTextureIndex = 2
-    val adjustableValueUniformIndices = adjustableValues.map { nextTextureIndex++ }
-
-    // uniforms
-    internal var uvCoordsLocation: Uniform? = null
-    internal var matLocation: Uniform? = null
-    internal var resolutionLocation: Uniform? = null
-    internal var timeLocation: Uniform? = null
 
     lateinit var instance: Instance
 
-    fun findUniforms() {
-        uvCoordsLocation = getUniformLocation("sm_uvCoords", required = true)
-        resolutionLocation = getUniformLocation("resolution")
-        timeLocation = getUniformLocation("time")
+    val program: Program = gl { createShaderProgram() }
+    internal var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
+    internal var resolutionUniform: Uniform? = gl { Uniform.find(gl, program, "resolution") }
+    internal var timeUniform: Uniform? = gl { Uniform.find(gl, program, "time") }
+
+    val quad: Quad = gl { Quad(gl, program) }
+
+    init {
+        gl { gl.clearColor(0f, .5f, 0f, 1f) }
+
+        instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
+    }
+
+    private fun createShaderProgram(): Program {
+        // Create a simple shader program
+        val program = Program.create(gl)
+
+        val vertexShaderSource = """#version $glslVersion
+
+precision lowp float;
+
+// xy = vertex position in normalized device coordinates ([-1,+1] range).
+in vec2 Vertex;
+
+const vec2 scale = vec2(0.5, 0.5);
+
+void main()
+{
+    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
+    gl_Position = vec4(Vertex, 0.0, 1.0);
+}
+"""
+        val vertexShader = Shader.createVertexShader(gl, vertexShaderSource)
+        program.attachShader(vertexShader)
+
+        val src = """#version $glslVersion
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform sampler2D sm_uvCoords;
+uniform float sm_uScale;
+uniform float sm_vScale;
+uniform float sm_startOfMeasure;
+uniform float sm_beat;
+
+out vec4 sm_fragColor;
+
+${fragShader
+            .replace(
+                Regex("void main\\s*\\(\\s*(void\\s*)?\\)"),
+                "void sm_main(vec2 sm_pixelCoord)"
+            )
+            .replace("gl_FragCoord", "sm_pixelCoord")
+            .replace("gl_FragColor", "sm_fragColor")
+        }
+
+// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.
+// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and
+// pass them to the shader's original `main()` method.
+void main(void) {
+    int uvX = int(gl_FragCoord.x);
+    int uvY = int(gl_FragCoord.y);
+    
+    vec2 pixelCoord = vec2(
+        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u
+        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v
+    );
+
+    sm_main(pixelCoord);
+}
+"""
+
+        println(src)
+        val fragmentShader = Shader.createFragmentShader(gl, src)
+        program.attachShader(fragmentShader)
+
+        if (!program.link()) {
+            val infoLog = program.getInfoLog()
+            throw RuntimeException("ProgramInfoLog: $infoLog")
+        }
+
+        program.bind()
+
+        return program
     }
 
     fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
@@ -68,16 +145,66 @@ abstract class GlslRenderer(
         return glslSurface
     }
 
-    abstract fun createSurfacePixels(surface: Surface, pixelOffset: Int): SurfacePixels
-    abstract fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): SurfacePixels
+    fun createSurfacePixels(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
+        SurfacePixels(surface, pixelOffset)
 
-    abstract fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Instance
+    inner class SurfacePixels(
+        surface: Surface, pixel0Index: Int
+    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
+        override fun get(i: Int): Color = instance.getPixel(pixel0Index + i)
+    }
 
-    abstract fun draw()
+    fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
+        SurfaceMonoPixel(surface, pixelOffset)
 
-    abstract fun <T> withGlContext(fn: () -> T): T
+    inner class SurfaceMonoPixel(
+        surface: Surface, pixel0Index: Int
+    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
+        override fun get(i: Int): Color = instance.getPixel(pixel0Index)
+    }
 
-    abstract fun getUniformLocation(name: String, required: Boolean = false): Uniform
+    fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Instance =
+        Instance(pixelCount, uvCoords, surfaceCount)
+
+    fun draw() {
+        withGlContext {
+            val addSurfacesMs = timeSync { incorporateNewSurfaces() }
+
+            val bindFbMs = timeSync { instance.bindFramebuffer() }
+            val renderMs = timeSync { render() }
+
+            val readPxMs = timeSync {
+                instance.copyToPixelBuffer()
+            }
+
+//            println("Render of $pixelCount took: " +
+//                    "addSurface=${addSurfacesMs}ms " +
+//                    "bindFbMs=${bindFbMs}ms " +
+//                    "renderMs=${renderMs}ms " +
+//                    "readPxMs=${readPxMs}ms " +
+//                    "$this")
+        }
+    }
+
+    private fun render() {
+        val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
+
+        resolutionUniform?.set(1f, 1f)
+        timeUniform?.set(thisTime)
+
+        instance.bindUvCoordTexture(0, uvCoordsUniform!!)
+        instance.bindUniforms()
+
+        gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight)
+        gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+
+        quad.render()
+
+        gl.finish()
+
+        val programLog = program.getInfoLog() ?: ""
+        if (programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
+    }
 
     protected fun incorporateNewSurfaces() {
         if (surfacesToAdd.isNotEmpty()) {
@@ -105,7 +232,7 @@ abstract class GlslRenderer(
 
             withGlContext {
                 instance = createInstance(newPixelCount, newUvCoords, nextSurfaceOffset)
-                instance.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsLocation!!)
+                instance.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
             }
 
             pixelCount = newPixelCount
@@ -116,19 +243,73 @@ abstract class GlslRenderer(
         }
     }
 
-    interface AdjustibleUniform {
-        fun bind()
-        fun setValue(surfaceOrdinal: Int, value: Any?)
-    }
+    inner class Instance(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
+        val adjustableUniforms: Map<Int, AdjustibleUniform> =
+            adjustableValues.associate { adjustableValue ->
+                adjustableValue.ordinal to UnifyingAdjustableUniform(program, adjustableValue, surfaceCount)
+            }
 
-    abstract inner class Instance(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
-        abstract val adjustableUniforms: Map<Int, AdjustibleUniform>
+        private var uvCoordTexture = gl { gl.createTextures(1)[0] }
+        private val frameBuffer = gl { gl.createFramebuffer()!! }
+        private val renderBuffer = gl { gl.createRenderbuffer()!! }
+        private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
+        private val uvCoordsFloatBuffer = FloatBuffer(uvCoords).apply { position = 0 }
 
-        abstract fun bindFramebuffer()
-        abstract fun bindUvCoordTexture(textureIndex: Int, uvCoordsLocation: Uniform)
-        abstract fun getPixel(pixelIndex: Int): Color
-        abstract fun copyToPixelBuffer()
-        abstract fun release()
+        fun bindFramebuffer() {
+            gl { gl.bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
+
+            gl { gl.bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
+//            console.error("pixel count: $pixelCount (${pixelCount.bufWidth} x ${pixelCount.bufHeight} = ${pixelCount.bufSize})")
+            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, pixelCount.bufWidth, pixelCount.bufHeight) }
+            gl { gl.framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
+
+            val status = gl { gl.checkFramebufferStatus(GL_FRAMEBUFFER) }
+            if (status != GL_FRAMEBUFFER_COMPLETE) {
+                println(RuntimeException("FrameBuffer huh? $status").message)
+            }
+        }
+
+        fun bindUvCoordTexture(textureIndex: Int, uvCoordsLocation: Uniform) {
+            gl { gl.activeTexture(GL_TEXTURE0) }
+            gl { gl.bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
+            gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
+            gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
+            gl {
+                gl.texImage2D(
+                    GL_TEXTURE_2D, 0,
+                    GL_R32F, pixelCount.bufWidth * 2, pixelCount.bufHeight, 0,
+                    GL_RED,
+                    GL_FLOAT, uvCoordsFloatBuffer
+                )
+            }
+            uvCoordsLocation.set(textureIndex)
+        }
+
+        fun getPixel(pixelIndex: Int): Color {
+            val offset = pixelIndex * 4
+            return Color(
+                red = pixelBuffer[offset],
+                green = pixelBuffer[offset + 1],
+                blue = pixelBuffer[offset + 2],
+                alpha = pixelBuffer[offset + 3]
+            )
+        }
+
+        fun copyToPixelBuffer() {
+            gl.readPixels(0, 0, pixelCount.bufWidth, pixelCount.bufHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer)
+        }
+
+        fun release() {
+            println("Release $this with $pixelCount pixels and ${uvCoords.size} uvs")
+
+            gl { gl.bindRenderbuffer(GL_RENDERBUFFER, null) }
+            gl { gl.bindFramebuffer(GL_FRAMEBUFFER, null) }
+            gl { gl.bindTexture(GL_TEXTURE_2D, null) }
+
+            gl { gl.deleteFramebuffer(frameBuffer) }
+            gl { gl.deleteRenderbuffer(renderBuffer) }
+            gl { gl.deleteTexture(uvCoordTexture) }
+        }
 
         fun bindUniforms() {
             adjustableUniforms.forEach { (key, value) -> value.bind() }
@@ -138,8 +319,6 @@ abstract class GlslRenderer(
             adjustableUniforms[adjustableValue.ordinal]!!.setValue(surfaceOrdinal, value)
         }
     }
-
-    class Uniform(val locationInternal: Any?)
 
     val Int.bufWidth: Int get() = max(1, min(this, 1024))
     val Int.bufHeight: Int get() = this / 1024 + 1
@@ -151,5 +330,19 @@ abstract class GlslRenderer(
                 instance.setUniform(it, surfaceOrdinal, values[it.ordinal])
             }
         }
+    }
+
+    inline fun <T> gl(fn: () -> T): T {
+        val result = fn.invoke()
+        gl.checkForGlError()
+        return result
+    }
+
+    private fun <T> withGlContext(fn: () -> T): T {
+        return contextSwitcher.inContext { fn() }
+    }
+
+    interface ContextSwitcher {
+        fun <T> inContext(fn: () -> T): T
     }
 }
