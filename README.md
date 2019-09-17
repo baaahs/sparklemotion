@@ -6,6 +6,9 @@
 * [Show API](show_api.md)
 * [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/)
 
+![gif demo](/demo.gif)
+![BRC 2019](/brc-2019.gif)
+
 ## Prerequisites
 
 1. Install [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
@@ -57,6 +60,3 @@ to the Pinky instance which is actually (presumably) talking to the Brains.
 Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
 
 Passing builds are automatically deployed here: https://baaahs.github.io/sparklemotion
-
-## Demo
-![gif demo](/demo.gif)
