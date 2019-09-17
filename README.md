@@ -6,8 +6,7 @@
 * [Show API](show_api.md)
 * [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/)
 
-![gif demo](/demo.gif)
-![BRC 2019](/brc-2019.gif)
+<img src="/demo.gif" alt="Simulator" width="400"> <img src="/brc-2019.gif" alt="BRC 2019" width="400">
 
 ## Prerequisites
 
