@@ -11,9 +11,6 @@
 ## Prerequisites
 
 1. Install [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
-1. Install [Gradle](https://gradle.org/install/):
-
-   `brew install gradle`
 1. Install [Node.js](https://nodejs.org/en/download/):
 
    `brew install node`
