@@ -24,7 +24,7 @@ open class GlslRenderer(
     var surfaceOrdinalTextureIndex = 1
     var nextTextureIndex = 2
 
-    lateinit var instance: Instance
+    lateinit var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
     internal var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
@@ -36,7 +36,7 @@ open class GlslRenderer(
     init {
         gl { gl.clearColor(0f, .5f, 0f, 1f) }
 
-        instance = createInstance(1, FloatArray(2), nextSurfaceOffset)
+        arrangement = createArrangement(1, FloatArray(2), nextSurfaceOffset)
     }
 
     private fun createShaderProgram(): Program {
@@ -151,7 +151,7 @@ void main(void) {
     inner class SurfacePixels(
         surface: Surface, pixel0Index: Int
     ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
-        override fun get(i: Int): Color = instance.getPixel(pixel0Index + i)
+        override fun get(i: Int): Color = arrangement.getPixel(pixel0Index + i)
     }
 
     fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
@@ -160,21 +160,21 @@ void main(void) {
     inner class SurfaceMonoPixel(
         surface: Surface, pixel0Index: Int
     ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
-        override fun get(i: Int): Color = instance.getPixel(pixel0Index)
+        override fun get(i: Int): Color = arrangement.getPixel(pixel0Index)
     }
 
-    fun createInstance(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Instance =
-        Instance(pixelCount, uvCoords, surfaceCount)
+    fun createArrangement(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Arrangement =
+        Arrangement(pixelCount, uvCoords, surfaceCount)
 
     fun draw() {
         withGlContext {
             val addSurfacesMs = timeSync { incorporateNewSurfaces() }
 
-            val bindFbMs = timeSync { instance.bindFramebuffer() }
+            val bindFbMs = timeSync { arrangement.bindFramebuffer() }
             val renderMs = timeSync { render() }
 
             val readPxMs = timeSync {
-                instance.copyToPixelBuffer()
+                arrangement.copyToPixelBuffer()
             }
 
 //            println("Render of $pixelCount took: " +
@@ -192,8 +192,8 @@ void main(void) {
         resolutionUniform?.set(1f, 1f)
         timeUniform?.set(thisTime)
 
-        instance.bindUvCoordTexture(0, uvCoordsUniform!!)
-        instance.bindUniforms()
+        arrangement.bindUvCoordTexture(0, uvCoordsUniform!!)
+        arrangement.bindUniforms()
 
         gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight)
         gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -208,11 +208,11 @@ void main(void) {
 
     protected fun incorporateNewSurfaces() {
         if (surfacesToAdd.isNotEmpty()) {
-            val oldUvCoords = instance.uvCoords
+            val oldUvCoords = arrangement.uvCoords
             val newPixelCount = nextPixelOffset
 
             withGlContext {
-                instance.release()
+                arrangement.release()
             }
 
             val newUvCoords = FloatArray(newPixelCount.bufSize * 2)
@@ -231,8 +231,8 @@ void main(void) {
             }
 
             withGlContext {
-                instance = createInstance(newPixelCount, newUvCoords, nextSurfaceOffset)
-                instance.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
+                arrangement = createArrangement(newPixelCount, newUvCoords, nextSurfaceOffset)
+                arrangement.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
             }
 
             pixelCount = newPixelCount
@@ -243,7 +243,7 @@ void main(void) {
         }
     }
 
-    inner class Instance(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
+    inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
         val adjustableUniforms: Map<Int, AdjustibleUniform> =
             adjustableValues.associate { adjustableValue ->
                 adjustableValue.ordinal to UnifyingAdjustableUniform(program, adjustableValue, surfaceCount)
@@ -327,7 +327,7 @@ void main(void) {
     inner class Uniforms(internal val surfaceOrdinal: Int) {
         fun updateFrom(values: Array<Any?>) {
             adjustableValues.forEach {
-                instance.setUniform(it, surfaceOrdinal, values[it.ordinal])
+                arrangement.setUniform(it, surfaceOrdinal, values[it.ordinal])
             }
         }
     }
