@@ -86,8 +86,8 @@ internal suspend fun time(function: suspend () -> Unit): Long {
     return getTimeMillis() - now
 }
 
-internal fun timeSync(function: () -> Unit): Long {
+internal fun timeSync(function: () -> Unit): Int {
     val now = getTimeMillis()
     function.invoke()
-    return getTimeMillis() - now
+    return (getTimeMillis() - now).toInt()
 }

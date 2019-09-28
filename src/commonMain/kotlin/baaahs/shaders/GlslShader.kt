@@ -47,7 +47,7 @@ class GlslShader(
                 json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }, 4
             ),
             AdjustableValue("sm_saturation", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f }, 4
+                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f }, 5
             )
         )
 
@@ -92,9 +92,7 @@ class GlslShader(
     class Renderer(private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
         override fun beginFrame(buffer: Buffer, pixelCount: Int) {
             // update uniforms from buffer...
-            if (glslSurface != null) {
-                glslSurface.uniforms.updateFrom(buffer.values)
-            }
+            glslSurface?.uniforms?.updateFrom(buffer.values)
         }
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
