@@ -23,37 +23,38 @@ class GlslShader(
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
             val adjustableValueCount = reader.readShort()
-            val adjustableValues = (0 until adjustableValueCount).map { i -> AdjustableValue.parse(reader, i) }
+            val adjustableValues = (0 until adjustableValueCount).map { AdjustableValue.parse(reader) }
             return GlslShader(glslProgram, adjustableValues)
         }
 
         private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
         private val gadgetPattern = Regex(
             "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
-                "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
+                    "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
         )
 
         val extraAdjustables = listOf(
-            AdjustableValue("sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }, 0),
-            AdjustableValue("sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }, 1),
-            AdjustableValue("sm_beat", "Beat", AdjustableValue.Type.FLOAT,
-                json { "name" to "beat" }, 2),
-            AdjustableValue("sm_startOfMeasure", "StartOfMeasure", AdjustableValue.Type.FLOAT,
-                json { "name" to "startOfMeasure"; }, 3
-            ),
-            AdjustableValue("sm_brightness", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }, 4
-            ),
-            AdjustableValue("sm_saturation", "Slider", AdjustableValue.Type.FLOAT,
-                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f }, 5
-            )
+            AdjustableValue(
+                "sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }),
+            AdjustableValue(
+                "sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }),
+            AdjustableValue(
+                "sm_beat", "Beat", AdjustableValue.Type.FLOAT,
+                json { "name" to "beat" }),
+            AdjustableValue(
+                "sm_startOfMeasure", "StartOfMeasure", AdjustableValue.Type.FLOAT,
+                json { "name" to "startOfMeasure"; }),
+            AdjustableValue(
+                "sm_brightness", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }),
+            AdjustableValue(
+                "sm_saturation", "Slider", AdjustableValue.Type.FLOAT,
+                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f })
         )
 
         fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
-            var i = (extraAdjustables.map { it.ordinal }.max() ?: -1) + 1
-
             return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
                 val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
@@ -64,7 +65,7 @@ class GlslShader(
                     "vec3" -> AdjustableValue.Type.VEC3
                     else -> throw IllegalArgumentException("unsupported type $valueTypeName")
                 }
-                AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, i++)
+                AdjustableValue(varName, gadgetType, valueType, configData.jsonObject)
             }.toList() + extraAdjustables
         }
     }
@@ -117,26 +118,24 @@ class GlslShader(
 
         val values = Array<Any?>(adjustableValues.size) { }
 
-        fun update(adjustableValue: AdjustableValue, value: Any) {
-            values[adjustableValue.ordinal] = value
+        fun update(values: List<Any?>) {
+            values.forEachIndexed { index, value -> this.values[index] = value }
         }
 
         override fun serialize(writer: ByteArrayWriter) {
-            adjustableValues.forEach { it.serializeValue(values[it.ordinal], writer) }
+            adjustableValues.zip(values).forEach { (adjustableValue, value) ->
+                adjustableValue.serializeValue(value, writer)
+            }
         }
 
         override fun read(reader: ByteArrayReader) {
-            adjustableValues.forEach { values[it.ordinal] = it.readValue(reader) }
+            adjustableValues.forEachIndexed { index, adjustableValue ->
+                values[index] = adjustableValue.readValue(reader)
+            }
         }
     }
 
-    class AdjustableValue(
-        val varName: String,
-        val gadgetType: String,
-        val valueType: Type,
-        val config: JsonObject,
-        val ordinal: Int
-    ) {
+    class AdjustableValue(val varName: String, val gadgetType: String, val valueType: Type, val config: JsonObject) {
         enum class Type { INT, FLOAT, VEC3 }
 
         fun serializeConfig(writer: ByteArrayWriter) {
@@ -163,10 +162,10 @@ class GlslShader(
         companion object {
             private val types = Type.values()
 
-            fun parse(reader: ByteArrayReader, ordinal: Int): AdjustableValue {
+            fun parse(reader: ByteArrayReader): AdjustableValue {
                 val varName = reader.readString()
                 val valueType = types[reader.readByte().toInt()]
-                return AdjustableValue(varName, "", valueType, JsonObject(emptyMap()), ordinal)
+                return AdjustableValue(varName, "", valueType, JsonObject(emptyMap()))
             }
         }
     }

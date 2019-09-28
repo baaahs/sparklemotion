@@ -41,7 +41,7 @@ class GlslRendererTest {
     fun testRenderingWithUniform() {
         val adjustables = GlslShader.extraAdjustables +
                 GlslShader.AdjustableValue("blue", "Slider", GlslShader.AdjustableValue.Type.FLOAT,
-                    json { }, 6
+                    json { }
                 )
 
         val renderer = GlslBase.manager.createRenderer(
