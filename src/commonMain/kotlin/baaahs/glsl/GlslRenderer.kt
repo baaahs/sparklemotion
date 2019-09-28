@@ -27,11 +27,11 @@ open class GlslRenderer(
     lateinit var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
-    internal var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
-    internal var resolutionUniform: Uniform? = gl { Uniform.find(gl, program, "resolution") }
-    internal var timeUniform: Uniform? = gl { Uniform.find(gl, program, "time") }
+    private var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
+    private var resolutionUniform: Uniform? = gl { Uniform.find(gl, program, "resolution") }
+    private var timeUniform: Uniform? = gl { Uniform.find(gl, program, "time") }
 
-    val quad: Quad = gl { Quad(gl, program) }
+    private val quad: Quad = gl { Quad(gl, program) }
 
     val stats = Stats()
 
@@ -120,14 +120,14 @@ void main(void) {
             if (surface.pixelLocations != null) {
                 glslSurface = GlslSurface(
                     createSurfacePixels(surface, nextPixelOffset),
-                    Uniforms(nextSurfaceOffset++),
+                    Uniforms(),
                     uvTranslator
                 )
                 nextPixelOffset += surface.pixelCount
             } else {
                 glslSurface = GlslSurface(
                     createSurfaceMonoPixel(surface, nextPixelOffset),
-                    Uniforms(nextSurfaceOffset++),
+                    Uniforms(),
                     uvTranslator
                 )
                 nextPixelOffset += 1
@@ -135,7 +135,7 @@ void main(void) {
         } else {
             glslSurface = GlslSurface(
                 createSurfaceMonoPixel(surface, nextPixelOffset),
-                Uniforms(nextSurfaceOffset++),
+                Uniforms(),
                 uvTranslator
             )
             nextPixelOffset += 1
@@ -232,9 +232,9 @@ void main(void) {
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
-        val adjustableUniforms: Map<Int, AdjustableUniform> =
-            adjustableValues.associate { adjustableValue ->
-                adjustableValue.ordinal to UnifyingAdjustableUniform(program, adjustableValue, surfaces.size)
+        val adjustableUniforms: List<AdjustableUniform> =
+            adjustableValues.map { adjustableValue ->
+                UnifyingAdjustableUniform(program, adjustableValue, surfaces.size)
             }
 
         private var uvCoordTexture = gl { gl.createTextures(1)[0] }
@@ -300,17 +300,17 @@ void main(void) {
         }
 
         fun bindUniforms() {
-            adjustableValues.forEach { adjustable ->
+            adjustableValues.forEachIndexed { adjustableIndex, adjustable ->
                 surfaces.forEachIndexed { surfaceIndex, surface ->
-                    val value = surface.uniforms.values?.get(adjustable.ordinal)
+                    val value = surface.uniforms.values?.get(adjustableIndex)
                     value?.let {
-                        val adjustableUniform = adjustableUniforms[adjustable.ordinal]!!
+                        val adjustableUniform = adjustableUniforms[adjustableIndex]
                         adjustableUniform.setValue(surfaceIndex, value)
                     }
                 }
             }
 
-            adjustableUniforms.values.forEach { it.bind() }
+            adjustableUniforms.forEach { it.bind() }
         }
     }
 
@@ -318,7 +318,7 @@ void main(void) {
     val Int.bufHeight: Int get() = this / 1024 + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
-    inner class Uniforms(internal val surfaceOrdinal: Int) {
+    inner class Uniforms {
         var values: Array<Any?>? = null
 
         fun updateFrom(values: Array<Any?>) {

@@ -11,16 +11,14 @@ abstract class GlslShow(name: String) : Show(name) {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslShader(program)
 
-        val adjustableValuesToDataSources = shader.adjustableValues.associateWith { it.createDataSource(showRunner) }
+        val adjustableValuesDataSources = shader.adjustableValues.map { it.createDataSource(showRunner) }
         val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
                 buffers.values.forEach { buffer ->
-                    adjustableValuesToDataSources.forEach { (adjustableValue, dataSource) ->
-                        val value: Any = dataSource.getValue()
-                        buffer.update(adjustableValue, value)
-                    }
+                    val bufferValues = adjustableValuesDataSources.map { it.getValue() }
+                    buffer.update(bufferValues)
                 }
             }
 
