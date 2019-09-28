@@ -2,9 +2,8 @@ package baaahs.glsl
 
 import baaahs.Color
 import baaahs.shaders.GlslShader
-import com.danielgergely.kgl.*
 
-interface AdjustibleUniform {
+interface AdjustableUniform {
     fun bind()
     fun setValue(surfaceOrdinal: Int, value: Any?)
 }
@@ -13,7 +12,7 @@ class UnifyingAdjustableUniform(
     program: Program,
     private val adjustableValue: GlslShader.AdjustableValue,
     val surfaceCount: Int
-) : AdjustibleUniform {
+) : AdjustableUniform {
     private val uniformLocation = program.getUniform(adjustableValue.varName)
     var buffer: Any? = null
 

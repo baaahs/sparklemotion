@@ -33,10 +33,12 @@ open class GlslRenderer(
 
     val quad: Quad = gl { Quad(gl, program) }
 
+    val stats = Stats()
+
     init {
         gl { gl.clearColor(0f, .5f, 0f, 1f) }
 
-        arrangement = createArrangement(1, FloatArray(2), nextSurfaceOffset)
+        arrangement = createArrangement(0, FloatArray(0), glslSurfaces)
     }
 
     private fun createShaderProgram(): Program {
@@ -109,8 +111,6 @@ void main(void) {
             throw RuntimeException("ProgramInfoLog: $infoLog")
         }
 
-        program.bind()
-
         return program
     }
 
@@ -163,27 +163,19 @@ void main(void) {
         override fun get(i: Int): Color = arrangement.getPixel(pixel0Index)
     }
 
-    fun createArrangement(pixelCount: Int, uvCoords: FloatArray, surfaceCount: Int): Arrangement =
-        Arrangement(pixelCount, uvCoords, surfaceCount)
+    private fun createArrangement(pixelCount: Int, uvCoords: FloatArray, surfaceCount: List<GlslSurface>): Arrangement =
+        Arrangement(pixelCount, uvCoords, surfaceCount.toList())
 
     fun draw() {
         withGlContext {
-            val addSurfacesMs = timeSync { incorporateNewSurfaces() }
-
-            val bindFbMs = timeSync { arrangement.bindFramebuffer() }
-            val renderMs = timeSync { render() }
-
-            val readPxMs = timeSync {
-                arrangement.copyToPixelBuffer()
-            }
-
-//            println("Render of $pixelCount took: " +
-//                    "addSurface=${addSurfacesMs}ms " +
-//                    "bindFbMs=${bindFbMs}ms " +
-//                    "renderMs=${renderMs}ms " +
-//                    "readPxMs=${readPxMs}ms " +
-//                    "$this")
+            program.bind()
+            stats.addSurfacesMs += timeSync { incorporateNewSurfaces() }
+            stats.bindFbMs += timeSync { arrangement.bindFramebuffer() }
+            stats.renderMs += timeSync { render() }
+            stats.readPxMs += timeSync { arrangement.copyToPixelBuffer() }
         }
+
+        stats.frameCount++
     }
 
     private fun render() {
@@ -211,9 +203,7 @@ void main(void) {
             val oldUvCoords = arrangement.uvCoords
             val newPixelCount = nextPixelOffset
 
-            withGlContext {
-                arrangement.release()
-            }
+            arrangement.release()
 
             val newUvCoords = FloatArray(newPixelCount.bufSize * 2)
             oldUvCoords.copyInto(newUvCoords)
@@ -230,23 +220,21 @@ void main(void) {
                 }
             }
 
-            withGlContext {
-                arrangement = createArrangement(newPixelCount, newUvCoords, nextSurfaceOffset)
-                arrangement.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
-            }
+            glslSurfaces.addAll(surfacesToAdd)
+            surfacesToAdd.clear()
+
+            arrangement = createArrangement(newPixelCount, newUvCoords, glslSurfaces)
+            arrangement.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
 
             pixelCount = newPixelCount
             println("Now managing $pixelCount pixels.")
-
-            glslSurfaces.addAll(surfacesToAdd)
-            surfacesToAdd.clear()
         }
     }
 
-    inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaceCount: Int) {
-        val adjustableUniforms: Map<Int, AdjustibleUniform> =
+    inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
+        val adjustableUniforms: Map<Int, AdjustableUniform> =
             adjustableValues.associate { adjustableValue ->
-                adjustableValue.ordinal to UnifyingAdjustableUniform(program, adjustableValue, surfaceCount)
+                adjustableValue.ordinal to UnifyingAdjustableUniform(program, adjustableValue, surfaces.size)
             }
 
         private var uvCoordTexture = gl { gl.createTextures(1)[0] }
@@ -312,11 +300,17 @@ void main(void) {
         }
 
         fun bindUniforms() {
-            adjustableUniforms.forEach { (key, value) -> value.bind() }
-        }
+            adjustableValues.forEach { adjustable ->
+                surfaces.forEachIndexed { surfaceIndex, surface ->
+                    val value = surface.uniforms.values?.get(adjustable.ordinal)
+                    value?.let {
+                        val adjustableUniform = adjustableUniforms[adjustable.ordinal]!!
+                        adjustableUniform.setValue(surfaceIndex, value)
+                    }
+                }
+            }
 
-        fun setUniform(adjustableValue: GlslShader.AdjustableValue, surfaceOrdinal: Int, value: Any?) {
-            adjustableUniforms[adjustableValue.ordinal]!!.setValue(surfaceOrdinal, value)
+            adjustableUniforms.values.forEach { it.bind() }
         }
     }
 
@@ -325,10 +319,10 @@ void main(void) {
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Uniforms(internal val surfaceOrdinal: Int) {
+        var values: Array<Any?>? = null
+
         fun updateFrom(values: Array<Any?>) {
-            adjustableValues.forEach {
-                arrangement.setUniform(it, surfaceOrdinal, values[it.ordinal])
-            }
+            this.values = values
         }
     }
 
@@ -344,5 +338,32 @@ void main(void) {
 
     interface ContextSwitcher {
         fun <T> inContext(fn: () -> T): T
+    }
+
+    class Stats {
+        var addSurfacesMs = 0; internal set
+        var bindFbMs = 0; internal set
+        var renderMs = 0; internal set
+        var readPxMs = 0; internal set
+        var frameCount = 0; internal set
+
+        fun dump() {
+            println(
+                "Render of $frameCount frames took: " +
+                        "addSurface=${addSurfacesMs}ms " +
+                        "bindFbMs=${bindFbMs}ms " +
+                        "renderMs=${renderMs}ms " +
+                        "readPxMs=${readPxMs}ms " +
+                        "$this"
+            )
+        }
+
+        fun reset() {
+            addSurfacesMs = 0
+            bindFbMs = 0
+            renderMs = 0
+            readPxMs = 0
+            frameCount = 0
+        }
     }
 }
