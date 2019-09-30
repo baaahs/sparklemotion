@@ -51,7 +51,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 
 repositories {
-    mavenLocal()
     jcenter()
     maven { url "https://kotlin.bintray.com/kotlinx" }
     maven { url 'https://kotlin.bintray.com/ktor' }
@@ -60,7 +59,8 @@ repositories {
 //    maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
     maven { url 'https://jitpack.io' }
     maven { url "https://dl.bintray.com/fabmax/kool" }
-    maven { url 'https://maven.danielgergely.com/repository/releases' }
+    maven { url 'https://raw.githubusercontent.com/baaahs/kgl/mvnrepo' }
+//    maven { url 'https://maven.danielgergely.com/repository/releases' }
 }
 
 group 'org.baaahs'

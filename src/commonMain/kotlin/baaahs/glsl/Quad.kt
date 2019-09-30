@@ -30,7 +30,7 @@ class Quad(private val gl: Kgl, private val program: Program) {
         gl { gl.bindVertexArray(null) }
     }
 
-    private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats).apply { position = 0 }
+    private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
     internal fun render() {
         gl { gl.bindVertexArray(vao) }
