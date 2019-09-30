@@ -241,7 +241,7 @@ void main(void) {
         private val frameBuffer = gl { gl.createFramebuffer()!! }
         private val renderBuffer = gl { gl.createRenderbuffer()!! }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
-        private val uvCoordsFloatBuffer = FloatBuffer(uvCoords).apply { position = 0 }
+        private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
 
         fun bindFramebuffer() {
             gl { gl.bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
