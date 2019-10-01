@@ -18,7 +18,6 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
         println("Received connection from ${tcpConnection.fromAddress}")
     }
 
-    @UseExperimental(ExperimentalStdlibApi::class)
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val parts = json.parseJson(bytes.decodeToString()).jsonArray
         val command = parts.first().contentOrNull

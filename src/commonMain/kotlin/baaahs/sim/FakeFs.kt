@@ -3,7 +3,6 @@ package baaahs.sim
 import baaahs.Logger
 import baaahs.io.Fs
 
-@UseExperimental(ExperimentalStdlibApi::class)
 class FakeFs : Fs {
     private val files = mutableMapOf<String, ByteArray>()
 
