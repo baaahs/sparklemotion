@@ -13,6 +13,13 @@
 <tbody>
 <tr>
 <td>
+<p><a href="-adjustable-uniform/index.html">AdjustableUniform</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">AdjustableUniform</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-glsl-base/index.html">GlslBase</a></p>
 </td>
 <td>
@@ -30,7 +37,7 @@
 <p><a href="-glsl-renderer/index.html">GlslRenderer</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslRenderer</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">GlslRenderer</span></code></td>
 </tr>
 <tr>
 <td>
@@ -41,31 +48,17 @@
 </tr>
 <tr>
 <td>
-<p><a href="-js-glsl-manager/index.html">JsGlslManager</a></p>
+<p><a href="-jogl-glsl-manager/index.html">JoglGlslManager</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">JsGlslManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-manager/index.html"><span class="identifier">GlslManager</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">JoglGlslManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-manager/index.html"><span class="identifier">GlslManager</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-js-glsl-renderer/index.html">JsGlslRenderer</a></p>
+<p><a href="-lwjgl-glsl-manager/index.html">LwjglGlslManager</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">JsGlslRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-renderer/index.html"><span class="identifier">GlslRenderer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-jvm-glsl-manager/index.html">JvmGlslManager</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmGlslManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-manager/index.html"><span class="identifier">GlslManager</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-jvm-glsl-renderer/index.html">JvmGlslRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmGlslRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-renderer/index.html"><span class="identifier">GlslRenderer</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">LwjglGlslManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-glsl-manager/index.html"><span class="identifier">GlslManager</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -83,10 +76,45 @@
 </tr>
 <tr>
 <td>
+<p><a href="-program/index.html">Program</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Program</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-quad/index.html">Quad</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Quad</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-shader/index.html">Shader</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Shader</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="-surface-pixels/index.html">SurfacePixels</a></p>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">SurfacePixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-uniform/index.html">Uniform</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Uniform</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-unifying-adjustable-uniform/index.html">UnifyingAdjustableUniform</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">UnifyingAdjustableUniform</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-adjustable-uniform/index.html"><span class="identifier">AdjustableUniform</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -95,13 +123,6 @@
 <td>
 <code><span class="keyword">interface </span><span class="identifier">UvTranslator</span></code></td>
 </tr>
-<tr>
-<td>
-<p><a href="-web-g-l2-rendering-context/index.html">WebGL2RenderingContext</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">external</span> <span class="keyword">class </span><span class="identifier">WebGL2RenderingContext</span></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -109,10 +130,17 @@
 <tbody>
 <tr>
 <td>
-<p><a href="main.html">main</a></p>
+<p><a href="check.html">check</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">check</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl$check(, kotlin.Function0((baaahs.glsl.check.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="check.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="check.html#T"><span class="identifier">T</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="check-for-gl-error.html">checkForGlError</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">checkForGlError</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

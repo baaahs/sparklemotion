@@ -1,8 +1,8 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
-    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-runtime', 'kotlinx-coroutines-core', 'klock-root-klock', 'kotlinx-html-js', 'threejs-wrapper'], factory);
+    define(['exports', 'kotlin', 'kotlinx-serialization-kotlinx-serialization-runtime', 'kotlinx-coroutines-core', 'klock-root-klock', 'kgl', 'kotlinx-html-js', 'threejs-wrapper'], factory);
   else if (typeof exports === 'object')
-    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('kotlinx-coroutines-core'), require('klock-root-klock'), require('kotlinx-html-js'), require('threejs-wrapper'));
+    factory(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('kotlinx-coroutines-core'), require('klock-root-klock'), require('kgl'), require('kotlinx-html-js'), require('threejs-wrapper'));
   else {
     if (typeof kotlin === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'sparklemotion'.");
@@ -16,16 +16,20 @@
     if (typeof this['klock-root-klock'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'klock-root-klock' was not found. Please, check whether 'klock-root-klock' is loaded prior to 'sparklemotion'.");
     }
+    if (typeof kgl === 'undefined') {
+      throw new Error("Error loading module 'sparklemotion'. Its dependency 'kgl' was not found. Please, check whether 'kgl' is loaded prior to 'sparklemotion'.");
+    }
     if (typeof this['kotlinx-html-js'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'sparklemotion'.");
     }
     if (typeof this['threejs-wrapper'] === 'undefined') {
       throw new Error("Error loading module 'sparklemotion'. Its dependency 'threejs-wrapper' was not found. Please, check whether 'threejs-wrapper' is loaded prior to 'sparklemotion'.");
     }
-    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-serialization-kotlinx-serialization-runtime'], this['kotlinx-coroutines-core'], this['klock-root-klock'], this['kotlinx-html-js'], this['threejs-wrapper']);
+    root.sparklemotion = factory(typeof sparklemotion === 'undefined' ? {} : sparklemotion, kotlin, this['kotlinx-serialization-kotlinx-serialization-runtime'], this['kotlinx-coroutines-core'], this['klock-root-klock'], kgl, this['kotlinx-html-js'], this['threejs-wrapper']);
   }
-}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kotlinx_html_js, $module$threejs_wrapper) {
+}(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kgl, $module$kotlinx_html_js, $module$threejs_wrapper) {
   'use strict';
+  var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var SerialClassDescImpl = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
   var equals = Kotlin.equals;
@@ -159,9 +163,16 @@
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
   var UnsupportedOperationException_init_0 = Kotlin.kotlin.UnsupportedOperationException_init_pdl1vj$;
+  var defineInlineFunction = Kotlin.defineInlineFunction;
+  var replace = Kotlin.kotlin.text.replace_680rmw$;
+  var L134217727 = Kotlin.Long.fromInt(134217727);
+  var ByteBuffer_init = $module$kgl.com.danielgergely.kgl.ByteBuffer_init_za3lpa$;
+  var FloatBuffer_init = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_q3cr5i$;
+  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
+  var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
+  var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
   var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
   var math = Kotlin.kotlin.math;
-  var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -194,14 +205,13 @@
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
   var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
   var listOf_0 = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var zip_0 = Kotlin.kotlin.collections.zip_xiheex$;
   var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
   var Array_0 = Array;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
-  var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
-  var replace = Kotlin.kotlin.text.replace_680rmw$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
@@ -262,12 +272,11 @@
   var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var L200000 = Kotlin.Long.fromInt(200000);
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
-  var L134217727 = Kotlin.Long.fromInt(134217727);
-  var toTypedArray_0 = Kotlin.kotlin.collections.toTypedArray_rjqryz$;
+  var KglJs = $module$kgl.com.danielgergely.kgl.KglJs;
   var canvas_0 = $module$kotlinx_html_js.kotlinx.html.js.canvas_o2d15m$;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
   var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
-  var toTypedArray_1 = Kotlin.kotlin.collections.toTypedArray_964n91$;
+  var toTypedArray_0 = Kotlin.kotlin.collections.toTypedArray_964n91$;
   var unboxChar = Kotlin.unboxChar;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
@@ -326,6 +335,10 @@
   PalettePicker.prototype.constructor = PalettePicker;
   Slider.prototype = Object.create(Gadget.prototype);
   Slider.prototype.constructor = Slider;
+  GlslRenderer$SurfacePixels.prototype = Object.create(SurfacePixels.prototype);
+  GlslRenderer$SurfacePixels.prototype.constructor = GlslRenderer$SurfacePixels;
+  GlslRenderer$SurfaceMonoPixel.prototype = Object.create(SurfacePixels.prototype);
+  GlslRenderer$SurfaceMonoPixel.prototype.constructor = GlslRenderer$SurfaceMonoPixel;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
@@ -418,14 +431,6 @@
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   Vector2_0.prototype = Object.create(Vector2.prototype);
   Vector2_0.prototype.constructor = Vector2_0;
-  JsGlslRenderer$SurfacePixels.prototype = Object.create(SurfacePixels.prototype);
-  JsGlslRenderer$SurfacePixels.prototype.constructor = JsGlslRenderer$SurfacePixels;
-  JsGlslRenderer$SurfaceMonoPixel.prototype = Object.create(SurfacePixels.prototype);
-  JsGlslRenderer$SurfaceMonoPixel.prototype.constructor = JsGlslRenderer$SurfaceMonoPixel;
-  JsGlslRenderer$Instance.prototype = Object.create(GlslRenderer$Instance.prototype);
-  JsGlslRenderer$Instance.prototype.constructor = JsGlslRenderer$Instance;
-  JsGlslRenderer.prototype = Object.create(GlslRenderer.prototype);
-  JsGlslRenderer.prototype.constructor = JsGlslRenderer;
   NativeBitmap.prototype = Object.create(CanvasBitmap.prototype);
   NativeBitmap.prototype.constructor = NativeBitmap;
   CanvasBitmap$asImage$ObjectLiteral.prototype = Object.create(JsImage.prototype);
@@ -9600,6 +9605,85 @@
     var max = accumulator_0;
     return new Pair(min, max);
   }
+  function AdjustableUniform() {
+  }
+  AdjustableUniform.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'AdjustableUniform',
+    interfaces: []
+  };
+  function UnifyingAdjustableUniform(program, adjustableValue, surfaceCount) {
+    this.adjustableValue_0 = adjustableValue;
+    this.surfaceCount = surfaceCount;
+    this.uniformLocation_0 = program.getUniform_61zpoe$(this.adjustableValue_0.varName);
+    this.buffer = null;
+  }
+  UnifyingAdjustableUniform.prototype.bind = function () {
+    var tmp$, tmp$_0, tmp$_1;
+    if (this.buffer != null && this.uniformLocation_0 != null) {
+      switch (this.adjustableValue_0.valueType.name) {
+        case 'INT':
+          this.uniformLocation_0.set_za3lpa$(typeof (tmp$ = this.buffer) === 'number' ? tmp$ : throwCCE());
+          break;
+        case 'FLOAT':
+          this.uniformLocation_0.set_mx4ult$(typeof (tmp$_0 = this.buffer) === 'number' ? tmp$_0 : throwCCE());
+          break;
+        case 'VEC3':
+          var color = Kotlin.isType(tmp$_1 = this.buffer, Color) ? tmp$_1 : throwCCE();
+          this.uniformLocation_0.set_y2kzbl$(color.redF, color.greenF, color.blueF);
+          break;
+      }
+    }
+  };
+  UnifyingAdjustableUniform.prototype.setValue_6t2rgq$ = function (surfaceOrdinal, value) {
+    this.buffer = value;
+  };
+  UnifyingAdjustableUniform.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UnifyingAdjustableUniform',
+    interfaces: [AdjustableUniform]
+  };
+  var check = defineInlineFunction('sparklemotion.baaahs.glsl.check_56a5t8$', wrapFunction(function () {
+    var checkForGlError = _.baaahs.glsl.checkForGlError_t0jnzc$;
+    return function ($receiver, fn) {
+      var result = fn();
+      checkForGlError($receiver);
+      return result;
+    };
+  }));
+  function checkForGlError($receiver) {
+    var tmp$;
+    while (true) {
+      var error = $receiver.getError();
+      switch (error) {
+        case 1280:
+          tmp$ = 'GL_INVALID_ENUM';
+          break;
+        case 1281:
+          tmp$ = 'GL_INVALID_VALUE';
+          break;
+        case 1282:
+          tmp$ = 'GL_INVALID_OPERATION';
+          break;
+        case 1286:
+          tmp$ = 'GL_INVALID_FRAMEBUFFER_OPERATION';
+          break;
+        case 36054:
+          tmp$ = 'FRAMEBUFFER_INCOMPLETE_ATTACHMENT';
+          break;
+        case 1285:
+          tmp$ = 'GL_OUT_OF_MEMORY';
+          break;
+        default:tmp$ = 'unknown error ' + error;
+          break;
+      }
+      var code = tmp$;
+      if (error !== 0)
+        throw RuntimeException_init('OpenGL Error: ' + code);
+      else
+        return;
+    }
+  }
   function GlslManager() {
   }
   GlslManager.$metadata$ = {
@@ -9607,9 +9691,12 @@
     simpleName: 'GlslManager',
     interfaces: []
   };
-  function GlslRenderer(fragShader, adjustableValues) {
+  function GlslRenderer(gl, contextSwitcher, fragShader, adjustableValues, glslVersion) {
+    this.gl = gl;
+    this.contextSwitcher_8zrvqj$_0 = contextSwitcher;
     this.fragShader = fragShader;
     this.adjustableValues = adjustableValues;
+    this.glslVersion_l4u3hb$_0 = glslVersion;
     this.surfacesToAdd_vfxuyj$_0 = ArrayList_init();
     this.pixelCount = 0;
     this.nextPixelOffset = 0;
@@ -9618,80 +9705,163 @@
     this.uvCoordTextureIndex = 0;
     this.surfaceOrdinalTextureIndex = 1;
     this.nextTextureIndex = 2;
-    var $receiver = this.adjustableValues;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var tmp$_0;
-      destination.add_11rb$((tmp$_0 = this.nextTextureIndex, this.nextTextureIndex = tmp$_0 + 1 | 0, tmp$_0));
-    }
-    this.adjustableValueUniformIndices = destination;
-    this.uvCoordsLocation_8be2vx$ = null;
-    this.matLocation_8be2vx$ = null;
-    this.resolutionLocation_8be2vx$ = null;
-    this.timeLocation_8be2vx$ = null;
-    this.instance_sgrkp0$_0 = this.instance_sgrkp0$_0;
+    this.arrangement = null;
+    var result = GlslRenderer$program$lambda(this)();
+    checkForGlError(this.gl);
+    this.program = result;
+    var result_0 = GlslRenderer$uvCoordsUniform$lambda(this)();
+    checkForGlError(this.gl);
+    this.uvCoordsUniform_67qhwm$_0 = result_0;
+    var result_1 = GlslRenderer$resolutionUniform$lambda(this)();
+    checkForGlError(this.gl);
+    this.resolutionUniform_bo22rx$_0 = result_1;
+    var result_2 = GlslRenderer$timeUniform$lambda(this)();
+    checkForGlError(this.gl);
+    this.timeUniform_2ukqek$_0 = result_2;
+    var result_3 = GlslRenderer$quad$lambda(this)();
+    checkForGlError(this.gl);
+    this.quad_eobc7m$_0 = result_3;
+    this.stats = new GlslRenderer$Stats();
+    var result_4 = GlslRenderer_init$lambda(this)();
+    checkForGlError(this.gl);
+    this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces);
   }
-  Object.defineProperty(GlslRenderer.prototype, 'instance', {
-    get: function () {
-      if (this.instance_sgrkp0$_0 == null)
-        return throwUPAE('instance');
-      return this.instance_sgrkp0$_0;
-    },
-    set: function (instance) {
-      this.instance_sgrkp0$_0 = instance;
+  GlslRenderer.prototype.createShaderProgram_66d3yg$_0 = function () {
+    var program = Program$Companion_getInstance().create_gz3vex$(this.gl);
+    var vertexShaderSource = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + 'precision lowp float;' + '\n' + '\n' + '// xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + 'in vec2 Vertex;' + '\n' + '\n' + 'const vec2 scale = vec2(0.5, 0.5);' + '\n' + '\n' + 'void main()' + '\n' + '{' + '\n' + '    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '    gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '}' + '\n';
+    var vertexShader = Shader$Companion_getInstance_0().createVertexShader_oiaex5$(this.gl, vertexShaderSource);
+    program.attachShader_6f59td$(vertexShader);
+    var tmp$ = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + 'uniform float sm_beat;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
+    var $receiver = this.fragShader;
+    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
+    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
+    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
+    println(src);
+    var fragmentShader = Shader$Companion_getInstance_0().createFragmentShader_oiaex5$(this.gl, src);
+    program.attachShader_6f59td$(fragmentShader);
+    if (!program.link()) {
+      var infoLog = program.getInfoLog();
+      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(infoLog));
     }
-  });
-  GlslRenderer.prototype.findUniforms = function () {
-    this.uvCoordsLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('sm_uvCoords', true);
-    this.resolutionLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('resolution');
-    this.timeLocation_8be2vx$ = this.getUniformLocation_ivxn3r$('time');
+    return program;
   };
   GlslRenderer.prototype.addSurface_173pey$ = function (surface, uvTranslator) {
-    var tmp$, tmp$_0, tmp$_1;
     var glslSurface;
     if (Kotlin.isType(surface, IdentifiedSurface)) {
       if (surface.pixelLocations != null) {
-        glslSurface = new GlslSurface(this.createSurfacePixels_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$ = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$ + 1 | 0, tmp$)), uvTranslator);
+        glslSurface = new GlslSurface(this.createSurfacePixels_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
         this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
       }
        else {
-        glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$_0 = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$_0 + 1 | 0, tmp$_0)), uvTranslator);
+        glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
         this.nextPixelOffset = this.nextPixelOffset + 1 | 0;
       }
     }
      else {
-      glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this, (tmp$_1 = this.nextSurfaceOffset, this.nextSurfaceOffset = tmp$_1 + 1 | 0, tmp$_1)), uvTranslator);
+      glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
       this.nextPixelOffset = this.nextPixelOffset + 1 | 0;
     }
     this.surfacesToAdd_vfxuyj$_0.add_11rb$(glslSurface);
     return glslSurface;
   };
-  GlslRenderer.prototype.getUniformLocation_ivxn3r$ = function (name, required, callback$default) {
-    if (required === void 0)
-      required = false;
-    return callback$default ? callback$default(name, required) : this.getUniformLocation_ivxn3r$$default(name, required);
+  GlslRenderer.prototype.createSurfacePixels_70b9t1$ = function (surface, pixelOffset) {
+    return new GlslRenderer$SurfacePixels(this, surface, pixelOffset);
   };
-  function GlslRenderer$incorporateNewSurfaces$lambda(this$GlslRenderer) {
+  function GlslRenderer$SurfacePixels($outer, surface, pixel0Index) {
+    this.$outer = $outer;
+    SurfacePixels.call(this, surface, pixel0Index);
+  }
+  GlslRenderer$SurfacePixels.prototype.get_za3lpa$ = function (i) {
+    return this.$outer.arrangement.getPixel_za3lpa$(this.pixel0Index + i | 0);
+  };
+  GlslRenderer$SurfacePixels.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixels',
+    interfaces: [SurfacePixels]
+  };
+  GlslRenderer.prototype.createSurfaceMonoPixel_70b9t1$ = function (surface, pixelOffset) {
+    return new GlslRenderer$SurfaceMonoPixel(this, surface, pixelOffset);
+  };
+  function GlslRenderer$SurfaceMonoPixel($outer, surface, pixel0Index) {
+    this.$outer = $outer;
+    SurfacePixels.call(this, surface, pixel0Index);
+  }
+  GlslRenderer$SurfaceMonoPixel.prototype.get_za3lpa$ = function (i) {
+    return this.$outer.arrangement.getPixel_za3lpa$(this.pixel0Index);
+  };
+  GlslRenderer$SurfaceMonoPixel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfaceMonoPixel',
+    interfaces: [SurfacePixels]
+  };
+  GlslRenderer.prototype.createArrangement_58qqz3$_0 = function (pixelCount, uvCoords, surfaceCount) {
+    return new GlslRenderer$Arrangement(this, pixelCount, uvCoords, toList_0(surfaceCount));
+  };
+  function GlslRenderer$draw$lambda$lambda(this$GlslRenderer) {
     return function () {
-      this$GlslRenderer.instance.release();
+      this$GlslRenderer.incorporateNewSurfaces();
       return Unit;
     };
   }
-  function GlslRenderer$incorporateNewSurfaces$lambda_0(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer) {
+  function GlslRenderer$draw$lambda$lambda_0(this$GlslRenderer) {
     return function () {
-      this$GlslRenderer.instance = this$GlslRenderer.createInstance_mfoo9a$(closure$newPixelCount, closure$newUvCoords, this$GlslRenderer.nextSurfaceOffset);
-      this$GlslRenderer.instance.bindUvCoordTexture_msnecj$(this$GlslRenderer.uvCoordTextureIndex, ensureNotNull(this$GlslRenderer.uvCoordsLocation_8be2vx$));
+      this$GlslRenderer.arrangement.bindFramebuffer();
       return Unit;
     };
   }
+  function GlslRenderer$draw$lambda$lambda_1(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.render_orvbml$_0();
+      return Unit;
+    };
+  }
+  function GlslRenderer$draw$lambda$lambda_2(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.arrangement.copyToPixelBuffer();
+      return Unit;
+    };
+  }
+  function GlslRenderer$draw$lambda(this$GlslRenderer) {
+    return function () {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2;
+      this$GlslRenderer.program.bind();
+      tmp$ = this$GlslRenderer.stats;
+      tmp$.addSurfacesMs = tmp$.addSurfacesMs + timeSync(GlslRenderer$draw$lambda$lambda(this$GlslRenderer)) | 0;
+      tmp$_0 = this$GlslRenderer.stats;
+      tmp$_0.bindFbMs = tmp$_0.bindFbMs + timeSync(GlslRenderer$draw$lambda$lambda_0(this$GlslRenderer)) | 0;
+      tmp$_1 = this$GlslRenderer.stats;
+      tmp$_1.renderMs = tmp$_1.renderMs + timeSync(GlslRenderer$draw$lambda$lambda_1(this$GlslRenderer)) | 0;
+      tmp$_2 = this$GlslRenderer.stats;
+      tmp$_2.readPxMs = tmp$_2.readPxMs + timeSync(GlslRenderer$draw$lambda$lambda_2(this$GlslRenderer)) | 0;
+      return Unit;
+    };
+  }
+  GlslRenderer.prototype.draw = function () {
+    this.withGlContext_plvbf1$_0(GlslRenderer$draw$lambda(this));
+    var tmp$;
+    tmp$ = this.stats;
+    tmp$.frameCount = tmp$.frameCount + 1 | 0;
+  };
+  GlslRenderer.prototype.render_orvbml$_0 = function () {
+    var tmp$, tmp$_0, tmp$_1;
+    var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
+    (tmp$ = this.resolutionUniform_bo22rx$_0) != null ? (tmp$.set_dleff0$(1.0, 1.0), Unit) : null;
+    (tmp$_0 = this.timeUniform_2ukqek$_0) != null ? (tmp$_0.set_mx4ult$(thisTime), Unit) : null;
+    this.arrangement.bindUvCoordTexture_54j4ym$(0, ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+    this.arrangement.bindUniforms();
+    this.gl.viewport_tjonv8$(0, 0, this.get_bufWidth_s8ev3n$(this.pixelCount), this.get_bufHeight_s8ev3n$(this.pixelCount));
+    this.gl.clear_za3lpa$(16640);
+    this.quad_eobc7m$_0.render_8be2vx$();
+    this.gl.finish();
+    var programLog = (tmp$_1 = this.program.getInfoLog()) != null ? tmp$_1 : '';
+    if (programLog.length > 0)
+      println('ProgramInfoLog: ' + programLog);
+  };
   GlslRenderer.prototype.incorporateNewSurfaces = function () {
     if (!this.surfacesToAdd_vfxuyj$_0.isEmpty()) {
-      var oldUvCoords = this.instance.uvCoords;
+      var oldUvCoords = this.arrangement.uvCoords;
       var newPixelCount = this.nextPixelOffset;
-      this.withGlContext_klfg04$(GlslRenderer$incorporateNewSurfaces$lambda(this));
+      this.arrangement.release();
       var newUvCoords = new Float32Array(this.get_bufSize_s8ev3n$(newPixelCount) * 2 | 0);
       arrayCopy(oldUvCoords, newUvCoords, 0, 0, oldUvCoords.length);
       var tmp$;
@@ -9711,50 +9881,253 @@
           newUvCoords[uvOffset + 1 | 0] = v;
         }
       }
-      this.withGlContext_klfg04$(GlslRenderer$incorporateNewSurfaces$lambda_0(newPixelCount, newUvCoords, this));
-      this.pixelCount = newPixelCount;
-      println('Now managing ' + this.pixelCount + ' pixels.');
       this.glslSurfaces.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
       this.surfacesToAdd_vfxuyj$_0.clear();
+      this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces);
+      this.arrangement.bindUvCoordTexture_54j4ym$(this.uvCoordTextureIndex, ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+      this.pixelCount = newPixelCount;
+      println('Now managing ' + this.pixelCount + ' pixels.');
     }
   };
-  function GlslRenderer$AdjustibleUniform() {
-  }
-  GlslRenderer$AdjustibleUniform.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'AdjustibleUniform',
-    interfaces: []
-  };
-  function GlslRenderer$Instance($outer, pixelCount, uvCoords, surfaceCount) {
+  function GlslRenderer$Arrangement($outer, pixelCount, uvCoords, surfaces) {
     this.$outer = $outer;
     this.pixelCount = pixelCount;
     this.uvCoords = uvCoords;
-    this.surfaceCount = surfaceCount;
-  }
-  GlslRenderer$Instance.prototype.bindUniforms = function () {
+    this.surfaces = surfaces;
+    var $receiver = this.$outer.adjustableValues;
+    this.$outer;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
-    tmp$ = this.adjustableUniforms.entries.iterator();
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var key = element.key;
-      var value = element.value;
-      value.bind();
+      var item = tmp$.next();
+      destination.add_11rb$(new UnifyingAdjustableUniform(this.$outer.program, item, this.surfaces.size));
+    }
+    this.adjustableUniforms = destination;
+    var $this = this.$outer;
+    var result = GlslRenderer$Arrangement$uvCoordTexture$lambda(this.$outer)();
+    checkForGlError($this.gl);
+    this.uvCoordTexture_0 = result;
+    var $this_0 = this.$outer;
+    var result_0 = GlslRenderer$Arrangement$frameBuffer$lambda(this.$outer)();
+    checkForGlError($this_0.gl);
+    this.frameBuffer_0 = result_0;
+    var $this_1 = this.$outer;
+    var result_1 = GlslRenderer$Arrangement$renderBuffer$lambda(this.$outer)();
+    checkForGlError($this_1.gl);
+    this.renderBuffer_0 = result_1;
+    this.pixelBuffer_0 = ByteBuffer_init(this.$outer.get_bufSize_s8ev3n$(this.pixelCount) * 4 | 0);
+    this.uvCoordsFloatBuffer_0 = FloatBuffer_init(this.uvCoords);
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.bindFramebuffer_6t2rgq$(36160, this$Arrangement.frameBuffer_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.bindRenderbuffer_6t2rgq$(36161, this$Arrangement.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, 32854, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount), this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount));
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.framebufferRenderbuffer_tjotsn$(36160, 36064, 36161, this$Arrangement.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this$GlslRenderer) {
+    return function () {
+      return this$GlslRenderer.gl.checkFramebufferStatus_za3lpa$(36160);
+    };
+  }
+  GlslRenderer$Arrangement.prototype.bindFramebuffer = function () {
+    checkForGlError(this.$outer.gl);
+    var $this = this.$outer;
+    var result = GlslRenderer$Arrangement$bindFramebuffer$lambda(this.$outer, this)();
+    checkForGlError($this.gl);
+    var $this_0 = this.$outer;
+    var result_0 = GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this.$outer, this)();
+    checkForGlError($this_0.gl);
+    var $this_1 = this.$outer;
+    var result_1 = GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this.$outer, this)();
+    checkForGlError($this_1.gl);
+    var $this_2 = this.$outer;
+    var result_2 = GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this.$outer, this)();
+    checkForGlError($this_2.gl);
+    var $this_3 = this.$outer;
+    var result_3 = GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this.$outer)();
+    checkForGlError($this_3.gl);
+    var status = result_3;
+    if (status !== 36053) {
+      println(RuntimeException_init('FrameBuffer huh? ' + status).message);
     }
   };
-  GlslRenderer$Instance.prototype.setUniform_jv3efz$ = function (adjustableValue, surfaceOrdinal, value) {
-    ensureNotNull(this.adjustableUniforms.get_11rb$(adjustableValue.ordinal)).setValue_6t2rgq$(surfaceOrdinal, value);
-  };
-  GlslRenderer$Instance.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Instance',
-    interfaces: []
-  };
-  function GlslRenderer$Uniform(locationInternal) {
-    this.locationInternal = locationInternal;
+  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.activeTexture_za3lpa$(33984);
+      return Unit;
+    };
   }
-  GlslRenderer$Uniform.$metadata$ = {
+  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_0(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.bindTexture_6t2rgq$(3553, this$Arrangement.uvCoordTexture_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_1(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.texParameteri_qt1dr2$(3553, 10241, 9728);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_2(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.texParameteri_qt1dr2$(3553, 10240, 9728);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.texImage2D_e7c6np$(3553, 0, 33326, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount) * 2 | 0, this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount), 0, 6403, 5126, this$Arrangement.uvCoordsFloatBuffer_0);
+      return Unit;
+    };
+  }
+  GlslRenderer$Arrangement.prototype.bindUvCoordTexture_54j4ym$ = function (textureIndex, uvCoordsLocation) {
+    var $this = this.$outer;
+    var result = GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this.$outer)();
+    checkForGlError($this.gl);
+    var $this_0 = this.$outer;
+    var result_0 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_0(this.$outer, this)();
+    checkForGlError($this_0.gl);
+    var $this_1 = this.$outer;
+    var result_1 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_1(this.$outer)();
+    checkForGlError($this_1.gl);
+    var $this_2 = this.$outer;
+    var result_2 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_2(this.$outer)();
+    checkForGlError($this_2.gl);
+    var $this_3 = this.$outer;
+    var result_3 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this.$outer, this)();
+    checkForGlError($this_3.gl);
+    uvCoordsLocation.set_za3lpa$(textureIndex);
+  };
+  GlslRenderer$Arrangement.prototype.getPixel_za3lpa$ = function (pixelIndex) {
+    var offset = pixelIndex * 4 | 0;
+    return Color_init_2(this.pixelBuffer_0.get_za3lpa$(offset), this.pixelBuffer_0.get_za3lpa$(offset + 1 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 2 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 3 | 0));
+  };
+  GlslRenderer$Arrangement.prototype.copyToPixelBuffer = function () {
+    this.$outer.gl.readPixels_idctqj$(0, 0, this.$outer.get_bufWidth_s8ev3n$(this.pixelCount), this.$outer.get_bufHeight_s8ev3n$(this.pixelCount), 6408, 5121, this.pixelBuffer_0);
+  };
+  function GlslRenderer$Arrangement$release$lambda(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.bindRenderbuffer_6t2rgq$(36161, null);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$release$lambda_0(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.bindFramebuffer_6t2rgq$(36160, null);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$release$lambda_1(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.bindTexture_6t2rgq$(3553, null);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$release$lambda_2(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.deleteFramebuffer_za3rmp$(this$Arrangement.frameBuffer_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$release$lambda_3(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.deleteRenderbuffer_za3rmp$(this$Arrangement.renderBuffer_0);
+      return Unit;
+    };
+  }
+  function GlslRenderer$Arrangement$release$lambda_4(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      this$GlslRenderer.gl.deleteTexture_za3rmp$(this$Arrangement.uvCoordTexture_0);
+      return Unit;
+    };
+  }
+  GlslRenderer$Arrangement.prototype.release = function () {
+    println('Release ' + this + ' with ' + this.pixelCount + ' pixels and ' + this.uvCoords.length + ' uvs');
+    var $this = this.$outer;
+    var result = GlslRenderer$Arrangement$release$lambda(this.$outer)();
+    checkForGlError($this.gl);
+    var $this_0 = this.$outer;
+    var result_0 = GlslRenderer$Arrangement$release$lambda_0(this.$outer)();
+    checkForGlError($this_0.gl);
+    var $this_1 = this.$outer;
+    var result_1 = GlslRenderer$Arrangement$release$lambda_1(this.$outer)();
+    checkForGlError($this_1.gl);
+    var $this_2 = this.$outer;
+    var result_2 = GlslRenderer$Arrangement$release$lambda_2(this.$outer, this)();
+    checkForGlError($this_2.gl);
+    var $this_3 = this.$outer;
+    var result_3 = GlslRenderer$Arrangement$release$lambda_3(this.$outer, this)();
+    checkForGlError($this_3.gl);
+    var $this_4 = this.$outer;
+    var result_4 = GlslRenderer$Arrangement$release$lambda_4(this.$outer, this)();
+    checkForGlError($this_4.gl);
+  };
+  GlslRenderer$Arrangement.prototype.bindUniforms = function () {
+    var tmp$, tmp$_0;
+    var index = 0;
+    tmp$ = this.$outer.adjustableValues.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var adjustableIndex = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
+      var tmp$_1, tmp$_0_0;
+      var index_0 = 0;
+      tmp$_1 = this.surfaces.iterator();
+      while (tmp$_1.hasNext()) {
+        var item_0 = tmp$_1.next();
+        var surfaceIndex = checkIndexOverflow((tmp$_0_0 = index_0, index_0 = tmp$_0_0 + 1 | 0, tmp$_0_0));
+        var tmp$_2;
+        var value = (tmp$_2 = item_0.uniforms.values) != null ? tmp$_2[adjustableIndex] : null;
+        if (value != null) {
+          var adjustableUniform = this.adjustableUniforms.get_za3lpa$(adjustableIndex);
+          adjustableUniform.setValue_6t2rgq$(surfaceIndex, value);
+        }
+      }
+    }
+    var tmp$_3;
+    tmp$_3 = this.adjustableUniforms.iterator();
+    while (tmp$_3.hasNext()) {
+      var element = tmp$_3.next();
+      element.bind();
+    }
+  };
+  function GlslRenderer$Arrangement$uvCoordTexture$lambda(this$GlslRenderer) {
+    return function () {
+      return this$GlslRenderer.gl.createTexture();
+    };
+  }
+  function GlslRenderer$Arrangement$frameBuffer$lambda(this$GlslRenderer) {
+    return function () {
+      return this$GlslRenderer.gl.createFramebuffer();
+    };
+  }
+  function GlslRenderer$Arrangement$renderBuffer$lambda(this$GlslRenderer) {
+    return function () {
+      return this$GlslRenderer.gl.createRenderbuffer();
+    };
+  }
+  GlslRenderer$Arrangement.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Uniform',
+    simpleName: 'Arrangement',
     interfaces: []
   };
   GlslRenderer.prototype.get_bufWidth_s8ev3n$ = function ($receiver) {
@@ -9767,25 +10140,134 @@
   GlslRenderer.prototype.get_bufSize_s8ev3n$ = function ($receiver) {
     return Kotlin.imul(this.get_bufWidth_s8ev3n$($receiver), this.get_bufHeight_s8ev3n$($receiver));
   };
-  function GlslRenderer$Uniforms($outer, surfaceOrdinal) {
+  function GlslRenderer$Uniforms($outer) {
     this.$outer = $outer;
-    this.surfaceOrdinal_8be2vx$ = surfaceOrdinal;
+    this.values = null;
   }
   GlslRenderer$Uniforms.prototype.updateFrom_eg9ycu$ = function (values) {
-    var $receiver = this.$outer.adjustableValues;
-    this.$outer;
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      this.$outer.instance.setUniform_jv3efz$(element, this.surfaceOrdinal_8be2vx$, values[element.ordinal]);
-    }
+    this.values = values;
   };
   GlslRenderer$Uniforms.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Uniforms',
     interfaces: []
   };
+  GlslRenderer.prototype.gl_klfg04$ = defineInlineFunction('sparklemotion.baaahs.glsl.GlslRenderer.gl_klfg04$', wrapFunction(function () {
+    var checkForGlError = _.baaahs.glsl.checkForGlError_t0jnzc$;
+    return function (fn) {
+      var result = fn();
+      checkForGlError(this.gl);
+      return result;
+    };
+  }));
+  function GlslRenderer$withGlContext$lambda(closure$fn) {
+    return function () {
+      return closure$fn();
+    };
+  }
+  GlslRenderer.prototype.withGlContext_plvbf1$_0 = function (fn) {
+    return this.contextSwitcher_8zrvqj$_0.inContext_klfg04$(GlslRenderer$withGlContext$lambda(fn));
+  };
+  function GlslRenderer$ContextSwitcher() {
+  }
+  GlslRenderer$ContextSwitcher.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ContextSwitcher',
+    interfaces: []
+  };
+  function GlslRenderer$Stats() {
+    this.addSurfacesMs_ebkhnh$_0 = 0;
+    this.bindFbMs_t680s5$_0 = 0;
+    this.renderMs_h0u2b2$_0 = 0;
+    this.readPxMs_w1jd6i$_0 = 0;
+    this.frameCount_vlwrtk$_0 = 0;
+  }
+  Object.defineProperty(GlslRenderer$Stats.prototype, 'addSurfacesMs', {
+    get: function () {
+      return this.addSurfacesMs_ebkhnh$_0;
+    },
+    set: function (addSurfacesMs) {
+      this.addSurfacesMs_ebkhnh$_0 = addSurfacesMs;
+    }
+  });
+  Object.defineProperty(GlslRenderer$Stats.prototype, 'bindFbMs', {
+    get: function () {
+      return this.bindFbMs_t680s5$_0;
+    },
+    set: function (bindFbMs) {
+      this.bindFbMs_t680s5$_0 = bindFbMs;
+    }
+  });
+  Object.defineProperty(GlslRenderer$Stats.prototype, 'renderMs', {
+    get: function () {
+      return this.renderMs_h0u2b2$_0;
+    },
+    set: function (renderMs) {
+      this.renderMs_h0u2b2$_0 = renderMs;
+    }
+  });
+  Object.defineProperty(GlslRenderer$Stats.prototype, 'readPxMs', {
+    get: function () {
+      return this.readPxMs_w1jd6i$_0;
+    },
+    set: function (readPxMs) {
+      this.readPxMs_w1jd6i$_0 = readPxMs;
+    }
+  });
+  Object.defineProperty(GlslRenderer$Stats.prototype, 'frameCount', {
+    get: function () {
+      return this.frameCount_vlwrtk$_0;
+    },
+    set: function (frameCount) {
+      this.frameCount_vlwrtk$_0 = frameCount;
+    }
+  });
+  GlslRenderer$Stats.prototype.dump = function () {
+    println('Render of ' + this.frameCount + ' frames took: ' + ('addSurface=' + this.addSurfacesMs + 'ms ') + ('bindFbMs=' + this.bindFbMs + 'ms ') + ('renderMs=' + this.renderMs + 'ms ') + ('readPxMs=' + this.readPxMs + 'ms ') + this.toString());
+  };
+  GlslRenderer$Stats.prototype.reset = function () {
+    this.addSurfacesMs = 0;
+    this.bindFbMs = 0;
+    this.renderMs = 0;
+    this.readPxMs = 0;
+    this.frameCount = 0;
+  };
+  GlslRenderer$Stats.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Stats',
+    interfaces: []
+  };
+  function GlslRenderer$program$lambda(this$GlslRenderer) {
+    return function () {
+      return this$GlslRenderer.createShaderProgram_66d3yg$_0();
+    };
+  }
+  function GlslRenderer$uvCoordsUniform$lambda(this$GlslRenderer) {
+    return function () {
+      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'sm_uvCoords');
+    };
+  }
+  function GlslRenderer$resolutionUniform$lambda(this$GlslRenderer) {
+    return function () {
+      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'resolution');
+    };
+  }
+  function GlslRenderer$timeUniform$lambda(this$GlslRenderer) {
+    return function () {
+      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'time');
+    };
+  }
+  function GlslRenderer$quad$lambda(this$GlslRenderer) {
+    return function () {
+      return new Quad(this$GlslRenderer.gl, this$GlslRenderer.program);
+    };
+  }
+  function GlslRenderer_init$lambda(this$GlslRenderer) {
+    return function () {
+      this$GlslRenderer.gl.clearColor_7b5o5w$(0.0, 0.5, 0.0, 1.0);
+      return Unit;
+    };
+  }
   GlslRenderer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslRenderer',
@@ -9799,6 +10281,326 @@
   GlslSurface.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslSurface',
+    interfaces: []
+  };
+  function SurfacePixels(surface, pixel0Index) {
+    this.surface = surface;
+    this.pixel0Index = pixel0Index;
+    this.size_l2kxw9$_0 = this.surface.pixelCount;
+  }
+  Object.defineProperty(SurfacePixels.prototype, 'size', {
+    get: function () {
+      return this.size_l2kxw9$_0;
+    }
+  });
+  SurfacePixels.prototype.set_ibd5tj$ = function (i, color) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.prototype.set_tmuqsv$ = function (colors) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixels',
+    interfaces: [Pixels]
+  };
+  function Program(gl, id) {
+    Program$Companion_getInstance();
+    this.gl_0 = gl;
+    this.id_8be2vx$ = id;
+  }
+  Program.prototype.getInfoLog = function () {
+    return this.gl_0.getProgramInfoLog_za3rmp$(this.id_8be2vx$);
+  };
+  Program.prototype.attachShader_6f59td$ = function (shader) {
+    this.gl_0.attachShader_wn2jw4$(this.id_8be2vx$, shader.id_8be2vx$);
+  };
+  Program.prototype.link = function () {
+    this.gl_0.linkProgram_za3rmp$(this.id_8be2vx$);
+    return this.gl_0.getProgramParameter_wn2dyp$(this.id_8be2vx$, 35714) === 1;
+  };
+  Program.prototype.bind = function () {
+    this.gl_0.useProgram_za3rmp$(this.id_8be2vx$);
+  };
+  Program.prototype.getUniform_61zpoe$ = function (name) {
+    var tmp$;
+    return (tmp$ = this.gl_0.getUniformLocation_hwpqgh$(this.id_8be2vx$, name)) != null ? new Uniform(this.gl_0, tmp$) : null;
+  };
+  function Program$Companion() {
+    Program$Companion_instance = this;
+  }
+  Program$Companion.prototype.create_gz3vex$ = function (gl) {
+    var tmp$;
+    tmp$ = gl.createProgram();
+    if (tmp$ == null) {
+      throw IllegalStateException_init_0();
+    }
+    return new Program(gl, tmp$);
+  };
+  Program$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Program$Companion_instance = null;
+  function Program$Companion_getInstance() {
+    if (Program$Companion_instance === null) {
+      new Program$Companion();
+    }
+    return Program$Companion_instance;
+  }
+  Program.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Program',
+    interfaces: []
+  };
+  function Quad(gl, program) {
+    this.gl_0 = gl;
+    this.program_0 = program;
+    this.vertices_0 = toFloatArray([1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0]);
+    this.vao_0 = this.gl_klfg04$(Quad$vao$lambda(this));
+    this.quadVertexBuffer_0 = this.gl_klfg04$(Quad$quadVertexBuffer$lambda(this));
+    this.gl_klfg04$(Quad_init$lambda(this));
+    this.gl_klfg04$(Quad_init$lambda_0(this));
+    this.gl_klfg04$(Quad_init$lambda_1(this));
+    var vertexAttr = this.gl_klfg04$(Quad_init$lambda_2(this));
+    this.gl_klfg04$(Quad_init$lambda_3(this, vertexAttr));
+    this.gl_klfg04$(Quad_init$lambda_4(this, vertexAttr));
+    this.gl_klfg04$(Quad_init$lambda_5(this));
+    this.gl_klfg04$(Quad_init$lambda_6(this));
+  }
+  Quad.prototype.bufferOf_0 = function (floats) {
+    return FloatBuffer_init(floats);
+  };
+  function Quad$render$lambda(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindVertexArray_s8jyv4$(this$Quad.vao_0);
+      return Unit;
+    };
+  }
+  function Quad$render$lambda_0(this$Quad) {
+    return function () {
+      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(0);
+      return Unit;
+    };
+  }
+  function Quad$render$lambda_1(this$Quad) {
+    return function () {
+      this$Quad.gl_0.drawArrays_qt1dr2$(4, 0, 6);
+      return Unit;
+    };
+  }
+  function Quad$render$lambda_2(this$Quad) {
+    return function () {
+      this$Quad.gl_0.disableVertexAttribArray_za3lpa$(0);
+      return Unit;
+    };
+  }
+  function Quad$render$lambda_3(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
+      return Unit;
+    };
+  }
+  Quad.prototype.render_8be2vx$ = function () {
+    this.gl_klfg04$(Quad$render$lambda(this));
+    this.gl_klfg04$(Quad$render$lambda_0(this));
+    this.gl_klfg04$(Quad$render$lambda_1(this));
+    this.gl_klfg04$(Quad$render$lambda_2(this));
+    this.gl_klfg04$(Quad$render$lambda_3(this));
+  };
+  function Quad$release$lambda(this$Quad) {
+    return function () {
+      this$Quad.gl_0.deleteBuffer_za3rmp$(this$Quad.quadVertexBuffer_0);
+      return Unit;
+    };
+  }
+  function Quad$release$lambda_0(this$Quad) {
+    return function () {
+      this$Quad.gl_0.deleteVertexArray_za3rmp$(this$Quad.vao_0);
+      return Unit;
+    };
+  }
+  Quad.prototype.release_0 = function () {
+    this.gl_klfg04$(Quad$release$lambda(this));
+    this.gl_klfg04$(Quad$release$lambda_0(this));
+  };
+  Quad.prototype.gl_klfg04$ = function (fn) {
+    var result = fn();
+    checkForGlError(this.gl_0);
+    return result;
+  };
+  function Quad$vao$lambda(this$Quad) {
+    return function () {
+      return ensureNotNull(this$Quad.gl_0.createVertexArray());
+    };
+  }
+  function Quad$quadVertexBuffer$lambda(this$Quad) {
+    return function () {
+      return this$Quad.gl_0.createBuffers_za3lpa$(1)[0];
+    };
+  }
+  function Quad_init$lambda(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindVertexArray_s8jyv4$(this$Quad.vao_0);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_0(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindBuffer_6t2rgq$(34962, this$Quad.quadVertexBuffer_0);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_1(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bufferData_8en9n9$(34962, this$Quad.bufferOf_0(this$Quad.vertices_0), this$Quad.vertices_0.length, 35044);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_2(this$Quad) {
+    return function () {
+      return this$Quad.gl_0.getAttribLocation_hwpqgh$(this$Quad.program_0.id_8be2vx$, 'Vertex');
+    };
+  }
+  function Quad_init$lambda_3(this$Quad, closure$vertexAttr) {
+    return function () {
+      this$Quad.gl_0.vertexAttribPointer_owihk5$(closure$vertexAttr, 2, 5126, false, 0, 0);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_4(this$Quad, closure$vertexAttr) {
+    return function () {
+      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(closure$vertexAttr);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_5(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindBuffer_6t2rgq$(34962, null);
+      return Unit;
+    };
+  }
+  function Quad_init$lambda_6(this$Quad) {
+    return function () {
+      this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
+      return Unit;
+    };
+  }
+  Quad.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Quad',
+    interfaces: []
+  };
+  function Shader_0(gl, id, source) {
+    Shader$Companion_getInstance_0();
+    this.gl_0 = gl;
+    this.id_8be2vx$ = id;
+    this.source_0 = source;
+    this.logger = new Logger('baaahs.glsl.Shader');
+    this.compile_0();
+  }
+  function Shader$compile$lambda(closure$infoLog, this$Shader) {
+    return function () {
+      return 'Failed to compile shader: ' + toString_0(closure$infoLog) + '\n' + 'Version: ${gl.getParameter(GL_VERSION)}\n' + 'GLSL Version: ${gl.getParameter(GL_SHADING_LANGUAGE_VERSION)}\n' + '\n' + this$Shader.source_0;
+    };
+  }
+  Shader_0.prototype.compile_0 = function () {
+    this.gl_0.shaderSource_hwpqgh$(this.id_8be2vx$, this.source_0);
+    this.gl_0.compileShader_za3rmp$(this.id_8be2vx$);
+    if (this.gl_0.getShaderParameter_wn2dyp$(this.id_8be2vx$, 35713) !== 1) {
+      var infoLog = this.gl_0.getShaderInfoLog_za3rmp$(this.id_8be2vx$);
+      this.logger.warn_h4ejuu$(Shader$compile$lambda(infoLog, this));
+      throw RuntimeException_init('Failed to compile shader: ' + toString_0(infoLog));
+    }
+  };
+  function Shader$Companion_0() {
+    Shader$Companion_instance_0 = this;
+  }
+  function Shader$Companion$createVertexShader$lambda(closure$gl) {
+    return function () {
+      return closure$gl.createShader_za3lpa$(35633);
+    };
+  }
+  Shader$Companion_0.prototype.createVertexShader_oiaex5$ = function (gl, source) {
+    var result = Shader$Companion$createVertexShader$lambda(gl)();
+    checkForGlError(gl);
+    if (result == null) {
+      throw IllegalStateException_init_0();
+    }
+    var shaderId = result;
+    return new Shader_0(gl, shaderId, source);
+  };
+  Shader$Companion_0.prototype.createFragmentShader_oiaex5$ = function (gl, source) {
+    var tmp$;
+    tmp$ = gl.createShader_za3lpa$(35632);
+    if (tmp$ == null) {
+      throw IllegalStateException_init_0();
+    }
+    var shaderId = tmp$;
+    return new Shader_0(gl, shaderId, source);
+  };
+  Shader$Companion_0.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Shader$Companion_instance_0 = null;
+  function Shader$Companion_getInstance_0() {
+    if (Shader$Companion_instance_0 === null) {
+      new Shader$Companion_0();
+    }
+    return Shader$Companion_instance_0;
+  }
+  Shader_0.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Shader',
+    interfaces: []
+  };
+  function Uniform(gl, uniformLocation) {
+    Uniform$Companion_getInstance();
+    this.gl_0 = gl;
+    this.uniformLocation = uniformLocation;
+  }
+  Uniform.prototype.set_za3lpa$ = function (x) {
+    this.gl_0.uniform1i_wn2dyp$(this.uniformLocation, x);
+  };
+  Uniform.prototype.set_vux9f0$ = function (x, y) {
+    this.gl_0.uniform2i_47d3mp$(this.uniformLocation, x, y);
+  };
+  Uniform.prototype.set_qt1dr2$ = function (x, y, z) {
+    this.gl_0.uniform3i_ab551r$(this.uniformLocation, x, y, z);
+  };
+  Uniform.prototype.set_mx4ult$ = function (x) {
+    this.gl_0.uniform1f_rvcsvw$(this.uniformLocation, x);
+  };
+  Uniform.prototype.set_dleff0$ = function (x, y) {
+    this.gl_0.uniform2f_zcqyrj$(this.uniformLocation, x, y);
+  };
+  Uniform.prototype.set_y2kzbl$ = function (x, y, z) {
+    this.gl_0.uniform3f_ig0gt8$(this.uniformLocation, x, y, z);
+  };
+  function Uniform$Companion() {
+    Uniform$Companion_instance = this;
+  }
+  Uniform$Companion.prototype.find_gpfe1h$ = function (gl, program, name) {
+    return program.getUniform_61zpoe$(name);
+  };
+  Uniform$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Uniform$Companion_instance = null;
+  function Uniform$Companion_getInstance() {
+    if (Uniform$Companion_instance === null) {
+      new Uniform$Companion();
+    }
+    return Uniform$Companion_instance;
+  }
+  Uniform.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Uniform',
     interfaces: []
   };
   function UvTranslator() {
@@ -9831,16 +10633,6 @@
     simpleName: 'UvTranslator',
     interfaces: []
   };
-  function average($receiver) {
-    var iterator = $receiver.iterator();
-    if (!iterator.hasNext())
-      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
-    var accumulator = iterator.next();
-    while (iterator.hasNext()) {
-      accumulator = accumulator.plus_7423r0$(iterator.next());
-    }
-    return accumulator.dividedByScalar_mx4ult$($receiver.size);
-  }
   function PanelSpaceUvTranslator() {
     PanelSpaceUvTranslator_instance = this;
   }
@@ -9918,27 +10710,16 @@
     simpleName: 'ModelSpaceUvTranslator',
     interfaces: [UvTranslator]
   };
-  function SurfacePixels(surface, pixel0Index) {
-    this.surface = surface;
-    this.pixel0Index = pixel0Index;
-    this.size_l2kxw9$_0 = this.surface.pixelCount;
-  }
-  Object.defineProperty(SurfacePixels.prototype, 'size', {
-    get: function () {
-      return this.size_l2kxw9$_0;
+  function average($receiver) {
+    var iterator = $receiver.iterator();
+    if (!iterator.hasNext())
+      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
+    var accumulator = iterator.next();
+    while (iterator.hasNext()) {
+      accumulator = accumulator.plus_7423r0$(iterator.next());
     }
-  });
-  SurfacePixels.prototype.set_ibd5tj$ = function (i, color) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  SurfacePixels.prototype.set_tmuqsv$ = function (colors) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  SurfacePixels.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SurfacePixels',
-    interfaces: [Pixels]
-  };
+    return accumulator.dividedByScalar_mx4ult$($receiver.size);
+  }
   function Image() {
   }
   Image.$metadata$ = {
@@ -12688,7 +13469,7 @@
     this.model_CHEAT = null;
     this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
-    this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda), 0), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0), 1), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1), 2), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2), 3), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3), 4), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4), 4)]);
+    this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
@@ -12699,20 +13480,20 @@
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(GlslShader$AdjustableValue$Companion_getInstance().parse_kbpt9e$(reader, item));
+      destination.add_11rb$(GlslShader$AdjustableValue$Companion_getInstance().parse_100t80$(reader));
     }
     var adjustableValues = destination;
     return new GlslShader(glslProgram, adjustableValues);
   };
-  function GlslShader$Companion$findAdjustableValues$lambda(this$GlslShader$, closure$i) {
+  function GlslShader$Companion$findAdjustableValues$lambda(this$GlslShader$) {
     return function (matchResult) {
-      var tmp$, tmp$_0;
+      var tmp$;
       println('matches: ' + matchResult.groupValues);
-      var tmp$_1 = matchResult.destructured;
-      var gadgetType = tmp$_1.match.groupValues.get_za3lpa$(1);
-      var configJson = tmp$_1.match.groupValues.get_za3lpa$(2);
-      var valueTypeName = tmp$_1.match.groupValues.get_za3lpa$(3);
-      var varName = tmp$_1.match.groupValues.get_za3lpa$(4);
+      var tmp$_0 = matchResult.destructured;
+      var gadgetType = tmp$_0.match.groupValues.get_za3lpa$(1);
+      var configJson = tmp$_0.match.groupValues.get_za3lpa$(2);
+      var valueTypeName = tmp$_0.match.groupValues.get_za3lpa$(3);
+      var varName = tmp$_0.match.groupValues.get_za3lpa$(4);
       var configData = this$GlslShader$.json_0.parseJson_61zpoe$(configJson);
       switch (valueTypeName) {
         case 'int':
@@ -12727,21 +13508,11 @@
         default:throw IllegalArgumentException_init('unsupported type ' + valueTypeName);
       }
       var valueType = tmp$;
-      return new GlslShader$AdjustableValue(varName, gadgetType, valueType, configData.jsonObject, (tmp$_0 = closure$i.v, closure$i.v = tmp$_0 + 1 | 0, tmp$_0));
+      return new GlslShader$AdjustableValue(varName, gadgetType, valueType, configData.jsonObject);
     };
   }
   GlslShader$Companion.prototype.findAdjustableValues_61zpoe$ = function (glslFragmentShader) {
-    var tmp$;
-    var $receiver = this.extraAdjustables;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(item.ordinal);
-    }
-    var i = {v: ((tmp$ = max(destination)) != null ? tmp$ : -1) + 1 | 0};
-    return plus_0(toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this, i))), this.extraAdjustables);
+    return plus_0(toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this))), this.extraAdjustables);
   };
   function GlslShader$Companion$extraAdjustables$lambda($receiver) {
     $receiver.to_npuxma$('name', 'u scale');
@@ -12818,9 +13589,8 @@
     this.glslSurface_0 = glslSurface;
   }
   GlslShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-    if (this.glslSurface_0 != null) {
-      this.glslSurface_0.uniforms.updateFrom_eg9ycu$(buffer.values);
-    }
+    var tmp$, tmp$_0;
+    (tmp$_0 = (tmp$ = this.glslSurface_0) != null ? tmp$.uniforms : null) != null ? (tmp$_0.updateFrom_eg9ycu$(buffer.values), Unit) : null;
   };
   GlslShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     return this.glslSurface_0 != null ? this.glslSurface_0.pixels.get_za3lpa$(pixelIndex) : Color$Companion_getInstance().BLACK;
@@ -12864,23 +13634,32 @@
       return this.$outer;
     }
   });
-  GlslShader$Buffer.prototype.update_egvix6$ = function (adjustableValue, value) {
-    this.values[adjustableValue.ordinal] = value;
+  GlslShader$Buffer.prototype.update_giv38x$ = function (values) {
+    var tmp$, tmp$_0;
+    var index = 0;
+    tmp$ = values.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      this.values[checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0))] = item;
+    }
   };
   GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
     var tmp$;
-    tmp$ = this.$outer.adjustableValues.iterator();
+    tmp$ = zip_0(this.$outer.adjustableValues, this.values).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      element.serializeValue_8f9ar8$(this.values[element.ordinal], writer);
+      var adjustableValue = element.component1()
+      , value = element.component2();
+      adjustableValue.serializeValue_8f9ar8$(value, writer);
     }
   };
   GlslShader$Buffer.prototype.read_100t80$ = function (reader) {
-    var tmp$;
+    var tmp$, tmp$_0;
+    var index = 0;
     tmp$ = this.$outer.adjustableValues.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      this.values[element.ordinal] = element.readValue_100t80$(reader);
+      var item = tmp$.next();
+      this.values[checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0))] = item.readValue_100t80$(reader);
     }
   };
   GlslShader$Buffer.$metadata$ = {
@@ -12888,13 +13667,12 @@
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function GlslShader$AdjustableValue(varName, gadgetType, valueType, config, ordinal) {
+  function GlslShader$AdjustableValue(varName, gadgetType, valueType, config) {
     GlslShader$AdjustableValue$Companion_getInstance();
     this.varName = varName;
     this.gadgetType = gadgetType;
     this.valueType = valueType;
     this.config = config;
-    this.ordinal = ordinal;
   }
   function GlslShader$AdjustableValue$Type(name, ordinal) {
     Enum.call(this);
@@ -12983,10 +13761,10 @@
     GlslShader$AdjustableValue$Companion_instance = this;
     this.types_0 = GlslShader$AdjustableValue$Type$values();
   }
-  GlslShader$AdjustableValue$Companion.prototype.parse_kbpt9e$ = function (reader, ordinal) {
+  GlslShader$AdjustableValue$Companion.prototype.parse_100t80$ = function (reader) {
     var varName = reader.readString();
     var valueType = this.types_0[reader.readByte()];
-    return new GlslShader$AdjustableValue(varName, '', valueType, new JsonObject(emptyMap()), ordinal);
+    return new GlslShader$AdjustableValue(varName, '', valueType, new JsonObject(emptyMap()));
   };
   GlslShader$AdjustableValue$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -14293,28 +15071,29 @@
   function GlslShow(name) {
     Show.call(this, name);
   }
-  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesToDataSources, closure$showRunner, closure$shader) {
+  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesDataSources, closure$showRunner, closure$shader) {
     this.closure$buffers = closure$buffers;
-    this.closure$adjustableValuesToDataSources = closure$adjustableValuesToDataSources;
+    this.closure$adjustableValuesDataSources = closure$adjustableValuesDataSources;
     this.closure$showRunner = closure$showRunner;
     this.closure$shader = closure$shader;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.closure$buffers.values;
-    this.closure$adjustableValuesToDataSources;
+    this.closure$adjustableValuesDataSources;
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
+      var $receiver_0 = this.closure$adjustableValuesDataSources;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
       var tmp$_0;
-      tmp$_0 = this.closure$adjustableValuesToDataSources.entries.iterator();
+      tmp$_0 = $receiver_0.iterator();
       while (tmp$_0.hasNext()) {
-        var element_0 = tmp$_0.next();
-        var adjustableValue = element_0.key;
-        var dataSource = element_0.value;
-        var value = dataSource.getValue();
-        element.update_egvix6$(adjustableValue, value);
+        var item = tmp$_0.next();
+        destination.add_11rb$(item.getValue());
       }
+      var bufferValues = destination;
+      element.update_giv38x$(bufferValues);
     }
   };
   GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
@@ -14346,24 +15125,24 @@
   GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var shader = new GlslShader(this.program);
     var $receiver = shader.adjustableValues;
-    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16));
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      result.put_xwzc9p$(element, this.createDataSource_j5u65$(element, showRunner));
+      var item = tmp$.next();
+      destination.add_11rb$(this.createDataSource_j5u65$(item, showRunner));
     }
-    var adjustableValuesToDataSources = result;
+    var adjustableValuesDataSources = destination;
     var tmp$_0 = showRunner.allSurfaces;
-    var destination = HashMap_init();
+    var destination_0 = HashMap_init();
     var tmp$_1;
     tmp$_1 = tmp$_0.iterator();
     while (tmp$_1.hasNext()) {
-      var element_0 = tmp$_1.next();
-      destination.put_xwzc9p$(element_0, showRunner.getShaderBuffer_9rhubp$(element_0, shader));
+      var element = tmp$_1.next();
+      destination_0.put_xwzc9p$(element, showRunner.getShaderBuffer_9rhubp$(element, shader));
     }
-    var buffers = destination;
-    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesToDataSources, showRunner, shader);
+    var buffers = destination_0;
+    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesDataSources, showRunner, shader);
   };
   GlslShow.prototype.createDataSource_j5u65$ = function ($receiver, showRunner) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
@@ -16059,7 +16838,7 @@
   function timeSync(function_0) {
     var now = getTimeMillis();
     function_0();
-    return getTimeMillis().subtract(now);
+    return getTimeMillis().subtract(now).toInt();
   }
   function JsDisplay() {
   }
@@ -18527,8 +19306,34 @@
       return this.manager_cd4dvk$_0.value;
     }
   });
+  function GlslBase$JsGlslManager() {
+  }
+  function GlslBase$JsGlslManager$createRenderer$ObjectLiteral() {
+  }
+  GlslBase$JsGlslManager$createRenderer$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
+    return fn();
+  };
+  GlslBase$JsGlslManager$createRenderer$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [GlslRenderer$ContextSwitcher]
+  };
+  GlslBase$JsGlslManager.prototype.createRenderer_3kbl32$ = function (fragShader, adjustableValues) {
+    var contextSwitcher = new GlslBase$JsGlslManager$createRenderer$ObjectLiteral();
+    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, adjustableValues, '300 es');
+  };
+  GlslBase$JsGlslManager.prototype.createContext_0 = function () {
+    var tmp$;
+    var canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
+    var gl = ensureNotNull(canvas.getContext('webgl2'));
+    return new KglJs(gl);
+  };
+  GlslBase$JsGlslManager.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsGlslManager',
+    interfaces: [GlslManager]
+  };
   function GlslBase$manager$lambda() {
-    return new JsGlslManager();
+    return new GlslBase$JsGlslManager();
   }
   GlslBase.$metadata$ = {
     kind: Kind_OBJECT,
@@ -18542,759 +19347,6 @@
     }
     return GlslBase_instance;
   }
-  function JsGlslManager() {
-  }
-  JsGlslManager.prototype.createRenderer_3kbl32$ = function (program, adjustableValues) {
-    return new JsGlslRenderer(program, adjustableValues);
-  };
-  JsGlslManager.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'JsGlslManager',
-    interfaces: [GlslManager]
-  };
-  function JsGlslRenderer(fragShader, adjustableValues) {
-    JsGlslRenderer$Companion_getInstance();
-    GlslRenderer.call(this, fragShader, adjustableValues);
-    var tmp$, tmp$_0;
-    this.canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
-    this.gl = Kotlin.isType(tmp$_0 = ensureNotNull(this.canvas.getContext('webgl2')), WebGL2RenderingContext) ? tmp$_0 : throwCCE();
-    this.program_0 = null;
-    this.quad_0 = null;
-    this.gl_klfg04$(JsGlslRenderer_init$lambda(this));
-    this.program_0 = this.createShaderProgram_0();
-    this.quad_0 = new JsGlslRenderer$Quad(this);
-    this.findUniforms();
-    this.instance = this.createInstance_mfoo9a$(1, new Float32Array(2), this.nextSurfaceOffset);
-  }
-  function JsGlslRenderer$getUniformLocation$lambda(this$JsGlslRenderer, closure$name) {
-    return function () {
-      return this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, closure$name);
-    };
-  }
-  JsGlslRenderer.prototype.getUniformLocation_ivxn3r$$default = function (name, required) {
-    var loc = this.gl_klfg04$(JsGlslRenderer$getUniformLocation$lambda(this, name));
-    if (loc == null && required)
-      throw IllegalStateException_init("Couldn't find uniform " + name);
-    return new GlslRenderer$Uniform(loc);
-  };
-  function JsGlslRenderer$Quad($outer) {
-    this.$outer = $outer;
-    this.vertices_0 = [1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0];
-    this.quadVertexBuffer_0 = null;
-    this.quadVertexBuffer_0 = this.$outer.gl.createBuffer();
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_0(this.$outer, this));
-    var vertexAttr = this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_1(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_2(this.$outer, vertexAttr));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_3(this.$outer, vertexAttr));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_4(this.$outer));
-  }
-  function JsGlslRenderer$Quad$render$lambda(this$JsGlslRenderer, this$Quad) {
-    return function () {
-      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, this$Quad.quadVertexBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Quad$render$lambda_0(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.drawArrays(JsGlslRenderer$Companion_getInstance().GL.TRIANGLES, 0, 6);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Quad$render$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, null);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Quad.prototype.render_8be2vx$ = function () {
-    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda_0(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$render$lambda_1(this.$outer));
-  };
-  function JsGlslRenderer$Quad$release$lambda(this$JsGlslRenderer, this$Quad) {
-    return function () {
-      this$JsGlslRenderer.gl.deleteBuffer(this$Quad.quadVertexBuffer_0);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Quad.prototype.release_0 = function () {
-    this.$outer.gl_klfg04$(JsGlslRenderer$Quad$release$lambda(this.$outer, this));
-  };
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda(this$JsGlslRenderer, this$Quad) {
-    return function () {
-      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, this$Quad.quadVertexBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_0(this$JsGlslRenderer, this$Quad) {
-    return function () {
-      this$JsGlslRenderer.gl.bufferData(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, new Float32Array(this$Quad.vertices_0), JsGlslRenderer$Companion_getInstance().GL.STATIC_DRAW);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.getAttribLocation(this$JsGlslRenderer.program_0, 'Vertex');
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_2(this$JsGlslRenderer, closure$vertexAttr) {
-    return function () {
-      this$JsGlslRenderer.gl.vertexAttribPointer(closure$vertexAttr, 2, JsGlslRenderer$Companion_getInstance().GL.FLOAT, false, 0, 0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_3(this$JsGlslRenderer, closure$vertexAttr) {
-    return function () {
-      this$JsGlslRenderer.gl.enableVertexAttribArray(closure$vertexAttr);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$Quad_init$lambda_4(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.bindBuffer(JsGlslRenderer$Companion_getInstance().GL.ARRAY_BUFFER, null);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Quad.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Quad',
-    interfaces: []
-  };
-  JsGlslRenderer.prototype.createSurfacePixels_70b9t1$ = function (surface, pixelOffset) {
-    return new JsGlslRenderer$SurfacePixels(this, surface, pixelOffset);
-  };
-  function JsGlslRenderer$SurfacePixels($outer, surface, pixel0Index) {
-    this.$outer = $outer;
-    SurfacePixels.call(this, surface, pixel0Index);
-  }
-  JsGlslRenderer$SurfacePixels.prototype.get_za3lpa$ = function (i) {
-    return this.$outer.instance.getPixel_za3lpa$(this.pixel0Index + i | 0);
-  };
-  JsGlslRenderer$SurfacePixels.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SurfacePixels',
-    interfaces: [SurfacePixels]
-  };
-  JsGlslRenderer.prototype.createSurfaceMonoPixel_70b9t1$ = function (surface, pixelOffset) {
-    return new JsGlslRenderer$SurfaceMonoPixel(this, surface, pixelOffset);
-  };
-  function JsGlslRenderer$SurfaceMonoPixel($outer, surface, pixel0Index) {
-    this.$outer = $outer;
-    SurfacePixels.call(this, surface, pixel0Index);
-  }
-  JsGlslRenderer$SurfaceMonoPixel.prototype.get_za3lpa$ = function (i) {
-    return this.$outer.instance.getPixel_za3lpa$(this.pixel0Index);
-  };
-  JsGlslRenderer$SurfaceMonoPixel.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SurfaceMonoPixel',
-    interfaces: [SurfacePixels]
-  };
-  JsGlslRenderer.prototype.createInstance_mfoo9a$ = function (pixelCount, uvCoords, surfaceCount) {
-    return new JsGlslRenderer$Instance(this, pixelCount, uvCoords, surfaceCount);
-  };
-  function JsGlslRenderer$draw$lambda$lambda(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.incorporateNewSurfaces();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$draw$lambda$lambda_0(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.instance.bindFramebuffer();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$draw$lambda$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.render_0();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$draw$lambda$lambda_2(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.instance.copyToPixelBuffer();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$draw$lambda$lambda_3(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.finish();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$draw$lambda(this$JsGlslRenderer) {
-    return function () {
-      var addSurfacesMs = timeSync(JsGlslRenderer$draw$lambda$lambda(this$JsGlslRenderer));
-      var bindFbMs = timeSync(JsGlslRenderer$draw$lambda$lambda_0(this$JsGlslRenderer));
-      var renderMs = timeSync(JsGlslRenderer$draw$lambda$lambda_1(this$JsGlslRenderer));
-      var readPxMs = timeSync(JsGlslRenderer$draw$lambda$lambda_2(this$JsGlslRenderer));
-      this$JsGlslRenderer.gl_klfg04$(JsGlslRenderer$draw$lambda$lambda_3(this$JsGlslRenderer));
-      return Unit;
-    };
-  }
-  JsGlslRenderer.prototype.draw = function () {
-    this.withGlContext_klfg04$(JsGlslRenderer$draw$lambda(this));
-  };
-  function JsGlslRenderer$render$lambda(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.uniform2f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.resolutionLocation_8be2vx$), 1.0, 1.0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_0(this$JsGlslRenderer, closure$thisTime) {
-    return function () {
-      this$JsGlslRenderer.gl.uniform1f(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.timeLocation_8be2vx$), closure$thisTime);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.viewport(0, 0, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$JsGlslRenderer.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$JsGlslRenderer.pixelCount));
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_2(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.clear(JsGlslRenderer$Companion_getInstance().GL.COLOR_BUFFER_BIT | JsGlslRenderer$Companion_getInstance().GL.DEPTH_BUFFER_BIT);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_3(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.finish();
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$render$lambda_4(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.getProgramInfoLog(this$JsGlslRenderer.program_0);
-    };
-  }
-  JsGlslRenderer.prototype.render_0 = function () {
-    var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
-    this.gl_klfg04$(JsGlslRenderer$render$lambda(this));
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_0(this, thisTime));
-    this.instance.bindUvCoordTexture_msnecj$(this.uvCoordTextureIndex, ensureNotNull(this.uvCoordsLocation_8be2vx$));
-    this.instance.bindUniforms();
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_1(this));
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_2(this));
-    this.quad_0.render_8be2vx$();
-    this.gl_klfg04$(JsGlslRenderer$render$lambda_3(this));
-    var programLog = this.gl_klfg04$(JsGlslRenderer$render$lambda_4(this));
-    var tmp$ = programLog != null;
-    if (tmp$) {
-      tmp$ = programLog.length > 0;
-    }
-    if (tmp$)
-      println('ProgramInfoLog: ' + toString_0(programLog));
-  };
-  function JsGlslRenderer$createShaderProgram$lambda(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createProgram();
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_0(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createShader(JsGlslRenderer$Companion_getInstance().GL.VERTEX_SHADER);
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_1(this$JsGlslRenderer, closure$vs) {
-    return function () {
-      this$JsGlslRenderer.gl.shaderSource(closure$vs, '#version 300 es\n\nprecision lowp float;\n\n// xy = vertex position in normalized device coordinates ([-1,+1] range).\nin vec2 Vertex;\n\nconst vec2 scale = vec2(0.5, 0.5);\n\nvoid main()\n{\n    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range\n    gl_Position = vec4(Vertex, 0.0, 1.0);\n}\n');
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_2(this$JsGlslRenderer, closure$program, closure$vs) {
-    return function () {
-      this$JsGlslRenderer.gl.attachShader(closure$program, closure$vs);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_3(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createShader(JsGlslRenderer$Companion_getInstance().GL.FRAGMENT_SHADER);
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_4(this$JsGlslRenderer, closure$fs, closure$src) {
-    return function () {
-      this$JsGlslRenderer.gl.shaderSource(closure$fs, closure$src);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_5(this$JsGlslRenderer, closure$program, closure$fs) {
-    return function () {
-      this$JsGlslRenderer.gl.attachShader(closure$program, closure$fs);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_6(this$JsGlslRenderer, closure$program) {
-    return function () {
-      this$JsGlslRenderer.gl.linkProgram(closure$program);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$createShaderProgram$lambda_7(this$JsGlslRenderer, closure$program) {
-    return function () {
-      this$JsGlslRenderer.gl.useProgram(closure$program);
-      return Unit;
-    };
-  }
-  JsGlslRenderer.prototype.createShaderProgram_0 = function () {
-    var program = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda(this));
-    var vs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_0(this));
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_1(this, vs));
-    this.compileShader_0(vs);
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_2(this, program, vs));
-    var fs = this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_3(this));
-    var tmp$ = '#version 300 es' + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + 'uniform float sm_beat;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
-    var $receiver = this.fragShader;
-    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
-    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
-    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
-    println(src);
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_4(this, fs, src));
-    this.compileShader_0(fs);
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_5(this, program, fs));
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_6(this, program));
-    if (equals(this.gl.getProgramParameter(program, JsGlslRenderer$Companion_getInstance().GL.LINK_STATUS), false)) {
-      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(this.gl.getProgramInfoLog(program)));
-    }
-    this.gl_klfg04$(JsGlslRenderer$createShaderProgram$lambda_7(this, program));
-    return program;
-  };
-  function JsGlslRenderer$compileShader$lambda(this$JsGlslRenderer, closure$shader) {
-    return function () {
-      this$JsGlslRenderer.gl.compileShader(closure$shader);
-      return Unit;
-    };
-  }
-  JsGlslRenderer.prototype.compileShader_0 = function (shader) {
-    this.gl_klfg04$(JsGlslRenderer$compileShader$lambda(this, shader));
-    if (equals(this.gl.getShaderParameter(shader, JsGlslRenderer$Companion_getInstance().GL.COMPILE_STATUS), false)) {
-      window.alert('Failed to compile shader: ' + toString_0(this.gl.getShaderInfoLog(shader)) + '\n' + ('Version: ' + toString_0(this.gl.getParameter(JsGlslRenderer$Companion_getInstance().GL.VERSION)) + '\n') + ('GLSL Version: ' + toString_0(this.gl.getParameter(JsGlslRenderer$Companion_getInstance().GL.SHADING_LANGUAGE_VERSION)) + '\n'));
-      throw RuntimeException_init('Failed to compile shader: ' + toString_0(this.gl.getShaderInfoLog(shader)));
-    }
-  };
-  JsGlslRenderer.prototype.gl_klfg04$ = function (fn) {
-    var result = fn();
-    JsGlslRenderer$Companion_getInstance().checkForGlError_tnk6ih$(this.gl);
-    return result;
-  };
-  JsGlslRenderer.prototype.withGlContext_klfg04$ = function (fn) {
-    return fn();
-  };
-  function JsGlslRenderer$Companion() {
-    JsGlslRenderer$Companion_instance = this;
-    this.GL = WebGLRenderingContext;
-    this.GL2 = WebGL2RenderingContext;
-  }
-  JsGlslRenderer$Companion.prototype.checkForGlError_tnk6ih$ = function (gl) {
-    var tmp$;
-    while (true) {
-      var error = gl.getError();
-      if (error === this.GL.INVALID_ENUM)
-        tmp$ = 'GL_INVALID_ENUM';
-      else if (error === this.GL.INVALID_VALUE)
-        tmp$ = 'GL_INVALID_VALUE';
-      else if (error === this.GL.INVALID_OPERATION)
-        tmp$ = 'GL_INVALID_OPERATION';
-      else if (error === this.GL.INVALID_FRAMEBUFFER_OPERATION)
-        tmp$ = 'GL_INVALID_FRAMEBUFFER_OPERATION';
-      else if (error === this.GL2.FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
-        tmp$ = 'FRAMEBUFFER_INCOMPLETE_ATTACHMENT';
-      else if (error === this.GL.CONTEXT_LOST_WEBGL)
-        tmp$ = 'GL_CONTEXT_LOST_WEBGL';
-      else if (error === this.GL.OUT_OF_MEMORY)
-        tmp$ = 'GL_OUT_OF_MEMORY';
-      else
-        tmp$ = 'unknown error ' + error;
-      var code = tmp$;
-      if (error !== 0)
-        throw RuntimeException_init('OpenGL Error: ' + code);
-      else
-        return;
-    }
-  };
-  JsGlslRenderer$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var JsGlslRenderer$Companion_instance = null;
-  function JsGlslRenderer$Companion_getInstance() {
-    if (JsGlslRenderer$Companion_instance === null) {
-      new JsGlslRenderer$Companion();
-    }
-    return JsGlslRenderer$Companion_instance;
-  }
-  function JsGlslRenderer$UnifyingAdjustableUniform($outer, adjustableValue, surfaceCount) {
-    this.$outer = $outer;
-    this.adjustableValue = adjustableValue;
-    this.surfaceCount = surfaceCount;
-    this.uniformLocation = this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$uniformLocation$lambda(this, this.$outer));
-    this.buffer = null;
-  }
-  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda(this$JsGlslRenderer, closure$location, this$UnifyingAdjustableUniform) {
-    return function () {
-      var tmp$;
-      this$JsGlslRenderer.gl.uniform1i(closure$location, typeof (tmp$ = this$UnifyingAdjustableUniform.buffer) === 'number' ? tmp$ : throwCCE());
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_0(this$JsGlslRenderer, closure$location, this$UnifyingAdjustableUniform) {
-    return function () {
-      var tmp$;
-      this$JsGlslRenderer.gl.uniform1f(closure$location, typeof (tmp$ = this$UnifyingAdjustableUniform.buffer) === 'number' ? tmp$ : throwCCE());
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_1(this$JsGlslRenderer, closure$location, closure$color) {
-    return function () {
-      this$JsGlslRenderer.gl.uniform3f(closure$location, closure$color.redF, closure$color.greenF, closure$color.blueF);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$UnifyingAdjustableUniform.prototype.bind = function () {
-    var tmp$;
-    if (this.buffer != null) {
-      var location = this.$outer.get_location_0(this.uniformLocation);
-      switch (this.adjustableValue.valueType.name) {
-        case 'INT':
-          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda(this.$outer, location, this));
-          break;
-        case 'FLOAT':
-          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_0(this.$outer, location, this));
-          break;
-        case 'VEC3':
-          var color = Kotlin.isType(tmp$ = this.buffer, Color) ? tmp$ : throwCCE();
-          this.$outer.gl_klfg04$(JsGlslRenderer$UnifyingAdjustableUniform$bind$lambda_1(this.$outer, location, color));
-          break;
-      }
-    }
-  };
-  JsGlslRenderer$UnifyingAdjustableUniform.prototype.setValue_6t2rgq$ = function (surfaceOrdinal, value) {
-    this.buffer = value;
-  };
-  function JsGlslRenderer$UnifyingAdjustableUniform$uniformLocation$lambda(this$UnifyingAdjustableUniform, this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.getUniformLocation_ivxn3r$(this$UnifyingAdjustableUniform.adjustableValue.varName);
-    };
-  }
-  JsGlslRenderer$UnifyingAdjustableUniform.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'UnifyingAdjustableUniform',
-    interfaces: [GlslRenderer$AdjustibleUniform]
-  };
-  function JsGlslRenderer$AwesomerAdjustableUniform($outer, adjustableValue, surfaceCount) {
-    this.$outer = $outer;
-    this.adjustableValue = adjustableValue;
-    this.surfaceCount = surfaceCount;
-    var tmp$;
-    switch (this.adjustableValue.valueType.name) {
-      case 'INT':
-        tmp$ = new Uint32Array(this.elementCount);
-        break;
-      case 'FLOAT':
-        tmp$ = new Float32Array(this.elementCount);
-        break;
-      case 'VEC3':
-        tmp$ = new Float32Array(this.elementCount);
-        break;
-      default:tmp$ = Kotlin.noWhenBranchMatched();
-        break;
-    }
-    this.buffer = tmp$;
-    this.texture = this.$outer.gl_klfg04$(JsGlslRenderer$AwesomerAdjustableUniform$texture$lambda(this.$outer));
-    this.textureIndex = this.$outer.adjustableValueUniformIndices.get_za3lpa$(this.adjustableValue.ordinal);
-    this.uniformLocation = this.$outer.gl_klfg04$(JsGlslRenderer$AwesomerAdjustableUniform$uniformLocation$lambda(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_0(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_1(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_2(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_3(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_4(this.$outer, this));
-  }
-  Object.defineProperty(JsGlslRenderer$AwesomerAdjustableUniform.prototype, 'elementCount', {
-    get: function () {
-      switch (this.adjustableValue.valueType.name) {
-        case 'INT':
-          return this.surfaceCount;
-        case 'FLOAT':
-          return this.surfaceCount;
-        case 'VEC3':
-          return this.surfaceCount * 3 | 0;
-        default:return Kotlin.noWhenBranchMatched();
-      }
-    }
-  });
-  Object.defineProperty(JsGlslRenderer$AwesomerAdjustableUniform.prototype, 'internalFormat', {
-    get: function () {
-      switch (this.adjustableValue.valueType.name) {
-        case 'INT':
-          return JsGlslRenderer$Companion_getInstance().GL.INT;
-        case 'FLOAT':
-          return JsGlslRenderer$Companion_getInstance().GL2.R32F;
-        case 'VEC3':
-          return JsGlslRenderer$Companion_getInstance().GL.RGB;
-        default:return Kotlin.noWhenBranchMatched();
-      }
-    }
-  });
-  function JsGlslRenderer$AwesomerAdjustableUniform$texture$lambda(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createTexture();
-    };
-  }
-  function JsGlslRenderer$AwesomerAdjustableUniform$uniformLocation$lambda(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
-    return function () {
-      return this$JsGlslRenderer.gl.getUniformLocation(this$JsGlslRenderer.program_0, this$AwesomerAdjustableUniform.adjustableValue.varName);
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
-    return function () {
-      this$JsGlslRenderer.gl.activeTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE0 + this$AwesomerAdjustableUniform.textureIndex | 0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_0(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
-    return function () {
-      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, this$AwesomerAdjustableUniform.texture);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MIN_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_2(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MAG_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_3(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
-    return function () {
-      this$JsGlslRenderer.gl.texImage2D(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, 0, JsGlslRenderer$Companion_getInstance().GL2.R32F, this$AwesomerAdjustableUniform.elementCount, 1, 0, JsGlslRenderer$Companion_getInstance().GL2.RED, JsGlslRenderer$Companion_getInstance().GL.FLOAT, null);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$JsGlslRenderer$AwesomerAdjustableUniform_init$lambda_4(this$JsGlslRenderer, this$AwesomerAdjustableUniform) {
-    return function () {
-      this$JsGlslRenderer.gl.uniform1i(this$JsGlslRenderer.get_location_0(this$JsGlslRenderer.uvCoordsLocation_8be2vx$), this$AwesomerAdjustableUniform.textureIndex);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$AwesomerAdjustableUniform.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'AwesomerAdjustableUniform',
-    interfaces: []
-  };
-  function JsGlslRenderer$Instance($outer, pixelCount, uvCoords, surfaceCount) {
-    this.$outer = $outer;
-    GlslRenderer$Instance.call(this, this.$outer, pixelCount, uvCoords, surfaceCount);
-    var $receiver = this.$outer.adjustableValues;
-    this.$outer;
-    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
-    var destination = LinkedHashMap_init_0(capacity);
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var pair = to(element.ordinal, new JsGlslRenderer$UnifyingAdjustableUniform(this.$outer, element, surfaceCount));
-      destination.put_xwzc9p$(pair.first, pair.second);
-    }
-    this.adjustableUniforms_edok6n$_0 = destination;
-    this.uvCoordTexture_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$uvCoordTexture$lambda(this.$outer));
-    this.frameBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$frameBuffer$lambda(this.$outer));
-    this.renderBuffer_0 = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$renderBuffer$lambda(this.$outer));
-    this.pixelBuffer = new Uint8Array(this.$outer.get_bufSize_s8ev3n$(pixelCount) * 4 | 0);
-    this.uvCoordsFloat32_0 = new Float32Array(toTypedArray_0(uvCoords));
-  }
-  Object.defineProperty(JsGlslRenderer$Instance.prototype, 'adjustableUniforms', {
-    get: function () {
-      return this.adjustableUniforms_edok6n$_0;
-    }
-  });
-  function JsGlslRenderer$Instance$bindFramebuffer$lambda(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.bindFramebuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, this$Instance.frameBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindFramebuffer$lambda_0(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.bindRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, this$Instance.renderBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindFramebuffer$lambda_1(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.renderbufferStorage(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, JsGlslRenderer$Companion_getInstance().GL.RGBA4, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount));
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindFramebuffer$lambda_2(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.framebufferRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, JsGlslRenderer$Companion_getInstance().GL.COLOR_ATTACHMENT0, JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, this$Instance.renderBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindFramebuffer$lambda_3(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.checkFramebufferStatus(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER);
-    };
-  }
-  JsGlslRenderer$Instance.prototype.bindFramebuffer = function () {
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_0(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_1(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_2(this.$outer, this));
-    var status = this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindFramebuffer$lambda_3(this.$outer));
-    if (status !== JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER_COMPLETE) {
-      throw RuntimeException_init('FrameBuffer huh? ' + status);
-    }
-  };
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda(this$JsGlslRenderer, closure$textureIndex) {
-    return function () {
-      this$JsGlslRenderer.gl.activeTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE0 + closure$textureIndex | 0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_0(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, this$Instance.uvCoordTexture_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MIN_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_2(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.texParameteri(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, JsGlslRenderer$Companion_getInstance().GL.TEXTURE_MAG_FILTER, JsGlslRenderer$Companion_getInstance().GL.NEAREST);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_3(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.texImage2D(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, 0, JsGlslRenderer$Companion_getInstance().GL2.R32F, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount) * 2 | 0, this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount), 0, JsGlslRenderer$Companion_getInstance().GL2.RED, JsGlslRenderer$Companion_getInstance().GL.FLOAT, this$Instance.uvCoordsFloat32_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$bindUvCoordTexture$lambda_4(this$JsGlslRenderer, closure$uvCoordsLocation, closure$textureIndex) {
-    return function () {
-      this$JsGlslRenderer.gl.uniform1i(this$JsGlslRenderer.get_location_0(closure$uvCoordsLocation), closure$textureIndex);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Instance.prototype.bindUvCoordTexture_msnecj$ = function (textureIndex, uvCoordsLocation) {
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda(this.$outer, textureIndex));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_0(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_1(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_2(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_3(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$bindUvCoordTexture$lambda_4(this.$outer, uvCoordsLocation, textureIndex));
-  };
-  JsGlslRenderer$Instance.prototype.getPixel_za3lpa$ = function (pixelIndex) {
-    var offset = pixelIndex * 4 | 0;
-    return Color_init_2(this.pixelBuffer[offset], this.pixelBuffer[offset + 1 | 0], this.pixelBuffer[offset + 2 | 0], this.pixelBuffer[offset + 3 | 0]);
-  };
-  function JsGlslRenderer$Instance$copyToPixelBuffer$lambda(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.readPixels(0, 0, this$JsGlslRenderer.get_bufWidth_s8ev3n$(this$Instance.pixelCount), this$JsGlslRenderer.get_bufHeight_s8ev3n$(this$Instance.pixelCount), JsGlslRenderer$Companion_getInstance().GL.RGBA, JsGlslRenderer$Companion_getInstance().GL.UNSIGNED_BYTE, this$Instance.pixelBuffer);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Instance.prototype.copyToPixelBuffer = function () {
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$copyToPixelBuffer$lambda(this.$outer, this));
-  };
-  function JsGlslRenderer$Instance$release$lambda(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.bindRenderbuffer(JsGlslRenderer$Companion_getInstance().GL.RENDERBUFFER, null);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$release$lambda_0(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.bindFramebuffer(JsGlslRenderer$Companion_getInstance().GL.FRAMEBUFFER, null);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$release$lambda_1(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.bindTexture(JsGlslRenderer$Companion_getInstance().GL.TEXTURE_2D, null);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$release$lambda_2(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.deleteFramebuffer(this$Instance.frameBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$release$lambda_3(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.deleteRenderbuffer(this$Instance.renderBuffer_0);
-      return Unit;
-    };
-  }
-  function JsGlslRenderer$Instance$release$lambda_4(this$JsGlslRenderer, this$Instance) {
-    return function () {
-      this$JsGlslRenderer.gl.deleteTexture(this$Instance.uvCoordTexture_0);
-      return Unit;
-    };
-  }
-  JsGlslRenderer$Instance.prototype.release = function () {
-    println('Release ' + this + ' with ' + this.pixelCount + ' pixels and ' + this.uvCoords.length + ' uvs');
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_0(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_1(this.$outer));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_2(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_3(this.$outer, this));
-    this.$outer.gl_klfg04$(JsGlslRenderer$Instance$release$lambda_4(this.$outer, this));
-  };
-  function JsGlslRenderer$Instance$uvCoordTexture$lambda(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createTexture();
-    };
-  }
-  function JsGlslRenderer$Instance$frameBuffer$lambda(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createFramebuffer();
-    };
-  }
-  function JsGlslRenderer$Instance$renderBuffer$lambda(this$JsGlslRenderer) {
-    return function () {
-      return this$JsGlslRenderer.gl.createRenderbuffer();
-    };
-  }
-  JsGlslRenderer$Instance.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Instance',
-    interfaces: [GlslRenderer$Instance]
-  };
-  JsGlslRenderer.prototype.get_location_0 = function ($receiver) {
-    var tmp$;
-    return (tmp$ = $receiver != null ? $receiver.locationInternal : null) == null || Kotlin.isType(tmp$, WebGLUniformLocation) ? tmp$ : throwCCE();
-  };
-  function JsGlslRenderer_init$lambda(this$JsGlslRenderer) {
-    return function () {
-      this$JsGlslRenderer.gl.clearColor(0.0, 0.5, 0.0, 1.0);
-      return Unit;
-    };
-  }
-  JsGlslRenderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'JsGlslRenderer',
-    interfaces: [GlslRenderer]
-  };
   function NativeBitmap(width, height) {
     CanvasBitmap.call(this, createCanvas(width, height));
     this.width_geohfm$_0 = width;
@@ -19673,7 +19725,7 @@
     }
   });
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_fqrh44$ = function (bytes) {
-    this.closure$webSocket.send(new Int8Array(toTypedArray_1(bytes)));
+    this.closure$webSocket.send(new Int8Array(toTypedArray_0(bytes)));
   };
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
@@ -21285,20 +21337,40 @@
   package$geom.center_21sjvd$ = center;
   package$geom.extents_21sjvd$ = extents;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
+  package$glsl.AdjustableUniform = AdjustableUniform;
+  package$glsl.UnifyingAdjustableUniform = UnifyingAdjustableUniform;
+  package$glsl.checkForGlError_t0jnzc$ = checkForGlError;
+  package$glsl.check_56a5t8$ = check;
   package$glsl.GlslManager = GlslManager;
-  GlslRenderer.AdjustibleUniform = GlslRenderer$AdjustibleUniform;
-  GlslRenderer.Instance = GlslRenderer$Instance;
-  GlslRenderer.Uniform = GlslRenderer$Uniform;
+  GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
+  GlslRenderer.SurfaceMonoPixel = GlslRenderer$SurfaceMonoPixel;
+  $$importsForInline$$.sparklemotion = _;
+  GlslRenderer.Arrangement = GlslRenderer$Arrangement;
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
+  GlslRenderer.ContextSwitcher = GlslRenderer$ContextSwitcher;
+  GlslRenderer.Stats = GlslRenderer$Stats;
   package$glsl.GlslRenderer = GlslRenderer;
   package$glsl.GlslSurface = GlslSurface;
+  package$glsl.SurfacePixels = SurfacePixels;
+  Object.defineProperty(Program, 'Companion', {
+    get: Program$Companion_getInstance
+  });
+  package$glsl.Program = Program;
+  package$glsl.Quad = Quad;
+  Object.defineProperty(Shader_0, 'Companion', {
+    get: Shader$Companion_getInstance_0
+  });
+  package$glsl.Shader = Shader_0;
+  Object.defineProperty(Uniform, 'Companion', {
+    get: Uniform$Companion_getInstance
+  });
+  package$glsl.Uniform = Uniform;
   UvTranslator.SurfaceUvTranslator = UvTranslator$SurfaceUvTranslator;
   package$glsl.UvTranslator = UvTranslator;
   Object.defineProperty(package$glsl, 'PanelSpaceUvTranslator', {
     get: PanelSpaceUvTranslator_getInstance
   });
   package$glsl.ModelSpaceUvTranslator = ModelSpaceUvTranslator;
-  package$glsl.SurfacePixels = SurfacePixels;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
   package$imaging.Bitmap = Bitmap;
@@ -21637,20 +21709,10 @@
   var package$browser = package$baaahs.browser || (package$baaahs.browser = {});
   package$browser.RealMediaDevices = RealMediaDevices;
   package$geom.Vector2 = Vector2_0;
+  GlslBase.prototype.JsGlslManager = GlslBase$JsGlslManager;
   Object.defineProperty(package$glsl, 'GlslBase', {
     get: GlslBase_getInstance
   });
-  package$glsl.JsGlslManager = JsGlslManager;
-  JsGlslRenderer.Quad = JsGlslRenderer$Quad;
-  JsGlslRenderer.SurfacePixels = JsGlslRenderer$SurfacePixels;
-  JsGlslRenderer.SurfaceMonoPixel = JsGlslRenderer$SurfaceMonoPixel;
-  Object.defineProperty(JsGlslRenderer, 'Companion', {
-    get: JsGlslRenderer$Companion_getInstance
-  });
-  JsGlslRenderer.UnifyingAdjustableUniform = JsGlslRenderer$UnifyingAdjustableUniform;
-  JsGlslRenderer.AwesomerAdjustableUniform = JsGlslRenderer$AwesomerAdjustableUniform;
-  JsGlslRenderer.Instance = JsGlslRenderer$Instance;
-  package$glsl.JsGlslRenderer = JsGlslRenderer;
   package$imaging.NativeBitmap = NativeBitmap;
   package$imaging.createCanvas_vux9f0$ = createCanvas;
   package$imaging.CanvasBitmap = CanvasBitmap;
@@ -21722,11 +21784,11 @@
   Matrix4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
-  PanelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
-  ModelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
   Object.defineProperty(SurfacePixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SurfacePixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SurfacePixels.prototype.iterator = Pixels.prototype.iterator;
+  PanelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
+  ModelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
   DateTimeSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$PixelData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;

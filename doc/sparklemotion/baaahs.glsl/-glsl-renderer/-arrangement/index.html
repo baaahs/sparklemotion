@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslRenderer.Arrangement - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="../index.html">GlslRenderer</a>&nbsp;/&nbsp;<a href="./index.html">Arrangement</a><br/>
+<br/>
+<h1>Arrangement</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Arrangement</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Arrangement</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.glsl.GlslSurface)))/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.glsl.GlslSurface)))/uvCoords">uvCoords</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.glsl.GlslSurface)))/surfaces">surfaces</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-glsl-surface/index.html"><span class="identifier">GlslSurface</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="adjustable-uniforms.html">adjustableUniforms</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">adjustableUniforms</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-adjustable-uniform/index.html"><span class="identifier">AdjustableUniform</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="pixel-count.html">pixelCount</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="surfaces.html">surfaces</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">surfaces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-glsl-surface/index.html"><span class="identifier">GlslSurface</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="uv-coords.html">uvCoords</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uvCoords</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="bind-framebuffer.html">bindFramebuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindFramebuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="bind-uniforms.html">bindUniforms</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindUniforms</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="bind-uv-coord-texture.html">bindUvCoordTexture</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindUvCoordTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$bindUvCoordTexture(kotlin.Int, baaahs.glsl.Uniform)/textureIndex">textureIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$bindUvCoordTexture(kotlin.Int, baaahs.glsl.Uniform)/uvCoordsLocation">uvCoordsLocation</span><span class="symbol">:</span>&nbsp;<a href="../../-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="copy-to-pixel-buffer.html">copyToPixelBuffer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">copyToPixelBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="get-pixel.html">getPixel</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer.Arrangement$getPixel(kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="release.html">release</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

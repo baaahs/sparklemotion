@@ -8,30 +8,44 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="./index.html">GlslRenderer</a><br/>
 <br/>
 <h1>GlslRenderer</h1>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslRenderer</span></code>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">GlslRenderer</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-adjustible-uniform/index.html">AdjustibleUniform</a></p>
+<p><a href="-arrangement/index.html">Arrangement</a></p>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">AdjustibleUniform</span></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Arrangement</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-instance/index.html">Instance</a></p>
+<p><a href="-context-switcher/index.html">ContextSwitcher</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Instance</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">ContextSwitcher</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-uniform/index.html">Uniform</a></p>
+<p><a href="-stats/index.html">Stats</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Uniform</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Stats</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-surface-mono-pixel/index.html">SurfaceMonoPixel</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SurfaceMonoPixel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-surface-pixels/index.html">SurfacePixels</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SurfacePixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -50,7 +64,7 @@
 <p><a href="-init-.html">&lt;init&gt;</a></p>
 </td>
 <td>
-<code><span class="identifier">GlslRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/fragShader">fragShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/adjustableValues">adjustableValues</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.shaders/-glsl-shader/-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(, baaahs.glsl.GlslRenderer.ContextSwitcher, kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)), kotlin.String)/gl">gl</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(, baaahs.glsl.GlslRenderer.ContextSwitcher, kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)), kotlin.String)/contextSwitcher">contextSwitcher</span><span class="symbol">:</span>&nbsp;<a href="-context-switcher/index.html"><span class="identifier">GlslRenderer.ContextSwitcher</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(, baaahs.glsl.GlslRenderer.ContextSwitcher, kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)), kotlin.String)/fragShader">fragShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(, baaahs.glsl.GlslRenderer.ContextSwitcher, kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)), kotlin.String)/adjustableValues">adjustableValues</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.shaders/-glsl-shader/-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(, baaahs.glsl.GlslRenderer.ContextSwitcher, kotlin.String, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)), kotlin.String)/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -66,10 +80,10 @@
 </tr>
 <tr>
 <td>
-<p><a href="adjustable-value-uniform-indices.html">adjustableValueUniformIndices</a></p>
+<p><a href="arrangement.html">arrangement</a></p>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">adjustableValueUniformIndices</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">var </span><span class="identifier">arrangement</span><span class="symbol">: </span><a href="-arrangement/index.html"><span class="identifier">GlslRenderer.Arrangement</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -101,17 +115,17 @@
 </tr>
 <tr>
 <td>
+<p><a href="gl.html">gl</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">gl</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="glsl-surfaces.html">glslSurfaces</a></p>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">glslSurfaces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../-glsl-surface/index.html"><span class="identifier">GlslSurface</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="instance.html">instance</a></p>
-</td>
-<td>
-<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">instance</span><span class="symbol">: </span><a href="-instance/index.html"><span class="identifier">GlslRenderer.Instance</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -143,6 +157,20 @@
 </tr>
 <tr>
 <td>
+<p><a href="program.html">program</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">program</span><span class="symbol">: </span><a href="../-program/index.html"><span class="identifier">Program</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="stats.html">stats</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">stats</span><span class="symbol">: </span><a href="-stats/index.html"><span class="identifier">GlslRenderer.Stats</span></a></code></td>
+</tr>
+<tr>
+<td>
 <p><a href="surface-ordinal-texture-index.html">surfaceOrdinalTextureIndex</a></p>
 </td>
 <td>
@@ -169,45 +197,31 @@
 </tr>
 <tr>
 <td>
-<p><a href="create-instance.html">createInstance</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createInstance</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$createInstance(kotlin.Int, kotlin.FloatArray, kotlin.Int)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createInstance(kotlin.Int, kotlin.FloatArray, kotlin.Int)/uvCoords">uvCoords</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createInstance(kotlin.Int, kotlin.FloatArray, kotlin.Int)/surfaceCount">surfaceCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-instance/index.html"><span class="identifier">GlslRenderer.Instance</span></a></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="create-surface-mono-pixel.html">createSurfaceMonoPixel</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createSurfaceMonoPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfaceMonoPixel(baaahs.Surface, kotlin.Int)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfaceMonoPixel(baaahs.Surface, kotlin.Int)/pixelOffset">pixelOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createSurfaceMonoPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfaceMonoPixel(baaahs.Surface, kotlin.Int)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfaceMonoPixel(baaahs.Surface, kotlin.Int)/pixelOffset">pixelOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="create-surface-pixels.html">createSurfacePixels</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createSurfacePixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfacePixels(baaahs.Surface, kotlin.Int)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfacePixels(baaahs.Surface, kotlin.Int)/pixelOffset">pixelOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createSurfacePixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfacePixels(baaahs.Surface, kotlin.Int)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$createSurfacePixels(baaahs.Surface, kotlin.Int)/pixelOffset">pixelOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="draw.html">draw</a></p>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="find-uniforms.html">findUniforms</a></p>
+<p><a href="gl.html">gl</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">findUniforms</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="get-uniform-location.html">getUniformLocation</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getUniformLocation</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$getUniformLocation(kotlin.String, kotlin.Boolean)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$getUniformLocation(kotlin.String, kotlin.Boolean)/required">required</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span><span class="symbol">: </span><a href="-uniform/index.html"><span class="identifier">GlslRenderer.Uniform</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">gl</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$gl(kotlin.Function0((baaahs.glsl.GlslRenderer.gl.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="gl.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="gl.html#T"><span class="identifier">T</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -215,32 +229,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">incorporateNewSurfaces</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="with-gl-context.html">withGlContext</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">withGlContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$withGlContext(kotlin.Function0((baaahs.glsl.GlslRenderer.withGlContext.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="with-gl-context.html#T"><span class="identifier">T</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="with-gl-context.html#T"><span class="identifier">T</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../-js-glsl-renderer/index.html">JsGlslRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsGlslRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslRenderer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../-jvm-glsl-renderer/index.html">JvmGlslRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmGlslRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslRenderer</span></a></code></td>
 </tr>
 </tbody>
 </table>
