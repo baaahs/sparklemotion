@@ -24,7 +24,7 @@ open class GlslRenderer(
     var surfaceOrdinalTextureIndex = 1
     var nextTextureIndex = 2
 
-    lateinit var arrangement: Arrangement
+    var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
     private var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
@@ -237,13 +237,14 @@ void main(void) {
                 UnifyingAdjustableUniform(program, adjustableValue, surfaces.size)
             }
 
-        private var uvCoordTexture = gl { gl.createTextures(1)[0] }
-        private val frameBuffer = gl { gl.createFramebuffer()!! }
-        private val renderBuffer = gl { gl.createRenderbuffer()!! }
+        private var uvCoordTexture = gl { gl.createTexture() }
+        private val frameBuffer = gl { gl.createFramebuffer() }
+        private val renderBuffer = gl { gl.createRenderbuffer() }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
         private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
 
         fun bindFramebuffer() {
+            gl.checkForGlError()
             gl { gl.bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
 
             gl { gl.bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
