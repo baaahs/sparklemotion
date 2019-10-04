@@ -24,7 +24,7 @@ class FakeNetwork(
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
-    override fun link(): Network.Link {
+    override fun link(): FakeLink {
         val address = FakeAddress(nextAddress++)
         return FakeLink(address)
     }
