@@ -22,7 +22,12 @@ class App extends Component {
     this.state = {
       showPickerOpen: false,
       selectedTab: SHOWS,
+      isConnected: props.pubSub.isConnected,
     };
+
+    props.pubSub.addStateChangeListener(function() {
+      this.setState({ isConnected: pubSub.isConnected });
+    }.bind(this));
   }
 
   close = () => {
@@ -50,10 +55,21 @@ class App extends Component {
 
   render() {
     const { pubSub } = this.props;
-    const { selectedTab } = this.state;
+    const { selectedTab, isConnected } = this.state;
 
     return (
       <Fragment>
+        <div id="errorMessage" style={{
+          height: "5vh",
+          width: "100%",
+          backgroundColor: "pink",
+          color: "black",
+          textAlign: "center",
+          fontSize: "2em",
+          display: isConnected ? "none" : "block"
+        }}>
+          Lost connection, reconnecting…
+        </div>
         <TabBar
           tabs={MAIN_TABS}
           activeTab={selectedTab}

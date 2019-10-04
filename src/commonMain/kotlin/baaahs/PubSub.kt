@@ -3,11 +3,16 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.plus
+import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 
 abstract class PubSub {
@@ -76,6 +81,7 @@ abstract class PubSub {
             debug("connection $this established")
             connection = tcpConnection
             isConnected = true
+
             toSend.forEach { tcpConnection.send(it) }
             toSend.clear()
         }
@@ -85,8 +91,7 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = topics[topicName] ?:
-                            throw IllegalArgumentException("Unknown topic $topicName")
+                    val topicInfo = topics[topicName] ?: throw IllegalArgumentException("Unknown topic $topicName")
 
                     val listener = object : Listener(this) {
                         override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
@@ -210,20 +215,43 @@ abstract class PubSub {
         }
     }
 
-    class Client(link: Network.Link, serverAddress: Network.Address, port: Int) : Endpoint() {
-        val isConnected: Boolean get() = server.isConnected
+    class Client(
+        link: Network.Link,
+        serverAddress: Network.Address,
+        port: Int,
+        coroutineScope: CoroutineScope = GlobalScope
+    ) : Endpoint() {
+        @JsName("isConnected")
+        val isConnected: Boolean
+            get() = server.isConnected
         private val stateChangeListeners = mutableListOf<() -> Unit>()
 
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
         private var server: Connection = object : Connection("client at ${link.myAddress}", topics, json) {
+            override fun connected(tcpConnection: Network.TcpConnection) {
+                super.connected(tcpConnection)
+
+                notifyChangeListeners()
+            }
+
             override fun reset(tcpConnection: Network.TcpConnection) {
                 super.reset(tcpConnection)
+                notifyChangeListeners()
 
-                stateChangeListeners.forEach { callback -> callback() }
+                coroutineScope.launch {
+                    println("we got called!")
+                    delay(1000)
+                    println("a second passed!")
+                    connectWebSocket(link, serverAddress, port)
+                }
             }
         }
 
         init {
+            connectWebSocket(link, serverAddress, port)
+        }
+
+        private fun connectWebSocket(link: Network.Link, serverAddress: Network.Address, port: Int) {
             link.connectWebSocket(serverAddress, port, "/sm/ws", server)
         }
 
@@ -267,8 +295,13 @@ abstract class PubSub {
             }
         }
 
+        @JsName("addStateChangeListener")
         fun addStateChangeListener(callback: () -> Unit) {
             stateChangeListeners.add(callback)
+        }
+
+        private fun notifyChangeListeners() {
+            stateChangeListeners.forEach { callback -> callback() }
         }
     }
 }

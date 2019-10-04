@@ -128,7 +128,7 @@ private class TestHandler {
     }
 
     internal fun postDelayed(block: Runnable, delayTime: Long) {
-        val run = TimedRunnable(block, counter++, time + delayTime.milliseconds.inNanoseconds.longValue)
+        val run = TimedRunnable(block, counter++, time + delayTime.milliseconds.longValue * 1_000_000L)
         queue.add(run)
     }
 
