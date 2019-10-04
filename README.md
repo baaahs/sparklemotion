@@ -44,6 +44,10 @@ and poked at the resulting simulator UI, you should be able to do the following 
 in *standalone JVM mode*. This is required if you want to talk to actual Brain hardware.
 
     ./gradlew runPinkyJvm
+
+If you don't have a Brain running locally, do this too:
+
+    ./gradlew runBrainJvm
     
 When running in this mode you should be able to access the UI at http://localhost:8004 
 
