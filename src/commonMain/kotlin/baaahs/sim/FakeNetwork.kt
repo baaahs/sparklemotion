@@ -33,9 +33,11 @@ class FakeNetwork(
     private fun receivePacketSuccess() = Random.nextFloat() > packetLossRate() / 2
     private fun packetLossRate() = display?.packetLossRate ?: 0f
 
-    private inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
+    inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
         private var nextAvailablePort = 65000
+        var webSocketListeners = mutableListOf<Network.WebSocketListener>()
+        var tcpConnections = mutableListOf<Network.TcpConnection>()
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val serverPort = if (port == 0) nextAvailablePort++ else port
@@ -57,6 +59,8 @@ class FakeNetwork(
             path: String,
             webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
+            webSocketListeners.add(webSocketListener)
+
             val fakeHttpServer = httpServersByPort[toAddress to port]
             val onConnectCallback = fakeHttpServer?.webSocketListeners?.get(path)
             if (onConnectCallback == null) {
@@ -65,6 +69,7 @@ class FakeNetwork(
                     networkDelay()
                     webSocketListener.reset(connection)
                 }
+                tcpConnections.add(connection)
                 return connection
             }
 
@@ -88,7 +93,7 @@ class FakeNetwork(
                 networkDelay()
                 serverListener.connected(serverSideConnection)
             }
-
+            tcpConnections.add(clientSideConnection)
             return clientSideConnection
         }
 

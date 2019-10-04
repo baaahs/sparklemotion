@@ -3,11 +3,11 @@ package baaahs
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.expect
 
 @InternalCoroutinesApi
 class PubSubTest {
@@ -18,7 +18,7 @@ class PubSubTest {
     val server = PubSub.listen(serverNetwork.startHttpServer(1234))
     val serverLog = mutableListOf<String>()
 
-    val client1Network = network.link()
+    val client1Network = network.link() as FakeNetwork.FakeLink
     val client1 = PubSub.connect(client1Network, serverNetwork.myAddress, 1234)
     val client1Log = mutableListOf<String>()
 
@@ -76,5 +76,25 @@ class PubSubTest {
 
         serverLog.assertEmpty()
         client1Log.assertContents("topic1 changed: second value")
+    }
+
+    @Test
+    fun beforeConnectionIsMade_isConnectedShouldBeFalse() {
+        expect(false) { client1.isConnected }
+        testCoroutineContext.runAll()
+        expect(true) { client1.isConnected }
+    }
+
+    @Test
+    fun whenConnectionIsReset_ShouldNotifyListenerOfStateChange() {
+        testCoroutineContext.runAll()
+        expect(true) { client1.isConnected }
+
+        client1.addStateChangeListener { client1Log.add("isConnected was changed to ${client1.isConnected}") }
+
+        // trigger a connection reset
+        client1Network.webSocketListeners[0].reset(client1Network.tcpConnections[0])
+
+        client1Log.assertContents("isConnected was changed to false")
     }
 }
