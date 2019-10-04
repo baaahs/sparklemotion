@@ -66,6 +66,8 @@ abstract class PubSub {
         private val topics: MutableMap<String, TopicInfo>,
         private val json: Json
     ) : Origin(), Network.WebSocketListener {
+        var isConnected: Boolean = false
+
         protected var connection: Network.TcpConnection? = null
         private val toSend: MutableList<ByteArray> = mutableListOf()
         private val cleanup: MutableList<() -> Unit> = mutableListOf()
@@ -73,6 +75,7 @@ abstract class PubSub {
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $this established")
             connection = tcpConnection
+            isConnected = true
             toSend.forEach { tcpConnection.send(it) }
             toSend.clear()
         }
@@ -133,6 +136,7 @@ abstract class PubSub {
 
         override fun reset(tcpConnection: Network.TcpConnection) {
             logger.info { "PubSub client $name disconnected." }
+            isConnected = false
             cleanup.forEach { it.invoke() }
         }
 
@@ -207,8 +211,17 @@ abstract class PubSub {
     }
 
     class Client(link: Network.Link, serverAddress: Network.Address, port: Int) : Endpoint() {
+        val isConnected: Boolean get() = server.isConnected
+        private val stateChangeListeners = mutableListOf<() -> Unit>()
+
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
-        private var server: Connection = Connection("client at ${link.myAddress}", topics, json)
+        private var server: Connection = object : Connection("client at ${link.myAddress}", topics, json) {
+            override fun reset(tcpConnection: Network.TcpConnection) {
+                super.reset(tcpConnection)
+
+                stateChangeListeners.forEach { callback -> callback() }
+            }
+        }
 
         init {
             link.connectWebSocket(serverAddress, port, "/sm/ws", server)
@@ -252,6 +265,10 @@ abstract class PubSub {
                     // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
             }
+        }
+
+        fun addStateChangeListener(callback: () -> Unit) {
+            stateChangeListeners.add(callback)
         }
     }
 }
