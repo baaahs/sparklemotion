@@ -10244,17 +10244,17 @@
   }
   function GlslRenderer$uvCoordsUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'sm_uvCoords');
+      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'sm_uvCoords');
     };
   }
   function GlslRenderer$resolutionUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'resolution');
+      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'resolution');
     };
   }
   function GlslRenderer$timeUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_gpfe1h$(this$GlslRenderer.gl, this$GlslRenderer.program, 'time');
+      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'time');
     };
   }
   function GlslRenderer$quad$lambda(this$GlslRenderer) {
@@ -10583,7 +10583,7 @@
   function Uniform$Companion() {
     Uniform$Companion_instance = this;
   }
-  Uniform$Companion.prototype.find_gpfe1h$ = function (gl, program, name) {
+  Uniform$Companion.prototype.find_m36rd6$ = function (program, name) {
     return program.getUniform_61zpoe$(name);
   };
   Uniform$Companion.$metadata$ = {
