@@ -2,6 +2,8 @@
 
 [![CircleCI:master](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
+[Simulator](https://baaahs.github.io/sparklemotion)
+
 ## Documentation
 * [Show API](show_api.md)
 * [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/)
