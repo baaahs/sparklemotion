@@ -12,7 +12,7 @@ class Uniform internal constructor(private val gl: Kgl, val uniformLocation: Uni
     fun set(x: Float, y: Float, z: Float) = gl.uniform3f(uniformLocation, x, y, z)
 
     companion object {
-        fun find(gl: Kgl, program: Program, name: String): Uniform? {
+        fun find(program: Program, name: String): Uniform? {
             return program.getUniform(name)
         }
     }

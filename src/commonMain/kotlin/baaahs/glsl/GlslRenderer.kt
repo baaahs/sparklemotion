@@ -27,9 +27,9 @@ open class GlslRenderer(
     var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
-    private var uvCoordsUniform: Uniform? = gl { Uniform.find(gl, program, "sm_uvCoords") }
-    private var resolutionUniform: Uniform? = gl { Uniform.find(gl, program, "resolution") }
-    private var timeUniform: Uniform? = gl { Uniform.find(gl, program, "time") }
+    private var uvCoordsUniform: Uniform? = gl { Uniform.find(program, "sm_uvCoords") }
+    private var resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
+    private var timeUniform: Uniform? = gl { Uniform.find(program, "time") }
 
     private val quad: Quad = gl { Quad(gl, program) }
 
