@@ -2,13 +2,13 @@
 
 [![CircleCI:master](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
-[Simulator](https://baaahs.github.io/sparklemotion)
-
 ## Documentation
 * [Show API](show_api.md)
 * [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/)
 
-<img src="/demo.gif" alt="Simulator" width="400"> <img src="/brc-2019.gif" alt="BRC 2019" width="400">
+| | |
+| --- | --- |
+| <img src="/demo.gif" alt="Simulator" width="400"> <br/> [Simulator](https://baaahs.github.io/sparklemotion) | <img src="/brc-2019.gif" alt="BRC 2019" width="400"> |
 
 ## Prerequisites
 
