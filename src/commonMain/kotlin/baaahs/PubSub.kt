@@ -12,7 +12,6 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.EmptyModule
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.plus
-import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 
 abstract class PubSub {
@@ -74,16 +73,12 @@ abstract class PubSub {
         var isConnected: Boolean = false
 
         protected var connection: Network.TcpConnection? = null
-        private val toSend: MutableList<ByteArray> = mutableListOf()
         private val cleanup: MutableList<() -> Unit> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $this established")
             connection = tcpConnection
             isConnected = true
-
-            toSend.forEach { tcpConnection.send(it) }
-            toSend.clear()
         }
 
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -121,22 +116,30 @@ abstract class PubSub {
         }
 
         fun sendTopicUpdate(name: String, data: JsonElement) {
-            debug("update $name $data")
+            if (isConnected) {
+                debug("update $name $data")
 
-            val writer = ByteArrayWriter()
-            writer.writeString("update")
-            writer.writeString(name)
-            writer.writeString(json.stringify(JsonElementSerializer, data))
-            sendCommand(writer.toBytes())
+                val writer = ByteArrayWriter()
+                writer.writeString("update")
+                writer.writeString(name)
+                writer.writeString(json.stringify(JsonElementSerializer, data))
+                sendCommand(writer.toBytes())
+            } else {
+                debug("not connected to server, so no update $name $data")
+            }
         }
 
         fun sendTopicSub(topicName: String) {
-            debug("sub $topicName")
+            if (isConnected) {
+                debug("sub $topicName")
 
-            val writer = ByteArrayWriter()
-            writer.writeString("sub")
-            writer.writeString(topicName)
-            sendCommand(writer.toBytes())
+                val writer = ByteArrayWriter()
+                writer.writeString("sub")
+                writer.writeString(topicName)
+                sendCommand(writer.toBytes())
+            } else {
+                debug("not connected to server, so no sub $topicName")
+            }
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
@@ -146,12 +149,7 @@ abstract class PubSub {
         }
 
         private fun sendCommand(bytes: ByteArray) {
-            val tcpConnection = connection
-            if (tcpConnection == null) {
-                toSend.add(bytes)
-            } else {
-                tcpConnection.send(bytes)
-            }
+            connection?.send(bytes)
         }
 
         private fun debug(message: String) {
@@ -231,6 +229,9 @@ abstract class PubSub {
             override fun connected(tcpConnection: Network.TcpConnection) {
                 super.connected(tcpConnection)
 
+                // If any topics were subscribed to before this connection was established, send the sub command now.
+                topics.values.forEach { topic -> sendTopicSub(topic.name) }
+
                 notifyChangeListeners()
             }
 
@@ -239,9 +240,7 @@ abstract class PubSub {
                 notifyChangeListeners()
 
                 coroutineScope.launch {
-                    println("we got called!")
                     delay(1000)
-                    println("a second passed!")
                     connectWebSocket(link, serverAddress, port)
                 }
             }
@@ -298,6 +297,11 @@ abstract class PubSub {
         @JsName("addStateChangeListener")
         fun addStateChangeListener(callback: () -> Unit) {
             stateChangeListeners.add(callback)
+        }
+
+        @JsName("removeStateChangeListener")
+        fun removeStateChangeListener(callback: () -> Unit) {
+            stateChangeListeners.remove(callback)
         }
 
         private fun notifyChangeListeners() {
