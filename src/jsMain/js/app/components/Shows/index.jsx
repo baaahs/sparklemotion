@@ -18,8 +18,6 @@ class Shows extends React.Component {
       selectedShow: null,
     };
 
-    this.pubSub = props.pubSub;
-
     this.drawerContainerRef = React.createRef();
   }
 

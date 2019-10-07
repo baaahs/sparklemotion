@@ -128,4 +128,38 @@ class PubSubTest {
         expect(2) { client1Network.tcpConnections.size }
         expect(true) { client1.isConnected }
     }
+
+    @Test
+    fun whenConnectionIsReset_resubscribeToTopics() {
+        val client1TopicObserver = client1.subscribe(topic1) { client1Log.add("topic1 changed: $it") }
+
+        val serverTopicObserver = server.publish(topic1, "value") {
+            serverLog.add("topic1 changed: $it")
+        }
+
+        expect(1) { client1Network.tcpConnections.size }
+        testCoroutineContext.triggerActions()
+        client1Log.assertContents("topic1 changed: value")
+
+        // trigger a connection reset
+        client1Network.webSocketListeners[0].reset(client1Network.tcpConnections[0])
+        expect(false) { client1.isConnected }
+
+        expect(1) { client1Network.tcpConnections.size }
+
+        // don't attempt a new connection until a second has passed
+        testCoroutineContext.triggerActions()
+        expect(1) { client1Network.tcpConnections.size }
+
+        testCoroutineContext.advanceTimeBy(2, Second())
+        testCoroutineContext.triggerActions()
+
+        // assert that there was a new outgoing connection
+        expect(2) { client1Network.tcpConnections.size }
+        expect(true) { client1.isConnected }
+
+        serverTopicObserver.onChange("new value")
+        testCoroutineContext.triggerActions()
+        client1Log.assertContents("topic1 changed: new value")
+    }
 }
