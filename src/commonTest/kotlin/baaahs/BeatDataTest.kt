@@ -23,4 +23,12 @@ class BeatDataTest {
         expect(3f) { BeatData(0.0, 500).beatWithinMeasure(FakeClock(1500.0)) }
         expect(3f) { BeatData(0.0, 500).beatWithinMeasure(FakeClock(3500.0)) }
     }
+
+    @Test
+    fun whenNoBeatDataPresent_beatAndTimeAreNegativeOne() {
+        expect(-1f) { BeatData(0.0, 0).beatWithinMeasure(FakeClock(0.0)) }
+        expect(-1f) { BeatData(0.0, 0).timeSinceMeasure(FakeClock(0.0)) }
+        expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
+        expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
+    }
 }
