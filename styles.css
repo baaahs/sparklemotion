@@ -68,7 +68,7 @@ body.noScroll {
     padding: 2px;
 }
 
-#beatsDiv > span {
+#beatsDiv > div {
     background-color: lightcyan;
     display: inline-block;
     border: 2px solid gray;
@@ -79,7 +79,7 @@ body.noScroll {
     text-align: center;
 }
 
-#beatsDiv > span.selected {
+#beatsDiv > div.selected {
     background-color: lightcoral;
 }
 
@@ -256,7 +256,7 @@ body.noScroll {
     padding: 20px;
     color: #ffaaff;
     font-family: 'Press Start 2P', sans-serif;
-    font-size: 16pt;
+    font-size: 10pt;
     font-style: normal;
     width: 100%;
     text-shadow: 1px 1px 3px black, -1px -1px 3px black;
@@ -267,7 +267,7 @@ body.noScroll {
     padding: 20px;
     color: #ff88ff;
     font-family: 'Press Start 2P', sans-serif;
-    font-size: 16pt;
+    font-size: 10pt;
     font-style: normal;
     width: 100%;
     text-shadow: 1px 1px 3px black, -1px -1px 3px black;

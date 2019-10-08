@@ -221,7 +221,6 @@
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
-  var removeSuffix = Kotlin.kotlin.text.removeSuffix_gsj5wt$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
@@ -16921,23 +16920,26 @@
     this.showElapsedMs_0 = ensureNotNull(document.getElementById('showElapsedMs'));
     this.statsSpan_0 = null;
     var tmp$;
+    appendText(element, 'Current Show: ');
+    this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda), HTMLSelectElement) ? tmp$ : throwCCE();
+    this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_0(this);
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_1);
     appendText(element, 'Brains online: ');
-    this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda);
-    var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_0);
-    this.beatConfidenceElement_0 = appendElement(beatsDiv, 'b', JsPinkyDisplay_init$lambda_1);
-    this.bpmSpan_0 = appendElement(beatsDiv, 'h1', JsPinkyDisplay_init$lambda_2);
-    this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
-    this.beat1_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_3);
-    this.beat2_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
-    this.beat3_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_5);
-    this.beat4_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_6);
+    this.brainCountDiv_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_2);
+    var beatsDiv = appendElement(element, 'div', JsPinkyDisplay_init$lambda_3);
+    this.beatConfidenceElement_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_4);
+    appendElement(beatsDiv, 'br', JsPinkyDisplay_init$lambda_5);
+    this.beat1_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_6);
+    this.beat2_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_7);
+    this.beat3_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_8);
+    this.beat4_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_9);
     this.beats_0 = listOf_0([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
-    appendElement(element, 'b', JsPinkyDisplay_init$lambda_7);
-    this.showListInput_0 = Kotlin.isType(tmp$ = appendElement(element, 'select', JsPinkyDisplay_init$lambda_8), HTMLSelectElement) ? tmp$ : throwCCE();
-    this.showListInput_0.onchange = JsPinkyDisplay_init$lambda_9(this);
-    appendElement(element, 'br', JsPinkyDisplay_init$lambda_10);
-    appendElement(element, 'b', JsPinkyDisplay_init$lambda_11);
-    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_12);
+    this.bpmSpan_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_10);
+    this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_11);
+    appendElement(element, 'b', JsPinkyDisplay_init$lambda_12);
+    appendElement(element, 'br', JsPinkyDisplay_init$lambda_13);
+    this.statsSpan_0 = appendElement(element, 'span', JsPinkyDisplay_init$lambda_14);
     this.brainCount_tt9c5b$_0 = 0;
     this.beat_o13evy$_0 = 0;
     this.bpm_32dxyb$_0 = 0.0;
@@ -16983,7 +16985,7 @@
     set: function (value) {
       var tmp$;
       this.stats_qcsqqr$_0 = value;
-      this.statsSpan_0.textContent = (tmp$ = value != null ? value.bytesSent.toString() + ' bytes / ' + value.packetsSent + ' packets sent' : null) != null ? tmp$ : '?';
+      this.statsSpan_0.textContent = (tmp$ = value != null ? value.bytesSent.toString() + ' bytes / ' + value.packetsSent + ' packets per frame' : null) != null ? tmp$ : '?';
     }
   });
   function JsPinkyDisplay$listShows$lambda$lambda(closure$it) {
@@ -17017,17 +17019,14 @@
       return this.beat_o13evy$_0;
     },
     set: function (value) {
-      var tmp$;
       try {
         clear_0(this.beats_0.get_za3lpa$(this.beat_o13evy$_0).classList);
         this.beats_0.get_za3lpa$(value).classList.add('selected');
         if (value % 2 === 1) {
           this.bpmSpan_0.classList.add('bpmDisplay-beatOn');
-          this.bpmSpan_0.textContent = this.bpmSpan_0.textContent + '!!';
         }
          else {
           this.bpmSpan_0.classList.remove('bpmDisplay-beatOn');
-          this.bpmSpan_0.textContent = (tmp$ = this.bpmSpan_0.textContent) != null ? removeSuffix(tmp$, ' !!') : null;
         }
       }
        catch (e) {
@@ -17053,12 +17052,7 @@
       return this.bpm_32dxyb$_0;
     },
     set: function (value) {
-      if (this.beat % 2 === 0) {
-        this.bpmSpan_0.textContent = this.format_lcymw2$(value, 1) + ' BPM !!';
-      }
-       else {
-        this.bpmSpan_0.textContent = this.format_lcymw2$(value, 1) + ' BPM';
-      }
+      this.bpmSpan_0.textContent = this.format_lcymw2$(value, 1) + ' BPM';
       this.bpm_32dxyb$_0 = value;
     }
   });
@@ -17075,54 +17069,10 @@
     return Unit;
   }
   function JsPinkyDisplay_init$lambda($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda$lambda($receiver) {
-    appendText($receiver, 'Beats: ');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_0($receiver) {
-    $receiver.id = 'beatsDiv';
-    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda);
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda$lambda_0($receiver) {
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_1($receiver) {
-    appendText($receiver, '[confidence: ?]');
-    appendElement($receiver, 'br', JsPinkyDisplay_init$lambda$lambda_0);
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_2($receiver) {
-    appendText($receiver, '\u2026BPM !!');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_3($receiver) {
-    appendText($receiver, '1');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_4($receiver) {
-    appendText($receiver, '2');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_5($receiver) {
-    appendText($receiver, '3');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_6($receiver) {
-    appendText($receiver, '4');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_7($receiver) {
-    appendText($receiver, 'Renderer: ');
-    return Unit;
-  }
-  function JsPinkyDisplay_init$lambda_8($receiver) {
     $receiver.className = 'showsDiv';
     return Unit;
   }
-  function JsPinkyDisplay_init$lambda_9(this$JsPinkyDisplay) {
+  function JsPinkyDisplay_init$lambda_0(this$JsPinkyDisplay) {
     return function (it) {
       var tmp$ = this$JsPinkyDisplay;
       var $receiver = this$JsPinkyDisplay.showList_0;
@@ -17146,14 +17096,59 @@
       return Unit;
     };
   }
+  function JsPinkyDisplay_init$lambda_1($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_2($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda$lambda($receiver) {
+    appendText($receiver, 'Beats: ');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_3($receiver) {
+    $receiver.id = 'beatsDiv';
+    appendElement($receiver, 'b', JsPinkyDisplay_init$lambda$lambda);
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_4($receiver) {
+    appendText($receiver, '[confidence: ?]');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_5($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_6($receiver) {
+    appendText($receiver, '1');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_7($receiver) {
+    appendText($receiver, '2');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_8($receiver) {
+    appendText($receiver, '3');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_9($receiver) {
+    appendText($receiver, '4');
+    return Unit;
+  }
   function JsPinkyDisplay_init$lambda_10($receiver) {
+    appendText($receiver, '\u2026BPM');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_11($receiver) {
-    appendText($receiver, 'Data to Brains: ');
     return Unit;
   }
   function JsPinkyDisplay_init$lambda_12($receiver) {
+    appendText($receiver, 'Data to Brains:');
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_13($receiver) {
+    return Unit;
+  }
+  function JsPinkyDisplay_init$lambda_14($receiver) {
     return Unit;
   }
   JsPinkyDisplay.$metadata$ = {
