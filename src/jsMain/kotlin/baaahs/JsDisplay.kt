@@ -84,7 +84,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     override var stats: Pinky.NetworkStats? = null
         set(value) {
             field = value
-            statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets sent" } ?: "?"
+            statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets per frame" } ?: "?"
         }
 
     private val brainCountDiv: Element
@@ -102,26 +102,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private var statsSpan: Element
 
     init {
-        element.appendText("Brains online: ")
-        brainCountDiv = element.appendElement("span") {}
-
-        val beatsDiv = element.appendElement("div") {
-            id = "beatsDiv"
-            appendElement("b") { appendText("Beats: ") }
-        }
-        beatConfidenceElement = beatsDiv.appendElement("b") {
-            appendText("[confidence: ?]")
-            appendElement("br") {}
-        }
-        bpmSpan = beatsDiv.appendElement("h1") { appendText("…BPM !!") }
-        bpmSpan.classList.add("bpmDisplay-beatOff")
-        beat1 = beatsDiv.appendElement("span") { appendText("1") }
-        beat2 = beatsDiv.appendElement("span") { appendText("2") }
-        beat3 = beatsDiv.appendElement("span") { appendText("3") }
-        beat4 = beatsDiv.appendElement("span") { appendText("4") }
-        beats = listOf(beat1, beat2, beat3, beat4)
-
-        element.appendElement("b") { appendText("Renderer: ") }
+        element.appendText("Current Show: ")
         showListInput = element.appendElement("select") { className = "showsDiv" } as HTMLSelectElement
         showListInput.onchange = {
             selectedShow = showList.find { it.name == showListInput.selectedOptions[0]?.textContent }
@@ -129,7 +110,29 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         }
 
         element.appendElement("br") { }
-        element.appendElement("b") { appendText("Data to Brains: ") }
+        element.appendText("Brains online: ")
+        brainCountDiv = element.appendElement("span") {}
+
+        val beatsDiv = element.appendElement("div") {
+            id = "beatsDiv"
+            appendElement("b") { appendText("Beats: ") }
+        }
+        beatConfidenceElement = beatsDiv.appendElement("span") {
+            appendText("[confidence: ?]")
+        }
+        beatsDiv.appendElement("br") {}
+        beat1 = beatsDiv.appendElement("div") { appendText("1") }
+        beat2 = beatsDiv.appendElement("div") { appendText("2") }
+        beat3 = beatsDiv.appendElement("div") { appendText("3") }
+        beat4 = beatsDiv.appendElement("div") { appendText("4") }
+        beats = listOf(beat1, beat2, beat3, beat4)
+
+        bpmSpan = beatsDiv.appendElement("span") { appendText("…BPM") }
+        bpmSpan.classList.add("bpmDisplay-beatOff")
+
+        element.appendElement("br") { }
+        element.appendElement("b") { appendText("Data to Brains:") }
+        element.appendElement("br") { }
         statsSpan = element.appendElement("span") {}
     }
 
@@ -155,10 +158,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
                 beats[value].classList.add("selected")
                 if (value % 2 == 1) {
                     bpmSpan.classList.add("bpmDisplay-beatOn")
-                    bpmSpan.textContent = bpmSpan.textContent + "!!"
                 } else {
                     bpmSpan.classList.remove("bpmDisplay-beatOn")
-                    bpmSpan.textContent = bpmSpan.textContent?.removeSuffix(" !!")
                 }
             } catch (e: Exception) {
                 println("durrr error $e")
@@ -172,11 +173,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
     override var bpm: Float = 0.0f
         set(value) {
-            if (beat % 2 == 0) {
-                bpmSpan.textContent = "${value.format(1)} BPM !!"
-            } else {
-                bpmSpan.textContent = "${value.format(1)} BPM"
-            }
+            bpmSpan.textContent = "${value.format(1)} BPM"
             field = value
         }
 
