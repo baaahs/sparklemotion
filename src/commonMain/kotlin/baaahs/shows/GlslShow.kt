@@ -71,13 +71,13 @@ abstract class GlslShow(name: String) : Show(name) {
 
     class BeatDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
         override fun getValue(): Any {
-            return beatData.fractionTilNextBeat(clock)
+            return beatData.fractionTillNextBeat(clock)
         }
     }
 
     class StartOfMeasureDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
         override fun getValue(): Any {
-            return beatData.fractionTilNextMeasure(clock)
+            return beatData.fractionTillNextMeasure(clock)
         }
     }
 }
