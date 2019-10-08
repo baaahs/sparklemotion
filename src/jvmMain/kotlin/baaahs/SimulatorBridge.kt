@@ -55,7 +55,6 @@ object SimulatorBridge {
     fun run() {
         val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
         beatLinkBeatSource.listen { beatData ->
-            println("BeatSource listener: $beatData")
             webSocketConnections.forEach {
                 it.outgoing.offer(Text(json.stringify(BeatData.serializer(), beatData)))
             }
