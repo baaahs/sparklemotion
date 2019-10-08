@@ -458,18 +458,22 @@
     }
   });
   BeatData.prototype.beatWithinMeasure_rnw5ii$ = function (clock) {
+    if (this.beatIntervalMs === 0)
+      return -1.0;
     var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
     return elapsedSinceStartOfMeasure / this.beatIntervalMs % this.beatsPerMeasure;
   };
   BeatData.prototype.timeSinceMeasure_rnw5ii$ = function (clock) {
+    if (this.beatIntervalMs === 0)
+      return -1.0;
     var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
     return elapsedSinceStartOfMeasure / this.beatIntervalMs;
   };
-  BeatData.prototype.fractionTilNextBeat_rnw5ii$ = function (clock) {
-    return 1 - this.beatWithinMeasure_rnw5ii$(clock) % 1.0;
+  BeatData.prototype.fractionTillNextBeat_rnw5ii$ = function (clock) {
+    return this.beatIntervalMs === 0 ? -1.0 : 1 - this.beatWithinMeasure_rnw5ii$(clock) % 1.0;
   };
-  BeatData.prototype.fractionTilNextMeasure_rnw5ii$ = function (clock) {
-    return 1 - this.timeSinceMeasure_rnw5ii$(clock);
+  BeatData.prototype.fractionTillNextMeasure_rnw5ii$ = function (clock) {
+    return this.beatIntervalMs === 0 ? -1.0 : 1 - this.timeSinceMeasure_rnw5ii$(clock);
   };
   function BeatData$Companion() {
     BeatData$Companion_instance = this;
@@ -15196,7 +15200,7 @@
     this.clock = clock;
   }
   GlslShow$BeatDataSource.prototype.getValue = function () {
-    return this.beatData.fractionTilNextBeat_rnw5ii$(this.clock);
+    return this.beatData.fractionTillNextBeat_rnw5ii$(this.clock);
   };
   GlslShow$BeatDataSource.$metadata$ = {
     kind: Kind_CLASS,
@@ -15208,7 +15212,7 @@
     this.clock = clock;
   }
   GlslShow$StartOfMeasureDataSource.prototype.getValue = function () {
-    return this.beatData.fractionTilNextMeasure_rnw5ii$(this.clock);
+    return this.beatData.fractionTillNextMeasure_rnw5ii$(this.clock);
   };
   GlslShow$StartOfMeasureDataSource.$metadata$ = {
     kind: Kind_CLASS,
