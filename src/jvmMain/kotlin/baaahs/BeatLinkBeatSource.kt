@@ -2,6 +2,7 @@ package baaahs
 
 import org.deepsymmetry.beatlink.*
 import kotlin.concurrent.thread
+import kotlin.math.abs
 
 /**
  * Listens to all connected CDJs' beat and tempo updates.
@@ -17,6 +18,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
     private val logger = Logger("BeatLinkBeatSource")
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
     private val listeners = mutableListOf<(BeatData) -> Unit>()
+    private var lastBeatAt: Time? = null
 
     fun start() {
         val deviceFinder = DeviceFinder.getInstance()
@@ -60,6 +62,18 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
             }
         }
 
+        thread(isDaemon = true, name = "Beat confidence decay") {
+            while (true) {
+                Thread.sleep(32)
+
+                lastBeatAt?.let {
+                    if (it < clock.now() - currentBeat.beatIntervalMs * currentBeat.beatsPerMeasure) {
+                        currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .9f)
+                    }
+                }
+            }
+        }
+
         val beatListener = BeatFinder.getInstance()
         beatListener.addBeatListener(this)
         beatListener.addOnAirListener(this)
@@ -82,11 +96,18 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
             // one channel is on air; pick the cdj that's on it
             || currentlyAudibleChannels.size == 1 && beat.deviceNumber == currentlyAudibleChannels.single()
         ) {
-            val beatIntervalMs = 60_000 / beat.effectiveTempo
-            val measureStartTime = clock.now() - beatIntervalMs * (beat.beatWithinBar - 1)
-            currentBeat = BeatData(measureStartTime, beatIntervalMs.toInt())
-            logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
-            notifyListeners()
+            val beatIntervalSec = 60.0 / beat.effectiveTempo
+            val beatIntervalMs = (beatIntervalSec * 1000).toInt()
+            val now = clock.now()
+            val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
+            if (currentBeat.beatIntervalMs != beatIntervalMs ||
+                abs(currentBeat.measureStartTime - measureStartTime) > 0.003
+            ) {
+                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
+                logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
+                notifyListeners()
+            }
+            lastBeatAt = now
         } else {
             logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Ignoring beat ${beat.beatWithinBar}" }
         }
