@@ -1,6 +1,7 @@
 package baaahs
 
 import org.deepsymmetry.beatlink.*
+import kotlin.concurrent.thread
 
 /** Listens to the current Master CDJ's beat and tempo updates. */
 class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener {
@@ -11,8 +12,9 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener 
     private var measureStartTime: Time? = null
 
     fun start() {
-        DeviceFinder.getInstance().start()
-        DeviceFinder.getInstance().addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
+        val deviceFinder = DeviceFinder.getInstance()
+        deviceFinder.start()
+        deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
                 println("Beat link: Lost device: ${announcement.name}")
             }
@@ -27,9 +29,30 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener 
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-        VirtualCdj.getInstance().useStandardPlayerNumber = true
-        VirtualCdj.getInstance().start()
-        VirtualCdj.getInstance().addMasterListener(this)
+        val virtualCdj = VirtualCdj.getInstance()
+        virtualCdj.useStandardPlayerNumber = true
+        virtualCdj.addMasterListener(this)
+        virtualCdj.addLifecycleListener(object : LifecycleListener {
+            override fun stopped(sender: LifecycleParticipant?) {
+                println("Beat link: VirtualCdj stopped!")
+            }
+
+            override fun started(sender: LifecycleParticipant?) {
+                println("Beat link: VirtualCdj started!")
+            }
+        })
+        virtualCdj.start()
+
+        thread(isDaemon = true, name = "VirtualCdj watchdog") {
+            while (true) {
+                Thread.sleep(5000)
+
+                if (!virtualCdj.isRunning) {
+                    println("Beat link: Attempting to restart VirtualCdj...")
+                    virtualCdj.start()
+                }
+            }
+        }
 
         BeatFinder.getInstance().start()
     }
@@ -57,7 +80,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener 
         }
     }
 
-    override fun masterChanged(update: DeviceUpdate) {
+    override fun masterChanged(update: DeviceUpdate?) {
 //        println("Master CDJ changed: tempo master is now player #${update.deviceNumber}")
     }
 
