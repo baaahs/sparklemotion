@@ -1,24 +1,35 @@
 package baaahs
 
 import org.deepsymmetry.beatlink.*
+import kotlin.concurrent.thread
+import kotlin.math.abs
 
-/** Listens to the current Master CDJ's beat and tempo updates. */
-class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener {
+/**
+ * Listens to all connected CDJs' beat and tempo updates.
+ *
+ * We pick the CDJ to sync shows to based on the following priority:
+ * 1) The CDJ that is currently on-air (has its fader up on the mixer)
+ * 2) If more than one CDJ is on-air, pick the CDJ that is the Tempo Master
+ */
+class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, OnAirListener {
 
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
 
+    private val logger = Logger("BeatLinkBeatSource")
+    private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
     private val listeners = mutableListOf<(BeatData) -> Unit>()
-    private var measureStartTime: Time? = null
+    private var lastBeatAt: Time? = null
 
     fun start() {
-        DeviceFinder.getInstance().start()
-        DeviceFinder.getInstance().addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
+        val deviceFinder = DeviceFinder.getInstance()
+        deviceFinder.start()
+        deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
-                println("Beat link: Lost device: ${announcement.name}")
+                logger.info { "Lost device: ${announcement.name}" }
             }
 
             override fun deviceFound(announcement: DeviceAnnouncement) {
-                println("Beat link: New device: ${announcement.name}")
+                logger.info { "New device: ${announcement.name}" }
             }
         })
 
@@ -27,38 +38,79 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, MasterListener 
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-        VirtualCdj.getInstance().useStandardPlayerNumber = true
-        VirtualCdj.getInstance().start()
-        VirtualCdj.getInstance().addMasterListener(this)
+        val virtualCdj = VirtualCdj.getInstance()
+        virtualCdj.useStandardPlayerNumber = true
+        virtualCdj.addLifecycleListener(object : LifecycleListener {
+            override fun stopped(sender: LifecycleParticipant?) {
+                logger.info { "VirtualCdj stopped!" }
+            }
 
-        BeatFinder.getInstance().start()
+            override fun started(sender: LifecycleParticipant?) {
+                logger.info { "VirtualCdj started as device ${virtualCdj.deviceNumber}" }
+            }
+        })
+        virtualCdj.start()
+
+        thread(isDaemon = true, name = "VirtualCdj watchdog") {
+            while (true) {
+                Thread.sleep(5000)
+
+                if (!virtualCdj.isRunning) {
+                    logger.info { "Attempting to restart VirtualCdj..." }
+                    virtualCdj.start()
+                }
+            }
+        }
+
+        thread(isDaemon = true, name = "Beat confidence decay") {
+            while (true) {
+                Thread.sleep(32)
+
+                lastBeatAt?.let {
+                    if (it < clock.now() - currentBeat.beatIntervalMs * currentBeat.beatsPerMeasure) {
+                        currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .9f)
+                    }
+                }
+            }
+        }
+
+        val beatListener = BeatFinder.getInstance()
+        beatListener.addBeatListener(this)
+        beatListener.addOnAirListener(this)
+        beatListener.start()
+    }
+
+    override fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
+        currentlyAudibleChannels.clear()
+        audibleChannels?.let { currentlyAudibleChannels.addAll(it) }
     }
 
     override fun newBeat(beat: Beat) {
-        println("Got a beat! ${beat.beatWithinBar}")
-        if (beat.beatWithinBar == 1) {
-            measureStartTime = clock.now()
-        }
-        measureStartTime?.let {
-            if (beat.isTempoMaster) {
-                // We currently only care about beats from the tempo master (usually, the cdj that is currently playing)
-                // Could also use on-air info from mixer (it tells us which faders corresponding to which players are
-                // up), which tells us which players are currently audible
-                currentBeat = BeatData(it, (60_000 / beat.effectiveTempo).toInt())
+        if (
+            // if more than one channel is on air, pick the tempo master
+            currentlyAudibleChannels.size > 1 && beat.isTempoMaster
+
+            // if no channels are on air, pick the master
+            || currentlyAudibleChannels.isEmpty() && beat.isTempoMaster
+
+            // one channel is on air; pick the cdj that's on it
+            || currentlyAudibleChannels.size == 1 && beat.deviceNumber == currentlyAudibleChannels.single()
+        ) {
+            val beatIntervalSec = 60.0 / beat.effectiveTempo
+            val beatIntervalMs = (beatIntervalSec * 1000).toInt()
+            val now = clock.now()
+            val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
+            if (currentBeat.beatIntervalMs != beatIntervalMs ||
+                abs(currentBeat.measureStartTime - measureStartTime) > 0.003
+            ) {
+                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
+                logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
                 notifyListeners()
             }
+            lastBeatAt = now
+        } else {
+            logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Ignoring beat ${beat.beatWithinBar}" }
         }
-    }
-
-    override fun tempoChanged(tempo: Double) {
-        measureStartTime?.let {
-            currentBeat = BeatData(it, (60_000 / tempo).toInt())
-            notifyListeners()
-        }
-    }
-
-    override fun masterChanged(update: DeviceUpdate) {
-//        println("Master CDJ changed: tempo master is now player #${update.deviceNumber}")
     }
 
     override fun getBeatData(): BeatData {
