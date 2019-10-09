@@ -30,6 +30,7 @@
 }(this, function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kgl, $module$kotlinx_html_js, $module$threejs_wrapper) {
   'use strict';
   var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
+  var math = Kotlin.kotlin.math;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var SerialClassDescImpl = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.SerialClassDescImpl;
   var equals = Kotlin.equals;
@@ -39,6 +40,7 @@
   var MissingFieldException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.MissingFieldException;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var Math_0 = Math;
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
@@ -60,7 +62,6 @@
   var numberToInt = Kotlin.numberToInt;
   var withName = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.withName_8new1j$;
   var KSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
-  var Math_0 = Math;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var Unit = Kotlin.kotlin.Unit;
@@ -172,7 +173,6 @@
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
   var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
-  var math = Kotlin.kotlin.math;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -438,17 +438,22 @@
   ImageBitmapImage.prototype.constructor = ImageBitmapImage;
   VideoElementImage.prototype = Object.create(JsImage.prototype);
   VideoElementImage.prototype.constructor = VideoElementImage;
-  function BeatData(measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence) {
+  function BeatData(measureStartTime, beatIntervalMs, beatsPerMeasure, confidence) {
     BeatData$Companion_getInstance();
     if (beatsPerMeasure === void 0)
       beatsPerMeasure = 4;
     if (confidence === void 0)
       confidence = 1.0;
-    this.measureStartTimeMs = measureStartTimeMs;
+    this.measureStartTime = measureStartTime;
     this.beatIntervalMs = beatIntervalMs;
     this.beatsPerMeasure = beatsPerMeasure;
     this.confidence = confidence;
   }
+  Object.defineProperty(BeatData.prototype, 'beatIntervalSec_0', {
+    get: function () {
+      return this.beatIntervalMs / 1000.0;
+    }
+  });
   Object.defineProperty(BeatData.prototype, 'bpm', {
     get: function () {
       if (this.beatIntervalMs === 0)
@@ -459,20 +464,36 @@
   BeatData.prototype.beatWithinMeasure_rnw5ii$ = function (clock) {
     if (this.beatIntervalMs === 0)
       return -1.0;
-    var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
-    return elapsedSinceStartOfMeasure / this.beatIntervalMs % this.beatsPerMeasure;
+    var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTime;
+    return elapsedSinceStartOfMeasure / this.beatIntervalSec_0 % this.beatsPerMeasure;
   };
   BeatData.prototype.timeSinceMeasure_rnw5ii$ = function (clock) {
     if (this.beatIntervalMs === 0)
       return -1.0;
-    var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTimeMs;
-    return elapsedSinceStartOfMeasure / this.beatIntervalMs;
+    var elapsedSinceStartOfMeasure = clock.now() - this.measureStartTime;
+    return elapsedSinceStartOfMeasure / this.beatIntervalSec_0;
   };
   BeatData.prototype.fractionTillNextBeat_rnw5ii$ = function (clock) {
-    return this.beatIntervalMs === 0 ? -1.0 : 1 - this.beatWithinMeasure_rnw5ii$(clock) % 1.0;
+    var tmp$;
+    if (this.beatIntervalMs === 0)
+      tmp$ = -1.0;
+    else
+      return this.clamp_0(this.sineWithEarlyAttack_0(clock)) * this.confidence;
+    return tmp$;
+  };
+  BeatData.prototype.sineWithEarlyAttack_0 = function (clock) {
+    var x = this.beatWithinMeasure_rnw5ii$(clock) % 1.0 - 0.87;
+    return (Math_0.sin(x) * 2 * math.PI * 1.25 + 1) / 2.0;
+  };
+  BeatData.prototype.sawtooth_0 = function (clock) {
+    return 1 - this.beatWithinMeasure_rnw5ii$(clock) % 1.0;
   };
   BeatData.prototype.fractionTillNextMeasure_rnw5ii$ = function (clock) {
     return this.beatIntervalMs === 0 ? -1.0 : 1 - this.timeSinceMeasure_rnw5ii$(clock);
+  };
+  BeatData.prototype.clamp_0 = function (f) {
+    var b = Math_0.max(f, 0.0);
+    return Math_0.min(1.0, b);
   };
   function BeatData$Companion() {
     BeatData$Companion_instance = this;
@@ -494,7 +515,7 @@
   }
   function BeatData$$serializer() {
     this.descriptor_7q0ok7$_0 = new SerialClassDescImpl('baaahs.BeatData', this);
-    this.descriptor.addElement_ivxn3r$('measureStartTimeMs', false);
+    this.descriptor.addElement_ivxn3r$('measureStartTime', false);
     this.descriptor.addElement_ivxn3r$('beatIntervalMs', false);
     this.descriptor.addElement_ivxn3r$('beatsPerMeasure', true);
     this.descriptor.addElement_ivxn3r$('confidence', true);
@@ -507,7 +528,7 @@
   });
   BeatData$$serializer.prototype.serialize_awe97i$ = function (encoder, obj) {
     var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
-    output.encodeDoubleElement_imzr5k$(this.descriptor, 0, obj.measureStartTimeMs);
+    output.encodeDoubleElement_imzr5k$(this.descriptor, 0, obj.measureStartTime);
     output.encodeIntElement_4wpqag$(this.descriptor, 1, obj.beatIntervalMs);
     if (!equals(obj.beatsPerMeasure, 4) || output.shouldEncodeElementDefault_3zr2iy$(this.descriptor, 2))
       output.encodeIntElement_4wpqag$(this.descriptor, 2, obj.beatsPerMeasure);
@@ -571,12 +592,12 @@
     }
     return BeatData$$serializer_instance;
   }
-  function BeatData_init(seen1, measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence, serializationConstructorMarker) {
+  function BeatData_init(seen1, measureStartTime, beatIntervalMs, beatsPerMeasure, confidence, serializationConstructorMarker) {
     var $this = serializationConstructorMarker || Object.create(BeatData.prototype);
     if ((seen1 & 1) === 0)
-      throw new MissingFieldException('measureStartTimeMs');
+      throw new MissingFieldException('measureStartTime');
     else
-      $this.measureStartTimeMs = measureStartTimeMs;
+      $this.measureStartTime = measureStartTime;
     if ((seen1 & 2) === 0)
       throw new MissingFieldException('beatIntervalMs');
     else
@@ -597,7 +618,7 @@
     interfaces: []
   };
   BeatData.prototype.component1 = function () {
-    return this.measureStartTimeMs;
+    return this.measureStartTime;
   };
   BeatData.prototype.component2 = function () {
     return this.beatIntervalMs;
@@ -608,22 +629,22 @@
   BeatData.prototype.component4 = function () {
     return this.confidence;
   };
-  BeatData.prototype.copy_vie62r$ = function (measureStartTimeMs, beatIntervalMs, beatsPerMeasure, confidence) {
-    return new BeatData(measureStartTimeMs === void 0 ? this.measureStartTimeMs : measureStartTimeMs, beatIntervalMs === void 0 ? this.beatIntervalMs : beatIntervalMs, beatsPerMeasure === void 0 ? this.beatsPerMeasure : beatsPerMeasure, confidence === void 0 ? this.confidence : confidence);
+  BeatData.prototype.copy_vie62r$ = function (measureStartTime, beatIntervalMs, beatsPerMeasure, confidence) {
+    return new BeatData(measureStartTime === void 0 ? this.measureStartTime : measureStartTime, beatIntervalMs === void 0 ? this.beatIntervalMs : beatIntervalMs, beatsPerMeasure === void 0 ? this.beatsPerMeasure : beatsPerMeasure, confidence === void 0 ? this.confidence : confidence);
   };
   BeatData.prototype.toString = function () {
-    return 'BeatData(measureStartTimeMs=' + Kotlin.toString(this.measureStartTimeMs) + (', beatIntervalMs=' + Kotlin.toString(this.beatIntervalMs)) + (', beatsPerMeasure=' + Kotlin.toString(this.beatsPerMeasure)) + (', confidence=' + Kotlin.toString(this.confidence)) + ')';
+    return 'BeatData(measureStartTime=' + Kotlin.toString(this.measureStartTime) + (', beatIntervalMs=' + Kotlin.toString(this.beatIntervalMs)) + (', beatsPerMeasure=' + Kotlin.toString(this.beatsPerMeasure)) + (', confidence=' + Kotlin.toString(this.confidence)) + ')';
   };
   BeatData.prototype.hashCode = function () {
     var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.measureStartTimeMs) | 0;
+    result = result * 31 + Kotlin.hashCode(this.measureStartTime) | 0;
     result = result * 31 + Kotlin.hashCode(this.beatIntervalMs) | 0;
     result = result * 31 + Kotlin.hashCode(this.beatsPerMeasure) | 0;
     result = result * 31 + Kotlin.hashCode(this.confidence) | 0;
     return result;
   };
   BeatData.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.measureStartTimeMs, other.measureStartTimeMs) && Kotlin.equals(this.beatIntervalMs, other.beatIntervalMs) && Kotlin.equals(this.beatsPerMeasure, other.beatsPerMeasure) && Kotlin.equals(this.confidence, other.confidence)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.measureStartTime, other.measureStartTime) && Kotlin.equals(this.beatIntervalMs, other.beatIntervalMs) && Kotlin.equals(this.beatsPerMeasure, other.beatsPerMeasure) && Kotlin.equals(this.confidence, other.confidence)))));
   };
   function BeatSource() {
   }
@@ -16752,7 +16773,7 @@
   Logger.prototype.error_nwdkmo$ = function (message, exception) {
     this.log_1('ERROR', message, exception);
   };
-  Logger.prototype.error_p5ysqc$ = function (message, exception) {
+  Logger.prototype.error_1wn3dw$ = function (exception, message) {
     this.log_1('ERROR', message(), exception);
   };
   function Logger$Companion() {
@@ -18962,7 +18983,7 @@
   function JsClock() {
   }
   JsClock.prototype.now = function () {
-    return Date.now();
+    return Date.now() / 1000.0;
   };
   JsClock.$metadata$ = {
     kind: Kind_CLASS,
@@ -18970,42 +18991,153 @@
     interfaces: [Clock_0]
   };
   function BridgedBeatSource(url) {
-    this.beatData_0 = new BeatData(0.0, 0, void 0, 0.0);
-    this.l = window.location;
-    this.webSocket_0 = new WebSocket((equals(this.l.protocol, 'https:') ? 'wss:' : 'ws:') + '//' + url + '/bridge/beatSource');
+    this.url_0 = url;
+    this.logger_0 = new Logger('BridgedBeatSource');
     this.json_0 = new Json(JsonConfiguration.Companion.Stable);
-    this.webSocket_0.onopen = BridgedBeatSource_init$lambda;
-    this.webSocket_0.onmessage = BridgedBeatSource_init$lambda_0(this);
-    this.webSocket_0.onerror = BridgedBeatSource_init$lambda_1(this);
-    this.webSocket_0.onclose = BridgedBeatSource_init$lambda_2;
+    this.defaultBpm_0 = new BeatData(0.0, 500, void 0, 1.0);
+    this.l_0 = window.location;
+    this.webSocket_hsvad5$_0 = this.webSocket_hsvad5$_0;
+    this.beatData_0 = new BeatData(0.0, 0, void 0, 0.0);
+    this.everConnected_0 = false;
+    this.connect_0();
   }
+  Object.defineProperty(BridgedBeatSource.prototype, 'webSocket_0', {
+    get: function () {
+      if (this.webSocket_hsvad5$_0 == null)
+        return throwUPAE('webSocket');
+      return this.webSocket_hsvad5$_0;
+    },
+    set: function (webSocket) {
+      this.webSocket_hsvad5$_0 = webSocket;
+    }
+  });
   BridgedBeatSource.prototype.getBeatData = function () {
     return this.beatData_0;
   };
-  function BridgedBeatSource_init$lambda(it) {
-    console.log('WebSocket open!', it);
-    return Unit;
+  function BridgedBeatSource$connect$lambda$lambda() {
+    return 'Connected to simulator bridge.';
   }
-  function BridgedBeatSource_init$lambda_0(this$BridgedBeatSource) {
+  function BridgedBeatSource$connect$lambda(this$BridgedBeatSource) {
+    return function (it) {
+      this$BridgedBeatSource.everConnected_0 = true;
+      this$BridgedBeatSource.logger_0.info_h4ejuu$(BridgedBeatSource$connect$lambda$lambda);
+      return Unit;
+    };
+  }
+  function BridgedBeatSource$connect$lambda$lambda_0(closure$buf) {
+    return function () {
+      return 'Received ' + closure$buf;
+    };
+  }
+  function BridgedBeatSource$connect$lambda_0(this$BridgedBeatSource) {
     return function (it) {
       var tmp$;
       var buf = typeof (tmp$ = it.data) === 'string' ? tmp$ : throwCCE();
-      println('buf is ' + buf);
+      this$BridgedBeatSource.logger_0.debug_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_0(buf));
       this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.json_0.parse_awif5v$(BeatData$Companion_getInstance().serializer(), buf);
       return null;
     };
   }
-  function BridgedBeatSource_init$lambda_1(this$BridgedBeatSource) {
+  function BridgedBeatSource$connect$lambda$lambda_1(closure$it) {
+    return function () {
+      return "Couldn't connect to simulator bridge; falling back to 120bpm: " + closure$it;
+    };
+  }
+  function BridgedBeatSource$connect$lambda$lambda_2(closure$it) {
+    return function () {
+      return 'WebSocket error: ' + closure$it;
+    };
+  }
+  function BridgedBeatSource$connect$lambda_1(this$BridgedBeatSource) {
     return function (it) {
-      this$BridgedBeatSource.beatData_0 = new BeatData(0.0, 500, 4, 0.0);
-      console.log('WebSocket error!', it);
+      if (!this$BridgedBeatSource.everConnected_0) {
+        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_1(it));
+        this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.defaultBpm_0;
+      }
+       else {
+        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_2(it));
+      }
       return Unit;
     };
   }
-  function BridgedBeatSource_init$lambda_2(it) {
-    console.log('WebSocket close!', it);
-    return Unit;
+  function BridgedBeatSource$connect$lambda$lambda_3(closure$it) {
+    return function () {
+      return 'Lost connection to simulator bridge; falling back to 120bpm: ' + closure$it;
+    };
   }
+  function BridgedBeatSource$connect$lambda$lambda$lambda() {
+    return 'Attempting to reconnect to simulator bridge...';
+  }
+  function Coroutine$BridgedBeatSource$connect$lambda$lambda(this$BridgedBeatSource_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$BridgedBeatSource = this$BridgedBeatSource_0;
+  }
+  Coroutine$BridgedBeatSource$connect$lambda$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype.constructor = Coroutine$BridgedBeatSource$connect$lambda$lambda;
+  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.local$this$BridgedBeatSource.logger_0.info_h4ejuu$(BridgedBeatSource$connect$lambda$lambda$lambda);
+            return this.local$this$BridgedBeatSource.connect_0(), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function BridgedBeatSource$connect$lambda$lambda_4(this$BridgedBeatSource_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$BridgedBeatSource$connect$lambda$lambda(this$BridgedBeatSource_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function BridgedBeatSource$connect$lambda_2(this$BridgedBeatSource) {
+    return function (it) {
+      if (this$BridgedBeatSource.everConnected_0) {
+        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_3(it));
+        this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.defaultBpm_0;
+        launch(coroutines.GlobalScope, void 0, void 0, BridgedBeatSource$connect$lambda$lambda_4(this$BridgedBeatSource));
+      }
+      return Unit;
+    };
+  }
+  BridgedBeatSource.prototype.connect_0 = function () {
+    this.webSocket_0 = new WebSocket((equals(this.l_0.protocol, 'https:') ? 'wss:' : 'ws:') + '//' + this.url_0 + '/bridge/beatSource');
+    this.webSocket_0.onopen = BridgedBeatSource$connect$lambda(this);
+    this.webSocket_0.onmessage = BridgedBeatSource$connect$lambda_0(this);
+    this.webSocket_0.onerror = BridgedBeatSource$connect$lambda_1(this);
+    this.webSocket_0.onclose = BridgedBeatSource$connect$lambda_2(this);
+  };
   BridgedBeatSource.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BridgedBeatSource',
