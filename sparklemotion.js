@@ -5850,7 +5850,7 @@
   }
   function Coroutine$Pinky$run$lambda_1(this$Pinky_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
-    this.exceptionState_0 = 1;
+    this.exceptionState_0 = 5;
     this.local$this$Pinky = this$Pinky_0;
   }
   Coroutine$Pinky$run$lambda_1.$metadata$ = {
@@ -5865,26 +5865,38 @@
       try {
         switch (this.state_0) {
           case 0:
-            try {
-              return this.local$this$Pinky.drawNextFrame_8be2vx$(), Unit;
+            this.exceptionState_0 = 1;
+            return this.local$this$Pinky.drawNextFrame_8be2vx$(), Unit;
+          case 1:
+            this.exceptionState_0 = 5;
+            var e = this.exception_0;
+            if (Kotlin.isType(e, Exception)) {
+              Pinky$Companion_getInstance().logger.error_nwdkmo$('Error rendering frame for ' + this.local$this$Pinky.selectedShow_0.name, e);
+              this.state_0 = 2;
+              this.result_0 = delay(L1000, this);
+              if (this.result_0 === COROUTINE_SUSPENDED)
+                return COROUTINE_SUSPENDED;
+              continue;
             }
-             catch (e) {
-              if (Kotlin.isType(e, Exception)) {
-                Pinky$Companion_getInstance().logger.error_nwdkmo$('Error rendering frame for ' + this.local$this$Pinky.selectedShow_0, e);
-                return this.local$this$Pinky.switchToShow_0(SolidColorShow_getInstance()), Unit;
-              }
-               else
-                throw e;
+             else {
+              throw e;
             }
 
-          case 1:
+          case 2:
+            return this.local$this$Pinky.switchToShow_0(SolidColorShow_getInstance()), Unit;
+          case 3:
+            this.state_0 = 4;
+            continue;
+          case 4:
+            return;
+          case 5:
             throw this.exception_0;
-          default:this.state_0 = 1;
+          default:this.state_0 = 5;
             throw new Error('State Machine Unreachable execution');
         }
       }
        catch (e) {
-        if (this.state_0 === 1) {
+        if (this.state_0 === 5) {
           this.exceptionState_0 = this.state_0;
           throw e;
         }
@@ -7687,6 +7699,7 @@
     this.currentShowRenderer_0 = null;
     this.changedSurfaces_0 = ArrayList_init();
     this.totalSurfaceReceivers_0 = 0;
+    this.performedHousekeeping_0 = false;
     this.shaderBuffers_0 = HashMap_init();
     this.requestedGadgets_0 = LinkedHashMap_init();
     this.shadersLocked_0 = true;
@@ -7788,11 +7801,16 @@
   };
   ShowRunner.prototype.nextFrame = function () {
     var tmp$;
+    if (!this.performedHousekeeping_0)
+      this.housekeeping_0();
+    else
+      this.performedHousekeeping_0 = false;
     if ((tmp$ = this.currentShowRenderer_0) != null) {
       tmp$.nextFrame();
       this.send();
     }
     this.housekeeping_0();
+    this.performedHousekeeping_0 = true;
   };
   function ShowRunner$housekeeping$lambda(this$ShowRunner) {
     return function () {
@@ -7850,12 +7868,10 @@
       }
     }
     this.changedSurfaces_0.clear();
-    if (this.totalSurfaceReceivers_0 > 0) {
-      if ((tmp$_4 = this.nextShow) != null) {
-        this.createShowRenderer_0(tmp$_4);
-        this.currentShow_0 = this.nextShow;
-        this.nextShow = null;
-      }
+    if ((tmp$_4 = this.nextShow) != null) {
+      this.createShowRenderer_0(tmp$_4);
+      this.currentShow_0 = this.nextShow;
+      this.nextShow = null;
     }
   };
   function ShowRunner$createShowRenderer$lambda(closure$startingShow, this$ShowRunner) {
@@ -19455,7 +19471,11 @@
   GlslBase$JsGlslManager.prototype.createContext_0 = function () {
     var tmp$;
     var canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
-    var gl = ensureNotNull(canvas.getContext('webgl2'));
+    var gl = canvas.getContext('webgl2');
+    if (gl == null) {
+      window.alert('Running GLSL shows on iOS requires WebGL 2.0.\n' + '\n' + 'Go to Settings \u2192 Safari \u2192 Advanced \u2192 Experimental Features and enable WebGL 2.0.');
+      throw Exception_init('WebGL 2 not supported');
+    }
     return new KglJs(gl);
   };
   GlslBase$JsGlslManager.$metadata$ = {
