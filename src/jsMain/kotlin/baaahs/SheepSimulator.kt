@@ -11,10 +11,7 @@ import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
 import decodeQueryParams
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.w3c.dom.WebSocket
@@ -110,35 +107,60 @@ class SheepSimulator {
 }
 
 class JsClock : Clock {
-    override fun now(): Time = Date.now()
+    override fun now(): Time = Date.now() / 1000.0
 }
 
-class BridgedBeatSource(url: String) : BeatSource {
+class BridgedBeatSource(private val url: String) : BeatSource {
+    private val logger = Logger("BridgedBeatSource")
+    private val json = Json(JsonConfiguration.Stable)
+    private val defaultBpm = BeatData(0.0, 500, confidence = 1f)
+    private val l = window.location
+    private lateinit var webSocket: WebSocket
+
     private var beatData = BeatData(0.0, 0, confidence = 0f)
+    private var everConnected = false
 
     override fun getBeatData(): BeatData = beatData
 
-    val l = window.location;
-    private val webSocket = WebSocket("${if (l.protocol == "https:") "wss:" else "ws:"}//$url/bridge/beatSource")
-    private val json = Json(JsonConfiguration.Stable)
-
     init {
+        connect()
+    }
+
+    private fun connect() {
+        webSocket = WebSocket("${if (l.protocol == "https:") "wss:" else "ws:"}//$url/bridge/beatSource")
+
         webSocket.onopen = {
-            console.log("WebSocket open!", it)
+            everConnected = true
+            logger.info { "Connected to simulator bridge." }
         }
 
         webSocket.onmessage = {
-            // TODO: be less woefully inefficient...
             val buf = it.data as String
-            println("buf is $buf")
+            logger.debug { "Received $buf" }
             beatData = json.parse(BeatData.serializer(), buf)
             null
         }
 
         webSocket.onerror = {
-            beatData = BeatData(0.0, 500, 4, 0.0f)
-            console.log("WebSocket error!", it)
+            if (!everConnected) {
+                logger.error { "Couldn't connect to simulator bridge; falling back to 120bpm: $it" }
+                beatData = defaultBpm
+            } else {
+                logger.error { "WebSocket error: $it" }
+            }
         }
-        webSocket.onclose = { console.log("WebSocket close!", it) }
+
+        webSocket.onclose = {
+            if (everConnected) {
+                logger.error { "Lost connection to simulator bridge; falling back to 120bpm: $it" }
+                beatData = defaultBpm
+
+                GlobalScope.launch {
+                    delay(1000)
+                    logger.info { "Attempting to reconnect to simulator bridge..." }
+                    connect()
+                }
+            }
+        }
     }
 }

@@ -58,7 +58,7 @@ class Logger(val id: String) {
         log("ERROR", message, exception)
     }
 
-    fun error(message: () -> String, exception: Exception) {
+    fun error(exception: Exception, message: () -> String) {
         log("ERROR", message.invoke(), exception)
     }
 
