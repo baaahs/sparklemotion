@@ -44,22 +44,22 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun whenNoKnownSurfaces_shouldNotCreateShow() {
+    fun whenNoKnownSurfaces_shouldStillCreateShow() {
         showRunner.nextFrame()
-        expect(0) { testShow1.createdShows.size }
+        expect(1) { testShow1.createdShows.size }
         expect(0) { surface1Messages.size }
     }
 
     @Test
     fun shouldRenderShow() {
         showRunner.surfacesChanged(listOf(surface1Receiver, surface2Receiver), emptyList())
-        showRunner.nextFrame() // First time through nothing is rendered but a show is created.
-        expect(1) { testShow1.createdShows.size }
-        expect(0) { surface1Messages.size }
-
-        showRunner.nextFrame() // Render to our surface.
+        showRunner.nextFrame()
         expect(1) { testShow1.createdShows.size }
         expect(1) { surface1Messages.size }
+
+        showRunner.nextFrame()
+        expect(1) { testShow1.createdShows.size }
+        expect(2) { surface1Messages.size }
 
         val buffer1 = surface1Messages[0]
         expect(testShow1.solidShader) { buffer1.shader }
@@ -111,10 +111,6 @@ class ShowRunnerTest {
         testShow1.supportsSurfaceChange = false
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // First time through we don't actually render anything.
-        expect(1) { testShow1.createdShows.size }
-        expect(0) { surface1Messages.size }
-
         showRunner.nextFrame() // Render a frame.
         expect(1) { testShow1.createdShows.size }
         expect(1) { surface1Messages.size }
@@ -189,7 +185,7 @@ class ShowRunnerTest {
         expect(emptyList<String>()) { dmxEvents }
 
         showRunner.nextFrame()
-        showRunner.send()
+
         expect(listOf("dmx frame sent")) { dmxEvents }
     }
 
@@ -208,7 +204,6 @@ class ShowRunnerTest {
         }
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Creates show but doesn't render a frame yet.
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
         assertTrue { e.message!!.startsWith("Too many shader buffers for Panel surface 1") }
     }
@@ -274,6 +269,24 @@ class ShowRunnerTest {
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
         assertTrue { e.message!!.startsWith("Gadgets can't be obtained during #nextFrame()") }
+    }
+
+    @Test
+    fun whenShowThrowsExceptionDuringNextFrame_shouldPerformHousekeepingImmediatelyOnNextFrame() {
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame()
+
+        testShow1.onNextFrame = {
+            throw Exception("fake exception from show")
+        }
+
+        val e = assertFailsWith(Exception::class) { showRunner.nextFrame() }
+        assertTrue { e.message!!.startsWith("fake exception from show") }
+
+        // When a show throws an exception, Pinky will switch to a safe show (e.g. SolidColorShow);
+        // we should use it to render the next frame.
+        showRunner.nextShow = TestShow1()
+        showRunner.nextFrame()
     }
 
     class TestShow1(
