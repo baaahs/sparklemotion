@@ -111,7 +111,8 @@ class Pinky(
                 try {
                     drawNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for $selectedShow", e)
+                    logger.error("Error rendering frame for ${selectedShow.name}", e)
+                    delay(1000)
                     switchToShow(SolidColorShow)
                 }
             }

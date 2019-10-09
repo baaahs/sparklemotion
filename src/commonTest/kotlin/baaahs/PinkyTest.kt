@@ -1,8 +1,10 @@
 package baaahs
 
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.proto.BrainHelloMessage
+import baaahs.proto.Type
 import baaahs.shaders.SolidShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -41,7 +43,9 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(0) { pinkyLink.packetsToSend.size }
+
+        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+        expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
     }
 
     @Test
@@ -56,7 +60,9 @@ class PinkyTest {
         expect(1) { show.shaderBuffers.size }
         expect(true) { show.shaderBuffers.keys.only() is IdentifiedSurface }
         expect(panel17.name) { (show.shaderBuffers.keys.only() as IdentifiedSurface).name }
-        expect(1) { pinkyLink.packetsToSend.size }
+
+        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+        expect(listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send a mapping packet.
     }
 
     @Test
@@ -69,7 +75,8 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(1) { pinkyLink.packetsToSend.size }
+        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+        expect(listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send a mapping packet.
     }
 
     @Test
@@ -82,7 +89,8 @@ class PinkyTest {
 
         val show = testShow1.createdShows.only()
         expect(1) { show.shaderBuffers.size }
-        expect(0) { pinkyLink.packetsToSend.size }
+        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+        expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
     }
 
     @Test

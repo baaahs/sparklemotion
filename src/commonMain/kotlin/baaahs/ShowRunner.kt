@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
@@ -19,6 +18,7 @@ class ShowRunner(
     private var currentShowRenderer: Show.Renderer? = null
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
+    private var performedHousekeeping: Boolean = false
 
     val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
     val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
@@ -123,6 +123,8 @@ class ShowRunner(
     }
 
     fun nextFrame() {
+        if (!performedHousekeeping) housekeeping() else performedHousekeeping = false
+
         // Always generate and send the next frame right away, then perform any housekeeping tasks immediately
         // afterward, to avoid frame lag.
         currentShowRenderer?.let {
@@ -131,6 +133,7 @@ class ShowRunner(
         }
 
         housekeeping()
+        performedHousekeeping = true
     }
 
     private val surfaceReceivers = mutableMapOf<Surface, MutableList<SurfaceReceiver>>()
@@ -159,13 +162,12 @@ class ShowRunner(
         }
         changedSurfaces.clear()
 
-        if (totalSurfaceReceivers > 0) {
-            nextShow?.let { startingShow ->
-                createShowRenderer(startingShow)
+        // Maybe switch to a new show.
+        nextShow?.let { startingShow ->
+            createShowRenderer(startingShow)
 
-                currentShow = nextShow
-                nextShow = null
-            }
+            currentShow = nextShow
+            nextShow = null
         }
     }
 

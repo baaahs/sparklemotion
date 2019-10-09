@@ -9,12 +9,7 @@ import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
-import kotlin.test.expect
+import kotlin.test.*
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
@@ -49,30 +44,30 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun whenNoKnownSurfaces_shouldNotCreateShow() {
+    fun whenNoKnownSurfaces_shouldStillCreateShow() {
         showRunner.nextFrame()
-        expect(0) { testShow1.createdShows.size }
+        expect(1) { testShow1.createdShows.size }
         expect(0) { surface1Messages.size }
     }
 
     @Test
     fun shouldRenderShow() {
         showRunner.surfacesChanged(listOf(surface1Receiver, surface2Receiver), emptyList())
-        showRunner.nextFrame() // First time through nothing is rendered but a show is created.
-        expect(1) { testShow1.createdShows.size }
-        expect(0) { surface1Messages.size }
-
-        showRunner.nextFrame() // Render to our surface.
+        showRunner.nextFrame()
         expect(1) { testShow1.createdShows.size }
         expect(1) { surface1Messages.size }
 
+        showRunner.nextFrame()
+        expect(1) { testShow1.createdShows.size }
+        expect(2) { surface1Messages.size }
+
         val buffer1 = surface1Messages[0]
-        expect(buffer1.shader) { testShow1.solidShader }
-        expect((buffer1 as SolidShader.Buffer).color) { Color.WHITE }
+        expect(testShow1.solidShader) { buffer1.shader }
+        expect(Color.WHITE) { (buffer1 as SolidShader.Buffer).color }
 
         val buffer2 = surface1Messages[0]
-        expect(buffer2.shader) { testShow1.solidShader }
-        expect((buffer2 as SolidShader.Buffer).color) { Color.WHITE }
+        expect(testShow1.solidShader) { buffer2.shader }
+        expect(Color.WHITE) { (buffer2 as SolidShader.Buffer).color }
     }
 
     @Test
@@ -116,10 +111,6 @@ class ShowRunnerTest {
         testShow1.supportsSurfaceChange = false
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // First time through we don't actually render anything.
-        expect(1) { testShow1.createdShows.size }
-        expect(0) { surface1Messages.size }
-
         showRunner.nextFrame() // Render a frame.
         expect(1) { testShow1.createdShows.size }
         expect(1) { surface1Messages.size }
@@ -153,18 +144,18 @@ class ShowRunnerTest {
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
         showRunner.nextFrame() // Create show and request gadgets.
-        expect(testShow1.createdShows.size) { 1 }
+        expect(1) { testShow1.createdShows.size }
 
         val originalSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(originalSlider.value) { 1.0f }
+        expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
         showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
         showRunner.nextFrame() // Recreate show and restore gadget state.
-        expect(testShow1.createdShows.size) { 2 }
+        expect(2) { testShow1.createdShows.size }
 
         val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(recreatedSlider.value) { 0.5f }
+        expect(0.5f) { recreatedSlider.value }
     }
 
     @Test
@@ -173,29 +164,29 @@ class ShowRunnerTest {
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
         showRunner.nextFrame() // Create show and request gadgets.
-        expect(testShow1.createdShows.size) { 1 }
+        expect(1) { testShow1.createdShows.size }
 
         expect(0) { serverNetwork.packetsToSend.size }
 
         val originalSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(originalSlider.value) { 1.0f }
+        expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
         showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
         showRunner.nextFrame() // Recreate show and restore gadget state.
-        expect(testShow1.createdShows.size) { 2 }
+        expect(2) { testShow1.createdShows.size }
 
         val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(recreatedSlider.value) { 0.5f }
+        expect(0.5f) { recreatedSlider.value }
     }
 
     @Test
     fun shouldUpdateDmxAfterEveryFrame() {
-        expect(dmxEvents) { emptyList<String>() }
+        expect(emptyList<String>()) { dmxEvents }
 
         showRunner.nextFrame()
-        showRunner.send()
-        expect(dmxEvents) { listOf("dmx frame sent") }
+
+        expect(listOf("dmx frame sent")) { dmxEvents }
     }
 
     @Ignore
@@ -213,7 +204,6 @@ class ShowRunnerTest {
         }
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Creates show but doesn't render a frame yet.
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
         assertTrue { e.message!!.startsWith("Too many shader buffers for Panel surface 1") }
     }
@@ -264,7 +254,7 @@ class ShowRunnerTest {
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-        expect(e.message!!) { "Moving heads can't be obtained during #nextFrame()" }
+        expect("Moving heads can't be obtained during #nextFrame()") { e.message!! }
     }
 
     @Test
@@ -279,6 +269,24 @@ class ShowRunnerTest {
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
         assertTrue { e.message!!.startsWith("Gadgets can't be obtained during #nextFrame()") }
+    }
+
+    @Test
+    fun whenShowThrowsExceptionDuringNextFrame_shouldPerformHousekeepingImmediatelyOnNextFrame() {
+        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
+        showRunner.nextFrame()
+
+        testShow1.onNextFrame = {
+            throw Exception("fake exception from show")
+        }
+
+        val e = assertFailsWith(Exception::class) { showRunner.nextFrame() }
+        assertTrue { e.message!!.startsWith("fake exception from show") }
+
+        // When a show throws an exception, Pinky will switch to a safe show (e.g. SolidColorShow);
+        // we should use it to render the next frame.
+        showRunner.nextShow = TestShow1()
+        showRunner.nextFrame()
     }
 
     class TestShow1(
