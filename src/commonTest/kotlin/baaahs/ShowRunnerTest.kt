@@ -9,12 +9,7 @@ import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
-import kotlin.test.expect
+import kotlin.test.*
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
@@ -67,12 +62,12 @@ class ShowRunnerTest {
         expect(1) { surface1Messages.size }
 
         val buffer1 = surface1Messages[0]
-        expect(buffer1.shader) { testShow1.solidShader }
-        expect((buffer1 as SolidShader.Buffer).color) { Color.WHITE }
+        expect(testShow1.solidShader) { buffer1.shader }
+        expect(Color.WHITE) { (buffer1 as SolidShader.Buffer).color }
 
         val buffer2 = surface1Messages[0]
-        expect(buffer2.shader) { testShow1.solidShader }
-        expect((buffer2 as SolidShader.Buffer).color) { Color.WHITE }
+        expect(testShow1.solidShader) { buffer2.shader }
+        expect(Color.WHITE) { (buffer2 as SolidShader.Buffer).color }
     }
 
     @Test
@@ -153,18 +148,18 @@ class ShowRunnerTest {
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
         showRunner.nextFrame() // Create show and request gadgets.
-        expect(testShow1.createdShows.size) { 1 }
+        expect(1) { testShow1.createdShows.size }
 
         val originalSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(originalSlider.value) { 1.0f }
+        expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
         showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
         showRunner.nextFrame() // Recreate show and restore gadget state.
-        expect(testShow1.createdShows.size) { 2 }
+        expect(2) { testShow1.createdShows.size }
 
         val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(recreatedSlider.value) { 0.5f }
+        expect(0.5f) { recreatedSlider.value }
     }
 
     @Test
@@ -173,29 +168,29 @@ class ShowRunnerTest {
 
         showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
         showRunner.nextFrame() // Create show and request gadgets.
-        expect(testShow1.createdShows.size) { 1 }
+        expect(1) { testShow1.createdShows.size }
 
         expect(0) { serverNetwork.packetsToSend.size }
 
         val originalSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(originalSlider.value) { 1.0f }
+        expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
         showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
         showRunner.nextFrame() // Recreate show and restore gadget state.
-        expect(testShow1.createdShows.size) { 2 }
+        expect(2) { testShow1.createdShows.size }
 
         val recreatedSlider = gadgetManager.findGadget("slider")!! as Slider
-        expect(recreatedSlider.value) { 0.5f }
+        expect(0.5f) { recreatedSlider.value }
     }
 
     @Test
     fun shouldUpdateDmxAfterEveryFrame() {
-        expect(dmxEvents) { emptyList<String>() }
+        expect(emptyList<String>()) { dmxEvents }
 
         showRunner.nextFrame()
         showRunner.send()
-        expect(dmxEvents) { listOf("dmx frame sent") }
+        expect(listOf("dmx frame sent")) { dmxEvents }
     }
 
     @Ignore
@@ -264,7 +259,7 @@ class ShowRunnerTest {
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-        expect(e.message!!) { "Moving heads can't be obtained during #nextFrame()" }
+        expect("Moving heads can't be obtained during #nextFrame()") { e.message!! }
     }
 
     @Test
