@@ -7,6 +7,7 @@ import baaahs.geom.extents
 abstract class Model<T : Model.Surface> {
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<T>
+    abstract val geomVertices: List<Vector3F>
 
     private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
 
@@ -32,40 +33,107 @@ abstract class Model<T : Model.Surface> {
         val description: String
         val expectedPixelCount: Int?
         fun allVertices(): Collection<Vector3F>
+        val faces: List<Face>
+        val lines: List<Line>
+    }
+
+    data class Line(val vertices: List<Vector3F>)
+
+    class Face(val vertexIds: List<Int>)
+}
+
+class Decom2019Model : ObjModel<Model.Surface>("decom-2019-panels.obj") {
+    override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
+        return SheepModel.Panel(name, 10 * 60, faces, lines)
     }
 }
 
-class SheepModel : Model<SheepModel.Panel>() {
-    lateinit var vertices: List<Vector3F>
-    lateinit var panels: List<Panel>
+class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
+    private val pixelsPerPanel = hashMapOf<String, Int>()
 
-    lateinit var eyes: List<MovingHead>
-
-    val allPanels: List<Panel>
-        get() = panels
-    val partySide: List<Panel>
-        get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
-
-    override val movingHeads: List<MovingHead> get() = eyes
-    override val allSurfaces get() = allPanels
-    lateinit var panelNeighbors: Map<Panel, List<Panel>>
-
-    fun load() {
-        val vertices: MutableList<Vector3F> = mutableListOf()
-        val panels: MutableList<Panel> = mutableListOf()
-        var currentPanel = Panel("initial")
-
-        val panelsByEdge = mutableMapOf<List<Int>, MutableList<Panel>>()
-        val edgesByPanel = mutableMapOf<Panel, MutableList<List<Int>>>()
-
-        val pixelsPerPanel = hashMapOf<String, Int>()
+    init {
         getResource("baaahs-panel-info.txt")
             .split("\n")
             .map { it.split(Regex("\\s+")) }
             .forEach { pixelsPerPanel[it[0]] = it[1].toInt() * 60 }
+    }
 
+    override fun createSurface(
+        name: String,
+        faces: MutableList<Face>,
+        lines: MutableList<Line>
+    ): Panel {
+        val expectedPixelCount = pixelsPerPanel[name]
+        if (expectedPixelCount == null) {
+            logger.warn { "No pixel count found for $name" }
+        }
+        return Panel(name, expectedPixelCount, faces, lines)
+    }
 
-        getResource("baaahs-model.obj")
+    class Panel(
+        override val name: String,
+        override val expectedPixelCount: Int? = null,
+        override val faces: List<Face> = listOf(),
+        override val lines: List<Line> = listOf()
+    ) : Surface {
+        override fun allVertices(): Collection<Vector3F> {
+            val vertices = hashSetOf<Vector3F>()
+            vertices.addAll(lines.flatMap { it.vertices })
+            return vertices
+        }
+
+        override val description: String = "Panel $name"
+        override fun equals(other: Any?): Boolean = other is Panel && name == other.name
+        override fun hashCode(): Int = name.hashCode()
+    }
+}
+
+abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<T>() {
+    override val geomVertices: List<Vector3F> get() = vertices
+    lateinit var vertices: List<Vector3F>
+    lateinit var panels: List<T>
+
+    lateinit var eyes: List<MovingHead>
+
+    val allPanels: List<T>
+        get() = panels
+    val partySide: List<T>
+        get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
+
+    override val movingHeads: List<MovingHead> get() = eyes
+    override val allSurfaces get() = allPanels
+    lateinit var surfaceNeighbors: Map<T, List<T>>
+    private val surfacesByName = mutableMapOf<String, T>()
+
+    abstract fun createSurface(
+        name: String,
+        faces: MutableList<Face>,
+        lines: MutableList<Line>
+    ): T
+
+    fun load() {
+        val vertices: MutableList<Vector3F> = mutableListOf()
+        val panels: MutableList<T> = mutableListOf()
+        var surfaceName: String? = null
+        var faces = mutableListOf<Face>()
+        var lines = mutableListOf<Line>()
+
+        val surfacesByEdge = mutableMapOf<List<Int>, MutableList<String>>()
+        val edgesBySurface = mutableMapOf<String, MutableList<List<Int>>>()
+
+        fun buildSurface() {
+            surfaceName?.let {
+                val surface = createSurface(it, faces, lines)
+                panels.add(surface)
+                surfacesByName[it] = surface
+
+                surfaceName = null
+                faces = mutableListOf()
+                lines = mutableListOf()
+            }
+        }
+
+        getResource(objResourceName)
             .split("\n")
             .map { it.trim() }
             .forEach { line ->
@@ -79,17 +147,14 @@ class SheepModel : Model<SheepModel.Panel>() {
                         vertices.add(Vector3F(coords[0], coords[1], coords[2]))
                     }
                     "o" -> {
+                        buildSurface()
+
                         val name = args.joinToString(" ")
-                        val expectedPixelCount = pixelsPerPanel[name]
-                        if (expectedPixelCount == null) {
-                            logger.warn { "No pixel count found for $name" }
-                        }
-                        currentPanel = Panel(name, expectedPixelCount)
-                        panels.add(currentPanel)
+                        surfaceName = name
                     }
                     "f" -> {
                         val verts = args.map { it.toInt() - 1 }
-                        currentPanel.faces.faces.add(Face(verts))
+                        faces.add(Face(verts))
                     }
                     "l" -> {
                         val verts = args.map { it.toInt() - 1 }
@@ -100,26 +165,29 @@ class SheepModel : Model<SheepModel.Panel>() {
                         }
 
                         val sortedVerts = verts.sorted()
-                        panelsByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(currentPanel)
-                        edgesByPanel.getOrPut(currentPanel) { mutableListOf() }.add(sortedVerts)
+                        surfacesByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(surfaceName!!)
+                        edgesBySurface.getOrPut(surfaceName!!) { mutableListOf() }.add(sortedVerts)
 
-                        currentPanel.lines.add(Line(points))
+                        lines.add(Line(points))
                     }
                 }
             }
+
+        buildSurface()
 
         println("Sheep model has ${panels.size} panels (and ${vertices.size} vertices)!")
         this.vertices = vertices
         this.panels = panels
 
-        fun neighborsOf(panel: Panel): List<Panel> {
-            return edgesByPanel[panel]
-                ?.flatMap { panelsByEdge[it]?.toList() ?: emptyList() }
-                ?.filter { it != panel }
+        fun neighborsOf(surface: T): List<T> {
+            return edgesBySurface[surface.name]
+                ?.flatMap { surfacesByEdge[it]?.toList() ?: emptyList() }
+                ?.filter { it != surface.name }
+                ?.map { surfacesByName[it]!! }
                 ?: emptyList()
         }
 
-        panelNeighbors = allPanels.associateWith { neighborsOf(it) }
+        surfaceNeighbors = allPanels.associateWith { neighborsOf(it) }
 
         eyes = arrayListOf(
             MovingHead("leftEye", Vector3F(0f, 204.361f, 48.738f)),
@@ -127,33 +195,10 @@ class SheepModel : Model<SheepModel.Panel>() {
         )
     }
 
-    fun neighborsOf(panel: Panel) = panelNeighbors[panel] ?: emptyList()
-
-    data class Line(val vertices: List<Vector3F>)
-
-    class Face(val vertexIds: List<Int>)
-
-    class Faces {
-        val faces: MutableList<Face> = mutableListOf()
-    }
-
-    class Panel(override val name: String, override val expectedPixelCount: Int? = null) : Surface {
-        val faces = Faces()
-        val lines = mutableListOf<Line>()
-
-        override fun allVertices(): Collection<Vector3F> {
-            val vertices = hashSetOf<Vector3F>()
-            vertices.addAll(lines.flatMap { it.vertices })
-            return vertices
-        }
-
-        override val description: String = "Panel $name"
-        override fun equals(other: Any?): Boolean = other is Panel && name == other.name
-        override fun hashCode(): Int = name.hashCode()
-    }
+    fun neighborsOf(panel: T) = surfaceNeighbors[panel] ?: emptyList()
 
     companion object {
-        val logger = Logger("SheepModel")
+        val logger = Logger("ObjModel")
     }
 }
 

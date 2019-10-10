@@ -61,7 +61,4 @@ object PanelTweenShow : Show("PanelTweenShow") {
         val sparkleShader: SparkleShader.Buffer,
         val compositorShader: CompositorShader.Buffer
     )
-
-    val SheepModel.Panel.number: Int
-        get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
 }

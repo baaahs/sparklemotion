@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 class Mapper(
     private val network: Network,
-    sheepModel: SheepModel,
+    model: Model<*>,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address
@@ -47,7 +47,7 @@ class Mapper(
 
     init {
         mapperUi.listen(this)
-        mapperUi.addWireframe(sheepModel)
+        mapperUi.addWireframe(model)
     }
 
     fun start() = doRunBlocking {
@@ -814,7 +814,7 @@ class Mapper(
 interface MapperUi {
     fun listen(listener: Listener)
 
-    fun addWireframe(sheepModel: SheepModel)
+    fun addWireframe(model: Model<*>)
     fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
     fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
     fun showMessage(message: String)

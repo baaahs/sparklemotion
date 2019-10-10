@@ -2,7 +2,6 @@ package baaahs.visualizer
 
 import baaahs.*
 import baaahs.dmx.LixadaMiniMovingHead
-import baaahs.dmx.Shenzarpy
 import baaahs.sim.FakeDmxUniverse
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -31,7 +30,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay): JsMapperUi.StatusListener {
+class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMapperUi.StatusListener {
 
     private var rotate: Boolean
         get() = getVizRotationEl().checked
@@ -101,7 +100,7 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         scene.add(sphere)
 
         // convert from SheepModel to THREE
-        sheepModel.vertices.forEach { v ->
+        model.geomVertices.forEach { v ->
             geom.vertices.asDynamic().push(Vector3(v.x, v.y, v.z))
         }
 
@@ -135,7 +134,7 @@ class Visualizer(sheepModel: SheepModel, private val display: VisualizerDisplay)
         )
     }
 
-    fun addPanel(p: SheepModel.Panel): VizPanel {
+    fun addPanel(p: Model.Surface): VizPanel {
         // if (p.name !== '15R') return
         // if (omitPanels.includes(p.name)) return
 

@@ -1,8 +1,8 @@
 package baaahs.visualizer
 
 import baaahs.Color
+import baaahs.Model
 import baaahs.Pixels
-import baaahs.SheepModel
 import baaahs.geom.Vector2
 import info.laht.threekt.THREE.AdditiveBlending
 import info.laht.threekt.THREE.FrontSide
@@ -33,7 +33,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val scene: Scene) {
+class VizPanel(panel: Model.Surface, private val geom: Geometry, private val scene: Scene) {
     companion object {
         private val roundLightTx = TextureLoader().load(
             "./visualizer/textures/round.png",
@@ -71,7 +71,7 @@ class VizPanel(panel: SheepModel.Panel, private val geom: Geometry, private val 
         val triangle = Triangle() // for computing area...
 
         val faceAreas = mutableListOf<Float>()
-        panelGeometry.faces = panel.faces.faces.map { face ->
+        panelGeometry.faces = panel.faces.map { face ->
             val localVerts = face.vertexIds.map { vi ->
                 val v = geom.vertices[vi]
                 var lvi = panelVertices.indexOf(v)

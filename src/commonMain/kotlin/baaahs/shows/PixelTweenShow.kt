@@ -41,8 +41,4 @@ object PixelTweenShow : Show("PixelTweenShow") {
             }
         }
     }
-
-    val SheepModel.Panel.number: Int
-        get() = Regex("\\d+").find(name)?.value?.toInt() ?: -1
-
 }
