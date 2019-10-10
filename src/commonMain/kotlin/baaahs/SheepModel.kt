@@ -32,7 +32,13 @@ abstract class Model<T : Model.Surface> {
         val description: String
         val expectedPixelCount: Int?
         fun allVertices(): Collection<Vector3F>
+        val faces: List<Face>
+        val lines: List<Line>
     }
+
+    data class Line(val vertices: List<Vector3F>)
+
+    class Face(val vertexIds: List<Int>)
 }
 
 class SheepModel : Model<SheepModel.Panel>() {
@@ -89,7 +95,7 @@ class SheepModel : Model<SheepModel.Panel>() {
                     }
                     "f" -> {
                         val verts = args.map { it.toInt() - 1 }
-                        currentPanel.faces.faces.add(Face(verts))
+                        currentPanel.faces.add(Face(verts))
                     }
                     "l" -> {
                         val verts = args.map { it.toInt() - 1 }
@@ -129,17 +135,9 @@ class SheepModel : Model<SheepModel.Panel>() {
 
     fun neighborsOf(panel: Panel) = panelNeighbors[panel] ?: emptyList()
 
-    data class Line(val vertices: List<Vector3F>)
-
-    class Face(val vertexIds: List<Int>)
-
-    class Faces {
-        val faces: MutableList<Face> = mutableListOf()
-    }
-
     class Panel(override val name: String, override val expectedPixelCount: Int? = null) : Surface {
-        val faces = Faces()
-        val lines = mutableListOf<Line>()
+        override val faces = mutableListOf<Face>()
+        override val lines = mutableListOf<Line>()
 
         override fun allVertices(): Collection<Vector3F> {
             val vertices = hashSetOf<Vector3F>()
