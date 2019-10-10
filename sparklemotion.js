@@ -140,16 +140,16 @@
   var Iterator = Kotlin.kotlin.collections.Iterator;
   var Iterable = Kotlin.kotlin.collections.Iterable;
   var RuntimeException_init = Kotlin.kotlin.RuntimeException_init_pdl1vj$;
-  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
+  var hashCode = Kotlin.hashCode;
   var split = Kotlin.kotlin.text.split_ip8yn$;
+  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
-  var hashCode = Kotlin.hashCode;
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
+  var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
-  var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var Exception_init_0 = Kotlin.kotlin.Exception_init;
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
   var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
@@ -316,7 +316,11 @@
   PubSub$Client.prototype.constructor = PubSub$Client;
   ShaderId.prototype = Object.create(Enum.prototype);
   ShaderId.prototype.constructor = ShaderId;
-  SheepModel.prototype = Object.create(Model.prototype);
+  ObjModel.prototype = Object.create(Model.prototype);
+  ObjModel.prototype.constructor = ObjModel;
+  Decom2019Model.prototype = Object.create(ObjModel.prototype);
+  Decom2019Model.prototype.constructor = Decom2019Model;
+  SheepModel.prototype = Object.create(ObjModel.prototype);
   SheepModel.prototype.constructor = SheepModel;
   Show$RestartShowException.prototype = Object.create(Exception.prototype);
   Show$RestartShowException.prototype.constructor = Show$RestartShowException;
@@ -1034,6 +1038,8 @@
     this.name_mkr12i$_0 = name;
     this.description_487evr$_0 = description;
     this.expectedPixelCount_hxd9uo$_0 = null;
+    this.faces_6nbazh$_0 = emptyList();
+    this.lines_9m6eyc$_0 = emptyList();
   }
   Object.defineProperty(Brain$FakeModelSurface.prototype, 'name', {
     get: function () {
@@ -1053,6 +1059,16 @@
   Brain$FakeModelSurface.prototype.allVertices = function () {
     return emptyList();
   };
+  Object.defineProperty(Brain$FakeModelSurface.prototype, 'faces', {
+    get: function () {
+      return this.faces_6nbazh$_0;
+    }
+  });
+  Object.defineProperty(Brain$FakeModelSurface.prototype, 'lines', {
+    get: function () {
+      return this.lines_9m6eyc$_0;
+    }
+  });
   Brain$FakeModelSurface.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'FakeModelSurface',
@@ -2061,7 +2077,7 @@
       };
     };
   });
-  function Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress) {
+  function Mapper(network, model, mapperUi, mediaDevices, pinkyAddress) {
     Mapper$Companion_getInstance();
     this.network_0 = network;
     this.mapperUi_0 = mapperUi;
@@ -2081,7 +2097,7 @@
     this.activeColor_0 = Color_init_1(7, 255, 7);
     this.inactiveColor_0 = Color_init_1(1, 0, 1);
     this.mapperUi_0.listen_97503t$(this);
-    this.mapperUi_0.addWireframe_9u144y$(sheepModel);
+    this.mapperUi_0.addWireframe_ld9ij$(model);
     this.deliverer_0 = new Mapper$ReliableShaderMessageDeliverer(this);
   }
   Object.defineProperty(Mapper.prototype, 'camera', {
@@ -7354,6 +7370,39 @@
     simpleName: 'Surface',
     interfaces: []
   };
+  function Model$Line(vertices) {
+    this.vertices = vertices;
+  }
+  Model$Line.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Line',
+    interfaces: []
+  };
+  Model$Line.prototype.component1 = function () {
+    return this.vertices;
+  };
+  Model$Line.prototype.copy_yvrc2v$ = function (vertices) {
+    return new Model$Line(vertices === void 0 ? this.vertices : vertices);
+  };
+  Model$Line.prototype.toString = function () {
+    return 'Line(vertices=' + Kotlin.toString(this.vertices) + ')';
+  };
+  Model$Line.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.vertices) | 0;
+    return result;
+  };
+  Model$Line.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.vertices, other.vertices))));
+  };
+  function Model$Face(vertexIds) {
+    this.vertexIds = vertexIds;
+  }
+  Model$Face.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Face',
+    interfaces: []
+  };
   function Model$allSurfacesByName$lambda(this$Model) {
     return function () {
       var $receiver = this$Model.allSurfaces;
@@ -7397,130 +7446,20 @@
     simpleName: 'Model',
     interfaces: []
   };
+  function Decom2019Model() {
+    ObjModel.call(this, 'decom-2019-panels.obj');
+  }
+  Decom2019Model.prototype.createSurface_gvyaud$ = function (name, faces, lines) {
+    return new SheepModel$Panel(name, 600, faces, lines);
+  };
+  Decom2019Model.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Decom2019Model',
+    interfaces: [ObjModel]
+  };
   function SheepModel() {
-    SheepModel$Companion_getInstance();
-    Model.call(this);
-    this.vertices_mqvov9$_0 = this.vertices_mqvov9$_0;
-    this.panels_kixrwx$_0 = this.panels_kixrwx$_0;
-    this.eyes_j3l09w$_0 = this.eyes_j3l09w$_0;
-    this.panelNeighbors_z1po1r$_0 = this.panelNeighbors_z1po1r$_0;
-  }
-  Object.defineProperty(SheepModel.prototype, 'vertices', {
-    get: function () {
-      if (this.vertices_mqvov9$_0 == null)
-        return throwUPAE('vertices');
-      return this.vertices_mqvov9$_0;
-    },
-    set: function (vertices) {
-      this.vertices_mqvov9$_0 = vertices;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'panels', {
-    get: function () {
-      if (this.panels_kixrwx$_0 == null)
-        return throwUPAE('panels');
-      return this.panels_kixrwx$_0;
-    },
-    set: function (panels) {
-      this.panels_kixrwx$_0 = panels;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'eyes', {
-    get: function () {
-      if (this.eyes_j3l09w$_0 == null)
-        return throwUPAE('eyes');
-      return this.eyes_j3l09w$_0;
-    },
-    set: function (eyes) {
-      this.eyes_j3l09w$_0 = eyes;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'allPanels', {
-    get: function () {
-      return this.panels;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'partySide', {
-    get: function () {
-      var $receiver = this.panels;
-      var destination = ArrayList_init();
-      var tmp$;
-      tmp$ = $receiver.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        if (Regex_init('P$').matches_6bul2c$(element.name))
-          destination.add_11rb$(element);
-      }
-      return destination;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'movingHeads', {
-    get: function () {
-      return this.eyes;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'allSurfaces', {
-    get: function () {
-      return this.allPanels;
-    }
-  });
-  Object.defineProperty(SheepModel.prototype, 'panelNeighbors', {
-    get: function () {
-      if (this.panelNeighbors_z1po1r$_0 == null)
-        return throwUPAE('panelNeighbors');
-      return this.panelNeighbors_z1po1r$_0;
-    },
-    set: function (panelNeighbors) {
-      this.panelNeighbors_z1po1r$_0 = panelNeighbors;
-    }
-  });
-  function SheepModel$load$lambda$lambda(closure$name) {
-    return function () {
-      return 'No pixel count found for ' + closure$name;
-    };
-  }
-  function SheepModel$load$neighborsOf(closure$edgesByPanel, closure$panelsByEdge) {
-    return function (panel) {
-      var tmp$, tmp$_0, tmp$_1;
-      var tmp$_2;
-      if ((tmp$ = closure$edgesByPanel.get_11rb$(panel)) != null) {
-        var destination = ArrayList_init();
-        var tmp$_3;
-        tmp$_3 = tmp$.iterator();
-        while (tmp$_3.hasNext()) {
-          var element = tmp$_3.next();
-          var tmp$_4, tmp$_5;
-          var list = (tmp$_5 = (tmp$_4 = closure$panelsByEdge.get_11rb$(element)) != null ? toList_0(tmp$_4) : null) != null ? tmp$_5 : emptyList();
-          addAll(destination, list);
-        }
-        tmp$_2 = destination;
-      }
-       else
-        tmp$_2 = null;
-      var tmp$_6;
-      if ((tmp$_0 = tmp$_2) != null) {
-        var destination_0 = ArrayList_init();
-        var tmp$_7;
-        tmp$_7 = tmp$_0.iterator();
-        while (tmp$_7.hasNext()) {
-          var element_0 = tmp$_7.next();
-          if (!(element_0 != null ? element_0.equals(panel) : null))
-            destination_0.add_11rb$(element_0);
-        }
-        tmp$_6 = destination_0;
-      }
-       else
-        tmp$_6 = null;
-      return (tmp$_1 = tmp$_6) != null ? tmp$_1 : emptyList();
-    };
-  }
-  SheepModel.prototype.load = function () {
-    var vertices = ArrayList_init();
-    var panels = ArrayList_init();
-    var currentPanel = {v: new SheepModel$Panel('initial')};
-    var panelsByEdge = LinkedHashMap_init();
-    var edgesByPanel = LinkedHashMap_init();
-    var pixelsPerPanel = HashMap_init();
+    ObjModel.call(this, 'baaahs-model.obj');
+    this.pixelsPerPanel_0 = HashMap_init();
     var $receiver = split(getResource('baaahs-panel-info.txt'), ['\n']);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
@@ -7533,178 +7472,37 @@
     tmp$_0 = destination.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
+      var $receiver_0 = this.pixelsPerPanel_0;
       var key = element.get_za3lpa$(0);
       var value = toInt_0(element.get_za3lpa$(1)) * 60 | 0;
-      pixelsPerPanel.put_xwzc9p$(key, value);
+      $receiver_0.put_xwzc9p$(key, value);
     }
-    var $receiver_0 = split(getResource('baaahs-model.obj'), ['\n']);
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_1;
-    tmp$_1 = $receiver_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var item_0 = tmp$_1.next();
-      var tmp$_2;
-      destination_0.add_11rb$(trim(Kotlin.isCharSequence(tmp$_2 = item_0) ? tmp$_2 : throwCCE()).toString());
-    }
-    var tmp$_3;
-    tmp$_3 = destination_0.iterator();
-    while (tmp$_3.hasNext()) {
-      var element_0 = tmp$_3.next();
-      var tmp$_4;
-      var parts = split(element_0, [' ']);
-      var args = parts.subList_vux9f0$(1, parts.size);
-      switch (parts.get_za3lpa$(0)) {
-        case 'v':
-          if (args.size !== 3)
-            throw Exception_init('invalid vertex line: ' + element_0);
-          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
-          var tmp$_5;
-          tmp$_5 = args.iterator();
-          while (tmp$_5.hasNext()) {
-            var item_1 = tmp$_5.next();
-            destination_1.add_11rb$(toDouble(item_1));
-          }
-
-          var coords = destination_1;
-          vertices.add_11rb$(new Vector3F(coords.get_za3lpa$(0), coords.get_za3lpa$(1), coords.get_za3lpa$(2)));
-          break;
-        case 'o':
-          var name = joinToString(args, ' ');
-          var expectedPixelCount = pixelsPerPanel.get_11rb$(name);
-          if (expectedPixelCount == null) {
-            SheepModel$Companion_getInstance().logger.warn_h4ejuu$(SheepModel$load$lambda$lambda(name));
-          }
-
-          currentPanel.v = new SheepModel$Panel(name, expectedPixelCount);
-          panels.add_11rb$(currentPanel.v);
-          break;
-        case 'f':
-          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
-          var tmp$_6;
-          tmp$_6 = args.iterator();
-          while (tmp$_6.hasNext()) {
-            var item_2 = tmp$_6.next();
-            destination_2.add_11rb$(toInt_0(item_2) - 1 | 0);
-          }
-
-          var verts = destination_2;
-          currentPanel.v.faces.faces.add_11rb$(new SheepModel$Face(verts));
-          break;
-        case 'l':
-          var destination_3 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
-          var tmp$_7;
-          tmp$_7 = args.iterator();
-          while (tmp$_7.hasNext()) {
-            var item_3 = tmp$_7.next();
-            destination_3.add_11rb$(toInt_0(item_3) - 1 | 0);
-          }
-
-          var verts_0 = destination_3;
-          var points = ArrayList_init();
-          tmp$_4 = verts_0.iterator();
-          while (tmp$_4.hasNext()) {
-            var vi = tmp$_4.next();
-            var v = vertices.get_za3lpa$(vi);
-            points.add_11rb$(v);
-          }
-
-          var sortedVerts = sorted(verts_0);
-          var tmp$_8;
-          var value_0 = panelsByEdge.get_11rb$(sortedVerts);
-          if (value_0 == null) {
-            var answer = ArrayList_init();
-            panelsByEdge.put_xwzc9p$(sortedVerts, answer);
-            tmp$_8 = answer;
-          }
-           else {
-            tmp$_8 = value_0;
-          }
-
-          tmp$_8.add_11rb$(currentPanel.v);
-          var key_0 = currentPanel.v;
-          var tmp$_9;
-          var value_1 = edgesByPanel.get_11rb$(key_0);
-          if (value_1 == null) {
-            var answer_0 = ArrayList_init();
-            edgesByPanel.put_xwzc9p$(key_0, answer_0);
-            tmp$_9 = answer_0;
-          }
-           else {
-            tmp$_9 = value_1;
-          }
-
-          tmp$_9.add_11rb$(sortedVerts);
-          currentPanel.v.lines.add_11rb$(new SheepModel$Line(points));
-          break;
-      }
-    }
-    println('Sheep model has ' + panels.size + ' panels (and ' + vertices.size + ' vertices)!');
-    this.vertices = vertices;
-    this.panels = panels;
-    var neighborsOf = SheepModel$load$neighborsOf(edgesByPanel, panelsByEdge);
-    var $receiver_1 = this.allPanels;
-    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver_1, 10)), 16));
-    var tmp$_10;
-    tmp$_10 = $receiver_1.iterator();
-    while (tmp$_10.hasNext()) {
-      var element_1 = tmp$_10.next();
-      result.put_xwzc9p$(element_1, neighborsOf(element_1));
-    }
-    this.panelNeighbors = result;
-    this.eyes = arrayListOf([new MovingHead('leftEye', new Vector3F(0.0, 204.361, 48.738)), new MovingHead('rightEye', new Vector3F(0.0, 204.361, -153.738))]);
-  };
-  SheepModel.prototype.neighborsOf_jfju1k$ = function (panel) {
-    var tmp$;
-    return (tmp$ = this.panelNeighbors.get_11rb$(panel)) != null ? tmp$ : emptyList();
-  };
-  function SheepModel$Line(vertices) {
-    this.vertices = vertices;
   }
-  SheepModel$Line.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Line',
-    interfaces: []
-  };
-  SheepModel$Line.prototype.component1 = function () {
-    return this.vertices;
-  };
-  SheepModel$Line.prototype.copy_yvrc2v$ = function (vertices) {
-    return new SheepModel$Line(vertices === void 0 ? this.vertices : vertices);
-  };
-  SheepModel$Line.prototype.toString = function () {
-    return 'Line(vertices=' + Kotlin.toString(this.vertices) + ')';
-  };
-  SheepModel$Line.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.vertices) | 0;
-    return result;
-  };
-  SheepModel$Line.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.vertices, other.vertices))));
-  };
-  function SheepModel$Face(vertexIds) {
-    this.vertexIds = vertexIds;
+  function SheepModel$createSurface$lambda(closure$name) {
+    return function () {
+      return 'No pixel count found for ' + closure$name;
+    };
   }
-  SheepModel$Face.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Face',
-    interfaces: []
+  SheepModel.prototype.createSurface_gvyaud$ = function (name, faces, lines) {
+    var expectedPixelCount = this.pixelsPerPanel_0.get_11rb$(name);
+    if (expectedPixelCount == null) {
+      ObjModel$Companion_getInstance().logger.warn_h4ejuu$(SheepModel$createSurface$lambda(name));
+    }
+    return new SheepModel$Panel(name, expectedPixelCount, faces, lines);
   };
-  function SheepModel$Faces() {
-    this.faces = ArrayList_init();
-  }
-  SheepModel$Faces.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Faces',
-    interfaces: []
-  };
-  function SheepModel$Panel(name, expectedPixelCount) {
+  function SheepModel$Panel(name, expectedPixelCount, faces, lines) {
     if (expectedPixelCount === void 0)
       expectedPixelCount = null;
+    if (faces === void 0) {
+      faces = emptyList();
+    }
+    if (lines === void 0) {
+      lines = emptyList();
+    }
     this.name_lqwv93$_0 = name;
     this.expectedPixelCount_jmxb4j$_0 = expectedPixelCount;
-    this.faces = new SheepModel$Faces();
-    this.lines = ArrayList_init();
+    this.faces_wcabbe$_0 = faces;
+    this.lines_zb5fa9$_0 = lines;
     this.description_fh6eyk$_0 = 'Panel ' + this.name;
   }
   Object.defineProperty(SheepModel$Panel.prototype, 'name', {
@@ -7715,6 +7513,16 @@
   Object.defineProperty(SheepModel$Panel.prototype, 'expectedPixelCount', {
     get: function () {
       return this.expectedPixelCount_jmxb4j$_0;
+    }
+  });
+  Object.defineProperty(SheepModel$Panel.prototype, 'faces', {
+    get: function () {
+      return this.faces_wcabbe$_0;
+    }
+  });
+  Object.defineProperty(SheepModel$Panel.prototype, 'lines', {
+    get: function () {
+      return this.lines_zb5fa9$_0;
     }
   });
   SheepModel$Panel.prototype.allVertices = function () {
@@ -7747,25 +7555,305 @@
     simpleName: 'Panel',
     interfaces: [Model$Surface]
   };
-  function SheepModel$Companion() {
-    SheepModel$Companion_instance = this;
-    this.logger = new Logger('SheepModel');
+  SheepModel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SheepModel',
+    interfaces: [ObjModel]
+  };
+  function ObjModel(objResourceName) {
+    ObjModel$Companion_getInstance();
+    Model.call(this);
+    this.objResourceName = objResourceName;
+    this.vertices_elq9o7$_0 = this.vertices_elq9o7$_0;
+    this.panels_v8y05v$_0 = this.panels_v8y05v$_0;
+    this.eyes_m2qnk0$_0 = this.eyes_m2qnk0$_0;
+    this.surfaceNeighbors_isj2cy$_0 = this.surfaceNeighbors_isj2cy$_0;
+    this.surfacesByName_33m42u$_0 = LinkedHashMap_init();
   }
-  SheepModel$Companion.$metadata$ = {
+  Object.defineProperty(ObjModel.prototype, 'geomVertices', {
+    get: function () {
+      return this.vertices;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'vertices', {
+    get: function () {
+      if (this.vertices_elq9o7$_0 == null)
+        return throwUPAE('vertices');
+      return this.vertices_elq9o7$_0;
+    },
+    set: function (vertices) {
+      this.vertices_elq9o7$_0 = vertices;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'panels', {
+    get: function () {
+      if (this.panels_v8y05v$_0 == null)
+        return throwUPAE('panels');
+      return this.panels_v8y05v$_0;
+    },
+    set: function (panels) {
+      this.panels_v8y05v$_0 = panels;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'eyes', {
+    get: function () {
+      if (this.eyes_m2qnk0$_0 == null)
+        return throwUPAE('eyes');
+      return this.eyes_m2qnk0$_0;
+    },
+    set: function (eyes) {
+      this.eyes_m2qnk0$_0 = eyes;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'allPanels', {
+    get: function () {
+      return this.panels;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'partySide', {
+    get: function () {
+      var $receiver = this.panels;
+      var destination = ArrayList_init();
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (Regex_init('P$').matches_6bul2c$(element.name))
+          destination.add_11rb$(element);
+      }
+      return destination;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'movingHeads', {
+    get: function () {
+      return this.eyes;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'allSurfaces', {
+    get: function () {
+      return this.allPanels;
+    }
+  });
+  Object.defineProperty(ObjModel.prototype, 'surfaceNeighbors', {
+    get: function () {
+      if (this.surfaceNeighbors_isj2cy$_0 == null)
+        return throwUPAE('surfaceNeighbors');
+      return this.surfaceNeighbors_isj2cy$_0;
+    },
+    set: function (surfaceNeighbors) {
+      this.surfaceNeighbors_isj2cy$_0 = surfaceNeighbors;
+    }
+  });
+  function ObjModel$load$buildSurface(closure$surfaceName, closure$faces, closure$lines, this$ObjModel, closure$panels) {
+    return function () {
+      var tmp$;
+      if ((tmp$ = closure$surfaceName.v) != null) {
+        var closure$faces_0 = closure$faces;
+        var closure$lines_0 = closure$lines;
+        var this$ObjModel_0 = this$ObjModel;
+        var closure$panels_0 = closure$panels;
+        var closure$surfaceName_0 = closure$surfaceName;
+        var surface = this$ObjModel_0.createSurface_gvyaud$(tmp$, closure$faces_0.v, closure$lines_0.v);
+        closure$panels_0.add_11rb$(surface);
+        this$ObjModel_0.surfacesByName_33m42u$_0.put_xwzc9p$(tmp$, surface);
+        closure$surfaceName_0.v = null;
+        closure$faces_0.v = ArrayList_init();
+        closure$lines_0.v = ArrayList_init();
+      }
+    };
+  }
+  function ObjModel$load$neighborsOf(closure$edgesBySurface, closure$surfacesByEdge, this$ObjModel) {
+    return function (surface) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2;
+      var tmp$_3;
+      if ((tmp$ = closure$edgesBySurface.get_11rb$(surface.name)) != null) {
+        var destination = ArrayList_init();
+        var tmp$_4;
+        tmp$_4 = tmp$.iterator();
+        while (tmp$_4.hasNext()) {
+          var element = tmp$_4.next();
+          var tmp$_5, tmp$_6;
+          var list = (tmp$_6 = (tmp$_5 = closure$surfacesByEdge.get_11rb$(element)) != null ? toList_0(tmp$_5) : null) != null ? tmp$_6 : emptyList();
+          addAll(destination, list);
+        }
+        tmp$_3 = destination;
+      }
+       else
+        tmp$_3 = null;
+      var tmp$_7;
+      if ((tmp$_0 = tmp$_3) != null) {
+        var destination_0 = ArrayList_init();
+        var tmp$_8;
+        tmp$_8 = tmp$_0.iterator();
+        while (tmp$_8.hasNext()) {
+          var element_0 = tmp$_8.next();
+          if (!equals(element_0, surface.name))
+            destination_0.add_11rb$(element_0);
+        }
+        tmp$_7 = destination_0;
+      }
+       else
+        tmp$_7 = null;
+      var tmp$_9;
+      if ((tmp$_1 = tmp$_7) != null) {
+        var destination_1 = ArrayList_init_0(collectionSizeOrDefault(tmp$_1, 10));
+        var tmp$_10;
+        tmp$_10 = tmp$_1.iterator();
+        while (tmp$_10.hasNext()) {
+          var item = tmp$_10.next();
+          destination_1.add_11rb$(ensureNotNull(this$ObjModel.surfacesByName_33m42u$_0.get_11rb$(item)));
+        }
+        tmp$_9 = destination_1;
+      }
+       else
+        tmp$_9 = null;
+      return (tmp$_2 = tmp$_9) != null ? tmp$_2 : emptyList();
+    };
+  }
+  ObjModel.prototype.load = function () {
+    var vertices = ArrayList_init();
+    var panels = ArrayList_init();
+    var surfaceName = {v: null};
+    var faces = {v: ArrayList_init()};
+    var lines = {v: ArrayList_init()};
+    var surfacesByEdge = LinkedHashMap_init();
+    var edgesBySurface = LinkedHashMap_init();
+    var buildSurface = ObjModel$load$buildSurface(surfaceName, faces, lines, this, panels);
+    var $receiver = split(getResource(this.objResourceName), ['\n']);
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0;
+      destination.add_11rb$(trim(Kotlin.isCharSequence(tmp$_0 = item) ? tmp$_0 : throwCCE()).toString());
+    }
+    var tmp$_1;
+    tmp$_1 = destination.iterator();
+    while (tmp$_1.hasNext()) {
+      var element = tmp$_1.next();
+      var tmp$_2;
+      var parts = split(element, [' ']);
+      var args = parts.subList_vux9f0$(1, parts.size);
+      switch (parts.get_za3lpa$(0)) {
+        case 'v':
+          if (args.size !== 3)
+            throw Exception_init('invalid vertex line: ' + element);
+          var destination_0 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var tmp$_3;
+          tmp$_3 = args.iterator();
+          while (tmp$_3.hasNext()) {
+            var item_0 = tmp$_3.next();
+            destination_0.add_11rb$(toDouble(item_0));
+          }
+
+          var coords = destination_0;
+          vertices.add_11rb$(new Vector3F(coords.get_za3lpa$(0), coords.get_za3lpa$(1), coords.get_za3lpa$(2)));
+          break;
+        case 'o':
+          buildSurface();
+          var name = joinToString(args, ' ');
+          surfaceName.v = name;
+          break;
+        case 'f':
+          var destination_1 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var tmp$_4;
+          tmp$_4 = args.iterator();
+          while (tmp$_4.hasNext()) {
+            var item_1 = tmp$_4.next();
+            destination_1.add_11rb$(toInt_0(item_1) - 1 | 0);
+          }
+
+          var verts = destination_1;
+          faces.v.add_11rb$(new Model$Face(verts));
+          break;
+        case 'l':
+          var destination_2 = ArrayList_init_0(collectionSizeOrDefault(args, 10));
+          var tmp$_5;
+          tmp$_5 = args.iterator();
+          while (tmp$_5.hasNext()) {
+            var item_2 = tmp$_5.next();
+            destination_2.add_11rb$(toInt_0(item_2) - 1 | 0);
+          }
+
+          var verts_0 = destination_2;
+          var points = ArrayList_init();
+          tmp$_2 = verts_0.iterator();
+          while (tmp$_2.hasNext()) {
+            var vi = tmp$_2.next();
+            var v = vertices.get_za3lpa$(vi);
+            points.add_11rb$(v);
+          }
+
+          var sortedVerts = sorted(verts_0);
+          var tmp$_6;
+          var value = surfacesByEdge.get_11rb$(sortedVerts);
+          if (value == null) {
+            var answer = ArrayList_init();
+            surfacesByEdge.put_xwzc9p$(sortedVerts, answer);
+            tmp$_6 = answer;
+          }
+           else {
+            tmp$_6 = value;
+          }
+
+          tmp$_6.add_11rb$(ensureNotNull(surfaceName.v));
+          var key = ensureNotNull(surfaceName.v);
+          var tmp$_7;
+          var value_0 = edgesBySurface.get_11rb$(key);
+          if (value_0 == null) {
+            var answer_0 = ArrayList_init();
+            edgesBySurface.put_xwzc9p$(key, answer_0);
+            tmp$_7 = answer_0;
+          }
+           else {
+            tmp$_7 = value_0;
+          }
+
+          tmp$_7.add_11rb$(sortedVerts);
+          lines.v.add_11rb$(new Model$Line(points));
+          break;
+      }
+    }
+    buildSurface();
+    println('Sheep model has ' + panels.size + ' panels (and ' + vertices.size + ' vertices)!');
+    this.vertices = vertices;
+    this.panels = panels;
+    var neighborsOf = ObjModel$load$neighborsOf(edgesBySurface, surfacesByEdge, this);
+    var $receiver_0 = this.allPanels;
+    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver_0, 10)), 16));
+    var tmp$_8;
+    tmp$_8 = $receiver_0.iterator();
+    while (tmp$_8.hasNext()) {
+      var element_0 = tmp$_8.next();
+      result.put_xwzc9p$(element_0, neighborsOf(element_0));
+    }
+    this.surfaceNeighbors = result;
+    this.eyes = arrayListOf([new MovingHead('leftEye', new Vector3F(0.0, 204.361, 48.738)), new MovingHead('rightEye', new Vector3F(0.0, 204.361, -153.738))]);
+  };
+  ObjModel.prototype.neighborsOf_ckpk7g$ = function (panel) {
+    var tmp$;
+    return (tmp$ = this.surfaceNeighbors.get_11rb$(panel)) != null ? tmp$ : emptyList();
+  };
+  function ObjModel$Companion() {
+    ObjModel$Companion_instance = this;
+    this.logger = new Logger('ObjModel');
+  }
+  ObjModel$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
     interfaces: []
   };
-  var SheepModel$Companion_instance = null;
-  function SheepModel$Companion_getInstance() {
-    if (SheepModel$Companion_instance === null) {
-      new SheepModel$Companion();
+  var ObjModel$Companion_instance = null;
+  function ObjModel$Companion_getInstance() {
+    if (ObjModel$Companion_instance === null) {
+      new ObjModel$Companion();
     }
-    return SheepModel$Companion_instance;
+    return ObjModel$Companion_instance;
   }
-  SheepModel.$metadata$ = {
+  ObjModel.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'SheepModel',
+    simpleName: 'ObjModel',
     interfaces: [Model]
   };
   function Show(name) {
@@ -15474,7 +15562,7 @@
   }
   function LifeyShow$createRenderer$neighbors(closure$model) {
     return function ($receiver) {
-      return closure$model.neighborsOf_jfju1k$($receiver);
+      return closure$model.neighborsOf_ckpk7g$($receiver);
     };
   }
   function LifeyShow$createRenderer$isSelected(closure$selectedPanels) {
@@ -15678,10 +15766,6 @@
     simpleName: 'Shaders',
     interfaces: []
   };
-  PanelTweenShow.prototype.get_number_y56fi1$ = function ($receiver) {
-    var tmp$, tmp$_0, tmp$_1;
-    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
-  };
   PanelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PanelTweenShow',
@@ -15748,10 +15832,6 @@
   PixelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
     return new PixelTweenShow$createRenderer$ObjectLiteral(colorArray, showRunner);
-  };
-  PixelTweenShow.prototype.get_number_y56fi1$ = function ($receiver) {
-    var tmp$, tmp$_0, tmp$_1;
-    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
   };
   PixelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
@@ -17735,8 +17815,8 @@
     this.afterCanvas_0.width = numberToInt(this.uiWidth_0 * this.diffCanvasScale_0);
     this.afterCanvas_0.height = numberToInt(this.uiHeight_0 * this.diffCanvasScale_0);
   };
-  JsMapperUi.prototype.addWireframe_9u144y$ = function (sheepModel) {
-    var $receiver = sheepModel.vertices;
+  JsMapperUi.prototype.addWireframe_ld9ij$ = function (model) {
+    var $receiver = model.geomVertices;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
@@ -17746,16 +17826,16 @@
     }
     var vertices = copyToArray(destination);
     var tmp$_0;
-    tmp$_0 = sheepModel.panels.iterator();
+    tmp$_0 = model.allSurfaces.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
       var geom = new Geometry();
       var allFaces = ArrayList_init();
       geom.vertices = vertices;
       var panelFaces = ArrayList_init();
-      var faceNormalAcc = {v: new Vector3()};
+      var faceNormalAcc = new Vector3();
       var tmp$_1;
-      tmp$_1 = element.faces.faces.iterator();
+      tmp$_1 = element.faces.iterator();
       while (tmp$_1.hasNext()) {
         var element_0 = tmp$_1.next();
         var face3 = new Face3_init(element_0.vertexIds.get_za3lpa$(0), element_0.vertexIds.get_za3lpa$(1), element_0.vertexIds.get_za3lpa$(2), new Vector3(0, 0, 0));
@@ -17763,9 +17843,9 @@
         panelFaces.add_11rb$(face3);
         geom.faces = [face3];
         geom.computeFaceNormals();
-        faceNormalAcc.v.add(ensureNotNull(face3.normal));
+        faceNormalAcc.add(ensureNotNull(face3.normal));
       }
-      var surfaceNormal = faceNormalAcc.v.divideScalar(element.faces.faces.size);
+      var surfaceNormal = faceNormalAcc.divideScalar(element.faces.size);
       var $receiver_0 = new MeshBasicMaterial();
       $receiver_0.color = new Color_init(0, 0, 0);
       var panelMaterial = $receiver_0;
@@ -18735,14 +18815,15 @@
     this.display_0 = new JsDisplay();
     this.network_0 = new FakeNetwork(void 0, this.display_0.forNetwork());
     this.dmxUniverse_0 = new FakeDmxUniverse();
+    var tmp$;
     var $receiver = new SheepModel();
     $receiver.load();
-    this.sheepModel_0 = $receiver;
+    this.model_0 = Kotlin.isType(tmp$ = $receiver, Model) ? tmp$ : throwCCE();
     this.shows_0 = AllShows$Companion_getInstance().allShows;
-    this.visualizer_0 = new Visualizer(this.sheepModel_0, this.display_0.forVisualizer());
+    this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer());
     this.fs_0 = new FakeFs();
     this.beatSource_0 = new BridgedBeatSource(window.location.hostname + ':' + '8006');
-    this.pinky_0 = new Pinky(this.sheepModel_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.beatSource_0, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), true);
+    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.beatSource_0, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -18858,7 +18939,7 @@
     return function () {
       var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer_0);
       var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer_0);
-      var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.sheepModel_0, mapperUi, mediaDevices, this$SheepSimulator.pinky_0.address);
+      var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.model_0, mapperUi, mediaDevices, this$SheepSimulator.pinky_0.address);
       launch(this$SheepSimulator.mapperScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda(mapper));
       return mapperUi;
     };
@@ -19013,7 +19094,7 @@
             var totalPixels = {v: 0};
             var tmp$_1, tmp$_0_0;
             var index = 0;
-            tmp$_1 = sortedWith(this.local$this$SheepSimulator.sheepModel_0.panels, new Comparator$ObjectLiteral_2(compareBy$lambda_1(getPropertyCallableRef('name', 1, function ($receiver) {
+            tmp$_1 = sortedWith(this.local$this$SheepSimulator.model_0.allSurfaces, new Comparator$ObjectLiteral_2(compareBy$lambda_1(getPropertyCallableRef('name', 1, function ($receiver) {
               return $receiver.name;
             })))).iterator();
             while (tmp$_1.hasNext()) {
@@ -19021,7 +19102,7 @@
               var this$SheepSimulator = this.local$this$SheepSimulator;
               var index_0 = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
               var tmp$_2;
-              var vizPanel = this$SheepSimulator.visualizer_0.addPanel_jfju1k$(item);
+              var vizPanel = this$SheepSimulator.visualizer_0.addPanel_1klhus$(item);
               var pixelPositions = pixelArranger.arrangePixels_zdreix$(vizPanel);
               vizPanel.vizPixels = new VizPanel$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
@@ -19041,7 +19122,7 @@
             }
 
             var tmp$_4;
-            tmp$_4 = this.local$this$SheepSimulator.sheepModel_0.eyes.iterator();
+            tmp$_4 = this.local$this$SheepSimulator.model_0.movingHeads.iterator();
             while (tmp$_4.hasNext()) {
               var element = tmp$_4.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
@@ -20554,7 +20635,7 @@
     simpleName: 'SwirlyPixelArranger',
     interfaces: []
   };
-  function Visualizer(sheepModel, display) {
+  function Visualizer(model, display) {
     this.display_0 = display;
     this.mapperIsRunning_y90e96$_0 = false;
     this.frameListeners_0 = ArrayList_init();
@@ -20606,7 +20687,7 @@
     this.sphere_0 = new Mesh_init(tmp$_1, $receiver_2);
     this.scene_0.add(this.sphere_0);
     var tmp$_2;
-    tmp$_2 = sheepModel.vertices.iterator();
+    tmp$_2 = model.geomVertices.iterator();
     while (tmp$_2.hasNext()) {
       var element = tmp$_2.next();
       this.geom_0.vertices.push(new Vector3(element.x, element.y, element.z));
@@ -20651,7 +20732,7 @@
   Visualizer.prototype.onMouseDown_tfvzir$ = function (event) {
     this.mouse_0 = new Vector2(event.clientX / this.sheepView_0.offsetWidth * 2 - 1, -(event.clientY / this.sheepView_0.offsetHeight) * 2 + 1);
   };
-  Visualizer.prototype.addPanel_jfju1k$ = function (p) {
+  Visualizer.prototype.addPanel_1klhus$ = function (p) {
     var vizPanel = new VizPanel(p, this.geom_0, this.scene_0);
     this.vizPanels_0.add_11rb$(vizPanel);
     return vizPanel;
@@ -20838,7 +20919,7 @@
     var panelVertices = panelGeometry.vertices;
     var triangle = new Triangle();
     var faceAreas = ArrayList_init();
-    var $receiver_0 = panel.faces.faces;
+    var $receiver_0 = panel.faces;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
     tmp$ = $receiver_0.iterator();
@@ -21378,15 +21459,16 @@
   package$baaahs.PooledRenderer = PooledRenderer;
   package$baaahs.Pixels = Pixels;
   Model.Surface = Model$Surface;
+  Model.Line = Model$Line;
+  Model.Face = Model$Face;
   package$baaahs.Model = Model;
-  SheepModel.Line = SheepModel$Line;
-  SheepModel.Face = SheepModel$Face;
-  SheepModel.Faces = SheepModel$Faces;
+  package$baaahs.Decom2019Model = Decom2019Model;
   SheepModel.Panel = SheepModel$Panel;
-  Object.defineProperty(SheepModel, 'Companion', {
-    get: SheepModel$Companion_getInstance
-  });
   package$baaahs.SheepModel = SheepModel;
+  Object.defineProperty(ObjModel, 'Companion', {
+    get: ObjModel$Companion_getInstance
+  });
+  package$baaahs.ObjModel = ObjModel;
   Show.Renderer = Show$Renderer;
   Show.RestartShowException = Show$RestartShowException;
   package$baaahs.Show = Show;

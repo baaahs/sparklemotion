@@ -36,6 +36,7 @@ baaahs/shows/SunsetDelight.glsl
 baaahs/shows/TvTestPattern.glsl
 baaahs/shows/YasQueen.glsl
 baaahs/shows/ZebraMadness.glsl
+decom-2019-panels.obj
 favicon.ico
 fontawesome/LICENSE.txt
 fontawesome/css/all.css
@@ -1713,6 +1714,7 @@ lib/OrbitControls.js
 lib/threejs-wrapper.js
 lib/threejs-wrapper.meta.js
 mapper-index.html
+panel-annotations.kts
 sparklemotion.js
 sparklemotion.js.map
 sparklemotion.meta.js
