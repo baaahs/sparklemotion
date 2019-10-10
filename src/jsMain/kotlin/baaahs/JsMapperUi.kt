@@ -136,7 +136,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     private val pauseButton = screen.first<HTMLButtonElement>("fa-pause")
     private val redoButton = screen.first<HTMLButtonElement>("fa-redo")
 
-    private val modelSurfaceInfos = mutableMapOf<SheepModel.Panel, PanelInfo>()
+    private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
@@ -283,16 +283,16 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         afterCanvas.height = (uiHeight * diffCanvasScale).toInt()
     }
 
-    override fun addWireframe(sheepModel: SheepModel) {
-        val vertices = sheepModel.vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
-        sheepModel.panels.forEach { panel ->
+    override fun addWireframe(model: Model<*>) {
+        val vertices = (model as SheepModel).vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
+        model.allSurfaces.forEach { surface ->
             val geom = Geometry()
             val allFaces = mutableListOf<Face3>()
             geom.vertices = vertices
 
             val panelFaces = mutableListOf<Face3>()
-            var faceNormalAcc = Vector3()
-            panel.faces.faces.forEach { face ->
+            val faceNormalAcc = Vector3()
+            surface.faces.forEach { face ->
                 val face3 = Face3(face.vertexIds[0], face.vertexIds[1], face.vertexIds[2], Vector3(0, 0, 0))
                 allFaces.add(face3)
                 panelFaces.add(face3)
@@ -302,11 +302,11 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
                 geom.computeFaceNormals()
                 faceNormalAcc.add(face3.normal!!)
             }
-            val surfaceNormal = faceNormalAcc.divideScalar(panel.faces.faces.size.toDouble())
+            val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
 
             val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
             val mesh = Mesh(geom, panelMaterial)
-            mesh.asDynamic().name = panel.name
+            mesh.asDynamic().name = surface.name
             uiScene.add(mesh)
 
             val lineMaterial = LineBasicMaterial().apply {
@@ -315,7 +315,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             }
 
             // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
-            panel.lines.forEach { line ->
+            surface.lines.forEach { line ->
                 val lineGeom = BufferGeometry()
                 lineGeom.setFromPoints(line.vertices.map { pt ->
                     Vector3(
@@ -331,7 +331,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             geom.computeFaceNormals()
             geom.computeVertexNormals()
 
-            modelSurfaceInfos[panel] = PanelInfo(panel.name, panelFaces, mesh, geom, lineMaterial)
+            modelSurfaceInfos[surface] = PanelInfo(surface.name, panelFaces, mesh, geom, lineMaterial)
         }
 
         uiScene.add(wireframe)

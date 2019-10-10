@@ -23,12 +23,12 @@ class SheepSimulator {
     private val display = JsDisplay()
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
-    private val sheepModel = SheepModel().apply { load() }
+    private val model = SheepModel().apply { load() } as Model<*>
     private val shows = AllShows.allShows
-    private val visualizer = Visualizer(sheepModel, display.forVisualizer())
+    private val visualizer = Visualizer(model, display.forVisualizer())
     private val fs = FakeFs()
     private val beatSource: BeatSource = BridgedBeatSource("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
-    private val pinky = Pinky(sheepModel, shows, network, dmxUniverse, beatSource, JsClock(), fs,
+    private val pinky = Pinky(model, shows, network, dmxUniverse, beatSource, JsClock(), fs,
         PermissiveFirmwareDaddy(), display.forPinky(),
         prerenderPixels = true)
 
@@ -49,7 +49,7 @@ class SheepSimulator {
         launcher.add("Mapper") {
             val mapperUi = JsMapperUi(visualizer)
             val mediaDevices = FakeMediaDevices(visualizer)
-            val mapper = Mapper(network, sheepModel, mapperUi, mediaDevices, pinky.address)
+            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinky.address)
             mapperScope.launch { mapper.start() }
 
             mapperUi
@@ -60,10 +60,10 @@ class SheepSimulator {
         val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
         var totalPixels = 0
 
-        sheepModel.panels.sortedBy(SheepModel.Panel::name).forEachIndexed { index, panel ->
+        model.allSurfaces.sortedBy(Model.Surface::name).forEachIndexed { index, surface ->
             //            if (panel.name != "17L") return@forEachIndexed
 
-            val vizPanel = visualizer.addPanel(panel)
+            val vizPanel = visualizer.addPanel(surface)
             val pixelPositions = pixelArranger.arrangePixels(vizPanel)
             vizPanel.vizPixels = VizPanel.VizPixels(vizPanel, pixelPositions)
 
@@ -74,15 +74,15 @@ class SheepSimulator {
             val pixelLocations = vizPanel.getPixelLocationsInModelSpace()!!.map {
                 Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
             }
-            pinky.providePixelMapping_CHEAT(panel, pixelLocations)
+            pinky.providePixelMapping_CHEAT(surface, pixelLocations)
 
             val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
-            pinky.providePanelMapping_CHEAT(BrainId(brain.id), panel)
+            pinky.providePanelMapping_CHEAT(BrainId(brain.id), surface)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
 
-        sheepModel.eyes.forEach { eye ->
-            visualizer.addMovingHead(eye, dmxUniverse)
+        model.movingHeads.forEach { movingHead ->
+            visualizer.addMovingHead(movingHead, dmxUniverse)
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }
