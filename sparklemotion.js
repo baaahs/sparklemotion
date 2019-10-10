@@ -310,6 +310,8 @@
   PubSub$Client$subscribe$lambda$lambda$ObjectLiteral.prototype.constructor = PubSub$Client$subscribe$lambda$lambda$ObjectLiteral;
   PubSub$Client$subscribe$ObjectLiteral.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Client$subscribe$ObjectLiteral.prototype.constructor = PubSub$Client$subscribe$ObjectLiteral;
+  PubSub$Client$server$ObjectLiteral.prototype = Object.create(PubSub$Connection.prototype);
+  PubSub$Client$server$ObjectLiteral.prototype.constructor = PubSub$Client$server$ObjectLiteral;
   PubSub$Client.prototype = Object.create(PubSub$Endpoint.prototype);
   PubSub$Client.prototype.constructor = PubSub$Client;
   ShaderId.prototype = Object.create(Enum.prototype);
@@ -6665,25 +6667,19 @@
     simpleName: 'TopicInfo',
     interfaces: []
   };
-  function PubSub$Connection(name, topics, json) {
+  function PubSub$Connection(name_0, topics_0, json_0) {
     PubSub$Origin.call(this);
-    this.name_qs3czq$_0 = name;
-    this.topics_okivn7$_0 = topics;
-    this.json_qq7q2x$_0 = json;
+    this.name_qs3czq$_0 = name_0;
+    this.topics_okivn7$_0 = topics_0;
+    this.json_qq7q2x$_0 = json_0;
+    this.isConnected = false;
     this.connection = null;
-    this.toSend_p0j902$_0 = ArrayList_init();
     this.cleanup_mgq9j5$_0 = ArrayList_init();
   }
   PubSub$Connection.prototype.connected_67ozxy$ = function (tcpConnection) {
     this.debug_6bynea$_0('connection ' + this + ' established');
     this.connection = tcpConnection;
-    var tmp$;
-    tmp$ = this.toSend_p0j902$_0.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      tcpConnection.send_fqrh44$(element);
-    }
-    this.toSend_p0j902$_0.clear();
+    this.isConnected = true;
   };
   function PubSub$Connection$receive$ObjectLiteral(closure$topicName, this$Connection, origin_0) {
     this.closure$topicName = closure$topicName;
@@ -6735,19 +6731,29 @@
     }
   };
   PubSub$Connection.prototype.sendTopicUpdate_zafu29$ = function (name, data) {
-    this.debug_6bynea$_0('update ' + name + ' ' + data);
-    var writer = new ByteArrayWriter();
-    writer.writeString_61zpoe$('update');
-    writer.writeString_61zpoe$(name);
-    writer.writeString_61zpoe$(this.json_qq7q2x$_0.stringify_tf03ej$(json.JsonElementSerializer, data));
-    this.sendCommand_su7uv8$_0(writer.toBytes());
+    if (this.isConnected) {
+      this.debug_6bynea$_0('update ' + name + ' ' + data);
+      var writer = new ByteArrayWriter();
+      writer.writeString_61zpoe$('update');
+      writer.writeString_61zpoe$(name);
+      writer.writeString_61zpoe$(this.json_qq7q2x$_0.stringify_tf03ej$(json.JsonElementSerializer, data));
+      this.sendCommand_su7uv8$_0(writer.toBytes());
+    }
+     else {
+      this.debug_6bynea$_0('not connected to server, so no update ' + name + ' ' + data);
+    }
   };
   PubSub$Connection.prototype.sendTopicSub_61zpoe$ = function (topicName) {
-    this.debug_6bynea$_0('sub ' + topicName);
-    var writer = new ByteArrayWriter();
-    writer.writeString_61zpoe$('sub');
-    writer.writeString_61zpoe$(topicName);
-    this.sendCommand_su7uv8$_0(writer.toBytes());
+    if (this.isConnected) {
+      this.debug_6bynea$_0('sub ' + topicName);
+      var writer = new ByteArrayWriter();
+      writer.writeString_61zpoe$('sub');
+      writer.writeString_61zpoe$(topicName);
+      this.sendCommand_su7uv8$_0(writer.toBytes());
+    }
+     else {
+      this.debug_6bynea$_0('not connected to server, so no sub ' + topicName);
+    }
   };
   function PubSub$Connection$reset$lambda(this$Connection) {
     return function () {
@@ -6756,6 +6762,7 @@
   }
   PubSub$Connection.prototype.reset_67ozxy$ = function (tcpConnection) {
     PubSub$Companion_getInstance().logger.info_h4ejuu$(PubSub$Connection$reset$lambda(this));
+    this.isConnected = false;
     var tmp$;
     tmp$ = this.cleanup_mgq9j5$_0.iterator();
     while (tmp$.hasNext()) {
@@ -6764,13 +6771,8 @@
     }
   };
   PubSub$Connection.prototype.sendCommand_su7uv8$_0 = function (bytes) {
-    var tcpConnection = this.connection;
-    if (tcpConnection == null) {
-      this.toSend_p0j902$_0.add_11rb$(bytes);
-    }
-     else {
-      tcpConnection.send_fqrh44$(bytes);
-    }
+    var tmp$;
+    (tmp$ = this.connection) != null ? (tmp$.send_fqrh44$(bytes), Unit) : null;
   };
   function PubSub$Connection$debug$lambda(this$Connection, closure$message) {
     return function () {
@@ -6871,12 +6873,23 @@
     simpleName: 'Server',
     interfaces: [PubSub$Endpoint]
   };
-  function PubSub$Client(link, serverAddress, port) {
+  function PubSub$Client(link, serverAddress, port, coroutineScope) {
+    if (coroutineScope === void 0)
+      coroutineScope = coroutines.GlobalScope;
     PubSub$Endpoint.call(this);
+    this.stateChangeListeners_0 = ArrayList_init();
     this.topics_0 = HashMap_init();
-    this.server_0 = new PubSub$Connection('client at ' + link.myAddress, this.topics_0, this.json);
-    link.connectWebSocket_t0j9bj$(serverAddress, port, '/sm/ws', this.server_0);
+    this.server_0 = new PubSub$Client$server$ObjectLiteral(this, coroutineScope, link, serverAddress, port, 'client at ' + link.myAddress, this.topics_0, this.json);
+    this.connectWebSocket_0(link, serverAddress, port);
   }
+  Object.defineProperty(PubSub$Client.prototype, 'isConnected', {
+    get: function () {
+      return this.server_0.isConnected;
+    }
+  });
+  PubSub$Client.prototype.connectWebSocket_0 = function (link, serverAddress, port) {
+    link.connectWebSocket_t0j9bj$(serverAddress, port, '/sm/ws', this.server_0);
+  };
   function PubSub$Client$subscribe$lambda$lambda$ObjectLiteral(this$Client, closure$topicName, origin_0) {
     this.this$Client = this$Client;
     this.closure$topicName = closure$topicName;
@@ -6946,6 +6959,102 @@
       listener.onUpdate_qiw0cd$(data);
     }
     return new PubSub$Client$subscribe$ObjectLiteral_0(this, topic, topicInfo, subscriber);
+  };
+  PubSub$Client.prototype.addStateChangeListener = function (callback) {
+    this.stateChangeListeners_0.add_11rb$(callback);
+  };
+  PubSub$Client.prototype.removeStateChangeListener = function (callback) {
+    this.stateChangeListeners_0.remove_11rb$(callback);
+  };
+  PubSub$Client.prototype.notifyChangeListeners_0 = function () {
+    var tmp$;
+    tmp$ = this.stateChangeListeners_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element();
+    }
+  };
+  function PubSub$Client$server$ObjectLiteral(this$Client, closure$coroutineScope, closure$link, closure$serverAddress, closure$port, name_0, topics_0, json_0) {
+    this.this$Client = this$Client;
+    this.closure$coroutineScope = closure$coroutineScope;
+    this.closure$link = closure$link;
+    this.closure$serverAddress = closure$serverAddress;
+    this.closure$port = closure$port;
+    PubSub$Connection.call(this, name_0, topics_0, json_0);
+  }
+  PubSub$Client$server$ObjectLiteral.prototype.connected_67ozxy$ = function (tcpConnection) {
+    PubSub$Connection.prototype.connected_67ozxy$.call(this, tcpConnection);
+    var tmp$;
+    tmp$ = this.this$Client.topics_0.values.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.sendTopicSub_61zpoe$(element.name);
+    }
+    this.this$Client.notifyChangeListeners_0();
+  };
+  function Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda(closure$link_0, closure$serverAddress_0, closure$port_0, this$Client_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$closure$link = closure$link_0;
+    this.local$closure$serverAddress = closure$serverAddress_0;
+    this.local$closure$port = closure$port_0;
+    this.local$this$Client = this$Client_0;
+  }
+  Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda.prototype.constructor = Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda;
+  Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            return this.local$this$Client.connectWebSocket_0(this.local$closure$link, this.local$closure$serverAddress, this.local$closure$port), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function PubSub$Client$server$ObjectLiteral$reset$lambda(closure$link_0, closure$serverAddress_0, closure$port_0, this$Client_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$PubSub$Client$server$ObjectLiteral$reset$lambda(closure$link_0, closure$serverAddress_0, closure$port_0, this$Client_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  PubSub$Client$server$ObjectLiteral.prototype.reset_67ozxy$ = function (tcpConnection) {
+    PubSub$Connection.prototype.reset_67ozxy$.call(this, tcpConnection);
+    this.this$Client.notifyChangeListeners_0();
+    launch(this.closure$coroutineScope, void 0, void 0, PubSub$Client$server$ObjectLiteral$reset$lambda(this.closure$link, this.closure$serverAddress, this.closure$port, this.this$Client));
+  };
+  PubSub$Client$server$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [PubSub$Connection]
   };
   PubSub$Client.$metadata$ = {
     kind: Kind_CLASS,
@@ -16157,6 +16266,8 @@
     this.myAddress_npb8zl$_0 = myAddress;
     this.udpMtu_jnv15u$_0 = 1500;
     this.nextAvailablePort_0 = 65000;
+    this.webSocketListeners = ArrayList_init();
+    this.tcpConnections = ArrayList_init();
   }
   Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
     get: function () {
@@ -16368,11 +16479,13 @@
   }
   FakeNetwork$FakeLink.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
     var tmp$;
+    this.webSocketListeners.add_11rb$(webSocketListener);
     var fakeHttpServer = this.$outer.httpServersByPort_0.get_11rb$(to(toAddress, port));
     var onConnectCallback = (tmp$ = fakeHttpServer != null ? fakeHttpServer.webSocketListeners : null) != null ? tmp$.get_11rb$(path) : null;
     if (onConnectCallback == null) {
       var connection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, null);
       launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda(this.$outer, webSocketListener, connection));
+      this.tcpConnections.add_11rb$(connection);
       return connection;
     }
     var clientSideConnection = {v: null};
@@ -16381,6 +16494,7 @@
     clientSideConnection.v = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, serverListener, FakeNetwork$FakeLink$connectWebSocket$lambda_1(serverSideConnection));
     launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_2(this.$outer, webSocketListener, clientSideConnection));
     launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_3(this.$outer, serverListener, serverSideConnection));
+    this.tcpConnections.add_11rb$(clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v);
     return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
   };
   function FakeNetwork$FakeLink$FakeTcpConnection($outer, fromAddress, toAddress, port, webSocketListener, otherListener) {
@@ -19907,9 +20021,12 @@
     console.error('WebSocket error!', it);
     return Unit;
   }
-  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2(it) {
-    console.error('WebSocket close!', it);
-    return Unit;
+  function BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2(closure$webSocketListener, closure$tcpConnection) {
+    return function (it) {
+      console.error('WebSocket close!', it);
+      closure$webSocketListener.reset_67ozxy$(closure$tcpConnection);
+      return Unit;
+    };
   }
   BrowserNetwork$link$ObjectLiteral.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
     var tmp$;
@@ -19919,7 +20036,7 @@
     webSocket.onopen = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda(webSocketListener, tcpConnection);
     webSocket.onmessage = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_0(webSocketListener, tcpConnection);
     webSocket.onerror = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_1;
-    webSocket.onclose = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2;
+    webSocket.onclose = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda_2(webSocketListener, tcpConnection);
     return tcpConnection;
   };
   function BrowserNetwork$link$ObjectLiteral$myAddress$ObjectLiteral() {
@@ -21810,6 +21927,9 @@
     get: FakeFs$Companion_getInstance
   });
   package$sim.FakeFs = FakeFs;
+  FakeNetwork$FakeLink.FakeTcpConnection = FakeNetwork$FakeLink$FakeTcpConnection;
+  FakeNetwork$FakeLink.FakeHttpServer = FakeNetwork$FakeLink$FakeHttpServer;
+  FakeNetwork.FakeLink = FakeNetwork$FakeLink;
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random;
   package$baaahs.random_hhb8gh$ = random_0;

@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FakeNetwork.FakeLink - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="../index.html">FakeNetwork</a>&nbsp;/&nbsp;<a href="./index.html">FakeLink</a><br/>
+<br/>
+<h1>FakeLink</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FakeLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-link/index.html"><span class="identifier">Network.Link</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-fake-tcp-connection/index.html">FakeTcpConnection</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FakeTcpConnection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">FakeLink</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$<init>(baaahs.net.Network.Address)/myAddress">myAddress</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="my-address.html">myAddress</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">myAddress</span><span class="symbol">: </span><a href="../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="tcp-connections.html">tcpConnections</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">tcpConnections</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="udp-mtu.html">udpMtu</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">udpMtu</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="web-socket-listeners.html">webSocketListeners</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">webSocketListeners</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="connect-web-socket.html">connectWebSocket</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">connectWebSocket</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-web-socket-listener/index.html"><span class="identifier">Network.WebSocketListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="listen-udp.html">listenUdp</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.net/-network/-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="start-http-server.html">startHttpServer</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">startHttpServer</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink$startHttpServer(kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.net/-network/-http-server/index.html"><span class="identifier">Network.HttpServer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
