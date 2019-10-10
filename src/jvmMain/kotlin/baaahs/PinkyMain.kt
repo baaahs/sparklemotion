@@ -21,8 +21,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     GlslBase.manager // Need to wake up OpenGL on the main thread.
 
-    val sheepModel = SheepModel()
-    sheepModel.load()
+    val sheepModel = SheepModel().apply { load() } as Model<*>
 
     val resource = Pinky::class.java.classLoader.getResource("baaahs")
     val useResources: Boolean

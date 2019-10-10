@@ -16,8 +16,7 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
-    val sheepModel = SheepModel()
-    sheepModel.load()
+    val model = SheepModel().apply { load() } as Model<*>
 
     val network = JvmNetwork()
     val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
@@ -29,9 +28,9 @@ fun main(args: Array<String>) {
         }
     }, JvmPixelsDisplay(2000))
 
-    val myPanel = if (Random.nextBoolean()) { sheepModel.allPanels.random()!! } else { null }
-    println("I'll be ${myPanel?.name ?: "anonymous"}!")
-    myPanel?.let { brain.forcedSurfaceName(myPanel.name) }
+    val mySurface = if (Random.nextBoolean()) { model.allSurfaces.random()!! } else { null }
+    println("I'll be ${mySurface?.name ?: "anonymous"}!")
+    mySurface?.let { brain.forcedSurfaceName(mySurface.name) }
 
     GlobalScope.launch { brain.run() }
 

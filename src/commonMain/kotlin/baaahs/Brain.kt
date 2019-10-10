@@ -160,6 +160,9 @@ class Brain(
         override val expectedPixelCount: Int? = null
 
         override fun allVertices(): Collection<Vector3F> = emptyList()
+
+        override val faces: List<Model.Face> = emptyList()
+        override val lines: List<Model.Line> = emptyList()
     }
 
     companion object {

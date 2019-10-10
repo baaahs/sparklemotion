@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import baaahs.Color
 import baaahs.IdentifiedSurface
-import baaahs.SheepModel
+import baaahs.TestModelSurface
 import baaahs.geom.Vector3F
 import baaahs.shaders.GlslShader
 import kotlinx.serialization.json.json
@@ -76,7 +76,7 @@ class GlslRendererTest {
 
     private fun threePixelPanel(): IdentifiedSurface {
         return IdentifiedSurface(
-            SheepModel.Panel("xyz"), 3, listOf(
+            TestModelSurface("xyz"), 3, listOf(
                 Vector3F(0f, .1f, 0f),
                 Vector3F(.2f, .3f, 0f),
                 Vector3F(.4f, .5f, 0f)
