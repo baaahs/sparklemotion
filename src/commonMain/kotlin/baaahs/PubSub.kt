@@ -3,6 +3,10 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.EmptyModule
@@ -66,15 +70,15 @@ abstract class PubSub {
         private val topics: MutableMap<String, TopicInfo>,
         private val json: Json
     ) : Origin(), Network.WebSocketListener {
+        var isConnected: Boolean = false
+
         protected var connection: Network.TcpConnection? = null
-        private val toSend: MutableList<ByteArray> = mutableListOf()
         private val cleanup: MutableList<() -> Unit> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $this established")
             connection = tcpConnection
-            toSend.forEach { tcpConnection.send(it) }
-            toSend.clear()
+            isConnected = true
         }
 
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -82,8 +86,7 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = topics[topicName] ?:
-                            throw IllegalArgumentException("Unknown topic $topicName")
+                    val topicInfo = topics[topicName] ?: throw IllegalArgumentException("Unknown topic $topicName")
 
                     val listener = object : Listener(this) {
                         override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
@@ -113,36 +116,40 @@ abstract class PubSub {
         }
 
         fun sendTopicUpdate(name: String, data: JsonElement) {
-            debug("update $name $data")
+            if (isConnected) {
+                debug("update $name $data")
 
-            val writer = ByteArrayWriter()
-            writer.writeString("update")
-            writer.writeString(name)
-            writer.writeString(json.stringify(JsonElementSerializer, data))
-            sendCommand(writer.toBytes())
+                val writer = ByteArrayWriter()
+                writer.writeString("update")
+                writer.writeString(name)
+                writer.writeString(json.stringify(JsonElementSerializer, data))
+                sendCommand(writer.toBytes())
+            } else {
+                debug("not connected to server, so no update $name $data")
+            }
         }
 
         fun sendTopicSub(topicName: String) {
-            debug("sub $topicName")
+            if (isConnected) {
+                debug("sub $topicName")
 
-            val writer = ByteArrayWriter()
-            writer.writeString("sub")
-            writer.writeString(topicName)
-            sendCommand(writer.toBytes())
+                val writer = ByteArrayWriter()
+                writer.writeString("sub")
+                writer.writeString(topicName)
+                sendCommand(writer.toBytes())
+            } else {
+                debug("not connected to server, so no sub $topicName")
+            }
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
             logger.info { "PubSub client $name disconnected." }
+            isConnected = false
             cleanup.forEach { it.invoke() }
         }
 
         private fun sendCommand(bytes: ByteArray) {
-            val tcpConnection = connection
-            if (tcpConnection == null) {
-                toSend.add(bytes)
-            } else {
-                tcpConnection.send(bytes)
-            }
+            connection?.send(bytes)
         }
 
         private fun debug(message: String) {
@@ -206,11 +213,44 @@ abstract class PubSub {
         }
     }
 
-    class Client(link: Network.Link, serverAddress: Network.Address, port: Int) : Endpoint() {
+    class Client(
+        link: Network.Link,
+        serverAddress: Network.Address,
+        port: Int,
+        coroutineScope: CoroutineScope = GlobalScope
+    ) : Endpoint() {
+        @JsName("isConnected")
+        val isConnected: Boolean
+            get() = server.isConnected
+        private val stateChangeListeners = mutableListOf<() -> Unit>()
+
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
-        private var server: Connection = Connection("client at ${link.myAddress}", topics, json)
+        private var server: Connection = object : Connection("client at ${link.myAddress}", topics, json) {
+            override fun connected(tcpConnection: Network.TcpConnection) {
+                super.connected(tcpConnection)
+
+                // If any topics were subscribed to before this connection was established, send the sub command now.
+                topics.values.forEach { topic -> sendTopicSub(topic.name) }
+
+                notifyChangeListeners()
+            }
+
+            override fun reset(tcpConnection: Network.TcpConnection) {
+                super.reset(tcpConnection)
+                notifyChangeListeners()
+
+                coroutineScope.launch {
+                    delay(1000)
+                    connectWebSocket(link, serverAddress, port)
+                }
+            }
+        }
 
         init {
+            connectWebSocket(link, serverAddress, port)
+        }
+
+        private fun connectWebSocket(link: Network.Link, serverAddress: Network.Address, port: Int) {
             link.connectWebSocket(serverAddress, port, "/sm/ws", server)
         }
 
@@ -252,6 +292,20 @@ abstract class PubSub {
                     // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
             }
+        }
+
+        @JsName("addStateChangeListener")
+        fun addStateChangeListener(callback: () -> Unit) {
+            stateChangeListeners.add(callback)
+        }
+
+        @JsName("removeStateChangeListener")
+        fun removeStateChangeListener(callback: () -> Unit) {
+            stateChangeListeners.remove(callback)
+        }
+
+        private fun notifyChangeListeners() {
+            stateChangeListeners.forEach { callback -> callback() }
         }
     }
 }

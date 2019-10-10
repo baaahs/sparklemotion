@@ -1,17 +1,11 @@
-import { hot } from 'react-hot-loader';
-import React, { Component, Fragment } from 'react';
+import {hot} from 'react-hot-loader';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import TabBar from './components/TabBar';
 import Shows from './components/Shows';
 import Eyes from './components/Eyes';
-import modalStyles from './components/Modal/Modal.scss';
 
-import {
-  SHOWS,
-  EYE_CONTROLS,
-  MAIN_TABS,
-  MODAL_PORTAL_DOM_NODE_ID,
-} from './constants';
+import {EYE_CONTROLS, MAIN_TABS, MODAL_PORTAL_DOM_NODE_ID, SHOWS,} from './constants';
 
 const baaahs = sparklemotion.baaahs;
 
@@ -22,8 +16,24 @@ class App extends Component {
     this.state = {
       showPickerOpen: false,
       selectedTab: SHOWS,
+      isConnected: this.props.pubSub.isConnected,
     };
+
+    this.pubSubStateChangeListener = function() {
+    }.bind(this);
   }
+
+  componentDidMount() {
+    this.props.pubSub.addStateChangeListener(this.onPubSubStateChange);
+  }
+
+  componentWillUnmount() {
+    this.props.pubSub.removeStateChangeListener(this.onPubSubStateChange);
+  }
+
+  onPubSubStateChange = () => {
+    this.setState({ isConnected: this.props.pubSub.isConnected });
+  };
 
   close = () => {
     console.log('app closed!');
@@ -50,10 +60,21 @@ class App extends Component {
 
   render() {
     const { pubSub } = this.props;
-    const { selectedTab } = this.state;
+    const { selectedTab, isConnected } = this.state;
 
     return (
       <Fragment>
+        <div id="errorMessage" style={{
+          height: "5vh",
+          width: "100%",
+          backgroundColor: "pink",
+          color: "black",
+          textAlign: "center",
+          fontSize: "2em",
+          display: isConnected ? "none" : "block"
+        }}>
+          Connecting...
+        </div>
         <TabBar
           tabs={MAIN_TABS}
           activeTab={selectedTab}
