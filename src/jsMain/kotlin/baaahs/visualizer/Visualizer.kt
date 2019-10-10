@@ -100,7 +100,7 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         scene.add(sphere)
 
         // convert from SheepModel to THREE
-        (model as SheepModel).vertices.forEach { v ->
+        model.geomVertices.forEach { v ->
             geom.vertices.asDynamic().push(Vector3(v.x, v.y, v.z))
         }
 

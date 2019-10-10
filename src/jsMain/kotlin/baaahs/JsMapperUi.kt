@@ -284,7 +284,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun addWireframe(model: Model<*>) {
-        val vertices = (model as SheepModel).vertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
+        val vertices = model.geomVertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
         model.allSurfaces.forEach { surface ->
             val geom = Geometry()
             val allFaces = mutableListOf<Face3>()

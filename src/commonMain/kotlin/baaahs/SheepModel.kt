@@ -7,6 +7,7 @@ import baaahs.geom.extents
 abstract class Model<T : Model.Surface> {
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<T>
+    abstract val geomVertices: List<Vector3F>
 
     private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
 
@@ -42,6 +43,7 @@ abstract class Model<T : Model.Surface> {
 }
 
 class SheepModel : Model<SheepModel.Panel>() {
+    override val geomVertices: List<Vector3F> get() = vertices
     lateinit var vertices: List<Vector3F>
     lateinit var panels: List<Panel>
 
