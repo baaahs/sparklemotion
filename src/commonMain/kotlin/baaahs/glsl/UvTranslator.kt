@@ -4,12 +4,43 @@ import baaahs.IdentifiedSurface
 import baaahs.Model
 import baaahs.Surface
 import baaahs.geom.Vector3F
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.random.Random
 
-interface UvTranslator {
+abstract class UvTranslator(val id: Id) {
+    enum class Id {
+        PANEL_SPACE_UV_TRANSLATOR {
+            override fun parse(reader: ByteArrayReader): UvTranslator =
+                PanelSpaceUvTranslator
+        },
+
+        CYLINDRICAL_MODEL_UV_TRANSLATOR {
+            override fun parse(reader: ByteArrayReader): UvTranslator =
+                CylindricalModelSpaceUvTranslator.parse(reader)
+        },
+
+        LINEAR_MODEL_UV_TRANSLATOR {
+            override fun parse(reader: ByteArrayReader): UvTranslator =
+                LinearModelSpaceUvTranslator.parse(reader)
+        };
+
+        abstract fun parse(reader: ByteArrayReader): UvTranslator
+
+        companion object {
+            val values = values()
+            fun get(i: Byte): Id {
+                if (i > values.size || i < 0) {
+                    throw Throwable("bad index for UvTranslator.Id: $i")
+                }
+                return values[i.toInt()]
+            }
+        }
+    }
+
     fun forSurface(surface: Surface): SurfaceUvTranslator {
         return if (surface is IdentifiedSurface) {
             if (surface.pixelLocations != null) {
@@ -19,17 +50,34 @@ interface UvTranslator {
                 forPixels(listOf(center))
             }
         } else {
-            forPixels(listOf(
-                Vector3F(
-                    Random.nextFloat() * 100f,
-                    Random.nextFloat() * 100f,
-                    1f
+            forPixels(
+                listOf(
+                    Vector3F(
+                        Random.nextFloat() * 100f,
+                        Random.nextFloat() * 100f,
+                        1f
+                    )
                 )
-            ))
+            )
         }
     }
 
-    fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator
+    abstract fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator
+
+    fun serialize(writer: ByteArrayWriter) {
+        writer.writeByte(id.ordinal.toByte())
+        serializeConfig(writer)
+    }
+
+    abstract fun serializeConfig(writer: ByteArrayWriter)
+
+    companion object {
+        fun parse(reader: ByteArrayReader): UvTranslator {
+            val uvTranslatorId = reader.readByte()
+            val uvTranslatorType = Id.get(uvTranslatorId)
+            return uvTranslatorType.parse(reader)
+        }
+    }
 
     interface SurfaceUvTranslator {
         val pixelCount: Int
@@ -37,9 +85,11 @@ interface UvTranslator {
     }
 }
 
-object PanelSpaceUvTranslator : UvTranslator {
-    override fun forPixels(pixelLocations: List<Vector3F?>): UvTranslator.SurfaceUvTranslator {
-        return object : UvTranslator.SurfaceUvTranslator {
+object PanelSpaceUvTranslator :
+    UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
+
+    override fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator {
+        return object : SurfaceUvTranslator {
             override val pixelCount: Int = pixelLocations.size
 
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
@@ -48,14 +98,18 @@ object PanelSpaceUvTranslator : UvTranslator {
             }
         }
     }
+
+    override fun serializeConfig(writer: ByteArrayWriter) {}
 }
 
-class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
-    val modelCenter = model.modelCenter
-    val modelExtents = model.modelExtents
+class CylindricalModelSpaceUvTranslator(
+    val modelCenter: Vector3F,
+    val modelExtents: Vector3F
+) : UvTranslator(Id.CYLINDRICAL_MODEL_UV_TRANSLATOR) {
+    constructor(model: Model<*>) : this(model.modelCenter, model.modelExtents)
 
-    override fun forPixels(pixelLocations: List<Vector3F?>): UvTranslator.SurfaceUvTranslator {
-        return object : UvTranslator.SurfaceUvTranslator {
+    override fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator {
+        return object : SurfaceUvTranslator {
             override val pixelCount: Int = pixelLocations.size
 
             override fun getUV(pixelIndex: Int): Pair<Float, Float> {
@@ -70,8 +124,60 @@ class ModelSpaceUvTranslator(val model: Model<*>) : UvTranslator {
             }
         }
     }
+
+    override fun serializeConfig(writer: ByteArrayWriter) {
+        modelCenter.serialize(writer)
+        modelExtents.serialize(writer)
+    }
+
+    companion object {
+        fun parse(reader: ByteArrayReader): CylindricalModelSpaceUvTranslator {
+            val modelCenter = Vector3F.parse(reader)
+            val modelExtents = Vector3F.parse(reader)
+            return CylindricalModelSpaceUvTranslator(modelCenter, modelExtents)
+        }
+    }
+}
+
+class LinearModelSpaceUvTranslator(
+    val modelCenter: Vector3F,
+    val modelBounds: Pair<Vector3F, Vector3F>
+) : UvTranslator(Id.LINEAR_MODEL_UV_TRANSLATOR) {
+    constructor(model: Model<*>) : this(model.modelCenter, model.modelBounds)
+
+    override fun forPixels(pixelLocations: List<Vector3F?>): SurfaceUvTranslator {
+        return object : SurfaceUvTranslator {
+            override val pixelCount: Int = pixelLocations.size
+
+            override fun getUV(pixelIndex: Int): Pair<Float, Float> {
+                val (min, max) = modelBounds
+                val pixelLocation = (pixelLocations[pixelIndex] ?: modelCenter) - min
+                val extents = max - min
+                val normalized = pixelLocation / extents // in range [0,1)
+                return normalized.x to normalized.y
+            }
+        }
+    }
+
+    override fun serializeConfig(writer: ByteArrayWriter) {
+        modelCenter.serialize(writer)
+        modelBounds.serialize(writer)
+    }
+
+    companion object {
+        fun parse(reader: ByteArrayReader): LinearModelSpaceUvTranslator {
+            val modelCenter = Vector3F.parse(reader)
+            val modelBounds = Vector3F.parse(reader) to Vector3F.parse(reader)
+            return LinearModelSpaceUvTranslator(modelCenter, modelBounds)
+        }
+
+        fun Pair<Vector3F, Vector3F>.serialize(writer: ByteArrayWriter) {
+            first.serialize(writer)
+            second.serialize(writer)
+        }
+    }
 }
 
 private fun Collection<Vector3F>.average(): Vector3F {
-    return reduce { acc, vector3F -> acc.plus(vector3F) }.dividedByScalar(size.toFloat())
+    return reduce { acc, vector3F -> acc + vector3F }.dividedByScalar(size.toFloat())
 }

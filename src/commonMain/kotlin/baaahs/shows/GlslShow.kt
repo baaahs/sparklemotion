@@ -9,7 +9,7 @@ abstract class GlslShow(name: String) : Show(name) {
     abstract val program: String
 
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val shader = GlslShader(program)
+        val shader = GlslShader(program, model.defaultUvTranslator)
 
         val adjustableValuesDataSources = shader.adjustableValues.map { it.createDataSource(showRunner) }
         val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
