@@ -172,7 +172,6 @@
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
-  var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
   var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -205,7 +204,7 @@
   var map = Kotlin.kotlin.sequences.map_z5avom$;
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
   var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var listOf_0 = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var zip_0 = Kotlin.kotlin.collections.zip_xiheex$;
   var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
   var Array_0 = Array;
@@ -213,6 +212,7 @@
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
+  var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
@@ -9715,6 +9715,9 @@
   Vector3F.prototype.times_mx4ult$ = function (scalar) {
     return new Vector3F(this.x * scalar, this.y * scalar, this.z * scalar);
   };
+  Vector3F.prototype.times_7423r0$ = function (other) {
+    return new Vector3F(this.x * other.x, this.y * other.y, this.z * other.z);
+  };
   Vector3F.prototype.div_mx4ult$ = function (scalar) {
     return new Vector3F(this.x / scalar, this.y / scalar, this.z / scalar);
   };
@@ -10883,7 +10886,18 @@
       tmp$ = destination;
     }
      else {
-      tmp$ = listOf(new Vector3F(Random.Default.nextFloat() * 100.0, Random.Default.nextFloat() * 100.0, 1.0));
+      var min = new Vector3F(0.0, 0.0, 0.0);
+      var max = new Vector3F(100.0, 100.0, 100.0);
+      var scale = max.minus_7423r0$(min);
+      var $receiver_0 = until(0, surface.pixelCount);
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+      var tmp$_2;
+      tmp$_2 = $receiver_0.iterator();
+      while (tmp$_2.hasNext()) {
+        var item_0 = tmp$_2.next();
+        destination_0.add_11rb$((new Vector3F(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat())).times_7423r0$(scale).plus_7423r0$(min));
+      }
+      tmp$ = destination_0;
     }
     return tmp$;
   };
@@ -14033,7 +14047,7 @@
     GlslShader$Companion_instance = this;
     this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
-    this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
+    this.extraAdjustables = listOf([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
@@ -15422,8 +15436,8 @@
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
     this.allGlslShows_su854s$_0 = lazy(AllShows$Companion$allGlslShows$lambda);
-    this.nonGlslShows_0 = listOf_0([SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance()]);
-    this.allShows = plus_0(listOf(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
+    this.nonGlslShows_0 = listOf([SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance()]);
+    this.allShows = plus_0(listOf_0(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
   }
   Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows', {
     get: function () {
@@ -16093,7 +16107,7 @@
     interfaces: [Show$Renderer]
   };
   PanelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var initialColors = listOf_0([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
+    var initialColors = listOf([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
     return new PanelTweenShow$createRenderer$ObjectLiteral(showRunner, initialColors);
   };
   function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
@@ -17504,7 +17518,7 @@
     this.beat2_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_7);
     this.beat3_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_8);
     this.beat4_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_9);
-    this.beats_0 = listOf_0([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
+    this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
     this.bpmSpan_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_10);
     this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
     appendElement(element, 'br', JsPinkyDisplay_init$lambda_11);
