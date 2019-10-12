@@ -172,6 +172,7 @@
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
+  var first_0 = Kotlin.kotlin.collections.first_7wnvza$;
   var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -243,7 +244,7 @@
   var Box3 = THREE.Box3;
   var Raycaster_init = THREE.Raycaster;
   var Vector2 = THREE.Vector2;
-  var first_0 = Kotlin.kotlin.collections.first_us0mfu$;
+  var first_1 = Kotlin.kotlin.collections.first_us0mfu$;
   var PointsMaterial = THREE.PointsMaterial;
   var Points = THREE.Points;
   var PerspectiveCamera_init = THREE.PerspectiveCamera;
@@ -345,8 +346,10 @@
   GlslRenderer$SurfacePixels.prototype.constructor = GlslRenderer$SurfacePixels;
   GlslRenderer$SurfaceMonoPixel.prototype = Object.create(SurfacePixels.prototype);
   GlslRenderer$SurfaceMonoPixel.prototype.constructor = GlslRenderer$SurfaceMonoPixel;
-  DefaultSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
-  DefaultSurfacePixelStrategy.prototype.constructor = DefaultSurfacePixelStrategy;
+  RandomSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
+  RandomSurfacePixelStrategy.prototype.constructor = RandomSurfacePixelStrategy;
+  LinearSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
+  LinearSurfacePixelStrategy.prototype.constructor = LinearSurfacePixelStrategy;
   UvTranslator$Id.prototype = Object.create(Enum.prototype);
   UvTranslator$Id.prototype.constructor = UvTranslator$Id;
   UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR.prototype = Object.create(UvTranslator$Id.prototype);
@@ -10167,7 +10170,7 @@
         var element = tmp$.next();
         var tmp$_0;
         var surface = element.pixels.surface;
-        var pixelLocations = DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
+        var pixelLocations = LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
         var uvTranslator = element.uvTranslator.forPixels_fvukwm$(pixelLocations);
         tmp$_0 = uvTranslator.pixelCount;
         for (var i = 0; i < tmp$_0; i++) {
@@ -10862,11 +10865,11 @@
     simpleName: 'SurfacePixelStrategy',
     interfaces: []
   };
-  function DefaultSurfacePixelStrategy() {
-    DefaultSurfacePixelStrategy_instance = this;
+  function RandomSurfacePixelStrategy() {
+    RandomSurfacePixelStrategy_instance = this;
     SurfacePixelStrategy.call(this);
   }
-  DefaultSurfacePixelStrategy.prototype.forSurface_ppt8xj$ = function (surface) {
+  RandomSurfacePixelStrategy.prototype.forSurface_ppt8xj$ = function (surface) {
     var tmp$;
     if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null)
       tmp$ = surface.pixelLocations;
@@ -10901,7 +10904,60 @@
     }
     return tmp$;
   };
-  DefaultSurfacePixelStrategy.prototype.average_0 = function ($receiver) {
+  RandomSurfacePixelStrategy.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'RandomSurfacePixelStrategy',
+    interfaces: [SurfacePixelStrategy]
+  };
+  var RandomSurfacePixelStrategy_instance = null;
+  function RandomSurfacePixelStrategy_getInstance() {
+    if (RandomSurfacePixelStrategy_instance === null) {
+      new RandomSurfacePixelStrategy();
+    }
+    return RandomSurfacePixelStrategy_instance;
+  }
+  function LinearSurfacePixelStrategy() {
+    LinearSurfacePixelStrategy_instance = this;
+    SurfacePixelStrategy.call(this);
+  }
+  LinearSurfacePixelStrategy.prototype.forSurface_ppt8xj$ = function (surface) {
+    var tmp$;
+    var pixelCount = surface.pixelCount;
+    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null)
+      tmp$ = surface.pixelLocations;
+    else if (Kotlin.isType(surface, IdentifiedSurface)) {
+      var surfaceVertices = surface.modelSurface.allVertices();
+      var surfaceCenter = this.average_0(surfaceVertices);
+      var vertex1 = first_0(surfaceVertices);
+      var $receiver = until(0, pixelCount);
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        destination.add_11rb$(this.interpolate_0(vertex1, surfaceCenter, item / pixelCount));
+      }
+      tmp$ = destination;
+    }
+     else {
+      var min = new Vector3F(0.0, 0.0, 0.0);
+      var max = new Vector3F(100.0, 100.0, 100.0);
+      var scale = max.minus_7423r0$(min);
+      var vertex1_0 = (new Vector3F(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat())).times_7423r0$(scale).plus_7423r0$(min);
+      var vertex2 = (new Vector3F(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat())).times_7423r0$(scale).plus_7423r0$(min);
+      var $receiver_0 = until(0, pixelCount);
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+      var tmp$_1;
+      tmp$_1 = $receiver_0.iterator();
+      while (tmp$_1.hasNext()) {
+        var item_0 = tmp$_1.next();
+        destination_0.add_11rb$(this.interpolate_0(vertex1_0, vertex2, item_0 / pixelCount));
+      }
+      tmp$ = destination_0;
+    }
+    return tmp$;
+  };
+  LinearSurfacePixelStrategy.prototype.average_0 = function ($receiver) {
     var iterator = $receiver.iterator();
     if (!iterator.hasNext())
       throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
@@ -10911,17 +10967,21 @@
     }
     return accumulator.div_mx4ult$($receiver.size);
   };
-  DefaultSurfacePixelStrategy.$metadata$ = {
+  LinearSurfacePixelStrategy.prototype.interpolate_0 = function (from, to, degree) {
+    var delta = to.minus_7423r0$(from);
+    return from.plus_7423r0$(delta.times_mx4ult$(degree));
+  };
+  LinearSurfacePixelStrategy.$metadata$ = {
     kind: Kind_OBJECT,
-    simpleName: 'DefaultSurfacePixelStrategy',
+    simpleName: 'LinearSurfacePixelStrategy',
     interfaces: [SurfacePixelStrategy]
   };
-  var DefaultSurfacePixelStrategy_instance = null;
-  function DefaultSurfacePixelStrategy_getInstance() {
-    if (DefaultSurfacePixelStrategy_instance === null) {
-      new DefaultSurfacePixelStrategy();
+  var LinearSurfacePixelStrategy_instance = null;
+  function LinearSurfacePixelStrategy_getInstance() {
+    if (LinearSurfacePixelStrategy_instance === null) {
+      new LinearSurfacePixelStrategy();
     }
-    return DefaultSurfacePixelStrategy_instance;
+    return LinearSurfacePixelStrategy_instance;
   }
   function Uniform(gl, uniformLocation) {
     Uniform$Companion_getInstance();
@@ -14434,7 +14494,7 @@
   function HeartShader$Renderer(surface) {
     var tmp$;
     if (Kotlin.isType(surface, IdentifiedSurface)) {
-      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
+      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
     }
      else
       tmp$ = null;
@@ -15150,7 +15210,7 @@
   function SimpleSpatialShader$Renderer(surface) {
     var tmp$;
     if (Kotlin.isType(surface, IdentifiedSurface)) {
-      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
+      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
     }
      else
       tmp$ = null;
@@ -17954,23 +18014,23 @@
     this.selectedSurfaces_0 = ArrayList_init();
     this.uiLocked_0 = false;
     this.screen_0 = div_0(get_create(document), 'mapperUi-screen', JsMapperUi$screen$lambda(this));
-    this.ui2dCanvas_0 = first_1(this.screen_0, 'mapperUi-2d-canvas');
+    this.ui2dCanvas_0 = first_2(this.screen_0, 'mapperUi-2d-canvas');
     this.ui2dCtx_0 = context2d(this.ui2dCanvas_0);
-    this.ui3dDiv_0 = first_1(this.screen_0, 'mapperUi-3d-div');
+    this.ui3dDiv_0 = first_2(this.screen_0, 'mapperUi-3d-div');
     var tmp$, tmp$_0;
     this.ui3dCanvas_0 = Kotlin.isType(tmp$ = this.uiRenderer_0.domElement, HTMLCanvasElement) ? tmp$ : throwCCE();
-    this.diffCanvas_0 = first_1(this.screen_0, 'mapperUi-diff-canvas');
+    this.diffCanvas_0 = first_2(this.screen_0, 'mapperUi-diff-canvas');
     this.diffCtx_0 = context2d(this.diffCanvas_0);
-    this.beforeCanvas_0 = first_1(this.screen_0, 'mapperUi-before-canvas');
-    this.afterCanvas_0 = first_1(this.screen_0, 'mapperUi-after-canvas');
-    this.statsDiv_0 = first_1(this.screen_0, 'mapperUi-stats');
-    this.messageDiv_0 = first_1(this.screen_0, 'mapperUi-message');
-    this.message2Div_0 = first_1(this.screen_0, 'mapperUi-message2');
-    this.table_0 = first_1(this.screen_0, 'mapperUi-table');
-    this.sessionSelector_0 = first_1(this.screen_0, 'mapperUi-sessionSelector');
-    this.playButton_0 = first_1(this.screen_0, 'fa-play');
-    this.pauseButton_0 = first_1(this.screen_0, 'fa-pause');
-    this.redoButton_0 = first_1(this.screen_0, 'fa-redo');
+    this.beforeCanvas_0 = first_2(this.screen_0, 'mapperUi-before-canvas');
+    this.afterCanvas_0 = first_2(this.screen_0, 'mapperUi-after-canvas');
+    this.statsDiv_0 = first_2(this.screen_0, 'mapperUi-stats');
+    this.messageDiv_0 = first_2(this.screen_0, 'mapperUi-message');
+    this.message2Div_0 = first_2(this.screen_0, 'mapperUi-message2');
+    this.table_0 = first_2(this.screen_0, 'mapperUi-table');
+    this.sessionSelector_0 = first_2(this.screen_0, 'mapperUi-sessionSelector');
+    this.playButton_0 = first_2(this.screen_0, 'fa-play');
+    this.pauseButton_0 = first_2(this.screen_0, 'fa-pause');
+    this.redoButton_0 = first_2(this.screen_0, 'fa-redo');
     this.modelSurfaceInfos_0 = LinkedHashMap_init();
     this.commandProgress_0 = '';
     this.cameraZRotation_0 = 0.0;
@@ -18343,7 +18403,7 @@
       console.log("Couldn't find point in " + this.modelSurface.name + '...', intersections);
     }
     if (!(intersections.length === 0)) {
-      return first_0(intersections);
+      return first_1(intersections);
     }
      else {
       return null;
@@ -18543,7 +18603,7 @@
     raycaster.setFromCamera(pixelVector, this.uiCamera_0);
     var intersections = raycaster.intersectObject(this.uiScene_0, true);
     if (!(intersections.length === 0)) {
-      var intersect = first_0(intersections);
+      var intersect = first_1(intersections);
       var firstOrNull$result;
       firstOrNull$break: do {
         var tmp$;
@@ -18608,7 +18668,7 @@
   };
   JsMapperUi.prototype.showBefore_5151av$ = function (bitmap) {
     var tmp$, tmp$_0;
-    var beforeCanvas = first_1(ensureNotNull(document.body), 'mapperUi-before-canvas');
+    var beforeCanvas = first_2(ensureNotNull(document.body), 'mapperUi-before-canvas');
     var beforeCtx = Kotlin.isType(tmp$ = beforeCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     beforeCtx.resetTransform();
     beforeCtx.scale(0.3, 0.3);
@@ -18623,7 +18683,7 @@
   };
   JsMapperUi.prototype.showAfter_5151av$ = function (bitmap) {
     var tmp$, tmp$_0;
-    var afterCanvas = first_1(ensureNotNull(document.body), 'mapperUi-after-canvas');
+    var afterCanvas = first_2(ensureNotNull(document.body), 'mapperUi-after-canvas');
     var afterCtx = Kotlin.isType(tmp$ = afterCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     afterCtx.resetTransform();
     afterCtx.scale(0.3, 0.3);
@@ -19731,7 +19791,7 @@
       $receiver.remove(ensureNotNull($receiver.item(0)));
     }
   }
-  function first_1($receiver, className) {
+  function first_2($receiver, className) {
     var tmp$;
     return ensureNotNull((tmp$ = $receiver.getElementsByClassName(className)[0]) == null || Kotlin.isType(tmp$, HTMLElement) ? tmp$ : throwCCE());
   }
@@ -22066,8 +22126,11 @@
   });
   package$glsl.Shader = Shader_0;
   package$glsl.SurfacePixelStrategy = SurfacePixelStrategy;
-  Object.defineProperty(package$glsl, 'DefaultSurfacePixelStrategy', {
-    get: DefaultSurfacePixelStrategy_getInstance
+  Object.defineProperty(package$glsl, 'RandomSurfacePixelStrategy', {
+    get: RandomSurfacePixelStrategy_getInstance
+  });
+  Object.defineProperty(package$glsl, 'LinearSurfacePixelStrategy', {
+    get: LinearSurfacePixelStrategy_getInstance
   });
   Object.defineProperty(Uniform, 'Companion', {
     get: Uniform$Companion_getInstance
@@ -22433,7 +22496,7 @@
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
   package$baaahs.clear_u75qir$ = clear_0;
-  package$baaahs.first_m814eh$ = first_1;
+  package$baaahs.first_m814eh$ = first_2;
   package$baaahs.context2d_ng27xv$ = context2d;
   package$baaahs.HostedWebApp = HostedWebApp;
   DomContainer.Frame = DomContainer$Frame;
