@@ -1,15 +1,12 @@
 package baaahs.glsl
 
-import baaahs.IdentifiedSurface
 import baaahs.Model
-import baaahs.Surface
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.random.Random
 
 abstract class UvTranslator(val id: Id) {
     enum class Id {
@@ -38,27 +35,6 @@ abstract class UvTranslator(val id: Id) {
                 }
                 return values[i.toInt()]
             }
-        }
-    }
-
-    fun forSurface(surface: Surface): SurfaceUvTranslator {
-        return if (surface is IdentifiedSurface) {
-            if (surface.pixelLocations != null) {
-                forPixels(surface.pixelLocations)
-            } else {
-                val center = surface.modelSurface.allVertices().average()
-                forPixels(listOf(center))
-            }
-        } else {
-            forPixels(
-                listOf(
-                    Vector3F(
-                        Random.nextFloat() * 100f,
-                        Random.nextFloat() * 100f,
-                        1f
-                    )
-                )
-            )
         }
     }
 
@@ -176,8 +152,4 @@ class LinearModelSpaceUvTranslator(
             second.serialize(writer)
         }
     }
-}
-
-private fun Collection<Vector3F>.average(): Vector3F {
-    return reduce { acc, vector3F -> acc + vector3F }.dividedByScalar(size.toFloat())
 }
