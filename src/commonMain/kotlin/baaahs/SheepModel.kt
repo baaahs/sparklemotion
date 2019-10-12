@@ -1,13 +1,17 @@
 package baaahs
 
 import baaahs.geom.Vector3F
+import baaahs.geom.boundingBox
 import baaahs.geom.center
-import baaahs.geom.extents
+import baaahs.glsl.CylindricalModelSpaceUvTranslator
+import baaahs.glsl.LinearModelSpaceUvTranslator
+import baaahs.glsl.UvTranslator
 
 abstract class Model<T : Model.Surface> {
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<T>
     abstract val geomVertices: List<Vector3F>
+    abstract val defaultUvTranslator: UvTranslator
 
     private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
 
@@ -19,8 +23,14 @@ abstract class Model<T : Model.Surface> {
         allSurfaces.map { allVertices.addAll(it.allVertices()) }
         allVertices
     }
+
+    val modelBounds by lazy {
+        boundingBox(allVertices)
+    }
+
     val modelExtents by lazy {
-        extents(allVertices)
+        val (min, max) = modelBounds
+        max - min
     }
 
     val modelCenter by lazy {
@@ -43,12 +53,15 @@ abstract class Model<T : Model.Surface> {
 }
 
 class Decom2019Model : ObjModel<Model.Surface>("decom-2019-panels.obj") {
+    override val defaultUvTranslator: UvTranslator by lazy { LinearModelSpaceUvTranslator(this) }
+
     override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
         return SheepModel.Panel(name, 10 * 60, faces, lines)
     }
 }
 
 class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
+    override val defaultUvTranslator: UvTranslator by lazy { CylindricalModelSpaceUvTranslator(this) }
     private val pixelsPerPanel = hashMapOf<String, Int>()
 
     init {

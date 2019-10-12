@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.glsl.DefaultSurfacePixelStrategy
 import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
@@ -46,7 +47,9 @@ class SimpleSpatialShader() : Shader<SimpleSpatialShader.Buffer>(ShaderId.SIMPLE
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {
         private val uvTranslator =
-            if (surface is IdentifiedSurface) PanelSpaceUvTranslator.forSurface(surface) else null
+            if (surface is IdentifiedSurface) {
+                PanelSpaceUvTranslator.forPixels(DefaultSurfacePixelStrategy.forSurface(surface))
+            } else null
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
             if (uvTranslator == null) return Color.BLACK

@@ -3,8 +3,7 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
-import baaahs.glsl.ModelSpaceUvTranslator
-import baaahs.glsl.PanelSpaceUvTranslator
+import baaahs.glsl.UvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.Json
@@ -13,18 +12,18 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.json
 
 class GlslShader(
-    val glslProgram: String,
+    private val glslProgram: String,
+    private val uvTranslator: UvTranslator,
     val adjustableValues: List<AdjustableValue> = findAdjustableValues(glslProgram)
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
-        var model_CHEAT: Model<*>? = null
-
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
+            val uvTranslator = UvTranslator.parse(reader)
             val adjustableValueCount = reader.readShort()
             val adjustableValues = (0 until adjustableValueCount).map { AdjustableValue.parse(reader) }
-            return GlslShader(glslProgram, adjustableValues)
+            return GlslShader(glslProgram, uvTranslator, adjustableValues)
         }
 
         private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
@@ -79,14 +78,13 @@ class GlslShader(
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
-        val uvTranslator = ModelSpaceUvTranslator(model_CHEAT!!)
         val glslSurface = pooledRenderer.glslRenderer.addSurface(surface, uvTranslator)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
         val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
-        val glslSurface = glslRenderer.addSurface(surface, PanelSpaceUvTranslator)
+        val glslSurface = glslRenderer.addSurface(surface, uvTranslator)
         return Renderer(glslSurface)
     }
 
@@ -123,6 +121,8 @@ class GlslShader(
         }
 
         override fun serialize(writer: ByteArrayWriter) {
+            uvTranslator.serialize(writer)
+
             adjustableValues.zip(values).forEach { (adjustableValue, value) ->
                 adjustableValue.serializeValue(value, writer)
             }
