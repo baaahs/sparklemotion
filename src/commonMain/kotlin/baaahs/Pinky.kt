@@ -11,7 +11,6 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import baaahs.shows.SolidColorShow
 import com.soywiz.klock.DateTime
@@ -74,8 +73,6 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
-
-        GlslShader.model_CHEAT = model
 
         pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
         selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
