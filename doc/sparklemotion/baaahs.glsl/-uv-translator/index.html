@@ -8,16 +8,47 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="./index.html">UvTranslator</a><br/>
 <br/>
 <h1>UvTranslator</h1>
-<code><span class="keyword">interface </span><span class="identifier">UvTranslator</span></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">UvTranslator</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<p><a href="-id/index.html">Id</a></p>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Id</span></code></td>
+</tr>
 <tr>
 <td>
 <p><a href="-surface-uv-translator/index.html">SurfaceUvTranslator</a></p>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">SurfaceUvTranslator</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">UvTranslator</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.UvTranslator$<init>(baaahs.glsl.UvTranslator.Id)/id">id</span><span class="symbol">:</span>&nbsp;<a href="-id/index.html"><span class="identifier">UvTranslator.Id</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="id.html">id</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="-id/index.html"><span class="identifier">UvTranslator.Id</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,10 +64,29 @@
 </tr>
 <tr>
 <td>
-<p><a href="for-surface.html">forSurface</a></p>
+<p><a href="serialize.html">serialize</a></p>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">forSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.UvTranslator$forSurface(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-surface-uv-translator/index.html"><span class="identifier">UvTranslator.SurfaceUvTranslator</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.UvTranslator$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="serialize-config.html">serializeConfig</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.UvTranslator$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="parse.html">parse</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.UvTranslator.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">UvTranslator</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,10 +95,17 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../-model-space-uv-translator/index.html">ModelSpaceUvTranslator</a></p>
+<p><a href="../-cylindrical-model-space-uv-translator/index.html">CylindricalModelSpaceUvTranslator</a></p>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">ModelSpaceUvTranslator</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">UvTranslator</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">CylindricalModelSpaceUvTranslator</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">UvTranslator</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-linear-model-space-uv-translator/index.html">LinearModelSpaceUvTranslator</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">LinearModelSpaceUvTranslator</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">UvTranslator</span></a></code></td>
 </tr>
 <tr>
 <td>

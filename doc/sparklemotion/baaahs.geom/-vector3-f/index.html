@@ -52,10 +52,11 @@
 <tbody>
 <tr>
 <td>
-<p><a href="divided-by-scalar.html">dividedByScalar</a></p>
+<p><a href="div.html">div</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">dividedByScalar</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$dividedByScalar(kotlin.Float)/scalar">scalar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">div</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$div(kotlin.Float)/scalar">scalar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code><br/>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">div</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$div(baaahs.geom.Vector3F)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -83,7 +84,7 @@
 <p><a href="minus.html">minus</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">minus</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$minus(baaahs.geom.Vector3F)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">minus</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$minus(baaahs.geom.Vector3F)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -97,14 +98,33 @@
 <p><a href="plus.html">plus</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$plus(baaahs.geom.Vector3F)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$plus(baaahs.geom.Vector3F)/other">other</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="serialize.html">serialize</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <p><a href="times.html">times</a></p>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">times</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$times(kotlin.Float)/scalar">scalar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">times</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F$times(kotlin.Float)/scalar">scalar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="parse.html">parse</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom.Vector3F.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Vector3F</span></a></code></td>
 </tr>
 </tbody>
 </table>

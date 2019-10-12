@@ -173,6 +173,7 @@
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
   var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
+  var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -344,6 +345,22 @@
   GlslRenderer$SurfacePixels.prototype.constructor = GlslRenderer$SurfacePixels;
   GlslRenderer$SurfaceMonoPixel.prototype = Object.create(SurfacePixels.prototype);
   GlslRenderer$SurfaceMonoPixel.prototype.constructor = GlslRenderer$SurfaceMonoPixel;
+  DefaultSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
+  DefaultSurfacePixelStrategy.prototype.constructor = DefaultSurfacePixelStrategy;
+  UvTranslator$Id.prototype = Object.create(Enum.prototype);
+  UvTranslator$Id.prototype.constructor = UvTranslator$Id;
+  UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR.prototype = Object.create(UvTranslator$Id.prototype);
+  UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR.prototype.constructor = UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR;
+  UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR.prototype = Object.create(UvTranslator$Id.prototype);
+  UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR.prototype.constructor = UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR;
+  UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR.prototype = Object.create(UvTranslator$Id.prototype);
+  UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR.prototype.constructor = UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR;
+  PanelSpaceUvTranslator.prototype = Object.create(UvTranslator.prototype);
+  PanelSpaceUvTranslator.prototype.constructor = PanelSpaceUvTranslator;
+  CylindricalModelSpaceUvTranslator.prototype = Object.create(UvTranslator.prototype);
+  CylindricalModelSpaceUvTranslator.prototype.constructor = CylindricalModelSpaceUvTranslator;
+  LinearModelSpaceUvTranslator.prototype = Object.create(UvTranslator.prototype);
+  LinearModelSpaceUvTranslator.prototype.constructor = LinearModelSpaceUvTranslator;
   Type.prototype = Object.create(Enum.prototype);
   Type.prototype.constructor = Type;
   BrainHelloMessage.prototype = Object.create(Message.prototype);
@@ -3776,7 +3793,7 @@
             ImageProcessing$Companion_getInstance().pixels_oh9quv$(surfaceOnBitmap, surfaceChangeRegion, Mapper$Session$identifyBrain$lambda_0(thresholdValue, sampleLocations));
             var surfaceBallot = new Mapper$Ballot();
             while (surfaceBallot.totalVotes < 10) {
-              var tmp$ = ensureNotNull(random(sampleLocations));
+              var tmp$ = ensureNotNull(random_0(sampleLocations));
               var x = tmp$.component1()
               , y = tmp$.component2();
               var visibleSurface = this.$this.$outer.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.$this.visibleSurfaces);
@@ -5715,7 +5732,6 @@
     this.networkStats_0 = new Pinky$NetworkStats();
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.httpServer.listenWebSocket_brdh44$('/ws/mapper', Pinky_init$lambda(this));
-    GlslShader$Companion_getInstance().model_CHEAT = this.model;
     var tmp$ = this.pubSub_0;
     var tmp$_0 = Topics_getInstance().availableShows;
     var $receiver_0 = this.shows;
@@ -6025,7 +6041,7 @@
     var now = DateTime.Companion.now();
     var secondsSinceUserInteraction = now.minus_mw5vjr$(this.gadgetManager_0.lastUserInteraction).seconds;
     if (now.minus_mw5vjr$(this.selectedNewShowAt_0).seconds > this.newShowAfterIdleSeconds && secondsSinceUserInteraction > this.newShowAfterIdleSeconds) {
-      this.switchToShow_0(ensureNotNull(random(this.shows)));
+      this.switchToShow_0(ensureNotNull(random_0(this.shows)));
       this.selectedNewShowAt_0 = now;
     }
     if (secondsSinceUserInteraction > this.adjustShowAfterIdleSeconds) {
@@ -7332,6 +7348,7 @@
   function Model() {
     this.allSurfacesByName_x6q8q$_2ixtr1$_0 = lazy(Model$allSurfacesByName$lambda(this));
     this.allVertices_344fm1$_0 = lazy(Model$allVertices$lambda(this));
+    this.modelBounds_6okah1$_0 = lazy(Model$modelBounds$lambda(this));
     this.modelExtents_12knpr$_0 = lazy(Model$modelExtents$lambda(this));
     this.modelCenter_girn8l$_0 = lazy(Model$modelCenter$lambda(this));
   }
@@ -7351,6 +7368,11 @@
   Object.defineProperty(Model.prototype, 'allVertices', {
     get: function () {
       return this.allVertices_344fm1$_0.value;
+    }
+  });
+  Object.defineProperty(Model.prototype, 'modelBounds', {
+    get: function () {
+      return this.modelBounds_6okah1$_0.value;
     }
   });
   Object.defineProperty(Model.prototype, 'modelExtents', {
@@ -7431,9 +7453,17 @@
       return allVertices;
     };
   }
+  function Model$modelBounds$lambda(this$Model) {
+    return function () {
+      return boundingBox(this$Model.allVertices);
+    };
+  }
   function Model$modelExtents$lambda(this$Model) {
     return function () {
-      return extents(this$Model.allVertices);
+      var tmp$ = this$Model.modelBounds;
+      var min = tmp$.component1()
+      , max = tmp$.component2();
+      return max.minus_7423r0$(min);
     };
   }
   function Model$modelCenter$lambda(this$Model) {
@@ -7448,10 +7478,21 @@
   };
   function Decom2019Model() {
     ObjModel.call(this, 'decom-2019-panels.obj');
+    this.defaultUvTranslator_y3up45$_0 = lazy(Decom2019Model$defaultUvTranslator$lambda(this));
   }
+  Object.defineProperty(Decom2019Model.prototype, 'defaultUvTranslator', {
+    get: function () {
+      return this.defaultUvTranslator_y3up45$_0.value;
+    }
+  });
   Decom2019Model.prototype.createSurface_gvyaud$ = function (name, faces, lines) {
     return new SheepModel$Panel(name, 600, faces, lines);
   };
+  function Decom2019Model$defaultUvTranslator$lambda(this$Decom2019Model) {
+    return function () {
+      return LinearModelSpaceUvTranslator_init(this$Decom2019Model);
+    };
+  }
   Decom2019Model.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Decom2019Model',
@@ -7459,6 +7500,7 @@
   };
   function SheepModel() {
     ObjModel.call(this, 'baaahs-model.obj');
+    this.defaultUvTranslator_a9ismy$_0 = lazy(SheepModel$defaultUvTranslator$lambda(this));
     this.pixelsPerPanel_0 = HashMap_init();
     var $receiver = split(getResource('baaahs-panel-info.txt'), ['\n']);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
@@ -7478,6 +7520,11 @@
       $receiver_0.put_xwzc9p$(key, value);
     }
   }
+  Object.defineProperty(SheepModel.prototype, 'defaultUvTranslator', {
+    get: function () {
+      return this.defaultUvTranslator_a9ismy$_0.value;
+    }
+  });
   function SheepModel$createSurface$lambda(closure$name) {
     return function () {
       return 'No pixel count found for ' + closure$name;
@@ -7555,6 +7602,11 @@
     simpleName: 'Panel',
     interfaces: [Model$Surface]
   };
+  function SheepModel$defaultUvTranslator$lambda(this$SheepModel) {
+    return function () {
+      return CylindricalModelSpaceUvTranslator_init(this$SheepModel);
+    };
+  }
   SheepModel.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SheepModel',
@@ -9663,6 +9715,12 @@
   Vector3F.prototype.times_mx4ult$ = function (scalar) {
     return new Vector3F(this.x * scalar, this.y * scalar, this.z * scalar);
   };
+  Vector3F.prototype.div_mx4ult$ = function (scalar) {
+    return new Vector3F(this.x / scalar, this.y / scalar, this.z / scalar);
+  };
+  Vector3F.prototype.div_7423r0$ = function (other) {
+    return new Vector3F(this.x / other.x, this.y / other.y, this.z / other.z);
+  };
   Vector3F.prototype.normalize = function () {
     var invLength = 1.0 / this.length();
     return new Vector3F(this.x * invLength, this.y * invLength, this.z * invLength);
@@ -9674,12 +9732,17 @@
   Vector3F.prototype.lengthSquared_0 = function () {
     return this.x * this.x + this.y * this.y + this.z * this.z;
   };
-  Vector3F.prototype.dividedByScalar_mx4ult$ = function (scalar) {
-    return new Vector3F(this.x / scalar, this.y / scalar, this.z / scalar);
+  Vector3F.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeFloat_mx4ult$(this.x);
+    writer.writeFloat_mx4ult$(this.y);
+    writer.writeFloat_mx4ult$(this.z);
   };
   function Vector3F$Companion() {
     Vector3F$Companion_instance = this;
   }
+  Vector3F$Companion.prototype.parse_100t80$ = function (reader) {
+    return new Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat());
+  };
   Vector3F$Companion.prototype.serializer = function () {
     return Vector3F$$serializer_getInstance();
   };
@@ -9816,12 +9879,6 @@
     , max = tmp$.component2();
     var diff = max.minus_7423r0$(min);
     return diff.times_mx4ult$(0.5).plus_7423r0$(min);
-  }
-  function extents(vectors) {
-    var tmp$ = boundingBox(vectors);
-    var min = tmp$.component1()
-    , max = tmp$.component2();
-    return max.minus_7423r0$(min);
   }
   function boundingBox(vectors) {
     var iterator = vectors.iterator();
@@ -10107,7 +10164,8 @@
         var element = tmp$.next();
         var tmp$_0;
         var surface = element.pixels.surface;
-        var uvTranslator = element.uvTranslator.forSurface_ppt8xj$(surface);
+        var pixelLocations = DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
+        var uvTranslator = element.uvTranslator.forPixels_fvukwm$(pixelLocations);
         tmp$_0 = uvTranslator.pixelCount;
         for (var i = 0; i < tmp$_0; i++) {
           var uvOffset = (element.pixels.pixel0Index + i | 0) * 2 | 0;
@@ -10794,6 +10852,63 @@
     simpleName: 'Shader',
     interfaces: []
   };
+  function SurfacePixelStrategy() {
+  }
+  SurfacePixelStrategy.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixelStrategy',
+    interfaces: []
+  };
+  function DefaultSurfacePixelStrategy() {
+    DefaultSurfacePixelStrategy_instance = this;
+    SurfacePixelStrategy.call(this);
+  }
+  DefaultSurfacePixelStrategy.prototype.forSurface_ppt8xj$ = function (surface) {
+    var tmp$;
+    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null)
+      tmp$ = surface.pixelLocations;
+    else if (Kotlin.isType(surface, IdentifiedSurface)) {
+      var surfaceVertices = toList_0(surface.modelSurface.allVertices());
+      var lastPixelLocation = {v: random(surfaceVertices, Random.Default)};
+      var $receiver = until(0, surface.pixelCount);
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        var tmp$_1 = destination.add_11rb$;
+        lastPixelLocation.v = lastPixelLocation.v.plus_7423r0$(random(surfaceVertices, Random.Default)).div_mx4ult$(2.0);
+        tmp$_1.call(destination, lastPixelLocation.v);
+      }
+      tmp$ = destination;
+    }
+     else {
+      tmp$ = listOf(new Vector3F(Random.Default.nextFloat() * 100.0, Random.Default.nextFloat() * 100.0, 1.0));
+    }
+    return tmp$;
+  };
+  DefaultSurfacePixelStrategy.prototype.average_0 = function ($receiver) {
+    var iterator = $receiver.iterator();
+    if (!iterator.hasNext())
+      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
+    var accumulator = iterator.next();
+    while (iterator.hasNext()) {
+      accumulator = accumulator.plus_7423r0$(iterator.next());
+    }
+    return accumulator.div_mx4ult$($receiver.size);
+  };
+  DefaultSurfacePixelStrategy.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'DefaultSurfacePixelStrategy',
+    interfaces: [SurfacePixelStrategy]
+  };
+  var DefaultSurfacePixelStrategy_instance = null;
+  function DefaultSurfacePixelStrategy_getInstance() {
+    if (DefaultSurfacePixelStrategy_instance === null) {
+      new DefaultSurfacePixelStrategy();
+    }
+    return DefaultSurfacePixelStrategy_instance;
+  }
   function Uniform(gl, uniformLocation) {
     Uniform$Companion_getInstance();
     this.gl_0 = gl;
@@ -10840,24 +10955,142 @@
     simpleName: 'Uniform',
     interfaces: []
   };
-  function UvTranslator() {
+  function UvTranslator(id) {
+    UvTranslator$Companion_getInstance();
+    this.id = id;
   }
-  UvTranslator.prototype.forSurface_ppt8xj$ = function (surface) {
-    var tmp$;
-    if (Kotlin.isType(surface, IdentifiedSurface)) {
-      if (surface.pixelLocations != null) {
-        tmp$ = this.forPixels_fvukwm$(surface.pixelLocations);
-      }
-       else {
-        var center = average(surface.modelSurface.allVertices());
-        tmp$ = this.forPixels_fvukwm$(listOf(center));
-      }
-    }
-     else {
-      tmp$ = this.forPixels_fvukwm$(listOf(new Vector3F(Random.Default.nextFloat() * 100.0, Random.Default.nextFloat() * 100.0, 1.0)));
-    }
-    return tmp$;
+  function UvTranslator$Id(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function UvTranslator$Id_initFields() {
+    UvTranslator$Id_initFields = function () {
+    };
+    new UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR();
+    new UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR();
+    new UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR();
+    UvTranslator$Id$Companion_getInstance();
+  }
+  function UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR() {
+    UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_instance = this;
+    UvTranslator$Id.call(this, 'PANEL_SPACE_UV_TRANSLATOR', 0);
+  }
+  UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR.prototype.parse_100t80$ = function (reader) {
+    return PanelSpaceUvTranslator_getInstance();
   };
+  UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PANEL_SPACE_UV_TRANSLATOR',
+    interfaces: [UvTranslator$Id]
+  };
+  var UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_instance = null;
+  function UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance() {
+    UvTranslator$Id_initFields();
+    return UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_instance;
+  }
+  function UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR() {
+    UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_instance = this;
+    UvTranslator$Id.call(this, 'CYLINDRICAL_MODEL_UV_TRANSLATOR', 1);
+  }
+  UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR.prototype.parse_100t80$ = function (reader) {
+    return CylindricalModelSpaceUvTranslator$Companion_getInstance().parse_100t80$(reader);
+  };
+  UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CYLINDRICAL_MODEL_UV_TRANSLATOR',
+    interfaces: [UvTranslator$Id]
+  };
+  var UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_instance = null;
+  function UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_getInstance() {
+    UvTranslator$Id_initFields();
+    return UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_instance;
+  }
+  function UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR() {
+    UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_instance = this;
+    UvTranslator$Id.call(this, 'LINEAR_MODEL_UV_TRANSLATOR', 2);
+  }
+  UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR.prototype.parse_100t80$ = function (reader) {
+    return LinearModelSpaceUvTranslator$Companion_getInstance().parse_100t80$(reader);
+  };
+  UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LINEAR_MODEL_UV_TRANSLATOR',
+    interfaces: [UvTranslator$Id]
+  };
+  var UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_instance = null;
+  function UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_getInstance() {
+    UvTranslator$Id_initFields();
+    return UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_instance;
+  }
+  function UvTranslator$Id$Companion() {
+    UvTranslator$Id$Companion_instance = this;
+    this.values = UvTranslator$Id$values();
+  }
+  UvTranslator$Id$Companion.prototype.get_s8j3t7$ = function (i) {
+    if (i > this.values.length || i < 0) {
+      throw Kotlin.newThrowable('bad index for UvTranslator.Id: ' + i);
+    }
+    return this.values[i];
+  };
+  UvTranslator$Id$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var UvTranslator$Id$Companion_instance = null;
+  function UvTranslator$Id$Companion_getInstance() {
+    UvTranslator$Id_initFields();
+    if (UvTranslator$Id$Companion_instance === null) {
+      new UvTranslator$Id$Companion();
+    }
+    return UvTranslator$Id$Companion_instance;
+  }
+  UvTranslator$Id.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Id',
+    interfaces: [Enum]
+  };
+  function UvTranslator$Id$values() {
+    return [UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance(), UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_getInstance(), UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_getInstance()];
+  }
+  UvTranslator$Id.values = UvTranslator$Id$values;
+  function UvTranslator$Id$valueOf(name) {
+    switch (name) {
+      case 'PANEL_SPACE_UV_TRANSLATOR':
+        return UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance();
+      case 'CYLINDRICAL_MODEL_UV_TRANSLATOR':
+        return UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_getInstance();
+      case 'LINEAR_MODEL_UV_TRANSLATOR':
+        return UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_getInstance();
+      default:throwISE('No enum constant baaahs.glsl.UvTranslator.Id.' + name);
+    }
+  }
+  UvTranslator$Id.valueOf_61zpoe$ = UvTranslator$Id$valueOf;
+  UvTranslator.prototype.serialize_3kjoo0$ = function (writer) {
+    writer.writeByte_s8j3t7$(toByte(this.id.ordinal));
+    this.serializeConfig_3kjoo0$(writer);
+  };
+  function UvTranslator$Companion() {
+    UvTranslator$Companion_instance = this;
+  }
+  UvTranslator$Companion.prototype.parse_100t80$ = function (reader) {
+    var uvTranslatorId = reader.readByte();
+    var uvTranslatorType = UvTranslator$Id$Companion_getInstance().get_s8j3t7$(uvTranslatorId);
+    return uvTranslatorType.parse_100t80$(reader);
+  };
+  UvTranslator$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var UvTranslator$Companion_instance = null;
+  function UvTranslator$Companion_getInstance() {
+    if (UvTranslator$Companion_instance === null) {
+      new UvTranslator$Companion();
+    }
+    return UvTranslator$Companion_instance;
+  }
   function UvTranslator$SurfaceUvTranslator() {
   }
   UvTranslator$SurfaceUvTranslator.$metadata$ = {
@@ -10866,12 +11099,13 @@
     interfaces: []
   };
   UvTranslator.$metadata$ = {
-    kind: Kind_INTERFACE,
+    kind: Kind_CLASS,
     simpleName: 'UvTranslator',
     interfaces: []
   };
   function PanelSpaceUvTranslator() {
     PanelSpaceUvTranslator_instance = this;
+    UvTranslator.call(this, UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance());
   }
   function PanelSpaceUvTranslator$forPixels$ObjectLiteral(closure$pixelLocations) {
     this.closure$pixelLocations = closure$pixelLocations;
@@ -10894,6 +11128,8 @@
   PanelSpaceUvTranslator.prototype.forPixels_fvukwm$ = function (pixelLocations) {
     return new PanelSpaceUvTranslator$forPixels$ObjectLiteral(pixelLocations);
   };
+  PanelSpaceUvTranslator.prototype.serializeConfig_3kjoo0$ = function (writer) {
+  };
   PanelSpaceUvTranslator.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'PanelSpaceUvTranslator',
@@ -10906,25 +11142,26 @@
     }
     return PanelSpaceUvTranslator_instance;
   }
-  function ModelSpaceUvTranslator(model) {
-    this.model = model;
-    this.modelCenter = this.model.modelCenter;
-    this.modelExtents = this.model.modelExtents;
+  function CylindricalModelSpaceUvTranslator(modelCenter, modelExtents) {
+    CylindricalModelSpaceUvTranslator$Companion_getInstance();
+    UvTranslator.call(this, UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_getInstance());
+    this.modelCenter = modelCenter;
+    this.modelExtents = modelExtents;
   }
-  function ModelSpaceUvTranslator$forPixels$ObjectLiteral(closure$pixelLocations, this$ModelSpaceUvTranslator) {
+  function CylindricalModelSpaceUvTranslator$forPixels$ObjectLiteral(closure$pixelLocations, this$CylindricalModelSpaceUvTranslator) {
     this.closure$pixelLocations = closure$pixelLocations;
-    this.this$ModelSpaceUvTranslator = this$ModelSpaceUvTranslator;
-    this.pixelCount_8a8aia$_0 = closure$pixelLocations.size;
+    this.this$CylindricalModelSpaceUvTranslator = this$CylindricalModelSpaceUvTranslator;
+    this.pixelCount_w1dhjs$_0 = closure$pixelLocations.size;
   }
-  Object.defineProperty(ModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype, 'pixelCount', {
+  Object.defineProperty(CylindricalModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype, 'pixelCount', {
     get: function () {
-      return this.pixelCount_8a8aia$_0;
+      return this.pixelCount_w1dhjs$_0;
     }
   });
-  ModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype.getUV_za3lpa$ = function (pixelIndex) {
+  CylindricalModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype.getUV_za3lpa$ = function (pixelIndex) {
     var tmp$;
-    var pixelLocation = (tmp$ = this.closure$pixelLocations.get_za3lpa$(pixelIndex)) != null ? tmp$ : this.this$ModelSpaceUvTranslator.modelCenter;
-    var normalDelta = pixelLocation.minus_7423r0$(this.this$ModelSpaceUvTranslator.modelCenter).normalize();
+    var pixelLocation = (tmp$ = this.closure$pixelLocations.get_za3lpa$(pixelIndex)) != null ? tmp$ : this.this$CylindricalModelSpaceUvTranslator.modelCenter;
+    var normalDelta = pixelLocation.minus_7423r0$(this.this$CylindricalModelSpaceUvTranslator.modelCenter).normalize();
     var x = normalDelta.z;
     var y = Math_0.abs(x);
     var x_0 = normalDelta.x;
@@ -10932,30 +11169,120 @@
     if (theta < 0.0)
       theta += 2.0 * math.PI;
     var u = theta / (2.0 * math.PI);
-    var v = (pixelLocation.minus_7423r0$(this.this$ModelSpaceUvTranslator.modelCenter).y + this.this$ModelSpaceUvTranslator.modelExtents.y / 2.0) / this.this$ModelSpaceUvTranslator.modelExtents.y;
+    var v = (pixelLocation.minus_7423r0$(this.this$CylindricalModelSpaceUvTranslator.modelCenter).y + this.this$CylindricalModelSpaceUvTranslator.modelExtents.y / 2.0) / this.this$CylindricalModelSpaceUvTranslator.modelExtents.y;
     return to(u, v);
   };
-  ModelSpaceUvTranslator$forPixels$ObjectLiteral.$metadata$ = {
+  CylindricalModelSpaceUvTranslator$forPixels$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [UvTranslator$SurfaceUvTranslator]
   };
-  ModelSpaceUvTranslator.prototype.forPixels_fvukwm$ = function (pixelLocations) {
-    return new ModelSpaceUvTranslator$forPixels$ObjectLiteral(pixelLocations, this);
+  CylindricalModelSpaceUvTranslator.prototype.forPixels_fvukwm$ = function (pixelLocations) {
+    return new CylindricalModelSpaceUvTranslator$forPixels$ObjectLiteral(pixelLocations, this);
   };
-  ModelSpaceUvTranslator.$metadata$ = {
+  CylindricalModelSpaceUvTranslator.prototype.serializeConfig_3kjoo0$ = function (writer) {
+    this.modelCenter.serialize_3kjoo0$(writer);
+    this.modelExtents.serialize_3kjoo0$(writer);
+  };
+  function CylindricalModelSpaceUvTranslator$Companion() {
+    CylindricalModelSpaceUvTranslator$Companion_instance = this;
+  }
+  CylindricalModelSpaceUvTranslator$Companion.prototype.parse_100t80$ = function (reader) {
+    var modelCenter = Vector3F$Companion_getInstance().parse_100t80$(reader);
+    var modelExtents = Vector3F$Companion_getInstance().parse_100t80$(reader);
+    return new CylindricalModelSpaceUvTranslator(modelCenter, modelExtents);
+  };
+  CylindricalModelSpaceUvTranslator$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var CylindricalModelSpaceUvTranslator$Companion_instance = null;
+  function CylindricalModelSpaceUvTranslator$Companion_getInstance() {
+    if (CylindricalModelSpaceUvTranslator$Companion_instance === null) {
+      new CylindricalModelSpaceUvTranslator$Companion();
+    }
+    return CylindricalModelSpaceUvTranslator$Companion_instance;
+  }
+  CylindricalModelSpaceUvTranslator.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'ModelSpaceUvTranslator',
+    simpleName: 'CylindricalModelSpaceUvTranslator',
     interfaces: [UvTranslator]
   };
-  function average($receiver) {
-    var iterator = $receiver.iterator();
-    if (!iterator.hasNext())
-      throw UnsupportedOperationException_init_0("Empty collection can't be reduced.");
-    var accumulator = iterator.next();
-    while (iterator.hasNext()) {
-      accumulator = accumulator.plus_7423r0$(iterator.next());
+  function CylindricalModelSpaceUvTranslator_init(model, $this) {
+    $this = $this || Object.create(CylindricalModelSpaceUvTranslator.prototype);
+    CylindricalModelSpaceUvTranslator.call($this, model.modelCenter, model.modelExtents);
+    return $this;
+  }
+  function LinearModelSpaceUvTranslator(modelCenter, modelBounds) {
+    LinearModelSpaceUvTranslator$Companion_getInstance();
+    UvTranslator.call(this, UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_getInstance());
+    this.modelCenter = modelCenter;
+    this.modelBounds = modelBounds;
+  }
+  function LinearModelSpaceUvTranslator$forPixels$ObjectLiteral(this$LinearModelSpaceUvTranslator, closure$pixelLocations) {
+    this.this$LinearModelSpaceUvTranslator = this$LinearModelSpaceUvTranslator;
+    this.closure$pixelLocations = closure$pixelLocations;
+    this.pixelCount_d99bmf$_0 = closure$pixelLocations.size;
+  }
+  Object.defineProperty(LinearModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype, 'pixelCount', {
+    get: function () {
+      return this.pixelCount_d99bmf$_0;
     }
-    return accumulator.dividedByScalar_mx4ult$($receiver.size);
+  });
+  LinearModelSpaceUvTranslator$forPixels$ObjectLiteral.prototype.getUV_za3lpa$ = function (pixelIndex) {
+    var tmp$;
+    var tmp$_0 = this.this$LinearModelSpaceUvTranslator.modelBounds;
+    var min = tmp$_0.component1()
+    , max = tmp$_0.component2();
+    var pixelLocation = ((tmp$ = this.closure$pixelLocations.get_za3lpa$(pixelIndex)) != null ? tmp$ : this.this$LinearModelSpaceUvTranslator.modelCenter).minus_7423r0$(min);
+    var extents = max.minus_7423r0$(min);
+    var normalized = pixelLocation.div_7423r0$(extents);
+    return to(normalized.x, normalized.y);
+  };
+  LinearModelSpaceUvTranslator$forPixels$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [UvTranslator$SurfaceUvTranslator]
+  };
+  LinearModelSpaceUvTranslator.prototype.forPixels_fvukwm$ = function (pixelLocations) {
+    return new LinearModelSpaceUvTranslator$forPixels$ObjectLiteral(this, pixelLocations);
+  };
+  LinearModelSpaceUvTranslator.prototype.serializeConfig_3kjoo0$ = function (writer) {
+    this.modelCenter.serialize_3kjoo0$(writer);
+    LinearModelSpaceUvTranslator$Companion_getInstance().serialize_f09pfy$(this.modelBounds, writer);
+  };
+  function LinearModelSpaceUvTranslator$Companion() {
+    LinearModelSpaceUvTranslator$Companion_instance = this;
+  }
+  LinearModelSpaceUvTranslator$Companion.prototype.parse_100t80$ = function (reader) {
+    var modelCenter = Vector3F$Companion_getInstance().parse_100t80$(reader);
+    var modelBounds = to(Vector3F$Companion_getInstance().parse_100t80$(reader), Vector3F$Companion_getInstance().parse_100t80$(reader));
+    return new LinearModelSpaceUvTranslator(modelCenter, modelBounds);
+  };
+  LinearModelSpaceUvTranslator$Companion.prototype.serialize_f09pfy$ = function ($receiver, writer) {
+    $receiver.first.serialize_3kjoo0$(writer);
+    $receiver.second.serialize_3kjoo0$(writer);
+  };
+  LinearModelSpaceUvTranslator$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var LinearModelSpaceUvTranslator$Companion_instance = null;
+  function LinearModelSpaceUvTranslator$Companion_getInstance() {
+    if (LinearModelSpaceUvTranslator$Companion_instance === null) {
+      new LinearModelSpaceUvTranslator$Companion();
+    }
+    return LinearModelSpaceUvTranslator$Companion_instance;
+  }
+  LinearModelSpaceUvTranslator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LinearModelSpaceUvTranslator',
+    interfaces: [UvTranslator]
+  };
+  function LinearModelSpaceUvTranslator_init(model, $this) {
+    $this = $this || Object.create(LinearModelSpaceUvTranslator.prototype);
+    LinearModelSpaceUvTranslator.call($this, model.modelCenter, model.modelBounds);
+    return $this;
   }
   function Image() {
   }
@@ -13693,23 +14020,24 @@
     }
   }
   CompositingMode.valueOf_61zpoe$ = CompositingMode$valueOf;
-  function GlslShader(glslProgram, adjustableValues) {
+  function GlslShader(glslProgram, uvTranslator, adjustableValues) {
     GlslShader$Companion_getInstance();
     if (adjustableValues === void 0)
       adjustableValues = GlslShader$Companion_getInstance().findAdjustableValues_61zpoe$(glslProgram);
     Shader.call(this, ShaderId$GLSL_SHADER_getInstance());
-    this.glslProgram = glslProgram;
+    this.glslProgram_0 = glslProgram;
+    this.uvTranslator_0 = uvTranslator;
     this.adjustableValues = adjustableValues;
   }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
-    this.model_CHEAT = null;
     this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
     this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
+    var uvTranslator = UvTranslator$Companion_getInstance().parse_100t80$(reader);
     var adjustableValueCount = reader.readShort();
     var $receiver = until_0(0, adjustableValueCount);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
@@ -13720,7 +14048,7 @@
       destination.add_11rb$(GlslShader$AdjustableValue$Companion_getInstance().parse_100t80$(reader));
     }
     var adjustableValues = destination;
-    return new GlslShader(glslProgram, adjustableValues);
+    return new GlslShader(glslProgram, uvTranslator, adjustableValues);
   };
   function GlslShader$Companion$findAdjustableValues$lambda(this$GlslShader$) {
     return function (matchResult) {
@@ -13796,7 +14124,7 @@
     return GlslShader$Companion_instance;
   }
   GlslShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.glslProgram);
+    writer.writeString_61zpoe$(this.glslProgram_0);
     writer.writeShort_za3lpa$(this.adjustableValues.size);
     var tmp$;
     tmp$ = this.adjustableValues.iterator();
@@ -13807,19 +14135,18 @@
   };
   function GlslShader$createRenderer$lambda(this$GlslShader) {
     return function () {
-      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram, this$GlslShader.adjustableValues);
+      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram_0, this$GlslShader.adjustableValues);
     };
   }
   GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
-    var poolKey = to(getKClass(GlslShader), this.glslProgram);
+    var poolKey = to(getKClass(GlslShader), this.glslProgram_0);
     var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
-    var uvTranslator = new ModelSpaceUvTranslator(ensureNotNull(GlslShader$Companion_getInstance().model_CHEAT));
-    var glslSurface = pooledRenderer.glslRenderer.addSurface_173pey$(surface, uvTranslator);
+    var glslSurface = pooledRenderer.glslRenderer.addSurface_173pey$(surface, this.uvTranslator_0);
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(this.glslProgram, this.adjustableValues);
-    var glslSurface = glslRenderer.addSurface_173pey$(surface, PanelSpaceUvTranslator_getInstance());
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(this.glslProgram_0, this.adjustableValues);
+    var glslSurface = glslRenderer.addSurface_173pey$(surface, this.uvTranslator_0);
     return new GlslShader$Renderer(glslSurface);
   };
   function GlslShader$Renderer(glslSurface) {
@@ -13881,6 +14208,7 @@
     }
   };
   GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
+    this.$outer.uvTranslator_0.serialize_3kjoo0$(writer);
     var tmp$;
     tmp$ = zip_0(this.$outer.adjustableValues, this.values).iterator();
     while (tmp$.hasNext()) {
@@ -14090,7 +14418,13 @@
     interfaces: [Shader$Buffer]
   };
   function HeartShader$Renderer(surface) {
-    this.uvTranslator_0 = Kotlin.isType(surface, IdentifiedSurface) ? PanelSpaceUvTranslator_getInstance().forSurface_ppt8xj$(surface) : null;
+    var tmp$;
+    if (Kotlin.isType(surface, IdentifiedSurface)) {
+      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
+    }
+     else
+      tmp$ = null;
+    this.uvTranslator_0 = tmp$;
   }
   HeartShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     var tmp$, tmp$_0;
@@ -14800,7 +15134,13 @@
     interfaces: [Shader$Buffer]
   };
   function SimpleSpatialShader$Renderer(surface) {
-    this.uvTranslator_0 = Kotlin.isType(surface, IdentifiedSurface) ? PanelSpaceUvTranslator_getInstance().forSurface_ppt8xj$(surface) : null;
+    var tmp$;
+    if (Kotlin.isType(surface, IdentifiedSurface)) {
+      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(DefaultSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
+    }
+     else
+      tmp$ = null;
+    this.uvTranslator_0 = tmp$;
   }
   SimpleSpatialShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
     var tmp$;
@@ -15360,7 +15700,7 @@
     interfaces: [Show$Renderer]
   };
   GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var shader = new GlslShader(this.program);
+    var shader = new GlslShader(this.program, model.defaultUvTranslator);
     var $receiver = shader.adjustableValues;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
@@ -15630,7 +15970,7 @@
             if (neighborsSelected < 1 || neighborsSelected > 3) {
               living = false;
               if (neighborsSelected === 0) {
-                var moveToNeighbor = random(closure$neighbors(element_0));
+                var moveToNeighbor = random_0(closure$neighbors(element_0));
                 if (moveToNeighbor != null) {
                   newSelectedPanels.add_11rb$(moveToNeighbor);
                 }
@@ -16888,10 +17228,10 @@
     simpleName: 'FakeNetwork',
     interfaces: [Network]
   };
-  function random($receiver) {
+  function random_0($receiver) {
     return $receiver.size > 0 ? $receiver.get_za3lpa$(Random.Default.nextInt_za3lpa$($receiver.size)) : null;
   }
-  function random_0($receiver, random) {
+  function random_1($receiver, random) {
     return $receiver.size > 0 ? $receiver.get_za3lpa$(random.nextInt_za3lpa$($receiver.size)) : null;
   }
   function only($receiver, description) {
@@ -21685,7 +22025,7 @@
   package$geom.Vector3F_init_vvq1nx$ = Vector3F_init;
   package$geom.Vector3F = Vector3F;
   package$geom.center_21sjvd$ = center;
-  package$geom.extents_21sjvd$ = extents;
+  package$geom.boundingBox_21sjvd$ = boundingBox;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
   package$glsl.AdjustableUniform = AdjustableUniform;
   package$glsl.UnifyingAdjustableUniform = UnifyingAdjustableUniform;
@@ -21711,16 +22051,45 @@
     get: Shader$Companion_getInstance_0
   });
   package$glsl.Shader = Shader_0;
+  package$glsl.SurfacePixelStrategy = SurfacePixelStrategy;
+  Object.defineProperty(package$glsl, 'DefaultSurfacePixelStrategy', {
+    get: DefaultSurfacePixelStrategy_getInstance
+  });
   Object.defineProperty(Uniform, 'Companion', {
     get: Uniform$Companion_getInstance
   });
   package$glsl.Uniform = Uniform;
+  Object.defineProperty(UvTranslator$Id, 'PANEL_SPACE_UV_TRANSLATOR', {
+    get: UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance
+  });
+  Object.defineProperty(UvTranslator$Id, 'CYLINDRICAL_MODEL_UV_TRANSLATOR', {
+    get: UvTranslator$Id$CYLINDRICAL_MODEL_UV_TRANSLATOR_getInstance
+  });
+  Object.defineProperty(UvTranslator$Id, 'LINEAR_MODEL_UV_TRANSLATOR', {
+    get: UvTranslator$Id$LINEAR_MODEL_UV_TRANSLATOR_getInstance
+  });
+  Object.defineProperty(UvTranslator$Id, 'Companion', {
+    get: UvTranslator$Id$Companion_getInstance
+  });
+  UvTranslator.Id = UvTranslator$Id;
+  Object.defineProperty(UvTranslator, 'Companion', {
+    get: UvTranslator$Companion_getInstance
+  });
   UvTranslator.SurfaceUvTranslator = UvTranslator$SurfaceUvTranslator;
   package$glsl.UvTranslator = UvTranslator;
   Object.defineProperty(package$glsl, 'PanelSpaceUvTranslator', {
     get: PanelSpaceUvTranslator_getInstance
   });
-  package$glsl.ModelSpaceUvTranslator = ModelSpaceUvTranslator;
+  Object.defineProperty(CylindricalModelSpaceUvTranslator, 'Companion', {
+    get: CylindricalModelSpaceUvTranslator$Companion_getInstance
+  });
+  package$glsl.CylindricalModelSpaceUvTranslator_init_ld9ij$ = CylindricalModelSpaceUvTranslator_init;
+  package$glsl.CylindricalModelSpaceUvTranslator = CylindricalModelSpaceUvTranslator;
+  Object.defineProperty(LinearModelSpaceUvTranslator, 'Companion', {
+    get: LinearModelSpaceUvTranslator$Companion_getInstance
+  });
+  package$glsl.LinearModelSpaceUvTranslator_init_ld9ij$ = LinearModelSpaceUvTranslator_init;
+  package$glsl.LinearModelSpaceUvTranslator = LinearModelSpaceUvTranslator;
   var package$imaging = package$baaahs.imaging || (package$baaahs.imaging = {});
   package$imaging.Image = Image;
   package$imaging.Bitmap = Bitmap;
@@ -22013,8 +22382,8 @@
   FakeNetwork$FakeLink.FakeHttpServer = FakeNetwork$FakeLink$FakeHttpServer;
   FakeNetwork.FakeLink = FakeNetwork$FakeLink;
   package$sim.FakeNetwork = FakeNetwork;
-  package$baaahs.random_2p1efm$ = random;
-  package$baaahs.random_hhb8gh$ = random_0;
+  package$baaahs.random_2p1efm$ = random_0;
+  package$baaahs.random_hhb8gh$ = random_1;
   package$baaahs.only_hxlr6s$ = only;
   package$baaahs.toRadians_mx4ult$ = toRadians;
   package$baaahs.constrain_y2kzbl$ = constrain;
@@ -22140,8 +22509,6 @@
   Object.defineProperty(SurfacePixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SurfacePixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SurfacePixels.prototype.iterator = Pixels.prototype.iterator;
-  PanelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
-  ModelSpaceUvTranslator.prototype.forSurface_ppt8xj$ = UvTranslator.prototype.forSurface_ppt8xj$;
   DateTimeSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$PixelData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
