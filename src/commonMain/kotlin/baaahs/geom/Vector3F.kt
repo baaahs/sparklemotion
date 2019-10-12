@@ -19,6 +19,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     operator fun times(scalar: Float): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
 
+    operator fun times(other: Vector3F): Vector3F = Vector3F(x * other.x, y * other.y, z * other.z)
+
     operator fun div(scalar: Float): Vector3F = Vector3F(x / scalar, y / scalar, z / scalar)
 
     operator fun div(other: Vector3F): Vector3F = Vector3F(x / other.x, y / other.y, z / other.z)

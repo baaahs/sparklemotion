@@ -27,9 +27,14 @@ object DefaultSurfacePixelStrategy : SurfacePixelStrategy() {
             }
 
             else -> {
-                listOf(
-                    Vector3F(Random.nextFloat() * 100f, Random.nextFloat() * 100f, 1f)
-                )
+                // Randomly pick locations.
+                val min = Vector3F(0f, 0f, 0f)
+                val max = Vector3F(100f, 100f, 100f)
+                val scale = max - min
+
+                (0 until surface.pixelCount).map {
+                    Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
+                }
             }
         }
     }
