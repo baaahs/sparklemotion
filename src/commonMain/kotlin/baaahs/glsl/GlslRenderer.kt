@@ -210,7 +210,7 @@ void main(void) {
 
             surfacesToAdd.forEach {
                 val surface = it.pixels.surface
-                val pixelLocations = DefaultSurfacePixelStrategy.forSurface(surface)
+                val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
                 val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
 
                 for (i in 0 until uvTranslator.pixelCount) {
