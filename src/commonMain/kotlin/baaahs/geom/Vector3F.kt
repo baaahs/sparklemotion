@@ -36,10 +36,6 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return x * x + y * y + z * z
     }
 
-    fun dividedByScalar(scalar: Float): Vector3F {
-        return Vector3F(x / scalar, y / scalar, z / scalar)
-    }
-
     fun serialize(writer: ByteArrayWriter) {
         writer.writeFloat(x)
         writer.writeFloat(y)

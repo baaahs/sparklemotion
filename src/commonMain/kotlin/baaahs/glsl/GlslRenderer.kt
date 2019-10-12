@@ -210,7 +210,8 @@ void main(void) {
 
             surfacesToAdd.forEach {
                 val surface = it.pixels.surface
-                val uvTranslator = it.uvTranslator.forSurface(surface)
+                val pixelLocations = DefaultSurfacePixelStrategy.forSurface(surface)
+                val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
 
                 for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
