@@ -76,7 +76,7 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
         fun serialize(writer: ByteArrayWriter)
 
         /**
-         * Read new data into an existing buffer (as efficiently as possible).
+         * Read new data into an existing buffer, as efficiently as possible.
          */
         fun read(reader: ByteArrayReader)
     }

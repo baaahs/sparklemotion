@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.IdentifiedSurface
 import baaahs.TestModelSurface
 import baaahs.geom.Vector3F
+import baaahs.io.ByteArrayWriter
 import baaahs.shaders.GlslShader
 import kotlinx.serialization.json.json
 import kotlin.test.Ignore
@@ -84,7 +85,9 @@ class GlslRendererTest {
         )
     }
 
-    object UvTranslatorForTest : UvTranslator {
+    object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
+        override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")
+
         override fun forPixels(pixelLocations: List<Vector3F?>) = object : UvTranslator.SurfaceUvTranslator {
             override val pixelCount = pixelLocations.count()
             override fun getUV(pixelIndex: Int): Pair<Float, Float> = pixelLocations[pixelIndex]!!.let { it.x to it.y }

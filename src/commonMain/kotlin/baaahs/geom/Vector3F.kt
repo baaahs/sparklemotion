@@ -1,5 +1,7 @@
 package baaahs.geom
 
+import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.min
@@ -11,11 +13,15 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     fun max(other: Vector3F): Vector3F = Vector3F(max(x, other.x), max(y, other.y), max(z, other.z))
 
-    fun plus(other: Vector3F): Vector3F = Vector3F(x + other.x, y + other.y, z + other.z)
+    operator fun plus(other: Vector3F): Vector3F = Vector3F(x + other.x, y + other.y, z + other.z)
 
-    fun minus(other: Vector3F): Vector3F = Vector3F(x - other.x, y - other.y, z - other.z)
+    operator fun minus(other: Vector3F): Vector3F = Vector3F(x - other.x, y - other.y, z - other.z)
 
-    fun times(scalar: Float): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
+    operator fun times(scalar: Float): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
+
+    operator fun div(scalar: Float): Vector3F = Vector3F(x / scalar, y / scalar, z / scalar)
+
+    operator fun div(other: Vector3F): Vector3F = Vector3F(x / other.x, y / other.y, z / other.z)
 
     fun normalize(): Vector3F {
         val invLength = 1.0f / length()
@@ -30,24 +36,25 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return x * x + y * y + z * z
     }
 
-    fun dividedByScalar(scalar: Float): Vector3F {
-        return Vector3F(x / scalar, y / scalar, z / scalar)
+    fun serialize(writer: ByteArrayWriter) {
+        writer.writeFloat(x)
+        writer.writeFloat(y)
+        writer.writeFloat(z)
     }
 
+    companion object {
+        fun parse(reader: ByteArrayReader) =
+            Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat())
+    }
 }
 
 fun center(vectors: Collection<Vector3F>): Vector3F {
     val (min, max) = boundingBox(vectors)
     val diff = max.minus(min)
-    return diff.times(0.5f).plus(min)
+    return diff * 0.5f + min
 }
 
-fun extents(vectors: Collection<Vector3F>): Vector3F {
-    val (min, max) = boundingBox(vectors)
-    return max.minus(min)
-}
-
-private fun boundingBox(vectors: Collection<Vector3F>): Pair<Vector3F, Vector3F> {
+fun boundingBox(vectors: Collection<Vector3F>): Pair<Vector3F, Vector3F> {
     val min = vectors.reduce { acc, vector3F -> acc.min(vector3F) }
     val max = vectors.reduce { acc, vector3F -> acc.max(vector3F) }
     return Pair(min, max)
