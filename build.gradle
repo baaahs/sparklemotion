@@ -30,6 +30,10 @@ buildscript {
     }
 }
 
+def isMac() {
+    return OperatingSystem.current() == OperatingSystem.MAC_OS
+}
+
 import org.gradle.internal.os.OperatingSystem
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
@@ -263,7 +267,9 @@ task runPinkyJvm(type: JavaExec) {
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
-    jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+    if (isMac()) {
+        jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+    }
 }
 
 task runBrainJvm(type: JavaExec) {
@@ -272,6 +278,16 @@ task runBrainJvm(type: JavaExec) {
 
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
     args projectDir
+}
+
+task runGlslJvmTests(type: JavaExec) {
+    main = 'org.junit.runner.JUnitCore'
+
+    classpath = files(kotlin.targets.jvm.compilations.test.output) + kotlin.targets.jvm.compilations.test.runtimeDependencyFiles
+    args 'baaahs.glsl.GlslRendererTest'
+    if (isMac()) {
+        jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+    }
 }
 
 task packageClientResources(type: Copy, dependsOn: [jsProcessResources, buildReactUI]) {
