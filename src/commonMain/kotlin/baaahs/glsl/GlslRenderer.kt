@@ -115,52 +115,17 @@ void main(void) {
     }
 
     fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
-        val glslSurface: GlslSurface
-        if (surface is IdentifiedSurface) {
-            if (surface.pixelLocations != null) {
-                glslSurface = GlslSurface(
-                    createSurfacePixels(surface, nextPixelOffset),
-                    Uniforms(),
-                    uvTranslator
-                )
-                nextPixelOffset += surface.pixelCount
-            } else {
-                glslSurface = GlslSurface(
-                    createSurfaceMonoPixel(surface, nextPixelOffset),
-                    Uniforms(),
-                    uvTranslator
-                )
-                nextPixelOffset += 1
-            }
-        } else {
-            glslSurface = GlslSurface(
-                createSurfaceMonoPixel(surface, nextPixelOffset),
-                Uniforms(),
-                uvTranslator
-            )
-            nextPixelOffset += 1
-        }
+        val glslSurface = GlslSurface(SurfacePixels(surface, nextPixelOffset), Uniforms(), uvTranslator)
+        nextPixelOffset += surface.pixelCount
 
         surfacesToAdd.add(glslSurface)
         return glslSurface
     }
 
-    fun createSurfacePixels(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
-        SurfacePixels(surface, pixelOffset)
-
     inner class SurfacePixels(
         surface: Surface, pixel0Index: Int
     ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
         override fun get(i: Int): Color = arrangement.getPixel(pixel0Index + i)
-    }
-
-    fun createSurfaceMonoPixel(surface: Surface, pixelOffset: Int): baaahs.glsl.SurfacePixels =
-        SurfaceMonoPixel(surface, pixelOffset)
-
-    inner class SurfaceMonoPixel(
-        surface: Surface, pixel0Index: Int
-    ) : baaahs.glsl.SurfacePixels(surface, pixel0Index) {
-        override fun get(i: Int): Color = arrangement.getPixel(pixel0Index)
     }
 
     private fun createArrangement(pixelCount: Int, uvCoords: FloatArray, surfaceCount: List<GlslSurface>): Arrangement =
@@ -205,6 +170,8 @@ void main(void) {
 
             arrangement.release()
 
+            println("Will be managing $newPixelCount pixels.")
+
             val newUvCoords = FloatArray(newPixelCount.bufSize * 2)
             oldUvCoords.copyInto(newUvCoords)
 
@@ -212,6 +179,8 @@ void main(void) {
                 val surface = it.pixels.surface
                 val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
                 val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
+
+                println("Adding ${uvTranslator.pixelCount} pixels from ${it}")
 
                 for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2

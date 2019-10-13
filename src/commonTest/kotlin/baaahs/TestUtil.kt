@@ -27,12 +27,14 @@ class FakeClock(var now: Time = 0.0) : Clock {
     override fun now(): Time = now
 }
 
-class TestModelSurface(override val name: String, override val expectedPixelCount: Int? = 1) : Model.Surface {
+class TestModelSurface(
+    override val name: String,
+    override val expectedPixelCount: Int? = 1,
+    val allVertices: Collection<Vector3F> = emptyList()
+) : Model.Surface {
     override val description = name
 
-    override fun allVertices(): Collection<Vector3F> {
-        TODO("allVertices not implemented")
-    }
+    override fun allVertices(): Collection<Vector3F> = allVertices
 
     override val faces: List<Model.Face> = emptyList()
     override val lines: List<Model.Line> = emptyList()
