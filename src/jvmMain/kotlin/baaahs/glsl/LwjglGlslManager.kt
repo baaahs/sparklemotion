@@ -17,10 +17,10 @@ class LwjglGlslManager : GlslManager {
         check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
         GLFW.glfwDefaultWindowHints()
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3)
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2)
-        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE)
-        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE)
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 2)
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 1)
+//        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE)
+//        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE)
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 8)
@@ -53,7 +53,7 @@ class LwjglGlslManager : GlslManager {
 
         val kgl = KglLwjgl()
         return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core")
+            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "300 es")
         }
     }
 

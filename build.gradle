@@ -9,7 +9,7 @@ buildscript {
     ext.klockVersion = "1.5.0"
     ext.kglVersion = "0.3-baaahs"
     ext.joglVersion = '2.3.2'
-    ext.lwjglVersion = "3.2.2"
+    ext.lwjglVersion = "3.2.3"
     ext.mockk_version = '1.9.3'
     ext.beatlink_version = '0.5.1'
 
@@ -39,6 +39,7 @@ switch (OperatingSystem.current()) {
         project.ext.lwjglNatives = "natives-macos"
         break
 }
+project.ext.lwjglNatives = "natives-linux-arm32"
 
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "kotlin-multiplatform"
