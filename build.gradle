@@ -274,6 +274,14 @@ task runBrainJvm(type: JavaExec) {
     args projectDir
 }
 
+task runBridgeJvm(type: JavaExec) {
+    dependsOn assemble
+    main = 'baaahs.SimulatorBridgeKt'
+
+    classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
+    args projectDir
+}
+
 task packageClientResources(type: Copy, dependsOn: [jsProcessResources, buildReactUI]) {
     from project.file("build/processedResources/js/main")
     into "build/classes/kotlin/jvm/main/htdocs"
