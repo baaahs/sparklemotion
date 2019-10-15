@@ -170,8 +170,6 @@ void main(void) {
 
             arrangement.release()
 
-            println("Will be managing $newPixelCount pixels.")
-
             val newUvCoords = FloatArray(newPixelCount.bufSize * 2)
             oldUvCoords.copyInto(newUvCoords)
 
@@ -179,8 +177,6 @@ void main(void) {
                 val surface = it.pixels.surface
                 val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
                 val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
-
-                println("Adding ${uvTranslator.pixelCount} pixels from ${it}")
 
                 for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
