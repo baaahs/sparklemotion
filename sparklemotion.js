@@ -173,6 +173,7 @@
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
   var first_0 = Kotlin.kotlin.collections.first_7wnvza$;
+  var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
   var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -205,7 +206,7 @@
   var map = Kotlin.kotlin.sequences.map_z5avom$;
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
   var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var listOf_0 = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var zip_0 = Kotlin.kotlin.collections.zip_xiheex$;
   var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
   var Array_0 = Array;
@@ -213,7 +214,6 @@
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
-  var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
@@ -344,8 +344,6 @@
   Slider.prototype.constructor = Slider;
   GlslRenderer$SurfacePixels.prototype = Object.create(SurfacePixels.prototype);
   GlslRenderer$SurfacePixels.prototype.constructor = GlslRenderer$SurfacePixels;
-  GlslRenderer$SurfaceMonoPixel.prototype = Object.create(SurfacePixels.prototype);
-  GlslRenderer$SurfaceMonoPixel.prototype.constructor = GlslRenderer$SurfaceMonoPixel;
   RandomSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
   RandomSurfacePixelStrategy.prototype.constructor = RandomSurfacePixelStrategy;
   LinearSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
@@ -8326,9 +8324,11 @@
     simpleName: 'IdentifiedSurface',
     interfaces: [Surface]
   };
-  function AnonymousSurface(brainId) {
+  function AnonymousSurface(brainId, pixelCount) {
+    if (pixelCount === void 0)
+      pixelCount = 2048;
     this.brainId = brainId;
-    this.pixelCount_3v96cn$_0 = 2048;
+    this.pixelCount_3v96cn$_0 = pixelCount;
   }
   Object.defineProperty(AnonymousSurface.prototype, 'pixelCount', {
     get: function () {
@@ -10046,26 +10046,10 @@
     return program;
   };
   GlslRenderer.prototype.addSurface_173pey$ = function (surface, uvTranslator) {
-    var glslSurface;
-    if (Kotlin.isType(surface, IdentifiedSurface)) {
-      if (surface.pixelLocations != null) {
-        glslSurface = new GlslSurface(this.createSurfacePixels_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
-        this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
-      }
-       else {
-        glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
-        this.nextPixelOffset = this.nextPixelOffset + 1 | 0;
-      }
-    }
-     else {
-      glslSurface = new GlslSurface(this.createSurfaceMonoPixel_70b9t1$(surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
-      this.nextPixelOffset = this.nextPixelOffset + 1 | 0;
-    }
+    var glslSurface = new GlslSurface(new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
+    this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
     this.surfacesToAdd_vfxuyj$_0.add_11rb$(glslSurface);
     return glslSurface;
-  };
-  GlslRenderer.prototype.createSurfacePixels_70b9t1$ = function (surface, pixelOffset) {
-    return new GlslRenderer$SurfacePixels(this, surface, pixelOffset);
   };
   function GlslRenderer$SurfacePixels($outer, surface, pixel0Index) {
     this.$outer = $outer;
@@ -10077,21 +10061,6 @@
   GlslRenderer$SurfacePixels.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SurfacePixels',
-    interfaces: [SurfacePixels]
-  };
-  GlslRenderer.prototype.createSurfaceMonoPixel_70b9t1$ = function (surface, pixelOffset) {
-    return new GlslRenderer$SurfaceMonoPixel(this, surface, pixelOffset);
-  };
-  function GlslRenderer$SurfaceMonoPixel($outer, surface, pixel0Index) {
-    this.$outer = $outer;
-    SurfacePixels.call(this, surface, pixel0Index);
-  }
-  GlslRenderer$SurfaceMonoPixel.prototype.get_za3lpa$ = function (i) {
-    return this.$outer.arrangement.getPixel_za3lpa$(this.pixel0Index);
-  };
-  GlslRenderer$SurfaceMonoPixel.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SurfaceMonoPixel',
     interfaces: [SurfacePixels]
   };
   GlslRenderer.prototype.createArrangement_58qqz3$_0 = function (pixelCount, uvCoords, surfaceCount) {
@@ -10929,15 +10898,7 @@
       var surfaceVertices = surface.modelSurface.allVertices();
       var surfaceCenter = this.average_0(surfaceVertices);
       var vertex1 = first_0(surfaceVertices);
-      var $receiver = until(0, pixelCount);
-      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-      var tmp$_0;
-      tmp$_0 = $receiver.iterator();
-      while (tmp$_0.hasNext()) {
-        var item = tmp$_0.next();
-        destination.add_11rb$(this.interpolate_0(vertex1, surfaceCenter, item / pixelCount));
-      }
-      tmp$ = destination;
+      tmp$ = this.interpolate_0(vertex1, surfaceCenter, pixelCount);
     }
      else {
       var min = new Vector3F(0.0, 0.0, 0.0);
@@ -10945,15 +10906,7 @@
       var scale = max.minus_7423r0$(min);
       var vertex1_0 = (new Vector3F(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat())).times_7423r0$(scale).plus_7423r0$(min);
       var vertex2 = (new Vector3F(Random.Default.nextFloat(), Random.Default.nextFloat(), Random.Default.nextFloat())).times_7423r0$(scale).plus_7423r0$(min);
-      var $receiver_0 = until(0, pixelCount);
-      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-      var tmp$_1;
-      tmp$_1 = $receiver_0.iterator();
-      while (tmp$_1.hasNext()) {
-        var item_0 = tmp$_1.next();
-        destination_0.add_11rb$(this.interpolate_0(vertex1_0, vertex2, item_0 / pixelCount));
-      }
-      tmp$ = destination_0;
+      tmp$ = this.interpolate_0(vertex1_0, vertex2, pixelCount);
     }
     return tmp$;
   };
@@ -10967,7 +10920,25 @@
     }
     return accumulator.div_mx4ult$($receiver.size);
   };
-  LinearSurfacePixelStrategy.prototype.interpolate_0 = function (from, to, degree) {
+  LinearSurfacePixelStrategy.prototype.interpolate_0 = function (from, to, steps) {
+    var tmp$;
+    if (steps === 1) {
+      tmp$ = listOf(from);
+    }
+     else {
+      var $receiver = until(0, steps);
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        destination.add_11rb$(this.interpolate_1(from, to, item / (steps - 1.0)));
+      }
+      tmp$ = destination;
+    }
+    return tmp$;
+  };
+  LinearSurfacePixelStrategy.prototype.interpolate_1 = function (from, to, degree) {
     var delta = to.minus_7423r0$(from);
     return from.plus_7423r0$(delta.times_mx4ult$(degree));
   };
@@ -14107,7 +14078,7 @@
     GlslShader$Companion_instance = this;
     this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
-    this.extraAdjustables = listOf([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
+    this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
@@ -15496,8 +15467,8 @@
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
     this.allGlslShows_su854s$_0 = lazy(AllShows$Companion$allGlslShows$lambda);
-    this.nonGlslShows_0 = listOf([SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance()]);
-    this.allShows = plus_0(listOf_0(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
+    this.nonGlslShows_0 = listOf_0([SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance()]);
+    this.allShows = plus_0(listOf(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
   }
   Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows', {
     get: function () {
@@ -16167,7 +16138,7 @@
     interfaces: [Show$Renderer]
   };
   PanelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var initialColors = listOf([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
+    var initialColors = listOf_0([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
     return new PanelTweenShow$createRenderer$ObjectLiteral(showRunner, initialColors);
   };
   function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
@@ -17578,7 +17549,7 @@
     this.beat2_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_7);
     this.beat3_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_8);
     this.beat4_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_9);
-    this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
+    this.beats_0 = listOf_0([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
     this.bpmSpan_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_10);
     this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
     appendElement(element, 'br', JsPinkyDisplay_init$lambda_11);
@@ -22107,7 +22078,6 @@
   package$glsl.check_56a5t8$ = check;
   package$glsl.GlslManager = GlslManager;
   GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
-  GlslRenderer.SurfaceMonoPixel = GlslRenderer$SurfaceMonoPixel;
   $$importsForInline$$.sparklemotion = _;
   GlslRenderer.Arrangement = GlslRenderer$Arrangement;
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
