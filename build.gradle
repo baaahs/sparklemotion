@@ -288,6 +288,13 @@ task runGlslJvmTests(type: JavaExec) {
     if (isMac()) {
         jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
+
+task runBridgeJvm(type: JavaExec) {
+    dependsOn assemble
+    main = 'baaahs.SimulatorBridgeKt'
+
+    classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
+    args projectDir
 }
 
 task packageClientResources(type: Copy, dependsOn: [jsProcessResources, buildReactUI]) {
