@@ -21,7 +21,7 @@ import java.nio.file.Paths
 fun main(args: Array<String>) {
     GlslBase.manager // Need to wake up OpenGL on the main thread.
 
-    val sheepModel = SheepModel().apply { load() } as Model<*>
+    val sheepModel = Decom2019Model().apply { load() } as Model<*>
 
     val resource = Pinky::class.java.classLoader.getResource("baaahs")
     val useResources: Boolean
@@ -49,9 +49,12 @@ fun main(args: Array<String>) {
 
     val dmxUniverse = findDmxUniverse()
 
+    val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
+    beatLinkBeatSource.start()
+
     val daddy = DirectoryDaddy(RealFs(fwDir), "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw")
     val pinky =
-        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, BeatLinkBeatSource(SystemClock()), SystemClock(),
+        Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, beatLinkBeatSource, SystemClock(),
             fs,
            daddy, object :
             StubPinkyDisplay() {
@@ -85,13 +88,7 @@ fun main(args: Array<String>) {
         }
     }
 
-
-
-
     GlobalScope.launch {
-        val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
-        beatLinkBeatSource.start()
-
         pinky.run()
     }
 
