@@ -27,7 +27,7 @@ object RandomSurfacePixelStrategy : SurfacePixelStrategy() {
             }
 
             else -> {
-                // Randomly pick locations.
+                // Randomly pick locations. TODO: this should be based on model extents.
                 val min = Vector3F(0f, 0f, 0f)
                 val max = Vector3F(100f, 100f, 100f)
                 val scale = max - min
@@ -55,28 +55,32 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
                 val surfaceCenter = surfaceVertices.average()
                 val vertex1 = surfaceVertices.first()
 
-                (0 until pixelCount).map {
-                    interpolate(vertex1, surfaceCenter, it.toFloat() / pixelCount)
-                }
+                interpolate(vertex1, surfaceCenter, pixelCount)
             }
 
             else -> {
-                // Randomly pick locations.
+                // Randomly pick locations. TODO: this should be based on model extents.
                 val min = Vector3F(0f, 0f, 0f)
                 val max = Vector3F(100f, 100f, 100f)
                 val scale = max - min
                 val vertex1 = Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
                 val vertex2 = Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
 
-                (0 until pixelCount).map {
-                    interpolate(vertex1, vertex2, it.toFloat() / pixelCount)
-                }
+                interpolate(vertex1, vertex2, pixelCount)
             }
         }
     }
 
     private fun Collection<Vector3F>.average(): Vector3F {
         return reduce { acc, vector3F -> acc + vector3F } / size.toFloat()
+    }
+
+    private fun interpolate(from: Vector3F, to: Vector3F, steps: Int): List<Vector3F> {
+        return if (steps == 1) {
+            listOf(from)
+        } else {
+            (0 until steps).map { interpolate(from, to, it / (steps - 1f)) }
+        }
     }
 
     private fun interpolate(from: Vector3F, to: Vector3F, degree: Float): Vector3F {

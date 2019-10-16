@@ -46,9 +46,10 @@ class IdentifiedSurface(
 /**
  * A surface whose identity isn't known.
  */
-class AnonymousSurface(val brainId: BrainId) : Surface {
-    override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
-
+class AnonymousSurface(
+    val brainId: BrainId,
+    override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
+) : Surface {
     override fun describe(): String = "Anonymous surface at $brainId"
     override fun equals(other: Any?): Boolean = other is AnonymousSurface && brainId.equals(other.brainId)
     override fun hashCode(): Int = brainId.hashCode()
