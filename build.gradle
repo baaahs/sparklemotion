@@ -288,6 +288,7 @@ task runGlslJvmTests(type: JavaExec) {
     if (isMac()) {
         jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
+}
 
 task runBridgeJvm(type: JavaExec) {
     dependsOn assemble
