@@ -51,28 +51,23 @@
 <select id="panelSelect"></select>
 <div id="info2"></div>
 
-<script type="application/javascript" src="kotlin.js"></script>
-<script type="application/javascript" src="kotlinx-coroutines-core.js"></script>
-<script type="application/javascript" src="kotlinx-html-js.js"></script>
-<script type="application/javascript" src="kotlinx-serialization-kotlinx-serialization-runtime.js"></script>
-<script type="application/javascript" src="klock-root-klock.js"></script>
-
 <script type="application/javascript" src="three.js"></script>
-<script type="application/javascript" src="lib/threejs-wrapper.js"></script>
+<script type="application/javascript" src="require.js" data-main="sparklemotion-0.0.1.js"></script>
+
 <script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
 
-<script type="application/javascript" src="kgl.js"></script>
-
-<script type="application/javascript" src="sparklemotion.js"></script>
-<script type="application/javascript" src="react_app.js"></script>
-
 <script type="application/javascript">
-  const baaahs = sparklemotion.baaahs;
+  require(['sparklemotion-0.0.1.js'], function(sparklemotion) {
+    // Until we figure out how to import sparklemotion in jsx:
+    window.sparklemotion = sparklemotion;
+    const baaahs = sparklemotion.baaahs;
 
-  let sheepSimulator = new baaahs.SheepSimulator();
-  sheepSimulator.start();
-
+    require(['react_app.js'], function(reactApp) {
+      let sheepSimulator = new baaahs.SheepSimulator();
+      sheepSimulator.start();
+    });
+  });
 </script>
 
 </body>

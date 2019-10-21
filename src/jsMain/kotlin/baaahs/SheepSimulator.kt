@@ -8,6 +8,12 @@ import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
 import decodeQueryParams
+import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import org.w3c.dom.WebSocket
+import three.Matrix4
+import three.Vector2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,6 +22,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
+@JsName("SheepSimulator")
 class SheepSimulator {
     private val display = JsDisplay()
     private val network = FakeNetwork(display = display.forNetwork())
@@ -107,4 +114,9 @@ class SheepSimulator {
 
 class JsClock : Clock {
     override fun now(): Time = Date.now() / 1000.0
+}
+
+fun main() {
+    console.log("Launching Simulator...")
+    console.log("vector:", Vector2())
 }

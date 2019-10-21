@@ -4,6 +4,8 @@ import ColorPicker from '../gadgets/ColorPicker';
 import PalettePicker from '../gadgets/PalettePicker';
 import RangeSlider from '../gadgets/Slider';
 
+const baaahs = sparklemotion.baaahs;
+
 export default class ShowControls extends Component {
   render() {
     const { gadgets } = this.props;

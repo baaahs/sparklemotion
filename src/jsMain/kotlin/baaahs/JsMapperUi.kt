@@ -31,6 +31,7 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.table
 import org.w3c.dom.*
 import org.w3c.dom.events.KeyboardEvent
+import three.Matrix4
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.collections.component1
@@ -429,7 +430,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             }
 
         private fun findIntersection(x: Float, y: Float): Intersect? {
-            val raycaster = Raycaster()
+            val raycaster = three.Raycaster()
             val pixelVector = Vector2(
                 x / uiWidth * 2 - 1,
                 -(y / uiHeight * 2 - 1)
@@ -531,7 +532,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         y: Int,
         visibleSurfaces: List<MapperUi.VisibleSurface>
     ): MapperUi.VisibleSurface? {
-        val raycaster = Raycaster()
+        val raycaster = three.Raycaster()
         val pixelVector = Vector2(
             x.toFloat() / uiWidth * 2 - 1,
             -(y.toFloat() / uiHeight * 2 - 1)

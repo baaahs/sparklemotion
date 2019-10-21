@@ -1,6 +1,6 @@
-@file:JsQualifier("THREE")
-
-package baaahs
+@file:JsModule("three")
+@file:JsNonModule
+package three
 
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.core.Intersect

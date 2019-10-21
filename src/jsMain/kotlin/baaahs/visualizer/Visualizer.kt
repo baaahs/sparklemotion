@@ -14,7 +14,6 @@ import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.Material
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.materials.PointsMaterial
-import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Vector2
 import info.laht.threekt.math.Vector3
 import info.laht.threekt.objects.Mesh
@@ -24,6 +23,7 @@ import info.laht.threekt.scenes.Scene
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.MouseEvent
+import three.Matrix4
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.math.PI
@@ -62,7 +62,7 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
     private val lineMaterial: Material
     private val panelMaterial: Material
 
-    private val raycaster: Raycaster
+    private val raycaster: three.Raycaster
     private var mouse: Vector2? = null
     private val sphere: Mesh
 
@@ -91,7 +91,7 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)
         sheepView.appendChild(renderer.domElement)
         geom = Geometry()
-        raycaster = Raycaster()
+        raycaster = three.Raycaster()
         raycaster.asDynamic().params.Points.threshold = 1
         sphere = Mesh(
             SphereBufferGeometry(1, 32, 32),

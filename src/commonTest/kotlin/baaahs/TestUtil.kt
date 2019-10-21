@@ -23,8 +23,8 @@ fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
     return json.parse(serializer, jsonString)
 }
 
-class FakeClock(var now: Time = 0.0) : Clock {
-    override fun now(): Time = now
+class FakeClock(var time: Time = 0.0) : Clock {
+    override fun now(): Time = time
 }
 
 class TestModelSurface(

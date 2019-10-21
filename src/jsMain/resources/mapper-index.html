@@ -14,38 +14,37 @@
   <h3>Sparkle Motion UI <small><i>FUCK YEAH</i></small></h3>
 </div>
 
-<script type="application/javascript" src="kotlin.js"></script>
-<script type="application/javascript" src="kotlinx-coroutines-core.js"></script>
-<script type="application/javascript" src="kotlinx-html-js.js"></script>
-<script type="application/javascript" src="kotlinx-serialization-kotlinx-serialization-runtime.js"></script>
-<script type="application/javascript" src="klock-root-klock.js"></script>
-
 <script type="application/javascript" src="three.js"></script>
-<script type="application/javascript" src="lib/threejs-wrapper.js"></script>
+<script type="application/javascript" src="require.js" data-main="sparklemotion-0.0.1.js"></script>
+
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
 
-<script type="application/javascript" src="sparklemotion.js"></script>
-<script type="application/javascript" src="react_app.js"></script>
-
 <script type="application/javascript">
-  const baaahs = sparklemotion.baaahs;
+  require(['sparklemotion-0.0.1.js'], function(sparklemotion) {
+    // Until we figure out how to import sparklemotion in jsx:
+    window.sparklemotion = sparklemotion;
+    const baaahs = sparklemotion.baaahs;
 
-  function myUrl() {
-    const l = window.location;
-    return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
-  }
+    require(['react_app.js'], function (reactApp) {
 
-  const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-  const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
+      function myUrl() {
+        const l = window.location;
+        return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
+      }
 
-  const sheepModel = new baaahs.SheepModel();
-  sheepModel.load();
+      const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
+      const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
 
-  const mapperUi = new baaahs.JsMapperUi();
-  const mediaDevices = new baaahs.browser.RealMediaDevices();
-  const mapper = new baaahs.Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress);
-  mapperUi.render(document.body);
-  mapper.start();
+      const sheepModel = new baaahs.SheepModel();
+      sheepModel.load();
+
+      const mapperUi = new baaahs.JsMapperUi();
+      const mediaDevices = new baaahs.browser.RealMediaDevices();
+      const mapper = new baaahs.Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress);
+      mapperUi.render(document.body);
+      mapper.start();
+    });
+  });
 </script>
 
 </body>

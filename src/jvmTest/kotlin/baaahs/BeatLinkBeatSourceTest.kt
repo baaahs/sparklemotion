@@ -43,11 +43,11 @@ class BeatLinkBeatSourceTest {
         beatSource.channelsOnAir(hashSetOf(1))
         beatSource.newBeat(mockBeat(123.4, 1))
 
-        fakeClock.now += 0.486
+        fakeClock.time += 0.486
         beatSource.newBeat(mockBeat(123.4, 2))
         expect(BeatData(10.0, 486, confidence = 1f)) { beatSource.currentBeat }
 
-        fakeClock.now += 0.490
+        fakeClock.time += 0.490
         beatSource.newBeat(mockBeat(123.4, 3))
         assertEquals(10.003, beatSource.currentBeat.measureStartTime, 0.0009)
         assertEquals(486, beatSource.currentBeat.beatIntervalMs)
@@ -58,7 +58,7 @@ class BeatLinkBeatSourceTest {
         beatSource.channelsOnAir(hashSetOf(1))
         beatSource.newBeat(mockBeat(123.4, 1))
 
-        fakeClock.now += 0.486
+        fakeClock.time += 0.486
         beatSource.newBeat(mockBeat(123.5, 2))
         assertNotEquals(10.0, beatSource.currentBeat.measureStartTime)
         assertEquals(10.0, beatSource.currentBeat.measureStartTime, 0.0009)
