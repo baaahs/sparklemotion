@@ -130,7 +130,7 @@ class GlslRendererTest {
 
     private fun identifiedSurfaceWithThreeUnmappedPixels(): IdentifiedSurface {
         return IdentifiedSurface(
-            TestModelSurface("zyx", allVertices = listOf(
+            TestModelSurface("zyx", vertices = listOf(
                 Vector3F(.6f, .6f, 0f),
                 Vector3F(.8f, .8f, 0f),
                 Vector3F(.6f, .8f, 0f),

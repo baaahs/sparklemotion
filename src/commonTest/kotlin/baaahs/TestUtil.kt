@@ -30,11 +30,11 @@ class FakeClock(var time: Time = 0.0) : Clock {
 class TestModelSurface(
     override val name: String,
     override val expectedPixelCount: Int? = 1,
-    val allVertices: Collection<Vector3F> = emptyList()
+    val vertices: Collection<Vector3F> = emptyList()
 ) : Model.Surface {
     override val description = name
 
-    override fun allVertices(): Collection<Vector3F> = allVertices
+    override fun allVertices(): Collection<Vector3F> = vertices
 
     override val faces: List<Model.Face> = emptyList()
     override val lines: List<Model.Line> = emptyList()
