@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val coroutines_version = "1.3.1"
+val coroutines_version = "1.3.2"
 val ktor_version = "1.1.5"
 val logback_version = "1.2.1"
 val serialization_version = "1.3.50"
@@ -167,6 +167,7 @@ kotlin {
                 implementation(npm("requirejs", "^2.3.6"))
                 implementation(npm("react", "^16.8.6"))
                 implementation(npm("three", "^0.102.1"))
+                implementation(npm("core-js", "^3"))
             }
         }
         val jsTest by getting {

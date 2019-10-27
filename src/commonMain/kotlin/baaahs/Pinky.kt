@@ -94,7 +94,7 @@ class Pinky(
             }
         }
 
-        display.listShows(shows)
+        display.availableShows = shows
         display.selectedShow = selectedShow
 
         display.onShowChange = { switchToShow(display.selectedShow!!) }

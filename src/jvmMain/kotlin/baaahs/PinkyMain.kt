@@ -55,9 +55,8 @@ fun main(args: Array<String>) {
             fs,
             daddy, object :
                 StubPinkyDisplay() {
-                override fun listShows(shows: List<Show>) {
-                    println("shows = ${shows}")
-                }
+                override var availableShows: List<Show> = emptyList()
+                    set(value) = println("shows = $value")
 
                 override var selectedShow: Show? = null
                     set(value) {

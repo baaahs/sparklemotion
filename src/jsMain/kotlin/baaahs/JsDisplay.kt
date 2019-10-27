@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.net.Network
+import baaahs.ui.components.SimulatorApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.Document
@@ -14,6 +15,12 @@ import kotlin.dom.appendText
 import kotlin.dom.clear
 
 class JsDisplay : Display {
+    init {
+        react.dom.render(document.getElementById("react_root")) {
+            child(SimulatorApp::class) {}
+        }
+    }
+
     override fun forNetwork(): NetworkDisplay = JsNetworkDisplay(document)
 
     override fun forPinky(): PinkyDisplay =
@@ -136,13 +143,15 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         statsSpan = element.appendElement("span") {}
     }
 
-    override fun listShows(shows: List<Show>) {
-        showListInput.clear()
-        showList = shows
-        shows.forEach {
-            showListInput.appendElement("option") { appendText(it.name) }
+    override var availableShows: List<Show>
+        get() = showList
+        set(value) {
+            showListInput.clear()
+            showList = value
+            showList.forEach {
+                showListInput.appendElement("option") { appendText(it.name) }
+            }
         }
-    }
 
     override var brainCount: Int = 0
         set(value) {
