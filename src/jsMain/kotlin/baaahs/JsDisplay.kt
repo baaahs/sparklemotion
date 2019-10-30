@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.net.Network
-import baaahs.ui.components.SimulatorApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.Document
@@ -15,12 +14,6 @@ import kotlin.dom.appendText
 import kotlin.dom.clear
 
 class JsDisplay : Display {
-    init {
-        react.dom.render(document.getElementById("react_root")) {
-            child(SimulatorApp::class) {}
-        }
-    }
-
     override fun forNetwork(): NetworkDisplay = JsNetworkDisplay(document)
 
     override fun forPinky(): PinkyDisplay =
@@ -58,16 +51,16 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
     private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
     private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
 
-    private var packetsReceived = 0
-    private var packetsDropped = 0
-
-    override fun receivedPacket() {
-        packetsReceivedSpan.textContent = packetsReceived++.toString()
-    }
-
-    override fun droppedPacket() {
-        packetsDroppedSpan.textContent = packetsDropped++.toString()
-    }
+    override var packetsReceived = 0
+        set(value) {
+            field = value
+            packetsReceivedSpan.textContent = value.toString()
+        }
+    override var packetsDropped = 0
+        set(value) {
+            field = value
+            packetsDroppedSpan.textContent = value.toString()
+        }
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {

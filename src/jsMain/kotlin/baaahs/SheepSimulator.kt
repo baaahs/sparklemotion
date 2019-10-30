@@ -8,22 +8,17 @@ import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
 import decodeQueryParams
-import kotlinx.coroutines.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import org.w3c.dom.WebSocket
-import three.Vector2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import three.Vector2
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
 @JsName("SheepSimulator")
-class SheepSimulator {
-    private val display = JsDisplay()
+class SheepSimulator(private val display: Display) {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val model = SheepModel().apply { load() } as Model<*>

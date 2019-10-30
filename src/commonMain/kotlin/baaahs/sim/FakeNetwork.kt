@@ -114,7 +114,7 @@ class FakeNetwork(
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 if (!sendPacketSuccess()) {
-                    display?.droppedPacket()
+                    display?.apply { packetsDropped++ }
                     return
                 }
 
@@ -124,7 +124,7 @@ class FakeNetwork(
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 if (!sendPacketSuccess()) {
-                    display?.droppedPacket()
+                    display?.apply { packetsDropped++ }
                     return
                 }
 
@@ -143,9 +143,9 @@ class FakeNetwork(
                     networkDelay()
 
                     if (!receivePacketSuccess()) {
-                        display?.droppedPacket()
+                        display?.apply { packetsDropped++ }
                     } else {
-                        display?.receivedPacket()
+                        display?.apply { packetsReceived++ }
                         udpListener.receive(fromAddress, fromPort, bytes)
                     }
                 }

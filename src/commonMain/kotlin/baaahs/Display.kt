@@ -11,8 +11,8 @@ interface Display {
 
 interface NetworkDisplay {
     var packetLossRate: Float
-    fun receivedPacket()
-    fun droppedPacket()
+    var packetsReceived: Int
+    var packetsDropped: Int
 }
 
 interface PinkyDisplay {

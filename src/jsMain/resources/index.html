@@ -25,7 +25,8 @@
     const baaahs = sparklemotion.baaahs;
 
     require(['react_app.js'], function(reactApp) {
-      let sheepSimulator = new baaahs.SheepSimulator();
+      const display = baaahs.ui.components.SimulatorApp.Companion.render(document.getElementById("react_root"));
+      const sheepSimulator = new baaahs.SheepSimulator(display);
       sheepSimulator.start();
     });
   });
