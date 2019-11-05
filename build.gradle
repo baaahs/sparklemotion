@@ -116,6 +116,7 @@ kotlin {
 
                 implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
                 implementation files("src/jvmMain/lib/javax.util.property-2_0.jar") // required by ftd2xxj
+                implementation files("src/jvmMain/lib/TarsosDSP-2.4-bin.jar") // sound analysis
 
                 implementation "org.joml:joml:1.9.16"
 
