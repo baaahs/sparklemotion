@@ -76,7 +76,7 @@ class SheepSimulator(private val display: Display) {
             }
             pinky.providePixelMapping_CHEAT(surface, pixelLocations)
 
-            val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
+            val brain = Brain("$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
             pinky.providePanelMapping_CHEAT(BrainId(brain.id), surface)
             brainScope.launch { randomDelay(1000); brain.run() }
         }

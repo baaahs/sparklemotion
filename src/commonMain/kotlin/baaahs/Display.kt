@@ -20,11 +20,20 @@ interface PinkyDisplay {
     var beat: Int
     var bpm: Float
     var beatConfidence: Float
-    var onShowChange: (() -> Unit)
+    var selectShow: ((Show) -> Unit)
     var selectedShow: Show?
     var availableShows: List<Show>
     var showFrameMs: Int
     var stats: Pinky.NetworkStats?
+    val brains: MutableMap<BrainId, BrainUiModel>
+}
+
+interface BrainUiModel {
+    val brainId: String
+    val surface: Surface?
+    val firmwareVersion: String?
+
+    fun reset()
 }
 
 open class StubPinkyDisplay : PinkyDisplay {
@@ -32,11 +41,12 @@ open class StubPinkyDisplay : PinkyDisplay {
     override var beat = 0
     override var bpm = 0.0f
     override var beatConfidence = 0.0f
-    override var onShowChange: () -> Unit = { }
+    override var selectShow: (Show) -> Unit = { }
     override var availableShows: List<Show> = emptyList()
     override var selectedShow: Show? = null
     override var showFrameMs: Int = 0
     override var stats: Pinky.NetworkStats? = null
+    override val brains: MutableMap<BrainId, BrainUiModel> = mutableMapOf()
 }
 
 interface BrainDisplay {
@@ -48,4 +58,13 @@ interface BrainDisplay {
 
 interface VisualizerDisplay {
     var renderMs: Int
+}
+
+open class Observable {
+    private val listeners: MutableSet<() -> Unit> = hashSetOf()
+
+    fun addListener(listener: () -> Unit) = listeners.add(listener)
+    fun removeListener(listener: () -> Unit) = listeners.remove(listener)
+
+    protected fun onChange() = listeners.forEach { it() }
 }

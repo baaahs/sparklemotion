@@ -97,7 +97,7 @@ class Pinky(
         display.availableShows = shows
         display.selectedShow = selectedShow
 
-        display.onShowChange = { switchToShow(display.selectedShow!!) }
+        display.selectShow = { show -> switchToShow(show) }
 
         while (true) {
             if (mapperIsRunning) {
@@ -161,9 +161,11 @@ class Pinky(
                 if (incomingBrainInfo.hadException) {
                     // Existing Brain has had exceptions so we're forgetting about it.
                     brainInfos.remove(brainId)
+                    display.brains.remove(brainId)
                 } else {
                     brainSurfacesToAdd.add(incomingBrainInfo.surfaceReceiver)
                     brainInfos[brainId] = incomingBrainInfo
+                    display.brains[brainId] = PinkyBrainUiModel(incomingBrainInfo)
                 }
             }
 
@@ -204,17 +206,21 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        logger.info { "Hello from ${brainId.uuid}" +
-                " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                " at $brainAddress: $msg" }
+        logger.info {
+            "Hello from $brainId" +
+                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                    " at $brainAddress: $msg"
+        }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.info { "The firmware daddy doesn't like $brainId" +
-                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                    " having ${msg.firmwareVersion}" +
-                    " so we'll send ${firmwareDaddy.urlForPreferredVersion}" }
+            logger.info {
+                "The firmware daddy doesn't like $brainId" +
+                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                        " having ${msg.firmwareVersion}" +
+                        " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
+            }
             val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
+            sendToBrain(brainAddress, newHotness)
         }
 
 
@@ -230,7 +236,7 @@ class Pinky(
                     brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
                     Vector2F(0f, 0f), pixelCount, pixelLocations
                 )
-                udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
+                sendToBrain(brainAddress, mappingMsg)
             }
 
             IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
@@ -277,12 +283,30 @@ class Pinky(
             ShowRunner.SurfaceReceiver(surface, sendFn)
         }
 
-        val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
+        val brainInfo = BrainInfo(
+            brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver,
+            firstHeardFrom = clock.now()
+        )
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
         pendingBrainInfos[brainId] = brainInfo
 
         // Decide whether or not to tell this brain it should use a different firmware
 
+    }
+
+    private fun sendToBrain(address: Network.Address, message: Message) {
+        udpSocket.sendUdp(address, Ports.BRAIN, message)
+    }
+
+    private fun sendToBrain(brainId: BrainId, message: Message) {
+        val brainInfo = brainInfos[brainId]
+        brainInfo?.run {
+            udpSocket.sendUdp(brainInfo.address, Ports.BRAIN, message)
+        }
+    }
+
+    fun resetBrain(brainId: BrainId) {
+        sendToBrain(brainId, ResetMessage())
     }
 
     private fun findMappingInfo_CHEAT(surfaceName: String?, brainId: BrainId): MappingResults.Info? {
@@ -318,7 +342,7 @@ class Pinky(
     inner class PinkyBeatDisplayer(val beatSource: BeatSource) {
         suspend fun run() {
             while (true) {
-               val beatData = beatSource.getBeatData()
+                val beatData = beatSource.getBeatData()
                 display.beat = beatData.beatWithinMeasure(clock).toInt()
                 display.bpm = beatData.bpm
                 display.beatConfidence = beatData.confidence
@@ -477,12 +501,24 @@ class Pinky(
         }
     }
 
+    inner class PinkyBrainUiModel(var brainInfo: BrainInfo) : BrainUiModel, Observable() {
+        override val brainId: String get() = brainInfo.brainId.toString()
+        override val surface: Surface? get() = brainInfo.surface
+        override val firmwareVersion: String? get() = brainInfo.firmwareVersion
+
+        override fun reset() {
+            resetBrain(brainInfo.brainId)
+        }
+    }
+
     companion object {
         val logger = Logger("Pinky")
     }
 }
 
-data class BrainId(val uuid: String)
+data class BrainId(val uuid: String) {
+    override fun toString(): String = "b${uuid}"
+}
 
 class BrainInfo(
     val address: Network.Address,
@@ -491,5 +527,7 @@ class BrainInfo(
     val firmwareVersion: String?,
     val idfVersion: String?,
     val surfaceReceiver: ShowRunner.SurfaceReceiver,
-    var hadException: Boolean = false
+    var hadException: Boolean = false,
+    val firstHeardFrom: Time,
+    var lastHeardFrom: Time = firstHeardFrom
 )

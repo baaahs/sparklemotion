@@ -24,7 +24,8 @@ enum class Type {
     BRAIN_ID_REQUEST,
     BRAIN_MAPPING,
     PING,
-    USE_FIRMWARE;
+    USE_FIRMWARE,
+    RESET;
 
     companion object {
         val values = values()
@@ -42,6 +43,7 @@ fun parse(bytes: ByteArray): Message {
         Type.BRAIN_MAPPING -> BrainMappingMessage.parse(reader)
         Type.PING -> PingMessage.parse(reader)
         Type.USE_FIRMWARE -> UseFirmwareMessage.parse(reader)
+        Type.RESET -> ResetMessage.parse(reader)
     }
 }
 
@@ -100,8 +102,7 @@ class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val p
  * download a wikipedia article and use that as a firmware. It just won't
  * be nice.
  */
-class UseFirmwareMessage(val url: String) :
-    Message(Type.USE_FIRMWARE) {
+class UseFirmwareMessage(val url: String) : Message(Type.USE_FIRMWARE) {
     companion object {
         fun parse(reader: ByteArrayReader): UseFirmwareMessage {
             return UseFirmwareMessage(reader.readString())
@@ -110,6 +111,15 @@ class UseFirmwareMessage(val url: String) :
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(url)
+    }
+}
+
+class ResetMessage : Message(Type.RESET) {
+    companion object {
+        fun parse(reader: ByteArrayReader): ResetMessage = ResetMessage()
+    }
+
+    override fun serialize(writer: ByteArrayWriter) {
     }
 }
 

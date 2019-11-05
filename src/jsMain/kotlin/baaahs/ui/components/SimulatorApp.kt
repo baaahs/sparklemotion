@@ -1,25 +1,25 @@
 package baaahs.ui.components
 
 import baaahs.*
-import baaahs.net.Network
 import kotlinx.html.InputType
 import kotlinx.html.id
+import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onMouseOverFunction
+import kotlinx.html.title
 import org.w3c.dom.Element
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.*
 import react.dom.*
 
 class SimulatorApp : RComponent<SimulatorApp.Props, SimulatorApp.State>() {
     override fun componentDidMount() {
-        println("componentDidMount")
+        props.pinkyDisplay.brains.addListener(this::onChange)
     }
 
     override fun componentWillUnmount() {
-        println("componentWillUnmount")
-        super.componentWillUnmount()
+        props.pinkyDisplay.brains.removeListener(this::onChange)
     }
+
+    fun onChange() = forceUpdate()
 
     override fun RBuilder.render() {
         div { attrs.id = "sheepView" }
@@ -31,35 +31,11 @@ class SimulatorApp : RComponent<SimulatorApp.Props, SimulatorApp.State>() {
 
             div("simulatorSection") { attrs.id = "launcher" }
 
-            table("simulatorSection") {
-                attrs.id = "networkView"; style(content = "table-layout: fixed; width: 100%;")
+            networkSection { networkDisplay = props.networkDisplay }
 
-                tbody {
-                    tr { th { attrs.colSpan = "2"; style(content = "text-align: left;"); +"Network" } }
-                    tr { td { +"Packet loss rate:" }; td { +"${props.networkDisplay.packetLossRate}" } }
-                    tr { td { +"Packets received:" }; td { +"${props.networkDisplay.packetsReceived}" } }
-                    tr { td { +"Packets dropped:" }; td { +"${props.networkDisplay.packetsDropped}" } }
-                }
-            }
-
-            table("simulatorSection") {
-                attrs.id = "networkView"; style(content = "table-layout: fixed; width: 100%;")
-
-                thead {
-                    tr { th { attrs.colSpan = "2"; style(content = "text-align: left;"); +"Effective frame rate" } }
-                }
-                tbody {
-                    val showFrameRenderMs = props.pinkyDisplay.showFrameMs
-                    tr { td { +"Show:" }; td { +"${1000 / showFrameRenderMs}fps" }; td { +"${showFrameRenderMs}ms" } }
-                    val vizRenderMs = props.visualizerDisplay.renderMs
-                    tr { td { +"Visualizer:" }; td { +"${1000 / vizRenderMs}fps" }; td { +"${vizRenderMs}ms" } }
-                    tr { td { +"Brains:" }; td { +"tbd" }; td { +"tbd" } }
-                }
-            }
-
-            div("simulatorSection") {
-                b { +"Pinky" }
-                div { attrs.id = "pinkyView" }
+            pinkySection {
+                pinkyDisplay = props.pinkyDisplay
+                visualizerDisplay = props.visualizerDisplay
             }
 
             div("simulatorSection") {
@@ -75,74 +51,47 @@ class SimulatorApp : RComponent<SimulatorApp.Props, SimulatorApp.State>() {
 
             div("simulatorSection") {
                 b { +"Brains:" }
-                div { attrs.id = "brainsView" }
-                div { attrs.id = "brainDetails" }
+                div {
+                    props.pinkyDisplay.brains.map { (brainId, brainUiModel) ->
+                        div("brain-box brain-offline") {
+                            attrs {
+                                title = brainId.toString()
+                                onMouseOverFunction = {
+                                    setState { selectedBrain = brainUiModel }
+                                }
+                            }
+                        }
+                    }
+                }
+                div { // brain details
+                    state.selectedBrain?.run {
+                        hr {}
+                        b { +"Brain $brainId"}
+                        div { +"Surface: ${surface?.describe()}"}
+                        div {
+                            button { +"Reset"; attrs { onClickFunction = { reset() } } }
+                        }
+                    }
+                }
             }
         }
     }
 
     interface Props : RProps {
-        var networkDisplay: NetworkDisplay
-        var pinkyDisplay: PinkyDisplay
-        var brainDisplay: BrainDisplay
-        var visualizerDisplay: VisualizerDisplay
-    }
-
-    class RVisualizerDisplay(val onChange: () -> Unit): VisualizerDisplay {
-        override var renderMs: Int = 0
-            set(value) { field = value; onChange() }
-    }
-
-    class RNetworkDisplay(val onChange: () -> Unit): NetworkDisplay {
-        override var packetLossRate: Float = 0f
-            set(value) { field = value; onChange() }
-        override var packetsReceived: Int = 0
-            set(value) { field = value; onChange() }
-        override var packetsDropped: Int = 0
-            set(value) { field = value; onChange() }
-    }
-
-    class RPinkyDisplay(val onChange: () -> Unit): PinkyDisplay {
-        override var brainCount: Int = 0
-            set(value) { field = value; onChange() }
-        override var beat: Int = 0
-            set(value) { field = value; onChange() }
-        override var bpm: Float = 0f
-            set(value) { field = value; onChange() }
-        override var beatConfidence: Float = 0f
-            set(value) { field = value; onChange() }
-        override var onShowChange: () -> Unit = {}
-            set(value) { field = value; onChange() }
-        override var selectedShow: Show? = null
-            set(value) { field = value; onChange() }
-        override var availableShows: List<Show> = emptyList()
-            set(value) { field = value; onChange() }
-        override var showFrameMs: Int = 0
-            set(value) { field = value; onChange() }
-        override var stats: Pinky.NetworkStats? = null
-            set(value) { field = value; onChange() }
-    }
-
-    class RBrainDisplay(val onChange: () -> Unit): BrainDisplay {
-        override var id: String? = null
-            set(value) { field = value; onChange() }
-        override var surface: Surface? = null
-            set(value) { field = value; onChange() }
-        override var onReset: suspend () -> Unit = {}
-            set(value) { field = value; onChange() }
-
-        override fun haveLink(link: Network.Link) {
-        }
+        var networkDisplay: RNetworkDisplay
+        var pinkyDisplay: RPinkyDisplay
+        var brainDisplay: RBrainDisplay
+        var visualizerDisplay: RVisualizerDisplay
     }
 
     companion object {
         @JsName("render")
         fun render(node: Element): Display {
             val display = object : Display {
-                private val networkDisplay = RNetworkDisplay { redraw() }
-                private val pinkyDisplay = RPinkyDisplay { redraw() }
-                private val brainDisplay = RBrainDisplay { redraw() }
-                private val visualizerDisplay = RVisualizerDisplay { redraw() }
+                private val networkDisplay = RNetworkDisplay()
+                private val pinkyDisplay = RPinkyDisplay()
+                private val brainDisplay = RBrainDisplay()
+                private val visualizerDisplay = RVisualizerDisplay()
 
                 override fun forNetwork(): NetworkDisplay = networkDisplay
                 override fun forPinky(): PinkyDisplay = pinkyDisplay
@@ -161,10 +110,10 @@ class SimulatorApp : RComponent<SimulatorApp.Props, SimulatorApp.State>() {
             render(node) {
                 child(SimulatorApp::class) {
                     attrs {
-                        this.networkDisplay = display.forNetwork()
-                        this.pinkyDisplay = display.forPinky()
-                        this.brainDisplay = display.forBrain()
-                        this.visualizerDisplay = display.forVisualizer()
+                        this.networkDisplay = display.forNetwork() as RNetworkDisplay
+                        this.pinkyDisplay = display.forPinky() as RPinkyDisplay
+                        this.brainDisplay = display.forBrain() as RBrainDisplay
+                        this.visualizerDisplay = display.forVisualizer() as RVisualizerDisplay
                     }
                 }
             }
@@ -172,6 +121,7 @@ class SimulatorApp : RComponent<SimulatorApp.Props, SimulatorApp.State>() {
     }
 
     interface State : RState {
+        var selectedBrain: BrainUiModel?
 //        var visualizerRenderMs: Int
 //        override var brainCount: Int,
 //        override var beat: Int,

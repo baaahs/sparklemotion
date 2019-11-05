@@ -64,7 +64,7 @@ class JsNetworkDisplay(document: Document) : NetworkDisplay {
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
-    override var onShowChange: (() -> Unit) = {}
+    override var selectShow: (Show) -> Unit = {}
     override var selectedShow: Show? = null
         set(value) {
             field = value
@@ -87,6 +87,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
             statsSpan.textContent = value?.run { "$bytesSent bytes / $packetsSent packets per frame" } ?: "?"
         }
 
+    override val brains: MutableMap<BrainId, BrainUiModel> = mutableMapOf()
+
     private val brainCountDiv: Element
     private val beat1: Element
     private val beat2: Element
@@ -105,8 +107,7 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
         element.appendText("Current Show: ")
         showListInput = element.appendElement("select") { className = "showsDiv" } as HTMLSelectElement
         showListInput.onchange = {
-            selectedShow = showList.find { it.name == showListInput.selectedOptions[0]?.textContent }
-            onShowChange.invoke()
+            selectShow.invoke(showList.find { it.name == showListInput.selectedOptions[0]?.textContent }!!)
         }
 
         element.appendElement("br") { }
