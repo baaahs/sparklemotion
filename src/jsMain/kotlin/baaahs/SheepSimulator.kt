@@ -3,18 +3,15 @@ package baaahs
 import baaahs.geom.Vector3F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
-import baaahs.sim.FakeDmxUniverse
-import baaahs.sim.FakeFs
-import baaahs.sim.FakeMediaDevices
-import baaahs.sim.FakeNetwork
+import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
 import decodeQueryParams
-import kotlinx.coroutines.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import org.w3c.dom.WebSocket
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -27,10 +24,12 @@ class SheepSimulator {
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(model, display.forVisualizer())
     private val fs = FakeFs()
-    private val beatSource: BeatSource = BridgedBeatSource("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
-    private val pinky = Pinky(model, shows, network, dmxUniverse, beatSource, JsClock(), fs,
-        PermissiveFirmwareDaddy(), display.forPinky(),
-        prerenderPixels = true)
+    private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
+    private val pinky = Pinky(
+        model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
+        PermissiveFirmwareDaddy(), display.forPinky(), bridgeClient.soundAnalyzer,
+        prerenderPixels = true
+    )
 
     fun start() = doRunBlocking {
         val queryParams = decodeQueryParams(document.location!!)
@@ -108,59 +107,4 @@ class SheepSimulator {
 
 class JsClock : Clock {
     override fun now(): Time = Date.now() / 1000.0
-}
-
-class BridgedBeatSource(private val url: String) : BeatSource {
-    private val logger = Logger("BridgedBeatSource")
-    private val json = Json(JsonConfiguration.Stable)
-    private val defaultBpm = BeatData(0.0, 500, confidence = 1f)
-    private val l = window.location
-    private lateinit var webSocket: WebSocket
-
-    private var beatData = BeatData(0.0, 0, confidence = 0f)
-    private var everConnected = false
-
-    override fun getBeatData(): BeatData = beatData
-
-    init {
-        connect()
-    }
-
-    private fun connect() {
-        webSocket = WebSocket("${if (l.protocol == "https:") "wss:" else "ws:"}//$url/bridge/beatSource")
-
-        webSocket.onopen = {
-            everConnected = true
-            logger.info { "Connected to simulator bridge." }
-        }
-
-        webSocket.onmessage = {
-            val buf = it.data as String
-            logger.debug { "Received $buf" }
-            beatData = json.parse(BeatData.serializer(), buf)
-            null
-        }
-
-        webSocket.onerror = {
-            if (!everConnected) {
-                logger.error { "Couldn't connect to simulator bridge; falling back to 120bpm: $it" }
-                beatData = defaultBpm
-            } else {
-                logger.error { "WebSocket error: $it" }
-            }
-        }
-
-        webSocket.onclose = {
-            if (everConnected) {
-                logger.error { "Lost connection to simulator bridge; falling back to 120bpm: $it" }
-                beatData = defaultBpm
-
-                GlobalScope.launch {
-                    delay(1000)
-                    logger.info { "Attempting to reconnect to simulator bridge..." }
-                    connect()
-                }
-            }
-        }
-    }
 }

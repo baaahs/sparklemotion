@@ -31,7 +31,7 @@ class PinkyTest {
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
         pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
-            PermissiveFirmwareDaddy(), StubPinkyDisplay())
+            PermissiveFirmwareDaddy(), StubPinkyDisplay(), StubSoundAnalyzer())
         pinkyLink = network.links.only()
     }
 
@@ -182,4 +182,14 @@ class PinkyTest {
 
 class StubBeatSource : BeatSource {
     override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
+}
+
+class StubSoundAnalyzer : SoundAnalyzer {
+    override val frequencies = floatArrayOf()
+
+    override fun listen(analysisListener: SoundAnalyzer.AnalysisListener) {
+    }
+
+    override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
+    }
 }

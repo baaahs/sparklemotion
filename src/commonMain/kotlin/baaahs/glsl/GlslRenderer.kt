@@ -1,7 +1,10 @@
 package baaahs.glsl
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Surface
+import baaahs.getTimeMillis
 import baaahs.shaders.GlslShader
+import baaahs.timeSync
 import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
@@ -11,7 +14,8 @@ open class GlslRenderer(
     private val contextSwitcher: ContextSwitcher,
     val fragShader: String,
     val adjustableValues: List<GlslShader.AdjustableValue>,
-    private val glslVersion: String
+    private val glslVersion: String,
+    plugins: List<GlslPlugin>
 ) {
     private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
     var pixelCount: Int = 0
@@ -20,16 +24,17 @@ open class GlslRenderer(
 
     val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
-    val uvCoordTextureIndex = 0
-    var surfaceOrdinalTextureIndex = 1
-    var nextTextureIndex = 2
+    private var nextTextureId = 0
+    private val uvCoordTextureId = getTextureId()
 
     var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
-    private var uvCoordsUniform: Uniform? = gl { Uniform.find(program, "sm_uvCoords") }
-    private var resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
-    private var timeUniform: Uniform? = gl { Uniform.find(program, "time") }
+    private val uvCoordsUniform: Uniform? = gl { Uniform.find(program, "sm_uvCoords") }
+    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
+    private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
+
+    private val rendererPlugins = plugins.map { it.forRenderer(this) }
 
     private val quad: Quad = gl { Quad(gl, program) }
 
@@ -39,6 +44,11 @@ open class GlslRenderer(
         gl { gl.clearColor(0f, .5f, 0f, 1f) }
 
         arrangement = createArrangement(0, FloatArray(0), glslSurfaces)
+    }
+
+    fun getTextureId(): Int {
+        check(nextTextureId <= 31) { "too many textures!" }
+        return nextTextureId++
     }
 
     private fun createShaderProgram(): Program {
@@ -74,6 +84,7 @@ uniform float sm_uScale;
 uniform float sm_vScale;
 uniform float sm_startOfMeasure;
 uniform float sm_beat;
+uniform sampler2D sm_soundAnalysis;
 
 out vec4 sm_fragColor;
 
@@ -149,8 +160,10 @@ void main(void) {
         resolutionUniform?.set(1f, 1f)
         timeUniform?.set(thisTime)
 
-        arrangement.bindUvCoordTexture(0, uvCoordsUniform!!)
+        arrangement.bindUvCoordTexture(uvCoordsUniform!!)
         arrangement.bindUniforms()
+
+        rendererPlugins.forEach { it.beforeRender() }
 
         gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight)
         gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -190,7 +203,7 @@ void main(void) {
             surfacesToAdd.clear()
 
             arrangement = createArrangement(newPixelCount, newUvCoords, glslSurfaces)
-            arrangement.bindUvCoordTexture(uvCoordTextureIndex, uvCoordsUniform!!)
+            arrangement.bindUvCoordTexture(uvCoordsUniform!!)
 
             pixelCount = newPixelCount
             println("Now managing $pixelCount pixels.")
@@ -224,8 +237,8 @@ void main(void) {
             }
         }
 
-        fun bindUvCoordTexture(textureIndex: Int, uvCoordsLocation: Uniform) {
-            gl { gl.activeTexture(GL_TEXTURE0) }
+        fun bindUvCoordTexture(uvCoordsLocation: Uniform) {
+            gl { gl.activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
             gl { gl.bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
             gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
             gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
@@ -237,7 +250,7 @@ void main(void) {
                     GL_FLOAT, uvCoordsFloatBuffer
                 )
             }
-            uvCoordsLocation.set(textureIndex)
+            uvCoordsLocation.set(uvCoordTextureId)
         }
 
         fun getPixel(pixelIndex: Int): Color {
