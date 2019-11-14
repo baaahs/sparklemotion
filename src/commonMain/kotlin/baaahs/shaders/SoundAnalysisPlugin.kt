@@ -1,10 +1,8 @@
 package baaahs.shaders
 
 import baaahs.SoundAnalyzer
-import baaahs.glsl.GlslPlugin
-import baaahs.glsl.GlslRenderer
-import baaahs.glsl.Uniform
-import baaahs.glsl.check
+import baaahs.glsl.*
+import baaahs.glsl.Program
 import com.danielgergely.kgl.*
 
 class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) : GlslPlugin {
@@ -37,16 +35,23 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
     }
 
     inner class RendererPlugin(val renderer: GlslRenderer) : GlslPlugin.RendererPlugin {
+        override val glslPreamble: String = "uniform sampler2D sm_soundAnalysis;"
+
         private val gl = renderer.gl
         private val texture = gl.check { gl.createTexture() }
         private val textureId = renderer.getTextureId()
-        private val soundAnalysisUniform: Uniform? = gl.check { Uniform.find(renderer.program, "sm_soundAnalysis") }
+        private var soundAnalysisUniform: Uniform? = null
+
+        override fun afterCompile(program: Program) {
+            soundAnalysisUniform = gl.check { Uniform.find(program, "sm_soundAnalysis") }
+        }
 
         override fun beforeRender() {
             val analysisBufferSize = soundAnalyzer.frequencies.size
             val expectedBufferSize = analysisBufferSize * historySize
 
-            if (soundAnalysisUniform == null || textureBuffer.size != expectedBufferSize) return
+            val uniform = soundAnalysisUniform
+            if (uniform == null || textureBuffer.size != expectedBufferSize) return
 
             textureGlBuffer.position = 0
             textureGlBuffer.put(textureBuffer)
@@ -62,7 +67,7 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
                     GL_RED, GL_FLOAT, textureGlBuffer
                 )
             }
-            soundAnalysisUniform.set(textureId)
+            uniform.set(textureId)
         }
 
         fun finalize() {

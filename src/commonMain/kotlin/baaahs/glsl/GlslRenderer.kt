@@ -26,6 +26,7 @@ open class GlslRenderer(
 
     private var nextTextureId = 0
     private val uvCoordTextureId = getTextureId()
+    private val rendererPlugins = plugins.map { it.forRenderer(this) }
 
     var arrangement: Arrangement
 
@@ -33,8 +34,6 @@ open class GlslRenderer(
     private val uvCoordsUniform: Uniform? = gl { Uniform.find(program, "sm_uvCoords") }
     private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
-
-    private val rendererPlugins = plugins.map { it.forRenderer(this) }
 
     private val quad: Quad = gl { Quad(gl, program) }
 
@@ -84,7 +83,7 @@ uniform float sm_uScale;
 uniform float sm_vScale;
 uniform float sm_startOfMeasure;
 uniform float sm_beat;
-uniform sampler2D sm_soundAnalysis;
+${rendererPlugins.map { plugin -> plugin.glslPreamble }.joinToString("\n")}
 
 out vec4 sm_fragColor;
 
@@ -121,6 +120,8 @@ void main(void) {
             val infoLog = program.getInfoLog()
             throw RuntimeException("ProgramInfoLog: $infoLog")
         }
+
+        rendererPlugins.forEach { it.afterCompile(program) }
 
         return program
     }
