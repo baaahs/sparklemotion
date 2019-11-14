@@ -53,20 +53,20 @@ fun main(args: Array<String>) {
     val pinky =
         Pinky(sheepModel, AllShows.allShows, network, dmxUniverse, BeatLinkBeatSource(SystemClock()), SystemClock(),
             fs,
-           daddy, object :
-            StubPinkyDisplay() {
-            override fun listShows(shows: List<Show>) {
-                println("shows = ${shows}")
-            }
-
-            override var selectedShow: Show? = null
-                set(value) {
-                    field = value; println("selectedShow: ${value}")
+            daddy, object :
+                StubPinkyDisplay() {
+                override fun listShows(shows: List<Show>) {
+                    println("shows = ${shows}")
                 }
 
-            override var showFrameMs: Int = 0
-                set(value) { field = value; /* println("showFrameMs: ${value}") */ }
-        }, prerenderPixels = true)
+                override var selectedShow: Show? = null
+                    set(value) {
+                        field = value; println("selectedShow: ${value}")
+                    }
+
+                override var showFrameMs: Int = 0
+                    set(value) { field = value; /* println("showFrameMs: ${value}") */ }
+            }, JvmSoundAnalyzer(), prerenderPixels = true)
 
     val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
     ktor.application.routing {
