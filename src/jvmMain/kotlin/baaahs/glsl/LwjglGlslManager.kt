@@ -3,7 +3,6 @@ package baaahs.glsl
 import baaahs.shaders.GlslShader
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GLCapabilities
 
 class LwjglGlslManager : GlslManager {
@@ -13,7 +12,7 @@ class LwjglGlslManager : GlslManager {
      * This is initialization stuff that's required on the main thread.
      */
     init {
-        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
+//        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
         check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
         GLFW.glfwDefaultWindowHints()
