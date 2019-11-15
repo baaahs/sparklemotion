@@ -1,16 +1,36 @@
 package baaahs.ui.components
 
-import react.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.ReactElement
 import react.dom.*
 
-class NetworkSection : RComponent<NetworkSection.Props, NetworkSection.State>() {
+class NetworkSection(props: Props) : RComponent<NetworkSection.Props, RNetworkDisplay>(props) {
+
+    override fun RNetworkDisplay.init(props: Props) {
+        println("RNetworkDisplay.init($props) $this")
+        state = props.networkDisplay
+    }
+
+    override fun componentWillReceiveProps(nextProps: Props) {
+        println("componentWillReceiveProps $this")
+    }
+
+    override fun componentWillUpdate(nextProps: Props, nextState: RNetworkDisplay) {
+        println("componentWillUpdate $this")
+    }
 
     override fun componentDidMount() {
-        props.networkDisplay.addListener(this::onChange)
+        props.networkDisplay.addStateListener(this::setMyState)
     }
 
     override fun componentWillUnmount() {
-        props.networkDisplay.removeListener(this::onChange)
+        props.networkDisplay.removeStateListener(this::setMyState)
+    }
+
+    private fun setMyState(state: RNetworkDisplay) {
+        setState(state) {}
     }
 
     fun onChange() = forceUpdate()
@@ -32,7 +52,6 @@ class NetworkSection : RComponent<NetworkSection.Props, NetworkSection.State>() 
     interface Props: RProps {
         var networkDisplay: RNetworkDisplay
     }
-    interface State: RState
 }
 
 fun RBuilder.networkSection(handler: NetworkSection.Props.() -> Unit): ReactElement {

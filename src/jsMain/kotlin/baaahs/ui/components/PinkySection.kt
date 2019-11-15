@@ -14,12 +14,13 @@ class PinkySection : RComponent<PinkySection.Props, PinkySection.State>() {
         props.visualizerDisplay.addListener(this::onPinkyDisplayChange)
     }
 
-    fun onPinkyDisplayChange() {
-        forceUpdate()
+    override fun componentWillUnmount() {
+        props.pinkyDisplay.removeListener(this::onPinkyDisplayChange)
+        props.visualizerDisplay.removeListener(this::onPinkyDisplayChange)
     }
 
-    override fun componentWillUnmount() {
-        super.componentWillUnmount()
+    fun onPinkyDisplayChange() {
+        forceUpdate()
     }
 
     override fun RBuilder.render() {

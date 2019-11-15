@@ -1,6 +1,9 @@
 package baaahs
 
 import baaahs.net.Network
+import kotlinx.serialization.UnstableDefault
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 interface Display {
     fun forNetwork(): NetworkDisplay
@@ -60,11 +63,36 @@ interface VisualizerDisplay {
     var renderMs: Int
 }
 
-open class Observable {
+open class Observable<S> {
+    val map: Map<String, Any?> = hashMapOf()
+
     private val listeners: MutableSet<() -> Unit> = hashSetOf()
+    private val stateListeners: MutableSet<(S) -> Unit> = hashSetOf()
 
     fun addListener(listener: () -> Unit) = listeners.add(listener)
     fun removeListener(listener: () -> Unit) = listeners.remove(listener)
 
+    fun addStateListener(listener: (S) -> Unit) = stateListeners.add(listener)
+    fun removeStateListener(listener: (S) -> Unit) = stateListeners.remove(listener)
+
     protected fun onChange() = listeners.forEach { it() }
+
+    fun <T> observer(default: T): ViewObserver<S, T> = ViewObserver(default)
+
+    val data: MutableMap<String, Any> = hashMapOf()
+
+    class ViewObserver<S, T>(val default: T) : ReadWriteProperty<Observable<S>, T> {
+        override fun getValue(thisRef: Observable<S>, property: KProperty<*>): T {
+            @Suppress("UNCHECKED_CAST")
+            return thisRef.data[property.name] as T ?: default
+        }
+
+        override fun setValue(thisRef: Observable<S>, property: KProperty<*>, value: T) {
+            if (thisRef.data[property.name] != value) {
+                @Suppress("UNCHECKED_CAST")
+                (thisRef.data as MutableMap<String, T>)[property.name] = value
+                thisRef.onChange()
+            }
+        }
+    }
 }

@@ -501,7 +501,7 @@ class Pinky(
         }
     }
 
-    inner class PinkyBrainUiModel(var brainInfo: BrainInfo) : BrainUiModel, Observable() {
+    inner class PinkyBrainUiModel(var brainInfo: BrainInfo) : BrainUiModel, Observable<BrainUiModel>() {
         override val brainId: String get() = brainInfo.brainId.toString()
         override val surface: Surface? get() = brainInfo.surface
         override val firmwareVersion: String? get() = brainInfo.firmwareVersion

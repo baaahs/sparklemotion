@@ -3,40 +3,26 @@ package baaahs.ui.components
 import baaahs.*
 import baaahs.net.Network
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
+import react.RState
+import kotlin.properties.Delegates
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class RVisualizerDisplay: VisualizerDisplay, Observable() {
+class RVisualizerDisplay: VisualizerDisplay, Observable<RVisualizerDisplay>() {
     override var renderMs: Int = 0
         set(value) { field = value; onChange() }
 }
 
-class ViewObserver<T>(
-    val name: String,
-    val initialValue: T,
-    private val serializer: KSerializer<T>,
-    val data: MutableMap<String, JsonElement>,
-    val onChange: () -> Unit
-) : ReadWriteProperty<Gadget, T> {
-    override fun getValue(thisRef: Gadget, property: KProperty<*>): T {
-        val value = data[name]
-        return if (value == null) initialValue else {
-            jsonParser.fromJson(serializer, value)
-        }
-    }
-
-    override fun setValue(thisRef: Gadget, property: KProperty<*>, value: T) {
-        if (getValue(thisRef, property) != value) {
-            data[name] = jsonParser.toJson(serializer, value)
-            onChange()
-        }
-    }
+class RNetworkDisplay: NetworkDisplay, Observable<RNetworkDisplay>(), RState {
+    override var packetLossRate: Float by observer(0f)
+    override var packetsReceived: Int by observer(0)
+    override var packetsDropped: Int by observer(0)
 }
 
-class XNetworkDisplay(val map: Map<String, Any?>): NetworkDisplay by ViewObserver
-
-class RNetworkDisplay: NetworkDisplay, Observable() {
+class XNetworkDisplay: NetworkDisplay, Observable<XNetworkDisplay>() {
     override var packetLossRate: Float = 0f
         set(value) { field = value; onChange() }
     override var packetsReceived: Int = 0
@@ -45,7 +31,7 @@ class RNetworkDisplay: NetworkDisplay, Observable() {
         set(value) { field = value; onChange() }
 }
 
-class RPinkyDisplay: PinkyDisplay, Observable() {
+class RPinkyDisplay: PinkyDisplay, Observable<RPinkyDisplay>() {
     override var brainCount: Int = 0
         set(value) { field = value; onChange() }
     override var beat: Int = 0
@@ -67,7 +53,7 @@ class RPinkyDisplay: PinkyDisplay, Observable() {
     override val brains = ObservableMap<BrainId, BrainUiModel>(mutableMapOf())
 }
 
-class RBrainDisplay: BrainDisplay, Observable() {
+class RBrainDisplay: BrainDisplay, Observable<RBrainDisplay>() {
     override var id: String? = null
         set(value) { field = value; onChange() }
     override var surface: Surface? = null
@@ -79,7 +65,7 @@ class RBrainDisplay: BrainDisplay, Observable() {
     }
 }
 
-class ObservableList<T>(private val l: MutableList<T>) : MutableList<T> by l, Observable() {
+class ObservableList<T>(private val l: MutableList<T>) : MutableList<T> by l, Observable<ObservableList<T>>() {
     override fun add(element: T): Boolean = l.add(element).also { onChange() }
     override fun add(index: Int, element: T) = l.add(index, element).also { onChange() }
     override fun addAll(index: Int, elements: Collection<T>): Boolean =
@@ -93,10 +79,11 @@ class ObservableList<T>(private val l: MutableList<T>) : MutableList<T> by l, Ob
     override fun set(index: Int, element: T): T = set(index, element).also { onChange() }
 }
 
-class ObservableMap<K,V>(private val m: MutableMap<K,V>) : MutableMap<K,V> by m, Observable() {
+class ObservableMap<K,V>(private val m: MutableMap<K,V>) : MutableMap<K,V> by m, Observable<ObservableMap<K,V>>() {
     override fun clear() = m.clear().also { onChange() }
     override fun put(key: K, value: V): V? = m.put(key, value).also { onChange() }
     override fun putAll(from: Map<out K, V>) = m.putAll(from).also { onChange() }
     override fun remove(key: K): V? = m.remove(key).also { onChange() }
 }
 
+private val jsonParser = Json(JsonConfiguration.Stable)
