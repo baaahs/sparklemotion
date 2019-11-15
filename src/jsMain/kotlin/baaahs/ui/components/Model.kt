@@ -2,18 +2,14 @@ package baaahs.ui.components
 
 import baaahs.*
 import baaahs.net.Network
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonElement
 import react.RState
-import kotlin.properties.Delegates
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 class RVisualizerDisplay: VisualizerDisplay, Observable<RVisualizerDisplay>() {
     override var renderMs: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
 }
 
 class RNetworkDisplay: NetworkDisplay, Observable<RNetworkDisplay>(), RState {
@@ -24,42 +20,57 @@ class RNetworkDisplay: NetworkDisplay, Observable<RNetworkDisplay>(), RState {
 
 class XNetworkDisplay: NetworkDisplay, Observable<XNetworkDisplay>() {
     override var packetLossRate: Float = 0f
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var packetsReceived: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var packetsDropped: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
 }
 
 class RPinkyDisplay: PinkyDisplay, Observable<RPinkyDisplay>() {
     override var brainCount: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var beat: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var bpm: Float = 0f
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var beatConfidence: Float = 0f
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var selectShow: (Show) -> Unit = {}
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var selectedShow: Show? = null
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var availableShows: List<Show> = emptyList()
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var showFrameMs: Int = 0
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var stats: Pinky.NetworkStats? = null
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override val brains = ObservableMap<BrainId, BrainUiModel>(mutableMapOf())
 }
 
 class RBrainDisplay: BrainDisplay, Observable<RBrainDisplay>() {
     override var id: String? = null
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var surface: Surface? = null
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
     override var onReset: suspend () -> Unit = {}
-        set(value) { field = value; onChange() }
+        set(value) { field = value; onChange()
+        }
 
     override fun haveLink(link: Network.Link) {
     }

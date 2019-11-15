@@ -33,9 +33,9 @@ import kotlin.math.sin
 class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMapperUi.StatusListener {
 
     private var rotate: Boolean
-        get() = getVizRotationEl().checked
+        get() = getVizRotationEl()?.checked ?: false
         set(value) {
-            getVizRotationEl().checked = value
+            getVizRotationEl()?.checked = value
         }
 
     var mapperIsRunning = false
@@ -178,7 +178,7 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         }
     }
 
-    private fun getVizRotationEl() = document.getElementById("vizRotation") as HTMLInputElement
+    private fun getVizRotationEl() = document.getElementById("vizRotation") as HTMLInputElement?
 
     private fun startRender() {
         geom.computeBoundingSphere()
@@ -213,7 +213,7 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         }
 
         if (!mapperIsRunning) {
-            if (getVizRotationEl().checked) {
+            if (getVizRotationEl()?.checked == true) {
                 val rotSpeed = .01
                 val x = camera.position.x
                 val z = camera.position.z

@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.net.Network
-import kotlinx.serialization.UnstableDefault
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -64,18 +63,21 @@ interface VisualizerDisplay {
 }
 
 open class Observable<S> {
-    val map: Map<String, Any?> = hashMapOf()
+    val map: Map<String, Any> = hashMapOf()
 
     private val listeners: MutableSet<() -> Unit> = hashSetOf()
-    private val stateListeners: MutableSet<(S) -> Unit> = hashSetOf()
+    private val stateListeners: MutableSet<(Map<String, Any>) -> Unit> = hashSetOf()
 
     fun addListener(listener: () -> Unit) = listeners.add(listener)
     fun removeListener(listener: () -> Unit) = listeners.remove(listener)
 
-    fun addStateListener(listener: (S) -> Unit) = stateListeners.add(listener)
-    fun removeStateListener(listener: (S) -> Unit) = stateListeners.remove(listener)
+    fun addStateListener(listener: (Map<String, Any>) -> Unit) = stateListeners.add(listener)
+    fun removeStateListener(listener: (Map<String, Any>) -> Unit) = stateListeners.remove(listener)
 
-    protected fun onChange() = listeners.forEach { it() }
+    protected fun onChange(changes: Map<String, Any> = map) {
+        listeners.forEach { it() }
+        stateListeners.forEach { it(changes) }
+    }
 
     fun <T> observer(default: T): ViewObserver<S, T> = ViewObserver(default)
 
@@ -88,10 +90,11 @@ open class Observable<S> {
         }
 
         override fun setValue(thisRef: Observable<S>, property: KProperty<*>, value: T) {
-            if (thisRef.data[property.name] != value) {
+            val name = property.name
+            if (thisRef.data[name] != value) {
                 @Suppress("UNCHECKED_CAST")
-                (thisRef.data as MutableMap<String, T>)[property.name] = value
-                thisRef.onChange()
+                (thisRef.data as MutableMap<String, T>)[name] = value
+                thisRef.onChange(mapOf(name to value as Any))
             }
         }
     }
