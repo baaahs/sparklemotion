@@ -8,6 +8,7 @@ import be.tarsos.dsp.io.jvm.JVMAudioInputStream
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.sound.sampled.*
+import kotlin.concurrent.thread
 
 class JvmSoundAnalyzer : SoundAnalyzer {
     override val frequencies: FloatArray
@@ -52,7 +53,7 @@ class JvmSoundAnalyzer : SoundAnalyzer {
 
             // 91hz/12 bits so it fits into an 8k buffer
             val constantQ = ConstantQ(sampleRate, 91f, 20000f, 12f)
-            logger.debug { "FFT length: ${constantQ.ffTlength}" }
+            logger.debug { "FFT length: ${constantQ.ffTlength}; bins: ${constantQ.numberOfOutputBands}" }
             val dataLineInfo = DataLine.Info(TargetDataLine::class.java, format)
             val line: TargetDataLine
             line = mixer.getLine(dataLineInfo) as TargetDataLine
@@ -82,8 +83,13 @@ class JvmSoundAnalyzer : SoundAnalyzer {
                 override fun processingFinished() {
                 }
             })
-            thread = Thread(dispatcher, "JvmMediaDevices Audio Processor")
-            thread.start()
+            thread = thread(name = "JvmMediaDevices Audio Processor", isDaemon = true) {
+                try {
+                    dispatcher.run()
+                } catch (t: Throwable) {
+                    logger.error(t) { "audio processing failed" }
+                }
+            }
         }
 
         fun finalize() {

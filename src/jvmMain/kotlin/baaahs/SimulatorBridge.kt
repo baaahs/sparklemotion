@@ -58,10 +58,10 @@ object SimulatorBridge {
 
     fun sendFrequencies(connection: WebSocketServerSession) {
         connection.outgoing.offer(
-            toWsFrame(
+            Text(toWsMessage(
                 "soundFrequencies",
                 json.toJson(Float.serializer().list, soundAnalyzer.frequencies.toList())
-            )
+            ))
         )
     }
 
@@ -86,15 +86,15 @@ object SimulatorBridge {
     }
 
     private fun sendToClients(command: String, json: JsonElement) {
-        val frame = toWsFrame(command, json)
-        webSocketConnections.forEach { it.outgoing.offer(frame) }
+        val frame = toWsMessage(command, json)
+        webSocketConnections.forEach { it.outgoing.offer(Text(frame)) }
     }
 
-    private fun toWsFrame(command: String, json: JsonElement): Text {
-        return Text(SimulatorBridge.json.stringify(JsonElementSerializer, jsonArray {
+    private fun toWsMessage(command: String, json: JsonElement): String {
+        return SimulatorBridge.json.stringify(JsonElementSerializer, jsonArray {
             +command
             +json
-        }))
+        })
     }
 }
 
