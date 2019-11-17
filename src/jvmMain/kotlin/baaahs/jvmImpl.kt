@@ -54,7 +54,7 @@ class RealFs(private val basePath: Path) : Fs {
     }
 }
 
-actual fun logMessage(level: String, message: String, exception: Exception?) {
+actual fun logMessage(level: String, message: String, exception: Throwable?) {
     when (level) {
         "ERROR" -> println("$level: $message")
         "WARN" -> println("$level: $message")
