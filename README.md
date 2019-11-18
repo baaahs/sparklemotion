@@ -26,24 +26,28 @@
   - `npm run build`
 * Open `src/jsMain/resources/index.html` using "Open in Browser -> Chrome" from IntelliJ context menu
 
-## Local build
+### Simulator Mode
+
+In simulator mode, most of Sparkle Motion runs within a web browser.
 
 Run this in one shell window:
 
-```sh
-./gradlew -t jsJar
-```
+    ./gradlew -t jsJar
 
-Run this in a second shell window and go to http://localhost:8001/index.html :
+Run this in a second shell window and go to http://localhost:8000/:
 
-```sh
-npm run start:dev
-```
+    npm run start:dev
 
-Not that at least one of the above steps seems to perform a somewhat important build process
-related to making the UI available. Presuming you have run jsJar and start:dev at least once
-and poked at the resulting simulator UI, you should be able to do the following to run Pinky
-in *standalone JVM mode*. This is required if you want to talk to actual Brain hardware.
+A few bits of Sparkle Motion can't run inside a browser, specifically beat detection and sound analysis.
+To enable those, run this:
+
+    ./gradlew runBridgeJvm
+
+### Production Mode
+
+In production mode, Sparkle Motion runs in a JVM process and talks to real hardware.
+
+To start it, run:
 
     ./gradlew runPinkyJvm
 
@@ -52,10 +56,6 @@ If you don't have a Brain running locally, do this too:
     ./gradlew runBrainJvm
     
 When running in this mode you should be able to access the UI at http://localhost:8004 
-
-Note that this is different from the URL above (it doesn't have the `index.html` part). If you
-load the index page you'll be loading a full local simulation into your browser and won't be talking
-to the Pinky instance which is actually (presumably) talking to the Brains.
 
 ## CI & Deployment
 
