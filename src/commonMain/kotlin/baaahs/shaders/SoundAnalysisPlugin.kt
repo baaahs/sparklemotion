@@ -4,6 +4,8 @@ import baaahs.SoundAnalyzer
 import baaahs.glsl.*
 import baaahs.glsl.Program
 import com.danielgergely.kgl.*
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) : GlslPlugin {
     private var textureBuffer = FloatArray(0)
@@ -22,9 +24,13 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
                 // Shift historical data down one row.
                 textureBuffer.copyInto(textureBuffer, analysisBufferSize, 0, expectedBufferSize - analysisBufferSize)
 
+                val octaves = ceil(analysisBufferSize / 12f).roundToInt()
+
                 // Copy this sample's data into the buffer.
                 analysis.magnitudes.forEachIndexed { index, magitude ->
-                    textureBuffer[index] = magitude * analysisBufferSize
+                    val destIndex = index % 12 * octaves + index / 12
+//                    val destIndex = index
+                    textureBuffer[destIndex] = magitude * analysisBufferSize
                 }
             }
         })
