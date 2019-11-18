@@ -3,7 +3,6 @@ package baaahs.glsl
 import baaahs.shaders.GlslShader
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GLCapabilities
 
 class LwjglGlslManager : GlslManager {
@@ -13,7 +12,7 @@ class LwjglGlslManager : GlslManager {
      * This is initialization stuff that's required on the main thread.
      */
     init {
-        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
+//        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
         check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
         GLFW.glfwDefaultWindowHints()
@@ -36,7 +35,8 @@ class LwjglGlslManager : GlslManager {
 
     override fun createRenderer(
         fragShader: String,
-        adjustableValues: List<GlslShader.AdjustableValue>
+        adjustableValues: List<GlslShader.AdjustableValue>,
+        plugins: List<GlslPlugin>
     ): GlslRenderer {
         val contextSwitcher = object : GlslRenderer.ContextSwitcher {
             override fun <T> inContext(fn: () -> T): T {
@@ -53,7 +53,7 @@ class LwjglGlslManager : GlslManager {
 
         val kgl = KglLwjgl()
         return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core")
+            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core", plugins)
         }
     }
 

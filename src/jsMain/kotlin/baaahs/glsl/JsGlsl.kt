@@ -7,14 +7,19 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 actual object GlslBase {
+    actual val plugins: MutableList<GlslPlugin> = mutableListOf()
     actual val manager: GlslManager by lazy { JsGlslManager() }
 
     class JsGlslManager : GlslManager {
-        override fun createRenderer(fragShader: String, adjustableValues: List<GlslShader.AdjustableValue>): GlslRenderer {
+        override fun createRenderer(
+            fragShader: String,
+            adjustableValues: List<GlslShader.AdjustableValue>,
+            plugins: List<GlslPlugin>
+        ): GlslRenderer {
             val contextSwitcher = object : GlslRenderer.ContextSwitcher {
                 override fun <T> inContext(fn: () -> T): T = fn()
             }
-            return GlslRenderer(createContext(), contextSwitcher, fragShader, adjustableValues, "300 es")
+            return GlslRenderer(createContext(), contextSwitcher, fragShader, adjustableValues, "300 es", plugins)
         }
 
         private fun createContext(): KglJs {
