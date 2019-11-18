@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SoundAnalyzer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">SoundAnalyzer</a><br/>
+<br/>
+<h1>SoundAnalyzer</h1>
+<code><span class="keyword">interface </span><span class="identifier">SoundAnalyzer</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-analysis/index.html">Analysis</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Analysis</span></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="-analysis-listener/index.html">AnalysisListener</a></p>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">AnalysisListener</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="frequencies.html">frequencies</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">frequencies</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="listen.html">listen</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.SoundAnalyzer$listen(baaahs.SoundAnalyzer.AnalysisListener)/analysisListener">analysisListener</span><span class="symbol">:</span>&nbsp;<a href="-analysis-listener/index.html"><span class="identifier">SoundAnalyzer.AnalysisListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unlisten.html">unlisten</a></p>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unlisten</span><span class="symbol">(</span><span class="identifier" id="baaahs.SoundAnalyzer$unlisten(baaahs.SoundAnalyzer.AnalysisListener)/analysisListener">analysisListener</span><span class="symbol">:</span>&nbsp;<a href="-analysis-listener/index.html"><span class="identifier">SoundAnalyzer.AnalysisListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="../../baaahs.sim/-bridge-client/-bridged-sound-analyzer/index.html">BridgedSoundAnalyzer</a></p>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BridgedSoundAnalyzer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">SoundAnalyzer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="../-jvm-sound-analyzer/index.html">JvmSoundAnalyzer</a></p>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JvmSoundAnalyzer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">SoundAnalyzer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

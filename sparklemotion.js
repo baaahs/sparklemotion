@@ -212,6 +212,7 @@
   var Array_0 = Array;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
+  var FloatBuffer_init_0 = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_za3lpa$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
@@ -282,6 +283,7 @@
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var contentHashCode = Kotlin.arrayHashCode;
+  var toFloatArray_0 = Kotlin.kotlin.collections.toFloatArray_zwy31$;
   var toMap = Kotlin.kotlin.collections.toMap_6hr0sd$;
   var Quaternion = THREE.Quaternion;
   var Line3 = THREE.Line3;
@@ -3109,7 +3111,7 @@
             var e = this.exception_0;
             if (Kotlin.isType(e, Mapper$TimeoutException)) {
               this.$this.$outer.mapperUi_0.showMessage_61zpoe$('Timed out: ' + toString_0(e.message));
-              Mapper$Companion_getInstance().logger.error_nwdkmo$('Timed out', e);
+              Mapper$Companion_getInstance().logger.error_ldd2zj$('Timed out', e);
             }
              else
               throw e;
@@ -5695,7 +5697,7 @@
     simpleName: 'MovingHeadDisplay',
     interfaces: []
   };
-  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, prerenderPixels) {
+  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, soundAnalyzer, prerenderPixels) {
     Pinky$Companion_getInstance();
     if (prerenderPixels === void 0)
       prerenderPixels = false;
@@ -5715,7 +5717,7 @@
     this.mappingResults_0 = this.storage_0.loadMappingData_ld9ij$(this.model);
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.httpServer = this.link_0.startHttpServer_za3lpa$(8004);
-    this.beatProvider_0 = new Pinky$PinkyBeatDisplayer(this, this.beatSource);
+    this.beatDisplayer_0 = new Pinky$PinkyBeatDisplayer(this, this.beatSource);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = first(this.shows);
     var $receiver = new PubSub$Server(this.httpServer);
@@ -5745,6 +5747,7 @@
     }
     tmp$.publish_oiz02e$(tmp$_0, destination, Pinky_init$lambda_0);
     this.selectedShowChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.shows.get_za3lpa$(0).name, Pinky_init$lambda_1(this));
+    GlslBase_getInstance().plugins.add_11rb$(new SoundAnalysisPlugin(soundAnalyzer));
     this.poolingRenderContext = new Pinky$PoolingRenderContext();
     this.lastSentAt = L0;
   }
@@ -5782,7 +5785,7 @@
         switch (this.state_0) {
           case 0:
             this.state_0 = 2;
-            this.result_0 = this.local$this$Pinky.beatProvider_0.run(this);
+            this.result_0 = this.local$this$Pinky.beatDisplayer_0.run(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -5906,7 +5909,7 @@
             this.exceptionState_0 = 5;
             var e = this.exception_0;
             if (Kotlin.isType(e, Exception)) {
-              Pinky$Companion_getInstance().logger.error_nwdkmo$('Error rendering frame for ' + this.local$this$Pinky.selectedShow_0.name, e);
+              Pinky$Companion_getInstance().logger.error_ldd2zj$('Error rendering frame for ' + this.local$this$Pinky.selectedShow_0.name, e);
               this.state_0 = 2;
               this.result_0 = delay(L1000, this);
               if (this.result_0 === COROUTINE_SUSPENDED)
@@ -6135,7 +6138,7 @@
           var $receiver = this$Pinky.pendingBrainInfos_0;
           var key = closure$brainId;
           $receiver.put_xwzc9p$(key, brainInfo);
-          Pinky$Companion_getInstance().logger.error_nwdkmo$('Error sending to ' + closure$brainId + ', will take offline', e);
+          Pinky$Companion_getInstance().logger.error_ldd2zj$('Error sending to ' + closure$brainId + ', will take offline', e);
         }
          else
           throw e;
@@ -8264,6 +8267,29 @@
     simpleName: 'ShowRunner',
     interfaces: []
   };
+  function SoundAnalyzer() {
+  }
+  function SoundAnalyzer$AnalysisListener() {
+  }
+  SoundAnalyzer$AnalysisListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'AnalysisListener',
+    interfaces: []
+  };
+  function SoundAnalyzer$Analysis(frequencies, magnitudes) {
+    this.frequencies = frequencies;
+    this.magnitudes = magnitudes;
+  }
+  SoundAnalyzer$Analysis.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Analysis',
+    interfaces: []
+  };
+  SoundAnalyzer.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'SoundAnalyzer',
+    interfaces: []
+  };
   function SparkleMotion() {
     SparkleMotion_instance = this;
     this.MAX_PIXEL_COUNT = 2048;
@@ -9986,12 +10012,31 @@
   }
   function GlslManager() {
   }
+  GlslManager.prototype.createRenderer_miqmvs$ = function (fragShader, adjustableValues, plugins, callback$default) {
+    if (plugins === void 0)
+      plugins = GlslBase_getInstance().plugins;
+    return callback$default ? callback$default(fragShader, adjustableValues, plugins) : this.createRenderer_miqmvs$$default(fragShader, adjustableValues, plugins);
+  };
   GlslManager.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'GlslManager',
     interfaces: []
   };
-  function GlslRenderer(gl, contextSwitcher, fragShader, adjustableValues, glslVersion) {
+  function GlslPlugin() {
+  }
+  function GlslPlugin$RendererPlugin() {
+  }
+  GlslPlugin$RendererPlugin.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'RendererPlugin',
+    interfaces: []
+  };
+  GlslPlugin.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'GlslPlugin',
+    interfaces: []
+  };
+  function GlslRenderer(gl, contextSwitcher, fragShader, adjustableValues, glslVersion, plugins) {
     this.gl = gl;
     this.contextSwitcher_8zrvqj$_0 = contextSwitcher;
     this.fragShader = fragShader;
@@ -10002,9 +10047,16 @@
     this.nextPixelOffset = 0;
     this.nextSurfaceOffset = 0;
     this.glslSurfaces = ArrayList_init();
-    this.uvCoordTextureIndex = 0;
-    this.surfaceOrdinalTextureIndex = 1;
-    this.nextTextureIndex = 2;
+    this.nextTextureId_nzaz14$_0 = 0;
+    this.uvCoordTextureId_c5rmnd$_0 = this.getTextureId();
+    var destination = ArrayList_init_0(collectionSizeOrDefault(plugins, 10));
+    var tmp$;
+    tmp$ = plugins.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(item.forRenderer_slafvx$(this));
+    }
+    this.rendererPlugins_8k6ftu$_0 = destination;
     this.arrangement = null;
     var result = GlslRenderer$program$lambda(this)();
     checkForGlError(this.gl);
@@ -10026,22 +10078,45 @@
     checkForGlError(this.gl);
     this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces);
   }
+  GlslRenderer.prototype.getTextureId = function () {
+    var tmp$;
+    if (!(this.nextTextureId_nzaz14$_0 <= 31)) {
+      var message = 'too many textures!';
+      throw IllegalStateException_init(message.toString());
+    }
+    return tmp$ = this.nextTextureId_nzaz14$_0, this.nextTextureId_nzaz14$_0 = tmp$ + 1 | 0, tmp$;
+  };
   GlslRenderer.prototype.createShaderProgram_66d3yg$_0 = function () {
     var program = Program$Companion_getInstance().create_gz3vex$(this.gl);
     var vertexShaderSource = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + 'precision lowp float;' + '\n' + '\n' + '// xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + 'in vec2 Vertex;' + '\n' + '\n' + 'const vec2 scale = vec2(0.5, 0.5);' + '\n' + '\n' + 'void main()' + '\n' + '{' + '\n' + '    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '    gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '}' + '\n';
     var vertexShader = Shader$Companion_getInstance_0().createVertexShader_oiaex5$(this.gl, vertexShaderSource);
     program.attachShader_6f59td$(vertexShader);
-    var tmp$ = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + 'uniform float sm_beat;' + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
-    var $receiver = this.fragShader;
+    var tmp$ = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + 'uniform float sm_beat;' + '\n';
+    var $receiver = this.rendererPlugins_8k6ftu$_0;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination.add_11rb$(item.glslPreamble);
+    }
+    var tmp$_1 = tmp$ + joinToString(destination, '\n') + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
+    var $receiver_0 = this.fragShader;
     var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
     var replacement = 'void sm_main(vec2 sm_pixelCoord)';
-    var src = tmp$ + replace(replace(regex.replace_x2uqeu$($receiver, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
+    var src = tmp$_1 + replace(replace(regex.replace_x2uqeu$($receiver_0, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
     println(src);
     var fragmentShader = Shader$Companion_getInstance_0().createFragmentShader_oiaex5$(this.gl, src);
     program.attachShader_6f59td$(fragmentShader);
     if (!program.link()) {
       var infoLog = program.getInfoLog();
       throw RuntimeException_init('ProgramInfoLog: ' + toString_0(infoLog));
+    }
+    var tmp$_2;
+    tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
+      element.afterCompile_hwc06w$(program);
     }
     return program;
   };
@@ -10116,8 +10191,14 @@
     var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
     (tmp$ = this.resolutionUniform_bo22rx$_0) != null ? (tmp$.set_dleff0$(1.0, 1.0), Unit) : null;
     (tmp$_0 = this.timeUniform_2ukqek$_0) != null ? (tmp$_0.set_mx4ult$(thisTime), Unit) : null;
-    this.arrangement.bindUvCoordTexture_54j4ym$(0, ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+    this.arrangement.bindUvCoordTexture_i9pfe0$(ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
     this.arrangement.bindUniforms();
+    var tmp$_2;
+    tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
+      element.beforeRender();
+    }
     this.gl.viewport_tjonv8$(0, 0, this.get_bufWidth_s8ev3n$(this.pixelCount), this.get_bufHeight_s8ev3n$(this.pixelCount));
     this.gl.clear_za3lpa$(16640);
     this.quad_eobc7m$_0.render_8be2vx$();
@@ -10154,7 +10235,7 @@
       this.glslSurfaces.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
       this.surfacesToAdd_vfxuyj$_0.clear();
       this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces);
-      this.arrangement.bindUvCoordTexture_54j4ym$(this.uvCoordTextureIndex, ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+      this.arrangement.bindUvCoordTexture_i9pfe0$(ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
     }
@@ -10242,7 +10323,7 @@
   };
   function GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this$GlslRenderer) {
     return function () {
-      this$GlslRenderer.gl.activeTexture_za3lpa$(33984);
+      this$GlslRenderer.gl.activeTexture_za3lpa$(33984 + this$GlslRenderer.uvCoordTextureId_c5rmnd$_0 | 0);
       return Unit;
     };
   }
@@ -10270,7 +10351,7 @@
       return Unit;
     };
   }
-  GlslRenderer$Arrangement.prototype.bindUvCoordTexture_54j4ym$ = function (textureIndex, uvCoordsLocation) {
+  GlslRenderer$Arrangement.prototype.bindUvCoordTexture_i9pfe0$ = function (uvCoordsLocation) {
     var $this = this.$outer;
     var result = GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this.$outer)();
     checkForGlError($this.gl);
@@ -10286,7 +10367,7 @@
     var $this_3 = this.$outer;
     var result_3 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this.$outer, this)();
     checkForGlError($this_3.gl);
-    uvCoordsLocation.set_za3lpa$(textureIndex);
+    uvCoordsLocation.set_za3lpa$(this.$outer.uvCoordTextureId_c5rmnd$_0);
   };
   GlslRenderer$Arrangement.prototype.getPixel_za3lpa$ = function (pixelIndex) {
     var offset = pixelIndex * 4 | 0;
@@ -10959,23 +11040,71 @@
     this.gl_0 = gl;
     this.uniformLocation = uniformLocation;
   }
+  function Uniform$set$lambda(this$Uniform, closure$x) {
+    return function () {
+      this$Uniform.gl_0.uniform1i_wn2dyp$(this$Uniform.uniformLocation, closure$x);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_za3lpa$ = function (x) {
-    this.gl_0.uniform1i_wn2dyp$(this.uniformLocation, x);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda(this, x)();
+    checkForGlError($receiver);
   };
+  function Uniform$set$lambda_0(this$Uniform, closure$x, closure$y) {
+    return function () {
+      this$Uniform.gl_0.uniform2i_47d3mp$(this$Uniform.uniformLocation, closure$x, closure$y);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_vux9f0$ = function (x, y) {
-    this.gl_0.uniform2i_47d3mp$(this.uniformLocation, x, y);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda_0(this, x, y)();
+    checkForGlError($receiver);
   };
+  function Uniform$set$lambda_1(this$Uniform, closure$x, closure$y, closure$z) {
+    return function () {
+      this$Uniform.gl_0.uniform3i_ab551r$(this$Uniform.uniformLocation, closure$x, closure$y, closure$z);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_qt1dr2$ = function (x, y, z) {
-    this.gl_0.uniform3i_ab551r$(this.uniformLocation, x, y, z);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda_1(this, x, y, z)();
+    checkForGlError($receiver);
   };
+  function Uniform$set$lambda_2(this$Uniform, closure$x) {
+    return function () {
+      this$Uniform.gl_0.uniform1f_rvcsvw$(this$Uniform.uniformLocation, closure$x);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_mx4ult$ = function (x) {
-    this.gl_0.uniform1f_rvcsvw$(this.uniformLocation, x);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda_2(this, x)();
+    checkForGlError($receiver);
   };
+  function Uniform$set$lambda_3(this$Uniform, closure$x, closure$y) {
+    return function () {
+      this$Uniform.gl_0.uniform2f_zcqyrj$(this$Uniform.uniformLocation, closure$x, closure$y);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_dleff0$ = function (x, y) {
-    this.gl_0.uniform2f_zcqyrj$(this.uniformLocation, x, y);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda_3(this, x, y)();
+    checkForGlError($receiver);
   };
+  function Uniform$set$lambda_4(this$Uniform, closure$x, closure$y, closure$z) {
+    return function () {
+      this$Uniform.gl_0.uniform3f_ig0gt8$(this$Uniform.uniformLocation, closure$x, closure$y, closure$z);
+      return Unit;
+    };
+  }
   Uniform.prototype.set_y2kzbl$ = function (x, y, z) {
-    this.gl_0.uniform3f_ig0gt8$(this.uniformLocation, x, y, z);
+    var $receiver = this.gl_0;
+    var result = Uniform$set$lambda_4(this, x, y, z)();
+    checkForGlError($receiver);
   };
   function Uniform$Companion() {
     Uniform$Companion_instance = this;
@@ -14190,7 +14319,7 @@
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(this.glslProgram_0, this.adjustableValues);
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_miqmvs$(this.glslProgram_0, this.adjustableValues);
     var glslSurface = glslRenderer.addSurface_173pey$(surface, this.uvTranslator_0);
     return new GlslShader$Renderer(glslSurface);
   };
@@ -14210,7 +14339,7 @@
     interfaces: [Shader$Renderer]
   };
   function GlslShader$PooledRenderer(glslProgram, adjustableValues) {
-    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_3kbl32$(glslProgram, adjustableValues);
+    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_miqmvs$(glslProgram, adjustableValues);
   }
   GlslShader$PooledRenderer.prototype.preDraw = function () {
     this.glslRenderer.draw();
@@ -15365,6 +15494,151 @@
     kind: Kind_CLASS,
     simpleName: 'SolidShader',
     interfaces: [Shader]
+  };
+  function SoundAnalysisPlugin(soundAnalyzer, historySize) {
+    if (historySize === void 0)
+      historySize = 300;
+    this.soundAnalyzer = soundAnalyzer;
+    this.historySize = historySize;
+    this.textureBuffer_0 = new Float32Array(0);
+    this.textureGlBuffer_0 = FloatBuffer_init_0(0);
+    this.soundAnalyzer.listen_iuqfe5$(new SoundAnalysisPlugin_init$ObjectLiteral(this));
+  }
+  SoundAnalysisPlugin.prototype.forRenderer_slafvx$ = function (renderer) {
+    return new SoundAnalysisPlugin$RendererPlugin(this, renderer);
+  };
+  function SoundAnalysisPlugin$RendererPlugin($outer, renderer) {
+    this.$outer = $outer;
+    this.renderer = renderer;
+    this.glslPreamble_1zthlg$_0 = 'uniform sampler2D sm_soundAnalysis;';
+    this.gl_0 = this.renderer.gl;
+    var $receiver = this.gl_0;
+    var result = SoundAnalysisPlugin$RendererPlugin$texture$lambda(this)();
+    checkForGlError($receiver);
+    this.texture_0 = result;
+    this.textureId_0 = this.renderer.getTextureId();
+    this.soundAnalysisUniform_0 = null;
+  }
+  Object.defineProperty(SoundAnalysisPlugin$RendererPlugin.prototype, 'glslPreamble', {
+    get: function () {
+      return this.glslPreamble_1zthlg$_0;
+    }
+  });
+  function SoundAnalysisPlugin$RendererPlugin$afterCompile$lambda(closure$program) {
+    return function () {
+      return Uniform$Companion_getInstance().find_m36rd6$(closure$program, 'sm_soundAnalysis');
+    };
+  }
+  SoundAnalysisPlugin$RendererPlugin.prototype.afterCompile_hwc06w$ = function (program) {
+    var $receiver = this.gl_0;
+    var result = SoundAnalysisPlugin$RendererPlugin$afterCompile$lambda(program)();
+    checkForGlError($receiver);
+    this.soundAnalysisUniform_0 = result;
+  };
+  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda(this$RendererPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.activeTexture_za3lpa$(33984 + this$RendererPlugin.textureId_0 | 0);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_0(this$RendererPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.bindTexture_6t2rgq$(3553, this$RendererPlugin.texture_0);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_1(this$RendererPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.texParameteri_qt1dr2$(3553, 10241, 9728);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_2(this$RendererPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.texParameteri_qt1dr2$(3553, 10240, 9728);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_3(this$RendererPlugin, this$SoundAnalysisPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.texImage2D_e7c6np$(3553, 0, 33326, this$SoundAnalysisPlugin.soundAnalyzer.frequencies.length, this$SoundAnalysisPlugin.historySize, 0, 6403, 5126, this$SoundAnalysisPlugin.textureGlBuffer_0);
+      return Unit;
+    };
+  }
+  SoundAnalysisPlugin$RendererPlugin.prototype.beforeRender = function () {
+    var analysisBufferSize = this.$outer.soundAnalyzer.frequencies.length;
+    var expectedBufferSize = Kotlin.imul(analysisBufferSize, this.$outer.historySize);
+    var uniform = this.soundAnalysisUniform_0;
+    if (uniform == null || this.$outer.textureBuffer_0.length !== expectedBufferSize)
+      return;
+    this.$outer.textureGlBuffer_0.position = 0;
+    this.$outer.textureGlBuffer_0.put_q3cr5i$(this.$outer.textureBuffer_0);
+    var $receiver = this.gl_0;
+    var result = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda(this)();
+    checkForGlError($receiver);
+    var $receiver_0 = this.gl_0;
+    var result_0 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_0(this)();
+    checkForGlError($receiver_0);
+    var $receiver_1 = this.gl_0;
+    var result_1 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_1(this)();
+    checkForGlError($receiver_1);
+    var $receiver_2 = this.gl_0;
+    var result_2 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_2(this)();
+    checkForGlError($receiver_2);
+    var $receiver_3 = this.gl_0;
+    var result_3 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_3(this, this.$outer)();
+    checkForGlError($receiver_3);
+    uniform.set_za3lpa$(this.textureId_0);
+  };
+  function SoundAnalysisPlugin$RendererPlugin$finalize$lambda(this$RendererPlugin) {
+    return function () {
+      this$RendererPlugin.gl_0.deleteTexture_za3rmp$(this$RendererPlugin.texture_0);
+      return Unit;
+    };
+  }
+  SoundAnalysisPlugin$RendererPlugin.prototype.finalize = function () {
+    var $receiver = this.gl_0;
+    var result = SoundAnalysisPlugin$RendererPlugin$finalize$lambda(this)();
+    checkForGlError($receiver);
+  };
+  function SoundAnalysisPlugin$RendererPlugin$texture$lambda(this$RendererPlugin) {
+    return function () {
+      return this$RendererPlugin.gl_0.createTexture();
+    };
+  }
+  SoundAnalysisPlugin$RendererPlugin.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RendererPlugin',
+    interfaces: [GlslPlugin$RendererPlugin]
+  };
+  function SoundAnalysisPlugin_init$ObjectLiteral(this$SoundAnalysisPlugin) {
+    this.this$SoundAnalysisPlugin = this$SoundAnalysisPlugin;
+  }
+  SoundAnalysisPlugin_init$ObjectLiteral.prototype.onSample_6x9e93$ = function (analysis) {
+    var analysisBufferSize = this.this$SoundAnalysisPlugin.soundAnalyzer.frequencies.length;
+    var expectedBufferSize = Kotlin.imul(analysisBufferSize, this.this$SoundAnalysisPlugin.historySize);
+    if (this.this$SoundAnalysisPlugin.textureBuffer_0.length !== expectedBufferSize) {
+      this.this$SoundAnalysisPlugin.textureBuffer_0 = new Float32Array(expectedBufferSize);
+      this.this$SoundAnalysisPlugin.textureGlBuffer_0 = FloatBuffer_init_0(expectedBufferSize);
+    }
+    arrayCopy(this.this$SoundAnalysisPlugin.textureBuffer_0, this.this$SoundAnalysisPlugin.textureBuffer_0, analysisBufferSize, 0, expectedBufferSize - analysisBufferSize | 0);
+    var $receiver = analysis.magnitudes;
+    this.this$SoundAnalysisPlugin;
+    var tmp$, tmp$_0;
+    var index = 0;
+    for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
+      var item = $receiver[tmp$];
+      this.this$SoundAnalysisPlugin.textureBuffer_0[tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0] = item * analysisBufferSize;
+    }
+  };
+  SoundAnalysisPlugin_init$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [SoundAnalyzer$AnalysisListener]
+  };
+  SoundAnalysisPlugin.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SoundAnalysisPlugin',
+    interfaces: [GlslPlugin]
   };
   function SparkleShader() {
     SparkleShader$Companion_getInstance();
@@ -17365,10 +17639,10 @@
   Logger.prototype.error_h4ejuu$ = function (message) {
     this.log_0('ERROR', message());
   };
-  Logger.prototype.error_nwdkmo$ = function (message, exception) {
+  Logger.prototype.error_ldd2zj$ = function (message, exception) {
     this.log_1('ERROR', message, exception);
   };
-  Logger.prototype.error_1wn3dw$ = function (exception, message) {
+  Logger.prototype.error_l35kib$ = function (exception, message) {
     this.log_1('ERROR', message(), exception);
   };
   function Logger$Companion() {
@@ -17635,6 +17909,8 @@
       return this.beat_o13evy$_0;
     },
     set: function (value) {
+      if (value < 0 || value > 3)
+        return;
       try {
         clear_0(this.beats_0.get_za3lpa$(this.beat_o13evy$_0).classList);
         this.beats_0.get_za3lpa$(value).classList.add('selected');
@@ -19207,8 +19483,8 @@
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer());
     this.fs_0 = new FakeFs();
-    this.beatSource_0 = new BridgedBeatSource(window.location.hostname + ':' + '8006');
-    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.beatSource_0, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), true);
+    this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
+    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), this.bridgeClient_0.soundAnalyzer, true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -19586,159 +19862,6 @@
     simpleName: 'JsClock',
     interfaces: [Clock_0]
   };
-  function BridgedBeatSource(url) {
-    this.url_0 = url;
-    this.logger_0 = new Logger('BridgedBeatSource');
-    this.json_0 = new Json(JsonConfiguration.Companion.Stable);
-    this.defaultBpm_0 = new BeatData(0.0, 500, void 0, 1.0);
-    this.l_0 = window.location;
-    this.webSocket_hsvad5$_0 = this.webSocket_hsvad5$_0;
-    this.beatData_0 = new BeatData(0.0, 0, void 0, 0.0);
-    this.everConnected_0 = false;
-    this.connect_0();
-  }
-  Object.defineProperty(BridgedBeatSource.prototype, 'webSocket_0', {
-    get: function () {
-      if (this.webSocket_hsvad5$_0 == null)
-        return throwUPAE('webSocket');
-      return this.webSocket_hsvad5$_0;
-    },
-    set: function (webSocket) {
-      this.webSocket_hsvad5$_0 = webSocket;
-    }
-  });
-  BridgedBeatSource.prototype.getBeatData = function () {
-    return this.beatData_0;
-  };
-  function BridgedBeatSource$connect$lambda$lambda() {
-    return 'Connected to simulator bridge.';
-  }
-  function BridgedBeatSource$connect$lambda(this$BridgedBeatSource) {
-    return function (it) {
-      this$BridgedBeatSource.everConnected_0 = true;
-      this$BridgedBeatSource.logger_0.info_h4ejuu$(BridgedBeatSource$connect$lambda$lambda);
-      return Unit;
-    };
-  }
-  function BridgedBeatSource$connect$lambda$lambda_0(closure$buf) {
-    return function () {
-      return 'Received ' + closure$buf;
-    };
-  }
-  function BridgedBeatSource$connect$lambda_0(this$BridgedBeatSource) {
-    return function (it) {
-      var tmp$;
-      var buf = typeof (tmp$ = it.data) === 'string' ? tmp$ : throwCCE();
-      this$BridgedBeatSource.logger_0.debug_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_0(buf));
-      this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.json_0.parse_awif5v$(BeatData$Companion_getInstance().serializer(), buf);
-      return null;
-    };
-  }
-  function BridgedBeatSource$connect$lambda$lambda_1(closure$it) {
-    return function () {
-      return "Couldn't connect to simulator bridge; falling back to 120bpm: " + closure$it;
-    };
-  }
-  function BridgedBeatSource$connect$lambda$lambda_2(closure$it) {
-    return function () {
-      return 'WebSocket error: ' + closure$it;
-    };
-  }
-  function BridgedBeatSource$connect$lambda_1(this$BridgedBeatSource) {
-    return function (it) {
-      if (!this$BridgedBeatSource.everConnected_0) {
-        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_1(it));
-        this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.defaultBpm_0;
-      }
-       else {
-        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_2(it));
-      }
-      return Unit;
-    };
-  }
-  function BridgedBeatSource$connect$lambda$lambda_3(closure$it) {
-    return function () {
-      return 'Lost connection to simulator bridge; falling back to 120bpm: ' + closure$it;
-    };
-  }
-  function BridgedBeatSource$connect$lambda$lambda$lambda() {
-    return 'Attempting to reconnect to simulator bridge...';
-  }
-  function Coroutine$BridgedBeatSource$connect$lambda$lambda(this$BridgedBeatSource_0, $receiver_0, controller, continuation_0) {
-    CoroutineImpl.call(this, continuation_0);
-    this.$controller = controller;
-    this.exceptionState_0 = 1;
-    this.local$this$BridgedBeatSource = this$BridgedBeatSource_0;
-  }
-  Coroutine$BridgedBeatSource$connect$lambda$lambda.$metadata$ = {
-    kind: Kotlin.Kind.CLASS,
-    simpleName: null,
-    interfaces: [CoroutineImpl]
-  };
-  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
-  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype.constructor = Coroutine$BridgedBeatSource$connect$lambda$lambda;
-  Coroutine$BridgedBeatSource$connect$lambda$lambda.prototype.doResume = function () {
-    do
-      try {
-        switch (this.state_0) {
-          case 0:
-            this.state_0 = 2;
-            this.result_0 = delay(L1000, this);
-            if (this.result_0 === COROUTINE_SUSPENDED)
-              return COROUTINE_SUSPENDED;
-            continue;
-          case 1:
-            throw this.exception_0;
-          case 2:
-            this.local$this$BridgedBeatSource.logger_0.info_h4ejuu$(BridgedBeatSource$connect$lambda$lambda$lambda);
-            return this.local$this$BridgedBeatSource.connect_0(), Unit;
-          default:this.state_0 = 1;
-            throw new Error('State Machine Unreachable execution');
-        }
-      }
-       catch (e) {
-        if (this.state_0 === 1) {
-          this.exceptionState_0 = this.state_0;
-          throw e;
-        }
-         else {
-          this.state_0 = this.exceptionState_0;
-          this.exception_0 = e;
-        }
-      }
-     while (true);
-  };
-  function BridgedBeatSource$connect$lambda$lambda_4(this$BridgedBeatSource_0) {
-    return function ($receiver_0, continuation_0, suspended) {
-      var instance = new Coroutine$BridgedBeatSource$connect$lambda$lambda(this$BridgedBeatSource_0, $receiver_0, this, continuation_0);
-      if (suspended)
-        return instance;
-      else
-        return instance.doResume(null);
-    };
-  }
-  function BridgedBeatSource$connect$lambda_2(this$BridgedBeatSource) {
-    return function (it) {
-      if (this$BridgedBeatSource.everConnected_0) {
-        this$BridgedBeatSource.logger_0.error_h4ejuu$(BridgedBeatSource$connect$lambda$lambda_3(it));
-        this$BridgedBeatSource.beatData_0 = this$BridgedBeatSource.defaultBpm_0;
-        launch(coroutines.GlobalScope, void 0, void 0, BridgedBeatSource$connect$lambda$lambda_4(this$BridgedBeatSource));
-      }
-      return Unit;
-    };
-  }
-  BridgedBeatSource.prototype.connect_0 = function () {
-    this.webSocket_0 = new WebSocket((equals(this.l_0.protocol, 'https:') ? 'wss:' : 'ws:') + '//' + this.url_0 + '/bridge/beatSource');
-    this.webSocket_0.onopen = BridgedBeatSource$connect$lambda(this);
-    this.webSocket_0.onmessage = BridgedBeatSource$connect$lambda_0(this);
-    this.webSocket_0.onerror = BridgedBeatSource$connect$lambda_1(this);
-    this.webSocket_0.onclose = BridgedBeatSource$connect$lambda_2(this);
-  };
-  BridgedBeatSource.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BridgedBeatSource',
-    interfaces: [BeatSource]
-  };
   function get_disabled($receiver) {
     return equals($receiver.getAttribute('disabled'), 'disabled');
   }
@@ -20026,6 +20149,7 @@
   };
   function GlslBase() {
     GlslBase_instance = this;
+    this.plugins = ArrayList_init();
     this.manager_cd4dvk$_0 = lazy(GlslBase$manager$lambda);
   }
   Object.defineProperty(GlslBase.prototype, 'manager', {
@@ -20044,9 +20168,9 @@
     kind: Kind_CLASS,
     interfaces: [GlslRenderer$ContextSwitcher]
   };
-  GlslBase$JsGlslManager.prototype.createRenderer_3kbl32$ = function (fragShader, adjustableValues) {
+  GlslBase$JsGlslManager.prototype.createRenderer_miqmvs$$default = function (fragShader, adjustableValues, plugins) {
     var contextSwitcher = new GlslBase$JsGlslManager$createRenderer$ObjectLiteral();
-    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, adjustableValues, '300 es');
+    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, adjustableValues, '300 es', plugins);
   };
   GlslBase$JsGlslManager.prototype.createContext_0 = function () {
     var tmp$;
@@ -20567,7 +20691,7 @@
     }
      catch (e) {
       if (Kotlin.isType(e, Exception)) {
-        BrowserUdpProxy$Companion_getInstance().logger.error_nwdkmo$('Error receiving WebSocket command', e);
+        BrowserUdpProxy$Companion_getInstance().logger.error_ldd2zj$('Error receiving WebSocket command', e);
         throw e;
       }
        else
@@ -20699,6 +20823,225 @@
     kind: Kind_CLASS,
     simpleName: 'BrowserUdpProxy',
     interfaces: [Network$WebSocketListener]
+  };
+  function BridgeClient(url) {
+    this.url_0 = url;
+    this.logger_0 = new Logger('BridgedBeatSource');
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable);
+    this.defaultBpm_0 = new BeatData(0.0, 500, void 0, 1.0);
+    this.l_0 = window.location;
+    this.webSocket_wsr33m$_0 = this.webSocket_wsr33m$_0;
+    this.everConnected_0 = false;
+    this.beatData_0 = new BeatData(0.0, 0, void 0, 0.0);
+    this.soundAnalysisFrequences_0 = new Float32Array([]);
+    this.beatSource = new BridgeClient$BridgedBeatSource(this);
+    this.soundAnalyzer = new BridgeClient$BridgedSoundAnalyzer(this);
+    this.connect_0();
+  }
+  Object.defineProperty(BridgeClient.prototype, 'webSocket_0', {
+    get: function () {
+      if (this.webSocket_wsr33m$_0 == null)
+        return throwUPAE('webSocket');
+      return this.webSocket_wsr33m$_0;
+    },
+    set: function (webSocket) {
+      this.webSocket_wsr33m$_0 = webSocket;
+    }
+  });
+  function BridgeClient$BridgedBeatSource($outer) {
+    this.$outer = $outer;
+  }
+  BridgeClient$BridgedBeatSource.prototype.getBeatData = function () {
+    return this.$outer.beatData_0;
+  };
+  BridgeClient$BridgedBeatSource.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BridgedBeatSource',
+    interfaces: [BeatSource]
+  };
+  function BridgeClient$BridgedSoundAnalyzer($outer) {
+    this.$outer = $outer;
+    this.listeners = ArrayList_init();
+  }
+  Object.defineProperty(BridgeClient$BridgedSoundAnalyzer.prototype, 'frequencies', {
+    get: function () {
+      return this.$outer.soundAnalysisFrequences_0;
+    }
+  });
+  BridgeClient$BridgedSoundAnalyzer.prototype.listen_iuqfe5$ = function (analysisListener) {
+    this.listeners.add_11rb$(analysisListener);
+  };
+  BridgeClient$BridgedSoundAnalyzer.prototype.unlisten_iuqfe5$ = function (analysisListener) {
+    this.listeners.remove_11rb$(analysisListener);
+  };
+  BridgeClient$BridgedSoundAnalyzer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BridgedSoundAnalyzer',
+    interfaces: [SoundAnalyzer]
+  };
+  function BridgeClient$connect$lambda$lambda() {
+    return 'Connected to simulator bridge.';
+  }
+  function BridgeClient$connect$lambda(this$BridgeClient) {
+    return function (it) {
+      this$BridgeClient.everConnected_0 = true;
+      this$BridgeClient.logger_0.info_h4ejuu$(BridgeClient$connect$lambda$lambda);
+      return Unit;
+    };
+  }
+  function BridgeClient$connect$lambda_0(this$BridgeClient) {
+    return function (it) {
+      var tmp$;
+      var buf = typeof (tmp$ = it.data) === 'string' ? tmp$ : throwCCE();
+      var jsonCmd = this$BridgeClient.json_0.parseJson_61zpoe$(buf);
+      var command = jsonCmd.jsonArray.get_za3lpa$(0).primitive.content;
+      var arg = jsonCmd.jsonArray.get_za3lpa$(1);
+      switch (command) {
+        case 'soundFrequencies':
+          var tmp$_0 = this$BridgeClient;
+          var $receiver = arg.jsonArray;
+          var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+          var tmp$_1;
+          tmp$_1 = $receiver.iterator();
+          while (tmp$_1.hasNext()) {
+            var item = tmp$_1.next();
+            destination.add_11rb$(item.primitive.float);
+          }
+
+          tmp$_0.soundAnalysisFrequences_0 = toFloatArray_0(destination);
+          break;
+        case 'soundMagnitudes':
+          var $receiver_0 = arg.jsonArray;
+          var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+          var tmp$_2;
+          tmp$_2 = $receiver_0.iterator();
+          while (tmp$_2.hasNext()) {
+            var item_0 = tmp$_2.next();
+            destination_0.add_11rb$(item_0.primitive.float);
+          }
+
+          var magnitudes = toFloatArray_0(destination_0);
+          var analysis = new SoundAnalyzer$Analysis(this$BridgeClient.soundAnalysisFrequences_0, magnitudes);
+          var tmp$_3;
+          tmp$_3 = this$BridgeClient.soundAnalyzer.listeners.iterator();
+          while (tmp$_3.hasNext()) {
+            var element = tmp$_3.next();
+            element.onSample_6x9e93$(analysis);
+          }
+
+          break;
+        case 'beatData':
+          this$BridgeClient.beatData_0 = this$BridgeClient.json_0.fromJson_htt2tq$(BeatData$Companion_getInstance().serializer(), arg);
+          break;
+        default:throw IllegalArgumentException_init('unknown command ' + '"' + command + '"');
+      }
+      return null;
+    };
+  }
+  function BridgeClient$connect$lambda$lambda_0(closure$it) {
+    return function () {
+      return "Couldn't connect to simulator bridge; falling back to 120bpm: " + closure$it;
+    };
+  }
+  function BridgeClient$connect$lambda$lambda_1(closure$it) {
+    return function () {
+      return 'WebSocket error: ' + closure$it;
+    };
+  }
+  function BridgeClient$connect$lambda_1(this$BridgeClient) {
+    return function (it) {
+      if (!this$BridgeClient.everConnected_0) {
+        this$BridgeClient.logger_0.error_h4ejuu$(BridgeClient$connect$lambda$lambda_0(it));
+        this$BridgeClient.beatData_0 = this$BridgeClient.defaultBpm_0;
+      }
+       else {
+        this$BridgeClient.logger_0.error_h4ejuu$(BridgeClient$connect$lambda$lambda_1(it));
+      }
+      return Unit;
+    };
+  }
+  function BridgeClient$connect$lambda$lambda_2(closure$it) {
+    return function () {
+      return 'Lost connection to simulator bridge; falling back to 120bpm: ' + closure$it;
+    };
+  }
+  function BridgeClient$connect$lambda$lambda$lambda() {
+    return 'Attempting to reconnect to simulator bridge...';
+  }
+  function Coroutine$BridgeClient$connect$lambda$lambda(this$BridgeClient_0, $receiver_0, controller, continuation_0) {
+    CoroutineImpl.call(this, continuation_0);
+    this.$controller = controller;
+    this.exceptionState_0 = 1;
+    this.local$this$BridgeClient = this$BridgeClient_0;
+  }
+  Coroutine$BridgeClient$connect$lambda$lambda.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: null,
+    interfaces: [CoroutineImpl]
+  };
+  Coroutine$BridgeClient$connect$lambda$lambda.prototype = Object.create(CoroutineImpl.prototype);
+  Coroutine$BridgeClient$connect$lambda$lambda.prototype.constructor = Coroutine$BridgeClient$connect$lambda$lambda;
+  Coroutine$BridgeClient$connect$lambda$lambda.prototype.doResume = function () {
+    do
+      try {
+        switch (this.state_0) {
+          case 0:
+            this.state_0 = 2;
+            this.result_0 = delay(L1000, this);
+            if (this.result_0 === COROUTINE_SUSPENDED)
+              return COROUTINE_SUSPENDED;
+            continue;
+          case 1:
+            throw this.exception_0;
+          case 2:
+            this.local$this$BridgeClient.logger_0.info_h4ejuu$(BridgeClient$connect$lambda$lambda$lambda);
+            return this.local$this$BridgeClient.connect_0(), Unit;
+          default:this.state_0 = 1;
+            throw new Error('State Machine Unreachable execution');
+        }
+      }
+       catch (e) {
+        if (this.state_0 === 1) {
+          this.exceptionState_0 = this.state_0;
+          throw e;
+        }
+         else {
+          this.state_0 = this.exceptionState_0;
+          this.exception_0 = e;
+        }
+      }
+     while (true);
+  };
+  function BridgeClient$connect$lambda$lambda_3(this$BridgeClient_0) {
+    return function ($receiver_0, continuation_0, suspended) {
+      var instance = new Coroutine$BridgeClient$connect$lambda$lambda(this$BridgeClient_0, $receiver_0, this, continuation_0);
+      if (suspended)
+        return instance;
+      else
+        return instance.doResume(null);
+    };
+  }
+  function BridgeClient$connect$lambda_2(this$BridgeClient) {
+    return function (it) {
+      if (this$BridgeClient.everConnected_0) {
+        this$BridgeClient.logger_0.error_h4ejuu$(BridgeClient$connect$lambda$lambda_2(it));
+        this$BridgeClient.beatData_0 = this$BridgeClient.defaultBpm_0;
+        launch(coroutines.GlobalScope, void 0, void 0, BridgeClient$connect$lambda$lambda_3(this$BridgeClient));
+      }
+      return Unit;
+    };
+  }
+  BridgeClient.prototype.connect_0 = function () {
+    this.webSocket_0 = new WebSocket((equals(this.l_0.protocol, 'https:') ? 'wss:' : 'ws:') + '//' + this.url_0 + '/bridge');
+    this.webSocket_0.onopen = BridgeClient$connect$lambda(this);
+    this.webSocket_0.onmessage = BridgeClient$connect$lambda_0(this);
+    this.webSocket_0.onerror = BridgeClient$connect$lambda_1(this);
+    this.webSocket_0.onclose = BridgeClient$connect$lambda_2(this);
+  };
+  BridgeClient.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BridgeClient',
+    interfaces: []
   };
   function FakeMediaDevices(visualizer) {
     this.visualizer_0 = visualizer;
@@ -21863,6 +22206,9 @@
     get: ShowRunner$Companion_getInstance
   });
   package$baaahs.ShowRunner = ShowRunner;
+  SoundAnalyzer.AnalysisListener = SoundAnalyzer$AnalysisListener;
+  SoundAnalyzer.Analysis = SoundAnalyzer$Analysis;
+  package$baaahs.SoundAnalyzer = SoundAnalyzer;
   Object.defineProperty(package$baaahs, 'SparkleMotion', {
     get: SparkleMotion_getInstance
   });
@@ -22077,6 +22423,8 @@
   package$glsl.checkForGlError_t0jnzc$ = checkForGlError;
   package$glsl.check_56a5t8$ = check;
   package$glsl.GlslManager = GlslManager;
+  GlslPlugin.RendererPlugin = GlslPlugin$RendererPlugin;
+  package$glsl.GlslPlugin = GlslPlugin;
   GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
   $$importsForInline$$.sparklemotion = _;
   GlslRenderer.Arrangement = GlslRenderer$Arrangement;
@@ -22367,6 +22715,8 @@
   SolidShader.Buffer = SolidShader$Buffer;
   SolidShader.Renderer = SolidShader$Renderer;
   package$shaders.SolidShader = SolidShader;
+  SoundAnalysisPlugin.RendererPlugin = SoundAnalysisPlugin$RendererPlugin;
+  package$shaders.SoundAnalysisPlugin = SoundAnalysisPlugin;
   Object.defineProperty(SparkleShader, 'Companion', {
     get: SparkleShader$Companion_getInstance
   });
@@ -22461,7 +22811,6 @@
   });
   package$baaahs.SheepSimulator = SheepSimulator;
   package$baaahs.JsClock = JsClock;
-  package$baaahs.BridgedBeatSource = BridgedBeatSource;
   package$baaahs.get_disabled_ejp6nk$ = get_disabled;
   package$baaahs.set_disabled_juh0kr$ = set_disabled;
   package$baaahs.forEach_dokpt5$ = forEach;
@@ -22493,7 +22842,7 @@
   package$baaahs.getResource_61zpoe$ = getResource;
   package$baaahs.getTimeMillis = getTimeMillis;
   package$baaahs.decodeBase64_61zpoe$ = decodeBase64;
-  package$baaahs.logMessage_xyrxb3$ = logMessage;
+  package$baaahs.logMessage_gqh5ww$ = logMessage;
   BrowserNetwork.BrowserAddress = BrowserNetwork$BrowserAddress;
   package$net.BrowserNetwork = BrowserNetwork;
   BrowserUdpProxy.UdpSocketProxy = BrowserUdpProxy$UdpSocketProxy;
@@ -22501,6 +22850,9 @@
     get: BrowserUdpProxy$Companion_getInstance
   });
   package$net.BrowserUdpProxy = BrowserUdpProxy;
+  BridgeClient.BridgedBeatSource = BridgeClient$BridgedBeatSource;
+  BridgeClient.BridgedSoundAnalyzer = BridgeClient$BridgedSoundAnalyzer;
+  package$sim.BridgeClient = BridgeClient;
   FakeMediaDevices.FakeCamera = FakeMediaDevices$FakeCamera;
   package$sim.FakeMediaDevices = FakeMediaDevices;
   _.decodeQueryParams_h13imq$ = decodeQueryParams;
@@ -22597,6 +22949,7 @@
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
+  GlslBase$JsGlslManager.prototype.createRenderer_miqmvs$ = GlslManager.prototype.createRenderer_miqmvs$;
   CanvasBitmap.prototype.withData_u0v8ny$ = Bitmap.prototype.withData_u0v8ny$;
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   BrowserUdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;

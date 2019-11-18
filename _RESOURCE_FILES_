@@ -32,6 +32,7 @@ baaahs/shows/RainbowTrianglez.glsl
 baaahs/shows/Seascape.glsl
 baaahs/shows/ShatteredWeb.glsl
 baaahs/shows/SpasticRainbow.glsl
+baaahs/shows/Spectrum.glsl
 baaahs/shows/SunsetDelight.glsl
 baaahs/shows/TvTestPattern.glsl
 baaahs/shows/YasQueen.glsl
@@ -1714,7 +1715,6 @@ lib/OrbitControls.js
 lib/threejs-wrapper.js
 lib/threejs-wrapper.meta.js
 mapper-index.html
-panel-annotations.kts
 sparklemotion.js
 sparklemotion.js.map
 sparklemotion.meta.js
