@@ -153,6 +153,8 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
     override var beat: Int = 0
         set(value) {
+            if (value < 0 || value > 3) return
+
             try {
                 beats[field].classList.clear()
                 beats[value].classList.add("selected")

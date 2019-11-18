@@ -8,7 +8,8 @@ import com.jogamp.opengl.*
 class JoglGlslManager : GlslManager {
     override fun createRenderer(
         fragShader: String,
-        adjustableValues: List<GlslShader.AdjustableValue>
+        adjustableValues: List<GlslShader.AdjustableValue>,
+        plugins: List<GlslPlugin>
     ): GlslRenderer {
         val gl = createGLContext()
         val contextSwitcher = object : GlslRenderer.ContextSwitcher {
@@ -25,7 +26,7 @@ class JoglGlslManager : GlslManager {
 
         val kgl = KglJogl(gl as GL3ES3)
         return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core")
+            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core", plugins)
         }
     }
 

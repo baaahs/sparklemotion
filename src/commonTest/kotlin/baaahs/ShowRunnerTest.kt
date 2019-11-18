@@ -36,8 +36,10 @@ class ShowRunnerTest {
     fun setUp() {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        showRunner = ShowRunner(sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse,
-            movingHeadManager, FakeClock())
+        showRunner = ShowRunner(
+            sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse,
+            movingHeadManager, FakeClock()
+        )
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()

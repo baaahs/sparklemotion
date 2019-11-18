@@ -28,7 +28,7 @@ actual fun decodeBase64(s: String): ByteArray {
     TODO("decodeBase64 not implemented")
 }
 
-actual fun logMessage(level: String, message: String, exception: Exception?) {
+actual fun logMessage(level: String, message: String, exception: Throwable?) {
     when (level) {
         "ERROR" -> console.error(message, exception)
         "WARN" -> console.warn(message, exception)
