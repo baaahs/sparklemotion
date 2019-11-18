@@ -10,5 +10,5 @@ interface SoundAnalyzer {
         fun onSample(analysis: Analysis)
     }
 
-    data class Analysis(val frequencies: FloatArray, val magnitudes: FloatArray)
+    class Analysis(val frequencies: FloatArray, val magnitudes: FloatArray)
 }

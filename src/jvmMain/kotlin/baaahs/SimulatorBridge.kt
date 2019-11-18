@@ -20,11 +20,11 @@ import java.time.Duration
 
 object SimulatorBridge {
     private val json = Json(JsonConfiguration.Stable)
-    val webSocketConnections = mutableListOf<WebSocketServerSession>()
+    private val webSocketConnections = mutableListOf<WebSocketServerSession>()
 
-    val soundAnalyzer = JvmSoundAnalyzer()
+    private val soundAnalyzer = JvmSoundAnalyzer()
 
-    val httpServer = embeddedServer(Netty, Ports.SIMULATOR_BRIDGE_TCP) {
+    private val httpServer = embeddedServer(Netty, Ports.SIMULATOR_BRIDGE_TCP) {
         install(io.ktor.websocket.WebSockets) {
             pingPeriod = Duration.ofSeconds(15)
             timeout = Duration.ofSeconds(15)
@@ -56,7 +56,7 @@ object SimulatorBridge {
         }
     }
 
-    fun sendFrequencies(connection: WebSocketServerSession) {
+    private fun sendFrequencies(connection: WebSocketServerSession) {
         connection.outgoing.offer(
             Text(toWsMessage(
                 "soundFrequencies",
