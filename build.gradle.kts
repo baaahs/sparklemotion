@@ -6,17 +6,18 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val coroutines_version = "1.3.2"
-val ktor_version = "1.1.5"
-val logback_version = "1.2.1"
-val serialization_version = "1.3.50"
-val serialization_runtime_version = "0.12.0"
+val kotlinVersion = "1.3.60"
+val coroutinesVersion = "1.3.2"
+val dokkaVersion = "0.9.18"
+val ktorVersion = "1.1.5"
+val logbackVersion = "1.2.1"
+val serializationRuntimeVersion = "0.13.0"
 val klockVersion = "1.5.0"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
 val lwjglVersion = "3.2.2"
-val mockk_version = "1.9.3"
-val beatlink_version = "0.5.1"
+val mockkVersion = "1.9.3"
+val beatlinkVersion = "0.5.1"
 
 buildscript {
 
@@ -29,11 +30,19 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.3.50")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.18")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion")
         classpath("com.github.jengelman.gradle.plugins:shadow:5.1.0")
     }
+}
+
+plugins {
+    id("org.jetbrains.kotlin.multiplatform") version "1.3.60"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.60"
+    id("org.jetbrains.dokka") version "0.9.18"
+    id("com.github.johnrengelman.shadow") version "5.1.0"
+    id("maven-publish")
 }
 
 val lwjglNatives = when (OperatingSystem.current()) {
@@ -41,15 +50,6 @@ val lwjglNatives = when (OperatingSystem.current()) {
     OperatingSystem.MAC_OS -> "natives-macos"
     else -> throw IllegalArgumentException()
 }
-
-plugins {
-    id("org.jetbrains.kotlin.multiplatform") version "1.3.50"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.50"
-    id("org.jetbrains.dokka") version "0.9.18"
-    id("com.github.johnrengelman.shadow") version "5.1.0"
-    id("maven-publish")
-}
-
 
 //import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
@@ -94,10 +94,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_runtime_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_runtime_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationRuntimeVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationRuntimeVersion")
                 implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
                 api("com.danielgergely.kgl:kgl-metadata:$kglVersion")
             }
@@ -112,13 +112,13 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("io.ktor:ktor-server-core:$ktor_version")
-                implementation("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-server-host-common:$ktor_version")
-                implementation("io.ktor:ktor-websockets:$ktor_version")
-                implementation("ch.qos.logback:logback-classic:$logback_version")
-                implementation("org.deepsymmetry:beat-link:$beatlink_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("io.ktor:ktor-server-core:$ktorVersion")
+                implementation("io.ktor:ktor-server-netty:$ktorVersion")
+                implementation("io.ktor:ktor-server-host-common:$ktorVersion")
+                implementation("io.ktor:ktor-websockets:$ktorVersion")
+                implementation("ch.qos.logback:logback-classic:$logbackVersion")
+                implementation("org.deepsymmetry:beat-link:$beatlinkVersion")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
@@ -147,17 +147,17 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
-                implementation("io.mockk:mockk:$mockk_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion")
+                implementation("io.mockk:mockk:$mockkVersion")
             }
         }
 
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_runtime_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationRuntimeVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.6.12")
                 implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
                 implementation("org.jetbrains:kotlin-react:16.9.0-pre.85-kotlin-1.3.50")
