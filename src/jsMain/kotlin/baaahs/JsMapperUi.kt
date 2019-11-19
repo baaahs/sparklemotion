@@ -609,10 +609,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         val beforeCtx = beforeCanvas.getContext("2d") as CanvasRenderingContext2D
         beforeCtx.resetTransform()
         beforeCtx.scale(.3, .3)
-        val renderBitmap: Any = when (bitmap) { // TODO: huh?
+        val renderBitmap = when (bitmap) { // TODO: huh?
             is NativeBitmap -> bitmap.canvas
             is CanvasBitmap -> bitmap.canvas
-            else -> bitmap
+            else -> bitmap as CanvasImageSource
         }
         beforeCtx.drawImage(renderBitmap, 0.0, 0.0)
     }
@@ -625,7 +625,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         val renderBitmap = when (bitmap) {
             is NativeBitmap -> bitmap.canvas
             is CanvasBitmap -> bitmap.canvas
-            else -> bitmap
+            else -> bitmap as CanvasImageSource
         }
         afterCtx.drawImage(renderBitmap, 0.0, 0.0)
     }
