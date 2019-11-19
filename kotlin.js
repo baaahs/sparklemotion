@@ -1602,6 +1602,7 @@
     var L3406603774387020532 = new Kotlin.Long(1993859828, 793161749);
     var DeprecationLevel = Kotlin.kotlin.DeprecationLevel;
     var L_9223372036854775807 = new Kotlin.Long(1, -2147483648);
+    var L_256204778801521550 = new Kotlin.Long(1908874354, -59652324);
     var L2047 = Kotlin.Long.fromInt(2047);
     CharProgressionIterator.prototype = Object.create(CharIterator.prototype);
     CharProgressionIterator.prototype.constructor = CharProgressionIterator;
@@ -5548,7 +5549,7 @@
       return copyOfRange_11($receiver, indices.start, indices.endInclusive + 1 | 0);
     }
     function take($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5563,14 +5564,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_0($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5585,14 +5586,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_1($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5607,14 +5608,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_2($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5629,14 +5630,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_3($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5651,14 +5652,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_4($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5673,14 +5674,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_5($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5695,14 +5696,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_6($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5717,14 +5718,14 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = $receiver[tmp$];
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_7($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -5739,9 +5740,9 @@
       var list = ArrayList_init_0(n);
       for (tmp$ = 0; tmp$ !== $receiver.length; ++tmp$) {
         var item = unboxChar($receiver[tmp$]);
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(toBoxedChar(item));
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
@@ -15446,7 +15447,7 @@
       return list;
     }
     function take_8($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -15464,9 +15465,9 @@
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return optimizeReadOnlyList(list);
     }
@@ -16819,12 +16820,17 @@
         step = 1;
       if (partialWindows === void 0)
         partialWindows = false;
+      var tmp$;
       checkWindowSizeStep(size, step);
       if (Kotlin.isType($receiver, RandomAccess) && Kotlin.isType($receiver, List)) {
         var thisSize = $receiver.size;
-        var result = ArrayList_init_0((thisSize + step - 1 | 0) / step | 0);
+        var resultCapacity = (thisSize / step | 0) + (thisSize % step === 0 ? 0 : 1) | 0;
+        var result = ArrayList_init_0(resultCapacity);
         var index = {v: 0};
-        while (index.v < thisSize) {
+        while (true) {
+          tmp$ = index.v;
+          if (!(0 <= tmp$ && tmp$ < thisSize))
+            break;
           var windowSize = coerceAtMost_2(size, thisSize - index.v | 0);
           if (windowSize < size && !partialWindows)
             break;
@@ -16853,13 +16859,15 @@
       checkWindowSizeStep(size, step);
       if (Kotlin.isType($receiver, RandomAccess) && Kotlin.isType($receiver, List)) {
         var thisSize = $receiver.size;
-        var result = ArrayList_init_0((thisSize + step - 1 | 0) / step | 0);
+        var resultCapacity = (thisSize / step | 0) + (thisSize % step === 0 ? 0 : 1) | 0;
+        var result = ArrayList_init_0(resultCapacity);
         var window_0 = new MovingSubList($receiver);
         var index = 0;
-        while (index < thisSize) {
-          window_0.move_vux9f0$(index, coerceAtMost_2(index + size | 0, thisSize));
-          if (!partialWindows && window_0.size < size)
+        while (0 <= index && index < thisSize) {
+          var windowSize = coerceAtMost_2(size, thisSize - index | 0);
+          if (!partialWindows && windowSize < size)
             break;
+          window_0.move_vux9f0$(index, index + windowSize | 0);
           result.add_11rb$(transform(window_0));
           index = index + step | 0;
         }
@@ -21141,11 +21149,12 @@
       var tmp$;
       checkWindowSizeStep(size, step);
       var thisSize = $receiver.length;
-      var result = ArrayList_init_0((thisSize + step - 1 | 0) / step | 0);
+      var resultCapacity = (thisSize / step | 0) + (thisSize % step === 0 ? 0 : 1) | 0;
+      var result = ArrayList_init_0(resultCapacity);
       var index = 0;
-      while (index < thisSize) {
+      while (0 <= index && index < thisSize) {
         var end = index + size | 0;
-        if (end > thisSize) {
+        if (end < 0 || end > thisSize) {
           if (partialWindows)
             tmp$ = thisSize;
           else
@@ -21169,9 +21178,11 @@
         partialWindows = false;
       return windowedSequence_0($receiver, size, step, partialWindows, windowedSequence$lambda);
     }
-    function windowedSequence$lambda_0(closure$transform, closure$size, this$windowedSequence) {
+    function windowedSequence$lambda_0(closure$size, this$windowedSequence, closure$transform) {
       return function (index) {
-        return closure$transform(Kotlin.subSequence(this$windowedSequence, index, coerceAtMost_2(index + closure$size | 0, this$windowedSequence.length)));
+        var end = index + closure$size | 0;
+        var coercedEnd = end < 0 || end > this$windowedSequence.length ? this$windowedSequence.length : end;
+        return closure$transform(Kotlin.subSequence(this$windowedSequence, index, coercedEnd));
       };
     }
     function windowedSequence_0($receiver, size, step_0, partialWindows, transform) {
@@ -21181,7 +21192,7 @@
         partialWindows = false;
       checkWindowSizeStep(size, step_0);
       var windows = step(partialWindows ? get_indices_13($receiver) : until_4(0, $receiver.length - size + 1 | 0), step_0);
-      return map_10(asSequence_8(windows), windowedSequence$lambda_0(transform, size, $receiver));
+      return map_10(asSequence_8(windows), windowedSequence$lambda_0(size, $receiver, transform));
     }
     function zip_57($receiver, other) {
       var length = Math_0.min($receiver.length, other.length);
@@ -23049,7 +23060,7 @@
       return new UShortArray(sliceArray_10($receiver.storage, indices));
     }
     function take_12($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -23065,14 +23076,14 @@
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_13($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -23088,14 +23099,14 @@
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_14($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -23111,14 +23122,14 @@
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
     function take_15($receiver, n) {
-      var tmp$, tmp$_0;
+      var tmp$;
       if (!(n >= 0)) {
         var message = 'Requested element count ' + n + ' is less than zero.';
         throw IllegalArgumentException_init_0(message.toString());
@@ -23134,9 +23145,9 @@
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var item = tmp$.next();
-        if ((tmp$_0 = count, count = tmp$_0 + 1 | 0, tmp$_0) === n)
-          break;
         list.add_11rb$(item);
+        if ((count = count + 1 | 0, count) === n)
+          break;
       }
       return list;
     }
@@ -29413,6 +29424,9 @@
       this.value = value;
     }
     JsQualifier.$metadata$ = {kind: Kind_CLASS, simpleName: 'JsQualifier', interfaces: [Annotation]};
+    function ExperimentalJsExport() {
+    }
+    ExperimentalJsExport.$metadata$ = {kind: Kind_CLASS, simpleName: 'ExperimentalJsExport', interfaces: [Annotation]};
     function JsExport() {
     }
     JsExport.$metadata$ = {kind: Kind_CLASS, simpleName: 'JsExport', interfaces: [Annotation]};
@@ -32441,6 +32455,179 @@
       }
       return NothingKClassImpl_instance;
     }
+    function createKType(classifier, arguments_0, isMarkedNullable) {
+      return new KTypeImpl(classifier, asList(arguments_0), isMarkedNullable);
+    }
+    function createDynamicKType() {
+      return DynamicKType_getInstance();
+    }
+    function markKTypeNullable(kType) {
+      return new KTypeImpl(ensureNotNull(kType.classifier), kType.arguments, true);
+    }
+    function createKTypeParameter(name, upperBounds, variance) {
+      var tmp$;
+      switch (variance) {
+        case 'in':
+          tmp$ = KVariance$IN_getInstance();
+          break;
+        case 'out':
+          tmp$ = KVariance$OUT_getInstance();
+          break;
+        default:tmp$ = KVariance$INVARIANT_getInstance();
+          break;
+      }
+      var kVariance = tmp$;
+      return new KTypeParameterImpl(name, asList(upperBounds), kVariance, false);
+    }
+    function getStarKTypeProjection() {
+      return KTypeProjection$Companion_getInstance().STAR;
+    }
+    function createCovariantKTypeProjection(type) {
+      return KTypeProjection$Companion_getInstance().covariant_saj79j$(type);
+    }
+    function createInvariantKTypeProjection(type) {
+      return KTypeProjection$Companion_getInstance().invariant_saj79j$(type);
+    }
+    function createContravariantKTypeProjection(type) {
+      return KTypeProjection$Companion_getInstance().contravariant_saj79j$(type);
+    }
+    function KTypeImpl(classifier, arguments_0, isMarkedNullable) {
+      this.classifier_50lv52$_0 = classifier;
+      this.arguments_lev63t$_0 = arguments_0;
+      this.isMarkedNullable_748rxs$_0 = isMarkedNullable;
+    }
+    Object.defineProperty(KTypeImpl.prototype, 'classifier', {get: function () {
+      return this.classifier_50lv52$_0;
+    }});
+    Object.defineProperty(KTypeImpl.prototype, 'arguments', {get: function () {
+      return this.arguments_lev63t$_0;
+    }});
+    Object.defineProperty(KTypeImpl.prototype, 'isMarkedNullable', {get: function () {
+      return this.isMarkedNullable_748rxs$_0;
+    }});
+    Object.defineProperty(KTypeImpl.prototype, 'annotations', {get: function () {
+      return emptyList();
+    }});
+    KTypeImpl.prototype.equals = function (other) {
+      return Kotlin.isType(other, KTypeImpl) && equals(this.classifier, other.classifier) && equals(this.arguments, other.arguments) && this.isMarkedNullable === other.isMarkedNullable;
+    };
+    KTypeImpl.prototype.hashCode = function () {
+      return (((hashCode(this.classifier) * 31 | 0) + hashCode(this.arguments) | 0) * 31 | 0) + hashCode(this.isMarkedNullable) | 0;
+    };
+    function KTypeImpl$toString$lambda(this$KTypeImpl) {
+      return function (it) {
+        return this$KTypeImpl.asString_0(it);
+      };
+    }
+    KTypeImpl.prototype.toString = function () {
+      var tmp$, tmp$_0;
+      var kClass = Kotlin.isType(tmp$ = this.classifier, KClass) ? tmp$ : null;
+      if (kClass == null)
+        tmp$_0 = this.classifier.toString();
+      else if (kClass.simpleName != null)
+        tmp$_0 = kClass.simpleName;
+      else
+        tmp$_0 = '(non-denotable type)';
+      var classifierName = tmp$_0;
+      var args = this.arguments.isEmpty() ? '' : joinToString_8(this.arguments, ', ', '<', '>', void 0, void 0, KTypeImpl$toString$lambda(this));
+      var nullable = this.isMarkedNullable ? '?' : '';
+      return classifierName + args + nullable;
+    };
+    KTypeImpl.prototype.asString_0 = function ($receiver) {
+      if ($receiver.variance == null)
+        return '*';
+      return prefixString($receiver.variance) + toString($receiver.type);
+    };
+    KTypeImpl.$metadata$ = {kind: Kind_CLASS, simpleName: 'KTypeImpl', interfaces: [KType]};
+    function DynamicKType() {
+      DynamicKType_instance = this;
+      this.classifier_rcrrnf$_0 = null;
+      this.arguments_2d0wf2$_0 = emptyList();
+      this.isMarkedNullable_vgyq3p$_0 = false;
+      this.annotations_1p17e4$_0 = emptyList();
+    }
+    Object.defineProperty(DynamicKType.prototype, 'classifier', {get: function () {
+      return this.classifier_rcrrnf$_0;
+    }});
+    Object.defineProperty(DynamicKType.prototype, 'arguments', {get: function () {
+      return this.arguments_2d0wf2$_0;
+    }});
+    Object.defineProperty(DynamicKType.prototype, 'isMarkedNullable', {get: function () {
+      return this.isMarkedNullable_vgyq3p$_0;
+    }});
+    Object.defineProperty(DynamicKType.prototype, 'annotations', {get: function () {
+      return this.annotations_1p17e4$_0;
+    }});
+    DynamicKType.prototype.toString = function () {
+      return 'dynamic';
+    };
+    DynamicKType.$metadata$ = {kind: Kind_OBJECT, simpleName: 'DynamicKType', interfaces: [KType]};
+    var DynamicKType_instance = null;
+    function DynamicKType_getInstance() {
+      if (DynamicKType_instance === null) {
+        new DynamicKType();
+      }
+      return DynamicKType_instance;
+    }
+    function prefixString($receiver) {
+      switch ($receiver.name) {
+        case 'INVARIANT':
+          return '';
+        case 'IN':
+          return 'in ';
+        case 'OUT':
+          return 'out ';
+        default:return Kotlin.noWhenBranchMatched();
+      }
+    }
+    function KTypeParameterImpl(name, upperBounds, variance, isReified) {
+      this.name_81dqmp$_0 = name;
+      this.upperBounds_nx4j3x$_0 = upperBounds;
+      this.variance_jsggjt$_0 = variance;
+      this.isReified_7azqms$_0 = isReified;
+    }
+    Object.defineProperty(KTypeParameterImpl.prototype, 'name', {get: function () {
+      return this.name_81dqmp$_0;
+    }});
+    Object.defineProperty(KTypeParameterImpl.prototype, 'upperBounds', {get: function () {
+      return this.upperBounds_nx4j3x$_0;
+    }});
+    Object.defineProperty(KTypeParameterImpl.prototype, 'variance', {get: function () {
+      return this.variance_jsggjt$_0;
+    }});
+    Object.defineProperty(KTypeParameterImpl.prototype, 'isReified', {get: function () {
+      return this.isReified_7azqms$_0;
+    }});
+    KTypeParameterImpl.prototype.toString = function () {
+      return this.name;
+    };
+    KTypeParameterImpl.$metadata$ = {kind: Kind_CLASS, simpleName: 'KTypeParameterImpl', interfaces: [KTypeParameter]};
+    KTypeParameterImpl.prototype.component1 = function () {
+      return this.name;
+    };
+    KTypeParameterImpl.prototype.component2 = function () {
+      return this.upperBounds;
+    };
+    KTypeParameterImpl.prototype.component3 = function () {
+      return this.variance;
+    };
+    KTypeParameterImpl.prototype.component4 = function () {
+      return this.isReified;
+    };
+    KTypeParameterImpl.prototype.copy_picmsx$ = function (name, upperBounds, variance, isReified) {
+      return new KTypeParameterImpl(name === void 0 ? this.name : name, upperBounds === void 0 ? this.upperBounds : upperBounds, variance === void 0 ? this.variance : variance, isReified === void 0 ? this.isReified : isReified);
+    };
+    KTypeParameterImpl.prototype.hashCode = function () {
+      var result = 0;
+      result = result * 31 + Kotlin.hashCode(this.name) | 0;
+      result = result * 31 + Kotlin.hashCode(this.upperBounds) | 0;
+      result = result * 31 + Kotlin.hashCode(this.variance) | 0;
+      result = result * 31 + Kotlin.hashCode(this.isReified) | 0;
+      return result;
+    };
+    KTypeParameterImpl.prototype.equals = function (other) {
+      return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.upperBounds, other.upperBounds) && Kotlin.equals(this.variance, other.variance) && Kotlin.equals(this.isReified, other.isReified)))));
+    };
     function PrimitiveClasses() {
       PrimitiveClasses_instance = this;
       this.anyClass = new PrimitiveKClassImpl(Object, 'Any', PrimitiveClasses$anyClass$lambda);
@@ -33898,16 +34085,16 @@
       o['allowWithoutGesture'] = allowWithoutGesture;
       return o;
     });
-    var get_10 = defineInlineFunction('kotlin.org.w3c.dom.css.get_hzg8kz$', function ($receiver, index) {
+    var get_10 = defineInlineFunction('kotlin.org.w3c.dom.css.get_vcm0yf$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_11 = defineInlineFunction('kotlin.org.w3c.dom.css.get_vcm0yf$', function ($receiver, index) {
+    var get_11 = defineInlineFunction('kotlin.org.w3c.dom.css.get_yovegz$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_12 = defineInlineFunction('kotlin.org.w3c.dom.css.get_yovegz$', function ($receiver, index) {
+    var get_12 = defineInlineFunction('kotlin.org.w3c.dom.css.get_nb2c3o$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_13 = defineInlineFunction('kotlin.org.w3c.dom.css.get_nb2c3o$', function ($receiver, index) {
+    var get_13 = defineInlineFunction('kotlin.org.w3c.dom.css.get_hzg8kz$', function ($receiver, index) {
       return $receiver[index];
     });
     var UIEventInit = defineInlineFunction('kotlin.org.w3c.dom.events.UIEventInit_b3va2d$', function (view, detail, bubbles, cancelable, composed) {
@@ -33951,7 +34138,7 @@
       o['composed'] = composed;
       return o;
     });
-    var MouseEventInit = defineInlineFunction('kotlin.org.w3c.dom.events.MouseEventInit_w16xh5$', function (screenX, screenY, clientX, clientY, button, buttons, relatedTarget, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
+    var MouseEventInit = defineInlineFunction('kotlin.org.w3c.dom.events.MouseEventInit_9obtc4$', function (screenX, screenY, clientX, clientY, button, buttons, relatedTarget, region, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
       if (screenX === void 0)
         screenX = 0;
       if (screenY === void 0)
@@ -33966,6 +34153,8 @@
         buttons = 0;
       if (relatedTarget === void 0)
         relatedTarget = null;
+      if (region === void 0)
+        region = null;
       if (ctrlKey === void 0)
         ctrlKey = false;
       if (shiftKey === void 0)
@@ -34012,6 +34201,7 @@
       o['button'] = button;
       o['buttons'] = buttons;
       o['relatedTarget'] = relatedTarget;
+      o['region'] = region;
       o['ctrlKey'] = ctrlKey;
       o['shiftKey'] = shiftKey;
       o['altKey'] = altKey;
@@ -34094,7 +34284,7 @@
       o['composed'] = composed;
       return o;
     });
-    var WheelEventInit = defineInlineFunction('kotlin.org.w3c.dom.events.WheelEventInit_jungk3$', function (deltaX, deltaY, deltaZ, deltaMode, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
+    var WheelEventInit = defineInlineFunction('kotlin.org.w3c.dom.events.WheelEventInit_s3o9pa$', function (deltaX, deltaY, deltaZ, deltaMode, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, region, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
       if (deltaX === void 0)
         deltaX = 0.0;
       if (deltaY === void 0)
@@ -34117,6 +34307,8 @@
         buttons = 0;
       if (relatedTarget === void 0)
         relatedTarget = null;
+      if (region === void 0)
+        region = null;
       if (ctrlKey === void 0)
         ctrlKey = false;
       if (shiftKey === void 0)
@@ -34167,6 +34359,7 @@
       o['button'] = button;
       o['buttons'] = buttons;
       o['relatedTarget'] = relatedTarget;
+      o['region'] = region;
       o['ctrlKey'] = ctrlKey;
       o['shiftKey'] = shiftKey;
       o['altKey'] = altKey;
@@ -34311,10 +34504,10 @@
       o['composed'] = composed;
       return o;
     });
-    var get_14 = defineInlineFunction('kotlin.org.w3c.dom.get_faw09z$', function ($receiver, name) {
-      return $receiver[name];
+    var get_14 = defineInlineFunction('kotlin.org.w3c.dom.get_zbxcyi$', function ($receiver, index) {
+      return $receiver[index];
     });
-    var get_15 = defineInlineFunction('kotlin.org.w3c.dom.get_ewayf0$', function ($receiver, name) {
+    var get_15 = defineInlineFunction('kotlin.org.w3c.dom.get_ni19om$', function ($receiver, name) {
       return $receiver[name];
     });
     var set_9 = defineInlineFunction('kotlin.org.w3c.dom.set_hw3ic1$', function ($receiver, index, option) {
@@ -34442,7 +34635,7 @@
     var get_24 = defineInlineFunction('kotlin.org.w3c.dom.get_c2gw6m$', function ($receiver, index) {
       return $receiver[index];
     });
-    var DragEventInit = defineInlineFunction('kotlin.org.w3c.dom.DragEventInit_rb6t3c$', function (dataTransfer, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
+    var DragEventInit = defineInlineFunction('kotlin.org.w3c.dom.DragEventInit_srvs6b$', function (dataTransfer, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, region, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
       if (dataTransfer === void 0)
         dataTransfer = null;
       if (screenX === void 0)
@@ -34459,6 +34652,8 @@
         buttons = 0;
       if (relatedTarget === void 0)
         relatedTarget = null;
+      if (region === void 0)
+        region = null;
       if (ctrlKey === void 0)
         ctrlKey = false;
       if (shiftKey === void 0)
@@ -34506,6 +34701,7 @@
       o['button'] = button;
       o['buttons'] = buttons;
       o['relatedTarget'] = relatedTarget;
+      o['region'] = region;
       o['ctrlKey'] = ctrlKey;
       o['shiftKey'] = shiftKey;
       o['altKey'] = altKey;
@@ -34526,6 +34722,9 @@
       o['cancelable'] = cancelable;
       o['composed'] = composed;
       return o;
+    });
+    var get_25 = defineInlineFunction('kotlin.org.w3c.dom.get_ewayf0$', function ($receiver, name) {
+      return $receiver[name];
     });
     var PopStateEventInit = defineInlineFunction('kotlin.org.w3c.dom.PopStateEventInit_m0in9k$', function (state, bubbles, cancelable, composed) {
       if (state === void 0)
@@ -34623,22 +34822,22 @@
       o['composed'] = composed;
       return o;
     });
-    var get_25 = defineInlineFunction('kotlin.org.w3c.dom.get_l671a0$', function ($receiver, index) {
+    var get_26 = defineInlineFunction('kotlin.org.w3c.dom.get_l671a0$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_26 = defineInlineFunction('kotlin.org.w3c.dom.get_ldwsk8$', function ($receiver, name) {
+    var get_27 = defineInlineFunction('kotlin.org.w3c.dom.get_ldwsk8$', function ($receiver, name) {
       return $receiver[name];
     });
-    var get_27 = defineInlineFunction('kotlin.org.w3c.dom.get_iatcyr$', function ($receiver, index) {
+    var get_28 = defineInlineFunction('kotlin.org.w3c.dom.get_iatcyr$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_28 = defineInlineFunction('kotlin.org.w3c.dom.get_usmy71$', function ($receiver, name) {
+    var get_29 = defineInlineFunction('kotlin.org.w3c.dom.get_usmy71$', function ($receiver, name) {
       return $receiver[name];
     });
-    var get_29 = defineInlineFunction('kotlin.org.w3c.dom.get_t3yadb$', function ($receiver, index) {
+    var get_30 = defineInlineFunction('kotlin.org.w3c.dom.get_t3yadb$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_30 = defineInlineFunction('kotlin.org.w3c.dom.get_bempxb$', function ($receiver, name) {
+    var get_31 = defineInlineFunction('kotlin.org.w3c.dom.get_bempxb$', function ($receiver, name) {
       return $receiver[name];
     });
     var ImageBitmapOptions = defineInlineFunction('kotlin.org.w3c.dom.ImageBitmapOptions_qp88pe$', function (imageOrientation, premultiplyAlpha, colorSpaceConversion, resizeWidth, resizeHeight, resizeQuality) {
@@ -34667,7 +34866,7 @@
       o['resizeQuality'] = resizeQuality;
       return o;
     });
-    var MessageEventInit = defineInlineFunction('kotlin.org.w3c.dom.MessageEventInit_146zbu$', function (data, origin, lastEventId, source, ports, bubbles, cancelable, composed) {
+    var MessageEventInit = defineInlineFunction('kotlin.org.w3c.dom.MessageEventInit_2mzoiy$', function (data, origin, lastEventId, source, ports, bubbles, cancelable, composed) {
       if (data === void 0)
         data = null;
       if (origin === void 0)
@@ -34736,7 +34935,7 @@
       o['credentials'] = credentials;
       return o;
     });
-    var get_31 = defineInlineFunction('kotlin.org.w3c.dom.get_bsm031$', function ($receiver, key) {
+    var get_32 = defineInlineFunction('kotlin.org.w3c.dom.get_bsm031$', function ($receiver, key) {
       return $receiver[key];
     });
     var set_12 = defineInlineFunction('kotlin.org.w3c.dom.set_9wlwlb$', function ($receiver, key, value) {
@@ -34819,13 +35018,13 @@
       o['capture'] = capture;
       return o;
     });
-    var get_32 = defineInlineFunction('kotlin.org.w3c.dom.get_axj990$', function ($receiver, index) {
+    var get_33 = defineInlineFunction('kotlin.org.w3c.dom.get_axj990$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_33 = defineInlineFunction('kotlin.org.w3c.dom.get_l6emzv$', function ($receiver, index) {
+    var get_34 = defineInlineFunction('kotlin.org.w3c.dom.get_l6emzv$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_34 = defineInlineFunction('kotlin.org.w3c.dom.get_kzcjh1$', function ($receiver, name) {
+    var get_35 = defineInlineFunction('kotlin.org.w3c.dom.get_kzcjh1$', function ($receiver, name) {
       return $receiver[name];
     });
     var MutationObserverInit = defineInlineFunction('kotlin.org.w3c.dom.MutationObserverInit_c5um2n$', function (childList, attributes, characterData, subtree, attributeOldValue, characterDataOldValue, attributeFilter) {
@@ -34860,11 +35059,14 @@
       o['composed'] = composed;
       return o;
     });
-    var ElementCreationOptions = defineInlineFunction('kotlin.org.w3c.dom.ElementCreationOptions_pdl1vj$', function (is_) {
-      if (is_ === void 0)
-        is_ = undefined;
+    var get_36 = defineInlineFunction('kotlin.org.w3c.dom.get_faw09z$', function ($receiver, name) {
+      return $receiver[name];
+    });
+    var ElementCreationOptions = defineInlineFunction('kotlin.org.w3c.dom.ElementCreationOptions_pdl1vj$', function (is) {
+      if (is === void 0)
+        is = undefined;
       var o = {};
-      o['is'] = is_;
+      o['is'] = is;
       return o;
     });
     var ShadowRootInit = defineInlineFunction('kotlin.org.w3c.dom.ShadowRootInit_16lofx$', function (mode) {
@@ -34872,13 +35074,13 @@
       o['mode'] = mode;
       return o;
     });
-    var get_35 = defineInlineFunction('kotlin.org.w3c.dom.get_rjm7cj$', function ($receiver, index) {
+    var get_37 = defineInlineFunction('kotlin.org.w3c.dom.get_rjm7cj$', function ($receiver, index) {
       return $receiver[index];
     });
-    var get_36 = defineInlineFunction('kotlin.org.w3c.dom.get_oszak3$', function ($receiver, qualifiedName) {
+    var get_38 = defineInlineFunction('kotlin.org.w3c.dom.get_oszak3$', function ($receiver, qualifiedName) {
       return $receiver[qualifiedName];
     });
-    var get_37 = defineInlineFunction('kotlin.org.w3c.dom.get_o72cm9$', function ($receiver, index) {
+    var get_39 = defineInlineFunction('kotlin.org.w3c.dom.get_o72cm9$', function ($receiver, index) {
       return $receiver[index];
     });
     var DOMPointInit = defineInlineFunction('kotlin.org.w3c.dom.DOMPointInit_rd1tgs$', function (x, y, z, w) {
@@ -34913,7 +35115,7 @@
       o['height'] = height;
       return o;
     });
-    var get_38 = defineInlineFunction('kotlin.org.w3c.dom.get_p225ue$', function ($receiver, index) {
+    var get_40 = defineInlineFunction('kotlin.org.w3c.dom.get_p225ue$', function ($receiver, index) {
       return $receiver[index];
     });
     var ScrollOptions = defineInlineFunction('kotlin.org.w3c.dom.ScrollOptions_pa3cpp$', function (behavior) {
@@ -35642,7 +35844,7 @@
     var get_VIDEOINPUT = defineInlineFunction('kotlin.org.w3c.dom.mediacapture.get_VIDEOINPUT_bcgeby$', function ($receiver) {
       return 'videoinput';
     });
-    var PointerEventInit = defineInlineFunction('kotlin.org.w3c.dom.pointerevents.PointerEventInit_1dxnaw$', function (pointerId, width, height, pressure, tangentialPressure, tiltX, tiltY, twist, pointerType, isPrimary, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
+    var PointerEventInit = defineInlineFunction('kotlin.org.w3c.dom.pointerevents.PointerEventInit_as1dp9$', function (pointerId, width, height, pressure, tangentialPressure, tiltX, tiltY, twist, pointerType, isPrimary, screenX, screenY, clientX, clientY, button, buttons, relatedTarget, region, ctrlKey, shiftKey, altKey, metaKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierHyper, modifierNumLock, modifierScrollLock, modifierSuper, modifierSymbol, modifierSymbolLock, view, detail, bubbles, cancelable, composed) {
       if (pointerId === void 0)
         pointerId = 0;
       if (width === void 0)
@@ -35677,6 +35879,8 @@
         buttons = 0;
       if (relatedTarget === void 0)
         relatedTarget = null;
+      if (region === void 0)
+        region = null;
       if (ctrlKey === void 0)
         ctrlKey = false;
       if (shiftKey === void 0)
@@ -35733,6 +35937,7 @@
       o['button'] = button;
       o['buttons'] = buttons;
       o['relatedTarget'] = relatedTarget;
+      o['region'] = region;
       o['ctrlKey'] = ctrlKey;
       o['shiftKey'] = shiftKey;
       o['altKey'] = altKey;
@@ -35770,37 +35975,37 @@
       o['clipped'] = clipped;
       return o;
     });
-    var get_39 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_2fgwj9$', function ($receiver, index) {
+    var get_41 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_2fgwj9$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_13 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_xg4o68$', function ($receiver, index, newItem) {
       $receiver[index] = newItem;
     });
-    var get_40 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_nujcb1$', function ($receiver, index) {
+    var get_42 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_nujcb1$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_14 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_vul1sp$', function ($receiver, index, newItem) {
       $receiver[index] = newItem;
     });
-    var get_41 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_ml6vgw$', function ($receiver, index) {
+    var get_43 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_ml6vgw$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_15 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_tsl60p$', function ($receiver, index, newItem) {
       $receiver[index] = newItem;
     });
-    var get_42 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_f2nmth$', function ($receiver, index) {
+    var get_44 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_f2nmth$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_16 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_nr97t$', function ($receiver, index, newItem) {
       $receiver[index] = newItem;
     });
-    var get_43 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_xcci3g$', function ($receiver, index) {
+    var get_45 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_xcci3g$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_17 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_7s907r$', function ($receiver, index, newItem) {
       $receiver[index] = newItem;
     });
-    var get_44 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_r7cbpc$', function ($receiver, index) {
+    var get_46 = defineInlineFunction('kotlin.org.w3c.dom.svg.get_r7cbpc$', function ($receiver, index) {
       return $receiver[index];
     });
     var set_18 = defineInlineFunction('kotlin.org.w3c.dom.svg.set_8k1hvb$', function ($receiver, index, newItem) {
@@ -36011,7 +36216,7 @@
       o['type'] = type;
       return o;
     });
-    var get_45 = defineInlineFunction('kotlin.org.w3c.files.get_frimup$', function ($receiver, index) {
+    var get_47 = defineInlineFunction('kotlin.org.w3c.files.get_frimup$', function ($receiver, index) {
       return $receiver[index];
     });
     var NotificationOptions = defineInlineFunction('kotlin.org.w3c.notifications.NotificationOptions_kxkl36$', function (dir, lang, body, tag, image, icon, badge, sound, vibrate, timestamp, renotify, silent, noscreen, requireInteraction, sticky, data, actions) {
@@ -36132,7 +36337,7 @@
       o['type'] = type;
       return o;
     });
-    var ServiceWorkerMessageEventInit = defineInlineFunction('kotlin.org.w3c.workers.ServiceWorkerMessageEventInit_d2wyw1$', function (data, origin, lastEventId, source, ports, bubbles, cancelable, composed) {
+    var ServiceWorkerMessageEventInit = defineInlineFunction('kotlin.org.w3c.workers.ServiceWorkerMessageEventInit_m1i4wi$', function (data, origin, lastEventId, source, ports, bubbles, cancelable, composed) {
       if (data === void 0)
         data = undefined;
       if (origin === void 0)
@@ -36337,7 +36542,7 @@
     var get_ALL = defineInlineFunction('kotlin.org.w3c.workers.get_ALL_jpgnoe$', function ($receiver) {
       return 'all';
     });
-    var ProgressEventInit = defineInlineFunction('kotlin.org.w3c.xhr.ProgressEventInit_swrtea$', function (lengthComputable, loaded, total, bubbles, cancelable, composed) {
+    var ProgressEventInit = defineInlineFunction('kotlin.org.w3c.xhr.ProgressEventInit_yosdck$', function (lengthComputable, loaded, total, bubbles, cancelable, composed) {
       if (lengthComputable === void 0)
         lengthComputable = false;
       if (loaded === void 0)
@@ -38089,7 +38294,7 @@
         return (Kotlin.isType(tmp$ = $receiver, Map) ? tmp$ : throwCCE()).containsKey_11rb$(key);
       };
     }));
-    var get_46 = defineInlineFunction('kotlin.kotlin.collections.get_4pa84t$', wrapFunction(function () {
+    var get_48 = defineInlineFunction('kotlin.kotlin.collections.get_4pa84t$', wrapFunction(function () {
       var Map = _.kotlin.collections.Map;
       var throwCCE = Kotlin.throwCCE;
       return function ($receiver, key) {
@@ -39656,12 +39861,12 @@
       checkWindowSizeStep(size, step);
       return new Sequence$ObjectLiteral_4(windowedSequence$lambda_1($receiver, size, step, partialWindows, reuseBuffer));
     }
-    function Coroutine$windowedIterator$lambda(closure$step_0, closure$size_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0, $receiver_0, controller, continuation_0) {
+    function Coroutine$windowedIterator$lambda(closure$size_0, closure$step_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0, $receiver_0, controller, continuation_0) {
       CoroutineImpl.call(this, continuation_0);
       this.$controller = controller;
       this.exceptionState_0 = 1;
-      this.local$closure$step = closure$step_0;
       this.local$closure$size = closure$size_0;
+      this.local$closure$step = closure$step_0;
       this.local$closure$iterator = closure$iterator_0;
       this.local$closure$reuseBuffer = closure$reuseBuffer_0;
       this.local$closure$partialWindows = closure$partialWindows_0;
@@ -39682,16 +39887,17 @@
         try {
           switch (this.state_0) {
             case 0:
+              var bufferInitialCapacity = coerceAtMost_2(this.local$closure$size, 1024);
               this.local$gap = this.local$closure$step - this.local$closure$size | 0;
               if (this.local$gap >= 0) {
-                this.local$buffer = ArrayList_init_0(this.local$closure$size);
+                this.local$buffer = ArrayList_init_0(bufferInitialCapacity);
                 this.local$skip = 0;
                 this.local$tmp$ = this.local$closure$iterator;
-                this.state_0 = 12;
+                this.state_0 = 13;
                 continue;
               }
                else {
-                this.local$buffer_0 = new RingBuffer(this.local$closure$size);
+                this.local$buffer_0 = RingBuffer_init(bufferInitialCapacity);
                 this.local$tmp$_0 = this.local$closure$iterator;
                 this.state_0 = 2;
                 continue;
@@ -39701,34 +39907,72 @@
               throw this.exception_0;
             case 2:
               if (!this.local$tmp$_0.hasNext()) {
-                this.state_0 = 5;
+                this.state_0 = 6;
                 continue;
               }
 
               var e_0 = this.local$tmp$_0.next();
               this.local$buffer_0.add_11rb$(e_0);
               if (this.local$buffer_0.isFull()) {
-                this.state_0 = 3;
-                this.result_0 = this.local$$receiver.yield_11rb$(this.local$closure$reuseBuffer ? this.local$buffer_0 : ArrayList_init_1(this.local$buffer_0), this);
-                if (this.result_0 === get_COROUTINE_SUSPENDED())
-                  return get_COROUTINE_SUSPENDED();
-                continue;
+                if (this.local$buffer_0.size < this.local$closure$size) {
+                  this.local$buffer_0 = this.local$buffer_0.expanded_za3lpa$(this.local$closure$size);
+                  this.state_0 = 2;
+                  continue;
+                }
+                 else {
+                  this.state_0 = 3;
+                  continue;
+                }
               }
                else {
-                this.state_0 = 4;
+                this.state_0 = 5;
                 continue;
               }
 
             case 3:
-              this.local$buffer_0.removeFirst_za3lpa$(this.local$closure$step);
               this.state_0 = 4;
+              this.result_0 = this.local$$receiver.yield_11rb$(this.local$closure$reuseBuffer ? this.local$buffer_0 : ArrayList_init_1(this.local$buffer_0), this);
+              if (this.result_0 === get_COROUTINE_SUSPENDED())
+                return get_COROUTINE_SUSPENDED();
               continue;
             case 4:
-              this.state_0 = 2;
+              this.local$buffer_0.removeFirst_za3lpa$(this.local$closure$step);
+              this.state_0 = 5;
               continue;
             case 5:
+              this.state_0 = 2;
+              continue;
+            case 6:
               if (this.local$closure$partialWindows) {
-                this.state_0 = 6;
+                this.state_0 = 7;
+                continue;
+              }
+               else {
+                this.state_0 = 12;
+                continue;
+              }
+
+            case 7:
+              if (this.local$buffer_0.size <= this.local$closure$step) {
+                this.state_0 = 9;
+                continue;
+              }
+
+              this.state_0 = 8;
+              this.result_0 = this.local$$receiver.yield_11rb$(this.local$closure$reuseBuffer ? this.local$buffer_0 : ArrayList_init_1(this.local$buffer_0), this);
+              if (this.result_0 === get_COROUTINE_SUSPENDED())
+                return get_COROUTINE_SUSPENDED();
+              continue;
+            case 8:
+              this.local$buffer_0.removeFirst_za3lpa$(this.local$closure$step);
+              this.state_0 = 7;
+              continue;
+            case 9:
+              if (!this.local$buffer_0.isEmpty()) {
+                this.state_0 = 10;
+                this.result_0 = this.local$$receiver.yield_11rb$(this.local$buffer_0, this);
+                if (this.result_0 === get_COROUTINE_SUSPENDED())
+                  return get_COROUTINE_SUSPENDED();
                 continue;
               }
                else {
@@ -39736,112 +39980,84 @@
                 continue;
               }
 
-            case 6:
-              if (this.local$buffer_0.size <= this.local$closure$step) {
-                this.state_0 = 8;
-                continue;
-              }
-
-              this.state_0 = 7;
-              this.result_0 = this.local$$receiver.yield_11rb$(this.local$closure$reuseBuffer ? this.local$buffer_0 : ArrayList_init_1(this.local$buffer_0), this);
-              if (this.result_0 === get_COROUTINE_SUSPENDED())
-                return get_COROUTINE_SUSPENDED();
-              continue;
-            case 7:
-              this.local$buffer_0.removeFirst_za3lpa$(this.local$closure$step);
-              this.state_0 = 6;
-              continue;
-            case 8:
-              if (!this.local$buffer_0.isEmpty()) {
-                this.state_0 = 9;
-                this.result_0 = this.local$$receiver.yield_11rb$(this.local$buffer_0, this);
-                if (this.result_0 === get_COROUTINE_SUSPENDED())
-                  return get_COROUTINE_SUSPENDED();
-                continue;
-              }
-               else {
-                this.state_0 = 10;
-                continue;
-              }
-
-            case 9:
-              return Unit;
             case 10:
-              this.state_0 = 11;
-              continue;
+              return Unit;
             case 11:
-              this.state_0 = 20;
+              this.state_0 = 12;
               continue;
             case 12:
+              this.state_0 = 21;
+              continue;
+            case 13:
               if (!this.local$tmp$.hasNext()) {
-                this.state_0 = 16;
+                this.state_0 = 17;
                 continue;
               }
 
               this.local$e = this.local$tmp$.next();
               if (this.local$skip > 0) {
                 this.local$skip = this.local$skip - 1 | 0;
-                this.state_0 = 12;
-                continue;
-              }
-               else {
                 this.state_0 = 13;
                 continue;
               }
+               else {
+                this.state_0 = 14;
+                continue;
+              }
 
-            case 13:
+            case 14:
               this.local$buffer.add_11rb$(this.local$e);
               if (this.local$buffer.size === this.local$closure$size) {
-                this.state_0 = 14;
+                this.state_0 = 15;
                 this.result_0 = this.local$$receiver.yield_11rb$(this.local$buffer, this);
                 if (this.result_0 === get_COROUTINE_SUSPENDED())
                   return get_COROUTINE_SUSPENDED();
                 continue;
               }
                else {
-                this.state_0 = 15;
+                this.state_0 = 16;
                 continue;
               }
 
-            case 14:
+            case 15:
               if (this.local$closure$reuseBuffer)
                 this.local$buffer.clear();
               else
                 this.local$buffer = ArrayList_init_0(this.local$closure$size);
               this.local$skip = this.local$gap;
-              this.state_0 = 15;
-              continue;
-            case 15:
-              this.state_0 = 12;
+              this.state_0 = 16;
               continue;
             case 16:
+              this.state_0 = 13;
+              continue;
+            case 17:
               if (!this.local$buffer.isEmpty()) {
                 if (this.local$closure$partialWindows || this.local$buffer.size === this.local$closure$size) {
-                  this.state_0 = 17;
+                  this.state_0 = 18;
                   this.result_0 = this.local$$receiver.yield_11rb$(this.local$buffer, this);
                   if (this.result_0 === get_COROUTINE_SUSPENDED())
                     return get_COROUTINE_SUSPENDED();
                   continue;
                 }
                  else {
-                  this.state_0 = 18;
+                  this.state_0 = 19;
                   continue;
                 }
               }
                else {
-                this.state_0 = 19;
+                this.state_0 = 20;
                 continue;
               }
 
-            case 17:
-              return Unit;
             case 18:
-              this.state_0 = 19;
-              continue;
+              return Unit;
             case 19:
               this.state_0 = 20;
               continue;
             case 20:
+              this.state_0 = 21;
+              continue;
+            case 21:
               return Unit;
             default:this.state_0 = 1;
               throw new Error('State Machine Unreachable execution');
@@ -39859,9 +40075,9 @@
         }
        while (true);
     };
-    function windowedIterator$lambda(closure$step_0, closure$size_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0) {
+    function windowedIterator$lambda(closure$size_0, closure$step_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0) {
       return function ($receiver_0, continuation_0, suspended) {
-        var instance = new Coroutine$windowedIterator$lambda(closure$step_0, closure$size_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0, $receiver_0, this, continuation_0);
+        var instance = new Coroutine$windowedIterator$lambda(closure$size_0, closure$step_0, closure$iterator_0, closure$reuseBuffer_0, closure$partialWindows_0, $receiver_0, this, continuation_0);
         if (suspended)
           return instance;
         else
@@ -39871,7 +40087,7 @@
     function windowedIterator(iterator, size, step, partialWindows, reuseBuffer) {
       if (!iterator.hasNext())
         return EmptyIterator_getInstance();
-      return iterator_3(windowedIterator$lambda(step, size, iterator, reuseBuffer, partialWindows));
+      return iterator_3(windowedIterator$lambda(size, step, iterator, reuseBuffer, partialWindows));
     }
     function MovingSubList(list) {
       AbstractList.call(this);
@@ -39892,16 +40108,20 @@
       return this._size_0;
     }});
     MovingSubList.$metadata$ = {kind: Kind_CLASS, simpleName: 'MovingSubList', interfaces: [RandomAccess, AbstractList]};
-    function RingBuffer(capacity) {
+    function RingBuffer(buffer, filledSize) {
       AbstractList.call(this);
-      this.capacity = capacity;
-      if (!(this.capacity >= 0)) {
-        var message = 'ring buffer capacity should not be negative but it is ' + this.capacity;
+      this.buffer_0 = buffer;
+      if (!(filledSize >= 0)) {
+        var message = 'ring buffer filled size should not be negative but it is ' + filledSize;
         throw IllegalArgumentException_init_0(message.toString());
       }
-      this.buffer_0 = Kotlin.newArray(this.capacity, null);
+      if (!(filledSize <= this.buffer_0.length)) {
+        var message_0 = 'ring buffer filled size: ' + filledSize + ' cannot be larger than the buffer size: ' + this.buffer_0.length;
+        throw IllegalArgumentException_init_0(message_0.toString());
+      }
+      this.capacity_0 = this.buffer_0.length;
       this.startIndex_0 = 0;
-      this.size_4goa01$_0 = 0;
+      this.size_4goa01$_0 = filledSize;
     }
     Object.defineProperty(RingBuffer.prototype, 'size', {get: function () {
       return this.size_4goa01$_0;
@@ -39911,10 +40131,10 @@
     RingBuffer.prototype.get_za3lpa$ = function (index) {
       var tmp$;
       AbstractList$Companion_getInstance().checkElementIndex_6xvm5r$(index, this.size);
-      return (tmp$ = this.buffer_0[(this.startIndex_0 + index | 0) % this.capacity]) == null || Kotlin.isType(tmp$, Any) ? tmp$ : throwCCE_0();
+      return (tmp$ = this.buffer_0[(this.startIndex_0 + index | 0) % this.capacity_0]) == null || Kotlin.isType(tmp$, Any) ? tmp$ : throwCCE_0();
     };
     RingBuffer.prototype.isFull = function () {
-      return this.size === this.capacity;
+      return this.size === this.capacity_0;
     };
     function RingBuffer$iterator$ObjectLiteral(this$RingBuffer) {
       this.this$RingBuffer = this$RingBuffer;
@@ -39929,7 +40149,7 @@
       }
        else {
         this.setNext_11rb$((tmp$ = this.this$RingBuffer.buffer_0[this.index_0]) == null || Kotlin.isType(tmp$, Any) ? tmp$ : throwCCE_0());
-        this.index_0 = (this.index_0 + 1 | 0) % this.this$RingBuffer.capacity;
+        this.index_0 = (this.index_0 + 1 | 0) % this.this$RingBuffer.capacity_0;
         this.count_0 = this.count_0 - 1 | 0;
       }
     };
@@ -39943,7 +40163,7 @@
       var size = this.size;
       var widx = 0;
       var idx = this.startIndex_0;
-      while (widx < size && idx < this.capacity) {
+      while (widx < size && idx < this.capacity_0) {
         result[widx] = (tmp$_0 = this.buffer_0[idx]) == null || Kotlin.isType(tmp$_0, Any) ? tmp$_0 : throwCCE_0();
         widx = widx + 1 | 0;
         idx = idx + 1 | 0;
@@ -39961,11 +40181,16 @@
     RingBuffer.prototype.toArray = function () {
       return this.toArray_ro6dgy$(Kotlin.newArray(this.size, null));
     };
+    RingBuffer.prototype.expanded_za3lpa$ = function (maxCapacity) {
+      var newCapacity = coerceAtMost_2(this.capacity_0 + (this.capacity_0 >> 1) + 1 | 0, maxCapacity);
+      var newBuffer = this.startIndex_0 === 0 ? copyOf_24(this.buffer_0, newCapacity) : this.toArray_ro6dgy$(Kotlin.newArray(newCapacity, null));
+      return new RingBuffer(newBuffer, this.size);
+    };
     RingBuffer.prototype.add_11rb$ = function (element) {
       if (this.isFull()) {
         throw IllegalStateException_init_0('ring buffer is full');
       }
-      this.buffer_0[(this.startIndex_0 + this.size | 0) % this.capacity] = element;
+      this.buffer_0[(this.startIndex_0 + this.size | 0) % this.capacity_0] = element;
       this.size = this.size + 1 | 0;
     };
     RingBuffer.prototype.removeFirst_za3lpa$ = function (n) {
@@ -39979,9 +40204,9 @@
       }
       if (n > 0) {
         var start = this.startIndex_0;
-        var end = (start + n | 0) % this.capacity;
+        var end = (start + n | 0) % this.capacity_0;
         if (start > end) {
-          fill_3(this.buffer_0, null, start, this.capacity);
+          fill_3(this.buffer_0, null, start, this.capacity_0);
           fill_3(this.buffer_0, null, 0, end);
         }
          else {
@@ -39992,9 +40217,14 @@
       }
     };
     RingBuffer.prototype.forward_0 = function ($receiver, n) {
-      return ($receiver + n | 0) % this.capacity;
+      return ($receiver + n | 0) % this.capacity_0;
     };
     RingBuffer.$metadata$ = {kind: Kind_CLASS, simpleName: 'RingBuffer', interfaces: [RandomAccess, AbstractList]};
+    function RingBuffer_init(capacity, $this) {
+      $this = $this || Object.create(RingBuffer.prototype);
+      RingBuffer.call($this, Kotlin.newArray(capacity, null), 0);
+      return $this;
+    }
     function partition_12(array, left, right) {
       var i = left;
       var j = right;
@@ -41451,9 +41681,9 @@
       if (range.isEmpty())
         throw IllegalArgumentException_init_0('Cannot get random in empty range: ' + range);
       else if (range.last.compareTo_11rb$(Long$Companion$MAX_VALUE) < 0)
-        return $receiver.nextLong_3pjtqy$(range.start, range.endInclusive.add(Kotlin.Long.fromInt(1)));
-      else if (range.start.compareTo_11rb$(Long$Companion$MIN_VALUE) > 0)
-        return $receiver.nextLong_3pjtqy$(range.start.subtract(Kotlin.Long.fromInt(1)), range.endInclusive).add(Kotlin.Long.fromInt(1));
+        return $receiver.nextLong_3pjtqy$(range.first, range.last.add(Kotlin.Long.fromInt(1)));
+      else if (range.first.compareTo_11rb$(Long$Companion$MIN_VALUE) > 0)
+        return $receiver.nextLong_3pjtqy$(range.first.subtract(Kotlin.Long.fromInt(1)), range.last).add(Kotlin.Long.fromInt(1));
       else
         return $receiver.nextLong();
     }
@@ -41965,7 +42195,6 @@
       return toIntOrNull_0($receiver, 10);
     }
     function toIntOrNull_0($receiver, radix) {
-      var tmp$;
       checkRadix(radix);
       var length = $receiver.length;
       if (length === 0)
@@ -41994,15 +42223,24 @@
         isNegative = false;
         limit = -2147483647;
       }
-      var limitBeforeMul = limit / radix | 0;
+      var limitForMaxRadix = -59652323;
+      var limitBeforeMul = limitForMaxRadix;
       var result = 0;
-      tmp$ = length - 1 | 0;
-      for (var i = start; i <= tmp$; i++) {
+      for (var i = start; i < length; i++) {
         var digit = digitOf($receiver.charCodeAt(i), radix);
         if (digit < 0)
           return null;
-        if (result < limitBeforeMul)
-          return null;
+        if (result < limitBeforeMul) {
+          if (limitBeforeMul === limitForMaxRadix) {
+            limitBeforeMul = limit / radix | 0;
+            if (result < limitBeforeMul) {
+              return null;
+            }
+          }
+           else {
+            return null;
+          }
+        }
         result = Kotlin.imul(result, radix);
         if (result < (limit + digit | 0))
           return null;
@@ -42014,7 +42252,6 @@
       return toLongOrNull_0($receiver, 10);
     }
     function toLongOrNull_0($receiver, radix) {
-      var tmp$;
       checkRadix(radix);
       var length = $receiver.length;
       if (length === 0)
@@ -42043,15 +42280,24 @@
         isNegative = false;
         limit = L_9223372036854775807;
       }
-      var limitBeforeMul = limit.div(Kotlin.Long.fromInt(radix));
+      var limitForMaxRadix = L_256204778801521550;
+      var limitBeforeMul = limitForMaxRadix;
       var result = L0;
-      tmp$ = length - 1 | 0;
-      for (var i = start; i <= tmp$; i++) {
+      for (var i = start; i < length; i++) {
         var digit = digitOf($receiver.charCodeAt(i), radix);
         if (digit < 0)
           return null;
-        if (result.compareTo_11rb$(limitBeforeMul) < 0)
-          return null;
+        if (result.compareTo_11rb$(limitBeforeMul) < 0) {
+          if (equals(limitBeforeMul, limitForMaxRadix)) {
+            limitBeforeMul = limit.div(Kotlin.Long.fromInt(radix));
+            if (result.compareTo_11rb$(limitBeforeMul) < 0) {
+              return null;
+            }
+          }
+           else {
+            return null;
+          }
+        }
         result = result.multiply(Kotlin.Long.fromInt(radix));
         if (result.compareTo_11rb$(limit.add(Kotlin.Long.fromInt(digit))) < 0)
           return null;
@@ -43991,7 +44237,7 @@
     function KotlinVersion$Companion() {
       KotlinVersion$Companion_instance = this;
       this.MAX_COMPONENT_VALUE = 255;
-      this.CURRENT = new KotlinVersion(1, 3, 50);
+      this.CURRENT = new KotlinVersion(1, 3, 60);
     }
     KotlinVersion$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
     var KotlinVersion$Companion_instance = null;
@@ -46967,15 +47213,25 @@
        else {
         start = 0;
       }
+      var limitForMaxRadix = new UInt(119304647);
+      var limitBeforeMul = limitForMaxRadix;
       var uradix = new UInt(radix);
-      var limitBeforeMul = uintDivide(limit, uradix);
       var result = new UInt(0);
       for (var i = start; i < length; i++) {
         var digit = digitOf($receiver.charCodeAt(i), radix);
         if (digit < 0)
           return null;
-        if (uintCompare(result.data, limitBeforeMul.data) > 0)
-          return null;
+        if (uintCompare(result.data, limitBeforeMul.data) > 0) {
+          if (limitBeforeMul != null ? limitBeforeMul.equals(limitForMaxRadix) : null) {
+            limitBeforeMul = uintDivide(limit, uradix);
+            if (uintCompare(result.data, limitBeforeMul.data) > 0) {
+              return null;
+            }
+          }
+           else {
+            return null;
+          }
+        }
         result = new UInt(Kotlin.imul(result.data, uradix.data));
         var beforeAdding = result;
         result = new UInt(result.data + (new UInt(digit)).data | 0);
@@ -47003,16 +47259,26 @@
        else {
         start = 0;
       }
-      var uradix = new UInt(radix);
-      var limitBeforeMul = ulongDivide(limit, new ULong(Kotlin.Long.fromInt(uradix.data).and(L4294967295)));
+      var limitForMaxRadix = new ULong(new Kotlin.Long(477218588, 119304647));
+      var limitBeforeMul = limitForMaxRadix;
+      var uradix = new ULong(Kotlin.Long.fromInt(radix));
       var result = new ULong(Kotlin.Long.ZERO);
       for (var i = start; i < length; i++) {
         var digit = digitOf($receiver.charCodeAt(i), radix);
         if (digit < 0)
           return null;
-        if (ulongCompare(result.data, limitBeforeMul.data) > 0)
-          return null;
-        result = new ULong(result.data.multiply((new ULong(Kotlin.Long.fromInt(uradix.data).and(L4294967295))).data));
+        if (ulongCompare(result.data, limitBeforeMul.data) > 0) {
+          if (limitBeforeMul != null ? limitBeforeMul.equals(limitForMaxRadix) : null) {
+            limitBeforeMul = ulongDivide(limit, uradix);
+            if (ulongCompare(result.data, limitBeforeMul.data) > 0) {
+              return null;
+            }
+          }
+           else {
+            return null;
+          }
+        }
+        result = new ULong(result.data.multiply(uradix.data));
         var beforeAdding = result;
         result = new ULong(result.data.add((new ULong(Kotlin.Long.fromInt((new UInt(digit)).data).and(L4294967295))).data));
         if (ulongCompare(result.data, beforeAdding.data) < 0)
@@ -49275,6 +49541,7 @@
     package$js.JsModule = JsModule;
     package$js.JsNonModule = JsNonModule;
     package$js.JsQualifier = JsQualifier;
+    package$js.ExperimentalJsExport = ExperimentalJsExport;
     package$js.JsExport = JsExport;
     var package$jvm = package$kotlin.jvm || (package$kotlin.jvm = {});
     package$jvm.Volatile = Volatile;
@@ -49484,6 +49751,18 @@
     package$internal_1.SimpleKClassImpl = SimpleKClassImpl;
     package$internal_1.PrimitiveKClassImpl = PrimitiveKClassImpl;
     Object.defineProperty(package$internal_1, 'NothingKClassImpl', {get: NothingKClassImpl_getInstance});
+    _.createKType = createKType;
+    _.createDynamicKType = createDynamicKType;
+    _.markKTypeNullable = markKTypeNullable;
+    _.createKTypeParameter = createKTypeParameter;
+    _.getStarKTypeProjection = getStarKTypeProjection;
+    _.createCovariantKTypeProjection = createCovariantKTypeProjection;
+    _.createInvariantKTypeProjection = createInvariantKTypeProjection;
+    _.createContravariantKTypeProjection = createContravariantKTypeProjection;
+    package$internal_1.KTypeImpl = KTypeImpl;
+    Object.defineProperty(package$internal_1, 'DynamicKType', {get: DynamicKType_getInstance});
+    package$internal_1.prefixString_knho38$ = prefixString;
+    package$internal_1.KTypeParameterImpl = KTypeParameterImpl;
     Object.defineProperty(package$internal_1, 'PrimitiveClasses', {get: PrimitiveClasses_getInstance});
     _.getKClass = getKClass;
     _.getKClassFromExpression = getKClassFromExpression;

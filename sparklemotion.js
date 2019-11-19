@@ -18914,33 +18914,33 @@
     this.message2Div_0.innerText = message;
   };
   JsMapperUi.prototype.showBefore_5151av$ = function (bitmap) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1;
     var beforeCanvas = first_2(ensureNotNull(document.body), 'mapperUi-before-canvas');
     var beforeCtx = Kotlin.isType(tmp$ = beforeCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     beforeCtx.resetTransform();
     beforeCtx.scale(0.3, 0.3);
     if (Kotlin.isType(bitmap, NativeBitmap))
-      tmp$_0 = bitmap.canvas_8be2vx$;
+      tmp$_1 = bitmap.canvas_8be2vx$;
     else if (Kotlin.isType(bitmap, CanvasBitmap))
-      tmp$_0 = bitmap.canvas_8be2vx$;
+      tmp$_1 = bitmap.canvas_8be2vx$;
     else
-      tmp$_0 = bitmap;
-    var renderBitmap = tmp$_0;
+      tmp$_1 = Kotlin.isType(tmp$_0 = bitmap, Object) ? tmp$_0 : throwCCE();
+    var renderBitmap = tmp$_1;
     beforeCtx.drawImage(renderBitmap, 0.0, 0.0);
   };
   JsMapperUi.prototype.showAfter_5151av$ = function (bitmap) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1;
     var afterCanvas = first_2(ensureNotNull(document.body), 'mapperUi-after-canvas');
     var afterCtx = Kotlin.isType(tmp$ = afterCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     afterCtx.resetTransform();
     afterCtx.scale(0.3, 0.3);
     if (Kotlin.isType(bitmap, NativeBitmap))
-      tmp$_0 = bitmap.canvas_8be2vx$;
+      tmp$_1 = bitmap.canvas_8be2vx$;
     else if (Kotlin.isType(bitmap, CanvasBitmap))
-      tmp$_0 = bitmap.canvas_8be2vx$;
+      tmp$_1 = bitmap.canvas_8be2vx$;
     else
-      tmp$_0 = bitmap;
-    var renderBitmap = tmp$_0;
+      tmp$_1 = Kotlin.isType(tmp$_0 = bitmap, Object) ? tmp$_0 : throwCCE();
+    var renderBitmap = tmp$_1;
     afterCtx.drawImage(renderBitmap, 0.0, 0.0);
   };
   function Coroutine$JsMapperUi$setRedo$lambda$lambda(closure$fn_0, $receiver_0, controller, continuation_0) {
