@@ -51,8 +51,8 @@ class JvmSoundAnalyzer : SoundAnalyzer {
                 /*signed =*/ true, /*bigEndian =*/ false
             )
 
-            // 91hz/12 bits so it fits into an 8k buffer
-            val constantQ = ConstantQ(sampleRate, 91f, 20000f, 12f)
+            // 40hz/12 bins/spread of 2.3 fits into an 8k buffer with 87 buckets; not quite the piano keys but close.
+            val constantQ = ConstantQ(sampleRate, 40f, 6000f, 12f, 0.001f, 2.3f)
             logger.debug { "FFT length: ${constantQ.ffTlength}; bins: ${constantQ.numberOfOutputBands}" }
             val dataLineInfo = DataLine.Info(TargetDataLine::class.java, format)
             val line: TargetDataLine
