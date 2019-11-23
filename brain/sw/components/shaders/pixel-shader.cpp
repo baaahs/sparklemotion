@@ -2,7 +2,7 @@
 
 #include "esp_log.h"
 #include "brain_common.h"
-#include "sysmon.h""
+#include "sysmon.h"
 
 #define TAG TAG_SHADER
 
