@@ -32,12 +32,8 @@ bool EthInterface::init() {
     if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, glue_evtHandler, this)) != ESP_OK) return false;
     if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, glue_evtHandler, this)) != ESP_OK) return false;
 
-    //eth_mac_config_t macConfig = ETH_MAC_DEFAULT_CONFIG();
-    eth_mac_config_t macConfig = {};
+    eth_mac_config_t macConfig = ETH_MAC_DEFAULT_CONFIG();
     macConfig.sw_reset_timeout_ms = 300;
-    macConfig.rx_task_stack_size = 4096;
-    macConfig.rx_task_prio = 15;
-    macConfig.queue_len = 100;
     esp_eth_mac_t *mac = esp_eth_mac_new_esp32(&macConfig);
 
     eth_phy_config_t phyConfig = ETH_PHY_DEFAULT_CONFIG();
