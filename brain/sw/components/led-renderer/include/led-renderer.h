@@ -100,4 +100,6 @@ private:
 
     LEDShaderContext m_context;
     TimeBase& m_timeBase;
+
+    uint32_t m_frameNumber;
 };
