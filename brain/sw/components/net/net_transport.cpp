@@ -11,6 +11,7 @@
 #include <driver/periph_ctrl.h>
 #include <hal/emac.h>
 
+#define RESTART_WHEN_NO_ETHERNET false
 
 ////////////////////////////////////////////////////////////
 // Glue functions that let us use C++ functions with the IDF
@@ -95,7 +96,7 @@ NetTransport::_interfaceTask() {
     vTaskDelay(pdMS_TO_TICKS(20000));
 
     ESP_LOGE(TAG, "Checking for ethernet link up");
-    if (!m_ethUp) {
+    if (RESTART_WHEN_NO_ETHERNET && !m_ethUp) {
         ESP_LOGE(TAG, "Ethernet link not up, restarting");
 
 //        ESP_LOGE(TAG, "=========  Ethernet restart disabled for testing wifi  ===========");
@@ -187,7 +188,7 @@ NetTransport::reconfigure() {
     wifiSta();
     m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
     m_pWifiSta->setEnabled(true);
-//
-//    wifiAp();
-//    m_pWifiAp->setEnabled(true);
+
+    wifiAp();
+    m_pWifiAp->setEnabled(true);
 }
