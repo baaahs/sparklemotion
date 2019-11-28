@@ -184,9 +184,9 @@ NetTransport::reconfigure() {
     m_pEth->setEnabled(true);
 #endif
 
-//    wifiSta();
-//    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
-//    m_pWifiSta->setEnabled(true);
+    wifiSta();
+    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
+    m_pWifiSta->setEnabled(true);
 //
 //    wifiAp();
 //    m_pWifiAp->setEnabled(true);
