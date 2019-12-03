@@ -10284,7 +10284,7 @@
   }
   function GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this$GlslRenderer, this$Arrangement) {
     return function () {
-      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, 32854, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount), this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount));
+      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, GlslRenderer$GlConst_getInstance().GL_RGBA8, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount), this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount));
       return Unit;
     };
   }
@@ -10588,6 +10588,22 @@
     simpleName: 'Stats',
     interfaces: []
   };
+  function GlslRenderer$GlConst() {
+    GlslRenderer$GlConst_instance = this;
+    this.GL_RGBA8 = 32856;
+  }
+  GlslRenderer$GlConst.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlConst',
+    interfaces: []
+  };
+  var GlslRenderer$GlConst_instance = null;
+  function GlslRenderer$GlConst_getInstance() {
+    if (GlslRenderer$GlConst_instance === null) {
+      new GlslRenderer$GlConst();
+    }
+    return GlslRenderer$GlConst_instance;
+  }
   function GlslRenderer$program$lambda(this$GlslRenderer) {
     return function () {
       return this$GlslRenderer.createShaderProgram_66d3yg$_0();
@@ -22431,6 +22447,9 @@
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
   GlslRenderer.ContextSwitcher = GlslRenderer$ContextSwitcher;
   GlslRenderer.Stats = GlslRenderer$Stats;
+  Object.defineProperty(GlslRenderer, 'GlConst', {
+    get: GlslRenderer$GlConst_getInstance
+  });
   package$glsl.GlslRenderer = GlslRenderer;
   package$glsl.GlslSurface = GlslSurface;
   package$glsl.SurfacePixels = SurfacePixels;
