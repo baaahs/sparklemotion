@@ -3,6 +3,7 @@ package baaahs.glsl
 import baaahs.Color
 import baaahs.Surface
 import baaahs.getTimeMillis
+import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import baaahs.shaders.GlslShader
 import baaahs.timeSync
 import com.danielgergely.kgl.*
@@ -229,7 +230,7 @@ void main(void) {
 
             gl { gl.bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
 //            console.error("pixel count: $pixelCount (${pixelCount.bufWidth} x ${pixelCount.bufHeight} = ${pixelCount.bufSize})")
-            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, pixelCount.bufWidth, pixelCount.bufHeight) }
+            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixelCount.bufWidth, pixelCount.bufHeight) }
             gl { gl.framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
 
             val status = gl { gl.checkFramebufferStatus(GL_FRAMEBUFFER) }
@@ -346,5 +347,9 @@ void main(void) {
             readPxMs = 0
             frameCount = 0
         }
+    }
+
+    object GlConst {
+        val GL_RGBA8 = 0x8058
     }
 }
