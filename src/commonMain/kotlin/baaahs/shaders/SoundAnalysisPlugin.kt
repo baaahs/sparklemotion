@@ -70,10 +70,8 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
             uniform.set(textureId)
         }
 
-        fun finalize() {
-            gl.check {
-                gl.deleteTexture(texture)
-            }
+        override fun release() {
+            gl.check { gl.deleteTexture(texture) }
         }
     }
 }
