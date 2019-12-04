@@ -20,10 +20,10 @@ class GlslRendererTest {
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, 0.5, 1.);
             }
-            """.trimIndent(), GlslShader.extraAdjustables
+            """.trimIndent(), UvTranslatorForTest, GlslShader.extraAdjustables
         )
 
-        val glslSurface = renderer.addSurface(surfaceWithThreePixels(), UvTranslatorForTest)!!
+        val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
         // TODO: yuck, let's not do this.
         glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f))
@@ -52,10 +52,10 @@ class GlslRendererTest {
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.);
             }
-            """.trimIndent(), adjustables
+            """.trimIndent(), UvTranslatorForTest, adjustables
         )
 
-        val glslSurface = renderer.addSurface(surfaceWithThreePixels(), UvTranslatorForTest)!!
+        val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
         glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
         renderer.draw()
@@ -82,12 +82,12 @@ class GlslRendererTest {
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, 0.5, 1.);
             }
-            """.trimIndent(), GlslShader.extraAdjustables
+            """.trimIndent(), UvTranslatorForTest, GlslShader.extraAdjustables
         )
 
-        val glslSurface1 = renderer.addSurface(surfaceWithThreePixels(), UvTranslatorForTest)!!
-        val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels(), UvTranslatorForTest)!!
-        val glslSurface3 = renderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels(), UvTranslatorForTest)!!
+        val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
+        val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
+        val glslSurface3 = renderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels())!!
 
         // TODO: yuck, let's not do this.
         listOf(glslSurface1, glslSurface2, glslSurface3).forEach {
@@ -145,7 +145,7 @@ class GlslRendererTest {
     object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
         override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")
 
-        override fun forPixels(pixelLocations: List<Vector3F?>) = object : UvTranslator.SurfaceUvTranslator {
+        override fun forPixels(pixelLocations: List<Vector3F?>) = object : SurfaceUvTranslator {
             override val pixelCount = pixelLocations.count()
             override fun getUV(pixelIndex: Int): Pair<Float, Float> = pixelLocations[pixelIndex]!!.let { it.x to it.y }
         }

@@ -1,8 +1,6 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.Surface
-import baaahs.getTimeMillis
+import baaahs.*
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import baaahs.shaders.GlslShader
 import baaahs.timeSync
@@ -14,6 +12,7 @@ open class GlslRenderer(
     val gl: Kgl,
     private val contextSwitcher: ContextSwitcher,
     val fragShader: String,
+    private val uvTranslator: UvTranslator,
     val adjustableValues: List<GlslShader.AdjustableValue>,
     private val glslVersion: String,
     plugins: List<GlslPlugin>
@@ -23,7 +22,7 @@ open class GlslRenderer(
     var nextPixelOffset: Int = 0
     var nextSurfaceOffset: Int = 0
 
-    val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
+    private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
     private var nextTextureId = 0
     private val uvCoordTextureId = getTextureId()
@@ -127,7 +126,7 @@ void main(void) {
         return program
     }
 
-    fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
+    fun addSurface(surface: Surface): GlslSurface? {
         val glslSurface = GlslSurface(SurfacePixels(surface, nextPixelOffset), Uniforms(), uvTranslator)
         nextPixelOffset += surface.pixelCount
 
