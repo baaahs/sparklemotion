@@ -434,7 +434,8 @@ class Mapper(
             }
 
             val surfaceBallot = Ballot<MapperUi.VisibleSurface>()
-            while (surfaceBallot.totalVotes < 10) {
+            var tries = 1000
+            while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
                 val (x, y) = sampleLocations.random()!!
                 val visibleSurface = mapperUi.intersectingSurface(x, y, visibleSurfaces)
                 val surface = visibleSurface?.modelSurface
@@ -442,6 +443,8 @@ class Mapper(
                     surfaceBallot.cast(surface.name, visibleSurface)
                 }
             }
+
+            if (tries == 0) return
 
             //                val orderedPanels = visibleSurfaces.map { visiblePanel ->
             //                    visiblePanel to visiblePanel.boxOnScreen.distanceTo(surfaceChangeRegion)

@@ -38,7 +38,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
             }
         } catch (e: Exception) {
             // Probably the directory doesn't exist
-            println("Exception encountered looking for a firmware to vend. No firmware will be distributed.")
+            logger.error(e) { "Exception encountered looking for a firmware to vend. No firmware will be distributed." }
         }
     }
 
@@ -46,10 +46,13 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
         // If we didn't find a firmware, don't hassle people. Accept anything.
         if (preferredVersion.isEmpty()) return false
 
-        return  firmwareVersion != preferredVersion
+        return firmwareVersion != preferredVersion
     }
 
     override val urlForPreferredVersion: String
         get() = "$urlBase/$preferredVersion.bin"
 
+    companion object {
+        private val logger = Logger("DirectoryDaddy")
+    }
 }
