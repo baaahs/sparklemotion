@@ -212,6 +212,11 @@ void main(void) {
         }
     }
 
+    fun release() {
+        rendererPlugins.forEach { it.release() }
+        arrangement.release()
+    }
+
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
         val adjustableUniforms: List<AdjustableUniform> =
             adjustableValues.map { adjustableValue ->

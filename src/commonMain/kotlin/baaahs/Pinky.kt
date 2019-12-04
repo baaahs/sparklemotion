@@ -364,6 +364,7 @@ class Pinky(
                 }
 
                 renderTree = Brain.RenderTree(shader, renderer, shaderBuffer)
+                currentRenderTree?.release()
                 currentRenderTree = renderTree
 
                 if (pixels == null) {
