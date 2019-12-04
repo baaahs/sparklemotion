@@ -93,6 +93,11 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
             rendererA.endFrame()
             rendererB.endFrame()
         }
+
+        override fun release() {
+            rendererA.release()
+            rendererB.release()
+        }
     }
 }
 

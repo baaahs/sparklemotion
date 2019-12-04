@@ -9,5 +9,7 @@ interface GlslPlugin {
         fun afterCompile(program: Program)
 
         fun beforeRender()
+
+        fun release()
     }
 }
