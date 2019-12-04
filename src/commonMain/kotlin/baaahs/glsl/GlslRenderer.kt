@@ -192,11 +192,26 @@ void main(void) {
                 val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
                 val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
 
+                var outOfBounds = 0
+                var outOfBoundsU = 0
+                var outOfBoundsV = 0
                 for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
                     val (u, v) = uvTranslator.getUV(i)
                     newUvCoords[uvOffset] = u     // u
                     newUvCoords[uvOffset + 1] = v // v
+
+                    val uOut = u < 0f || u > 1f
+                    val vOut = v < 0f || v > 1f
+                    if (uOut || vOut) outOfBounds++
+                    if (uOut) outOfBoundsU++
+                    if (vOut) outOfBoundsV++
+                }
+                if (outOfBoundsU > 0 || outOfBoundsV > 0) {
+                    logger.warn {
+                        "Surface ${surface.describe()} has $outOfBounds points (of ${uvTranslator.pixelCount})" +
+                                " outside the model (u=$outOfBoundsU v=$outOfBoundsV)"
+                    }
                 }
             }
 
@@ -214,6 +229,10 @@ void main(void) {
     fun release() {
         rendererPlugins.forEach { it.release() }
         arrangement.release()
+    }
+
+    companion object {
+        private val logger = Logger("GlslRenderer")
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
