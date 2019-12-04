@@ -35,6 +35,7 @@ class LwjglGlslManager : GlslManager {
 
     override fun createRenderer(
         fragShader: String,
+        uvTranslator: UvTranslator,
         adjustableValues: List<GlslShader.AdjustableValue>,
         plugins: List<GlslPlugin>
     ): GlslRenderer {
@@ -53,7 +54,7 @@ class LwjglGlslManager : GlslManager {
 
         val kgl = KglLwjgl()
         return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, adjustableValues, "330 core", plugins)
+            GlslRenderer(kgl, contextSwitcher, fragShader, uvTranslator, adjustableValues, "330 core", plugins)
         }
     }
 

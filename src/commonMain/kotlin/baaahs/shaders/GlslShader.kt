@@ -77,14 +77,15 @@ class GlslShader(
 
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
-        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, adjustableValues) }
-        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface, uvTranslator)
+        val pooledRenderer =
+            renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator, adjustableValues) }
+        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
-        val glslSurface = glslRenderer.addSurface(surface, uvTranslator)
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, adjustableValues)
+        val glslSurface = glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
 
@@ -99,8 +100,10 @@ class GlslShader(
         }
     }
 
-    class PooledRenderer(glslProgram: String, adjustableValues: List<AdjustableValue>) : baaahs.PooledRenderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, adjustableValues)
+    class PooledRenderer(
+        glslProgram: String, uvTranslator: UvTranslator, adjustableValues: List<AdjustableValue>
+    ) : baaahs.PooledRenderer {
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, adjustableValues)
 
         override fun preDraw() {
             glslRenderer.draw()
