@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.IdentifiedSurface
+import baaahs.Logger
 import baaahs.Surface
 import baaahs.geom.Vector3F
 import kotlin.random.Random
@@ -41,15 +42,19 @@ object RandomSurfacePixelStrategy : SurfacePixelStrategy() {
 }
 
 object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
+    val logger = Logger("LinearSurfacePixelStrategy")
+
     override fun forSurface(surface: Surface): List<Vector3F?> {
         val pixelCount = surface.pixelCount
 
         return when {
             surface is IdentifiedSurface && surface.pixelLocations != null -> {
+                logger.debug { "Surface ${surface.name} has mapped pixels."}
                 surface.pixelLocations
             }
 
             surface is IdentifiedSurface -> {
+                logger.debug { "Surface ${surface.name} doesn't have mapped pixels."}
                 // Generate pixel locations along a line from one vertex to the surface's center.
                 val surfaceVertices = surface.modelSurface.allVertices()
                 val surfaceCenter = surfaceVertices.average()
@@ -59,6 +64,7 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
             }
 
             else -> {
+                logger.debug { "Surface ${surface.describe()} is unknown."}
                 // Randomly pick locations. TODO: this should be based on model extents.
                 val min = Vector3F(0f, 0f, 0f)
                 val max = Vector3F(100f, 100f, 100f)

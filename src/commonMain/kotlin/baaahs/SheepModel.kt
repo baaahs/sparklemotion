@@ -8,6 +8,7 @@ import baaahs.glsl.LinearModelSpaceUvTranslator
 import baaahs.glsl.UvTranslator
 
 abstract class Model<T : Model.Surface> {
+    abstract val name: String
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<T>
     abstract val geomVertices: List<Vector3F>
@@ -53,14 +54,16 @@ abstract class Model<T : Model.Surface> {
 }
 
 class Decom2019Model : ObjModel<Model.Surface>("decom-2019-panels.obj") {
+    override val name: String = "Decom2019"
     override val defaultUvTranslator: UvTranslator by lazy { LinearModelSpaceUvTranslator(this) }
 
     override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
-        return SheepModel.Panel(name, 10 * 60, faces, lines)
+        return SheepModel.Panel(name, 16 * 60, faces, lines)
     }
 }
 
 class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
+    override val name: String = "BAAAHS"
     override val defaultUvTranslator: UvTranslator by lazy { CylindricalModelSpaceUvTranslator(this) }
     private val pixelsPerPanel = hashMapOf<String, Int>()
 

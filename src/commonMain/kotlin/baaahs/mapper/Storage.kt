@@ -1,5 +1,6 @@
 package baaahs.mapper;
 
+import baaahs.Logger
 import baaahs.Model
 import baaahs.io.Fs
 import com.soywiz.klock.DateFormat
@@ -10,6 +11,7 @@ import kotlinx.serialization.json.JsonConfiguration
 class Storage(val fs: Fs) {
 
     companion object {
+        private val logger = Logger("Storage")
         val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
@@ -36,10 +38,14 @@ class Storage(val fs: Fs) {
 
     fun loadMappingData(model: Model<*>): MappingResults {
         val sessions = arrayListOf<MappingSession>()
-        fs.listFiles("mapping-sessions").forEach { dir ->
-            fs.listFiles("mapping-sessions/$dir").sorted().filter { it.endsWith(".json") }.forEach { f ->
-                val mappingJson = fs.loadFile("mapping-sessions/$dir/$f")
+        val path = "mapping/${model.name}"
+        fs.listFiles(path).forEach { dir ->
+            fs.listFiles("$path/$dir").sorted().filter { it.endsWith(".json") }.forEach { f ->
+                val mappingJson = fs.loadFile("$path/$dir/$f")
                 val mappingSession = json.parse(MappingSession.serializer(), mappingJson!!)
+                mappingSession.surfaces.forEach { surface ->
+                    logger.debug { "Found pixel mapping for ${surface.panelName} (${surface.brainId})" }
+                }
                 sessions.add(mappingSession)
             }
         }
