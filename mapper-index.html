@@ -24,6 +24,8 @@
 <script type="application/javascript" src="lib/threejs-wrapper.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
 
+<script type="application/javascript" src="kgl.js"></script>
+
 <script type="application/javascript" src="sparklemotion.js"></script>
 <script type="application/javascript" src="react_app.js"></script>
 
@@ -38,12 +40,12 @@
   const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
   const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
 
-  const sheepModel = new baaahs.SheepModel();
-  sheepModel.load();
+  const model = new baaahs.SheepModel();
+  model.load();
 
   const mapperUi = new baaahs.JsMapperUi();
   const mediaDevices = new baaahs.browser.RealMediaDevices();
-  const mapper = new baaahs.Mapper(network, sheepModel, mapperUi, mediaDevices, pinkyAddress);
+  const mapper = new baaahs.Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
   mapperUi.render(document.body);
   mapper.start();
 </script>

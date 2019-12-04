@@ -3745,6 +3745,7 @@
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
+    this.local$surfaceBallot = void 0;
     this.local$index = index_0;
     this.local$brainToMap = brainToMap_0;
     this.local$retryCount = retryCount_0;
@@ -3763,6 +3764,7 @@
           case 0:
             if (this.local$retryCount === void 0)
               this.local$retryCount = 0;
+            var tmp$;
             this.$this.$outer.mapperUi_0.showMessage_61zpoe$('MAPPING SURFACE ' + this.local$index + ' / ' + this.$this.$outer.brainsToMap_0.size + ' (' + this.local$brainToMap.brainId + ')\u2026');
             this.$this.$outer.deliverer_0.send_b2qy7x$(this.local$brainToMap, this.$this.$outer.solidColorBuffer_0(this.$this.$outer.activeColor_0));
             this.state_0 = 2;
@@ -3794,33 +3796,43 @@
             var thresholdValue = surfaceAnalysis.thresholdValueFor_mx4ult$(0.25);
             var sampleLocations = ArrayList_init();
             ImageProcessing$Companion_getInstance().pixels_oh9quv$(surfaceOnBitmap, surfaceChangeRegion, Mapper$Session$identifyBrain$lambda_0(thresholdValue, sampleLocations));
-            var surfaceBallot = new Mapper$Ballot();
-            while (surfaceBallot.totalVotes < 10) {
-              var tmp$ = ensureNotNull(random_0(sampleLocations));
-              var x = tmp$.component1()
-              , y = tmp$.component2();
+            this.local$surfaceBallot = new Mapper$Ballot();
+            var tries = 1000;
+            while (this.local$surfaceBallot.totalVotes < 10 && (tmp$ = tries, tries = tmp$ - 1 | 0, tmp$) > 0) {
+              var tmp$_0 = ensureNotNull(random_0(sampleLocations));
+              var x = tmp$_0.component1()
+              , y = tmp$_0.component2();
               var visibleSurface = this.$this.$outer.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.$this.visibleSurfaces);
               var surface = visibleSurface != null ? visibleSurface.modelSurface : null;
               if (surface != null) {
-                surfaceBallot.cast_yuqcw7$(surface.name, visibleSurface);
+                this.local$surfaceBallot.cast_yuqcw7$(surface.name, visibleSurface);
               }
             }
 
-            var firstGuess = surfaceBallot.winner();
+            if (tries === 0) {
+              return;
+            }
+             else {
+              this.state_0 = 5;
+              continue;
+            }
+
+          case 5:
+            var firstGuess = this.local$surfaceBallot.winner();
             var firstGuessSurface = firstGuess.modelSurface;
             this.$this.$outer.mapperUi_0.showMessage_61zpoe$(this.local$index.toString() + ' / ' + this.$this.$outer.brainsToMap_0.size + ': ' + this.local$brainToMap.brainId + ' \u2014\xA0surface is ' + firstGuessSurface.name + '?');
-            this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Candidate panels: ' + surfaceBallot.summarize());
+            this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Candidate panels: ' + this.local$surfaceBallot.summarize());
             Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$identifyBrain$lambda_1(firstGuessSurface, this.local$brainToMap));
             this.local$brainToMap.guessedModelSurface = firstGuessSurface;
             this.local$brainToMap.guessedVisibleSurface = firstGuess;
             this.local$brainToMap.expectedPixelCount = firstGuessSurface.expectedPixelCount;
             this.local$brainToMap.panelDeltaBitmap = this.$this.deltaBitmap.clone();
-            this.state_0 = 5;
+            this.state_0 = 6;
             this.result_0 = this.$this.$outer.mapperClient_0.saveImage_39j694$(this.$this.sessionStartTime, 'brain-' + this.local$brainToMap.brainId + '-' + this.local$retryCount, this.$this.deltaBitmap, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 5:
+          case 6:
             this.local$brainToMap.deltaImageName = this.result_0;
             return;
           default:this.state_0 = 1;
@@ -7482,15 +7494,21 @@
   };
   function Decom2019Model() {
     ObjModel.call(this, 'decom-2019-panels.obj');
+    this.name_jk6hs8$_0 = 'Decom2019';
     this.defaultUvTranslator_y3up45$_0 = lazy(Decom2019Model$defaultUvTranslator$lambda(this));
   }
+  Object.defineProperty(Decom2019Model.prototype, 'name', {
+    get: function () {
+      return this.name_jk6hs8$_0;
+    }
+  });
   Object.defineProperty(Decom2019Model.prototype, 'defaultUvTranslator', {
     get: function () {
       return this.defaultUvTranslator_y3up45$_0.value;
     }
   });
   Decom2019Model.prototype.createSurface_gvyaud$ = function (name, faces, lines) {
-    return new SheepModel$Panel(name, 600, faces, lines);
+    return new SheepModel$Panel(name, 960, faces, lines);
   };
   function Decom2019Model$defaultUvTranslator$lambda(this$Decom2019Model) {
     return function () {
@@ -7504,6 +7522,7 @@
   };
   function SheepModel() {
     ObjModel.call(this, 'baaahs-model.obj');
+    this.name_iz210t$_0 = 'BAAAHS';
     this.defaultUvTranslator_a9ismy$_0 = lazy(SheepModel$defaultUvTranslator$lambda(this));
     this.pixelsPerPanel_0 = HashMap_init();
     var $receiver = split(getResource('baaahs-panel-info.txt'), ['\n']);
@@ -7524,6 +7543,11 @@
       $receiver_0.put_xwzc9p$(key, value);
     }
   }
+  Object.defineProperty(SheepModel.prototype, 'name', {
+    get: function () {
+      return this.name_iz210t$_0;
+    }
+  });
   Object.defineProperty(SheepModel.prototype, 'defaultUvTranslator', {
     get: function () {
       return this.defaultUvTranslator_a9ismy$_0.value;
@@ -10985,19 +11009,39 @@
   function LinearSurfacePixelStrategy() {
     LinearSurfacePixelStrategy_instance = this;
     SurfacePixelStrategy.call(this);
+    this.logger = new Logger('LinearSurfacePixelStrategy');
+  }
+  function LinearSurfacePixelStrategy$forSurface$lambda(closure$surface) {
+    return function () {
+      return 'Surface ' + closure$surface.name + ' has mapped pixels.';
+    };
+  }
+  function LinearSurfacePixelStrategy$forSurface$lambda_0(closure$surface) {
+    return function () {
+      return 'Surface ' + closure$surface.name + " doesn't have mapped pixels.";
+    };
+  }
+  function LinearSurfacePixelStrategy$forSurface$lambda_1(closure$surface) {
+    return function () {
+      return 'Surface ' + closure$surface.describe() + ' is unknown.';
+    };
   }
   LinearSurfacePixelStrategy.prototype.forSurface_ppt8xj$ = function (surface) {
     var tmp$;
     var pixelCount = surface.pixelCount;
-    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null)
+    if (Kotlin.isType(surface, IdentifiedSurface) && surface.pixelLocations != null) {
+      this.logger.debug_h4ejuu$(LinearSurfacePixelStrategy$forSurface$lambda(surface));
       tmp$ = surface.pixelLocations;
-    else if (Kotlin.isType(surface, IdentifiedSurface)) {
+    }
+     else if (Kotlin.isType(surface, IdentifiedSurface)) {
+      this.logger.debug_h4ejuu$(LinearSurfacePixelStrategy$forSurface$lambda_0(surface));
       var surfaceVertices = surface.modelSurface.allVertices();
       var surfaceCenter = this.average_0(surfaceVertices);
       var vertex1 = first_0(surfaceVertices);
       tmp$ = this.interpolate_0(vertex1, surfaceCenter, pixelCount);
     }
      else {
+      this.logger.debug_h4ejuu$(LinearSurfacePixelStrategy$forSurface$lambda_1(surface));
       var min = new Vector3F(0.0, 0.0, 0.0);
       var max = new Vector3F(100.0, 100.0, 100.0);
       var scale = max.minus_7423r0$(min);
@@ -13143,6 +13187,7 @@
   }
   function Storage$Companion() {
     Storage$Companion_instance = this;
+    this.logger_0 = new Logger('Storage');
     this.json = new Json(JsonConfiguration.Companion.Stable.copy_u5l5z3$(void 0, false));
     this.format_0 = DateFormat.Companion.invoke_61zpoe$("yyyy''MM''dd'-'HH''mm''ss");
   }
@@ -13179,13 +13224,19 @@
   Storage.prototype.saveImage_yzgtim$ = function (name, imageData) {
     this.fs.createFile_7x97xx$('mapping-sessions/images/' + name, imageData);
   };
+  function Storage$loadMappingData$lambda$lambda$lambda$lambda(closure$surface) {
+    return function () {
+      return 'Found pixel mapping for ' + closure$surface.panelName + ' (' + closure$surface.brainId + ')';
+    };
+  }
   Storage.prototype.loadMappingData_ld9ij$ = function (model) {
     var sessions = ArrayList_init();
+    var path = 'mapping/' + model.name;
     var tmp$;
-    tmp$ = this.fs.listFiles_61zpoe$('mapping-sessions').iterator();
+    tmp$ = this.fs.listFiles_61zpoe$(path).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var $receiver = sorted(this.fs.listFiles_61zpoe$('mapping-sessions/' + element));
+      var $receiver = sorted(this.fs.listFiles_61zpoe$(path + '/' + element));
       var destination = ArrayList_init();
       var tmp$_0;
       tmp$_0 = $receiver.iterator();
@@ -13198,8 +13249,14 @@
       tmp$_1 = destination.iterator();
       while (tmp$_1.hasNext()) {
         var element_1 = tmp$_1.next();
-        var mappingJson = this.fs.loadFile_61zpoe$('mapping-sessions/' + element + '/' + element_1);
+        var mappingJson = this.fs.loadFile_61zpoe$(path + '/' + element + '/' + element_1);
         var mappingSession = Storage$Companion_getInstance().json.parse_awif5v$(MappingSession$Companion_getInstance().serializer(), ensureNotNull(mappingJson));
+        var tmp$_2;
+        tmp$_2 = mappingSession.surfaces.iterator();
+        while (tmp$_2.hasNext()) {
+          var element_2 = tmp$_2.next();
+          Storage$Companion_getInstance().logger_0.debug_h4ejuu$(Storage$loadMappingData$lambda$lambda$lambda$lambda(element_2));
+        }
         sessions.add_11rb$(mappingSession);
       }
     }
