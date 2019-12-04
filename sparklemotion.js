@@ -45,6 +45,7 @@
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var Unit = Kotlin.kotlin.Unit;
   var L0 = Kotlin.Long.ZERO;
   var L5000 = Kotlin.Long.fromInt(5000);
   var delay = $module$kotlinx_coroutines_core.kotlinx.coroutines.delay_s8cxhz$;
@@ -64,7 +65,6 @@
   var KSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.KSerializer;
   var Pair = Kotlin.kotlin.Pair;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
-  var Unit = Kotlin.kotlin.Unit;
   var IllegalStateException_init = Kotlin.kotlin.IllegalStateException_init_pdl1vj$;
   var ReadWriteProperty = Kotlin.kotlin.properties.ReadWriteProperty;
   var getKClass = Kotlin.getKClass;
@@ -966,7 +966,7 @@
       return instance.doResume(null);
   };
   Brain.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
-    var tmp$, tmp$_0, tmp$_1;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var now = getTimeMillis();
     this.lastInstructionsReceivedAtMs_0 = now;
     var reader = new ByteArrayReader(bytes);
@@ -986,7 +986,9 @@
         if (theCurrentShaderDesc == null || !contentEquals(theCurrentShaderDesc, shaderDesc)) {
           this.currentShaderDesc_0 = shaderDesc;
           var shader = Kotlin.isType(tmp$_0 = Shader$Companion_getInstance().parse_100t80$(new ByteArrayReader(shaderDesc)), Shader) ? tmp$_0 : throwCCE();
-          this.currentRenderTree_0 = new Brain$RenderTree(shader, shader.createRenderer_ppt8xj$(this.surface_0), shader.createBuffer_ppt8xj$(this.surface_0));
+          var newRenderTree = new Brain$RenderTree(shader, shader.createRenderer_ppt8xj$(this.surface_0), shader.createBuffer_ppt8xj$(this.surface_0));
+          (tmp$_1 = this.currentRenderTree_0) != null ? (tmp$_1.release(), Unit) : null;
+          this.currentRenderTree_0 = newRenderTree;
         }
 
         var $receiver = ensureNotNull(this.currentRenderTree_0);
@@ -1005,13 +1007,13 @@
         this.surfaceName_0 = message.surfaceName;
         if (message.surfaceName != null) {
           var fakeModelSurface = new Brain$FakeModelSurface(message.surfaceName);
-          tmp$_1 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations);
+          tmp$_2 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations);
         }
          else {
-          tmp$_1 = new AnonymousSurface(new BrainId(this.id));
+          tmp$_2 = new AnonymousSurface(new BrainId(this.id));
         }
 
-        this.surface_0 = tmp$_1;
+        this.surface_0 = tmp$_2;
         this.currentShaderDesc_0 = null;
         this.currentRenderTree_0 = null;
         this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.id, this.surfaceName_0));
@@ -1046,6 +1048,9 @@
     }
     this.renderer.endFrame();
     pixels.finishedFrame();
+  };
+  Brain$RenderTree.prototype.release = function () {
+    this.renderer.release();
   };
   Brain$RenderTree.$metadata$ = {
     kind: Kind_CLASS,
@@ -6354,7 +6359,7 @@
     interfaces: [RenderContext]
   };
   Pinky$PrerenderingSurfaceReceiver.prototype.send_i8eued$ = function (shaderBuffer) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1;
     var shader = Kotlin.isType(tmp$ = shaderBuffer.shader, Shader) ? tmp$ : throwCCE();
     var renderTree = this.currentRenderTree;
     if (renderTree == null || !equals(renderTree.shader, shader)) {
@@ -6368,13 +6373,14 @@
         this.currentPoolKey_0 = newPoolKey.v;
       }
       renderTree = new Brain$RenderTree(shader, renderer, shaderBuffer);
+      (tmp$_0 = this.currentRenderTree) != null ? (tmp$_0.release(), Unit) : null;
       this.currentRenderTree = renderTree;
       if (this.pixels == null) {
         var pixelBuffer = (new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance())).createBuffer_ppt8xj$(this.surface);
         this.pixels = new Pinky$PixelsAdapter(pixelBuffer);
       }
     }
-    var renderer_0 = Kotlin.isType(tmp$_0 = ensureNotNull(this.currentRenderTree).renderer, Shader$Renderer) ? tmp$_0 : throwCCE();
+    var renderer_0 = Kotlin.isType(tmp$_1 = ensureNotNull(this.currentRenderTree).renderer, Shader$Renderer) ? tmp$_1 : throwCCE();
     renderer_0.beginFrame_b23bvv$(shaderBuffer, ensureNotNull(this.pixels).size);
     this.currentBuffer = shaderBuffer;
   };
@@ -7305,6 +7311,8 @@
   Shader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
   };
   Shader$Renderer.prototype.endFrame = function () {
+  };
+  Shader$Renderer.prototype.release = function () {
   };
   Shader$Renderer.$metadata$ = {
     kind: Kind_INTERFACE,
@@ -10263,6 +10271,15 @@
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
     }
+  };
+  GlslRenderer.prototype.release = function () {
+    var tmp$;
+    tmp$ = this.rendererPlugins_8k6ftu$_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.release();
+    }
+    this.arrangement.release();
   };
   function GlslRenderer$Arrangement($outer, pixelCount, uvCoords, surfaces) {
     this.$outer = $outer;
@@ -14172,6 +14189,10 @@
     this.rendererA_0.endFrame();
     this.rendererB_0.endFrame();
   };
+  CompositorShader$Renderer.prototype.release = function () {
+    this.rendererA_0.release();
+    this.rendererB_0.release();
+  };
   CompositorShader$Renderer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Renderer',
@@ -15663,15 +15684,15 @@
     checkForGlError($receiver_3);
     uniform.set_za3lpa$(this.textureId_0);
   };
-  function SoundAnalysisPlugin$RendererPlugin$finalize$lambda(this$RendererPlugin) {
+  function SoundAnalysisPlugin$RendererPlugin$release$lambda(this$RendererPlugin) {
     return function () {
       this$RendererPlugin.gl_0.deleteTexture_za3rmp$(this$RendererPlugin.texture_0);
       return Unit;
     };
   }
-  SoundAnalysisPlugin$RendererPlugin.prototype.finalize = function () {
+  SoundAnalysisPlugin$RendererPlugin.prototype.release = function () {
     var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$RendererPlugin$finalize$lambda(this)();
+    var result = SoundAnalysisPlugin$RendererPlugin$release$lambda(this)();
     checkForGlError($receiver);
   };
   function SoundAnalysisPlugin$RendererPlugin$texture$lambda(this$RendererPlugin) {
@@ -22991,19 +23012,27 @@
   FragmentingUdpLink$FragmentingUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
   GlslShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  GlslShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  HeartShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   PixelShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  PixelShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   RandomShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   RandomShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  RandomShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   SimpleSpatialShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SimpleSpatialShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SimpleSpatialShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   SineWaveShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SineWaveShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   SolidShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SolidShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
+  SparkleShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
