@@ -90,11 +90,13 @@ class Brain(
 
                     @Suppress("UNCHECKED_CAST")
                     val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
-                    currentRenderTree = RenderTree(
+                    val newRenderTree = RenderTree(
                         shader,
                         shader.createRenderer(surface),
                         shader.createBuffer(surface)
                     )
+                    currentRenderTree?.release()
+                    currentRenderTree = newRenderTree
                 }
 
                 with(currentRenderTree!!) {
@@ -153,6 +155,10 @@ class Brain(
             }
             renderer.endFrame()
             pixels.finishedFrame()
+        }
+
+        fun release() {
+            renderer.release()
         }
     }
 

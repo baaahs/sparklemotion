@@ -85,6 +85,7 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
         fun beginFrame(buffer: B, pixelCount: Int) {}
         fun draw(buffer: B, pixelIndex: Int): Color
         fun endFrame() {}
+        fun release() {}
     }
 }
 
