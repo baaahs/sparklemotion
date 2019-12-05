@@ -2,7 +2,7 @@ package baaahs
 
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.deepsymmetry.beatlink.Beat
 import org.junit.Before
 import org.junit.Test
