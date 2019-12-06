@@ -21,7 +21,7 @@ public:
         m_colorSecondary(0, 255, 255)
         { }
 
-    void beginShade(LEDShaderContext* pCtx) override {
+    bool beginFrame(LEDShaderContext* pCtx) override {
         m_pCtx = pCtx;
 
         // m_pos = m_timeBase.posInInterval(m_timeBase.currentTime(), m_timeBase.duration(4), m_numPixels + 1);
@@ -31,18 +31,19 @@ public:
 //            m_pos = 0;
 //        }
         m_pos = pCtx->progress * pCtx->numPixels;
+        return true;
     }
 
-    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override {
-        if (indexPixel < m_pos) {
-            memcpy((void*)color, (void*)&m_colorPrimary, 3);
+    Color draw(uint16_t pixelIndex) override {
+        if (pixelIndex < m_pos) {
+            return {.channel = {0xFF, m_colorPrimary.R, m_colorPrimary.G, m_colorPrimary.B}};
         } else {
-            memcpy((void*)color, (void*)&m_colorSecondary, 3);
+            return {.channel = {0xFF, m_colorSecondary.R, m_colorSecondary.G, m_colorSecondary.B}};
         }
         // ESP_LOGI("#filler", "%d = %d %d %d", indexPixel, color[0], color[1], color[2]);
     }
 
-    void endShade() override {
+    void endFrame() override {
 
     }
 

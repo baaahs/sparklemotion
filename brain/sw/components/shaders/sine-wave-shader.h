@@ -4,7 +4,7 @@
 
 class SineWaveShader : public Shader {
     LEDShaderContext* m_pCtx;
-    RgbColor m_color;
+    Color m_color;
     float m_theta;
     float m_density;
 
@@ -13,6 +13,6 @@ public:
     ~SineWaveShader();
 
     void begin(Msg *pMsg, LEDShaderContext* pCtx) override;
-    void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) override;
+    Color apply(uint16_t pixelIndex) override;
     void end() override;
 };

@@ -18,11 +18,11 @@ public:
     void start();
     void stop() { m_timeToDie = true; }
 
-    void beginShade(LEDShaderContext* pCtx) override;
+    bool beginFrame(LEDShaderContext* pCtx) override;
 
-    void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) override;
+    Color draw(uint16_t pixelIndex) override;
 
-    void endShade() override;
+    void endFrame() override;
 
     void handleMessage(Msg* pMsg);
 

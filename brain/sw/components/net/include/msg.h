@@ -13,9 +13,9 @@
 #include <stdint.h>
 #include <esp_types.h>
 #include <sys/param.h>
-#include <internal/RgbColor.h>
 
 #include "ip_port.h"
+#include "../../shaders/include/shader.h"
 #include <brain_common.h>
 
 class BrainHelloMsg;
@@ -360,23 +360,20 @@ public:
     }
 
     /**
-     * Reads a 4 byte color value, ARGB, discarding the first byte
+     * Reads a 4 byte color value, ARGB.
      *
      * @return
      */
-    RgbColor readColor() {
-        RgbColor out(0,0,0);
+    Color readColor() {
+        Color out = {0};
 
         if (!available(4)) {
             return out;
         }
 
-        // Ignore Alpha
-        m_cursor++;
-
-        // Get the RGB
-        memcpy((void*)&out, m_buf + m_cursor, 3);
-        m_cursor += 3;
+        // Get the ARGB
+        memcpy((void*)&out, m_buf + m_cursor, 4);
+        m_cursor += 4;
 
         return out;
     }

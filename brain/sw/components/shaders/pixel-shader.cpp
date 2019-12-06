@@ -61,12 +61,9 @@ PixelShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
 
     uint8_t paletteCount = paletteCountFor(m_encoding);
     for (int i = 0; i < paletteCount; i++) {
-        const RgbColor color = pMsg->readColor();
+        const Color color = pMsg->readColor();
         if (!m_disabled) {
-            m_palette[i].channel.a = 0xff;
-            m_palette[i].channel.r = color.R;
-            m_palette[i].channel.g = color.G;
-            m_palette[i].channel.b = color.B;
+            m_palette[i] = color;
         }
     }
 
@@ -100,11 +97,11 @@ PixelShader::paletteIndex(uint16_t pixelIndex, uint8_t pixelsPerByte, uint8_t bi
     return m_dataBuf[bufOffset] >> bitShift & mask;
 }
 
-void
-PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
+Color
+PixelShader::apply(uint16_t pixelIndex) {
     if (m_disabled || m_dataBufRead == 0) {
         // TODO: colorOut should have alpha channel set explicitly to zero.
-        return;
+        return { 0xFFFFFF };
     }
 
     uint16_t bufOffset;
@@ -155,11 +152,8 @@ PixelShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
             break;
     }
 
-    *colorOut++ = color.channel.r;
-    *colorOut++ = color.channel.g;
-    *colorOut = color.channel.b;
-
     m_pixelsShaded++;
+    return color;
 }
 
 void

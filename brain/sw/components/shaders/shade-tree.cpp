@@ -1,3 +1,4 @@
+#include "shader.h"
 #include "shade-tree.h"
 
 #include <esp_event.h>
@@ -38,51 +39,39 @@ ShadeTree::start() {
     esp_event_handler_register(BRAIN_UI_BASE, BrainUiEvent::KeyPress, glue_handleEvent, this);
 }
 
-void
-ShadeTree::beginShade(LEDShaderContext* pCtx) {
-    if (m_timeToDie) return;
+bool
+ShadeTree::beginFrame(LEDShaderContext* pCtx) {
+    if (m_timeToDie) return false;
 
     xSemaphoreTake(m_hMsgAccess, portMAX_DELAY);
     // Assume success
-    ESP_LOGD(TAG, "beginShade got semaphore");
+    ESP_LOGD(TAG, "beginFrame got semaphore");
 
     if (m_pCurrentShader && m_pMsg) {
         m_pCurrentShader->begin(m_pMsg, pCtx);
+        return true;
     } else if (m_pLocalShader) {
-        ESP_LOGI(TAG, "beginShade with localShader");
+        ESP_LOGI(TAG, "beginFrame with localShader");
         m_pLocalShader->begin(nullptr, pCtx);
+        return true;
     } else {
-        //ESP_LOGW(TAG, "beginShade but don't have a message and a current shader");
+        //ESP_LOGW(TAG, "beginFrame but don't have a message and a current shader");
+        xSemaphoreGive(m_hMsgAccess);
+        return false;
     }
 }
 
-void
-ShadeTree::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
-    if (m_timeToDie) return;
-
-    // If we don't have a pNextMsg set, we don't want to change anything
-    // about the pixels
-    if (!(m_pCurrentShader || m_pLocalShader)) {
-        // However, because the color OUT parameter will absolutely be set as
-        // the value of the pixel, we DO have to copy the current color
-        // into the output.
-        // However However, the pixels are going through a color feature so we
-        // have to do this swap on the first two bytes.
-        color[0] = currentColor[1];
-        color[1] = currentColor[0];
-        color[2] = currentColor[2];
-        return;
-    }
-
+Color
+ShadeTree::draw(uint16_t pixelIndex) {
     if (m_pCurrentShader) {
-        m_pCurrentShader->apply(indexPixel, color, currentColor);
+        return m_pCurrentShader->apply(pixelIndex);
     } else if (m_pLocalShader) {
-        m_pLocalShader->apply(indexPixel, color, currentColor);
+        return m_pLocalShader->apply(pixelIndex);
     }
 }
 
 void
-ShadeTree::endShade() {
+ShadeTree::endFrame() {
 
     if (m_pCurrentShader) {
         m_pCurrentShader->end();
@@ -97,7 +86,7 @@ ShadeTree::endShade() {
     }
 
     // Be nice and give it back
-    // ESP_LOGW(TAG, "endShade giving semaphore");
+    // ESP_LOGW(TAG, "endFrame giving semaphore");
     xSemaphoreGive(m_hMsgAccess);
 }
 
@@ -128,7 +117,7 @@ ShadeTree::handleMessage(Msg* pMsg){
     // Now we do any setup or massive shader switch a roo sort of stuff here
     // in the network task rather than leaving it for the render task to
     // stumble over. It _probably_ doesn't make much difference if we do
-    // it here or during say, beginShade(), but this feels a little bit
+    // it here or during say, beginFrame(), but this feels a little bit
     // more appropriate.
     checkForShaderChanges();
 

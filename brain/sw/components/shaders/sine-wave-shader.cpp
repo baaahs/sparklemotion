@@ -25,13 +25,16 @@ SineWaveShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
 
 float last_theta = 0;
 
-void
-SineWaveShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
+Color
+SineWaveShader::apply(uint16_t pixelIndex) {
     float v = sinf(m_theta + 2 * PI * ( ( float)pixelIndex / m_surface->pixelCount() * m_density) ) / 2.0 + 0.5;
 
-    colorOut[0] = (float)m_color.R * v;
-    colorOut[1] = (float)m_color.G * v;
-    colorOut[2] = (float)m_color.B * v;
+    return {.channel = {
+            m_color.channel.a,
+            static_cast<uint8_t>((float)m_color.channel.r * v),
+            static_cast<uint8_t>((float)m_color.channel.g * v),
+            static_cast<uint8_t>((float)m_color.channel.b * v)
+    }};
 
 //    if (pixelIndex == 1 && m_theta != last_theta) {
 //        last_theta = m_theta;

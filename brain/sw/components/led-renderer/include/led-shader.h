@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../shaders/include/shader.h"
 #include "time-base.h"
 
 /**
@@ -34,7 +35,28 @@ struct LEDShaderContext {
  */
 class LEDShader {
 public:
-    virtual void beginShade(LEDShaderContext* pCtx) = 0;
-    virtual void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) = 0;
-    virtual void endShade() = 0;
+    /**
+     * Prepare the shader for drawing a frame.
+     *
+     * @param pCtx
+     * @return `false` if this shader isn't ready to draw
+     */
+    virtual bool beginFrame(LEDShaderContext* pCtx) = 0;
+
+    /**
+     * Draw a single pixel.
+     *
+     * This method will only be called if `beginFrame` returned `true`.
+     *
+     * @param pixelIndex the pixel index
+     * @return the color
+     */
+    virtual Color draw(uint16_t pixelIndex) = 0;
+
+    /**
+     * Called after every pixel has been drawn for a frame.
+     *
+     * This method will only be called if `beginFrame` returned `true`.
+     */
+    virtual void endFrame() = 0;
 };

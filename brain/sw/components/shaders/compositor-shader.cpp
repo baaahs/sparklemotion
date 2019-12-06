@@ -38,36 +38,39 @@ CompositorShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     }
 }
 
-void
-CompositorShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
-    RgbColor clrA;
-    RgbColor clrB;
+Color
+CompositorShader::apply(uint16_t pixelIndex) {
+    Color clrA;
+    Color clrB;
 
     if (m_shaderA) {
-        m_shaderA->apply(pixelIndex, (uint8_t*)&clrA, colorIn);
+        clrA = m_shaderA->apply(pixelIndex);
     }
     if (m_shaderB) {
-        m_shaderB->apply(pixelIndex, (uint8_t*)&clrB, colorIn);
+        clrB = m_shaderB->apply(pixelIndex);
     }
 
     // Because we might want to add values which could overflow we have to upgrade
     // the storage for the composite result.
-    uint16_t compR = clrB.R;
-    uint16_t compG = clrB.G;
-    uint16_t compB = clrB.B;
+    uint16_t compR = clrB.channel.r;
+    uint16_t compG = clrB.channel.g;
+    uint16_t compB = clrB.channel.b;
 
     if (m_mode) {
         // Add A and B into B before fading
-        compR = MIN(255, compR + clrA.R);
-        compG = MIN(255, compG + clrA.G);
-        compB = MIN(255, compB + clrA.B);
+        compR = MIN(255, compR + clrA.channel.r);
+        compG = MIN(255, compG + clrA.channel.g);
+        compB = MIN(255, compB + clrA.channel.b);
     }
 
     // Use the fade value to take some from A and some from B
     float aFactor = 1.0f - m_fade;
-    colorOut[0] = (aFactor * clrA.R) + (m_fade * compR);
-    colorOut[1] = (aFactor * clrA.G) + (m_fade * compG);
-    colorOut[2] = (aFactor * clrA.B) + (m_fade * compB);
+    return { .channel = {
+            0xff,
+            static_cast<uint8_t>(aFactor * clrA.channel.r + m_fade * compR),
+            static_cast<uint8_t>(aFactor * clrA.channel.g + m_fade * compG),
+            static_cast<uint8_t>(aFactor * clrA.channel.b + m_fade * compB)
+    } };
 
 //    if (pixelIndex == 1) {
 //        ESP_LOGI(TAG, "a=%2x%2x%2x  b=%2x%2x%2x  out=%2x%2x%2x",

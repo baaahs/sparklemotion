@@ -7,5 +7,5 @@ public:
     DefaultShader(Surface *surface, Msg *config);
     ~DefaultShader();
 
-    void apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) override;
+    Color apply(uint16_t pixelIndex) override;
 };

@@ -157,7 +157,7 @@ LEDRenderer::render() {
         uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/1000, 1 * USEC_IN_SEC/1000, INTERVAL_BASE);
         m_context.progress = ((float)intPos) / (float)INTERVAL_BASE;
 
-        m_shader->beginShade(&m_context);
+        m_shader->beginFrame(&m_context);
         // ESP_LOGI(TAG, "time=%d, intPos = %d  progress=%f", m_timeBase.currentTime(), intPos, progress);
 
         m_buffer.Render(m_buffer, *m_shader);
@@ -191,7 +191,7 @@ LEDRenderer::render() {
             }
         }
 
-        m_shader->endShade();
+        m_shader->endFrame();
 
         m_frameNumber++;
     } else {

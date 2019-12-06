@@ -34,8 +34,8 @@ SolidShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     }
 }
 
-void
-SolidShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
+Color
+SolidShader::apply(uint16_t pixelIndex) {
     memcpy((void*)colorOut, (void*)&m_color, 3);
 }
 

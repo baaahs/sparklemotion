@@ -72,8 +72,8 @@ RainbowShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
     m_pCtx = pCtx;
 }
 
-void
-RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
+Color
+RainbowShader::apply(uint16_t pixelIndex) {
 //    memcpy((void*)colorOut, (void*)&m_color, 3);
     float paletteProgress = m_pCtx->progress + (pixelIndex / 32.0f);
     if (paletteProgress > 1.0f) {
@@ -82,7 +82,7 @@ RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
     // ESP_LOGW(TAG, "progress=%f  paletteProgress=%f", m_progress, paletteProgress);
     RgbColor color = colorInPalette(paletteProgress);
 
-    memcpy((void*)colorOut, (void*)&color, 3);
+    return {.channel = {0xFF, color.R, color.G, color.B}};
 }
 
 void
