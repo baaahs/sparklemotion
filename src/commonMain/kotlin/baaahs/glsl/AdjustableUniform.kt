@@ -10,18 +10,18 @@ interface AdjustableUniform {
 
 class UnifyingAdjustableUniform(
     program: Program,
-    private val adjustableValue: GlslShader.AdjustableValue,
+    private val param: GlslShader.Param,
     val surfaceCount: Int
 ) : AdjustableUniform {
-    private val uniformLocation = program.getUniform(adjustableValue.varName)
+    private val uniformLocation = program.getUniform(param.varName)
     var buffer: Any? = null
 
     override fun bind() {
         if (buffer != null && uniformLocation != null) {
-            when (adjustableValue.valueType) {
-                GlslShader.AdjustableValue.Type.INT -> uniformLocation.set(buffer as Int)
-                GlslShader.AdjustableValue.Type.FLOAT -> uniformLocation.set(buffer as Float)
-                GlslShader.AdjustableValue.Type.VEC3 -> {
+            when (param.valueType) {
+                GlslShader.Param.Type.INT -> uniformLocation.set(buffer as Int)
+                GlslShader.Param.Type.FLOAT -> uniformLocation.set(buffer as Float)
+                GlslShader.Param.Type.VEC3 -> {
                     val color = buffer as Color
                     uniformLocation.set(color.redF, color.greenF, color.blueF)
                 }
@@ -35,34 +35,34 @@ class UnifyingAdjustableUniform(
     }
 }
 
-//    val adjustableValueUniformIndices = adjustableValues.map { nextTextureIndex++ }
+//    val paramUniformIndices = params.map { nextTextureIndex++ }
 //class AwesomerAdjustableUniform(
 //    gl: Kgl,
-//    adjustableValueUniformIndices: Array<Int>,
+//    paramUniformIndices: Array<Int>,
 //    uvCoordsUniform: Uniform,
-//    val adjustableValue: GlslShader.AdjustableValue, val surfaceCount: Int) {
+//    val param: GlslShader.Param, val surfaceCount: Int) {
 //    // TODO: we should save these in an array, one for each surface, but let's keep it simple for now.
 //    val elementCount: Int
-//        get() = when (adjustableValue.valueType) {
-//            GlslShader.AdjustableValue.Type.INT -> surfaceCount
-//            GlslShader.AdjustableValue.Type.FLOAT -> surfaceCount
-//            GlslShader.AdjustableValue.Type.VEC3 -> surfaceCount * 3
+//        get() = when (param.valueType) {
+//            GlslShader.Param.Type.INT -> surfaceCount
+//            GlslShader.Param.Type.FLOAT -> surfaceCount
+//            GlslShader.Param.Type.VEC3 -> surfaceCount * 3
 //        }
 //
 //    val internalFormat: Int
-//        get() = when (adjustableValue.valueType) {
-//            GlslShader.AdjustableValue.Type.INT -> GL_INT
-//            GlslShader.AdjustableValue.Type.FLOAT -> GL_R32F
-//            GlslShader.AdjustableValue.Type.VEC3 -> GL_RGB
+//        get() = when (param.valueType) {
+//            GlslShader.Param.Type.INT -> GL_INT
+//            GlslShader.Param.Type.FLOAT -> GL_R32F
+//            GlslShader.Param.Type.VEC3 -> GL_RGB
 //        }
 //
-//    val buffer: ArrayBufferView = when (adjustableValue.valueType) {
-//        GlslShader.AdjustableValue.Type.INT -> Uint32Array(elementCount)
-//        GlslShader.AdjustableValue.Type.FLOAT -> Float32Array(elementCount)
-//        GlslShader.AdjustableValue.Type.VEC3 -> Float32Array(elementCount)
+//    val buffer: ArrayBufferView = when (param.valueType) {
+//        GlslShader.Param.Type.INT -> Uint32Array(elementCount)
+//        GlslShader.Param.Type.FLOAT -> Float32Array(elementCount)
+//        GlslShader.Param.Type.VEC3 -> Float32Array(elementCount)
 //    }
 //
-//    val textureIndex = adjustableValueUniformIndices[adjustableValue.ordinal]
+//    val textureIndex = paramUniformIndices[param.ordinal]
 //    var texture = TextureResource.create(
 //        GL_TEXTURE0 + textureIndex,
 //        TextureProps("", GL_NEAREST, GL_NEAREST), gl

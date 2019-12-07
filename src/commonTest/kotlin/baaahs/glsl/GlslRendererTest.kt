@@ -60,7 +60,7 @@ class GlslRendererTest {
         if (!glslAvailable()) return
 
         val adjustables = GlslShader.extraAdjustables +
-                GlslShader.AdjustableValue("blue", "Slider", GlslShader.AdjustableValue.Type.FLOAT,
+                GlslShader.Param("blue", "Slider", GlslShader.Param.Type.FLOAT,
                     json { }
                 )
 

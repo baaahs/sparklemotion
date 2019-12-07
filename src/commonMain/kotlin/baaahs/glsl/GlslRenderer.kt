@@ -12,7 +12,7 @@ open class GlslRenderer(
     private val contextSwitcher: ContextSwitcher,
     val fragShader: String,
     private val uvTranslator: UvTranslator,
-    val adjustableValues: List<GlslShader.AdjustableValue>,
+    val params: List<GlslShader.Param>,
     private val glslVersion: String,
     plugins: List<GlslPlugin>
 ) {
@@ -236,9 +236,7 @@ void main(void) {
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
         val adjustableUniforms: List<AdjustableUniform> =
-            adjustableValues.map { adjustableValue ->
-                UnifyingAdjustableUniform(program, adjustableValue, surfaces.size)
-            }
+            params.map { param -> UnifyingAdjustableUniform(program, param, surfaces.size) }
 
         private var uvCoordTexture = gl { gl.createTexture() }
         private val frameBuffer = gl { gl.createFramebuffer() }
@@ -304,7 +302,7 @@ void main(void) {
         }
 
         fun bindUniforms() {
-            adjustableValues.forEachIndexed { adjustableIndex, adjustable ->
+            params.forEachIndexed { adjustableIndex, adjustable ->
                 surfaces.forEachIndexed { surfaceIndex, surface ->
                     val value = surface.uniforms.values?.get(adjustableIndex)
                     value?.let {

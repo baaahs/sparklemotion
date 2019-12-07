@@ -20,13 +20,13 @@ actual object GlslBase {
         override fun createRenderer(
             fragShader: String,
             uvTranslator: UvTranslator,
-            adjustableValues: List<GlslShader.AdjustableValue>,
+            params: List<GlslShader.Param>,
             plugins: List<GlslPlugin>
         ): GlslRenderer {
             val contextSwitcher = object : GlslRenderer.ContextSwitcher {
                 override fun <T> inContext(fn: () -> T): T = fn()
             }
-            return GlslRenderer(createContext(), contextSwitcher, fragShader, uvTranslator, adjustableValues, "300 es", plugins)
+            return GlslRenderer(createContext(), contextSwitcher, fragShader, uvTranslator, params, "300 es", plugins)
         }
 
         private fun createContext(): KglJs {

@@ -12,7 +12,7 @@ class JoglGlslManager : GlslManager {
     override fun createRenderer(
         fragShader: String,
         uvTranslator: UvTranslator,
-        adjustableValues: List<GlslShader.AdjustableValue>,
+        params: List<GlslShader.Param>,
         plugins: List<GlslPlugin>
     ): GlslRenderer {
         val gl = createGLContext()
@@ -30,7 +30,7 @@ class JoglGlslManager : GlslManager {
 
         val kgl = KglJogl(gl as GL3ES3)
         return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, uvTranslator, adjustableValues, "330 core", plugins)
+            GlslRenderer(kgl, contextSwitcher, fragShader, uvTranslator, params, "330 core", plugins)
         }
     }
 

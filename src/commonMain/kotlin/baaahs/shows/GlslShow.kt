@@ -11,13 +11,13 @@ abstract class GlslShow(name: String) : Show(name) {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslShader(program, model.defaultUvTranslator)
 
-        val adjustableValuesDataSources = shader.adjustableValues.map { it.createDataSource(showRunner) }
+        val paramDataSources = shader.params.map { it.createDataSource(showRunner) }
         val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
                 buffers.values.forEach { buffer ->
-                    val bufferValues = adjustableValuesDataSources.map { it.getValue() }
+                    val bufferValues = paramDataSources.map { it.getValue() }
                     buffer.update(bufferValues)
                 }
             }
@@ -29,7 +29,7 @@ abstract class GlslShow(name: String) : Show(name) {
         }
     }
 
-    fun GlslShader.AdjustableValue.createDataSource(showRunner: ShowRunner): DataSource {
+    fun GlslShader.Param.createDataSource(showRunner: ShowRunner): DataSource {
         val config = config
         val name = config.getPrimitive("name").contentOrNull ?: varName
 
