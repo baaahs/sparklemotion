@@ -8,7 +8,7 @@ interface GlslManager {
     fun createRenderer(
         fragShader: String,
         uvTranslator: UvTranslator,
-        adjustableValues: List<GlslShader.AdjustableValue>,
+        params: List<GlslShader.Param>,
         plugins: List<GlslPlugin> = GlslBase.plugins
     ): GlslRenderer
 }

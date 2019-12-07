@@ -14,16 +14,16 @@ import kotlinx.serialization.json.json
 class GlslShader(
     private val glslProgram: String,
     private val uvTranslator: UvTranslator,
-    val adjustableValues: List<AdjustableValue> = findAdjustableValues(glslProgram)
+    val params: List<Param> = findParams(glslProgram)
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
             val uvTranslator = UvTranslator.parse(reader)
-            val adjustableValueCount = reader.readShort()
-            val adjustableValues = (0 until adjustableValueCount).map { AdjustableValue.parse(reader) }
-            return GlslShader(glslProgram, uvTranslator, adjustableValues)
+            val paramCount = reader.readShort()
+            val params = (0 until paramCount).map { Param.parse(reader) }
+            return GlslShader(glslProgram, uvTranslator, params)
         }
 
         private val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
@@ -33,58 +33,58 @@ class GlslShader(
         )
 
         val extraAdjustables = listOf(
-            AdjustableValue(
-                "sm_uScale", "Slider", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_uScale", "Slider", Param.Type.FLOAT,
                 json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }),
-            AdjustableValue(
-                "sm_vScale", "Slider", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_vScale", "Slider", Param.Type.FLOAT,
                 json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }),
-            AdjustableValue(
-                "sm_beat", "Beat", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_beat", "Beat", Param.Type.FLOAT,
                 json { "name" to "beat" }),
-            AdjustableValue(
-                "sm_startOfMeasure", "StartOfMeasure", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_startOfMeasure", "StartOfMeasure", Param.Type.FLOAT,
                 json { "name" to "startOfMeasure"; }),
-            AdjustableValue(
-                "sm_brightness", "Slider", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_brightness", "Slider", Param.Type.FLOAT,
                 json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }),
-            AdjustableValue(
-                "sm_saturation", "Slider", AdjustableValue.Type.FLOAT,
+            Param(
+                "sm_saturation", "Slider", Param.Type.FLOAT,
                 json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f })
         )
 
-        fun findAdjustableValues(glslFragmentShader: String): List<AdjustableValue> {
+        fun findParams(glslFragmentShader: String): List<Param> {
             return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
                 println("matches: ${matchResult.groupValues}")
                 val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
                 val configData = json.parseJson(configJson)
                 val valueType = when (valueTypeName) {
-                    "int" -> AdjustableValue.Type.INT
-                    "float" -> AdjustableValue.Type.FLOAT
-                    "vec3" -> AdjustableValue.Type.VEC3
+                    "int" -> Param.Type.INT
+                    "float" -> Param.Type.FLOAT
+                    "vec3" -> Param.Type.VEC3
                     else -> throw IllegalArgumentException("unsupported type $valueTypeName")
                 }
-                AdjustableValue(varName, gadgetType, valueType, configData.jsonObject)
+                Param(varName, gadgetType, valueType, configData.jsonObject)
             }.toList() + extraAdjustables
         }
     }
 
     override fun serializeConfig(writer: ByteArrayWriter) {
         writer.writeString(glslProgram)
-        writer.writeShort(adjustableValues.size)
-        adjustableValues.forEach { it.serializeConfig(writer) }
+        writer.writeShort(params.size)
+        params.forEach { it.serializeConfig(writer) }
     }
 
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer =
-            renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator, adjustableValues) }
+            renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator, params) }
         val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, adjustableValues)
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, params)
         val glslSurface = glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
@@ -101,9 +101,9 @@ class GlslShader(
     }
 
     class PooledRenderer(
-        glslProgram: String, uvTranslator: UvTranslator, adjustableValues: List<AdjustableValue>
+        glslProgram: String, uvTranslator: UvTranslator, params: List<Param>
     ) : baaahs.PooledRenderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, adjustableValues)
+        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, params)
 
         override fun preDraw() {
             glslRenderer.draw()
@@ -117,7 +117,7 @@ class GlslShader(
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
-        val values = Array<Any?>(adjustableValues.size) { }
+        val values = Array<Any?>(params.size) { }
 
         fun update(values: List<Any?>) {
             values.forEachIndexed { index, value -> this.values[index] = value }
@@ -126,19 +126,15 @@ class GlslShader(
         override fun serialize(writer: ByteArrayWriter) {
             uvTranslator.serialize(writer)
 
-            adjustableValues.zip(values).forEach { (adjustableValue, value) ->
-                adjustableValue.serializeValue(value, writer)
-            }
+            params.zip(values).forEach { (param, value) -> param.serializeValue(value, writer) }
         }
 
         override fun read(reader: ByteArrayReader) {
-            adjustableValues.forEachIndexed { index, adjustableValue ->
-                values[index] = adjustableValue.readValue(reader)
-            }
+            params.forEachIndexed { index, param -> values[index] = param.readValue(reader) }
         }
     }
 
-    class AdjustableValue(val varName: String, val gadgetType: String, val valueType: Type, val config: JsonObject) {
+    class Param(val varName: String, val gadgetType: String, val valueType: Type, val config: JsonObject) {
         enum class Type { INT, FLOAT, VEC3 }
 
         fun serializeConfig(writer: ByteArrayWriter) {
@@ -165,10 +161,10 @@ class GlslShader(
         companion object {
             private val types = Type.values()
 
-            fun parse(reader: ByteArrayReader): AdjustableValue {
+            fun parse(reader: ByteArrayReader): Param {
                 val varName = reader.readString()
                 val valueType = types[reader.readByte().toInt()]
-                return AdjustableValue(varName, "", valueType, JsonObject(emptyMap()))
+                return Param(varName, "", valueType, JsonObject(emptyMap()))
             }
         }
     }
