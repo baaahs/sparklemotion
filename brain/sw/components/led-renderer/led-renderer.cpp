@@ -1,4 +1,5 @@
 #include "led-renderer.h"
+#include "gamma.h"
 
 #include "sysmon.h"
 
@@ -175,7 +176,24 @@ LEDRenderer::render() {
             }
         }
 
+        // Apply gamma correction.
+        {
+            NeoBufferContext<BRAIN_NEO_COLORFEATURE> buf = m_buffer;
+            uint8_t *pCursor = buf.Pixels;
+            uint8_t *pEnd = pCursor + buf.SizePixels;
+            uint32_t pixelIndex = 0;
+            while (pCursor != pEnd) {
+                for (int i = 0; i < BRAIN_NEO_COLORFEATURE::PixelSize; i++) {
+                    uint8_t corrected = Gamma::Correct(*pCursor, m_frameNumber, pixelIndex);
+                    *(pCursor++) = corrected;
+                }
+                pixelIndex++;
+            }
+        }
+
         m_shader->endShade();
+
+        m_frameNumber++;
     } else {
         ESP_LOGE(TAG, "Nothing to render!!!!");
     }
