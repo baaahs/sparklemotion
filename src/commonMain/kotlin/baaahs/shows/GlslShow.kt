@@ -3,15 +3,16 @@ package baaahs.shows
 import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.glsl.Program
 import baaahs.shaders.GlslShader
 
 abstract class GlslShow(name: String) : Show(name) {
-    abstract val program: String
+    abstract val program: Program
 
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslShader(program, model.defaultUvTranslator)
 
-        val paramDataSources = shader.params.map { it.createDataSource(showRunner) }
+        val paramDataSources = program.params.map { it.createDataSource(showRunner) }
         val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
 
         return object : Renderer {

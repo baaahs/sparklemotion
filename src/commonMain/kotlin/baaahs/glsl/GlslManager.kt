@@ -1,14 +1,29 @@
 package baaahs.glsl
 
-import baaahs.shaders.GlslShader
+import com.danielgergely.kgl.Kgl
 
-interface GlslManager {
-    val available: Boolean
+abstract class GlslManager(private val glslVersion: String) {
+    protected abstract val kgl: Kgl
+    abstract val available: Boolean
+
+    private val contextSwitcher = object : GlslRenderer.ContextSwitcher {
+        override fun <T> inContext(fn: () -> T): T = runInContext(fn)
+    }
+
+    abstract fun <T> runInContext(fn: () -> T): T
+
+    fun createProgram(fragShader: String): Program {
+        return runInContext {
+            Program(kgl, fragShader, glslVersion, GlslBase.plugins)
+        }
+    }
 
     fun createRenderer(
-        fragShader: String,
-        uvTranslator: UvTranslator,
-        params: List<GlslShader.Param>,
-        plugins: List<GlslPlugin> = GlslBase.plugins
-    ): GlslRenderer
+        program: Program,
+        uvTranslator: UvTranslator
+    ): GlslRenderer {
+        return runInContext {
+            GlslRenderer(kgl, contextSwitcher, program, uvTranslator)
+        }
+    }
 }

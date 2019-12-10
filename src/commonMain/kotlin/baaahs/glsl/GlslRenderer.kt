@@ -2,7 +2,6 @@ package baaahs.glsl
 
 import baaahs.*
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
-import baaahs.shaders.GlslShader
 import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
@@ -10,11 +9,8 @@ import kotlin.math.min
 open class GlslRenderer(
     val gl: Kgl,
     private val contextSwitcher: ContextSwitcher,
-    val fragShader: String,
-    private val uvTranslator: UvTranslator,
-    val params: List<GlslShader.Param>,
-    private val glslVersion: String,
-    plugins: List<GlslPlugin>
+    private val program: Program,
+    private val uvTranslator: UvTranslator
 ) {
     private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
     var pixelCount: Int = 0
@@ -23,13 +19,11 @@ open class GlslRenderer(
 
     private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
-    private var nextTextureId = 0
-    private val uvCoordTextureId = getTextureId()
-    private val rendererPlugins = plugins.map { it.forRenderer(this) }
+    private val uvCoordTextureId = program.obtainTextureId()
+    private val rendererPlugins = program.plugins.mapNotNull { it.forRender() }
 
     var arrangement: Arrangement
 
-    val program: Program = gl { createShaderProgram() }
     private val uvCoordsUniform: Uniform = gl { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
     private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
@@ -42,87 +36,6 @@ open class GlslRenderer(
         gl { gl.clearColor(0f, .5f, 0f, 1f) }
 
         arrangement = createArrangement(0, FloatArray(0), glslSurfaces)
-    }
-
-    fun getTextureId(): Int {
-        check(nextTextureId <= 31) { "too many textures!" }
-        return nextTextureId++
-    }
-
-    private fun createShaderProgram(): Program {
-        // Create a simple shader program
-        val program = Program.create(gl)
-
-        val vertexShaderSource = """#version $glslVersion
-
-precision lowp float;
-
-// xy = vertex position in normalized device coordinates ([-1,+1] range).
-in vec2 Vertex;
-
-const vec2 scale = vec2(0.5, 0.5);
-
-void main()
-{
-    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
-    gl_Position = vec4(Vertex, 0.0, 1.0);
-}
-"""
-        val vertexShader = Shader.createVertexShader(gl, vertexShaderSource)
-        program.attachShader(vertexShader)
-
-        val src = """#version $glslVersion
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform sampler2D sm_uvCoords;
-uniform float sm_uScale;
-uniform float sm_vScale;
-uniform float sm_startOfMeasure;
-uniform float sm_beat;
-${rendererPlugins.map { plugin -> plugin.glslPreamble }.joinToString("\n")}
-
-out vec4 sm_fragColor;
-
-${fragShader
-            .replace(
-                Regex("void main\\s*\\(\\s*(void\\s*)?\\)"),
-                "void sm_main(vec2 sm_pixelCoord)"
-            )
-            .replace("gl_FragCoord", "sm_pixelCoord")
-            .replace("gl_FragColor", "sm_fragColor")
-        }
-
-// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.
-// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and
-// pass them to the shader's original `main()` method.
-void main(void) {
-    int uvX = int(gl_FragCoord.x);
-    int uvY = int(gl_FragCoord.y);
-    
-    vec2 pixelCoord = vec2(
-        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u
-        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v
-    );
-
-    sm_main(pixelCoord);
-}
-"""
-
-        println(src)
-        val fragmentShader = Shader.createFragmentShader(gl, src)
-        program.attachShader(fragmentShader)
-
-        if (!program.link()) {
-            val infoLog = program.getInfoLog()
-            throw RuntimeException("ProgramInfoLog: $infoLog")
-        }
-
-        rendererPlugins.forEach { it.afterCompile(program) }
-
-        return program
     }
 
     fun addSurface(surface: Surface): GlslSurface? {
@@ -163,12 +76,14 @@ void main(void) {
         arrangement.bindUvCoordTexture(uvCoordsUniform)
         arrangement.bindUniforms()
 
-        rendererPlugins.forEach { it.beforeRender() }
+        rendererPlugins.forEach { it.before() }
 
         gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight)
         gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         quad.render()
+
+        rendererPlugins.forEach { it.after() }
 
         gl.finish()
 
@@ -228,6 +143,7 @@ void main(void) {
     fun release() {
         rendererPlugins.forEach { it.release() }
         arrangement.release()
+        quad.release()
     }
 
     companion object {
@@ -235,8 +151,8 @@ void main(void) {
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
-        val adjustableUniforms: List<AdjustableUniform> =
-            params.map { param -> UnifyingAdjustableUniform(program, param, surfaces.size) }
+        private val adjustableUniforms: List<AdjustableUniform> =
+            program.params.map { param -> UnifyingAdjustableUniform(program, param, surfaces.size) }
 
         private var uvCoordTexture = gl { gl.createTexture() }
         private val frameBuffer = gl { gl.createFramebuffer() }
@@ -302,7 +218,7 @@ void main(void) {
         }
 
         fun bindUniforms() {
-            params.forEachIndexed { adjustableIndex, adjustable ->
+            program.params.forEachIndexed { adjustableIndex, adjustable ->
                 surfaces.forEachIndexed { surfaceIndex, surface ->
                     val value = surface.uniforms.values?.get(adjustableIndex)
                     value?.let {

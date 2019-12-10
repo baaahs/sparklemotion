@@ -3,8 +3,6 @@ package baaahs.glsl
 import baaahs.*
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.GlslShader
-import kotlinx.serialization.json.json
 import kotlin.math.abs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -32,14 +30,15 @@ class GlslRendererTest {
     fun testSimpleRendering() {
         if (!glslAvailable()) return
 
-        val renderer = GlslBase.manager.createRenderer(
+        val program = GlslBase.manager.createProgram(
             """
             uniform float time;
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, 0.5, 1.);
             }
-            """.trimIndent(), UvTranslatorForTest, GlslShader.extraAdjustables
+            """.trimIndent()
         )
+        val renderer = GlslBase.manager.createRenderer(program, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
@@ -59,21 +58,19 @@ class GlslRendererTest {
     fun testRenderingWithUniform() {
         if (!glslAvailable()) return
 
-        val adjustables = GlslShader.extraAdjustables +
-                GlslShader.Param("blue", "Slider", GlslShader.Param.Type.FLOAT,
-                    json { }
-                )
-
-        val renderer = GlslBase.manager.createRenderer(
+        val program = GlslBase.manager.createProgram(
             """
             uniform float time;
+            
+            // SPARKLEMOTION GADGET: Slider {}
             uniform float blue;
             
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.);
             }
-            """.trimIndent(), UvTranslatorForTest, adjustables
+            """.trimIndent()
         )
+        val renderer = GlslBase.manager.createRenderer(program, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
@@ -98,14 +95,15 @@ class GlslRendererTest {
     fun testRenderingWithUnmappedPixels() {
         if (!glslAvailable()) return
 
-        val renderer = GlslBase.manager.createRenderer(
+        val program = GlslBase.manager.createProgram(
             """
             uniform float time;
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, 0.5, 1.);
             }
-            """.trimIndent(), UvTranslatorForTest, GlslShader.extraAdjustables
+            """.trimIndent()
         )
+        val renderer = GlslBase.manager.createRenderer(program, UvTranslatorForTest)
 
         val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
         val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
