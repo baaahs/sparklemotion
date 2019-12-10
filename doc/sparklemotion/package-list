@@ -4,6 +4,7 @@ $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)))baaahs/kotlin.collections.-list/random.html
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)), )baaahs/kotlin.collections.-list/random.html
+$dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 baaahs
 baaahs.browser
@@ -19,5 +20,6 @@ baaahs.proto
 baaahs.shaders
 baaahs.shows
 baaahs.sim
+baaahs.util
 baaahs.visualizer
 three
