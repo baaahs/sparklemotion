@@ -14,7 +14,7 @@ class Quad(private val gl: Kgl, private val program: Program) {
         1.0f, 1.0f
     ).toFloatArray()
 
-    private var vao: VertexArrayObject = gl { gl.createVertexArray()!! }
+    private var vao: VertexArrayObject = gl { gl.createVertexArray() }
     private var quadVertexBuffer: GlBuffer = gl { gl.createBuffers(1)[0] }
 
     init {
@@ -22,7 +22,7 @@ class Quad(private val gl: Kgl, private val program: Program) {
         gl { gl.bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
         gl { gl.bufferData(GL_ARRAY_BUFFER, bufferOf(vertices), vertices.size, GL_STATIC_DRAW) }
 
-        val vertexAttr = gl { gl.getAttribLocation(program.id, "Vertex") }
+        val vertexAttr = gl { program.getVertexAttribLocation() }
         gl { gl.vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
         gl { gl.enableVertexAttribArray(vertexAttr) }
 
@@ -43,7 +43,7 @@ class Quad(private val gl: Kgl, private val program: Program) {
         gl { gl.bindVertexArray(null) }
     }
 
-    private fun release() {
+    fun release() {
         gl { gl.deleteBuffer(quadVertexBuffer) }
         gl { gl.deleteVertexArray(vao) }
     }

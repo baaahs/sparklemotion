@@ -1,7 +1,9 @@
 package baaahs
 
 import baaahs.geom.Vector3F
+import baaahs.glsl.GlslBase
 import baaahs.proto.Ports
+import baaahs.shaders.SoundAnalysisPlugin
 import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
@@ -25,9 +27,7 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
-
-    private val shows = AllShows.allShows
-    public val visualizer = Visualizer(
+    private val visualizer = Visualizer(
         model,
         display.forVisualizer(),
         document.getElementById("sheepView")!! as HTMLDivElement,
@@ -37,6 +37,10 @@ class SheepSimulator {
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     private val pinkyDisplay = display.forPinky()
+    init {
+        GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
+    }
+    private val shows = AllShows.allShows
     private val pinky = Pinky(
         model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
         PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,

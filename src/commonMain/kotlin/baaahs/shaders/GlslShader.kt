@@ -3,88 +3,38 @@ package baaahs.shaders
 import baaahs.*
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
+import baaahs.glsl.Program
 import baaahs.glsl.UvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.json
 
 class GlslShader(
-    private val glslProgram: String,
-    private val uvTranslator: UvTranslator,
-    val params: List<Param> = findParams(glslProgram)
+    private val program: Program,
+    private val uvTranslator: UvTranslator
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
-
     companion object : ShaderReader<GlslShader> {
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
+            val program = GlslBase.manager.createProgram(glslProgram)
             val uvTranslator = UvTranslator.parse(reader)
-            val paramCount = reader.readShort()
-            val params = (0 until paramCount).map { Param.parse(reader) }
-            return GlslShader(glslProgram, uvTranslator, params)
-        }
-
-        private val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
-        private val gadgetPattern = Regex(
-            "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
-                    "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
-        )
-
-        val extraAdjustables = listOf(
-            Param(
-                "sm_uScale", "Slider", Param.Type.FLOAT,
-                json { "name" to "u scale"; "minValue" to 0f; "maxValue" to 3f }),
-            Param(
-                "sm_vScale", "Slider", Param.Type.FLOAT,
-                json { "name" to "v scale"; "minValue" to 0f; "maxValue" to 3f }),
-            Param(
-                "sm_beat", "Beat", Param.Type.FLOAT,
-                json { "name" to "beat" }),
-            Param(
-                "sm_startOfMeasure", "StartOfMeasure", Param.Type.FLOAT,
-                json { "name" to "startOfMeasure"; }),
-            Param(
-                "sm_brightness", "Slider", Param.Type.FLOAT,
-                json { "name" to "brightness"; "minValue" to 0f; "maxValue" to 1f }),
-            Param(
-                "sm_saturation", "Slider", Param.Type.FLOAT,
-                json { "name" to "saturation"; "minValue" to 0f; "maxValue" to 1f })
-        )
-
-        fun findParams(glslFragmentShader: String): List<Param> {
-            return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
-                println("matches: ${matchResult.groupValues}")
-                val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
-                val configData = json.parseJson(configJson)
-                val valueType = when (valueTypeName) {
-                    "int" -> Param.Type.INT
-                    "float" -> Param.Type.FLOAT
-                    "vec3" -> Param.Type.VEC3
-                    else -> throw IllegalArgumentException("unsupported type $valueTypeName")
-                }
-                Param(varName, gadgetType, valueType, configData.jsonObject)
-            }.toList() + extraAdjustables
+            return GlslShader(program, uvTranslator)
         }
     }
 
     override fun serializeConfig(writer: ByteArrayWriter) {
-        writer.writeString(glslProgram)
-        writer.writeShort(params.size)
-        params.forEach { it.serializeConfig(writer) }
+        writer.writeString(program.fragShader)
     }
 
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
-        val poolKey = GlslShader::class to glslProgram
-        val pooledRenderer =
-            renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator, params) }
+        val poolKey = GlslShader::class to program
+        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(program, uvTranslator) }
         val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, params)
+        val glslRenderer = GlslBase.manager.createRenderer(program, uvTranslator)
         val glslSurface = glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
@@ -100,10 +50,8 @@ class GlslShader(
         }
     }
 
-    class PooledRenderer(
-        glslProgram: String, uvTranslator: UvTranslator, params: List<Param>
-    ) : baaahs.PooledRenderer {
-        val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, params)
+    class PooledRenderer(program: Program, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
+        val glslRenderer = GlslBase.manager.createRenderer(program, uvTranslator)
 
         override fun preDraw() {
             glslRenderer.draw()
@@ -117,7 +65,7 @@ class GlslShader(
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
-        val values = Array<Any?>(params.size) { }
+        val values = Array<Any?>(program.params.size) { }
 
         fun update(values: List<Any?>) {
             values.forEachIndexed { index, value -> this.values[index] = value }
@@ -126,11 +74,11 @@ class GlslShader(
         override fun serialize(writer: ByteArrayWriter) {
             uvTranslator.serialize(writer)
 
-            params.zip(values).forEach { (param, value) -> param.serializeValue(value, writer) }
+            program.params.zip(values).forEach { (param, value) -> param.serializeValue(value, writer) }
         }
 
         override fun read(reader: ByteArrayReader) {
-            params.forEachIndexed { index, param -> values[index] = param.readValue(reader) }
+            program.params.forEachIndexed { index, param -> values[index] = param.readValue(reader) }
         }
     }
 

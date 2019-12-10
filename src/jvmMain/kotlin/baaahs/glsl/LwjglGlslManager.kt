@@ -6,7 +6,7 @@ import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GLCapabilities
 
-class LwjglGlslManager : GlslManager {
+class LwjglGlslManager : GlslManager("330 core") {
     private val window: Long
 
     /**
@@ -45,29 +45,17 @@ class LwjglGlslManager : GlslManager {
     override val available: Boolean
         get() = window != 0L
 
-    override fun createRenderer(
-        fragShader: String,
-        uvTranslator: UvTranslator,
-        params: List<GlslShader.Param>,
-        plugins: List<GlslPlugin>
-    ): GlslRenderer {
-        val contextSwitcher = object : GlslRenderer.ContextSwitcher {
-            override fun <T> inContext(fn: () -> T): T {
-                if (!available) throw RuntimeException("GLSL not available")
-                GLFW.glfwMakeContextCurrent(window)
-                glCapabilities.get() // because it's expensive and only has to happen once per thread
+    override val kgl = KglLwjgl()
 
-                try {
-                    return fn()
-                } finally {
-                    GLFW.glfwMakeContextCurrent(0)
-                }
-            }
-        }
+    override fun <T> runInContext(fn: () -> T): T {
+        if (!available) throw RuntimeException("GLSL not available")
+        GLFW.glfwMakeContextCurrent(window)
+        glCapabilities.get() // because it's expensive and only has to happen once per thread
 
-        val kgl = KglLwjgl()
-        return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, uvTranslator, params, "330 core", plugins)
+        try {
+            return fn()
+        } finally {
+            GLFW.glfwMakeContextCurrent(0)
         }
     }
 

@@ -1,38 +1,25 @@
 package baaahs.glsl
 
-import baaahs.shaders.GlslShader
 import com.danielgergely.kgl.KglJogl
 import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 
-class JoglGlslManager : GlslManager {
+class JoglGlslManager : GlslManager("330 core") {
+    private val gl = createGLContext()
     override val available: Boolean
         get() = true
 
-    override fun createRenderer(
-        fragShader: String,
-        uvTranslator: UvTranslator,
-        params: List<GlslShader.Param>,
-        plugins: List<GlslPlugin>
-    ): GlslRenderer {
-        val gl = createGLContext()
-        val contextSwitcher = object : GlslRenderer.ContextSwitcher {
-            override fun <T> inContext(fn: () -> T): T {
-                val context = gl.context
-                context.makeCurrent()
-                try {
-                    return fn()
-                } finally {
-                    context.release()
-                }
-            }
-        }
-
-        val kgl = KglJogl(gl as GL3ES3)
-        return contextSwitcher.inContext {
-            GlslRenderer(kgl, contextSwitcher, fragShader, uvTranslator, params, "330 core", plugins)
+    override fun <T> runInContext(fn: () -> T): T {
+        val context = gl.context
+        context.makeCurrent()
+        try {
+            return fn()
+        } finally {
+            context.release()
         }
     }
+
+    override val kgl = KglJogl(gl as GL3ES3)
 
     companion object {
         fun createGLContext(): GL4 {
