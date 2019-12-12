@@ -49,7 +49,7 @@ object PanelTweenShow : Show("PanelTweenShow") {
                         solidShader.color = tweenedColor
 
                         sparkleShader.color = Color.WHITE
-                        sparkleShader.sparkliness = slider.value
+                        sparkleShader.sparkliness = slider.value / 3
                     }
                 }
             }
