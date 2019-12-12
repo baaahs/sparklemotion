@@ -16498,7 +16498,7 @@
       var tweenedColor = startColor.fade_6zkv30$(endColor, now % this.fadeTimeMs / this.fadeTimeMs);
       item.solidShader.color = tweenedColor;
       item.sparkleShader.color = Color$Companion_getInstance().WHITE;
-      item.sparkleShader.sparkliness = this.slider.value;
+      item.sparkleShader.sparkliness = this.slider.value / 3;
     }
   };
   PanelTweenShow$createRenderer$ObjectLiteral.$metadata$ = {
