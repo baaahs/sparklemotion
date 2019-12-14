@@ -1,10 +1,8 @@
 package baaahs.shaders
 
 import baaahs.*
-import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslSurface
-import baaahs.glsl.Program
-import baaahs.glsl.UvTranslator
+import baaahs.Shader
+import baaahs.glsl.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.JsonObject
@@ -14,6 +12,8 @@ class GlslShader(
     private val uvTranslator: UvTranslator
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
     companion object : ShaderReader<GlslShader> {
+        val logger = Logger("GlslShader")
+
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
             val program = GlslBase.manager.createProgram(glslProgram)
@@ -82,11 +82,18 @@ class GlslShader(
         }
     }
 
-    class Param(val varName: String, val gadgetType: String, val valueType: Type, val config: JsonObject) {
+    data class Param(
+        val varName: String,
+        val dataSourceProvider: GlslPlugin.DataSourceProvider,
+        val valueType: Type,
+        val config: JsonObject
+    ) {
         enum class Type { INT, FLOAT, VEC3 }
 
         fun serializeConfig(writer: ByteArrayWriter) {
             writer.writeString(varName)
+            writer.writeString(dataSourceProvider.category.name)
+            writer.writeString(dataSourceProvider.name)
             writer.writeByte(valueType.ordinal.toByte())
         }
 
@@ -111,8 +118,11 @@ class GlslShader(
 
             fun parse(reader: ByteArrayReader): Param {
                 val varName = reader.readString()
+                val categoryName = reader.readString()
+                val sourceName = reader.readString()
+                val dataSourceProvider = GlslPlugin.DataSourceProvider.from(categoryName, sourceName)
                 val valueType = types[reader.readByte().toInt()]
-                return Param(varName, "", valueType, JsonObject(emptyMap()))
+                return Param(varName, dataSourceProvider, valueType, JsonObject(emptyMap()))
             }
         }
     }

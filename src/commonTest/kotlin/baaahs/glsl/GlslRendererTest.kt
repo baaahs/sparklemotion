@@ -2,7 +2,6 @@ package baaahs.glsl
 
 import baaahs.*
 import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayWriter
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.BeforeTest
@@ -14,14 +13,6 @@ class GlslRendererTest {
     // TODO: Do something better.
 //    @BeforeTest
 //    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
-
-    fun glslAvailable(): Boolean {
-        val available = GlslBase.manager.available
-        if (!available) {
-            println("WARNING: OpenGL not available, skipping test!")
-        }
-        return available
-    }
 
     @BeforeTest
     fun resetPlugins() {
@@ -243,14 +234,5 @@ class GlslRendererTest {
             TestModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
         )
-    }
-
-    object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
-        override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")
-
-        override fun forPixels(pixelLocations: List<Vector3F?>) = object : SurfaceUvTranslator {
-            override val pixelCount = pixelLocations.count()
-            override fun getUV(pixelIndex: Int): Pair<Float, Float> = pixelLocations[pixelIndex]!!.let { it.x to it.y }
-        }
     }
 }

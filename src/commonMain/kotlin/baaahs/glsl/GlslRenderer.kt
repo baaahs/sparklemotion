@@ -21,7 +21,7 @@ open class GlslRenderer(
     private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
     private val uvCoordTextureId = program.obtainTextureId()
-    private val rendererPlugins = program.plugins.mapNotNull { it.forRender() }
+    private val rendererPlugins = program.plugins.mapNotNull { it.forRenderer() }.associateBy { it.plugin.name }
 
     var arrangement: Arrangement
 
@@ -77,14 +77,14 @@ open class GlslRenderer(
 
         arrangement.bindUvCoordTexture(uvCoordsUniform)
 
-        rendererPlugins.forEach { it.before() }
+        rendererPlugins.values.forEach { it.before() }
 
         gl.viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
         gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
         arrangement.render()
 
-        rendererPlugins.forEach { it.after() }
+        rendererPlugins.values.forEach { it.after() }
 
         gl.finish()
 
@@ -142,7 +142,7 @@ open class GlslRenderer(
     }
 
     fun release() {
-        rendererPlugins.forEach { it.release() }
+        rendererPlugins.values.forEach { it.release() }
         arrangement.release()
     }
 

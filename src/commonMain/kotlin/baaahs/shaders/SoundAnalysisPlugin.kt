@@ -8,6 +8,8 @@ import baaahs.glsl.check
 import com.danielgergely.kgl.*
 
 class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) : GlslPlugin {
+    override val name: String = "SoundAnalysis"
+
     private var textureBuffer = FloatArray(0)
     private var textureGlBuffer = FloatBuffer(0)
 
@@ -37,6 +39,8 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
     }
 
     inner class ProgramContext(private val gl: Kgl, private val program: Program) : GlslPlugin.ProgramContext {
+        override val plugin: GlslPlugin = this@SoundAnalysisPlugin
+
         override val glslPreamble: String = "uniform sampler2D sm_soundAnalysis;"
 
         private var soundAnalysisUniform: Uniform? = null
@@ -45,7 +49,7 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
             soundAnalysisUniform = gl.check { Uniform.find(program, "sm_soundAnalysis") }
         }
 
-        override fun forRender(): GlslPlugin.RenderContext? {
+        override fun forRenderer(): GlslPlugin.RendererContext? {
             val analysisBufferSize = soundAnalyzer.frequencies.size
             val expectedBufferSize = analysisBufferSize * historySize
 
@@ -53,11 +57,11 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
             if (uniform == null || textureBuffer.size != expectedBufferSize) {
                 return null
             } else {
-                return RenderContext(uniform)
+                return RendererContext(uniform)
             }
         }
 
-        inner class RenderContext(uniform: Uniform) : GlslPlugin.RenderContext {
+        inner class RendererContext(uniform: Uniform) : GlslPlugin.RendererContext {
             private val texture = gl.check { gl.createTexture() }
             private val textureId = program.obtainTextureId()
 
@@ -78,6 +82,8 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
                 }
                 uniform.set(textureId)
             }
+
+            override val plugin: GlslPlugin = this@SoundAnalysisPlugin
 
             override fun release() {
                 gl.check { gl.deleteTexture(texture) }

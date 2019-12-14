@@ -3,6 +3,7 @@ package baaahs.shows
 import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.glsl.GlslPlugin
 import baaahs.glsl.Program
 import baaahs.shaders.GlslShader
 
@@ -30,29 +31,55 @@ abstract class GlslShow(name: String) : Show(name) {
         }
     }
 
-    fun GlslShader.Param.createDataSource(showRunner: ShowRunner): DataSource {
+    private fun GlslShader.Param.createDataSource(showRunner: ShowRunner): DataSource {
         val config = config
         val name = config.getPrimitive("name").contentOrNull ?: varName
 
-        return when (gadgetType) {
-            "Slider" -> {
-                GadgetDataSource(showRunner.getGadget("glsl_${varName}", Slider(
-                    name,
-                    initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
-                    minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
-                    maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
-                )))
+        return when (dataSourceProvider) {
+            is GlslPlugin.GadgetDataSourceProvider -> {
+                when (dataSourceProvider.name) {
+                    "Slider" -> {
+                        GadgetDataSource(
+                            showRunner.getGadget(
+                                "glsl_${varName}", Slider(
+                                    name,
+                                    initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
+                                    minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
+                                    maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
+                                )
+                            )
+                        )
+                    }
+                    "ColorPicker" -> {
+                        GadgetDataSource(showRunner.getGadget("glsl_${varName}", ColorPicker(name)))
+                    }
+                    "Beat" -> {
+                        BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                    }
+                    "StartOfMeasure" -> {
+                        StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                    }
+                    else -> throw IllegalArgumentException("unknown gadget ${dataSourceProvider}")
+                }
             }
-            "ColorPicker" -> {
-                GadgetDataSource(showRunner.getGadget("glsl_${varName}", ColorPicker(name)))
+            is GlslPlugin.PluginDataSourceProvider -> {
+                when (dataSourceProvider.name) {
+                    "SoundAnalysis" -> {
+                        GadgetDataSource(
+                            showRunner.getGadget(
+                                "glsl_${varName}", Slider(
+                                    name,
+                                    initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
+                                    minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
+                                    maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
+                                )
+                            )
+                        )
+                    }
+                    else -> throw IllegalArgumentException("unknown plugin $dataSourceProvider")
+                }
             }
-            "Beat" -> {
-                BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-            }
-            "StartOfMeasure" -> {
-                StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-            }
-            else -> throw IllegalArgumentException("unknown gadget ${gadgetType}")
+            else -> throw IllegalArgumentException("unknown source $dataSourceProvider")
         }
     }
 

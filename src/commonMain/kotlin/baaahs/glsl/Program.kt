@@ -19,7 +19,7 @@ class Program constructor(
     val plugins = plugins.map { it.forProgram(gl, this) }
 
     private val gadgetPattern = Regex(
-        "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
+        "\\s*//\\s*SPARKLEMOTION (\\w+):\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
                 "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"
     )
     private val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
@@ -49,16 +49,18 @@ class Program constructor(
 
     fun findParams(glslFragmentShader: String): List<GlslShader.Param> {
         return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
-            println("matches: ${matchResult.groupValues}")
-            val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
-            val configData = json.parseJson(configJson)
+            GlslShader.logger.debug { "data source match: ${matchResult.groupValues.apply { subList(1, size) }}" }
+
+            val (dataSourceCategory, dataSourceName, configJson, valueTypeName, varName) = matchResult.destructured
             val valueType = when (valueTypeName) {
                 "int" -> GlslShader.Param.Type.INT
                 "float" -> GlslShader.Param.Type.FLOAT
                 "vec3" -> GlslShader.Param.Type.VEC3
                 else -> throw IllegalArgumentException("unsupported type $valueTypeName")
             }
-            GlslShader.Param(varName, gadgetType, valueType, configData.jsonObject)
+            val configData = json.parseJson(configJson)
+            val dataSource = GlslPlugin.DataSourceProvider.from(dataSourceCategory, dataSourceName)
+            GlslShader.Param(varName, dataSource, valueType, configData.jsonObject)
         }.toList()
     }
 
@@ -124,7 +126,7 @@ uniform float sm_brightness;
 // SPARKLEMOTION GADGET: Slider { "name": "Saturation", "minValue": 0, "maxValue": 1 }
 uniform float sm_saturation;
 
-${plugins.map { plugin -> plugin.glslPreamble }.joinToString("\n")}
+${plugins.joinToString("\n") { plugin -> plugin.glslPreamble }}
 
 out vec4 sm_fragColor;
 

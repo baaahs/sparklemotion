@@ -8,13 +8,16 @@ precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
+// SPARKLEMOTION PLUGIN: SoundAnalysis:History {}
+uniform sampler2D soundAnalysisHistory;
+
 // SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 1.0, minValue: 0.0, maxValue: 2.0}
 uniform float scale;
 
 void main(void)
 {
-    float mag = texture(sm_soundAnalysis, vec2(gl_FragCoord.y, pow(gl_FragCoord.x - .25, scale))).r;
-    float magNow = texture(sm_soundAnalysis, vec2(gl_FragCoord.y, 0)).r;
+    float mag = texture(soundAnalysisHistory, vec2(gl_FragCoord.y, pow(gl_FragCoord.x - .25, scale))).r;
+    float magNow = texture(soundAnalysisHistory, vec2(gl_FragCoord.y, 0)).r;
     gl_FragColor = vec4(mag, mag, magNow, 1.0);
 
 }
