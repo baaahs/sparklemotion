@@ -3,7 +3,7 @@ package baaahs
 import baaahs.geom.Vector3F
 import baaahs.glsl.GlslBase
 import baaahs.proto.Ports
-import baaahs.shaders.SoundAnalysisPlugin
+import baaahs.plugins.SoundAnalysisPlugin
 import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger

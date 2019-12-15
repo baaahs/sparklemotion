@@ -4,7 +4,7 @@ import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
-import baaahs.shaders.SoundAnalysisPlugin
+import baaahs.plugins.SoundAnalysisPlugin
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser

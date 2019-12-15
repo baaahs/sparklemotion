@@ -1,4 +1,4 @@
-package baaahs.shaders
+package baaahs.plugins
 
 import baaahs.SoundAnalyzer
 import baaahs.glsl.GlslPlugin
@@ -6,6 +6,7 @@ import baaahs.glsl.Program
 import baaahs.glsl.Uniform
 import baaahs.glsl.check
 import com.danielgergely.kgl.*
+import kotlinx.serialization.json.JsonObject
 
 class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) : GlslPlugin {
     override val name: String = "SoundAnalysis"
@@ -36,6 +37,12 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
 
     override fun forProgram(gl: Kgl, program: Program): GlslPlugin.ProgramContext {
         return ProgramContext(gl, program)
+    }
+
+    override fun createDataSource(config: JsonObject): GlslPlugin.DataSource {
+        return object : GlslPlugin.DataSource {
+            override fun getValue(): Any = Unit
+        }
     }
 
     inner class ProgramContext(private val gl: Kgl, private val program: Program) : GlslPlugin.ProgramContext {

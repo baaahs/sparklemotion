@@ -13,6 +13,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.collections.set
 import kotlin.js.JsName
@@ -156,12 +157,24 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
 
 val gadgetModule = SerializersModule {
     polymorphic(Gadget::class) {
-        ColorPicker::class with ColorPicker.serializer()
-        PalettePicker::class with PalettePicker.serializer()
-        Slider::class with Slider.serializer()
+        Plugins.gadgets.forEach { gadgetPlugin ->
+            val plugin : GadgetPlugin<Gadget> = gadgetPlugin as GadgetPlugin<Gadget>
+            plugin.gadgetClass.with(plugin.serializer)
+        }
+//        ColorPicker::class with ColorPicker.serializer()
+//        PalettePicker::class with PalettePicker.serializer()
+//        Slider::class with Slider.serializer()
     }
 }
 
 private val jsonParser = Json(JsonConfiguration.Stable)
 
 fun <T : Any> KSerializer<T>.array(kKlass: KClass<T>): KSerializer<Array<T>> = ArraySerializer(kKlass, this)
+
+interface GadgetPlugin<T : Gadget> {
+    val name: String
+    val gadgetClass: KClass<T>
+    val serializer: KSerializer<T>
+    fun create(name: String, config: JsonObject): T
+    fun getValue(gadget: T): Any
+}

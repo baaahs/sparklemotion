@@ -1,9 +1,15 @@
 package baaahs.glsl
 
+import baaahs.shows.GlslShow
 import com.danielgergely.kgl.Kgl
+import kotlinx.serialization.json.JsonObject
 
 interface GlslPlugin {
     val name: String
+
+    fun createDataSource(config: JsonObject): DataSource
+
+    interface DataSource : GlslShow.DataSource
 
     fun forProgram(gl: Kgl, program: Program): ProgramContext
 
