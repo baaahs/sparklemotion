@@ -1,13 +1,18 @@
 package baaahs
 
 class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
-    private var preferredVersion = ""
+    private var preferredVersion: String?
 
     init {
         // TODO: Watch the directory for changes instead of just scanning once at startup
+        preferredVersion = findPreferredFirmware()
+        logger.debug { "Full URL is $urlForPreferredVersion" }
+    }
+
+    private fun findPreferredFirmware(): String? {
         try {
             val files = fs.listFiles("")
-            println("Found the following firmware files:")
+            logger.debug { "Found the following firmware files:" }
 
             var currentNum = 0
             var currentFile: String? = null
@@ -28,23 +33,21 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
             }
 
             if (currentFile == null) {
-                println("  ** No .bin file is named with a proper firmware version like '0.0.1-450-gad9451b-dirty'")
+                logger.warn { "  ** No .bin file is named with a proper firmware version like '0.0.1-450-gad9451b-dirty'" }
             } else {
-                println("Selected firmware ====> $currentFile")
-
-                preferredVersion = currentFile.substring(0, currentFile.length - 4);
-
-                println("Full URL is ${urlForPreferredVersion}")
+                logger.debug { "Selected firmware ====> $currentFile" }
+                return currentFile.substring(0, currentFile.length - 4);
             }
         } catch (e: Exception) {
             // Probably the directory doesn't exist
             logger.error(e) { "Exception encountered looking for a firmware to vend. No firmware will be distributed." }
         }
+        return null
     }
 
     override fun doesntLikeThisVersion(firmwareVersion: String?): Boolean {
         // If we didn't find a firmware, don't hassle people. Accept anything.
-        if (preferredVersion.isEmpty()) return false
+        if (preferredVersion == null) return false
 
         return firmwareVersion != preferredVersion
     }
