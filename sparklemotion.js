@@ -10044,10 +10044,10 @@
   }
   function GlslManager() {
   }
-  GlslManager.prototype.createRenderer_miqmvs$ = function (fragShader, adjustableValues, plugins, callback$default) {
+  GlslManager.prototype.createRenderer_k4mt0f$ = function (fragShader, uvTranslator, adjustableValues, plugins, callback$default) {
     if (plugins === void 0)
       plugins = GlslBase_getInstance().plugins;
-    return callback$default ? callback$default(fragShader, adjustableValues, plugins) : this.createRenderer_miqmvs$$default(fragShader, adjustableValues, plugins);
+    return callback$default ? callback$default(fragShader, uvTranslator, adjustableValues, plugins) : this.createRenderer_k4mt0f$$default(fragShader, uvTranslator, adjustableValues, plugins);
   };
   GlslManager.$metadata$ = {
     kind: Kind_INTERFACE,
@@ -10068,17 +10068,19 @@
     simpleName: 'GlslPlugin',
     interfaces: []
   };
-  function GlslRenderer(gl, contextSwitcher, fragShader, adjustableValues, glslVersion, plugins) {
+  function GlslRenderer(gl, contextSwitcher, fragShader, uvTranslator, adjustableValues, glslVersion, plugins) {
+    GlslRenderer$Companion_getInstance();
     this.gl = gl;
     this.contextSwitcher_8zrvqj$_0 = contextSwitcher;
     this.fragShader = fragShader;
+    this.uvTranslator_7f5fm$_0 = uvTranslator;
     this.adjustableValues = adjustableValues;
     this.glslVersion_l4u3hb$_0 = glslVersion;
     this.surfacesToAdd_vfxuyj$_0 = ArrayList_init();
     this.pixelCount = 0;
     this.nextPixelOffset = 0;
     this.nextSurfaceOffset = 0;
-    this.glslSurfaces = ArrayList_init();
+    this.glslSurfaces_vgfiet$_0 = ArrayList_init();
     this.nextTextureId_nzaz14$_0 = 0;
     this.uvCoordTextureId_c5rmnd$_0 = this.getTextureId();
     var destination = ArrayList_init_0(collectionSizeOrDefault(plugins, 10));
@@ -10108,7 +10110,7 @@
     this.stats = new GlslRenderer$Stats();
     var result_4 = GlslRenderer_init$lambda(this)();
     checkForGlError(this.gl);
-    this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces);
+    this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces_vgfiet$_0);
   }
   GlslRenderer.prototype.getTextureId = function () {
     var tmp$;
@@ -10152,8 +10154,8 @@
     }
     return program;
   };
-  GlslRenderer.prototype.addSurface_173pey$ = function (surface, uvTranslator) {
-    var glslSurface = new GlslSurface(new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), uvTranslator);
+  GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
+    var glslSurface = new GlslSurface(new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), this.uvTranslator_7f5fm$_0);
     this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
     this.surfacesToAdd_vfxuyj$_0.add_11rb$(glslSurface);
     return glslSurface;
@@ -10239,6 +10241,11 @@
     if (programLog.length > 0)
       println('ProgramInfoLog: ' + programLog);
   };
+  function GlslRenderer$incorporateNewSurfaces$lambda$lambda(closure$surface, closure$outOfBounds, closure$uvTranslator, closure$outOfBoundsU, closure$outOfBoundsV) {
+    return function () {
+      return 'Surface ' + closure$surface.describe() + ' has ' + closure$outOfBounds.v + ' points (of ' + closure$uvTranslator.pixelCount + ')' + (' outside the model (u=' + closure$outOfBoundsU.v + ' v=' + closure$outOfBoundsV.v + ')');
+    };
+  }
   GlslRenderer.prototype.incorporateNewSurfaces = function () {
     if (!this.surfacesToAdd_vfxuyj$_0.isEmpty()) {
       var oldUvCoords = this.arrangement.uvCoords;
@@ -10254,6 +10261,9 @@
         var surface = element.pixels.surface;
         var pixelLocations = LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
         var uvTranslator = element.uvTranslator.forPixels_fvukwm$(pixelLocations);
+        var outOfBounds = {v: 0};
+        var outOfBoundsU = {v: 0};
+        var outOfBoundsV = {v: 0};
         tmp$_0 = uvTranslator.pixelCount;
         for (var i = 0; i < tmp$_0; i++) {
           var uvOffset = (element.pixels.pixel0Index + i | 0) * 2 | 0;
@@ -10262,11 +10272,25 @@
           , v = tmp$_1.component2();
           newUvCoords[uvOffset] = u;
           newUvCoords[uvOffset + 1 | 0] = v;
+          var uOut = u < 0.0 || u > 1.0;
+          var vOut = v < 0.0 || v > 1.0;
+          if (uOut || vOut) {
+            outOfBounds.v = outOfBounds.v + 1 | 0;
+          }
+          if (uOut) {
+            outOfBoundsU.v = outOfBoundsU.v + 1 | 0;
+          }
+          if (vOut) {
+            outOfBoundsV.v = outOfBoundsV.v + 1 | 0;
+          }
+        }
+        if (outOfBoundsU.v > 0 || outOfBoundsV.v > 0) {
+          GlslRenderer$Companion_getInstance().logger_0.warn_h4ejuu$(GlslRenderer$incorporateNewSurfaces$lambda$lambda(surface, outOfBounds, uvTranslator, outOfBoundsU, outOfBoundsV));
         }
       }
-      this.glslSurfaces.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
+      this.glslSurfaces_vgfiet$_0.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
       this.surfacesToAdd_vfxuyj$_0.clear();
-      this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces);
+      this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces_vgfiet$_0);
       this.arrangement.bindUvCoordTexture_i9pfe0$(ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
@@ -10281,6 +10305,22 @@
     }
     this.arrangement.release();
   };
+  function GlslRenderer$Companion() {
+    GlslRenderer$Companion_instance = this;
+    this.logger_0 = new Logger('GlslRenderer');
+  }
+  GlslRenderer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslRenderer$Companion_instance = null;
+  function GlslRenderer$Companion_getInstance() {
+    if (GlslRenderer$Companion_instance === null) {
+      new GlslRenderer$Companion();
+    }
+    return GlslRenderer$Companion_instance;
+  }
   function GlslRenderer$Arrangement($outer, pixelCount, uvCoords, surfaces) {
     this.$outer = $outer;
     this.pixelCount = pixelCount;
@@ -14403,18 +14443,18 @@
   };
   function GlslShader$createRenderer$lambda(this$GlslShader) {
     return function () {
-      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram_0, this$GlslShader.adjustableValues);
+      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram_0, this$GlslShader.uvTranslator_0, this$GlslShader.adjustableValues);
     };
   }
   GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
     var poolKey = to(getKClass(GlslShader), this.glslProgram_0);
     var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
-    var glslSurface = pooledRenderer.glslRenderer.addSurface_173pey$(surface, this.uvTranslator_0);
+    var glslSurface = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_miqmvs$(this.glslProgram_0, this.adjustableValues);
-    var glslSurface = glslRenderer.addSurface_173pey$(surface, this.uvTranslator_0);
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_k4mt0f$(this.glslProgram_0, this.uvTranslator_0, this.adjustableValues);
+    var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
     return new GlslShader$Renderer(glslSurface);
   };
   function GlslShader$Renderer(glslSurface) {
@@ -14432,8 +14472,8 @@
     simpleName: 'Renderer',
     interfaces: [Shader$Renderer]
   };
-  function GlslShader$PooledRenderer(glslProgram, adjustableValues) {
-    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_miqmvs$(glslProgram, adjustableValues);
+  function GlslShader$PooledRenderer(glslProgram, uvTranslator, adjustableValues) {
+    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_k4mt0f$(glslProgram, uvTranslator, adjustableValues);
   }
   GlslShader$PooledRenderer.prototype.preDraw = function () {
     this.glslRenderer.draw();
@@ -20262,9 +20302,9 @@
     kind: Kind_CLASS,
     interfaces: [GlslRenderer$ContextSwitcher]
   };
-  GlslBase$JsGlslManager.prototype.createRenderer_miqmvs$$default = function (fragShader, adjustableValues, plugins) {
+  GlslBase$JsGlslManager.prototype.createRenderer_k4mt0f$$default = function (fragShader, uvTranslator, adjustableValues, plugins) {
     var contextSwitcher = new GlslBase$JsGlslManager$createRenderer$ObjectLiteral();
-    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, adjustableValues, '300 es', plugins);
+    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, uvTranslator, adjustableValues, '300 es', plugins);
   };
   GlslBase$JsGlslManager.prototype.createContext_0 = function () {
     var tmp$;
@@ -22520,6 +22560,9 @@
   GlslPlugin.RendererPlugin = GlslPlugin$RendererPlugin;
   package$glsl.GlslPlugin = GlslPlugin;
   GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
+  Object.defineProperty(GlslRenderer, 'Companion', {
+    get: GlslRenderer$Companion_getInstance
+  });
   $$importsForInline$$.sparklemotion = _;
   GlslRenderer.Arrangement = GlslRenderer$Arrangement;
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
@@ -23054,7 +23097,7 @@
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
-  GlslBase$JsGlslManager.prototype.createRenderer_miqmvs$ = GlslManager.prototype.createRenderer_miqmvs$;
+  GlslBase$JsGlslManager.prototype.createRenderer_k4mt0f$ = GlslManager.prototype.createRenderer_k4mt0f$;
   CanvasBitmap.prototype.withData_u0v8ny$ = Bitmap.prototype.withData_u0v8ny$;
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   BrowserUdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
