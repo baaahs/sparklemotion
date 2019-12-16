@@ -17,23 +17,27 @@ import kotlin.browser.window
 import kotlin.js.Date
 
 class SheepSimulator {
+    private val queryParams = decodeQueryParams(document.location!!)
     private val display = JsDisplay()
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
-    private val model = SheepModel().apply { load() } as Model<*>
+    private val model = selectModel()
+
     private val shows = AllShows.allShows
     private val visualizer = Visualizer(model, display.forVisualizer())
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
+    private val pinkyDisplay = display.forPinky()
     private val pinky = Pinky(
         model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
-        PermissiveFirmwareDaddy(), display.forPinky(), bridgeClient.soundAnalyzer,
+        PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,
         prerenderPixels = true
     )
 
-    fun start() = doRunBlocking {
-        val queryParams = decodeQueryParams(document.location!!)
+    private fun selectModel(): Model<*> =
+        Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
+    fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
@@ -82,6 +86,15 @@ class SheepSimulator {
 
         model.movingHeads.forEach { movingHead ->
             visualizer.addMovingHead(movingHead, dmxUniverse)
+        }
+
+        val showName = queryParams.get("show")
+        showName?.let {
+            val show = shows.find { it.name == showName }
+            show?.let {
+                pinky.switchToShow(show)
+                pinkyDisplay.selectedShow = show
+            }
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }

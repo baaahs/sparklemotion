@@ -62,6 +62,15 @@ class Decom2019Model : ObjModel<Model.Surface>("decom-2019-panels.obj") {
     }
 }
 
+class SuiGenerisModel : ObjModel<Model.Surface>("sui-generis.obj") {
+    override val name: String = "Decom2019" // todo: it's weird that we're reusing Decom2019 here.
+    override val defaultUvTranslator: UvTranslator by lazy { LinearModelSpaceUvTranslator(this) }
+
+    override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
+        return SheepModel.Panel(name, 10 * 60, faces, lines)
+    }
+}
+
 class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
     override val name: String = "BAAAHS"
     override val defaultUvTranslator: UvTranslator by lazy { CylindricalModelSpaceUvTranslator(this) }
@@ -149,6 +158,7 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
             }
         }
 
+        logger.debug { "Loading model data from $objResourceName..." }
         getResource(objResourceName)
             .split("\n")
             .map { it.trim() }
@@ -191,7 +201,7 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
 
         buildSurface()
 
-        println("Sheep model has ${panels.size} panels (and ${vertices.size} vertices)!")
+        logger.debug { "${this::class.simpleName} has ${panels.size} panels and ${vertices.size} vertices" }
         this.vertices = vertices
         this.panels = panels
 

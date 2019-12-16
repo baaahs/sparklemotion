@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.BrainId
+import baaahs.Logger
 import baaahs.Model
 import baaahs.geom.Vector3F
 
@@ -23,13 +24,22 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
             mappingSession.surfaces.forEach { surfaceData ->
                 val brainId = BrainId(surfaceData.brainId)
                 val surfaceName = surfaceData.surfaceName
-                val modelSurface = model.findModelSurface(surfaceName)
-                val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
 
-                brainData[brainId] = MappingResults.Info(modelSurface, pixelLocations)
+                try {
+                    val modelSurface = model.findModelSurface(surfaceName)
+                    val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
+
+                    brainData[brainId] = MappingResults.Info(modelSurface, pixelLocations)
+                } catch (e: Exception) {
+                    logger.warn(e) { "Skipping $surfaceName" }
+                }
             }
         }
     }
 
     override fun dataFor(brainId: BrainId): MappingResults.Info? = brainData[brainId]
+
+    companion object {
+        private val logger = Logger("SessionMappingResults")
+    }
 }

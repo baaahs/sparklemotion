@@ -32,11 +32,10 @@ class Pinky(
     val firmwareDaddy: FirmwareDaddy,
     val display: PinkyDisplay,
     soundAnalyzer: SoundAnalyzer,
-    private val prerenderPixels: Boolean = false
+    private val prerenderPixels: Boolean = false,
+    private val switchShowAfterIdleSeconds: Int? = 600,
+    private val adjustShowAfterIdleSeconds: Int? = null
 ) : Network.UdpListener {
-    val newShowAfterIdleSeconds = 600
-    val adjustShowAfterIdleSeconds = 6000
-
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
 
@@ -130,19 +129,22 @@ class Pinky(
     private fun maybeChangeThingsIfUsersAreIdle() {
         val now = DateTime.now()
         val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
-        if (now.minus(selectedNewShowAt).seconds > newShowAfterIdleSeconds
-            && secondsSinceUserInteraction > newShowAfterIdleSeconds
+        if (switchShowAfterIdleSeconds != null
+            && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
+            && secondsSinceUserInteraction > switchShowAfterIdleSeconds
         ) {
             switchToShow(shows.random()!!)
             selectedNewShowAt = now
         }
 
-        if (secondsSinceUserInteraction > adjustShowAfterIdleSeconds) {
+        if (adjustShowAfterIdleSeconds != null
+            && secondsSinceUserInteraction > adjustShowAfterIdleSeconds
+        ) {
             gadgetManager.adjustSomething()
         }
     }
 
-    private fun switchToShow(nextShow: Show) {
+    fun switchToShow(nextShow: Show) {
         this.selectedShow = nextShow
         selectedShowChannel.onChange(nextShow.name)
     }
@@ -204,15 +206,19 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        logger.info { "Hello from ${brainId.uuid}" +
-                " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                " at $brainAddress: $msg" }
+        logger.info {
+            "Hello from ${brainId.uuid}" +
+                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                    " at $brainAddress: $msg"
+        }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.info { "The firmware daddy doesn't like $brainId" +
-                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                    " having ${msg.firmwareVersion}" +
-                    " so we'll send ${firmwareDaddy.urlForPreferredVersion}" }
+            logger.info {
+                "The firmware daddy doesn't like $brainId" +
+                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                        " having ${msg.firmwareVersion}" +
+                        " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
+            }
             val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
         }
@@ -318,7 +324,7 @@ class Pinky(
     inner class PinkyBeatDisplayer(val beatSource: BeatSource) {
         suspend fun run() {
             while (true) {
-               val beatData = beatSource.getBeatData()
+                val beatData = beatSource.getBeatData()
                 display.beat = beatData.beatWithinMeasure(clock).toInt()
                 display.bpm = beatData.bpm
                 display.beatConfidence = beatData.confidence

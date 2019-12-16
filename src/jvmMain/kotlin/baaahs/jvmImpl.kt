@@ -62,5 +62,5 @@ actual fun logMessage(level: String, message: String, exception: Throwable?) {
         "DEBUG" -> println("$level: $message")
         else -> println("$level: $message")
     }
-    exception?.printStackTrace()
+    exception?.printStackTrace(System.out)
 }

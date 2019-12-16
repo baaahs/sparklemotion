@@ -111,6 +111,8 @@ kotlin {
                 implementation "io.ktor:ktor-server-host-common:$ktor_version"
                 implementation "io.ktor:ktor-websockets:$ktor_version"
                 implementation "ch.qos.logback:logback-classic:$logback_version"
+                implementation "com.xenomachina:kotlin-argparser:2.0.7"
+
                 implementation "org.deepsymmetry:beat-link:$beatlink_version"
 
                 implementation files("src/jvmMain/lib/ftd2xxj-2.1.jar")
