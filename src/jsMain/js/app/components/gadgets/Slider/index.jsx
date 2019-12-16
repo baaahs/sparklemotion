@@ -29,7 +29,12 @@ class RangeSlider extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.gadget.unlisten(this._handleChangeFromServer);
+    try {
+      this.props.gadget.unlisten(this._handleChangeFromServer);
+    } catch (e) {
+      // TODO: Why is this happening? It causes the UI to disappear. :-(
+      console.warn("Failed to unlisten on", this.props.gadget, e);
+    }
   }
 
   get domain() {

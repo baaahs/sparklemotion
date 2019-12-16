@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 object CompositeShow : Show("Composite") {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
+        val colorPicker = showRunner.getGadget("color", ColorPicker("Color", initialValue = Color.BLUE))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
