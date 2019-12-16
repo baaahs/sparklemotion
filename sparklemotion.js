@@ -284,6 +284,7 @@
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var contentHashCode = Kotlin.arrayHashCode;
   var toFloatArray_0 = Kotlin.kotlin.collections.toFloatArray_zwy31$;
+  var replace_0 = Kotlin.kotlin.text.replace_r2fvfm$;
   var toMap = Kotlin.kotlin.collections.toMap_6hr0sd$;
   var Quaternion = THREE.Quaternion;
   var Line3 = THREE.Line3;
@@ -324,6 +325,8 @@
   ObjModel.prototype.constructor = ObjModel;
   Decom2019Model.prototype = Object.create(ObjModel.prototype);
   Decom2019Model.prototype.constructor = Decom2019Model;
+  SuiGenerisModel.prototype = Object.create(ObjModel.prototype);
+  SuiGenerisModel.prototype.constructor = SuiGenerisModel;
   SheepModel.prototype = Object.create(ObjModel.prototype);
   SheepModel.prototype.constructor = SheepModel;
   Show$RestartShowException.prototype = Object.create(Exception.prototype);
@@ -5714,10 +5717,14 @@
     simpleName: 'MovingHeadDisplay',
     interfaces: []
   };
-  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, soundAnalyzer, prerenderPixels) {
+  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, soundAnalyzer, prerenderPixels, switchShowAfterIdleSeconds, adjustShowAfterIdleSeconds) {
     Pinky$Companion_getInstance();
     if (prerenderPixels === void 0)
       prerenderPixels = false;
+    if (switchShowAfterIdleSeconds === void 0)
+      switchShowAfterIdleSeconds = 600;
+    if (adjustShowAfterIdleSeconds === void 0)
+      adjustShowAfterIdleSeconds = null;
     this.model = model;
     this.shows = shows;
     this.network = network;
@@ -5728,8 +5735,8 @@
     this.firmwareDaddy = firmwareDaddy;
     this.display = display;
     this.prerenderPixels_0 = prerenderPixels;
-    this.newShowAfterIdleSeconds = 600;
-    this.adjustShowAfterIdleSeconds = 6000;
+    this.switchShowAfterIdleSeconds_0 = switchShowAfterIdleSeconds;
+    this.adjustShowAfterIdleSeconds_0 = adjustShowAfterIdleSeconds;
     this.storage_0 = new Storage(this.fs);
     this.mappingResults_0 = this.storage_0.loadMappingData_ld9ij$(this.model);
     this.link_0 = new FragmentingUdpLink(this.network.link());
@@ -5899,7 +5906,7 @@
   }
   function Pinky$run$lambda_1(this$Pinky) {
     return function () {
-      this$Pinky.switchToShow_0(ensureNotNull(this$Pinky.display.selectedShow));
+      this$Pinky.switchToShow_q3rpgh$(ensureNotNull(this$Pinky.display.selectedShow));
       return Unit;
     };
   }
@@ -5938,7 +5945,7 @@
             }
 
           case 2:
-            return this.local$this$Pinky.switchToShow_0(SolidColorShow_getInstance()), Unit;
+            return this.local$this$Pinky.switchToShow_q3rpgh$(SolidColorShow_getInstance()), Unit;
           case 3:
             this.state_0 = 4;
             continue;
@@ -6061,15 +6068,15 @@
   Pinky.prototype.maybeChangeThingsIfUsersAreIdle_0 = function () {
     var now = DateTime.Companion.now();
     var secondsSinceUserInteraction = now.minus_mw5vjr$(this.gadgetManager_0.lastUserInteraction).seconds;
-    if (now.minus_mw5vjr$(this.selectedNewShowAt_0).seconds > this.newShowAfterIdleSeconds && secondsSinceUserInteraction > this.newShowAfterIdleSeconds) {
-      this.switchToShow_0(ensureNotNull(random_0(this.shows)));
+    if (this.switchShowAfterIdleSeconds_0 != null && now.minus_mw5vjr$(this.selectedNewShowAt_0).seconds > this.switchShowAfterIdleSeconds_0 && secondsSinceUserInteraction > this.switchShowAfterIdleSeconds_0) {
+      this.switchToShow_q3rpgh$(ensureNotNull(random_0(this.shows)));
       this.selectedNewShowAt_0 = now;
     }
-    if (secondsSinceUserInteraction > this.adjustShowAfterIdleSeconds) {
+    if (this.adjustShowAfterIdleSeconds_0 != null && secondsSinceUserInteraction > this.adjustShowAfterIdleSeconds_0) {
       this.gadgetManager_0.adjustSomething();
     }
   };
-  Pinky.prototype.switchToShow_0 = function (nextShow) {
+  Pinky.prototype.switchToShow_q3rpgh$ = function (nextShow) {
     this.selectedShow_0 = nextShow;
     this.selectedShowChannel_0.onChange(nextShow.name);
   };
@@ -6616,6 +6623,44 @@
     simpleName: 'BrainInfo',
     interfaces: []
   };
+  function Pluggables() {
+    Pluggables_instance = this;
+    this.defaultModel = 'BAAAHS';
+  }
+  Pluggables.prototype.loadModel = function (name) {
+    var tmp$;
+    switch (name) {
+      case 'Decom2019':
+        var $receiver = new Decom2019Model();
+        $receiver.load();
+        tmp$ = $receiver;
+        break;
+      case 'SuiGeneris':
+        var $receiver_0 = new SuiGenerisModel();
+        $receiver_0.load();
+        tmp$ = $receiver_0;
+        break;
+      case 'BAAAHS':
+        var $receiver_1 = new SheepModel();
+        $receiver_1.load();
+        tmp$ = $receiver_1;
+        break;
+      default:throw IllegalArgumentException_init('unknown model ' + '"' + name + '"');
+    }
+    return tmp$;
+  };
+  Pluggables.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Pluggables',
+    interfaces: []
+  };
+  var Pluggables_instance = null;
+  function Pluggables_getInstance() {
+    if (Pluggables_instance === null) {
+      new Pluggables();
+    }
+    return Pluggables_instance;
+  }
   function PubSub() {
     PubSub$Companion_getInstance();
   }
@@ -7528,6 +7573,34 @@
     simpleName: 'Decom2019Model',
     interfaces: [ObjModel]
   };
+  function SuiGenerisModel() {
+    ObjModel.call(this, 'sui-generis.obj');
+    this.name_kkm47u$_0 = 'Decom2019';
+    this.defaultUvTranslator_ya605j$_0 = lazy(SuiGenerisModel$defaultUvTranslator$lambda(this));
+  }
+  Object.defineProperty(SuiGenerisModel.prototype, 'name', {
+    get: function () {
+      return this.name_kkm47u$_0;
+    }
+  });
+  Object.defineProperty(SuiGenerisModel.prototype, 'defaultUvTranslator', {
+    get: function () {
+      return this.defaultUvTranslator_ya605j$_0.value;
+    }
+  });
+  SuiGenerisModel.prototype.createSurface_gvyaud$ = function (name, faces, lines) {
+    return new SheepModel$Panel(name, 600, faces, lines);
+  };
+  function SuiGenerisModel$defaultUvTranslator$lambda(this$SuiGenerisModel) {
+    return function () {
+      return LinearModelSpaceUvTranslator_init(this$SuiGenerisModel);
+    };
+  }
+  SuiGenerisModel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SuiGenerisModel',
+    interfaces: [ObjModel]
+  };
   function SheepModel() {
     ObjModel.call(this, 'baaahs-model.obj');
     this.name_iz210t$_0 = 'BAAAHS';
@@ -7750,6 +7823,16 @@
       }
     };
   }
+  function ObjModel$load$lambda(this$ObjModel) {
+    return function () {
+      return 'Loading model data from ' + this$ObjModel.objResourceName + '...';
+    };
+  }
+  function ObjModel$load$lambda_0(this$ObjModel, closure$panels, closure$vertices) {
+    return function () {
+      return toString_0(Kotlin.getKClassFromExpression(this$ObjModel).simpleName) + ' has ' + closure$panels.size + ' panels and ' + closure$vertices.size + ' vertices';
+    };
+  }
   function ObjModel$load$neighborsOf(closure$edgesBySurface, closure$surfacesByEdge, this$ObjModel) {
     return function (surface) {
       var tmp$, tmp$_0, tmp$_1, tmp$_2;
@@ -7807,6 +7890,7 @@
     var surfacesByEdge = LinkedHashMap_init();
     var edgesBySurface = LinkedHashMap_init();
     var buildSurface = ObjModel$load$buildSurface(surfaceName, faces, lines, this, panels);
+    ObjModel$Companion_getInstance().logger.debug_h4ejuu$(ObjModel$load$lambda(this));
     var $receiver = split(getResource(this.objResourceName), ['\n']);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
@@ -7904,7 +7988,7 @@
       }
     }
     buildSurface();
-    println('Sheep model has ' + panels.size + ' panels (and ' + vertices.size + ' vertices)!');
+    ObjModel$Companion_getInstance().logger.debug_h4ejuu$(ObjModel$load$lambda_0(this, panels, vertices));
     this.vertices = vertices;
     this.panels = panels;
     var neighborsOf = ObjModel$load$neighborsOf(edgesBySurface, surfacesByEdge, this);
@@ -12648,6 +12732,7 @@
     interfaces: []
   };
   function SessionMappingResults(model, mappingSessions) {
+    SessionMappingResults$Companion_getInstance();
     this.brainData = LinkedHashMap_init();
     var tmp$;
     tmp$ = mappingSessions.iterator();
@@ -12659,25 +12744,55 @@
         var element_0 = tmp$_0.next();
         var brainId = new BrainId(element_0.brainId);
         var surfaceName = element_0.surfaceName;
-        var modelSurface = model.findModelSurface_61zpoe$(surfaceName);
-        var $receiver = element_0.pixels;
-        var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-        var tmp$_1;
-        tmp$_1 = $receiver.iterator();
-        while (tmp$_1.hasNext()) {
-          var item = tmp$_1.next();
-          destination.add_11rb$(item != null ? item.modelPosition : null);
+        try {
+          var modelSurface = model.findModelSurface_61zpoe$(surfaceName);
+          var $receiver = element_0.pixels;
+          var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+          var tmp$_1;
+          tmp$_1 = $receiver.iterator();
+          while (tmp$_1.hasNext()) {
+            var item = tmp$_1.next();
+            destination.add_11rb$(item != null ? item.modelPosition : null);
+          }
+          var pixelLocations = destination;
+          var $receiver_0 = this.brainData;
+          var value = new MappingResults$Info(modelSurface, pixelLocations);
+          $receiver_0.put_xwzc9p$(brainId, value);
         }
-        var pixelLocations = destination;
-        var $receiver_0 = this.brainData;
-        var value = new MappingResults$Info(modelSurface, pixelLocations);
-        $receiver_0.put_xwzc9p$(brainId, value);
+         catch (e) {
+          if (Kotlin.isType(e, Exception)) {
+            SessionMappingResults$Companion_getInstance().logger_0.warn_l35kib$(e, SessionMappingResults_init$lambda$lambda$lambda(surfaceName));
+          }
+           else
+            throw e;
+        }
       }
     }
   }
   SessionMappingResults.prototype.dataFor_77gxvx$ = function (brainId) {
     return this.brainData.get_11rb$(brainId);
   };
+  function SessionMappingResults$Companion() {
+    SessionMappingResults$Companion_instance = this;
+    this.logger_0 = new Logger('SessionMappingResults');
+  }
+  SessionMappingResults$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var SessionMappingResults$Companion_instance = null;
+  function SessionMappingResults$Companion_getInstance() {
+    if (SessionMappingResults$Companion_instance === null) {
+      new SessionMappingResults$Companion();
+    }
+    return SessionMappingResults$Companion_instance;
+  }
+  function SessionMappingResults_init$lambda$lambda$lambda(closure$surfaceName) {
+    return function () {
+      return 'Skipping ' + closure$surfaceName;
+    };
+  }
   SessionMappingResults.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SessionMappingResults',
@@ -17770,6 +17885,9 @@
   Logger.prototype.warn_h4ejuu$ = function (message) {
     this.log_0('WARN', message());
   };
+  Logger.prototype.warn_l35kib$ = function (exception, message) {
+    this.log_1('WARN', message(), exception);
+  };
   Logger.prototype.error_h4ejuu$ = function (message) {
     this.log_0('ERROR', message());
   };
@@ -19607,22 +19725,25 @@
     };
   });
   function SheepSimulator() {
+    this.queryParams_0 = decodeQueryParams(ensureNotNull(document.location));
     this.display_0 = new JsDisplay();
     this.network_0 = new FakeNetwork(void 0, this.display_0.forNetwork());
     this.dmxUniverse_0 = new FakeDmxUniverse();
-    var tmp$;
-    var $receiver = new SheepModel();
-    $receiver.load();
-    this.model_0 = Kotlin.isType(tmp$ = $receiver, Model) ? tmp$ : throwCCE();
+    this.model_0 = this.selectModel_0();
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer());
     this.fs_0 = new FakeFs();
     this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
-    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.display_0.forPinky(), this.bridgeClient_0.soundAnalyzer, true);
+    this.pinkyDisplay_0 = this.display_0.forPinky();
+    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
   }
+  SheepSimulator.prototype.selectModel_0 = function () {
+    var tmp$;
+    return Pluggables_getInstance().loadModel((tmp$ = this.queryParams_0.get_11rb$('model')) != null ? tmp$ : Pluggables_getInstance().defaultModel);
+  };
   function Coroutine$SheepSimulator$start$lambda$lambda(this$SheepSimulator_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -19849,7 +19970,6 @@
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.local$this$SheepSimulator = this$SheepSimulator_0;
-    this.local$queryParams = void 0;
     this.local$launcher = void 0;
     this.local$$receiver = void 0;
   }
@@ -19865,7 +19985,6 @@
       try {
         switch (this.state_0) {
           case 0:
-            this.local$queryParams = decodeQueryParams(ensureNotNull(document.location));
             launch(this.local$this$SheepSimulator.pinkyScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda(this.local$this$SheepSimulator));
             this.local$launcher = new Launcher(ensureNotNull(document.getElementById('launcher')));
             this.local$$receiver = this.local$launcher.add_yfl68i$('Web UI', SheepSimulator$start$lambda$lambda_0(this.local$this$SheepSimulator));
@@ -19879,12 +19998,14 @@
           case 2:
             this.local$$receiver.click();
             this.local$launcher.add_yfl68i$('Mapper', SheepSimulator$start$lambda$lambda_1(this.local$this$SheepSimulator));
+            var $receiver = this.local$this$SheepSimulator.queryParams_0;
             var key = 'pixelDensity';
             var tmp$;
-            var pixelDensity = toDouble((tmp$ = this.local$queryParams.get_11rb$(key)) != null ? tmp$ : '0.2');
+            var pixelDensity = toDouble((tmp$ = $receiver.get_11rb$(key)) != null ? tmp$ : '0.2');
+            var $receiver_0 = this.local$this$SheepSimulator.queryParams_0;
             var key_0 = 'pixelSpacing';
             var tmp$_0;
-            var pixelSpacing = toDouble((tmp$_0 = this.local$queryParams.get_11rb$(key_0)) != null ? tmp$_0 : '3');
+            var pixelSpacing = toDouble((tmp$_0 = $receiver_0.get_11rb$(key_0)) != null ? tmp$_0 : '3');
             var pixelArranger = new SwirlyPixelArranger(pixelDensity, pixelSpacing);
             var totalPixels = {v: 0};
             var tmp$_1, tmp$_0_0;
@@ -19902,11 +20023,11 @@
               vizPanel.vizPixels = new VizPanel$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
               document.getElementById('visualizerPixelCount').innerText = totalPixels.v.toString();
-              var $receiver = ensureNotNull(vizPanel.getPixelLocationsInModelSpace());
-              var destination = ArrayList_init_0($receiver.length);
+              var $receiver_1 = ensureNotNull(vizPanel.getPixelLocationsInModelSpace());
+              var destination = ArrayList_init_0($receiver_1.length);
               var tmp$_3;
-              for (tmp$_3 = 0; tmp$_3 !== $receiver.length; ++tmp$_3) {
-                var item_0 = $receiver[tmp$_3];
+              for (tmp$_3 = 0; tmp$_3 !== $receiver_1.length; ++tmp$_3) {
+                var item_0 = $receiver_1[tmp$_3];
                 destination.add_11rb$(new Vector3F(item_0.x, item_0.y, item_0.z));
               }
               var pixelLocations = destination;
@@ -19922,6 +20043,31 @@
               var element = tmp$_4.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
               this$SheepSimulator_0.visualizer_0.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
+            }
+
+            var showName = this.local$this$SheepSimulator.queryParams_0.get_11rb$('show');
+            if (showName != null) {
+              var this$SheepSimulator_1 = this.local$this$SheepSimulator;
+              var $receiver_2 = this$SheepSimulator_1.shows_0;
+              var firstOrNull$result;
+              firstOrNull$break: do {
+                var tmp$_5;
+                tmp$_5 = $receiver_2.iterator();
+                while (tmp$_5.hasNext()) {
+                  var element_0 = tmp$_5.next();
+                  if (equals(element_0.name, showName)) {
+                    firstOrNull$result = element_0;
+                    break firstOrNull$break;
+                  }
+                }
+                firstOrNull$result = null;
+              }
+               while (false);
+              var show = firstOrNull$result;
+              if (show != null) {
+                this$SheepSimulator_1.pinky_0.switchToShow_q3rpgh$(show);
+                this$SheepSimulator_1.pinkyDisplay_0.selectedShow = show;
+              }
             }
 
             return doRunBlocking(SheepSimulator$start$lambda$lambda_2), Unit;
@@ -21296,7 +21442,7 @@
     }
   }
   function decodeQueryParams_0($receiver) {
-    var $receiver_0 = split($receiver, ['&']);
+    var $receiver_0 = split(replace_0($receiver, 43, 32), ['&']);
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
     var tmp$;
     tmp$ = $receiver_0.iterator();
@@ -22265,6 +22411,9 @@
   package$baaahs.Pinky = Pinky;
   package$baaahs.BrainId = BrainId;
   package$baaahs.BrainInfo = BrainInfo;
+  Object.defineProperty(package$baaahs, 'Pluggables', {
+    get: Pluggables_getInstance
+  });
   Object.defineProperty(PubSub, 'Companion', {
     get: PubSub$Companion_getInstance
   });
@@ -22325,6 +22474,7 @@
   Model.Face = Model$Face;
   package$baaahs.Model = Model;
   package$baaahs.Decom2019Model = Decom2019Model;
+  package$baaahs.SuiGenerisModel = SuiGenerisModel;
   SheepModel.Panel = SheepModel$Panel;
   package$baaahs.SheepModel = SheepModel;
   Object.defineProperty(ObjModel, 'Companion', {
@@ -22654,6 +22804,9 @@
   package$mapper.MapperEndpoint = MapperEndpoint;
   MappingResults.Info = MappingResults$Info;
   package$mapper.MappingResults = MappingResults;
+  Object.defineProperty(SessionMappingResults, 'Companion', {
+    get: SessionMappingResults$Companion_getInstance
+  });
   package$mapper.SessionMappingResults = SessionMappingResults;
   Object.defineProperty(MappingSession$SurfaceData$PixelData, 'Companion', {
     get: MappingSession$SurfaceData$PixelData$Companion_getInstance

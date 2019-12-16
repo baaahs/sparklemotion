@@ -31,6 +31,7 @@ baaahs/shows/PurpleLightning.glsl
 baaahs/shows/RainbowTrianglez.glsl
 baaahs/shows/Seascape.glsl
 baaahs/shows/ShatteredWeb.glsl
+baaahs/shows/Snow.glsl
 baaahs/shows/SpasticRainbow.glsl
 baaahs/shows/Spectrum.glsl
 baaahs/shows/SunsetDelight.glsl
@@ -1736,6 +1737,7 @@ sparklemotion/baaahs/visualizer/visualizer.kjsm
 sparklemotion/root-package.kjsm
 sparklemotion/three/three.kjsm
 styles.css
+sui-generis.obj
 three.js
 threejs-wrapper.js
 threejs-wrapper.meta.js
