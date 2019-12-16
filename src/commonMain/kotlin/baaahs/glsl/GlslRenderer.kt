@@ -1,8 +1,6 @@
 package baaahs.glsl
 
-import baaahs.Color
-import baaahs.Surface
-import baaahs.getTimeMillis
+import baaahs.*
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import baaahs.shaders.GlslShader
 import baaahs.timeSync
@@ -14,6 +12,7 @@ open class GlslRenderer(
     val gl: Kgl,
     private val contextSwitcher: ContextSwitcher,
     val fragShader: String,
+    private val uvTranslator: UvTranslator,
     val adjustableValues: List<GlslShader.AdjustableValue>,
     private val glslVersion: String,
     plugins: List<GlslPlugin>
@@ -23,7 +22,7 @@ open class GlslRenderer(
     var nextPixelOffset: Int = 0
     var nextSurfaceOffset: Int = 0
 
-    val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
+    private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
     private var nextTextureId = 0
     private val uvCoordTextureId = getTextureId()
@@ -127,7 +126,7 @@ void main(void) {
         return program
     }
 
-    fun addSurface(surface: Surface, uvTranslator: UvTranslator): GlslSurface? {
+    fun addSurface(surface: Surface): GlslSurface? {
         val glslSurface = GlslSurface(SurfacePixels(surface, nextPixelOffset), Uniforms(), uvTranslator)
         nextPixelOffset += surface.pixelCount
 
@@ -193,11 +192,26 @@ void main(void) {
                 val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
                 val uvTranslator = it.uvTranslator.forPixels(pixelLocations)
 
+                var outOfBounds = 0
+                var outOfBoundsU = 0
+                var outOfBoundsV = 0
                 for (i in 0 until uvTranslator.pixelCount) {
                     val uvOffset = (it.pixels.pixel0Index + i) * 2
                     val (u, v) = uvTranslator.getUV(i)
                     newUvCoords[uvOffset] = u     // u
                     newUvCoords[uvOffset + 1] = v // v
+
+                    val uOut = u < 0f || u > 1f
+                    val vOut = v < 0f || v > 1f
+                    if (uOut || vOut) outOfBounds++
+                    if (uOut) outOfBoundsU++
+                    if (vOut) outOfBoundsV++
+                }
+                if (outOfBoundsU > 0 || outOfBoundsV > 0) {
+                    logger.warn {
+                        "Surface ${surface.describe()} has $outOfBounds points (of ${uvTranslator.pixelCount})" +
+                                " outside the model (u=$outOfBoundsU v=$outOfBoundsV)"
+                    }
                 }
             }
 
@@ -215,6 +229,10 @@ void main(void) {
     fun release() {
         rendererPlugins.forEach { it.release() }
         arrangement.release()
+    }
+
+    companion object {
+        private val logger = Logger("GlslRenderer")
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
