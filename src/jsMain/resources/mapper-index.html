@@ -40,7 +40,7 @@
   const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
   const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
 
-  const model = new baaahs.SheepModel();
+  const model = baaahs.Pluggables.loadModel(baaahs.Pluggables.defaultModel); // todo: which model?
   model.load();
 
   const mapperUi = new baaahs.JsMapperUi();
