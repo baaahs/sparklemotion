@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import throttle from 'lodash/throttle';
 import sass from './Slider.scss';
-import { Handles, Rail, Slider, Ticks, Tracks } from 'react-compound-slider';
-import { Handle, SliderRail, Tick, Track } from './slider-parts';
-import { enableScroll, disableScroll } from '../../utils';
+import {Handles, Rail, Slider, Ticks, Tracks} from 'react-compound-slider';
+import {Handle, SliderRail, Tick, Track} from './slider-parts';
+import {disableScroll, enableScroll} from '../../utils';
 
 const sliderStyle = {
   position: 'relative',
@@ -29,9 +29,7 @@ class RangeSlider extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this._handleChangeFromServer) {
-      this.props.gadget.unlisten(this._handleChangeFromServer);
-    }
+    this.props.gadget.unlisten(this._handleChangeFromServer);
   }
 
   get domain() {

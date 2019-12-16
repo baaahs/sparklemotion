@@ -51,7 +51,6 @@ class Shows extends React.Component {
   handleSelectShow = (selectedShow) => {
     this.setState({ selectedShow });
     this.setSelectedShow(selectedShow);
-    this.toggleShowPicker();
   };
 
   setSelectedShow(name) {
