@@ -50,6 +50,10 @@ class Logger(val id: String) {
         log("WARN", message.invoke())
     }
 
+    fun warn(exception: Throwable, message: () -> String) {
+        log("WARN", message.invoke(), exception)
+    }
+
     fun error(message: () -> String) {
         log("ERROR", message.invoke())
     }

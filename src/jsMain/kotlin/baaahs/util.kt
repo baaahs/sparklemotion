@@ -22,7 +22,7 @@ fun decodeHashParams(location: Location): Map<String, String> {
 }
 
 fun String.decodeQueryParams(): Map<String, String> {
-    return split("&").map {
+    return replace('+', ' ').split("&").map {
         val (k, v) = it.split("=", limit = 2)
         decodeURIComponent(k) to decodeURIComponent(v)
     }.toMap()
