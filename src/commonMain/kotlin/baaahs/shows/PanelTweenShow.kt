@@ -20,7 +20,7 @@ object PanelTweenShow : Show("PanelTweenShow") {
 
         return object : Renderer {
             val palettePicker = showRunner.getGadget("palette", PalettePicker("Palette", initialColors))
-            val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", 0f, 0f, 1f, 0.01f ))
+            val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", .01f, 0f, 1f, 0.01f ))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
