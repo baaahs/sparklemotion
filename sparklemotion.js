@@ -15990,7 +15990,7 @@
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
     this.allGlslShows_su854s$_0 = lazy(AllShows$Companion$allGlslShows$lambda);
-    this.nonGlslShows_0 = listOf_0([SomeDumbShow_getInstance(), RandomShow_getInstance(), CompositeShow_getInstance(), ThumpShow_getInstance(), PanelTweenShow_getInstance(), PixelTweenShow_getInstance(), HeartbleatShow_getInstance(), CreepingPixelsShow_getInstance()]);
+    this.nonGlslShows_0 = listOf_0([SomeDumbShow_getInstance(), CompositeShow_getInstance(), PanelTweenShow_getInstance()]);
     this.allShows = plus_0(listOf(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
   }
   Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows', {
@@ -16018,7 +16018,7 @@
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      if (startsWith(element, 'baaahs/shows/'))
+      if (startsWith(element, 'baaahs/shows/') && endsWith(element, '.glsl'))
         destination.add_11rb$(element);
     }
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
@@ -16061,7 +16061,7 @@
   }
   function CompositeShow$createRenderer$ObjectLiteral(closure$showRunner) {
     this.closure$showRunner = closure$showRunner;
-    this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
+    this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color', Color$Companion_getInstance().BLUE));
     this.solidShader = new SolidShader();
     this.sineWaveShader = new SineWaveShader();
     var $receiver = closure$showRunner.allSurfaces;
@@ -16621,7 +16621,7 @@
   }
   function PanelTweenShow$createRenderer$ObjectLiteral(closure$showRunner, closure$initialColors) {
     this.palettePicker = closure$showRunner.getGadget_vedre8$('palette', new PalettePicker('Palette', closure$initialColors));
-    this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.0, 0.0, 1.0, 0.01));
+    this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.01, 0.0, 1.0, 0.01));
     this.solidShader = new SolidShader();
     this.sparkleShader = new SparkleShader();
     var $receiver = closure$showRunner.allSurfaces;
