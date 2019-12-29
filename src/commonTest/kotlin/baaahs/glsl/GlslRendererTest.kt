@@ -5,13 +5,15 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.GlslShader
 import kotlinx.serialization.json.json
+import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.expect
 
-// TODO: requires `-XstartOnFirstThread` jvmargs on Mac or jvm will crash
-@Ignore
 class GlslRendererTest {
+    @BeforeTest
+    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
+
     @Test
     fun testSimpleRendering() {
         val renderer = GlslBase.manager.createRenderer(

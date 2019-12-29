@@ -39,3 +39,5 @@ class TestModelSurface(
     override val faces: List<Model.Face> = emptyList()
     override val lines: List<Model.Line> = emptyList()
 }
+
+expect fun assumeTrue(boolean: Boolean)
