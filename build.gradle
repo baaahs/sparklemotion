@@ -268,7 +268,6 @@ task runPinkyJvm(type: JavaExec) {
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
     classpath = files(kotlin.targets.jvm.compilations.main.output) + kotlin.targets.jvm.compilations.main.runtimeDependencyFiles
-    args projectDir
     if (isMac()) {
         jvmArgs "-XstartOnFirstThread" // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
