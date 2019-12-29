@@ -28,7 +28,7 @@ open class GlslRenderer(
     private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
 
-    private val quad: Quad = gl { Quad(gl, program) }
+    private val quad: Quad = gl { Quad(gl, program, listOf(Quad.Rect(1f, -1f, -1f, 1f))) }
 
     val stats = Stats()
 

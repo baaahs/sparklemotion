@@ -2,17 +2,19 @@ package baaahs.glsl
 
 import com.danielgergely.kgl.*
 
-class Quad(private val gl: Kgl, program: Program) {
-    private val vertices = arrayOf(
-        // First triangle:
-        1.0f, 1.0f,
-        -1.0f, 1.0f,
-        -1.0f, -1.0f,
-        // Second triangle:
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        1.0f, 1.0f
-    ).toFloatArray()
+class Quad(private val gl: Kgl, program: Program, rects: List<Rect>) {
+    private val vertices = rects.flatMap { rect ->
+        listOf(
+            // First triangle:
+            rect.right, rect.top,
+            rect.left, rect.top,
+            rect.left, rect.bottom,
+            // Second triangle:
+            rect.left, rect.bottom,
+            rect.right, rect.bottom,
+            rect.right, rect.top
+        )
+    }.toFloatArray()
 
     private var vao: VertexArrayObject = gl { gl.createVertexArray() }
     private var quadVertexBuffer: GlBuffer = gl { gl.createBuffers(1)[0] }
@@ -54,4 +56,6 @@ class Quad(private val gl: Kgl, program: Program) {
         gl.checkForGlError()
         return result
     }
+
+    class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
 }
