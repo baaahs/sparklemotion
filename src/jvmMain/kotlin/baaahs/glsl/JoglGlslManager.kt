@@ -6,6 +6,9 @@ import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 
 class JoglGlslManager : GlslManager {
+    override val available: Boolean
+        get() = true
+
     override fun createRenderer(
         fragShader: String,
         uvTranslator: UvTranslator,

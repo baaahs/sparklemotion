@@ -11,6 +11,9 @@ actual object GlslBase {
     actual val manager: GlslManager by lazy { JsGlslManager() }
 
     class JsGlslManager : GlslManager {
+        override val available: Boolean
+            get() = true
+
         override fun createRenderer(
             fragShader: String,
             uvTranslator: UvTranslator,
