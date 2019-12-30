@@ -131,6 +131,8 @@ class GlslRendererTest {
 //        )) { glslSurface3.pixels.toList() }
     }
 
+    fun expect(expected: List<Quad.Rect>, actualFn: () -> List<Quad.Rect>) = kotlin.test.expect(expected, actualFn)
+
     // More forgiving color equality checking, allows each channel to be off by one.
     fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
         val actual = actualFn()
