@@ -4,8 +4,10 @@ import baaahs.*
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayWriter
 import kotlin.math.abs
+import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.expect
 
 class GlslRendererTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
@@ -47,7 +49,7 @@ class GlslRendererTest {
 
         renderer.draw()
 
-        expect(listOf(
+        expectColor(listOf(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
@@ -76,7 +78,7 @@ class GlslRendererTest {
 
         glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
         renderer.draw()
-        expect(listOf(
+        expectColor(listOf(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
@@ -84,7 +86,7 @@ class GlslRendererTest {
 
         glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
         renderer.draw()
-        expect(listOf(
+        expectColor(listOf(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
@@ -116,14 +118,14 @@ class GlslRendererTest {
 
         renderer.draw()
 
-        expect(listOf(
+        expectColor(listOf(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
         )) { glslSurface1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
-        expect(listOf(
+        expectColor(listOf(
             Color(.6f, .6f, .5f),
             Color(.651f, .651f, .5f),
             Color(.7f, .7f, .5f)
@@ -139,7 +141,7 @@ class GlslRendererTest {
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.
-    fun expect(expected: List<Color>, actualFn: () -> List<Color>) {
+    fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
         val actual = actualFn()
         val nearlyEqual = expected.zip(actual) { exp, act ->
             val diff = exp - act
@@ -152,6 +154,65 @@ class GlslRendererTest {
 
     operator fun Color.minus(other: Color) =
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
+
+    @Test
+    fun testRenderingSurfacesWithDifferentBufferValues() {
+        if (!glslAvailable()) return
+
+        val program = GlslBase.manager.createProgram(
+            """
+            // SPARKLEMOTION GADGET: Slider {name: "Blue", initialValue: 1.0, minValue: 0.0, maxValue: 1.0}
+            uniform float blue;
+
+            uniform float time;
+            void main() {
+                gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.);
+            }
+            """.trimIndent()
+        )
+        val renderer = GlslBase.manager.createRenderer(program, UvTranslatorForTest)
+
+        val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
+        val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
+
+        // TODO: yuck, let's not do this [first part]
+        glslSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+        glslSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
+
+        renderer.draw()
+
+        expectColor(listOf(
+            Color(0f, .1f, .2f),
+            Color(.2f, .3f, .2f),
+            Color(.4f, .503f, .2f)
+        )) { glslSurface1.pixels.toList() }
+
+        // Interpolation between vertex 0 and the surface's center.
+        expectColor(listOf(
+            Color(.6f, .6f, .3f),
+            Color(.651f, .651f, .3f),
+            Color(.7f, .7f, .3f)
+        )) { glslSurface2.pixels.toList() }
+    }
+
+    @Test
+    fun mapSurfacesToRects_shouldWrapAsNecessary() {
+
+        // ....
+        // xxx.
+        expect(listOf(
+            Quad.Rect(1f, 0f, 2f, 3f)
+        )) { GlslRenderer.mapSurfaceToRects(4, 4, createSurface("A", 3)) }
+
+        // ...x
+        // xxxx
+        // xx..
+        expect(listOf(
+            Quad.Rect(0f, 3f, 1f, 4f),
+            Quad.Rect(1f, 0f, 2f, 4f),
+            Quad.Rect(2f, 0f, 3f, 2f)
+        )) { GlslRenderer.mapSurfaceToRects(3, 4, createSurface("A", 7)) }
+    }
 
     private fun surfaceWithThreePixels(): IdentifiedSurface {
         return IdentifiedSurface(
@@ -175,6 +236,13 @@ class GlslRendererTest {
 
     private fun anonymousSurfaceWithThreeUnmappedPixels(): AnonymousSurface {
         return AnonymousSurface(BrainId("some-brain"), 3)
+    }
+
+    private fun createSurface(name: String, pixelCount: Int): Surface {
+        return IdentifiedSurface(
+            TestModelSurface(name), pixelCount,
+            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
+        )
     }
 
     object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {

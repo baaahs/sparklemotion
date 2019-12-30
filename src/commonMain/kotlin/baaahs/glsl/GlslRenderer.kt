@@ -13,9 +13,10 @@ open class GlslRenderer(
     private val uvTranslator: UvTranslator
 ) {
     private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
+    private val fbMaxPixWidth = 1024
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
-    var nextSurfaceOffset: Int = 0
+    var nextRectOffset: Int = 0
 
     private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
@@ -28,8 +29,6 @@ open class GlslRenderer(
     private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
 
-    private val quad: Quad = gl { Quad(gl, program, listOf(Quad.Rect(1f, -1f, -1f, 1f))) }
-
     val stats = Stats()
 
     init {
@@ -39,8 +38,11 @@ open class GlslRenderer(
     }
 
     fun addSurface(surface: Surface): GlslSurface? {
-        val glslSurface = GlslSurface(SurfacePixels(surface, nextPixelOffset), Uniforms(), uvTranslator)
+        val surfacePixels = SurfacePixels(surface, nextPixelOffset)
+        val rects = mapSurfaceToRects(nextPixelOffset, fbMaxPixWidth, surface)
+        val glslSurface = GlslSurface(surfacePixels, Uniforms(), nextRectOffset, rects, uvTranslator)
         nextPixelOffset += surface.pixelCount
+        nextRectOffset += glslSurface.rects.size
 
         surfacesToAdd.add(glslSurface)
         return glslSurface
@@ -74,14 +76,13 @@ open class GlslRenderer(
         timeUniform?.set(thisTime)
 
         arrangement.bindUvCoordTexture(uvCoordsUniform)
-        arrangement.bindUniforms()
 
         rendererPlugins.forEach { it.before() }
 
-        gl.viewport(0, 0, pixelCount.bufWidth, pixelCount.bufHeight)
+        gl.viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
         gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        quad.render()
+        arrangement.render()
 
         rendererPlugins.forEach { it.after() }
 
@@ -143,30 +144,68 @@ open class GlslRenderer(
     fun release() {
         rendererPlugins.forEach { it.release() }
         arrangement.release()
-        quad.release()
     }
 
     companion object {
         private val logger = Logger("GlslRenderer")
+
+        /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
+        internal fun mapSurfaceToRects(nextPix: Int, pixWidth: Int, surface: Surface): List<Quad.Rect> {
+            fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
+                val xStartPixel = offsetPix % pixWidth
+                val yStartPixel = offsetPix / pixWidth
+                val xEndPixel = xStartPixel + widthPix
+                val yEndPixel = yStartPixel + 1
+                return Quad.Rect(yStartPixel.toFloat(), xStartPixel.toFloat(), yEndPixel.toFloat(), xEndPixel.toFloat())
+            }
+
+            var nextPixelOffset = nextPix
+            var pixelsLeft = surface.pixelCount
+            val rects = mutableListOf<Quad.Rect>()
+            while (pixelsLeft > 0) {
+                val rowPixelOffset = nextPixelOffset % pixWidth
+                val rowPixelsLeft = pixWidth - rowPixelOffset
+                val rowPixelsTaken = min(pixelsLeft, rowPixelsLeft)
+                rects.add(makeQuad(nextPixelOffset, rowPixelsTaken))
+
+                nextPixelOffset += rowPixelsTaken
+                pixelsLeft -= rowPixelsTaken
+            }
+            return rects
+        }
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
-        private val adjustableUniforms: List<AdjustableUniform> =
-            program.params.map { param -> UnifyingAdjustableUniform(program, param, surfaces.size) }
+        val pixWidth = pixelCount.bufWidth
+        val pixHeight = pixelCount.bufHeight
 
-        private var uvCoordTexture = gl { gl.createTexture() }
+        private val uniformSetters: List<UniformSetter> =
+            program.params.map { param -> UniformSetter(program, param) }
+
+        private val uvCoordTexture = gl { gl.createTexture() }
         private val frameBuffer = gl { gl.createFramebuffer() }
         private val renderBuffer = gl { gl.createRenderbuffer() }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
         private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
+        private val quad: Quad = gl { Quad(gl, program, surfaces.flatMap {
+            it.rects.map { rect ->
+                // Remap from pixel coordinates to normalized device coordinates.
+               Quad.Rect(
+                    -(rect.top / pixHeight * 2 - 1),
+                    rect.left / pixWidth * 2 - 1,
+                    -(rect.bottom / pixHeight * 2 - 1),
+                    rect.right / pixWidth * 2 - 1
+                )
+            }
+        }) }
 
         fun bindFramebuffer() {
             gl.checkForGlError()
             gl { gl.bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
 
             gl { gl.bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
-//            console.error("pixel count: $pixelCount (${pixelCount.bufWidth} x ${pixelCount.bufHeight} = ${pixelCount.bufSize})")
-            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixelCount.bufWidth, pixelCount.bufHeight) }
+//            logger.debug { "pixel count: $pixelCount ($pixWidth x $pixHeight = ${pixelCount.bufSize})" }
+            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixWidth, pixHeight) }
             gl { gl.framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
 
             val status = gl { gl.checkFramebufferStatus(GL_FRAMEBUFFER) }
@@ -183,7 +222,7 @@ open class GlslRenderer(
             gl {
                 gl.texImage2D(
                     GL_TEXTURE_2D, 0,
-                    GL_R32F, pixelCount.bufWidth * 2, pixelCount.bufHeight, 0,
+                    GL_R32F, pixWidth * 2, pixHeight, 0,
                     GL_RED,
                     GL_FLOAT, uvCoordsFloatBuffer
                 )
@@ -202,11 +241,13 @@ open class GlslRenderer(
         }
 
         fun copyToPixelBuffer() {
-            gl.readPixels(0, 0, pixelCount.bufWidth, pixelCount.bufHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer)
+            gl.readPixels(0, 0, pixWidth, pixHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer)
         }
 
         fun release() {
             println("Release $this with $pixelCount pixels and ${uvCoords.size} uvs")
+
+            quad.release()
 
             gl { gl.bindRenderbuffer(GL_RENDERBUFFER, null) }
             gl { gl.bindFramebuffer(GL_FRAMEBUFFER, null) }
@@ -217,23 +258,30 @@ open class GlslRenderer(
             gl { gl.deleteTexture(uvCoordTexture) }
         }
 
-        fun bindUniforms() {
-            program.params.forEachIndexed { adjustableIndex, adjustable ->
-                surfaces.forEachIndexed { surfaceIndex, surface ->
-                    val value = surface.uniforms.values?.get(adjustableIndex)
-                    value?.let {
-                        val adjustableUniform = adjustableUniforms[adjustableIndex]
-                        adjustableUniform.setValue(surfaceIndex, value)
+        fun render() {
+            quad.prepareToRender {
+                surfaces.forEach { surface ->
+                    updateUniformsForSurface(surface)
+
+                    surface.rects.indices.forEach { i ->
+                        quad.renderRect(surface.rect0Index + i)
                     }
                 }
             }
+        }
 
-            adjustableUniforms.forEach { it.bind() }
+        private fun updateUniformsForSurface(surface: GlslSurface) {
+            program.params.forEachIndexed { paramIndex, param ->
+                val value = surface.uniforms.values?.get(paramIndex)
+                value?.let {
+                    uniformSetters[paramIndex].set(value)
+                }
+            }
         }
     }
 
-    val Int.bufWidth: Int get() = max(1, min(this, 1024))
-    val Int.bufHeight: Int get() = this / 1024 + 1
+    val Int.bufWidth: Int get() = max(1, min(this, fbMaxPixWidth))
+    val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Uniforms {
