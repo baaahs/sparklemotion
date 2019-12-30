@@ -7,6 +7,8 @@ import baaahs.Surface
 class GlslSurface(
     val pixels: SurfacePixels,
     val uniforms: GlslRenderer.Uniforms,
+    val rect0Index: Int,
+    val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
     val uvTranslator: UvTranslator
 )
 

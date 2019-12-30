@@ -35,15 +35,19 @@ class Quad(private val gl: Kgl, program: Program, rects: List<Rect>) {
 
     private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
-    internal fun render() {
+    internal fun prepareToRender(fn: () -> Unit) {
         gl { gl.bindVertexArray(vao) }
         gl { gl.enableVertexAttribArray(vertexAttr) }
 
-        // Draw the triangles
-        gl { gl.drawArrays(GL_TRIANGLES, 0, 6) }
+        fn()
 
         gl { gl.disableVertexAttribArray(vertexAttr) }
         gl { gl.bindVertexArray(null) }
+    }
+
+    internal fun renderRect(rectIndex: Int) {
+        // Draw the triangles
+        gl { gl.drawArrays(GL_TRIANGLES, rectIndex * 6, 6) }
     }
 
     fun release() {
@@ -57,5 +61,5 @@ class Quad(private val gl: Kgl, program: Program, rects: List<Rect>) {
         return result
     }
 
-    class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
+    data class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
 }
