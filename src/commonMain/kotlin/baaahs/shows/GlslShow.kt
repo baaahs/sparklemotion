@@ -1,8 +1,6 @@
 package baaahs.shows
 
 import baaahs.*
-import baaahs.gadgets.ColorPicker
-import baaahs.gadgets.Slider
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslPlugin
 import baaahs.glsl.Program
@@ -38,30 +36,25 @@ abstract class GlslShow(name: String) : Show(name) {
 
         return when (dataSourceProvider) {
             is GlslPlugin.GadgetDataSourceProvider -> {
-                val gadgetPlugin = (Plugins.gadgets[dataSourceProvider.name]
-                    ?: throw IllegalArgumentException("unknown gadget $dataSourceProvider"))
-                        as GadgetPlugin<Gadget>
+                when (dataSourceProvider.name) {
+                    // TODO: kill these:
+                    "Beat" -> {
+                        BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                    }
+                    "StartOfMeasure" -> {
+                        StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                    }
+                    else -> {
+                        val gadgetPlugin = (Plugins.gadgets[dataSourceProvider.name]
+                            ?: throw IllegalArgumentException("unknown gadget ${dataSourceProvider.name}"))
+                                as GadgetPlugin<Gadget>
 
-                GadgetDataSource(
-                    showRunner.getGadget("glsl_${varName}", gadgetPlugin.create(name, config)),
-                    gadgetPlugin
-                )
-
-//                when (dataSourceProvider.name) {
-//                    "Slider" -> {
-//                        GadgetDataSource(showRunner.getGadget("glsl_${varName}", Slider.Plugin.create(name, config)))
-//                    }
-//                    "ColorPicker" -> {
-//                        GadgetDataSource(showRunner.getGadget("glsl_${varName}", ColorPicker(name)))
-//                    }
-//                    "Beat" -> {
-//                        BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-//                    }
-//                    "StartOfMeasure" -> {
-//                        StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-//                    }
-//                    else -> throw IllegalArgumentException("unknown gadget ${dataSourceProvider}")
-//                }
+                        GadgetDataSource(
+                            showRunner.getGadget("glsl_${varName}", gadgetPlugin.create(name, config)),
+                            gadgetPlugin
+                        )
+                    }
+                }
             }
             is GlslPlugin.PluginDataSourceProvider -> {
                 val plugin = GlslBase.plugins.find { it.name == dataSourceProvider.name }
