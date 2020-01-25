@@ -300,14 +300,14 @@ class ShowRunnerTest {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-            return ShowRenderer(showRunner).also { createdShows.add(it) }
+        override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
+            return ShowRenderer(showApi).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
-            val slider = showRunner.getGadget("slider", Slider("slider"))
+        inner class ShowRenderer(private val showApi: ShowApi) : Renderer {
+            val slider = showApi.getGadget("slider", Slider("slider"))
             val shaderBuffers =
-                showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
+                showApi.allSurfaces.associateWith { showApi.getShaderBuffer(it, solidShader) }.toMutableMap()
 
             init {
                 onCreateShow()
@@ -323,7 +323,7 @@ class ShowRunnerTest {
                     super.surfacesChanged(newSurfaces, removedSurfaces)
                 } else {
                     removedSurfaces.forEach { shaderBuffers.remove(it) }
-                    newSurfaces.forEach { shaderBuffers[it] = showRunner.getShaderBuffer(it, solidShader) }
+                    newSurfaces.forEach { shaderBuffers[it] = showApi.getShaderBuffer(it, solidShader) }
                 }
 
                 onSurfacesChanged(newSurfaces, removedSurfaces)

@@ -156,13 +156,13 @@ class PinkyTest {
         val createdShows = mutableListOf<ShowRenderer>()
         val solidShader = SolidShader()
 
-        override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-            return ShowRenderer(showRunner).also { createdShows.add(it) }
+        override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
+            return ShowRenderer(showApi).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
+        inner class ShowRenderer(private val showApi: ShowApi) : Renderer {
             val shaderBuffers =
-                showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
+                showApi.allSurfaces.associateWith { showApi.getShaderBuffer(it, solidShader) }.toMutableMap()
 
             override fun nextFrame() {
                 shaderBuffers.values.forEach { it.color = Color.WHITE }
@@ -173,7 +173,7 @@ class PinkyTest {
                     super.surfacesChanged(newSurfaces, removedSurfaces)
                 } else {
                     removedSurfaces.forEach { shaderBuffers.remove(it) }
-                    newSurfaces.forEach { shaderBuffers[it] = showRunner.getShaderBuffer(it, solidShader) }
+                    newSurfaces.forEach { shaderBuffers[it] = showApi.getShaderBuffer(it, solidShader) }
                 }
             }
         }

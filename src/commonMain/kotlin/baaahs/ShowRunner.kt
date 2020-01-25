@@ -11,8 +11,8 @@ class ShowRunner(
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
-    internal val clock: Clock
-) {
+    override val clock: Clock
+) : ShowApi {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
     private var currentShowRenderer: Show.Renderer? = null
@@ -20,10 +20,10 @@ class ShowRunner(
     private var totalSurfaceReceivers = 0
     private var performedHousekeeping: Boolean = false
 
-    val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
-    val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
+    override val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
+    override val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
 
-    val allMovingHeads: List<MovingHead> get() = model.movingHeads
+    override val allMovingHeads: List<MovingHead> get() = model.movingHeads
 
     private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
 
@@ -33,10 +33,10 @@ class ShowRunner(
     private var gadgetsLocked = true
 
     // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
-    val currentBeat: Float
+    override val currentBeat: Float
         get() = beatSource.getBeatData().beatWithinMeasure(clock)
 
-    fun getBeatSource(): BeatSource = beatSource
+    override fun getBeatSource(): BeatSource = beatSource
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
@@ -59,7 +59,7 @@ class ShowRunner(
      * @param shader The type of shader.
      * @return A shader buffer of the appropriate type.
      */
-    fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+    override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
         if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         val buffer = shader.createBuffer(surface)
         recordShader(surface, buffer)
@@ -71,12 +71,12 @@ class ShowRunner(
      *
      * The shaders must already have been obtained using [getShaderBuffer].
      */
-    fun getCompositorBuffer(
+    override fun getCompositorBuffer(
         surface: Surface,
         bufferA: Shader.Buffer,
         bufferB: Shader.Buffer,
-        mode: CompositingMode = CompositingMode.NORMAL,
-        fade: Float = 0.5f
+        mode: CompositingMode,
+        fade: Float
     ): CompositorShader.Buffer {
         if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         return CompositorShader(bufferA.shader, bufferB.shader)
@@ -91,7 +91,7 @@ class ShowRunner(
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
+    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
         val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
         val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
@@ -111,7 +111,7 @@ class ShowRunner(
      * @param name Symbolic name for this gadget; must be unique within the show.
      * @param gadget The gadget to display.
      */
-    fun <T : Gadget> getGadget(name: String, gadget: T): T {
+    override fun <T : Gadget> getGadget(name: String, gadget: T): T {
         if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
         val oldValue = requestedGadgets.put(name, gadget)
         if (oldValue != null) throw IllegalStateException("Gadget names must be unique ($name)")

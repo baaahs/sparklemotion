@@ -6,14 +6,14 @@ import baaahs.shaders.SolidShader
 import kotlin.random.Random
 
 object LifeyShow : Show("Lifey") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
         model as SheepModel
 
-        val speedSlider = showRunner.getGadget("speed", Slider("Speed", .25f))
+        val speedSlider = showApi.getGadget("speed", Slider("Speed", .25f))
 
         val shader = SolidShader()
-        val shaderBuffers = showRunner.allSurfaces.associateWith {
-            showRunner.getShaderBuffer(it, shader).apply { color = Color.WHITE }
+        val shaderBuffers = showApi.allSurfaces.associateWith {
+            showApi.getShaderBuffer(it, shader).apply { color = Color.WHITE }
         }
 
         val selectedPanels = mutableListOf<SheepModel.Panel>()

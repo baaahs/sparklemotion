@@ -10,28 +10,28 @@ import kotlin.math.PI
 import kotlin.random.Random
 
 object CompositeShow : Show("Composite") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color", initialValue = Color.BLUE))
+    override fun createRenderer(model: Model<*>, showApi: ShowApi) = object : Renderer {
+        val colorPicker = showApi.getGadget("color", ColorPicker("Color", initialValue = Color.BLUE))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
 
-        private val shaderBufs = showRunner.allSurfaces.associateWith { surface -> shaderBufsFor(surface) }
+        private val shaderBufs = showApi.allSurfaces.associateWith { surface -> shaderBufsFor(surface) }
             .toMutableMap()
 
         private fun shaderBufsFor(surface: Surface): ShaderBufs {
-            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
+            val solidShaderBuffer = showApi.getShaderBuffer(surface, solidShader)
+            val sineWaveShaderBuffer = showApi.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
+                showApi.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
 
             return ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = showRunner.allMovingHeads.map { showRunner.getMovingHeadBuffer(it) }
+        private val movingHeadBuffers = showApi.allMovingHeads.map { showApi.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()

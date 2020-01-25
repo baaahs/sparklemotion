@@ -9,7 +9,7 @@ import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 
 object PanelTweenShow : Show("PanelTweenShow") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
         val initialColors = listOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
@@ -19,16 +19,16 @@ object PanelTweenShow : Show("PanelTweenShow") {
         )
 
         return object : Renderer {
-            val palettePicker = showRunner.getGadget("palette", PalettePicker("Palette", initialColors))
-            val slider = showRunner.getGadget("sparkliness", Slider("Sparkliness", .01f, 0f, 1f, 0.01f ))
+            val palettePicker = showApi.getGadget("palette", PalettePicker("Palette", initialColors))
+            val slider = showApi.getGadget("sparkliness", Slider("Sparkliness", .01f, 0f, 1f, 0.01f ))
 
             val solidShader = SolidShader()
             val sparkleShader = SparkleShader()
 
-            val shaderBuffers = showRunner.allSurfaces.map { surface ->
-                val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
-                val sparkleShaderBuffer = showRunner.getShaderBuffer(surface, sparkleShader)
-                val compositorShaderBuffer = showRunner.getCompositorBuffer(
+            val shaderBuffers = showApi.allSurfaces.map { surface ->
+                val solidShaderBuffer = showApi.getShaderBuffer(surface, solidShader)
+                val sparkleShaderBuffer = showApi.getShaderBuffer(surface, sparkleShader)
+                val compositorShaderBuffer = showApi.getCompositorBuffer(
                     surface, solidShaderBuffer, sparkleShaderBuffer, CompositingMode.ADD, 1f
                 )
 

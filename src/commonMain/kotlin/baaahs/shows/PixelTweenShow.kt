@@ -5,7 +5,7 @@ import baaahs.shaders.PixelShader
 import kotlin.random.Random
 
 object PixelTweenShow : Show("PixelTweenShow") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
         val colorArray = arrayOf(
             Color.from("#FF8A47"),
             Color.from("#FC6170"),
@@ -15,8 +15,8 @@ object PixelTweenShow : Show("PixelTweenShow") {
         )
 
         return object : Renderer {
-            val shaderBuffers = showRunner.allSurfaces.map { surface ->
-                showRunner.getShaderBuffer(surface, PixelShader())
+            val shaderBuffers = showApi.allSurfaces.map { surface ->
+                showApi.getShaderBuffer(surface, PixelShader())
             }
             val fadeTimeMs = 1000
 

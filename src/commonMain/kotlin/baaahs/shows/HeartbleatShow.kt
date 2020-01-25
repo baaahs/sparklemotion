@@ -9,20 +9,20 @@ import kotlin.math.abs
 import kotlin.math.sin
 
 object HeartbleatShow : Show("Heartbleat") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
         model as SheepModel
 
         return object : Renderer {
-            val hearts = showRunner.allSurfaces.filter { it is IdentifiedSurface && it.number == 7 }
-                .map { showRunner.getShaderBuffer(it, HeartShader()) }
-            val heartSizeGadget = showRunner.getGadget("heartSize", Slider("Heart Size", .16f))
-            val strokeSize = showRunner.getGadget("strokeSize", Slider("Stroke Size", .5f))
-            val xOff = showRunner.getGadget("xOff", Slider("X Offset", .4f))
-            val yOff = showRunner.getGadget("yOff", Slider("Y Offset", .67f))
-            val otherSurfaces = showRunner.allUnusedSurfaces.map { showRunner.getShaderBuffer(it, SolidShader()) }
+            val hearts = showApi.allSurfaces.filter { it is IdentifiedSurface && it.number == 7 }
+                .map { showApi.getShaderBuffer(it, HeartShader()) }
+            val heartSizeGadget = showApi.getGadget("heartSize", Slider("Heart Size", .16f))
+            val strokeSize = showApi.getGadget("strokeSize", Slider("Stroke Size", .5f))
+            val xOff = showApi.getGadget("xOff", Slider("X Offset", .4f))
+            val yOff = showApi.getGadget("yOff", Slider("Y Offset", .67f))
+            val otherSurfaces = showApi.allUnusedSurfaces.map { showApi.getShaderBuffer(it, SolidShader()) }
 
             override fun nextFrame() {
-                val currentBeat = showRunner.currentBeat
+                val currentBeat = showApi.currentBeat
                 var phase = (currentBeat % 1.0) * 3.0f
                 val heartSize = heartSizeGadget.value * if (phase > 1.5 && phase < 2.5f) {
                     1f + ((.5f - abs(phase - 2)) / 4).toFloat()

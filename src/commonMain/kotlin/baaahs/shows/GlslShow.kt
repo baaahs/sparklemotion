@@ -9,11 +9,11 @@ import baaahs.shaders.GlslShader
 abstract class GlslShow(name: String) : Show(name) {
     abstract val program: Program
 
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi): Renderer {
         val shader = GlslShader(program, model.defaultUvTranslator)
 
-        val paramDataSources = program.params.map { it.createDataSource(showRunner) }
-        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
+        val paramDataSources = program.params.map { it.createDataSource(showApi) }
+        val buffers = showApi.allSurfaces.associateWithTo(hashMapOf()) { showApi.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
@@ -25,12 +25,12 @@ abstract class GlslShow(name: String) : Show(name) {
 
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
                 removedSurfaces.forEach { buffers.remove(it) }
-                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
+                newSurfaces.forEach { buffers[it] = showApi.getShaderBuffer(it, shader) }
             }
         }
     }
 
-    private fun GlslShader.Param.createDataSource(showRunner: ShowRunner): DataSource {
+    private fun GlslShader.Param.createDataSource(showApi: ShowApi): DataSource {
         val config = config
         val name = config.getPrimitive("name").contentOrNull ?: varName
 
@@ -39,10 +39,10 @@ abstract class GlslShow(name: String) : Show(name) {
                 when (dataSourceProvider.name) {
                     // TODO: kill these:
                     "Beat" -> {
-                        BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                        BeatDataSource(showApi.getBeatSource().getBeatData(), showApi.clock)
                     }
                     "StartOfMeasure" -> {
-                        StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
+                        StartOfMeasureDataSource(showApi.getBeatSource().getBeatData(), showApi.clock)
                     }
                     else -> {
                         val gadgetPlugin = (Plugins.gadgets[dataSourceProvider.name]
@@ -50,7 +50,7 @@ abstract class GlslShow(name: String) : Show(name) {
                                 as GadgetPlugin<Gadget>
 
                         GadgetDataSource(
-                            showRunner.getGadget("glsl_${varName}", gadgetPlugin.create(name, config)),
+                            showApi.getGadget("glsl_${varName}", gadgetPlugin.create(name, config)),
                             gadgetPlugin
                         )
                     }

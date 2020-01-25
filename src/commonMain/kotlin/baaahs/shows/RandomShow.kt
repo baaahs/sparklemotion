@@ -1,20 +1,17 @@
 package baaahs.shows
 
-import baaahs.Color
-import baaahs.Model
-import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.*
 import baaahs.dmx.Shenzarpy
 import baaahs.shaders.RandomShader
 import kotlin.random.Random
 
 object RandomShow : Show("Random") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
+    override fun createRenderer(model: Model<*>, showApi: ShowApi) = object : Renderer {
         init {
-            showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, RandomShader()) }
+            showApi.allSurfaces.map { surface -> showApi.getShaderBuffer(surface, RandomShader()) }
         }
 
-        val movingHeadBuffers = model.movingHeads.map { showRunner.getMovingHeadBuffer(it) }
+        val movingHeadBuffers = model.movingHeads.map { showApi.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             movingHeadBuffers.forEach { shenzarpy ->
