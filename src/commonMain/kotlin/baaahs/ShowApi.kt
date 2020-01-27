@@ -1,7 +1,9 @@
 package baaahs
 
+import baaahs.plugins.InputPlugin
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
+import kotlin.reflect.KClass
 
 interface ShowApi {
     val allMovingHeads: List<MovingHead>
@@ -25,4 +27,6 @@ interface ShowApi {
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer
 
     fun getBeatSource(): BeatSource
+
+    fun <T : InputPlugin> getPlugin(pluginType: KClass<T>): T
 }

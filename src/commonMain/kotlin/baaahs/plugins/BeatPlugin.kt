@@ -1,21 +1,16 @@
 package baaahs.plugins
 
+import baaahs.BeatData
 import baaahs.BeatSource
-import baaahs.glsl.GlslPlugin
-import baaahs.glsl.Program
-import com.danielgergely.kgl.Kgl
 import kotlinx.serialization.json.JsonObject
 
-class BeatPlugin(val beatSource: BeatSource) : GlslPlugin {
+class BeatPlugin(val beatSource: BeatSource) : InputPlugin {
     override val name: String = "Beat"
 
-    override fun createDataSource(config: JsonObject): GlslPlugin.DataSource {
-        return object : GlslPlugin.DataSource {
-            override fun getValue(): Any = beatSource.getBeatData()
+    override fun createDataSource(config: JsonObject): InputPlugin.DataSource<BeatData> {
+        return object : InputPlugin.DataSource<BeatData> {
+            override val name: String = "Beat"
+            override fun getValue(): BeatData = beatSource.getBeatData()
         }
-    }
-
-    override fun forProgram(gl: Kgl, program: Program): GlslPlugin.ProgramContext {
-        TODO("not implemented")
     }
 }
