@@ -12599,7 +12599,8 @@
     launch(this, void 0, void 0, MapperClient$receive$lambda(this, bytes));
   };
   MapperClient.prototype.reset_67ozxy$ = function (tcpConnection) {
-    this.responses_0.close_dbl4no$();
+    if (this.responses_pa3azj$_0 != null)
+      this.responses_0.close_dbl4no$();
     println('Mapper disconnected from Pinky!');
   };
   function MapperClient$Companion() {
@@ -20439,6 +20440,11 @@
   });
   function GlslBase$JsGlslManager() {
   }
+  Object.defineProperty(GlslBase$JsGlslManager.prototype, 'available', {
+    get: function () {
+      return true;
+    }
+  });
   function GlslBase$JsGlslManager$createRenderer$ObjectLiteral() {
   }
   GlslBase$JsGlslManager$createRenderer$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
