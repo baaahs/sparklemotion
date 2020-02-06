@@ -15,7 +15,7 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
     }
 
     override fun connected(tcpConnection: Network.TcpConnection) {
-        println("Received connection from ${tcpConnection.fromAddress}")
+        logger.info { "Received connection from ${tcpConnection.fromAddress}" }
     }
 
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -50,7 +50,7 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
             logger.error { e.toString() }
         }
 
-        println("Command: $parts -> $status $response")
+        logger.debug { "Command: $parts -> $status $response" }
         tcpConnection.send(json.stringify(JsonElementSerializer, json {
             "status" to status
             "response" to response
@@ -58,6 +58,6 @@ class MapperEndpoint(val storage: Storage) : Network.WebSocketListener {
     }
 
     override fun reset(tcpConnection: Network.TcpConnection) {
-        println("MapperEndpoint client disconnected from Pinky!")
+        logger.info { "MapperEndpoint client disconnected from Pinky!" }
     }
 }
