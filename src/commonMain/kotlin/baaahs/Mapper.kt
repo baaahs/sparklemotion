@@ -629,21 +629,25 @@ class Mapper(
 
                 val nowMs = getTimeMillis().toDouble()
 
-                outstanding.values.forEach {
+                outstanding.values.removeAll {
                     if (it.failAt < nowMs) {
-                        throw TimeoutException("Timed out waiting for ${it.brainToMap.brainId} pong ${it.key.stringify()}")
-                    }
-                    if (sleepUntil > it.failAt) sleepUntil = it.failAt
+                        logger.debug { "Timed out waiting for ${it.brainToMap.brainId} pong ${it.key.stringify()}" }
+                        it.failed()
+                        true
+                    } else {
+                        if (sleepUntil > it.failAt) sleepUntil = it.failAt
 
-                    if (it.retryAt < nowMs) {
-                        logger.warn {
-                            "Haven't heard from ${it.brainToMap.brainId} after ${nowMs - it.retryAt}," +
-                                    " retrying (attempt ${++it.retryCount})..."
+                        if (it.retryAt < nowMs) {
+                            logger.warn {
+                                "Haven't heard from ${it.brainToMap.brainId} after ${nowMs - it.retryAt}," +
+                                        " retrying (attempt ${++it.retryCount})..."
+                            }
+                            it.attemptDelivery()
+                            it.retryAt = nowMs + retryAfterMillis
                         }
-                        it.attemptDelivery()
-                        it.retryAt = nowMs + retryAfterMillis
+                        if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
+                        false
                     }
-                    if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
                 }
 
                 val timeoutMs = sleepUntil - nowMs
@@ -691,6 +695,10 @@ class Mapper(
 
         fun succeeded() {
             logger.debug { "${brainToMap.brainId} shader message pong after ${getTimeMillis() - sentAt}ms" }
+        }
+
+        fun failed() {
+            logger.error { "${brainToMap.brainId} shader message pong not received after ${getTimeMillis() - sentAt}ms" }
         }
     }
 
