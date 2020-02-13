@@ -1,6 +1,8 @@
 package baaahs.net
 
 import baaahs.proto.Message
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 interface Network {
     fun link(): Link
@@ -52,7 +54,32 @@ interface Network {
             listenWebSocket(path) { webSocketListener }
         }
 
+        fun routing(config: HttpRouting.() -> Unit)
         fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
+
+        interface HttpRequest {
+            fun param(name: String): String?
+        }
+
+        interface HttpRouting {
+            fun get(path: String, handler: (HttpRequest) -> HttpResponse)
+        }
+    }
+
+    interface HttpResponse {
+        val statusCode: Int
+        val contentType: String
+        val body: ByteArray
+    }
+
+    class TextResponse(override val statusCode: Int = 200, body: String) : HttpResponse {
+        override val body = body.encodeToByteArray()
+        override val contentType = "text/plain"
+    }
+
+    class JsonResponse(val json: Json, override val statusCode: Int = 200, element: JsonElement) : HttpResponse {
+        override val body = json.stringify(JsonElement.serializer(), element).encodeToByteArray()
+        override val contentType = "application/json"
     }
 
     interface WebSocketListener {
