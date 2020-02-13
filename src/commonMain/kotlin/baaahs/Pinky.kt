@@ -87,14 +87,31 @@ class Pinky(
                         brainIds.add(brainId.uuid)
                     }
                 }
-
+                val allVertices = model.geomVertices
                 Network.JsonResponse(json, 200,
                     JsonArray(model.allSurfaces.map { surface ->
                         val brainIds = brainsBySurface[surface.name] ?: mutableListOf()
+                        val vertices = surface.allVertices()
                         JsonObject(mapOf(
                             "name" to JsonPrimitive(surface.name),
-                            "vertices" to JsonArray(surface.allVertices().map {
-                                JsonArray(listOf(it.x, it.y, it.z).map { JsonPrimitive((it)) })
+                            "description" to JsonPrimitive(surface.description),
+                            "expectedPixelCount" to JsonPrimitive(surface.expectedPixelCount ?: -1),
+                            "vertices" to JsonArray(vertices.map {
+                                JsonObject(mapOf(
+                                    "x" to JsonPrimitive(it.x),
+                                    "y" to JsonPrimitive(it.y),
+                                    "z" to JsonPrimitive(it.z)
+                                ))
+                            }),
+                            "faces" to JsonArray(surface.faces.map {
+                                JsonArray(it.vertexIds.map {
+                                    JsonPrimitive(vertices.indexOf(allVertices.get(it)))
+                                })
+                            }),
+                            "lines" to JsonArray(surface.lines.map {
+                                JsonArray(it.vertices.map {
+                                    JsonPrimitive(vertices.indexOf(it))
+                                })
                             }),
                             "brainIds" to JsonArray(brainIds.map { JsonPrimitive(it) })
                         ))
