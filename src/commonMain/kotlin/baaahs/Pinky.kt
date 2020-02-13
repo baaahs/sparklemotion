@@ -19,6 +19,7 @@ import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.*
 import kotlin.math.min
 
 class Pinky(
@@ -73,7 +74,33 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
 
+    private val json = Json(JsonConfiguration.Stable)
+
     init {
+        httpServer.routing {
+            get("/surfaces") {
+                println("/surfaces!")
+                val brainsBySurface = mutableMapOf<String, MutableList<String>>()
+                brainInfos.forEach { (brainId, brainInfo) ->
+                    if (brainInfo.surface is IdentifiedSurface) {
+                        val brainIds = brainsBySurface.getOrPut(brainInfo.surface.name) { mutableListOf() }
+                        brainIds.add(brainId.uuid)
+                    }
+                }
+
+                Network.JsonResponse(json, 200,
+                    JsonArray(model.allSurfaces.map { surface ->
+                        val brainIds = brainsBySurface[surface.name] ?: mutableListOf()
+                        JsonObject(mapOf(
+                            "name" to JsonPrimitive(surface.name),
+                            "vertices" to JsonArray(surface.allVertices().map {
+                                JsonArray(listOf(it.x, it.y, it.z).map { JsonPrimitive((it)) })
+                            }),
+                            "brainIds" to JsonArray(brainIds.map { JsonPrimitive(it) })
+                        ))
+                    }))
+            }
+        }
         httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
 
         pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
