@@ -31,8 +31,8 @@ open class GlslRenderer(
     var arrangement: Arrangement
 
     val program: Program = gl { createShaderProgram() }
-    private val uvCoordsUniform: Uniform? = gl { Uniform.find(program, "sm_uvCoords") }
-    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
+    private val uvCoordsUniform: Uniform = gl { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
+    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") ?: throw Exception("no resolution uniform!") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
 
     private val quad: Quad = gl { Quad(gl, program) }
@@ -161,7 +161,7 @@ void main(void) {
         resolutionUniform?.set(1f, 1f)
         timeUniform?.set(thisTime)
 
-        arrangement.bindUvCoordTexture(uvCoordsUniform!!)
+        arrangement.bindUvCoordTexture(uvCoordsUniform)
         arrangement.bindUniforms()
 
         rendererPlugins.forEach { it.beforeRender() }
@@ -219,7 +219,7 @@ void main(void) {
             surfacesToAdd.clear()
 
             arrangement = createArrangement(newPixelCount, newUvCoords, glslSurfaces)
-            arrangement.bindUvCoordTexture(uvCoordsUniform!!)
+            arrangement.bindUvCoordTexture(uvCoordsUniform)
 
             pixelCount = newPixelCount
             println("Now managing $pixelCount pixels.")
