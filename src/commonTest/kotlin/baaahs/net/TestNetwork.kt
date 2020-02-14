@@ -33,6 +33,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             return TestUdpSocket(port)
         }
 
+        override fun mdns(): Network.Mdns {
+            TODO("not implemented")
+        }
+
         inner class TestUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 packetsToSend += bytes

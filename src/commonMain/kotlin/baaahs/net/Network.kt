@@ -10,7 +10,7 @@ interface Network {
 
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
-
+        fun mdns(): Mdns
         fun startHttpServer(port: Int): HttpServer
         fun connectWebSocket(
             toAddress: Address,
@@ -18,6 +18,22 @@ interface Network {
             path: String,
             webSocketListener: WebSocketListener
         ): TcpConnection
+    }
+
+    interface Mdns {
+        fun register(type: String, proto: String, port: Int, txt: Map<String, String> = mapOf()): MdnsRegisteredService?
+        fun unregister(inst: MdnsRegisteredService?)
+        // todo: add discovery methods
+    }
+
+    interface MdnsService {
+        // todo: add service methods
+    }
+
+    interface MdnsRegisteredService : MdnsService {
+        fun unregister()
+        fun updateTXT(txt: Map<String, String>)
+        fun updateTXT(key: String, value: String)
     }
 
     interface Address
