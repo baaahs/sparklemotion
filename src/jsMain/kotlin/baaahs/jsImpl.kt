@@ -3,6 +3,7 @@ package baaahs
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.xhr.XMLHttpRequest
+import kotlin.browser.window
 import kotlin.js.Date
 
 actual fun doRunBlocking(block: suspend () -> Unit) {
@@ -25,7 +26,7 @@ actual fun getResource(name: String): String {
 actual fun getTimeMillis(): Long = Date.now().toLong()
 
 actual fun decodeBase64(s: String): ByteArray {
-    TODO("decodeBase64 not implemented")
+    return window.atob(s).encodeToByteArray()
 }
 
 actual fun logMessage(level: String, message: String, exception: Throwable?) {

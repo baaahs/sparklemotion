@@ -190,6 +190,7 @@ class Mapper(
                 brainsToMap.values.forEachIndexed { index, brainToMap ->
                     identifyBrain(index, brainToMap)
 
+                    // the next line causes the UI to wait after each panel has been identified...
                     pauseForUserInteraction()
 
                     var retryCount = 0
@@ -433,6 +434,11 @@ class Mapper(
                 }
             }
 
+            if (sampleLocations.isEmpty()) {
+                logger.warn { "Failed to match anything up with ${brainToMap.brainId}, bailing." }
+                return
+            }
+
             val surfaceBallot = Ballot<MapperUi.VisibleSurface>()
             var tries = 1000
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
@@ -444,7 +450,13 @@ class Mapper(
                 }
             }
 
-            if (tries == 0) return
+            if (tries == 0 || surfaceBallot.noVotes()) {
+                logger.warn {
+                    "Failed to cast sufficient votes (${surfaceBallot.totalVotes}) after 1000 tries" +
+                        " on ${brainToMap.brainId}, bailing."
+                }
+                return
+            }
 
             //                val orderedPanels = visibleSurfaces.map { visiblePanel ->
             //                    visiblePanel to visiblePanel.boxOnScreen.distanceTo(surfaceChangeRegion)
@@ -629,21 +641,28 @@ class Mapper(
 
                 val nowMs = getTimeMillis().toDouble()
 
-                outstanding.values.forEach {
+                outstanding.values.removeAll {
                     if (it.failAt < nowMs) {
-                        throw TimeoutException("Timed out waiting for ${it.brainToMap.brainId} pong ${it.key.stringify()}")
-                    }
-                    if (sleepUntil > it.failAt) sleepUntil = it.failAt
-
-                    if (it.retryAt < nowMs) {
-                        logger.warn {
-                            "Haven't heard from ${it.brainToMap.brainId} after ${nowMs - it.retryAt}," +
-                                    " retrying (attempt ${++it.retryCount})..."
+                        logger.debug {
+                            "Timed out waiting after ${nowMs - it.sentAt}ms for ${it.brainToMap.brainId}" +
+                                " pong ${it.key.stringify()}"
                         }
-                        it.attemptDelivery()
-                        it.retryAt = nowMs + retryAfterMillis
+                        it.failed()
+                        true
+                    } else {
+                        if (sleepUntil > it.failAt) sleepUntil = it.failAt
+
+                        if (it.retryAt < nowMs) {
+                            logger.warn {
+                                "Haven't heard from ${it.brainToMap.brainId} after ${nowMs - it.sentAt}ms," +
+                                        " retrying (attempt ${++it.retryCount})..."
+                            }
+                            it.attemptDelivery()
+                            it.retryAt = nowMs + retryAfterMillis
+                        }
+                        if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
+                        false
                     }
-                    if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
                 }
 
                 val timeoutMs = sleepUntil - nowMs
@@ -691,6 +710,10 @@ class Mapper(
 
         fun succeeded() {
             logger.debug { "${brainToMap.brainId} shader message pong after ${getTimeMillis() - sentAt}ms" }
+        }
+
+        fun failed() {
+            logger.error { "${brainToMap.brainId} shader message pong not received after ${getTimeMillis() - sentAt}ms" }
         }
     }
 
@@ -788,6 +811,8 @@ class Mapper(
             box.getOrPut(key) { Vote(value) }.votes++
             totalVotes++
         }
+
+        fun noVotes(): Boolean = box.isEmpty()
 
         fun winner(): T {
             return box.values.sortedByDescending { it.votes }.first().item
