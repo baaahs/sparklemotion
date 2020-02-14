@@ -47,6 +47,10 @@ class FakeNetwork(
             return FakeUdpSocket(serverPort)
         }
 
+        override fun mdns(): Network.Mdns {
+            TODO("not implemented")
+        }
+
         override fun startHttpServer(port: Int): Network.HttpServer {
             val fakeHttpServer = FakeHttpServer(port)
             httpServersByPort[myAddress to port] = fakeHttpServer

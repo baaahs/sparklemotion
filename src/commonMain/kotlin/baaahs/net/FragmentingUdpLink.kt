@@ -92,6 +92,10 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         }))
     }
 
+    override fun mdns(): Network.Mdns {
+        TODO("not implemented")
+    }
+
     private fun removeMessageId(messageId: Short): List<Fragment> {
         val myFragments = arrayListOf<Fragment>()
 

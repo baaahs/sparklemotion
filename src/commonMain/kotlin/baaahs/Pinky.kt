@@ -41,7 +41,7 @@ class Pinky(
 
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
-
+    private val mdns = network.link().mdns()
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
@@ -82,6 +82,10 @@ class Pinky(
         }
 
         GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
+
+        // save these if we want to explicitly unregister them or update their TXT records later
+        mdns.register("_sparklemotion-pinky", "_udp", Ports.PINKY, mapOf(Pair("MAX_UDP_SIZE", "1450")))
+        mdns.register("_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP)
     }
 
     suspend fun run(): Show.Renderer {

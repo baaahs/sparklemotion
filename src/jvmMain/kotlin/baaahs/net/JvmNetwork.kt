@@ -14,6 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.posick.mDNS.MulticastDNSService
+import net.posick.mDNS.ServiceInstance
+import net.posick.mDNS.ServiceName
+import org.xbill.DNS.MulticastDNSUtils
+import org.xbill.DNS.Name
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -32,6 +37,7 @@ class JvmNetwork : Network {
 //        val myAddress = InetAddress.getLocalHost()
         val myAddress = InetAddress.getByName("127.0.0.1")
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
+        var myHostname = MulticastDNSUtils.getHostName()
 
         val networkScope = CoroutineScope(Dispatchers.IO)
 
@@ -46,6 +52,7 @@ class JvmNetwork : Network {
     inner class RealLink() : Network.Link {
 
         override val udpMtu = MAX_UDP_SIZE
+        private val mdns = JvmMdnsService()
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = JvmUdpSocket(port)
@@ -69,6 +76,8 @@ class JvmNetwork : Network {
             }.start()
             return socket
         }
+
+        override fun mdns(): Network.Mdns = mdns
 
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
@@ -175,6 +184,50 @@ class JvmNetwork : Network {
         }
 
         override val myAddress = IpAddress.mine()
+
+        inner class JvmMdnsService() : Network.Mdns {
+            private val svc = MulticastDNSService()
+
+            override fun register(type: String, proto: String, port: Int, txt: Map<String, String>): Network.MdnsRegisteredService? {
+                val name = myHostname.replace(Regex("\\.local\\.?$"), "")
+                val domain = "local."
+                val serviceName = ServiceName("$name.$type.$proto.$domain")
+                var hostname = myHostname
+                if (!hostname.endsWith(".")) {
+                    hostname += ".local."
+                }
+                val inst = ServiceInstance(serviceName, 0, 0, port, Name(hostname), InetAddress.getAllByName(myHostname), txt)
+
+                val regInst = svc.register(inst)
+                if (regInst != null) {
+                    println("Service successfully registered: \n\t$regInst")
+                    return JvmRegisteredService(regInst)
+                }
+                println("Unable to register service: \n\t$inst")
+                return null
+            }
+
+            override fun unregister(inst: Network.MdnsRegisteredService?) {
+                inst?.unregister()
+            }
+
+            inner class JvmRegisteredService(private val inst: ServiceInstance) : Network.MdnsRegisteredService {
+
+                override fun unregister() {
+                    svc.unregister(inst)
+                }
+
+                override fun updateTXT(txt: Map<String, String>) {
+                    inst.addText(txt)
+                }
+
+                override fun updateTXT(key: String, value: String) {
+                    inst.addText(key, value)
+                }
+
+            }
+
+        }
 
     }
 

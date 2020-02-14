@@ -27,6 +27,11 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             return udpProxy!!.listenUdp(port, udpListener)
         }
 
+        override fun mdns(): Network.Mdns {
+            // this can, in fact, be implemented if we want, at least for browsing/discovery
+            TODO("BrowserNetwork.mdns not yet implemented")
+        }
+
         override fun startHttpServer(port: Int): Network.HttpServer =
             TODO("BrowserNetwork.startHttpServer not implemented")
 
