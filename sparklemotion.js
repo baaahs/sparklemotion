@@ -44,7 +44,6 @@
   var throwUPAE = Kotlin.throwUPAE;
   var COROUTINE_SUSPENDED = Kotlin.kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED;
   var CoroutineImpl = Kotlin.kotlin.coroutines.CoroutineImpl;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var Unit = Kotlin.kotlin.Unit;
   var L0 = Kotlin.Long.ZERO;
   var L5000 = Kotlin.Long.fromInt(5000);
@@ -52,6 +51,7 @@
   var contentEquals = Kotlin.arrayEquals;
   var throwCCE = Kotlin.throwCCE;
   var ensureNotNull = Kotlin.ensureNotNull;
+  var Exception = Kotlin.kotlin.Exception;
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var toByte = Kotlin.toByte;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
@@ -74,6 +74,7 @@
   var JsonElement = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonElement;
   var to = Kotlin.kotlin.to_ujzrz7$;
   var get_map = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.get_map_kgqhr1$;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var SerializersModule = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.SerializersModule_q4tcel$;
   var JsonConfiguration = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonConfiguration;
   var Json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.Json;
@@ -110,10 +111,10 @@
   var L10000 = Kotlin.Long.fromInt(10000);
   var sorted = Kotlin.kotlin.collections.sorted_exjks8$;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
+  var removeAll = Kotlin.kotlin.collections.removeAll_uhyeqt$;
   var withTimeoutOrNull = $module$kotlinx_coroutines_core.kotlinx.coroutines.withTimeoutOrNull_ms3uf5$;
   var toList = Kotlin.kotlin.collections.toList_964n91$;
   var Channel = $module$kotlinx_coroutines_core.kotlinx.coroutines.channels.Channel_ww73n8$;
-  var Exception = Kotlin.kotlin.Exception;
   var L2 = Kotlin.Long.fromInt(2);
   var first = Kotlin.kotlin.collections.first_2p1efm$;
   var padStart = Kotlin.kotlin.text.padStart_vrc1nu$;
@@ -193,7 +194,6 @@
   var indexOf = Kotlin.kotlin.text.indexOf_l5u8uk$;
   var JsonPrimitive = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_pdl1vj$;
   var jsonArray = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.jsonArray_mb52fq$;
-  var L5 = Kotlin.Long.fromInt(5);
   var getValue = Kotlin.kotlin.collections.getValue_t9ocha$;
   var get_contentOrNull = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.get_contentOrNull_u3sd3g$;
   var JsonDecodingException = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonDecodingException;
@@ -201,7 +201,7 @@
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
-  var removeAll = Kotlin.kotlin.collections.removeAll_qafx1e$;
+  var removeAll_0 = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var until_0 = Kotlin.kotlin.ranges.until_c8b4g4$;
   var map = Kotlin.kotlin.sequences.map_z5avom$;
   var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
@@ -732,6 +732,11 @@
       this.display_0.surface = value;
     }
   });
+  function Brain$run$lambda$lambda(this$Brain) {
+    return function () {
+      return 'Resetting Brain ' + this$Brain.id + '!';
+    };
+  }
   function Coroutine$Brain$run$lambda(this$Brain_0, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
@@ -749,7 +754,7 @@
       try {
         switch (this.state_0) {
           case 0:
-            println('Resetting Brain ' + this.local$this$Brain.id + '!');
+            Brain$Companion_getInstance().logger.info_h4ejuu$(Brain$run$lambda$lambda(this.local$this$Brain));
             this.state_0 = 2;
             this.result_0 = this.local$this$Brain.reset_0(this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -968,67 +973,81 @@
     else
       return instance.doResume(null);
   };
+  function Brain$receive$lambda(this$Brain) {
+    return function () {
+      return 'Brain ' + this$Brain.id + ' failed to handle a packet.';
+    };
+  }
   Brain.prototype.receive_ytpeqp$ = function (fromAddress, fromPort, bytes) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var now = getTimeMillis();
     this.lastInstructionsReceivedAtMs_0 = now;
     var reader = new ByteArrayReader(bytes);
-    var type = Type$Companion_getInstance().get_s8j3t7$(reader.readByte());
-    switch (type.name) {
-      case 'BRAIN_PANEL_SHADE':
-        if (reader.readBoolean()) {
-          tmp$ = reader.readBytes();
-        }
-         else {
-          tmp$ = null;
-        }
+    try {
+      var type = Type$Companion_getInstance().get_s8j3t7$(reader.readByte());
+      switch (type.name) {
+        case 'BRAIN_PANEL_SHADE':
+          if (reader.readBoolean()) {
+            tmp$ = reader.readBytes();
+          }
+           else {
+            tmp$ = null;
+          }
 
-        var pongData = tmp$;
-        var shaderDesc = reader.readBytes();
-        var theCurrentShaderDesc = this.currentShaderDesc_0;
-        if (theCurrentShaderDesc == null || !contentEquals(theCurrentShaderDesc, shaderDesc)) {
-          this.currentShaderDesc_0 = shaderDesc;
-          var shader = Kotlin.isType(tmp$_0 = Shader$Companion_getInstance().parse_100t80$(new ByteArrayReader(shaderDesc)), Shader) ? tmp$_0 : throwCCE();
-          var newRenderTree = new Brain$RenderTree(shader, shader.createRenderer_ppt8xj$(this.surface_0), shader.createBuffer_ppt8xj$(this.surface_0));
-          (tmp$_1 = this.currentRenderTree_0) != null ? (tmp$_1.release(), Unit) : null;
-          this.currentRenderTree_0 = newRenderTree;
-        }
+          var pongData = tmp$;
+          var shaderDesc = reader.readBytes();
+          var theCurrentShaderDesc = this.currentShaderDesc_0;
+          if (theCurrentShaderDesc == null || !contentEquals(theCurrentShaderDesc, shaderDesc)) {
+            this.currentShaderDesc_0 = shaderDesc;
+            var shader = Kotlin.isType(tmp$_0 = Shader$Companion_getInstance().parse_100t80$(new ByteArrayReader(shaderDesc)), Shader) ? tmp$_0 : throwCCE();
+            var newRenderTree = new Brain$RenderTree(shader, shader.createRenderer_ppt8xj$(this.surface_0), shader.createBuffer_ppt8xj$(this.surface_0));
+            (tmp$_1 = this.currentRenderTree_0) != null ? (tmp$_1.release(), Unit) : null;
+            this.currentRenderTree_0 = newRenderTree;
+          }
 
-        var $receiver = ensureNotNull(this.currentRenderTree_0);
-        $receiver.read_100t80$(reader);
-        $receiver.draw_bbfl1t$(this.pixels_0);
-        if (pongData != null) {
-          this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new PingMessage(pongData, true));
-        }
+          var $receiver = ensureNotNull(this.currentRenderTree_0);
+          $receiver.read_100t80$(reader);
+          $receiver.draw_bbfl1t$(this.pixels_0);
+          if (pongData != null) {
+            this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new PingMessage(pongData, true));
+          }
 
-        break;
-      case 'BRAIN_ID_REQUEST':
-        this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new BrainHelloMessage(this.id, this.surfaceName_0));
-        break;
-      case 'BRAIN_MAPPING':
-        var message = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
-        this.surfaceName_0 = message.surfaceName;
-        if (message.surfaceName != null) {
-          var fakeModelSurface = new Brain$FakeModelSurface(message.surfaceName);
-          tmp$_2 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations);
-        }
-         else {
-          tmp$_2 = new AnonymousSurface(new BrainId(this.id));
-        }
+          break;
+        case 'BRAIN_ID_REQUEST':
+          this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new BrainHelloMessage(this.id, this.surfaceName_0));
+          break;
+        case 'BRAIN_MAPPING':
+          var message = BrainMappingMessage$Companion_getInstance().parse_100t80$(reader);
+          this.surfaceName_0 = message.surfaceName;
+          if (message.surfaceName != null) {
+            var fakeModelSurface = new Brain$FakeModelSurface(message.surfaceName);
+            tmp$_2 = new IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations);
+          }
+           else {
+            tmp$_2 = new AnonymousSurface(new BrainId(this.id));
+          }
 
-        this.surface_0 = tmp$_2;
-        this.currentShaderDesc_0 = null;
-        this.currentRenderTree_0 = null;
-        this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.id, this.surfaceName_0));
-        break;
-      case 'PING':
-        var ping = PingMessage$Companion_getInstance().parse_100t80$(reader);
-        if (!ping.isPong) {
-          this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new PingMessage(ping.data, true));
-        }
+          this.surface_0 = tmp$_2;
+          this.currentShaderDesc_0 = null;
+          this.currentRenderTree_0 = null;
+          this.udpSocket_0.broadcastUdp_68hu5j$(8002, new BrainHelloMessage(this.id, this.surfaceName_0));
+          break;
+        case 'PING':
+          var ping = PingMessage$Companion_getInstance().parse_100t80$(reader);
+          if (!ping.isPong) {
+            this.udpSocket_0.sendUdp_wpmaqi$(fromAddress, fromPort, new PingMessage(ping.data, true));
+          }
 
-        break;
-      default:break;
+          break;
+        default:break;
+      }
+    }
+     catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        Brain$Companion_getInstance().logger.error_l35kib$(e, Brain$receive$lambda(this));
+      }
+       else
+        throw e;
     }
   };
   function Brain$RenderTree(shader, renderer, buffer) {
@@ -3744,7 +3763,17 @@
       return Unit;
     };
   }
-  function Mapper$Session$identifyBrain$lambda_1(closure$firstGuessSurface, closure$brainToMap) {
+  function Mapper$Session$identifyBrain$lambda_1(closure$brainToMap) {
+    return function () {
+      return 'Failed to match anything up with ' + closure$brainToMap.brainId + ', bailing.';
+    };
+  }
+  function Mapper$Session$identifyBrain$lambda_2(closure$surfaceBallot, closure$brainToMap) {
+    return function () {
+      return 'Failed to cast sufficient votes (' + closure$surfaceBallot.totalVotes + ') after 1000 tries' + (' on ' + closure$brainToMap.brainId + ', bailing.');
+    };
+  }
+  function Mapper$Session$identifyBrain$lambda_3(closure$firstGuessSurface, closure$brainToMap) {
     return function () {
       return 'Guessed panel ' + closure$firstGuessSurface.name + ' for ' + closure$brainToMap.brainId;
     };
@@ -3753,6 +3782,7 @@
     CoroutineImpl.call(this, continuation_0);
     this.exceptionState_0 = 1;
     this.$this = $this;
+    this.local$sampleLocations = void 0;
     this.local$surfaceBallot = void 0;
     this.local$index = index_0;
     this.local$brainToMap = brainToMap_0;
@@ -3802,12 +3832,22 @@
             this.$this.$outer.mapperUi_0.showDiffImage_oa2j07$(this.$this.deltaBitmap, surfaceChangeRegion);
             this.local$brainToMap.changeRegion = surfaceChangeRegion;
             var thresholdValue = surfaceAnalysis.thresholdValueFor_mx4ult$(0.25);
-            var sampleLocations = ArrayList_init();
-            ImageProcessing$Companion_getInstance().pixels_oh9quv$(surfaceOnBitmap, surfaceChangeRegion, Mapper$Session$identifyBrain$lambda_0(thresholdValue, sampleLocations));
+            this.local$sampleLocations = ArrayList_init();
+            ImageProcessing$Companion_getInstance().pixels_oh9quv$(surfaceOnBitmap, surfaceChangeRegion, Mapper$Session$identifyBrain$lambda_0(thresholdValue, this.local$sampleLocations));
+            if (this.local$sampleLocations.isEmpty()) {
+              Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$Session$identifyBrain$lambda_1(this.local$brainToMap));
+              return;
+            }
+             else {
+              this.state_0 = 5;
+              continue;
+            }
+
+          case 5:
             this.local$surfaceBallot = new Mapper$Ballot();
             var tries = 1000;
             while (this.local$surfaceBallot.totalVotes < 10 && (tmp$ = tries, tries = tmp$ - 1 | 0, tmp$) > 0) {
-              var tmp$_0 = ensureNotNull(random_0(sampleLocations));
+              var tmp$_0 = ensureNotNull(random_0(this.local$sampleLocations));
               var x = tmp$_0.component1()
               , y = tmp$_0.component2();
               var visibleSurface = this.$this.$outer.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.$this.visibleSurfaces);
@@ -3817,30 +3857,31 @@
               }
             }
 
-            if (tries === 0) {
+            if (tries === 0 || this.local$surfaceBallot.noVotes()) {
+              Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$Session$identifyBrain$lambda_2(this.local$surfaceBallot, this.local$brainToMap));
               return;
             }
              else {
-              this.state_0 = 5;
+              this.state_0 = 6;
               continue;
             }
 
-          case 5:
+          case 6:
             var firstGuess = this.local$surfaceBallot.winner();
             var firstGuessSurface = firstGuess.modelSurface;
             this.$this.$outer.mapperUi_0.showMessage_61zpoe$(this.local$index.toString() + ' / ' + this.$this.$outer.brainsToMap_0.size + ': ' + this.local$brainToMap.brainId + ' \u2014\xA0surface is ' + firstGuessSurface.name + '?');
             this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Candidate panels: ' + this.local$surfaceBallot.summarize());
-            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$identifyBrain$lambda_1(firstGuessSurface, this.local$brainToMap));
+            Mapper$Companion_getInstance().logger.info_h4ejuu$(Mapper$Session$identifyBrain$lambda_3(firstGuessSurface, this.local$brainToMap));
             this.local$brainToMap.guessedModelSurface = firstGuessSurface;
             this.local$brainToMap.guessedVisibleSurface = firstGuess;
             this.local$brainToMap.expectedPixelCount = firstGuessSurface.expectedPixelCount;
             this.local$brainToMap.panelDeltaBitmap = this.$this.deltaBitmap.clone();
-            this.state_0 = 6;
+            this.state_0 = 7;
             this.result_0 = this.$this.$outer.mapperClient_0.saveImage_39j694$(this.$this.sessionStartTime, 'brain-' + this.local$brainToMap.brainId + '-' + this.local$retryCount, this.$this.deltaBitmap, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
-          case 6:
+          case 7:
             this.local$brainToMap.deltaImageName = this.result_0;
             return;
           default:this.state_0 = 1;
@@ -4395,9 +4436,35 @@
       return 'Waiting pongs from ' + destination + '...';
     };
   }
-  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$it, closure$nowMs) {
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$nowMs, closure$it, this$Mapper) {
     return function () {
-      return "Haven't heard from " + closure$it.brainToMap.brainId + ' after ' + (closure$nowMs - closure$it.retryAt) + ',' + (' retrying (attempt ' + (closure$it.retryCount = closure$it.retryCount + 1 | 0, closure$it.retryCount) + ')...');
+      return 'Timed out waiting after ' + (closure$nowMs - closure$it.sentAt) + 'ms for ' + closure$it.brainToMap.brainId + (' pong ' + this$Mapper.stringify_fo0d1v$(closure$it.key));
+    };
+  }
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda_0(closure$it, closure$nowMs) {
+    return function () {
+      return "Haven't heard from " + closure$it.brainToMap.brainId + ' after ' + (closure$nowMs - closure$it.sentAt) + 'ms,' + (' retrying (attempt ' + (closure$it.retryCount = closure$it.retryCount + 1 | 0, closure$it.retryCount) + ')...');
+    };
+  }
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda_0(closure$nowMs, this$Mapper, closure$sleepUntil, closure$retryAfterMillis) {
+    return function (it) {
+      if (it.failAt < closure$nowMs) {
+        Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(closure$nowMs, it, this$Mapper));
+        it.failed();
+        return true;
+      }
+       else {
+        if (closure$sleepUntil.v > it.failAt)
+          closure$sleepUntil.v = it.failAt;
+        if (it.retryAt < closure$nowMs) {
+          Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda_0(it, closure$nowMs));
+          it.attemptDelivery();
+          it.retryAt = closure$nowMs + closure$retryAfterMillis;
+        }
+        if (closure$sleepUntil.v > it.retryAt)
+          closure$sleepUntil.v = it.retryAt;
+        return false;
+      }
     };
   }
   function Coroutine$Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0, $receiver_0, controller, continuation_0) {
@@ -4443,7 +4510,7 @@
       }
      while (true);
   };
-  function Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this$ReliableShaderMessageDeliverer_0) {
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda_1(this$ReliableShaderMessageDeliverer_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$Mapper$ReliableShaderMessageDeliverer$await$lambda(this$ReliableShaderMessageDeliverer_0, $receiver_0, this, continuation_0);
       if (suspended)
@@ -4452,7 +4519,7 @@
         return instance.doResume(null);
     };
   }
-  function Mapper$ReliableShaderMessageDeliverer$await$lambda_1(closure$pongTag, this$Mapper) {
+  function Mapper$ReliableShaderMessageDeliverer$await$lambda_2(closure$pongTag, this$Mapper) {
     return function () {
       return 'huh? no such pong tag ' + this$Mapper.stringify_fo0d1v$(closure$pongTag) + '!';
     };
@@ -4513,30 +4580,10 @@
             this.$this.$outer.mapperUi_0.showMessage2_61zpoe$('Waiting for PONG from ' + joinToString(waitingFor, ','));
             var sleepUntil = {v: kotlin_js_internal_DoubleCompanionObject.MAX_VALUE};
             var nowMs = getTimeMillis().toNumber();
-            var $receiver_0 = this.$this.outstanding.values;
-            this.$this.$outer;
-            var tmp$_3;
-            tmp$_3 = $receiver_0.iterator();
-            while (tmp$_3.hasNext()) {
-              var element_0 = tmp$_3.next();
-              var this$Mapper = this.$this.$outer;
-              if (element_0.failAt < nowMs) {
-                throw new Mapper$TimeoutException('Timed out waiting for ' + element_0.brainToMap.brainId + ' pong ' + this$Mapper.stringify_fo0d1v$(element_0.key));
-              }
-              if (sleepUntil.v > element_0.failAt)
-                sleepUntil.v = element_0.failAt;
-              if (element_0.retryAt < nowMs) {
-                Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda$lambda(element_0, nowMs));
-                element_0.attemptDelivery();
-                element_0.retryAt = nowMs + this.local$retryAfterMillis;
-              }
-              if (sleepUntil.v > element_0.retryAt)
-                sleepUntil.v = element_0.retryAt;
-            }
-
+            removeAll(this.$this.outstanding.values, Mapper$ReliableShaderMessageDeliverer$await$lambda_0(nowMs, this.$this.$outer, sleepUntil, this.local$retryAfterMillis));
             var timeoutMs = sleepUntil.v - nowMs;
             this.state_0 = 3;
-            this.result_0 = withTimeoutOrNull(Kotlin.Long.fromNumber(timeoutMs), Mapper$ReliableShaderMessageDeliverer$await$lambda_0(this.$this), this);
+            this.result_0 = withTimeoutOrNull(Kotlin.Long.fromNumber(timeoutMs), Mapper$ReliableShaderMessageDeliverer$await$lambda_1(this.$this), this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -4549,7 +4596,7 @@
                 deliveryAttempt.succeeded();
               }
                else {
-                Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda_1(pongTag, this.$this.$outer));
+                Mapper$Companion_getInstance().logger.warn_h4ejuu$(Mapper$ReliableShaderMessageDeliverer$await$lambda_2(pongTag, this.$this.$outer));
               }
             }
 
@@ -4676,6 +4723,14 @@
   }
   Mapper$DeliveryAttempt.prototype.succeeded = function () {
     Mapper$Companion_getInstance().logger.debug_h4ejuu$(Mapper$DeliveryAttempt$succeeded$lambda(this));
+  };
+  function Mapper$DeliveryAttempt$failed$lambda(this$DeliveryAttempt) {
+    return function () {
+      return this$DeliveryAttempt.brainToMap.brainId + ' shader message pong not received after ' + (getTimeMillis().toNumber() - this$DeliveryAttempt.sentAt) + 'ms';
+    };
+  }
+  Mapper$DeliveryAttempt.prototype.failed = function () {
+    Mapper$Companion_getInstance().logger.error_h4ejuu$(Mapper$DeliveryAttempt$failed$lambda(this));
   };
   Mapper$DeliveryAttempt.$metadata$ = {
     kind: Kind_CLASS,
@@ -4952,6 +5007,9 @@
     tmp$ = tmp$_0;
     tmp$.votes = tmp$.votes + 1 | 0;
     this.totalVotes = this.totalVotes + 1 | 0;
+  };
+  Mapper$Ballot.prototype.noVotes = function () {
+    return this.box_0.isEmpty();
   };
   function Mapper$Ballot$winner$lambda(it) {
     return it.votes;
@@ -5844,7 +5902,12 @@
   }
   function Pinky$run$lambda$lambda(this$Pinky) {
     return function () {
-      return 'Sending to ' + this$Pinky.brainInfos_0.size + ' brains';
+      return 'Mapping ' + this$Pinky.brainInfos_0.size + ' brains...';
+    };
+  }
+  function Pinky$run$lambda$lambda_0(this$Pinky) {
+    return function () {
+      return 'Sending to ' + this$Pinky.brainInfos_0.size + ' brains...';
     };
   }
   function Coroutine$Pinky$run$lambda_0(this$Pinky_0, $receiver_0, controller, continuation_0) {
@@ -5870,7 +5933,13 @@
           case 1:
             throw this.exception_0;
           case 2:
-            Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$run$lambda$lambda(this.local$this$Pinky));
+            if (this.local$this$Pinky.mapperIsRunning_0) {
+              Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$run$lambda$lambda(this.local$this$Pinky));
+            }
+             else {
+              Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$run$lambda$lambda_0(this.local$this$Pinky));
+            }
+
             this.state_0 = 3;
             this.result_0 = delay(L1000, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
@@ -10309,7 +10378,7 @@
     var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
     (tmp$ = this.resolutionUniform_bo22rx$_0) != null ? (tmp$.set_dleff0$(1.0, 1.0), Unit) : null;
     (tmp$_0 = this.timeUniform_2ukqek$_0) != null ? (tmp$_0.set_mx4ult$(thisTime), Unit) : null;
-    this.arrangement.bindUvCoordTexture_i9pfe0$(ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+    this.arrangement.bindUvCoordTexture_i9pfe0$(this.uvCoordsUniform_67qhwm$_0);
     this.arrangement.bindUniforms();
     var tmp$_2;
     tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
@@ -10375,7 +10444,7 @@
       this.glslSurfaces_vgfiet$_0.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
       this.surfacesToAdd_vfxuyj$_0.clear();
       this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces_vgfiet$_0);
-      this.arrangement.bindUvCoordTexture_i9pfe0$(ensureNotNull(this.uvCoordsUniform_67qhwm$_0));
+      this.arrangement.bindUvCoordTexture_i9pfe0$(this.uvCoordsUniform_67qhwm$_0);
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
     }
@@ -10776,12 +10845,22 @@
   }
   function GlslRenderer$uvCoordsUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'sm_uvCoords');
+      var tmp$;
+      tmp$ = Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'sm_uvCoords');
+      if (tmp$ == null) {
+        throw Exception_init('no sm_uvCoords uniform!');
+      }
+      return tmp$;
     };
   }
   function GlslRenderer$resolutionUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'resolution');
+      var tmp$;
+      tmp$ = Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'resolution');
+      if (tmp$ == null) {
+        throw Exception_init('no resolution uniform!');
+      }
+      return tmp$;
     };
   }
   function GlslRenderer$timeUniform$lambda(this$GlslRenderer) {
@@ -12236,7 +12315,7 @@
     this.tcpConnection_co05n0$_0 = this.tcpConnection_co05n0$_0;
     this.connected_0 = false;
     this.responses_pa3azj$_0 = this.responses_pa3azj$_0;
-    link.connectWebSocket_t0j9bj$(address, 0, '/ws/mapper', this);
+    link.connectWebSocket_t0j9bj$(address, 8004, '/ws/mapper', this);
   }
   Object.defineProperty(MapperClient.prototype, 'tcpConnection_0', {
     get: function () {
@@ -12436,7 +12515,10 @@
       return Unit;
     };
   }
-  function MapperClient$sendCommand$lambda_0(closure$command, closure$args, closure$responseJsonStr) {
+  function MapperClient$sendCommand$lambda_0() {
+    return 'Mapper not connected to Pinky\u2026';
+  }
+  function MapperClient$sendCommand$lambda_1(closure$command, closure$args, closure$responseJsonStr) {
     return function () {
       return "can't parse response to " + closure$command + ' ' + closure$args + ': ' + closure$responseJsonStr;
     };
@@ -12471,8 +12553,9 @@
               continue;
             }
 
+            MapperClient$Companion_getInstance().logger.warn_h4ejuu$(MapperClient$sendCommand$lambda_0);
             this.state_0 = 2;
-            this.result_0 = delay(L5, this);
+            this.result_0 = delay(L50, this);
             if (this.result_0 === COROUTINE_SUSPENDED)
               return COROUTINE_SUSPENDED;
             continue;
@@ -12503,7 +12586,7 @@
             this.exceptionState_0 = 7;
             var e = this.exception_0;
             if (Kotlin.isType(e, JsonDecodingException)) {
-              MapperClient$Companion_getInstance().logger.error_h4ejuu$(MapperClient$sendCommand$lambda_0(this.local$command, this.local$args, this.local$responseJsonStr));
+              MapperClient$Companion_getInstance().logger.error_h4ejuu$(MapperClient$sendCommand$lambda_1(this.local$command, this.local$args, this.local$responseJsonStr));
               throw e;
             }
              else
@@ -12535,12 +12618,20 @@
     else
       return instance.doResume(null);
   };
+  function MapperClient$connected$lambda() {
+    return 'Mapper connected to Pinky!';
+  }
   MapperClient.prototype.connected_67ozxy$ = function (tcpConnection) {
-    println('Mapper connected to Pinky!');
+    MapperClient$Companion_getInstance().logger.info_h4ejuu$(MapperClient$connected$lambda);
     this.tcpConnection_0 = tcpConnection;
     this.responses_0 = Channel(1);
     this.connected_0 = true;
   };
+  function MapperClient$receive$lambda(closure$bytes) {
+    return function () {
+      return 'Received ' + decodeToString(closure$bytes);
+    };
+  }
   function Coroutine$MapperClient$receive$lambda(this$MapperClient_0, closure$bytes_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -12585,7 +12676,7 @@
       }
      while (true);
   };
-  function MapperClient$receive$lambda(this$MapperClient_0, closure$bytes_0) {
+  function MapperClient$receive$lambda_0(this$MapperClient_0, closure$bytes_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$MapperClient$receive$lambda(this$MapperClient_0, closure$bytes_0, $receiver_0, this, continuation_0);
       if (suspended)
@@ -12595,13 +12686,16 @@
     };
   }
   MapperClient.prototype.receive_r00qii$ = function (tcpConnection, bytes) {
-    println('Received ' + decodeToString(bytes));
-    launch(this, void 0, void 0, MapperClient$receive$lambda(this, bytes));
+    MapperClient$Companion_getInstance().logger.debug_h4ejuu$(MapperClient$receive$lambda(bytes));
+    launch(this, void 0, void 0, MapperClient$receive$lambda_0(this, bytes));
   };
+  function MapperClient$reset$lambda() {
+    return 'Mapper disconnected from Pinky!';
+  }
   MapperClient.prototype.reset_67ozxy$ = function (tcpConnection) {
     if (this.responses_pa3azj$_0 != null)
       this.responses_0.close_dbl4no$();
-    println('Mapper disconnected from Pinky!');
+    MapperClient$Companion_getInstance().logger.info_h4ejuu$(MapperClient$reset$lambda);
   };
   function MapperClient$Companion() {
     MapperClient$Companion_instance = this;
@@ -12650,8 +12744,13 @@
     }
     return MapperEndpoint$Companion_instance;
   }
+  function MapperEndpoint$connected$lambda(closure$tcpConnection) {
+    return function () {
+      return 'Received connection from ' + closure$tcpConnection.fromAddress;
+    };
+  }
   MapperEndpoint.prototype.connected_67ozxy$ = function (tcpConnection) {
-    println('Received connection from ' + tcpConnection.fromAddress);
+    MapperEndpoint$Companion_getInstance().logger.info_h4ejuu$(MapperEndpoint$connected$lambda(tcpConnection));
   };
   function MapperEndpoint$receive$lambda(closure$parts) {
     return function () {
@@ -12663,7 +12762,12 @@
       return closure$e.toString();
     };
   }
-  function MapperEndpoint$receive$lambda_1(closure$status, closure$response) {
+  function MapperEndpoint$receive$lambda_1(closure$parts, closure$status, closure$response) {
+    return function () {
+      return 'Command: ' + closure$parts + ' -> ' + closure$status.v + ' ' + closure$response.v;
+    };
+  }
+  function MapperEndpoint$receive$lambda_2(closure$status, closure$response) {
     return function ($receiver) {
       $receiver.to_npuxma$('status', closure$status.v);
       $receiver.to_ahl3kc$('response', closure$response.v);
@@ -12705,11 +12809,14 @@
        else
         throw e;
     }
-    println('Command: ' + parts + ' -> ' + status.v + ' ' + response.v);
-    tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonElementSerializer, json_0(MapperEndpoint$receive$lambda_1(status, response)))));
+    MapperEndpoint$Companion_getInstance().logger.debug_h4ejuu$(MapperEndpoint$receive$lambda_1(parts, status, response));
+    tcpConnection.send_fqrh44$(encodeToByteArray(MapperEndpoint$Companion_getInstance().json.stringify_tf03ej$(json.JsonElementSerializer, json_0(MapperEndpoint$receive$lambda_2(status, response)))));
   };
+  function MapperEndpoint$reset$lambda() {
+    return 'MapperEndpoint client disconnected from Pinky!';
+  }
   MapperEndpoint.prototype.reset_67ozxy$ = function (tcpConnection) {
-    println('MapperEndpoint client disconnected from Pinky!');
+    MapperEndpoint$Companion_getInstance().logger.info_h4ejuu$(MapperEndpoint$reset$lambda);
   };
   MapperEndpoint.$metadata$ = {
     kind: Kind_CLASS,
@@ -13612,9 +13719,9 @@
   }
   FragmentingUdpLink.prototype.removeMessageId_0 = function (messageId) {
     var myFragments = ArrayList_init();
-    removeAll(this.fragments_0, FragmentingUdpLink$removeMessageId$lambda$lambda(messageId, myFragments));
+    removeAll_0(this.fragments_0, FragmentingUdpLink$removeMessageId$lambda$lambda(messageId, myFragments));
     var offsets = HashSet_init();
-    removeAll(myFragments, FragmentingUdpLink$removeMessageId$lambda$lambda_0(offsets, myFragments));
+    removeAll_0(myFragments, FragmentingUdpLink$removeMessageId$lambda$lambda_0(offsets, myFragments));
     if (myFragments.isEmpty()) {
       println('remaining fragments = ' + this.fragments_0);
     }
@@ -17221,6 +17328,7 @@
     interfaces: [Fs]
   };
   function FakeNetwork(networkDelay, display, coroutineContext) {
+    FakeNetwork$Companion_getInstance();
     if (networkDelay === void 0)
       networkDelay = 1;
     if (display === void 0)
@@ -17294,6 +17402,11 @@
     $receiver.put_xwzc9p$(key, fakeHttpServer);
     return fakeHttpServer;
   };
+  function FakeNetwork$FakeLink$connectWebSocket$lambda(closure$toAddress, closure$port, closure$path) {
+    return function () {
+      return 'No HTTP server at ' + closure$toAddress + ':' + closure$port + ' for ' + closure$path;
+    };
+  }
   function Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
     this.$controller = controller;
@@ -17339,7 +17452,7 @@
       }
      while (true);
   };
-  function FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0) {
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_0(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda(this$FakeNetwork_0, closure$webSocketListener_0, closure$connection_0, $receiver_0, this, continuation_0);
       if (suspended)
@@ -17348,12 +17461,17 @@
         return instance.doResume(null);
     };
   }
-  function FakeNetwork$FakeLink$connectWebSocket$lambda_0(closure$clientSideConnection) {
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_1(closure$toAddress, closure$port, closure$path) {
+    return function () {
+      return 'No WebSocket listener at ' + closure$toAddress + ':' + closure$port + closure$path;
+    };
+  }
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_2(closure$clientSideConnection) {
     return function () {
       return closure$clientSideConnection.v == null ? throwUPAE('clientSideConnection') : closure$clientSideConnection.v;
     };
   }
-  function FakeNetwork$FakeLink$connectWebSocket$lambda_1(closure$serverSideConnection) {
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_3(closure$serverSideConnection) {
     return function () {
       return closure$serverSideConnection;
     };
@@ -17403,7 +17521,7 @@
       }
      while (true);
   };
-  function FakeNetwork$FakeLink$connectWebSocket$lambda_2(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0) {
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_4(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_0(this$FakeNetwork_0, closure$webSocketListener_0, closure$clientSideConnection_0, $receiver_0, this, continuation_0);
       if (suspended)
@@ -17457,7 +17575,7 @@
       }
      while (true);
   };
-  function FakeNetwork$FakeLink$connectWebSocket$lambda_3(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
+  function FakeNetwork$FakeLink$connectWebSocket$lambda_5(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0) {
     return function ($receiver_0, continuation_0, suspended) {
       var instance = new Coroutine$FakeNetwork$FakeLink$connectWebSocket$lambda_1(this$FakeNetwork_0, closure$serverListener_0, closure$serverSideConnection_0, $receiver_0, this, continuation_0);
       if (suspended)
@@ -17470,19 +17588,25 @@
     var tmp$;
     this.webSocketListeners.add_11rb$(webSocketListener);
     var fakeHttpServer = this.$outer.httpServersByPort_0.get_11rb$(to(toAddress, port));
+    if (fakeHttpServer == null) {
+      FakeNetwork$Companion_getInstance().logger.warn_h4ejuu$(FakeNetwork$FakeLink$connectWebSocket$lambda(toAddress, port, path));
+    }
     var onConnectCallback = (tmp$ = fakeHttpServer != null ? fakeHttpServer.webSocketListeners : null) != null ? tmp$.get_11rb$(path) : null;
     if (onConnectCallback == null) {
       var connection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, null);
-      launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda(this.$outer, webSocketListener, connection));
+      launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_0(this.$outer, webSocketListener, connection));
       this.tcpConnections.add_11rb$(connection);
       return connection;
     }
+     else {
+      FakeNetwork$Companion_getInstance().logger.warn_h4ejuu$(FakeNetwork$FakeLink$connectWebSocket$lambda_1(toAddress, port, path));
+    }
     var clientSideConnection = {v: null};
-    var serverSideConnection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, webSocketListener, FakeNetwork$FakeLink$connectWebSocket$lambda_0(clientSideConnection));
+    var serverSideConnection = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, webSocketListener, FakeNetwork$FakeLink$connectWebSocket$lambda_2(clientSideConnection));
     var serverListener = onConnectCallback(serverSideConnection);
-    clientSideConnection.v = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, serverListener, FakeNetwork$FakeLink$connectWebSocket$lambda_1(serverSideConnection));
-    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_2(this.$outer, webSocketListener, clientSideConnection));
-    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_3(this.$outer, serverListener, serverSideConnection));
+    clientSideConnection.v = new FakeNetwork$FakeLink$FakeTcpConnection(this, this.myAddress, toAddress, port, serverListener, FakeNetwork$FakeLink$connectWebSocket$lambda_3(serverSideConnection));
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_4(this.$outer, webSocketListener, clientSideConnection));
+    launch(this.$outer.coroutineScope_0, void 0, void 0, FakeNetwork$FakeLink$connectWebSocket$lambda_5(this.$outer, serverListener, serverSideConnection));
     this.tcpConnections.add_11rb$(clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v);
     return clientSideConnection.v == null ? throwUPAE('clientSideConnection') : clientSideConnection.v;
   };
@@ -17780,6 +17904,22 @@
   FakeNetwork$FakeAddress.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.id, other.id))));
   };
+  function FakeNetwork$Companion() {
+    FakeNetwork$Companion_instance = this;
+    this.logger = new Logger('FakeNetwork');
+  }
+  FakeNetwork$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var FakeNetwork$Companion_instance = null;
+  function FakeNetwork$Companion_getInstance() {
+    if (FakeNetwork$Companion_instance === null) {
+      new FakeNetwork$Companion();
+    }
+    return FakeNetwork$Companion_instance;
+  }
   function FakeNetwork$coroutineScope$ObjectLiteral(closure$coroutineContext) {
     this.closure$coroutineContext = closure$coroutineContext;
   }
@@ -20789,7 +20929,7 @@
     return Kotlin.Long.fromNumber(Date.now());
   }
   function decodeBase64(s) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'decodeBase64 not implemented');
+    return encodeToByteArray(window.atob(s));
   }
   function logMessage(level, message, exception) {
     if (exception === void 0)
@@ -21476,7 +21616,8 @@
   function SwirlyPixelArranger$PanelArranger($outer, vizPanel) {
     this.$outer = $outer;
     var x = vizPanel.area * this.$outer.pixelDensity_0;
-    this.pixelCount_0 = numberToInt(Math_0.floor(x));
+    var b = numberToInt(Math_0.floor(x));
+    this.pixelCount_0 = Math_0.min(2048, b);
     this.panelGeometry_0 = vizPanel.geometry_8be2vx$.clone();
     this.vertices_0 = this.panelGeometry_0.vertices;
     this.isMultiFaced_0 = vizPanel.isMultiFaced;
@@ -23077,6 +23218,9 @@
   FakeNetwork$FakeLink.FakeTcpConnection = FakeNetwork$FakeLink$FakeTcpConnection;
   FakeNetwork$FakeLink.FakeHttpServer = FakeNetwork$FakeLink$FakeHttpServer;
   FakeNetwork.FakeLink = FakeNetwork$FakeLink;
+  Object.defineProperty(FakeNetwork, 'Companion', {
+    get: FakeNetwork$Companion_getInstance
+  });
   package$sim.FakeNetwork = FakeNetwork;
   package$baaahs.random_2p1efm$ = random_0;
   package$baaahs.random_hhb8gh$ = random_1;
