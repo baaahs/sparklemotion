@@ -23,17 +23,26 @@ interface Network {
     interface Mdns {
         fun register(type: String, proto: String, port: Int, txt: Map<String, String> = mapOf()): MdnsRegisteredService?
         fun unregister(inst: MdnsRegisteredService?)
-        // todo: add discovery methods
+        fun listen(type: String, proto: String, handler: MdnsListenHandler)
     }
 
     interface MdnsService {
         // todo: add service methods
+        fun getAddress() : Address?
+        fun getName() : String?
+        fun getTXT(key: String) : String?
+        fun getAllTXTs() : Map<String, String>
     }
 
     interface MdnsRegisteredService : MdnsService {
         fun unregister()
         fun updateTXT(txt: Map<String, String>)
         fun updateTXT(key: String, value: String)
+    }
+
+    interface MdnsListenHandler {
+        fun resolved(service: MdnsService)
+        fun removed(service: MdnsService)
     }
 
     interface Address
