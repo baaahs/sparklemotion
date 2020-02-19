@@ -9,6 +9,7 @@ import io.ktor.request.host
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -181,18 +182,22 @@ class JvmNetwork : Network {
         }
 
         override val myAddress = IpAddress.mine()
-
+        override val myHostname = myAddress.address.hostName.replace(Regex("\\.local\\.?$"), "")
         private val mdns = JvmMdns()
 
         inner class JvmMdns() : Network.Mdns {
 
             private val svc = JmDNS.create(InetAddress.getLocalHost())
 
-            override fun register(type: String, proto: String, port: Int, txt: Map<String, String>): Network.MdnsRegisteredService? {
-                val name = myAddress.address.hostName.replace(Regex("\\.local\\.?$"), "")
-                val domain = "local."
-
-                val inst = ServiceInfo.create("$name.$type.$proto.$domain", name, port, 1, 1, txt)
+            override fun register(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>): Network.MdnsRegisteredService? {
+                var dom = domain
+                if (dom.startsWith(".")) {
+                    dom = dom.substring(1)
+                }
+                if (!dom.endsWith(".")) {
+                    dom += "."
+                }
+                val inst = ServiceInfo.create("$hostname.$type.$proto.$domain", hostname, port, 1, 1, params)
                 svc.registerService(inst)
                 return JvmRegisteredService(inst)
             }
@@ -201,7 +206,7 @@ class JvmNetwork : Network {
                 inst?.unregister()
             }
 
-            override fun listen(type: String, proto: String, handler: Network.MdnsListenHandler) {
+            override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
                 val wrapper = object : ServiceListener {
                     override fun serviceResolved(event: ServiceEvent?) {
                         if (event != null) {
@@ -217,10 +222,17 @@ class JvmNetwork : Network {
 
                     override fun serviceAdded(event: ServiceEvent?) { /* noop */ }
                 }
-                svc.addServiceListener("$type.$proto.local.", wrapper)
+                svc.addServiceListener("$type.$proto.$domain", wrapper)
             }
 
             open inner class JvmMdnsService(private val inst: ServiceInfo) : Network.MdnsService {
+
+                override val hostname : String get() = inst.name
+                override val type     : String get() = inst.type.removeSuffix(inst.domain).removeSuffix(".").removeSuffix(inst.protocol).removeSuffix(".")
+                override val proto    : String get() = inst.protocol
+                override val port     : Int    get() = inst.port
+                override val domain   : String get() = inst.domain
+
                 override fun getAddress(): Network.Address? {
                     val addresses = inst.inet4Addresses
                     return if (addresses.isNotEmpty()) {
@@ -228,15 +240,11 @@ class JvmNetwork : Network {
                     } else { null }
                 }
 
-                override fun getName(): String? {
-                    return inst.name
-                }
-
                 override fun getTXT(key: String): String? {
                     return inst.getPropertyString(key)
                 }
 
-                override fun getAllTXTs(): Map<String, String> {
+                override fun getAllTXTs(): MutableMap<String, String> {
                     val map = mutableMapOf<String, String>()
                     val names = inst.propertyNames
                     while (names.hasMoreElements()) {
@@ -254,8 +262,8 @@ class JvmNetwork : Network {
                     svc.unregisterService(inst)
                 }
 
-                override fun updateTXT(txt: Map<String, String>) {
-                    val map = getAllTXTs().toMutableMap()
+                override fun updateTXT(txt: MutableMap<String, String>) {
+                    val map = getAllTXTs()
                     for ((k, v) in txt) {
                         map[k] = v
                     }
@@ -263,7 +271,7 @@ class JvmNetwork : Network {
                 }
 
                 override fun updateTXT(key: String, value: String) {
-                    updateTXT(mapOf(Pair(key, value)))
+                    updateTXT(mutableMapOf(Pair(key, value)))
                 }
 
             }

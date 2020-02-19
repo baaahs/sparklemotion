@@ -35,6 +35,7 @@ class FakeNetwork(
 
     inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
+        override val myHostname = "PinkyHost"
         private var nextAvailablePort = 65000
         var webSocketListeners = mutableListOf<Network.WebSocketListener>()
         var tcpConnections = mutableListOf<Network.TcpConnection>()
@@ -48,7 +49,7 @@ class FakeNetwork(
         }
 
         override fun mdns(): Network.Mdns {
-            TODO("not implemented")
+            return mdns
         }
 
         override fun startHttpServer(port: Int): Network.HttpServer {
@@ -113,6 +114,104 @@ class FakeNetwork(
                     webSocketListener?.receive(otherListener!!(), bytes)
                 }
             }
+        }
+
+        private val mdns = FakeMdns()
+
+        inner class FakeMdns() : Network.Mdns {
+
+            private var services = mutableMapOf<String, FakeMdnsService>()
+            private var listeners = mutableMapOf<String, MutableList<Network.MdnsListenHandler>>()
+            private var nextId : Int = 0
+
+            override fun register(
+                hostname: String,
+                type: String,
+                proto: String,
+                port: Int,
+                domain: String,
+                params: MutableMap<String, String>
+            ): Network.MdnsRegisteredService? {
+                var dom = domain
+                if (dom.startsWith(".")) {
+                    dom = dom.substring(1)
+                }
+                if (!dom.endsWith(".")) {
+                    dom += "."
+                }
+                val fullname = "$hostname.$type.$proto.$domain"
+                val inst = FakeRegisteredService(hostname, type, proto, port, domain, params)
+                services[fullname] = inst
+                (inst as? FakeRegisteredService)?.announceResolved()
+                return inst
+            }
+
+            override fun unregister(inst: Network.MdnsRegisteredService?) {
+                if (inst != null) {
+                    val fullname = inst.hostname + "." + inst.type + "." + inst.proto + "." + inst.domain
+                    val removed = services.remove(fullname)
+                    if (removed != null) {
+                        (removed as? FakeRegisteredService)?.announceRemoved()
+                    }
+                }
+            }
+
+            override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
+                if (!listeners.containsKey("$type.$proto.$domain")) {
+                    listeners["$type.$proto.$domain"] = mutableListOf()
+                }
+                listeners["$type.$proto.$domain"]!!.add(handler)
+            }
+
+            open inner class FakeMdnsService(override val hostname: String, override val type: String, override val proto: String, override val port: Int, override val domain: String, val params: MutableMap<String, String>) : Network.MdnsService {
+
+                private var id : Int = nextId++
+
+                override fun getAddress(): Network.Address? {
+                    return FakeAddress(id)
+                }
+
+                override fun getTXT(key: String): String? {
+                    return params[key]
+                }
+
+                override fun getAllTXTs(): MutableMap<String, String> {
+                    return params
+                }
+            }
+
+            inner class FakeRegisteredService(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>) : FakeMdnsService(hostname, type, proto, port, domain, params), Network.MdnsRegisteredService {
+                override fun unregister() {
+                    mdns.unregister(this)
+                }
+
+                override fun updateTXT(txt: MutableMap<String, String>) {
+                    params.putAll(txt)
+                    announceResolved()
+                }
+
+                override fun updateTXT(key: String, value: String) {
+                    params[key] = value
+                    announceResolved()
+                }
+
+                internal fun announceResolved() {
+                    if (listeners.containsKey("$type.$proto.$domain")) {
+                        for (listener in listeners["$type.$proto.$domain"]!!) {
+                            listener.resolved(this)
+                        }
+                    }
+                }
+
+                internal fun announceRemoved() {
+                    if (listeners.containsKey("$type.$proto.$domain")) {
+                        for (listener in listeners["$type.$proto.$domain"]!!) {
+                            listener.removed(this)
+                        }
+                    }
+                }
+            }
+
         }
 
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
