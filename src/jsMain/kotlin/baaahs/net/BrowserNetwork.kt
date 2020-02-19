@@ -13,6 +13,7 @@ import org.w3c.dom.WebSocket
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(): Network.Link = object : Network.Link {
         override val myAddress: Network.Address = object : Network.Address {}
+        override val myHostname: String get() = "Browser"
 
         var udpProxy: BrowserUdpProxy? = null
         init {
