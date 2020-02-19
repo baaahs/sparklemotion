@@ -24,6 +24,10 @@ class FakeNetwork(
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
+    private var services = mutableMapOf<String, FakeLink.FakeMdns.FakeMdnsService>()
+    private var listeners = mutableMapOf<String, MutableList<Network.MdnsListenHandler>>()
+    private var nextServiceId : Int = 0
+
     override fun link(): FakeLink {
         val address = FakeAddress(nextAddress++)
         return FakeLink(address)
@@ -120,10 +124,6 @@ class FakeNetwork(
 
         inner class FakeMdns() : Network.Mdns {
 
-            private var services = mutableMapOf<String, FakeMdnsService>()
-            private var listeners = mutableMapOf<String, MutableList<Network.MdnsListenHandler>>()
-            private var nextId : Int = 0
-
             override fun register(
                 hostname: String,
                 type: String,
@@ -165,7 +165,7 @@ class FakeNetwork(
 
             open inner class FakeMdnsService(override val hostname: String, override val type: String, override val proto: String, override val port: Int, override val domain: String, val params: MutableMap<String, String>) : Network.MdnsService {
 
-                private var id : Int = nextId++
+                private var id : Int = nextServiceId++
 
                 override fun getAddress(): Network.Address? {
                     return FakeAddress(id)

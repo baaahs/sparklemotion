@@ -41,7 +41,7 @@ class Pinky(
 
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
-    private val mdns = network.link().mdns()
+    private val mdns = link.mdns()
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
