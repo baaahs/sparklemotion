@@ -86,6 +86,7 @@ class Pinky(
         // save these if we want to explicitly unregister them or update their TXT records later
         mdns.register("_sparklemotion-pinky", "_udp", Ports.PINKY, mapOf(Pair("MAX_UDP_SIZE", "1450")))
         mdns.register("_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP)
+        mdns.listen("_sparklemotion-brain", "_udp", MdnsBrainListenHandler())
     }
 
     suspend fun run(): Show.Renderer {
@@ -485,6 +486,23 @@ class Pinky(
             for (i in 0 until min(colors.size, size)) {
                 buffer.colors[i] = colors[i]
             }
+        }
+    }
+
+    private inner class MdnsBrainListenHandler : Network.MdnsListenHandler {
+        override fun resolved(service: Network.MdnsService) {
+            val brainId = service.getName()
+            val address = service.getAddress()
+            if (brainId != null && address != null) {
+                val version = service.getTXT("version")
+                val idfVersion = service.getTXT("idf_ver")
+                val msg = BrainHelloMessage(brainId, null, version, idfVersion)
+                foundBrain(address, msg)
+            }
+        }
+
+        override fun removed(service: Network.MdnsService) {
+            TODO("not implemented: What do when brain disconnects?")
         }
     }
 

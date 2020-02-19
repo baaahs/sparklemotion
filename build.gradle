@@ -136,7 +136,7 @@ kotlin {
                 implementation "org.jogamp.jogl:jogl-all-main:$joglVersion"
                 implementation "com.danielgergely.kgl:kgl-jogl:$kglVersion"
 
-                implementation "com.github.posicks.mdnsjava:mdnsjava:2.2.0-SNAPSHOT"
+                implementation "com.github.jmdns:jmdns:jmdns-3.5.5"
             }
         }
         jvmTest {
