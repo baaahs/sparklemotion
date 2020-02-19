@@ -84,9 +84,9 @@ class Pinky(
         GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         // save these if we want to explicitly unregister them or update their TXT records later
-        mdns.register("_sparklemotion-pinky", "_udp", Ports.PINKY, mapOf(Pair("MAX_UDP_SIZE", "1450")))
-        mdns.register("_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP)
-        mdns.listen("_sparklemotion-brain", "_udp", MdnsBrainListenHandler())
+        mdns.register(link.myHostname, "_sparklemotion-pinky", "_udp", Ports.PINKY, "local.", mutableMapOf(Pair("MAX_UDP_SIZE", "1450")))
+        mdns.register(link.myHostname, "_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP, "local.")
+        mdns.listen("_sparklemotion-brain", "_udp", "local.", MdnsBrainListenHandler())
     }
 
     suspend fun run(): Show.Renderer {
@@ -491,9 +491,9 @@ class Pinky(
 
     private inner class MdnsBrainListenHandler : Network.MdnsListenHandler {
         override fun resolved(service: Network.MdnsService) {
-            val brainId = service.getName()
+            val brainId = service.hostname
             val address = service.getAddress()
-            if (brainId != null && address != null) {
+            if (address != null) {
                 val version = service.getTXT("version")
                 val idfVersion = service.getTXT("idf_ver")
                 val msg = BrainHelloMessage(brainId, null, version, idfVersion)

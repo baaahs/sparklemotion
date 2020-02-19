@@ -7,7 +7,7 @@ interface Network {
 
     interface Link {
         val myAddress: Address
-
+        val myHostname: String
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
         fun mdns(): Mdns
@@ -21,22 +21,28 @@ interface Network {
     }
 
     interface Mdns {
-        fun register(type: String, proto: String, port: Int, txt: Map<String, String> = mapOf()): MdnsRegisteredService?
+        fun register(hostname: String, type: String, proto: String, port: Int, domain: String = "local.", params: MutableMap<String, String> = mutableMapOf()): MdnsRegisteredService?
         fun unregister(inst: MdnsRegisteredService?)
-        fun listen(type: String, proto: String, handler: MdnsListenHandler)
+        fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
     }
 
     interface MdnsService {
         // todo: add service methods
+
+        val hostname : String
+        val type     : String
+        val proto    : String
+        val port     : Int
+        val domain   : String
+
         fun getAddress() : Address?
-        fun getName() : String?
         fun getTXT(key: String) : String?
-        fun getAllTXTs() : Map<String, String>
+        fun getAllTXTs() : MutableMap<String, String>
     }
 
     interface MdnsRegisteredService : MdnsService {
         fun unregister()
-        fun updateTXT(txt: Map<String, String>)
+        fun updateTXT(txt: MutableMap<String, String>)
         fun updateTXT(key: String, value: String)
     }
 
