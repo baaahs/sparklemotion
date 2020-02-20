@@ -24,6 +24,17 @@ interface Network {
         fun register(hostname: String, type: String, proto: String, port: Int, domain: String = "local.", params: MutableMap<String, String> = mutableMapOf()): MdnsRegisteredService?
         fun unregister(inst: MdnsRegisteredService?)
         fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
+
+        fun String.normalizeMdnsDomain(): String {
+            var dom = this
+            if (dom.startsWith(".")) {
+                dom = dom.substring(1)
+            }
+            if (!dom.endsWith(".")) {
+                dom += "."
+            }
+            return dom
+        }
     }
 
     interface MdnsService {
@@ -44,6 +55,8 @@ interface Network {
         fun unregister()
         fun updateTXT(txt: MutableMap<String, String>)
         fun updateTXT(key: String, value: String)
+        // todo: unsetTXT
+        // todo: unsetAllTXT
     }
 
     interface MdnsListenHandler {
