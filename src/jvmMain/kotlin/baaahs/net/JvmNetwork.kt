@@ -186,25 +186,15 @@ class JvmNetwork : Network {
         private val mdns = JvmMdns()
 
         inner class JvmMdns() : Network.Mdns {
-
             private val svc = JmDNS.create(InetAddress.getLocalHost())
 
             override fun register(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>): Network.MdnsRegisteredService? {
-                var dom = domain
-                if (dom.startsWith(".")) {
-                    dom = dom.substring(1)
-                }
-                if (!dom.endsWith(".")) {
-                    dom += "."
-                }
-                val inst = ServiceInfo.create("$hostname.$type.$proto.$domain", hostname, port, 1, 1, params)
+                val inst = ServiceInfo.create("$hostname.$type.$proto.${domain.normalizeMdnsDomain()}", hostname, port, 1, 1, params)
                 svc.registerService(inst)
                 return JvmRegisteredService(inst)
             }
 
-            override fun unregister(inst: Network.MdnsRegisteredService?) {
-                inst?.unregister()
-            }
+            override fun unregister(inst: Network.MdnsRegisteredService?) { inst?.unregister() }
 
             override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
                 val wrapper = object : ServiceListener {
@@ -222,11 +212,10 @@ class JvmNetwork : Network {
 
                     override fun serviceAdded(event: ServiceEvent?) { /* noop */ }
                 }
-                svc.addServiceListener("$type.$proto.$domain", wrapper)
+                svc.addServiceListener("$type.$proto.${domain.normalizeMdnsDomain()}", wrapper)
             }
 
             open inner class JvmMdnsService(private val inst: ServiceInfo) : Network.MdnsService {
-
                 override val hostname : String get() = inst.name
                 override val type     : String get() = inst.type.removeSuffix(inst.domain).removeSuffix(".").removeSuffix(inst.protocol).removeSuffix(".")
                 override val proto    : String get() = inst.protocol
@@ -240,9 +229,7 @@ class JvmNetwork : Network {
                     } else { null }
                 }
 
-                override fun getTXT(key: String): String? {
-                    return inst.getPropertyString(key)
-                }
+                override fun getTXT(key: String): String? = inst.getPropertyString(key)
 
                 override fun getAllTXTs(): MutableMap<String, String> {
                     val map = mutableMapOf<String, String>()
@@ -253,31 +240,22 @@ class JvmNetwork : Network {
                     }
                     return map
                 }
-
             }
 
             inner class JvmRegisteredService(private val inst: ServiceInfo) : JvmMdnsService(inst), Network.MdnsRegisteredService {
-
-                override fun unregister() {
-                    svc.unregisterService(inst)
-                }
+                override fun unregister() { svc.unregisterService(inst) }
 
                 override fun updateTXT(txt: MutableMap<String, String>) {
                     val map = getAllTXTs()
-                    for ((k, v) in txt) {
-                        map[k] = v
-                    }
+                    map.putAll(txt)
                     inst.setText(map)
                 }
 
                 override fun updateTXT(key: String, value: String) {
                     updateTXT(mutableMapOf(Pair(key, value)))
                 }
-
             }
-
         }
-
     }
 
     data class IpAddress(val address: InetAddress) : Network.Address {
