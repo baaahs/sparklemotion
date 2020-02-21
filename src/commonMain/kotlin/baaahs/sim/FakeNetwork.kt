@@ -135,7 +135,7 @@ class FakeNetwork(
                 val fullname = "$hostname.$type.$proto.${domain.normalizeMdnsDomain()}"
                 val inst = FakeRegisteredService(hostname, type, proto, port, domain.normalizeMdnsDomain(), params)
                 services[fullname] = inst
-                (inst as? FakeRegisteredService)?.announceResolved()
+                inst.announceResolved()
                 return inst
             }
 
