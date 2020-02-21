@@ -1,5 +1,7 @@
 package baaahs.net
 
+import baaahs.sim.FakeNetwork
+
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
     val links = mutableListOf<Link>()
     private var services = mutableMapOf<String, Link.TestMdns.TestMdnsService>()
@@ -89,12 +91,7 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
                 return inst
             }
 
-            override fun unregister(inst: Network.MdnsRegisteredService?) {
-                if (inst != null) {
-                    val fullname = "${inst.hostname}.${inst.type}.${inst.proto}.${inst.domain}"
-                    (services.remove(fullname) as? TestRegisteredService)?.announceRemoved()
-                }
-            }
+            override fun unregister(inst: Network.MdnsRegisteredService?) { inst?.unregister() }
 
             override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
                 listeners.getOrPut("$type.$proto.${domain.normalizeMdnsDomain()}") { mutableListOf() }.add(handler)
@@ -111,7 +108,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             }
 
             inner class TestRegisteredService(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>) : TestMdnsService(hostname, type, proto, port, domain.normalizeMdnsDomain(), params), Network.MdnsRegisteredService {
-                override fun unregister() { mdns.unregister(this) }
+                override fun unregister() {
+                    val fullname = "$hostname.$type.$proto.${domain.normalizeMdnsDomain()}"
+                    (services.remove(fullname) as? FakeNetwork.FakeLink.FakeMdns.FakeRegisteredService)?.announceRemoved()
+                }
 
                 override fun updateTXT(txt: MutableMap<String, String>) {
                     params.putAll(txt)
