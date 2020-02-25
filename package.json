@@ -47,7 +47,7 @@
     "react-draggable": "^3.3.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "three": "^0.102.1",
+    "three": "^0.113.2",
     "webpack": "^4.34.0",
     "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.1"
