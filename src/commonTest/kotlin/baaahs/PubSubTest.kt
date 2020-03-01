@@ -81,6 +81,42 @@ class PubSubTest {
     }
 
     @Test
+    fun clientUnsubscribeShouldPreventFutureUpdatesAndUnregisterFromServerWhenAppropriate() {
+        val client1Log2 = mutableListOf<String>()
+
+        val serverTopicObserver = server.publish(topic1, "value") {
+            serverLog.add("topic1 changed: $it")
+        }
+
+        val serverTopicInfo = server.getTopicInfo(topic1.name)!!
+        assertEquals(1, serverTopicInfo.listeners.size) // assume
+
+        val client1TopicObserver1 = client1.subscribe(topic1) { client1Log.add("topic1 changed1: $it") }
+        val client1TopicObserver2 = client1.subscribe(topic1) { client1Log2.add("topic1 changed2: $it") }
+        testCoroutineContext.runAll()
+
+        client1Log.assertContents("topic1 changed1: value")
+        client1Log2.assertContents("topic1 changed2: value")
+        assertEquals(2, serverTopicInfo.listeners.size) // sanity check
+
+        client1TopicObserver1.unsubscribe()
+        serverTopicObserver.onChange("new value")
+        testCoroutineContext.runAll()
+
+        client1Log.assertEmpty()
+        client1Log2.assertContents("topic1 changed2: new value")
+        assertEquals(2, serverTopicInfo.listeners.size)
+
+        client1TopicObserver2.unsubscribe()
+        serverTopicObserver.onChange("another new value")
+        testCoroutineContext.runAll()
+
+        client1Log.assertEmpty()
+        client1Log2.assertEmpty()
+        assertEquals(1, serverTopicInfo.listeners.size)
+    }
+
+    @Test
     fun beforeConnectionIsMade_isConnectedShouldBeFalse() {
         expect(false) { client1.isConnected }
         testCoroutineContext.runAll()
