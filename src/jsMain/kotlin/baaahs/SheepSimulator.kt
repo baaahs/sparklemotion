@@ -4,7 +4,6 @@ import baaahs.geom.Vector3F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.*
-import baaahs.ui.UiApp
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
@@ -44,7 +43,7 @@ class SheepSimulator {
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
-            UiApp(network, pinky.address)
+            WebUi(network, pinky.address)
         }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {

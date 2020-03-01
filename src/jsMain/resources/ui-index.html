@@ -14,30 +14,12 @@
 </div>
 
 <script type="application/javascript" src="three.js"></script>
-<script type="application/javascript" src="require.js" data-main="sparklemotion-0.0.1.js"></script>
-
+<script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
-
 <script type="application/javascript">
-  require(['sparklemotion-0.0.1.js'], function(sparklemotion) {
-    // Until we figure out how to import sparklemotion in jsx:
-    window.sparklemotion = sparklemotion;
-    import { baaahs } from 'sparklemotion';
-
-    function myUrl() {
-      const l = window.location;
-      return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
-    }
-
-    require(['react_app.js'], function (reactApp) {
-      let network = new baaahs.net.BrowserNetwork();
-      let pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-      let pubSub = baaahs.WebUi.createPubSubClient(network, pinkyAddress);
-      let webApp = document.createUiApp(pubSub);
-      webApp.render(document.body);
-    });
-  });
+  document.sparklemotionMode = "UI";
 </script>
+<script type="application/javascript" src="sparklemotion.js"></script>
 
 </body>
 </html>

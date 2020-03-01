@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val kotlin_version = "1.3.70-eap-274"
 val coroutines_version = "1.3.3-1.3.70-eap-42"
 val ktor_version = "1.1.5"
-val logback_version = "1.2.1"
+val logback_version = "1.2.3"
 val serialization_version = kotlin_version
 val serialization_runtime_version = "0.20.0-1.3.70-eap-274"
 val klockVersion = "1.5.0"
@@ -251,6 +251,8 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
+    from("build/distributions") { include("sparklemotion.js") }
+
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
     }
