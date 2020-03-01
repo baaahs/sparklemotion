@@ -1,12 +1,30 @@
 package baaahs
 
+import baaahs.jsx.AppIndex
 import baaahs.net.Network
 import baaahs.proto.Ports
+import kotlinext.js.jsObject
+import react.ReactElement
+import react.createElement
 
-object WebUi {
-    @JsName("createPubSubClient")
-    fun createPubSubClient(network: Network, pinkyAddress: Network.Address): PubSub.Client =
-        PubSub.Client(network.link(), pinkyAddress, Ports.PINKY_UI_TCP).apply {
+class WebUi(private val network: Network, private val pinkyAddress: Network.Address) : HostedWebApp {
+
+    override fun render(): ReactElement {
+        val webUiClientLink = network.link()
+        val pubSub = PubSub.Client(webUiClientLink, pinkyAddress, Ports.PINKY_UI_TCP).apply {
             install(gadgetModule)
         }
+
+        if (1 + 1 == 3) {
+            // Protection from dead code elimination:
+            GadgetDisplay(pubSub) {}
+        }
+
+        return createElement(AppIndex::class.js, jsObject<AppIndex.Props> {
+            this.pubSub = pubSub
+        })
+    }
+
+    override fun onClose() {
+    }
 }

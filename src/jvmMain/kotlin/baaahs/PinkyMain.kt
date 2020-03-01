@@ -9,6 +9,8 @@ import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
+import io.ktor.application.install
+import io.ktor.features.CallLogging
 import io.ktor.http.content.*
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
@@ -33,25 +35,11 @@ class PinkyMain(val config: Config) {
     private val logger = Logger("PinkyMain")
 
     fun run() {
+        logger.info { "Are you thinking what I'm thinking?" }
+
         GlslBase.manager // Need to wake up OpenGL on the main thread.
 
         val model = Pluggables.loadModel(config.modelName)
-
-        val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
-        val useResources: Boolean
-        val jsResDir = if (resource.protocol == "jar") {
-            useResources = true
-            val uri = resource.toURI()!!
-            FileSystems.newFileSystem(uri, mapOf("create" to "true"))
-            Paths.get(uri).parent.resolve("htdocs")
-        } else {
-            useResources = false
-            val classPathBaseDir = Paths.get(resource.file).parent
-            classPathBaseDir.parent.parent.parent.parent.parent
-                .resolve("build/processedResources/js/main")
-        }
-
-        testForIndexDotHtml(jsResDir)
 
         val network = JvmNetwork()
         val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
@@ -92,17 +80,38 @@ class PinkyMain(val config: Config) {
         )
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
-        ktor.application.routing {
-            static {
-                if (useResources) {
+        val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
+        if (resource.protocol == "jar") {
+            val uri = resource.toURI()!!
+            FileSystems.newFileSystem(uri, mapOf("create" to "true"))
+            val jsResDir = Paths.get(uri).parent.resolve("htdocs")
+            testForIndexDotHtml(jsResDir)
+
+            ktor.application.routing {
+                static {
                     resources("htdocs")
                     defaultResource("htdocs/ui-index.html")
-                } else {
+                }
+            }
+        } else {
+            val classPathBaseDir = Paths.get(resource.file).parent
+            val repoDir = classPathBaseDir.parent.parent.parent.parent.parent
+            val jsResDir = repoDir.resolve("build/processedResources/js/main")
+            testForIndexDotHtml(jsResDir)
+
+            ktor.application.routing {
+                static {
+                    file("sparklemotion.js",
+                        repoDir.resolve("build/distributions/sparklemotion.js").toFile())
+
                     files(jsResDir.toFile())
                     default(jsResDir.resolve("ui-index.html").toFile())
                 }
             }
+        }
 
+        ktor.application.install(CallLogging)
+        ktor.application.routing {
             static("fw") {
                 files(fwDir.toFile())
             }

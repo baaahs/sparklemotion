@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.io.Fs
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
@@ -54,13 +55,13 @@ class RealFs(private val basePath: Path) : Fs {
     }
 }
 
-actual fun logMessage(level: String, message: String, exception: Throwable?) {
+actual fun log(id: String, level: String, message: String, exception: Throwable?) {
+    val logger = LoggerFactory.getLogger(id)
     when (level) {
-        "ERROR" -> println("$level: $message")
-        "WARN" -> println("$level: $message")
-        "INFO" -> println("$level: $message")
-        "DEBUG" -> println("$level: $message")
-        else -> println("$level: $message")
+        "ERROR" -> logger.error(message, exception)
+        "WARN" -> logger.warn(message, exception)
+        "INFO" -> logger.info(message, exception)
+        "DEBUG" -> logger.debug(message, exception)
+        else -> logger.info(message, exception)
     }
-    exception?.printStackTrace(System.out)
 }

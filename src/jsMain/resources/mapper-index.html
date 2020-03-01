@@ -15,37 +15,12 @@
 </div>
 
 <script type="application/javascript" src="three.js"></script>
-<script type="application/javascript" src="require.js" data-main="sparklemotion-0.0.1.js"></script>
-
+<script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
-
 <script type="application/javascript">
-  require(['sparklemotion-0.0.1.js'], function(sparklemotion) {
-    // Until we figure out how to import sparklemotion in jsx:
-    window.sparklemotion = sparklemotion;
-    import { baaahs } from 'sparklemotion';
-
-    require(['react_app.js'], function (reactApp) {
-
-      function myUrl() {
-        const l = window.location;
-        return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
-      }
-
-      const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-      const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
-
-      const model = baaahs.Pluggables.loadModel(baaahs.Pluggables.defaultModel); // todo: which model?
-      model.load();
-
-      const mapperUi = new baaahs.JsMapperUi();
-      const mediaDevices = new baaahs.browser.RealMediaDevices();
-      const mapper = new baaahs.Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
-      mapperUi.render(document.body);
-      mapper.start();
-    });
-  });
+  document.sparklemotionMode = "Mapper";
 </script>
+<script type="application/javascript" src="sparklemotion.js"></script>
 
 </body>
 </html>
