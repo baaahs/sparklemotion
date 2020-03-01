@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Show from './Show';
 import styles from './ShowList.scss';
 
-const baaahs = sparklemotion.baaahs;
+import {baaahs} from 'sparklemotion';
 
 class ShowList extends Component {
   state = {

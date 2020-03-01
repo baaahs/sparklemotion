@@ -6,7 +6,7 @@ import ShowControls from './ShowControls';
 
 import styles from './Shows.scss';
 
-const baaahs = sparklemotion.baaahs;
+import {baaahs} from 'sparklemotion';
 
 class Shows extends React.Component {
   constructor(props) {
@@ -25,6 +25,11 @@ class Shows extends React.Component {
     this.subscribeToChannels();
   }
 
+  componentWillUnmount() {
+    this.selectedShowChannel.unsubscribe();
+    this.gadgetDisplay.unsubscribe();
+  }
+
   subscribeToChannels() {
     this.selectedShowChannel = this.props.pubSub.subscribe(
       baaahs.Topics.selectedShow,
@@ -33,7 +38,7 @@ class Shows extends React.Component {
       }
     );
 
-    this.gadgetDisplay = baaahs.GadgetDisplay(
+    this.gadgetDisplay = new baaahs.GadgetDisplay(
       this.props.pubSub,
       (newGadgets) => {
         console.log('got new gadgets!', newGadgets);

@@ -102,11 +102,12 @@ class GadgetData(val name: String, @Polymorphic var gadget: Gadget, val topicNam
 val GadgetDataSerializer = (String.serializer() to JsonElement.serializer()).map
 
 class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>) -> Unit) {
-    val activeGadgets = mutableListOf<GadgetData>()
-    val channels = hashMapOf<String, PubSub.Channel<Map<String, JsonElement>>>()
+    private var gadgetsChannel: PubSub.Channel<List<GadgetData>>
+    private val activeGadgets = mutableListOf<GadgetData>()
+    private val channels = hashMapOf<String, PubSub.Channel<Map<String, JsonElement>>>()
 
     init {
-        pubSub.subscribe(Topics.activeGadgets) { gadgetDatas ->
+        this.gadgetsChannel = pubSub.subscribe(Topics.activeGadgets) { gadgetDatas ->
             activeGadgets.clear()
             channels.forEach { it.value.unsubscribe() }
             channels.clear()
@@ -140,6 +141,10 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
 
             onUpdatedGadgets(activeGadgets.toTypedArray())
         }
+    }
+
+    fun unsubscribe() {
+        gadgetsChannel.unsubscribe()
     }
 }
 

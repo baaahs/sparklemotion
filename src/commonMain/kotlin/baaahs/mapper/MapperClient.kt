@@ -71,7 +71,7 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
                 "error" -> throw RuntimeException(response.contentOrNull)
             }
             return responseJson
-        } catch (e: JsonParsingException) {
+        } catch (e: JsonDecodingException) {
             logger.error { "can't parse response to $command $args: $responseJsonStr" }
             throw e
         }

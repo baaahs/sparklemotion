@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    }
+}
+
 //pluginManagement {
 //    resolutionStrategy {
 //        eachPlugin {
@@ -10,7 +17,6 @@
 //        }
 //    }
 //}
-rootProject.name = 'sparklemotion'
+rootProject.name = "sparklemotion"
 
-
-enableFeaturePreview('GRADLE_METADATA')
+enableFeaturePreview("GRADLE_METADATA")
