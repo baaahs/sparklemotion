@@ -45,7 +45,9 @@ config.resolve.alias = {
     js: path.resolve(__dirname, "../../../../src/jsMain/js/"),
 };
 
-config.devServer.hot = true;
+if (config.devServer) {
+    config.devServer.hot = true;
+}
 
 // config.devtool = 'eval';
 
