@@ -6,7 +6,6 @@ import baaahs.io.ByteArrayWriter
 import baaahs.shaders.GlslShader
 import kotlinx.serialization.json.json
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -132,7 +131,7 @@ class GlslRendererTest {
 
     private fun identifiedSurfaceWithThreeUnmappedPixels(): IdentifiedSurface {
         return IdentifiedSurface(
-            TestModelSurface("zyx", allVertices = listOf(
+            TestModelSurface("zyx", vertices = listOf(
                 Vector3F(.6f, .6f, 0f),
                 Vector3F(.8f, .8f, 0f),
                 Vector3F(.6f, .8f, 0f),

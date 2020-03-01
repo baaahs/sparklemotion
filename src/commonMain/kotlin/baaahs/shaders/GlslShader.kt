@@ -26,7 +26,7 @@ class GlslShader(
             return GlslShader(glslProgram, uvTranslator, adjustableValues)
         }
 
-        private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
+        private val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
         private val gadgetPattern = Regex(
             "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
                     "\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);"

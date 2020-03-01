@@ -4,6 +4,7 @@ import baaahs.geom.Vector3F
 import baaahs.proto.Ports
 import baaahs.shows.AllShows
 import baaahs.sim.*
+import baaahs.ui.UiApp
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPanel
@@ -16,6 +17,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
+@JsName("SheepSimulator")
 class SheepSimulator {
     private val queryParams = decodeQueryParams(document.location!!)
     private val display = JsDisplay()
@@ -42,11 +44,7 @@ class SheepSimulator {
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
-            val webUiClientLink = network.link()
-            val pubSub = PubSub.Client(webUiClientLink, pinky.address, Ports.PINKY_UI_TCP).apply {
-                install(gadgetModule)
-            }
-            document.asDynamic().createUiApp(pubSub)
+            UiApp(network, pinky.address)
         }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {

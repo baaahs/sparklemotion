@@ -10,6 +10,8 @@ export default class FakeClientDevice extends Component {
   constructor(props) {
     super(props);
 
+    this.state = { isOpen: true };
+
     this.clientDeviceContentRef = React.createRef();
   }
 
@@ -35,10 +37,6 @@ export default class FakeClientDevice extends Component {
     };
   }
 
-  componentDidMount = () => {
-    this.props.hostedWebApp.render(this.clientDeviceContentRef.current);
-  };
-
   onZoomOut = () => {
     console.log('TODO: Implement onZoomOut');
   };
@@ -63,7 +61,16 @@ export default class FakeClientDevice extends Component {
     }
   };
 
+  onClose = () => {
+    this.setState({ isOpen: false });
+    this.props.hostedWebApp.onClose();
+  };
+
   render() {
+    if (!this.state.isOpen) {
+      return (<div/>);
+    }
+
     return (
       <Draggable
         onStart={(e, data) => {
@@ -93,7 +100,7 @@ export default class FakeClientDevice extends Component {
                 'fa-times-circle',
                 styles.iconButton
               )}
-              onClick={this.props.onClose}
+              onClick={this.onClose}
             />
           </div>
           <div className={styles['FakeClientDevice-home-button']}/>
@@ -101,7 +108,9 @@ export default class FakeClientDevice extends Component {
             ref={this.clientDeviceContentRef}
             className={styles['FakeClientDevice--content']}
             style={this.contentStyle}
-          />
+          >
+            {this.props.hostedWebApp.render()}
+          </div>
         </div>
       </Draggable>
     );
