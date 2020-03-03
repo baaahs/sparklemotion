@@ -226,6 +226,10 @@ class FakeNetwork(
             val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
                 mutableMapOf()
 
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+//                TODO("not implemented")
+            }
+
             override fun listenWebSocket(
                 path: String,
                 onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
