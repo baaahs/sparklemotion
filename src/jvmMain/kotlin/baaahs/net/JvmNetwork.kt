@@ -182,7 +182,7 @@ class JvmNetwork : Network {
         }
 
         override val myAddress = IpAddress.mine()
-        override val myHostname = myAddress.address.hostName.replace(Regex("\\.local\\.?$"), "")
+        override val myHostname = myAddress.address.hostName.replace(Regex("\\.local(domain)?\\.?$"), "")
         private val mdns = JvmMdns()
 
         inner class JvmMdns() : Network.Mdns {
