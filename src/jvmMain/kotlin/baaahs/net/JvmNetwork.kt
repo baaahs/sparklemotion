@@ -2,10 +2,16 @@ package baaahs.net
 
 import baaahs.Logger
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.content.ByteArrayContent
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readBytes
 import io.ktor.request.host
+import io.ktor.response.respond
+import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -124,6 +130,31 @@ class JvmNetwork : Network {
             }
 
             val application: Application get() = httpServer.application
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                application.routing {
+                    val route = this
+                    val routing = object : Network.HttpServer.HttpRouting {
+                        override fun get(
+                            path: String,
+                            handler: (Network.HttpServer.HttpRequest) -> Network.HttpResponse
+                        ) {
+                            route.get(path) {
+                                val response = handler.invoke(object : Network.HttpServer.HttpRequest {
+                                    override fun param(name: String): String? = call.parameters[name]
+                                })
+                                call.respond(
+                                    ByteArrayContent(
+                                        response.body,
+                                        ContentType.parse(response.contentType),
+                                        HttpStatusCode.fromValue(response.statusCode)
+                                    ))
+                            }
+                        }
+                    }
+                    config.invoke(routing)
+                }
+            }
 
             override fun listenWebSocket(
                 path: String,

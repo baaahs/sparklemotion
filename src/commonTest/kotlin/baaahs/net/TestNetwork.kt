@@ -55,6 +55,11 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         }
 
         override fun startHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+//                TODO("not implemented")
+            }
+
             override fun listenWebSocket(
                 path: String,
                 onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
