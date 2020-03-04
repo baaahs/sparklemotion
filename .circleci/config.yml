@@ -63,7 +63,7 @@ jobs:
               mkdir -p build/gh-pages/doc
               cp -r build/javadoc/* build/gh-pages/doc/.
 
-              cp -r build/processedResources/js/main/. build/gh-pages
+              (cd build/gh-pages && jar xf ../libs/sparklemotion-js-0.0.1.jar)
 
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
