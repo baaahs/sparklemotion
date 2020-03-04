@@ -349,3 +349,7 @@ tasks.create<ShadowJar>("shadowJar") {
         attributes["Main-Class"] = "baaahs.PinkyMainKt"
     }
 }
+
+tasks.named<Test>("jvmTest") {
+    dependsOn("runGlslJvmTests")
+}
