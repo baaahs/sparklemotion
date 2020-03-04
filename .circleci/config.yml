@@ -26,11 +26,11 @@ jobs:
           name: Prefetch Dependencies
           command: |
             ./gradlew model
+            sudo npm install -g --silent gh-pages@2.0.1 # ugh why sudo?; later versions busted
 
       - save_cache:
           paths:
             - ~/.gradle
-            - node_modules
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
 
       - run:
