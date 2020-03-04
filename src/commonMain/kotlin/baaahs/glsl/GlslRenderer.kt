@@ -3,7 +3,6 @@ package baaahs.glsl
 import baaahs.*
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import baaahs.shaders.GlslShader
-import baaahs.timeSync
 import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
@@ -32,7 +31,7 @@ open class GlslRenderer(
 
     val program: Program = gl { createShaderProgram() }
     private val uvCoordsUniform: Uniform = gl { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
-    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") ?: throw Exception("no resolution uniform!") }
+    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
     private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
 
     private val quad: Quad = gl { Quad(gl, program) }

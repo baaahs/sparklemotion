@@ -15,7 +15,6 @@ import info.laht.threekt.geometries.PlaneBufferGeometry
 import info.laht.threekt.loaders.TextureLoader
 import info.laht.threekt.materials.LineBasicMaterial
 import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Triangle
 import info.laht.threekt.math.Vector3
 import info.laht.threekt.math.minus
@@ -28,6 +27,7 @@ import org.khronos.webgl.set
 import org.w3c.dom.get
 import three.BufferGeometryUtils
 import three.Float32BufferAttribute
+import three.Matrix4
 import kotlin.browser.document
 import kotlin.math.max
 import kotlin.math.min

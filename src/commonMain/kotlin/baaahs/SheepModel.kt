@@ -76,11 +76,13 @@ class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
     override val defaultUvTranslator: UvTranslator by lazy { CylindricalModelSpaceUvTranslator(this) }
     private val pixelsPerPanel = hashMapOf<String, Int>()
 
-    init {
+    override fun load() {
         getResource("baaahs-panel-info.txt")
             .split("\n")
             .map { it.split(Regex("\\s+")) }
             .forEach { pixelsPerPanel[it[0]] = it[1].toInt() * 60 }
+
+        super.load()
     }
 
     override fun createSurface(
@@ -136,7 +138,7 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
         lines: MutableList<Line>
     ): T
 
-    fun load() {
+    open fun load() {
         val vertices: MutableList<Vector3F> = mutableListOf()
         val panels: MutableList<T> = mutableListOf()
         var surfaceName: String? = null

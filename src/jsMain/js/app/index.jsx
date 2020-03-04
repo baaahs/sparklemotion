@@ -7,8 +7,6 @@ import Eyes from './components/Eyes';
 
 import {EYE_CONTROLS, MAIN_TABS, MODAL_PORTAL_DOM_NODE_ID, SHOWS,} from './constants';
 
-const baaahs = sparklemotion.baaahs;
-
 class App extends Component {
   constructor(props) {
     super(props);

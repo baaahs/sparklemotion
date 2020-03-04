@@ -13,9 +13,9 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.websocket.WebSocketServerSession
 import io.ktor.websocket.webSocket
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.list
-import kotlinx.serialization.serializer
 import java.time.Duration
 
 object SimulatorBridge {

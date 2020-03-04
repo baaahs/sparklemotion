@@ -28,25 +28,3 @@ fun DOMTokenList.clear() {
 fun <T : HTMLElement> HTMLElement.first(className: String) : T = (getElementsByClassName(className)[0] as T?)!!
 
 fun HTMLCanvasElement.context2d() = this.getContext("2d")!! as CanvasRenderingContext2D
-
-interface HostedWebApp {
-    @JsName("render")
-    fun render(parentNode: HTMLElement)
-
-    @JsName("onClose")
-    fun onClose()
-}
-
-interface DomContainer {
-    fun createFrame(name: String, hostedWebApp: HostedWebApp): Frame
-
-    interface Frame {
-        @JsName("close")
-        fun close()
-    }
-}
-
-class FakeDomContainer : DomContainer {
-    override fun createFrame(name: String, hostedWebApp: HostedWebApp): DomContainer.Frame =
-        js("document.createFakeClientDevice")(name, hostedWebApp)
-}

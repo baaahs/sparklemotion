@@ -93,7 +93,7 @@ class Pinky(
                 } else {
                     logger.info { "Sending to ${brainInfos.size} brains..." }
                 }
-                delay(1000)
+                delay(10000)
             }
         }
 

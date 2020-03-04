@@ -1,8 +1,8 @@
 package baaahs
 
-import kotlinx.serialization.list
-import kotlinx.serialization.map
-import kotlinx.serialization.serializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 
 object Topics {
     val availableShows = PubSub.Topic("availableShows", String.serializer().list)
@@ -12,6 +12,6 @@ object Topics {
 
     val movingHeadPresets = PubSub.Topic(
         "movingHeadPresets",
-        (String.serializer() to MovingHead.MovingHeadPosition.serializer()).map
+        MapSerializer(String.serializer(), MovingHead.MovingHeadPosition.serializer())
     )
 }
