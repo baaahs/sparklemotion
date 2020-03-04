@@ -6,12 +6,12 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlin_version = "1.3.70-eap-274"
-val coroutines_version = "1.3.3-1.3.70-eap-42"
+val kotlin_version = "1.3.70"
+val coroutines_version = "1.3.3"
 val ktor_version = "1.1.5"
 val logback_version = "1.2.3"
 val serialization_version = kotlin_version
-val serialization_runtime_version = "0.20.0-1.3.70-eap-274"
+val serialization_runtime_version = "0.20.0-1.3.70-eap-274-2"
 val klockVersion = "1.5.0"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
@@ -20,7 +20,7 @@ val mockk_version = "1.9.3"
 val beatlink_version = "0.5.1"
 
 buildscript {
-    val kotlin_version = "1.3.70-eap-274"
+    val kotlin_version = "1.3.70"
 
     repositories {
         jcenter()
@@ -45,7 +45,7 @@ val lwjglNatives = when (OperatingSystem.current()) {
 }
 
 plugins {
-    val kotlin_version = "1.3.70-eap-274"
+    val kotlin_version = "1.3.70"
 
     id("org.jetbrains.kotlin.multiplatform") version kotlin_version
     id("org.jetbrains.kotlin.plugin.serialization") version kotlin_version
@@ -88,7 +88,6 @@ kotlin {
             }
         }
 
-        println("compilations.names = ${compilations.names}")
 //        compilations["main"].compileKotlinTask.kotlinOptions.moduleKind = "umd"
     }
 
@@ -170,8 +169,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_runtime_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.6.12")
                 implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
-                implementation("org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60")
-                implementation("org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60")
+                implementation("org.jetbrains:kotlin-react:16.13.0-pre.92-kotlin-1.3.61")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.92-kotlin-1.3.61")
                 implementation("com.danielgergely.kgl:kgl-js:$kglVersion")
 
                 implementation(npm("babel-loader", "^8.0.6"))
