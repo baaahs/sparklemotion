@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import GridSlider from '../GridSlider';
 import Modal from '../Modal';
 
 import s from './Eyes.scss';
 
-const baaahs = sparklemotion.baaahs;
+import {baaahs} from 'sparklemotion';
 
 class Eyes extends React.Component {
   constructor(props) {

@@ -63,14 +63,13 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstB, "second" to secondB, "third" to thirdB))
 
         expect(
-            listOf(
-                "[" +
-                        "{\"name\":\"first\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"uno\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/first\"}," +
-                        "{\"name\":\"second\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"dos\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/second\"}," +
-                        "{\"name\":\"third\",\"gadget\":{\"type\":\"baaahs.gadgets.Slider\",\"name\":\"tres\",\"initialValue\":1.0,\"minValue\":0.0,\"maxValue\":1.0,\"stepValue\":0.01},\"topicName\":\"/gadgets/third\"}" +
-                        "]"
-            )
-        ) { activeGadgetsListener.events }
+            jsonArray {
+                +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "name" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/first"}
+                +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "name" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/second"}
+                +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "name" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/third"}
+
+            }
+        ) { activeGadgetsListener.events.map { json.parseJson(it) }.first() }
         expect(json {}) { pubSub.getTopicInfo("/gadgets/first")!!.data }
         expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/second")!!.data }
         expect(json {}) { pubSub.getTopicInfo("/gadgets/third")!!.data }

@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import styles from './Shows.scss';
 import ColorPicker from '../gadgets/ColorPicker';
 import PalettePicker from '../gadgets/PalettePicker';
 import RangeSlider from '../gadgets/Slider';
+
+import {baaahs} from 'sparklemotion';
 
 export default class ShowControls extends Component {
   render() {

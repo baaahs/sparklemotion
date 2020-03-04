@@ -6,6 +6,7 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.CanvasBitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
+import baaahs.jsx.MapperIndex
 import baaahs.visualizer.Rotator
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -22,6 +23,7 @@ import info.laht.threekt.objects.Mesh
 import info.laht.threekt.objects.Points
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
+import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.*
@@ -31,6 +33,9 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.table
 import org.w3c.dom.*
 import org.w3c.dom.events.KeyboardEvent
+import react.ReactElement
+import react.createElement
+import three.Matrix4
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.collections.component1
@@ -151,7 +156,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         uiCamera.position.z = 1000.0
         uiScene.add(uiCamera)
 
-        uiControls = js("document.createCameraControls")(uiCamera, uiRenderer.domElement)
+        uiControls = MapperIndex.createCameraControls(uiCamera, uiRenderer.domElement)
 
         screen.focus()
         screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -230,7 +235,13 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         window.requestAnimationFrame { drawAnimationFrame() }
     }
 
-    override fun render(parentNode: HTMLElement) {
+    override fun render(): ReactElement {
+        return createElement(MapperIndex::class.js, jsObject<MapperIndex.Props> {
+            render = this@JsMapperUi::renderDom
+        })
+    }
+
+    private fun renderDom(parentNode: HTMLElement) {
         parentNode.appendChild(screen)
         resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
 
@@ -429,7 +440,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             }
 
         private fun findIntersection(x: Float, y: Float): Intersect? {
-            val raycaster = Raycaster()
+            val raycaster = three.Raycaster()
             val pixelVector = Vector2(
                 x / uiWidth * 2 - 1,
                 -(y / uiHeight * 2 - 1)
@@ -531,7 +542,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         y: Int,
         visibleSurfaces: List<MapperUi.VisibleSurface>
     ): MapperUi.VisibleSurface? {
-        val raycaster = Raycaster()
+        val raycaster = three.Raycaster()
         val pixelVector = Vector2(
             x.toFloat() / uiWidth * 2 - 1,
             -(y.toFloat() / uiHeight * 2 - 1)

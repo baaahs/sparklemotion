@@ -11,8 +11,11 @@ actual object GlslBase {
     actual val manager: GlslManager by lazy { JsGlslManager() }
 
     class JsGlslManager : GlslManager {
-        override val available: Boolean
-            get() = true
+        override val available: Boolean by lazy {
+            val canvas = document.createElement("canvas") as HTMLCanvasElement
+            val gl = canvas.getContext("webgl")
+            gl != null
+        }
 
         override fun createRenderer(
             fragShader: String,

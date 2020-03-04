@@ -16,6 +16,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
+@JsName("SheepSimulator")
 class SheepSimulator {
     private val queryParams = decodeQueryParams(document.location!!)
     private val display = JsDisplay()
@@ -42,11 +43,7 @@ class SheepSimulator {
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
-            val webUiClientLink = network.link()
-            val pubSub = PubSub.Client(webUiClientLink, pinky.address, Ports.PINKY_UI_TCP).apply {
-                install(gadgetModule)
-            }
-            document.asDynamic().createUiApp(pubSub)
+            WebUi(network, pinky.address)
         }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {

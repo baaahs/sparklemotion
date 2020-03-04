@@ -1,13 +1,10 @@
-@file:JsQualifier("THREE")
-
+@file:JsModule("three")
+@file:JsNonModule()
 package three
 
 import info.laht.threekt.core.BufferAttribute
-import info.laht.threekt.core.BufferGeometry
-import info.laht.threekt.math.Euler
+import info.laht.threekt.math.Matrix3
 import info.laht.threekt.math.Matrix4
-import info.laht.threekt.math.Quaternion
-import info.laht.threekt.math.Vector3
 
 open external class Float32BufferAttribute(
     array: dynamic,
@@ -15,141 +12,106 @@ open external class Float32BufferAttribute(
     normalized: Boolean = definedExternally
 ) : BufferAttribute
 
-open external class BufferGeometryUtils() {
-    companion object {
-        fun mergeBufferGeometries(
-            geometries: Array<BufferGeometry>,
-            useGroups: Boolean = definedExternally
-        ): BufferGeometry
-    }
-}
+open external class Matrix4 : Matrix4
 
-open external class Matrix4 {
+open external class Vector2(
+    x: Number = definedExternally,
+    y: Number = definedExternally
+) {
 
-    /**
-     * A column-major list of matrix values.
-     */
-    val elements: DoubleArray
+    var x: Double
+    var y: Double
 
-    /**
-     * Creates and initializes the Matrix4 to the 4x4 identity matrix.
-     */
-    constructor()
+    fun width() : Double
+    fun height() : Double
 
-    fun set(n11: Number, n12: Number, n13: Number, n14: Number,
-            n21: Number, n22: Number, n23: Number, n24: Number,
-            n31: Number, n32: Number, n33: Number, n34: Number,
-            n41: Number, n42: Number, n43: Number, n44: Number)
+    fun set ( x: Number, y: Number ) : Vector2
 
-    /**
-     * Resets this matrix to the identity matrix.
-     */
-    fun identity () : Matrix4
+    fun setScalar ( scalar: Number ) : Vector2
 
-    /**
-     * Creates a new Matrix4 with identical elements to this one.
-     */
-    fun clone () : Matrix4
+    fun setX ( x: Number ) : Vector2
 
-    /**
-     * Copies the elements of matrix m into this matrix.
-     */
-    fun copy ( m: Matrix4) : Matrix4
+    fun setY ( y: Number ) : Vector2
 
-    /**
-     * Copies the translation component of the supplied matrix m into this matrix's translation component.
-     */
-    fun copyPosition ( m: Matrix4): Matrix4
+    fun setComponent ( index: Int, value: Number ) : Vector2
 
-    fun extractBasis (xAxis: Vector3, yAxis: Vector3, zAxis: Vector3) : Matrix4
+    fun getComponent ( index: Int ): Double
 
-    /**
-     * Set this to the basis matrix consisting of the three provided basis vectors
-     */
-    fun makeBasis (xAxis: Vector3, yAxis: Vector3, zAxis: Vector3) : Matrix4
+    fun clone () : Vector2
 
-    fun extractRotation (m: Matrix4) : Matrix4
+    fun  copy ( v: Vector2 ) : Vector2
 
-    fun makeRotationFromEuler ( euler: Euler) : Matrix4
+    fun  add ( v: Vector2 ): Vector2
 
-    fun makeRotationFromQuaternion ( q: Quaternion): Quaternion
+    fun addScalar ( s: Number ): Vector2
+    fun addVectors ( a: Vector2, b: Vector2 ): Vector2
 
-    fun lookAt (eye : Vector3, target: Vector3, up: Vector3): Matrix4
+    fun addScaledVector ( v: Vector2, s: Number ): Vector2
+    fun sub ( v : Vector2): Vector2
 
-    /**
-     * Post-multiplies this matrix by m.
-     */
-    fun multiply ( m: Matrix4) : Matrix4
+    fun subScalar ( s: Number ): Vector2
 
-    /**
-     * Pre-multiplies this matrix by m.
-     */
-    fun premultiply ( m: Matrix4) : Matrix4
+    fun subVectors ( a: Vector2, b: Vector2 ): Vector2
 
-    /**
-     * Sets this matrix to a x b.
-     */
-    fun multiplyMatrices (a: Matrix4, b: Matrix4) : Matrix4
+    fun multiply ( v: Vector2 ): Vector2
 
-    /**
-     * Multiplies every component of the matrix by a scalar value s.
-     */
-    fun multiplyScalar ( s: Double ): Matrix4
+    fun multiplyScalar ( scalar: Number ): Vector2
+    fun divide ( v: Vector2 ): Vector2
 
-    fun applyToBufferAttribute (attribute : BufferGeometry)
+    fun divideScalar ( scalar: Number ): Vector2
 
-    fun determinant () : Double
+    fun applyMatrix3 ( m: Matrix3): Vector2
 
-    fun transpose () : Matrix4
+    fun  min ( v: Vector2 ): Vector2
 
-    fun setPosition ( v: Vector3) : Matrix4
+    fun  max ( v: Vector2 ): Vector2
 
-    /**
-     * Set this matrix to the inverse of the passed matrix m, using the method outlined here.
-     * If throwOnDegenerate is not set and the matrix is not invertible, set this to the 4x4 identity matrix.
-     *
-     * @m the matrix to take the inverse of.
-     * @param throwOnDegenerate (optional) If true, throw an error if the matrix is degenerate (not invertible).
-     */
-    fun getInverse (m : Matrix4, throwOnDegenerate: Boolean = definedExternally )
+    fun  clamp ( min: Vector2, max: Vector2 ): Vector2
 
-    /**
-     * Multiplies the columns of this matrix by vector v.
-     */
-    fun scale ( v: Vector3): Matrix4
+    fun clampScalar (minVal: Number, maxVal: Number): Vector2
 
-    /**
-     * Gets the maximum scale value of the 3 axes.
-     */
-    fun getMaxScaleOnAxis () : Double
+    fun  clampLength ( min: Vector2, max: Vector2 ): Vector2
+    fun  floor () : Vector2
 
-    fun makeTranslation ( x: Double, y: Double, z: Double ) : Matrix4
+    fun  ceil (): Vector2
 
-    fun makeRotationX ( theta: Double ): Matrix4
+    fun  round (): Vector2
+    fun  roundToZero (): Vector2
 
-    fun makeRotationY ( theta: Double ) : Matrix4
+    fun  negate (): Vector2
 
-    fun makeRotationZ ( theta: Double ) : Matrix4
+    fun  dot ( v: Vector2 ) : Double
 
-    fun makeRotationAxis (axis: Vector3, angle:Double ) : Matrix4
+    fun  lengthSq (): Double
 
-    fun makeScale ( x: Double, y: Double, z: Double ) : Matrix4
+    fun  length (): Double
 
-    fun makeShear ( x:Double, y:Double, z:Double ) : Matrix4
+    fun  manhattanLength (): Double
 
-    fun compose (position: Vector3, quaternion: Vector3, scale: Vector3) : Matrix4
+    fun  normalize (): Vector2
 
-    fun decompose (position: Vector3, quaternion: Vector3, scale: Vector3) : Matrix4
+    fun  angle (): Double
 
-    fun makePerspective ( left: Double, right: Double, top: Double, bottom: Double, near: Double, far:Double ) : Matrix4
+    fun  distanceTo ( v: Vector2 ): Double
 
-    fun makeOrthographic ( left: Double, right: Double, top: Double, bottom: Double, near: Double, far: Double ) : Matrix4
+    fun  distanceToSquared ( v: Vector2 ): Double
 
-    fun equals ( matrix: Matrix4) : Boolean
+    fun   manhattanDistanceTo ( v: Vector2 ): Double
 
-    fun fromArray ( array: DoubleArray, offset: Int = definedExternally ) : Matrix4
+    fun  setLength ( length: Number ): Vector2
 
-    fun toArray ( array: DoubleArray, offset: Int = definedExternally ) : DoubleArray
+    fun  lerp ( v: Vector2, alpha: Number ): Vector2
+
+    fun  lerpVectors ( v1: Vector2, v2: Vector2, alpha: Number ): Vector2
+
+    fun equals ( v: Vector2 ) : Boolean
+
+    fun fromArray ( array: DoubleArray, offset: Int ) : Vector2
+
+    fun  toArray ( array: DoubleArray = definedExternally, offset: Int ) : DoubleArray
+
+    fun  fromBufferAttribute ( attribute: dynamic, index: Int )
+
+    fun  rotateAround ( center: Vector2, angle: Number ): Vector2
 
 }
-

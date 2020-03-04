@@ -27,43 +27,35 @@ suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
 
-expect fun logMessage(level: String, message: String, exception: Throwable? = null)
+expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
 
 class Logger(val id: String) {
-    private fun log(level: String, message: String) {
-        logMessage(level, "${ts()} [] $level  $id - $message")
-    }
-
-    private fun log(level: String, message: String, exception: Throwable) {
-        logMessage(level, "${ts()} [] $level  $id - $message", exception)
-    }
-
     fun debug(message: () -> String) {
-        log("DEBUG", message.invoke())
+        log(id, "DEBUG", message.invoke())
     }
 
     fun info(message: () -> String) {
-        log("INFO", message.invoke())
+        log(id, "INFO", message.invoke())
     }
 
     fun warn(message: () -> String) {
-        log("WARN", message.invoke())
+        log(id, "WARN", message.invoke())
     }
 
     fun warn(exception: Throwable, message: () -> String) {
-        log("WARN", message.invoke(), exception)
+        log(id, "WARN", message.invoke(), exception)
     }
 
     fun error(message: () -> String) {
-        log("ERROR", message.invoke())
+        log(id, "ERROR", message.invoke())
     }
 
     fun error(message: String, exception: Throwable) {
-        log("ERROR", message, exception)
+        log(id, "ERROR", message, exception)
     }
 
     fun error(exception: Throwable, message: () -> String) {
-        log("ERROR", message.invoke(), exception)
+        log(id, "ERROR", message.invoke(), exception)
     }
 
     companion object {

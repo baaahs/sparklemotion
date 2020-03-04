@@ -29,7 +29,7 @@ class Brain(
         display.id = id
         display.haveLink(link)
         display.onReset = {
-            println("Resetting Brain $id!")
+            logger.info { "Resetting Brain $id!" }
             reset()
         }
 
@@ -75,73 +75,81 @@ class Brain(
 
         val reader = ByteArrayReader(bytes)
 
-        // Inline message parsing here so we can optimize stuff.
-        val type = Type.get(reader.readByte())
-        // println("Got a message of type ${type}")
-        when (type) {
-            Type.BRAIN_PANEL_SHADE -> {
-                val pongData = if (reader.readBoolean()) { reader.readBytes() } else { null }
-                val shaderDesc = reader.readBytes()
+        try {
+            // Inline message parsing here so we can optimize stuff.
+            val type = Type.get(reader.readByte())
+            // println("Got a message of type ${type}")
+            when (type) {
+                Type.BRAIN_PANEL_SHADE -> {
+                    val pongData = if (reader.readBoolean()) {
+                        reader.readBytes()
+                    } else {
+                        null
+                    }
+                    val shaderDesc = reader.readBytes()
 
-                // If possible, use the previously-built Shader stuff:
-                val theCurrentShaderDesc = currentShaderDesc
-                if (theCurrentShaderDesc == null || !theCurrentShaderDesc.contentEquals(shaderDesc)) {
-                    currentShaderDesc = shaderDesc
+                    // If possible, use the previously-built Shader stuff:
+                    val theCurrentShaderDesc = currentShaderDesc
+                    if (theCurrentShaderDesc == null || !theCurrentShaderDesc.contentEquals(shaderDesc)) {
+                        currentShaderDesc = shaderDesc
 
-                    @Suppress("UNCHECKED_CAST")
-                    val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
-                    val newRenderTree = RenderTree(
-                        shader,
-                        shader.createRenderer(surface),
-                        shader.createBuffer(surface)
-                    )
-                    currentRenderTree?.release()
-                    currentRenderTree = newRenderTree
+                        @Suppress("UNCHECKED_CAST")
+                        val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
+                        val newRenderTree = RenderTree(
+                            shader,
+                            shader.createRenderer(surface),
+                            shader.createBuffer(surface)
+                        )
+                        currentRenderTree?.release()
+                        currentRenderTree = newRenderTree
+                    }
+
+                    with(currentRenderTree!!) {
+                        read(reader)
+                        draw(pixels)
+                    }
+
+                    if (pongData != null) {
+                        udpSocket.sendUdp(fromAddress, fromPort, PingMessage(pongData, true))
+                    }
+
                 }
 
-                with(currentRenderTree!!) {
-                    read(reader)
-                    draw(pixels)
+                Type.BRAIN_ID_REQUEST -> {
+                    udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, surfaceName))
                 }
 
-                if (pongData != null) {
-                    udpSocket.sendUdp(fromAddress, fromPort, PingMessage(pongData, true))
+                Type.BRAIN_MAPPING -> {
+                    val message = BrainMappingMessage.parse(reader)
+                    surfaceName = message.surfaceName
+                    surface = if (message.surfaceName != null) {
+                        val fakeModelSurface = FakeModelSurface(message.surfaceName)
+                        IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations)
+                    } else {
+                        AnonymousSurface(BrainId(id))
+                    }
+
+                    // next frame we'll need to recreate everything...
+                    currentShaderDesc = null
+                    currentRenderTree = null
+
+                    udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
                 }
 
-            }
-
-            Type.BRAIN_ID_REQUEST -> {
-                udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, surfaceName))
-            }
-
-            Type.BRAIN_MAPPING -> {
-                val message = BrainMappingMessage.parse(reader)
-                surfaceName = message.surfaceName
-                surface = if (message.surfaceName != null) {
-                    val fakeModelSurface = FakeModelSurface(message.surfaceName)
-                    IdentifiedSurface(fakeModelSurface, message.pixelCount, message.pixelLocations)
-                } else {
-                    AnonymousSurface(BrainId(id))
+                Type.PING -> {
+                    val ping = PingMessage.parse(reader)
+                    if (!ping.isPong) {
+                        udpSocket.sendUdp(fromAddress, fromPort, PingMessage(ping.data, isPong = true))
+                    }
                 }
 
-                // next frame we'll need to recreate everything...
-                currentShaderDesc = null
-                currentRenderTree = null
-
-                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, surfaceName))
-            }
-
-            Type.PING -> {
-                val ping = PingMessage.parse(reader)
-                if (!ping.isPong) {
-                    udpSocket.sendUdp(fromAddress, fromPort, PingMessage(ping.data, isPong = true))
+                // Other message types are ignored by Brains.
+                else -> {
+                    // no-op
                 }
             }
-
-            // Other message types are ignored by Brains.
-            else -> {
-                // no-op
-            }
+        } catch (e: Exception) {
+            logger.error(e) { "Brain $id failed to handle a packet." }
         }
     }
 

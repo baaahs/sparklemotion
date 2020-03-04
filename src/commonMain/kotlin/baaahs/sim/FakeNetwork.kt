@@ -1,5 +1,6 @@
 package baaahs.sim
 
+import baaahs.Logger
 import baaahs.NetworkDisplay
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
@@ -71,6 +72,10 @@ class FakeNetwork(
             webSocketListeners.add(webSocketListener)
 
             val fakeHttpServer = httpServersByPort[toAddress to port]
+            if (fakeHttpServer == null) {
+                logger.warn { "No HTTP server at $toAddress:$port for $path" }
+            }
+
             val onConnectCallback = fakeHttpServer?.webSocketListeners?.get(path)
             if (onConnectCallback == null) {
                 val connection = FakeTcpConnection(myAddress, toAddress, port, null)
@@ -80,6 +85,8 @@ class FakeNetwork(
                 }
                 tcpConnections.add(connection)
                 return connection
+            } else {
+                logger.warn { "No WebSocket listener at $toAddress:$port$path" }
             }
 
             lateinit var clientSideConnection: FakeTcpConnection
@@ -245,5 +252,9 @@ class FakeNetwork(
 
     private data class FakeAddress(val id: Int) : Network.Address {
         override fun toString(): String = "x${id.toString(16)}"
+    }
+
+    companion object {
+        val logger = Logger("FakeNetwork")
     }
 }

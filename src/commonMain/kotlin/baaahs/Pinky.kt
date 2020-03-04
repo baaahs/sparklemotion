@@ -187,8 +187,12 @@ class Pinky(
         GlobalScope.launch { beatDisplayer.run() }
         GlobalScope.launch {
             while (true) {
-                logger.info { "Sending to ${brainInfos.size} brains" }
-                delay(1000)
+                if (mapperIsRunning) {
+                    logger.info { "Mapping ${brainInfos.size} brains..." }
+                } else {
+                    logger.info { "Sending to ${brainInfos.size} brains..." }
+                }
+                delay(10000)
             }
         }
 
