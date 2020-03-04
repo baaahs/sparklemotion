@@ -149,7 +149,7 @@ kotlin {
                 implementation("org.jogamp.jogl:jogl-all-main:$joglVersion")
                 implementation("com.danielgergely.kgl:kgl-jogl:$kglVersion")
 
-                implementation "com.github.jmdns:jmdns:jmdns-3.5.5"
+                implementation("com.github.jmdns:jmdns:jmdns-3.5.5")
             }
         }
         val jvmTest by getting {
