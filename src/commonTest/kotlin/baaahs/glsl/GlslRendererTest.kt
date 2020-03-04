@@ -10,8 +10,18 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class GlslRendererTest {
-    @BeforeTest
-    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
+    // assumeTrue() doesn't work in js runners; instead, bail manually.
+    // TODO: Do something better.
+//    @BeforeTest
+//    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
+
+    fun glslAvailable(): Boolean {
+        val available = GlslBase.manager.available
+        if (!available) {
+            println("WARNING: OpenGL not available, skipping test!")
+        }
+        return available
+    }
 
     @BeforeTest
     fun resetPlugins() {
@@ -20,6 +30,8 @@ class GlslRendererTest {
 
     @Test
     fun testSimpleRendering() {
+        if (!glslAvailable()) return
+
         val renderer = GlslBase.manager.createRenderer(
             """
             uniform float time;
@@ -45,6 +57,8 @@ class GlslRendererTest {
 
     @Test
     fun testRenderingWithUniform() {
+        if (!glslAvailable()) return
+
         val adjustables = GlslShader.extraAdjustables +
                 GlslShader.AdjustableValue("blue", "Slider", GlslShader.AdjustableValue.Type.FLOAT,
                     json { }
@@ -82,6 +96,8 @@ class GlslRendererTest {
 
     @Test
     fun testRenderingWithUnmappedPixels() {
+        if (!glslAvailable()) return
+
         val renderer = GlslBase.manager.createRenderer(
             """
             uniform float time;
