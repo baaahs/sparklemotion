@@ -5,7 +5,7 @@ import ext.Second
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.serialization.serializer
+import kotlinx.serialization.builtins.serializer
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
