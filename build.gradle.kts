@@ -194,6 +194,7 @@ kotlin {
                 implementation(npm("sass-loader", "^7.1.0"))
                 implementation(npm("style-loader", "^0.23.1"))
                 implementation(npm("three", "^0.102.1"))
+                implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
             }
         }
         val jsTest by getting {
@@ -243,6 +244,10 @@ tasks.withType(KotlinCompile::class) {
 tasks.named<ProcessResources>("jsProcessResources") {
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
+    from("build/js/node_modules/@fortawesome") {
+        include("fontawesome-free/css/all.min.css")
+        include("fontawesome-free/webfonts/*")
+    }
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/js/main"))
