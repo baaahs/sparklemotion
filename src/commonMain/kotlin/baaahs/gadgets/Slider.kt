@@ -3,7 +3,7 @@ package baaahs.gadgets
 import baaahs.Gadget
 import baaahs.constrain
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.serializer
+import kotlinx.serialization.builtins.serializer
 import kotlin.js.JsName
 import kotlin.random.Random
 

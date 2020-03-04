@@ -81,6 +81,13 @@ abstract class PubSub {
             isConnected = true
         }
 
+        inner class ClientListener(
+            private val topicName: String,
+            val tcpConnection: Network.TcpConnection
+        ): Listener(this) {
+            override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
+        }
+
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
             val reader = ByteArrayReader(bytes)
             when (val command = reader.readString()) {
@@ -88,9 +95,7 @@ abstract class PubSub {
                     val topicName = reader.readString()
                     val topicInfo = topics[topicName] ?: throw IllegalArgumentException("Unknown topic $topicName")
 
-                    val listener = object : Listener(this) {
-                        override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicName, data)
-                    }
+                    val listener = ClientListener(topicName, tcpConnection)
                     topicInfo.listeners.add(listener)
                     cleanup.add {
                         topicInfo.listeners.remove(listener)
@@ -100,6 +105,13 @@ abstract class PubSub {
                     if (topicData != JsonNull) {
                         listener.onUpdate(topicData)
                     }
+                }
+
+                "unsub" -> {
+                    val topicName = reader.readString()
+                    val topicInfo = topics[topicName] ?: throw IllegalArgumentException("Unknown topic $topicName")
+
+                    topicInfo.listeners.removeAll { it is ClientListener && it.tcpConnection === tcpConnection }
                 }
 
                 "update" -> {
@@ -135,6 +147,19 @@ abstract class PubSub {
 
                 val writer = ByteArrayWriter()
                 writer.writeString("sub")
+                writer.writeString(topicName)
+                sendCommand(writer.toBytes())
+            } else {
+                debug("not connected to server, so no sub $topicName")
+            }
+        }
+
+        fun sendTopicUnsub(topicName: String) {
+            if (isConnected) {
+                debug("unsub $topicName")
+
+                val writer = ByteArrayWriter()
+                writer.writeString("unsub")
                 writer.writeString(topicName)
                 sendCommand(writer.toBytes())
             } else {
@@ -289,7 +314,12 @@ abstract class PubSub {
                 }
 
                 override fun unsubscribe() {
-                    // TODO("${CLASS_NAME}.unsubscribe not implemented")
+                    topicInfo.listeners.remove(listener)
+
+                    // If there's only one listener left, it's the server listener, and we can safely go away.
+                    if (topicInfo.listeners.size == 1) {
+                        server.sendTopicUnsub(topicName)
+                    }
                 }
             }
         }

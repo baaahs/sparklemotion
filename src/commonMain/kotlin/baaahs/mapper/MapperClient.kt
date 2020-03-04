@@ -3,15 +3,16 @@ package baaahs.mapper
 import baaahs.Logger
 import baaahs.imaging.Bitmap
 import baaahs.net.Network
+import baaahs.proto.Ports
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.list
-import kotlinx.serialization.serializer
 
 class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
     CoroutineScope by MainScope() {
@@ -20,7 +21,7 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
     private lateinit var responses: Channel<ByteArray>
 
     init {
-        link.connectWebSocket(address, 0, "/ws/mapper", this)
+        link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/mapper", this)
     }
 
     suspend fun listSessions(): List<String> {
@@ -55,7 +56,8 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
             args.forEach { +it }
         }
         while (!connected) {
-            delay(5)
+            logger.warn { "Mapper not connected to Pinky…" }
+            delay(50)
         }
         tcpConnection.send(MapperEndpoint.json.stringify(JsonArraySerializer, content).encodeToByteArray())
 
@@ -69,27 +71,27 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
                 "error" -> throw RuntimeException(response.contentOrNull)
             }
             return responseJson
-        } catch (e: JsonParsingException) {
+        } catch (e: JsonDecodingException) {
             logger.error { "can't parse response to $command $args: $responseJsonStr" }
             throw e
         }
     }
 
     override fun connected(tcpConnection: Network.TcpConnection) {
-        println("Mapper connected to Pinky!")
+        logger.info { "Mapper connected to Pinky!" }
         this.tcpConnection = tcpConnection
         responses = Channel(1)
         connected = true
     }
 
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-        println("Received ${bytes.decodeToString()}")
+        logger.debug { "Received ${bytes.decodeToString()}" }
         launch { responses.send(bytes) }
     }
 
     override fun reset(tcpConnection: Network.TcpConnection) {
         if (::responses.isInitialized) responses.close()
-        println("Mapper disconnected from Pinky!")
+        logger.info { "Mapper disconnected from Pinky!" }
     }
 
     companion object {

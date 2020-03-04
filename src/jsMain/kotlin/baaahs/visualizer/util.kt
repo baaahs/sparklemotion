@@ -1,8 +1,11 @@
 package baaahs.visualizer
 
-import info.laht.threekt.cameras.Camera
-import info.laht.threekt.core.*
-import info.laht.threekt.math.*
+import info.laht.threekt.core.BufferGeometry
+import info.laht.threekt.core.Face3
+import info.laht.threekt.core.Geometry
+import info.laht.threekt.math.Quaternion
+import info.laht.threekt.math.Vector3
+import three.Matrix4
 
 fun Face3.segments() = arrayOf(arrayOf(a, b), arrayOf(b, c), arrayOf(c, a))
 fun Array<Int>.asKey() = sorted().joinToString("-")
