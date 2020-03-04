@@ -3,7 +3,7 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.*
-import kotlinx.serialization.internal.IntDescriptor
+import kotlinx.serialization.PrimitiveKind.INT
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.math.min
@@ -207,7 +207,7 @@ data class Color(val argb: Int) {
         private fun bounded(b: Byte): Int = b.toInt() and 0xff
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
 
-        override val descriptor: SerialDescriptor = IntDescriptor.withName("Color")
+        override val descriptor: SerialDescriptor = PrimitiveDescriptor("Color", INT)
         override fun serialize(encoder: Encoder, obj: Color) = encoder.encodeInt(obj.argb)
         override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt())
     }

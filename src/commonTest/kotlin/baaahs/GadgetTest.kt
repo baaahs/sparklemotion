@@ -4,7 +4,7 @@ import baaahs.gadgets.Slider
 import baaahs.sim.FakeNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.serialization.serializer
+import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.expect
 

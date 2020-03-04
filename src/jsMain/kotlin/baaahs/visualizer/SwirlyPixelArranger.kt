@@ -4,9 +4,9 @@ import baaahs.SparkleMotion
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.math.Line3
-import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Quaternion
 import info.laht.threekt.math.Vector3
+import three.Matrix4
 import kotlin.math.*
 import kotlin.random.Random
 

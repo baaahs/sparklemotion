@@ -29,7 +29,11 @@ actual fun decodeBase64(s: String): ByteArray {
     return window.atob(s).encodeToByteArray()
 }
 
-actual fun logMessage(level: String, message: String, exception: Throwable?) {
+actual fun log(id: String, level: String, message: String, exception: Throwable?) {
+    logMessage(level, "${Logger.ts()} [] $level  $id - $message", exception)
+}
+
+private fun logMessage(level: String, message: String, exception: Throwable?) {
     when (level) {
         "ERROR" -> console.error(message, exception)
         "WARN" -> console.warn(message, exception)

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styles from './ColorWheel.scss';
 import classNames from 'classnames';
 import chroma from 'chroma-js';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
-import { rgb2xy, xy2polar, xy2rgb } from '../../../utils/colorUtils';
-import { enableScroll, disableScroll } from '../utils';
+import {rgb2xy, xy2polar, xy2rgb} from '../../../utils/colorUtils';
+import {disableScroll, enableScroll} from '../utils';
 
-const baaahs = sparklemotion.baaahs;
+import {baaahs} from 'sparklemotion';
 
 const pickerRadius = 12;
 
@@ -246,7 +246,7 @@ class ColorWheel extends Component {
 }
 
 ColorWheel.propTypes = {
-  colors: PropTypes.arrayOf(PropTypes.instanceOf(baaahs.Color)).isRequired,
+  colors: PropTypes.arrayOf(PropTypes.any/*instanceOf(baaahs.Color)*/).isRequired,
   onChange: PropTypes.func.isRequired,
   isPalette: PropTypes.bool,
 };

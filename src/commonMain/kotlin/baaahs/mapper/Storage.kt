@@ -12,7 +12,7 @@ class Storage(val fs: Fs) {
 
     companion object {
         private val logger = Logger("Storage")
-        val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
+        val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
 

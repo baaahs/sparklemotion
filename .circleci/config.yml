@@ -7,30 +7,31 @@ jobs:
     docker:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/openjdk:11-jdk-node
+      - image: circleci/openjdk:11-jdk-node-browsers
 
     working_directory: ~/repo
+
+    environment:
+      NO_GPU: true
 
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "build.gradle" }}
+            - v1-dependencies-{{ checksum "build.gradle.kts" }}
             - v1-dependencies-
 
       - run:
           name: Prefetch Dependencies
           command: |
-            npm install
-            sudo npm install -g --silent gh-pages@2.0.1 # ugh why sudo?; later versions busted
             ./gradlew model
 
       - save_cache:
           paths:
             - ~/.gradle
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "build.gradle" }}
+          key: v1-dependencies-{{ checksum "build.gradle.kts" }}
 
       - run:
           name: Build
@@ -38,7 +39,6 @@ jobs:
           # because it outputs directly into the gradle build directory
           command: |
             ./gradlew build dokka
-            npm run build
 
       - add_ssh_keys:
           fingerprints:
@@ -49,6 +49,9 @@ jobs:
 
       - store_artifacts:
           path: build/processedResources/js/main
+
+      - store_artifacts:
+          path: build/reports
 
       - run:
           name: Deploy to gh-pages

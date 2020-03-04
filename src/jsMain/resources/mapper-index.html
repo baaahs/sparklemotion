@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Mapper | sparklemotion</title>
   <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link rel="stylesheet" href="./fontawesome-free/css/all.min.css">
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </head>
 <body class="sparklemotion-ui">
@@ -14,41 +14,13 @@
   <h3>Sparkle Motion UI <small><i>FUCK YEAH</i></small></h3>
 </div>
 
-<script type="application/javascript" src="kotlin.js"></script>
-<script type="application/javascript" src="kotlinx-coroutines-core.js"></script>
-<script type="application/javascript" src="kotlinx-html-js.js"></script>
-<script type="application/javascript" src="kotlinx-serialization-kotlinx-serialization-runtime.js"></script>
-<script type="application/javascript" src="klock-root-klock.js"></script>
-
 <script type="application/javascript" src="three.js"></script>
-<script type="application/javascript" src="lib/threejs-wrapper.js"></script>
+<script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>
 <script type="application/javascript" src="lib/OrbitControls.js"></script>
-
-<script type="application/javascript" src="kgl.js"></script>
-
-<script type="application/javascript" src="sparklemotion.js"></script>
-<script type="application/javascript" src="react_app.js"></script>
-
 <script type="application/javascript">
-  const baaahs = sparklemotion.baaahs;
-
-  function myUrl() {
-    const l = window.location;
-    return (l.protocol === "https:" ? "wss:" : "ws:") + "//" + l.host + "/";
-  }
-
-  const pinkyAddress = new baaahs.net.BrowserNetwork.BrowserAddress(myUrl());
-  const network = new baaahs.net.BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY);
-
-  const model = baaahs.Pluggables.loadModel(baaahs.Pluggables.defaultModel); // todo: which model?
-  model.load();
-
-  const mapperUi = new baaahs.JsMapperUi();
-  const mediaDevices = new baaahs.browser.RealMediaDevices();
-  const mapper = new baaahs.Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
-  mapperUi.render(document.body);
-  mapper.start();
+  document.sparklemotionMode = "Mapper";
 </script>
+<script type="application/javascript" src="sparklemotion.js"></script>
 
 </body>
 </html>

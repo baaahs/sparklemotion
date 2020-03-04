@@ -2,10 +2,8 @@ package baaahs.gadgets
 
 import baaahs.Color
 import baaahs.Gadget
-import baaahs.array
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.internal.ReferenceArraySerializer
-import kotlinx.serialization.list
+import kotlinx.serialization.builtins.list
 
 /** A gadget for picking multiple colors. */
 @Serializable

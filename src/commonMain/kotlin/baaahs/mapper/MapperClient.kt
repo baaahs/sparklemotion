@@ -10,9 +10,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.list
-import kotlinx.serialization.serializer
 
 class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
     CoroutineScope by MainScope() {
@@ -71,7 +71,7 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
                 "error" -> throw RuntimeException(response.contentOrNull)
             }
             return responseJson
-        } catch (e: JsonParsingException) {
+        } catch (e: JsonDecodingException) {
             logger.error { "can't parse response to $command $args: $responseJsonStr" }
             throw e
         }
