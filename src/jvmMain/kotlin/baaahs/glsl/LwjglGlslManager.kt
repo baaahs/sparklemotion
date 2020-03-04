@@ -16,6 +16,9 @@ class LwjglGlslManager : GlslManager {
         if (Thread.currentThread().name != "main") {
             logger.warn { "GLSL not available. On a Mac, start java with `-XstartOnFirstThread`" }
             window = 0L
+        } else if (System.getenv("NO_GPU") == "true") {
+            logger.warn { "NO_GPU=true; GLSL not available." }
+            window = 0L
         } else {
 //            GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
             check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
