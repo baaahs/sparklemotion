@@ -22,8 +22,6 @@ jobs:
       - run:
           name: Prefetch Dependencies
           command: |
-            npm install
-            sudo npm install -g --silent gh-pages@2.0.1 # ugh why sudo?; later versions busted
             ./gradlew model
 
       - save_cache:
@@ -38,7 +36,6 @@ jobs:
           # because it outputs directly into the gradle build directory
           command: |
             ./gradlew build dokka
-            npm run build
 
       - add_ssh_keys:
           fingerprints:
