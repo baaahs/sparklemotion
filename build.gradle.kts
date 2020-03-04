@@ -242,6 +242,8 @@ tasks.withType(KotlinCompile::class) {
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
+    dependsOn("kotlinNpmInstall") // for node_modules stuff
+
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
     from("build/js/node_modules/@fortawesome") {
