@@ -124,20 +124,6 @@
 </tr>
 <tr>
 <td>
-<p><a href="-dom-container/index.html">DomContainer</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">DomContainer</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-fake-dom-container/index.html">FakeDomContainer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">FakeDomContainer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-dom-container/index.html"><span class="identifier">DomContainer</span></a></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="-firmware-daddy/index.html">FirmwareDaddy</a></p>
 </td>
 <td>
@@ -185,7 +171,7 @@
 <p><a href="-hosted-web-app/index.html">HostedWebApp</a></p>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">HostedWebApp</span></code></td>
+<code><span class="keyword">external</span> <span class="keyword">interface </span><span class="identifier">HostedWebApp</span></code></td>
 </tr>
 <tr>
 <td>
@@ -404,13 +390,6 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<p><a href="-raycaster/index.html">Raycaster</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">external</span> <span class="keyword">class </span><span class="identifier">Raycaster</span></code></td>
-</tr>
-<tr>
-<td>
 <p><a href="-real-fs/index.html">RealFs</a></p>
 </td>
 <td>
@@ -551,7 +530,7 @@ then the drawing cycle will look like this:</p>
 <p><a href="-web-ui/index.html">WebUi</a></p>
 </td>
 <td>
-<code><span class="keyword">object </span><span class="identifier">WebUi</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">WebUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -694,10 +673,10 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<p><a href="log-message.html">logMessage</a></p>
+<p><a href="log.html">log</a></p>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">logMessage</span><span class="symbol">(</span><span class="identifier" id="baaahs$logMessage(kotlin.String, kotlin.String, kotlin.Throwable)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$logMessage(kotlin.String, kotlin.String, kotlin.Throwable)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$logMessage(kotlin.String, kotlin.String, kotlin.Throwable)/exception">exception</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html"><span class="identifier">Throwable</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">log</span><span class="symbol">(</span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/exception">exception</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html"><span class="identifier">Throwable</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
