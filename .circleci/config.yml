@@ -11,6 +11,9 @@ jobs:
 
     working_directory: ~/repo
 
+    environment:
+      NO_GPU: true
+
     steps:
       - checkout
 
@@ -46,6 +49,9 @@ jobs:
 
       - store_artifacts:
           path: build/processedResources/js/main
+
+      - store_artifacts:
+          path: build/reports
 
       - run:
           name: Deploy to gh-pages
