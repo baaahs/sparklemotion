@@ -9,7 +9,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 fun main(args: Array<String>) {
-    val mode = document["sparklemotionMode"]
+    val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")
 
     when (mode) {
@@ -33,6 +33,7 @@ fun main(args: Array<String>) {
             val uiApp = WebUi(network, pinkyAddress)
             render(uiApp.render(), document.body)
         }
+        "test" -> {}
         else -> throw UnsupportedOperationException("unknown mode $mode")
     }
 }
