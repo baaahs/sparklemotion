@@ -30,12 +30,20 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMapperUi.StatusListener {
+class Visualizer(
+    model: Model<*>,
+    private val display: VisualizerDisplay,
+    private val container: HTMLDivElement,
+    private val selectionInfo: HTMLDivElement? = null,
+    private val rotationCheckbox: HTMLInputElement? = null
+): JsMapperUi.StatusListener {
+
+    var stopRendering: Boolean = false
 
     private var rotate: Boolean
-        get() = getVizRotationEl().checked
+        get() = rotationCheckbox?.checked ?: false
         set(value) {
-            getVizRotationEl().checked = value
+            rotationCheckbox?.checked = value
         }
 
     var mapperIsRunning = false
@@ -68,16 +76,13 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
 
     private val rendererListeners = mutableListOf<() -> Unit>()
 
-    private var vizPanels = mutableListOf<VizPanel>()
-
-    private var sheepView = document.getElementById("sheepView")!! as HTMLDivElement
-    private val selectionInfo = document.getElementById("selectionInfo")!! as HTMLDivElement
+    private var vizPanels = mutableListOf<VizSurface>()
 
     init {
-        sheepView.addEventListener("mousedown", { event -> onMouseDown(event as MouseEvent) }, false)
-        camera = PerspectiveCamera(45, sheepView.offsetWidth.toDouble() / sheepView.offsetHeight, 1, 10000)
+        container.addEventListener("mousedown", { event -> onMouseDown(event as MouseEvent) }, false)
+        camera = PerspectiveCamera(45, container.offsetWidth.toDouble() / container.offsetHeight, 1, 10000)
         camera.position.z = 1000.0
-        controls = OrbitControls(camera, sheepView)
+        controls = OrbitControls(camera, container)
         controls.minPolarAngle = PI / 2 - .25 // radians
         controls.maxPolarAngle = PI / 2 + .25 // radians
 
@@ -88,8 +93,10 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         scene.add(camera)
         renderer = WebGLRenderer()
         renderer.setPixelRatio(window.devicePixelRatio)
-        renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)
-        sheepView.appendChild(renderer.domElement)
+        renderer.setSize(container.offsetWidth, container.offsetHeight)
+        container.addEventListener("resize", { doResize() })
+
+        container.appendChild(renderer.domElement)
         geom = Geometry()
         raycaster = three.Raycaster()
         raycaster.asDynamic().params.Points.threshold = 1
@@ -129,16 +136,16 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
 
     fun onMouseDown(event: MouseEvent) {
         mouse = Vector2(
-            (event.clientX.toDouble() / sheepView.offsetWidth) * 2 - 1,
-            -(event.clientY.toDouble() / sheepView.offsetHeight) * 2 + 1
+            (event.clientX.toDouble() / container.offsetWidth) * 2 - 1,
+            -(event.clientY.toDouble() / container.offsetHeight) * 2 + 1
         )
     }
 
-    fun addPanel(p: Model.Surface): VizPanel {
+    fun addSurface(p: Model.Surface): VizSurface {
         // if (p.name !== '15R') return
         // if (omitPanels.includes(p.name)) return
 
-        val vizPanel = VizPanel(p, geom, scene)
+        val vizPanel = VizSurface(p, geom, scene)
         vizPanels.add(vizPanel)
         return vizPanel
     }
@@ -178,8 +185,6 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
         }
     }
 
-    private fun getVizRotationEl() = document.getElementById("vizRotation") as HTMLInputElement
-
     private fun startRender() {
         geom.computeBoundingSphere()
         this.obj = Points().apply { geometry = geom; material = pointMaterial }
@@ -194,6 +199,8 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
     private val REFRESH_DELAY = 50 // ms
 
     fun render() {
+        if (stopRendering) return
+
         window.setTimeout(fun() {
             window.requestAnimationFrame { render() }
         }, REFRESH_DELAY)
@@ -204,16 +211,16 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
             val intersections = raycaster.intersectObjects(scene.children, false)
             intersections.forEach { intersection ->
                 val intersectedObject = intersection.`object`
-                val vizPanel = VizPanel.getFromObject(intersectedObject)
+                val vizPanel = VizSurface.getFromObject(intersectedObject)
                 vizPanel?.let {
-                    selectionInfo.innerText = "Selected: " + vizPanel.name
+                    selectionInfo?.innerText = "Selected: " + vizPanel.name
                     return@forEach
                 }
             }
         }
 
         if (!mapperIsRunning) {
-            if (getVizRotationEl().checked) {
+            if (rotationCheckbox?.checked == true) {
                 val rotSpeed = .01
                 val x = camera.position.x
                 val z = camera.position.z
@@ -238,9 +245,9 @@ class Visualizer(model: Model<*>, private val display: VisualizerDisplay): JsMap
     private val resizeDelay = 100
 
     private fun doResize() {
-        camera.aspect = sheepView.offsetWidth.toDouble() / sheepView.offsetHeight
+        camera.aspect = container.offsetWidth.toDouble() / container.offsetHeight
         camera.updateProjectionMatrix()
-        renderer.setSize(sheepView.offsetWidth, sheepView.offsetHeight)
+        renderer.setSize(container.offsetWidth, container.offsetHeight)
     }
 
     override fun mapperStatusChanged(isRunning: Boolean) {

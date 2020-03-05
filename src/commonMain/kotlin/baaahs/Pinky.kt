@@ -74,12 +74,16 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
 
+    private val listeningVisualizers = hashSetOf<ListeningVisualizer>()
+
     init {
         httpServer.listenWebSocket("/ws/api") {
             WebSocketRouter {
                 PinkyMapperHandlers(storage).register(this)
             }
         }
+
+        httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
 
         pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
         selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
@@ -179,6 +183,11 @@ class Pinky(
             }
 
             showRunner.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
+            listeningVisualizers.forEach { listeningVisualizer ->
+                brainSurfacesToAdd.forEach {
+                    listeningVisualizer.sendPixelData(it.surface)
+                }
+            }
 
             pendingBrainInfos.clear()
         }
@@ -234,7 +243,9 @@ class Pinky(
 
 
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val dataFor = mappingResults.dataFor(brainId) ?: findMappingInfo_CHEAT(surfaceName, brainId)
+        val dataFor = mappingResults.dataFor(brainId)
+            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
+            ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
             val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
@@ -414,6 +425,8 @@ class Pinky(
                 renderTree.draw(pixels)
 
                 super.send(pixels.buffer)
+
+                updateListeningVisualizers(surface, pixels.buffer.colors)
             }
         }
     }
@@ -489,6 +502,61 @@ class Pinky(
         override fun set(colors: Array<Color>) {
             for (i in 0 until min(colors.size, size)) {
                 buffer.colors[i] = colors[i]
+            }
+        }
+    }
+
+    inner class ListeningVisualizer : Network.WebSocketListener {
+        lateinit var tcpConnection: Network.TcpConnection
+
+        override fun connected(tcpConnection: Network.TcpConnection) {
+            this.tcpConnection = tcpConnection
+            listeningVisualizers.add(this)
+
+            brainInfos.values.forEach { sendPixelData(it.surface) }
+        }
+
+        override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+            TODO("not implemented")
+        }
+
+        override fun reset(tcpConnection: Network.TcpConnection) {
+            listeningVisualizers.remove(this)
+        }
+
+        fun sendPixelData(surface: Surface) {
+            if (surface is IdentifiedSurface) {
+                val pixelLocations = surface.pixelLocations ?: return
+
+                val out = ByteArrayWriter(surface.name.length + surface.pixelCount * 3 * 4 + 20)
+                out.writeByte(0)
+                out.writeString(surface.name)
+                out.writeInt(surface.pixelCount)
+                pixelLocations.forEach {
+                    (it ?: Vector3F(0f, 0f, 0f)).serialize(out)
+                }
+                tcpConnection.send(out.toBytes())
+            }
+        }
+
+        fun sendFrame(surface: Surface, colors: List<Color>) {
+            if (surface is IdentifiedSurface) {
+                val out = ByteArrayWriter(surface.name.length + colors.size * 3 + 20)
+                out.writeByte(1)
+                out.writeString(surface.name)
+                out.writeInt(colors.size)
+                colors.forEach {
+                    it.serializeWithoutAlpha(out)
+                }
+                tcpConnection.send(out.toBytes())
+            }
+        }
+    }
+
+    private fun updateListeningVisualizers(surface: Surface, colors: MutableList<Color>) {
+        if (listeningVisualizers.isNotEmpty()) {
+            listeningVisualizers.forEach {
+                it.sendFrame(surface, colors)
             }
         }
     }
