@@ -14,9 +14,16 @@ fun main(args: Array<String>) {
 
     val pinkyAddress = BrowserAddress(websocketsUrl())
     val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
+    val contentDiv = document.getElementById("content")
 
     when (mode) {
         "Simulator" -> SheepSimulator().start()
+
+        "Admin" -> {
+            val adminApp = AdminUi(network, pinkyAddress)
+            render(adminApp.render(), contentDiv)
+        }
+
         "Mapper" -> {
 
             val model = Pluggables.loadModel(Pluggables.defaultModel) // todo: which model?
@@ -25,13 +32,13 @@ fun main(args: Array<String>) {
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices();
             val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
-            render(mapperUi.render(), document.body);
+            render(mapperUi.render(), contentDiv);
             mapper.start();
         }
 
         "UI" -> {
             val uiApp = WebUi(network, pinkyAddress)
-            render(uiApp.render(), document.body)
+            render(uiApp.render(), contentDiv)
         }
 
         "test" -> {}

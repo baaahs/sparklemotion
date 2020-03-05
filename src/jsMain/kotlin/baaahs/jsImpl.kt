@@ -13,7 +13,7 @@ actual fun doRunBlocking(block: suspend () -> Unit) {
     return
 }
 
-private val resourcesBase = document["resourcesBase"]
+val resourcesBase = document["resourcesBase"]
 
 actual fun getResource(name: String): String {
     val xhr = XMLHttpRequest()

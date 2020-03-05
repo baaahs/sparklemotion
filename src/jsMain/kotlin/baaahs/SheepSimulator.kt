@@ -6,12 +6,14 @@ import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VizPanel
+import baaahs.visualizer.VizSurface
 import decodeQueryParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLInputElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -25,7 +27,13 @@ class SheepSimulator {
     private val model = selectModel()
 
     private val shows = AllShows.allShows
-    private val visualizer = Visualizer(model, display.forVisualizer())
+    private val visualizer = Visualizer(
+        model,
+        display.forVisualizer(),
+        document.getElementById("sheepView")!! as HTMLDivElement,
+        document.getElementById("selectionInfo")!! as HTMLDivElement,
+        document.getElementById("vizRotation") as HTMLInputElement
+    )
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     private val pinkyDisplay = display.forPinky()
@@ -63,9 +71,9 @@ class SheepSimulator {
         model.allSurfaces.sortedBy(Model.Surface::name).forEachIndexed { index, surface ->
             //            if (panel.name != "17L") return@forEachIndexed
 
-            val vizPanel = visualizer.addPanel(surface)
+            val vizPanel = visualizer.addSurface(surface)
             val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizPanel.VizPixels(vizPanel, pixelPositions)
+            vizPanel.vizPixels = VizSurface.VizPixels(vizPanel, pixelPositions)
 
             totalPixels += pixelPositions.size
             document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
