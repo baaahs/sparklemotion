@@ -12,6 +12,7 @@ import com.xenomachina.argparser.mainBody
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.http.content.*
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -88,6 +89,8 @@ class PinkyMain(private val args: Args) {
             ktor.application.routing {
                 static {
                     resources("htdocs")
+                    route("mapper") { default("htdocs/mapper/index.html") }
+                    route("ui") { default("htdocs/ui/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
@@ -99,11 +102,15 @@ class PinkyMain(private val args: Args) {
 
             ktor.application.routing {
                 static {
+                    staticRootFolder = jsResDir.toFile()
+
                     file("sparklemotion.js",
                         repoDir.resolve("build/distributions/sparklemotion.js").toFile())
 
                     files(jsResDir.toFile())
-                    default(jsResDir.resolve("ui-index.html").toFile())
+                    route("mapper") { default("mapper/index.html") }
+                    route("ui") { default("ui/index.html") }
+                    default("ui-index.html")
                 }
             }
         }

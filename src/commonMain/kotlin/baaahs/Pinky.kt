@@ -1,14 +1,15 @@
 package baaahs
 
+import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.glsl.GlslBase
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
-import baaahs.mapper.MapperEndpoint
 import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
+import baaahs.mapper.PinkyMapperHandlers
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -74,7 +75,11 @@ class Pinky(
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
 
     init {
-        httpServer.listenWebSocket("/ws/mapper") { MapperEndpoint(storage) }
+        httpServer.listenWebSocket("/ws/api") {
+            WebSocketRouter {
+                PinkyMapperHandlers(storage).register(this)
+            }
+        }
 
         pubSub.publish(Topics.availableShows, shows.map { show -> show.name }) {}
         selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->

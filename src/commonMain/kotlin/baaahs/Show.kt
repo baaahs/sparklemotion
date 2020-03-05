@@ -5,6 +5,8 @@ abstract class Show(val name: String) {
 
     abstract fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer
 
+    override fun toString(): String = name
+
     interface Renderer {
         /**
          * Renders the next frame of the show.
