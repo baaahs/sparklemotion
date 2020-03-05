@@ -2,7 +2,9 @@ package baaahs
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
+import org.w3c.dom.get
 import org.w3c.xhr.XMLHttpRequest
+import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
@@ -11,9 +13,11 @@ actual fun doRunBlocking(block: suspend () -> Unit) {
     return
 }
 
+private val resourcesBase = document["resourcesBase"]
+
 actual fun getResource(name: String): String {
     val xhr = XMLHttpRequest()
-    xhr.open("GET", name, false)
+    xhr.open("GET", "$resourcesBase/$name", false)
     xhr.send()
 
     if (xhr.status.equals(200)) {

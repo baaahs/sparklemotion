@@ -12,11 +12,12 @@ fun main(args: Array<String>) {
     val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")
 
+    val pinkyAddress = BrowserAddress(websocketsUrl())
+    val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
+
     when (mode) {
         "Simulator" -> SheepSimulator().start()
         "Mapper" -> {
-            val pinkyAddress = BrowserAddress(websocketsUrl())
-            val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
 
             val model = Pluggables.loadModel(Pluggables.defaultModel) // todo: which model?
             (model as? ObjModel)?.load()
@@ -27,13 +28,14 @@ fun main(args: Array<String>) {
             render(mapperUi.render(), document.body);
             mapper.start();
         }
+
         "UI" -> {
-            val network = BrowserNetwork()
-            val pinkyAddress = BrowserAddress(websocketsUrl())
             val uiApp = WebUi(network, pinkyAddress)
             render(uiApp.render(), document.body)
         }
+
         "test" -> {}
+
         else -> throw UnsupportedOperationException("unknown mode $mode")
     }
 }
