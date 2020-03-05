@@ -251,7 +251,7 @@ val dokka by tasks.getting(DokkaTask::class) {
 }
 
 tasks.create<JavaExec>("runPinkyJvm") {
-    dependsOn("assemble")
+    dependsOn("jsBrowserDevelopmentWebpack")
     main = "baaahs.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
@@ -264,7 +264,6 @@ tasks.create<JavaExec>("runPinkyJvm") {
 }
 
 tasks.create<JavaExec>("runBrainJvm") {
-    dependsOn("assemble")
     main = "baaahs.BrainMainKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
@@ -273,7 +272,6 @@ tasks.create<JavaExec>("runBrainJvm") {
 }
 
 tasks.create<JavaExec>("runBridgeJvm") {
-    dependsOn("assemble")
     main = "baaahs.SimulatorBridgeKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
