@@ -2,11 +2,9 @@ package baaahs
 
 import baaahs.proto.Ports
 import io.ktor.application.install
-import io.ktor.http.cio.websocket.CloseReason
+import io.ktor.http.cio.websocket.*
 import io.ktor.http.cio.websocket.CloseReason.Codes.NORMAL
 import io.ktor.http.cio.websocket.Frame.Text
-import io.ktor.http.cio.websocket.close
-import io.ktor.http.cio.websocket.readText
 import io.ktor.request.host
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer

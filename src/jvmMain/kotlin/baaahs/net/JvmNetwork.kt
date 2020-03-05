@@ -3,8 +3,7 @@ package baaahs.net
 import baaahs.Logger
 import io.ktor.application.Application
 import io.ktor.application.install
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readBytes
+import io.ktor.http.cio.websocket.*
 import io.ktor.request.host
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -43,7 +42,7 @@ class JvmNetwork : Network {
 
     override fun link(): RealLink = link
 
-    inner class RealLink() : Network.Link {
+    inner class RealLink : Network.Link {
 
         override val udpMtu = MAX_UDP_SIZE
 
@@ -157,7 +156,8 @@ class JvmNetwork : Network {
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            close(e)
+                            close(CloseReason(
+                                CloseReason.Codes.INTERNAL_ERROR, "Internal error: ${e.message}"))
                         } finally {
                             webSocketListener.reset(tcpConnection)
                         }
