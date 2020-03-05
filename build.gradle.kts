@@ -24,7 +24,6 @@ buildscript {
         maven("https://kotlin.bintray.com/kotlinx")
         maven("https://plugins.gradle.org/m2/")
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
-//        maven("https://dl.bintray.com/salomonbrys/gradle-plugins")
     }
 
     dependencies {
@@ -52,18 +51,12 @@ plugins {
     id("maven-publish")
 }
 
-//apply plugin: 'kotlin-dce-js'
-
-//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
-
 repositories {
     jcenter()
     maven("https://kotlin.bintray.com/kotlinx")
     maven("https://kotlin.bintray.com/ktor")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
-//    maven("https://dl.bintray.com/kotlin/kotlin-dev")
     maven("https://jitpack.io")
     maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
@@ -82,18 +75,9 @@ kotlin {
             webpackTask {
                 report = true
                 sourceMaps = true
-//                devServer =
             }
         }
-
-//        compilations["main"].compileKotlinTask.kotlinOptions.moduleKind = "umd"
     }
-
-    // For ARM, should be changed to iosArm32 or iosArm64
-    // For Linux, should be changed to e.g. linuxX64
-    // For MacOS, should be changed to e.g. macosX64
-    // For Windows, should be changed to e.g. mingwX64
-//    linuxX64("linux")
 
     sourceSets {
         val commonMain by getting {
@@ -207,11 +191,6 @@ kotlin {
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
             }
         }
-
-//        linuxMain {
-//        }
-//        linuxTest {
-//        }
     }
 }
 
@@ -231,7 +210,6 @@ tasks.withType(Kotlin2JsCompile::class) {
 }
 
 tasks.withType(KotlinWebpack::class) {
-//    dependsOn("buildReactUI")
     sourceMaps = true
 }
 
@@ -266,19 +244,6 @@ tasks.create<Exec>("installReactUImodules") {
     commandLine = listOf("npm", "install")
 }
 
-//tasks.create<Exec>("buildReactUI") {
-//    inputs.file("package-lock.json").withPathSensitivity(PathSensitivity.RELATIVE)
-//    inputs.file("webpack.config.js").withPathSensitivity(PathSensitivity.RELATIVE)
-//    inputs.dir("src/jsMain/js").withPathSensitivity(PathSensitivity.RELATIVE)
-//
-//    outputs.dir("$buildDir/js/packages/sparklemotion/react_app")
-//    outputs.cacheIf { true }
-//
-//    commandLine = listOf(
-//        "$projectDir/node_modules/.bin/webpack-cli", "--config", "$projectDir/webpack.config.js", "--mode", "development", "--color"
-//    )
-//}
-
 val dokka by tasks.getting(DokkaTask::class) {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
@@ -291,7 +256,6 @@ val dokka by tasks.getting(DokkaTask::class) {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("assemble")
-//    dependsOn("buildReactUI")
     main = "baaahs.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
@@ -333,7 +297,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 }
 
 tasks.create<Copy>("packageClientResources") {
-    dependsOn("jsProcessResources", "jsBrowserWebpack"/*, "buildReactUI"*/)
+    dependsOn("jsProcessResources", "jsBrowserWebpack")
     from(project.file("build/processedResources/js/main"))
     from(project.file("build/distributions"))
     into("build/classes/kotlin/jvm/main/htdocs")
