@@ -8,13 +8,13 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.shaders</a>&nbsp;/&nbsp;<a href="../index.html">SimpleSpatialShader</a>&nbsp;/&nbsp;<a href="./index.html">Renderer</a><br/>
 <br/>
 <h1>Renderer</h1>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../-buffer/index.html"><span class="identifier">SimpleSpatialShader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">Renderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SimpleSpatialShader.Renderer$<init>(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span></code></td>
@@ -26,36 +26,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="draw.html">draw</a></p>
+<h4><a href="draw.html">draw</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SimpleSpatialShader.Renderer$draw(baaahs.shaders.SimpleSpatialShader.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="../-buffer/index.html"><span class="identifier">SimpleSpatialShader.Buffer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.SimpleSpatialShader.Renderer$draw(baaahs.shaders.SimpleSpatialShader.Buffer, kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../../baaahs/-shader/-renderer/begin-frame.html">beginFrame</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">beginFrame</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-shader/-renderer/index.html#B"><span class="identifier">B</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs/-shader/-renderer/end-frame.html">endFrame</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">endFrame</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs/-shader/-renderer/release.html">release</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SimpleSpatialShader.Renderer$draw(baaahs.shaders.SimpleSpatialShader.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.SimpleSpatialShader.Renderer$draw(baaahs.shaders.SimpleSpatialShader.Buffer, kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
 </tr>
 </tbody>
 </table>

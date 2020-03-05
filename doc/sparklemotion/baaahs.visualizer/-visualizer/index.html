@@ -8,20 +8,20 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.visualizer</a>&nbsp;/&nbsp;<a href="./index.html">Visualizer</a><br/>
 <br/>
 <h1>Visualizer</h1>
-<code><span class="keyword">class </span><span class="identifier">Visualizer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-js-mapper-ui/-status-listener/index.html"><span class="identifier">JsMapperUi.StatusListener</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Visualizer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StatusListener</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-frame-listener/index.html">FrameListener</a></p>
+<h4><a href="-frame-listener/index.html">FrameListener</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">FrameListener</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-viz-moving-head/index.html">VizMovingHead</a></p>
+<h4><a href="-viz-moving-head/index.html">VizMovingHead</a></h4>
 </td>
 <td>
 <code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">VizMovingHead</span></code></td>
@@ -33,7 +33,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">Visualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-visualizer-display/index.html"><span class="identifier">VisualizerDisplay</span></a><span class="symbol">)</span></code></td>
@@ -45,7 +45,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="mapper-is-running.html">mapperIsRunning</a></p>
+<h4><a href="mapper-is-running.html">mapperIsRunning</a></h4>
 </td>
 <td>
 <code><span class="keyword">var </span><span class="identifier">mapperIsRunning</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
@@ -57,49 +57,49 @@
 <tbody>
 <tr>
 <td>
-<p><a href="add-frame-listener.html">addFrameListener</a></p>
+<h4><a href="add-frame-listener.html">addFrameListener</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="-frame-listener/index.html"><span class="identifier">Visualizer.FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<span class="identifier">FrameListener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="add-moving-head.html">addMovingHead</a></p>
+<h4><a href="add-moving-head.html">addMovingHead</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addMovingHead</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.MovingHead, baaahs.sim.FakeDmxUniverse)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-moving-head/index.html"><span class="identifier">MovingHead</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.MovingHead, baaahs.sim.FakeDmxUniverse)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.sim/-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-viz-moving-head/index.html"><span class="identifier">Visualizer.VizMovingHead</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addMovingHead</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.MovingHead, baaahs.sim.FakeDmxUniverse)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-moving-head/index.html"><span class="identifier">MovingHead</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$addMovingHead(baaahs.MovingHead, baaahs.sim.FakeDmxUniverse)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.sim/-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">VizMovingHead</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="add-panel.html">addPanel</a></p>
+<h4><a href="add-panel.html">addPanel</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addPanel(baaahs.Model.Surface)/p">p</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-viz-panel/index.html"><span class="identifier">VizPanel</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addPanel(baaahs.Model.Surface)/p">p</span><span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-viz-panel/index.html"><span class="identifier">VizPanel</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="mapper-status-changed.html">mapperStatusChanged</a></p>
+<h4><a href="mapper-status-changed.html">mapperStatusChanged</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">mapperStatusChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$mapperStatusChanged(kotlin.Boolean)/isRunning">isRunning</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="on-mouse-down.html">onMouseDown</a></p>
+<h4><a href="on-mouse-down.html">onMouseDown</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">onMouseDown</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$onMouseDown(org.w3c.dom.events.MouseEvent)/event">event</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom.events/-mouse-event/index.html"><span class="identifier">MouseEvent</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="remove-frame-listener.html">removeFrameListener</a></p>
+<h4><a href="remove-frame-listener.html">removeFrameListener</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">removeFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$removeFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<a href="-frame-listener/index.html"><span class="identifier">Visualizer.FrameListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">removeFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$removeFrameListener(baaahs.visualizer.Visualizer.FrameListener)/frameListener">frameListener</span><span class="symbol">:</span>&nbsp;<span class="identifier">FrameListener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="render.html">render</a></p>
+<h4><a href="render.html">render</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>

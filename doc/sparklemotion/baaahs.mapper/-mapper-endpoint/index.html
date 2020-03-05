@@ -8,13 +8,13 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="./index.html">MapperEndpoint</a><br/>
 <br/>
 <h1>MapperEndpoint</h1>
-<code><span class="keyword">class </span><span class="identifier">MapperEndpoint</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-web-socket-listener/index.html"><span class="identifier">Network.WebSocketListener</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">MapperEndpoint</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">WebSocketListener</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">MapperEndpoint</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$<init>(baaahs.mapper.Storage)/storage">storage</span><span class="symbol">:</span>&nbsp;<a href="../-storage/index.html"><span class="identifier">Storage</span></a><span class="symbol">)</span></code></td>
@@ -26,7 +26,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="storage.html">storage</a></p>
+<h4><a href="storage.html">storage</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">storage</span><span class="symbol">: </span><a href="../-storage/index.html"><span class="identifier">Storage</span></a></code></td>
@@ -38,24 +38,24 @@
 <tbody>
 <tr>
 <td>
-<p><a href="connected.html">connected</a></p>
+<h4><a href="connected.html">connected</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">connected</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$connected(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">connected</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$connected(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="receive.html">receive</a></p>
+<h4><a href="receive.html">receive</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperEndpoint$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperEndpoint$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="reset.html">reset</a></p>
+<h4><a href="reset.html">reset</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$reset(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperEndpoint$reset(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -64,14 +64,14 @@
 <tbody>
 <tr>
 <td>
-<p><a href="json.html">json</a></p>
+<h4><a href="json.html">json</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">json</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">json</span><span class="symbol">: </span><span class="identifier">Json</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="logger.html">logger</a></p>
+<h4><a href="logger.html">logger</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>

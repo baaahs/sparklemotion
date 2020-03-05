@@ -15,7 +15,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-renderer/index.html">Renderer</a></p>
+<h4><a href="-renderer/index.html">Renderer</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Renderer</span></code></td>
@@ -27,10 +27,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-restart-show-exception/index.html">RestartShowException</a></p>
+<h4><a href="-restart-show-exception/index.html">RestartShowException</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">RestartShowException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html"><span class="identifier">Exception</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">RestartShowException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html"><span class="identifier">Exception</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -39,12 +39,11 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Show</span><span class="symbol">(</span><span class="identifier" id="baaahs.Show$<init>(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code>
 <p>A show takes input from gadgets and uses it to configure shaders, creating pretty stuff on surfaces.</p>
-</td>
+<code><span class="identifier">Show</span><span class="symbol">(</span><span class="identifier" id="baaahs.Show$<init>(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -53,7 +52,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="name.html">name</a></p>
+<h4><a href="name.html">name</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
@@ -65,10 +64,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="create-renderer.html">createRenderer</a></p>
+<h4><a href="create-renderer.html">createRenderer</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Show$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Show$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-renderer/index.html"><span class="identifier">Show.Renderer</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Show$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.Show$createRenderer(baaahs.Model((baaahs.Model.Surface)), baaahs.ShowRunner)/showRunner">showRunner</span><span class="symbol">:</span>&nbsp;<a href="../-show-runner/index.html"><span class="identifier">ShowRunner</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Renderer</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -77,84 +76,84 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-composite-show/index.html">CompositeShow</a></p>
+<h4><a href="../../baaahs.shows/-composite-show/index.html">CompositeShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">CompositeShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-creeping-pixels-show/index.html">CreepingPixelsShow</a></p>
+<h4><a href="../../baaahs.shows/-creeping-pixels-show/index.html">CreepingPixelsShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">CreepingPixelsShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-glsl-show/index.html">GlslShow</a></p>
+<h4><a href="../../baaahs.shows/-glsl-show/index.html">GlslShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-heartbleat-show/index.html">HeartbleatShow</a></p>
+<h4><a href="../../baaahs.shows/-heartbleat-show/index.html">HeartbleatShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">HeartbleatShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-lifey-show/index.html">LifeyShow</a></p>
+<h4><a href="../../baaahs.shows/-lifey-show/index.html">LifeyShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">LifeyShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-panel-tween-show/index.html">PanelTweenShow</a></p>
+<h4><a href="../../baaahs.shows/-panel-tween-show/index.html">PanelTweenShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">PanelTweenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-pixel-tween-show/index.html">PixelTweenShow</a></p>
+<h4><a href="../../baaahs.shows/-pixel-tween-show/index.html">PixelTweenShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">PixelTweenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-random-show/index.html">RandomShow</a></p>
+<h4><a href="../../baaahs.shows/-random-show/index.html">RandomShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">RandomShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-simple-spatial-show/index.html">SimpleSpatialShow</a></p>
+<h4><a href="../../baaahs.shows/-simple-spatial-show/index.html">SimpleSpatialShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SimpleSpatialShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-solid-color-show/index.html">SolidColorShow</a></p>
+<h4><a href="../../baaahs.shows/-solid-color-show/index.html">SolidColorShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SolidColorShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-some-dumb-show/index.html">SomeDumbShow</a></p>
+<h4><a href="../../baaahs.shows/-some-dumb-show/index.html">SomeDumbShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SomeDumbShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.shows/-thump-show/index.html">ThumpShow</a></p>
+<h4><a href="../../baaahs.shows/-thump-show/index.html">ThumpShow</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">ThumpShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Show</span></a></code></td>

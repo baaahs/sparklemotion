@@ -8,31 +8,31 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.shaders</a>&nbsp;/&nbsp;<a href="./index.html">SolidShader</a><br/>
 <br/>
 <h1>SolidShader</h1>
-<code><span class="keyword">class </span><span class="identifier">SolidShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">SolidShader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">class </span><span class="identifier">SolidShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code>
 <p>A shader that sets all pixels to a single color.</p>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-buffer/index.html">Buffer</a></p>
+<h4><a href="-buffer/index.html">Buffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-companion/index.html">Companion</a></p>
+<h4><a href="-companion/index.html">Companion</a></h4>
 </td>
 <td>
 <code><span class="keyword">companion</span> <span class="keyword">object </span><span class="identifier">Companion</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-reader/index.html"><span class="identifier">ShaderReader</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">SolidShader</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-renderer/index.html">Renderer</a></p>
+<h4><a href="-renderer/index.html">Renderer</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">SolidShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -41,31 +41,11 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">SolidShader</span><span class="symbol">(</span><span class="symbol">)</span></code>
 <p>A shader that sets all pixels to a single color.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/descriptor-bytes.html">descriptorBytes</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">descriptorBytes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/id.html">id</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="../../baaahs/-shader-id/index.html"><span class="identifier">ShaderId</span></a></code></td>
+<code><span class="identifier">SolidShader</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -74,52 +54,24 @@
 <tbody>
 <tr>
 <td>
-<p><a href="create-buffer.html">createBuffer</a></p>
+<h4><a href="create-buffer.html">createBuffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">SolidShader.Buffer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="create-renderer.html">createRenderer</a></p>
+<h4><a href="create-renderer.html">createRenderer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$createRenderer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-renderer/index.html"><span class="identifier">SolidShader.Renderer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$createRenderer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Renderer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="read-buffer.html">readBuffer</a></p>
+<h4><a href="read-buffer.html">readBuffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">SolidShader.Buffer</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/create-renderer.html">createRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$createRenderer(baaahs.Surface, baaahs.RenderContext)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Shader$createRenderer(baaahs.Surface, baaahs.RenderContext)/renderContext">renderContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-render-context/index.html"><span class="identifier">RenderContext</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-shader/index.html#B"><span class="identifier">B</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/serialize.html">serialize</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/serialize-config.html">serializeConfig</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
-<p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
-</td>
+<code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +80,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="parse.html">parse</a></p>
+<h4><a href="parse.html">parse</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.SolidShader.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SolidShader</span></a></code></td>

@@ -1,9 +1,12 @@
 $dokka.format:html
 $dokka.linkExtension:html
+$dokka.location:baaahs$array(kotlinx.serialization.KSerializer((baaahs.array.T)), kotlin.reflect.KClass((baaahs.array.T)))baaahs/kotlinx.serialization.-k-serializer/array.html
 $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/disabled.html
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)))baaahs/kotlin.collections.-list/random.html
-$dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)), )baaahs/kotlin.collections.-list/random.html
+$dokka.location:baaahs$random(kotlin.collections.List((baaahs.random.E)), kotlin.random.Random)baaahs/kotlin.collections.-list/random.html
+$dokka.location:baaahs.glsl$check(com.danielgergely.kgl.Kgl, kotlin.Function0((baaahs.glsl.check.T)))baaahs.glsl/com.danielgergely.kgl.-kgl/check.html
+$dokka.location:baaahs.glsl$checkForGlError(com.danielgergely.kgl.Kgl)baaahs.glsl/com.danielgergely.kgl.-kgl/check-for-gl-error.html
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 baaahs

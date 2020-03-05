@@ -14,21 +14,21 @@
 <tbody>
 <tr>
 <td>
-<p><a href="box-on-screen.html">boxOnScreen</a></p>
+<h4><a href="box-on-screen.html">boxOnScreen</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">boxOnScreen</span><span class="symbol">: </span><a href="../../-media-devices/-region/index.html"><span class="identifier">MediaDevices.Region</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">boxOnScreen</span><span class="symbol">: </span><span class="identifier">Region</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="model-surface.html">modelSurface</a></p>
+<h4><a href="model-surface.html">modelSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">modelSurface</span><span class="symbol">: </span><a href="../../-model/-surface/index.html"><span class="identifier">Model.Surface</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">modelSurface</span><span class="symbol">: </span><span class="identifier">Surface</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="pixels-in-model-space.html">pixelsInModelSpace</a></p>
+<h4><a href="pixels-in-model-space.html">pixelsInModelSpace</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">pixelsInModelSpace</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
@@ -40,43 +40,31 @@
 <tbody>
 <tr>
 <td>
-<p><a href="add-pixel.html">addPixel</a></p>
+<h4><a href="add-pixel.html">addPixel</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperUi.VisibleSurface$addPixel(kotlin.Int, kotlin.Float, kotlin.Float)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperUi.VisibleSurface$addPixel(kotlin.Int, kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperUi.VisibleSurface$addPixel(kotlin.Int, kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="hide-pixels.html">hidePixels</a></p>
+<h4><a href="hide-pixels.html">hidePixels</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">hidePixels</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="show-pixels.html">showPixels</a></p>
+<h4><a href="show-pixels.html">showPixels</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showPixels</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="translate-pixel-to-panel-space.html">translatePixelToPanelSpace</a></p>
+<h4><a href="translate-pixel-to-panel-space.html">translatePixelToPanelSpace</a></h4>
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">translatePixelToPanelSpace</span><span class="symbol">(</span><span class="identifier" id="baaahs.MapperUi.VisibleSurface$translatePixelToPanelSpace(kotlin.Float, kotlin.Float)/screenX">screenX</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.MapperUi.VisibleSurface$translatePixelToPanelSpace(kotlin.Float, kotlin.Float)/screenY">screenY</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.geom/-vector2-f/index.html"><span class="identifier">Vector2F</span></a><span class="symbol">?</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../-js-mapper-ui/-visible-surface/index.html">VisibleSurface</a></p>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">VisibleSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MapperUi.VisibleSurface</span></a></code></td>
 </tr>
 </tbody>
 </table>

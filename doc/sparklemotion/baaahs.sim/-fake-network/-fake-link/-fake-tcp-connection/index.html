@@ -8,16 +8,16 @@
 <a href="../../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="../../index.html">FakeNetwork</a>&nbsp;/&nbsp;<a href="../index.html">FakeLink</a>&nbsp;/&nbsp;<a href="./index.html">FakeTcpConnection</a><br/>
 <br/>
 <h1>FakeTcpConnection</h1>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FakeTcpConnection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FakeTcpConnection</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">FakeTcpConnection</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.net/-network/-web-socket-listener/index.html"><span class="identifier">Network.WebSocketListener</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/otherListener">otherListener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../../../../baaahs.net/-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+<code><span class="identifier">FakeTcpConnection</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<span class="identifier">WebSocketListener</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$<init>(baaahs.net.Network.Address, baaahs.net.Network.Address, kotlin.Int, baaahs.net.Network.WebSocketListener, kotlin.Function0((baaahs.net.Network.TcpConnection)))/otherListener">otherListener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,24 +26,24 @@
 <tbody>
 <tr>
 <td>
-<p><a href="from-address.html">fromAddress</a></p>
+<h4><a href="from-address.html">fromAddress</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">fromAddress</span><span class="symbol">: </span><a href="../../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">fromAddress</span><span class="symbol">: </span><span class="identifier">Address</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="port.html">port</a></p>
+<h4><a href="port.html">port</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">port</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="to-address.html">toAddress</a></p>
+<h4><a href="to-address.html">toAddress</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">toAddress</span><span class="symbol">: </span><a href="../../../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">toAddress</span><span class="symbol">: </span><span class="identifier">Address</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -52,22 +52,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="send.html">send</a></p>
+<h4><a href="send.html">send</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork.FakeLink.FakeTcpConnection$send(kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../../../baaahs.net/-network/-tcp-connection/send.html">send</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network.TcpConnection$send(baaahs.proto.Message)/message">message</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.proto/-message/index.html"><span class="identifier">Message</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

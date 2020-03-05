@@ -8,23 +8,23 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Brain</a><br/>
 <br/>
 <h1>Brain</h1>
-<code><span class="keyword">class </span><span class="identifier">Brain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Brain</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-fake-model-surface/index.html">FakeModelSurface</a></p>
+<h4><a href="-fake-model-surface/index.html">FakeModelSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">FakeModelSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-model/-surface/index.html"><span class="identifier">Model.Surface</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">FakeModelSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-render-tree/index.html">RenderTree</a></p>
+<h4><a href="-render-tree/index.html">RenderTree</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">RenderTree</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">RenderTree</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,7 +33,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">Brain</span><span class="symbol">(</span><span class="identifier" id="baaahs.Brain$<init>(kotlin.String, baaahs.net.Network, baaahs.BrainDisplay, baaahs.Pixels)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$<init>(kotlin.String, baaahs.net.Network, baaahs.BrainDisplay, baaahs.Pixels)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$<init>(kotlin.String, baaahs.net.Network, baaahs.BrainDisplay, baaahs.Pixels)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../-brain-display/index.html"><span class="identifier">BrainDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$<init>(kotlin.String, baaahs.net.Network, baaahs.BrainDisplay, baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span></code></td>
@@ -45,7 +45,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="id.html">id</a></p>
+<h4><a href="id.html">id</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
@@ -57,23 +57,22 @@
 <tbody>
 <tr>
 <td>
-<p><a href="forced-surface-name.html">forcedSurfaceName</a></p>
+<h4><a href="forced-surface-name.html">forcedSurfaceName</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">forcedSurfaceName</span><span class="symbol">(</span><span class="identifier" id="baaahs.Brain$forcedSurfaceName(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
 <p>So that the JVM standalone can boot up and have a surface name without mapping</p>
-</td>
+<code><span class="keyword">fun </span><span class="identifier">forcedSurfaceName</span><span class="symbol">(</span><span class="identifier" id="baaahs.Brain$forcedSurfaceName(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="receive.html">receive</a></p>
+<h4><a href="receive.html">receive</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromPort">fromPort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromPort">fromPort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Brain$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="run.html">run</a></p>
+<h4><a href="run.html">run</a></h4>
 </td>
 <td>
 <code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">run</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
@@ -85,7 +84,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="logger.html">logger</a></p>
+<h4><a href="logger.html">logger</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../-logger/index.html"><span class="identifier">Logger</span></a></code></td>

@@ -14,14 +14,14 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-camera/index.html">Camera</a></p>
+<h4><a href="-camera/index.html">Camera</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Camera</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-region/index.html">Region</a></p>
+<h4><a href="-region/index.html">Region</a></h4>
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Region</span></code></td>
@@ -33,10 +33,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="get-camera.html">getCamera</a></p>
+<h4><a href="get-camera.html">getCamera</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getCamera</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-camera/index.html"><span class="identifier">MediaDevices.Camera</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getCamera</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Camera</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,17 +45,17 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../../baaahs.sim/-fake-media-devices/index.html">FakeMediaDevices</a></p>
+<h4><a href="../../baaahs.sim/-fake-media-devices/index.html">FakeMediaDevices</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">FakeMediaDevices</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MediaDevices</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../../baaahs.browser/-real-media-devices/index.html">RealMediaDevices</a></p>
+<h4><a href="../../baaahs.browser/-real-media-devices/index.html">RealMediaDevices</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">RealMediaDevices</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MediaDevices</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">RealMediaDevices</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier">CoroutineScope</span></code></td>
 </tr>
 </tbody>
 </table>

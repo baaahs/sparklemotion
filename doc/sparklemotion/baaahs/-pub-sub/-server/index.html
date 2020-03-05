@@ -8,16 +8,16 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">PubSub</a>&nbsp;/&nbsp;<a href="./index.html">Server</a><br/>
 <br/>
 <h1>Server</h1>
-<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-endpoint/index.html"><span class="identifier">PubSub.Endpoint</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Server</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-publisher-listener/index.html">PublisherListener</a></p>
+<h4><a href="-publisher-listener/index.html">PublisherListener</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PublisherListener</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-listener/index.html"><span class="identifier">PubSub.Listener</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PublisherListener</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,29 +26,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Server</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$<init>(baaahs.net.Network.HttpServer)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.net/-network/-http-server/index.html"><span class="identifier">Network.HttpServer</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../-endpoint/json.html">json</a></p>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">json</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../-endpoint/serial-module.html">serialModule</a></p>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="identifier">Server</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$<init>(baaahs.net.Network.HttpServer)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<span class="identifier">HttpServer</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -57,22 +38,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="publish.html">publish</a></p>
+<h4><a href="publish.html">publish</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">publish</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<a href="../-topic/index.html"><span class="identifier">PubSub.Topic</span></a><span class="symbol">&lt;</span><a href="publish.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/data">data</span><span class="symbol">:</span>&nbsp;<a href="publish.html#T"><span class="identifier">T</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/onUpdate">onUpdate</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="publish.html#T"><span class="identifier">T</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-channel/index.html"><span class="identifier">PubSub.Channel</span></a><span class="symbol">&lt;</span><a href="publish.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../-endpoint/install.html">install</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">install</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Endpoint$install()/toInstall">toInstall</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">publish</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/data">data</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Server$publish(baaahs.PubSub.Topic((baaahs.PubSub.Server.publish.T)), baaahs.PubSub.Server.publish.T, kotlin.Function1((baaahs.PubSub.Server.publish.T, kotlin.Unit)))/onUpdate">onUpdate</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Channel</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

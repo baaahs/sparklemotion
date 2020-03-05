@@ -14,7 +14,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">Message</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.Message$<init>(baaahs.proto.Type)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../-type/index.html"><span class="identifier">Type</span></a><span class="symbol">)</span></code></td>
@@ -26,7 +26,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="type.html">type</a></p>
+<h4><a href="type.html">type</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">type</span><span class="symbol">: </span><a href="../-type/index.html"><span class="identifier">Type</span></a></code></td>
@@ -38,21 +38,21 @@
 <tbody>
 <tr>
 <td>
-<p><a href="serialize.html">serialize</a></p>
+<h4><a href="serialize.html">serialize</a></h4>
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.proto.Message$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="size.html">size</a></p>
+<h4><a href="size.html">size</a></h4>
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">size</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="to-bytes.html">toBytes</a></p>
+<h4><a href="to-bytes.html">toBytes</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">toBytes</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
@@ -64,59 +64,58 @@
 <tbody>
 <tr>
 <td>
-<p><a href="../-brain-hello-message/index.html">BrainHelloMessage</a></p>
+<h4><a href="../-brain-hello-message/index.html">BrainHelloMessage</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">BrainHelloMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-brain-id-request/index.html">BrainIdRequest</a></p>
+<h4><a href="../-brain-id-request/index.html">BrainIdRequest</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">BrainIdRequest</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-brain-mapping-message/index.html">BrainMappingMessage</a></p>
+<h4><a href="../-brain-mapping-message/index.html">BrainMappingMessage</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">BrainMappingMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-brain-shader-message/index.html">BrainShaderMessage</a></p>
+<h4><a href="../-brain-shader-message/index.html">BrainShaderMessage</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">BrainShaderMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-mapper-hello-message/index.html">MapperHelloMessage</a></p>
+<h4><a href="../-mapper-hello-message/index.html">MapperHelloMessage</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">MapperHelloMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-ping-message/index.html">PingMessage</a></p>
+<h4><a href="../-ping-message/index.html">PingMessage</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">PingMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="../-use-firmware-message/index.html">UseFirmwareMessage</a></p>
+<h4><a href="../-use-firmware-message/index.html">UseFirmwareMessage</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">UseFirmwareMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code>
 <p>The message that Pinky will send to a brain when Pinky has decided that
 the Brain should use a particular firmware. The url can point anywhere,
 either self hosted by Pinky or out into the nether reaches of the Interwebs.
 What could possibly go wrong? Pinky would <strong>never</strong> tell a brain to go
 download a wikipedia article and use that as a firmware. It just won't
 be nice.</p>
-</td>
+<code><span class="keyword">class </span><span class="identifier">UseFirmwareMessage</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Message</span></a></code></td>
 </tr>
 </tbody>
 </table>

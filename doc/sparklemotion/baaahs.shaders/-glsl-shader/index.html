@@ -8,44 +8,44 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.shaders</a>&nbsp;/&nbsp;<a href="./index.html">GlslShader</a><br/>
 <br/>
 <h1>GlslShader</h1>
-<code><span class="keyword">class </span><span class="identifier">GlslShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">GlslShader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">class </span><span class="identifier">GlslShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-adjustable-value/index.html">AdjustableValue</a></p>
+<h4><a href="-adjustable-value/index.html">AdjustableValue</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">AdjustableValue</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-buffer/index.html">Buffer</a></p>
+<h4><a href="-buffer/index.html">Buffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Buffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-companion/index.html">Companion</a></p>
+<h4><a href="-companion/index.html">Companion</a></h4>
 </td>
 <td>
 <code><span class="keyword">companion</span> <span class="keyword">object </span><span class="identifier">Companion</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader-reader/index.html"><span class="identifier">ShaderReader</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">GlslShader</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-pooled-renderer/index.html">PooledRenderer</a></p>
+<h4><a href="-pooled-renderer/index.html">PooledRenderer</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">PooledRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pooled-renderer/index.html"><span class="identifier">PooledRenderer</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-renderer/index.html">Renderer</a></p>
+<h4><a href="-renderer/index.html">Renderer</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-shader/-renderer/index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="-buffer/index.html"><span class="identifier">GlslShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -54,10 +54,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/adjustableValues">adjustableValues</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;findAdjustableValues(glslProgram)<span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$<init>(kotlin.String, baaahs.glsl.UvTranslator, kotlin.collections.List((baaahs.shaders.GlslShader.AdjustableValue)))/adjustableValues">adjustableValues</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">AdjustableValue</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;findAdjustableValues(glslProgram)<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -66,29 +66,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="adjustable-values.html">adjustableValues</a></p>
+<h4><a href="adjustable-values.html">adjustableValues</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">adjustableValues</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/descriptor-bytes.html">descriptorBytes</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">descriptorBytes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/id.html">id</a></p>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="../../baaahs/-shader-id/index.html"><span class="identifier">ShaderId</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">adjustableValues</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">AdjustableValue</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -97,46 +78,33 @@
 <tbody>
 <tr>
 <td>
-<p><a href="create-buffer.html">createBuffer</a></p>
+<h4><a href="create-buffer.html">createBuffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">GlslShader.Buffer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createBuffer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="create-renderer.html">createRenderer</a></p>
+<h4><a href="create-renderer.html">createRenderer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface, baaahs.RenderContext)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface, baaahs.RenderContext)/renderContext">renderContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-render-context/index.html"><span class="identifier">RenderContext</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-renderer/index.html"><span class="identifier">GlslShader.Renderer</span></a></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-renderer/index.html"><span class="identifier">GlslShader.Renderer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface, baaahs.RenderContext)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface, baaahs.RenderContext)/renderContext">renderContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-render-context/index.html"><span class="identifier">RenderContext</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Renderer</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$createRenderer(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Renderer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="read-buffer.html">readBuffer</a></p>
+<h4><a href="read-buffer.html">readBuffer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-buffer/index.html"><span class="identifier">GlslShader.Buffer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">readBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$readBuffer(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="serialize-config.html">serializeConfig</a></p>
+<h4><a href="serialize-config.html">serializeConfig</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
 <p>Override if your shader has static configuration that needs to be shared with the Renderer.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<h3>Inherited Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../baaahs/-shader/serialize.html">serialize</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">serializeConfig</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader$serializeConfig(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -145,10 +113,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="extra-adjustables.html">extraAdjustables</a></p>
+<h4><a href="extra-adjustables.html">extraAdjustables</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">extraAdjustables</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">extraAdjustables</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">AdjustableValue</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -157,14 +125,14 @@
 <tbody>
 <tr>
 <td>
-<p><a href="find-adjustable-values.html">findAdjustableValues</a></p>
+<h4><a href="find-adjustable-values.html">findAdjustableValues</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">findAdjustableValues</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader.Companion$findAdjustableValues(kotlin.String)/glslFragmentShader">glslFragmentShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="-adjustable-value/index.html"><span class="identifier">GlslShader.AdjustableValue</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">findAdjustableValues</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader.Companion$findAdjustableValues(kotlin.String)/glslFragmentShader">glslFragmentShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">AdjustableValue</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="parse.html">parse</a></p>
+<h4><a href="parse.html">parse</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.GlslShader.Companion$parse(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">GlslShader</span></a></code></td>

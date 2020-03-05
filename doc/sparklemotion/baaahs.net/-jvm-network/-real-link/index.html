@@ -8,23 +8,23 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.net</a>&nbsp;/&nbsp;<a href="../index.html">JvmNetwork</a>&nbsp;/&nbsp;<a href="./index.html">RealLink</a><br/>
 <br/>
 <h1>RealLink</h1>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RealLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../-network/-link/index.html"><span class="identifier">Network.Link</span></a></code>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RealLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="-jvm-udp-socket/index.html">JvmUdpSocket</a></p>
+<h4><a href="-jvm-udp-socket/index.html">JvmUdpSocket</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">JvmUdpSocket</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../-network/-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">JvmUdpSocket</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpSocket</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-ktor-http-server/index.html">KtorHttpServer</a></p>
+<h4><a href="-ktor-http-server/index.html">KtorHttpServer</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">KtorHttpServer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../-network/-http-server/index.html"><span class="identifier">Network.HttpServer</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">KtorHttpServer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">HttpServer</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,7 +33,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">RealLink</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
@@ -45,14 +45,14 @@
 <tbody>
 <tr>
 <td>
-<p><a href="my-address.html">myAddress</a></p>
+<h4><a href="my-address.html">myAddress</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">myAddress</span><span class="symbol">: </span><a href="../-ip-address/index.html"><span class="identifier">JvmNetwork.IpAddress</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">myAddress</span><span class="symbol">: </span><span class="identifier">IpAddress</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="udp-mtu.html">udpMtu</a></p>
+<h4><a href="udp-mtu.html">udpMtu</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">udpMtu</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
@@ -64,24 +64,24 @@
 <tbody>
 <tr>
 <td>
-<p><a href="connect-web-socket.html">connectWebSocket</a></p>
+<h4><a href="connect-web-socket.html">connectWebSocket</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">connectWebSocket</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-address.html"><span class="identifier">Network.Address</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-web-socket-listener/index.html"><span class="identifier">Network.WebSocketListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-network/-tcp-connection/index.html"><span class="identifier">Network.TcpConnection</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">connectWebSocket</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/toAddress">toAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$connectWebSocket(baaahs.net.Network.Address, kotlin.Int, kotlin.String, baaahs.net.Network.WebSocketListener)/webSocketListener">webSocketListener</span><span class="symbol">:</span>&nbsp;<span class="identifier">WebSocketListener</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">TcpConnection</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="listen-udp.html">listenUdp</a></p>
+<h4><a href="listen-udp.html">listenUdp</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<a href="../../-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-network/-udp-socket/index.html"><span class="identifier">Network.UdpSocket</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">listenUdp</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$listenUdp(kotlin.Int, baaahs.net.Network.UdpListener)/udpListener">udpListener</span><span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UdpSocket</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="start-http-server.html">startHttpServer</a></p>
+<h4><a href="start-http-server.html">startHttpServer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">startHttpServer</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$startHttpServer(kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-ktor-http-server/index.html"><span class="identifier">JvmNetwork.RealLink.KtorHttpServer</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">startHttpServer</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink$startHttpServer(kotlin.Int)/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">KtorHttpServer</span></code></td>
 </tr>
 </tbody>
 </table>

@@ -8,105 +8,37 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">Shader</a>&nbsp;/&nbsp;<a href="./index.html">Renderer</a><br/>
 <br/>
 <h1>Renderer</h1>
-<code><span class="keyword">interface </span><span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">interface </span><span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">&gt;</span></code>
 <h3>Functions</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<p><a href="begin-frame.html">beginFrame</a></p>
+<h4><a href="begin-frame.html">beginFrame</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">beginFrame</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="index.html#B"><span class="identifier">B</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">beginFrame</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">B</span><span class="symbol">, </span><span class="identifier" id="baaahs.Shader.Renderer$beginFrame(baaahs.Shader.Renderer.B, kotlin.Int)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="draw.html">draw</a></p>
+<h4><a href="draw.html">draw</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader.Renderer$draw(baaahs.Shader.Renderer.B, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="index.html#B"><span class="identifier">B</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Shader.Renderer$draw(baaahs.Shader.Renderer.B, kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-color/index.html"><span class="identifier">Color</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="identifier" id="baaahs.Shader.Renderer$draw(baaahs.Shader.Renderer.B, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">B</span><span class="symbol">, </span><span class="identifier" id="baaahs.Shader.Renderer$draw(baaahs.Shader.Renderer.B, kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-color/index.html"><span class="identifier">Color</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="end-frame.html">endFrame</a></p>
+<h4><a href="end-frame.html">endFrame</a></h4>
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">endFrame</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="release.html">release</a></p>
+<h4><a href="release.html">release</a></h4>
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-compositor-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span><span class="symbol">&lt;</span><span class="identifier">A</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">, </span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-compositor-shader/-buffer/index.html"><span class="identifier">CompositorShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-glsl-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-glsl-shader/-buffer/index.html"><span class="identifier">GlslShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-heart-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-heart-shader/-buffer/index.html"><span class="identifier">HeartShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-pixel-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-pixel-shader/-buffer/index.html"><span class="identifier">PixelShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-random-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-random-shader/-buffer/index.html"><span class="identifier">RandomShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-simple-spatial-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-simple-spatial-shader/-buffer/index.html"><span class="identifier">SimpleSpatialShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-sine-wave-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-sine-wave-shader/-buffer/index.html"><span class="identifier">SineWaveShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-solid-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-solid-shader/-buffer/index.html"><span class="identifier">SolidShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="../../../baaahs.shaders/-sparkle-shader/-renderer/index.html">Renderer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Shader.Renderer</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.shaders/-sparkle-shader/-buffer/index.html"><span class="identifier">SparkleShader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

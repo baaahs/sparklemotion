@@ -14,17 +14,17 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-ip-address/index.html">IpAddress</a></p>
+<h4><a href="-ip-address/index.html">IpAddress</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">IpAddress</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-network/-address.html"><span class="identifier">Network.Address</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">IpAddress</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Address</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-real-link/index.html">RealLink</a></p>
+<h4><a href="-real-link/index.html">RealLink</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RealLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-network/-link/index.html"><span class="identifier">Network.Link</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RealLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,7 +33,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
 <code><span class="identifier">JvmNetwork</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
@@ -45,10 +45,10 @@
 <tbody>
 <tr>
 <td>
-<p><a href="link.html">link</a></p>
+<h4><a href="link.html">link</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-real-link/index.html"><span class="identifier">JvmNetwork.RealLink</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">RealLink</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -57,38 +57,38 @@
 <tbody>
 <tr>
 <td>
-<p><a href="broadcast-address.html">broadcastAddress</a></p>
+<h4><a href="broadcast-address.html">broadcastAddress</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">broadcastAddress</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html"><span class="identifier">InetAddress</span></a><span class="symbol">!</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="logger.html">logger</a></p>
+<h4><a href="logger.html">logger</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-m-a-x_-u-d-p_-s-i-z-e.html">MAX_UDP_SIZE</a></p>
+<h4><a href="-m-a-x_-u-d-p_-s-i-z-e.html">MAX_UDP_SIZE</a></h4>
 </td>
 <td>
 <code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">MAX_UDP_SIZE</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="my-address.html">myAddress</a></p>
+<h4><a href="my-address.html">myAddress</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">myAddress</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html"><span class="identifier">InetAddress</span></a><span class="symbol">!</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="network-scope.html">networkScope</a></p>
+<h4><a href="network-scope.html">networkScope</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">networkScope</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">networkScope</span><span class="symbol">: </span><span class="identifier">CoroutineScope</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -97,7 +97,7 @@
 <tbody>
 <tr>
 <td>
-<p><a href="msg-id.html">msgId</a></p>
+<h4><a href="msg-id.html">msgId</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">msgId</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.Companion$msgId(kotlin.ByteArray)/data">data</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>

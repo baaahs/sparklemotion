@@ -13,543 +13,530 @@
 <tbody>
 <tr>
 <td>
-<p><a href="-anonymous-surface/index.html">AnonymousSurface</a></p>
+<h4><a href="-anonymous-surface/index.html">AnonymousSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">AnonymousSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code>
 <p>A surface whose identity isn't known.</p>
-</td>
+<code><span class="keyword">class </span><span class="identifier">AnonymousSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-beat-data/index.html">BeatData</a></p>
+<h4><a href="-beat-data/index.html">BeatData</a></h4>
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">BeatData</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-beat-link-beat-source/index.html">BeatLinkBeatSource</a></p>
+<h4><a href="-beat-link-beat-source/index.html">BeatLinkBeatSource</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-source/index.html"><span class="identifier">BeatSource</span></a></code>
 <p>Listens to all connected CDJs' beat and tempo updates.</p>
-</td>
+<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-source/index.html"><span class="identifier">BeatSource</span></a><span class="symbol">, </span><span class="identifier">BeatListener</span><span class="symbol">, </span><span class="identifier">OnAirListener</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-beat-source/index.html">BeatSource</a></p>
+<h4><a href="-beat-source/index.html">BeatSource</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">BeatSource</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-brain/index.html">Brain</a></p>
+<h4><a href="-brain/index.html">Brain</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Brain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">Brain</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-brain-display/index.html">BrainDisplay</a></p>
+<h4><a href="-brain-display/index.html">BrainDisplay</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">BrainDisplay</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-brain-id/index.html">BrainId</a></p>
+<h4><a href="-brain-id/index.html">BrainId</a></h4>
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">BrainId</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-brain-info/index.html">BrainInfo</a></p>
+<h4><a href="-brain-info/index.html">BrainInfo</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">BrainInfo</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-clock/index.html">Clock</a></p>
+<h4><a href="-clock/index.html">Clock</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Clock</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-color/index.html">Color</a></p>
+<h4><a href="-color/index.html">Color</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Color</span></code>
 <p>Canonical representation of a color.</p>
-</td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Color</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-config/index.html">Config</a></p>
+<h4><a href="-config/index.html">Config</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">Config</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-decom2019-model/index.html">Decom2019Model</a></p>
+<h4><a href="-decom2019-model/index.html">Decom2019Model</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Decom2019Model</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><a href="-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Decom2019Model</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><span class="identifier">Surface</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-directory-daddy/index.html">DirectoryDaddy</a></p>
+<h4><a href="-directory-daddy/index.html">DirectoryDaddy</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">DirectoryDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-display/index.html">Display</a></p>
+<h4><a href="-display/index.html">Display</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Display</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-dmx/index.html">Dmx</a></p>
+<h4><a href="-dmx/index.html">Dmx</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">Dmx</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-firmware-daddy/index.html">FirmwareDaddy</a></p>
+<h4><a href="-firmware-daddy/index.html">FirmwareDaddy</a></h4>
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">FirmwareDaddy</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-gadget/index.html">Gadget</a></p>
+<h4><a href="-gadget/index.html">Gadget</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Gadget</span></code>
 <p>Base class for user input gadgets.</p>
-</td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Gadget</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-gadget-data/index.html">GadgetData</a></p>
+<h4><a href="-gadget-data/index.html">GadgetData</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">GadgetData</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-gadget-display/index.html">GadgetDisplay</a></p>
+<h4><a href="-gadget-display/index.html">GadgetDisplay</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">GadgetDisplay</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-gadget-manager/index.html">GadgetManager</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">GadgetManager</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-gadget-value-observer/index.html">GadgetValueObserver</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">GadgetValueObserver</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-hosted-web-app/index.html">HostedWebApp</a></p>
-</td>
-<td>
-<code><span class="keyword">external</span> <span class="keyword">interface </span><span class="identifier">HostedWebApp</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-identified-surface/index.html">IdentifiedSurface</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">IdentifiedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code>
-<p>A surface which has been associated with a specific <a href="-model/-surface/index.html">Model.Surface</a>.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-brain-display/index.html">JsBrainDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsBrainDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-brain-display/index.html"><span class="identifier">BrainDisplay</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-clock/index.html">JsClock</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-display/index.html">JsDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-display/index.html"><span class="identifier">Display</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-mapper-ui/index.html">JsMapperUi</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsMapperUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-network-display/index.html">JsNetworkDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsNetworkDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-network-display/index.html"><span class="identifier">NetworkDisplay</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-pinky-display/index.html">JsPinkyDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsPinkyDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-js-visualizer-display/index.html">JsVisualizerDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsVisualizerDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-visualizer-display/index.html"><span class="identifier">VisualizerDisplay</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-jvm-pixels-display/index.html">JvmPixelsDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmPixelsDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pixels/index.html"><span class="identifier">Pixels</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-jvm-sound-analyzer/index.html">JvmSoundAnalyzer</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmSoundAnalyzer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-sound-analyzer/index.html"><span class="identifier">SoundAnalyzer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-launcher/index.html">Launcher</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Launcher</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-logger/index.html">Logger</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Logger</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-mapper/index.html">Mapper</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a><span class="symbol">, </span><a href="-mapper-ui/-listener/index.html"><span class="identifier">MapperUi.Listener</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-mapper-ui/index.html">MapperUi</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">MapperUi</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-media-devices/index.html">MediaDevices</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">MediaDevices</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-model/index.html">Model</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Model</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-moving-head/index.html">MovingHead</a></p>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">MovingHead</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-moving-head-display/index.html">MovingHeadDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">MovingHeadDisplay</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-moving-head-manager/index.html">MovingHeadManager</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">MovingHeadManager</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-network-display/index.html">NetworkDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">NetworkDisplay</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-obj-model/index.html">ObjModel</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ObjModel</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><a href="-obj-model/index.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-panel-info/index.html">PanelInfo</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PanelInfo</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-permissive-firmware-daddy/index.html">PermissiveFirmwareDaddy</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PermissiveFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pinky/index.html">Pinky</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Pinky</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.net/-network/-udp-listener/index.html"><span class="identifier">Network.UdpListener</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pinky-display/index.html">PinkyDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PinkyDisplay</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pinky-main/index.html">PinkyMain</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PinkyMain</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pixels/index.html">Pixels</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Pixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterable/index.html"><span class="identifier">Iterable</span></a><span class="symbol">&lt;</span><a href="-color/index.html"><span class="identifier">Color</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pluggables/index.html">Pluggables</a></p>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Pluggables</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-pooled-renderer/index.html">PooledRenderer</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PooledRenderer</span></code>
-<p>If a <a href="-shader/-renderer/index.html">Shader.Renderer</a> implements <a href="-pooled-renderer/index.html">PooledRenderer</a> and pixel prerendering is enabled on Pinky,
-then the drawing cycle will look like this:</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="-pub-sub/index.html">PubSub</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PubSub</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-real-fs/index.html">RealFs</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">RealFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-render-context/index.html">RenderContext</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">RenderContext</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-shader/index.html">Shader</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Shader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-shader/-buffer/index.html"><span class="identifier">Shader.Buffer</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-shader-id/index.html">ShaderId</a></p>
-</td>
-<td>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">ShaderId</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-shader-reader/index.html">ShaderReader</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderReader</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-sheep-model/index.html">SheepModel</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SheepModel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><a href="-sheep-model/-panel/index.html"><span class="identifier">SheepModel.Panel</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-sheep-simulator/index.html">SheepSimulator</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SheepSimulator</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-show/index.html">Show</a></p>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Show</span></code>
-<p>A show takes input from gadgets and uses it to configure shaders, creating pretty stuff on surfaces.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="-show-runner/index.html">ShowRunner</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ShowRunner</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-simulator-bridge/index.html">SimulatorBridge</a></p>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">SimulatorBridge</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-sound-analyzer/index.html">SoundAnalyzer</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">SoundAnalyzer</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-sparkle-motion/index.html">SparkleMotion</a></p>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">SparkleMotion</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-strict-firmware-daddy/index.html">StrictFirmwareDaddy</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">StrictFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-stub-pinky-display/index.html">StubPinkyDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">StubPinkyDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-sui-generis-model/index.html">SuiGenerisModel</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SuiGenerisModel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><a href="-model/-surface/index.html"><span class="identifier">Model.Surface</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-surface/index.html">Surface</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Surface</span></code>
-<p>Represents a surface whose lighting can be controlled.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="-system-clock/index.html">SystemClock</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SystemClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-topics/index.html">Topics</a></p>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Topics</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-visualizer-display/index.html">VisualizerDisplay</a></p>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">VisualizerDisplay</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="-web-ui/index.html">WebUi</a></p>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">WebUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Type Aliases</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="-gadget-listener.html">GadgetListener</a></p>
+<h4><a href="-gadget-listener.html">GadgetListener</a></h4>
 </td>
 <td>
 <code><span class="keyword">typealias </span><span class="identifier">GadgetListener</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><a href="-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="-time.html">Time</a></p>
+<h4><a href="-gadget-manager/index.html">GadgetManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">GadgetManager</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-gadget-value-observer/index.html">GadgetValueObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">GadgetValueObserver</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-hosted-web-app/index.html">HostedWebApp</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HostedWebApp</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-identified-surface/index.html">IdentifiedSurface</a></h4>
+</td>
+<td>
+<p>A surface which has been associated with a specific <a href="-model/-surface/index.html">Model.Surface</a>.</p>
+<code><span class="keyword">class </span><span class="identifier">IdentifiedSurface</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-surface/index.html"><span class="identifier">Surface</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-brain-display/index.html">JsBrainDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsBrainDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-brain-display/index.html"><span class="identifier">BrainDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-clock/index.html">JsClock</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-display/index.html">JsDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-display/index.html"><span class="identifier">Display</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-mapper-ui/index.html">JsMapperUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsMapperUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-network-display/index.html">JsNetworkDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsNetworkDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-network-display/index.html"><span class="identifier">NetworkDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-pinky-display/index.html">JsPinkyDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsPinkyDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-js-visualizer-display/index.html">JsVisualizerDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsVisualizerDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-visualizer-display/index.html"><span class="identifier">VisualizerDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-jvm-pixels-display/index.html">JvmPixelsDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JvmPixelsDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pixels/index.html"><span class="identifier">Pixels</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-jvm-sound-analyzer/index.html">JvmSoundAnalyzer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JvmSoundAnalyzer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-sound-analyzer/index.html"><span class="identifier">SoundAnalyzer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-launcher/index.html">Launcher</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Launcher</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-logger/index.html">Logger</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Logger</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mapper/index.html">Mapper</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span><span class="symbol">, </span><span class="identifier">Listener</span><span class="symbol">, </span><span class="identifier">CoroutineScope</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mapper-ui/index.html">MapperUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MapperUi</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-media-devices/index.html">MediaDevices</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MediaDevices</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-model/index.html">Model</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Model</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-moving-head/index.html">MovingHead</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">MovingHead</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-moving-head-display/index.html">MovingHeadDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadDisplay</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-moving-head-manager/index.html">MovingHeadManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadManager</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-network-display/index.html">NetworkDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">NetworkDisplay</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-obj-model/index.html">ObjModel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ObjModel</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-panel-info/index.html">PanelInfo</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PanelInfo</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-permissive-firmware-daddy/index.html">PermissiveFirmwareDaddy</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PermissiveFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pinky/index.html">Pinky</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Pinky</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pinky-display/index.html">PinkyDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">PinkyDisplay</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pinky-main/index.html">PinkyMain</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PinkyMain</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixels/index.html">Pixels</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Pixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterable/index.html"><span class="identifier">Iterable</span></a><span class="symbol">&lt;</span><a href="-color/index.html"><span class="identifier">Color</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pluggables/index.html">Pluggables</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Pluggables</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pooled-renderer/index.html">PooledRenderer</a></h4>
+</td>
+<td>
+<p>If a <a href="-shader/-renderer/index.html">Shader.Renderer</a> implements <a href="-pooled-renderer/index.html">PooledRenderer</a> and pixel prerendering is enabled on Pinky,
+then the drawing cycle will look like this:</p>
+<code><span class="keyword">interface </span><span class="identifier">PooledRenderer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pub-sub/index.html">PubSub</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PubSub</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-real-fs/index.html">RealFs</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RealFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-render-context/index.html">RenderContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">RenderContext</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader/index.html">Shader</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Shader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-id/index.html">ShaderId</a></h4>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">ShaderId</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-reader/index.html">ShaderReader</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShaderReader</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sheep-model/index.html">SheepModel</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SheepModel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><span class="identifier">Panel</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sheep-simulator/index.html">SheepSimulator</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SheepSimulator</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show/index.html">Show</a></h4>
+</td>
+<td>
+<p>A show takes input from gadgets and uses it to configure shaders, creating pretty stuff on surfaces.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Show</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-runner/index.html">ShowRunner</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ShowRunner</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-simulator-bridge/index.html">SimulatorBridge</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">SimulatorBridge</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sound-analyzer/index.html">SoundAnalyzer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SoundAnalyzer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sparkle-motion/index.html">SparkleMotion</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">SparkleMotion</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-strict-firmware-daddy/index.html">StrictFirmwareDaddy</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">StrictFirmwareDaddy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-stub-pinky-display/index.html">StubPinkyDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">StubPinkyDisplay</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pinky-display/index.html"><span class="identifier">PinkyDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sui-generis-model/index.html">SuiGenerisModel</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SuiGenerisModel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-obj-model/index.html"><span class="identifier">ObjModel</span></a><span class="symbol">&lt;</span><span class="identifier">Surface</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-surface/index.html">Surface</a></h4>
+</td>
+<td>
+<p>Represents a surface whose lighting can be controlled.</p>
+<code><span class="keyword">interface </span><span class="identifier">Surface</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-system-clock/index.html">SystemClock</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SystemClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-time.html">Time</a></h4>
 </td>
 <td>
 <code><span class="keyword">typealias </span><span class="identifier">Time</span>&nbsp;<span class="symbol">=</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-topics/index.html">Topics</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Topics</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-visualizer-display/index.html">VisualizerDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VisualizerDisplay</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-web-ui/index.html">WebUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">WebUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -558,21 +545,28 @@ then the drawing cycle will look like this:</p>
 <tbody>
 <tr>
 <td>
-<p><a href="kotlin.collections.-collection/index.html">kotlin.collections.Collection</a></p>
+<h4><a href="kotlin.collections.-collection/index.html">kotlin.collections.Collection</a></h4>
 </td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<p><a href="kotlin.collections.-list/index.html">kotlin.collections.List</a></p>
+<h4><a href="kotlin.collections.-list/index.html">kotlin.collections.List</a></h4>
 </td>
 <td>
 </td>
 </tr>
 <tr>
 <td>
-<p><a href="org.w3c.dom.-element/index.html">org.w3c.dom.Element</a></p>
+<h4><a href="kotlinx.serialization.-k-serializer/index.html">kotlinx.serialization.KSerializer</a></h4>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<h4><a href="org.w3c.dom.-element/index.html">org.w3c.dom.Element</a></h4>
 </td>
 <td>
 </td>
@@ -584,17 +578,17 @@ then the drawing cycle will look like this:</p>
 <tbody>
 <tr>
 <td>
-<p><a href="-gadget-data-serializer.html">GadgetDataSerializer</a></p>
+<h4><a href="-gadget-data-serializer.html">GadgetDataSerializer</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">GadgetDataSerializer</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">GadgetDataSerializer</span><span class="symbol">: </span><span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="gadget-module.html">gadgetModule</a></p>
+<h4><a href="gadget-module.html">gadgetModule</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">gadgetModule</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">gadgetModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -603,84 +597,77 @@ then the drawing cycle will look like this:</p>
 <tbody>
 <tr>
 <td>
-<p><a href="array.html">array</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="array.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">array</span><span class="symbol">(</span><span class="identifier" id="baaahs$array(((baaahs.array.T)), kotlin.reflect.KClass((baaahs.array.T)))/kKlass">kKlass</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><a href="array.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="array.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<p><a href="clear.html">clear</a></p>
+<h4><a href="clear.html">clear</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">clear</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="constrain.html">constrain</a></p>
+<h4><a href="constrain.html">constrain</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">constrain</span><span class="symbol">(</span><span class="identifier" id="baaahs$constrain(kotlin.Float, kotlin.Float, kotlin.Float)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$constrain(kotlin.Float, kotlin.Float, kotlin.Float)/minValue">minValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$constrain(kotlin.Float, kotlin.Float, kotlin.Float)/maxValue">maxValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="context2d.html">context2d</a></p>
+<h4><a href="context2d.html">context2d</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">context2d</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="decode-base64.html">decodeBase64</a></p>
+<h4><a href="decode-base64.html">decodeBase64</a></h4>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">decodeBase64</span><span class="symbol">(</span><span class="identifier" id="baaahs$decodeBase64(kotlin.String)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">decodeBase64</span><span class="symbol">(</span><span class="identifier" id="baaahs$decodeBase64(kotlin.String)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="do-run-blocking.html">doRunBlocking</a></p>
+<h4><a href="do-run-blocking.html">doRunBlocking</a></h4>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">doRunBlocking</span><span class="symbol">(</span><span class="identifier" id="baaahs$doRunBlocking(kotlin.coroutines.SuspendFunction0((kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="keyword">suspend </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">doRunBlocking</span><span class="symbol">(</span><span class="identifier" id="baaahs$doRunBlocking(kotlin.coroutines.SuspendFunction0((kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="keyword">suspend </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="first.html">first</a></p>
+<h4><a href="first.html">first</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">first</span><span class="symbol">(</span><span class="identifier" id="baaahs$first(, kotlin.String)/className">className</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="first.html#T"><span class="identifier">T</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">first</span><span class="symbol">(</span><span class="identifier" id="baaahs$first(, kotlin.String)/className">className</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="for-each.html">forEach</a></p>
+<h4><a href="for-each.html">forEach</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="for-each.html#T"><span class="identifier">T</span></a><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">forEach</span><span class="symbol">(</span><span class="identifier" id="baaahs$forEach(((baaahs.forEach.T)), kotlin.Function1((baaahs.forEach.T, kotlin.Unit)))/action">action</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="for-each.html#T"><span class="identifier">T</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">forEach</span><span class="symbol">(</span><span class="identifier" id="baaahs$forEach(((baaahs.forEach.T)), kotlin.Function1((baaahs.forEach.T, kotlin.Unit)))/action">action</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="get-resource.html">getResource</a></p>
+<h4><a href="get-resource.html">getResource</a></h4>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">getResource</span><span class="symbol">(</span><span class="identifier" id="baaahs$getResource(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">getResource</span><span class="symbol">(</span><span class="identifier" id="baaahs$getResource(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="get-time-millis.html">getTimeMillis</a></p>
+<h4><a href="get-time-millis.html">getTimeMillis</a></h4>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">getTimeMillis</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><span class="identifier">Long</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">getTimeMillis</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><span class="identifier">Long</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="log.html">log</a></p>
+<h4><a href="log.html">log</a></h4>
 </td>
 <td>
-<code><span class="keyword">expect</span> <span class="keyword">fun </span><span class="identifier">log</span><span class="symbol">(</span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/exception">exception</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html"><span class="identifier">Throwable</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">log</span><span class="symbol">(</span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$log(kotlin.String, kotlin.String, kotlin.String, kotlin.Throwable)/exception">exception</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html"><span class="identifier">Throwable</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="main.html">main</a></p>
+<h4><a href="main.html">main</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="identifier" id="baaahs$main(kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
@@ -688,17 +675,17 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<p><a href="random-delay.html">randomDelay</a></p>
+<h4><a href="random-delay.html">randomDelay</a></h4>
 </td>
 <td>
 <code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">randomDelay</span><span class="symbol">(</span><span class="identifier" id="baaahs$randomDelay(kotlin.Int)/timeMs">timeMs</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<p><a href="to-radians.html">toRadians</a></p>
+<h4><a href="to-radians.html">toRadians</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">toRadians</span><span class="symbol">(</span><span class="identifier" id="baaahs$toRadians(kotlin.Float)/degrees">degrees</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">toRadians</span><span class="symbol">(</span><span class="identifier" id="baaahs$toRadians(kotlin.Float)/degrees">degrees</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
 </tr>
 </tbody>
 </table>
