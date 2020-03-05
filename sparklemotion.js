@@ -6490,23 +6490,19 @@
     var tmp$;
     switch (name) {
       case 'Decom2019':
-        var $receiver = new Decom2019Model();
-        $receiver.load();
-        tmp$ = $receiver;
+        tmp$ = new Decom2019Model();
         break;
       case 'SuiGeneris':
-        var $receiver_0 = new SuiGenerisModel();
-        $receiver_0.load();
-        tmp$ = $receiver_0;
+        tmp$ = new SuiGenerisModel();
         break;
       case 'BAAAHS':
-        var $receiver_1 = new SheepModel();
-        $receiver_1.load();
-        tmp$ = $receiver_1;
+        tmp$ = new SheepModel();
         break;
       default:throw IllegalArgumentException_init('unknown model ' + '"' + name + '"');
     }
-    return tmp$;
+    var $receiver = tmp$;
+    $receiver.load();
+    return $receiver;
   };
   Pluggables.$metadata$ = {
     kind: Kind_OBJECT,
