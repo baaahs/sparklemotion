@@ -268,7 +268,6 @@ tasks.create<JavaExec>("runBrainJvm") {
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
-    args = listOf(projectDir.absolutePath)
 }
 
 tasks.create<JavaExec>("runBridgeJvm") {
@@ -276,7 +275,6 @@ tasks.create<JavaExec>("runBridgeJvm") {
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
-    args = listOf(projectDir.absolutePath)
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
