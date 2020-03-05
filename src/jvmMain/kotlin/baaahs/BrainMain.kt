@@ -2,6 +2,9 @@ package baaahs
 
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
+import com.xenomachina.argparser.mainBody
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -9,6 +12,7 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
+import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -16,26 +20,49 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
-    val model = SheepModel().apply { load() } as Model<*>
+    mainBody(BrainMain::class.simpleName) {
+        BrainMain(ArgParser(args).parseInto(BrainMain::Args)).run()
+    }
+}
 
-    val network = JvmNetwork()
-    val brain = Brain(JvmNetwork.myAddress.toString(), network, object : BrainDisplay {
-        override var id: String? = null
-        override var surface: Surface? = null
-        override var onReset: suspend () -> Unit = {}
-        override fun haveLink(link: Network.Link) {
-            println("Brain has a link!")
+class BrainMain(private val args: Args) {
+    fun run() {
+        val model = Pluggables.loadModel(args.modelName)
+
+        val network = JvmNetwork()
+        val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
+        val brain = Brain(brainId, network, object : BrainDisplay {
+            override var id: String? = null
+            override var surface: Surface? = null
+            override var onReset: suspend () -> Unit = {}
+            override fun haveLink(link: Network.Link) {
+                println("Brain has a link!")
+            }
+        }, JvmPixelsDisplay(2000))
+
+        val mySurface = if (args.anonymous) {
+            null
+        } else if (args.surfaceName == null) {
+            if (Random.nextBoolean()) model.allSurfaces.random()!! else null
+        } else {
+            model.allSurfaces.find { it.name == args.surfaceName }
+                ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")
         }
-    }, JvmPixelsDisplay(2000))
+        println("I'll be ${mySurface?.name ?: "anonymous"}!")
+        mySurface?.let { brain.forcedSurfaceName(mySurface.name) }
 
-    val mySurface = if (Random.nextBoolean()) { model.allSurfaces.random()!! } else { null }
-    println("I'll be ${mySurface?.name ?: "anonymous"}!")
-    mySurface?.let { brain.forcedSurfaceName(mySurface.name) }
+        GlobalScope.launch { brain.run() }
 
-    GlobalScope.launch { brain.run() }
+        doRunBlocking {
+            delay(200000L)
+        }
+    }
 
-    doRunBlocking {
-        delay(200000L)
+    class Args(parser: ArgParser) {
+        val modelName by parser.storing("model").default(Pluggables.defaultModel)
+        val brainId by parser.storing("brain ID").default<String?>(null)
+        val surfaceName by parser.storing("surface name").default<String?>(null)
+        val anonymous by parser.flagging("anonymous surface").default(false)
     }
 }
 
