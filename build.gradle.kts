@@ -240,10 +240,6 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
-tasks.create<Exec>("installReactUImodules") {
-    commandLine = listOf("npm", "install")
-}
-
 val dokka by tasks.getting(DokkaTask::class) {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
