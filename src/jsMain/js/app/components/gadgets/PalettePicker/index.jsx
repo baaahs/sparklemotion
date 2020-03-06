@@ -1,5 +1,6 @@
 import React from 'react';
 import ColorWheel from '../../ColorWheel';
+import { kotlin } from 'sparklemotion';
 
 class PalettePicker extends React.Component {
   constructor(props) {
@@ -19,8 +20,9 @@ class PalettePicker extends React.Component {
   }
 
   _handleChangeFromUi = (colors) => {
+    console.log(`kotlin`,kotlin);
     this.setState({ colors });
-    this.props.gadget.colors = new kotlin.kotlin.collections.ArrayList(colors);
+    this.props.gadget.colors = new kotlin.collections.ArrayList(colors);
   };
 
   _handleChangeFromServer = () => {
