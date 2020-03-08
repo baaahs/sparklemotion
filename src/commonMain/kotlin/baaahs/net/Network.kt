@@ -1,6 +1,5 @@
 package baaahs.net
 
-import baaahs.io.ByteArrayWriter
 import baaahs.proto.Message
 
 interface Network {
