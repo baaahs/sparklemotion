@@ -1,6 +1,5 @@
 package baaahs.net
 
-import baaahs.io.ByteArrayWriter
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Int8Array
 import org.khronos.webgl.get
