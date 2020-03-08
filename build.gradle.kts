@@ -15,6 +15,7 @@ val ktor_version = "1.3.1"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
 val lwjglVersion = "3.2.3"
+val spek_version = "2.0.10"
 
 buildscript {
     val kotlin_version = "1.3.70"
@@ -95,6 +96,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("org.spekframework.spek2:spek-dsl-metadata:$spek_version")
             }
         }
 
@@ -135,7 +137,13 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
+
+                implementation("org.spekframework.spek2:spek-dsl-jvm:$spek_version")
+                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
+                // spek requires kotlin-reflect, can be omitted if already in the classpath
+                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
                 implementation("io.mockk:mockk:1.9.3")
@@ -182,6 +190,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
+                implementation("org.spekframework.spek2:spek-dsl-js:$spek_version")
             }
         }
 
@@ -305,6 +314,12 @@ tasks.create<ShadowJar>("shadowJar") {
     configurations = listOf(project.configurations["jvmRuntimeClasspath"])
     manifest {
         attributes["Main-Class"] = "baaahs.PinkyMainKt"
+    }
+}
+
+tasks.withType(Test::class) {
+    useJUnitPlatform {
+        includeEngines.add("spek2")
     }
 }
 
