@@ -1,9 +1,12 @@
 package baaahs
 
 import baaahs.browser.RealMediaDevices
+import baaahs.jsx.MosiacUI
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
+import kotlinext.js.jsObject
 import org.w3c.dom.get
+import react.createElement
 import react.dom.render
 import kotlin.browser.document
 import kotlin.browser.window
@@ -17,7 +20,14 @@ fun main(args: Array<String>) {
     val contentDiv = document.getElementById("content")
 
     when (mode) {
-        "Simulator" -> SheepSimulator().start()
+        "Simulator" -> {
+            // Run the simulator from within the new MosiacUI
+            val props = jsObject<MosiacUI.Props> {
+            }
+            val simulatorEl = document.getElementById("app")
+            render(createElement(MosiacUI::class.js, props), simulatorEl)
+            SheepSimulator().start()
+        }
 
         "Admin" -> {
             val adminApp = AdminUi(network, pinkyAddress)
