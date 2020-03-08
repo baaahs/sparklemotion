@@ -8,8 +8,8 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MappingResults
-import baaahs.mapper.Storage
 import baaahs.mapper.PinkyMapperHandlers
+import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -78,9 +78,7 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter {
-                PinkyMapperHandlers(storage).register(this)
-            }
+            WebSocketRouter { PinkyMapperHandlers(storage).register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }

@@ -63,6 +63,10 @@ class SheepSimulator {
             mapperUi
         }
 
+        launcher.add("Admin UI") {
+            AdminUi(network, pinky.address)
+        }
+
         val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
         val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
         val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)

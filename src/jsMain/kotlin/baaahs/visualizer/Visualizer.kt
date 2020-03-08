@@ -24,7 +24,6 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.MouseEvent
 import three.Matrix4
 import three.OrbitControls
-import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.math.PI
 import kotlin.math.cos
@@ -93,8 +92,7 @@ class Visualizer(
         scene.add(camera)
         renderer = WebGLRenderer()
         renderer.setPixelRatio(window.devicePixelRatio)
-        renderer.setSize(container.offsetWidth, container.offsetHeight)
-        container.addEventListener("resize", { doResize() })
+        resize()
 
         container.appendChild(renderer.domElement)
         geom = Geometry()
@@ -121,7 +119,7 @@ class Visualizer(
 
             resizeTaskId = window.setTimeout({
                 resizeTaskId = null
-                doResize()
+                resize()
             }, resizeDelay)
         })
     }
@@ -244,7 +242,7 @@ class Visualizer(
 
     private val resizeDelay = 100
 
-    private fun doResize() {
+    fun resize() {
         camera.aspect = container.offsetWidth.toDouble() / container.offsetHeight
         camera.updateProjectionMatrix()
         renderer.setSize(container.offsetWidth, container.offsetHeight)
