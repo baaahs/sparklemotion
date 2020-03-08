@@ -251,6 +251,7 @@ val dokka by tasks.getting(DokkaTask::class) {
 }
 
 tasks.create<JavaExec>("runPinkyJvm") {
+    dependsOn("compileKotlinJvm")
     dependsOn("jsBrowserDevelopmentWebpack")
     main = "baaahs.PinkyMainKt"
 
@@ -264,6 +265,7 @@ tasks.create<JavaExec>("runPinkyJvm") {
 }
 
 tasks.create<JavaExec>("runBrainJvm") {
+    dependsOn("compileKotlinJvm")
     main = "baaahs.BrainMainKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
@@ -271,6 +273,7 @@ tasks.create<JavaExec>("runBrainJvm") {
 }
 
 tasks.create<JavaExec>("runBridgeJvm") {
+    dependsOn("compileKotlinJvm")
     main = "baaahs.SimulatorBridgeKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
@@ -278,6 +281,7 @@ tasks.create<JavaExec>("runBridgeJvm") {
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
+    dependsOn("compileKotlinJvm")
     main = "org.junit.runner.JUnitCore"
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles

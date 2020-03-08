@@ -8,6 +8,8 @@ import baaahs.geom.Vector3F
 interface MappingResults {
     fun dataFor(brainId: BrainId): Info?
 
+    fun dataFor(surfaceName: String): Info?
+
     class Info(
         val surface: Model.Surface,
 
@@ -38,6 +40,10 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
     }
 
     override fun dataFor(brainId: BrainId): MappingResults.Info? = brainData[brainId]
+
+    override fun dataFor(surfaceName: String): MappingResults.Info? {
+        return brainData.values.find { it.surface.name == surfaceName }
+    }
 
     companion object {
         private val logger = Logger("SessionMappingResults")
