@@ -1,7 +1,9 @@
-package baaahs.mapper
+package baaahs.api.ws
 
 import baaahs.Logger
 import baaahs.imaging.Bitmap
+import baaahs.mapper.MappingSession
+import baaahs.mapper.Storage
 import baaahs.net.Network
 import baaahs.proto.Ports
 import com.soywiz.klock.DateTime
@@ -14,18 +16,18 @@ import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 
-class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
+class WebSocketClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
     CoroutineScope by MainScope() {
     private lateinit var tcpConnection: Network.TcpConnection
     private var connected = false
     private lateinit var responses: Channel<ByteArray>
 
     init {
-        link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/mapper", this)
+        link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/api", this)
     }
 
     suspend fun listSessions(): List<String> {
-        return MapperEndpoint.json.fromJson(String.serializer().list, sendCommand("listSessions"))
+        return WebSocketRouter.json.fromJson(String.serializer().list, sendCommand("listSessions"))
     }
 
     suspend fun saveImage(sessionStartTime: DateTime, name: String, bitmap: Bitmap): String {
@@ -47,7 +49,7 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
     }
 
     suspend fun saveSession(mappingSession: MappingSession) {
-        sendCommand("saveSession", MapperEndpoint.json.toJson(MappingSession.serializer(), mappingSession))
+        sendCommand("saveSession", WebSocketRouter.json.toJson(MappingSession.serializer(), mappingSession))
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
@@ -59,11 +61,11 @@ class MapperClient(link: Network.Link, address: Network.Address) : Network.WebSo
             logger.warn { "Mapper not connected to Pinky…" }
             delay(50)
         }
-        tcpConnection.send(MapperEndpoint.json.stringify(JsonArraySerializer, content).encodeToByteArray())
+        tcpConnection.send(WebSocketRouter.json.stringify(JsonArraySerializer, content).encodeToByteArray())
 
         val responseJsonStr = responses.receive().decodeToString()
         try {
-            val responseJson = MapperEndpoint.json.parseJson(responseJsonStr)
+            val responseJson = WebSocketRouter.json.parseJson(responseJsonStr)
             val status = responseJson.jsonObject.getPrimitive("status")
             val response = responseJson.jsonObject.getValue("response")
             when (status.contentOrNull) {

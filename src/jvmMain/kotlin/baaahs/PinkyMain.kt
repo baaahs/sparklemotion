@@ -12,6 +12,7 @@ import com.xenomachina.argparser.mainBody
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.http.content.*
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -22,6 +23,7 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
     mainBody(PinkyMain::class.simpleName) {
@@ -50,7 +52,7 @@ class PinkyMain(private val args: Args) {
         val dmxUniverse = findDmxUniverse()
 
         val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
-        beatLinkBeatSource.start()
+        thread(name = "BeatLinkBeatSource startup") { beatLinkBeatSource.start() }
 
         val fwUrlBase = "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
@@ -88,6 +90,9 @@ class PinkyMain(private val args: Args) {
             ktor.application.routing {
                 static {
                     resources("htdocs")
+                    route("admin") { default("htdocs/admin/index.html") }
+                    route("mapper") { default("htdocs/mapper/index.html") }
+                    route("ui") { default("htdocs/ui/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
@@ -99,11 +104,16 @@ class PinkyMain(private val args: Args) {
 
             ktor.application.routing {
                 static {
+                    staticRootFolder = jsResDir.toFile()
+
                     file("sparklemotion.js",
                         repoDir.resolve("build/distributions/sparklemotion.js").toFile())
 
                     files(jsResDir.toFile())
-                    default(jsResDir.resolve("ui-index.html").toFile())
+                    route("admin") { default("admin/index.html") }
+                    route("mapper") { default("mapper/index.html") }
+                    route("ui") { default("ui/index.html") }
+                    default("ui-index.html")
                 }
             }
         }

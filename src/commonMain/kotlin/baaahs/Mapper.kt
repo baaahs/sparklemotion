@@ -7,7 +7,7 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
-import baaahs.mapper.MapperClient
+import baaahs.api.ws.WebSocketClient
 import baaahs.mapper.MappingSession
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -34,7 +34,7 @@ class Mapper(
 
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
-    private lateinit var mapperClient: MapperClient
+    private lateinit var webSocketClient: WebSocketClient
     private var isRunning: Boolean = false
     private var isPaused: Boolean = false
     private var newIncomingImage: Image? = null
@@ -53,10 +53,10 @@ class Mapper(
     fun start() = doRunBlocking {
         link = FragmentingUdpLink(network.link())
         udpSocket = link.listenUdp(0, this)
-        mapperClient = MapperClient(link, pinkyAddress)
+        webSocketClient = WebSocketClient(link, pinkyAddress)
 
         launch {
-            mapperClient.listSessions().forEach { mapperUi.addExistingSession(it) }
+            webSocketClient.listSessions().forEach { mapperUi.addExistingSession(it) }
 
             onStart()
         }
@@ -179,7 +179,7 @@ class Mapper(
             baseBitmap = bitmap
             deltaBitmap = NativeBitmap(bitmap.width, bitmap.height)
 
-            val baseImageName = mapperClient.saveImage(sessionStartTime, "base", bitmap)
+            val baseImageName = webSocketClient.saveImage(sessionStartTime, "base", bitmap)
 
             mapperUi.showMessage("MAPPING…")
             mapperUi.showStats(brainsToMap.size, 0, -1)
@@ -305,7 +305,7 @@ class Mapper(
             // Save data.
             val mappingSession =
                 MappingSession(sessionStartTime.unixMillis, surfaces, cameraOrientation.cameraMatrix, baseImageName)
-            mapperClient.saveSession(mappingSession)
+            webSocketClient.saveSession(mappingSession)
 
             // We're done!
 
@@ -477,7 +477,7 @@ class Mapper(
             brainToMap.expectedPixelCount = firstGuessSurface.expectedPixelCount
             brainToMap.panelDeltaBitmap = deltaBitmap.clone()
             brainToMap.deltaImageName =
-                mapperClient.saveImage(sessionStartTime, "brain-${brainToMap.brainId}-$retryCount", deltaBitmap)
+                webSocketClient.saveImage(sessionStartTime, "brain-${brainToMap.brainId}-$retryCount", deltaBitmap)
         }
 
         private fun identifyBrainPixel(
