@@ -10,6 +10,8 @@ $dokka.location:baaahs.glsl$checkForGlError(com.danielgergely.kgl.Kgl)baaahs.gl
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 baaahs
+baaahs.admin
+baaahs.api.ws
 baaahs.browser
 baaahs.dmx
 baaahs.gadgets

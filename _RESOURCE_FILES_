@@ -1,4 +1,5 @@
 .nojekyll
+admin/index.html
 baaahs-model.obj
 baaahs-panel-info.txt
 baaahs/shows/AcidAtTheDisco.glsl
@@ -78,9 +79,11 @@ lib/OrbitControls.js
 lib/threejs-wrapper.js
 lib/threejs-wrapper.meta.js
 mapper-index.html
+mapper/index.html
 require.js
 styles.css
 sui-generis.obj
 three.js
 ui-index.html
+ui/index.html
 visualizer/textures/round.png

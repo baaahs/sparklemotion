@@ -36,7 +36,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Visualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-visualizer-display/index.html"><span class="identifier">VisualizerDisplay</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Visualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay, , , )/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay, , , )/display">display</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-visualizer-display/index.html"><span class="identifier">VisualizerDisplay</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay, , , )/container">container</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay, , , )/selectionInfo">selectionInfo</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.Visualizer$<init>(baaahs.Model((baaahs.Model.Surface)), baaahs.VisualizerDisplay, , , )/rotationCheckbox">rotationCheckbox</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -49,6 +49,13 @@
 </td>
 <td>
 <code><span class="keyword">var </span><span class="identifier">mapperIsRunning</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stop-rendering.html">stopRendering</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">stopRendering</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -71,10 +78,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="add-panel.html">addPanel</a></h4>
+<h4><a href="add-surface.html">addSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addPanel(baaahs.Model.Surface)/p">p</span><span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-viz-panel/index.html"><span class="identifier">VizPanel</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.Visualizer$addSurface(baaahs.Model.Surface)/p">p</span><span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-viz-surface/index.html"><span class="identifier">VizSurface</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -103,6 +110,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resize.html">resize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
