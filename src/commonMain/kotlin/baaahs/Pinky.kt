@@ -19,6 +19,7 @@ import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.*
 import kotlin.math.min
 
 class Pinky(
@@ -516,7 +517,14 @@ class Pinky(
     }
 }
 
+@Serializable(with = BrainIdSerializer::class)
 data class BrainId(val uuid: String)
+
+class BrainIdSerializer : KSerializer<BrainId> {
+    override val descriptor: SerialDescriptor = PrimitiveDescriptor("BrainId", PrimitiveKind.STRING)
+    override fun deserialize(decoder: Decoder): BrainId = BrainId(decoder.decodeString())
+    override fun serialize(encoder: Encoder, value: BrainId) = encoder.encodeString(value.uuid)
+}
 
 class BrainInfo(
     val address: Network.Address,
