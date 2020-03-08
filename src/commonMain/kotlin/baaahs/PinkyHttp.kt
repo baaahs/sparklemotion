@@ -1,12 +1,17 @@
 package baaahs
 
+import baaahs.geom.Vector3F
 import baaahs.mapper.MappingResults
 import baaahs.net.Network
-import kotlinx.serialization.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 
 class PinkyHttp(val httpServer: Network.HttpServer) {
-    private val json =
-        Json(JsonConfiguration.Stable)
+    private val json = Json(JsonConfiguration.Stable)
 
     fun register(
         brainInfos: MutableMap<BrainId, BrainInfo>,
@@ -16,77 +21,40 @@ class PinkyHttp(val httpServer: Network.HttpServer) {
         httpServer.routing {
             get("/brains/{name}") { call ->
                 val brainInfo = call.param("name")?.let { name -> brainInfos[BrainId(name)] }
-                val mappedInfo = call.param("name")?.let { name -> mappingResults.dataForBrain(
-                    BrainId(
-                        name
-                    )
-                ) }
+                val mappedInfo = call.param("name")?.let { name -> mappingResults.dataForBrain(BrainId(name)) }
                 if (brainInfo == null && mappedInfo == null) {
                     Network.TextResponse(404, "not found")
                 } else {
-                    Network.JsonResponse(json,
-                        200,
-                        JsonObject(mapOf(
-                            "name" to JsonPrimitive(call.param("name")),
-                            "surface" to JsonPrimitive(
-                                mappedInfo?.surface?.name
-                                    ?: (brainInfo?.surface as? IdentifiedSurface)?.name
-                            ),
-                            "mapped" to JsonPrimitive(
-                                mappedInfo?.pixelLocations?.isNotEmpty() ?: false
-                            ),
-                            "online" to JsonPrimitive(brainInfo != null),
-                            "pixels" to JsonArray(mappedInfo?.pixelLocations?.map { pixel ->
-                                JsonObject(
-                                    mapOf(
-                                        "x" to JsonPrimitive(pixel?.x),
-                                        "y" to JsonPrimitive(pixel?.y),
-                                        "z" to JsonPrimitive(pixel?.z)
-                                    )
-                                )
-                            } ?: listOf())
-                        )))
+                    val brainData = BrainData(
+                        name = call.param("name"),
+                        surface = mappedInfo?.surface?.name ?: (brainInfo?.surface as? IdentifiedSurface)?.name,
+                        mapped = mappedInfo?.pixelLocations?.isNotEmpty() ?: false,
+                        online = brainInfo != null,
+                        pixels = mappedInfo?.pixelLocations ?: emptyList()
+                    )
+                    Network.JsonResponse.create(json, 200, brainData, BrainData.serializer())
                 }
             }
+
             get("/brains") {
-                val allBrains = mutableMapOf<BrainId, Triple<String?, Boolean, Boolean>>()
+                val allBrains = mutableMapOf<BrainId, TerseBrainData>()
                 for ((k, v) in brainInfos) {
-                    val info = allBrains.getOrPut(k, { Triple(null, false, false) })
+                    val info = allBrains.getOrPut(k, { TerseBrainData(null, false, false) })
                     val surfaceName = (v.surface as? IdentifiedSurface)?.name
                     val hasPixels = (v.surface as? IdentifiedSurface)?.pixelLocations?.isNotEmpty() ?: false
-                    allBrains[k] = info.copy(first = surfaceName, second = hasPixels, third = true)
+                    allBrains[k] = info.copy(surface = surfaceName, mapped = hasPixels, online = true)
                 }
                 mappingResults.forEachBrain {
-                    val info = allBrains.getOrPut(it.key, { Triple(null, false, false) })
+                    val info = allBrains.getOrPut(it.key, { TerseBrainData(null, false, false) })
                     val surfaceName = it.value.surface.name
                     val hasPixels = it.value.pixelLocations?.isNotEmpty() ?: false
-                    allBrains[it.key] = info.copy(first = surfaceName, second = hasPixels)
+                    allBrains[it.key] = info.copy(surface = surfaceName, mapped = hasPixels)
                 }
 
-                Network.JsonResponse(
-                    json, 200, JsonObject(
-                        mapOf(
-                            *allBrains.entries.map { (brainId, triple) ->
-                                Pair(
-                                    brainId.uuid, JsonObject(
-                                        mapOf(
-                                            "surface" to JsonPrimitive(
-                                                triple.first
-                                            ),
-                                            "mapped" to JsonPrimitive(
-                                                triple.second
-                                            ),
-                                            "online" to JsonPrimitive(
-                                                triple.third
-                                            )
-                                        )
-                                    )
-                                )
-                            }.toTypedArray()
-                        )
-                    )
-                )
+                Network.JsonResponse.create(json, 200,
+                    allBrains, MapSerializer(BrainId.serializer(), TerseBrainData.serializer()))
             }
+
             get("/surfaces/{name}") { call ->
                 val surface = call.param("name")?.let { name -> model.findModelSurface(name) }
                 if (surface != null) {
@@ -94,72 +62,70 @@ class PinkyHttp(val httpServer: Network.HttpServer) {
                     val vertices = surface.allVertices()
                     val mappedBrains = mappingResults.dataForSurface(surface.name)
 
-                    Network.JsonResponse(
-                        json, 200, JsonObject(
-                            mapOf(
-                                "name" to JsonPrimitive(surface.name),
-                                "description" to JsonPrimitive(surface.description),
-                                "expectedPixelCount" to JsonPrimitive(
-                                    surface.expectedPixelCount ?: -1
-                                ),
-                                "vertices" to JsonArray(vertices.map { vertex ->
-                                    JsonObject(
-                                        mapOf(
-                                            "x" to JsonPrimitive(vertex.x),
-                                            "y" to JsonPrimitive(vertex.y),
-                                            "z" to JsonPrimitive(vertex.z)
-                                        )
+                    Network.JsonResponse.create(json, 200,
+                        SurfaceData(name = surface.name,
+                            description = surface.description,
+                            expectedPixelCount = surface.expectedPixelCount ?: -1,
+                            vertices = vertices.toList(),
+                            faces = surface.faces.map { face ->
+                                face.vertexIds.map { vertexIndex ->
+                                    vertices.indexOf(
+                                        allVertices.get(vertexIndex)
                                     )
-                                }),
-                                "faces" to JsonArray(surface.faces.map { face ->
-                                    JsonArray(face.vertexIds.map { vertexIndex ->
-                                        JsonPrimitive(
-                                            vertices.indexOf(
-                                                allVertices.get(vertexIndex)
-                                            )
-                                        )
-                                    })
-                                }),
-                                "lines" to JsonArray(surface.lines.map {
-                                    JsonArray(it.vertices.map { vertex ->
-                                        JsonPrimitive(
-                                            vertices.indexOf(
-                                                vertex
-                                            )
-                                        )
-                                    })
-                                }),
-                                "brains" to JsonObject(mapOf(*mappedBrains?.entries?.map { (brainId, info) ->
-                                    Pair(
-                                        brainId.uuid, JsonObject(
-                                            mapOf(
-                                                "mapped" to JsonPrimitive(
-                                                    info.pixelLocations?.isNotEmpty() ?: false
-                                                ),
-                                                "online" to JsonPrimitive(
-                                                    brainInfos[brainId] != null
-                                                )
-                                            )
-                                        )
-                                    )
-                                }?.toTypedArray() ?: arrayOf()))
-                            )
-                        )
+                                }
+                            },
+                            lines = surface.lines.map {
+                                it.vertices.map { vertex -> vertices.indexOf(vertex) }
+                            },
+                            brains = mappedBrains?.entries?.associate { (brainId, info) ->
+                                brainId to TerseBrainData(
+                                    surface = null,
+                                    mapped = info.pixelLocations?.isNotEmpty() ?: false,
+                                    online = brainInfos[brainId] != null
+                                )
+                            } ?: emptyMap()
+                        ),
+                        SurfaceData.serializer()
                     )
                 } else {
                     Network.TextResponse(404, "not found")
                 }
             }
+
             get("/surfaces") {
-                Network.JsonResponse(
+                Network.JsonResponse.create(
                     json, 200,
-                    JsonArray(model.allSurfaces.map { surface ->
-                        JsonPrimitive(
-                            surface.name
-                        )
-                    })
+                    model.allSurfaces.map { surface -> surface.name },
+                    String.serializer().list
                 )
             }
         }
     }
+
+    @Serializable
+    data class BrainData(
+        val name: String?,
+        val surface: String?,
+        val mapped: Boolean,
+        val online: Boolean,
+        val pixels: List<Vector3F?>
+    )
+
+    @Serializable
+    data class TerseBrainData(
+        val surface: String?,
+        val mapped: Boolean,
+        val online: Boolean
+    )
+
+    @Serializable
+    data class SurfaceData(
+        val name: String,
+        val description: String,
+        val expectedPixelCount: Int?,
+        val vertices: List<Vector3F>,
+        val faces: List<List<Int>>,
+        val lines: List<List<Int>>,
+        val brains: Map<BrainId, TerseBrainData>
+    )
 }
