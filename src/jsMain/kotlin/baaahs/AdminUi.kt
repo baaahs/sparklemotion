@@ -6,12 +6,11 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VisualizerListenerClient
 import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLInputElement
 import react.ReactElement
 import react.createElement
 import kotlin.browser.document
 
-class AdminUi(private val network: Network, private val pinkyAddress: Network.Address) : HostedWebApp {
+class AdminUi(network: Network, pinkyAddress: Network.Address) : HostedWebApp {
     private val clientLink = network.link()
     private val container = document.createElement("div") as HTMLDivElement
     private val model = selectModel()
@@ -26,6 +25,7 @@ class AdminUi(private val network: Network, private val pinkyAddress: Network.Ad
     override fun render(): ReactElement {
         return createElement(AdminPage::class.js, jsObject<AdminPage.Props> {
             this.containerDiv = container
+            this.visualizer = this@AdminUi.visualizer
         })
     }
 

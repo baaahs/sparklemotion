@@ -1,7 +1,7 @@
 package baaahs.admin
 
+import baaahs.visualizer.Visualizer
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -13,7 +13,7 @@ class AdminPage(props: Props) : RComponent<AdminPage.Props, AdminPage.State>(pro
 
     override fun componentDidMount() {
         container.current?.appendChild(props.containerDiv)
-        props.containerDiv.dispatchEvent(Event("resize"))
+        props.visualizer.resize()
     }
 
     override fun componentWillUnmount() {
@@ -25,7 +25,8 @@ class AdminPage(props: Props) : RComponent<AdminPage.Props, AdminPage.State>(pro
     }
 
     class Props(
-        var containerDiv: HTMLDivElement
+        var containerDiv: HTMLDivElement,
+        var visualizer: Visualizer
     ) : RProps
 
     class State : RState
