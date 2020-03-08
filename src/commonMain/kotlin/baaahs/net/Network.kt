@@ -12,7 +12,7 @@ interface Network {
         val myHostname: String
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
-        fun mdns(): Mdns
+        val mdns: Mdns
         fun startHttpServer(port: Int): HttpServer
         fun connectWebSocket(
             toAddress: Address,
