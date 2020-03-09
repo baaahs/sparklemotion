@@ -65,6 +65,12 @@ data class BeatData(
 
 interface BeatSource {
     fun getBeatData(): BeatData
+
+    object None : BeatSource {
+        val none = BeatData(0.0, 0, 4, 0f)
+
+        override fun getBeatData(): BeatData = none
+    }
 }
 
 typealias Time = Double
