@@ -24,7 +24,7 @@ config.module.rules.push(
         }
     },
     {
-        test: /\.(sass|scss)$/,
+        test: /\.(css|sass|scss)$/,
         use: [
             'style-loader',
             {
@@ -59,6 +59,7 @@ if (config.devServer) {
     };
 }
 
+config.mode = 'development'
 // config.devtool = 'eval';
 
 // config.plugins = [
