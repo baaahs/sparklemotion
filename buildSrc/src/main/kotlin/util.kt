@@ -21,6 +21,4 @@ fun createResourceFilesList(baseDir: File) {
     Files.write(outFile.toPath(), list, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
 }
 
-fun isMac(): Boolean {
-    return OperatingSystem.current() == OperatingSystem.MAC_OS
-}
+fun isMac(): Boolean = OperatingSystem.current().isMacOsX

@@ -12,6 +12,7 @@ import com.xenomachina.argparser.mainBody
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.http.content.*
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -22,16 +23,15 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
-    val config = mainBody(PinkyMain::class.simpleName) {
-        ArgParser(args).parseInto(PinkyMain::Config)
+    mainBody(PinkyMain::class.simpleName) {
+        PinkyMain(ArgParser(args).parseInto(PinkyMain::Args)).run()
     }
-
-    PinkyMain(config).run()
 }
 
-class PinkyMain(val config: Config) {
+class PinkyMain(private val args: Args) {
     private val logger = Logger("PinkyMain")
 
     fun run() {
@@ -39,7 +39,7 @@ class PinkyMain(val config: Config) {
 
         GlslBase.manager // Need to wake up OpenGL on the main thread.
 
-        val model = Pluggables.loadModel(config.modelName)
+        val model = Pluggables.loadModel(args.modelName)
 
         val network = JvmNetwork()
         val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
@@ -52,11 +52,11 @@ class PinkyMain(val config: Config) {
         val dmxUniverse = findDmxUniverse()
 
         val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
-        beatLinkBeatSource.start()
+        thread(name = "BeatLinkBeatSource startup") { beatLinkBeatSource.start() }
 
         val fwUrlBase = "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
-        val shows = AllShows.allShows.filter { config.showName == null || config.showName == it.name }
+        val shows = AllShows.allShows.filter { args.showName == null || args.showName == it.name }
 
         val display = object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
@@ -75,8 +75,8 @@ class PinkyMain(val config: Config) {
             model, shows, network, dmxUniverse, beatLinkBeatSource, SystemClock(),
             fs, daddy, display, JvmSoundAnalyzer(),
             prerenderPixels = true,
-            switchShowAfterIdleSeconds = config.switchShowAfter,
-            adjustShowAfterIdleSeconds = config.adjustShowAfter
+            switchShowAfterIdleSeconds = args.switchShowAfter,
+            adjustShowAfterIdleSeconds = args.adjustShowAfter
         )
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
@@ -90,6 +90,9 @@ class PinkyMain(val config: Config) {
             ktor.application.routing {
                 static {
                     resources("htdocs")
+                    route("admin") { default("htdocs/admin/index.html") }
+                    route("mapper") { default("htdocs/mapper/index.html") }
+                    route("ui") { default("htdocs/ui/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
@@ -101,11 +104,16 @@ class PinkyMain(val config: Config) {
 
             ktor.application.routing {
                 static {
+                    staticRootFolder = jsResDir.toFile()
+
                     file("sparklemotion.js",
                         repoDir.resolve("build/distributions/sparklemotion.js").toFile())
 
                     files(jsResDir.toFile())
-                    default(jsResDir.resolve("ui-index.html").toFile())
+                    route("admin") { default("admin/index.html") }
+                    route("mapper") { default("mapper/index.html") }
+                    route("ui") { default("ui/index.html") }
+                    default("ui-index.html")
                 }
             }
         }
@@ -154,7 +162,7 @@ class PinkyMain(val config: Config) {
         return FakeDmxUniverse()
     }
 
-    class Config(parser: ArgParser) {
+    class Args(parser: ArgParser) {
         val modelName by parser.storing("model").default(Pluggables.defaultModel)
 
         val showName by parser.storing("show").default<String?>(null)

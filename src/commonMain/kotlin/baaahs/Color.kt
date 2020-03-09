@@ -27,6 +27,12 @@ data class Color(val argb: Int) {
 
     fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
 
+    fun serializeWithoutAlpha(writer: ByteArrayWriter) {
+        writer.writeByte(redB)
+        writer.writeByte(greenB)
+        writer.writeByte(blueB)
+    }
+
     @Transient
     val alphaB: Byte
         get() = alphaI(argb).toByte()
@@ -160,6 +166,9 @@ data class Color(val argb: Int) {
         )
 
         fun parse(reader: ByteArrayReader) = Color(reader.readInt())
+
+        fun parseWithoutAlpha(reader: ByteArrayReader) =
+            Color(reader.readByte(), reader.readByte(), reader.readByte())
 
         @JsName("fromInt")
         fun from(i: Int) = Color(i)

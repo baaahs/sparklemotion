@@ -35,6 +35,12 @@ body.noScroll {
     height: 80%;
 }
 
+.adminModelVisualizerContainer {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+}
+
 #simulatorView {
     position: absolute;
     color: black;
