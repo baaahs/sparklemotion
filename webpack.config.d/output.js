@@ -47,6 +47,16 @@ config.resolve.alias = {
 
 if (config.devServer) {
     config.devServer.hot = true;
+} else {
+    // Otherwise we get "unknown module and require" from production build.
+    config.optimization = {
+        sideEffects: false,
+        splitChunks: {
+            chunks: function(chunk) {
+                return false;
+            }
+        }
+    };
 }
 
 // config.devtool = 'eval';
