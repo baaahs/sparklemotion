@@ -9,10 +9,10 @@ object Pluggables {
     @JsName("loadModel")
     fun loadModel(name: String): Model<*> {
         return when (name) {
-            "Decom2019" -> Decom2019Model().apply { load() }
-            "SuiGeneris" -> SuiGenerisModel().apply { load() }
-            "BAAAHS" -> SheepModel().apply { load() }
+            "Decom2019" -> Decom2019Model()
+            "SuiGeneris" -> SuiGenerisModel()
+            "BAAAHS" -> SheepModel()
             else -> throw IllegalArgumentException("unknown model \"$name\"")
-        }
+        }.apply { load() }
     }
 }

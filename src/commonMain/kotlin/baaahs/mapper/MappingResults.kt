@@ -11,6 +11,8 @@ interface MappingResults {
     fun forEachBrain(f: (Map.Entry<BrainId, Info>) -> Unit)
     fun forEachSurface(f: (Map.Entry<String, MutableMap<BrainId, Info>>) -> Unit)
 
+    fun dataFor(surfaceName: String): Info?
+
     class Info(
         val surface: Model.Surface,
 
@@ -47,6 +49,10 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
     override fun dataForSurface(surfaceName: String) : Map<BrainId, MappingResults.Info>? = bySurface[surfaceName]?.toMap()
     override fun forEachBrain(f: (Map.Entry<BrainId, MappingResults.Info>) -> Unit) = byBrain.forEach(f)
     override fun forEachSurface(f: (Map.Entry<String, MutableMap<BrainId, MappingResults.Info>>) -> Unit) = bySurface.forEach(f)
+
+    override fun dataFor(surfaceName: String): MappingResults.Info? {
+        return brainData.values.find { it.surface.name == surfaceName }
+    }
 
     companion object {
         private val logger = Logger("SessionMappingResults")

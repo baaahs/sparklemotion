@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.Model
 import baaahs.Pixels
 import baaahs.geom.Vector2
+import baaahs.resourcesBase
 import info.laht.threekt.THREE.AdditiveBlending
 import info.laht.threekt.THREE.FrontSide
 import info.laht.threekt.THREE.VertexColors
@@ -33,17 +34,17 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class VizPanel(panel: Model.Surface, private val geom: Geometry, private val scene: Scene) {
+class VizSurface(panel: Model.Surface, private val geom: Geometry, private val scene: Scene) {
     companion object {
         private val roundLightTx = TextureLoader().load(
-            "./visualizer/textures/round.png",
+            "${resourcesBase}/visualizer/textures/round.png",
             { println("loaded!") },
             { println("progress!") },
             { println("error!") }
         )
 
-        fun getFromObject(object3D: Object3D): VizPanel? =
-            object3D.userData.asDynamic()["VizPanel"] as VizPanel?
+        fun getFromObject(object3D: Object3D): VizSurface? =
+            object3D.userData.asDynamic()["VizPanel"] as VizSurface?
     }
 
     val name = panel.name
@@ -149,7 +150,7 @@ class VizPanel(panel: Model.Surface, private val geom: Geometry, private val sce
     }
 
 
-    class VizPixels(vizPanel: VizPanel, val positions: Array<Vector3>) : Pixels {
+    class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels {
         override val size = positions.size
         private val pixGeometry = BufferGeometry()
         private val planeGeometry: BufferGeometry
@@ -170,7 +171,7 @@ class VizPanel(panel: Model.Surface, private val geom: Geometry, private val sce
             vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
             vertexColorBufferAttr.dynamic = true
 
-            val rotator = Rotator(Vector3(0, 0, 1), vizPanel.panelNormal)
+            val rotator = Rotator(Vector3(0, 0, 1), vizSurface.panelNormal)
             planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
                 val geometry = PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8)
                 rotator.rotate(geometry)
@@ -233,16 +234,16 @@ class VizPanel(panel: Model.Surface, private val geom: Geometry, private val sce
             vertexColorBufferAttr.needsUpdate = true
         }
 
-        fun getPixelLocationsInModelSpace(vizPanel: VizPanel): Array<Vector3> = positions
+        fun getPixelLocationsInModelSpace(vizSurface: VizSurface): Array<Vector3> = positions
 
-        fun getPixelLocationsInPanelSpace(vizPanel: VizPanel): Array<Vector2> {
-            val panelGeom = vizPanel.geometry.clone()
+        fun getPixelLocationsInPanelSpace(vizSurface: VizSurface): Array<Vector2> {
+            val panelGeom = vizSurface.geometry.clone()
             val pixGeom = pixGeometry.clone()
 
             val straightOnNormal = Vector3(0, 0, 1)
 
             // Rotate to straight on.
-            val rotator = Rotator(vizPanel.panelNormal, straightOnNormal)
+            val rotator = Rotator(vizSurface.panelNormal, straightOnNormal)
             rotator.rotate(panelGeom)
             rotator.rotate(pixGeom)
 
