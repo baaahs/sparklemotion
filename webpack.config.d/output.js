@@ -59,7 +59,6 @@ if (config.devServer) {
     };
 }
 
-config.mode = 'development'
 // config.devtool = 'eval';
 
 // config.plugins = [
