@@ -1,6 +1,7 @@
 package baaahs.net
 
 import baaahs.proto.Message
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
@@ -12,7 +13,7 @@ interface Network {
         val myHostname: String
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
-        fun mdns(): Mdns
+        val mdns: Mdns
         fun startHttpServer(port: Int): HttpServer
         fun connectWebSocket(
             toAddress: Address,
@@ -122,6 +123,11 @@ interface Network {
     }
 
     class JsonResponse(val json: Json, override val statusCode: Int = 200, element: JsonElement) : HttpResponse {
+        companion object {
+            fun <T : Any>create(json: Json, statusCode: Int = 200, data: T, serializer: KSerializer<T>) =
+                JsonResponse(json, statusCode, json.toJson(serializer, data))
+        }
+
         override val body = json.stringify(JsonElement.serializer(), element).encodeToByteArray()
         override val contentType = "application/json"
     }

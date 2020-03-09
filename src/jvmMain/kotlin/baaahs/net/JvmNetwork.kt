@@ -14,7 +14,6 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +79,7 @@ class JvmNetwork : Network {
             return socket
         }
 
-        override fun mdns(): Network.Mdns = mdns
+        override val mdns by lazy { JvmMdns() }
 
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
@@ -214,7 +213,6 @@ class JvmNetwork : Network {
 
         override val myAddress = IpAddress.mine()
         override val myHostname = myAddress.address.hostName.replace(Regex("\\.local(domain)?\\.?$"), "")
-        private val mdns = JvmMdns()
 
         inner class JvmMdns() : Network.Mdns {
             private val svc = JmDNS.create(InetAddress.getLocalHost())
