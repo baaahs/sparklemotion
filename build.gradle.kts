@@ -108,7 +108,7 @@ kotlin {
                 implementation("io.ktor:ktor-websockets:$ktor_version")
                 implementation("ch.qos.logback:logback-classic:1.2.3")
                 implementation("com.xenomachina:kotlin-argparser:2.0.7")
-                implementation("org.deepsymmetry:beat-link:0.5.5")
+                implementation("org.deepsymmetry:beat-link:0.6.1")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
@@ -260,7 +260,10 @@ tasks.create<JavaExec>("runPinkyJvm") {
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
     if (isMac()) {
-        jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+        jvmArgs = listOf(
+            "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+            "-Djava.awt.headless=true"
+        )
     }
 }
 
