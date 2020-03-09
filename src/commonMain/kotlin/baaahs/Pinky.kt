@@ -249,7 +249,7 @@ class Pinky(
 
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
         val dataFor = mappingResults.dataForBrain(brainId)
-            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
+            ?: mappingResults.dataForSurface(msg.surfaceName ?: "__nope")?.get(brainId)
             ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
