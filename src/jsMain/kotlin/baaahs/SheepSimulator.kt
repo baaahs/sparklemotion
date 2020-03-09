@@ -27,7 +27,7 @@ class SheepSimulator {
     private val model = selectModel()
 
     private val shows = AllShows.allShows
-    private val visualizer = Visualizer(
+    public val visualizer = Visualizer(
         model,
         display.forVisualizer(),
         document.getElementById("sheepView")!! as HTMLDivElement,

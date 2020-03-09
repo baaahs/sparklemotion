@@ -161,6 +161,7 @@ kotlin {
                 implementation(npm("@babel/plugin-proposal-object-rest-spread", "^7.4.4"))
                 implementation(npm("@babel/preset-env", "^7.4.5"))
                 implementation(npm("@babel/preset-react", "^7.0.0"))
+                implementation(npm("prettier", "1.19.1"))
 
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
@@ -176,6 +177,8 @@ kotlin {
                 implementation(npm("style-loader", "^0.23.1"))
                 implementation(npm("three", "^0.102.1"))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
+                implementation(npm("react-mosaic-component", "^4.0.0"))
+                implementation(npm("resize-observer-polyfill", "^1.5.1"))
             }
         }
         val jsTest by getting {

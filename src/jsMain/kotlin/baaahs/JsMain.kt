@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.browser.RealMediaDevices
-import baaahs.jsx.MosiacUI
+import baaahs.jsx.MosaicUI
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import kotlinext.js.jsObject
@@ -21,12 +21,15 @@ fun main(args: Array<String>) {
 
     when (mode) {
         "Simulator" -> {
-            // Run the simulator from within the new MosiacUI
-            val props = jsObject<MosiacUI.Props> {
+            // Instead of starting the simulator directly, pass the JS
+            // a function that it can use to get and start the simulator.
+            // We do this so the JS can create the HTML templates before
+            // the JsDisplay tries to find them.
+            val props = jsObject<MosaicUI.Props> {
+                getSheepSimulator = { SheepSimulator() }
             }
             val simulatorEl = document.getElementById("app")
-            render(createElement(MosiacUI::class.js, props), simulatorEl)
-            SheepSimulator().start()
+            render(createElement(MosaicUI::class.js, props), simulatorEl)
         }
 
         "Admin" -> {
