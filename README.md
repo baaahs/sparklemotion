@@ -39,6 +39,14 @@ If you don't have a Brain running locally, do this too:
     
 When running in this mode you should be able to access the UI at http://localhost:8004 
 
+### Builds the production (minified) js package
+
+To build the production minified js package run:
+
+```
+./gradlew jsBrowserWebpack
+```
+
 ## CI & Deployment
 
 Continuous build here: https://circleci.com/gh/baaahs/sparklemotion
