@@ -663,6 +663,24 @@
   };
   function BeatSource() {
   }
+  function BeatSource$None() {
+    BeatSource$None_instance = this;
+    this.none = new BeatData(0.0, 0, 4, 0.0);
+  }
+  BeatSource$None.prototype.getBeatData = function () {
+    return this.none;
+  };
+  BeatSource$None.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'None',
+    interfaces: [BeatSource]
+  };
+  var BeatSource$None_instance = null;
+  function BeatSource$None_getInstance() {
+    if (BeatSource$None_instance === null) {
+      new BeatSource$None();
+    }return BeatSource$None_instance;
+  }
   BeatSource.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'BeatSource',
@@ -22443,6 +22461,9 @@
   var package$baaahs = _.baaahs || (_.baaahs = {});
   package$baaahs.BeatData_init_vdtwv5$ = BeatData_init;
   package$baaahs.BeatData = BeatData;
+  Object.defineProperty(BeatSource, 'None', {
+    get: BeatSource$None_getInstance
+  });
   package$baaahs.BeatSource = BeatSource;
   package$baaahs.Clock = Clock_0;
   Brain.RenderTree = Brain$RenderTree;
