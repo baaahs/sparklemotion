@@ -172,7 +172,6 @@ kotlin {
                 implementation(npm("react-dom", "^16.8.6"))
                 implementation(npm("react-draggable", "^3.3.0"))
                 implementation(npm("react-hot-loader", "^4.11.0"))
-                implementation(npm("requirejs", "^2.3.6"))
                 implementation(npm("sass-loader", "^7.1.0"))
                 implementation(npm("style-loader", "^0.23.1"))
                 implementation(npm("three", "^0.102.1"))
@@ -262,7 +261,7 @@ tasks.create<JavaExec>("runPinkyJvm") {
     if (isMac()) {
         jvmArgs = listOf(
             "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
-            "-Djava.awt.headless=true"
+            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
         )
     }
 }
