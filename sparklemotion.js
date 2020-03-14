@@ -1983,7 +1983,7 @@
         , oldGadget = old.component2();
         var newGadget = new_0.second;
         var gadgetInfo = ensureNotNull(this.gadgets_0.get_11rb$(name_0));
-        gadgetInfo.channel.replaceOnUpdate_qlkmfe$(GadgetManager$sync$lambda$lambda(newGadget, this));
+        gadgetInfo.channel.replaceOnUpdate(GadgetManager$sync$lambda$lambda(newGadget, this));
         gadgetInfo.gadgetData.gadget.unlisten(gadgetInfo.gadgetChannelListener);
         gadgetInfo.gadgetData.gadget = newGadget;
         newGadget.listen(gadgetInfo.gadgetChannelListener);
@@ -6930,7 +6930,7 @@
   PubSub$Server$publish$ObjectLiteral.prototype.onChange = function (t) {
     this.closure$topicInfo.notify_hlqsza$(this.this$Server.json.toJson_tf03ej$(this.closure$topic.serializer, t), this.closure$publisher);
   };
-  PubSub$Server$publish$ObjectLiteral.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
+  PubSub$Server$publish$ObjectLiteral.prototype.replaceOnUpdate = function (onUpdate) {
     this.closure$listener.onUpdate = onUpdate;
   };
   PubSub$Server$publish$ObjectLiteral.prototype.unsubscribe = function () {
@@ -7040,7 +7040,7 @@
     var jsonData = this.this$Client.json.toJson_tf03ej$(this.closure$topic.serializer, t);
     this.closure$topicInfo.notify_hlqsza$(jsonData, this.closure$subscriber);
   };
-  PubSub$Client$subscribe$ObjectLiteral_0.prototype.replaceOnUpdate_qlkmfe$ = function (onUpdate) {
+  PubSub$Client$subscribe$ObjectLiteral_0.prototype.replaceOnUpdate = function (onUpdate) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Client.channel.replaceOnUpdate not implemented');
   };
   PubSub$Client$subscribe$ObjectLiteral_0.prototype.unsubscribe = function () {
