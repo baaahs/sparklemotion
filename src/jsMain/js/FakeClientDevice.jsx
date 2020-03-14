@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import classNames from 'classnames';
 import styles from './FakeClientDevice.scss';
 import PropTypes from 'prop-types';
+import Frame from 'react-frame-component';
 
 const BORDER_WIDTH = 10;
 
@@ -109,7 +110,11 @@ export default class FakeClientDevice extends Component {
             className={styles['FakeClientDevice--content']}
             style={this.contentStyle}
           >
-            {this.props.hostedWebApp.render()}
+            <Frame
+                src="about:blank"
+            >
+              {this.props.hostedWebApp.render()}
+            </Frame>
           </div>
         </div>
       </Draggable>
