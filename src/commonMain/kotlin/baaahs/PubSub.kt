@@ -34,8 +34,10 @@ abstract class PubSub {
         @JsName("onChange")
         fun onChange(t: T)
 
+        @JsName("replaceOnUpdate")
         fun replaceOnUpdate(onUpdate: (T) -> Unit)
 
+        @JsName("unsubscribe")
         fun unsubscribe()
     }
 
