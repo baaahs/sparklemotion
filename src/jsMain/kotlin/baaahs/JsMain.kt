@@ -1,9 +1,12 @@
 package baaahs
 
 import baaahs.browser.RealMediaDevices
+import baaahs.jsx.MosaicUI
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
+import kotlinext.js.jsObject
 import org.w3c.dom.get
+import react.createElement
 import react.dom.render
 import kotlin.browser.document
 import kotlin.browser.window
@@ -17,7 +20,17 @@ fun main(args: Array<String>) {
     val contentDiv = document.getElementById("content")
 
     when (mode) {
-        "Simulator" -> SheepSimulator().start()
+        "Simulator" -> {
+            // Instead of starting the simulator directly, pass the JS
+            // a function that it can use to get and start the simulator.
+            // We do this so the JS can create the HTML templates before
+            // the JsDisplay tries to find them.
+            val props = jsObject<MosaicUI.Props> {
+                getSheepSimulator = { SheepSimulator() }
+            }
+            val simulatorEl = document.getElementById("app")
+            render(createElement(MosaicUI::class.js, props), simulatorEl)
+        }
 
         "Admin" -> {
             val adminApp = AdminUi(network, pinkyAddress)

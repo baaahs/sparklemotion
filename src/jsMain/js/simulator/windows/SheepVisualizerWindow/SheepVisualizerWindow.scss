@@ -1,0 +1,28 @@
+.sheepVisualizerWindow {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+}
+
+.sheepView {
+  flex: 1 1 auto;
+  height: 100%;
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  height: 30px;
+  padding: 0 8px;
+  flex: 0 0 auto;
+}
+
+.pixelCount {
+  padding-left: 8px;
+}
