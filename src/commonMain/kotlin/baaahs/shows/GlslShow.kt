@@ -6,7 +6,7 @@ import baaahs.gadgets.Slider
 import baaahs.shaders.GlslShader
 
 abstract class GlslShow(name: String) : Show(name) {
-    abstract val program: String
+    public abstract val program: String
 
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslShader(program, model.defaultUvTranslator)

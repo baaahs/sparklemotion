@@ -1,16 +1,19 @@
 import { hot } from 'react-hot-loader';
 import styles from './MosaicUI.scss';
-import React, { useEffect, useContext } from 'react';
+import { baaahs } from 'sparklemotion';
+import React, { useEffect, useContext, useState } from 'react';
 import { Mosaic, MosaicWindow, MosaicZeroState } from 'react-mosaic-component';
 import SheepVisualizerWindow from './simulator/windows/SheepVisualizerWindow/SheepVisualizerWindow';
 import SimulatorSettingsWindow from './simulator/windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
 import MosiacMenuBar from './mosiac/MosiacMenuBar/MosiacMenuBar';
 import { StateProvider, store } from './store';
+import ShowEditorWindow from './simulator/windows/ShowEditorWindow/ShowEditorWindow';
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
 
 const WINDOWS_BY_TYPE = {
+  'Show Editor': ShowEditorWindow,
   'Sheep Visualizer': SheepVisualizerWindow,
   'Simulator Settings': SimulatorSettingsWindow,
 };
@@ -26,21 +29,47 @@ const MosaicApp = (props) => {
 const MosaicUI = (props) => {
   const { getSheepSimulator } = props;
   const { state, dispatch } = useContext(store);
-
-  const setState = (statePartial) =>
-    dispatch({ type: 'SET_ENTIRE_STATE', payload: statePartial });
+  const [pubSub, setPubSub] = useState(null);
 
   useEffect(() => {
+    if (state.sheepSimulator) return;
+
     const sheepSimulator = getSheepSimulator();
+    setPubSub(sheepSimulator.getPubSub());
     sheepSimulator.start();
+
     dispatch({ type: 'SET_SHEEP_SIMULATOR', payload: { sheepSimulator } });
   }, []);
+
+  useEffect(() => {
+    if (!pubSub) return;
+
+    const onPubSubStateChange = () => {
+      dispatch({
+        type: 'SET_STATE',
+        payload: { isConnected: pubSub.isConnected },
+      });
+    };
+    pubSub.addStateChangeListener(onPubSubStateChange);
+
+    const selectedShowChannel = pubSub.subscribe(
+      baaahs.Topics.selectedShow,
+      (selectedShow) => {
+        dispatch({ type: 'SET_STATE', payload: { selectedShow } });
+      }
+    );
+
+    return () => {
+      selectedShowChannel.unsubscribe();
+      pubSub.removeStateChangeListener(onPubSubStateChange);
+    };
+  }, [pubSub]);
 
   //
   // Mosaic API
   //
   const onChange = (currentNode) => {
-    setState({ currentNode });
+    dispatch({ type: 'SET_STATE', payload: { currentNode } });
   };
   const onRelease = (currentNode) => {
     console.log('Mosaic.onRelease():', currentNode);

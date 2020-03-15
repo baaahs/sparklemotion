@@ -26,7 +26,7 @@ class SheepSimulator {
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
 
-    private val shows = AllShows.allShows
+    public val shows = AllShows.allShows
     public val visualizer = Visualizer(
         model,
         display.forVisualizer(),
@@ -45,6 +45,11 @@ class SheepSimulator {
 
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
+
+    fun getPubSub(): PubSub.Client =
+        PubSub.Client(network.link(), pinky.address, Ports.PINKY_UI_TCP).apply {
+            install(gadgetModule)
+        }
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
