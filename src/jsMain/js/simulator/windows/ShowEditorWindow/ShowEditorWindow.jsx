@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import AceEditor from 'react-ace';
+import classNames from 'classnames';
 import styles from './ShowEditorWindow.scss';
 import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-github';
@@ -35,22 +36,35 @@ const ShowEditorWindow = (props) => {
   const [showStr, setShowStr] = useState('');
   const onChange = useCallback(
     (newValue) => {
-      console.log(`sheepSimulator.shows`, sheepSimulator?.shows);
-
       setShowStr(newValue);
     },
     [setShowStr]
   );
 
+  const previewShow = () => {
+    console.log(`previewShow!`);
+  };
+
   return (
     <div className={styles.showEditorWindow} ref={windowRootEl}>
+      <div className={styles.toolbar}>
+        <div className={styles.showName}>
+          <i className="fas fa-chevron-right"></i>
+          <input className={styles.showNameInput} defaultValue={selectedShow} />
+        </div>
+        <div className={styles.buttons}>
+          <i
+              className={classNames('fas', 'fa-play', styles.iconButton)}
+              onClick={previewShow}
+          />
+        </div>
+      </div>
       <AceEditor
         ref={aceEditor}
         mode="glsl"
         theme="tomorrow_night_bright"
         width="100%"
         height="100%"
-        readOnly
         showGutter={false}
         setAutoScrollEditorIntoView={true}
         onChange={onChange}
