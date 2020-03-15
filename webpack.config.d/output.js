@@ -24,7 +24,7 @@ config.module.rules.push(
         }
     },
     {
-        test: /\.(sass|scss)$/,
+        test: /\.(css|sass|scss)$/,
         use: [
             'style-loader',
             {
