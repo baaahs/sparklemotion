@@ -116,6 +116,7 @@ const MosaicUI = (props) => {
         value={state.currentNode}
         onChange={onChange}
         onRelease={onRelease}
+        className={'mosaic mosaic-blueprint-theme bp3-dark'}
       />
     </div>
   );
