@@ -1,4 +1,4 @@
-(function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kgl, $module$kotlin_extensions, $module$react, $module$react_dom, $module$kotlinx_html_js, $module$three, $module$js_mapper_index_jsx, $module$threejs_wrapper, $module$js_FakeClientDevice_jsx, $module$js_app_index_jsx, $module$kotlin_react_dom, $module$kotlin_react) {
+(function (_, Kotlin, $module$kotlinx_serialization_kotlinx_serialization_runtime, $module$kotlinx_coroutines_core, $module$klock_root_klock, $module$kgl, $module$kotlin_extensions, $module$react, $module$js_MosaicUI_jsx, $module$react_dom, $module$kotlinx_html_js, $module$three, $module$js_mapper_index_jsx, $module$threejs_wrapper, $module$js_FakeClientDevice_jsx, $module$js_app_index_jsx, $module$kotlin_react_dom, $module$kotlin_react) {
   'use strict';
   var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var math = Kotlin.kotlin.math;
@@ -202,6 +202,7 @@
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  var MosaicUI = $module$js_MosaicUI_jsx.default;
   var render = $module$react_dom.render;
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
@@ -18413,6 +18414,9 @@
     simpleName: 'JsVisualizerDisplay',
     interfaces: [VisualizerDisplay]
   };
+  function main$lambda$lambda() {
+    return new SheepSimulator();
+  }
   function main(args) {
     var tmp$, tmp$_0, tmp$_1;
     var mode = (tmp$ = document['sparklemotionMode']) != null ? tmp$ : 'test';
@@ -18422,7 +18426,11 @@
     var contentDiv = document.getElementById('content');
     switch (mode) {
       case 'Simulator':
-        (new SheepSimulator()).start();
+        var obj = {};
+        obj.getSheepSimulator = main$lambda$lambda;
+        var props = obj;
+        var simulatorEl = document.getElementById('app');
+        render(createElement(get_js(getKClass(MosaicUI)), props), simulatorEl);
         break;
       case 'Admin':
         var adminApp = new AdminUi(network, pinkyAddress);
@@ -19806,7 +19814,7 @@
     this.model_0 = this.selectModel_0();
     this.shows_0 = AllShows$Companion_getInstance().allShows;
     var tmp$, tmp$_0, tmp$_1;
-    this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE(), Kotlin.isType(tmp$_1 = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$_1 : throwCCE());
+    this.visualizer = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE(), Kotlin.isType(tmp$_1 = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$_1 : throwCCE());
     this.fs_0 = new FakeFs();
     this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
     this.pinkyDisplay_0 = this.display_0.forPinky();
@@ -19920,8 +19928,8 @@
   }
   function SheepSimulator$start$lambda$lambda_1(this$SheepSimulator) {
     return function () {
-      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer_0);
-      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer_0);
+      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer);
+      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer);
       var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.model_0, mapperUi, mediaDevices, this$SheepSimulator.pinky_0.address);
       launch(this$SheepSimulator.mapperScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda(mapper));
       return mapperUi;
@@ -20087,7 +20095,7 @@
               var this$SheepSimulator = this.local$this$SheepSimulator;
               var index_0 = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
               var tmp$_2;
-              var vizPanel = this$SheepSimulator.visualizer_0.addSurface_1klhus$(item);
+              var vizPanel = this$SheepSimulator.visualizer.addSurface_1klhus$(item);
               var pixelPositions = pixelArranger.arrangePixels_w3vf02$(vizPanel);
               vizPanel.vizPixels = new VizSurface$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
@@ -20111,7 +20119,7 @@
             while (tmp$_4.hasNext()) {
               var element = tmp$_4.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
-              this$SheepSimulator_0.visualizer_0.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
+              this$SheepSimulator_0.visualizer.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
 
             var showName = this.local$this$SheepSimulator.queryParams_0.get_11rb$('show');
@@ -23463,6 +23471,6 @@
   main([]);
   Kotlin.defineModule('sparklemotion', _);
   return _;
-}(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('kotlinx-coroutines-core'), require('klock-root-klock'), require('kgl'), require('kotlin-extensions'), require('react'), require('react-dom'), require('kotlinx-html-js'), require('three'), require('js/mapper/index.jsx'), require('threejs-wrapper'), require('js/FakeClientDevice.jsx'), require('js/app/index.jsx'), require('kotlin-react-dom'), require('kotlin-react')));
+}(module.exports, require('kotlin'), require('kotlinx-serialization-kotlinx-serialization-runtime'), require('kotlinx-coroutines-core'), require('klock-root-klock'), require('kgl'), require('kotlin-extensions'), require('react'), require('js/MosaicUI.jsx'), require('react-dom'), require('kotlinx-html-js'), require('three'), require('js/mapper/index.jsx'), require('threejs-wrapper'), require('js/FakeClientDevice.jsx'), require('js/app/index.jsx'), require('kotlin-react-dom'), require('kotlin-react')));
 
 //# sourceMappingURL=sparklemotion.js.map

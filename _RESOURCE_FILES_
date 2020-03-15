@@ -80,6 +80,7 @@ lib/threejs-wrapper.js
 lib/threejs-wrapper.meta.js
 mapper-index.html
 mapper/index.html
+react-mosaic-component.css
 styles.css
 sui-generis.obj
 three.js
