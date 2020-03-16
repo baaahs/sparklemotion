@@ -1,8 +1,7 @@
 package baaahs.shaders
 
-import baaahs.*
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
+import baaahs.Color
+import baaahs.Surface
 
 /**
  * A shader which combines the results of two sub-shaders according to a specified compositing mode and cross-fade
@@ -12,11 +11,6 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
     Shader<CompositorShader.Buffer>(ShaderId.COMPOSITOR) {
 
     override fun createBuffer(surface: Surface) = Buffer(aShader.createBuffer(surface), bShader.createBuffer(surface))
-
-    override fun serializeConfig(writer: ByteArrayWriter) {
-        aShader.serialize(writer)
-        bShader.serialize(writer)
-    }
 
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Shader.Renderer<Buffer> {
         val rendererA: Shader.Renderer<*> = aShader.createRenderer(surface, renderContext)
@@ -30,24 +24,8 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         return Renderer(rendererA, rendererB)
     }
 
-    override fun readBuffer(reader: ByteArrayReader): Buffer =
-        Buffer(
-            aShader.readBuffer(reader),
-            bShader.readBuffer(reader),
-            CompositingMode.get(reader.readByte()),
-            reader.readFloat()
-        )
-
     fun createBuffer(bufferA: Shader.Buffer, bufferB: Shader.Buffer): Buffer =
         Buffer(bufferA, bufferB)
-
-    companion object : ShaderReader<CompositorShader> {
-        override fun parse(reader: ByteArrayReader): CompositorShader {
-            val shaderA = Shader.parse(reader)
-            val shaderB = Shader.parse(reader)
-            return CompositorShader(shaderA, shaderB)
-        }
-    }
 
     inner class Buffer(
         val bufferA: Shader.Buffer, val bufferB: Shader.Buffer,
@@ -55,20 +33,6 @@ class CompositorShader(val aShader: Shader<*>, val bShader: Shader<*>) :
         var fade: Float = 0.5f
     ) : Shader.Buffer {
         override val shader: Shader<*> = this@CompositorShader
-
-        override fun serialize(writer: ByteArrayWriter) {
-            bufferA.serialize(writer)
-            bufferB.serialize(writer)
-            writer.writeByte(mode.ordinal.toByte())
-            writer.writeFloat(fade)
-        }
-
-        override fun read(reader: ByteArrayReader) {
-            bufferA.read(reader)
-            bufferB.read(reader)
-            mode = CompositingMode.get(reader.readByte())
-            fade = reader.readFloat()
-        }
     }
 
     class Renderer<A : Shader.Buffer, B : Shader.Buffer>(

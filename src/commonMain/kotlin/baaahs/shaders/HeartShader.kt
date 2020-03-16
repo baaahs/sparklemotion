@@ -5,8 +5,6 @@ import baaahs.IdentifiedSurface
 import baaahs.Surface
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.PanelSpaceUvTranslator
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.acos
@@ -15,13 +13,7 @@ import kotlin.math.pow
 class HeartShader : Shader<HeartShader.Buffer>(ShaderId.HEART) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
-    override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
-
     override fun createRenderer(surface: Surface): Renderer = Renderer(surface)
-
-    companion object : ShaderReader<HeartShader> {
-        override fun parse(reader: ByteArrayReader) = HeartShader()
-    }
 
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@HeartShader
@@ -32,21 +24,6 @@ class HeartShader : Shader<HeartShader.Buffer>(ShaderId.HEART) {
         var strokeSize = 1f
         var xOff = 0f
         var yOff = 0f
-
-        override fun serialize(writer: ByteArrayWriter) {
-            writer.writeFloat(heartSize)
-            writer.writeFloat(strokeSize)
-            writer.writeFloat(xOff)
-            writer.writeFloat(yOff)
-        }
-
-        override fun read(reader: ByteArrayReader) {
-            heartSize = reader.readFloat()
-            strokeSize = reader.readFloat()
-            xOff = reader.readFloat()
-            yOff = reader.readFloat()
-        }
-
     }
 
     class Renderer(surface: Surface) : Shader.Renderer<Buffer> {

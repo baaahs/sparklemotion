@@ -18,15 +18,7 @@ class GlslShader(
     val adjustableValues: List<AdjustableValue> = findAdjustableValues(glslProgram)
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
-    companion object : ShaderReader<GlslShader> {
-        override fun parse(reader: ByteArrayReader): GlslShader {
-            val glslProgram = reader.readString()
-            val uvTranslator = UvTranslator.parse(reader)
-            val adjustableValueCount = reader.readShort()
-            val adjustableValues = (0 until adjustableValueCount).map { AdjustableValue.parse(reader) }
-            return GlslShader(glslProgram, uvTranslator, adjustableValues)
-        }
-
+    companion object {
         private val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
         private val gadgetPattern = Regex(
             "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
@@ -70,12 +62,6 @@ class GlslShader(
         }
     }
 
-    override fun serializeConfig(writer: ByteArrayWriter) {
-        writer.writeString(glslProgram)
-        writer.writeShort(adjustableValues.size)
-        adjustableValues.forEach { it.serializeConfig(writer) }
-    }
-
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer =
@@ -113,8 +99,6 @@ class GlslShader(
 
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
-    override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
-
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
@@ -122,20 +106,6 @@ class GlslShader(
 
         fun update(values: List<Any?>) {
             values.forEachIndexed { index, value -> this.values[index] = value }
-        }
-
-        override fun serialize(writer: ByteArrayWriter) {
-            uvTranslator.serialize(writer)
-
-            adjustableValues.zip(values).forEach { (adjustableValue, value) ->
-                adjustableValue.serializeValue(value, writer)
-            }
-        }
-
-        override fun read(reader: ByteArrayReader) {
-            adjustableValues.forEachIndexed { index, adjustableValue ->
-                values[index] = adjustableValue.readValue(reader)
-            }
         }
     }
 

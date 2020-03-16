@@ -353,8 +353,6 @@ class Pinky(
     }
 
     class RenderTree<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
-        fun read(reader: ByteArrayReader) = buffer.read(reader)
-
         fun draw(pixels: Pixels) {
             renderer.beginFrame(buffer, pixels.size)
             for (i in pixels.indices) {

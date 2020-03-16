@@ -3,9 +3,6 @@ package baaahs.shaders
 import baaahs.Color
 import baaahs.SparkleMotion
 import baaahs.Surface
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
-import kotlin.math.min
 
 /**
  * A shader that allows control of individual pixels' colors directly from a show.
@@ -47,10 +44,6 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         }
     }
 
-    override fun serializeConfig(writer: ByteArrayWriter) {
-        writer.writeByte(encoding.ordinal.toByte())
-    }
-
     override fun createBuffer(surface: Surface): Buffer {
         val pixelCount = if (surface.pixelCount == SparkleMotion.PIXEL_COUNT_UNKNOWN) {
             SparkleMotion.DEFAULT_PIXEL_COUNT
@@ -63,28 +56,9 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
 
     override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> = Renderer()
 
-    override fun readBuffer(reader: ByteArrayReader): Buffer {
-        val incomingPixelCount = reader.readShort().toInt()
-        val buf = encoding.createBuffer(this, incomingPixelCount)
-        buf.read(reader, incomingPixelCount)
-        return buf
-    }
-
-    companion object : ShaderReader<PixelShader> {
-        override fun parse(reader: ByteArrayReader): PixelShader {
-            val encoding = Encoding.get(reader.readByte())
-            return PixelShader(encoding)
-        }
-    }
-
     abstract inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
             get() = this@PixelShader
-
-        override fun read(reader: ByteArrayReader) {
-            val incomingPixelCount = reader.readShort().toInt()
-            read(reader, incomingPixelCount)
-        }
 
         abstract val colors: MutableList<Color>
         abstract val palette: Array<Color>
@@ -94,7 +68,6 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         abstract fun setAll(color: Color)
         abstract fun setAll(paletteIndex: Int)
         abstract val indices: IntRange
-        abstract fun read(reader: ByteArrayReader, incomingPixelCount: Int)
     }
 
     inner class DirectColorBuffer(private val pixelCount: Int, private val rgb24BitMode: Boolean = false) : Buffer() {
@@ -116,44 +89,6 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
 
                 override fun get(index: Int): Color = this@DirectColorBuffer.get(index)
             }
-
-        /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
-        override fun serialize(writer: ByteArrayWriter) {
-            writer.writeShort(pixelCount)
-            colorsBuf.forEach { color -> writeColor(color, writer) }
-        }
-
-        /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
-        override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
-            // if there are more colors in the buffer than pixels, drop from the end
-            val countFromBuffer = min(colorsBuf.size, incomingPixelCount)
-            for (i in 0 until countFromBuffer) {
-                colorsBuf[i] = readColor(reader)
-            }
-
-            // if there are more pixels than colors in the buffer, repeat
-            for (i in countFromBuffer until colorsBuf.size) {
-                colorsBuf[i] = colorsBuf[i % countFromBuffer]
-            }
-        }
-
-        private fun writeColor(color: Color, writer: ByteArrayWriter) {
-            if (rgb24BitMode) {
-                writer.writeByte(color.redB)
-                writer.writeByte(color.greenB)
-                writer.writeByte(color.blueB)
-            } else {
-                writer.writeInt(color.argb)
-            }
-        }
-
-        private fun readColor(reader: ByteArrayReader): Color {
-            return if (rgb24BitMode) {
-                Color(reader.readByte(), reader.readByte(), reader.readByte())
-            } else {
-                Color(reader.readInt())
-            }
-        }
 
         override operator fun get(pixelIndex: Int): Color = colorsBuf[pixelIndex]
         override fun set(pixelIndex: Int, color: Color) {
@@ -224,19 +159,6 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
             val bitShift = positionInByte * bitsPerPixel
             val byte = (dataBuf[bufOffset].toInt() and (mask shl bitShift).inv()) or (paletteIndex shl bitShift)
             dataBuf[bufOffset] = byte.toByte()
-        }
-
-        /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
-        override fun serialize(writer: ByteArrayWriter) {
-            writer.writeShort(pixelCount)
-            palette.forEach { paletteColor -> writer.writeInt(paletteColor.argb) }
-            writer.writeNBytes(dataBuf)
-        }
-
-        /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
-        override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
-            palette.indices.forEach { i -> palette[i] = Color.from(reader.readInt()) }
-            reader.readNBytes(dataBuf)
         }
 
         override fun setAll(color: Color): Unit =

@@ -2,8 +2,6 @@ package baaahs.shaders
 
 import baaahs.Color
 import baaahs.Surface
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -13,13 +11,7 @@ import kotlin.math.sin
 class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
-    override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
-
     override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> = Renderer()
-
-    companion object : ShaderReader<SineWaveShader> {
-        override fun parse(reader: ByteArrayReader) = SineWaveShader()
-    }
 
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*>
@@ -28,18 +20,6 @@ class SineWaveShader() : Shader<SineWaveShader.Buffer>(ShaderId.SINE_WAVE) {
         var color: Color = Color.WHITE
         var theta: Float = 0f
         var density: Float = 1f
-
-        override fun serialize(writer: ByteArrayWriter) {
-            color.serialize(writer)
-            writer.writeFloat(theta)
-            writer.writeFloat(density)
-        }
-
-        override fun read(reader: ByteArrayReader) {
-            color = Color.parse(reader)
-            theta = reader.readFloat()
-            density = reader.readFloat()
-        }
     }
 
     class Renderer : Shader.Renderer<Buffer> {
