@@ -1,8 +1,8 @@
 package baaahs.glsl
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.Surface
+import baaahs.shaders.Pixels
 
 class GlslSurface(
     val pixels: SurfacePixels,

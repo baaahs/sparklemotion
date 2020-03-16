@@ -13,8 +13,7 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.PixelShader
-import baaahs.shaders.SoundAnalysisPlugin
+import baaahs.shaders.*
 import baaahs.shows.SolidColorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope

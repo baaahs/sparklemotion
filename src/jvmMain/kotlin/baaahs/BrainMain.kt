@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
+import baaahs.shaders.Pixels
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -12,7 +13,6 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
-import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -7,12 +8,12 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
-import baaahs.api.ws.WebSocketClient
 import baaahs.mapper.MappingSession
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
+import baaahs.shaders.Shader
 import baaahs.shaders.SolidShader
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*

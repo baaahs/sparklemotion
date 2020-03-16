@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.proto.Ports
+import baaahs.shaders.Pixels
 import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger

@@ -1,6 +1,8 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Color
+import baaahs.IdentifiedSurface
+import baaahs.Surface
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.PanelSpaceUvTranslator
 import baaahs.io.ByteArrayReader

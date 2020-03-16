@@ -1,6 +1,8 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Color
+import baaahs.SparkleMotion
+import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min
@@ -10,7 +12,8 @@ import kotlin.math.min
  *
  * This is a suboptimal shader for most purposes, consider writing a custom shader instead!
  */
-class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
+class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shader<PixelShader.Buffer>(
+    ShaderId.PIXEL) {
 
     enum class Encoding {
         DIRECT_ARGB {

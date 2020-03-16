@@ -4,6 +4,7 @@ import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.net.TestNetwork
+import baaahs.shaders.Shader
 import baaahs.shaders.SolidShader
 import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse

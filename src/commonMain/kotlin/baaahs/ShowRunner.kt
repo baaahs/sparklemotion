@@ -3,6 +3,7 @@ package baaahs
 import baaahs.dmx.Shenzarpy
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
+import baaahs.shaders.Shader
 
 class ShowRunner(
     private val model: Model<*>,

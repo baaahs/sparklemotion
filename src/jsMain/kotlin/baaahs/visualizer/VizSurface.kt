@@ -2,9 +2,9 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.Model
-import baaahs.Pixels
 import baaahs.geom.Vector2
 import baaahs.resourcesBase
+import baaahs.shaders.Pixels
 import info.laht.threekt.THREE.AdditiveBlending
 import info.laht.threekt.THREE.FrontSide
 import info.laht.threekt.THREE.VertexColors

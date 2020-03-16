@@ -5,6 +5,8 @@ import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import baaahs.shaders.Pixels
+import baaahs.shaders.Shader
 import kotlinx.coroutines.delay
 
 class Brain(

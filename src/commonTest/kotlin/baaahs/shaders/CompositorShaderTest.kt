@@ -1,7 +1,6 @@
 package baaahs.shaders
 
 import baaahs.Color
-import baaahs.Shader
 import kotlin.test.Test
 import kotlin.test.expect
 

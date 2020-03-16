@@ -1,8 +1,9 @@
-package baaahs
+package baaahs.shaders
 
+import baaahs.Color
+import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.*
 
 enum class ShaderId(val reader: ShaderReader<*>) {
     SOLID(SolidShader),

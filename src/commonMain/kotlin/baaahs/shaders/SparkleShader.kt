@@ -1,6 +1,7 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.random.Random

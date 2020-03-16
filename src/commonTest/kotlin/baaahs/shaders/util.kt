@@ -1,8 +1,6 @@
 package baaahs.shaders
 
 import baaahs.Color
-import baaahs.Pixels
-import baaahs.Shader
 import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter

@@ -1,6 +1,7 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Surface
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
 import baaahs.glsl.UvTranslator
@@ -102,7 +103,7 @@ class GlslShader(
 
     class PooledRenderer(
         glslProgram: String, uvTranslator: UvTranslator, adjustableValues: List<AdjustableValue>
-    ) : baaahs.PooledRenderer {
+    ) : baaahs.shaders.PooledRenderer {
         val glslRenderer = GlslBase.manager.createRenderer(glslProgram, uvTranslator, adjustableValues)
 
         override fun preDraw() {
