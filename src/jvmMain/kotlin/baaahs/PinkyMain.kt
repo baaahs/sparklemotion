@@ -76,7 +76,6 @@ class PinkyMain(private val args: Args) {
         val pinky = Pinky(
             model, shows, network, dmxUniverse, beatSource, SystemClock(),
             fs, daddy, display, JvmSoundAnalyzer(),
-            prerenderPixels = true,
             switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter
         )

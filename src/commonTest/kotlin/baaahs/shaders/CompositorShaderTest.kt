@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.Color
+import baaahs.Surface
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -15,15 +16,6 @@ class CompositorShaderTest {
         fade = .5f
     }
     private val surface = FakeSurface(1)
-
-    @Test
-    fun shouldTransmit() {
-        val dstBuf = transmit(buffer, surface)
-        expect(CompositingMode.NORMAL) { dstBuf.mode }
-        expect(.5f) { dstBuf.fade }
-        expect(Color.BLACK) { (dstBuf.bufferA as SolidShader.Buffer).color }
-        expect(Color.WHITE) { (dstBuf.bufferB as SolidShader.Buffer).color }
-    }
 
     @Test
     fun shouldRender() {
@@ -99,4 +91,21 @@ class CompositorShaderTest {
         buffer.color = color
         return shader to buffer
     }
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
+        val pixels = FakePixels(surface.pixelCount)
+        val shader: Shader<T> = srcBuf.shader as Shader<T>
+        val renderer = shader.createRenderer(surface)
+        renderer.beginFrame(srcBuf, pixels.size)
+        for (i in pixels.indices) {
+            pixels[i] = renderer.draw(srcBuf, i)
+        }
+        renderer.endFrame()
+        return pixels
+    }
+
+    internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
+        render(srcShaderAndBuffer.second, surface)
+
 }

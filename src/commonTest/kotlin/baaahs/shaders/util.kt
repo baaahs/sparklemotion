@@ -4,9 +4,10 @@ import baaahs.Color
 import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.proto.BrainShader
 import kotlin.test.expect
 
-private fun <T : Shader.Buffer> send(srcShader: Shader<T>, srcBuf: T, surface: Surface): Pair<Shader<T>, T> {
+private fun <T : BrainShader.Buffer> send(srcShader: BrainShader<T>, srcBuf: T, surface: Surface): Pair<BrainShader<T>, T> {
     val writer = ByteArrayWriter()
     srcShader.serialize(writer)
     srcBuf.serialize(writer)
@@ -16,21 +17,21 @@ private fun <T : Shader.Buffer> send(srcShader: Shader<T>, srcBuf: T, surface: S
     expect(srcShader.id.ordinal.toByte()) { reader.readByte() }
 
     @Suppress("UNCHECKED_CAST")
-    val dstShader: Shader<T> = srcShader.id.reader.parse(reader) as Shader<T>
+    val dstShader: BrainShader<T> = srcShader.id.reader.parse(reader) as BrainShader<T>
     val dstBuf = dstShader.createBuffer(surface)
     dstBuf.read(reader)
     return Pair(dstShader, dstBuf)
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : Shader.Buffer> transmit(srcBuf: T, surface: Surface): T {
-    val (_: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
+internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, surface: Surface): T {
+    val (_: BrainShader<T>, dstBuf) = send(srcBuf.shader as BrainShader<T>, srcBuf, surface)
     return dstBuf
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
-    val (dstShader: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
+internal fun <T : BrainShader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
+    val (dstShader: BrainShader<T>, dstBuf) = send(srcBuf.shader as BrainShader<T>, srcBuf, surface)
     val pixels = FakePixels(surface.pixelCount)
     val renderer = dstShader.createRenderer(surface)
     renderer.beginFrame(dstBuf, pixels.size)
@@ -41,7 +42,7 @@ internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
     return pixels
 }
 
-internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
+internal fun <T : BrainShader.Buffer> render(srcShaderAndBuffer: Pair<BrainShader<T>, T>, surface: Surface): Pixels =
     render(srcShaderAndBuffer.second, surface)
 
 class FakeSurface(override val pixelCount: Int) : Surface {

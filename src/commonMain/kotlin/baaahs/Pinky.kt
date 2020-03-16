@@ -32,7 +32,6 @@ class Pinky(
     val firmwareDaddy: FirmwareDaddy,
     val display: PinkyDisplay,
     soundAnalyzer: SoundAnalyzer,
-    private val prerenderPixels: Boolean = false,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null
 ) : Network.UdpListener {
@@ -277,7 +276,7 @@ class Pinky(
 //            )
         }
 
-        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer ->
+        val sendFn: (BrainShader.Buffer) -> Unit = { shaderBuffer ->
             val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
             try {
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
@@ -294,11 +293,7 @@ class Pinky(
             networkStats.bytesSent += message.size
         }
 
-        val surfaceReceiver = if (prerenderPixels) {
-            PrerenderingSurfaceReceiver(surface, sendFn)
-        } else {
-            ShowRunner.SurfaceReceiver(surface, sendFn)
-        }
+        val surfaceReceiver = PrerenderingSurfaceReceiver(surface, sendFn)
 
         val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
@@ -357,9 +352,28 @@ class Pinky(
         }
     }
 
-    private inner class PrerenderingSurfaceReceiver(surface: Surface, sendFn: (Shader.Buffer) -> Unit) :
-        ShowRunner.SurfaceReceiver(surface, sendFn) {
-        var currentRenderTree: Brain.RenderTree<*>? = null
+    class RenderTree<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+        fun read(reader: ByteArrayReader) = buffer.read(reader)
+
+        fun draw(pixels: Pixels) {
+            renderer.beginFrame(buffer, pixels.size)
+            for (i in pixels.indices) {
+                pixels[i] = renderer.draw(buffer, i)
+            }
+            renderer.endFrame()
+            pixels.finishedFrame()
+        }
+
+        fun release() {
+            renderer.release()
+        }
+    }
+
+    private inner class PrerenderingSurfaceReceiver(
+        surface: Surface,
+        private val sendFn: (BrainShader.Buffer) -> Unit
+    ) : ShowRunner.SurfaceReceiver(surface) {
+        var currentRenderTree: RenderTree<*>? = null
         private var currentPoolKey: Any? = null
         var pixels: PixelsAdapter? = null
         var currentBuffer: Shader.Buffer? = null
@@ -386,12 +400,12 @@ class Pinky(
                     currentPoolKey = newPoolKey
                 }
 
-                renderTree = Brain.RenderTree(shader, renderer, shaderBuffer)
+                renderTree = RenderTree(shader, renderer, shaderBuffer)
                 currentRenderTree?.release()
                 currentRenderTree = renderTree
 
                 if (pixels == null) {
-                    val pixelBuffer = PixelShader(PixelShader.Encoding.DIRECT_RGB).createBuffer(surface)
+                    val pixelBuffer = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB).createBuffer(surface)
                     pixels = PixelsAdapter(pixelBuffer)
                 }
             }
@@ -421,7 +435,7 @@ class Pinky(
 
                 renderTree.draw(pixels)
 
-                super.send(pixels.buffer)
+                sendFn(pixels.buffer)
 
                 updateListeningVisualizers(surface, pixels.buffer.colors)
             }
@@ -433,25 +447,23 @@ class Pinky(
 
     private fun aroundNextFrame(callNextFrame: () -> Unit) {
         /**
-         * [ShowRunner.SurfaceReceiver.send] is called here; if [prerenderPixels] is true, it won't
-         * actually send; we need to do that ourselves.
+         * [ShowRunner.SurfaceReceiver.send] is called here; because we prerender everything on Pinky, it won't
+         * actually send anything to brains; we need to do that ourselves.
          */
         callNextFrame()
 
-        if (prerenderPixels) {
-            val preDrawElapsed = timeSync {
-                poolingRenderContext.preDraw()
-            }
-
-            val sendElapsed = timeSync {
-                brainInfos.values.forEach { brainInfo ->
-                    val surfaceReceiver = brainInfo.surfaceReceiver as PrerenderingSurfaceReceiver
-                    surfaceReceiver.actuallySend()
-                }
-            }
-
-//            println("preDraw took ${preDrawElapsed}ms, send took ${sendElapsed}ms")
+        val preDrawElapsed = timeSync {
+            poolingRenderContext.preDraw()
         }
+
+        val sendElapsed = timeSync {
+            brainInfos.values.forEach { brainInfo ->
+                val surfaceReceiver = brainInfo.surfaceReceiver as PrerenderingSurfaceReceiver
+                surfaceReceiver.actuallySend()
+            }
+        }
+
+//        println("preDraw took ${preDrawElapsed}ms, send took ${sendElapsed}ms")
         val now = getTimeMillis()
         val elapsedMs = now - lastSentAt
 //        println("It's been $elapsedMs")
@@ -487,7 +499,7 @@ class Pinky(
         class Holder<T : PooledRenderer>(val pooledRenderer: T, var count: Int = 0)
     }
 
-    private class PixelsAdapter(internal val buffer: PixelShader.Buffer) : Pixels {
+    private class PixelsAdapter(internal val buffer: PixelBrainShader.Buffer) : Pixels {
         override val size: Int = buffer.colors.size
 
         override fun get(i: Int): Color = buffer.colors[i]

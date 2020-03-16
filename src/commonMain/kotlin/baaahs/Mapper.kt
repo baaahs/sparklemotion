@@ -12,9 +12,6 @@ import baaahs.mapper.MappingSession
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.PixelShader
-import baaahs.shaders.Shader
-import baaahs.shaders.SolidShader
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -560,7 +557,7 @@ class Mapper(
 
     private suspend fun sendToAllReliably(
         brains: Collection<BrainToMap>,
-        fn: (BrainToMap) -> Shader.Buffer
+        fn: (BrainToMap) -> BrainShader.Buffer
     ) {
         sendToAll(brains, fn)
         waitForDelivery()
@@ -568,7 +565,7 @@ class Mapper(
 
     private fun sendToAll(
         brains: Collection<BrainToMap>,
-        fn: (BrainToMap) -> Shader.Buffer
+        fn: (BrainToMap) -> BrainShader.Buffer
     ) {
         brains.forEach {
             deliverer.send(it, fn(it))
@@ -600,8 +597,8 @@ class Mapper(
         return BrainShaderMessage(buf.shader, buf)
     }
 
-    private fun solidColorBuffer(color: Color): Shader.Buffer {
-        val solidShader = SolidShader()
+    private fun solidColorBuffer(color: Color): BrainShader.Buffer {
+        val solidShader = SolidBrainShader()
         val buffer = solidShader.createBuffer(object : Surface {
             override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
@@ -616,7 +613,7 @@ class Mapper(
         val outstanding = mutableMapOf<List<Byte>, DeliveryAttempt>()
         val pongs = Channel<PingMessage>()
 
-        fun send(brainToMap: BrainToMap, buffer: Shader.Buffer) {
+        fun send(brainToMap: BrainToMap, buffer: BrainShader.Buffer) {
             val deliveryAttempt = DeliveryAttempt(brainToMap, buffer)
 //            logger.debug { "attempting reliable delivery with key ${deliveryAttempt.key.stringify()}" }
             outstanding[deliveryAttempt.key] = deliveryAttempt
@@ -697,7 +694,7 @@ class Mapper(
 
     class TimeoutException(message: String) : Exception(message)
 
-    inner class DeliveryAttempt(val brainToMap: BrainToMap, val buffer: Shader.Buffer) {
+    inner class DeliveryAttempt(val brainToMap: BrainToMap, val buffer: BrainShader.Buffer) {
         private val tag = Random.nextBytes(8)
         val key get() = tag.toList()
         val sentAt = getTimeMillis().toDouble()
@@ -785,7 +782,7 @@ class Mapper(
         var screenMin: Vector2F? = null
         var screenMax: Vector2F? = null
 
-        val pixelShader = PixelShader(PixelShader.Encoding.INDEXED_2)
+        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
         val pixelShaderBuffer = pixelShader.createBuffer(object : Surface {
             override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 

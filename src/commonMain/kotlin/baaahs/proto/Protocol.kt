@@ -5,7 +5,6 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.Shader
 
 object Ports {
     const val PINKY = 8002
@@ -69,7 +68,7 @@ class BrainHelloMessage(val brainId: String, val surfaceName: String?, val firmw
     }
 }
 
-class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val pongData: ByteArray? = null) :
+class BrainShaderMessage(val shader: BrainShader<*>, val buffer: BrainShader.Buffer, val pongData: ByteArray? = null) :
     Message(Type.BRAIN_PANEL_SHADE) {
     companion object {
         /**
@@ -78,7 +77,7 @@ class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val p
         fun parse(reader: ByteArrayReader): BrainShaderMessage {
             val pongData = if (reader.readBoolean()) reader.readBytes() else null
             val shaderDesc = reader.readBytes()
-            val shader = Shader.parse(ByteArrayReader(shaderDesc))
+            val shader = BrainShader.parse(ByteArrayReader(shaderDesc))
             val buffer = shader.readBuffer(reader)
             return BrainShaderMessage(shader, buffer, pongData)
         }

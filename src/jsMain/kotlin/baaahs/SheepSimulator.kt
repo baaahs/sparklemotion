@@ -40,8 +40,7 @@ class SheepSimulator {
     private val pinkyDisplay = display.forPinky()
     private val pinky = Pinky(
         model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
-        PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,
-        prerenderPixels = true
+        PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer
     )
 
     private fun selectModel(): Model<*> =

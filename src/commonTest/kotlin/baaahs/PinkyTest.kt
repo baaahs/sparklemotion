@@ -30,8 +30,10 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
-            PermissiveFirmwareDaddy(), StubPinkyDisplay(), StubSoundAnalyzer())
+        pinky = Pinky(
+            model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
+            PermissiveFirmwareDaddy(), StubPinkyDisplay(), StubSoundAnalyzer()
+        )
         pinkyLink = network.links.only()
     }
 
