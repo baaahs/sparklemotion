@@ -31,8 +31,7 @@ class SheepSimulator {
         model,
         display.forVisualizer(),
         document.getElementById("sheepView")!! as HTMLDivElement,
-        document.getElementById("selectionInfo")!! as HTMLDivElement,
-        document.getElementById("vizRotation") as HTMLInputElement
+        document.getElementById("selectionInfo")!! as HTMLDivElement
     )
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
