@@ -75,12 +75,7 @@ const SimulatorSettingsWindow = (props) => {
         <div id="selectionInfo"></div>
       </div>
 
-
-
       <div className={styles.controls}>
-        <label>
-          <input type="checkbox" id="vizRotation" /> Rotate
-        </label>
         <div className={styles.pixelCount}>
           Pixel count: <span id="visualizerPixelCount">n/a</span>
         </div>
