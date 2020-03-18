@@ -3,20 +3,19 @@ package baaahs.glsl
 import baaahs.shaders.GlslShader
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
-import com.danielgergely.kgl.Kgl
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
-class Program constructor(
-    private val gl: Kgl,
+class Program(
+    private val gl: GlslManager,
     val fragShader: String,
     private val glslVersion: String,
     plugins: List<GlslPlugin> = GlslBase.plugins
 ) {
-    private val id = gl.check { gl.createProgram() ?: throw IllegalStateException() }
+    private val id = gl.check { createProgram() ?: throw IllegalStateException() }
 
     val params: List<GlslShader.Param>
-    val plugins = plugins.map { it.forProgram(gl, this) }
+    val plugins = plugins.map { gl.check { it.forProgram(this, this@Program) } }
 
     private val gadgetPattern = Regex(
         "\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n" +
@@ -36,7 +35,7 @@ class Program constructor(
         val src = buildFragmentShader()
         println(src)
         params = findParams(src)
-        val fragmentShader = Shader.createFragmentShader(gl, src)
+        val fragmentShader = gl.createFragmentShader(src)
         attachShader(fragmentShader)
 
         if (!link()) {
@@ -62,16 +61,16 @@ class Program constructor(
         }.toList()
     }
 
-    fun getInfoLog(): String? = gl.getProgramInfoLog(id)
-    fun attachShader(shader: Shader) = gl.attachShader(id, shader.id)
+    fun getInfoLog(): String? = gl.check { getProgramInfoLog(id) }
+    fun attachShader(compiledShader: CompiledShader) = gl.check { attachShader(id, compiledShader.id) }
     fun link(): Boolean {
-        gl.linkProgram(id)
-        return gl.getProgramParameter(id, GL_LINK_STATUS) == GL_TRUE
+        gl.check { linkProgram(id) }
+        return gl.check { getProgramParameter(id, GL_LINK_STATUS) } == GL_TRUE
     }
 
-    fun bind() = gl.useProgram(id)
+    fun bind() = gl.check { useProgram(id) }
 
-    fun getUniform(name: String): Uniform? = gl.getUniformLocation(id, name)?.let { Uniform(gl, it) }
+    fun getUniform(name: String): Uniform? = gl.check { getUniformLocation(id, name)?.let { Uniform(this, it) } }
 
     private fun attachVertexShader() {
         val vertexShaderSource = """#version $glslVersion
@@ -89,12 +88,12 @@ void main()
     gl_Position = vec4(Vertex, 0.0, 1.0);
 }
 """
-        val vertexShader = Shader.createVertexShader(gl, vertexShaderSource)
+        val vertexShader = gl.createVertexShader(vertexShaderSource)
         attachShader(vertexShader)
     }
 
     fun getVertexAttribLocation(): Int {
-        return gl.getAttribLocation(id, "Vertex")
+        return gl.check { getAttribLocation(id, "Vertex") }
     }
 
     private fun buildFragmentShader(): String {

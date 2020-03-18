@@ -1,11 +1,14 @@
 package baaahs.glsl
 
 import baaahs.Logger
-import com.danielgergely.kgl.*
+import com.danielgergely.kgl.GL_COMPILE_STATUS
+import com.danielgergely.kgl.GL_TRUE
+import com.danielgergely.kgl.Kgl
+import com.danielgergely.kgl.Shader
 
-class Shader private constructor(
+class CompiledShader(
     private val gl: Kgl,
-    internal val id: com.danielgergely.kgl.Shader,
+    internal val id: Shader,
     private val source: String
 ) {
     val logger = Logger("baaahs.glsl.Shader")
@@ -28,18 +31,6 @@ class Shader private constructor(
                         source
             }
             throw RuntimeException("Failed to compile shader: $infoLog")
-        }
-    }
-
-    companion object {
-        fun createVertexShader(gl: Kgl, source: String): Shader {
-            val shaderId = gl.check { gl.createShader(GL_VERTEX_SHADER) } ?: throw IllegalStateException()
-            return Shader(gl, shaderId, source)
-        }
-
-        fun createFragmentShader(gl: Kgl, source: String): Shader {
-            val shaderId = gl.createShader(GL_FRAGMENT_SHADER) ?: throw IllegalStateException()
-            return Shader(gl, shaderId, source)
         }
     }
 }
