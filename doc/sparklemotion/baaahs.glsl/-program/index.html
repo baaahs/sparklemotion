@@ -9,6 +9,44 @@
 <br/>
 <h1>Program</h1>
 <code><span class="keyword">class </span><span class="identifier">Program</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Program</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.Program$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.String, kotlin.collections.List((baaahs.glsl.GlslPlugin)))/gl">gl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.Program$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.String, kotlin.collections.List((baaahs.glsl.GlslPlugin)))/fragShader">fragShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.Program$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.String, kotlin.collections.List((baaahs.glsl.GlslPlugin)))/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.Program$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.String, kotlin.collections.List((baaahs.glsl.GlslPlugin)))/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-glsl-plugin/index.html"><span class="identifier">GlslPlugin</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;GlslBase.plugins<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="frag-shader.html">fragShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fragShader</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="params.html">params</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">params</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Param</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="plugins.html">plugins</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">ProgramContext</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Functions</h3>
 <table>
 <tbody>
@@ -28,6 +66,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="find-params.html">findParams</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findParams</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.Program$findParams(kotlin.String)/glslFragmentShader">glslFragmentShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Param</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="get-info-log.html">getInfoLog</a></h4>
 </td>
 <td>
@@ -42,22 +87,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="get-vertex-attrib-location.html">getVertexAttribLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getVertexAttribLocation</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="link.html">link</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
-</tbody>
-</table>
-<h3>Companion Object Functions</h3>
-<table>
-<tbody>
 <tr>
 <td>
-<h4><a href="create.html">create</a></h4>
+<h4><a href="obtain-texture-id.html">obtainTextureId</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">create</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.Program.Companion$create(com.danielgergely.kgl.Kgl)/gl">gl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Program</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">obtainTextureId</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>

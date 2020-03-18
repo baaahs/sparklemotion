@@ -151,15 +151,19 @@
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
   var ReferenceArraySerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ReferenceArraySerializer;
   var defineInlineFunction = Kotlin.defineInlineFunction;
-  var replace = Kotlin.kotlin.text.replace_680rmw$;
   var L134217727 = Kotlin.Long.fromInt(134217727);
+  var get_indices = Kotlin.kotlin.collections.get_indices_gzk92b$;
   var ByteBuffer_init = $module$kgl.com.danielgergely.kgl.ByteBuffer_init_za3lpa$;
   var FloatBuffer_init = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_q3cr5i$;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
+  var map = Kotlin.kotlin.sequences.map_z5avom$;
+  var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
+  var replace = Kotlin.kotlin.text.replace_680rmw$;
   var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
-  var toFloatArray = Kotlin.kotlin.collections.toFloatArray_529xol$;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var toFloatArray = Kotlin.kotlin.collections.toFloatArray_zwy31$;
   var first_0 = Kotlin.kotlin.collections.first_7wnvza$;
-  var listOf = Kotlin.kotlin.collections.listOf_mh5how$;
+  var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
   var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
@@ -171,25 +175,21 @@
   var copyOfRange_0 = Kotlin.kotlin.collections.copyOfRange_qxueih$;
   var min_0 = Kotlin.kotlin.collections.min_i2lc79$;
   var max_1 = Kotlin.kotlin.collections.max_i2lc79$;
-  var get_indices = Kotlin.kotlin.collections.get_indices_i2lc79$;
+  var get_indices_0 = Kotlin.kotlin.collections.get_indices_i2lc79$;
   var reversed = Kotlin.kotlin.ranges.reversed_zf1xzc$;
   var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_tmsbgo$;
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
-  var until_0 = Kotlin.kotlin.ranges.until_c8b4g4$;
-  var map = Kotlin.kotlin.sequences.map_z5avom$;
-  var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
-  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var listOf_0 = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var zip_0 = Kotlin.kotlin.collections.zip_xiheex$;
   var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
   var Array_0 = Array;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
-  var get_indices_0 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
+  var get_indices_1 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
   var FloatBuffer_init_0 = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_za3lpa$;
   var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
+  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
   var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
   var L268435455 = Kotlin.Long.fromInt(268435455);
@@ -276,7 +276,6 @@
   var unboxChar = Kotlin.unboxChar;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
   var contentHashCode = Kotlin.arrayHashCode;
-  var toFloatArray_0 = Kotlin.kotlin.collections.toFloatArray_zwy31$;
   var replace_0 = Kotlin.kotlin.text.replace_r2fvfm$;
   var toMap_0 = Kotlin.kotlin.collections.toMap_6hr0sd$;
   var Quaternion = THREE.Quaternion;
@@ -384,8 +383,8 @@
   CompositingMode$NORMAL.prototype.constructor = CompositingMode$NORMAL;
   CompositingMode$ADD.prototype = Object.create(CompositingMode.prototype);
   CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
-  GlslShader$AdjustableValue$Type.prototype = Object.create(Enum.prototype);
-  GlslShader$AdjustableValue$Type.prototype.constructor = GlslShader$AdjustableValue$Type;
+  GlslShader$Param$Type.prototype = Object.create(Enum.prototype);
+  GlslShader$Param$Type.prototype.constructor = GlslShader$Param$Type;
   GlslShader.prototype = Object.create(Shader.prototype);
   GlslShader.prototype.constructor = GlslShader;
   HeartShader.prototype = Object.create(Shader.prototype);
@@ -454,6 +453,8 @@
   AdminPage.prototype.constructor = AdminPage;
   Vector2_0.prototype = Object.create(Vector2.prototype);
   Vector2_0.prototype.constructor = Vector2_0;
+  GlslBase$JsGlslManager.prototype = Object.create(GlslManager.prototype);
+  GlslBase$JsGlslManager.prototype.constructor = GlslBase$JsGlslManager;
   NativeBitmap.prototype = Object.create(CanvasBitmap.prototype);
   NativeBitmap.prototype.constructor = NativeBitmap;
   CanvasBitmap$asImage$ObjectLiteral.prototype = Object.create(JsImage.prototype);
@@ -5697,7 +5698,6 @@
     }
     tmp$.publish_oiz02e$(tmp$_0, destination, Pinky_init$lambda_1);
     this.selectedShowChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.shows.get_za3lpa$(0).name, Pinky_init$lambda_2(this));
-    GlslBase_getInstance().plugins.add_11rb$(new SoundAnalysisPlugin(soundAnalyzer));
     this.poolingRenderContext = new Pinky$PoolingRenderContext();
     this.lastSentAt = L0;
   }
@@ -10499,43 +10499,6 @@
     var max = accumulator_0;
     return new Pair(min, max);
   }
-  function AdjustableUniform() {
-  }
-  AdjustableUniform.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'AdjustableUniform',
-    interfaces: []
-  };
-  function UnifyingAdjustableUniform(program, adjustableValue, surfaceCount) {
-    this.adjustableValue_0 = adjustableValue;
-    this.surfaceCount = surfaceCount;
-    this.uniformLocation_0 = program.getUniform_61zpoe$(this.adjustableValue_0.varName);
-    this.buffer = null;
-  }
-  UnifyingAdjustableUniform.prototype.bind = function () {
-    var tmp$, tmp$_0, tmp$_1;
-    if (this.buffer != null && this.uniformLocation_0 != null) {
-      switch (this.adjustableValue_0.valueType.name) {
-        case 'INT':
-          this.uniformLocation_0.set_za3lpa$(typeof (tmp$ = this.buffer) === 'number' ? tmp$ : throwCCE());
-          break;
-        case 'FLOAT':
-          this.uniformLocation_0.set_mx4ult$(typeof (tmp$_0 = this.buffer) === 'number' ? tmp$_0 : throwCCE());
-          break;
-        case 'VEC3':
-          var color = Kotlin.isType(tmp$_1 = this.buffer, Color) ? tmp$_1 : throwCCE();
-          this.uniformLocation_0.set_y2kzbl$(color.redF, color.greenF, color.blueF);
-          break;
-      }
-    }};
-  UnifyingAdjustableUniform.prototype.setValue_6t2rgq$ = function (surfaceOrdinal, value) {
-    this.buffer = value;
-  };
-  UnifyingAdjustableUniform.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'UnifyingAdjustableUniform',
-    interfaces: [AdjustableUniform]
-  };
   var check = defineInlineFunction('sparklemotion.baaahs.glsl.check_56a5t8$', wrapFunction(function () {
     var checkForGlError = _.baaahs.glsl.checkForGlError_t0jnzc$;
     return function ($receiver, fn) {
@@ -10577,25 +10540,75 @@
         return;
     }
   }
-  function GlslManager() {
+  function GlslManager(glslVersion) {
+    this.glslVersion_rl4red$_0 = glslVersion;
+    this.kgl_2rc0ad$_0 = lazy(GlslManager$kgl$lambda(this));
   }
-  GlslManager.prototype.createRenderer_k4mt0f$ = function (fragShader, uvTranslator, adjustableValues, plugins, callback$default) {
-    if (plugins === void 0)
-      plugins = GlslBase_getInstance().plugins;
-    return callback$default ? callback$default(fragShader, uvTranslator, adjustableValues, plugins) : this.createRenderer_k4mt0f$$default(fragShader, uvTranslator, adjustableValues, plugins);
+  Object.defineProperty(GlslManager.prototype, 'kgl', {
+    get: function () {
+      return this.kgl_2rc0ad$_0.value;
+    }
+  });
+  function GlslManager$createProgram$lambda(this$GlslManager, closure$fragShader) {
+    return function () {
+      return new Program(this$GlslManager.kgl, closure$fragShader, this$GlslManager.glslVersion_rl4red$_0, GlslBase_getInstance().plugins);
+    };
+  }
+  GlslManager.prototype.createProgram_61zpoe$ = function (fragShader) {
+    return this.runInContext_klfg04$(GlslManager$createProgram$lambda(this, fragShader));
   };
+  function GlslManager$createRenderer$lambda$ObjectLiteral(this$GlslManager) {
+    this.this$GlslManager = this$GlslManager;
+  }
+  GlslManager$createRenderer$lambda$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
+    return this.this$GlslManager.runInContext_klfg04$(fn);
+  };
+  GlslManager$createRenderer$lambda$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [GlslRenderer$ContextSwitcher]
+  };
+  function GlslManager$createRenderer$lambda(this$GlslManager, closure$program, closure$uvTranslator) {
+    return function () {
+      return new GlslRenderer(this$GlslManager.kgl, new GlslManager$createRenderer$lambda$ObjectLiteral(this$GlslManager), closure$program, closure$uvTranslator);
+    };
+  }
+  GlslManager.prototype.createRenderer_41a8d7$ = function (program, uvTranslator) {
+    return this.runInContext_klfg04$(GlslManager$createRenderer$lambda(this, program, uvTranslator));
+  };
+  function GlslManager$kgl$lambda(this$GlslManager) {
+    return function () {
+      return this$GlslManager.createContext();
+    };
+  }
   GlslManager.$metadata$ = {
-    kind: Kind_INTERFACE,
+    kind: Kind_CLASS,
     simpleName: 'GlslManager',
     interfaces: []
   };
   function GlslPlugin() {
   }
-  function GlslPlugin$RendererPlugin() {
+  function GlslPlugin$ProgramContext() {
   }
-  GlslPlugin$RendererPlugin.$metadata$ = {
+  GlslPlugin$ProgramContext.prototype.afterCompile = function () {
+  };
+  GlslPlugin$ProgramContext.prototype.release = function () {
+  };
+  GlslPlugin$ProgramContext.$metadata$ = {
     kind: Kind_INTERFACE,
-    simpleName: 'RendererPlugin',
+    simpleName: 'ProgramContext',
+    interfaces: []
+  };
+  function GlslPlugin$RenderContext() {
+  }
+  GlslPlugin$RenderContext.prototype.before = function () {
+  };
+  GlslPlugin$RenderContext.prototype.after = function () {
+  };
+  GlslPlugin$RenderContext.prototype.release = function () {
+  };
+  GlslPlugin$RenderContext.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'RenderContext',
     interfaces: []
   };
   GlslPlugin.$metadata$ = {
@@ -10603,93 +10616,51 @@
     simpleName: 'GlslPlugin',
     interfaces: []
   };
-  function GlslRenderer(gl, contextSwitcher, fragShader, uvTranslator, adjustableValues, glslVersion, plugins) {
+  function GlslRenderer(gl, contextSwitcher, program, uvTranslator) {
     GlslRenderer$Companion_getInstance();
     this.gl = gl;
     this.contextSwitcher_8zrvqj$_0 = contextSwitcher;
-    this.fragShader = fragShader;
+    this.program_4yv7rr$_0 = program;
     this.uvTranslator_7f5fm$_0 = uvTranslator;
-    this.adjustableValues = adjustableValues;
-    this.glslVersion_l4u3hb$_0 = glslVersion;
     this.surfacesToAdd_vfxuyj$_0 = ArrayList_init();
+    this.fbMaxPixWidth_99u0r8$_0 = 1024;
     this.pixelCount = 0;
     this.nextPixelOffset = 0;
-    this.nextSurfaceOffset = 0;
+    this.nextRectOffset = 0;
     this.glslSurfaces_vgfiet$_0 = ArrayList_init();
-    this.nextTextureId_nzaz14$_0 = 0;
-    this.uvCoordTextureId_c5rmnd$_0 = this.getTextureId();
-    var destination = ArrayList_init_0(collectionSizeOrDefault(plugins, 10));
+    this.uvCoordTextureId_c5rmnd$_0 = this.program_4yv7rr$_0.obtainTextureId();
+    var $receiver = this.program_4yv7rr$_0.plugins;
+    var destination = ArrayList_init();
     var tmp$;
-    tmp$ = plugins.iterator();
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(item.forRenderer_slafvx$(this));
-    }
+      var element = tmp$.next();
+      var tmp$_0;
+      if ((tmp$_0 = element.forRender()) != null) {
+        destination.add_11rb$(tmp$_0);
+      }}
     this.rendererPlugins_8k6ftu$_0 = destination;
     this.arrangement = null;
-    var result = GlslRenderer$program$lambda(this)();
+    var result = GlslRenderer$uvCoordsUniform$lambda(this)();
     checkForGlError(this.gl);
-    this.program = result;
-    var result_0 = GlslRenderer$uvCoordsUniform$lambda(this)();
+    this.uvCoordsUniform_67qhwm$_0 = result;
+    var result_0 = GlslRenderer$resolutionUniform$lambda(this)();
     checkForGlError(this.gl);
-    this.uvCoordsUniform_67qhwm$_0 = result_0;
-    var result_1 = GlslRenderer$resolutionUniform$lambda(this)();
+    this.resolutionUniform_bo22rx$_0 = result_0;
+    var result_1 = GlslRenderer$timeUniform$lambda(this)();
     checkForGlError(this.gl);
-    this.resolutionUniform_bo22rx$_0 = result_1;
-    var result_2 = GlslRenderer$timeUniform$lambda(this)();
-    checkForGlError(this.gl);
-    this.timeUniform_2ukqek$_0 = result_2;
-    var result_3 = GlslRenderer$quad$lambda(this)();
-    checkForGlError(this.gl);
-    this.quad_eobc7m$_0 = result_3;
+    this.timeUniform_2ukqek$_0 = result_1;
     this.stats = new GlslRenderer$Stats();
-    var result_4 = GlslRenderer_init$lambda(this)();
+    var result_2 = GlslRenderer_init$lambda(this)();
     checkForGlError(this.gl);
     this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces_vgfiet$_0);
   }
-  GlslRenderer.prototype.getTextureId = function () {
-    var tmp$;
-    if (!(this.nextTextureId_nzaz14$_0 <= 31)) {
-      var message = 'too many textures!';
-      throw IllegalStateException_init(message.toString());
-    }return tmp$ = this.nextTextureId_nzaz14$_0, this.nextTextureId_nzaz14$_0 = tmp$ + 1 | 0, tmp$;
-  };
-  GlslRenderer.prototype.createShaderProgram_66d3yg$_0 = function () {
-    var program = Program$Companion_getInstance().create_gz3vex$(this.gl);
-    var vertexShaderSource = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + 'precision lowp float;' + '\n' + '\n' + '// xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + 'in vec2 Vertex;' + '\n' + '\n' + 'const vec2 scale = vec2(0.5, 0.5);' + '\n' + '\n' + 'void main()' + '\n' + '{' + '\n' + '    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '    gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '}' + '\n';
-    var vertexShader = Shader$Companion_getInstance_0().createVertexShader_oiaex5$(this.gl, vertexShaderSource);
-    program.attachShader_6f59td$(vertexShader);
-    var tmp$ = '#version ' + this.glslVersion_l4u3hb$_0 + '\n' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + 'uniform float sm_uScale;' + '\n' + 'uniform float sm_vScale;' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + 'uniform float sm_beat;' + '\n';
-    var $receiver = this.rendererPlugins_8k6ftu$_0;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(item.glslPreamble);
-    }
-    var tmp$_1 = tmp$ + joinToString(destination, '\n') + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
-    var $receiver_0 = this.fragShader;
-    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
-    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
-    var src = tmp$_1 + replace(replace(regex.replace_x2uqeu$($receiver_0, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
-    println(src);
-    var fragmentShader = Shader$Companion_getInstance_0().createFragmentShader_oiaex5$(this.gl, src);
-    program.attachShader_6f59td$(fragmentShader);
-    if (!program.link()) {
-      var infoLog = program.getInfoLog();
-      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(infoLog));
-    }var tmp$_2;
-    tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
-    while (tmp$_2.hasNext()) {
-      var element = tmp$_2.next();
-      element.afterCompile_hwc06w$(program);
-    }
-    return program;
-  };
   GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
-    var glslSurface = new GlslSurface(new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset), new GlslRenderer$Uniforms(this), this.uvTranslator_7f5fm$_0);
+    var surfacePixels = new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset);
+    var rects = GlslRenderer$Companion_getInstance().mapSurfaceToRects_j2z8d6$(this.nextPixelOffset, this.fbMaxPixWidth_99u0r8$_0, surface);
+    var glslSurface = new GlslSurface(surfacePixels, new GlslRenderer$Uniforms(this), this.nextRectOffset, rects, this.uvTranslator_7f5fm$_0);
     this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
+    this.nextRectOffset = this.nextRectOffset + glslSurface.rects.size | 0;
     this.surfacesToAdd_vfxuyj$_0.add_11rb$(glslSurface);
     return glslSurface;
   };
@@ -10735,7 +10706,7 @@
   function GlslRenderer$draw$lambda(this$GlslRenderer) {
     return function () {
       var tmp$, tmp$_0, tmp$_1, tmp$_2;
-      this$GlslRenderer.program.bind();
+      this$GlslRenderer.program_4yv7rr$_0.bind();
       tmp$ = this$GlslRenderer.stats;
       tmp$.addSurfacesMs = tmp$.addSurfacesMs + timeSync(GlslRenderer$draw$lambda$lambda(this$GlslRenderer)) | 0;
       tmp$_0 = this$GlslRenderer.stats;
@@ -10759,18 +10730,23 @@
     (tmp$ = this.resolutionUniform_bo22rx$_0) != null ? (tmp$.set_dleff0$(1.0, 1.0), Unit) : null;
     (tmp$_0 = this.timeUniform_2ukqek$_0) != null ? (tmp$_0.set_mx4ult$(thisTime), Unit) : null;
     this.arrangement.bindUvCoordTexture_i9pfe0$(this.uvCoordsUniform_67qhwm$_0);
-    this.arrangement.bindUniforms();
     var tmp$_2;
     tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
     while (tmp$_2.hasNext()) {
       var element = tmp$_2.next();
-      element.beforeRender();
+      element.before();
     }
-    this.gl.viewport_tjonv8$(0, 0, this.get_bufWidth_s8ev3n$(this.pixelCount), this.get_bufHeight_s8ev3n$(this.pixelCount));
+    this.gl.viewport_tjonv8$(0, 0, this.arrangement.pixWidth, this.arrangement.pixHeight);
     this.gl.clear_za3lpa$(16640);
-    this.quad_eobc7m$_0.render_8be2vx$();
+    this.arrangement.render();
+    var tmp$_3;
+    tmp$_3 = this.rendererPlugins_8k6ftu$_0.iterator();
+    while (tmp$_3.hasNext()) {
+      var element_0 = tmp$_3.next();
+      element_0.after();
+    }
     this.gl.finish();
-    var programLog = (tmp$_1 = this.program.getInfoLog()) != null ? tmp$_1 : '';
+    var programLog = (tmp$_1 = this.program_4yv7rr$_0.getInfoLog()) != null ? tmp$_1 : '';
     if (programLog.length > 0)
       println('ProgramInfoLog: ' + programLog);
   };
@@ -10837,6 +10813,31 @@
     GlslRenderer$Companion_instance = this;
     this.logger_0 = new Logger('GlslRenderer');
   }
+  function GlslRenderer$Companion$mapSurfaceToRects$makeQuad(closure$pixWidth) {
+    return function (offsetPix, widthPix) {
+      var xStartPixel = offsetPix % closure$pixWidth;
+      var yStartPixel = offsetPix / closure$pixWidth | 0;
+      var xEndPixel = xStartPixel + widthPix | 0;
+      var yEndPixel = yStartPixel + 1 | 0;
+      return new Quad$Rect(yStartPixel, xStartPixel, yEndPixel, xEndPixel);
+    };
+  }
+  GlslRenderer$Companion.prototype.mapSurfaceToRects_j2z8d6$ = function (nextPix, pixWidth, surface) {
+    var makeQuad = GlslRenderer$Companion$mapSurfaceToRects$makeQuad(pixWidth);
+    var nextPixelOffset = nextPix;
+    var pixelsLeft = surface.pixelCount;
+    var rects = ArrayList_init();
+    while (pixelsLeft > 0) {
+      var rowPixelOffset = nextPixelOffset % pixWidth;
+      var rowPixelsLeft = pixWidth - rowPixelOffset | 0;
+      var a = pixelsLeft;
+      var rowPixelsTaken = Math_0.min(a, rowPixelsLeft);
+      rects.add_11rb$(makeQuad(nextPixelOffset, rowPixelsTaken));
+      nextPixelOffset = nextPixelOffset + rowPixelsTaken | 0;
+      pixelsLeft = pixelsLeft - rowPixelsTaken | 0;
+    }
+    return rects;
+  };
   GlslRenderer$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
@@ -10853,16 +10854,18 @@
     this.pixelCount = pixelCount;
     this.uvCoords = uvCoords;
     this.surfaces = surfaces;
-    var $receiver = this.$outer.adjustableValues;
+    this.pixWidth = this.$outer.get_bufWidth_s8ev3n$(this.pixelCount);
+    this.pixHeight = this.$outer.get_bufHeight_s8ev3n$(this.pixelCount);
+    var $receiver = this.$outer.program_4yv7rr$_0.params;
     this.$outer;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(new UnifyingAdjustableUniform(this.$outer.program, item, this.surfaces.size));
+      destination.add_11rb$(new UniformSetter(this.$outer.program_4yv7rr$_0, item));
     }
-    this.adjustableUniforms = destination;
+    this.uniformSetters_0 = destination;
     var $this = this.$outer;
     var result = GlslRenderer$Arrangement$uvCoordTexture$lambda(this.$outer)();
     checkForGlError($this.gl);
@@ -10877,6 +10880,10 @@
     this.renderBuffer_0 = result_1;
     this.pixelBuffer_0 = ByteBuffer_init(this.$outer.get_bufSize_s8ev3n$(this.pixelCount) * 4 | 0);
     this.uvCoordsFloatBuffer_0 = FloatBuffer_init(this.uvCoords);
+    var $this_2 = this.$outer;
+    var result_2 = GlslRenderer$Arrangement$quad$lambda(this.$outer, this)();
+    checkForGlError($this_2.gl);
+    this.quad_0 = result_2;
   }
   function GlslRenderer$Arrangement$bindFramebuffer$lambda(this$GlslRenderer, this$Arrangement) {
     return function () {
@@ -10892,7 +10899,7 @@
   }
   function GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this$GlslRenderer, this$Arrangement) {
     return function () {
-      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, GlslRenderer$GlConst_getInstance().GL_RGBA8, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount), this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount));
+      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, GlslRenderer$GlConst_getInstance().GL_RGBA8, this$Arrangement.pixWidth, this$Arrangement.pixHeight);
       return Unit;
     };
   }
@@ -10954,7 +10961,7 @@
   }
   function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this$GlslRenderer, this$Arrangement) {
     return function () {
-      this$GlslRenderer.gl.texImage2D_e7c6np$(3553, 0, 33326, this$GlslRenderer.get_bufWidth_s8ev3n$(this$Arrangement.pixelCount) * 2 | 0, this$GlslRenderer.get_bufHeight_s8ev3n$(this$Arrangement.pixelCount), 0, 6403, 5126, this$Arrangement.uvCoordsFloatBuffer_0);
+      this$GlslRenderer.gl.texImage2D_e7c6np$(3553, 0, 33326, this$Arrangement.pixWidth * 2 | 0, this$Arrangement.pixHeight, 0, 6403, 5126, this$Arrangement.uvCoordsFloatBuffer_0);
       return Unit;
     };
   }
@@ -10981,7 +10988,7 @@
     return Color_init_2(this.pixelBuffer_0.get_za3lpa$(offset), this.pixelBuffer_0.get_za3lpa$(offset + 1 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 2 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 3 | 0));
   };
   GlslRenderer$Arrangement.prototype.copyToPixelBuffer = function () {
-    this.$outer.gl.readPixels_idctqj$(0, 0, this.$outer.get_bufWidth_s8ev3n$(this.pixelCount), this.$outer.get_bufHeight_s8ev3n$(this.pixelCount), 6408, 5121, this.pixelBuffer_0);
+    this.$outer.gl.readPixels_idctqj$(0, 0, this.pixWidth, this.pixHeight, 6408, 5121, this.pixelBuffer_0);
   };
   function GlslRenderer$Arrangement$release$lambda(this$GlslRenderer) {
     return function () {
@@ -11021,6 +11028,7 @@
   }
   GlslRenderer$Arrangement.prototype.release = function () {
     println('Release ' + this + ' with ' + this.pixelCount + ' pixels and ' + this.uvCoords.length + ' uvs');
+    this.quad_0.release();
     var $this = this.$outer;
     var result = GlslRenderer$Arrangement$release$lambda(this.$outer)();
     checkForGlError($this.gl);
@@ -11040,32 +11048,40 @@
     var result_4 = GlslRenderer$Arrangement$release$lambda_4(this.$outer, this)();
     checkForGlError($this_4.gl);
   };
-  GlslRenderer$Arrangement.prototype.bindUniforms = function () {
+  function GlslRenderer$Arrangement$render$lambda(this$Arrangement) {
+    return function () {
+      var $receiver = this$Arrangement.surfaces;
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var this$Arrangement_0 = this$Arrangement;
+        this$Arrangement_0.updateUniformsForSurface_0(element);
+        var tmp$_0;
+        tmp$_0 = get_indices(element.rects).iterator();
+        while (tmp$_0.hasNext()) {
+          var element_0 = tmp$_0.next();
+          this$Arrangement_0.quad_0.renderRect_kcn2v3$(element.rect0Index + element_0 | 0);
+        }
+      }
+      return Unit;
+    };
+  }
+  GlslRenderer$Arrangement.prototype.render = function () {
+    this.quad_0.prepareToRender_ls4sck$(GlslRenderer$Arrangement$render$lambda(this));
+  };
+  GlslRenderer$Arrangement.prototype.updateUniformsForSurface_0 = function (surface) {
     var tmp$, tmp$_0;
     var index = 0;
-    tmp$ = this.$outer.adjustableValues.iterator();
+    tmp$ = this.$outer.program_4yv7rr$_0.params.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      var adjustableIndex = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-      var tmp$_1, tmp$_0_0;
-      var index_0 = 0;
-      tmp$_1 = this.surfaces.iterator();
-      while (tmp$_1.hasNext()) {
-        var item_0 = tmp$_1.next();
-        var surfaceIndex = checkIndexOverflow((tmp$_0_0 = index_0, index_0 = tmp$_0_0 + 1 | 0, tmp$_0_0));
-        var tmp$_2;
-        var value = (tmp$_2 = item_0.uniforms.values) != null ? tmp$_2[adjustableIndex] : null;
-        if (value != null) {
-          var adjustableUniform = this.adjustableUniforms.get_za3lpa$(adjustableIndex);
-          adjustableUniform.setValue_6t2rgq$(surfaceIndex, value);
-        }}
-    }
-    var tmp$_3;
-    tmp$_3 = this.adjustableUniforms.iterator();
-    while (tmp$_3.hasNext()) {
-      var element = tmp$_3.next();
-      element.bind();
-    }
+      var paramIndex = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
+      var tmp$_1;
+      var value = (tmp$_1 = surface.uniforms.values) != null ? tmp$_1[paramIndex] : null;
+      if (value != null) {
+        this.uniformSetters_0.get_za3lpa$(paramIndex).set_s8jyv4$(value);
+      }}
   };
   function GlslRenderer$Arrangement$uvCoordTexture$lambda(this$GlslRenderer) {
     return function () {
@@ -11082,17 +11098,43 @@
       return this$GlslRenderer.gl.createRenderbuffer();
     };
   }
+  function GlslRenderer$Arrangement$quad$lambda(this$GlslRenderer, this$Arrangement) {
+    return function () {
+      var tmp$ = this$GlslRenderer.gl;
+      var tmp$_0 = this$GlslRenderer.program_4yv7rr$_0;
+      var $receiver = this$Arrangement.surfaces;
+      var destination = ArrayList_init();
+      var tmp$_1;
+      tmp$_1 = $receiver.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        var this$Arrangement_0 = this$Arrangement;
+        var $receiver_0 = element.rects;
+        var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+        var tmp$_2;
+        tmp$_2 = $receiver_0.iterator();
+        while (tmp$_2.hasNext()) {
+          var item = tmp$_2.next();
+          destination_0.add_11rb$(new Quad$Rect(-(item.top / this$Arrangement_0.pixHeight * 2 - 1), item.left / this$Arrangement_0.pixWidth * 2 - 1, -(item.bottom / this$Arrangement_0.pixHeight * 2 - 1), item.right / this$Arrangement_0.pixWidth * 2 - 1));
+        }
+        var list = destination_0;
+        addAll(destination, list);
+      }
+      return new Quad(tmp$, tmp$_0, destination);
+    };
+  }
   GlslRenderer$Arrangement.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Arrangement',
     interfaces: []
   };
   GlslRenderer.prototype.get_bufWidth_s8ev3n$ = function ($receiver) {
-    var b = Math_0.min($receiver, 1024);
-    return Math_0.max(1, b);
+    var b = this.fbMaxPixWidth_99u0r8$_0;
+    var b_0 = Math_0.min($receiver, b);
+    return Math_0.max(1, b_0);
   };
   GlslRenderer.prototype.get_bufHeight_s8ev3n$ = function ($receiver) {
-    return ($receiver / 1024 | 0) + 1 | 0;
+    return ($receiver / this.fbMaxPixWidth_99u0r8$_0 | 0) + 1 | 0;
   };
   GlslRenderer.prototype.get_bufSize_s8ev3n$ = function ($receiver) {
     return Kotlin.imul(this.get_bufWidth_s8ev3n$($receiver), this.get_bufHeight_s8ev3n$($receiver));
@@ -11209,15 +11251,10 @@
       new GlslRenderer$GlConst();
     }return GlslRenderer$GlConst_instance;
   }
-  function GlslRenderer$program$lambda(this$GlslRenderer) {
-    return function () {
-      return this$GlslRenderer.createShaderProgram_66d3yg$_0();
-    };
-  }
   function GlslRenderer$uvCoordsUniform$lambda(this$GlslRenderer) {
     return function () {
       var tmp$;
-      tmp$ = Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'sm_uvCoords');
+      tmp$ = Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'sm_uvCoords');
       if (tmp$ == null) {
         throw Exception_init('no sm_uvCoords uniform!');
       }return tmp$;
@@ -11225,17 +11262,12 @@
   }
   function GlslRenderer$resolutionUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'resolution');
+      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'resolution');
     };
   }
   function GlslRenderer$timeUniform$lambda(this$GlslRenderer) {
     return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program, 'time');
-    };
-  }
-  function GlslRenderer$quad$lambda(this$GlslRenderer) {
-    return function () {
-      return new Quad(this$GlslRenderer.gl, this$GlslRenderer.program);
+      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'time');
     };
   }
   function GlslRenderer_init$lambda(this$GlslRenderer) {
@@ -11249,9 +11281,11 @@
     simpleName: 'GlslRenderer',
     interfaces: []
   };
-  function GlslSurface(pixels, uniforms, uvTranslator) {
+  function GlslSurface(pixels, uniforms, rect0Index, rects, uvTranslator) {
     this.pixels = pixels;
     this.uniforms = uniforms;
+    this.rect0Index = rect0Index;
+    this.rects = rects;
     this.uvTranslator = uvTranslator;
   }
   GlslSurface.$metadata$ = {
@@ -11280,108 +11314,200 @@
     simpleName: 'SurfacePixels',
     interfaces: [Pixels]
   };
-  function Program(gl, id) {
-    Program$Companion_getInstance();
+  function Program(gl, fragShader, glslVersion, plugins) {
+    if (plugins === void 0)
+      plugins = GlslBase_getInstance().plugins;
     this.gl_0 = gl;
-    this.id_8be2vx$ = id;
+    this.fragShader = fragShader;
+    this.glslVersion_0 = glslVersion;
+    var $receiver = this.gl_0;
+    var result = Program$id$lambda(this)();
+    checkForGlError($receiver);
+    this.id_0 = result;
+    this.params = null;
+    var $receiver_0 = plugins;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$;
+    tmp$ = $receiver_0.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      destination.add_11rb$(item.forProgram_4xpcsd$(this.gl_0, this));
+    }
+    this.plugins = destination;
+    this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_bjakrj$(void 0, void 0, true));
+    this.nextTextureId_0 = 0;
+    this.attachVertexShader_0();
+    var src = this.buildFragmentShader_0();
+    println(src);
+    this.params = this.findParams_61zpoe$(src);
+    var fragmentShader = Shader$Companion_getInstance_0().createFragmentShader_oiaex5$(this.gl_0, src);
+    this.attachShader_6f59td$(fragmentShader);
+    if (!this.link()) {
+      var infoLog = this.getInfoLog();
+      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(infoLog));
+    }var tmp$_0;
+    tmp$_0 = this.plugins.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      element.afterCompile();
+    }
   }
+  Program.prototype.obtainTextureId = function () {
+    var tmp$;
+    if (!(this.nextTextureId_0 <= 31)) {
+      var message = 'too many textures!';
+      throw IllegalStateException_init(message.toString());
+    }return tmp$ = this.nextTextureId_0, this.nextTextureId_0 = tmp$ + 1 | 0, tmp$;
+  };
+  function Program$findParams$lambda(this$Program) {
+    return function (matchResult) {
+      var tmp$;
+      println('matches: ' + matchResult.groupValues);
+      var tmp$_0 = matchResult.destructured;
+      var gadgetType = tmp$_0.match.groupValues.get_za3lpa$(1);
+      var configJson = tmp$_0.match.groupValues.get_za3lpa$(2);
+      var valueTypeName = tmp$_0.match.groupValues.get_za3lpa$(3);
+      var varName = tmp$_0.match.groupValues.get_za3lpa$(4);
+      var configData = this$Program.json_0.parseJson_61zpoe$(configJson);
+      switch (valueTypeName) {
+        case 'int':
+          tmp$ = GlslShader$Param$Type$INT_getInstance();
+          break;
+        case 'float':
+          tmp$ = GlslShader$Param$Type$FLOAT_getInstance();
+          break;
+        case 'vec3':
+          tmp$ = GlslShader$Param$Type$VEC3_getInstance();
+          break;
+        default:throw IllegalArgumentException_init('unsupported type ' + valueTypeName);
+      }
+      var valueType = tmp$;
+      return new GlslShader$Param(varName, gadgetType, valueType, configData.jsonObject);
+    };
+  }
+  Program.prototype.findParams_61zpoe$ = function (glslFragmentShader) {
+    return toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), Program$findParams$lambda(this)));
+  };
   Program.prototype.getInfoLog = function () {
-    return this.gl_0.getProgramInfoLog_za3rmp$(this.id_8be2vx$);
+    return this.gl_0.getProgramInfoLog_za3rmp$(this.id_0);
   };
   Program.prototype.attachShader_6f59td$ = function (shader) {
-    this.gl_0.attachShader_wn2jw4$(this.id_8be2vx$, shader.id_8be2vx$);
+    this.gl_0.attachShader_wn2jw4$(this.id_0, shader.id_8be2vx$);
   };
   Program.prototype.link = function () {
-    this.gl_0.linkProgram_za3rmp$(this.id_8be2vx$);
-    return this.gl_0.getProgramParameter_wn2dyp$(this.id_8be2vx$, 35714) === 1;
+    this.gl_0.linkProgram_za3rmp$(this.id_0);
+    return this.gl_0.getProgramParameter_wn2dyp$(this.id_0, 35714) === 1;
   };
   Program.prototype.bind = function () {
-    this.gl_0.useProgram_za3rmp$(this.id_8be2vx$);
+    this.gl_0.useProgram_za3rmp$(this.id_0);
   };
   Program.prototype.getUniform_61zpoe$ = function (name) {
     var tmp$;
-    return (tmp$ = this.gl_0.getUniformLocation_hwpqgh$(this.id_8be2vx$, name)) != null ? new Uniform(this.gl_0, tmp$) : null;
+    return (tmp$ = this.gl_0.getUniformLocation_hwpqgh$(this.id_0, name)) != null ? new Uniform(this.gl_0, tmp$) : null;
   };
-  function Program$Companion() {
-    Program$Companion_instance = this;
-  }
-  Program$Companion.prototype.create_gz3vex$ = function (gl) {
-    var tmp$;
-    tmp$ = gl.createProgram();
-    if (tmp$ == null) {
-      throw IllegalStateException_init_0();
-    }return new Program(gl, tmp$);
+  Program.prototype.attachVertexShader_0 = function () {
+    var vertexShaderSource = '#version ' + this.glslVersion_0 + '\n' + '    ' + '\n' + 'precision lowp float;' + '\n' + '\n' + '// xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + 'in vec2 Vertex;' + '\n' + '\n' + 'const vec2 scale = vec2(0.5, 0.5);' + '\n' + '\n' + 'void main()' + '\n' + '{' + '\n' + '    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '    gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '}' + '\n';
+    var vertexShader = Shader$Companion_getInstance_0().createVertexShader_oiaex5$(this.gl_0, vertexShaderSource);
+    this.attachShader_6f59td$(vertexShader);
   };
-  Program$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
+  Program.prototype.getVertexAttribLocation = function () {
+    return this.gl_0.getAttribLocation_hwpqgh$(this.id_0, 'Vertex');
   };
-  var Program$Companion_instance = null;
-  function Program$Companion_getInstance() {
-    if (Program$Companion_instance === null) {
-      new Program$Companion();
-    }return Program$Companion_instance;
+  Program.prototype.buildFragmentShader_0 = function () {
+    var tmp$ = '#version ' + this.glslVersion_0 + '\n' + '    ' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'u scale' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 3 }' + '\n' + 'uniform float sm_uScale;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'v scale' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 3 }' + '\n' + 'uniform float sm_vScale;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: StartOfMeasure { ' + '"' + 'name' + '"' + ': ' + '"' + 'startOfMeasure' + '"' + ' }' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Beat { ' + '"' + 'name' + '"' + ': ' + '"' + 'beat' + '"' + ' }' + '\n' + 'uniform float sm_beat;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'Brightness' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 1 }' + '\n' + 'uniform float sm_brightness;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'Saturation' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 1 }' + '\n' + 'uniform float sm_saturation;' + '\n' + '\n';
+    var $receiver = this.plugins;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination.add_11rb$(item.glslPreamble);
+    }
+    var tmp$_1 = tmp$ + joinToString(destination, '\n') + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
+    var $receiver_0 = this.fragShader;
+    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
+    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
+    return tmp$_1 + replace(replace(regex.replace_x2uqeu$($receiver_0, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
+  };
+  function Program$id$lambda(this$Program) {
+    return function () {
+      var tmp$;
+      tmp$ = this$Program.gl_0.createProgram();
+      if (tmp$ == null) {
+        throw IllegalStateException_init_0();
+      }return tmp$;
+    };
   }
   Program.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Program',
     interfaces: []
   };
-  function Quad(gl, program) {
+  function Quad(gl, program, rects) {
     this.gl_0 = gl;
-    this.program_0 = program;
-    this.vertices_0 = toFloatArray([1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0]);
+    var destination = ArrayList_init();
+    var tmp$;
+    tmp$ = rects.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var list = listOf([element.right, element.top, element.left, element.top, element.left, element.bottom, element.left, element.bottom, element.right, element.bottom, element.right, element.top]);
+      addAll(destination, list);
+    }
+    this.vertices_0 = toFloatArray(destination);
     this.vao_0 = this.gl_klfg04$(Quad$vao$lambda(this));
     this.quadVertexBuffer_0 = this.gl_klfg04$(Quad$quadVertexBuffer$lambda(this));
+    this.vertexAttr_0 = this.gl_klfg04$(Quad$vertexAttr$lambda(program));
     this.gl_klfg04$(Quad_init$lambda(this));
     this.gl_klfg04$(Quad_init$lambda_0(this));
     this.gl_klfg04$(Quad_init$lambda_1(this));
-    var vertexAttr = this.gl_klfg04$(Quad_init$lambda_2(this));
-    this.gl_klfg04$(Quad_init$lambda_3(this, vertexAttr));
-    this.gl_klfg04$(Quad_init$lambda_4(this, vertexAttr));
+    this.gl_klfg04$(Quad_init$lambda_2(this));
+    this.gl_klfg04$(Quad_init$lambda_3(this));
+    this.gl_klfg04$(Quad_init$lambda_4(this));
     this.gl_klfg04$(Quad_init$lambda_5(this));
-    this.gl_klfg04$(Quad_init$lambda_6(this));
   }
   Quad.prototype.bufferOf_0 = function (floats) {
     return FloatBuffer_init(floats);
   };
-  function Quad$render$lambda(this$Quad) {
+  function Quad$prepareToRender$lambda(this$Quad) {
     return function () {
       this$Quad.gl_0.bindVertexArray_s8jyv4$(this$Quad.vao_0);
       return Unit;
     };
   }
-  function Quad$render$lambda_0(this$Quad) {
+  function Quad$prepareToRender$lambda_0(this$Quad) {
     return function () {
-      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(0);
+      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
       return Unit;
     };
   }
-  function Quad$render$lambda_1(this$Quad) {
+  function Quad$prepareToRender$lambda_1(this$Quad) {
     return function () {
-      this$Quad.gl_0.drawArrays_qt1dr2$(4, 0, 6);
+      this$Quad.gl_0.disableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
       return Unit;
     };
   }
-  function Quad$render$lambda_2(this$Quad) {
-    return function () {
-      this$Quad.gl_0.disableVertexAttribArray_za3lpa$(0);
-      return Unit;
-    };
-  }
-  function Quad$render$lambda_3(this$Quad) {
+  function Quad$prepareToRender$lambda_2(this$Quad) {
     return function () {
       this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
       return Unit;
     };
   }
-  Quad.prototype.render_8be2vx$ = function () {
-    this.gl_klfg04$(Quad$render$lambda(this));
-    this.gl_klfg04$(Quad$render$lambda_0(this));
-    this.gl_klfg04$(Quad$render$lambda_1(this));
-    this.gl_klfg04$(Quad$render$lambda_2(this));
-    this.gl_klfg04$(Quad$render$lambda_3(this));
+  Quad.prototype.prepareToRender_ls4sck$ = function (fn) {
+    this.gl_klfg04$(Quad$prepareToRender$lambda(this));
+    this.gl_klfg04$(Quad$prepareToRender$lambda_0(this));
+    fn();
+    this.gl_klfg04$(Quad$prepareToRender$lambda_1(this));
+    this.gl_klfg04$(Quad$prepareToRender$lambda_2(this));
+  };
+  function Quad$renderRect$lambda(this$Quad, closure$rectIndex) {
+    return function () {
+      this$Quad.gl_0.drawArrays_qt1dr2$(4, closure$rectIndex * 6 | 0, 6);
+      return Unit;
+    };
+  }
+  Quad.prototype.renderRect_kcn2v3$ = function (rectIndex) {
+    this.gl_klfg04$(Quad$renderRect$lambda(this, rectIndex));
   };
   function Quad$release$lambda(this$Quad) {
     return function () {
@@ -11395,7 +11521,7 @@
       return Unit;
     };
   }
-  Quad.prototype.release_0 = function () {
+  Quad.prototype.release = function () {
     this.gl_klfg04$(Quad$release$lambda(this));
     this.gl_klfg04$(Quad$release$lambda_0(this));
   };
@@ -11404,14 +11530,59 @@
     checkForGlError(this.gl_0);
     return result;
   };
+  function Quad$Rect(top, left, bottom, right) {
+    this.top = top;
+    this.left = left;
+    this.bottom = bottom;
+    this.right = right;
+  }
+  Quad$Rect.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Rect',
+    interfaces: []
+  };
+  Quad$Rect.prototype.component1 = function () {
+    return this.top;
+  };
+  Quad$Rect.prototype.component2 = function () {
+    return this.left;
+  };
+  Quad$Rect.prototype.component3 = function () {
+    return this.bottom;
+  };
+  Quad$Rect.prototype.component4 = function () {
+    return this.right;
+  };
+  Quad$Rect.prototype.copy_7b5o5w$ = function (top, left, bottom, right) {
+    return new Quad$Rect(top === void 0 ? this.top : top, left === void 0 ? this.left : left, bottom === void 0 ? this.bottom : bottom, right === void 0 ? this.right : right);
+  };
+  Quad$Rect.prototype.toString = function () {
+    return 'Rect(top=' + Kotlin.toString(this.top) + (', left=' + Kotlin.toString(this.left)) + (', bottom=' + Kotlin.toString(this.bottom)) + (', right=' + Kotlin.toString(this.right)) + ')';
+  };
+  Quad$Rect.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.top) | 0;
+    result = result * 31 + Kotlin.hashCode(this.left) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bottom) | 0;
+    result = result * 31 + Kotlin.hashCode(this.right) | 0;
+    return result;
+  };
+  Quad$Rect.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.top, other.top) && Kotlin.equals(this.left, other.left) && Kotlin.equals(this.bottom, other.bottom) && Kotlin.equals(this.right, other.right)))));
+  };
   function Quad$vao$lambda(this$Quad) {
     return function () {
-      return ensureNotNull(this$Quad.gl_0.createVertexArray());
+      return this$Quad.gl_0.createVertexArray();
     };
   }
   function Quad$quadVertexBuffer$lambda(this$Quad) {
     return function () {
       return this$Quad.gl_0.createBuffers_za3lpa$(1)[0];
+    };
+  }
+  function Quad$vertexAttr$lambda(closure$program) {
+    return function () {
+      return closure$program.getVertexAttribLocation();
     };
   }
   function Quad_init$lambda(this$Quad) {
@@ -11434,28 +11605,23 @@
   }
   function Quad_init$lambda_2(this$Quad) {
     return function () {
-      return this$Quad.gl_0.getAttribLocation_hwpqgh$(this$Quad.program_0.id_8be2vx$, 'Vertex');
-    };
-  }
-  function Quad_init$lambda_3(this$Quad, closure$vertexAttr) {
-    return function () {
-      this$Quad.gl_0.vertexAttribPointer_owihk5$(closure$vertexAttr, 2, 5126, false, 0, 0);
+      this$Quad.gl_0.vertexAttribPointer_owihk5$(this$Quad.vertexAttr_0, 2, 5126, false, 0, 0);
       return Unit;
     };
   }
-  function Quad_init$lambda_4(this$Quad, closure$vertexAttr) {
+  function Quad_init$lambda_3(this$Quad) {
     return function () {
-      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(closure$vertexAttr);
+      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
       return Unit;
     };
   }
-  function Quad_init$lambda_5(this$Quad) {
+  function Quad_init$lambda_4(this$Quad) {
     return function () {
       this$Quad.gl_0.bindBuffer_6t2rgq$(34962, null);
       return Unit;
     };
   }
-  function Quad_init$lambda_6(this$Quad) {
+  function Quad_init$lambda_5(this$Quad) {
     return function () {
       this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
       return Unit;
@@ -11639,7 +11805,7 @@
   LinearSurfacePixelStrategy.prototype.interpolate_0 = function (from, to, steps) {
     var tmp$;
     if (steps === 1) {
-      tmp$ = listOf(from);
+      tmp$ = listOf_0(from);
     } else {
       var $receiver = until(0, steps);
       var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
@@ -11759,6 +11925,31 @@
   Uniform.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Uniform',
+    interfaces: []
+  };
+  function UniformSetter(program, param) {
+    this.param_0 = param;
+    this.uniformLocation_0 = program.getUniform_61zpoe$(this.param_0.varName);
+  }
+  UniformSetter.prototype.set_s8jyv4$ = function (value) {
+    var tmp$, tmp$_0, tmp$_1;
+    if (value != null && this.uniformLocation_0 != null) {
+      switch (this.param_0.valueType.name) {
+        case 'INT':
+          this.uniformLocation_0.set_za3lpa$(typeof (tmp$ = value) === 'number' ? tmp$ : throwCCE());
+          break;
+        case 'FLOAT':
+          this.uniformLocation_0.set_mx4ult$(typeof (tmp$_0 = value) === 'number' ? tmp$_0 : throwCCE());
+          break;
+        case 'VEC3':
+          var color = Kotlin.isType(tmp$_1 = value, Color) ? tmp$_1 : throwCCE();
+          this.uniformLocation_0.set_y2kzbl$(color.redF, color.greenF, color.blueF);
+          break;
+      }
+    }};
+  UniformSetter.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UniformSetter',
     interfaces: []
   };
   function UvTranslator(id) {
@@ -12569,7 +12760,7 @@
     var indexOfLast$result;
     indexOfLast$break: do {
       var tmp$;
-      tmp$ = reversed(get_indices($receiver_1)).iterator();
+      tmp$ = reversed(get_indices_0($receiver_1)).iterator();
       while (tmp$.hasNext()) {
         var index_1 = tmp$.next();
         if ($receiver_1[index_1] >= thresholdValue) {
@@ -12584,7 +12775,7 @@
     var indexOfLast$result_0;
     indexOfLast$break: do {
       var tmp$_0;
-      tmp$_0 = reversed(get_indices($receiver_2)).iterator();
+      tmp$_0 = reversed(get_indices_0($receiver_2)).iterator();
       while (tmp$_0.hasNext()) {
         var index_2 = tmp$_0.next();
         if ($receiver_2[index_2] >= thresholdValue) {
@@ -14370,97 +14561,21 @@
     }
   }
   CompositingMode.valueOf_61zpoe$ = CompositingMode$valueOf;
-  function GlslShader(glslProgram, uvTranslator, adjustableValues) {
+  function GlslShader(program, uvTranslator) {
     GlslShader$Companion_getInstance();
-    if (adjustableValues === void 0)
-      adjustableValues = GlslShader$Companion_getInstance().findAdjustableValues_61zpoe$(glslProgram);
     Shader.call(this, ShaderId$GLSL_SHADER_getInstance());
-    this.glslProgram_0 = glslProgram;
+    this.program_0 = program;
     this.uvTranslator_0 = uvTranslator;
-    this.adjustableValues = adjustableValues;
   }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
-    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_bjakrj$(void 0, void 0, true));
-    this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
-    this.extraAdjustables = listOf_0([new GlslShader$AdjustableValue('sm_uScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda)), new GlslShader$AdjustableValue('sm_vScale', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_0)), new GlslShader$AdjustableValue('sm_beat', 'Beat', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_1)), new GlslShader$AdjustableValue('sm_startOfMeasure', 'StartOfMeasure', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_2)), new GlslShader$AdjustableValue('sm_brightness', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_3)), new GlslShader$AdjustableValue('sm_saturation', 'Slider', GlslShader$AdjustableValue$Type$FLOAT_getInstance(), json_0(GlslShader$Companion$extraAdjustables$lambda_4))]);
   }
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
+    var program = GlslBase_getInstance().manager.createProgram_61zpoe$(glslProgram);
     var uvTranslator = UvTranslator$Companion_getInstance().parse_100t80$(reader);
-    var adjustableValueCount = reader.readShort();
-    var $receiver = until_0(0, adjustableValueCount);
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(GlslShader$AdjustableValue$Companion_getInstance().parse_100t80$(reader));
-    }
-    var adjustableValues = destination;
-    return new GlslShader(glslProgram, uvTranslator, adjustableValues);
+    return new GlslShader(program, uvTranslator);
   };
-  function GlslShader$Companion$findAdjustableValues$lambda(this$GlslShader$) {
-    return function (matchResult) {
-      var tmp$;
-      println('matches: ' + matchResult.groupValues);
-      var tmp$_0 = matchResult.destructured;
-      var gadgetType = tmp$_0.match.groupValues.get_za3lpa$(1);
-      var configJson = tmp$_0.match.groupValues.get_za3lpa$(2);
-      var valueTypeName = tmp$_0.match.groupValues.get_za3lpa$(3);
-      var varName = tmp$_0.match.groupValues.get_za3lpa$(4);
-      var configData = this$GlslShader$.json_0.parseJson_61zpoe$(configJson);
-      switch (valueTypeName) {
-        case 'int':
-          tmp$ = GlslShader$AdjustableValue$Type$INT_getInstance();
-          break;
-        case 'float':
-          tmp$ = GlslShader$AdjustableValue$Type$FLOAT_getInstance();
-          break;
-        case 'vec3':
-          tmp$ = GlslShader$AdjustableValue$Type$VEC3_getInstance();
-          break;
-        default:throw IllegalArgumentException_init('unsupported type ' + valueTypeName);
-      }
-      var valueType = tmp$;
-      return new GlslShader$AdjustableValue(varName, gadgetType, valueType, configData.jsonObject);
-    };
-  }
-  GlslShader$Companion.prototype.findAdjustableValues_61zpoe$ = function (glslFragmentShader) {
-    return plus_0(toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), GlslShader$Companion$findAdjustableValues$lambda(this))), this.extraAdjustables);
-  };
-  function GlslShader$Companion$extraAdjustables$lambda($receiver) {
-    $receiver.to_npuxma$('name', 'u scale');
-    $receiver.to_lr5kl6$('minValue', 0.0);
-    $receiver.to_lr5kl6$('maxValue', 3.0);
-    return Unit;
-  }
-  function GlslShader$Companion$extraAdjustables$lambda_0($receiver) {
-    $receiver.to_npuxma$('name', 'v scale');
-    $receiver.to_lr5kl6$('minValue', 0.0);
-    $receiver.to_lr5kl6$('maxValue', 3.0);
-    return Unit;
-  }
-  function GlslShader$Companion$extraAdjustables$lambda_1($receiver) {
-    $receiver.to_npuxma$('name', 'beat');
-    return Unit;
-  }
-  function GlslShader$Companion$extraAdjustables$lambda_2($receiver) {
-    $receiver.to_npuxma$('name', 'startOfMeasure');
-    return Unit;
-  }
-  function GlslShader$Companion$extraAdjustables$lambda_3($receiver) {
-    $receiver.to_npuxma$('name', 'brightness');
-    $receiver.to_lr5kl6$('minValue', 0.0);
-    $receiver.to_lr5kl6$('maxValue', 1.0);
-    return Unit;
-  }
-  function GlslShader$Companion$extraAdjustables$lambda_4($receiver) {
-    $receiver.to_npuxma$('name', 'saturation');
-    $receiver.to_lr5kl6$('minValue', 0.0);
-    $receiver.to_lr5kl6$('maxValue', 1.0);
-    return Unit;
-  }
   GlslShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
@@ -14473,28 +14588,21 @@
     }return GlslShader$Companion_instance;
   }
   GlslShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.glslProgram_0);
-    writer.writeShort_za3lpa$(this.adjustableValues.size);
-    var tmp$;
-    tmp$ = this.adjustableValues.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.serializeConfig_3kjoo0$(writer);
-    }
+    writer.writeString_61zpoe$(this.program_0.fragShader);
   };
   function GlslShader$createRenderer$lambda(this$GlslShader) {
     return function () {
-      return new GlslShader$PooledRenderer(this$GlslShader.glslProgram_0, this$GlslShader.uvTranslator_0, this$GlslShader.adjustableValues);
+      return new GlslShader$PooledRenderer(this$GlslShader.program_0, this$GlslShader.uvTranslator_0);
     };
   }
   GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
-    var poolKey = to(getKClass(GlslShader), this.glslProgram_0);
+    var poolKey = to(getKClass(GlslShader), this.program_0);
     var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
     var glslSurface = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_k4mt0f$(this.glslProgram_0, this.uvTranslator_0, this.adjustableValues);
+    var glslRenderer = GlslBase_getInstance().manager.createRenderer_41a8d7$(this.program_0, this.uvTranslator_0);
     var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
     return new GlslShader$Renderer(glslSurface);
   };
@@ -14513,8 +14621,8 @@
     simpleName: 'Renderer',
     interfaces: [Shader$Renderer]
   };
-  function GlslShader$PooledRenderer(glslProgram, uvTranslator, adjustableValues) {
-    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_k4mt0f$(glslProgram, uvTranslator, adjustableValues);
+  function GlslShader$PooledRenderer(program, uvTranslator) {
+    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_41a8d7$(program, uvTranslator);
   }
   GlslShader$PooledRenderer.prototype.preDraw = function () {
     this.glslRenderer.draw();
@@ -14534,7 +14642,7 @@
   };
   function GlslShader$Buffer($outer) {
     this.$outer = $outer;
-    var array = Array_0(this.$outer.adjustableValues.size);
+    var array = Array_0(this.$outer.program_0.params.size);
     var tmp$;
     tmp$ = array.length - 1 | 0;
     for (var i = 0; i <= tmp$; i++) {
@@ -14559,18 +14667,18 @@
   GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
     this.$outer.uvTranslator_0.serialize_3kjoo0$(writer);
     var tmp$;
-    tmp$ = zip_0(this.$outer.adjustableValues, this.values).iterator();
+    tmp$ = zip_0(this.$outer.program_0.params, this.values).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var adjustableValue = element.component1()
+      var param = element.component1()
       , value = element.component2();
-      adjustableValue.serializeValue_8f9ar8$(value, writer);
+      param.serializeValue_8f9ar8$(value, writer);
     }
   };
   GlslShader$Buffer.prototype.read_100t80$ = function (reader) {
     var tmp$, tmp$_0;
     var index = 0;
-    tmp$ = this.$outer.adjustableValues.iterator();
+    tmp$ = this.$outer.program_0.params.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
       this.values[checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0))] = item.readValue_100t80$(reader);
@@ -14581,66 +14689,66 @@
     simpleName: 'Buffer',
     interfaces: [Shader$Buffer]
   };
-  function GlslShader$AdjustableValue(varName, gadgetType, valueType, config) {
-    GlslShader$AdjustableValue$Companion_getInstance();
+  function GlslShader$Param(varName, gadgetType, valueType, config) {
+    GlslShader$Param$Companion_getInstance();
     this.varName = varName;
     this.gadgetType = gadgetType;
     this.valueType = valueType;
     this.config = config;
   }
-  function GlslShader$AdjustableValue$Type(name, ordinal) {
+  function GlslShader$Param$Type(name, ordinal) {
     Enum.call(this);
     this.name$ = name;
     this.ordinal$ = ordinal;
   }
-  function GlslShader$AdjustableValue$Type_initFields() {
-    GlslShader$AdjustableValue$Type_initFields = function () {
+  function GlslShader$Param$Type_initFields() {
+    GlslShader$Param$Type_initFields = function () {
     };
-    GlslShader$AdjustableValue$Type$INT_instance = new GlslShader$AdjustableValue$Type('INT', 0);
-    GlslShader$AdjustableValue$Type$FLOAT_instance = new GlslShader$AdjustableValue$Type('FLOAT', 1);
-    GlslShader$AdjustableValue$Type$VEC3_instance = new GlslShader$AdjustableValue$Type('VEC3', 2);
+    GlslShader$Param$Type$INT_instance = new GlslShader$Param$Type('INT', 0);
+    GlslShader$Param$Type$FLOAT_instance = new GlslShader$Param$Type('FLOAT', 1);
+    GlslShader$Param$Type$VEC3_instance = new GlslShader$Param$Type('VEC3', 2);
   }
-  var GlslShader$AdjustableValue$Type$INT_instance;
-  function GlslShader$AdjustableValue$Type$INT_getInstance() {
-    GlslShader$AdjustableValue$Type_initFields();
-    return GlslShader$AdjustableValue$Type$INT_instance;
+  var GlslShader$Param$Type$INT_instance;
+  function GlslShader$Param$Type$INT_getInstance() {
+    GlslShader$Param$Type_initFields();
+    return GlslShader$Param$Type$INT_instance;
   }
-  var GlslShader$AdjustableValue$Type$FLOAT_instance;
-  function GlslShader$AdjustableValue$Type$FLOAT_getInstance() {
-    GlslShader$AdjustableValue$Type_initFields();
-    return GlslShader$AdjustableValue$Type$FLOAT_instance;
+  var GlslShader$Param$Type$FLOAT_instance;
+  function GlslShader$Param$Type$FLOAT_getInstance() {
+    GlslShader$Param$Type_initFields();
+    return GlslShader$Param$Type$FLOAT_instance;
   }
-  var GlslShader$AdjustableValue$Type$VEC3_instance;
-  function GlslShader$AdjustableValue$Type$VEC3_getInstance() {
-    GlslShader$AdjustableValue$Type_initFields();
-    return GlslShader$AdjustableValue$Type$VEC3_instance;
+  var GlslShader$Param$Type$VEC3_instance;
+  function GlslShader$Param$Type$VEC3_getInstance() {
+    GlslShader$Param$Type_initFields();
+    return GlslShader$Param$Type$VEC3_instance;
   }
-  GlslShader$AdjustableValue$Type.$metadata$ = {
+  GlslShader$Param$Type.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Type',
     interfaces: [Enum]
   };
-  function GlslShader$AdjustableValue$Type$values() {
-    return [GlslShader$AdjustableValue$Type$INT_getInstance(), GlslShader$AdjustableValue$Type$FLOAT_getInstance(), GlslShader$AdjustableValue$Type$VEC3_getInstance()];
+  function GlslShader$Param$Type$values() {
+    return [GlslShader$Param$Type$INT_getInstance(), GlslShader$Param$Type$FLOAT_getInstance(), GlslShader$Param$Type$VEC3_getInstance()];
   }
-  GlslShader$AdjustableValue$Type.values = GlslShader$AdjustableValue$Type$values;
-  function GlslShader$AdjustableValue$Type$valueOf(name) {
+  GlslShader$Param$Type.values = GlslShader$Param$Type$values;
+  function GlslShader$Param$Type$valueOf(name) {
     switch (name) {
       case 'INT':
-        return GlslShader$AdjustableValue$Type$INT_getInstance();
+        return GlslShader$Param$Type$INT_getInstance();
       case 'FLOAT':
-        return GlslShader$AdjustableValue$Type$FLOAT_getInstance();
+        return GlslShader$Param$Type$FLOAT_getInstance();
       case 'VEC3':
-        return GlslShader$AdjustableValue$Type$VEC3_getInstance();
-      default:throwISE('No enum constant baaahs.shaders.GlslShader.AdjustableValue.Type.' + name);
+        return GlslShader$Param$Type$VEC3_getInstance();
+      default:throwISE('No enum constant baaahs.shaders.GlslShader.Param.Type.' + name);
     }
   }
-  GlslShader$AdjustableValue$Type.valueOf_61zpoe$ = GlslShader$AdjustableValue$Type$valueOf;
-  GlslShader$AdjustableValue.prototype.serializeConfig_3kjoo0$ = function (writer) {
+  GlslShader$Param$Type.valueOf_61zpoe$ = GlslShader$Param$Type$valueOf;
+  GlslShader$Param.prototype.serializeConfig_3kjoo0$ = function (writer) {
     writer.writeString_61zpoe$(this.varName);
     writer.writeByte_s8j3t7$(toByte(this.valueType.ordinal));
   };
-  GlslShader$AdjustableValue.prototype.serializeValue_8f9ar8$ = function (value, writer) {
+  GlslShader$Param.prototype.serializeValue_8f9ar8$ = function (value, writer) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     switch (this.valueType.name) {
       case 'INT':
@@ -14654,7 +14762,7 @@
         break;
     }
   };
-  GlslShader$AdjustableValue.prototype.readValue_100t80$ = function (reader) {
+  GlslShader$Param.prototype.readValue_100t80$ = function (reader) {
     var tmp$;
     switch (this.valueType.name) {
       case 'INT':
@@ -14671,29 +14779,29 @@
     }
     return tmp$;
   };
-  function GlslShader$AdjustableValue$Companion() {
-    GlslShader$AdjustableValue$Companion_instance = this;
-    this.types_0 = GlslShader$AdjustableValue$Type$values();
+  function GlslShader$Param$Companion() {
+    GlslShader$Param$Companion_instance = this;
+    this.types_0 = GlslShader$Param$Type$values();
   }
-  GlslShader$AdjustableValue$Companion.prototype.parse_100t80$ = function (reader) {
+  GlslShader$Param$Companion.prototype.parse_100t80$ = function (reader) {
     var varName = reader.readString();
     var valueType = this.types_0[reader.readByte()];
-    return new GlslShader$AdjustableValue(varName, '', valueType, new JsonObject(emptyMap()));
+    return new GlslShader$Param(varName, '', valueType, new JsonObject(emptyMap()));
   };
-  GlslShader$AdjustableValue$Companion.$metadata$ = {
+  GlslShader$Param$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
     interfaces: []
   };
-  var GlslShader$AdjustableValue$Companion_instance = null;
-  function GlslShader$AdjustableValue$Companion_getInstance() {
-    if (GlslShader$AdjustableValue$Companion_instance === null) {
-      new GlslShader$AdjustableValue$Companion();
-    }return GlslShader$AdjustableValue$Companion_instance;
+  var GlslShader$Param$Companion_instance = null;
+  function GlslShader$Param$Companion_getInstance() {
+    if (GlslShader$Param$Companion_instance === null) {
+      new GlslShader$Param$Companion();
+    }return GlslShader$Param$Companion_instance;
   }
-  GlslShader$AdjustableValue.$metadata$ = {
+  GlslShader$Param.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'AdjustableValue',
+    simpleName: 'Param',
     interfaces: []
   };
   GlslShader.$metadata$ = {
@@ -15046,7 +15154,7 @@
       array[i] = Color$Companion_getInstance().WHITE;
     }
     this.colorsBuf_0 = array;
-    this.indices_4idwzy$_0 = get_indices_0(this.colorsBuf_0);
+    this.indices_4idwzy$_0 = get_indices_1(this.colorsBuf_0);
   }
   Object.defineProperty(PixelShader$DirectColorBuffer.prototype, 'palette', {
     get: function () {
@@ -15259,7 +15367,7 @@
   };
   PixelShader$IndexedBuffer.prototype.read_kbpt9e$ = function (reader, incomingPixelCount) {
     var tmp$;
-    tmp$ = get_indices_0(this.palette).iterator();
+    tmp$ = get_indices_1(this.palette).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
       this.palette[element] = Color$Companion_getInstance().fromInt(reader.readInt());
@@ -15661,112 +15769,123 @@
     this.textureGlBuffer_0 = FloatBuffer_init_0(0);
     this.soundAnalyzer.listen_iuqfe5$(new SoundAnalysisPlugin_init$ObjectLiteral(this));
   }
-  SoundAnalysisPlugin.prototype.forRenderer_slafvx$ = function (renderer) {
-    return new SoundAnalysisPlugin$RendererPlugin(this, renderer);
+  SoundAnalysisPlugin.prototype.forProgram_4xpcsd$ = function (gl, program) {
+    return new SoundAnalysisPlugin$ProgramContext(this, gl, program);
   };
-  function SoundAnalysisPlugin$RendererPlugin($outer, renderer) {
+  function SoundAnalysisPlugin$ProgramContext($outer, gl, program) {
     this.$outer = $outer;
-    this.renderer = renderer;
-    this.glslPreamble_1zthlg$_0 = 'uniform sampler2D sm_soundAnalysis;';
-    this.gl_0 = this.renderer.gl;
-    var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$RendererPlugin$texture$lambda(this)();
-    checkForGlError($receiver);
-    this.texture_0 = result;
-    this.textureId_0 = this.renderer.getTextureId();
+    this.gl_0 = gl;
+    this.program_0 = program;
+    this.glslPreamble_74lc9r$_0 = 'uniform sampler2D sm_soundAnalysis;';
     this.soundAnalysisUniform_0 = null;
   }
-  Object.defineProperty(SoundAnalysisPlugin$RendererPlugin.prototype, 'glslPreamble', {
+  Object.defineProperty(SoundAnalysisPlugin$ProgramContext.prototype, 'glslPreamble', {
     get: function () {
-      return this.glslPreamble_1zthlg$_0;
+      return this.glslPreamble_74lc9r$_0;
     }
   });
-  function SoundAnalysisPlugin$RendererPlugin$afterCompile$lambda(closure$program) {
+  function SoundAnalysisPlugin$ProgramContext$afterCompile$lambda(this$ProgramContext) {
     return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(closure$program, 'sm_soundAnalysis');
+      return Uniform$Companion_getInstance().find_m36rd6$(this$ProgramContext.program_0, 'sm_soundAnalysis');
     };
   }
-  SoundAnalysisPlugin$RendererPlugin.prototype.afterCompile_hwc06w$ = function (program) {
+  SoundAnalysisPlugin$ProgramContext.prototype.afterCompile = function () {
     var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$RendererPlugin$afterCompile$lambda(program)();
+    var result = SoundAnalysisPlugin$ProgramContext$afterCompile$lambda(this)();
     checkForGlError($receiver);
     this.soundAnalysisUniform_0 = result;
   };
-  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda(this$RendererPlugin) {
-    return function () {
-      this$RendererPlugin.gl_0.activeTexture_za3lpa$(33984 + this$RendererPlugin.textureId_0 | 0);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_0(this$RendererPlugin) {
-    return function () {
-      this$RendererPlugin.gl_0.bindTexture_6t2rgq$(3553, this$RendererPlugin.texture_0);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_1(this$RendererPlugin) {
-    return function () {
-      this$RendererPlugin.gl_0.texParameteri_qt1dr2$(3553, 10241, 9728);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_2(this$RendererPlugin) {
-    return function () {
-      this$RendererPlugin.gl_0.texParameteri_qt1dr2$(3553, 10240, 9728);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_3(this$RendererPlugin, this$SoundAnalysisPlugin) {
-    return function () {
-      this$RendererPlugin.gl_0.texImage2D_e7c6np$(3553, 0, 33326, this$SoundAnalysisPlugin.soundAnalyzer.frequencies.length, this$SoundAnalysisPlugin.historySize, 0, 6403, 5126, this$SoundAnalysisPlugin.textureGlBuffer_0);
-      return Unit;
-    };
-  }
-  SoundAnalysisPlugin$RendererPlugin.prototype.beforeRender = function () {
+  SoundAnalysisPlugin$ProgramContext.prototype.forRender = function () {
     var analysisBufferSize = this.$outer.soundAnalyzer.frequencies.length;
     var expectedBufferSize = Kotlin.imul(analysisBufferSize, this.$outer.historySize);
     var uniform = this.soundAnalysisUniform_0;
-    if (uniform == null || this.$outer.textureBuffer_0.length !== expectedBufferSize)
-      return;
-    this.$outer.textureGlBuffer_0.position = 0;
-    this.$outer.textureGlBuffer_0.put_q3cr5i$(this.$outer.textureBuffer_0);
-    var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda(this)();
-    checkForGlError($receiver);
-    var $receiver_0 = this.gl_0;
-    var result_0 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_0(this)();
-    checkForGlError($receiver_0);
-    var $receiver_1 = this.gl_0;
-    var result_1 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_1(this)();
-    checkForGlError($receiver_1);
-    var $receiver_2 = this.gl_0;
-    var result_2 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_2(this)();
-    checkForGlError($receiver_2);
-    var $receiver_3 = this.gl_0;
-    var result_3 = SoundAnalysisPlugin$RendererPlugin$beforeRender$lambda_3(this, this.$outer)();
-    checkForGlError($receiver_3);
-    uniform.set_za3lpa$(this.textureId_0);
+    if (uniform == null || this.$outer.textureBuffer_0.length !== expectedBufferSize) {
+      return null;
+    } else {
+      return new SoundAnalysisPlugin$ProgramContext$RenderContext(this, uniform);
+    }
   };
-  function SoundAnalysisPlugin$RendererPlugin$release$lambda(this$RendererPlugin) {
+  function SoundAnalysisPlugin$ProgramContext$RenderContext($outer, uniform) {
+    this.$outer = $outer;
+    var $receiver = this.$outer.gl_0;
+    var result = SoundAnalysisPlugin$ProgramContext$RenderContext$texture$lambda(this.$outer)();
+    checkForGlError($receiver);
+    this.texture_0 = result;
+    this.textureId_0 = this.$outer.program_0.obtainTextureId();
+    this.$outer.$outer.textureGlBuffer_0.position = 0;
+    this.$outer.$outer.textureGlBuffer_0.put_q3cr5i$(this.$outer.$outer.textureBuffer_0);
+    var $receiver_0 = this.$outer.gl_0;
+    var result_0 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda(this.$outer, this)();
+    checkForGlError($receiver_0);
+    var $receiver_1 = this.$outer.gl_0;
+    var result_1 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_0(this.$outer, this)();
+    checkForGlError($receiver_1);
+    var $receiver_2 = this.$outer.gl_0;
+    var result_2 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_1(this.$outer)();
+    checkForGlError($receiver_2);
+    var $receiver_3 = this.$outer.gl_0;
+    var result_3 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_2(this.$outer)();
+    checkForGlError($receiver_3);
+    var $receiver_4 = this.$outer.gl_0;
+    var result_4 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_3(this.$outer, this.$outer.$outer)();
+    checkForGlError($receiver_4);
+    uniform.set_za3lpa$(this.textureId_0);
+  }
+  function SoundAnalysisPlugin$ProgramContext$RenderContext$release$lambda(this$ProgramContext, this$RenderContext) {
     return function () {
-      this$RendererPlugin.gl_0.deleteTexture_za3rmp$(this$RendererPlugin.texture_0);
+      this$ProgramContext.gl_0.deleteTexture_za3rmp$(this$RenderContext.texture_0);
       return Unit;
     };
   }
-  SoundAnalysisPlugin$RendererPlugin.prototype.release = function () {
-    var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$RendererPlugin$release$lambda(this)();
+  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.release = function () {
+    var $receiver = this.$outer.gl_0;
+    var result = SoundAnalysisPlugin$ProgramContext$RenderContext$release$lambda(this.$outer, this)();
     checkForGlError($receiver);
   };
-  function SoundAnalysisPlugin$RendererPlugin$texture$lambda(this$RendererPlugin) {
+  function SoundAnalysisPlugin$ProgramContext$RenderContext$texture$lambda(this$ProgramContext) {
     return function () {
-      return this$RendererPlugin.gl_0.createTexture();
+      return this$ProgramContext.gl_0.createTexture();
     };
   }
-  SoundAnalysisPlugin$RendererPlugin.$metadata$ = {
+  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda(this$ProgramContext, this$RenderContext) {
+    return function () {
+      this$ProgramContext.gl_0.activeTexture_za3lpa$(33984 + this$RenderContext.textureId_0 | 0);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_0(this$ProgramContext, this$RenderContext) {
+    return function () {
+      this$ProgramContext.gl_0.bindTexture_6t2rgq$(3553, this$RenderContext.texture_0);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_1(this$ProgramContext) {
+    return function () {
+      this$ProgramContext.gl_0.texParameteri_qt1dr2$(3553, 10241, 9728);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_2(this$ProgramContext) {
+    return function () {
+      this$ProgramContext.gl_0.texParameteri_qt1dr2$(3553, 10240, 9728);
+      return Unit;
+    };
+  }
+  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_3(this$ProgramContext, this$SoundAnalysisPlugin) {
+    return function () {
+      this$ProgramContext.gl_0.texImage2D_e7c6np$(3553, 0, 33326, this$SoundAnalysisPlugin.soundAnalyzer.frequencies.length, this$SoundAnalysisPlugin.historySize, 0, 6403, 5126, this$SoundAnalysisPlugin.textureGlBuffer_0);
+      return Unit;
+    };
+  }
+  SoundAnalysisPlugin$ProgramContext$RenderContext.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'RendererPlugin',
-    interfaces: [GlslPlugin$RendererPlugin]
+    simpleName: 'RenderContext',
+    interfaces: [GlslPlugin$RenderContext]
+  };
+  SoundAnalysisPlugin$ProgramContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ProgramContext',
+    interfaces: [GlslPlugin$ProgramContext]
   };
   function SoundAnalysisPlugin_init$ObjectLiteral(this$SoundAnalysisPlugin) {
     this.this$SoundAnalysisPlugin = this$SoundAnalysisPlugin;
@@ -15895,8 +16014,8 @@
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
     this.allGlslShows_su854s$_0 = lazy(AllShows$Companion$allGlslShows$lambda);
-    this.nonGlslShows_0 = listOf_0([SomeDumbShow_getInstance(), CompositeShow_getInstance(), PanelTweenShow_getInstance()]);
-    this.allShows = plus_0(listOf(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
+    this.nonGlslShows_0 = listOf([SomeDumbShow_getInstance(), CompositeShow_getInstance(), PanelTweenShow_getInstance()]);
+    this.allShows = plus_0(listOf_0(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
   }
   Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows', {
     get: function () {
@@ -15905,7 +16024,7 @@
   });
   function AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral(closure$shaderSource, name) {
     GlslShow.call(this, name);
-    this.program_oxrn8f$_0 = closure$shaderSource;
+    this.program_oxrn8f$_0 = GlslBase_getInstance().manager.createProgram_61zpoe$(closure$shaderSource);
   }
   Object.defineProperty(AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.prototype, 'program', {
     get: function () {
@@ -16118,20 +16237,20 @@
   function GlslShow(name) {
     Show.call(this, name);
   }
-  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$adjustableValuesDataSources, closure$showRunner, closure$shader) {
+  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$paramDataSources, closure$showRunner, closure$shader) {
     this.closure$buffers = closure$buffers;
-    this.closure$adjustableValuesDataSources = closure$adjustableValuesDataSources;
+    this.closure$paramDataSources = closure$paramDataSources;
     this.closure$showRunner = closure$showRunner;
     this.closure$shader = closure$shader;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
     var $receiver = this.closure$buffers.values;
-    this.closure$adjustableValuesDataSources;
+    this.closure$paramDataSources;
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var $receiver_0 = this.closure$adjustableValuesDataSources;
+      var $receiver_0 = this.closure$paramDataSources;
       var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
       var tmp$_0;
       tmp$_0 = $receiver_0.iterator();
@@ -16171,15 +16290,15 @@
   };
   GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
     var shader = new GlslShader(this.program, model.defaultUvTranslator);
-    var $receiver = shader.adjustableValues;
+    var $receiver = this.program.params;
     var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
     var tmp$;
     tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var item = tmp$.next();
-      destination.add_11rb$(this.createDataSource_j5u65$(item, showRunner));
+      destination.add_11rb$(this.createDataSource_r8brig$(item, showRunner));
     }
-    var adjustableValuesDataSources = destination;
+    var paramDataSources = destination;
     var tmp$_0 = showRunner.allSurfaces;
     var destination_0 = HashMap_init();
     var tmp$_1;
@@ -16189,9 +16308,9 @@
       destination_0.put_xwzc9p$(element, showRunner.getShaderBuffer_9rhubp$(element, shader));
     }
     var buffers = destination_0;
-    return new GlslShow$createRenderer$ObjectLiteral(buffers, adjustableValuesDataSources, showRunner, shader);
+    return new GlslShow$createRenderer$ObjectLiteral(buffers, paramDataSources, showRunner, shader);
   };
-  GlslShow.prototype.createDataSource_j5u65$ = function ($receiver, showRunner) {
+  GlslShow.prototype.createDataSource_r8brig$ = function ($receiver, showRunner) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
     var config = $receiver.config;
     var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
@@ -16550,7 +16669,7 @@
     interfaces: [Show$Renderer]
   };
   PanelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var initialColors = listOf_0([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
+    var initialColors = listOf([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
     return new PanelTweenShow$createRenderer$ObjectLiteral(showRunner, initialColors);
   };
   function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
@@ -18005,7 +18124,7 @@
     this.beat2_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_7);
     this.beat3_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_8);
     this.beat4_0 = appendElement(beatsDiv, 'div', JsPinkyDisplay_init$lambda_9);
-    this.beats_0 = listOf_0([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
+    this.beats_0 = listOf([this.beat1_0, this.beat2_0, this.beat3_0, this.beat4_0]);
     this.bpmSpan_0 = appendElement(beatsDiv, 'span', JsPinkyDisplay_init$lambda_10);
     this.bpmSpan_0.classList.add('bpmDisplay-beatOff');
     appendElement(element, 'br', JsPinkyDisplay_init$lambda_11);
@@ -19812,12 +19931,13 @@
     this.network_0 = new FakeNetwork(void 0, this.display_0.forNetwork());
     this.dmxUniverse_0 = new FakeDmxUniverse();
     this.model_0 = this.selectModel_0();
-    this.shows_0 = AllShows$Companion_getInstance().allShows;
     var tmp$, tmp$_0, tmp$_1;
-    this.visualizer = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE(), Kotlin.isType(tmp$_1 = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$_1 : throwCCE());
+    this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE(), Kotlin.isType(tmp$_1 = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$_1 : throwCCE());
     this.fs_0 = new FakeFs();
     this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
     this.pinkyDisplay_0 = this.display_0.forPinky();
+    GlslBase_getInstance().plugins.add_11rb$(new SoundAnalysisPlugin(this.bridgeClient_0.soundAnalyzer));
+    this.shows_0 = AllShows$Companion_getInstance().allShows;
     this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -19928,8 +20048,8 @@
   }
   function SheepSimulator$start$lambda$lambda_1(this$SheepSimulator) {
     return function () {
-      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer);
-      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer);
+      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer_0);
+      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer_0);
       var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.model_0, mapperUi, mediaDevices, this$SheepSimulator.pinky_0.address);
       launch(this$SheepSimulator.mapperScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda(mapper));
       return mapperUi;
@@ -20095,7 +20215,7 @@
               var this$SheepSimulator = this.local$this$SheepSimulator;
               var index_0 = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
               var tmp$_2;
-              var vizPanel = this$SheepSimulator.visualizer.addSurface_1klhus$(item);
+              var vizPanel = this$SheepSimulator.visualizer_0.addSurface_1klhus$(item);
               var pixelPositions = pixelArranger.arrangePixels_w3vf02$(vizPanel);
               vizPanel.vizPixels = new VizSurface$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
@@ -20119,7 +20239,7 @@
             while (tmp$_4.hasNext()) {
               var element = tmp$_4.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
-              this$SheepSimulator_0.visualizer.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
+              this$SheepSimulator_0.visualizer_0.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
 
             var showName = this.local$this$SheepSimulator.queryParams_0.get_11rb$('show');
@@ -20523,6 +20643,7 @@
     }
   });
   function GlslBase$JsGlslManager() {
+    GlslManager.call(this, '300 es');
     this.available_vb2jjg$_0 = lazy(GlslBase$JsGlslManager$available$lambda);
   }
   Object.defineProperty(GlslBase$JsGlslManager.prototype, 'available', {
@@ -20530,20 +20651,7 @@
       return this.available_vb2jjg$_0.value;
     }
   });
-  function GlslBase$JsGlslManager$createRenderer$ObjectLiteral() {
-  }
-  GlslBase$JsGlslManager$createRenderer$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
-    return fn();
-  };
-  GlslBase$JsGlslManager$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [GlslRenderer$ContextSwitcher]
-  };
-  GlslBase$JsGlslManager.prototype.createRenderer_k4mt0f$$default = function (fragShader, uvTranslator, adjustableValues, plugins) {
-    var contextSwitcher = new GlslBase$JsGlslManager$createRenderer$ObjectLiteral();
-    return new GlslRenderer(this.createContext_0(), contextSwitcher, fragShader, uvTranslator, adjustableValues, '300 es', plugins);
-  };
-  GlslBase$JsGlslManager.prototype.createContext_0 = function () {
+  GlslBase$JsGlslManager.prototype.createContext = function () {
     var tmp$;
     var canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
     var gl = canvas.getContext('webgl2');
@@ -20551,6 +20659,9 @@
       window.alert('Running GLSL shows on iOS requires WebGL 2.0.\n' + '\n' + 'Go to Settings \u2192 Safari \u2192 Advanced \u2192 Experimental Features and enable WebGL 2.0.');
       throw Exception_init('WebGL 2 not supported');
     }return new KglJs(gl);
+  };
+  GlslBase$JsGlslManager.prototype.runInContext_klfg04$ = function (fn) {
+    return fn();
   };
   function GlslBase$JsGlslManager$available$lambda() {
     var tmp$;
@@ -21284,7 +21395,7 @@
             destination.add_11rb$(item.primitive.float);
           }
 
-          tmp$_0.soundAnalysisFrequences_0 = toFloatArray_0(destination);
+          tmp$_0.soundAnalysisFrequences_0 = toFloatArray(destination);
           break;
         case 'soundMagnitudes':
           var $receiver_0 = arg.jsonArray;
@@ -21296,7 +21407,7 @@
             destination_0.add_11rb$(item_0.primitive.float);
           }
 
-          var magnitudes = toFloatArray_0(destination_0);
+          var magnitudes = toFloatArray(destination_0);
           var analysis = new SoundAnalyzer$Analysis(this$BridgeClient.soundAnalysisFrequences_0, magnitudes);
           var tmp$_3;
           tmp$_3 = this$BridgeClient.soundAnalyzer.listeners.iterator();
@@ -22897,12 +23008,11 @@
   package$geom.center_21sjvd$ = center;
   package$geom.boundingBox_21sjvd$ = boundingBox;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
-  package$glsl.AdjustableUniform = AdjustableUniform;
-  package$glsl.UnifyingAdjustableUniform = UnifyingAdjustableUniform;
   package$glsl.checkForGlError_t0jnzc$ = checkForGlError;
   package$glsl.check_56a5t8$ = check;
   package$glsl.GlslManager = GlslManager;
-  GlslPlugin.RendererPlugin = GlslPlugin$RendererPlugin;
+  GlslPlugin.ProgramContext = GlslPlugin$ProgramContext;
+  GlslPlugin.RenderContext = GlslPlugin$RenderContext;
   package$glsl.GlslPlugin = GlslPlugin;
   GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
   Object.defineProperty(GlslRenderer, 'Companion', {
@@ -22919,10 +23029,8 @@
   package$glsl.GlslRenderer = GlslRenderer;
   package$glsl.GlslSurface = GlslSurface;
   package$glsl.SurfacePixels = SurfacePixels;
-  Object.defineProperty(Program, 'Companion', {
-    get: Program$Companion_getInstance
-  });
   package$glsl.Program = Program;
+  Quad.Rect = Quad$Rect;
   package$glsl.Quad = Quad;
   Object.defineProperty(Shader_0, 'Companion', {
     get: Shader$Companion_getInstance_0
@@ -22939,6 +23047,7 @@
     get: Uniform$Companion_getInstance
   });
   package$glsl.Uniform = Uniform;
+  package$glsl.UniformSetter = UniformSetter;
   Object.defineProperty(UvTranslator$Id, 'PANEL_SPACE_UV_TRANSLATOR', {
     get: UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance
   });
@@ -23124,20 +23233,20 @@
   GlslShader.Renderer = GlslShader$Renderer;
   GlslShader.PooledRenderer = GlslShader$PooledRenderer;
   GlslShader.Buffer = GlslShader$Buffer;
-  Object.defineProperty(GlslShader$AdjustableValue$Type, 'INT', {
-    get: GlslShader$AdjustableValue$Type$INT_getInstance
+  Object.defineProperty(GlslShader$Param$Type, 'INT', {
+    get: GlslShader$Param$Type$INT_getInstance
   });
-  Object.defineProperty(GlslShader$AdjustableValue$Type, 'FLOAT', {
-    get: GlslShader$AdjustableValue$Type$FLOAT_getInstance
+  Object.defineProperty(GlslShader$Param$Type, 'FLOAT', {
+    get: GlslShader$Param$Type$FLOAT_getInstance
   });
-  Object.defineProperty(GlslShader$AdjustableValue$Type, 'VEC3', {
-    get: GlslShader$AdjustableValue$Type$VEC3_getInstance
+  Object.defineProperty(GlslShader$Param$Type, 'VEC3', {
+    get: GlslShader$Param$Type$VEC3_getInstance
   });
-  GlslShader$AdjustableValue.Type = GlslShader$AdjustableValue$Type;
-  Object.defineProperty(GlslShader$AdjustableValue, 'Companion', {
-    get: GlslShader$AdjustableValue$Companion_getInstance
+  GlslShader$Param.Type = GlslShader$Param$Type;
+  Object.defineProperty(GlslShader$Param, 'Companion', {
+    get: GlslShader$Param$Companion_getInstance
   });
-  GlslShader.AdjustableValue = GlslShader$AdjustableValue;
+  GlslShader.Param = GlslShader$Param;
   package$shaders.GlslShader = GlslShader;
   Object.defineProperty(HeartShader, 'Companion', {
     get: HeartShader$Companion_getInstance
@@ -23196,7 +23305,8 @@
   SolidShader.Buffer = SolidShader$Buffer;
   SolidShader.Renderer = SolidShader$Renderer;
   package$shaders.SolidShader = SolidShader;
-  SoundAnalysisPlugin.RendererPlugin = SoundAnalysisPlugin$RendererPlugin;
+  SoundAnalysisPlugin$ProgramContext.RenderContext = SoundAnalysisPlugin$ProgramContext$RenderContext;
+  SoundAnalysisPlugin.ProgramContext = SoundAnalysisPlugin$ProgramContext;
   package$shaders.SoundAnalysisPlugin = SoundAnalysisPlugin;
   Object.defineProperty(SparkleShader, 'Companion', {
     get: SparkleShader$Companion_getInstance
@@ -23432,6 +23542,9 @@
   SolidShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SolidShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
+  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.before = GlslPlugin$RenderContext.prototype.before;
+  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.after = GlslPlugin$RenderContext.prototype.after;
+  SoundAnalysisPlugin$ProgramContext.prototype.release = GlslPlugin$ProgramContext.prototype.release;
   SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SparkleShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
@@ -23456,7 +23569,6 @@
   Object.defineProperty(SheepSimulator$NullPixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SheepSimulator$NullPixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SheepSimulator$NullPixels.prototype.iterator = Pixels.prototype.iterator;
-  GlslBase$JsGlslManager.prototype.createRenderer_k4mt0f$ = GlslManager.prototype.createRenderer_k4mt0f$;
   CanvasBitmap.prototype.withData_u0v8ny$ = Bitmap.prototype.withData_u0v8ny$;
   BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   BrowserUdpProxy$UdpSocketProxy.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
