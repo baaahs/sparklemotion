@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.getResource
+import baaahs.glsl.GlslBase
 
 class AllShows {
     companion object {
@@ -16,7 +17,7 @@ class AllShows {
                         .replace(".glsl", "")
                         .replace("_", " ")
                     object : GlslShow(name) {
-                        override val program = shaderSource
+                        override val program = GlslBase.manager.createProgram(shaderSource)
                     }
                 }
         }

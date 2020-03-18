@@ -4,6 +4,7 @@ import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
+import baaahs.shaders.SoundAnalysisPlugin
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
@@ -59,6 +60,8 @@ class PinkyMain(private val args: Args) {
         val fwUrlBase = "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
         val shows = AllShows.allShows.filter { args.showName == null || args.showName == it.name }
+        val soundAnalyzer = JvmSoundAnalyzer()
+        GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         val display = object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
@@ -75,7 +78,7 @@ class PinkyMain(private val args: Args) {
 
         val pinky = Pinky(
             model, shows, network, dmxUniverse, beatSource, SystemClock(),
-            fs, daddy, display, JvmSoundAnalyzer(),
+            fs, daddy, display, soundAnalyzer,
             prerenderPixels = true,
             switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter
