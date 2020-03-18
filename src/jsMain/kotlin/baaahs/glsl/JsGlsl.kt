@@ -11,17 +11,13 @@ actual object GlslBase {
     actual val manager: GlslManager by lazy { JsGlslManager() }
 
     class JsGlslManager : GlslManager("300 es") {
-        override val kgl = createContext()
-
         override val available: Boolean by lazy {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
             val gl = canvas.getContext("webgl")
             gl != null
         }
 
-        override fun <T> runInContext(fn: () -> T): T = fn()
-
-        private fun createContext(): Kgl {
+        override fun createContext(): Kgl {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
             val gl = canvas.getContext("webgl2")
             if (gl == null) {
@@ -34,5 +30,7 @@ actual object GlslBase {
             }
             return KglJs(gl.asDynamic())
         }
+
+        override fun <T> runInContext(fn: () -> T): T = fn()
     }
 }

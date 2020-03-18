@@ -1,7 +1,7 @@
 package baaahs.glsl
 
 import baaahs.Logger
-import baaahs.shaders.GlslShader
+import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GLCapabilities
@@ -45,7 +45,7 @@ class LwjglGlslManager : GlslManager("330 core") {
     override val available: Boolean
         get() = window != 0L
 
-    override val kgl = KglLwjgl()
+    override fun createContext(): Kgl = KglLwjgl()
 
     override fun <T> runInContext(fn: () -> T): T {
         if (!available) throw RuntimeException("GLSL not available")

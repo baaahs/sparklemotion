@@ -3,8 +3,11 @@ package baaahs.glsl
 import com.danielgergely.kgl.Kgl
 
 abstract class GlslManager(private val glslVersion: String) {
-    protected abstract val kgl: Kgl
     abstract val available: Boolean
+
+    protected val kgl: Kgl by lazy { createContext() }
+
+    abstract fun createContext(): Kgl
 
     abstract fun <T> runInContext(fn: () -> T): T
 

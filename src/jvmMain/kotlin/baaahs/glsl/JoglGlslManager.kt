@@ -1,13 +1,17 @@
 package baaahs.glsl
 
+import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJogl
 import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 
 class JoglGlslManager : GlslManager("330 core") {
-    private val gl = createGLContext()
     override val available: Boolean
         get() = true
+
+    private val gl by lazy { createGLContext() }
+
+    override fun createContext(): Kgl = KglJogl(gl as GL3ES3)
 
     override fun <T> runInContext(fn: () -> T): T {
         val context = gl.context
@@ -18,8 +22,6 @@ class JoglGlslManager : GlslManager("330 core") {
             context.release()
         }
     }
-
-    override val kgl = KglJogl(gl as GL3ES3)
 
     companion object {
         fun createGLContext(): GL4 {
