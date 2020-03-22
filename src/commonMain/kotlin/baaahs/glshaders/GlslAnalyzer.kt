@@ -14,14 +14,14 @@ class GlslAnalyzer {
     }
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {
-        val data = Data()
+        val data = Context()
         var state: ParseState = ParseState.initial(data)
 
-        Regex("(.*?)(//|[;{}\n])").findAll(shaderText).forEach { matchResult ->
+        Regex("(.*?)(//|[;{}\n#])").findAll(shaderText).forEach { matchResult ->
             val before = matchResult.groupValues[1]
             val token = matchResult.groupValues[2]
 
-            state.visitText(before)
+            if (before.isNotEmpty()) state.visitText(before)
             state = state.visit(token)
         }
         state.visitEof()
@@ -29,15 +29,61 @@ class GlslAnalyzer {
         return data.statements
     }
 
-    data class Data(
-        val statements: MutableList<GlslStatement> = arrayListOf(),
-        val uniforms: MutableList<ShaderFragment.GlslUniform> = arrayListOf(),
-        val functions: MutableList<ShaderFragment.GlslFunction> = arrayListOf()
-    )
+    private class Context {
+        val defines: MutableMap<String, String> = hashMapOf()
+        val statements: MutableList<GlslStatement> = arrayListOf()
+        var enabled = true
+        val enabledStack = mutableListOf<Boolean>()
 
-    sealed class ParseState(val data: Data) {
+        fun doDefine(args: List<String>) {
+            if (enabled) {
+                when (args.size) {
+                    0 -> throw IllegalArgumentException("#define without args?")
+                    1 -> defines[args[0]] = ""
+                    else -> defines[args[0]] = args.subList(1, args.size).joinToString(" ")
+                }
+            }
+        }
+
+        fun doIfdef(args: List<String>) {
+            if (args.size != 1) throw IllegalArgumentException("huh? #ifdef ${args.joinToString(" ")}")
+            enabledStack.add(enabled)
+            enabled = enabled && defines.containsKey(args.first())
+        }
+
+        fun doIfndef(args: List<String>) {
+            if (args.size != 1) throw IllegalArgumentException("huh? #ifndef ${args.joinToString(" ")}")
+            enabledStack.add(enabled)
+            enabled = enabled && !defines.containsKey(args.first())
+        }
+
+        fun doElse(args: List<String>) {
+            if (args.isNotEmpty()) throw IllegalArgumentException("huh? #else ${args.joinToString(" ")}")
+            enabled = enabledStack.last() && !enabled
+        }
+
+        fun doEndif(args: List<String>) {
+            if (args.isNotEmpty()) throw IllegalArgumentException("huh? #endif ${args.joinToString(" ")}")
+            enabled = enabledStack.removeLast()
+        }
+    }
+
+    private sealed class ParseState(val context: Context) {
         companion object {
-            fun initial(data: Data): ParseState = Statement(data)
+            fun initial(context: Context): ParseState = Statement(context)
+        }
+
+        private val text = StringBuilder()
+        val textAsString get() = text.toString()
+
+        fun appendText(value: String, substitute: Boolean = true) {
+            if (substitute) {
+                text.append(value.replace(Regex("([A-Za-z][A-Za-z0-9_]*)")) {
+                    context.defines[it.value] ?: it.value
+                })
+            } else {
+                text.append(value)
+            }
         }
 
         open fun visit(token: String): ParseState {
@@ -46,63 +92,67 @@ class GlslAnalyzer {
                 ";" -> visitSemicolon()
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
+                "#" -> visitDirective()
                 "\n" -> visitNewline()
                 else -> throw IllegalStateException("unknown token $token")
             }
         }
 
-        abstract fun visitText(value: String): ParseState
+        open fun visitText(value: String): ParseState {
+            if (context.enabled) appendText(value)
+            return this
+        }
+
         open fun visitComment(): ParseState = visitText("//")
         open fun visitSemicolon(): ParseState = visitText(";")
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
+        open fun visitDirective(): ParseState = visitText("#")
         open fun visitNewline(): ParseState = visitText("\n")
         open fun visitEof(): Unit = Unit
 
         open fun addComment(comment: String) {}
 
-        private class Statement(data: Data) : ParseState(data) {
-            val parts = mutableListOf<String>()
+        private class Statement(context: Context) : ParseState(context) {
             val comments = mutableListOf<String>()
 
-            override fun visitText(value: String): Statement {
-                parts.add(value)
-                return this
-            }
-
             override fun visitComment(): ParseState {
-                return Comment(data, this)
+                return Comment(context, this)
             }
 
             override fun visitSemicolon(): Statement {
                 visitText(";")
                 finishStatement()
-                return Statement(data)
+                return Statement(context)
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
-                return Block(data, this)
+                return Block(context, this).also { visitText("{") }
             }
 
-            override fun addComment(comment: String) {
-                comments.add(comment)
+            override fun visitDirective(): ParseState {
+                return Directive(context, this)
             }
 
             override fun visitEof() {
                 if (!isEmpty()) finishStatement()
             }
 
-            fun finishStatement() {
-                data.statements.add(GlslStatement(parts.joinToString(""), comments))
+            override fun addComment(comment: String) {
+                comments.add(comment)
             }
 
-            fun isEmpty(): Boolean = parts.isEmpty() && comments.isEmpty()
+            fun finishStatement() {
+                context.statements.add(GlslStatement(textAsString, comments))
+            }
+
+            fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
         }
 
         private class Comment(
-            data: Data,
+            context: Context,
             val priorParseState: ParseState
-        ) : ParseState(data) {
+        ) : ParseState(context) {
             val parts = mutableListOf<String>()
 
             override fun visitText(value: String): ParseState {
@@ -117,16 +167,10 @@ class GlslAnalyzer {
         }
 
         private class Block(
-            data: Data,
+            context: Context,
             val priorParseState: Statement
-        ) : ParseState(data) {
+        ) : ParseState(context) {
             var nestLevel: Int = 1
-            val contents = mutableListOf("{")
-
-            override fun visitText(value: String): ParseState {
-                contents.add(value)
-                return this
-            }
 
             override fun visitLeftCurlyBrace(): ParseState {
                 nestLevel++
@@ -139,7 +183,7 @@ class GlslAnalyzer {
 
                 return if (nestLevel == 0) {
                     finishStatement()
-                    Statement(data)
+                    Statement(context)
                 } else {
                     this
                 }
@@ -150,8 +194,34 @@ class GlslAnalyzer {
             }
 
             private fun finishStatement() {
-                priorParseState.visitText(contents.joinToString(""))
+                priorParseState.visitText(textAsString)
                 priorParseState.finishStatement()
+            }
+        }
+
+        private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
+            override fun visitText(value: String): ParseState {
+                appendText(value, substitute = false)
+                return this
+            }
+
+            override fun visitNewline(): ParseState {
+                val str = textAsString
+                val args = str.split(Regex("\\s+")).toMutableList()
+                val directive = args.removeFirst()
+                when (directive) {
+                    "define" -> context.doDefine(args)
+                    "ifdef" -> context.doIfdef(args)
+                    "ifndef" -> context.doIfndef(args)
+                    "else" -> context.doElse(args)
+                    "endif" -> context.doEndif(args)
+                    else -> throw IllegalArgumentException("unknown directive #$str")
+                }
+                return priorParseState
+            }
+
+            override fun visitEof() {
+                visitNewline()
             }
         }
     }
@@ -164,9 +234,15 @@ class GlslAnalyzer {
         }
 
         fun asFunctionOrNull(): ShaderFragment.GlslFunction? {
-            return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)?.let {
-                ShaderFragment.GlslFunction(it.groupValues[1], it.groupValues[2], it.groupValues[3], it.groupValues[4])
-            }
+            return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
+                ?.let {
+                    ShaderFragment.GlslFunction(
+                        it.groupValues[1],
+                        it.groupValues[2],
+                        it.groupValues[3],
+                        it.groupValues[4]
+                    )
+                }
         }
     }
 }

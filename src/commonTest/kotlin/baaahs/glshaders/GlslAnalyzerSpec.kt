@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
+import baaahs.testing.override
 import baaahs.testing.value
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -95,9 +96,11 @@ void main() {
             }
 
             context("with #ifdefs") {
-                val shaderText by value {
+                override(shaderText) {
                     /**language=glsl*/
                     """
+// Shader Name
+
 #ifdef NOT_DEFINED
 uniform float shouldNotBeDefined;
 #define NOT_DEFINED_A
@@ -107,8 +110,9 @@ uniform float shouldBeDefined;
 #define NOT_DEFINED_B
 #define DEF_VAL shouldBeThis
 #endif
+#define PI 3.14159
 
-uniform float DEF_VAL;
+uniform vec2 DEF_VAL;
 #ifdef NOT_DEFINED_A
 void this_is_super_busted() {
 #endif
@@ -117,25 +121,28 @@ void this_is_super_busted() {
 #endif
 
 #ifdef NOT_DEFINED_B
-void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragCood = vec4(uv.xy, 0., 1.); }
+void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragCoord = vec4(uv.xy, PI, 1.); }
 #endif
 void main() { mainFunc(gl_FragColor, gl_FragCoord); }
 """.trimIndent()
                 }
 
-                it("finds the uniforms") {
+                it("finds the uniforms and performs substitutions") {
                     expect(listOf(
-                        ShaderFragment.GlslUniform("float", "shouldBeDefined")
+                        ShaderFragment.GlslUniform("float", "shouldBeDefined"),
+                        ShaderFragment.GlslUniform("vec2", "shouldBeThis")
                     )) { fragment.uniforms }
                 }
 
-                it("finds the functions") {
+                it("finds the functions and performs substitutions") {
                     expect(listOf(
-                        ShaderFragment.GlslFunction("void", "mainFunc", " out vec4 fragColor, in vec2 fragCoord ",
-                            "{ fragColor = vec4(uv.xy, 0., 1.); }"),
+                        ShaderFragment.GlslFunction("void", "mainFunc", "out vec4 fragColor, in vec2 fragCoord",
+                            "{ fragCoord = vec4(uv.xy, 3.14159, 1.); }"
+                        ),
 
                         ShaderFragment.GlslFunction("void", "main", "",
-                            "{ mainFunc(gl_FragColor, gl_FragCoord); }")
+                            "{ mainFunc(gl_FragColor, gl_FragCoord); }"
+                        )
                     )) { fragment.functions }
                 }
             }
