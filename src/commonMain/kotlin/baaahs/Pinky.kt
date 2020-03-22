@@ -3,7 +3,6 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
-import baaahs.glsl.GlslBase
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -14,7 +13,6 @@ import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
-import baaahs.shaders.SoundAnalysisPlugin
 import baaahs.shows.SolidColorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
@@ -87,8 +85,6 @@ class Pinky(
         selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
             this.selectedShow = shows.find { it.name == selectedShow }!!
         }
-
-        GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
     }
 
     suspend fun run(): Show.Renderer {

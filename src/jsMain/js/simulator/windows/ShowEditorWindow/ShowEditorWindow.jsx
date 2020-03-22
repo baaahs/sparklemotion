@@ -30,7 +30,7 @@ const ShowEditorWindow = (props) => {
     const allShows = sheepSimulator?.shows.toArray() || [];
     const currentShow = allShows.find(({ name }) => name === selectedShow);
 
-    setShowStr(currentShow?.program);
+    setShowStr(currentShow?.program.fragShader);
   }, [selectedShow, isConnected]);
 
   const [showStr, setShowStr] = useState('');
