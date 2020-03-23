@@ -7,7 +7,7 @@ import baaahs.glsl.Program
 import baaahs.shaders.GlslShader
 
 abstract class GlslShow(name: String) : Show(name) {
-    abstract val program: Program
+    public abstract val program: Program
 
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
         val shader = GlslShader(program, model.defaultUvTranslator)
