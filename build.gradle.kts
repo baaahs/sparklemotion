@@ -179,6 +179,8 @@ kotlin {
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
+                implementation(npm("react-ace", "^8.1.0"))
+                implementation(npm("ace-builds", "^1.4.6"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
             }

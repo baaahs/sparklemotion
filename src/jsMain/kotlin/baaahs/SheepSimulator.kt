@@ -27,12 +27,11 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
-    private val visualizer = Visualizer(
+    val visualizer = Visualizer(
         model,
         display.forVisualizer(),
         document.getElementById("sheepView")!! as HTMLDivElement,
-        document.getElementById("selectionInfo")!! as HTMLDivElement,
-        document.getElementById("vizRotation") as HTMLInputElement
+        document.getElementById("selectionInfo")!! as HTMLDivElement
     )
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
@@ -40,7 +39,7 @@ class SheepSimulator {
     init {
         GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
-    private val shows = AllShows.allShows
+    public val shows = AllShows.allShows
     private val pinky = Pinky(
         model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
         PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,
@@ -49,6 +48,11 @@ class SheepSimulator {
 
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
+
+    fun getPubSub(): PubSub.Client =
+        PubSub.Client(network.link(), pinky.address, Ports.PINKY_UI_TCP).apply {
+            install(gadgetModule)
+        }
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
