@@ -19931,14 +19931,14 @@
     this.network_0 = new FakeNetwork(void 0, this.display_0.forNetwork());
     this.dmxUniverse_0 = new FakeDmxUniverse();
     this.model_0 = this.selectModel_0();
-    var tmp$, tmp$_0, tmp$_1;
-    this.visualizer_0 = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE(), Kotlin.isType(tmp$_1 = document.getElementById('vizRotation'), HTMLInputElement) ? tmp$_1 : throwCCE());
+    var tmp$, tmp$_0;
+    this.visualizer = new Visualizer(this.model_0, this.display_0.forVisualizer(), Kotlin.isType(tmp$ = ensureNotNull(document.getElementById('sheepView')), HTMLDivElement) ? tmp$ : throwCCE(), Kotlin.isType(tmp$_0 = ensureNotNull(document.getElementById('selectionInfo')), HTMLDivElement) ? tmp$_0 : throwCCE());
     this.fs_0 = new FakeFs();
     this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
     this.pinkyDisplay_0 = this.display_0.forPinky();
     GlslBase_getInstance().plugins.add_11rb$(new SoundAnalysisPlugin(this.bridgeClient_0.soundAnalyzer));
-    this.shows_0 = AllShows$Companion_getInstance().allShows;
-    this.pinky_0 = new Pinky(this.model_0, this.shows_0, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, true);
+    this.shows = AllShows$Companion_getInstance().allShows;
+    this.pinky_0 = new Pinky(this.model_0, this.shows, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, true);
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -19946,6 +19946,11 @@
   SheepSimulator.prototype.selectModel_0 = function () {
     var tmp$;
     return Pluggables_getInstance().loadModel((tmp$ = this.queryParams_0.get_11rb$('model')) != null ? tmp$ : Pluggables_getInstance().defaultModel);
+  };
+  SheepSimulator.prototype.getPubSub = function () {
+    var $receiver = new PubSub$Client(this.network_0.link(), this.pinky_0.address, 8004);
+    $receiver.install_stpyu4$(gadgetModule);
+    return $receiver;
   };
   function Coroutine$SheepSimulator$start$lambda$lambda(this$SheepSimulator_0, $receiver_0, controller, continuation_0) {
     CoroutineImpl.call(this, continuation_0);
@@ -20048,8 +20053,8 @@
   }
   function SheepSimulator$start$lambda$lambda_1(this$SheepSimulator) {
     return function () {
-      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer_0);
-      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer_0);
+      var mapperUi = new JsMapperUi(this$SheepSimulator.visualizer);
+      var mediaDevices = new FakeMediaDevices(this$SheepSimulator.visualizer);
       var mapper = new Mapper(this$SheepSimulator.network_0, this$SheepSimulator.model_0, mapperUi, mediaDevices, this$SheepSimulator.pinky_0.address);
       launch(this$SheepSimulator.mapperScope_0, void 0, void 0, SheepSimulator$start$lambda$lambda$lambda(mapper));
       return mapperUi;
@@ -20215,7 +20220,7 @@
               var this$SheepSimulator = this.local$this$SheepSimulator;
               var index_0 = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
               var tmp$_2;
-              var vizPanel = this$SheepSimulator.visualizer_0.addSurface_1klhus$(item);
+              var vizPanel = this$SheepSimulator.visualizer.addSurface_1klhus$(item);
               var pixelPositions = pixelArranger.arrangePixels_w3vf02$(vizPanel);
               vizPanel.vizPixels = new VizSurface$VizPixels(vizPanel, pixelPositions);
               totalPixels.v = totalPixels.v + pixelPositions.length | 0;
@@ -20239,13 +20244,13 @@
             while (tmp$_4.hasNext()) {
               var element = tmp$_4.next();
               var this$SheepSimulator_0 = this.local$this$SheepSimulator;
-              this$SheepSimulator_0.visualizer_0.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
+              this$SheepSimulator_0.visualizer.addMovingHead_g9d0gu$(element, this$SheepSimulator_0.dmxUniverse_0);
             }
 
             var showName = this.local$this$SheepSimulator.queryParams_0.get_11rb$('show');
             if (showName != null) {
               var this$SheepSimulator_1 = this.local$this$SheepSimulator;
-              var $receiver_2 = this$SheepSimulator_1.shows_0;
+              var $receiver_2 = this$SheepSimulator_1.shows;
               var firstOrNull$result;
               firstOrNull$break: do {
                 var tmp$_5;
@@ -21832,16 +21837,14 @@
     simpleName: 'SwirlyPixelArranger',
     interfaces: []
   };
-  function Visualizer(model, display, container, selectionInfo, rotationCheckbox) {
+  function Visualizer(model, display, container, selectionInfo) {
     if (selectionInfo === void 0)
       selectionInfo = null;
-    if (rotationCheckbox === void 0)
-      rotationCheckbox = null;
     this.display_0 = display;
     this.container_0 = container;
     this.selectionInfo_0 = selectionInfo;
-    this.rotationCheckbox_0 = rotationCheckbox;
     this.stopRendering = false;
+    this.rotate = false;
     this.mapperIsRunning_y90e96$_0 = false;
     this.frameListeners_0 = ArrayList_init();
     this.controls_0 = null;
@@ -21900,16 +21903,6 @@
     this.REFRESH_DELAY_0 = 50;
     this.resizeDelay_0 = 100;
   }
-  Object.defineProperty(Visualizer.prototype, 'rotate_0', {
-    get: function () {
-      var tmp$, tmp$_0;
-      return (tmp$_0 = (tmp$ = this.rotationCheckbox_0) != null ? tmp$.checked : null) != null ? tmp$_0 : false;
-    },
-    set: function (value) {
-      var tmp$;
-      (tmp$ = this.rotationCheckbox_0) != null ? (tmp$.checked = value) : null;
-    }
-  });
   Object.defineProperty(Visualizer.prototype, 'mapperIsRunning', {
     get: function () {
       return this.mapperIsRunning_y90e96$_0;
@@ -21923,7 +21916,7 @@
         element.faceMaterial_8be2vx$.transparent = !isRunning;
       }
       if (isRunning) {
-        this.rotate_0 = false;
+        this.rotate = false;
       }}
   });
   Visualizer.prototype.addFrameListener_imgev1$ = function (frameListener) {
@@ -22006,7 +21999,7 @@
     };
   }
   Visualizer.prototype.render = function () {
-    var tmp$, tmp$_0;
+    var tmp$;
     if (this.stopRendering)
       return;
     window.setTimeout(Visualizer$render$lambda(this), this.REFRESH_DELAY_0);
@@ -22014,41 +22007,40 @@
       this.mouse_0 = null;
       this.raycaster_0.setFromCamera(tmp$, this.camera_0);
       var intersections = this.raycaster_0.intersectObjects(this.scene_0.children, false);
-      var tmp$_1;
-      for (tmp$_1 = 0; tmp$_1 !== intersections.length; ++tmp$_1) {
-        var element = intersections[tmp$_1];
+      var tmp$_0;
+      for (tmp$_0 = 0; tmp$_0 !== intersections.length; ++tmp$_0) {
+        var element = intersections[tmp$_0];
         var intersectedObject = element.object;
         var vizPanel = VizSurface$Companion_getInstance().getFromObject_pz83aj$(intersectedObject);
         if (vizPanel != null) {
-          var tmp$_2;
-          (tmp$_2 = this.selectionInfo_0) != null ? (tmp$_2.innerText = 'Selected: ' + vizPanel.name) : null;
+          var tmp$_1;
+          (tmp$_1 = this.selectionInfo_0) != null ? (tmp$_1.innerText = 'Selected: ' + vizPanel.name) : null;
         }}
-    }if (!this.mapperIsRunning) {
-      if (((tmp$_0 = this.rotationCheckbox_0) != null ? tmp$_0.checked : null) === true) {
-        var rotSpeed = 0.01;
-        var x = this.camera_0.position.x;
-        var z = this.camera_0.position.z;
-        this.camera_0.position.x = x * Math_0.cos(rotSpeed) + z * Math_0.sin(rotSpeed);
-        var tmp$_3 = this.camera_0.position;
-        var x_0 = rotSpeed * 2;
-        var tmp$_4 = z * Math_0.cos(x_0);
-        var x_1 = rotSpeed * 2;
-        tmp$_3.z = tmp$_4 - x * Math_0.sin(x_1);
-        this.camera_0.lookAt(this.scene_0.position);
-      }}this.controls_0.update();
+    }if (!this.mapperIsRunning && this.rotate) {
+      var rotSpeed = 0.01;
+      var x = this.camera_0.position.x;
+      var z = this.camera_0.position.z;
+      this.camera_0.position.x = x * Math_0.cos(rotSpeed) + z * Math_0.sin(rotSpeed);
+      var tmp$_2 = this.camera_0.position;
+      var x_0 = rotSpeed * 2;
+      var tmp$_3 = z * Math_0.cos(x_0);
+      var x_1 = rotSpeed * 2;
+      tmp$_2.z = tmp$_3 - x * Math_0.sin(x_1);
+      this.camera_0.lookAt(this.scene_0.position);
+    }this.controls_0.update();
     var startMs = getTimeMillis();
     this.renderer_0.render(this.scene_0, this.camera_0);
     this.display_0.renderMs = getTimeMillis().subtract(startMs).toInt();
-    var tmp$_5;
-    tmp$_5 = this.frameListeners_0.iterator();
-    while (tmp$_5.hasNext()) {
-      var element_0 = tmp$_5.next();
+    var tmp$_4;
+    tmp$_4 = this.frameListeners_0.iterator();
+    while (tmp$_4.hasNext()) {
+      var element_0 = tmp$_4.next();
       element_0.onFrameReady(this.scene_0, this.camera_0);
     }
-    var tmp$_6;
-    tmp$_6 = this.rendererListeners_0.iterator();
-    while (tmp$_6.hasNext()) {
-      var element_1 = tmp$_6.next();
+    var tmp$_5;
+    tmp$_5 = this.rendererListeners_0.iterator();
+    while (tmp$_5.hasNext()) {
+      var element_1 = tmp$_5.next();
       element_1();
     }
   };
