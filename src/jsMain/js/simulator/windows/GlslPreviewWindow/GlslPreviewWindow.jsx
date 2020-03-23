@@ -2,14 +2,12 @@ import React, {
   useRef,
   useEffect,
   useContext,
-  useCallback,
   useState,
 } from 'react';
-import throttle from 'lodash/throttle';
 import styles from './GlslPreviewWindow.scss';
-import ResizeObserver from 'resize-observer-polyfill';
 import { store } from '../../../store';
 import { FormGroup, FormControlLabel, Switch } from '@material-ui/core';
+import { useResizeListener } from '../../../app/hooks/useResizeListener';
 
 const GlslPreviewWindow = () => {
   const { state } = useContext(store);
@@ -34,28 +32,11 @@ const GlslPreviewWindow = () => {
     { canvasContainerEl }
   );
 
-  // Anytime the sheepView div is resized,
-  // ask the Visualizer to resize the 3D sheep canvas
-  const onWindowResized = useCallback(
-    throttle(() => {
-      // if (!glslPreviewer) return;
-
-      // Tell Kotlin controller the window was resized
-      // glslPreviewer.resize();
-    }, 40),
-    [sheepSimulator, glslPreviewer]
-  );
-
-  useEffect(() => {
-    if (!sheepSimulator) return;
-
-    const ro = new ResizeObserver(onWindowResized);
-    ro.observe(windowRootEl.current);
-
-    return () => {
-      ro.unobserve(windowRootEl.current);
-    };
-  }, [windowRootEl, onWindowResized]);
+  useResizeListener(windowRootEl, () => {
+    // if (!glslPreviewer) return;
+    // Tell Kotlin controller the window was resized
+    // glslPreviewer.resize();
+  });
 
   return (
     <div ref={windowRootEl}>

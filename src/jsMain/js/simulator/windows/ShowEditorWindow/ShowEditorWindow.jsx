@@ -12,6 +12,7 @@ import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_bright';
 import { store } from '../../../store';
+import { useResizeListener } from '../../../app/hooks/useResizeListener';
 
 const ShowEditorWindow = (props) => {
   const { state } = useContext(store);
@@ -19,11 +20,11 @@ const ShowEditorWindow = (props) => {
   const aceEditor = useRef(null);
   const windowRootEl = useRef(null);
 
-  useEffect(() => {
-    const ro = new ResizeObserver(() => aceEditor.current.editor.resize());
-    ro.observe(windowRootEl.current);
-    return () => ro.unobserve(windowRootEl.current);
-  }, [windowRootEl]);
+  // Anytime the sheepView div is resized,
+  // ask the Visualizer to resize the 3D sheep canvas
+  useResizeListener(windowRootEl, () => {
+    aceEditor.current.editor.resize();
+  });
 
   useEffect(() => {
     // Look up the text for the show
@@ -54,8 +55,8 @@ const ShowEditorWindow = (props) => {
         </div>
         <div className={styles.buttons}>
           <i
-              className={classNames('fas', 'fa-play', styles.iconButton)}
-              onClick={previewShow}
+            className={classNames('fas', 'fa-play', styles.iconButton)}
+            onClick={previewShow}
           />
         </div>
       </div>
