@@ -4,7 +4,12 @@ const initialState = {
   currentNode: {
     direction: 'row',
     splitPercentage: 30,
-    first: 'Sheep Visualizer',
+    first: {
+      direction: 'column',
+      splitPercentage: 50,
+      first: 'Sheep Visualizer',
+      second: 'Glsl Preview',
+    },
     second: {
       direction: 'row',
       splitPercentage: 35,
