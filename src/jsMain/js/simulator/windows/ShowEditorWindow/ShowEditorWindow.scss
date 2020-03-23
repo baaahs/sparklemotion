@@ -1,0 +1,38 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .showName {
+    flex: 1 1;
+    padding: 0 8px;
+    display: flex;
+  }
+
+  .showNameInput {
+    display: flex;
+    background: none;
+    border: none;
+    padding: 0 8px;
+    color: white;
+    flex: 1 1;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+}
+
+.iconButton {
+  color: white;
+  padding: 8px;
+
+  &:hover {
+    cursor: pointer;
+    color: #d7d7d7;
+  }
+}
