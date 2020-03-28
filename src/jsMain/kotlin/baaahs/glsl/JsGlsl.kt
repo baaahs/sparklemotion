@@ -2,6 +2,7 @@ package baaahs.glsl
 
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
+import com.danielgergely.kgl.WebGL2RenderingContext
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
@@ -10,16 +11,16 @@ actual object GlslBase {
     actual val plugins: MutableList<GlslPlugin> = mutableListOf()
     actual val manager: GlslManager by lazy { JsGlslManager() }
 
-    class JsGlslManager : GlslManager("300 es") {
+    class JsGlslManager : GlslManager() {
         override val available: Boolean by lazy {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
             val gl = canvas.getContext("webgl")
             gl != null
         }
 
-        override fun createContext(): Kgl {
+        override fun createContext(): GlslContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
-            val gl = canvas.getContext("webgl2")
+            val gl = canvas.getContext("webgl2") as WebGL2RenderingContext?
             if (gl == null) {
                 window.alert(
                     "Running GLSL shows on iOS requires WebGL 2.0.\n" +
@@ -28,9 +29,11 @@ actual object GlslBase {
                 )
                 throw Exception("WebGL 2 not supported")
             }
-            return KglJs(gl.asDynamic())
+            return JsGlslContext(KglJs(gl), "300 es")
         }
+    }
 
+    class JsGlslContext(kgl: Kgl, glslVersion: String) : GlslContext(kgl, glslVersion) {
         override fun <T> runInContext(fn: () -> T): T = fn()
     }
 }
