@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
 class Program(
-    private val gl: GlslManager,
+    private val gl: GlslContext,
     val fragShader: String,
     private val glslVersion: String,
     plugins: List<GlslPlugin> = GlslBase.plugins

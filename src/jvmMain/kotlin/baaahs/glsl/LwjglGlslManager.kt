@@ -6,7 +6,7 @@ import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GLCapabilities
 
-class LwjglGlslManager : GlslManager("330 core") {
+class LwjglGlslManager : GlslManager() {
     private val window: Long
 
     /**
@@ -45,17 +45,23 @@ class LwjglGlslManager : GlslManager("330 core") {
     override val available: Boolean
         get() = window != 0L
 
-    override fun createContext(): Kgl = KglLwjgl()
-
-    override fun <T> runInContext(fn: () -> T): T {
+    override fun createContext(): GlslContext {
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
         glCapabilities.get() // because it's expensive and only has to happen once per thread
+        GLFW.glfwMakeContextCurrent(0)
 
-        try {
-            return fn()
-        } finally {
-            GLFW.glfwMakeContextCurrent(0)
+        return LwjglGlslContext(KglLwjgl())
+    }
+
+    inner class LwjglGlslContext(kgl: Kgl) : GlslContext(kgl, "330 core") {
+        override fun <T> runInContext(fn: () -> T): T {
+            GLFW.glfwMakeContextCurrent(window)
+            try {
+                return fn()
+            } finally {
+                GLFW.glfwMakeContextCurrent(0)
+            }
         }
     }
 

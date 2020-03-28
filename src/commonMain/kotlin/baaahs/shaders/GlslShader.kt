@@ -14,9 +14,11 @@ class GlslShader(
     private val uvTranslator: UvTranslator
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
     companion object : ShaderReader<GlslShader> {
+        val renderContext by lazy { GlslBase.manager.createContext() }
+
         override fun parse(reader: ByteArrayReader): GlslShader {
             val glslProgram = reader.readString()
-            val program = GlslBase.manager.createProgram(glslProgram)
+            val program = renderContext.createProgram(glslProgram)
             val uvTranslator = UvTranslator.parse(reader)
             return GlslShader(program, uvTranslator)
         }
@@ -34,7 +36,7 @@ class GlslShader(
     }
 
     override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = GlslBase.manager.createRenderer(program, uvTranslator)
+        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
         val glslSurface = glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
@@ -51,7 +53,7 @@ class GlslShader(
     }
 
     class PooledRenderer(program: Program, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
-        val glslRenderer = GlslBase.manager.createRenderer(program, uvTranslator)
+        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
 
         override fun preDraw() {
             glslRenderer.draw()

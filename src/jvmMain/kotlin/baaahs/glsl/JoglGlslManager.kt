@@ -5,21 +5,24 @@ import com.danielgergely.kgl.KglJogl
 import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 
-class JoglGlslManager : GlslManager("330 core") {
+class JoglGlslManager : GlslManager() {
     override val available: Boolean
         get() = true
 
-    private val gl by lazy { createGLContext() }
+    override fun createContext(): GlslContext {
+        val gl = createGLContext()
+        return JoglGlslContext(KglJogl(gl as GL3ES3), gl)
+    }
 
-    override fun createContext(): Kgl = KglJogl(gl as GL3ES3)
-
-    override fun <T> runInContext(fn: () -> T): T {
-        val context = gl.context
-        context.makeCurrent()
-        try {
-            return fn()
-        } finally {
-            context.release()
+    class JoglGlslContext(kgl: Kgl, gl: GL4) : GlslContext(kgl, "330 core") {
+        private val context = gl.context
+        override fun <T> runInContext(fn: () -> T): T {
+            context.makeCurrent()
+            try {
+                return fn()
+            } finally {
+                context.release()
+            }
         }
     }
 
