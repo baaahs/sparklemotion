@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslManager$<init>(kotlin.String)/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslManager</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -31,13 +31,6 @@
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">available</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
-<tr>
-<td>
-<h4><a href="kgl.html">kgl</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">kgl</span><span class="symbol">: </span><span class="identifier">Kgl</span></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -48,28 +41,7 @@
 <h4><a href="create-context.html">createContext</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createContext</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Kgl</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="create-program.html">createProgram</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">createProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslManager$createProgram(kotlin.String)/fragShader">fragShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-program/index.html"><span class="identifier">Program</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="create-renderer.html">createRenderer</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslManager$createRenderer(baaahs.glsl.Program, baaahs.glsl.UvTranslator)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../-program/index.html"><span class="identifier">Program</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslManager$createRenderer(baaahs.glsl.Program, baaahs.glsl.UvTranslator)/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-renderer/index.html"><span class="identifier">GlslRenderer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="run-in-context.html">runInContext</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">runInContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslManager$runInContext(kotlin.Function0((baaahs.glsl.GlslManager.runInContext.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createContext</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-context/index.html"><span class="identifier">GlslContext</span></a></code></td>
 </tr>
 </tbody>
 </table>

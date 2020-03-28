@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslContext - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="./index.html">GlslContext</a><br/>
+<br/>
+<h1>GlslContext</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlslContext</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GlslContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslContext$<init>(com.danielgergely.kgl.Kgl, kotlin.String)/kgl">kgl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslContext$<init>(com.danielgergely.kgl.Kgl, kotlin.String)/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="create-program.html">createProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslContext$createProgram(kotlin.String)/fragShader">fragShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-program/index.html"><span class="identifier">Program</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-renderer.html">createRenderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslContext$createRenderer(baaahs.glsl.Program, baaahs.glsl.UvTranslator)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../-program/index.html"><span class="identifier">Program</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslContext$createRenderer(baaahs.glsl.Program, baaahs.glsl.UvTranslator)/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-renderer/index.html"><span class="identifier">GlslRenderer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="run-in-context.html">runInContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">runInContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslContext$runInContext(kotlin.Function0((baaahs.glsl.GlslContext.runInContext.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

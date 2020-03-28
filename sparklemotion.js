@@ -455,6 +455,8 @@
   Vector2_0.prototype.constructor = Vector2_0;
   GlslBase$JsGlslManager.prototype = Object.create(GlslManager.prototype);
   GlslBase$JsGlslManager.prototype.constructor = GlslBase$JsGlslManager;
+  GlslBase$JsGlslContext.prototype = Object.create(GlslContext.prototype);
+  GlslBase$JsGlslContext.prototype.constructor = GlslBase$JsGlslContext;
   NativeBitmap.prototype = Object.create(CanvasBitmap.prototype);
   NativeBitmap.prototype.constructor = NativeBitmap;
   CanvasBitmap$asImage$ObjectLiteral.prototype = Object.create(JsImage.prototype);
@@ -10540,45 +10542,42 @@
         return;
     }
   }
-  function GlslManager(glslVersion) {
-    this.glslVersion_rl4red$_0 = glslVersion;
-    this.kgl_2rc0ad$_0 = lazy(GlslManager$kgl$lambda(this));
+  function GlslContext(kgl, glslVersion) {
+    this.kgl_xaboz$_0 = kgl;
+    this.glslVersion_xb7c7d$_0 = glslVersion;
   }
-  Object.defineProperty(GlslManager.prototype, 'kgl', {
-    get: function () {
-      return this.kgl_2rc0ad$_0.value;
-    }
-  });
-  function GlslManager$createProgram$lambda(this$GlslManager, closure$fragShader) {
+  function GlslContext$createProgram$lambda(this$GlslContext, closure$fragShader) {
     return function () {
-      return new Program(this$GlslManager.kgl, closure$fragShader, this$GlslManager.glslVersion_rl4red$_0, GlslBase_getInstance().plugins);
+      return new Program(this$GlslContext.kgl_xaboz$_0, closure$fragShader, this$GlslContext.glslVersion_xb7c7d$_0, GlslBase_getInstance().plugins);
     };
   }
-  GlslManager.prototype.createProgram_61zpoe$ = function (fragShader) {
-    return this.runInContext_klfg04$(GlslManager$createProgram$lambda(this, fragShader));
+  GlslContext.prototype.createProgram_61zpoe$ = function (fragShader) {
+    return this.runInContext_klfg04$(GlslContext$createProgram$lambda(this, fragShader));
   };
-  function GlslManager$createRenderer$lambda$ObjectLiteral(this$GlslManager) {
-    this.this$GlslManager = this$GlslManager;
+  function GlslContext$createRenderer$lambda$ObjectLiteral(this$GlslContext) {
+    this.this$GlslContext = this$GlslContext;
   }
-  GlslManager$createRenderer$lambda$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
-    return this.this$GlslManager.runInContext_klfg04$(fn);
+  GlslContext$createRenderer$lambda$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
+    return this.this$GlslContext.runInContext_klfg04$(fn);
   };
-  GlslManager$createRenderer$lambda$ObjectLiteral.$metadata$ = {
+  GlslContext$createRenderer$lambda$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [GlslRenderer$ContextSwitcher]
   };
-  function GlslManager$createRenderer$lambda(this$GlslManager, closure$program, closure$uvTranslator) {
+  function GlslContext$createRenderer$lambda(this$GlslContext, closure$program, closure$uvTranslator) {
     return function () {
-      return new GlslRenderer(this$GlslManager.kgl, new GlslManager$createRenderer$lambda$ObjectLiteral(this$GlslManager), closure$program, closure$uvTranslator);
+      return new GlslRenderer(this$GlslContext.kgl_xaboz$_0, new GlslContext$createRenderer$lambda$ObjectLiteral(this$GlslContext), closure$program, closure$uvTranslator);
     };
   }
-  GlslManager.prototype.createRenderer_41a8d7$ = function (program, uvTranslator) {
-    return this.runInContext_klfg04$(GlslManager$createRenderer$lambda(this, program, uvTranslator));
+  GlslContext.prototype.createRenderer_41a8d7$ = function (program, uvTranslator) {
+    return this.runInContext_klfg04$(GlslContext$createRenderer$lambda(this, program, uvTranslator));
   };
-  function GlslManager$kgl$lambda(this$GlslManager) {
-    return function () {
-      return this$GlslManager.createContext();
-    };
+  GlslContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslContext',
+    interfaces: []
+  };
+  function GlslManager() {
   }
   GlslManager.$metadata$ = {
     kind: Kind_CLASS,
@@ -14569,13 +14568,22 @@
   }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
+    this.renderContext_o01z06$_0 = lazy(GlslShader$Companion$renderContext$lambda);
   }
+  Object.defineProperty(GlslShader$Companion.prototype, 'renderContext', {
+    get: function () {
+      return this.renderContext_o01z06$_0.value;
+    }
+  });
   GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
     var glslProgram = reader.readString();
-    var program = GlslBase_getInstance().manager.createProgram_61zpoe$(glslProgram);
+    var program = this.renderContext.createProgram_61zpoe$(glslProgram);
     var uvTranslator = UvTranslator$Companion_getInstance().parse_100t80$(reader);
     return new GlslShader(program, uvTranslator);
   };
+  function GlslShader$Companion$renderContext$lambda() {
+    return GlslBase_getInstance().manager.createContext();
+  }
   GlslShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
@@ -14602,7 +14610,7 @@
     return new GlslShader$Renderer(glslSurface);
   };
   GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslBase_getInstance().manager.createRenderer_41a8d7$(this.program_0, this.uvTranslator_0);
+    var glslRenderer = GlslShader$Companion_getInstance().renderContext.createRenderer_41a8d7$(this.program_0, this.uvTranslator_0);
     var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
     return new GlslShader$Renderer(glslSurface);
   };
@@ -14622,7 +14630,7 @@
     interfaces: [Shader$Renderer]
   };
   function GlslShader$PooledRenderer(program, uvTranslator) {
-    this.glslRenderer = GlslBase_getInstance().manager.createRenderer_41a8d7$(program, uvTranslator);
+    this.glslRenderer = GlslShader$Companion_getInstance().renderContext.createRenderer_41a8d7$(program, uvTranslator);
   }
   GlslShader$PooledRenderer.prototype.preDraw = function () {
     this.glslRenderer.draw();
@@ -16024,7 +16032,7 @@
   });
   function AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral(closure$shaderSource, name) {
     GlslShow.call(this, name);
-    this.program_oxrn8f$_0 = GlslBase_getInstance().manager.createProgram_61zpoe$(closure$shaderSource);
+    this.program_oxrn8f$_0 = GlslShader$Companion_getInstance().renderContext.createProgram_61zpoe$(closure$shaderSource);
   }
   Object.defineProperty(AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.prototype, 'program', {
     get: function () {
@@ -20648,7 +20656,7 @@
     }
   });
   function GlslBase$JsGlslManager() {
-    GlslManager.call(this, '300 es');
+    GlslManager.call(this);
     this.available_vb2jjg$_0 = lazy(GlslBase$JsGlslManager$available$lambda);
   }
   Object.defineProperty(GlslBase$JsGlslManager.prototype, 'available', {
@@ -20657,16 +20665,13 @@
     }
   });
   GlslBase$JsGlslManager.prototype.createContext = function () {
-    var tmp$;
+    var tmp$, tmp$_0;
     var canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
-    var gl = canvas.getContext('webgl2');
+    var gl = (tmp$_0 = canvas.getContext('webgl2')) == null || Kotlin.isType(tmp$_0, WebGL2RenderingContext) ? tmp$_0 : throwCCE();
     if (gl == null) {
       window.alert('Running GLSL shows on iOS requires WebGL 2.0.\n' + '\n' + 'Go to Settings \u2192 Safari \u2192 Advanced \u2192 Experimental Features and enable WebGL 2.0.');
       throw Exception_init('WebGL 2 not supported');
-    }return new KglJs(gl);
-  };
-  GlslBase$JsGlslManager.prototype.runInContext_klfg04$ = function (fn) {
-    return fn();
+    }return new GlslBase$JsGlslContext(new KglJs(gl), '300 es');
   };
   function GlslBase$JsGlslManager$available$lambda() {
     var tmp$;
@@ -20678,6 +20683,17 @@
     kind: Kind_CLASS,
     simpleName: 'JsGlslManager',
     interfaces: [GlslManager]
+  };
+  function GlslBase$JsGlslContext(kgl, glslVersion) {
+    GlslContext.call(this, kgl, glslVersion);
+  }
+  GlslBase$JsGlslContext.prototype.runInContext_klfg04$ = function (fn) {
+    return fn();
+  };
+  GlslBase$JsGlslContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsGlslContext',
+    interfaces: [GlslContext]
   };
   function GlslBase$manager$lambda() {
     return new GlslBase$JsGlslManager();
@@ -23002,6 +23018,7 @@
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
   package$glsl.checkForGlError_t0jnzc$ = checkForGlError;
   package$glsl.check_56a5t8$ = check;
+  package$glsl.GlslContext = GlslContext;
   package$glsl.GlslManager = GlslManager;
   GlslPlugin.ProgramContext = GlslPlugin$ProgramContext;
   GlslPlugin.RenderContext = GlslPlugin$RenderContext;
@@ -23420,6 +23437,7 @@
   package$browser.RealMediaDevices = RealMediaDevices;
   package$geom.Vector2 = Vector2_0;
   GlslBase.prototype.JsGlslManager = GlslBase$JsGlslManager;
+  GlslBase.prototype.JsGlslContext = GlslBase$JsGlslContext;
   Object.defineProperty(package$glsl, 'GlslBase', {
     get: GlslBase_getInstance
   });
