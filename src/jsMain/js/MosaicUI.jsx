@@ -8,6 +8,7 @@ import SimulatorSettingsWindow from './simulator/windows/SimulatorSettingsWindow
 import MosiacMenuBar from './mosiac/MosiacMenuBar/MosiacMenuBar';
 import { StateProvider, store } from './store';
 import ShowEditorWindow from './simulator/windows/ShowEditorWindow/ShowEditorWindow';
+import GlslPreviewWindow from "./simulator/windows/GlslPreviewWindow/GlslPreviewWindow";
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
@@ -16,6 +17,7 @@ const WINDOWS_BY_TYPE = {
   'Show Editor': ShowEditorWindow,
   'Sheep Visualizer': SheepVisualizerWindow,
   'Simulator Settings': SimulatorSettingsWindow,
+  'Glsl Preview': GlslPreviewWindow,
 };
 
 const MosaicApp = (props) => {
