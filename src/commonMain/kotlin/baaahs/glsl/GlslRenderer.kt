@@ -7,8 +7,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 open class GlslRenderer(
-    val gl: Kgl,
-    private val contextSwitcher: ContextSwitcher,
+    val gl: GlslContext,
     private val program: Program,
     private val uvTranslator: UvTranslator
 ) {
@@ -25,14 +24,14 @@ open class GlslRenderer(
 
     var arrangement: Arrangement
 
-    private val uvCoordsUniform: Uniform = gl { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
-    private val resolutionUniform: Uniform? = gl { Uniform.find(program, "resolution") }
-    private val timeUniform: Uniform? = gl { Uniform.find(program, "time") }
+    private val uvCoordsUniform: Uniform = gl.check { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
+    private val resolutionUniform: Uniform? = gl.check { Uniform.find(program, "resolution") }
+    private val timeUniform: Uniform? = gl.check { Uniform.find(program, "time") }
 
     val stats = Stats()
 
     init {
-        gl { gl.clearColor(0f, .5f, 0f, 1f) }
+        gl.check { clearColor(0f, .5f, 0f, 1f) }
 
         arrangement = createArrangement(0, FloatArray(0), glslSurfaces)
     }
@@ -58,7 +57,7 @@ open class GlslRenderer(
         Arrangement(pixelCount, uvCoords, surfaceCount.toList())
 
     fun draw() {
-        withGlContext {
+        gl.runInContext {
             program.bind()
             stats.addSurfacesMs += timeSync { incorporateNewSurfaces() }
             stats.bindFbMs += timeSync { arrangement.bindFramebuffer() }
@@ -79,14 +78,14 @@ open class GlslRenderer(
 
         rendererPlugins.forEach { it.before() }
 
-        gl.viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+        gl.check { viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight) }
+        gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
 
         rendererPlugins.forEach { it.after() }
 
-        gl.finish()
+        gl.check { finish() }
 
         val programLog = program.getInfoLog() ?: ""
         if (programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
@@ -182,12 +181,12 @@ open class GlslRenderer(
         private val uniformSetters: List<UniformSetter> =
             program.params.map { param -> UniformSetter(program, param) }
 
-        private val uvCoordTexture = gl { gl.createTexture() }
-        private val frameBuffer = gl { gl.createFramebuffer() }
-        private val renderBuffer = gl { gl.createRenderbuffer() }
+        private val uvCoordTexture = gl.check { createTexture() }
+        private val frameBuffer = gl.check { createFramebuffer() }
+        private val renderBuffer = gl.check { createRenderbuffer() }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
         private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
-        private val quad: Quad = gl { Quad(gl, program, surfaces.flatMap {
+        private val quad: Quad = Quad(gl, program, surfaces.flatMap {
             it.rects.map { rect ->
                 // Remap from pixel coordinates to normalized device coordinates.
                Quad.Rect(
@@ -197,30 +196,30 @@ open class GlslRenderer(
                     rect.right / pixWidth * 2 - 1
                 )
             }
-        }) }
+        })
 
         fun bindFramebuffer() {
-            gl.checkForGlError()
-            gl { gl.bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
+            gl.noCheck { checkForGlError() }
+            gl.check { bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
 
-            gl { gl.bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
+            gl.check { bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
 //            logger.debug { "pixel count: $pixelCount ($pixWidth x $pixHeight = ${pixelCount.bufSize})" }
-            gl { gl.renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixWidth, pixHeight) }
-            gl { gl.framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
+            gl.check { renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixWidth, pixHeight) }
+            gl.check { framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
 
-            val status = gl { gl.checkFramebufferStatus(GL_FRAMEBUFFER) }
+            val status = gl.check { checkFramebufferStatus(GL_FRAMEBUFFER) }
             if (status != GL_FRAMEBUFFER_COMPLETE) {
                 println(RuntimeException("FrameBuffer huh? $status").message)
             }
         }
 
         fun bindUvCoordTexture(uvCoordsLocation: Uniform) {
-            gl { gl.activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
-            gl { gl.bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
-            gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
-            gl { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
-            gl {
-                gl.texImage2D(
+            gl.check { activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
+            gl.check { bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
+            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
+            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
+            gl.check {
+                texImage2D(
                     GL_TEXTURE_2D, 0,
                     GL_R32F, pixWidth * 2, pixHeight, 0,
                     GL_RED,
@@ -241,7 +240,7 @@ open class GlslRenderer(
         }
 
         fun copyToPixelBuffer() {
-            gl.readPixels(0, 0, pixWidth, pixHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer)
+            gl.check { readPixels(0, 0, pixWidth, pixHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer) }
         }
 
         fun release() {
@@ -249,13 +248,13 @@ open class GlslRenderer(
 
             quad.release()
 
-            gl { gl.bindRenderbuffer(GL_RENDERBUFFER, null) }
-            gl { gl.bindFramebuffer(GL_FRAMEBUFFER, null) }
-            gl { gl.bindTexture(GL_TEXTURE_2D, null) }
+            gl.check { bindRenderbuffer(GL_RENDERBUFFER, null) }
+            gl.check { bindFramebuffer(GL_FRAMEBUFFER, null) }
+            gl.check { bindTexture(GL_TEXTURE_2D, null) }
 
-            gl { gl.deleteFramebuffer(frameBuffer) }
-            gl { gl.deleteRenderbuffer(renderBuffer) }
-            gl { gl.deleteTexture(uvCoordTexture) }
+            gl.check { deleteFramebuffer(frameBuffer) }
+            gl.check { deleteRenderbuffer(renderBuffer) }
+            gl.check { deleteTexture(uvCoordTexture) }
         }
 
         fun render() {
@@ -290,20 +289,6 @@ open class GlslRenderer(
         fun updateFrom(values: Array<Any?>) {
             this.values = values
         }
-    }
-
-    inline fun <T> gl(fn: () -> T): T {
-        val result = fn.invoke()
-        gl.checkForGlError()
-        return result
-    }
-
-    private fun <T> withGlContext(fn: () -> T): T {
-        return contextSwitcher.inContext { fn() }
-    }
-
-    interface ContextSwitcher {
-        fun <T> inContext(fn: () -> T): T
     }
 
     class Stats {

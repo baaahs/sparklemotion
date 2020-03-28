@@ -7,22 +7,11 @@ import com.danielgergely.kgl.Kgl
 abstract class GlslContext(private val kgl: Kgl, private val glslVersion: String) {
     abstract fun <T> runInContext(fn: () -> T): T
 
-    fun createProgram(fragShader: String): Program {
-        return runInContext {
-            Program(this, fragShader, glslVersion, GlslBase.plugins)
-        }
-    }
+    fun createProgram(fragShader: String): Program =
+        runInContext { Program(this, fragShader, glslVersion, GlslBase.plugins) }
 
-    fun createRenderer(
-        program: Program,
-        uvTranslator: UvTranslator
-    ): GlslRenderer {
-        return runInContext {
-            GlslRenderer(kgl, object : GlslRenderer.ContextSwitcher {
-                override fun <T> inContext(fn: () -> T): T = runInContext(fn)
-            }, program, uvTranslator)
-        }
-    }
+    fun createRenderer(program: Program, uvTranslator: UvTranslator) =
+        runInContext { GlslRenderer(this, program, uvTranslator) }
 
     fun createVertexShader(source: String): CompiledShader {
         val shaderId = check { createShader(GL_VERTEX_SHADER) } ?: throw IllegalStateException()
@@ -32,6 +21,10 @@ abstract class GlslContext(private val kgl: Kgl, private val glslVersion: String
     fun createFragmentShader(source: String): CompiledShader {
         val shaderId = check { createShader(GL_FRAGMENT_SHADER) ?: throw IllegalStateException() }
         return CompiledShader(kgl, shaderId, source)
+    }
+
+    fun <T> noCheck(fn: Kgl.() -> T): T {
+        return kgl.fn()
     }
 
     fun <T> check(fn: Kgl.() -> T): T {
