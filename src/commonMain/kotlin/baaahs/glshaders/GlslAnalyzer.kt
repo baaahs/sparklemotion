@@ -21,6 +21,8 @@ class GlslAnalyzer {
             val before = matchResult.groupValues[1]
             val token = matchResult.groupValues[2]
 
+            if (token == "\n") data.lineNumber++
+
             if (before.isNotEmpty()) state.visitText(before)
             state = state.visit(token)
         }
@@ -34,6 +36,7 @@ class GlslAnalyzer {
         val statements: MutableList<GlslStatement> = arrayListOf()
         var enabled = true
         val enabledStack = mutableListOf<Boolean>()
+        var lineNumber = 1
 
         fun doDefine(args: List<String>) {
             if (enabled) {
@@ -42,6 +45,13 @@ class GlslAnalyzer {
                     1 -> defines[args[0]] = ""
                     else -> defines[args[0]] = args.subList(1, args.size).joinToString(" ")
                 }
+            }
+        }
+
+        fun doUndef(args: List<String>) {
+            if (enabled) {
+                if (args.size != 1) throw IllegalArgumentException("huh? #undef ${args.joinToString(" ")}")
+                defines.remove(args[0])
             }
         }
 
@@ -75,6 +85,7 @@ class GlslAnalyzer {
 
         private val text = StringBuilder()
         val textAsString get() = text.toString()
+        fun textIsEmpty() = text.isEmpty()
 
         fun appendText(value: String, substitute: Boolean = true) {
             if (substitute) {
@@ -114,6 +125,7 @@ class GlslAnalyzer {
         open fun addComment(comment: String) {}
 
         private class Statement(context: Context) : ParseState(context) {
+            var lineNumber = context.lineNumber
             val comments = mutableListOf<String>()
 
             override fun visitComment(): ParseState {
@@ -134,6 +146,11 @@ class GlslAnalyzer {
                 return Directive(context, this)
             }
 
+            override fun visitNewline(): ParseState {
+                if (textIsEmpty() && comments.isEmpty()) lineNumber = context.lineNumber
+                return super.visitNewline()
+            }
+
             override fun visitEof() {
                 if (!isEmpty()) finishStatement()
             }
@@ -143,7 +160,7 @@ class GlslAnalyzer {
             }
 
             fun finishStatement() {
-                context.statements.add(GlslStatement(textAsString, comments))
+                context.statements.add(GlslStatement(textAsString, comments, lineNumber))
             }
 
             fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
@@ -211,6 +228,7 @@ class GlslAnalyzer {
                 val directive = args.removeFirst()
                 when (directive) {
                     "define" -> context.doDefine(args)
+                    "undef" -> context.doUndef(args)
                     "ifdef" -> context.doIfdef(args)
                     "ifndef" -> context.doIfndef(args)
                     "else" -> context.doElse(args)
@@ -226,7 +244,7 @@ class GlslAnalyzer {
         }
     }
 
-    data class GlslStatement(val text: String, val comments: List<String> = emptyList()) {
+    data class GlslStatement(val text: String, val comments: List<String> = emptyList(), val lineNumber: Int? = null) {
         fun asUniformOrNull(): ShaderFragment.GlslUniform? {
             return Regex("uniform\\s+(\\w+)\\s+(\\w+)\\s*;", RegexOption.MULTILINE).find(text)?.let {
                 ShaderFragment.GlslUniform(it.groupValues[1], it.groupValues[2])
