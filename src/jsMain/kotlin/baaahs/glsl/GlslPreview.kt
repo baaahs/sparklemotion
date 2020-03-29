@@ -10,7 +10,11 @@ import kotlin.browser.window
 import kotlin.dom.appendText
 import kotlin.dom.clear
 
-class GlslPreview(private val baseEl: Element, private val statusEl: Element, shaderSrc: String? = null) {
+class GlslPreview(
+    private val baseEl: Element,
+    private val statusEl: Element,
+    shaderSrc: String? = null
+) {
     private var running = false
     private val canvas = document.createElement("canvas") as HTMLCanvasElement
     private val gl = GlslBase.jsManager.createContext(canvas)
@@ -36,7 +40,7 @@ class GlslPreview(private val baseEl: Element, private val statusEl: Element, sh
     }
 
     @JsName("setShaderSrc")
-    fun setShaderSrc(src: String?) {
+    fun setShaderSrc(src: String?, errorCallback: (Array<CompiledShader.GlslError>) -> Unit = {}) {
         scene?.release()
         scene = null
         statusEl.clear()
@@ -44,6 +48,7 @@ class GlslPreview(private val baseEl: Element, private val statusEl: Element, sh
         try {
             scene = createScene(src)
         } catch (e: CompiledShader.CompilationException) {
+            errorCallback.invoke(e.getErrors().toTypedArray())
             statusEl.appendText(e.errorMessage)
         }
     }

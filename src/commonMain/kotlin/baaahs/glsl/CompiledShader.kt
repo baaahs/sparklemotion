@@ -34,5 +34,22 @@ class CompiledShader(
         }
     }
 
-    class CompilationException(val errorMessage: String) : Exception("GLSL Compilation Error: $errorMessage")
+    class CompilationException(val errorMessage: String) : Exception("GLSL Compilation Error: $errorMessage") {
+        fun getErrors(): List<GlslError> {
+            return errorMessage.trimEnd().split("\n").map { line ->
+                pattern.matchEntire(line)?.groupValues?.let { match ->
+                    @Suppress("UNUSED_VARIABLE") val file = match[1].toInt()
+                    val row = match[2].toInt()
+                    val message = match[3]
+                    GlslError(row, 0, message)
+                } ?: GlslError(-1, -1, line)
+            }
+        }
+
+        companion object {
+            val pattern = Regex("^ERROR: (\\d+):(\\d+): (.*)$")
+        }
+    }
+
+    class GlslError(val row: Int, val column: Int, val message: String)
 }

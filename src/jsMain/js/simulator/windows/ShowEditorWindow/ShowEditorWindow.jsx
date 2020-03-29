@@ -24,6 +24,19 @@ const ShowEditorWindow = (props) => {
     aceEditor.current.editor.resize();
   });
 
+  const updatePreview = (src) => {
+    aceEditor.current.editor.getSession().setAnnotations([]);
+
+    glslPreviewer?.setShaderSrc(src, (errors) => {
+      aceEditor.current.editor.getSession().setAnnotations(errors.map(e => ({
+          row: e.row,
+          column: e.column,
+          text: e.message,
+          type: "error"
+        })));
+    });
+  };
+
   useEffect(() => {
     // Look up the text for the show
     const allShows = sheepSimulator?.shows.toArray() || [];
@@ -31,14 +44,14 @@ const ShowEditorWindow = (props) => {
 
     let shaderSource = currentShow?.program.fragShader;
     setShowStr(shaderSource);
-    glslPreviewer?.setShaderSrc(shaderSource);
+    updatePreview(shaderSource);
   }, [selectedShow, isConnected, glslPreviewer]);
 
   const [showStr, setShowStr] = useState('');
   const onChange = useCallback(
     (newValue) => {
       setShowStr(newValue);
-      glslPreviewer?.setShaderSrc(newValue);
+      updatePreview(newValue);
     },
     [setShowStr, glslPreviewer]
   );
@@ -46,7 +59,7 @@ const ShowEditorWindow = (props) => {
   useEffect(() => {
     // Pass div to Kotlin GlslPreview class
     const glslPreviewer = new baaahs.glsl.GlslPreview(canvasContainerEl.current, statusContainerEl.current);
-    glslPreviewer.setShaderSrc(showStr);
+    updatePreview(showStr);
     glslPreviewer.start();
 
     setGlslPreviewer(glslPreviewer);
@@ -92,7 +105,7 @@ const ShowEditorWindow = (props) => {
         theme="tomorrow_night_bright"
         width="100%"
         height="100%"
-        showGutter={false}
+        showGutter={true}
         setAutoScrollEditorIntoView={true}
         onChange={onChange}
         value={showStr}
