@@ -6,7 +6,7 @@ config.resolve.modules.push(path.resolve(__dirname, "../../node_modules"));
 config.module.rules.push(
     {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+        include: /src\/jsMain/,
         use: {
             loader: 'babel-loader',
             options: {
@@ -25,6 +25,7 @@ config.module.rules.push(
     },
     {
         test: /\.(css|sass|scss)$/,
+        include: /src\/jsMain/,
         use: [
             'style-loader',
             {
