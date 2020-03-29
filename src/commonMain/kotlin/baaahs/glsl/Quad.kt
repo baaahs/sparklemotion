@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import com.danielgergely.kgl.*
 
-class Quad(private val gl: GlslContext, program: Program, rects: List<Rect>) {
+class Quad(private val gl: GlslContext, private val vertexAttr: Int, rects: List<Rect>) {
     private val vertices = rects.flatMap { rect ->
         listOf(
             // First triangle:
@@ -18,7 +18,6 @@ class Quad(private val gl: GlslContext, program: Program, rects: List<Rect>) {
 
     private var vao: VertexArrayObject = gl.check { createVertexArray() }
     private var quadVertexBuffer: GlBuffer = gl.check { createBuffers(1)[0] }
-    private val vertexAttr = program.getVertexAttribLocation()
 
     init {
         gl.check { bindVertexArray(vao) }

@@ -4,7 +4,7 @@ import com.danielgergely.kgl.GL_FRAGMENT_SHADER
 import com.danielgergely.kgl.GL_VERTEX_SHADER
 import com.danielgergely.kgl.Kgl
 
-abstract class GlslContext(private val kgl: Kgl, private val glslVersion: String) {
+abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
     abstract fun <T> runInContext(fn: () -> T): T
 
     fun createProgram(fragShader: String): Program =
