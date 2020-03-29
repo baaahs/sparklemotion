@@ -47,6 +47,7 @@ precision mediump float;
 uniform float sm_beat;
 out vec4 sm_fragColor;
 
+#line 0 1
 ${shaderSrc.replace("gl_FragColor", "sm_fragColor")}
         """.trimIndent()
         )
