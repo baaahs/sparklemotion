@@ -232,6 +232,7 @@ tasks.withType(Kotlin2JsCompile::class) {
 
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true
+    inputs.dir("src/jsMain/js")
 }
 
 tasks.withType(KotlinCompile::class) {
