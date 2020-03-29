@@ -186,7 +186,7 @@ open class GlslRenderer(
         private val renderBuffer = gl.check { createRenderbuffer() }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
         private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
-        private val quad: Quad = Quad(gl, program, surfaces.flatMap {
+        private val quad: Quad = Quad(gl, program.getVertexAttribLocation(), surfaces.flatMap {
             it.rects.map { rect ->
                 // Remap from pixel coordinates to normalized device coordinates.
                Quad.Rect(

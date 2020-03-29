@@ -1,24 +1,22 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-  useRef,
-} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState,} from 'react';
 import AceEditor from 'react-ace';
 import classNames from 'classnames';
 import styles from './ShowEditorWindow.scss';
 import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_bright';
-import { store } from '../../../store';
-import { useResizeListener } from '../../../app/hooks/useResizeListener';
+import {store} from '../../../store';
+import {useResizeListener} from '../../../app/hooks/useResizeListener';
+import {baaahs} from 'sparklemotion';
 
 const ShowEditorWindow = (props) => {
   const { state } = useContext(store);
   const { sheepSimulator, selectedShow, isConnected } = state;
   const aceEditor = useRef(null);
   const windowRootEl = useRef(null);
+  const canvasContainerEl = useRef(null);
+  const statusContainerEl = useRef(null);
+  const [glslPreviewer, setGlslPreviewer] = useState(null);
 
   // Anytime the sheepView div is resized,
   // ask the Visualizer to resize the 3D sheep canvas
@@ -31,20 +29,44 @@ const ShowEditorWindow = (props) => {
     const allShows = sheepSimulator?.shows.toArray() || [];
     const currentShow = allShows.find(({ name }) => name === selectedShow);
 
-    setShowStr(currentShow?.program.fragShader);
-  }, [selectedShow, isConnected]);
+    let shaderSource = currentShow?.program.fragShader;
+    setShowStr(shaderSource);
+    glslPreviewer?.setShaderSrc(shaderSource);
+  }, [selectedShow, isConnected, glslPreviewer]);
 
   const [showStr, setShowStr] = useState('');
   const onChange = useCallback(
     (newValue) => {
       setShowStr(newValue);
+      glslPreviewer?.setShaderSrc(newValue);
     },
-    [setShowStr]
+    [setShowStr, glslPreviewer]
   );
+
+  useEffect(() => {
+    // Pass div to Kotlin GlslPreview class
+    const glslPreviewer = new baaahs.glsl.GlslPreview(canvasContainerEl.current, statusContainerEl.current);
+    glslPreviewer.setShaderSrc(showStr);
+    glslPreviewer.start();
+
+    setGlslPreviewer(glslPreviewer);
+    return () => {
+      // The GlslPreviewWindow is being unmounted, disconnect from the GlslPreview
+      glslPreviewer.stop();
+      glslPreviewer.destroy();
+    }
+  }, []);
 
   const previewShow = () => {
     console.log(`previewShow!`);
   };
+
+  useResizeListener(windowRootEl, () => {
+    if (glslPreviewer) {
+      // Tell Kotlin controller the window was resized
+      glslPreviewer.resize();
+    }
+  });
 
   return (
     <div className={styles.showEditorWindow} ref={windowRootEl}>
@@ -59,6 +81,10 @@ const ShowEditorWindow = (props) => {
             onClick={previewShow}
           />
         </div>
+      </div>
+      <div className={styles.previewBar}>
+        <div className={styles.preview} ref={canvasContainerEl}/>
+        <div className={styles.status} ref={statusContainerEl}/>
       </div>
       <AceEditor
         ref={aceEditor}

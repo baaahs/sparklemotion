@@ -23,6 +23,15 @@
   }
 }
 
+.previewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .preview {}
+  .status {}
+}
+
 .buttons {
   display: flex;
 }

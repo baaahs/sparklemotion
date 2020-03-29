@@ -46,7 +46,7 @@ class Program(
         this.plugins.forEach { it.afterCompile() }
     }
 
-    fun findParams(glslFragmentShader: String): List<GlslShader.Param> {
+    private fun findParams(glslFragmentShader: String): List<GlslShader.Param> {
         return gadgetPattern.findAll(glslFragmentShader).map { matchResult ->
             println("matches: ${matchResult.groupValues}")
             val (gadgetType, configJson, valueTypeName, varName) = matchResult.destructured
@@ -62,15 +62,17 @@ class Program(
     }
 
     fun getInfoLog(): String? = gl.check { getProgramInfoLog(id) }
-    fun attachShader(compiledShader: CompiledShader) = gl.check { attachShader(id, compiledShader.id) }
-    fun link(): Boolean {
+
+    private fun attachShader(compiledShader: CompiledShader) = gl.check { attachShader(id, compiledShader.id) }
+
+    private fun link(): Boolean {
         gl.check { linkProgram(id) }
         return gl.check { getProgramParameter(id, GL_LINK_STATUS) } == GL_TRUE
     }
 
     fun bind() = gl.check { useProgram(id) }
 
-    fun getUniform(name: String): Uniform? = gl.check { getUniformLocation(id, name)?.let { Uniform(this, it) } }
+    fun getUniform(name: String): Uniform? = gl.check { getUniformLocation(id, name)?.let { Uniform(gl, it) } }
 
     private fun attachVertexShader() {
         val vertexShaderSource = """#version $glslVersion
