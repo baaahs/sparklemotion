@@ -10,15 +10,20 @@ import kotlin.test.expect
 
 fun String.esc() = replace("\n", "\\n")
 
-fun GlslStatement.esc(): String =
-    if (comments.isEmpty()) {
-        text.trim().esc()
-    } else {
-        "${text.trim().esc()} // ${comments.joinToString(" ") { it.trim().esc() }}"
-    }
+fun GlslStatement.esc(lineNumbers: Boolean): String {
+    val buf = StringBuilder()
+    buf.append(text.trim().esc())
+    if (comments.isNotEmpty())
+        buf.append(" // ${comments.joinToString(" ") { it.trim().esc() }}")
+    if (lineNumbers)
+        buf.append(" # $lineNumber")
+    return buf.toString()
+}
 
-fun expectStatements(expected: List<GlslStatement>, actual: () -> List<GlslStatement>) {
-    assertEquals(expected.map { it.esc() }.joinToString("\n"), actual().map { it.esc() }.joinToString("\n"))
+fun expectStatements(expected: List<GlslStatement>, actual: () -> List<GlslStatement>, checkLineNumbers: Boolean = false) {
+    assertEquals(
+        expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
+        actual().map { it.esc(checkLineNumbers) }.joinToString("\n"))
 }
 
 object GlslAnalyzerSpec : Spek({
@@ -26,8 +31,7 @@ object GlslAnalyzerSpec : Spek({
         context("given a full GLSL program") {
             val shaderText by value {
 /**language=glsl*/
-"""
-// This Shader's Name
+"""// This Shader's Name
 // Other stuff.
 
 uniform float time;
@@ -50,19 +54,19 @@ void main() {
                 expect("This Shader's Name") { fragment.title }
             }
 
-            it("finds statements") {
+            it("finds statements including line numbers") {
                 expectStatements(listOf(
-                    GlslStatement("uniform float time;", listOf("This Shader's Name", "Other stuff.")),
-                    GlslStatement("uniform vec2  resolution;"),
+                    GlslStatement("uniform float time;", listOf("This Shader's Name", "Other stuff."), lineNumber = 1),
+                    GlslStatement("uniform vec2  resolution;", lineNumber = 5),
                     GlslStatement("void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                             "{\n" +
                             "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
                             "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                            "}"),
+                            "}", lineNumber = 6),
                     GlslStatement("void main() {\n" +
                             "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                            "}")
-                )) { GlslAnalyzer().findStatements(shaderText) }
+                            "}", lineNumber = 12)
+                ), { GlslAnalyzer().findStatements(shaderText) }, true)
             }
 
             it("finds the uniforms") {
@@ -121,8 +125,9 @@ void this_is_super_busted() {
 #endif
 
 #ifdef NOT_DEFINED_B
-void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragCoord = vec4(uv.xy, PI, 1.); }
+void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragColor = vec4(uv.xy, PI, 1.); }
 #endif
+#undef PI
 void main() { mainFunc(gl_FragColor, gl_FragCoord); }
 """.trimIndent()
                 }
@@ -137,7 +142,7 @@ void main() { mainFunc(gl_FragColor, gl_FragCoord); }
                 it("finds the functions and performs substitutions") {
                     expect(listOf(
                         ShaderFragment.GlslFunction("void", "mainFunc", "out vec4 fragColor, in vec2 fragCoord",
-                            "{ fragCoord = vec4(uv.xy, 3.14159, 1.); }"
+                            "{ fragColor = vec4(uv.xy, 3.14159, 1.); }"
                         ),
 
                         ShaderFragment.GlslFunction("void", "main", "",
