@@ -32,7 +32,7 @@ void main()
     }
 
     val fragment = glslAnalyzer.analyze(shaderSrc)
-    val bindings = fragment.uniforms.map { uniform ->
+    val bindings = fragment.globalVars.map { uniform ->
         Binding(uniform, defaultBindings["${uniform.type}:${uniform.name}"])
     }
 
@@ -79,7 +79,7 @@ ${shaderSrc.replace("gl_FragColor", "sm_fragColor")}
     }
 
     inner class Binding(
-        val glslUniform: ShaderFragment.GlslUniform,
+        val glslUniform: ShaderFragment.GlslVar,
         providerFactory: (() -> Provider)?
     ) {
         private val uniformLocation by lazy {

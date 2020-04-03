@@ -9,7 +9,7 @@ class GlslAnalyzer {
 
         return ShaderFragment(
             title,
-            statements.mapNotNull { it.asUniformOrNull() },
+            statements.mapNotNull { it.asVarOrNull() },
             statements.mapNotNull { it.asFunctionOrNull() })
     }
 
@@ -29,6 +29,10 @@ class GlslAnalyzer {
         state.visitEof()
 
         return data.statements
+    }
+
+    companion object {
+        val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
     }
 
     private class Context {
@@ -89,7 +93,7 @@ class GlslAnalyzer {
 
         fun appendText(value: String, substitute: Boolean = true) {
             if (substitute) {
-                text.append(value.replace(Regex("([A-Za-z][A-Za-z0-9_]*)")) {
+                text.append(value.replace(wordRegex) {
                     context.defines[it.value] ?: it.value
                 })
             } else {
@@ -245,21 +249,23 @@ class GlslAnalyzer {
     }
 
     data class GlslStatement(val text: String, val comments: List<String> = emptyList(), val lineNumber: Int? = null) {
-        fun asUniformOrNull(): ShaderFragment.GlslUniform? {
-            return Regex("uniform\\s+(\\w+)\\s+(\\w+)\\s*;", RegexOption.MULTILINE).find(text)?.let {
-                ShaderFragment.GlslUniform(it.groupValues[1], it.groupValues[2])
+        fun asVarOrNull(): ShaderFragment.GlslVar? {
+            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)?.let {
+                val (_, qualifier, type, name, constValue) = it.destructured
+                var (isConst, isUniform) = (false to false)
+                when (qualifier) {
+                    "const" -> isConst = true
+                    "uniform" -> isUniform = true
+                }
+                ShaderFragment.GlslVar(type, name, isConst, isUniform, lineNumber)
             }
         }
 
         fun asFunctionOrNull(): ShaderFragment.GlslFunction? {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
                 ?.let {
-                    ShaderFragment.GlslFunction(
-                        it.groupValues[1],
-                        it.groupValues[2],
-                        it.groupValues[3],
-                        it.groupValues[4]
-                    )
+                    val (returnType, name, params, body) = it.destructured
+                    ShaderFragment.GlslFunction(returnType, name, params, body)
                 }
         }
     }
