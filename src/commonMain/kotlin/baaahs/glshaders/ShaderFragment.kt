@@ -10,6 +10,9 @@ class ShaderFragment(
 
     fun namespace(namespace: String): ShaderFragment {
         val symbolNames = HashSet(globalVars.map { it.name } + functions.map { it.name })
+        symbolNames.add("gl_FragCoord")
+        symbolNames.add("gl_FragColor")
+
         return ShaderFragment(
             title,
             globalVars.map { it.namespaced(namespace) },
