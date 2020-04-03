@@ -47,7 +47,7 @@ object ShaderFragmentSpec : Spek({
                 ) { namespaced.globalVars }
             }
 
-            it("prefixes function names and symbol references") {
+            it("prefixes function names, symbol references, and special globals") {
                 expect(
                     listOf(
                         ShaderFragment.GlslFunction(
@@ -57,8 +57,8 @@ object ShaderFragmentSpec : Spek({
                         ShaderFragment.GlslFunction(
                             "void", "p0_main", "()", """
                     {
-                      vec2 p = gl_FragCoord / p0_resolution;
-                      gl_FragColor = vec4(p0_anotherFunc(p), 1. - p0_anotherFunc(p), p0_blueness, 1.);
+                      vec2 p = p0_gl_FragCoord / p0_resolution;
+                      p0_gl_FragColor = vec4(p0_anotherFunc(p), 1. - p0_anotherFunc(p), p0_blueness, 1.);
                     }""".trimIndent()
                         )
                     )
@@ -87,6 +87,20 @@ object ShaderFragmentSpec : Spek({
             context("uniform") {
                 override(text) { "uniform vec3 vector;" }
                 expectValue(ShaderFragment.GlslVar("vec3", "vector", isUniform = true)) { variable }
+            }
+        }
+
+        context("functions") {
+            val variable by value { statement.asFunctionOrNull() }
+
+            context("simple") {
+                override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
+                expectValue(
+                    ShaderFragment.GlslFunction(
+                        "float", "rand", "vec2 uv",
+                        "{ return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
+                    )
+                ) { variable }
             }
         }
     }
