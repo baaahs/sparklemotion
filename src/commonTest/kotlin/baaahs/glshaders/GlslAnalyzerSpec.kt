@@ -28,7 +28,7 @@ fun expectStatements(expected: List<GlslStatement>, actual: () -> List<GlslState
 
 object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
-        context("given a full GLSL program") {
+        context("given some GLSL code") {
             val shaderText by value {
 /**language=glsl*/
 """// This Shader's Name
@@ -69,11 +69,11 @@ void main() {
                 ), { GlslAnalyzer().findStatements(shaderText) }, true)
             }
 
-            it("finds the uniforms") {
+            it("finds the global variables") {
                 expect(listOf(
-                    ShaderFragment.GlslUniform("float", "time"),
-                    ShaderFragment.GlslUniform("vec2", "resolution")
-                )) { fragment.uniforms }
+                    ShaderFragment.GlslVar("float", "time", isConst = false, isUniform = false),
+                    ShaderFragment.GlslVar("vec2", "resolution", isConst = false, isUniform = false)
+                )) { fragment.globalVars }
             }
 
             it("finds the functions") {
@@ -132,11 +132,11 @@ void main() { mainFunc(gl_FragColor, gl_FragCoord); }
 """.trimIndent()
                 }
 
-                it("finds the uniforms and performs substitutions") {
+                it("finds the global variables and performs substitutions") {
                     expect(listOf(
-                        ShaderFragment.GlslUniform("float", "shouldBeDefined"),
-                        ShaderFragment.GlslUniform("vec2", "shouldBeThis")
-                    )) { fragment.uniforms }
+                        ShaderFragment.GlslVar("float", "shouldBeDefined", isConst = false, isUniform = false),
+                        ShaderFragment.GlslVar("vec2", "shouldBeThis", isConst = false, isUniform = false)
+                    )) { fragment.globalVars }
                 }
 
                 it("finds the functions and performs substitutions") {
