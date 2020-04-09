@@ -79,7 +79,7 @@ ${shaderSrc.replace("gl_FragColor", "sm_fragColor")}
     }
 
     inner class Binding(
-        val glslUniform: ShaderFragment.GlslVar,
+        val glslUniform: GlslCode.GlslVar,
         providerFactory: (() -> Provider)?
     ) {
         private val uniformLocation by lazy {

@@ -20,135 +20,238 @@ fun GlslStatement.esc(lineNumbers: Boolean): String {
     return buf.toString()
 }
 
-fun expectStatements(expected: List<GlslStatement>, actual: () -> List<GlslStatement>, checkLineNumbers: Boolean = false) {
+fun expectStatements(
+    expected: List<GlslStatement>,
+    actual: () -> List<GlslStatement>,
+    checkLineNumbers: Boolean = false
+) {
     assertEquals(
         expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
-        actual().map { it.esc(checkLineNumbers) }.joinToString("\n"))
+        actual().map { it.esc(checkLineNumbers) }.joinToString("\n")
+    )
 }
 
 object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
         context("given some GLSL code") {
-            val shaderText by value {
-/**language=glsl*/
-"""// This Shader's Name
-// Other stuff.
+            val shaderText by value<String> { TODO() }
 
-uniform float time;
-uniform vec2  resolution;
-
-void mainFunc( out vec4 fragColor, in vec2 fragCoord )
-{
-    vec2 uv = fragCoord.xy / iResolution.xy;
-    fragColor = vec4(uv.xy, 0., 1.);
-}
-
-void main() {
-    mainFunc(gl_FragColor, gl_FragCoord);
-}
-""".trimIndent()
-            }
-            val fragment by value { GlslAnalyzer().analyze(shaderText) }
-
-            it("finds the title") {
-                expect("This Shader's Name") { fragment.title }
-            }
-
-            it("finds statements including line numbers") {
-                expectStatements(listOf(
-                    GlslStatement("uniform float time;", listOf("This Shader's Name", "Other stuff."), lineNumber = 1),
-                    GlslStatement("uniform vec2  resolution;", lineNumber = 5),
-                    GlslStatement("void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
-                            "{\n" +
-                            "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
-                            "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                            "}", lineNumber = 6),
-                    GlslStatement("void main() {\n" +
-                            "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                            "}", lineNumber = 12)
-                ), { GlslAnalyzer().findStatements(shaderText) }, true)
-            }
-
-            it("finds the global variables") {
-                expect(listOf(
-                    ShaderFragment.GlslVar("float", "time", isConst = false, isUniform = false),
-                    ShaderFragment.GlslVar("vec2", "resolution", isConst = false, isUniform = false)
-                )) { fragment.globalVars }
-            }
-
-            it("finds the functions") {
-                expect(listOf(
-                    ShaderFragment.GlslFunction("void", "mainFunc", " out vec4 fragColor, in vec2 fragCoord ",
-                    "{\n" +
-                            "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
-                            "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                            "}"),
-
-                    ShaderFragment.GlslFunction("void", "main", "",
-                    "{\n" +
-                            "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                            "}")
-                    )) { fragment.functions }
-            }
-
-            it("finds the entry point function") {
-                expect(ShaderFragment.GlslFunction("void", "main", "",
-                    "{\n" +
-                            "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                            "}")
-                ) { fragment.entryPoint }
-            }
-
-            context("with #ifdefs") {
+            context("#analyze") {
                 override(shaderText) {
                     /**language=glsl*/
                     """
-// Shader Name
+                    // This Shader's Name
+                    // Other stuff.
+                    
+                    uniform float time;
+                    uniform vec2  resolution;
+                    
+                    void mainFunc( out vec4 fragColor, in vec2 fragCoord )
+                    {
+                        vec2 uv = fragCoord.xy / iResolution.xy;
+                        fragColor = vec4(uv.xy, 0., 1.);
+                    }
+                    
+                    void main() {
+                        mainFunc(gl_FragColor, gl_FragCoord);
+                    }
+                    """.trimIndent()
+                }
+                val glslCode by value { GlslAnalyzer().analyze(shaderText).sansLineNumbers() }
 
-#ifdef NOT_DEFINED
-uniform float shouldNotBeDefined;
-#define NOT_DEFINED_A
-#define DEF_VAL shouldNotBeThis
-#else
-uniform float shouldBeDefined;
-#define NOT_DEFINED_B
-#define DEF_VAL shouldBeThis
-#endif
-#define PI 3.14159
-
-uniform vec2 DEF_VAL;
-#ifdef NOT_DEFINED_A
-void this_is_super_busted() {
-#endif
-#ifndef NOT_DEFINED_B
-}
-#endif
-
-#ifdef NOT_DEFINED_B
-void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragColor = vec4(uv.xy, PI, 1.); }
-#endif
-#undef PI
-void main() { mainFunc(gl_FragColor, gl_FragCoord); }
-""".trimIndent()
+                it("finds the title") {
+                    expect("This Shader's Name") { glslCode.title }
                 }
 
-                it("finds the global variables and performs substitutions") {
-                    expect(listOf(
-                        ShaderFragment.GlslVar("float", "shouldBeDefined", isConst = false, isUniform = false),
-                        ShaderFragment.GlslVar("vec2", "shouldBeThis", isConst = false, isUniform = false)
-                    )) { fragment.globalVars }
+                it("finds statements including line numbers") {
+                    expectStatements(
+                        listOf(
+                            GlslStatement(
+                                "uniform float time;",
+                                listOf("This Shader's Name", "Other stuff."),
+                                lineNumber = 1
+                            ),
+                            GlslStatement("uniform vec2  resolution;", lineNumber = 5),
+                            GlslStatement(
+                                "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
+                                        "{\n" +
+                                        "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
+                                        "    fragColor = vec4(uv.xy, 0., 1.);\n" +
+                                        "}", lineNumber = 6
+                            ),
+                            GlslStatement(
+                                "void main() {\n" +
+                                        "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
+                                        "}", lineNumber = 12
+                            )
+                        ), { GlslAnalyzer().findStatements(shaderText) }, true
+                    )
                 }
 
-                it("finds the functions and performs substitutions") {
-                    expect(listOf(
-                        ShaderFragment.GlslFunction("void", "mainFunc", "out vec4 fragColor, in vec2 fragCoord",
-                            "{ fragColor = vec4(uv.xy, 3.14159, 1.); }"
-                        ),
-
-                        ShaderFragment.GlslFunction("void", "main", "",
-                            "{ mainFunc(gl_FragColor, gl_FragCoord); }"
+                it("finds the global variables") {
+                    expect(
+                        listOf(
+                            GlslCode.GlslVar("float", "time", isUniform = true),
+                            GlslCode.GlslVar("vec2", "resolution", isUniform = true)
                         )
-                    )) { fragment.functions }
+                    ) { glslCode.globalVars }
+                }
+
+                it("finds the functions") {
+                    expect(
+                        listOf(
+                            GlslCode.GlslFunction(
+                                "void", "mainFunc", " out vec4 fragColor, in vec2 fragCoord ",
+                                "{\n" +
+                                        "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
+                                        "    fragColor = vec4(uv.xy, 0., 1.);\n" +
+                                        "}"
+                            ),
+
+                            GlslCode.GlslFunction(
+                                "void", "main", "",
+                                "{\n" +
+                                        "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
+                                        "}"
+                            )
+                        )
+                    ) { glslCode.functions }
+                }
+
+                context("with #ifdefs") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                        // Shader Name
+                        
+                        #ifdef NOT_DEFINED
+                        uniform float shouldNotBeDefined;
+                        #define NOT_DEFINED_A
+                        #define DEF_VAL shouldNotBeThis
+                        #else
+                        uniform float shouldBeDefined;
+                        #define NOT_DEFINED_B
+                        #define DEF_VAL shouldBeThis
+                        #endif
+                        #define PI 3.14159
+                        
+                        uniform vec2 DEF_VAL;
+                        #ifdef NOT_DEFINED_A
+                        void this_is_super_busted() {
+                        #endif
+                        #ifndef NOT_DEFINED_B
+                        }
+                        #endif
+                        
+                        #ifdef NOT_DEFINED_B
+                        void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragColor = vec4(uv.xy, PI, 1.); }
+                        #endif
+                        #undef PI
+                        void main() { mainFunc(gl_FragColor, gl_FragCoord); }
+                        """.trimIndent()
+                    }
+
+                    it("finds the global variables and performs substitutions") {
+                        expect(
+                            listOf(
+                                GlslCode.GlslVar("float", "shouldBeDefined", isUniform = true),
+                                GlslCode.GlslVar("vec2", "shouldBeThis", isUniform = true)
+                            )
+                        ) { glslCode.globalVars }
+                    }
+
+                    it("finds the functions and performs substitutions") {
+                        expect(
+                            listOf(
+                                GlslCode.GlslFunction(
+                                    "void", "mainFunc", "out vec4 fragColor, in vec2 fragCoord",
+                                    "{ fragColor = vec4(uv.xy, 3.14159, 1.); }"
+                                ),
+
+                                GlslCode.GlslFunction(
+                                    "void", "main", "",
+                                    "{ mainFunc(gl_FragColor, gl_FragCoord); }"
+                                )
+                            )
+                        ) { glslCode.functions }
+                    }
+                }
+            }
+
+            context("#asShader") {
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                    // This Shader's Name
+                    // Other stuff.
+                    
+                    uniform float time;
+                    uniform vec2  resolution;
+                    
+                    void mainFunc( out vec4 fragColor, in vec2 fragCoord )
+                    {
+                        vec2 uv = fragCoord.xy / iResolution.xy;
+                        fragColor = vec4(uv.xy, 0., 1.);
+                    }
+                    
+                    void main() {
+                        mainFunc(gl_FragColor, gl_FragCoord);
+                    }
+                    """.trimIndent()
+                }
+                val shader by value { GlslAnalyzer().asShader(shaderText) }
+
+                context("with generic shader") {
+                    it("finds the entry point function") {
+                        expect(
+                            GlslCode.GlslFunction(
+                                "void", "main", "",
+                                "{\n    mainFunc(gl_FragColor, gl_FragCoord);\n}"
+                            )
+                        ) { shader.entryPoint }
+                    }
+                }
+
+                context("with shadertoy shader") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                        // This Shader's Name
+                        // Other stuff
+                        
+                        void mainImage( out vec4 fragColor, in vec2 fragCoord )
+                        {
+                        	vec2 uv = fragCoord.xy / iResolution.xy;
+                        	float time = iTime;
+                        	fragColor = vec4(uv * iTime, -uv.x * iTime, 1.0);
+                        }
+                        """.trimIndent()
+                    }
+
+                    it("creates an entry point function calling mainImage()") {
+                        expect(
+                            GlslCode.GlslFunction(
+                                "void", "sm_main", "",
+                                "{\n    mainImage(sm_FragColor, sm_FragCoord);\n}"
+                            )
+                        ) { shader.entryPoint }
+                    }
+
+                    it("creates inputs for implicit uniforms") {
+                        expect(
+                            setOf(
+                                GlslCode.InputPort(
+                                    "float", "iTime", "Time", GlslCode.ContentType.Time
+                                ),
+                                GlslCode.InputPort(
+                                    "vec2", "iResolution", "Resolution", GlslCode.ContentType.Resolution
+                                ),
+                                GlslCode.InputPort(
+                                    "vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate
+                                )
+                            )
+                        ) { shader.inputPorts.toSet() }
+                    }
                 }
             }
         }
