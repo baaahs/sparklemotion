@@ -76,16 +76,4 @@ class GlslCode(
         Unknown(null)
     }
 
-    data class InputPort(
-        val type: String,
-        val name: String,
-        val description: String?,
-        val contentType: ContentType
-    )
-
-    data class OutputPort(
-        val type: String,
-        val name: String,
-        val description: String?
-    )
 }

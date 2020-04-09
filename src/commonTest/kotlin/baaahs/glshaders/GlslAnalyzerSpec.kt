@@ -179,36 +179,47 @@ object GlslAnalyzerSpec : Spek({
             }
 
             context("#asShader") {
-                override(shaderText) {
-                    /**language=glsl*/
-                    """
-                    // This Shader's Name
-                    // Other stuff.
-                    
-                    uniform float time;
-                    uniform vec2  resolution;
-                    
-                    void mainFunc( out vec4 fragColor, in vec2 fragCoord )
-                    {
-                        vec2 uv = fragCoord.xy / iResolution.xy;
-                        fragColor = vec4(uv.xy, 0., 1.);
-                    }
-                    
-                    void main() {
-                        mainFunc(gl_FragColor, gl_FragCoord);
-                    }
-                    """.trimIndent()
-                }
                 val shader by value { GlslAnalyzer().asShader(shaderText) }
 
                 context("with generic shader") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                        // This Shader's Name
+                        // Other stuff.
+                        
+                        uniform float time;
+                        uniform vec2  resolution;
+                        uniform float blueness;
+    
+                        void main( void ) {
+                            vec2 uv = gl_FragCoord.xy / resolution.xy;
+                            gl_FragColor = vec4(uv.xy, 0., 1.);
+                        }
+                        """.trimIndent()
+                    }
+
                     it("finds the entry point function") {
                         expect(
                             GlslCode.GlslFunction(
-                                "void", "main", "",
-                                "{\n    mainFunc(gl_FragColor, gl_FragCoord);\n}"
+                                "void", "main", " void ",
+                                "{\n" +
+                                        "    vec2 uv = gl_FragCoord.xy / resolution.xy;\n" +
+                                        "    gl_FragColor = vec4(uv.xy, 0., 1.);\n" +
+                                        "}"
                             )
                         ) { shader.entryPoint }
+                    }
+
+                    it("creates inputs for implicit uniforms") {
+                        expect(
+                            setOf(
+                                InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate),
+                                InputPort("float", "time", "Time", GlslCode.ContentType.Time),
+                                InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
+                                InputPort("float", "blueness", null, GlslCode.ContentType.Unknown)
+                            )
+                        ) { shader.inputPorts.toSet() }
                     }
                 }
 
@@ -219,11 +230,12 @@ object GlslAnalyzerSpec : Spek({
                         // This Shader's Name
                         // Other stuff
                         
+                        uniform float blueness;
+                        
                         void mainImage( out vec4 fragColor, in vec2 fragCoord )
                         {
                         	vec2 uv = fragCoord.xy / iResolution.xy;
-                        	float time = iTime;
-                        	fragColor = vec4(uv * iTime, -uv.x * iTime, 1.0);
+                        	fragColor = vec4(uv * iTime, -uv.x * blueness, 1.0);
                         }
                         """.trimIndent()
                     }
@@ -240,15 +252,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             setOf(
-                                GlslCode.InputPort(
-                                    "float", "iTime", "Time", GlslCode.ContentType.Time
-                                ),
-                                GlslCode.InputPort(
-                                    "vec2", "iResolution", "Resolution", GlslCode.ContentType.Resolution
-                                ),
-                                GlslCode.InputPort(
-                                    "vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate
-                                )
+                                InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate),
+                                InputPort("float", "iTime", "Time", GlslCode.ContentType.Time),
+                                InputPort("vec2", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
+                                InputPort("float", "blueness", null, GlslCode.ContentType.Unknown)
                             )
                         ) { shader.inputPorts.toSet() }
                     }

@@ -12,22 +12,22 @@ class GlslProgram(private val gl: GlslContext, shaderSrc: String) {
     private val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
     private val vertexShader = gl.runInContext {
-        gl.createVertexShader(
-            """#version ${gl.glslVersion}
-    
-precision lowp float;
-
-// xy = vertex position in normalized device coordinates ([-1,+1] range).
-in vec2 Vertex;
-
-const vec2 scale = vec2(0.5, 0.5);
-
-void main()
-{
-    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
-    gl_Position = vec4(Vertex, 0.0, 1.0);
-}
-"""
+        gl.createVertexShader("""
+            #version ${gl.glslVersion}
+                
+            precision lowp float;
+            
+            // xy = vertex position in normalized device coordinates ([-1,+1] range).
+            in vec2 Vertex;
+            
+            const vec2 scale = vec2(0.5, 0.5);
+            
+            void main()
+            {
+                vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
+                gl_Position = vec4(Vertex, 0.0, 1.0);
+            }
+            """
         )
     }
 
