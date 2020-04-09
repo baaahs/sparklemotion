@@ -1,16 +1,25 @@
 package baaahs.glshaders
 
+import baaahs.glshaders.GlslCode.GlslFunction
+import baaahs.glshaders.GlslCode.GlslVar
+
 class GlslAnalyzer {
-    fun analyze(shaderText: String): ShaderFragment {
+    fun analyze(shaderText: String): GlslCode {
         val statements = findStatements(shaderText)
         val title = Regex("^// (.*)").find(shaderText)?.groupValues?.get(1)
             ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
 
 
-        return ShaderFragment(
-            title,
-            statements.mapNotNull { it.asVarOrNull() },
-            statements.mapNotNull { it.asFunctionOrNull() })
+        val globalVars = statements.mapNotNull { it.asVarOrNull() }
+        val functions = statements.mapNotNull { it.asFunctionOrNull() }
+        return GlslCode(title, null, globalVars, functions)
+    }
+
+    fun asShader(shaderText: String): ShaderFragment {
+        val glslObj = analyze(shaderText)
+
+        return ShaderFragment.tryColorShader(glslObj)
+            ?: throw IllegalArgumentException("huh? unknown sort of shader")
     }
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {
@@ -249,23 +258,24 @@ class GlslAnalyzer {
     }
 
     data class GlslStatement(val text: String, val comments: List<String> = emptyList(), val lineNumber: Int? = null) {
-        fun asVarOrNull(): ShaderFragment.GlslVar? {
-            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)?.let {
+        fun asVarOrNull(): GlslVar? {
+            return Regex("\\A\\s*((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)?.let {
                 val (_, qualifier, type, name, constValue) = it.destructured
+                if (constValue.contains("(")) return null // function declaration
                 var (isConst, isUniform) = (false to false)
                 when (qualifier) {
                     "const" -> isConst = true
                     "uniform" -> isUniform = true
                 }
-                ShaderFragment.GlslVar(type, name, isConst, isUniform, lineNumber)
+                GlslVar(type, name, isConst, isUniform, lineNumber)
             }
         }
 
-        fun asFunctionOrNull(): ShaderFragment.GlslFunction? {
+        fun asFunctionOrNull(): GlslFunction? {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
                 ?.let {
                     val (returnType, name, params, body) = it.destructured
-                    ShaderFragment.GlslFunction(returnType, name, params, body)
+                    GlslFunction(returnType, name, params, body)
                 }
         }
     }
