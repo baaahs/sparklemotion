@@ -10,6 +10,8 @@ interface ShaderFragment {
     val outputPorts: List<OutputPort>
 //    TODO val inputDefaults: Map<String, InputDefault>
 
+    fun toGlsl(namespace: String): String
+
     abstract class Base(protected val glslCode: GlslCode) : ShaderFragment {
         override val id: String = glslCode.title
         override val name: String = glslCode.title
@@ -90,5 +92,19 @@ interface ShaderFragment {
         override val outputPorts: List<OutputPort>
             get() = TODO("not implemented")
 
+        override fun toGlsl(namespace: String): String {
+            val buf = StringBuilder()
+
+            glslCode.globalVars.forEach { glslVar ->
+                buf.append(glslVar.toGlsl(namespace))
+            }
+
+            val symbolsToNamespace = inputPorts.map { it.name }.toSet() + "gl_FragColor"
+            glslCode.functions.forEach { glslFunction ->
+                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace))
+            }
+
+            return buf.toString()
+        }
     }
 }

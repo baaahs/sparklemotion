@@ -122,5 +122,9 @@ ${shaderSrc.replace("gl_FragColor", "sm_fragColor")}
             "vec2:resolution" to { ResolutionProvider() },
             "vec2:iResolution" to { ResolutionProvider() }
         )
+
+        fun create(gl: GlslContext, fragments: Map<String, ShaderFragment>): GlslProgram {
+            return GlslProgram(gl, "")
+        }
     }
 }
