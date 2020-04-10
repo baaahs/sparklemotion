@@ -23,32 +23,34 @@ class GlslAnalyzer {
     }
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {
-        val data = Context()
-        var state: ParseState = ParseState.initial(data)
+        val context = Context(shaderText)
+        var state: ParseState = ParseState.initial(context)
 
         Regex("(.*?)(//|[;{}\n#])").findAll(shaderText).forEach { matchResult ->
             val before = matchResult.groupValues[1]
             val token = matchResult.groupValues[2]
 
-            if (token == "\n") data.lineNumber++
+            context.curMatchRange = matchResult.range
+            if (token == "\n") context.lineNumber++
 
             if (before.isNotEmpty()) state.visitText(before)
             state = state.visit(token)
         }
         state.visitEof()
 
-        return data.statements
+        return context.statements
     }
 
     companion object {
         val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
     }
 
-    private class Context {
+    private class Context(val originalText: String) {
         val defines: MutableMap<String, String> = hashMapOf()
         val statements: MutableList<GlslStatement> = arrayListOf()
         var enabled = true
         val enabledStack = mutableListOf<Boolean>()
+        var curMatchRange: IntRange = 0..0
         var lineNumber = 1
 
         fun doDefine(args: List<String>) {
@@ -93,7 +95,7 @@ class GlslAnalyzer {
 
     private sealed class ParseState(val context: Context) {
         companion object {
-            fun initial(context: Context): ParseState = Statement(context)
+            fun initial(context: Context): ParseState = Statement(context, 0)
         }
 
         private val text = StringBuilder()
@@ -137,7 +139,7 @@ class GlslAnalyzer {
 
         open fun addComment(comment: String) {}
 
-        private class Statement(context: Context) : ParseState(context) {
+        private class Statement(context: Context, var startIndex: Int) : ParseState(context) {
             var lineNumber = context.lineNumber
             val comments = mutableListOf<String>()
 
@@ -148,7 +150,7 @@ class GlslAnalyzer {
             override fun visitSemicolon(): Statement {
                 visitText(";")
                 finishStatement()
-                return Statement(context)
+                return Statement(context, context.curMatchRange.last + 1)
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
@@ -160,8 +162,14 @@ class GlslAnalyzer {
             }
 
             override fun visitNewline(): ParseState {
-                if (textIsEmpty() && comments.isEmpty()) lineNumber = context.lineNumber
-                return super.visitNewline()
+                return if (textIsEmpty() && comments.isEmpty()) {
+                    // Skip leading newlines.
+                    startIndex = context.curMatchRange.last + 1
+                    lineNumber = context.lineNumber
+                    this
+                } else {
+                    super.visitNewline()
+                }
             }
 
             override fun visitEof() {
@@ -173,7 +181,8 @@ class GlslAnalyzer {
             }
 
             fun finishStatement() {
-                context.statements.add(GlslStatement(textAsString, comments, lineNumber))
+                val originalText = context.originalText.substring(startIndex..context.curMatchRange.last)
+                context.statements.add(GlslStatement(textAsString, comments, originalText, lineNumber))
             }
 
             fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
@@ -213,7 +222,7 @@ class GlslAnalyzer {
 
                 return if (nestLevel == 0) {
                     finishStatement()
-                    Statement(context)
+                    Statement(context, context.curMatchRange.last + 1)
                 } else {
                     this
                 }
@@ -257,25 +266,31 @@ class GlslAnalyzer {
         }
     }
 
-    data class GlslStatement(val text: String, val comments: List<String> = emptyList(), val lineNumber: Int? = null) {
+    data class GlslStatement(
+        val text: String,
+        val comments: List<String> = emptyList(),
+        val originalText: String = "",
+        val lineNumber: Int? = null
+    ) {
         fun asVarOrNull(): GlslVar? {
-            return Regex("\\A\\s*((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)?.let {
-                val (_, qualifier, type, name, constValue) = it.destructured
-                if (constValue.contains("(")) return null // function declaration
-                var (isConst, isUniform) = (false to false)
-                when (qualifier) {
-                    "const" -> isConst = true
-                    "uniform" -> isUniform = true
+            return Regex("\\A\\s*((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)
+                ?.let {
+                    val (_, qualifier, type, name, constValue) = it.destructured
+                    if (constValue.contains("(")) return null // function declaration
+                    var (isConst, isUniform) = (false to false)
+                    when (qualifier) {
+                        "const" -> isConst = true
+                        "uniform" -> isUniform = true
+                    }
+                    GlslVar(type, name, isConst, isUniform, originalText, lineNumber)
                 }
-                GlslVar(type, name, isConst, isUniform, lineNumber)
-            }
         }
 
         fun asFunctionOrNull(): GlslFunction? {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
                 ?.let {
                     val (returnType, name, params, body) = it.destructured
-                    GlslFunction(returnType, name, params, body)
+                    GlslFunction(returnType, name, params, body, originalText, lineNumber)
                 }
         }
     }

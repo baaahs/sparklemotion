@@ -57,7 +57,7 @@ object GlslAnalyzerSpec : Spek({
                     }
                     """.trimIndent()
                 }
-                val glslCode by value { GlslAnalyzer().analyze(shaderText).sansLineNumbers() }
+                val glslCode by value { GlslAnalyzer().analyze(shaderText).stripSource() }
 
                 it("finds the title") {
                     expect("This Shader's Name") { glslCode.title }
@@ -77,12 +77,12 @@ object GlslAnalyzerSpec : Spek({
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 6
+                                        "}", lineNumber = 7
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 12
+                                        "}", lineNumber = 13
                             )
                         ), { GlslAnalyzer().findStatements(shaderText) }, true
                     )
@@ -208,7 +208,7 @@ object GlslAnalyzerSpec : Spek({
                                         "    gl_FragColor = vec4(uv.xy, 0., 1.);\n" +
                                         "}"
                             )
-                        ) { shader.entryPoint }
+                        ) { shader.entryPoint.stripSource() }
                     }
 
                     it("creates inputs for implicit uniforms") {
