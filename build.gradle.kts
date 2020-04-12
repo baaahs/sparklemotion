@@ -151,6 +151,9 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
                 implementation("io.mockk:mockk:1.9.3")
+
+                // For RunOpenGLTests:
+                implementation("org.junit.platform:junit-platform-launcher:1.6.2")
             }
         }
 
@@ -306,12 +309,12 @@ tasks.create<JavaExec>("runBridgeJvm") {
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
-    dependsOn("compileKotlinJvm")
-    main = "org.junit.runner.JUnitCore"
+    dependsOn("compileTestKotlinJvm")
+    main = "baaahs.RunOpenGLTestsKt"
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
-    args = listOf("baaahs.glsl.GlslRendererTest")
+    args = listOf("baaahs.glsl.GlslRendererTest", "baaahs.glshaders.GlslProgramSpec")
     if (isMac()) {
         jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }

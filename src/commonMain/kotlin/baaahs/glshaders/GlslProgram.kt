@@ -8,7 +8,7 @@ import baaahs.glsl.Uniform
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
 
-class GlslProgram(private val gl: GlslContext, shaderSrc: String) {
+class GlslProgram(private val gl: GlslContext, val shaderSrc: String) {
     private val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
     private val vertexShader = gl.runInContext {
@@ -123,8 +123,26 @@ ${shaderSrc.replace("gl_FragColor", "sm_fragColor")}
             "vec2:iResolution" to { ResolutionProvider() }
         )
 
-        fun create(gl: GlslContext, fragments: Map<String, ShaderFragment>): GlslProgram {
-            return GlslProgram(gl, "")
+        fun toGlsl(fragments: Map<String, ShaderFragment>): String {
+            val buf = StringBuilder()
+            buf.append("// SparkleMotion generated GLSL\n")
+            buf.append("\n")
+            buf.append("uniform float time;\n")
+            buf.append("uniform vec2 resolution;\n")
+            buf.append("\n")
+
+            fragments.values.forEachIndexed { i, shaderFragment ->
+                buf.append(shaderFragment.toGlsl("p$i"))
+            }
+
+            buf.append("\n\n#line 10001\n")
+            buf.append("void main() {\n")
+            fragments.values.forEachIndexed { i, shaderFragment ->
+                val namespace = "p$i"
+                buf.append(shaderFragment.invocationGlsl(namespace))
+            }
+            buf.append("}\n")
+            return buf.toString()
         }
     }
 }

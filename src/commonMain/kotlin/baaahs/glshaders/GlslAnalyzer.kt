@@ -91,6 +91,11 @@ class GlslAnalyzer {
             if (args.isNotEmpty()) throw IllegalArgumentException("huh? #endif ${args.joinToString(" ")}")
             enabled = enabledStack.removeLast()
         }
+
+        @Suppress("UNUSED_PARAMETER")
+        fun doLine(args: List<String>) {
+            // No-op.
+        }
     }
 
     private sealed class ParseState(val context: Context) {
@@ -255,6 +260,7 @@ class GlslAnalyzer {
                     "ifndef" -> context.doIfndef(args)
                     "else" -> context.doElse(args)
                     "endif" -> context.doEndif(args)
+                    "line" -> context.doLine(args)
                     else -> throw IllegalArgumentException("unknown directive #$str")
                 }
                 return priorParseState
