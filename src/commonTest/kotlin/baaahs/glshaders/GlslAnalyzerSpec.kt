@@ -219,7 +219,7 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
                                 InputPort("float", "blueness", null, GlslCode.ContentType.Unknown)
                             )
-                        ) { shader.inputPorts.toSet() }
+                        ) { shader.inputPorts.map { it.copy(glslVar = null) }.toSet() }
                     }
                 }
 

@@ -84,7 +84,7 @@ class GlslCode(
         val originalText: String = "",
         val lineNumber: Int? = null
     ) {
-        fun namespaced(namespace: String, symbolNames: HashSet<String>): GlslFunction {
+        fun namespaced(namespace: String, symbolNames: Set<String>): GlslFunction {
             return GlslFunction(
                 returnType,
                 "${namespace}_$name",

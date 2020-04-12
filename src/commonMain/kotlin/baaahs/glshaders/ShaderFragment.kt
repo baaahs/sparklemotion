@@ -11,6 +11,7 @@ interface ShaderFragment {
 //    TODO val inputDefaults: Map<String, InputDefault>
 
     fun toGlsl(namespace: String): String
+    fun invocationGlsl(namespace: String): String
 
     abstract class Base(protected val glslCode: GlslCode) : ShaderFragment {
         override val id: String = glslCode.title
@@ -62,7 +63,12 @@ interface ShaderFragment {
 
             list
         }
+        override val outputPorts: List<OutputPort>
+            get() = listOf()
 
+        override fun invocationGlsl(namespace: String): String {
+            return "  ${entryPoint.namespaced(namespace, emptySet()).name}();\n"
+        }
     }
 
     class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
@@ -80,28 +86,47 @@ interface ShaderFragment {
 
         override val inputPorts: List<InputPort> by lazy {
             glslCode.globalVars.map {
-                magicUniforms[it.name]?.copy(type = it.type)
-                    ?: InputPort(it.type, it.name, null, GlslCode.ContentType.Unknown)
+                magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
+                    ?: InputPort(it.type, it.name, null, GlslCode.ContentType.Unknown, it)
             } + InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
+        }
+
+        override val outputPorts: List<OutputPort>
+            get() = listOf(OutputPort("vec4", "gl_FragColor", "Output Color"))
+
+        override fun invocationGlsl(namespace: String): String {
+            val buf = StringBuilder()
+            inputPorts.forEach { inputPort ->
+                buf.append("  ", namespace, "_", inputPort.name, " = ", inputPort.name, ";\n")
+            }
+            buf.append("  ", entryPoint.namespaced(namespace, emptySet()).name, "();\n")
+            outputPorts.forEach { outputPort ->
+                buf.append("  gl_FragColor = ", namespace, "_", outputPort.name, ";\n")
+            }
+            return buf.toString()
         }
     }
 
     abstract class ColorShader(glslCode: GlslCode) : Base(glslCode) {
         override val shaderType: ShaderType = ShaderType.Color
 
-        override val outputPorts: List<OutputPort>
-            get() = TODO("not implemented")
-
         override fun toGlsl(namespace: String): String {
             val buf = StringBuilder()
 
-            glslCode.globalVars.forEach { glslVar ->
-                buf.append(glslVar.toGlsl(namespace))
+            inputPorts.forEach { inputPort ->
+                buf.append(inputPort.toGlsl(namespace))
+                buf.append("\n")
+            }
+
+            outputPorts.forEach { outputPort ->
+                buf.append(outputPort.toGlsl(namespace))
+                buf.append("\n")
             }
 
             val symbolsToNamespace = inputPorts.map { it.name }.toSet() + "gl_FragColor"
             glslCode.functions.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace))
+                buf.append("\n")
             }
 
             return buf.toString()
