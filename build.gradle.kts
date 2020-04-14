@@ -181,7 +181,7 @@ kotlin {
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
-                implementation(npm("@material-ui/core", "^4.1.1"))
+                implementation(npm("@material-ui/core", "~4.8"))
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.8.6"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
@@ -347,7 +347,7 @@ tasks.withType(Test::class) {
 }
 
 tasks.named<Test>("jvmTest") {
-    dependsOn("runGlslJvmTests")
+//    dependsOn("runGlslJvmTests")
 }
 
 tasks.withType<DependencyUpdatesTask> {
