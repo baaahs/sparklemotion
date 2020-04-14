@@ -105,13 +105,13 @@ class GlslCode(
         fun toGlsl(
             namespace: String,
             globalVarNames: Set<String>,
-            portMap: Map<String, String>
+            symbolMap: Map<String, String>
         ): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
                     replaceCodeWords(fullText) {
                         when {
                             it == name -> "${namespace}_$it"
-                            globalVarNames.contains(it) -> portMap[it] ?: it
+                            globalVarNames.contains(it) -> symbolMap[it] ?: it
                             else -> it
                         }
                     }
