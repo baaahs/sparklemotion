@@ -184,9 +184,8 @@ class GlslProgram(private val gl: GlslContext, val shaderSrc: String) {
                 buf.append("// Shader ID: $shaderId; namespace: $namespace")
                 val portMap = hashMapOf<String, String>()
                 toById[shaderId]?.forEach { (from, to) ->
-                    when {
-                        to is ShaderPort && from is UniformInput ->
-                            portMap[to.portName] = from.uniformName
+                    if (to is ShaderPort && from is UniformInput) {
+                        portMap[to.portName] = from.uniformName
                     }
                 }
                 buf.append(shaderFragment.toGlsl(namespace, portMap))

@@ -24,9 +24,12 @@ object GlslProgramSpec : Spek({
                 uniform float time;
                 uniform vec2  resolution;
                 uniform float blueness;
+                int someGlobalVar;
+                const int someConstVar = 123;
 
                 void main( void ) {
                     vec2 uv = gl_FragCoord.xy / resolution.xy;
+                    someGlobalVar = someConstVar;
                     gl_FragColor = vec4(uv.xy, blueness, 1.);
                 }
                 """.trimIndent()
@@ -61,9 +64,16 @@ object GlslProgramSpec : Spek({
                         uniform float in_blueness;
                         
                         // Shader ID: color; namespace: p0
+                        #line 7
+                        int p0_someGlobalVar;
+                        
                         #line 8
+                        const int p0_someConstVar = 123;
+                        
+                        #line 10
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
+                            p0_someGlobalVar = p0_someConstVar;
                             gl_FragColor = vec4(uv.xy, in_blueness, 1.);
                         }
 

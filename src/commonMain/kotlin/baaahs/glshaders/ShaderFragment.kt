@@ -107,19 +107,25 @@ interface ShaderFragment {
         override fun toGlsl(namespace: String, portMap: Map<String, String>): String {
             val buf = StringBuilder()
 
-//            inputPorts.forEach { inputPort ->
-//                buf.append(inputPort.toGlsl(namespace))
-//                buf.append("\n")
-//            }
-//
+            val nonUniformGlobalsMap = hashMapOf<String, String>()
+            glslCode.globalVars.forEach { glslVar ->
+                if (!glslVar.isUniform) {
+                    nonUniformGlobalsMap[glslVar.name] = "${namespace}_${glslVar.name}"
+                    buf.append(glslVar.toGlsl(namespace))
+                    buf.append("\n")
+                }
+            }
+
 //            outputPorts.forEach { outputPort ->
 //                buf.append(outputPort.toGlsl(namespace))
 //                buf.append("\n")
 //            }
 
+            val symbolMap = portMap + nonUniformGlobalsMap
+
             val symbolsToNamespace = inputPorts.map { it.name }.toSet() + "gl_FragColor"
             glslCode.functions.forEach { glslFunction ->
-                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, portMap))
+                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
                 buf.append("\n")
             }
 
