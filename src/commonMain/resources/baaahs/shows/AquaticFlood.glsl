@@ -7,6 +7,8 @@ precision mediump float;
 
 uniform float time;
 uniform vec2 resolution;
+// SPARKLEMOTION GADGET: Beat { "name": "beat" }
+uniform float sm_beat;
 
 void main(void)
 {

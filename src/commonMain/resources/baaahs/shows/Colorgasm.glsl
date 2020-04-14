@@ -7,6 +7,8 @@
 
 uniform float time;
 uniform vec2 resolution;
+// SPARKLEMOTION GADGET: Beat { "name": "beat" }
+uniform float sm_beat;
 
 /*
 others did lab color space better than THIS:
