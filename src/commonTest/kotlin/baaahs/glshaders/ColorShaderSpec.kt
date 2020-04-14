@@ -21,39 +21,33 @@ object ColorShaderSpec : Spek({
                         uniform float time;
                         uniform vec2  resolution;
                         uniform float blueness;
+                        
+                        float identity(float value) { return value; }
     
                         void main( void ) {
                             vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            gl_FragColor = vec4(uv.xy, blueness, 1.);
+                            gl_FragColor = vec4(uv.xy, identity(blueness), 1.);
                         }
                         """.trimIndent()
             }
 
             describe("#toGlsl") {
-                it("generates text") {
+                it("generates function declarations") {
                     expect(
                         """
-                        #line 1
-                        // This Shader's Name
-                        // Other stuff.
-                        
-                        uniform float p0_time;
-                        
-                        #line 5
-                        uniform vec2  p0_resolution;
-                        
-                        #line 6
-                        uniform float p0_blueness;
-                        uniform vec4 p0_gl_FragCoord;
-                        vec4 p0_gl_FragColor;
-                        
                         #line 8
+                        float p0_identity(float value) { return value; }
+                        
+                        #line 10
                         void p0_main( void ) {
-                            vec2 uv = p0_gl_FragCoord.xy / p0_resolution.xy;
-                            p0_gl_FragColor = vec4(uv.xy, p0_blueness, 1.);
+                            vec2 uv = gl_FragCoord.xy / resolution.xy;
+                            gl_FragColor = vec4(uv.xy, identity(aquamarinity), 1.);
                         }
                         """.trimIndent()
-                    ) { shader.toGlsl("p0").trim() }
+                    ) { shader.toGlsl("p0", mapOf(
+                        "blueness" to "aquamarinity",
+                        "identity" to "p0_identity"
+                    )).trim() }
                 }
             }
         }

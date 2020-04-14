@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
+import baaahs.only
 import baaahs.testing.override
 import baaahs.testing.value
 import org.spekframework.spek2.Spek
@@ -48,7 +49,7 @@ object GlslAnalyzerSpec : Spek({
                     
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
                     {
-                        vec2 uv = fragCoord.xy / iResolution.xy;
+                        vec2 uv = fragCoord.xy / resolution.xy;
                         fragColor = vec4(uv.xy, 0., 1.);
                     }
                     
@@ -75,7 +76,7 @@ object GlslAnalyzerSpec : Spek({
                             GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
-                                        "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
+                                        "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
                                         "}", lineNumber = 7
                             ),
@@ -100,22 +101,10 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the functions") {
                     expect(
                         listOf(
-                            GlslCode.GlslFunction(
-                                "void", "mainFunc", " out vec4 fragColor, in vec2 fragCoord ",
-                                "{\n" +
-                                        "    vec2 uv = fragCoord.xy / iResolution.xy;\n" +
-                                        "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}"
-                            ),
-
-                            GlslCode.GlslFunction(
-                                "void", "main", "",
-                                "{\n" +
-                                        "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}"
-                            )
+                            "void mainFunc( out vec4 fragColor, in vec2 fragCoord )",
+                            "void main()"
                         )
-                    ) { glslCode.functions }
+                    ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
                 }
 
                 context("with #ifdefs") {
@@ -163,17 +152,42 @@ object GlslAnalyzerSpec : Spek({
                     it("finds the functions and performs substitutions") {
                         expect(
                             listOf(
-                                GlslCode.GlslFunction(
-                                    "void", "mainFunc", "out vec4 fragColor, in vec2 fragCoord",
-                                    "{ fragColor = vec4(uv.xy, 3.14159, 1.); }"
-                                ),
-
-                                GlslCode.GlslFunction(
-                                    "void", "main", "",
-                                    "{ mainFunc(gl_FragColor, gl_FragCoord); }"
-                                )
+                                "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
+                                "void main()"
                             )
-                        ) { glslCode.functions }
+                        ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
+                    }
+
+                    context("with defines") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #define iResolution resolution
+                                uniform vec2 resolution;
+                                void main() {
+                                #ifdef xyz
+                                    foo();
+                                #endif
+                                    gl_FragColor = iResolution.x;
+                                }
+                                """.trimIndent()
+                        }
+
+                        it("handles and replaces directives with empty lines") {
+                            val glslFunction = GlslAnalyzer().analyze(shaderText).functions.only()
+
+                            val glsl = glslFunction.toGlsl("ns", emptySet(), emptyMap())
+                            println("glslFunction = ${glsl}")
+
+                            expect("#line 3\n" +
+                                    "void ns_main() {\n" +
+                                    "\n" +
+                                    "\n" +
+                                    "\n" +
+                                    "    gl_FragColor = resolution.x;\n" +
+                                    "}\n".trimIndent()
+                            ) { glsl.trim() }
+                        }
                     }
                 }
             }
@@ -200,15 +214,7 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("finds the entry point function") {
-                        expect(
-                            GlslCode.GlslFunction(
-                                "void", "main", " void ",
-                                "{\n" +
-                                        "    vec2 uv = gl_FragCoord.xy / resolution.xy;\n" +
-                                        "    gl_FragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}"
-                            )
-                        ) { shader.entryPoint.stripSource() }
+                        expect("main") { shader.entryPoint.name }
                     }
 
                     it("creates inputs for implicit uniforms") {

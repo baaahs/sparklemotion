@@ -6,6 +6,8 @@ precision mediump float;
 
 uniform vec2      resolution;
 uniform float     time;
+// SPARKLEMOTION GADGET: Beat { "name": "beat" }
+uniform float sm_beat;
 
 
 // SPARKLEMOTION GADGET: Slider {name: "Scale", initialValue: 5.0, minValue: 1.0, maxValue: 10.0}

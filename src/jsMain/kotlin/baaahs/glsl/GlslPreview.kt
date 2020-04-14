@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
@@ -68,7 +69,20 @@ class GlslPreview(
     }
 
     inner class Scene(shaderSrc: String) {
-        private val program = GlslProgram(gl, shaderSrc)
+        val patch = GlslProgram.Patch(
+            mapOf(
+                "color" to GlslAnalyzer().asShader(shaderSrc)
+            ),
+            listOf(
+                GlslProgram.UvCoord to GlslProgram.ShaderPort("color", "gl_FragCoord"),
+                GlslProgram.Resolution to GlslProgram.ShaderPort("color", "resolution"),
+                GlslProgram.Time to GlslProgram.ShaderPort("color", "time"),
+                GlslProgram.UniformInput("float", "blueness") to GlslProgram.ShaderPort("color", "blueness"),
+                GlslProgram.ShaderPort("color", "gl_FragColor") to GlslProgram.PixelColor
+            )
+        )
+        private val sceneSrc = GlslProgram.toGlsl(patch)
+        private val program = GlslProgram(gl, sceneSrc)
         private var quad = Quad(gl, program.vertexAttribLocation, listOf(quadRect))
 
         fun render() {

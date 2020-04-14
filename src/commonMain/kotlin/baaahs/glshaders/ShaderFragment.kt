@@ -10,7 +10,7 @@ interface ShaderFragment {
     val outputPorts: List<OutputPort>
 //    TODO val inputDefaults: Map<String, InputDefault>
 
-    fun toGlsl(namespace: String): String
+    fun toGlsl(namespace: String, portMap: Map<String, String> = emptyMap()): String
     fun invocationGlsl(namespace: String): String
 
     abstract class Base(protected val glslCode: GlslCode) : ShaderFragment {
@@ -45,8 +45,8 @@ interface ShaderFragment {
             val list = arrayListOf<InputPort>()
             var (iResolution, iTime) = (false to false)
             glslCode.functions.forEach {
-                println("body = ${it.body}")
-                Regex("\\W(iResolution|iTime)\\W").findAll(it.body).forEach { match ->
+                println("body = ${it.fullText}")
+                Regex("\\W(iResolution|iTime)\\W").findAll(it.fullText).forEach { match ->
                     when (match.groupValues[1]) {
                         "iResolution" -> iResolution = true
                         "iTime" -> iTime = true
@@ -96,13 +96,7 @@ interface ShaderFragment {
 
         override fun invocationGlsl(namespace: String): String {
             val buf = StringBuilder()
-            inputPorts.forEach { inputPort ->
-                buf.append("  ", namespace, "_", inputPort.name, " = ", inputPort.name, ";\n")
-            }
             buf.append("  ", entryPoint.namespaced(namespace, emptySet()).name, "();\n")
-            outputPorts.forEach { outputPort ->
-                buf.append("  gl_FragColor = ", namespace, "_", outputPort.name, ";\n")
-            }
             return buf.toString()
         }
     }
@@ -110,22 +104,22 @@ interface ShaderFragment {
     abstract class ColorShader(glslCode: GlslCode) : Base(glslCode) {
         override val shaderType: ShaderType = ShaderType.Color
 
-        override fun toGlsl(namespace: String): String {
+        override fun toGlsl(namespace: String, portMap: Map<String, String>): String {
             val buf = StringBuilder()
 
-            inputPorts.forEach { inputPort ->
-                buf.append(inputPort.toGlsl(namespace))
-                buf.append("\n")
-            }
-
-            outputPorts.forEach { outputPort ->
-                buf.append(outputPort.toGlsl(namespace))
-                buf.append("\n")
-            }
+//            inputPorts.forEach { inputPort ->
+//                buf.append(inputPort.toGlsl(namespace))
+//                buf.append("\n")
+//            }
+//
+//            outputPorts.forEach { outputPort ->
+//                buf.append(outputPort.toGlsl(namespace))
+//                buf.append("\n")
+//            }
 
             val symbolsToNamespace = inputPorts.map { it.name }.toSet() + "gl_FragColor"
             glslCode.functions.forEach { glslFunction ->
-                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace))
+                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, portMap))
                 buf.append("\n")
             }
 

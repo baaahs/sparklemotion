@@ -61,35 +61,35 @@ class GlslCode(
     data class GlslVar(
         val type: String,
         val name: String,
+        val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
-        val originalText: String = "",
         val lineNumber: Int? = null
     ) {
         fun namespaced(namespace: String) =
-            GlslVar(type, "${namespace}_$name", isConst, isUniform, originalText, lineNumber)
+            GlslVar(type, "${namespace}_$name", fullText, isConst, isUniform, lineNumber)
 
         fun toGlsl(namespace: String): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(originalText) {
+                    replaceCodeWords(fullText) {
                         if (it == name) "${namespace}_$it" else it
                     }
         }
 
-        fun stripSource() = copy(originalText = "", lineNumber = null)
+        fun stripSource() = copy(fullText = "", lineNumber = null)
     }
 
     data class GlslFunction(
-        val returnType: String, val name: String, val params: String, val body: String,
-        val originalText: String = "",
-        val lineNumber: Int? = null
+        val returnType: String, val name: String, val params: String, val fullText: String,
+        val lineNumber: Int? = null,
+        val globalVars: Set<String> = emptySet()
     ) {
         fun namespaced(namespace: String, symbolNames: Set<String>): GlslFunction {
             return GlslFunction(
                 returnType,
                 "${namespace}_$name",
                 params,
-                body.replace(GlslAnalyzer.wordRegex) { matchResult ->
+                fullText.replace(GlslAnalyzer.wordRegex) { matchResult ->
                     val (word) = matchResult.destructured
                     if (symbolNames.contains(word)) {
                         "${namespace}_$word"
@@ -97,19 +97,27 @@ class GlslCode(
                         word
                     }
                 },
-                originalText,
-                lineNumber
+                lineNumber,
+                globalVars
             )
         }
 
-        fun toGlsl(namespace: String, globalVarNames: Set<String>): String {
+        fun toGlsl(
+            namespace: String,
+            globalVarNames: Set<String>,
+            portMap: Map<String, String>
+        ): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(originalText) {
-                        if (it == name || globalVarNames.contains(it)) "${namespace}_$it" else it
+                    replaceCodeWords(fullText) {
+                        when {
+                            it == name -> "${namespace}_$it"
+                            globalVarNames.contains(it) -> portMap[it] ?: it
+                            else -> it
+                        }
                     }
         }
 
-        fun stripSource() = copy(originalText = "", lineNumber = null)
+        fun stripSource() = copy(lineNumber = null, globalVars = emptySet())
     }
 
     enum class ContentType(val description: String?) {

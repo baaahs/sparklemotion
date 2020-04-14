@@ -7,11 +7,12 @@ class GlslAnalyzer {
     fun analyze(shaderText: String): GlslCode {
         val statements = findStatements(shaderText)
         val title = Regex("^// (.*)").find(shaderText)?.groupValues?.get(1)
-            ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
-
+            ?: "Unknown"
+//            ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
 
         val globalVars = statements.mapNotNull { it.asVarOrNull() }
-        val functions = statements.mapNotNull { it.asFunctionOrNull() }
+        val globalVarNames = globalVars.map { it.name }.toSet()
+        val functions = statements.mapNotNull { it.asFunctionOrNull(globalVarNames) }
         return GlslCode(title, null, globalVars, functions)
     }
 
@@ -23,14 +24,13 @@ class GlslAnalyzer {
     }
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {
-        val context = Context(shaderText)
+        val context = Context()
         var state: ParseState = ParseState.initial(context)
 
         Regex("(.*?)(//|[;{}\n#])").findAll(shaderText).forEach { matchResult ->
             val before = matchResult.groupValues[1]
             val token = matchResult.groupValues[2]
 
-            context.curMatchRange = matchResult.range
             if (token == "\n") context.lineNumber++
 
             if (before.isNotEmpty()) state.visitText(before)
@@ -45,16 +45,15 @@ class GlslAnalyzer {
         val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
     }
 
-    private class Context(val originalText: String) {
+    private class Context {
         val defines: MutableMap<String, String> = hashMapOf()
         val statements: MutableList<GlslStatement> = arrayListOf()
-        var enabled = true
+        var outputEnabled = true
         val enabledStack = mutableListOf<Boolean>()
-        var curMatchRange: IntRange = 0..0
         var lineNumber = 1
 
         fun doDefine(args: List<String>) {
-            if (enabled) {
+            if (outputEnabled) {
                 when (args.size) {
                     0 -> throw IllegalArgumentException("#define without args?")
                     1 -> defines[args[0]] = ""
@@ -64,7 +63,7 @@ class GlslAnalyzer {
         }
 
         fun doUndef(args: List<String>) {
-            if (enabled) {
+            if (outputEnabled) {
                 if (args.size != 1) throw IllegalArgumentException("huh? #undef ${args.joinToString(" ")}")
                 defines.remove(args[0])
             }
@@ -72,24 +71,24 @@ class GlslAnalyzer {
 
         fun doIfdef(args: List<String>) {
             if (args.size != 1) throw IllegalArgumentException("huh? #ifdef ${args.joinToString(" ")}")
-            enabledStack.add(enabled)
-            enabled = enabled && defines.containsKey(args.first())
+            enabledStack.add(outputEnabled)
+            outputEnabled = outputEnabled && defines.containsKey(args.first())
         }
 
         fun doIfndef(args: List<String>) {
             if (args.size != 1) throw IllegalArgumentException("huh? #ifndef ${args.joinToString(" ")}")
-            enabledStack.add(enabled)
-            enabled = enabled && !defines.containsKey(args.first())
+            enabledStack.add(outputEnabled)
+            outputEnabled = outputEnabled && !defines.containsKey(args.first())
         }
 
         fun doElse(args: List<String>) {
             if (args.isNotEmpty()) throw IllegalArgumentException("huh? #else ${args.joinToString(" ")}")
-            enabled = enabledStack.last() && !enabled
+            outputEnabled = enabledStack.last() && !outputEnabled
         }
 
         fun doEndif(args: List<String>) {
             if (args.isNotEmpty()) throw IllegalArgumentException("huh? #endif ${args.joinToString(" ")}")
-            enabled = enabledStack.removeLast()
+            outputEnabled = enabledStack.removeLast()
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -100,21 +99,15 @@ class GlslAnalyzer {
 
     private sealed class ParseState(val context: Context) {
         companion object {
-            fun initial(context: Context): ParseState = Statement(context, 0)
+            fun initial(context: Context): ParseState = Statement(context)
         }
 
         private val text = StringBuilder()
         val textAsString get() = text.toString()
         fun textIsEmpty() = text.isEmpty()
 
-        fun appendText(value: String, substitute: Boolean = true) {
-            if (substitute) {
-                text.append(value.replace(wordRegex) {
-                    context.defines[it.value] ?: it.value
-                })
-            } else {
-                text.append(value)
-            }
+        fun appendText(value: String) {
+            text.append(value)
         }
 
         open fun visit(token: String): ParseState {
@@ -130,7 +123,13 @@ class GlslAnalyzer {
         }
 
         open fun visitText(value: String): ParseState {
-            if (context.enabled) appendText(value)
+            if (context.outputEnabled || value == "\n") {
+                val substituted = value.replace(wordRegex) {
+                    context.defines[it.value] ?: it.value
+                }
+
+                appendText(substituted)
+            }
             return this
         }
 
@@ -144,7 +143,7 @@ class GlslAnalyzer {
 
         open fun addComment(comment: String) {}
 
-        private class Statement(context: Context, var startIndex: Int) : ParseState(context) {
+        private class Statement(context: Context) : ParseState(context) {
             var lineNumber = context.lineNumber
             val comments = mutableListOf<String>()
 
@@ -155,7 +154,7 @@ class GlslAnalyzer {
             override fun visitSemicolon(): Statement {
                 visitText(";")
                 finishStatement()
-                return Statement(context, context.curMatchRange.last + 1)
+                return Statement(context)
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
@@ -169,7 +168,6 @@ class GlslAnalyzer {
             override fun visitNewline(): ParseState {
                 return if (textIsEmpty() && comments.isEmpty()) {
                     // Skip leading newlines.
-                    startIndex = context.curMatchRange.last + 1
                     lineNumber = context.lineNumber
                     this
                 } else {
@@ -186,8 +184,7 @@ class GlslAnalyzer {
             }
 
             fun finishStatement() {
-                val originalText = context.originalText.substring(startIndex..context.curMatchRange.last)
-                context.statements.add(GlslStatement(textAsString, comments, originalText, lineNumber))
+                context.statements.add(GlslStatement(textAsString, comments, lineNumber))
             }
 
             fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
@@ -227,10 +224,14 @@ class GlslAnalyzer {
 
                 return if (nestLevel == 0) {
                     finishStatement()
-                    Statement(context, context.curMatchRange.last + 1)
+                    Statement(context)
                 } else {
                     this
                 }
+            }
+
+            override fun visitDirective(): ParseState {
+                return Directive(context, this)
             }
 
             override fun visitEof() {
@@ -245,7 +246,7 @@ class GlslAnalyzer {
 
         private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
             override fun visitText(value: String): ParseState {
-                appendText(value, substitute = false)
+                appendText(value)
                 return this
             }
 
@@ -263,6 +264,7 @@ class GlslAnalyzer {
                     "line" -> context.doLine(args)
                     else -> throw IllegalArgumentException("unknown directive #$str")
                 }
+                priorParseState.visitText("\n")
                 return priorParseState
             }
 
@@ -275,11 +277,13 @@ class GlslAnalyzer {
     data class GlslStatement(
         val text: String,
         val comments: List<String> = emptyList(),
-        val originalText: String = "",
         val lineNumber: Int? = null
     ) {
         fun asVarOrNull(): GlslVar? {
-            return Regex("\\A\\s*((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text)
+            // If there are curly braces it must be a function.
+            if (text.contains("{")) return null
+
+            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text.trim())
                 ?.let {
                     val (_, qualifier, type, name, constValue) = it.destructured
                     if (constValue.contains("(")) return null // function declaration
@@ -288,15 +292,15 @@ class GlslAnalyzer {
                         "const" -> isConst = true
                         "uniform" -> isUniform = true
                     }
-                    GlslVar(type, name, isConst, isUniform, originalText, lineNumber)
+                    GlslVar(type, name, text, isConst, isUniform, lineNumber)
                 }
         }
 
-        fun asFunctionOrNull(): GlslFunction? {
+        fun asFunctionOrNull(globalVars: Set<String> = emptySet()): GlslFunction? {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
                 ?.let {
                     val (returnType, name, params, body) = it.destructured
-                    GlslFunction(returnType, name, params, body, originalText, lineNumber)
+                    GlslFunction(returnType, name, params, text, lineNumber, globalVars)
                 }
         }
     }

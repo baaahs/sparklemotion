@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.glshaders.GlslProgram.*
 import baaahs.glsl.GlslBase
 import baaahs.testing.override
 import baaahs.testing.value
@@ -32,46 +33,44 @@ object GlslProgramSpec : Spek({
             }
 
             describe("#toGlsl") {
-                val glsl by value { GlslProgram.toGlsl(mapOf("color" to shader)) }
+                val patch by value {
+                    Patch(
+                        mapOf("color" to shader),
+                        listOf(
+                            UvCoord to ShaderPort("color", "gl_FragCoord"),
+                            Resolution to ShaderPort("color", "resolution"),
+                            Time to ShaderPort("color", "time"),
+                            UniformInput("float", "blueness") to ShaderPort("color", "blueness"),
+                            ShaderPort("color", "gl_FragColor") to PixelColor
+                        )
+                    )
+                }
+                val glsl by value { GlslProgram.toGlsl(patch) }
 
-                it("generates text") {
+                it("generates GLSL") {
                     expect(
                         """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+                        
                         // SparkleMotion generated GLSL
 
-                        uniform float time;
-                        uniform vec2 resolution;
+                        uniform vec2 in_resolution;
+                        uniform float in_time;
+                        uniform float in_blueness;
                         
-                        
-                        #line 1
-                        // This Shader's Name
-                        // Other stuff.
-                        
-                        uniform float p0_time;
-                        
-                        #line 5
-                        uniform vec2  p0_resolution;
-
-                        #line 6
-                        uniform float p0_blueness;
-                        uniform vec4 p0_gl_FragCoord;
-                        vec4 p0_gl_FragColor;
-
+                        // Shader ID: color; namespace: p0
                         #line 8
                         void p0_main( void ) {
-                            vec2 uv = p0_gl_FragCoord.xy / p0_resolution.xy;
-                            p0_gl_FragColor = vec4(uv.xy, p0_blueness, 1.);
+                            vec2 uv = gl_FragCoord.xy / in_resolution.xy;
+                            gl_FragColor = vec4(uv.xy, in_blueness, 1.);
                         }
 
 
                         #line 10001
                         void main() {
-                          p0_time = time;
-                          p0_resolution = resolution;
-                          p0_blueness = blueness;
-                          p0_gl_FragCoord = gl_FragCoord;
                           p0_main();
-                          gl_FragColor = p0_gl_FragColor;
                         }
                         """.trimIndent()
                     ) { glsl.trim() }

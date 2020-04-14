@@ -18,6 +18,8 @@ class CompiledShader(
     }
 
     private fun compile() {
+        logger.warn { "CompiledShader src: ${source}" }
+
         gl.shaderSource(id, source)
         gl.compileShader(id)
 

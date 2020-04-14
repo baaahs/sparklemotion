@@ -116,9 +116,6 @@ uniform float sm_vScale;
 // SPARKLEMOTION GADGET: StartOfMeasure { "name": "startOfMeasure" }
 uniform float sm_startOfMeasure;
 
-// SPARKLEMOTION GADGET: Beat { "name": "beat" }
-uniform float sm_beat;
-
 // SPARKLEMOTION GADGET: Slider { "name": "Brightness", "minValue": 0, "maxValue": 1 }
 uniform float sm_brightness;
 
