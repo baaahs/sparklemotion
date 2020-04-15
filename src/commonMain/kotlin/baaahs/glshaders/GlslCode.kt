@@ -39,7 +39,7 @@ class GlslCode(
             val buf = StringBuilder()
 
             var inComment = false
-            Regex("(.*?)(\\w+|//|\n|\\Z)", RegexOption.MULTILINE).findAll(originalText).forEach { matchResult ->
+            Regex("(.*?)(\\w+|//|\n|\\Z|$)", RegexOption.MULTILINE).findAll(originalText).forEach { matchResult ->
                 val (before, str) = matchResult.destructured
                 buf.append(before)
                 when (str) {
