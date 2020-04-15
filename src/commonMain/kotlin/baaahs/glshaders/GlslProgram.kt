@@ -182,8 +182,10 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
             buf.append("\n")
 
             shaderFragments.entries.forEachIndexed { i, (shaderId, shaderFragment) ->
-                val namespace = "p$i"
-                buf.append("// Shader ID: $shaderId; namespace: $namespace")
+                val nsPrefix = "p$i"
+                val namespace = GlslCode.Namespace(nsPrefix)
+                buf.append("// Shader ID: ", shaderId, "; namespace: ", nsPrefix, "\n")
+                buf.append("// ", shaderFragment.name, "\n")
                 val portMap = hashMapOf<String, String>()
                 toById[shaderId]?.forEach { (from, to) ->
                     if (to is ShaderPort && from is UniformInput) {
@@ -191,13 +193,13 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
                     }
                 }
                 portMap["gl_FragColor"] = "sm_pixelColor"
-                buf.append(shaderFragment.toGlsl(namespace, portMap))
+                buf.append(shaderFragment.toGlsl(namespace, portMap), "\n")
             }
 
-            buf.append("\n\n#line 10001\n")
+            buf.append("\n#line 10001\n")
             buf.append("void main() {\n")
             shaderFragments.values.forEachIndexed { i, shaderFragment ->
-                val namespace = "p$i"
+                val namespace = GlslCode.Namespace("p$i")
                 buf.append(shaderFragment.invocationGlsl(namespace))
             }
             buf.append("}\n")

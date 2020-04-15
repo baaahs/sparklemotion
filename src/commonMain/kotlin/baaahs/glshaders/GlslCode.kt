@@ -3,36 +3,19 @@ package baaahs.glshaders
 class GlslCode(
     val title: String,
     val description: String? = null,
-    internal val globalVars: List<GlslVar>,
-    internal val functions: List<GlslFunction>,
+    glslStatements: List<GlslAnalyzer.GlslStatement>,
     private val entryPointName: String = "main"
 ) {
-    val globalVarsByName = globalVars.associateBy { it.name }
-    val functionsByName = functions.associateBy { it.name }
+    internal val globalVarsByName = linkedMapOf<String, GlslVar>()
+    internal val functionsByName = linkedMapOf<String, GlslFunction>()
 
-    fun namespace(namespace: String): GlslCode {
-        val symbolNames = HashSet(globalVars.map { it.name } + functions.map { it.name })
-        symbolNames.add("gl_FragCoord")
-        symbolNames.add("gl_FragColor")
-
-        return GlslCode(
-            title,
-            description,
-            globalVars.map { it.namespaced(namespace) },
-            functions.map { it.namespaced(namespace, symbolNames) },
-            "${namespace}_$entryPointName"
-        )
+    val statements = glslStatements.map {
+        it.asVarOrNull()?.also { glslVar -> globalVarsByName[glslVar.name] = glslVar }
+            ?: it.asFunctionOrNull()?.also { glslFunction -> functionsByName[glslFunction.name] = glslFunction }
     }
-
-    internal fun stripSource(): GlslCode {
-        return GlslCode(
-            title,
-            description,
-            globalVars.map { it.stripSource() },
-            functions.map { it.stripSource() },
-            entryPointName
-        )
-    }
+    val symbolNames = globalVarsByName.keys + functionsByName.keys
+    val globalVars: Collection<GlslVar> get() = globalVarsByName.values
+    val functions: Collection<GlslFunction> get() = functionsByName.values
 
     companion object {
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
@@ -58,66 +41,68 @@ class GlslCode(
         }
     }
 
-    data class GlslVar(
-        val type: String,
-        val name: String,
-        val fullText: String = "",
-        val isConst: Boolean = false,
-        val isUniform: Boolean = false,
-        val lineNumber: Int? = null
-    ) {
-        fun namespaced(namespace: String) =
-            GlslVar(type, "${namespace}_$name", fullText, isConst, isUniform, lineNumber)
+    interface Statement {
+        val name: String
+        val fullText: String
+        val lineNumber: Int?
 
-        fun toGlsl(namespace: String): String {
+        fun stripSource(): Statement
+
+        fun toGlsl(
+            namespace: Namespace,
+            symbolsToNamespace: Set<String>,
+            symbolMap: Map<String, String>
+        ): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
                     replaceCodeWords(fullText) {
-                        if (it == name) "${namespace}_$it" else it
+                        symbolMap[it]
+                            ?: if (it == name || symbolsToNamespace.contains(it)) {
+                                namespace.qualify(it)
+                            } else {
+                                it
+                            }
                     }
         }
+    }
 
-        fun stripSource() = copy(fullText = "", lineNumber = null)
+    data class GlslVar(
+        val type: String,
+        override val name: String,
+        override val fullText: String = "",
+        val isConst: Boolean = false,
+        val isUniform: Boolean = false,
+        override val lineNumber: Int? = null
+    ) : Statement {
+        override fun stripSource() = copy(fullText = "", lineNumber = null)
     }
 
     data class GlslFunction(
-        val returnType: String, val name: String, val params: String, val fullText: String,
-        val lineNumber: Int? = null,
-        val globalVars: Set<String> = emptySet()
-    ) {
-        fun namespaced(namespace: String, symbolNames: Set<String>): GlslFunction {
+        val returnType: String,
+        override val name: String,
+        val params: String,
+        override val fullText: String,
+        override val lineNumber: Int? = null,
+        val symbols: Set<String> = emptySet()
+    ) : Statement {
+        fun namespaced(namespace: Namespace, symbolNames: Set<String>): GlslFunction {
             return GlslFunction(
                 returnType,
-                "${namespace}_$name",
+                namespace.qualify(name),
                 params,
                 fullText.replace(GlslAnalyzer.wordRegex) { matchResult ->
                     val (word) = matchResult.destructured
                     if (symbolNames.contains(word)) {
-                        "${namespace}_$word"
+                        namespace.qualify(word)
                     } else {
                         word
                     }
                 },
                 lineNumber,
-                globalVars
+                symbols
             )
         }
 
-        fun toGlsl(
-            namespace: String,
-            globalVarNames: Set<String>,
-            symbolMap: Map<String, String>
-        ): String {
-            return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(fullText) {
-                        when {
-                            it == name -> "${namespace}_$it"
-                            globalVarNames.contains(it) -> symbolMap[it] ?: it
-                            else -> it
-                        }
-                    }
-        }
-
-        fun stripSource() = copy(lineNumber = null, globalVars = emptySet())
+        override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
     enum class ContentType(val description: String?) {
@@ -130,4 +115,7 @@ class GlslCode(
         Unknown(null)
     }
 
+    class Namespace(private val prefix: String) {
+        fun qualify(name: String) = "${prefix}_$name"
+    }
 }

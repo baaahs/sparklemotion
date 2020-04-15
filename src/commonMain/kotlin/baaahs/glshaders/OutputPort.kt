@@ -5,5 +5,5 @@ data class OutputPort(
     val name: String,
     val description: String?
 ) {
-    fun toGlsl(namespace: String): String = "$type ${namespace}_$name;"
+    fun toGlsl(namespace: GlslCode.Namespace): String = "$type ${namespace.qualify(name)};"
 }

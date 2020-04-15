@@ -10,10 +10,7 @@ class GlslAnalyzer {
             ?: "Unknown"
 //            ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
 
-        val globalVars = statements.mapNotNull { it.asVarOrNull() }
-        val globalVarNames = globalVars.map { it.name }.toSet()
-        val functions = statements.mapNotNull { it.asFunctionOrNull(globalVarNames) }
-        return GlslCode(title, null, globalVars, functions)
+        return GlslCode(title, null, statements)
     }
 
     fun asShader(shaderText: String): ShaderFragment {
