@@ -7,7 +7,7 @@ data class InputPort(
     val contentType: GlslCode.ContentType,
     val glslVar: GlslCode.GlslVar? = null
 ) {
-    fun toGlsl(namespace: String): Any {
-        return glslVar?.toGlsl(namespace) ?: "uniform $type ${namespace}_$name;"
+    fun toGlsl(namespace: GlslCode.Namespace): Any {
+        return glslVar?.toGlsl(namespace, emptySet(), emptyMap()) ?: "uniform $type ${namespace.qualify(name)};"
     }
 }

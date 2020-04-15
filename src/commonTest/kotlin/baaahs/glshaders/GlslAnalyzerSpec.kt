@@ -58,7 +58,7 @@ object GlslAnalyzerSpec : Spek({
                     }
                     """.trimIndent()
                 }
-                val glslCode by value { GlslAnalyzer().analyze(shaderText).stripSource() }
+                val glslCode by value { GlslAnalyzer().analyze(shaderText) }
 
                 it("finds the title") {
                     expect("This Shader's Name") { glslCode.title }
@@ -92,10 +92,12 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the global variables") {
                     expect(
                         listOf(
-                            GlslCode.GlslVar("float", "time", isUniform = true),
-                            GlslCode.GlslVar("vec2", "resolution", isUniform = true)
+                            GlslCode.GlslVar("float", "time",
+                                fullText = "\nuniform float time;", isUniform = true, lineNumber = 1),
+                            GlslCode.GlslVar("vec2", "resolution",
+                                fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 5)
                         )
-                    ) { glslCode.globalVars }
+                    ) { glslCode.globalVars.toList() }
                 }
 
                 it("finds the functions") {
@@ -143,10 +145,12 @@ object GlslAnalyzerSpec : Spek({
                     it("finds the global variables and performs substitutions") {
                         expect(
                             listOf(
-                                GlslCode.GlslVar("float", "shouldBeDefined", isUniform = true),
-                                GlslCode.GlslVar("vec2", "shouldBeThis", isUniform = true)
+                                GlslCode.GlslVar("float", "shouldBeDefined",
+                                    fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5),
+                                GlslCode.GlslVar("vec2", "shouldBeThis",
+                                    fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9)
                             )
-                        ) { glslCode.globalVars }
+                        ) { glslCode.globalVars.toList() }
                     }
 
                     it("finds the functions and performs substitutions") {
@@ -176,7 +180,7 @@ object GlslAnalyzerSpec : Spek({
                         it("handles and replaces directives with empty lines") {
                             val glslFunction = GlslAnalyzer().analyze(shaderText).functions.only()
 
-                            val glsl = glslFunction.toGlsl("ns", emptySet(), emptyMap())
+                            val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
                             println("glslFunction = ${glsl}")
 
                             expect("#line 3\n" +

@@ -40,11 +40,12 @@ object ColorShaderSpec : Spek({
                         
                         #line 10
                         void p0_main( void ) {
-                            vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            gl_FragColor = vec4(uv.xy, identity(aquamarinity), 1.);
+                            vec2 uv = gl_FragCoord.xy / in_resolution.xy;
+                            gl_FragColor = vec4(uv.xy, p0_identity(aquamarinity), 1.);
                         }
                         """.trimIndent()
-                    ) { shader.toGlsl("p0", mapOf(
+                    ) { shader.toGlsl(GlslCode.Namespace("p0"), mapOf(
+                        "resolution" to "in_resolution",
                         "blueness" to "aquamarinity",
                         "identity" to "p0_identity"
                     )).trim() }

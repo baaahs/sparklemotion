@@ -26,10 +26,12 @@ object GlslProgramSpec : Spek({
                 uniform float blueness;
                 int someGlobalVar;
                 const int someConstVar = 123;
-
+                
+                int anotherFunc(int i) { return i; }
+                
                 void main( void ) {
                     vec2 uv = gl_FragCoord.xy / resolution.xy;
-                    someGlobalVar = someConstVar;
+                    someGlobalVar = anotherFunc(someConstVar);
                     gl_FragColor = vec4(uv.xy, blueness, 1.);
                 }
                 """.trimIndent()
@@ -48,7 +50,7 @@ object GlslProgramSpec : Spek({
                         )
                     )
                 }
-                val glsl by value { GlslProgram.toGlsl(patch) }
+                val glsl by value { patch.toGlsl() }
 
                 it("generates GLSL") {
                     expect(
@@ -59,11 +61,15 @@ object GlslProgramSpec : Spek({
                         
                         // SparkleMotion generated GLSL
 
+                        layout(location = 0) out vec4 sm_pixelColor;
+
                         uniform vec2 in_resolution;
                         uniform float in_time;
                         uniform float in_blueness;
                         
                         // Shader ID: color; namespace: p0
+                        // This Shader's Name
+                        
                         #line 7
                         int p0_someGlobalVar;
                         
@@ -71,10 +77,13 @@ object GlslProgramSpec : Spek({
                         const int p0_someConstVar = 123;
                         
                         #line 10
+                        int p0_anotherFunc(int i) { return i; }
+                        
+                        #line 12
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
-                            p0_someGlobalVar = p0_someConstVar;
-                            gl_FragColor = vec4(uv.xy, in_blueness, 1.);
+                            p0_someGlobalVar = p0_anotherFunc(p0_someConstVar);
+                            sm_pixelColor = vec4(uv.xy, in_blueness, 1.);
                         }
 
 
