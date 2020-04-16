@@ -44,6 +44,7 @@ object GlslAnalyzerSpec : Spek({
                     // This Shader's Name
                     // Other stuff.
                     
+                    precision mediump float;
                     uniform float time;
                     uniform vec2  resolution;
                     
@@ -68,22 +69,23 @@ object GlslAnalyzerSpec : Spek({
                     expectStatements(
                         listOf(
                             GlslStatement(
-                                "uniform float time;",
+                                "precision mediump float;",
                                 listOf("This Shader's Name", "Other stuff."),
                                 lineNumber = 1
                             ),
-                            GlslStatement("uniform vec2  resolution;", lineNumber = 5),
+                            GlslStatement("uniform float time;", lineNumber = 5),
+                            GlslStatement("uniform vec2  resolution;", lineNumber = 6),
                             GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 7
+                                        "}", lineNumber = 8
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 13
+                                        "}", lineNumber = 14
                             )
                         ), { GlslAnalyzer().findStatements(shaderText) }, true
                     )
@@ -93,9 +95,9 @@ object GlslAnalyzerSpec : Spek({
                     expect(
                         listOf(
                             GlslCode.GlslVar("float", "time",
-                                fullText = "\nuniform float time;", isUniform = true, lineNumber = 1),
+                                fullText = "uniform float time;", isUniform = true, lineNumber = 5),
                             GlslCode.GlslVar("vec2", "resolution",
-                                fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 5)
+                                fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 6)
                         )
                     ) { glslCode.globalVars.toList() }
                 }
@@ -181,7 +183,6 @@ object GlslAnalyzerSpec : Spek({
                             val glslFunction = GlslAnalyzer().analyze(shaderText).functions.only()
 
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
-                            println("glslFunction = ${glsl}")
 
                             expect("#line 3\n" +
                                     "void ns_main() {\n" +
@@ -192,6 +193,24 @@ object GlslAnalyzerSpec : Spek({
                                     "}\n".trimIndent()
                             ) { glsl.trim() }
                         }
+                    }
+                }
+
+                context("with overloaded functions") {
+                    override(shaderText) {
+                        """
+                            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                            vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                        """.trimIndent()
+                    }
+
+                    it("finds both functions") {
+                        expect(
+                            listOf(
+                                "vec3 mod289(vec3 x)",
+                                "vec4 mod289(vec4 x)"
+                            )
+                        ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
                     }
                 }
             }
@@ -250,13 +269,8 @@ object GlslAnalyzerSpec : Spek({
                         """.trimIndent()
                     }
 
-                    it("creates an entry point function calling mainImage()") {
-                        expect(
-                            GlslCode.GlslFunction(
-                                "void", "sm_main", "",
-                                "{\n    mainImage(sm_FragColor, sm_FragCoord);\n}"
-                            )
-                        ) { shader.entryPoint }
+                    it("identifies mainImage() as the entry point") {
+                        expect("mainImage") { shader.entryPoint.name }
                     }
 
                     it("creates inputs for implicit uniforms") {
