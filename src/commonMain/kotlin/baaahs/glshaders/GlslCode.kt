@@ -3,19 +3,19 @@ package baaahs.glshaders
 class GlslCode(
     val title: String,
     val description: String? = null,
-    glslStatements: List<GlslAnalyzer.GlslStatement>,
-    private val entryPointName: String = "main"
+    glslStatements: List<GlslAnalyzer.GlslStatement>
 ) {
-    internal val globalVarsByName = linkedMapOf<String, GlslVar>()
-    internal val functionsByName = linkedMapOf<String, GlslFunction>()
+    internal val globalVarNames = hashSetOf<String>()
+    internal val functionNames = hashSetOf<String>()
 
     val statements = glslStatements.map {
-        it.asVarOrNull()?.also { glslVar -> globalVarsByName[glslVar.name] = glslVar }
-            ?: it.asFunctionOrNull()?.also { glslFunction -> functionsByName[glslFunction.name] = glslFunction }
+        it.asSpecialOrNull()
+            ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
+            ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
     }
-    val symbolNames = globalVarsByName.keys + functionsByName.keys
-    val globalVars: Collection<GlslVar> get() = globalVarsByName.values
-    val functions: Collection<GlslFunction> get() = functionsByName.values
+    val symbolNames = globalVarNames + functionNames
+    val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
+    val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
 
     companion object {
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
@@ -65,6 +65,14 @@ class GlslCode(
         }
     }
 
+    data class GlslOther(
+        override val name: String,
+        override val fullText: String,
+        override val lineNumber: Int?
+    ) : Statement {
+        override fun stripSource() = copy(fullText = "", lineNumber = null)
+    }
+
     data class GlslVar(
         val type: String,
         override val name: String,
@@ -84,24 +92,6 @@ class GlslCode(
         override val lineNumber: Int? = null,
         val symbols: Set<String> = emptySet()
     ) : Statement {
-        fun namespaced(namespace: Namespace, symbolNames: Set<String>): GlslFunction {
-            return GlslFunction(
-                returnType,
-                namespace.qualify(name),
-                params,
-                fullText.replace(GlslAnalyzer.wordRegex) { matchResult ->
-                    val (word) = matchResult.destructured
-                    if (symbolNames.contains(word)) {
-                        namespace.qualify(word)
-                    } else {
-                        word
-                    }
-                },
-                lineNumber,
-                symbols
-            )
-        }
-
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 

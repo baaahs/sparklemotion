@@ -276,12 +276,20 @@ class GlslAnalyzer {
         val comments: List<String> = emptyList(),
         val lineNumber: Int? = null
     ) {
+        fun asSpecialOrNull(): GlslCode.GlslOther? {
+            return Regex("^(struct|precision)\\s+.*;", RegexOption.MULTILINE)
+                .find(text.trim())?.let {
+                    val (keyword) = it.destructured
+                    GlslCode.GlslOther(keyword, text, lineNumber)
+                }
+        }
+
         fun asVarOrNull(): GlslVar? {
             // If there are curly braces it must be a function.
             if (text.contains("{")) return null
 
-            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE).find(text.trim())
-                ?.let {
+            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE)
+                .find(text.trim())?.let {
                     val (_, qualifier, type, name, constValue) = it.destructured
                     if (constValue.contains("(")) return null // function declaration
                     var (isConst, isUniform) = (false to false)
@@ -294,8 +302,8 @@ class GlslAnalyzer {
         }
 
         fun asFunctionOrNull(globalVars: Set<String> = emptySet()): GlslFunction? {
-            return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE).find(text)
-                ?.let {
+            return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE)
+                .find(text.trim())?.let {
                     val (returnType, name, params, body) = it.destructured
                     GlslFunction(returnType, name, params, text, lineNumber, globalVars)
                 }

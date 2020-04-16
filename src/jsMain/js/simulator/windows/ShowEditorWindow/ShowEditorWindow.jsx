@@ -42,7 +42,7 @@ const ShowEditorWindow = (props) => {
     const allShows = sheepSimulator?.shows.toArray() || [];
     const currentShow = allShows.find(({ name }) => name === selectedShow);
 
-    let shaderSource = currentShow?.program.fragShader;
+    let shaderSource = currentShow?.src;
     setShowStr(shaderSource);
     updatePreview(shaderSource);
   }, [selectedShow, isConnected, glslPreviewer]);

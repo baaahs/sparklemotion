@@ -3,29 +3,30 @@ package baaahs.shows
 import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
-import baaahs.glsl.Program
 import baaahs.shaders.GlslShader
+import baaahs.shaders.SolidShader
 
 abstract class GlslShow(name: String) : Show(name) {
-    public abstract val program: Program
+    abstract val src: String
+//    abstract val program: Program
 
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val shader = GlslShader(program, model.defaultUvTranslator)
+//        val shader = GlslShader(program, model.defaultUvTranslator)
 
-        val paramDataSources = program.params.map { it.createDataSource(showRunner) }
-        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
+//        val paramDataSources = program.params.map { it.createDataSource(showRunner) }
+        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, SolidShader()) }
 
         return object : Renderer {
             override fun nextFrame() {
-                buffers.values.forEach { buffer ->
-                    val bufferValues = paramDataSources.map { it.getValue() }
-                    buffer.update(bufferValues)
-                }
+//                buffers.values.forEach { buffer ->
+//                    val bufferValues = paramDataSources.map { it.getValue() }
+//                    buffer.update(bufferValues)
+//                }
             }
 
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
-                removedSurfaces.forEach { buffers.remove(it) }
-                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
+//                removedSurfaces.forEach { buffers.remove(it) }
+//                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
             }
         }
     }

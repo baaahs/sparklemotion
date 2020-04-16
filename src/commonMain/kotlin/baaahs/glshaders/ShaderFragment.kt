@@ -22,10 +22,10 @@ interface ShaderFragment {
     companion object {
         fun tryColorShader(glslCode: GlslCode): ColorShader? {
             return when {
-                glslCode.functionsByName.containsKey("mainImage") ->
+                glslCode.functionNames.contains("mainImage") ->
                     ShaderToyColorShader(glslCode)
 
-                glslCode.functionsByName.containsKey("main") ->
+                glslCode.functionNames.contains("main") ->
                     GenericColorShader(glslCode)
 
                 else -> null
@@ -36,10 +36,7 @@ interface ShaderFragment {
 
     class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         override val entryPoint: GlslCode.GlslFunction =
-            GlslCode.GlslFunction(
-                "void", "sm_main", "",
-                "{\n    mainImage(sm_FragColor, sm_FragCoord);\n}"
-            )
+            glslCode.functions.find { it.name == "mainImage" }!!
 
         override val inputPorts: List<InputPort> by lazy {
             val list = arrayListOf<InputPort>()
@@ -67,7 +64,7 @@ interface ShaderFragment {
             get() = listOf()
 
         override fun invocationGlsl(namespace: GlslCode.Namespace): String {
-            return "  ${entryPoint.namespaced(namespace, emptySet()).name}();\n"
+            return "  ${namespace.qualify(entryPoint.name)}(sm_pixelColor, gl_FragCoord.xy);\n"
         }
     }
 
@@ -96,7 +93,7 @@ interface ShaderFragment {
 
         override fun invocationGlsl(namespace: GlslCode.Namespace): String {
             val buf = StringBuilder()
-            buf.append("  ", entryPoint.namespaced(namespace, emptySet()).name, "();\n")
+            buf.append("  ", namespace.qualify(entryPoint.name), "();\n")
             return buf.toString()
         }
     }
