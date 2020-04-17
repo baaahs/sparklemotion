@@ -69,18 +69,8 @@ class GlslPreview(
     }
 
     inner class Scene(shaderSrc: String) {
-        val patch = GlslProgram.Patch(
-            mapOf(
-                "color" to GlslAnalyzer().asShader(shaderSrc)
-            ),
-            listOf(
-                GlslProgram.UvCoord to GlslProgram.ShaderPort("color", "gl_FragCoord"),
-                GlslProgram.Resolution to GlslProgram.ShaderPort("color", "resolution"),
-                GlslProgram.Time to GlslProgram.ShaderPort("color", "time"),
-                GlslProgram.UniformInput("float", "blueness") to GlslProgram.ShaderPort("color", "blueness"),
-                GlslProgram.UniformInput("float", "sm_beat") to GlslProgram.ShaderPort("color", "sm_beat"),
-                GlslProgram.ShaderPort("color", "gl_FragColor") to GlslProgram.PixelColor
-            )
+        val patch = GlslProgram.autoWire(
+            mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
         private val program = GlslProgram(gl, patch)
         private var quad = Quad(gl, program.vertexAttribLocation, listOf(quadRect))

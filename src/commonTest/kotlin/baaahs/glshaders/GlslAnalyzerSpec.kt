@@ -242,13 +242,13 @@ object GlslAnalyzerSpec : Spek({
 
                     it("creates inputs for implicit uniforms") {
                         expect(
-                            setOf(
-                                InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate),
+                            listOf(
                                 InputPort("float", "time", "Time", GlslCode.ContentType.Time),
                                 InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
-                                InputPort("float", "blueness", null, GlslCode.ContentType.Unknown)
+                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Unknown),
+                                InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) }.toSet() }
+                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
                 }
 
@@ -275,13 +275,13 @@ object GlslAnalyzerSpec : Spek({
 
                     it("creates inputs for implicit uniforms") {
                         expect(
-                            setOf(
-                                InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate),
+                            listOf(
+                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Unknown),
+                                InputPort("vec3", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
                                 InputPort("float", "iTime", "Time", GlslCode.ContentType.Time),
-                                InputPort("vec2", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
-                                InputPort("float", "blueness", null, GlslCode.ContentType.Unknown)
+                                InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
                             )
-                        ) { shader.inputPorts.toSet() }
+                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
                 }
             }

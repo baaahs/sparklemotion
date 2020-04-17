@@ -2,6 +2,8 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.getTimeMillis
+import baaahs.glshaders.GlslCode.ContentType
+import baaahs.glshaders.GlslCode.Namespace
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.Uniform
@@ -56,7 +58,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         val providerFactory = if (uniformInput is StockUniformInput) {
             uniformInput.providerFactory
         } else {
-            defaultBindings["${uniformInput.type}:${uniformInput.name}"]
+            TODO()
         }
         Binding(uniformInput, providerFactory)
     }
@@ -183,7 +185,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
 
             shaderFragments.entries.forEachIndexed { i, (shaderId, shaderFragment) ->
                 val nsPrefix = "p$i"
-                val namespace = GlslCode.Namespace(nsPrefix)
+                val namespace = Namespace(nsPrefix)
                 buf.append("// Shader ID: ", shaderId, "; namespace: ", nsPrefix, "\n")
                 buf.append("// ", shaderFragment.name, "\n")
                 val portMap = hashMapOf<String, String>()
@@ -199,7 +201,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
             buf.append("\n#line 10001\n")
             buf.append("void main() {\n")
             shaderFragments.values.forEachIndexed { i, shaderFragment ->
-                val namespace = GlslCode.Namespace("p$i")
+                val namespace = Namespace("p$i")
                 buf.append(shaderFragment.invocationGlsl(namespace))
             }
             buf.append("}\n")
@@ -208,13 +210,29 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
     }
 
     companion object {
+        fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
+            val links = arrayListOf<Link>()
+            shaders.forEach { (name, shaderFragment) ->
+                shaderFragment.inputPorts.forEach { inputPort ->
+                    val uniformInput = defaultBindings[inputPort.contentType]
+                        ?: throw IllegalArgumentException("Unsupported content type ${inputPort.contentType} for ${inputPort.name}")
+
+                    links.add(uniformInput() to ShaderPort(inputPort.type, inputPort.name))
+                }
+            }
+            return Patch(shaders, links)
+        }
+
         val logger = Logger("GlslProgram")
 
-        private val defaultBindings = mapOf<String, () -> Provider>(
-            "float:time" to { TimeProvider() },
-            "float:iTime" to { TimeProvider() },
-            "vec2:resolution" to { ResolutionProvider() },
-            "vec2:iResolution" to { ResolutionProvider() }
+        private val defaultBindings = mapOf<ContentType, () -> UniformInput>(
+            ContentType.UvCoordinate to { UvCoord },
+//            ContentType.XyCoordinate to { TODO() },
+//            ContentType.XyzCoordinate to { TODO() },
+//            ContentType.Color to { TODO() },
+            ContentType.Time to { Time },
+            ContentType.Resolution to { Resolution }
+//            ContentType.Unknown to { TODO() }
         )
     }
 }

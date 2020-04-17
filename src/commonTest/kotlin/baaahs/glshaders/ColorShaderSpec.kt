@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.glshaders.GlslCode.ContentType
 import baaahs.testing.override
 import baaahs.testing.value
 import org.spekframework.spek2.Spek
@@ -21,6 +22,7 @@ object ColorShaderSpec : Spek({
                         
                         uniform float time;
                         uniform vec2  resolution;
+                        uniform vec2  mouse;
                         uniform float blueness;
                         
                         float identity(float value) { return value; }
@@ -32,13 +34,23 @@ object ColorShaderSpec : Spek({
                         """.trimIndent()
             }
 
+            it("finds magic uniforms") {
+                expect(listOf(
+                    InputPort("float", "time", "Time", ContentType.Time),
+                    InputPort("vec2", "resolution", "Resolution", ContentType.Resolution),
+                    InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
+                    InputPort("float", "blueness", "Blueness", ContentType.Unknown),
+                    InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
+                )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+            }
+
             it("generates function declarations") {
                 expect(
                     """
-                        #line 8
+                        #line 9
                         float p0_identity(float value) { return value; }
                         
-                        #line 10
+                        #line 11
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             sm_pixelColor = vec4(uv.xy, p0_identity(aquamarinity), 1.);
@@ -65,45 +77,53 @@ object ColorShaderSpec : Spek({
                         // This Shader's Name
                         // Other stuff.
                         
-                        uniform float iTime;
-                        uniform vec2  iResolution;
-                        uniform vec2  iMouse;
                         uniform float blueness;
                         
                         float identity(float value) { return value; }
     
                         void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                            vec2 uv = fragCoord.xy / iResolution.xy;
+                            vec2 uv = fragCoord.xy / iResolution.xy * iTime;
                             fragColor = vec4(uv.xy / iMouse, identity(blueness), 1.);
                         }
                         """.trimIndent()
             }
 
-            describe("#toGlsl") {
-                it("generates function declarations") {
-                    expect(
-                        """
-                        #line 9
+            describe("#inputPorts") {
+                it("finds magic uniforms") {
+                    expect(listOf(
+                        InputPort("float", "blueness", "Blueness", ContentType.Unknown),
+                        InputPort("vec3", "iResolution", "Resolution", ContentType.Resolution),
+                        InputPort("float", "iTime", "Time", ContentType.Time),
+                        InputPort("vec2", "iMouse", "Mouse", ContentType.XyCoordinate),
+                        InputPort("vec2", "sm_FragCoord", "Coordinates", ContentType.UvCoordinate)
+                    )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                }
+            }
+
+            it("generates function declarations") {
+                expect(
+                    """
+                        #line 6
                         float p0_identity(float value) { return value; }
                         
-                        #line 11
+                        #line 8
                         void p0_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                            vec2 uv = fragCoord.xy / in_resolution.xy;
+                            vec2 uv = fragCoord.xy / in_resolution.xy * in_time;
                             fragColor = vec4(uv.xy / in_mouse, p0_identity(aquamarinity), 1.);
                         }
                         """.trimIndent()
-                    ) { shader.toGlsl(
-                        namespace, mapOf(
+                ) { shader.toGlsl(
+                    namespace, mapOf(
                         "iResolution" to "in_resolution",
                         "iMouse" to "in_mouse",
+                        "iTime" to "in_time",
                         "blueness" to "aquamarinity",
                         "identity" to "p0_identity"
                     )).trim() }
-                }
+            }
 
-                it("generates invocation GLSL") {
-                    expect("  p0_mainImage(sm_pixelColor, gl_FragCoord.xy);\n") { shader.invocationGlsl(namespace) }
-                }
+            it("generates invocation GLSL") {
+                expect("  p0_mainImage(sm_pixelColor, gl_FragCoord.xy);\n") { shader.invocationGlsl(namespace) }
             }
         }
     }
