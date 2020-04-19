@@ -46,11 +46,21 @@ class GlslPreview(
         scene = null
         statusEl.clear()
 
-        try {
-            scene = createScene(src)
-        } catch (e: CompiledShader.CompilationException) {
-            errorCallback.invoke(e.getErrors().toTypedArray())
-            statusEl.appendText(e.errorMessage)
+        src?.let {
+            try {
+                scene = Scene(src).also {
+                    statusEl.appendText("Inputs:\n")
+                    it.links.forEach { (from, to) ->
+                        if (from is GlslProgram.UserUniformInput) {
+                            statusEl.appendText(from.toString())
+                            statusEl.appendText("\n")
+                        }
+                    }
+                }
+            } catch (e: CompiledShader.CompilationException) {
+                errorCallback.invoke(e.getErrors().toTypedArray())
+                statusEl.appendText(e.errorMessage)
+            }
         }
     }
 
@@ -72,6 +82,7 @@ class GlslPreview(
         val patch = GlslProgram.autoWire(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
+        val links = patch.fromGlobal
         private val program = GlslProgram(gl, patch)
         private var quad = Quad(gl, program.vertexAttribLocation, listOf(quadRect))
 
@@ -91,14 +102,6 @@ class GlslPreview(
         fun release() {
             quad.release()
             program.release()
-        }
-    }
-
-    private fun createScene(shaderSrc: String?): Scene? {
-        return if (shaderSrc != null && shaderSrc.isNotBlank()) {
-            Scene(shaderSrc)
-        } else {
-            null
         }
     }
 }

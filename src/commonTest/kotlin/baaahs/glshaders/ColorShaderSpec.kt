@@ -24,6 +24,8 @@ object ColorShaderSpec : Spek({
                         uniform vec2  resolution;
                         uniform vec2  mouse;
                         uniform float blueness;
+                        int someGlobalVar;
+                        const int someConstVar = 123;
                         
                         float identity(float value) { return value; }
     
@@ -47,10 +49,16 @@ object ColorShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     """
+                        #line 8
+                        int p0_someGlobalVar;
+                        
                         #line 9
-                        float p0_identity(float value) { return value; }
+                        const int p0_someConstVar = 123;
                         
                         #line 11
+                        float p0_identity(float value) { return value; }
+                        
+                        #line 13
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             sm_pixelColor = vec4(uv.xy, p0_identity(aquamarinity), 1.);
@@ -78,7 +86,9 @@ object ColorShaderSpec : Spek({
                         // Other stuff.
                         
                         uniform float blueness;
-                        
+                        int someGlobalVar;
+                        const int someConstVar = 123;
+
                         float identity(float value) { return value; }
     
                         void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
@@ -103,10 +113,16 @@ object ColorShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     """
+                        #line 5
+                        int p0_someGlobalVar;
+                        
                         #line 6
-                        float p0_identity(float value) { return value; }
+                        const int p0_someConstVar = 123;
                         
                         #line 8
+                        float p0_identity(float value) { return value; }
+                        
+                        #line 10
                         void p0_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                             vec2 uv = fragCoord.xy / in_resolution.xy * in_time;
                             fragColor = vec4(uv.xy / in_mouse, p0_identity(aquamarinity), 1.);

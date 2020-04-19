@@ -45,7 +45,7 @@ object GlslProgramSpec : Spek({
                             UvCoord to ShaderPort("color", "gl_FragCoord"),
                             Resolution to ShaderPort("color", "resolution"),
                             Time to ShaderPort("color", "time"),
-                            UniformInput("float", "blueness") to ShaderPort("color", "blueness"),
+                            UserUniformInput("float", "blueness") to ShaderPort("color", "blueness"),
                             ShaderPort("color", "gl_FragColor") to PixelColor
                         )
                     )
@@ -93,6 +93,21 @@ object GlslProgramSpec : Spek({
                         }
                         """.trimIndent()
                     ) { glsl.trim() }
+                }
+            }
+
+            describe(".autoWire") {
+                val patch by value { GlslProgram.autoWire(mapOf("color" to shader)) }
+
+                it("creates a reasonable guess patch") {
+                    expect(
+                        listOf(
+                            Time to ShaderPort("color", "time"),
+                            Resolution to ShaderPort("color", "resolution"),
+                            UserUniformInput("float", "blueness") to ShaderPort("color", "blueness"),
+                            UvCoord to ShaderPort("color", "gl_FragCoord")
+                        )
+                    ) { patch.links }
                 }
             }
         }

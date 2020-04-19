@@ -15,6 +15,7 @@ class GlslCode(
     }
     val symbolNames = globalVarNames + functionNames
     val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
+    val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
 
     companion object {

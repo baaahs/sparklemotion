@@ -54,11 +54,17 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
+    val noOpProvider = object : Provider {
+        override fun set(uniform: Uniform) {
+            // TODO
+        }
+    }
+
     val bindings = patch.uniformInputs.map { uniformInput ->
         val providerFactory = if (uniformInput is StockUniformInput) {
             uniformInput.providerFactory
         } else {
-            TODO()
+            { noOpProvider }
         }
         Binding(uniformInput, providerFactory)
     }
@@ -136,18 +142,44 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         override val shaderId: String? = null
     }
 
-    open class UniformInput(val type: String, val name: String) : Port {
+    abstract class UniformInput(val type: String, val name: String) : Port {
         override val shaderId: String? = null
 
         open val varName: String get() = "in_$name"
         open val isImplicit = false
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is UniformInput) return false
+
+            if (type != other.type) return false
+            if (name != other.name) return false
+            if (shaderId != other.shaderId) return false
+            if (isImplicit != other.isImplicit) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = type.hashCode()
+            result = 31 * result + name.hashCode()
+            result = 31 * result + (shaderId?.hashCode() ?: 0)
+            result = 31 * result + isImplicit.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "UniformInput(type='$type', name='$name', shaderId=$shaderId, isImplicit=$isImplicit)"
+        }
     }
 
-    class ShaderPort(override val shaderId: String, val portName: String) : Port
+    class UserUniformInput(type: String, name: String) : UniformInput(type, name)
+
+    data class ShaderPort(override val shaderId: String, val portName: String) : Port
 
     class Patch(
         private val shaderFragments: Map<String, ShaderFragment>,
-        private val links: List<Link>
+        internal val links: List<Link>
     ) {
         private val fromById = hashMapOf<String?, ArrayList<Link>>()
         private val toById = hashMapOf<String?, ArrayList<Link>>()
@@ -215,9 +247,9 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
             shaders.forEach { (name, shaderFragment) ->
                 shaderFragment.inputPorts.forEach { inputPort ->
                     val uniformInput = defaultBindings[inputPort.contentType]
-                        ?: throw IllegalArgumentException("Unsupported content type ${inputPort.contentType} for ${inputPort.name}")
+                        ?: { UserUniformInput(inputPort.type, inputPort.name) }
 
-                    links.add(uniformInput() to ShaderPort(inputPort.type, inputPort.name))
+                    links.add(uniformInput() to ShaderPort(name, inputPort.name))
                 }
             }
             return Patch(shaders, links)

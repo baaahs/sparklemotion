@@ -87,14 +87,13 @@ interface ShaderFragment {
             glslCode.functions.find { it.name == "mainImage" }!!
 
         override val inputPorts: List<InputPort> by lazy {
-
             val iVars = glslCode.functions.flatMap { glslFunction ->
                 Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
                     magicUniforms.containsKey(word)
                 }.toList()
             }.toSet()
 
-            val explicitUniforms = glslCode.globalVars.map {
+            val explicitUniforms = glslCode.uniforms.map {
                 magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                     ?: {
                         val desc = it.name.replace(Regex("^i"), "")
@@ -132,7 +131,7 @@ interface ShaderFragment {
             glslCode.functions.find { it.name == "main" }!!
 
         override val inputPorts: List<InputPort> by lazy {
-            glslCode.globalVars.map {
+            glslCode.uniforms.map {
                 magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                     ?: {
                         val desc = it.name
