@@ -29,7 +29,11 @@
   justify-content: space-between;
 
   .preview {}
-  .status {}
+  .status {
+    white-space: pre;
+    height: 180px;
+    overflow: scroll;
+  }
 }
 
 .buttons {
