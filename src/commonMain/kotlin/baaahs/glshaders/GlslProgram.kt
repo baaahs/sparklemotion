@@ -3,7 +3,6 @@ package baaahs.glshaders
 import baaahs.Logger
 import baaahs.getTimeMillis
 import baaahs.glshaders.GlslCode.ContentType
-import baaahs.glshaders.GlslCode.Namespace
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.Uniform
@@ -127,10 +126,12 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
 
     object Resolution : StockUniformInput("vec2", "resolution", ::ResolutionProvider)
     object Time : StockUniformInput("float", "time", ::TimeProvider)
-    object UvCoord : StockUniformInput("vec4", "gl_FragCoord", ::UvCoordProvider) {
+    object GlFragCoord : StockUniformInput("vec4", "gl_FragCoord", ::UvCoordProvider) {
         override val varName: String = name
         override val isImplicit = true
     }
+
+    data class ShaderOut(override val shaderId: String) : Port
 
     object PixelColor : Port {
         override val shaderId: String? = null
@@ -142,7 +143,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         override val shaderId: String? = null
     }
 
-    abstract class UniformInput(val type: String, val name: String) : Port {
+    open class UniformInput(val type: String, val name: String) : Port {
         override val shaderId: String? = null
 
         open val varName: String get() = "in_$name"
@@ -177,77 +178,24 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
 
     data class ShaderPort(override val shaderId: String, val portName: String) : Port
 
-    class Patch(
-        private val shaderFragments: Map<String, ShaderFragment>,
-        internal val links: List<Link>
-    ) {
-        private val fromById = hashMapOf<String?, ArrayList<Link>>()
-        private val toById = hashMapOf<String?, ArrayList<Link>>()
-
-        init {
-            links.forEach { link ->
-                val (from, to) = link
-                fromById.getOrPut(from.shaderId) { arrayListOf() }.add(link)
-                toById.getOrPut(to.shaderId) { arrayListOf() }.add(link)
-            }
-        }
-
-        val fromGlobal: List<Link> = fromById[null] ?: emptyList()
-        val toGlobal: List<Link> = toById[null] ?: emptyList()
-
-        val uniformInputs: List<UniformInput>
-            get() = fromGlobal.mapNotNull { (from, _) -> from as? UniformInput }
-
-        fun toGlsl(): String {
-            val buf = StringBuilder()
-            buf.append("#ifdef GL_ES\n")
-            buf.append("precision mediump float;\n")
-            buf.append("#endif\n")
-            buf.append("\n")
-            buf.append("// SparkleMotion generated GLSL\n")
-            buf.append("\n")
-            buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
-            buf.append("\n")
-
-            uniformInputs.forEach {
-                if (!it.isImplicit)
-                    buf.append("uniform ${it.type} ${it.varName};\n")
-            }
-            buf.append("\n")
-
-            shaderFragments.entries.forEachIndexed { i, (shaderId, shaderFragment) ->
-                val nsPrefix = "p$i"
-                val namespace = Namespace(nsPrefix)
-                buf.append("// Shader ID: ", shaderId, "; namespace: ", nsPrefix, "\n")
-                buf.append("// ", shaderFragment.name, "\n")
-                val portMap = hashMapOf<String, String>()
-                toById[shaderId]?.forEach { (from, to) ->
-                    if (to is ShaderPort && from is UniformInput) {
-                        portMap[to.portName] = from.varName
-                    }
-                }
-                portMap["gl_FragColor"] = "sm_pixelColor"
-                buf.append(shaderFragment.toGlsl(namespace, portMap), "\n")
-            }
-
-            buf.append("\n#line 10001\n")
-            buf.append("void main() {\n")
-            shaderFragments.values.forEachIndexed { i, shaderFragment ->
-                val namespace = Namespace("p$i")
-                buf.append(shaderFragment.invocationGlsl(namespace))
-            }
-            buf.append("}\n")
-            return buf.toString()
-        }
-    }
 
     companion object {
         fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
+            val uvProjectorName =
+                shaders.entries
+                    .find { (_, shaderFragment) -> shaderFragment.shaderType == ShaderType.Projection }
+                    ?.key
+
             val links = arrayListOf<Link>()
             shaders.forEach { (name, shaderFragment) ->
                 shaderFragment.inputPorts.forEach { inputPort ->
-                    val uniformInput = defaultBindings[inputPort.contentType]
-                        ?: { UserUniformInput(inputPort.type, inputPort.name) }
+                    val uniformInput =
+                        if (inputPort.contentType == ContentType.UvCoordinate && uvProjectorName != null) {
+                            { ShaderOut(uvProjectorName) }
+                        } else {
+                            defaultBindings[inputPort.contentType]
+                        }
+                            ?: { UserUniformInput(inputPort.type, inputPort.name) }
 
                     links.add(uniformInput() to ShaderPort(name, inputPort.name))
                 }
@@ -258,7 +206,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         val logger = Logger("GlslProgram")
 
         private val defaultBindings = mapOf<ContentType, () -> UniformInput>(
-            ContentType.UvCoordinate to { UvCoord },
+            ContentType.UvCoordinate to { GlFragCoord },
 //            ContentType.XyCoordinate to { TODO() },
 //            ContentType.XyzCoordinate to { TODO() },
 //            ContentType.Color to { TODO() },

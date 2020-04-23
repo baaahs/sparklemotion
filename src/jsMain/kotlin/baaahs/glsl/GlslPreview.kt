@@ -82,7 +82,7 @@ class GlslPreview(
         val patch = GlslProgram.autoWire(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
-        val links = patch.fromGlobal
+        val links = patch.links
         private val program = GlslProgram(gl, patch)
         private var quad = Quad(gl, program.vertexAttribLocation, listOf(quadRect))
 
