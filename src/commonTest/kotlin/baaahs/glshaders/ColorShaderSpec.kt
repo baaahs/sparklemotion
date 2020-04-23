@@ -64,17 +64,19 @@ object ColorShaderSpec : Spek({
                             sm_pixelColor = vec4(uv.xy, p0_identity(aquamarinity), 1.);
                         }
                         """.trimIndent()
-                ) { shader.toGlsl(
-                    namespace, mapOf(
-                        "resolution" to "in_resolution",
-                        "blueness" to "aquamarinity",
-                        "identity" to "p0_identity",
-                        "gl_FragColor" to "sm_pixelColor"
-                )).trim() }
+                ) {
+                    shader.toGlsl(
+                        namespace, mapOf(
+                            "resolution" to "in_resolution",
+                            "blueness" to "aquamarinity",
+                            "identity" to "p0_identity",
+                            "gl_FragColor" to "sm_pixelColor"
+                        )).trim()
+                }
             }
 
             it("generates invocation GLSL") {
-                expect("  p0_main();\n") { shader.invocationGlsl(namespace) }
+                expect("p0_main()") { shader.invocationGlsl(namespace) }
             }
         }
 
@@ -139,7 +141,9 @@ object ColorShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect("  p0_mainImage(sm_pixelColor, gl_FragCoord.xy);\n") { shader.invocationGlsl(namespace) }
+                expect("p0_mainImage(sm_pixelColor, gl_FragCoord.xy)") {
+                    shader.invocationGlsl(namespace)
+                }
             }
         }
     }

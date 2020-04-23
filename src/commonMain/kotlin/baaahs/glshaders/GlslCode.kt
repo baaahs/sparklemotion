@@ -97,6 +97,7 @@ class GlslCode(
     }
 
     enum class ContentType(val description: String?) {
+        RasterCoordinate("Raster Coordinate"),
         UvCoordinate("U/V Coordinate"),
         XyCoordinate("X/Y Coordinate"),
         XyzCoordinate("X/Y/Z Coordinate"),
@@ -108,5 +109,6 @@ class GlslCode(
 
     class Namespace(private val prefix: String) {
         fun qualify(name: String) = "${prefix}_$name"
+        fun internalQualify(name: String) = "${prefix}i_$name"
     }
 }

@@ -17,6 +17,7 @@ class GlslAnalyzer {
         val glslObj = analyze(shaderText)
 
         return ShaderFragment.tryColorShader(glslObj)
+            ?: ShaderFragment.tryUvTranslatorShader(glslObj)
             ?: throw IllegalArgumentException("huh? unknown sort of shader")
     }
 
