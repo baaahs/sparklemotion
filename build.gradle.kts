@@ -141,6 +141,7 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
                 implementation(kotlin("test-junit5"))
+                implementation("org.junit.vintage:junit-vintage-engine:5.6.2")
 
                 implementation("org.spekframework.spek2:spek-dsl-jvm:$spek_version")
                 implementation("org.spekframework.spek2:spek-runtime-metadata:$spek_version")
@@ -342,6 +343,7 @@ tasks.create<ShadowJar>("shadowJar") {
 
 tasks.withType(Test::class) {
     useJUnitPlatform {
+        includeEngines.add("junit-vintage")
         includeEngines.add("spek2")
     }
 }

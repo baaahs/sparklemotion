@@ -1,42 +1,40 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Patch
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
-import baaahs.glsl.Program
 import baaahs.glsl.UvTranslator
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.JsonObject
 
 class GlslShader(
-    private val program: Program,
+    private val patch: Patch,
     private val uvTranslator: UvTranslator
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
+    private val glslProgram = patch.compile()
+
     companion object : ShaderReader<GlslShader> {
         val renderContext by lazy { GlslBase.manager.createContext() }
 
-        override fun parse(reader: ByteArrayReader): GlslShader {
-            val glslProgram = reader.readString()
-            val program = renderContext.createProgram(glslProgram)
-            val uvTranslator = UvTranslator.parse(reader)
-            return GlslShader(program, uvTranslator)
-        }
+        override fun parse(reader: ByteArrayReader): GlslShader = TODO("nope")
     }
 
     override fun serializeConfig(writer: ByteArrayWriter) {
-        writer.writeString(program.fragShader)
+        TODO("nope")
     }
 
     override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
-        val poolKey = GlslShader::class to program
-        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(program, uvTranslator) }
+        val poolKey = GlslShader::class to glslProgram
+        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator) }
         val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
+        val glslRenderer = renderContext.createRenderer(glslProgram, uvTranslator)
         val glslSurface = glslRenderer.addSurface(surface)
         return Renderer(glslSurface)
     }
@@ -52,7 +50,7 @@ class GlslShader(
         }
     }
 
-    class PooledRenderer(program: Program, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
+    class PooledRenderer(program: GlslProgram, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
         val glslRenderer = renderContext.createRenderer(program, uvTranslator)
 
         override fun preDraw() {
@@ -67,20 +65,18 @@ class GlslShader(
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
-        val values = Array<Any?>(program.params.size) { }
+        val values = Array<Any?>(patch.uniformInputs.size) { }
 
         fun update(values: List<Any?>) {
             values.forEachIndexed { index, value -> this.values[index] = value }
         }
 
         override fun serialize(writer: ByteArrayWriter) {
-            uvTranslator.serialize(writer)
-
-            program.params.zip(values).forEach { (param, value) -> param.serializeValue(value, writer) }
+            TODO("nope")
         }
 
         override fun read(reader: ByteArrayReader) {
-            program.params.forEachIndexed { index, param -> values[index] = param.readValue(reader) }
+            TODO("nope")
         }
     }
 

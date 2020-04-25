@@ -46,11 +46,11 @@ interface ShaderFragment {
     companion object {
         fun tryColorShader(glslCode: GlslCode): ColorShader? {
             return when {
-                glslCode.functionNames.contains("mainImage") ->
-                    ShaderToyColorShader(glslCode)
-
                 glslCode.functionNames.contains("main") ->
                     GenericColorShader(glslCode)
+
+                glslCode.functionNames.contains("mainImage") ->
+                    ShaderToyColorShader(glslCode)
 
                 else -> null
             }
@@ -139,7 +139,8 @@ interface ShaderFragment {
             get() = listOf()
 
         override fun invocationGlsl(namespace: Namespace, portMap: Map<String, String>): String {
-            return "${namespace.qualify(entryPoint.name)}(sm_pixelColor, gl_FragCoord.xy)"
+            return namespace.qualify(entryPoint.name) +
+                    "(sm_pixelColor, ${portMap["sm_FragCoord"] ?: "sm_FragCoord"}.xy)"
         }
     }
 
@@ -150,6 +151,7 @@ interface ShaderFragment {
                 InputPort("vec2", "resolution", "Resolution", ContentType.Resolution),
                 InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
                 InputPort("float", "time", "Time", ContentType.Time)
+//                        varying vec2 surfacePosition; TODO
             ).associateBy { it.name }
 
             val uvCoordPort = InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
@@ -180,6 +182,12 @@ interface ShaderFragment {
     }
 
     class UvShader(glslCode: GlslCode) : Base(glslCode) {
+        companion object {
+            val magicUniforms = listOf(
+                InputPort("sampler2D", "sm_uvCoordsTexture", "U/V Coordinates Texture", ContentType.UvCoordinateTexture)
+            ).associateBy { it.name }
+        }
+
         override val shaderType: ShaderType = ShaderType.Projection
 
         override val entryPoint: GlslFunction
@@ -187,7 +195,7 @@ interface ShaderFragment {
 
         override val inputPorts: List<InputPort> by lazy {
             glslCode.uniforms.map {
-                GenericColorShader.magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
+                magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                     ?: InputPort(it.type, it.name, it.name.nameify(), ContentType.Unknown, it)
             }
         }

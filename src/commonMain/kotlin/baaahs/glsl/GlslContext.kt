@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
 import com.danielgergely.kgl.GL_VERTEX_SHADER
 import com.danielgergely.kgl.Kgl
@@ -10,7 +11,7 @@ abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
     fun createProgram(fragShader: String): Program =
         runInContext { Program(this, fragShader, glslVersion, GlslBase.plugins) }
 
-    fun createRenderer(program: Program, uvTranslator: UvTranslator) =
+    fun createRenderer(program: GlslProgram, uvTranslator: UvTranslator) =
         runInContext { GlslRenderer(this, program, uvTranslator) }
 
     fun createVertexShader(source: String): CompiledShader {
