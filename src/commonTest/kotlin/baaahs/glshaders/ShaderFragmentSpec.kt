@@ -1,7 +1,5 @@
 package baaahs.glshaders
 
-import baaahs.testing.override
-import baaahs.testing.value
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
