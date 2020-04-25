@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import com.danielgergely.kgl.*
 
-class Quad(private val gl: GlslContext, private val vertexAttr: Int, rects: List<Rect>) {
+class Quad(private val gl: GlslContext, rects: List<Rect>) {
     private val vertices = rects.flatMap { rect ->
         listOf(
             // First triangle:
@@ -19,7 +19,7 @@ class Quad(private val gl: GlslContext, private val vertexAttr: Int, rects: List
     private var vao: VertexArrayObject = gl.check { createVertexArray() }
     private var quadVertexBuffer: GlBuffer = gl.check { createBuffers(1)[0] }
 
-    init {
+    fun bind(vertexAttr: Int) {
         gl.check { bindVertexArray(vao) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
         gl.check { bufferData(GL_ARRAY_BUFFER, bufferOf(vertices), vertices.size, GL_STATIC_DRAW) }
@@ -34,7 +34,7 @@ class Quad(private val gl: GlslContext, private val vertexAttr: Int, rects: List
 
     private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
-    internal fun prepareToRender(fn: () -> Unit) {
+    internal fun prepareToRender(vertexAttr: Int, fn: () -> Unit) {
         gl.check { bindVertexArray(vao) }
         gl.check { enableVertexAttribArray(vertexAttr) }
 

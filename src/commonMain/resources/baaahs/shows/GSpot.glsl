@@ -1,18 +1,12 @@
 // G-spot
 // From: https://www.shadertoy.com/view/ltBcRc
 
-// shadertoy emulation
-#define iTime time
-#define iResolution resolution
 
-uniform float time;
-uniform vec2 resolution;
-
-#define l 10
+#define l 120
 void mainImage(out vec4 FragColor,vec2 FragCoord){
     vec2 v = (FragCoord.xy - iResolution.xy/2.) / min(iResolution.y,iResolution.x) * 30.;
-    vec2 vv = v; vec2 vvv = v;
-    float ft = iTime*10.;
+    vec2 vv = v;// vec2 vvv = v;
+    float ft = iTime+360.1;
     float tm = ft*0.1;
     float tm2 = ft*0.3;
     vec2 mspt = (vec2(
@@ -34,7 +28,7 @@ void mainImage(out vec4 FragColor,vec2 FragCoord){
     vec2 shift = vec2( 0.033, 0.14);
     vec2 shift2 = vec2( -0.023, -0.22);
     float Z = 0.4 + mspt.y*0.3;
-    float m = 0.99+sin(iTime*0.3)*0.003;
+    float m = 0.99+sin(iTime*0.03)*0.003;
     for ( int i = 0; i < l; i++ ){
         float r = dot(v,v);
         float r2 = dot(vv,vv);
@@ -75,8 +69,4 @@ void mainImage(out vec4 FragColor,vec2 FragCoord){
     float cc = ((mod(RR,2.0)>1.0)?1.0-fract(RR):fract(RR));
     float ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));
     FragColor = vec4(ccc, cc, c, 1.0);
-}
-
-void main() {
-    mainImage(gl_FragColor, gl_FragCoord);
 }

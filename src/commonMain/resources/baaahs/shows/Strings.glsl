@@ -1,23 +1,6 @@
 // Strings
-// from http://glslsandbox.com/e#61175.0
+// from https://www.shadertoy.com/view/WldXRS
 
-/*
- * Original shader from: https://www.shadertoy.com/view/WldXRS
- */
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-// glslsandbox uniforms
-uniform float time;
-uniform vec2 resolution;
-
-// shadertoy emulation
-#define iTime time
-#define iResolution resolution
-
-// --------[ Original ShaderToy begins here ]---------- //
 #define LINE_FUNKINESS 23.23
 
 
@@ -33,11 +16,11 @@ vec3 makeLine(vec2 uv, vec2 r_uv, float row_id, float scale, float i, float n)
 
     vec2 current_uv = vec2(r_uv);
 
-    current_uv.y += sin(r_uv.x + iTime*.1 * direction * 2.23 * n + row_id * 2.3623) * LINE_FUNKINESS * n * (sin(iTime + n * 80.932) * 0.5 + 0.5) * (sin(iTime) * 0.5 + 0.5);
+    current_uv.y += sin(r_uv.x + iTime * direction * 2.23 * n + row_id * 2.3623) * LINE_FUNKINESS * n * (sin(iTime + n * 80.932) * 0.5 + 0.5) * (sin(iTime) * 0.5 + 0.5);
 
 
-    vec3 current_col = 0.5 + 0.5*cos(iTime*.1+uv.xyx+vec3(0,2,4) + row_id * 23.61232);
-    return scale / pow(abs(current_uv.y - i * 2.), (1.5 + n*2.) * (1. + sin(iTime*.1 + 3.14159*0.5) * 0.5)) * current_col;
+    vec3 current_col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4) + row_id * 23.61232);
+    return scale / pow(abs(current_uv.y - i * 2.), (1.5 + n*2.) * (1. + sin(iTime + 3.14159*0.5) * 0.5)) * current_col;
 }
 
 
@@ -45,11 +28,11 @@ vec3 makeLine(vec2 uv, vec2 r_uv, float row_id, float scale, float i, float n)
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
 
-    const float rows = 25.0;
+    float rows = 25.0;
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord/iResolution.xy;
 
-    uv.y += iTime * 0.005;
+    uv.y += iTime * 0.05;
 
     float a = iTime * 0.1;// + length(uv) * 3.141592653589 * sin(iTime * 0.12316);
     float s = sin(a);
@@ -76,21 +59,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
         float current_row_id = row_id + i;
         float n = Hash21(vec2(current_row_id, mag));
-        col += makeLine(uv, r_uv, current_row_id, mag + sin(iTime * 0.05 + n * 6.1412) * 0.1, i, n);
+        col += makeLine(uv, r_uv, current_row_id, mag + sin(iTime * 0.5 + n * 6.1412) * 0.1, i, n);
     }
 
     for(float i = -rows; i <= rows; i++)
     {
         float current_row_id = row_id + i;
         float n = Hash21(vec2(current_row_id, mag * 0.1));
-        col += makeLine(uv, r_uv, current_row_id, mag * 0.1 + sin(iTime * 0.05 + n * 14.6875) * 0.01, i, n);
+        col += makeLine(uv, r_uv, current_row_id, mag * 0.1 + sin(iTime * 0.5 + n * 14.6875) * 0.01, i, n);
     }
 
     for(float i = -rows; i <= rows; i++)
     {
         float current_row_id = row_id + i;
         float n = Hash21(vec2(current_row_id, mag * 0.05));
-        col += makeLine(uv, r_uv, current_row_id, mag * 0.05 + sin(iTime * 0.05 + n * 23.78563) * 0.01, i, n);
+        col += makeLine(uv, r_uv, current_row_id, mag * 0.05 + sin(iTime * 0.5 + n * 23.78563) * 0.01, i, n);
     }
 
 
@@ -98,14 +81,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
     float power = 2.0;
-    col = vec3(pow(col.x, power), pow(col.y, power) * .015, pow(col.z, power) * .012);
+    col = vec3(pow(col.x, power), pow(col.y, power), pow(col.z, power));
 
     // Output to screen
     fragColor = vec4(col,1.0);
-}
-// --------[ Original ShaderToy ends here ]---------- //
-
-void main(void)
-{
-    mainImage(gl_FragColor, gl_FragCoord.xy);
 }

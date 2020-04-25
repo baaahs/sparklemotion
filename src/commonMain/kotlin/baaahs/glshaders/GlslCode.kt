@@ -99,6 +99,7 @@ class GlslCode(
     enum class ContentType(val description: String?) {
         RasterCoordinate("Raster Coordinate"),
         UvCoordinate("U/V Coordinate"),
+        UvCoordinateTexture("U/V Coordinates Texture"),
         XyCoordinate("X/Y Coordinate"),
         XyzCoordinate("X/Y/Z Coordinate"),
         Color("Color"),

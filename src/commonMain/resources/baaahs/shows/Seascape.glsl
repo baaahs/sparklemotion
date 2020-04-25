@@ -7,14 +7,11 @@
  * Contact: tdmaav@gmail.com
  */
 
-uniform vec2 resolution;
-uniform float time;
-uniform vec2 iMouse;
-
 const int NUM_STEPS = 8;
 const float PI	 	= 3.141592;
 const float EPSILON	= 1e-3;
-#define EPSILON_NRM (0.1 / resolution.x)
+#define EPSILON_NRM (0.1 / iResolution.x)
+#define AA
 
 // sea
 const int ITER_GEOMETRY = 3;
@@ -23,9 +20,9 @@ const float SEA_HEIGHT = 0.6;
 const float SEA_CHOPPY = 4.0;
 const float SEA_SPEED = 0.8;
 const float SEA_FREQ = 0.16;
-const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
-const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
-#define SEA_TIME (1.0 + time * SEA_SPEED)
+const vec3 SEA_BASE = vec3(0.0,0.09,0.18);
+const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6)*0.6;
+#define SEA_TIME (1.0 + iTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
 // math
@@ -64,8 +61,8 @@ float specular(vec3 n,vec3 l,vec3 e,float s) {
 
 // sky
 vec3 getSkyColor(vec3 e) {
-    e.y = max(e.y,0.0);
-    return vec3(pow(1.0-e.y,2.0), 1.0-e.y, 0.6+(1.0-e.y)*0.4);
+    e.y = (max(e.y,0.0)*0.8+0.2)*0.8;
+    return vec3(pow(1.0-e.y,2.0), 1.0-e.y, 0.6+(1.0-e.y)*0.4) * 1.1;
 }
 
 // sea
@@ -113,7 +110,7 @@ float map_detailed(vec3 p) {
 
 vec3 getSeaColor(vec3 p, vec3 n, vec3 l, vec3 eye, vec3 dist) {
     float fresnel = clamp(1.0 - dot(n,-eye), 0.0, 1.0);
-    fresnel = pow(fresnel,3.0) * 0.65;
+    fresnel = pow(fresnel,3.0) * 0.5;
 
     vec3 reflected = getSkyColor(reflect(eye,n));
     vec3 refracted = SEA_BASE + diffuse(n,l,80.0) * SEA_WATER_COLOR * 0.12;
@@ -160,17 +157,15 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
     return tmid;
 }
 
-// main
-void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    vec2 uv = fragCoord.xy / resolution.xy;
+vec3 getPixel(in vec2 coord, float time) {
+    vec2 uv = coord / iResolution.xy;
     uv = uv * 2.0 - 1.0;
-    uv.x *= resolution.x / resolution.y;
-    float scaledTime = time * 0.3 + iMouse.x*0.01;
+    uv.x *= iResolution.x / iResolution.y;
 
     // ray
-    vec3 ang = vec3(sin(scaledTime*3.0)*0.1,sin(scaledTime)*0.2+0.3,scaledTime);
-    vec3 ori = vec3(0.0,3.5,scaledTime*5.0);
-    vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.15;
+    vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
+    vec3 ori = vec3(0.0,3.5,time*5.0);
+    vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.14;
     dir = normalize(dir) * fromEuler(ang);
 
     // tracing
@@ -181,15 +176,29 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec3 light = normalize(vec3(0.0,1.0,0.8));
 
     // color
-    vec3 color = mix(
+    return mix(
     getSkyColor(dir),
     getSeaColor(p,n,light,dir,dist),
-    pow(smoothstep(0.0,-0.05,dir.y),0.3));
-
-    // post
-    fragColor = vec4(pow(color,vec3(0.75)), 1.0);
+    pow(smoothstep(0.0,-0.02,dir.y),0.2));
 }
 
-void main ( void ) {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
+// main
+void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+    float time = iTime * 0.3 + iMouse.x*0.01;
+
+    #ifdef AA
+    vec3 color = vec3(0.0);
+    for(int i = -1; i <= 1; i++) {
+        for(int j = -1; j <= 1; j++) {
+            vec2 uv = fragCoord+vec2(i,j)/3.0;
+            color += getPixel(uv, time);
+        }
+    }
+    color /= 9.0;
+    #else
+    vec3 color = getPixel(fragCoord, time);
+    #endif
+
+    // post
+    fragColor = vec4(pow(color,vec3(0.65)), 1.0);
 }

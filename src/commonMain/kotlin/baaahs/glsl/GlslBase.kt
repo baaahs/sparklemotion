@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.Logger
 import com.danielgergely.kgl.*
 
 expect object GlslBase {
@@ -26,6 +27,10 @@ fun Kgl.checkForGlError() {
             GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
             else -> "unknown error $error"
         }
-        if (error != 0) throw RuntimeException("OpenGL Error: $code") else return
+        if (error != 0) {
+            val logger = Logger("GlslBase")
+            logger.error { "OpenGL Error: $code" }
+            throw RuntimeException("OpenGL Error: $code")
+        } else return
     }
 }

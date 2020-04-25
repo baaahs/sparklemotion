@@ -15,10 +15,7 @@ class AllShows {
                         .split("/").last()
                         .replace(".glsl", "")
                         .replace("_", " ")
-                    object : GlslShow(name) {
-                        override val src = shaderSource
-//                        override val program = GlslShader.renderContext.createProgram(shaderSource)
-                    }
+                    GlslShow(name, shaderSource)
                 }
         }
 

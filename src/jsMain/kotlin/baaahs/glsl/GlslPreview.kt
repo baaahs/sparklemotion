@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.Logger
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
@@ -41,7 +42,7 @@ class GlslPreview(
     }
 
     @JsName("setShaderSrc")
-    fun setShaderSrc(src: String?, errorCallback: (Array<CompiledShader.GlslError>) -> Unit = {}) {
+    fun setShaderSrc(src: String?, callback: (Array<CompiledShader.GlslError>) -> Unit = {}) {
         scene?.release()
         scene = null
         statusEl.clear()
@@ -57,9 +58,13 @@ class GlslPreview(
                         }
                     }
                 }
+                callback.invoke(emptyArray())
             } catch (e: CompiledShader.CompilationException) {
-                errorCallback.invoke(e.getErrors().toTypedArray())
+                callback.invoke(e.getErrors().toTypedArray())
                 statusEl.appendText(e.errorMessage)
+            } catch (e: Exception) {
+                statusEl.appendText(e.message ?: e.toString())
+                logger.error("failed to compile shader", e)
             }
         }
     }
@@ -83,8 +88,11 @@ class GlslPreview(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
         val links = patch.links
-        private val program = GlslProgram(gl, patch)
-        private var quad = Quad(gl, program.vertexAttribLocation, listOf(quadRect))
+        private val program = GlslProgram(gl, patch).apply {
+            setResolution(canvas.width.toFloat(), canvas.height.toFloat())
+        }
+        private var quad = Quad(gl, listOf(quadRect))
+            .apply { bind(program.vertexAttribLocation) }
 
         fun render() {
             gl.runInContext {
@@ -93,7 +101,7 @@ class GlslPreview(
                 gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
                 program.bind()
-                quad.prepareToRender {
+                quad.prepareToRender(program.vertexAttribLocation) {
                     quad.renderRect(0)
                 }
             }
@@ -103,5 +111,9 @@ class GlslPreview(
             quad.release()
             program.release()
         }
+    }
+
+    companion object {
+        val logger = Logger("GlslPreview")
     }
 }

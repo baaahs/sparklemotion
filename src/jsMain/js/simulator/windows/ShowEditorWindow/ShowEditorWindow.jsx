@@ -34,6 +34,10 @@ const ShowEditorWindow = (props) => {
           text: e.message,
           type: "error"
         })));
+
+      if (errors.length === 0) {
+        sheepSimulator.switchToShow(new baaahs.shows.GlslShow(selectedShow, src, true));
+      }
     });
   };
 
@@ -42,16 +46,22 @@ const ShowEditorWindow = (props) => {
     const allShows = sheepSimulator?.shows.toArray() || [];
     const currentShow = allShows.find(({ name }) => name === selectedShow);
 
-    let shaderSource = currentShow?.src;
-    setShowStr(shaderSource);
-    updatePreview(shaderSource);
+    if (currentShow && !currentShow.isPreview) {
+      let shaderSource = currentShow?.src;
+      setShowStr(shaderSource);
+      updatePreview(shaderSource);
+    }
   }, [selectedShow, isConnected, glslPreviewer]);
 
   const [showStr, setShowStr] = useState('');
   const onChange = useCallback(
     (newValue) => {
       setShowStr(newValue);
-      updatePreview(newValue);
+      try {
+        updatePreview(newValue);
+      } catch (e) {
+        console.error("Uncaught exception in editor onChange", e);
+      }
     },
     [setShowStr, glslPreviewer]
   );

@@ -5,9 +5,9 @@ import baaahs.getTimeMillis
 import baaahs.glshaders.GlslCode.ContentType
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
+import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
-import com.danielgergely.kgl.GL_LINK_STATUS
-import com.danielgergely.kgl.GL_TRUE
+import com.danielgergely.kgl.*
 
 class GlslProgram(private val gl: GlslContext, val patch: Patch) {
     private val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
@@ -33,6 +33,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         )
     }
 
+    private var nextTextureId = 0
     private val fragShader = gl.runInContext {
         gl.createFragmentShader("#version ${gl.glslVersion}\n\n${patch.toGlsl()}\n")
     }
@@ -63,9 +64,16 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         val providerFactory = if (uniformInput is StockUniformInput) {
             uniformInput.providerFactory
         } else {
-            { noOpProvider }
+            {
+                logger.warn { "No provider binding found for ${uniformInput.name}" }
+                noOpProvider
+            }
         }
         Binding(uniformInput, providerFactory)
+    }
+
+    fun setResolution(x: Float, y: Float) {
+        bindings.forEach { (it.provider as? ResolutionListener)?.onResolution(x, y) }
     }
 
     fun bind() {
@@ -73,14 +81,25 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         bindings.forEach { it.bind() }
     }
 
+    fun obtainTextureId(): Int {
+        check(nextTextureId <= 31) { "too many textures" }
+        return nextTextureId++
+    }
+
+    fun setUniforms() {
+    }
+
     fun release() {
+        bindings.forEach { it.release() }
 //        TODO gl.runInContext { gl.check { deleteProgram } }
     }
 
     inner class Binding(
-        val uniformInput: UniformInput,
-        providerFactory: (() -> Provider)?
+        uniformInput: UniformInput,
+        providerFactory: ((GlslProgram) -> Provider)
     ) {
+        internal val provider = providerFactory.invoke(this@GlslProgram)
+
         private val uniformLocation by lazy {
             gl.runInContext {
                 gl.check {
@@ -88,23 +107,37 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
                 }
             }
         }
-        private val provider = providerFactory?.invoke()
 
         fun bind() {
             uniformLocation?.let { uniformLocation ->
-                gl.runInContext { provider?.set(uniformLocation) }
+                gl.runInContext { provider.set(uniformLocation) }
             }
         }
+
+        fun release() = provider.release()
     }
 
     interface Provider {
         fun set(uniform: Uniform)
+        fun release() {}
     }
 
-    class ResolutionProvider : Provider {
+    class ResolutionProvider : Provider, ResolutionListener {
+        var x = 1f
+        var y = 1f
+
         override fun set(uniform: Uniform) {
-            uniform.set(320f, 150f) // TODO: these need to match the canvas size
+            uniform.set(x, y)
         }
+
+        override fun onResolution(x: Float, y: Float) {
+            this.x = x
+            this.y = y
+        }
+    }
+
+    interface ResolutionListener {
+        fun onResolution(x: Float, y: Float)
     }
 
     class TimeProvider : Provider {
@@ -114,9 +147,37 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         }
     }
 
-    class UvCoordProvider : Provider {
+    inner class UvCoordProvider : Provider, GlslRenderer.ArrangementListener {
+        private val uvCoordTextureId = obtainTextureId()
+        private var uvCoordTexture = gl.check { createTexture() }
+
+        override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
+            if (arrangement.uvCoords.isEmpty()) return
+
+            val pixWidth = arrangement.pixWidth
+            val pixHeight = arrangement.pixHeight
+            val floatBuffer = FloatBuffer(arrangement.uvCoords)
+
+            gl.check { activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
+            gl.check { bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
+            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
+            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
+            gl.check {
+                texImage2D(
+                    GL_TEXTURE_2D, 0,
+                    GL_R32F, pixWidth * 2, pixHeight, 0,
+                    GL_RED,
+                    GL_FLOAT, floatBuffer
+                )
+            }
+        }
+
         override fun set(uniform: Uniform) {
-            // No-op.
+            uniform.set(uvCoordTextureId)
+        }
+
+        override fun release() {
+            gl.check { deleteTexture(uvCoordTexture) }
         }
     }
 
@@ -124,12 +185,16 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         val shaderId: String?
     }
 
-    object Resolution : StockUniformInput("vec2", "resolution", ::ResolutionProvider)
-    object Time : StockUniformInput("float", "time", ::TimeProvider)
-    object GlFragCoord : StockUniformInput("vec4", "gl_FragCoord", ::UvCoordProvider) {
+    object Resolution : StockUniformInput("vec2", "resolution", { p -> ResolutionProvider() })
+
+    object Time : StockUniformInput("float", "time", { p -> TimeProvider() })
+
+    object GlFragCoord : StockUniformInput("vec4", "gl_FragCoord", { p -> p.noOpProvider }) {
         override val varName: String = name
         override val isImplicit = true
     }
+
+    object UvCoordsTexture : StockUniformInput("sampler2D", "sm_uvCoordsTexture", { p -> p.UvCoordProvider() })
 
     data class ShaderOut(override val shaderId: String) : Port
 
@@ -138,7 +203,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
     }
 
     open class StockUniformInput(
-        type: String, name: String, val providerFactory: () -> Provider
+        type: String, name: String, val providerFactory: (GlslProgram) -> Provider
     ) : UniformInput(type, name) {
         override val shaderId: String? = null
     }
@@ -180,6 +245,17 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
 
 
     companion object {
+        fun autoWire(colorShader: String): Patch {
+            return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ShaderFragment.ColorShader)
+        }
+
+        fun autoWire(colorShader: ShaderFragment.ColorShader): Patch {
+            return autoWire(mapOf(
+                "uv" to GlslRenderer.uvMapper,
+                "color" to colorShader
+            ))
+        }
+
         fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
             val uvProjectorName =
                 shaders.entries
@@ -206,6 +282,7 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         val logger = Logger("GlslProgram")
 
         private val defaultBindings = mapOf<ContentType, () -> UniformInput>(
+            ContentType.UvCoordinateTexture to { UvCoordsTexture },
             ContentType.UvCoordinate to { GlFragCoord },
 //            ContentType.XyCoordinate to { TODO() },
 //            ContentType.XyzCoordinate to { TODO() },

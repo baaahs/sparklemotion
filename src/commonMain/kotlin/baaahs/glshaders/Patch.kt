@@ -1,5 +1,7 @@
 package baaahs.glshaders
 
+import baaahs.shaders.GlslShader
+
 class Patch(
     shaderFragments: Map<String, ShaderFragment>,
     internal val links: List<Link>
@@ -117,4 +119,6 @@ class Patch(
         buf.append("}\n")
         return buf.toString()
     }
+
+    fun compile(): GlslProgram = GlslProgram(GlslShader.renderContext, this)
 }

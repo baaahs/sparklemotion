@@ -1,6 +1,8 @@
 package baaahs.glsl
 
 import baaahs.*
+import baaahs.glshaders.GlslAnalyzer
+import baaahs.glshaders.GlslProgram
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import com.danielgergely.kgl.*
 import kotlin.math.max
@@ -8,7 +10,7 @@ import kotlin.math.min
 
 open class GlslRenderer(
     val gl: GlslContext,
-    private val program: Program,
+    private val program: GlslProgram,
     private val uvTranslator: UvTranslator
 ) {
     private val surfacesToAdd: MutableList<GlslSurface> = mutableListOf()
@@ -19,14 +21,7 @@ open class GlslRenderer(
 
     private val glslSurfaces: MutableList<GlslSurface> = mutableListOf()
 
-    private val uvCoordTextureId = program.obtainTextureId()
-    private val rendererPlugins = program.plugins.mapNotNull { it.forRender() }
-
     var arrangement: Arrangement
-
-    private val uvCoordsUniform: Uniform = gl.check { Uniform.find(program, "sm_uvCoords") ?: throw Exception("no sm_uvCoords uniform!")}
-    private val resolutionUniform: Uniform? = gl.check { Uniform.find(program, "resolution") }
-    private val timeUniform: Uniform? = gl.check { Uniform.find(program, "time") }
 
     val stats = Stats()
 
@@ -34,6 +29,7 @@ open class GlslRenderer(
         gl.check { clearColor(0f, .5f, 0f, 1f) }
 
         arrangement = createArrangement(0, FloatArray(0), glslSurfaces)
+            .also { notifyListeners(it) }
     }
 
     fun addSurface(surface: Surface): GlslSurface? {
@@ -71,24 +67,14 @@ open class GlslRenderer(
     private fun render() {
         val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
 
-        resolutionUniform?.set(1f, 1f)
-        timeUniform?.set(thisTime)
-
-        arrangement.bindUvCoordTexture(uvCoordsUniform)
-
-        rendererPlugins.forEach { it.before() }
+        program.setUniforms()
 
         gl.check { viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
 
-        rendererPlugins.forEach { it.after() }
-
         gl.check { finish() }
-
-        val programLog = program.getInfoLog() ?: ""
-        if (programLog.isNotEmpty()) println("ProgramInfoLog: $programLog")
     }
 
     protected fun incorporateNewSurfaces() {
@@ -133,7 +119,7 @@ open class GlslRenderer(
             surfacesToAdd.clear()
 
             arrangement = createArrangement(newPixelCount, newUvCoords, glslSurfaces)
-            arrangement.bindUvCoordTexture(uvCoordsUniform)
+                .also { notifyListeners(it) }
 
             pixelCount = newPixelCount
             println("Now managing $pixelCount pixels.")
@@ -141,8 +127,17 @@ open class GlslRenderer(
     }
 
     fun release() {
-        rendererPlugins.forEach { it.release() }
         arrangement.release()
+    }
+
+    private fun notifyListeners(arrangement: Arrangement) {
+        program.bindings.forEach {
+            (it.provider as? ArrangementListener)?.onArrangementChange(arrangement)
+        }
+    }
+
+    interface ArrangementListener {
+        fun onArrangementChange(arrangement: Arrangement)
     }
 
     companion object {
@@ -172,31 +167,49 @@ open class GlslRenderer(
             }
             return rects
         }
+
+        val glslAnalyzer = GlslAnalyzer()
+
+        val uvMapper = glslAnalyzer.asShader(
+            /**language=glsl*/
+            """
+            uniform sampler2D sm_uvCoordsTexture;
+            
+            vec2 mainUvFromRaster(vec2 rasterCoord) {
+                int rasterX = int(rasterCoord.x);
+                int rasterY = int(rasterCoord.y);
+                
+                vec2 uvCoord = vec2(
+                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
+                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
+                );
+                return uvCoord;
+            }
+            """.trimIndent()
+        )
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<GlslSurface>) {
         val pixWidth = pixelCount.bufWidth
         val pixHeight = pixelCount.bufHeight
 
-        private val uniformSetters: List<UniformSetter> =
-            program.params.map { param -> UniformSetter(program, param) }
-
-        private val uvCoordTexture = gl.check { createTexture() }
         private val frameBuffer = gl.check { createFramebuffer() }
         private val renderBuffer = gl.check { createRenderbuffer() }
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
-        private val uvCoordsFloatBuffer = FloatBuffer(uvCoords)
-        private val quad: Quad = Quad(gl, program.getVertexAttribLocation(), surfaces.flatMap {
+
+        private val quad: Quad = Quad(gl, surfaces.flatMap {
             it.rects.map { rect ->
                 // Remap from pixel coordinates to normalized device coordinates.
-               Quad.Rect(
+                Quad.Rect(
                     -(rect.top / pixHeight * 2 - 1),
                     rect.left / pixWidth * 2 - 1,
                     -(rect.bottom / pixHeight * 2 - 1),
                     rect.right / pixWidth * 2 - 1
                 )
             }
-        })
+        }).apply {
+            bind(program.vertexAttribLocation)
+        }
 
         fun bindFramebuffer() {
             gl.noCheck { checkForGlError() }
@@ -211,22 +224,6 @@ open class GlslRenderer(
             if (status != GL_FRAMEBUFFER_COMPLETE) {
                 println(RuntimeException("FrameBuffer huh? $status").message)
             }
-        }
-
-        fun bindUvCoordTexture(uvCoordsLocation: Uniform) {
-            gl.check { activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
-            gl.check { bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
-            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
-            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
-            gl.check {
-                texImage2D(
-                    GL_TEXTURE_2D, 0,
-                    GL_R32F, pixWidth * 2, pixHeight, 0,
-                    GL_RED,
-                    GL_FLOAT, uvCoordsFloatBuffer
-                )
-            }
-            uvCoordsLocation.set(uvCoordTextureId)
         }
 
         fun getPixel(pixelIndex: Int): Color {
@@ -254,11 +251,10 @@ open class GlslRenderer(
 
             gl.check { deleteFramebuffer(frameBuffer) }
             gl.check { deleteRenderbuffer(renderBuffer) }
-            gl.check { deleteTexture(uvCoordTexture) }
         }
 
         fun render() {
-            quad.prepareToRender {
+            quad.prepareToRender(program.vertexAttribLocation) {
                 surfaces.forEach { surface ->
                     updateUniformsForSurface(surface)
 
@@ -270,12 +266,13 @@ open class GlslRenderer(
         }
 
         private fun updateUniformsForSurface(surface: GlslSurface) {
-            program.params.forEachIndexed { paramIndex, param ->
-                val value = surface.uniforms.values?.get(paramIndex)
-                value?.let {
-                    uniformSetters[paramIndex].set(value)
-                }
-            }
+//            TODO
+//            patch.params.forEachIndexed { paramIndex, param ->
+//                val value = surface.uniforms.values?.get(paramIndex)
+//                value?.let {
+//                    uniformSetters[paramIndex].set(value)
+//                }
+//            }
         }
     }
 

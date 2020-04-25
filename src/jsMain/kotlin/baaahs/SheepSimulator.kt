@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLInputElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -120,6 +119,11 @@ class SheepSimulator {
         doRunBlocking {
             delay(200000L)
         }
+    }
+
+    @JsName("switchToShow")
+    fun switchToShow(show: Show) {
+        pinky.switchToShow(show)
     }
 
     object NullPixels : Pixels {
