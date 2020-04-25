@@ -2,8 +2,6 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslProgram.*
 import baaahs.glsl.GlslBase
-import baaahs.testing.override
-import baaahs.testing.value
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
