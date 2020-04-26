@@ -9,6 +9,7 @@ class Uniform internal constructor(private val gl: GlslContext, private val unif
     fun set(x: Float) = gl.check { uniform1f(uniformLocation, x) }
     fun set(x: Float, y: Float) = gl.check { uniform2f(uniformLocation, x, y) }
     fun set(x: Float, y: Float, z: Float) = gl.check { uniform3f(uniformLocation, x, y, z) }
+    fun set(x: Float, y: Float, z: Float, w: Float) = gl.check { uniform4f(uniformLocation, x, y, z, w) }
 
     companion object {
         fun find(program: Program, name: String): Uniform? {

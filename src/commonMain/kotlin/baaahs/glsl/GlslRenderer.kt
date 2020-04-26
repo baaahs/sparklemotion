@@ -1,9 +1,12 @@
 package baaahs.glsl
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Logger
+import baaahs.Surface
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
+import baaahs.timeSync
 import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
@@ -65,10 +68,6 @@ open class GlslRenderer(
     }
 
     private fun render() {
-        val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
-
-        program.setUniforms()
-
         gl.check { viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
