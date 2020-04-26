@@ -29,7 +29,7 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val shader by value { GlslAnalyzer().asShader(shaderText) as ShaderFragment.ColorShader }
+            val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
             val shaders by value { mapOf("color" to shader) }
             val patch by value { AutoWirer().autoWire(shaders) }
 

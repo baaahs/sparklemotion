@@ -8,7 +8,7 @@ import kotlin.test.expect
 object PatchSpec : Spek({
     describe("GlslProgram") {
         val shaderText by value<String> { TODO() }
-        val shader by value { GlslAnalyzer().asShader(shaderText) as ShaderFragment.ColorShader }
+        val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
 
         context("GLSL generation") {
             override(shaderText) {

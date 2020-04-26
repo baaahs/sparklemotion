@@ -8,7 +8,7 @@ import kotlin.test.expect
 object ColorShaderSpec : Spek({
     describe("ColorShader") {
         val shaderText by value<String> { TODO() }
-        val shader by value { GlslAnalyzer().asShader(shaderText) as ShaderFragment.ColorShader }
+        val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("generic shaders") {
