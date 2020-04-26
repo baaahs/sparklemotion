@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.glshaders.GlslProgramSpec
+import baaahs.glshaders.PatchSpec
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.LwjglGlslManager
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
@@ -17,7 +17,7 @@ fun main() {
         LauncherDiscoveryRequestBuilder.request()
             .selectors(
                 selectClass(GlslRendererTest::class.java),
-                selectClass(GlslProgramSpec::class.java)
+                selectClass(PatchSpec::class.java)
             )
             .build()
     val launcher = LauncherFactory.create()

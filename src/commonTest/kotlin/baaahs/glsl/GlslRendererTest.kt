@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import baaahs.*
 import baaahs.geom.Vector3F
-import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.AutoWirer
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.GlslShader
 import kotlin.math.abs
@@ -43,7 +43,7 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = GlslProgram.autoWire(program).compile()
+        val glslProgram = AutoWirer().autoWire(program).compile()
         val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
@@ -77,7 +77,7 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = GlslProgram.autoWire(program).compile()
+        val glslProgram = AutoWirer().autoWire(program).compile()
         val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
@@ -112,7 +112,7 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = GlslProgram.autoWire(program).compile()
+        val glslProgram = AutoWirer().autoWire(program).compile()
         val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
@@ -179,7 +179,7 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = GlslProgram.autoWire(program).compile()
+        val glslProgram = AutoWirer().autoWire(program).compile()
         val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!

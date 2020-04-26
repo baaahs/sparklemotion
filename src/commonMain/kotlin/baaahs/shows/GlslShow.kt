@@ -3,13 +3,14 @@ package baaahs.shows
 import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslProgram
 import baaahs.glsl.GlslRenderer
 import baaahs.shaders.GlslShader
 
 class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : Show(name) {
     override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val patch = GlslProgram.autoWire(
+        val patch = AutoWirer().autoWire(
             mapOf(
                 "uv" to GlslRenderer.uvMapper,
                 "color" to GlslRenderer.glslAnalyzer.asShader(src)

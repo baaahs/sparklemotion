@@ -1,15 +1,12 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslProgram.*
-import baaahs.glsl.GlslBase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.assertEquals
 import kotlin.test.expect
 
-object GlslProgramSpec : Spek({
+object PatchSpec : Spek({
     describe("GlslProgram") {
-        val gl by value { GlslBase.manager.createContext() }
         val shaderText by value<String> { TODO() }
         val shader by value { GlslAnalyzer().asShader(shaderText) as ShaderFragment.ColorShader }
 
@@ -194,63 +191,7 @@ object GlslProgramSpec : Spek({
                     }
                 }
             }
-
-            describe(".autoWire") {
-                val shaders by value { mapOf("color" to shader) }
-                val patch by value { GlslProgram.autoWire(shaders) }
-
-                it("creates a reasonable guess patch") {
-                    expect(
-                        listOf(
-                            Time to ShaderPort("color", "time"),
-                            Resolution to ShaderPort("color", "resolution"),
-                            UserUniformInput("float", "blueness") to ShaderPort("color", "blueness"),
-                            GlFragCoord to ShaderPort("color", "gl_FragCoord")
-                        )
-                    ) { patch.links }
-                }
-
-                context("with a UV projection shader") {
-                    val uvShader by value { GlslAnalyzer().asShader(
-                        /**language=glsl*/
-                        """
-                        uniform sampler2D sm_uvCoordsTexture;
-                        
-                        vec2 mainUvFromRaster(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec2 uvCoord = vec2(
-                                texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                                texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
-                            );
-                            return uvCoord;
-                        }
-                        """.trimIndent()) }
-
-                    override(shaders) {
-                        mapOf("color" to shader, "uv" to uvShader)
-                    }
-
-                    it("creates a reasonable guess patch") {
-                        expects(
-                            listOf(
-                                Time to ShaderPort("color", "time"),
-                                Resolution to ShaderPort("color", "resolution"),
-                                UserUniformInput("float", "blueness") to ShaderPort("color", "blueness"),
-                                ShaderOut("uv") to ShaderPort("color", "gl_FragCoord"),
-                                UniformInput("sampler2D", "sm_uvCoordsTexture") to ShaderPort("uv", "sm_uvCoordsTexture")
-                            )
-                        ) { patch.links }
-                    }
-                }
-            }
         }
     }
 })
 
-fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
-    val actual = block()
-    if (actual != expected)
-        assertEquals(expected.joinToString("\n"), actual.joinToString("\n"))
-}

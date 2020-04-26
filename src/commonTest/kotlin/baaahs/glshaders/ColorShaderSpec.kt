@@ -2,7 +2,6 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.ContentType
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.LifecycleAware
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
@@ -147,7 +146,3 @@ object ColorShaderSpec : Spek({
         }
     }
 })
-
-fun <T> LifecycleAware.override(letValue: T, factory: () -> T) {
-    value(letValue, factory)
-}

@@ -1,11 +1,7 @@
 package baaahs.glshaders
 
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.Skip
-import org.spekframework.spek2.meta.*
-import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object ShaderFragmentSpec : Spek({
     describe("statements") {
@@ -46,14 +42,3 @@ object ShaderFragmentSpec : Spek({
         }
     }
 })
-
-
-@Synonym(SynonymType.TEST)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-fun <T> Suite.expectValue(expected: T, skip: Skip = Skip.No, actual: () -> T) {
-    delegate.test("should equal", skip, delegate.defaultTimeout) {
-        expect(expected, actual)
-    }
-}
-
-fun <T> undefined(): T = throw NotImplementedError("value not given")
