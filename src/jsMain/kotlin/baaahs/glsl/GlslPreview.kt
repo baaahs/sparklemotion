@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.Logger
+import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
@@ -84,7 +85,7 @@ class GlslPreview(
     }
 
     inner class Scene(shaderSrc: String) {
-        val patch = GlslProgram.autoWire(
+        val patch = AutoWirer().autoWire(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
         val links = patch.links
