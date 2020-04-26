@@ -36,10 +36,14 @@ object AutoWirerSpec : Spek({
             it("creates a reasonable guess patch") {
                 expect(
                     listOf(
-                        GlslProgram.Time to GlslProgram.ShaderPort("color", "time"),
-                        GlslProgram.Resolution to GlslProgram.ShaderPort("color", "resolution"),
-                        GlslProgram.UserUniformInput("float", "blueness") to GlslProgram.ShaderPort("color", "blueness"),
-                        GlslProgram.GlFragCoord to GlslProgram.ShaderPort("color", "gl_FragCoord")
+                        GlslProgram.Time
+                                linkTo Patch.ShaderPort("color", "time"),
+                        GlslProgram.Resolution
+                                linkTo Patch.ShaderPort("color", "resolution"),
+                        GlslProgram.UserUniformPort("float", "blueness")
+                                linkTo Patch.ShaderPort("color", "blueness"),
+                        GlslProgram.GlFragCoord
+                                linkTo Patch.ShaderPort("color", "gl_FragCoord")
                     )
                 ) { patch.links }
             }
@@ -69,17 +73,16 @@ object AutoWirerSpec : Spek({
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            GlslProgram.Time to GlslProgram.ShaderPort("color", "time"),
-                            GlslProgram.Resolution to GlslProgram.ShaderPort("color", "resolution"),
-                            GlslProgram.UserUniformInput("float", "blueness") to GlslProgram.ShaderPort(
-                                "color",
-                                "blueness"
-                            ),
-                            GlslProgram.ShaderOut("uv") to GlslProgram.ShaderPort("color", "gl_FragCoord"),
-                            GlslProgram.UniformInput("sampler2D", "sm_uvCoordsTexture") to GlslProgram.ShaderPort(
-                                "uv",
-                                "sm_uvCoordsTexture"
-                            )
+                            GlslProgram.Time
+                                    linkTo Patch.ShaderPort("color", "time"),
+                            GlslProgram.Resolution
+                                    linkTo Patch.ShaderPort("color", "resolution"),
+                            GlslProgram.UserUniformPort("float", "blueness")
+                                    linkTo Patch.ShaderPort("color", "blueness"),
+                            Patch.ShaderOut("uv")
+                                    linkTo Patch.ShaderPort("color", "gl_FragCoord"),
+                            Patch.UniformPort("sampler2D", "sm_uvCoordsTexture")
+                                    linkTo Patch.ShaderPort("uv", "sm_uvCoordsTexture")
                         )
                     ) { patch.links }
                 }

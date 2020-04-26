@@ -33,29 +33,29 @@ class Patch(
         toGlobal = toById[null] ?: emptyList()
     }
 
-    val uniformInputs: List<GlslProgram.UniformInput>
-        get() = fromGlobal.mapNotNull { (from, _) -> from as? GlslProgram.UniformInput }
+    val uniformPorts: List<UniformPort>
+        get() = fromGlobal.mapNotNull { (from, _) -> from as? UniformPort }
 
     inner class Component(
         val index: Int,
         val shaderId: String,
-        val shaderFragment: ShaderFragment,
-        val incomingLinks: List<Link>,
-        val outgoingLinks: List<Link>
+        private val shaderFragment: ShaderFragment,
+        incomingLinks: List<Link>,
+        outgoingLinks: List<Link>
     ) {
-        val prefix = "p$index"
-        val namespace = GlslCode.Namespace(prefix)
-        val portMap: Map<String, () -> String>
+        private val prefix = "p$index"
+        private val namespace = GlslCode.Namespace(prefix)
+        private val portMap: Map<String, () -> String>
 
         init {
             val tmpPortMap = hashMapOf<String, () -> String>()
 
             incomingLinks.forEach { (from, to) ->
-                if (to is GlslProgram.ShaderPort) {
-                    if (from is GlslProgram.ShaderOut) {
+                if (to is ShaderPort) {
+                    if (from is ShaderOut) {
                         tmpPortMap[to.portName] =
                             { components[from.shaderId]?.resultVar ?: error("huh? no ${from.shaderId}?") }
-                    } else if (from is GlslProgram.UniformInput) {
+                    } else if (from is UniformPort) {
                         tmpPortMap[to.portName] =
                             { from.varName }
                     }
@@ -66,7 +66,7 @@ class Patch(
             portMap = tmpPortMap
         }
 
-        val saveResult = outgoingLinks.any { (from, _) -> from is GlslProgram.ShaderOut }
+        val saveResult = outgoingLinks.any { (from, _) -> from is ShaderOut }
         val resultVar = namespace.internalQualify("result")
         val resolvedPortMap by lazy { portMap.entries.associate { (k, v) -> k to v() } }
 
@@ -101,7 +101,7 @@ class Patch(
         buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
         buf.append("\n")
 
-        uniformInputs.forEach {
+        uniformPorts.forEach {
             if (!it.isImplicit)
                 buf.append("uniform ${it.type} ${it.varName};\n")
         }
@@ -121,4 +121,51 @@ class Patch(
     }
 
     fun compile(): GlslProgram = GlslProgram(GlslShader.renderContext, this)
+
+    interface Port {
+        val shaderId: String?
+
+        infix fun linkTo(other: Port): Link = Link(this, other)
+    }
+
+    data class ShaderOut(override val shaderId: String) : Port
+
+    object PixelColor : Port {
+        override val shaderId: String? = null
+    }
+
+    open class UniformPort(val type: String, val name: String) : Port {
+        override val shaderId: String? = null
+
+        open val varName: String get() = "in_$name"
+        open val isImplicit = false
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is UniformPort) return false
+
+            if (type != other.type) return false
+            if (name != other.name) return false
+            if (shaderId != other.shaderId) return false
+            if (isImplicit != other.isImplicit) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = type.hashCode()
+            result = 31 * result + name.hashCode()
+            result = 31 * result + (shaderId?.hashCode() ?: 0)
+            result = 31 * result + isImplicit.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "UniformInput(type='$type', name='$name', shaderId=$shaderId, isImplicit=$isImplicit)"
+        }
+    }
+
+    data class ShaderPort(override val shaderId: String, val portName: String) : Port
+
+    data class Link(val from: Port, val to: Port)
 }
