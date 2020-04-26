@@ -2,7 +2,6 @@ package baaahs.shaders
 
 import baaahs.*
 import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslSurface
 import baaahs.glsl.UvTranslator
@@ -11,10 +10,9 @@ import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.JsonObject
 
 class GlslShader(
-    private val patch: Patch,
+    private val glslProgram: GlslProgram,
     private val uvTranslator: UvTranslator
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
-    private val glslProgram = patch.compile()
 
     companion object : ShaderReader<GlslShader> {
         val renderContext by lazy { GlslBase.manager.createContext() }
@@ -42,7 +40,7 @@ class GlslShader(
     class Renderer(private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
         override fun beginFrame(buffer: Buffer, pixelCount: Int) {
             // update uniforms from buffer...
-            glslSurface?.uniforms?.updateFrom(buffer.values)
+//            glslSurface?.uniforms?.updateFrom(buffer.values)
         }
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
@@ -65,10 +63,10 @@ class GlslShader(
     inner class Buffer : Shader.Buffer {
         override val shader: Shader<*> get() = this@GlslShader
 
-        val values = Array<Any?>(patch.uniformInputs.size) { }
+//        val values = Array<Any?>(patch.uniformInputs.size) { }
 
         fun update(values: List<Any?>) {
-            values.forEachIndexed { index, value -> this.values[index] = value }
+//            values.forEachIndexed { index, value -> this.values[index] = value }
         }
 
         override fun serialize(writer: ByteArrayWriter) {

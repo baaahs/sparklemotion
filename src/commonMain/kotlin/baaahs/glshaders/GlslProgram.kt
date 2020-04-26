@@ -9,8 +9,8 @@ import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 
-class GlslProgram(private val gl: GlslContext, val patch: Patch) {
-    private val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
+class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
+    internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
     private val vertexShader = gl.runInContext {
         gl.createVertexShader(
@@ -81,12 +81,12 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
         bindings.forEach { it.bind() }
     }
 
+    val userInputs: List<Binding> get() =
+        bindings.filter { it.uniformInput is UserUniformInput }
+
     fun obtainTextureId(): Int {
         check(nextTextureId <= 31) { "too many textures" }
         return nextTextureId++
-    }
-
-    fun setUniforms() {
     }
 
     fun release() {
@@ -95,12 +95,12 @@ class GlslProgram(private val gl: GlslContext, val patch: Patch) {
     }
 
     inner class Binding(
-        uniformInput: UniformInput,
+        internal val uniformInput: UniformInput,
         providerFactory: ((GlslProgram) -> Provider)
     ) {
         internal val provider = providerFactory.invoke(this@GlslProgram)
 
-        private val uniformLocation by lazy {
+        internal val uniformLocation by lazy {
             gl.runInContext {
                 gl.check {
                     getUniformLocation(id, uniformInput.varName)?.let { Uniform(gl, it) }
