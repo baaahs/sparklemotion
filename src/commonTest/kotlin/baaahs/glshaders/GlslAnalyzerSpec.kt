@@ -4,31 +4,7 @@ import baaahs.glshaders.GlslAnalyzer.GlslStatement
 import baaahs.only
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.assertEquals
 import kotlin.test.expect
-
-fun String.esc() = replace("\n", "\\n")
-
-fun GlslStatement.esc(lineNumbers: Boolean): String {
-    val buf = StringBuilder()
-    buf.append(text.trim().esc())
-    if (comments.isNotEmpty())
-        buf.append(" // ${comments.joinToString(" ") { it.trim().esc() }}")
-    if (lineNumbers)
-        buf.append(" # $lineNumber")
-    return buf.toString()
-}
-
-fun expectStatements(
-    expected: List<GlslStatement>,
-    actual: () -> List<GlslStatement>,
-    checkLineNumbers: Boolean = false
-) {
-    assertEquals(
-        expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
-        actual().map { it.esc(checkLineNumbers) }.joinToString("\n")
-    )
-}
 
 object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {

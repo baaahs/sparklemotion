@@ -2,7 +2,6 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.getTimeMillis
-import baaahs.glshaders.GlslCode.ContentType
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
@@ -245,52 +244,7 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
 
 
     companion object {
-        fun autoWire(colorShader: String): Patch {
-            return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ShaderFragment.ColorShader)
-        }
-
-        fun autoWire(colorShader: ShaderFragment.ColorShader): Patch {
-            return autoWire(mapOf(
-                "uv" to GlslRenderer.uvMapper,
-                "color" to colorShader
-            ))
-        }
-
-        fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
-            val uvProjectorName =
-                shaders.entries
-                    .find { (_, shaderFragment) -> shaderFragment.shaderType == ShaderType.Projection }
-                    ?.key
-
-            val links = arrayListOf<Link>()
-            shaders.forEach { (name, shaderFragment) ->
-                shaderFragment.inputPorts.forEach { inputPort ->
-                    val uniformInput =
-                        if (inputPort.contentType == ContentType.UvCoordinate && uvProjectorName != null) {
-                            { ShaderOut(uvProjectorName) }
-                        } else {
-                            defaultBindings[inputPort.contentType]
-                        }
-                            ?: { UserUniformInput(inputPort.type, inputPort.name) }
-
-                    links.add(uniformInput() to ShaderPort(name, inputPort.name))
-                }
-            }
-            return Patch(shaders, links)
-        }
-
         val logger = Logger("GlslProgram")
-
-        private val defaultBindings = mapOf<ContentType, () -> UniformInput>(
-            ContentType.UvCoordinateTexture to { UvCoordsTexture },
-            ContentType.UvCoordinate to { GlFragCoord },
-//            ContentType.XyCoordinate to { TODO() },
-//            ContentType.XyzCoordinate to { TODO() },
-//            ContentType.Color to { TODO() },
-            ContentType.Time to { Time },
-            ContentType.Resolution to { Resolution }
-//            ContentType.Unknown to { TODO() }
-        )
     }
 }
 
