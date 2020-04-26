@@ -4,10 +4,10 @@ import baaahs.glsl.GlslRenderer
 
 class AutoWirer {
     fun autoWire(colorShader: String): Patch {
-        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ShaderFragment.ColorShader)
+        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader)
     }
 
-    fun autoWire(colorShader: ShaderFragment.ColorShader): Patch {
+    fun autoWire(colorShader: ColorShader): Patch {
         return autoWire(mapOf(
             "uv" to GlslRenderer.uvMapper,
             "color" to colorShader
@@ -17,7 +17,7 @@ class AutoWirer {
     fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
         val uvProjectorName =
             shaders.entries
-                .find { (_, shaderFragment) -> shaderFragment.shaderType == ShaderType.Projection }
+                .find { (_, shaderFragment) -> shaderFragment.shaderType == ShaderFragment.Type.Projection }
                 ?.key
 
         val links = arrayListOf<Patch.Link>()
