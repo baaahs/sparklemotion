@@ -20,24 +20,24 @@ class AutoWirer {
                 .find { (_, shaderFragment) -> shaderFragment.shaderType == ShaderType.Projection }
                 ?.key
 
-        val links = arrayListOf<Link>()
+        val links = arrayListOf<Patch.Link>()
         shaders.forEach { (name, shaderFragment) ->
             shaderFragment.inputPorts.forEach { inputPort ->
                 val uniformInput =
                     if (inputPort.contentType == GlslCode.ContentType.UvCoordinate && uvProjectorName != null) {
-                        { GlslProgram.ShaderOut(uvProjectorName) }
+                        { Patch.ShaderOut(uvProjectorName) }
                     } else {
                         defaultBindings[inputPort.contentType]
                     }
-                        ?: { GlslProgram.UserUniformInput(inputPort.type, inputPort.name) }
+                        ?: { GlslProgram.UserUniformPort(inputPort.type, inputPort.name) }
 
-                links.add(uniformInput() to GlslProgram.ShaderPort(name, inputPort.name))
+                links.add(Patch.Link(uniformInput(), Patch.ShaderPort(name, inputPort.name)))
             }
         }
         return Patch(shaders, links)
     }
 
-    private val defaultBindings = mapOf<GlslCode.ContentType, () -> GlslProgram.UniformInput>(
+    private val defaultBindings = mapOf<GlslCode.ContentType, () -> Patch.UniformPort>(
         GlslCode.ContentType.UvCoordinateTexture to { GlslProgram.UvCoordsTexture },
         GlslCode.ContentType.UvCoordinate to { GlslProgram.GlFragCoord },
 //            ContentType.XyCoordinate to { TODO() },

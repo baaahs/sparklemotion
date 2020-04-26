@@ -52,7 +52,7 @@ class GlslPreview(
                 scene = Scene(src).also {
                     statusEl.appendText("Inputs:\n")
                     it.links.forEach { (from, to) ->
-                        if (from is GlslProgram.UserUniformInput) {
+                        if (from is GlslProgram.UserUniformPort) {
                             statusEl.appendText(from.toString())
                             statusEl.appendText("\n")
                         }

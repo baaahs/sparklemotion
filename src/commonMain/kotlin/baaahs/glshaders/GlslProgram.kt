@@ -59,8 +59,8 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
         }
     }
 
-    val bindings = patch.uniformInputs.map { uniformInput ->
-        val providerFactory = if (uniformInput is StockUniformInput) {
+    val bindings = patch.uniformPorts.map { uniformInput ->
+        val providerFactory = if (uniformInput is StockUniformPort) {
             uniformInput.providerFactory
         } else {
             {
@@ -81,7 +81,7 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
     }
 
     val userInputs: List<Binding> get() =
-        bindings.filter { it.uniformInput is UserUniformInput }
+        bindings.filter { it.uniformPort is UserUniformPort }
 
     fun obtainTextureId(): Int {
         check(nextTextureId <= 31) { "too many textures" }
@@ -94,7 +94,7 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
     }
 
     inner class Binding(
-        internal val uniformInput: UniformInput,
+        internal val uniformPort: Patch.UniformPort,
         providerFactory: ((GlslProgram) -> Provider)
     ) {
         internal val provider = providerFactory.invoke(this@GlslProgram)
@@ -102,7 +102,7 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
         internal val uniformLocation by lazy {
             gl.runInContext {
                 gl.check {
-                    getUniformLocation(id, uniformInput.varName)?.let { Uniform(gl, it) }
+                    getUniformLocation(id, uniformPort.varName)?.let { Uniform(gl, it) }
                 }
             }
         }
@@ -180,72 +180,27 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
         }
     }
 
-    interface Port {
-        val shaderId: String?
-    }
+    object Resolution : StockUniformPort("vec2", "resolution", { p -> ResolutionProvider() })
 
-    object Resolution : StockUniformInput("vec2", "resolution", { p -> ResolutionProvider() })
+    object Time : StockUniformPort("float", "time", { p -> TimeProvider() })
 
-    object Time : StockUniformInput("float", "time", { p -> TimeProvider() })
-
-    object GlFragCoord : StockUniformInput("vec4", "gl_FragCoord", { p -> p.noOpProvider }) {
+    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", { p -> p.noOpProvider }) {
         override val varName: String = name
         override val isImplicit = true
     }
 
-    object UvCoordsTexture : StockUniformInput("sampler2D", "sm_uvCoordsTexture", { p -> p.UvCoordProvider() })
+    object UvCoordsTexture : StockUniformPort("sampler2D", "sm_uvCoordsTexture", { p -> p.UvCoordProvider() })
 
-    data class ShaderOut(override val shaderId: String) : Port
-
-    object PixelColor : Port {
-        override val shaderId: String? = null
-    }
-
-    open class StockUniformInput(
+    open class StockUniformPort(
         type: String, name: String, val providerFactory: (GlslProgram) -> Provider
-    ) : UniformInput(type, name) {
+    ) : Patch.UniformPort(type, name) {
         override val shaderId: String? = null
     }
 
-    open class UniformInput(val type: String, val name: String) : Port {
-        override val shaderId: String? = null
-
-        open val varName: String get() = "in_$name"
-        open val isImplicit = false
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is UniformInput) return false
-
-            if (type != other.type) return false
-            if (name != other.name) return false
-            if (shaderId != other.shaderId) return false
-            if (isImplicit != other.isImplicit) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = type.hashCode()
-            result = 31 * result + name.hashCode()
-            result = 31 * result + (shaderId?.hashCode() ?: 0)
-            result = 31 * result + isImplicit.hashCode()
-            return result
-        }
-
-        override fun toString(): String {
-            return "UniformInput(type='$type', name='$name', shaderId=$shaderId, isImplicit=$isImplicit)"
-        }
-    }
-
-    class UserUniformInput(type: String, name: String) : UniformInput(type, name)
-
-    data class ShaderPort(override val shaderId: String, val portName: String) : Port
+    class UserUniformPort(type: String, name: String) : Patch.UniformPort(type, name)
 
 
     companion object {
         val logger = Logger("GlslProgram")
     }
 }
-
-typealias Link = Pair<GlslProgram.Port, GlslProgram.Port>

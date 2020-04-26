@@ -20,7 +20,7 @@ class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : 
         val program = patch.compile()
         val shader = GlslShader(program, model.defaultUvTranslator)
         val userInputs = program.userInputs.map { binding ->
-            val uniformInput = binding.uniformInput
+            val uniformInput = binding.uniformPort
             val name = uniformInput.name
             val varName = uniformInput.varName
 
