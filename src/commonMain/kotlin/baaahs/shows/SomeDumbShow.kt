@@ -8,13 +8,13 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 object SomeDumbShow : Show("SomeDumbShow") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
+    override fun createRenderer(model: Model<*>, showContext: ShowContext) = object : Renderer {
+        val colorPicker = showContext.getGadget("color", ColorPicker("Color"))
         val pixelShader = PixelShader()
 
         val pixelShaderBuffers =
-            showRunner.allSurfaces.map { surface -> showRunner.getShaderBuffer(surface, pixelShader) }
-        val movingHeads = model.movingHeads.map { showRunner.getMovingHeadBuffer(it) }
+            showContext.allSurfaces.map { surface -> showContext.getShaderBuffer(surface, pixelShader) }
+        val movingHeads = model.movingHeads.map { showContext.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val seed = Random(0)

@@ -10,28 +10,28 @@ import kotlin.math.PI
 import kotlin.random.Random
 
 object CompositeShow : Show("Composite") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color", initialValue = Color.BLUE))
+    override fun createRenderer(model: Model<*>, showContext: ShowContext) = object : Renderer {
+        val colorPicker = showContext.getGadget("color", ColorPicker("Color", initialValue = Color.BLUE))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
 
-        private val shaderBufs = showRunner.allSurfaces.associateWith { surface -> shaderBufsFor(surface) }
+        private val shaderBufs = showContext.allSurfaces.associateWith { surface -> shaderBufsFor(surface) }
             .toMutableMap()
 
         private fun shaderBufsFor(surface: Surface): ShaderBufs {
-            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
+            val solidShaderBuffer = showContext.getShaderBuffer(surface, solidShader)
+            val sineWaveShaderBuffer = showContext.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
+                showContext.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD)
 
             return ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = showRunner.allMovingHeads.map { showRunner.getMovingHeadBuffer(it) }
+        private val movingHeadBuffers = showContext.allMovingHeads.map { showContext.getMovingHeadBuffer(it) }
 
         override fun nextFrame() {
             val theta = ((getTimeMillis() % 10000 / 1000f) % (2 * PI)).toFloat()
