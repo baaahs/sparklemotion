@@ -9,7 +9,7 @@ import baaahs.glsl.GlslRenderer
 import baaahs.shaders.GlslShader
 
 class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : Show(name) {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
+    override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
         val patch = AutoWirer().autoWire(
             mapOf(
                 "uv" to GlslRenderer.uvMapper,
@@ -26,7 +26,7 @@ class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : 
 
             when (uniformInput.type) {
                 "float" -> {
-                    val slider = showRunner.getGadget(
+                    val slider = showContext.getGadget(
                         "glsl_$varName",
                         Slider(
                             name //,
@@ -42,7 +42,7 @@ class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : 
                     }
                 }
                 "vec4" -> {
-                    val colorPicker = showRunner.getGadget("glsl_$varName", ColorPicker(name))
+                    val colorPicker = showContext.getGadget("glsl_$varName", ColorPicker(name))
                     object : GadgetDataSource(colorPicker) {
                         override fun update() {
                             binding.uniformLocation?.set(
@@ -67,7 +67,7 @@ class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : 
             } as DataSource
         }
 
-        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
+        val buffers = showContext.allSurfaces.associateWithTo(hashMapOf()) { showContext.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
@@ -85,7 +85,7 @@ class GlslShow(name: String, val src: String, val isPreview: Boolean = false) : 
 
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
                 removedSurfaces.forEach { buffers.remove(it) }
-                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
+                newSurfaces.forEach { buffers[it] = showContext.getShaderBuffer(it, shader) }
             }
         }
     }

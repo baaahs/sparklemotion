@@ -3,17 +3,17 @@ package baaahs.shows
 import baaahs.Color
 import baaahs.Model
 import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.ShowContext
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.PixelShader
 
 object CreepingPixelsShow : Show("Creeping Pixels") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
+    override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
+        val colorPicker = showContext.getGadget("color", ColorPicker("Color"))
 
         val shader = PixelShader(PixelShader.Encoding.INDEXED_2)
-        val shaderBuffers = showRunner.allSurfaces.map {
-            showRunner.getShaderBuffer(it, shader).apply {
+        val shaderBuffers = showContext.allSurfaces.map {
+            showContext.getShaderBuffer(it, shader).apply {
                 palette[0] = Color.BLACK
             }
         }

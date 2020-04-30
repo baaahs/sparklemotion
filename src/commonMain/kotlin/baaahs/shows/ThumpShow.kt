@@ -3,7 +3,7 @@ package baaahs.shows
 import baaahs.Color
 import baaahs.Model
 import baaahs.Show
-import baaahs.ShowRunner
+import baaahs.ShowContext
 import baaahs.gadgets.ColorPicker
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
@@ -13,28 +13,28 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 object ThumpShow : Show("Thump") {
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner) = object : Renderer {
-        private val beatSource = showRunner.getBeatSource()
-        val colorPicker = showRunner.getGadget("color", ColorPicker("Color"))
+    override fun createRenderer(model: Model<*>, showContext: ShowContext) = object : Renderer {
+        private val beatSource = showContext.getBeatSource()
+        val colorPicker = showContext.getGadget("color", ColorPicker("Color"))
 
         val solidShader = SolidShader()
         val sineWaveShader = SineWaveShader()
         val compositorShader = CompositorShader(solidShader, sineWaveShader)
 
-        private val shaderBufs = showRunner.allSurfaces.map { surface ->
-            val solidShaderBuffer = showRunner.getShaderBuffer(surface, solidShader)
+        private val shaderBufs = showContext.allSurfaces.map { surface ->
+            val solidShaderBuffer = showContext.getShaderBuffer(surface, solidShader)
 
-            val sineWaveShaderBuffer = showRunner.getShaderBuffer(surface, sineWaveShader).apply {
+            val sineWaveShaderBuffer = showContext.getShaderBuffer(surface, sineWaveShader).apply {
                 density = Random.nextFloat() * 20
             }
 
             val compositorShaderBuffer =
-                showRunner.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
+                showContext.getCompositorBuffer(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode.ADD, 1f)
 
             ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer)
         }
 
-        private val movingHeadBuffers = model.movingHeads.map { showRunner.getMovingHeadBuffer(it) }
+        private val movingHeadBuffers = model.movingHeads.map { showContext.getMovingHeadBuffer(it) }
 
         init {
 //        println("Created new CompositeShow, we have ${shaderBufs.size} buffers")
@@ -42,7 +42,7 @@ object ThumpShow : Show("Thump") {
 
         override fun nextFrame() {
 //            val theta = ((getTimeMillis() / 1000f) % (2 * PI)).toFloat()
-            val beat = showRunner.currentBeat
+            val beat = showContext.currentBeat
 
             var i = 0
             val beatColor: Color = Color.WHITE.fade(colorPicker.color, beat % 1)
