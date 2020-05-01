@@ -99,7 +99,6 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 implementation("spek:spek-dsl:$spek_version")
-//                implementation("spek:spek-runtime:$spek_version")
             }
         }
 
@@ -144,9 +143,6 @@ kotlin {
                 implementation(kotlin("test-junit5"))
                 implementation("org.junit.vintage:junit-vintage-engine:5.6.2")
 
-//                implementation("org.spekframework.spek2:spek-dsl-jvm:$spek_version")
-//                implementation("org.spekframework.spek2:spek-runtime-metadata:$spek_version")
-//                implementation("org.spekframework.spek2:spek-runtime-jvm:$spek_version")
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 
@@ -205,8 +201,6 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-//                implementation("org.spekframework.spek2:spek-dsl-js:$spek_version")
-//                implementation("org.spekframework.spek2:spek-runtime-js:$spek_version")
                 implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:$atrium_version")
             }
         }

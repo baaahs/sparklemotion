@@ -65,7 +65,7 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                 ?: {
                     val desc = it.name.replace(Regex("^i"), "").nameify()
-                    InputPort(it.type, it.name, desc, GlslCode.ContentType.Unknown, it)
+                    InputPort(it.type, it.name, desc, GlslCode.ContentType.Unknown, null, it)
                 }()
         }
 
@@ -101,7 +101,7 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
-                ?: InputPort(it.type, it.name, it.name.nameify(), GlslCode.ContentType.Unknown, it)
+                ?: InputPort(it.type, it.name, it.name.nameify(), GlslCode.ContentType.Unknown)
         } + uvCoordPort
     }
 

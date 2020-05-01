@@ -5,6 +5,7 @@ data class InputPort(
     val name: String,
     val description: String?,
     val contentType: GlslCode.ContentType,
+    val pluginId: String? = contentType.pluginId,
     val glslVar: GlslCode.GlslVar? = null
 ) {
     fun toGlsl(namespace: GlslCode.Namespace): Any {

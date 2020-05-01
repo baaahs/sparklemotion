@@ -1,14 +1,18 @@
 package baaahs.glshaders
 
 import baaahs.Logger
-import baaahs.getTimeMillis
+import baaahs.glshaders.GlslCode.ContentType
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
-import com.danielgergely.kgl.*
+import com.danielgergely.kgl.GL_LINK_STATUS
+import com.danielgergely.kgl.GL_TRUE
 
-class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
+class GlslProgram(
+    internal val gl: GlslContext,
+    private val patch: Patch
+) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
     private val vertexShader = gl.runInContext {
@@ -53,31 +57,52 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    val noOpProvider = object : Provider {
+    val noOpProvider = object : UniformProvider {
         override fun set(uniform: Uniform) {
             // TODO
         }
     }
 
-    val bindings = patch.uniformPorts.map { uniformInput ->
-        val providerFactory = if (uniformInput is StockUniformPort) {
-            uniformInput.providerFactory
-        } else {
-            {
-                logger.warn { "No provider binding found for ${uniformInput.name}" }
-                noOpProvider
+    private lateinit var bindings: List<Binding>
+
+    fun bind(fn: (Patch.UniformPort) -> UniformProvider?) {
+        if (::bindings.isInitialized) {
+            throw IllegalStateException("program is already bound")
+        }
+
+        bindings = patch.uniformPorts.mapNotNull { uniformPort ->
+            val uniformProvider = fn(uniformPort)
+            if (uniformProvider != null) {
+                Binding(uniformPort, uniformProvider)
+            } else {
+                logger.warn { "no UniformProvider bound for $uniformPort" }
+                null
             }
         }
-        Binding(uniformInput, providerFactory)
     }
+
+    private inline fun <reified T> bindingsOf(): List<T> {
+        return bindings
+            .map { it.uniformProvider }
+            .filterIsInstance<T>()
+    }
+
+    val arrangementListeners: List<GlslRenderer.ArrangementListener>
+        get() = bindingsOf()
+
+    val resolutionListeners: List<ResolutionListener>
+        get() = bindingsOf()
 
     fun setResolution(x: Float, y: Float) {
-        bindings.forEach { (it.provider as? ResolutionListener)?.onResolution(x, y) }
+        resolutionListeners.forEach { it.onResolution(x, y) }
     }
 
-    fun bind() {
-        gl.runInContext { gl.check { useProgram(id) } }
-        bindings.forEach { it.bind() }
+    fun prepareToDraw() {
+        gl.runInContext {
+            gl.check { useProgram(id) }
+
+            bindings.forEach { it.setUniform() }
+        }
     }
 
     val userInputs: List<Binding> get() =
@@ -95,10 +120,8 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
 
     inner class Binding(
         internal val uniformPort: Patch.UniformPort,
-        providerFactory: ((GlslProgram) -> Provider)
+        val uniformProvider: UniformProvider
     ) {
-        internal val provider = providerFactory.invoke(this@GlslProgram)
-
         internal val uniformLocation by lazy {
             gl.runInContext {
                 gl.check {
@@ -107,93 +130,36 @@ class GlslProgram(internal val gl: GlslContext, val patch: Patch) {
             }
         }
 
-        fun bind() {
+        fun setUniform() {
             uniformLocation?.let { uniformLocation ->
-                gl.runInContext { provider.set(uniformLocation) }
+                uniformProvider.set(uniformLocation)
             }
         }
 
-        fun release() = provider.release()
+        fun release() = uniformProvider.release()
     }
 
-    interface Provider {
+    interface UniformProvider {
         fun set(uniform: Uniform)
         fun release() {}
-    }
-
-    class ResolutionProvider : Provider, ResolutionListener {
-        var x = 1f
-        var y = 1f
-
-        override fun set(uniform: Uniform) {
-            uniform.set(x, y)
-        }
-
-        override fun onResolution(x: Float, y: Float) {
-            this.x = x
-            this.y = y
-        }
     }
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
     }
 
-    class TimeProvider : Provider {
-        override fun set(uniform: Uniform) {
-            val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
-            uniform.set(thisTime)
-        }
-    }
+    object Resolution : StockUniformPort("vec2", "resolution", ContentType.Resolution.pluginId!!)
 
-    inner class UvCoordProvider : Provider, GlslRenderer.ArrangementListener {
-        private val uvCoordTextureId = obtainTextureId()
-        private var uvCoordTexture = gl.check { createTexture() }
+    object Time : StockUniformPort("float", "time", ContentType.Time.pluginId!!)
 
-        override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
-            if (arrangement.uvCoords.isEmpty()) return
-
-            val pixWidth = arrangement.pixWidth
-            val pixHeight = arrangement.pixHeight
-            val floatBuffer = FloatBuffer(arrangement.uvCoords)
-
-            gl.check { activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
-            gl.check { bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
-            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
-            gl.check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
-            gl.check {
-                texImage2D(
-                    GL_TEXTURE_2D, 0,
-                    GL_R32F, pixWidth * 2, pixHeight, 0,
-                    GL_RED,
-                    GL_FLOAT, floatBuffer
-                )
-            }
-        }
-
-        override fun set(uniform: Uniform) {
-            uniform.set(uvCoordTextureId)
-        }
-
-        override fun release() {
-            gl.check { deleteTexture(uvCoordTexture) }
-        }
-    }
-
-    object Resolution : StockUniformPort("vec2", "resolution", { p -> ResolutionProvider() })
-
-    object Time : StockUniformPort("float", "time", { p -> TimeProvider() })
-
-    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", { p -> p.noOpProvider }) {
+    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", "baaahs:nope") {
         override val varName: String = name
         override val isImplicit = true
     }
 
-    object UvCoordsTexture : StockUniformPort("sampler2D", "sm_uvCoordsTexture", { p -> p.UvCoordProvider() })
+    object UvCoordsTexture : StockUniformPort("sampler2D", "sm_uvCoordsTexture", ContentType.UvCoordinateTexture.pluginId!!)
 
-    open class StockUniformPort(
-        type: String, name: String, val providerFactory: (GlslProgram) -> Provider
-    ) : Patch.UniformPort(type, name) {
+    open class StockUniformPort(type: String, name: String, val pluginId: String) : Patch.UniformPort(type, name) {
         override val shaderId: String? = null
     }
 

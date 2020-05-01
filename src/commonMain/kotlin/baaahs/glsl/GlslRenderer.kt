@@ -57,7 +57,8 @@ open class GlslRenderer(
 
     fun draw() {
         gl.runInContext {
-            program.bind()
+            program.prepareToDraw()
+
             stats.addSurfacesMs += timeSync { incorporateNewSurfaces() }
             stats.bindFbMs += timeSync { arrangement.bindFramebuffer() }
             stats.renderMs += timeSync { render() }
@@ -130,8 +131,8 @@ open class GlslRenderer(
     }
 
     private fun notifyListeners(arrangement: Arrangement) {
-        program.bindings.forEach {
-            (it.provider as? ArrangementListener)?.onArrangementChange(arrangement)
+        program.arrangementListeners.forEach {
+            it.onArrangementChange(arrangement)
         }
     }
 
