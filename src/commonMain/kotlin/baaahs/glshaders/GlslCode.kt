@@ -96,15 +96,15 @@ class GlslCode(
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
-    enum class ContentType(val description: String?) {
+    enum class ContentType(val description: String?, val pluginId: String? = null) {
         RasterCoordinate("Raster Coordinate"),
         UvCoordinate("U/V Coordinate"),
-        UvCoordinateTexture("U/V Coordinates Texture"),
+        UvCoordinateTexture("U/V Coordinates Texture", "baaahs.Core:uvCoords"),
         XyCoordinate("X/Y Coordinate"),
         XyzCoordinate("X/Y/Z Coordinate"),
         Color("Color"),
-        Time("Time"),
-        Resolution("Resolution"),
+        Time("Time", "baaahs.Core:time"),
+        Resolution("Resolution", "baaahs.Core:resolution"),
         Unknown(null)
     }
 

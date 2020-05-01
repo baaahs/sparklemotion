@@ -2,20 +2,19 @@ package baaahs.shaders
 
 import baaahs.*
 import baaahs.glshaders.GlslProgram
-import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslSurface
-import baaahs.glsl.UvTranslator
+import baaahs.glsl.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.JsonObject
 
 class GlslShader(
     private val glslProgram: GlslProgram,
-    private val uvTranslator: UvTranslator
+    private val uvTranslator: UvTranslator,
+    private val renderContext: GlslContext = globalRenderContext
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
-        val renderContext by lazy { GlslBase.manager.createContext() }
+        val globalRenderContext by lazy { GlslBase.manager.createContext() }
 
         override fun parse(reader: ByteArrayReader): GlslShader = TODO("nope")
     }
@@ -28,19 +27,21 @@ class GlslShader(
         val poolKey = GlslShader::class to glslProgram
         val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(glslProgram, uvTranslator) }
         val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
-        return Renderer(glslSurface)
+        return Renderer(null, glslSurface)
     }
 
     override fun createRenderer(surface: Surface): Renderer {
         val glslRenderer = renderContext.createRenderer(glslProgram, uvTranslator)
         val glslSurface = glslRenderer.addSurface(surface)
-        return Renderer(glslSurface)
+        return Renderer(glslRenderer, glslSurface)
     }
 
-    class Renderer(private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
+    class Renderer(val glslRenderer: GlslRenderer?, private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
         override fun beginFrame(buffer: Buffer, pixelCount: Int) {
             // update uniforms from buffer...
 //            glslSurface?.uniforms?.updateFrom(buffer.values)
+
+            glslRenderer?.draw()
         }
 
         override fun draw(buffer: Buffer, pixelIndex: Int): Color {
@@ -49,7 +50,7 @@ class GlslShader(
     }
 
     class PooledRenderer(program: GlslProgram, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
-        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
+        val glslRenderer = globalRenderContext.createRenderer(program, uvTranslator)
 
         override fun preDraw() {
             glslRenderer.draw()

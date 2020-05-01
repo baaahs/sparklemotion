@@ -1,9 +1,7 @@
 package baaahs.glsl
 
 import baaahs.Logger
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.*
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import org.w3c.dom.Element
@@ -89,9 +87,23 @@ class GlslPreview(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
         val links = patch.links
-        private val program = GlslProgram(gl, patch).apply {
-            setResolution(canvas.width.toFloat(), canvas.height.toFloat())
+        private val program = GlslProgram(gl, patch)
+
+        init {
+            program.bind { uniformPort -> providerFromPlugin(uniformPort, program) }
+            program.setResolution(canvas.width.toFloat(), canvas.height.toFloat())
         }
+
+        private fun providerFromPlugin(
+            uniformPort: Patch.UniformPort,
+            program: GlslProgram
+        ): GlslProgram.UniformProvider? {
+            return (uniformPort as? GlslProgram.StockUniformPort)?.let {
+                val plugins = Plugins.findAll()
+                plugins.matchUniformProvider(uniformPort.type, uniformPort.pluginId, program)
+            }
+        }
+
         private var quad = Quad(gl, listOf(quadRect))
             .apply { bind(program.vertexAttribLocation) }
 
@@ -101,7 +113,7 @@ class GlslPreview(
                 gl.check { clearColor(1f, 0f, 0f, 1f) }
                 gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
-                program.bind()
+                program.prepareToDraw()
                 quad.prepareToRender(program.vertexAttribLocation) {
                     quad.renderRect(0)
                 }

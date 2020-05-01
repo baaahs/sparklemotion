@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.shaders.GlslShader
+import baaahs.glsl.GlslContext
 
 class Patch(
     shaderFragments: Map<String, ShaderFragment>,
@@ -34,7 +34,7 @@ class Patch(
     }
 
     val uniformPorts: List<UniformPort>
-        get() = fromGlobal.mapNotNull { (from, _) -> from as? UniformPort }
+        get() = fromGlobal.map { it.from }.filterIsInstance<UniformPort>()
 
     inner class Component(
         val index: Int,
@@ -120,7 +120,8 @@ class Patch(
         return buf.toString()
     }
 
-    fun compile(): GlslProgram = GlslProgram(GlslShader.renderContext, this)
+    fun compile(glslContext: GlslContext): GlslProgram =
+        GlslProgram(glslContext, this)
 
     interface Port {
         val shaderId: String?

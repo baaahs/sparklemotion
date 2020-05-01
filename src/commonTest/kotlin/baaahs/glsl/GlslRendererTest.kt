@@ -43,8 +43,8 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = AutoWirer().autoWire(program).compile()
-        val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
+        val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
@@ -77,8 +77,8 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = AutoWirer().autoWire(program).compile()
-        val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
+        val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
 
@@ -112,8 +112,8 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = AutoWirer().autoWire(program).compile()
-        val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
+        val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
         val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
@@ -179,8 +179,8 @@ class GlslRendererTest {
             }
             """.trimIndent()
 
-        val glslProgram = AutoWirer().autoWire(program).compile()
-        val renderer = GlslRenderer(GlslShader.renderContext, glslProgram, UvTranslatorForTest)
+        val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
 
         val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
         val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!

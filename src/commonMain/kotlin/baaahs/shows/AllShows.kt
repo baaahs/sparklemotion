@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.getResource
+import baaahs.shaders.GlslShader
 
 class AllShows {
     companion object {
@@ -15,7 +16,7 @@ class AllShows {
                         .split("/").last()
                         .replace(".glsl", "")
                         .replace("_", " ")
-                    GlslShow(name, shaderSource)
+                    GlslShow(name, shaderSource, glslContext = GlslShader.globalRenderContext)
                 }
         }
 
