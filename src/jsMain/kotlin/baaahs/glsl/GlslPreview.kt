@@ -1,7 +1,9 @@
 package baaahs.glsl
 
-import baaahs.Logger
+import baaahs.*
 import baaahs.glshaders.*
+import baaahs.shaders.CompositingMode
+import baaahs.shaders.CompositorShader
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import org.w3c.dom.Element
@@ -100,7 +102,7 @@ class GlslPreview(
         ): GlslProgram.UniformProvider? {
             return (uniformPort as? GlslProgram.StockUniformPort)?.let {
                 val plugins = Plugins.findAll()
-                plugins.matchUniformProvider(uniformPort.type, uniformPort.pluginId, program)
+                plugins.matchUniformProvider(uniformPort, program, FakeShowContext())
             }
         }
 
@@ -124,6 +126,44 @@ class GlslPreview(
             quad.release()
             program.release()
         }
+    }
+
+    inner class FakeShowContext : ShowContext {
+        override val allSurfaces: List<Surface>
+            get() = TODO("not implemented")
+        override val allUnusedSurfaces: List<Surface>
+            get() = TODO("not implemented")
+        override val allMovingHeads: List<MovingHead>
+            get() = TODO("not implemented")
+        override val currentBeat: Float
+            get() = TODO("not implemented")
+
+        override fun getBeatSource(): BeatSource {
+            TODO("not implemented")
+        }
+
+        override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+            TODO("not implemented")
+        }
+
+        override fun getCompositorBuffer(
+            surface: Surface,
+            bufferA: Shader.Buffer,
+            bufferB: Shader.Buffer,
+            mode: CompositingMode,
+            fade: Float
+        ): CompositorShader.Buffer {
+            TODO("not implemented")
+        }
+
+        override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
+            TODO("not implemented")
+        }
+
+        override fun <T : Gadget> getGadget(name: String, gadget: T): T {
+            TODO("not implemented")
+        }
+
     }
 
     companion object {

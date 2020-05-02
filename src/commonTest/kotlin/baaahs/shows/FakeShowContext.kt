@@ -5,6 +5,8 @@ import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 
 class FakeShowContext : ShowContext {
+    val gadgets: MutableMap<String, Gadget> = mutableMapOf()
+
     override val allSurfaces: List<Surface> = emptyList()
     override val allUnusedSurfaces: List<Surface> = emptyList()
     override val allMovingHeads: List<MovingHead> = emptyList()
@@ -36,7 +38,8 @@ class FakeShowContext : ShowContext {
     }
 
     override fun <T : Gadget> getGadget(name: String, gadget: T): T {
-        TODO("not implemented")
+        gadgets[name] = gadget
+        return gadget
     }
 
     fun drawFrame() {

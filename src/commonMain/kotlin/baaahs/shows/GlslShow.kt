@@ -1,15 +1,10 @@
 package baaahs.shows
 
 import baaahs.*
-import baaahs.gadgets.ColorPicker
-import baaahs.gadgets.Slider
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
-import baaahs.glsl.Uniform
 import baaahs.shaders.GlslShader
 
 class GlslShow(
@@ -28,9 +23,9 @@ class GlslShow(
 
         val program = patch.compile(glslContext)
 
+        val plugins = Plugins.findAll()
         program.bind { uniformPort ->
-            providerFromPlugin(uniformPort, program)
-                ?: providerFromGadget(uniformPort, showContext)
+            plugins.matchUniformProvider(uniformPort, program, showContext)
         }
 
         val shader = GlslShader(program, model.defaultUvTranslator, glslContext)
@@ -50,64 +45,6 @@ class GlslShow(
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
                 removedSurfaces.forEach { buffers.remove(it) }
                 newSurfaces.forEach { buffers[it] = showContext.getShaderBuffer(it, shader) }
-            }
-        }
-    }
-
-    private fun providerFromPlugin(
-        uniformPort: Patch.UniformPort,
-        program: GlslProgram
-    ): GlslProgram.UniformProvider? {
-        return (uniformPort as? GlslProgram.StockUniformPort)?.let {
-            val plugins = Plugins.findAll()
-            plugins.matchUniformProvider(uniformPort.type, uniformPort.pluginId, program)
-        }
-    }
-
-    private fun providerFromGadget(
-        uniformPort: Patch.UniformPort,
-        showContext: ShowContext
-    ): GlslProgram.UniformProvider? {
-        val name = uniformPort.name
-        val varName = uniformPort.varName
-
-        when (uniformPort.type) {
-            "float" -> {
-                val slider = showContext.getGadget(
-                    "glsl_$varName",
-                    Slider(
-                        name //,
-                        //                            initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
-                        //                            minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
-                        //                            maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
-                    )
-                )
-                return object : GlslProgram.UniformProvider {
-                    override fun set(uniform: Uniform) = uniform.set(slider.value)
-                }
-            }
-            "vec4" -> {
-                val colorPicker = showContext.getGadget("glsl_$varName", ColorPicker(name))
-                return object : GlslProgram.UniformProvider {
-                    override fun set(uniform: Uniform) {
-                        uniform.set(
-                            colorPicker.color.redF,
-                            colorPicker.color.greenF,
-                            colorPicker.color.blueF,
-                            colorPicker.color.alphaF
-                        )
-                    }
-                }
-            }
-            //                "Beat" -> {
-            //                    BeatDataSource(showContext.getBeatSource().getBeatData(), showContext.clock)
-            //                }
-            //                "StartOfMeasure" -> {
-            //                    StartOfMeasureDataSource(showContext.getBeatSource().getBeatData(), showContext.clock, binding)
-            //                }
-            else -> {
-                logger.info { "dunno how to handle uniform input type ${uniformPort.type}" }
-                return null
             }
         }
     }

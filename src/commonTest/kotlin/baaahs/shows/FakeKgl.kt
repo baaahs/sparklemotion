@@ -237,15 +237,15 @@ class FakeKgl : Kgl {
     }
 
     override fun uniform2f(location: UniformLocation, x: Float, y: Float) {
-        location.set(arrayOf(x, y))
+        location.set(listOf(x, y))
     }
 
     override fun uniform2i(location: UniformLocation, x: Int, y: Int) {
-        location.set(arrayOf(x, y))
+        location.set(listOf(x, y))
     }
 
     override fun uniform3f(location: UniformLocation, x: Float, y: Float, z: Float) {
-        location.set(arrayOf(x, y, z))
+        location.set(listOf(x, y, z))
     }
 
     override fun uniform3fv(location: UniformLocation, value: FloatArray) {
@@ -253,15 +253,15 @@ class FakeKgl : Kgl {
     }
 
     override fun uniform3i(location: UniformLocation, x: Int, y: Int, z: Int) {
-        location.set(arrayOf(x, y, z))
+        location.set(listOf(x, y, z))
     }
 
     override fun uniform4f(location: UniformLocation, x: Float, y: Float, z: Float, w: Float) {
-        location.set(arrayOf(x, y, z, w))
+        location.set(listOf(x, y, z, w))
     }
 
     override fun uniform4i(location: UniformLocation, x: Int, y: Int, z: Int, w: Int) {
-        location.set(arrayOf(x, y, z, w))
+        location.set(listOf(x, y, z, w))
     }
 
     override fun uniformMatrix3fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {}

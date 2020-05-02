@@ -1,6 +1,9 @@
+import baaahs.Color
 import baaahs.Model
 import baaahs.MovingHead
+import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
+import baaahs.glshaders.override
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
 import baaahs.shaders.FakeSurface
@@ -27,17 +30,24 @@ object GlslShowSpec : Spek({
         val glslShow by value { GlslShow("test show", shaderSrc, fakeGlslContext) }
         val model by value { TestModel() }
         val showContext by value { FakeShowContext() }
+        val showRenderer by value {
+            glslShow.createRenderer(model, showContext).apply {
+                surfacesChanged(listOf(FakeSurface(100)), emptyList())
+            }
+        }
+
+        fun render() {
+            showRenderer.nextFrame()
+            showContext.drawFrame()
+        }
+
+        val fakeProgram by value { fakeGlslContext.programs[1] }
+
+        beforeEachTest { render() }
 
         context("port wiring") {
             it("wires up UV texture stuff") {
-                val renderer = glslShow.createRenderer(model, showContext)
-                renderer.surfacesChanged(listOf(FakeSurface(100)), emptyList())
-                renderer.nextFrame()
-
-                showContext.drawFrame()
-
-                val program = fakeGlslContext.programs[1]
-                val fragCoordVal = program.getUniform("in_sm_uvCoordsTexture")
+                val fragCoordVal = fakeProgram.getUniform("in_sm_uvCoordsTexture")
                 val textureInfo = fakeGlslContext.getTexture(fragCoordVal as Int)!!
 
                 expect(200 to 1) { textureInfo.width to textureInfo.height }
@@ -46,8 +56,36 @@ object GlslShowSpec : Spek({
                 expect(GL_FLOAT) { textureInfo.type }
                 expect(GL_NEAREST) { textureInfo.params[GL_TEXTURE_MIN_FILTER] }
                 expect(GL_NEAREST) { textureInfo.params[GL_TEXTURE_MAG_FILTER] }
+            }
 
-                println("fragCoordVal = ${textureInfo}")
+            context("for vec4 uniforms") {
+                override(shaderSrc) {
+                    /**language=glsl*/
+                    """
+                    uniform vec4 color;
+                    void main() { gl_FragColor = color; }
+                    """.trimIndent()
+                }
+
+                val colorPickerGadget by value { showContext.gadgets["glsl_in_color"] as ColorPicker }
+
+                it("wires it up as a color picker") {
+                    expect("Color") { colorPickerGadget.name }
+                    expect(Color.WHITE) { colorPickerGadget.initialValue }
+                }
+
+                it("sets the uniform from the gadget's initial value") {
+                    val colorUniform = fakeProgram.getUniform("in_color")
+                    expect(arrayListOf(1f, 1f, 1f, 1f)) { colorUniform }
+                }
+
+                it("sets the uniform when the gadget value changes") {
+                    colorPickerGadget.color = Color.YELLOW
+
+                    render()
+                    val colorUniform = fakeProgram.getUniform("in_color")
+                    expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
+                }
             }
         }
     }

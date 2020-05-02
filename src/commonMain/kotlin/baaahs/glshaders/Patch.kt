@@ -135,7 +135,7 @@ class Patch(
         override val shaderId: String? = null
     }
 
-    open class UniformPort(val type: String, val name: String) : Port {
+    open class UniformPort(val type: String, val name: String, val pluginId: String) : Port {
         override val shaderId: String? = null
 
         open val varName: String get() = "in_$name"
@@ -147,6 +147,7 @@ class Patch(
 
             if (type != other.type) return false
             if (name != other.name) return false
+            if (pluginId != other.pluginId) return false
             if (shaderId != other.shaderId) return false
             if (isImplicit != other.isImplicit) return false
 
@@ -156,13 +157,14 @@ class Patch(
         override fun hashCode(): Int {
             var result = type.hashCode()
             result = 31 * result + name.hashCode()
+            result = 31 * result + pluginId.hashCode()
             result = 31 * result + (shaderId?.hashCode() ?: 0)
             result = 31 * result + isImplicit.hashCode()
             return result
         }
 
         override fun toString(): String {
-            return "UniformInput(type='$type', name='$name', shaderId=$shaderId, isImplicit=$isImplicit)"
+            return "UniformInput(type='$type', name='$name', pluginId='$pluginId, shaderId=$shaderId, isImplicit=$isImplicit)"
         }
     }
 

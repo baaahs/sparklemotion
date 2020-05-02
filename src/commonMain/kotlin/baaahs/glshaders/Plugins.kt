@@ -1,5 +1,7 @@
 package baaahs.glshaders
 
+import baaahs.ShowContext
+
 class Plugins(private val byPackage: Map<String, Plugin>) {
     // name would be in form:
     //   [baaahs.Core:]resolution
@@ -7,26 +9,35 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     //   [baaahs.Core:]uvCoords
     //   com.example.Plugin:data
     //   baaahs.SoundAnalysis:coq
-    fun matchUniformProvider(type: String, name: String, program: GlslProgram): GlslProgram.UniformProvider? {
-        val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(name)
+    fun matchUniformProvider(
+        uniformPort: Patch.UniformPort,
+        program: GlslProgram,
+        showContext: ShowContext
+    ): GlslProgram.UniformProvider? {
+        val pluginId = uniformPort.pluginId
+        val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(pluginId)
         val (plugin, dataName) = if (result != null) {
             val (_, pluginPackage, dataName) = result.destructured
             val plugin = findAll().getPlugin(pluginPackage)
             plugin to dataName
         } else {
-            findAll().getPlugin(default) to name
+            findAll().getPlugin(default) to pluginId
         }
 
-        return plugin.matchUniformProvider(type, dataName, program)
+        return plugin.matchUniformProvider(dataName, uniformPort, program, showContext)
     }
 
     private fun getPlugin(packageName: String): Plugin {
-        return byPackage[packageName] ?: error("no such plugin \"$packageName\"")
+        return byPackage[packageName]
+            ?: error("no such plugin \"$packageName\"")
     }
 
     companion object {
         private val default = "baaahs.Core"
-        private val plugins = Plugins(mapOf(default to CorePlugin()))
+        private val plugins = Plugins(
+            listOf(CorePlugin(), GadgetsPlugin())
+                .associateBy(Plugin::packageName)
+        )
 
         fun findAll(): Plugins {
             return plugins
