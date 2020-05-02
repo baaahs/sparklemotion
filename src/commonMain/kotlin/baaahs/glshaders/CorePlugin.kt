@@ -1,14 +1,21 @@
 package baaahs.glshaders
 
+import baaahs.ShowContext
 import baaahs.getTimeMillis
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 
 class CorePlugin : Plugin {
+    override val packageName: String = "baaahs.Core"
     override val name: String = "SparkleMotion Core"
 
-    override fun matchUniformProvider(type: String, name: String, program: GlslProgram): GlslProgram.UniformProvider? {
+    override fun matchUniformProvider(
+        name: String,
+        uniformPort: Patch.UniformPort,
+        program: GlslProgram,
+        showContext: ShowContext
+    ): GlslProgram.UniformProvider? {
         return when (name) {
             "resolution" -> ResolutionProvider()
             "time" -> TimeProvider()

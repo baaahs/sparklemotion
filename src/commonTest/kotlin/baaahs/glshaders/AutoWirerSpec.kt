@@ -81,7 +81,7 @@ object AutoWirerSpec : Spek({
                                     linkTo Patch.ShaderPort("color", "blueness"),
                             Patch.ShaderOut("uv")
                                     linkTo Patch.ShaderPort("color", "gl_FragCoord"),
-                            Patch.UniformPort("sampler2D", "sm_uvCoordsTexture")
+                            Patch.UniformPort("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoords")
                                     linkTo Patch.ShaderPort("uv", "sm_uvCoordsTexture")
                         )
                     ) { patch.links }

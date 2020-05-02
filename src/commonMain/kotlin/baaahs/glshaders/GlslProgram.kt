@@ -152,18 +152,18 @@ class GlslProgram(
 
     object Time : StockUniformPort("float", "time", ContentType.Time.pluginId!!)
 
-    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", "baaahs:nope") {
+    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", "baaahs.Core:none") {
         override val varName: String = name
         override val isImplicit = true
     }
 
     object UvCoordsTexture : StockUniformPort("sampler2D", "sm_uvCoordsTexture", ContentType.UvCoordinateTexture.pluginId!!)
 
-    open class StockUniformPort(type: String, name: String, val pluginId: String) : Patch.UniformPort(type, name) {
+    open class StockUniformPort(type: String, name: String, pluginId: String) : Patch.UniformPort(type, name, pluginId) {
         override val shaderId: String? = null
     }
 
-    class UserUniformPort(type: String, name: String) : Patch.UniformPort(type, name)
+    class UserUniformPort(type: String, name: String, pluginId: String = "baaahs.Gadgets:whatever") : Patch.UniformPort(type, name, pluginId)
 
 
     companion object {

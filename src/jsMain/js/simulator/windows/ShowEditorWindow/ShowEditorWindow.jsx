@@ -36,7 +36,8 @@ const ShowEditorWindow = (props) => {
         })));
 
       if (errors.length === 0) {
-        sheepSimulator.switchToShow(new baaahs.shows.GlslShow(selectedShow, src, true));
+        const renderContext = baaahs.shaders.GlslShader.Companion.globalRenderContext;
+        sheepSimulator.switchToShow(new baaahs.shows.GlslShow(selectedShow, src, renderContext, true));
       }
     });
   };

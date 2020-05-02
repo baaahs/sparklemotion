@@ -1,20 +1,17 @@
 package baaahs.glshaders
 
+import baaahs.ShowContext
+
 interface Plugin {
+    val packageName: String
     val name: String
 
     fun matchUniformProvider(
-        type: String,
         name: String,
-        program: GlslProgram
+        uniformPort: Patch.UniformPort,
+        program: GlslProgram,
+        showContext: ShowContext
     ): GlslProgram.UniformProvider?
-
-    companion object {
-        fun factoryOf(fn: (GlslProgram) -> GlslProgram.UniformProvider): UniformProviderFactory =
-            object : UniformProviderFactory {
-                override fun create(program: GlslProgram) = fn(program)
-            }
-    }
 
     interface UniformProviderFactory {
         fun create(program: GlslProgram): GlslProgram.UniformProvider

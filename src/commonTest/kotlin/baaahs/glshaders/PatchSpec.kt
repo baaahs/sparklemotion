@@ -122,7 +122,7 @@ object PatchSpec : Spek({
                                 "color" to shader
                             ),
                             listOf(
-                                Patch.UniformPort("sampler2D", "sm_uvCoordsTexture")
+                                Patch.UniformPort("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoordsTexture")
                                         linkTo Patch.ShaderPort("uv", "sm_uvCoordsTexture"),
                                 Patch.ShaderOut("uv")
                                         linkTo Patch.ShaderPort("color", "gl_FragCoord"),

@@ -6,6 +6,7 @@ import baaahs.glsl.*
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.json.JsonObject
+import kotlin.js.JsName
 
 class GlslShader(
     private val glslProgram: GlslProgram,
@@ -14,6 +15,7 @@ class GlslShader(
 ) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
 
     companion object : ShaderReader<GlslShader> {
+        @JsName("globalRenderContext")
         val globalRenderContext by lazy { GlslBase.manager.createContext() }
 
         override fun parse(reader: ByteArrayReader): GlslShader = TODO("nope")
