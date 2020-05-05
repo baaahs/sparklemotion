@@ -22,6 +22,8 @@ class AllShows {
 
         private val nonGlslShows = listOf(PanelTweenShow)
 
-        val allShows = listOf(FallbackShow) + (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() }
+        val allShows =
+            (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() } +
+            GuruMeditationErrorShow
     }
 }

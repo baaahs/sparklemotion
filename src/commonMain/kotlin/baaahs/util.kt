@@ -8,10 +8,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-fun <E> List<E>.random(): E? = if (size > 0) get(Random.nextInt(size)) else null
-
-fun <E> List<E>.random(random: Random): E? = if (size > 0) get(random.nextInt(size)) else null
-
 fun <E> Collection<E>.only(description: String = "item"): E {
     if (size != 1) throw IllegalArgumentException("Expected one $description, found $size: $this")
     else return iterator().next()

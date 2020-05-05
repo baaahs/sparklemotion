@@ -13,7 +13,7 @@ import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
-import baaahs.shows.FallbackShow
+import baaahs.shows.GuruMeditationErrorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -44,7 +44,7 @@ class Pinky(
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
-    private var selectedShow = shows.first()
+    private var selectedShow = shows.random()
         set(value) {
             field = value
             display.selectedShow = value
@@ -121,7 +121,7 @@ class Pinky(
                 } catch (e: Exception) {
                     logger.error("Error rendering frame for ${selectedShow.name}", e)
                     delay(1000)
-                    switchToShow(FallbackShow)
+                    switchToShow(GuruMeditationErrorShow)
                 }
             }
             display.showFrameMs = elapsedMs.toInt()
@@ -140,7 +140,7 @@ class Pinky(
             && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
             && secondsSinceUserInteraction > switchShowAfterIdleSeconds
         ) {
-            switchToShow(shows.random()!!)
+            switchToShow(shows.random())
             selectedNewShowAt = now
         }
 

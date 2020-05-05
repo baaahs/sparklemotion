@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -7,7 +8,6 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
-import baaahs.api.ws.WebSocketClient
 import baaahs.mapper.MappingSession
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -442,7 +442,7 @@ class Mapper(
             val surfaceBallot = Ballot<MapperUi.VisibleSurface>()
             var tries = 1000
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
-                val (x, y) = sampleLocations.random()!!
+                val (x, y) = sampleLocations.random()
                 val visibleSurface = mapperUi.intersectingSurface(x, y, visibleSurfaces)
                 val surface = visibleSurface?.modelSurface
                 surface?.let {
