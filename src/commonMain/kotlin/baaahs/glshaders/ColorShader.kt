@@ -9,7 +9,7 @@ abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
         val contentType = when (it.type) {
             "float" -> ContentType.Float
             "vec2" -> ContentType.XyCoordinate
-            "vec3" -> ContentType.XyzCoordinate
+            "vec3" -> ContentType.Color
             "vec4" -> ContentType.Color
             else -> ContentType.Unknown
         }
