@@ -13,7 +13,7 @@ import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
-import baaahs.shows.SolidColorShow
+import baaahs.shows.FallbackShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -121,7 +121,7 @@ class Pinky(
                 } catch (e: Exception) {
                     logger.error("Error rendering frame for ${selectedShow.name}", e)
                     delay(1000)
-                    switchToShow(SolidColorShow)
+                    switchToShow(FallbackShow)
                 }
             }
             display.showFrameMs = elapsedMs.toInt()

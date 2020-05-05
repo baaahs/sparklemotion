@@ -1,8 +1,6 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
 
 class ShowRunner(
     private val model: Model<*>,
@@ -40,15 +38,6 @@ class ShowRunner(
 
     private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
         val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
-
-        if (shaderBuffer is CompositorShader.Buffer) {
-            if (!buffersForSurface.remove(shaderBuffer.bufferA)
-                || !buffersForSurface.remove(shaderBuffer.bufferB)
-            ) {
-                throw IllegalStateException("Composite of unknown shader buffers!")
-            }
-        }
-
         buffersForSurface += shaderBuffer
     }
 
@@ -66,34 +55,12 @@ class ShowRunner(
         return buffer
     }
 
-    /**
-     * Obtain a compositing shader buffer which can be used to blend two other shaders together.
-     *
-     * The shaders must already have been obtained using [getShaderBuffer].
-     */
-    override fun getCompositorBuffer(
-        surface: Surface,
-        bufferA: Shader.Buffer,
-        bufferB: Shader.Buffer,
-        mode: CompositingMode,
-        fade: Float
-    ): CompositorShader.Buffer {
-        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
-        return CompositorShader(bufferA.shader, bufferB.shader)
-            .createBuffer(bufferA, bufferB)
-            .also {
-                it.mode = mode
-                it.fade = fade
-                recordShader(surface, it)
-            }
-    }
-
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
     override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
-        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+        val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
         val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
 
         movingHeadManager.listen(movingHead) { updated ->
