@@ -13,7 +13,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
         uniformPort: Patch.UniformPortRef,
         program: GlslProgram,
         showContext: ShowContext
-    ): GlslProgram.UniformProvider? {
+    ): GlslProgram.DataSourceProvider? {
         val pluginId = uniformPort.pluginId
         val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
         val (plugin, arg) = if (result != null) {

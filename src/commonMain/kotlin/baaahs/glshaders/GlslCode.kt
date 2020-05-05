@@ -123,7 +123,7 @@ class GlslCode(
         RasterCoordinate("Raster Coordinate"),
         UvCoordinate("U/V Coordinate"),
         UvCoordinateTexture("U/V Coordinates Texture", "baaahs.Core:uvCoords"),
-        XyCoordinate("X/Y Coordinate"),
+        XyCoordinate("X/Y Coordinate", "baaahs.Core:xyCoord"),
         XyzCoordinate("X/Y/Z Coordinate"),
         Color("Color", "baaahs.Core:ColorPicker"),
         Time("Time", "baaahs.Core:time"),
