@@ -3,7 +3,7 @@ package baaahs.shows
 import baaahs.glsl.GlslContext
 import com.danielgergely.kgl.*
 
-class FakeGlslContext(val kgl: FakeKgl = FakeKgl()) : GlslContext(kgl, "1234") {
+class FakeGlslContext(private val kgl: FakeKgl = FakeKgl()) : GlslContext(kgl, "1234") {
     val programs: List<FakeKgl.FakeProgram>
         get() = kgl.programs
 
@@ -42,7 +42,6 @@ class FakeKgl : Kgl {
     }
 
     class FakeTextureInfo(
-        var texture: Texture? = null,
         var params: MutableMap<Int, Int> = mutableMapOf(),
         var level: Int? = null,
         var internalFormat: Int? = null,
@@ -74,7 +73,8 @@ class FakeKgl : Kgl {
             targets.remove(target)
             textureSlots.remove(activeTextureSlot)
         } else {
-            val boundTextureInfo = textures[texture!!]
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            val boundTextureInfo = textures[texture as Int]
             targets[target] = boundTextureInfo
             textureSlots[activeTextureSlot!!] = boundTextureInfo
         }
@@ -169,7 +169,8 @@ class FakeKgl : Kgl {
     override fun getShaderParameter(shader: Shader, pname: Int): Int = 1
 
     override fun getUniformLocation(programId: Program, name: String): UniformLocation? {
-        return programs[programId as Int]!!.getUniformLocation(name)
+        @Suppress("CAST_NEVER_SUCCEEDS")
+        return programs[programId as Int].getUniformLocation(name)
     }
 
     override fun isFramebuffer(framebuffer: Framebuffer): Boolean = true
@@ -225,7 +226,8 @@ class FakeKgl : Kgl {
     }
 
     fun UniformLocation.set(value: Any) {
-        uniforms[this] = value
+        @Suppress("CAST_NEVER_SUCCEEDS")
+        uniforms[this as Int] = value
     }
 
     override fun uniform1f(location: UniformLocation, f: Float) {
@@ -269,7 +271,8 @@ class FakeKgl : Kgl {
     override fun uniformMatrix4fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {}
 
     override fun useProgram(programId: Program) {
-        activeProgram = programs[programId]
+        @Suppress("CAST_NEVER_SUCCEEDS")
+        activeProgram = programs[programId as Int]
     }
 
     override fun vertexAttribPointer(
@@ -284,6 +287,7 @@ class FakeKgl : Kgl {
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {}
 
     private fun <T> fake(i: Int) : T {
+        @Suppress("UNCHECKED_CAST")
         return i as T
     }
 
