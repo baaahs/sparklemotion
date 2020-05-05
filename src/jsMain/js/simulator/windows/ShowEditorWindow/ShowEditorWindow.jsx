@@ -6,6 +6,7 @@ import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_bright';
 import {store} from '../../../store';
+import ShowControls from "../../../app/components/Shows/ShowControls";
 import {useResizeListener} from '../../../app/hooks/useResizeListener';
 import {baaahs} from 'sparklemotion';
 
@@ -17,6 +18,7 @@ const ShowEditorWindow = (props) => {
   const canvasContainerEl = useRef(null);
   const statusContainerEl = useRef(null);
   const [glslPreviewer, setGlslPreviewer] = useState(null);
+  const [gadgets, setGadgets] = useState([]);
 
   // Anytime the sheepView div is resized,
   // ask the Visualizer to resize the 3D sheep canvas
@@ -27,7 +29,7 @@ const ShowEditorWindow = (props) => {
   const updatePreview = (src) => {
     aceEditor.current.editor.getSession().setAnnotations([]);
 
-    glslPreviewer?.setShaderSrc(src, (errors) => {
+    glslPreviewer?.setShaderSrc(src, (pGadgets, errors) => {
       aceEditor.current.editor.getSession().setAnnotations(errors.map(e => ({
           row: e.row,
           column: e.column,
@@ -36,6 +38,8 @@ const ShowEditorWindow = (props) => {
         })));
 
       if (errors.length === 0) {
+        setGadgets(pGadgets);
+
         const renderContext = baaahs.shaders.GlslShader.Companion.globalRenderContext;
         sheepSimulator.switchToShow(new baaahs.shows.GlslShow(selectedShow, src, renderContext, true));
       }
@@ -109,6 +113,9 @@ const ShowEditorWindow = (props) => {
       <div className={styles.previewBar}>
         <div className={styles.preview} ref={canvasContainerEl}/>
         <div className={styles.status} ref={statusContainerEl}/>
+        <div className={styles.controls}>
+          <ShowControls gadgets={gadgets}/>
+        </div>
       </div>
       <AceEditor
         ref={aceEditor}
