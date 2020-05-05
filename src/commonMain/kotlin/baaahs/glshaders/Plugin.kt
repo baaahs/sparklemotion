@@ -11,5 +11,5 @@ interface Plugin {
         uniformPort: Patch.UniformPortRef,
         program: GlslProgram,
         showContext: ShowContext
-    ): GlslProgram.UniformProvider?
+    ): GlslProgram.DataSourceProvider?
 }

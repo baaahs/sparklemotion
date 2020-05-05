@@ -59,7 +59,7 @@ class GlslProgram(
 
     private lateinit var bindings: List<Binding>
 
-    fun bind(fn: (Patch.UniformPortRef) -> UniformProvider?) {
+    fun bind(fn: (Patch.UniformPortRef) -> DataSourceProvider?) {
         if (::bindings.isInitialized) {
             throw IllegalStateException("program is already bound")
         }
@@ -67,7 +67,12 @@ class GlslProgram(
         bindings = patch.uniformPorts.mapNotNull { uniformPort ->
             val uniformProvider = fn(uniformPort)
             if (uniformProvider != null) {
-                Binding(uniformPort, uniformProvider)
+                val binding = Binding(uniformPort, uniformProvider)
+                if (binding.isValid) binding else {
+                    logger.warn { "unused uniform for $uniformPort" }
+                    binding.release()
+                    null
+                }
             } else {
                 logger.warn { "no UniformProvider bound for $uniformPort" }
                 null
@@ -77,7 +82,7 @@ class GlslProgram(
 
     private inline fun <reified T> bindingsOf(): List<T> {
         return bindings
-            .map { it.uniformProvider }
+            .map { it.dataSourceProvider }
             .filterIsInstance<T>()
     }
 
@@ -99,9 +104,6 @@ class GlslProgram(
         }
     }
 
-    val userInputs: List<Binding> get() =
-        bindings.filter { it.uniformPort is InputPortRef }
-
     fun obtainTextureId(): Int {
         check(nextTextureId <= 31) { "too many textures" }
         return nextTextureId++
@@ -113,11 +115,11 @@ class GlslProgram(
     }
 
     inner class Binding(
-        internal val uniformPort: Patch.UniformPortRef,
-        val uniformProvider: UniformProvider
+        private val uniformPort: Patch.UniformPortRef,
+        internal val dataSourceProvider: DataSourceProvider
     ) {
         init {
-            val supportedTypes = uniformProvider.supportedTypes
+            val supportedTypes = dataSourceProvider.supportedTypes
             if (!supportedTypes.contains(uniformPort.type)) {
                 throw CompiledShader.LinkException(
                     "can't set uniform ${uniformPort.type} ${uniformPort.name}: expected $supportedTypes)"
@@ -136,20 +138,29 @@ class GlslProgram(
                 }
             }
 
+        val isValid: Boolean get() = uniformLocation != null
+
+        private val dataSource: DataSource? = if (isValid) {
+            dataSourceProvider.provide()
+        } else null
+
         fun setUniform() {
             try {
-                uniformLocation?.let { uniformProvider.set(it) }
+                uniformLocation?.let { dataSource?.set(it) }
             } catch (e: Exception) {
-                logger.error(e) { "failed to set ${uniformPort.name} from $uniformProvider" }
+                logger.error(e) { "failed to set ${uniformPort.name} from $dataSource" }
             }
         }
 
-        fun release() = uniformProvider.release()
+        fun release() = dataSource?.release()
     }
 
-    interface UniformProvider {
+    interface DataSourceProvider {
         val supportedTypes: List<String>
+        fun provide(): DataSource
+    }
 
+    interface DataSource {
         fun set(uniform: Uniform)
         fun release() {}
     }
