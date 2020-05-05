@@ -37,13 +37,13 @@ object AutoWirerSpec : Spek({
                 expect(
                     listOf(
                         GlslProgram.Time
-                                linkTo Patch.ShaderPort("color", "time"),
+                                linkTo Patch.ShaderPortRef("color", "time"),
                         GlslProgram.Resolution
-                                linkTo Patch.ShaderPort("color", "resolution"),
-                        GlslProgram.UserUniformPort("float", "blueness")
-                                linkTo Patch.ShaderPort("color", "blueness"),
+                                linkTo Patch.ShaderPortRef("color", "resolution"),
+                        GlslProgram.InputPortRef("float", "blueness", "baaahs.Core:Slider")
+                                linkTo Patch.ShaderPortRef("color", "blueness"),
                         GlslProgram.GlFragCoord
-                                linkTo Patch.ShaderPort("color", "gl_FragCoord")
+                                linkTo Patch.ShaderPortRef("color", "gl_FragCoord")
                     )
                 ) { patch.links }
             }
@@ -74,15 +74,15 @@ object AutoWirerSpec : Spek({
                     expects(
                         listOf(
                             GlslProgram.Time
-                                    linkTo Patch.ShaderPort("color", "time"),
+                                    linkTo Patch.ShaderPortRef("color", "time"),
                             GlslProgram.Resolution
-                                    linkTo Patch.ShaderPort("color", "resolution"),
-                            GlslProgram.UserUniformPort("float", "blueness")
-                                    linkTo Patch.ShaderPort("color", "blueness"),
+                                    linkTo Patch.ShaderPortRef("color", "resolution"),
+                            GlslProgram.InputPortRef("float", "blueness", "baaahs.Core:Slider")
+                                    linkTo Patch.ShaderPortRef("color", "blueness"),
                             Patch.ShaderOut("uv")
-                                    linkTo Patch.ShaderPort("color", "gl_FragCoord"),
-                            Patch.UniformPort("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoords")
-                                    linkTo Patch.ShaderPort("uv", "sm_uvCoordsTexture")
+                                    linkTo Patch.ShaderPortRef("color", "gl_FragCoord"),
+                            Patch.UniformPortRef("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoords")
+                                    linkTo Patch.ShaderPortRef("uv", "sm_uvCoordsTexture")
                         )
                     ) { patch.links }
                 }

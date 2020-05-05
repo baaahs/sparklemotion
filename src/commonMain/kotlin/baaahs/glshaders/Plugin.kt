@@ -8,12 +8,8 @@ interface Plugin {
 
     fun matchUniformProvider(
         name: String,
-        uniformPort: Patch.UniformPort,
+        uniformPort: Patch.UniformPortRef,
         program: GlslProgram,
         showContext: ShowContext
     ): GlslProgram.UniformProvider?
-
-    interface UniformProviderFactory {
-        fun create(program: GlslProgram): GlslProgram.UniformProvider
-    }
 }

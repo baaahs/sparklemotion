@@ -6,9 +6,6 @@ data class InputPort(
     val description: String?,
     val contentType: GlslCode.ContentType,
     val pluginId: String? = contentType.pluginId,
+    val pluginConfig: Map<String, String> = emptyMap(),
     val glslVar: GlslCode.GlslVar? = null
-) {
-    fun toGlsl(namespace: GlslCode.Namespace): Any {
-        return glslVar?.toGlsl(namespace, emptySet(), emptyMap()) ?: "uniform $type ${namespace.qualify(name)};"
-    }
-}
+)

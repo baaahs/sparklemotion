@@ -8,8 +8,7 @@ uniform float brightness;
 // @@Slider
 //   default=.02
 //   scale=log
-//   desc:
-//     How sparkly do you want it?
+//   desc="How sparkly do you want it?"
 uniform float sparkliness;
 
 float random (vec2 st) {

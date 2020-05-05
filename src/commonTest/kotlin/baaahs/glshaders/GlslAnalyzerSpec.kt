@@ -19,7 +19,11 @@ object GlslAnalyzerSpec : Spek({
                     // Other stuff.
                     
                     precision mediump float;
-                    uniform float time;
+                    uniform float time; // trailing comment
+                    
+                    // @@HintClass
+                    //   key=value
+                    //   key2=value2
                     uniform vec2  resolution;
                     
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
@@ -47,19 +51,23 @@ object GlslAnalyzerSpec : Spek({
                                 listOf("This Shader's Name", "Other stuff."),
                                 lineNumber = 1
                             ),
-                            GlslStatement("uniform float time;", lineNumber = 5),
-                            GlslStatement("uniform vec2  resolution;", lineNumber = 6),
+                            GlslStatement("uniform float time;", lineNumber = 5,
+                                comments = listOf(" trailing comment")),
+                            GlslStatement(
+                                "\nuniform vec2  resolution;", lineNumber = 5,
+                                comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
+                            ),
                             GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 8
+                                        "}", lineNumber = 12
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 14
+                                        "}", lineNumber = 18
                             )
                         ), { GlslAnalyzer().findStatements(shaderText) }, true
                     )
@@ -68,10 +76,16 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the global variables") {
                     expect(
                         listOf(
-                            GlslCode.GlslVar("float", "time",
-                                fullText = "uniform float time;", isUniform = true, lineNumber = 5),
-                            GlslCode.GlslVar("vec2", "resolution",
-                                fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 6)
+                            GlslCode.GlslVar(
+                                "float", "time",
+                                fullText = "uniform float time;", isUniform = true, lineNumber = 5,
+                                comments = listOf(" trailing comment")
+                            ),
+                            GlslCode.GlslVar(
+                                "vec2", "resolution",
+                                fullText = " \nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
+                                comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
+                            )
                         )
                     ) { glslCode.globalVars.toList() }
                 }
@@ -121,10 +135,14 @@ object GlslAnalyzerSpec : Spek({
                     it("finds the global variables and performs substitutions") {
                         expect(
                             listOf(
-                                GlslCode.GlslVar("float", "shouldBeDefined",
-                                    fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5),
-                                GlslCode.GlslVar("vec2", "shouldBeThis",
-                                    fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9)
+                                GlslCode.GlslVar(
+                                    "float", "shouldBeDefined",
+                                    fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
+                                ),
+                                GlslCode.GlslVar(
+                                    "vec2", "shouldBeThis",
+                                    fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
+                                )
                             )
                         ) { glslCode.globalVars.toList() }
                     }
@@ -158,13 +176,14 @@ object GlslAnalyzerSpec : Spek({
 
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
-                            expect("#line 3\n" +
-                                    "void ns_main() {\n" +
-                                    "\n" +
-                                    "\n" +
-                                    "\n" +
-                                    "    gl_FragColor = resolution.x;\n" +
-                                    "}\n".trimIndent()
+                            expect(
+                                "#line 3\n" +
+                                        "void ns_main() {\n" +
+                                        "\n" +
+                                        "\n" +
+                                        "\n" +
+                                        "    gl_FragColor = resolution.x;\n" +
+                                        "}\n".trimIndent()
                             ) { glsl.trim() }
                         }
                     }
@@ -219,7 +238,7 @@ object GlslAnalyzerSpec : Spek({
                             listOf(
                                 InputPort("float", "time", "Time", GlslCode.ContentType.Time),
                                 InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
-                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Unknown),
+                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Float),
                                 InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
@@ -250,13 +269,46 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Unknown),
+                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Float),
                                 InputPort("vec3", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
                                 InputPort("float", "iTime", "Time", GlslCode.ContentType.Time),
                                 InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
+                }
+            }
+        }
+    }
+
+    describe("GlslVar") {
+        context("with comments") {
+            val hintClassStr by value { "whatever.package.Plugin:Thing" }
+            val glslVar by value {
+                GlslCode.GlslVar(
+                    "float", "varName", isUniform = true,
+                    comments = listOf(" @@$hintClassStr", "  key=value", "  key2=value2")
+                )
+            }
+
+            it("parses hints") {
+                expect("whatever.package.Plugin:Thing") { glslVar.hint!!.plugin }
+                expect(mapOf("key" to "value", "key2" to "value2")) { glslVar.hint!!.map }
+            }
+
+            context("when package is unspecified") {
+                override(hintClassStr) { "Thing" }
+
+                it("defaults to baaahs.Core") {
+                    expect("baaahs.Core:Thing") { glslVar.hint!!.plugin }
+                }
+            }
+
+            context("when package is partially specified") {
+                override(hintClassStr) { "FooPlugin:Thing" }
+
+                it("defaults to baaahs.Core") {
+                    expect("baaahs.FooPlugin:Thing") { glslVar.hint!!.plugin }
                 }
             }
         }

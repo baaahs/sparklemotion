@@ -57,15 +57,9 @@ class GlslProgram(
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    val noOpProvider = object : UniformProvider {
-        override fun set(uniform: Uniform) {
-            // TODO
-        }
-    }
-
     private lateinit var bindings: List<Binding>
 
-    fun bind(fn: (Patch.UniformPort) -> UniformProvider?) {
+    fun bind(fn: (Patch.UniformPortRef) -> UniformProvider?) {
         if (::bindings.isInitialized) {
             throw IllegalStateException("program is already bound")
         }
@@ -106,7 +100,7 @@ class GlslProgram(
     }
 
     val userInputs: List<Binding> get() =
-        bindings.filter { it.uniformPort is UserUniformPort }
+        bindings.filter { it.uniformPort is InputPortRef }
 
     fun obtainTextureId(): Int {
         check(nextTextureId <= 31) { "too many textures" }
@@ -119,20 +113,31 @@ class GlslProgram(
     }
 
     inner class Binding(
-        internal val uniformPort: Patch.UniformPort,
+        internal val uniformPort: Patch.UniformPortRef,
         val uniformProvider: UniformProvider
     ) {
-        internal val uniformLocation by lazy {
-            gl.runInContext {
-                gl.check {
-                    getUniformLocation(id, uniformPort.varName)?.let { Uniform(gl, it) }
-                }
+        init {
+            val supportedTypes = uniformProvider.supportedTypes
+            if (!supportedTypes.contains(uniformPort.type)) {
+                throw CompiledShader.LinkException(
+                    "can't set uniform ${uniformPort.type} ${uniformPort.name}: expected $supportedTypes)"
+                )
             }
         }
 
+        private val uniformLocation =
+            gl.runInContext {
+                gl.check {
+                    Uniform(gl, getUniformLocation(id, uniformPort.varName)
+                        ?: error("no such uniform ${uniformPort.varName}"))
+                }
+            }
+
         fun setUniform() {
-            uniformLocation?.let { uniformLocation ->
+            try {
                 uniformProvider.set(uniformLocation)
+            } catch (e: Exception) {
+                logger.error(e) { "failed to set ${uniformPort.name} from $uniformProvider" }
             }
         }
 
@@ -140,6 +145,8 @@ class GlslProgram(
     }
 
     interface UniformProvider {
+        val supportedTypes: List<String>
+
         fun set(uniform: Uniform)
         fun release() {}
     }
@@ -148,22 +155,27 @@ class GlslProgram(
         fun onResolution(x: Float, y: Float)
     }
 
-    object Resolution : StockUniformPort("vec2", "resolution", ContentType.Resolution.pluginId!!)
+    object Resolution : StockUniformPortRef("vec2", "resolution", ContentType.Resolution.pluginId!!)
 
-    object Time : StockUniformPort("float", "time", ContentType.Time.pluginId!!)
+    object Time : StockUniformPortRef("float", "time", ContentType.Time.pluginId!!)
 
-    object GlFragCoord : StockUniformPort("vec4", "gl_FragCoord", "baaahs.Core:none") {
+    object GlFragCoord : StockUniformPortRef("vec4", "gl_FragCoord", "baaahs.Core:none") {
         override val varName: String = name
         override val isImplicit = true
     }
 
-    object UvCoordsTexture : StockUniformPort("sampler2D", "sm_uvCoordsTexture", ContentType.UvCoordinateTexture.pluginId!!)
+    object UvCoordsTexture : StockUniformPortRef("sampler2D", "sm_uvCoordsTexture", ContentType.UvCoordinateTexture.pluginId!!)
 
-    open class StockUniformPort(type: String, name: String, pluginId: String) : Patch.UniformPort(type, name, pluginId) {
+    open class StockUniformPortRef(type: String, name: String, pluginId: String) : Patch.UniformPortRef(type, name, pluginId) {
         override val shaderId: String? = null
     }
 
-    class UserUniformPort(type: String, name: String, pluginId: String = "baaahs.Gadgets:whatever") : Patch.UniformPort(type, name, pluginId)
+    class InputPortRef(
+        type: String,
+        name: String,
+        pluginId: String? = null,
+        pluginConfig: Map<String, String> = emptyMap()
+    ) : Patch.UniformPortRef(type, name, pluginId, pluginConfig)
 
 
     companion object {

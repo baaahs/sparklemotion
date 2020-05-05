@@ -46,6 +46,7 @@ class GlslCode(
         val name: String
         val fullText: String
         val lineNumber: Int?
+        val comments: List<String>
 
         fun stripSource(): Statement
 
@@ -69,7 +70,8 @@ class GlslCode(
     data class GlslOther(
         override val name: String,
         override val fullText: String,
-        override val lineNumber: Int?
+        override val lineNumber: Int?,
+        override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
     }
@@ -80,9 +82,27 @@ class GlslCode(
         override val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
-        override val lineNumber: Int? = null
+        override val lineNumber: Int? = null,
+        override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
+
+        val hint: Hint? by lazy {
+            val commentString = comments.joinToString(" ") { it.trim() }
+            val parts = commentString.split(" ")
+            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
+                val type = parts.first().trimStart('@')
+                val fullType = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
+                    val (prefix, pluginClass, arg) = it.destructured
+                    "${prefix.ifEmpty { "baaahs." }}${pluginClass .ifEmpty { "Core" }}:$arg"
+                } ?: type
+                val map = parts.subList(1, parts.size).associate { s ->
+                    val kv = s.split("=")
+                    kv.first() to kv.subList(1, kv.size).joinToString("=")
+                }
+                Hint(fullType, map)
+            } else null
+        }
     }
 
     data class GlslFunction(
@@ -91,10 +111,13 @@ class GlslCode(
         val params: String,
         override val fullText: String,
         override val lineNumber: Int? = null,
-        val symbols: Set<String> = emptySet()
+        val symbols: Set<String> = emptySet(),
+        override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
+
+    data class Hint(val plugin: String, val map: Map<String, String>)
 
     enum class ContentType(val description: String?, val pluginId: String? = null) {
         RasterCoordinate("Raster Coordinate"),
@@ -102,10 +125,12 @@ class GlslCode(
         UvCoordinateTexture("U/V Coordinates Texture", "baaahs.Core:uvCoords"),
         XyCoordinate("X/Y Coordinate"),
         XyzCoordinate("X/Y/Z Coordinate"),
-        Color("Color"),
+        Color("Color", "baaahs.Core:ColorPicker"),
         Time("Time", "baaahs.Core:time"),
         Resolution("Resolution", "baaahs.Core:resolution"),
-        Unknown(null)
+        Float("Float", "baaahs.Core:Slider"),
+        Int("Integer"),
+        Unknown("Unknown")
     }
 
     class Namespace(private val prefix: String) {

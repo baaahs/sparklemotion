@@ -39,14 +39,14 @@ object PatchSpec : Spek({
                         mapOf("color" to shader),
                         listOf(
                             GlFragCoord
-                                    linkTo Patch.ShaderPort("color", "gl_FragCoord"),
+                                    linkTo Patch.ShaderPortRef("color", "gl_FragCoord"),
                             Resolution
-                                    linkTo Patch.ShaderPort("color", "resolution"),
+                                    linkTo Patch.ShaderPortRef("color", "resolution"),
                             Time
-                                    linkTo Patch.ShaderPort("color", "time"),
-                            UserUniformPort("float", "blueness")
-                                    linkTo Patch.ShaderPort("color", "blueness"),
-                            Patch.ShaderPort("color", "gl_FragColor")
+                                    linkTo Patch.ShaderPortRef("color", "time"),
+                            InputPortRef("float", "blueness")
+                                    linkTo Patch.ShaderPortRef("color", "blueness"),
+                            Patch.ShaderPortRef("color", "gl_FragColor")
                                     linkTo Patch.PixelColor
                         )
                     )
@@ -122,16 +122,16 @@ object PatchSpec : Spek({
                                 "color" to shader
                             ),
                             listOf(
-                                Patch.UniformPort("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoordsTexture")
-                                        linkTo Patch.ShaderPort("uv", "sm_uvCoordsTexture"),
+                                Patch.UniformPortRef("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoordsTexture")
+                                        linkTo Patch.ShaderPortRef("uv", "sm_uvCoordsTexture"),
                                 Patch.ShaderOut("uv")
-                                        linkTo Patch.ShaderPort("color", "gl_FragCoord"),
+                                        linkTo Patch.ShaderPortRef("color", "gl_FragCoord"),
                                 Resolution
-                                        linkTo Patch.ShaderPort("color", "resolution"),
+                                        linkTo Patch.ShaderPortRef("color", "resolution"),
                                 Time
-                                        linkTo Patch.ShaderPort("color", "time"),
-                                UserUniformPort("float", "blueness")
-                                        linkTo Patch.ShaderPort("color", "blueness")
+                                        linkTo Patch.ShaderPortRef("color", "time"),
+                                InputPortRef("float", "blueness")
+                                        linkTo Patch.ShaderPortRef("color", "blueness")
                             )
                         )
                     }

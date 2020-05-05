@@ -10,21 +10,20 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     //   com.example.Plugin:data
     //   baaahs.SoundAnalysis:coq
     fun matchUniformProvider(
-        uniformPort: Patch.UniformPort,
+        uniformPort: Patch.UniformPortRef,
         program: GlslProgram,
         showContext: ShowContext
     ): GlslProgram.UniformProvider? {
         val pluginId = uniformPort.pluginId
-        val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(pluginId)
-        val (plugin, dataName) = if (result != null) {
-            val (_, pluginPackage, dataName) = result.destructured
-            val plugin = findAll().getPlugin(pluginPackage)
-            plugin to dataName
+        val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
+        val (plugin, arg) = if (result != null) {
+            val (_, pluginPackage, pluginArg) = result.destructured
+            getPlugin(pluginPackage) to pluginArg
         } else {
-            findAll().getPlugin(default) to pluginId
+            getPlugin(default) to pluginId
         }
 
-        return plugin.matchUniformProvider(dataName, uniformPort, program, showContext)
+        return arg?.let { plugin.matchUniformProvider(it, uniformPort, program, showContext) }
     }
 
     private fun getPlugin(packageName: String): Plugin {
@@ -35,7 +34,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     companion object {
         private val default = "baaahs.Core"
         private val plugins = Plugins(
-            listOf(CorePlugin(), GadgetsPlugin())
+            listOf(CorePlugin())
                 .associateBy(Plugin::packageName)
         )
 

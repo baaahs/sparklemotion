@@ -1,6 +1,10 @@
 package baaahs.glshaders
 
+import baaahs.Color
+import baaahs.Gadget
 import baaahs.ShowContext
+import baaahs.gadgets.ColorPicker
+import baaahs.gadgets.Slider
 import baaahs.getTimeMillis
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
@@ -12,7 +16,7 @@ class CorePlugin : Plugin {
 
     override fun matchUniformProvider(
         name: String,
-        uniformPort: Patch.UniformPort,
+        uniformPort: Patch.UniformPortRef,
         program: GlslProgram,
         showContext: ShowContext
     ): GlslProgram.UniformProvider? {
@@ -20,12 +24,20 @@ class CorePlugin : Plugin {
             "resolution" -> ResolutionProvider()
             "time" -> TimeProvider()
             "uvCoords" -> UvCoordProvider(program)
-            else -> null
+
+            "Slider" -> SliderProvider(uniformPort, showContext)
+            "ColorPicker" -> ColorPickerProvider(uniformPort, showContext)
+
+            "none" -> null
+
+            else -> throw IllegalArgumentException("unknown type ${name}")
         }
     }
 
 
     class ResolutionProvider : GlslProgram.UniformProvider, GlslProgram.ResolutionListener {
+        override val supportedTypes: List<String> = listOf("vec2")
+
         var x = 1f
         var y = 1f
 
@@ -40,6 +52,8 @@ class CorePlugin : Plugin {
     }
 
     class TimeProvider : GlslProgram.UniformProvider {
+        override val supportedTypes: List<String> = listOf("float")
+
         override fun set(uniform: Uniform) {
             val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
             uniform.set(thisTime)
@@ -47,6 +61,8 @@ class CorePlugin : Plugin {
     }
 
     class UvCoordProvider(val program: GlslProgram) : GlslProgram.UniformProvider, GlslRenderer.ArrangementListener {
+        override val supportedTypes: List<String> = listOf("sampler2D")
+
         private val uvCoordTextureId = program.obtainTextureId()
         private val uvCoordTexture = program.gl.check { createTexture() }
 
@@ -79,6 +95,59 @@ class CorePlugin : Plugin {
 
         override fun release() {
             program.gl.check { deleteTexture(uvCoordTexture) }
+        }
+    }
+
+    abstract class GadgetProvider<T : Gadget>(
+        uniformPortRef: Patch.UniformPortRef,
+        val showContext: ShowContext,
+        pGadget: T
+    ) : GlslProgram.UniformProvider {
+        val gadget: T
+
+        init {
+            val varName = uniformPortRef.varName
+            val gadgetId = "glsl_$varName"
+            gadget = showContext.getGadget(gadgetId, pGadget)
+        }
+    }
+
+    class SliderProvider(
+        uniformPortRef: Patch.UniformPortRef,
+        showContext: ShowContext
+    ) : GadgetProvider<Slider>(uniformPortRef, showContext,
+        Slider(
+            uniformPortRef.name.capitalize(),
+            initialValue = uniformPortRef.pluginConfig["default"]?.toFloat() ?: 1f,
+            minValue = uniformPortRef.pluginConfig["min"]?.toFloat() ?: 0f,
+            maxValue = uniformPortRef.pluginConfig["max"]?.toFloat() ?: 1f,
+            stepValue = uniformPortRef.pluginConfig["step"]?.toFloat() ?: .01f
+            // ,scale = uniformPortRef.pluginConfig["scale"] ?: "linear"
+        )
+    ) {
+        override val supportedTypes: List<String> = listOf("float")
+
+        override fun set(uniform: Uniform) = uniform.set(gadget.value)
+    }
+
+    class ColorPickerProvider(
+        uniformPortRef: Patch.UniformPortRef,
+        showContext: ShowContext
+    ) : GadgetProvider<ColorPicker>(uniformPortRef, showContext,
+        ColorPicker(
+            uniformPortRef.name.capitalize(),
+            initialValue = uniformPortRef.pluginConfig["default"]?.let { Color.from(it) } ?: Color.WHITE
+        )
+    ) {
+        override val supportedTypes: List<String> = listOf("vec4")
+
+        override fun set(uniform: Uniform) {
+            uniform.set(
+                gadget.color.redF,
+                gadget.color.greenF,
+                gadget.color.blueF,
+                gadget.color.alphaF
+            )
         }
     }
 }

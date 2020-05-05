@@ -53,5 +53,7 @@ class CompiledShader(
         }
     }
 
+    class LinkException(errorMessage: String) : Exception("GLSL Link Error: $errorMessage")
+
     class GlslError(val row: Int, val column: Int, val message: String)
 }

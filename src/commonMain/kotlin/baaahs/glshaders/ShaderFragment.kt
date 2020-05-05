@@ -4,11 +4,11 @@ import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
 
 interface ShaderFragment {
-    enum class Type {
-        Color,
-        Projection,
-        Transformer,
-        Mixer
+    enum class Type(val outContentType: GlslCode.ContentType) {
+        Color(GlslCode.ContentType.Color),
+        Projection(GlslCode.ContentType.UvCoordinate),
+        Transformer(GlslCode.ContentType.UvCoordinate),
+        Filter(GlslCode.ContentType.Color)
     }
 
     val id: String

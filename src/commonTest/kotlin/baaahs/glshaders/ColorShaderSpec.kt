@@ -39,7 +39,7 @@ object ColorShaderSpec : Spek({
                     InputPort("float", "time", "Time", ContentType.Time),
                     InputPort("vec2", "resolution", "Resolution", ContentType.Resolution),
                     InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
-                    InputPort("float", "blueness", "Blueness", ContentType.Unknown),
+                    InputPort("float", "blueness", "Blueness", ContentType.Float, "baaahs.Core:Slider"),
                     InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
@@ -101,7 +101,7 @@ object ColorShaderSpec : Spek({
             describe("#inputPorts") {
                 it("finds magic uniforms") {
                     expect(listOf(
-                        InputPort("float", "blueness", "Blueness", ContentType.Unknown),
+                        InputPort("float", "blueness", "Blueness", ContentType.Float, "baaahs.Core:Slider"),
                         InputPort("vec3", "iResolution", "Resolution", ContentType.Resolution),
                         InputPort("float", "iTime", "Time", ContentType.Time),
                         InputPort("vec2", "iMouse", "Mouse", ContentType.XyCoordinate),

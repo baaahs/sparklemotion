@@ -1,7 +1,10 @@
 package baaahs.glsl
 
 import baaahs.*
-import baaahs.glshaders.*
+import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.GlslAnalyzer
+import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Plugins
 import baaahs.shaders.CompositingMode
 import baaahs.shaders.CompositorShader
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
@@ -53,7 +56,7 @@ class GlslPreview(
                 scene = Scene(src).also {
                     statusEl.appendText("Inputs:\n")
                     it.links.forEach { (from, to) ->
-                        if (from is GlslProgram.UserUniformPort) {
+                        if (from is GlslProgram.InputPortRef) {
                             statusEl.appendText(from.toString())
                             statusEl.appendText("\n")
                         }
@@ -90,20 +93,14 @@ class GlslPreview(
         )
         val links = patch.links
         private val program = GlslProgram(gl, patch)
+        private val gadgets = linkedMapOf<String, Gadget>()
 
         init {
-            program.bind { uniformPort -> providerFromPlugin(uniformPort, program) }
-            program.setResolution(canvas.width.toFloat(), canvas.height.toFloat())
-        }
-
-        private fun providerFromPlugin(
-            uniformPort: Patch.UniformPort,
-            program: GlslProgram
-        ): GlslProgram.UniformProvider? {
-            return (uniformPort as? GlslProgram.StockUniformPort)?.let {
-                val plugins = Plugins.findAll()
+            val plugins = Plugins.findAll()
+            program.bind { uniformPort ->
                 plugins.matchUniformProvider(uniformPort, program, FakeShowContext())
             }
+            program.setResolution(canvas.width.toFloat(), canvas.height.toFloat())
         }
 
         private var quad = Quad(gl, listOf(quadRect))
@@ -126,42 +123,46 @@ class GlslPreview(
             quad.release()
             program.release()
         }
-    }
 
-    inner class FakeShowContext : ShowContext {
-        override val allSurfaces: List<Surface>
-            get() = TODO("not implemented")
-        override val allUnusedSurfaces: List<Surface>
-            get() = TODO("not implemented")
-        override val allMovingHeads: List<MovingHead>
-            get() = TODO("not implemented")
-        override val currentBeat: Float
-            get() = TODO("not implemented")
+        inner class FakeShowContext : ShowContext {
+            override val allSurfaces: List<Surface>
+                get() = TODO("not implemented")
+            override val allUnusedSurfaces: List<Surface>
+                get() = TODO("not implemented")
+            override val allMovingHeads: List<MovingHead>
+                get() = TODO("not implemented")
+            override val currentBeat: Float
+                get() = TODO("not implemented")
 
-        override fun getBeatSource(): BeatSource {
-            TODO("not implemented")
-        }
+            override fun getBeatSource(): BeatSource {
+                TODO("not implemented")
+            }
 
-        override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
-            TODO("not implemented")
-        }
+            override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+                TODO("not implemented")
+            }
 
-        override fun getCompositorBuffer(
-            surface: Surface,
-            bufferA: Shader.Buffer,
-            bufferB: Shader.Buffer,
-            mode: CompositingMode,
-            fade: Float
-        ): CompositorShader.Buffer {
-            TODO("not implemented")
-        }
+            override fun getCompositorBuffer(
+                surface: Surface,
+                bufferA: Shader.Buffer,
+                bufferB: Shader.Buffer,
+                mode: CompositingMode,
+                fade: Float
+            ): CompositorShader.Buffer {
+                TODO("not implemented")
+            }
 
-        override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-            TODO("not implemented")
-        }
+            override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
+                TODO("not implemented")
+            }
 
-        override fun <T : Gadget> getGadget(name: String, gadget: T): T {
-            TODO("not implemented")
+            override fun <T : Gadget> getGadget(name: String, gadget: T): T {
+                if (gadgets.containsKey(name)) {
+                    throw CompiledShader.LinkException("multiple gadgets with the same name ($name)")
+                }
+                gadgets[name] = gadget
+                return gadget
+            }
         }
 
     }

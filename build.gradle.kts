@@ -141,8 +141,8 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
                 implementation(kotlin("test-junit5"))
-                implementation("org.junit.vintage:junit-vintage-engine:5.6.2")
 
+                runtimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 
