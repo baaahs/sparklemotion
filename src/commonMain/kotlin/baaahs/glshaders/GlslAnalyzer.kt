@@ -141,18 +141,23 @@ class GlslAnalyzer {
 
         open fun addComment(comment: String) {}
 
-        private class Statement(context: Context) : ParseState(context) {
+        private class Statement(
+            context: Context,
+            val precedingStatement: Statement? = null
+        ) : ParseState(context) {
             var lineNumber = context.lineNumber
             val comments = mutableListOf<String>()
 
             override fun visitComment(): ParseState {
-                return Comment(context, this)
+                val parentParseState =
+                    if (!textAsString.contains("\n") && precedingStatement != null) precedingStatement else this
+                return Comment(context, parentParseState, this)
             }
 
             override fun visitSemicolon(): Statement {
                 visitText(";")
                 finishStatement()
-                return Statement(context)
+                return Statement(context, this)
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
@@ -190,7 +195,8 @@ class GlslAnalyzer {
 
         private class Comment(
             context: Context,
-            val priorParseState: ParseState
+            val parentParseState: ParseState,
+            val nextParseState: ParseState
         ) : ParseState(context) {
             val parts = mutableListOf<String>()
 
@@ -200,8 +206,8 @@ class GlslAnalyzer {
             }
 
             override fun visitNewline(): ParseState {
-                priorParseState.addComment(parts.joinToString(""))
-                return priorParseState
+                parentParseState.addComment(parts.joinToString(""))
+                return nextParseState
             }
         }
 
@@ -281,7 +287,7 @@ class GlslAnalyzer {
             return Regex("^(struct|precision)\\s+.*;", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (keyword) = it.destructured
-                    GlslCode.GlslOther(keyword, text, lineNumber)
+                    GlslCode.GlslOther(keyword, text, lineNumber, comments)
                 }
         }
 
@@ -298,7 +304,7 @@ class GlslAnalyzer {
                         "const" -> isConst = true
                         "uniform" -> isUniform = true
                     }
-                    GlslVar(type, name, text, isConst, isUniform, lineNumber)
+                    GlslVar(type, name, text, isConst, isUniform, lineNumber, comments)
                 }
         }
 
@@ -306,7 +312,7 @@ class GlslAnalyzer {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (returnType, name, params, body) = it.destructured
-                    GlslFunction(returnType, name, params, text, lineNumber, globalVars)
+                    GlslFunction(returnType, name, params, text, lineNumber, globalVars, comments)
                 }
         }
     }

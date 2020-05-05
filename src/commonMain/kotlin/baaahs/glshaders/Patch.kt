@@ -33,8 +33,8 @@ class Patch(
         toGlobal = toById[null] ?: emptyList()
     }
 
-    val uniformPorts: List<UniformPort>
-        get() = fromGlobal.map { it.from }.filterIsInstance<UniformPort>()
+    val uniformPorts: List<UniformPortRef>
+        get() = fromGlobal.map { it.from }.filterIsInstance<UniformPortRef>()
 
     inner class Component(
         val index: Int,
@@ -51,11 +51,11 @@ class Patch(
             val tmpPortMap = hashMapOf<String, () -> String>()
 
             incomingLinks.forEach { (from, to) ->
-                if (to is ShaderPort) {
+                if (to is ShaderPortRef) {
                     if (from is ShaderOut) {
                         tmpPortMap[to.portName] =
                             { components[from.shaderId]?.resultVar ?: error("huh? no ${from.shaderId}?") }
-                    } else if (from is UniformPort) {
+                    } else if (from is UniformPortRef) {
                         tmpPortMap[to.portName] =
                             { from.varName }
                     }
@@ -123,19 +123,24 @@ class Patch(
     fun compile(glslContext: GlslContext): GlslProgram =
         GlslProgram(glslContext, this)
 
-    interface Port {
+    interface PortRef {
         val shaderId: String?
 
-        infix fun linkTo(other: Port): Link = Link(this, other)
+        infix fun linkTo(other: PortRef): Link = Link(this, other)
     }
 
-    data class ShaderOut(override val shaderId: String) : Port
+    data class ShaderOut(override val shaderId: String) : PortRef
 
-    object PixelColor : Port {
+    object PixelColor : PortRef {
         override val shaderId: String? = null
     }
 
-    open class UniformPort(val type: String, val name: String, val pluginId: String) : Port {
+    open class UniformPortRef(
+        val type: String,
+        val name: String,
+        val pluginId: String? = null,
+        val pluginConfig: Map<String, String> = emptyMap()
+    ) : PortRef {
         override val shaderId: String? = null
 
         open val varName: String get() = "in_$name"
@@ -143,11 +148,12 @@ class Patch(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is UniformPort) return false
+            if (other !is UniformPortRef) return false
 
             if (type != other.type) return false
             if (name != other.name) return false
             if (pluginId != other.pluginId) return false
+            if (pluginConfig != other.pluginConfig) return false
             if (shaderId != other.shaderId) return false
             if (isImplicit != other.isImplicit) return false
 
@@ -157,18 +163,19 @@ class Patch(
         override fun hashCode(): Int {
             var result = type.hashCode()
             result = 31 * result + name.hashCode()
-            result = 31 * result + pluginId.hashCode()
+            result = 31 * result + (pluginId?.hashCode() ?: 0)
+            result = 31 * result + pluginConfig.hashCode()
             result = 31 * result + (shaderId?.hashCode() ?: 0)
             result = 31 * result + isImplicit.hashCode()
             return result
         }
 
         override fun toString(): String {
-            return "UniformInput(type='$type', name='$name', pluginId='$pluginId, shaderId=$shaderId, isImplicit=$isImplicit)"
+            return "UniformPortRef(type='$type', name='$name', pluginId=$pluginId, pluginConfig=$pluginConfig, shaderId=$shaderId, isImplicit=$isImplicit)"
         }
     }
 
-    data class ShaderPort(override val shaderId: String, val portName: String) : Port
+    data class ShaderPortRef(override val shaderId: String, val portName: String) : PortRef
 
-    data class Link(val from: Port, val to: Port)
+    data class Link(val from: PortRef, val to: PortRef)
 }

@@ -1,7 +1,23 @@
 package baaahs.glshaders
 
+import baaahs.glshaders.GlslCode.ContentType
+
 abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Color
+
+    protected fun guessInputPort(it: GlslCode.GlslVar, desc: String = it.name.nameify()): InputPort {
+        val contentType = when (it.type) {
+            "float" -> ContentType.Float
+            "vec2" -> ContentType.XyCoordinate
+            "vec3" -> ContentType.XyzCoordinate
+            "vec4" -> ContentType.Color
+            else -> ContentType.Unknown
+        }
+        return InputPort(
+            it.type, it.name, desc, contentType,
+            it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
+        )
+    }
 }
 
 class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
@@ -18,37 +34,37 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 //              uniform vec4      iDate;                 // (year, month, day, time in seconds)
 //              uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 
-            "iResolution" to InputPort("vec3", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
+            "iResolution" to InputPort("vec3", "iResolution", "Resolution", ContentType.Resolution),
 
 //                float iTime (or iGlobalTime ) : seconds(+fracs) since the shader (re)started.
-            "iTime" to InputPort("float", "iTime", "Time", GlslCode.ContentType.Time),
-            "iGlobalTime" to InputPort("float", "iGlobalTime", "Global Time", GlslCode.ContentType.Time),
+            "iTime" to InputPort("float", "iTime", "Time", ContentType.Time),
+            "iGlobalTime" to InputPort("float", "iGlobalTime", "Global Time", ContentType.Time),
 
 //                float iTimeDelta: duration since the previous frame.
-            "iTimeDelta" to InputPort("float", "iTimeDelta", "Time Delta", GlslCode.ContentType.Unknown),
+            "iTimeDelta" to InputPort("float", "iTimeDelta", "Time Delta", ContentType.Float),
 
 //                int iFrame: frames since the shader (re)started.
-            "iFrame" to InputPort("float", "iFrame", "Frame", GlslCode.ContentType.Unknown),
+            "iFrame" to InputPort("float", "iFrame", "Frame", ContentType.Float),
 //                float iFrameRate: average FPS.
-            "iFrameRate" to InputPort("float", "iFrameRate", "Frame Rate", GlslCode.ContentType.Unknown),
+            "iFrameRate" to InputPort("float", "iFrameRate", "Frame Rate", ContentType.Float),
 
 //                float iChannelTime[4] : current time in video or sound.
-            "iChannelTime" to InputPort("float[4]", "iChannelTime", "Channel Time", GlslCode.ContentType.Unknown),
-            "iMouse" to InputPort("vec2", "iMouse", "Mouse", GlslCode.ContentType.XyCoordinate),
+            "iChannelTime" to InputPort("float[4]", "iChannelTime", "Channel Time", ContentType.Float),
+            "iMouse" to InputPort("vec2", "iMouse", "Mouse", ContentType.XyCoordinate),
 
 //                vec4 iDate: year-1, month-1, day, seconds(+fracs) since midnight.
-            "iDate" to InputPort("vec4", "iDate", "Date", GlslCode.ContentType.Unknown),
-            "iSampleRate" to InputPort("float", "iSampleRate", "Sample Rate", GlslCode.ContentType.Unknown),
-            "iChannelResolution" to InputPort("vec3[4]", "iChannelResolution", "Channel Resolution", GlslCode.ContentType.Unknown),
+            "iDate" to InputPort("vec4", "iDate", "Date", ContentType.Float),
+            "iSampleRate" to InputPort("float", "iSampleRate", "Sample Rate", ContentType.Float),
+            "iChannelResolution" to InputPort("vec3[4]", "iChannelResolution", "Channel Resolution", ContentType.Float),
 
-            "iChannel0" to InputPort("sampleXX", "iChannel0", "Channel 0", GlslCode.ContentType.Unknown),
-            "iChannel1" to InputPort("sampleXX", "iChannel1", "Channel 1", GlslCode.ContentType.Unknown),
-            "iChannel2" to InputPort("sampleXX", "iChannel2", "Channel 2", GlslCode.ContentType.Unknown),
-            "iChannel3" to InputPort("sampleXX", "iChannel3", "Channel 3", GlslCode.ContentType.Unknown)
+            "iChannel0" to InputPort("sampleXX", "iChannel0", "Channel 0", ContentType.Float),
+            "iChannel1" to InputPort("sampleXX", "iChannel1", "Channel 1", ContentType.Float),
+            "iChannel2" to InputPort("sampleXX", "iChannel2", "Channel 2", ContentType.Float),
+            "iChannel3" to InputPort("sampleXX", "iChannel3", "Channel 3", ContentType.Float)
 //            uniform samplerXX iChanneli;
         )
 
-        val uvCoordPort = InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
+        val uvCoordPort = InputPort("vec2", "sm_FragCoord", "Coordinates", ContentType.UvCoordinate)
     }
 
     override val entryPoint: GlslCode.GlslFunction =
@@ -65,7 +81,7 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                 ?: {
                     val desc = it.name.replace(Regex("^i"), "").nameify()
-                    InputPort(it.type, it.name, desc, GlslCode.ContentType.Unknown, null, it)
+                    guessInputPort(it, desc)
                 }()
         }
 
@@ -85,14 +101,14 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     companion object {
         val magicUniforms = listOf(
-            InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate),
-            InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
-            InputPort("vec2", "mouse", "Mouse", GlslCode.ContentType.XyCoordinate),
-            InputPort("float", "time", "Time", GlslCode.ContentType.Time)
+            InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate),
+            InputPort("vec2", "resolution", "Resolution", ContentType.Resolution),
+            InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
+            InputPort("float", "time", "Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.name }
 
-        val uvCoordPort = InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
+        val uvCoordPort = InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
     }
 
     override val entryPoint: GlslCode.GlslFunction =
@@ -101,12 +117,12 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
-                ?: InputPort(it.type, it.name, it.name.nameify(), GlslCode.ContentType.Unknown)
+                ?: guessInputPort(it)
         } + uvCoordPort
     }
 
     override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec4", "gl_FragColor", "Output Color", GlslCode.ContentType.UvCoordinate))
+            = listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.UvCoordinate))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return StringBuilder().apply {
