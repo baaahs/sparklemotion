@@ -131,7 +131,7 @@ class CorePlugin : Plugin {
     }
 
     class ColorPickerProvider(
-        uniformPortRef: Patch.UniformPortRef,
+        val uniformPortRef: Patch.UniformPortRef,
         showContext: ShowContext
     ) : GadgetProvider<ColorPicker>(uniformPortRef, showContext,
         ColorPicker(
@@ -139,15 +139,14 @@ class CorePlugin : Plugin {
             initialValue = uniformPortRef.pluginConfig["default"]?.let { Color.from(it) } ?: Color.WHITE
         )
     ) {
-        override val supportedTypes: List<String> = listOf("vec4")
+        override val supportedTypes: List<String> = listOf("vec3", "vec4")
 
         override fun set(uniform: Uniform) {
-            uniform.set(
-                gadget.color.redF,
-                gadget.color.greenF,
-                gadget.color.blueF,
-                gadget.color.alphaF
-            )
+            val color = gadget.color
+            when (uniformPortRef.type) {
+                "vec3" -> uniform.set(color.redF, color.greenF, color.blueF)
+                "vec4" -> uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
+            }
         }
     }
 }

@@ -128,14 +128,17 @@ class GlslProgram(
         private val uniformLocation =
             gl.runInContext {
                 gl.check {
-                    Uniform(gl, getUniformLocation(id, uniformPort.varName)
-                        ?: error("no such uniform ${uniformPort.varName}"))
+                    val uniformLoc = getUniformLocation(id, uniformPort.varName)
+                    if (uniformLoc == null) {
+                        logger.warn { "no such uniform ${uniformPort.varName}" }
+                    }
+                    uniformLoc?.let { Uniform(gl, it) }
                 }
             }
 
         fun setUniform() {
             try {
-                uniformProvider.set(uniformLocation)
+                uniformLocation?.let { uniformProvider.set(it) }
             } catch (e: Exception) {
                 logger.error(e) { "failed to set ${uniformPort.name} from $uniformProvider" }
             }
