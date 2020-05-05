@@ -46,7 +46,10 @@ class GlslPreview(
     }
 
     @JsName("setShaderSrc")
-    fun setShaderSrc(src: String?, callback: (Array<CompiledShader.GlslError>) -> Unit = {}) {
+    fun setShaderSrc(
+        src: String?,
+        callback: (Array<GadgetData>, Array<CompiledShader.GlslError>) -> Unit = { _, _ -> }
+    ) {
         scene?.release()
         scene = null
         statusEl.clear()
@@ -61,10 +64,14 @@ class GlslPreview(
                             statusEl.appendText("\n")
                         }
                     }
+
+                    val gadgetDatas = it.gadgets.entries.map { (name, gadget) ->
+                        GadgetData(name, gadget, "/preview/gadgets/$name")
+                    }.toTypedArray()
+                    callback.invoke(gadgetDatas, emptyArray())
                 }
-                callback.invoke(emptyArray())
             } catch (e: CompiledShader.CompilationException) {
-                callback.invoke(e.getErrors().toTypedArray())
+                callback.invoke(emptyArray(), e.getErrors().toTypedArray())
                 statusEl.appendText(e.errorMessage)
             } catch (e: Exception) {
                 statusEl.appendText(e.message ?: e.toString())
@@ -93,7 +100,7 @@ class GlslPreview(
         )
         val links = patch.links
         private val program = GlslProgram(gl, patch)
-        private val gadgets = linkedMapOf<String, Gadget>()
+        val gadgets = linkedMapOf<String, Gadget>()
 
         init {
             val plugins = Plugins.findAll()
