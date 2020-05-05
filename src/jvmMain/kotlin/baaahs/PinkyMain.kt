@@ -141,7 +141,7 @@ class PinkyMain(private val args: Args) {
             "I think so, Brain... but how would we ever determine Sandra Bullock's shoe size?",
             "Yes, Brain, I think so. But how do we get Twiggy to pose with an electric goose?"
         )
-        logger.info { responses.random()!! }
+        logger.info { responses.random() }
 
         doRunBlocking {
             delay(200000L)
