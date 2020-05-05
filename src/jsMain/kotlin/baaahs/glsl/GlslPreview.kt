@@ -5,8 +5,6 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import org.w3c.dom.Element
@@ -146,16 +144,6 @@ class GlslPreview(
             }
 
             override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
-                TODO("not implemented")
-            }
-
-            override fun getCompositorBuffer(
-                surface: Surface,
-                bufferA: Shader.Buffer,
-                bufferB: Shader.Buffer,
-                mode: CompositingMode,
-                fade: Float
-            ): CompositorShader.Buffer {
                 TODO("not implemented")
             }
 

@@ -5,7 +5,6 @@ import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.net.TestNetwork
 import baaahs.shaders.SolidShader
-import baaahs.shaders.SparkleShader
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -233,7 +232,7 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getShaderBuffer(surface1Receiver.surface, SparkleShader())
+            showRunner.getShaderBuffer(surface1Receiver.surface, SolidShader())
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }

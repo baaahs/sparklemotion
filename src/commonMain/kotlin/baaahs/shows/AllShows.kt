@@ -20,21 +20,8 @@ class AllShows {
                 }
         }
 
-        private val nonGlslShows = listOf(
-            SomeDumbShow,
-//            RandomShow,
-            CompositeShow,
-//            ThumpShow,
-            PanelTweenShow
-//            PixelTweenShow
-//            LifeyShow,
-//            SimpleSpatialShow,
-//            HeartbleatShow,
-//            CreepingPixelsShow
-        )
+        private val nonGlslShows = listOf(PanelTweenShow)
 
-        val allShows = listOf(
-            SolidColorShow
-        ) + (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() }
+        val allShows = listOf(FallbackShow) + (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() }
     }
 }

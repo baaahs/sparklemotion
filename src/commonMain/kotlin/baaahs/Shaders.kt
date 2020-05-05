@@ -2,17 +2,13 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.*
+import baaahs.shaders.GlslShader
+import baaahs.shaders.PixelShader
+import baaahs.shaders.SolidShader
 
 enum class ShaderId(val reader: ShaderReader<*>) {
     SOLID(SolidShader),
     PIXEL(PixelShader),
-    SINE_WAVE(SineWaveShader),
-    COMPOSITOR(CompositorShader),
-    SPARKLE(SparkleShader),
-    SIMPLE_SPATIAL(SimpleSpatialShader),
-    HEART(HeartShader),
-    RANDOM(RandomShader),
     GLSL_SHADER(GlslShader);
 
     companion object {

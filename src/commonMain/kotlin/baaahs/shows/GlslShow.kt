@@ -7,7 +7,7 @@ import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.shaders.GlslShader
 
-class GlslShow(
+open class GlslShow(
     name: String,
     val src: String,
     val glslContext: GlslContext,

@@ -1,8 +1,5 @@
 package baaahs
 
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
-
 interface ShowContext {
     val allSurfaces: List<Surface>
     val allUnusedSurfaces: List<Surface>
@@ -21,19 +18,6 @@ interface ShowContext {
      * @return A shader buffer of the appropriate type.
      */
     fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B
-
-    /**
-     * Obtain a compositing shader buffer which can be used to blend two other shaders together.
-     *
-     * The shaders must already have been obtained using [getShaderBuffer].
-     */
-    fun getCompositorBuffer(
-        surface: Surface,
-        bufferA: Shader.Buffer,
-        bufferB: Shader.Buffer,
-        mode: CompositingMode = CompositingMode.NORMAL,
-        fade: Float = 0.5f
-    ): CompositorShader.Buffer
 
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer
 

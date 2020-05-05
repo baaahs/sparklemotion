@@ -1,8 +1,6 @@
 package baaahs.shows
 
 import baaahs.*
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
 
 class FakeShowContext : ShowContext {
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
@@ -21,16 +19,6 @@ class FakeShowContext : ShowContext {
     override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
         return shader.createBuffer(surface)
             .also { shaderBuffers[surface] = it }
-    }
-
-    override fun getCompositorBuffer(
-        surface: Surface,
-        bufferA: Shader.Buffer,
-        bufferB: Shader.Buffer,
-        mode: CompositingMode,
-        fade: Float
-    ): CompositorShader.Buffer {
-        TODO("not implemented")
     }
 
     override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
