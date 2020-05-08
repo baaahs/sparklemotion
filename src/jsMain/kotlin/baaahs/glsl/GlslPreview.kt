@@ -111,7 +111,6 @@ class GlslPreview(
         }
 
         private var quad = Quad(gl, listOf(quadRect))
-//            .apply { bind(program.vertexAttribLocation) }
 
         fun render() {
             gl.runInContext {

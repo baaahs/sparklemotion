@@ -4,7 +4,6 @@ import baaahs.Color
 import baaahs.Logger
 import baaahs.Surface
 import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.GlslProgram
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
 import baaahs.timeSync
 import com.danielgergely.kgl.*
@@ -224,10 +223,6 @@ open class GlslRenderer(
             }
         })
 
-        fun bindQuad(program: GlslProgram) {
-//            quad.bind(program.vertexAttribLocation)
-        }
-
         fun bindFramebuffer() {
             gl.noCheck { checkForGlError() }
             gl.check { bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
@@ -272,6 +267,7 @@ open class GlslRenderer(
         fun render() {
             surfaces.groupBy { it.program }.forEach { (program, surfaces) ->
                 if (program != null) {
+                    gl.useProgram(program)
                     program.updateUniforms()
 
                     quad.prepareToRender(program.vertexAttribLocation) {
