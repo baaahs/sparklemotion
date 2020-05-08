@@ -217,7 +217,4 @@ class FakeShader(
         GlslProgram(FakeGlslContext(), Patch(emptyMap(), emptyList()))
             .apply { bind { uniformPortRef -> null } }
 ) : IGlslShader {
-    override fun createRenderer(): GlslRenderer {
-        return GlslRenderer(glslProgram.gl, GlslRendererTest.UvTranslatorForTest)
-    }
 }

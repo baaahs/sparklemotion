@@ -5,7 +5,7 @@ import baaahs.shaders.GlslShader
 
 class AllShows {
     companion object {
-        val allGlslShows: List<GlslShow> by lazy {
+        private val allGlslShows: List<GlslShow> by lazy {
             getResource("_RESOURCE_FILES_")
                 .split("\n")
                 .filter { it.startsWith("baaahs/shows/") && it.endsWith(".glsl")}
