@@ -4,7 +4,6 @@ import baaahs.Logger
 import com.danielgergely.kgl.*
 
 expect object GlslBase {
-    val plugins: MutableList<GlslPlugin>
     val manager: GlslManager
 }
 

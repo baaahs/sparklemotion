@@ -2,9 +2,10 @@ package baaahs
 
 import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
+import baaahs.glsl.GlslRenderer
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
-import baaahs.shaders.SoundAnalysisPlugin
+import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
@@ -61,7 +62,7 @@ class PinkyMain(private val args: Args) {
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
         val shows = AllShows.allShows.filter { args.showName == null || args.showName == it.name }
         val soundAnalyzer = JvmSoundAnalyzer()
-        GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
+//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         val display = object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
@@ -76,12 +77,13 @@ class PinkyMain(private val args: Args) {
             override var showFrameMs: Int = 0
         }
 
+        val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)
         val pinky = Pinky(
             model, shows, network, dmxUniverse, beatSource, SystemClock(),
             fs, daddy, display, soundAnalyzer,
-            prerenderPixels = true,
             switchShowAfterIdleSeconds = args.switchShowAfter,
-            adjustShowAfterIdleSeconds = args.adjustShowAfter
+            adjustShowAfterIdleSeconds = args.adjustShowAfter,
+            glslRenderer = glslRenderer
         )
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)

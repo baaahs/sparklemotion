@@ -36,7 +36,6 @@ class GlslProgram(
         )
     }
 
-    private var nextTextureId = 0
     private val fragShader = gl.runInContext {
         gl.createFragmentShader("#version ${gl.glslVersion}\n\n${patch.toGlsl()}\n")
     }
@@ -96,22 +95,26 @@ class GlslProgram(
         resolutionListeners.forEach { it.onResolution(x, y) }
     }
 
-    fun prepareToDraw() {
+    fun updateUniforms() {
         gl.runInContext {
-            gl.check { useProgram(id) }
+            gl.useProgram(this)
 
             bindings.forEach { it.setUniform() }
         }
     }
 
-    fun obtainTextureId(): Int {
-        check(nextTextureId <= 31) { "too many textures" }
-        return nextTextureId++
-    }
-
     fun release() {
         bindings.forEach { it.release() }
 //        TODO gl.runInContext { gl.check { deleteProgram } }
+    }
+
+    fun getUniform(name: String): Uniform? = gl.runInContext {
+        gl.useProgram(this)
+        val uniformLoc = gl.check { getUniformLocation(id, name) }
+        if (uniformLoc == null) {
+            logger.warn { "no such uniform $name" }
+        }
+        uniformLoc?.let { Uniform(this@GlslProgram, it) }
     }
 
     inner class Binding(
@@ -127,16 +130,7 @@ class GlslProgram(
             }
         }
 
-        private val uniformLocation =
-            gl.runInContext {
-                gl.check {
-                    val uniformLoc = getUniformLocation(id, uniformPort.varName)
-                    if (uniformLoc == null) {
-                        logger.warn { "no such uniform ${uniformPort.varName}" }
-                    }
-                    uniformLoc?.let { Uniform(gl, it) }
-                }
-            }
+        private val uniformLocation = getUniform(uniformPort.varName)
 
         val isValid: Boolean get() = uniformLocation != null
 

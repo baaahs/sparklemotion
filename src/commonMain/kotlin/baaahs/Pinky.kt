@@ -3,6 +3,7 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.glsl.GlslRenderer
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -12,13 +13,13 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import baaahs.shows.GuruMeditationErrorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.min
 
 class Pinky(
     val model: Model<*>,
@@ -31,9 +32,9 @@ class Pinky(
     val firmwareDaddy: FirmwareDaddy,
     val display: PinkyDisplay,
     soundAnalyzer: SoundAnalyzer,
-    private val prerenderPixels: Boolean = false,
     private val switchShowAfterIdleSeconds: Int? = 600,
-    private val adjustShowAfterIdleSeconds: Int? = null
+    private val adjustShowAfterIdleSeconds: Int? = null,
+    glslRenderer: GlslRenderer
 ) : Network.UdpListener {
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
@@ -54,8 +55,9 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply { install(gadgetModule) }
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    private val showRunner =
-        ShowRunner(model, selectedShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock)
+    private val showRunner = ShowRunner(
+        model, selectedShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer
+    )
 
     private val selectedShowChannel: PubSub.Channel<String>
     private var selectedNewShowAt = DateTime.now()
@@ -190,9 +192,7 @@ class Pinky(
     }
 
     internal fun drawNextFrame() {
-        aroundNextFrame {
-            showRunner.nextFrame()
-        }
+        showRunner.nextFrame()
     }
 
     private fun disableDmx() {
@@ -291,10 +291,17 @@ class Pinky(
             networkStats.bytesSent += message.size
         }
 
-        val surfaceReceiver = if (prerenderPixels) {
-            PrerenderingSurfaceReceiver(surface, sendFn)
-        } else {
-            ShowRunner.SurfaceReceiver(surface, sendFn)
+        val pixelShader = PixelShader(PixelShader.Encoding.DIRECT_RGB)
+        val surfaceReceiver = object : ShowRunner.SurfaceReceiver {
+            override val surface = surface
+            private val pixelBuffer = pixelShader.createBuffer(surface)
+
+            override fun send(pixels: Pixels) {
+                pixelBuffer.indices.forEach { i ->
+                    pixelBuffer.colors[i] = pixels[i]
+                }
+                sendFn(pixelBuffer)
+            }
         }
 
         val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
@@ -354,151 +361,42 @@ class Pinky(
         }
     }
 
-    private inner class PrerenderingSurfaceReceiver(surface: Surface, sendFn: (Shader.Buffer) -> Unit) :
-        ShowRunner.SurfaceReceiver(surface, sendFn) {
-        var currentRenderTree: Brain.RenderTree<*>? = null
-        private var currentPoolKey: Any? = null
-        var pixels: PixelsAdapter? = null
-        var currentBuffer: Shader.Buffer? = null
-
-        @Suppress("UNCHECKED_CAST")
-        override fun send(shaderBuffer: Shader.Buffer) {
-            val shader = shaderBuffer.shader as Shader<Shader.Buffer>
-            var renderTree = currentRenderTree
-            if (renderTree == null || renderTree.shader != shader) {
-                val priorPoolKey = currentPoolKey
-                var newPoolKey: Any? = null
-
-                val renderer = shader.createRenderer(surface, object : RenderContext {
-                    override fun <T : PooledRenderer> registerPooled(key: Any, fn: () -> T): T {
-                        newPoolKey = key
-                        return poolingRenderContext.registerPooled(key, fn)
-                    }
-                })
-
-                if (newPoolKey != priorPoolKey) {
-                    if (priorPoolKey != null) {
-                        poolingRenderContext.decrement(priorPoolKey)
-                    }
-                    currentPoolKey = newPoolKey
-                }
-
-                renderTree = Brain.RenderTree(shader, renderer, shaderBuffer)
-                currentRenderTree?.release()
-                currentRenderTree = renderTree
-
-                if (pixels == null) {
-                    val pixelBuffer = PixelShader(PixelShader.Encoding.DIRECT_RGB).createBuffer(surface)
-                    pixels = PixelsAdapter(pixelBuffer)
-                }
-            }
-
-            val renderer = currentRenderTree!!.renderer as Shader.Renderer<Shader.Buffer>
-            renderer.beginFrame(shaderBuffer, pixels!!.size)
-
-            // we need to reorder the draw cycle, so don't do the rest of the render yet!
-            currentBuffer = shaderBuffer
+    class RenderTree(val shader: GlslShader, val renderer: GlslRenderer, val buffer: GlslShader.Buffer) {
+        fun draw(pixels: Pixels) {
+            renderer.draw()
+            pixels.finishedFrame()
         }
 
-        @Suppress("UNCHECKED_CAST")
-        fun actuallySend() {
-            val renderTree = currentRenderTree
-            if (renderTree != null) {
-                val renderer = renderTree.renderer as Shader.Renderer<Shader.Buffer>
-                val pixels = pixels!!
-                val currentBuffer = currentBuffer!!
-
-                for (i in pixels.indices) {
-                    pixels[i] = renderer.draw(currentBuffer, i)
-                }
-                this.currentBuffer = null
-
-                renderer.endFrame()
-                pixels.finishedFrame()
-
-                renderTree.draw(pixels)
-
-                super.send(pixels.buffer)
-
-                updateListeningVisualizers(surface, pixels.buffer.colors)
-            }
+        fun release() {
+            renderer.release()
         }
     }
 
-    var poolingRenderContext = PoolingRenderContext()
-    var lastSentAt: Long = 0
-
-    private fun aroundNextFrame(callNextFrame: () -> Unit) {
-        /**
-         * [ShowRunner.SurfaceReceiver.send] is called here; if [prerenderPixels] is true, it won't
-         * actually send; we need to do that ourselves.
-         */
-        callNextFrame()
-
-        if (prerenderPixels) {
-            val preDrawElapsed = timeSync {
-                poolingRenderContext.preDraw()
-            }
-
-            val sendElapsed = timeSync {
-                brainInfos.values.forEach { brainInfo ->
-                    val surfaceReceiver = brainInfo.surfaceReceiver as PrerenderingSurfaceReceiver
-                    surfaceReceiver.actuallySend()
-                }
-            }
-
-//            println("preDraw took ${preDrawElapsed}ms, send took ${sendElapsed}ms")
-        }
-        val now = getTimeMillis()
-        val elapsedMs = now - lastSentAt
-//        println("It's been $elapsedMs")
-        lastSentAt = now
-    }
-
-
-    class PoolingRenderContext : RenderContext {
-        private val pooledRenderers = hashMapOf<Any, Holder<*>>()
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : PooledRenderer> registerPooled(key: Any, fn: () -> T): T {
-            val holder = pooledRenderers.getOrPut(key) { Holder(fn()) }
-            holder.count++
-            return holder.pooledRenderer as T
-        }
-
-        fun decrement(key: Any) {
-            val holder = pooledRenderers[key]!!
-            holder.count--
-            if (holder.count == 0) {
-                logger.debug { "Removing pooled renderer for $key" }
-                pooledRenderers.remove(key)
-            }
-        }
-
-        fun preDraw() {
-            pooledRenderers.values.forEach { holder ->
-                holder.pooledRenderer.preDraw()
-            }
-        }
-
-        class Holder<T : PooledRenderer>(val pooledRenderer: T, var count: Int = 0)
-    }
-
-    private class PixelsAdapter(internal val buffer: PixelShader.Buffer) : Pixels {
-        override val size: Int = buffer.colors.size
-
-        override fun get(i: Int): Color = buffer.colors[i]
-
-        override fun set(i: Int, color: Color) {
-            buffer.colors[i] = color
-        }
-
-        override fun set(colors: Array<Color>) {
-            for (i in 0 until min(colors.size, size)) {
-                buffer.colors[i] = colors[i]
-            }
-        }
-    }
+//    var lastSentAt: Long = 0
+//
+//    private fun aroundNextFrame(callNextFrame: () -> Unit) {
+//        /**
+//         * [ShowRunner.SurfaceReceiver.send] is called here; if [prerenderPixels] is true, it won't
+//         * actually send; we need to do that ourselves.
+//         */
+//
+//        val preDrawElapsed = timeSync {
+//            showRunner.preDraw()
+//        }
+//
+//        val sendElapsed = timeSync {
+//            brainInfos.values.forEach { brainInfo ->
+//                val surfaceReceiver = brainInfo.surfaceReceiver.send()
+//                surfaceReceiver.actuallySend()
+//            }
+//        }
+//
+////            println("preDraw took ${preDrawElapsed}ms, send took ${sendElapsed}ms")
+//        val now = getTimeMillis()
+//        val elapsedMs = now - lastSentAt
+////        println("It's been $elapsedMs")
+//        lastSentAt = now
+//    }
 
     inner class ListeningVisualizer : Network.WebSocketListener {
         lateinit var tcpConnection: Network.TcpConnection

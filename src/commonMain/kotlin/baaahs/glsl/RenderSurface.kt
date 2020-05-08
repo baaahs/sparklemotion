@@ -3,10 +3,11 @@ package baaahs.glsl
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.Surface
+import baaahs.glshaders.GlslProgram
 
-class GlslSurface(
+class RenderSurface(
+    var program: GlslProgram? = null,
     val pixels: SurfacePixels,
-    val uniforms: GlslRenderer.Uniforms,
     val rect0Index: Int,
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
     val uvTranslator: UvTranslator

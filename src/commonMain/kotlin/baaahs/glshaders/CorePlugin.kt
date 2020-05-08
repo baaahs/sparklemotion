@@ -32,12 +32,21 @@ class CorePlugin : Plugin {
             "Slider" -> SliderProvider(uniformPort, showContext)
             "ColorPicker" -> ColorPickerProvider(uniformPort, showContext)
 
-            "none" -> null
+            "none" -> NoOpProvider(uniformPort.type)
 
             else -> throw IllegalArgumentException("unknown type ${name}")
         }
     }
 
+    class NoOpProvider(forType: String) : DataSourceProvider, DataSource {
+        override val supportedTypes = listOf(forType)
+
+        override fun provide(): DataSource = this
+
+        override fun set(uniform: Uniform) {
+            // no-op
+        }
+    }
 
     class ResolutionProvider : DataSourceProvider, DataSource, GlslProgram.ResolutionListener {
         override val supportedTypes: List<String> = listOf("vec2")
@@ -68,13 +77,12 @@ class CorePlugin : Plugin {
 
     class UvCoordProvider(
         val program: GlslProgram
-    ) : DataSourceProvider, DataSource, GlslRenderer.ArrangementListener {
+    ) : DataSourceProvider, GlslRenderer.ArrangementListener {
         override val supportedTypes: List<String> = listOf("sampler2D")
 
-        override fun provide(): DataSource = this
-
-        private val uvCoordTextureId = program.obtainTextureId()
-        private val uvCoordTexture = program.gl.check { createTexture() }
+        private val gl = program.gl
+        private val uvCoordTextureUnit = gl.getTextureUnit(UvCoordProvider::class)
+        private val uvCoordTexture = gl.check { createTexture() }
 
         override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
             if (arrangement.uvCoords.isEmpty()) return
@@ -83,28 +91,21 @@ class CorePlugin : Plugin {
             val pixHeight = arrangement.pixHeight
             val floatBuffer = FloatBuffer(arrangement.uvCoords)
 
-            with(program.gl) {
-                check { activeTexture(GL_TEXTURE0 + uvCoordTextureId) }
-                check { bindTexture(GL_TEXTURE_2D, uvCoordTexture) }
-                check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
-                check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
-                check {
-                    texImage2D(
-                        GL_TEXTURE_2D, 0,
-                        GL_R32F, pixWidth * 2, pixHeight, 0,
-                        GL_RED,
-                        GL_FLOAT, floatBuffer
-                    )
-                }
+            with(uvCoordTextureUnit) {
+                bindTexture(uvCoordTexture)
+                configure(GL_NEAREST, GL_NEAREST)
+                uploadTexture(0, GL_R32F, pixWidth * 2, pixHeight, 0, GL_RED, GL_FLOAT, floatBuffer)
             }
         }
 
-        override fun set(uniform: Uniform) {
-            uniform.set(uvCoordTextureId)
-        }
+        override fun provide(): DataSource = object : DataSource {
+            override fun set(uniform: Uniform) {
+                uniform.set(uvCoordTextureUnit)
+            }
 
-        override fun release() {
-            program.gl.check { deleteTexture(uvCoordTexture) }
+            override fun release() {
+                gl.check { deleteTexture(uvCoordTexture) }
+            }
         }
     }
 
@@ -119,8 +120,10 @@ class CorePlugin : Plugin {
             val varName = uniformPortRef.varName
             val gadgetId = "glsl_$varName"
             val displayName = uniformPortRef.name.capitalize()
-            val gadget = showContext.getGadget(gadgetId,
-                createGadget(displayName, uniformPortRef.pluginConfig))
+            val gadget = showContext.getGadget(
+                gadgetId,
+                createGadget(displayName, uniformPortRef.pluginConfig)
+            )
             return object : DataSource {
                 override fun set(uniform: Uniform) {
                     this@GadgetProvider.set(gadget, uniform)
@@ -162,19 +165,23 @@ class CorePlugin : Plugin {
 
         override fun provide(): DataSource {
             return object : DataSource {
-                val xControl = showContext.getGadget("${gadgetIdPrefix}_x", Slider(
-                    "$displayName X",
-                    initialValue = .5f,
-                    minValue = 0f,
-                    maxValue = 1f
-                ))
+                val xControl = showContext.getGadget(
+                    "${gadgetIdPrefix}_x", Slider(
+                        "$displayName X",
+                        initialValue = .5f,
+                        minValue = 0f,
+                        maxValue = 1f
+                    )
+                )
 
-                val yControl = showContext.getGadget("${gadgetIdPrefix}_y", Slider(
-                    "$displayName Y",
-                    initialValue = .5f,
-                    minValue = 0f,
-                    maxValue = 1f
-                ))
+                val yControl = showContext.getGadget(
+                    "${gadgetIdPrefix}_y", Slider(
+                        "$displayName Y",
+                        initialValue = .5f,
+                        minValue = 0f,
+                        maxValue = 1f
+                    )
+                )
 
                 override fun set(uniform: Uniform) {
                     uniform.set(xControl.value, yControl.value)

@@ -45,6 +45,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
     }
 
     companion object {
+        val origin = Vector3F(0f, 0f, 0f)
+
         fun parse(reader: ByteArrayReader) =
             Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat())
     }

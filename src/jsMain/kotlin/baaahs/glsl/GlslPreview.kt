@@ -5,6 +5,8 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
+import baaahs.shaders.GlslShader
+import baaahs.shaders.IGlslShader
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import org.w3c.dom.Element
@@ -109,7 +111,7 @@ class GlslPreview(
         }
 
         private var quad = Quad(gl, listOf(quadRect))
-            .apply { bind(program.vertexAttribLocation) }
+//            .apply { bind(program.vertexAttribLocation) }
 
         fun render() {
             gl.runInContext {
@@ -117,7 +119,7 @@ class GlslPreview(
                 gl.check { clearColor(1f, 0f, 0f, 1f) }
                 gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
-                program.prepareToDraw()
+                program.updateUniforms()
                 quad.prepareToRender(program.vertexAttribLocation) {
                     quad.renderRect(0)
                 }
@@ -143,7 +145,7 @@ class GlslPreview(
                 TODO("not implemented")
             }
 
-            override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+            override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
                 TODO("not implemented")
             }
 

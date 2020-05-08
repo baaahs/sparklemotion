@@ -8,7 +8,6 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 actual object GlslBase {
-    actual val plugins: MutableList<GlslPlugin> = mutableListOf()
     actual val manager: GlslManager by lazy { jsManager }
     val jsManager: JsGlslManager by lazy { JsGlslManager() }
 

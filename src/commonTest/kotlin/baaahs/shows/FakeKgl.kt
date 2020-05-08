@@ -9,8 +9,9 @@ class FakeGlslContext(private val kgl: FakeKgl = FakeKgl()) : GlslContext(kgl, "
 
     override fun <T> runInContext(fn: () -> T): T = fn()
 
-    fun getTexture(textureSlot: Int): FakeKgl.FakeTextureInfo? {
-        return kgl.getTexture(textureSlot)
+    fun getTextureConfig(textureUnit: Int): FakeKgl.TextureConfig {
+        return kgl.getTextureConfig(textureUnit)
+            ?: error("no texture bound on unit $textureUnit")
     }
 }
 
@@ -21,10 +22,10 @@ class FakeKgl : Kgl {
 
     private val uniforms = arrayListOf<Any?>(null) // 1-based
 
-    private val textures = arrayListOf(FakeTextureInfo()) // 1-based
-    private var activeTextureSlot: Int? = null
-    private var textureSlots: MutableMap<Int, FakeTextureInfo> = mutableMapOf()
-    private var targets: MutableMap<Int, FakeTextureInfo> = mutableMapOf()
+    private val textures = arrayListOf(TextureConfig()) // 1-based
+    private var activeTextureUnit: Int? = null
+    private var textureUnits: MutableMap<Int, TextureConfig> = mutableMapOf()
+    private var targets: MutableMap<Int, TextureConfig> = mutableMapOf()
 
     inner class FakeProgram {
         private val uniformIdsByName = mutableMapOf<String, Int>()
@@ -41,7 +42,7 @@ class FakeKgl : Kgl {
         }
     }
 
-    class FakeTextureInfo(
+    class TextureConfig(
         var params: MutableMap<Int, Int> = mutableMapOf(),
         var level: Int? = null,
         var internalFormat: Int? = null,
@@ -55,7 +56,7 @@ class FakeKgl : Kgl {
     )
 
     override fun activeTexture(texture: Int) {
-        activeTextureSlot = texture - GL_TEXTURE0
+        activeTextureUnit = texture - GL_TEXTURE0
     }
 
     override fun attachShader(programId: Program, shaderId: Shader) {}
@@ -71,12 +72,12 @@ class FakeKgl : Kgl {
     override fun bindTexture(target: Int, texture: Texture?) {
         if (texture == null) {
             targets.remove(target)
-            textureSlots.remove(activeTextureSlot)
+            textureUnits.remove(activeTextureUnit)
         } else {
             @Suppress("CAST_NEVER_SUCCEEDS")
-            val boundTextureInfo = textures[texture as Int]
-            targets[target] = boundTextureInfo
-            textureSlots[activeTextureSlot!!] = boundTextureInfo
+            val boundTextureConfig = textures[texture as Int]
+            targets[target] = boundTextureConfig
+            textureUnits[activeTextureUnit!!] = boundTextureConfig
         }
     }
 
@@ -110,7 +111,7 @@ class FakeKgl : Kgl {
     override fun createShader(type: Int): Shader? = fake(1)
 
     override fun createTexture(): Texture {
-        textures.add(FakeTextureInfo())
+        textures.add(TextureConfig())
         return fake(textures.size - 1)
     }
 
@@ -291,7 +292,7 @@ class FakeKgl : Kgl {
         return i as T
     }
 
-    fun getTexture(textureSlot: Int): FakeTextureInfo? {
-        return textureSlots[textureSlot]
+    fun getTextureConfig(textureUnit: Int): TextureConfig? {
+        return textureUnits[textureUnit]
     }
 }

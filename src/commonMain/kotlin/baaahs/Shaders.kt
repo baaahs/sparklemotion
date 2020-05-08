@@ -8,8 +8,7 @@ import baaahs.shaders.SolidShader
 
 enum class ShaderId(val reader: ShaderReader<*>) {
     SOLID(SolidShader),
-    PIXEL(PixelShader),
-    GLSL_SHADER(GlslShader);
+    PIXEL(PixelShader);
 
     companion object {
         val values = values()
@@ -27,7 +26,7 @@ interface ShaderReader<T : Shader<*>> {
 }
 
 interface RenderContext {
-    fun <T : PooledRenderer> registerPooled(key: Any, fn: () -> T): T
+    fun <T : PooledRenderer> registerPooled(glslShader: GlslShader, fn: () -> T): T
 }
 
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {

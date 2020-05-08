@@ -1,24 +1,33 @@
 package baaahs.shows
 
 import baaahs.*
+import baaahs.glsl.GlslRenderer
+import baaahs.glsl.GlslRendererTest
+import baaahs.shaders.GlslShader
+import baaahs.shaders.IGlslShader
 
 class FakeShowContext : ShowContext {
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
+    val glslRenderer = GlslRenderer(FakeGlslContext(), GlslRendererTest.UvTranslatorForTest)
 
     override val allSurfaces: List<Surface> = emptyList()
     override val allUnusedSurfaces: List<Surface> = emptyList()
     override val allMovingHeads: List<MovingHead> = emptyList()
     override val currentBeat: Float = 1f
 
-    private val shaderBuffers = mutableMapOf<Surface, Shader.Buffer>()
+    private val surfaceBinders = mutableMapOf<Surface, SurfaceBinder>()
 
     override fun getBeatSource(): BeatSource {
         TODO("not implemented")
     }
 
-    override fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+    override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
         return shader.createBuffer(surface)
-            .also { shaderBuffers[surface] = it }
+            .also {
+                val surfaceBinder = SurfaceBinder(surface, glslRenderer.addSurface(surface))
+                surfaceBinder.setBuffer(it)
+                surfaceBinders[surface] = surfaceBinder
+            }
     }
 
     override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
@@ -31,12 +40,9 @@ class FakeShowContext : ShowContext {
     }
 
     fun drawFrame() {
-        shaderBuffers.forEach { (surface, buffer) ->
-            val renderer: Shader.Renderer<Shader.Buffer> =
-                buffer.shader.createRenderer(surface) as Shader.Renderer<Shader.Buffer>
-            renderer.beginFrame(buffer, 1)
-            renderer.draw(buffer, 0)
-            renderer.endFrame()
+        surfaceBinders.values.forEach { surfaceBinder ->
+            surfaceBinder.updateRenderSurface()
         }
+        glslRenderer.draw()
     }
 }

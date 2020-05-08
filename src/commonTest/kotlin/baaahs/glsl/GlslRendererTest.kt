@@ -7,7 +7,6 @@ import baaahs.io.ByteArrayWriter
 import baaahs.shaders.GlslShader
 import kotlin.math.abs
 import kotlin.random.Random
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -25,11 +24,6 @@ class GlslRendererTest {
         return available
     }
 
-    @BeforeTest
-    fun resetPlugins() {
-        GlslBase.plugins.clear()
-    }
-
     @Test
     fun testSimpleRendering() {
         if (!glslAvailable()) return
@@ -44,12 +38,9 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
-        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, UvTranslatorForTest)
 
-        val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
-
-        // TODO: yuck, let's not do this.
-        glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f))
+        val renderSurface = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
         renderer.draw()
 
@@ -57,7 +48,7 @@ class GlslRendererTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { glslSurface.pixels.toList() }
+        )) { renderSurface.pixels.toList() }
     }
 
     @Test
@@ -78,25 +69,25 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
-        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, UvTranslatorForTest)
 
-        val glslSurface = renderer.addSurface(surfaceWithThreePixels())!!
+        val renderSurface = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
+//        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
         renderer.draw()
         expectColor(listOf(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        )) { glslSurface.pixels.toList() }
+        )) { renderSurface.pixels.toList() }
 
-        glslSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+//        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
         renderer.draw()
         expectColor(listOf(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        )) { glslSurface.pixels.toList() }
+        )) { renderSurface.pixels.toList() }
     }
 
     @Test
@@ -113,16 +104,11 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
-        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, UvTranslatorForTest)
 
-        val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
-        val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
-        val glslSurface3 = renderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels())!!
-
-        // TODO: yuck, let's not do this.
-        listOf(glslSurface1, glslSurface2, glslSurface3).forEach {
-            it.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f))
-        }
+        val renderSurface1 = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface3 = renderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         renderer.draw()
 
@@ -130,14 +116,14 @@ class GlslRendererTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { glslSurface1.pixels.toList() }
+        )) { renderSurface1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(listOf(
             Color(.6f, .6f, .5f),
             Color(.651f, .651f, .5f),
             Color(.7f, .7f, .5f)
-        )) { glslSurface2.pixels.toList() }
+        )) { renderSurface2.pixels.toList() }
 
         // TODO: this is wrong (and flaky); it depends on LinearModelSpaceUvTranslator picking a random
         //       x,y,x coord in [0..100], which is usually > 1.
@@ -145,7 +131,7 @@ class GlslRendererTest {
 //            Color(1f, 1f, .5f),
 //            Color(1f, 1f, .5f),
 //            Color(1f, 1f, .5f)
-//        )) { glslSurface3.pixels.toList() }
+//        )) { renderSurface3.pixels.toList() }
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.
@@ -180,14 +166,14 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = AutoWirer().autoWire(program).compile(GlslShader.globalRenderContext)
-        val renderer = GlslRenderer(GlslShader.globalRenderContext, glslProgram, UvTranslatorForTest)
+        val renderer = GlslRenderer(GlslShader.globalRenderContext, UvTranslatorForTest)
 
-        val glslSurface1 = renderer.addSurface(surfaceWithThreePixels())!!
-        val glslSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels())!!
+        val renderSurface1 = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
-        glslSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-        glslSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
+//        renderSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+//        renderSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
         renderer.draw()
 
@@ -195,14 +181,14 @@ class GlslRendererTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        )) { glslSurface1.pixels.toList() }
+        )) { renderSurface1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(listOf(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        )) { glslSurface2.pixels.toList() }
+        )) { renderSurface2.pixels.toList() }
     }
 
     @Test
