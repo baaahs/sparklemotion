@@ -1,9 +1,9 @@
 package baaahs
 
 import baaahs.geom.Vector3F
-import baaahs.glsl.GlslBase
+import baaahs.glsl.GlslRenderer
 import baaahs.proto.Ports
-import baaahs.shaders.SoundAnalysisPlugin
+import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
@@ -36,13 +36,22 @@ class SheepSimulator {
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     private val pinkyDisplay = display.forPinky()
     init {
-        GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
+//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
     public val shows = AllShows.allShows
+    val glslContext = GlslShader.globalRenderContext
     private val pinky = Pinky(
-        model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
-        PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,
-        prerenderPixels = true
+        model,
+        shows,
+        network,
+        dmxUniverse,
+        bridgeClient.beatSource,
+        JsClock(),
+        fs,
+        PermissiveFirmwareDaddy(),
+        pinkyDisplay,
+        bridgeClient.soundAnalyzer,
+        glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
     )
 
     private fun selectModel(): Model<*> =

@@ -18,11 +18,12 @@ class Quad(private val gl: GlslContext, rects: List<Rect>) {
 
     private var vao: VertexArrayObject = gl.check { createVertexArray() }
     private var quadVertexBuffer: GlBuffer = gl.check { createBuffers(1)[0] }
+    val sourceData = bufferOf(vertices)
 
     fun bind(vertexAttr: Int) {
         gl.check { bindVertexArray(vao) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
-        gl.check { bufferData(GL_ARRAY_BUFFER, bufferOf(vertices), vertices.size, GL_STATIC_DRAW) }
+        gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
 
         gl.check { vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
         gl.check { enableVertexAttribArray(vertexAttr) }
@@ -34,7 +35,14 @@ class Quad(private val gl: GlslContext, rects: List<Rect>) {
 
     private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
+    private var initialized = false
     internal fun prepareToRender(vertexAttr: Int, fn: () -> Unit) {
+        if (!initialized) {
+            // TODO: don't call [bufferData] on every render!
+            bind(vertexAttr)
+            initialized = true
+        }
+
         gl.check { bindVertexArray(vao) }
         gl.check { enableVertexAttribArray(vertexAttr) }
 

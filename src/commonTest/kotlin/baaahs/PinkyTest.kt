@@ -1,11 +1,16 @@
 package baaahs
 
+import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Patch
+import baaahs.glsl.GlslRenderer
+import baaahs.glsl.GlslRendererTest
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
-import baaahs.shaders.SolidShader
+import baaahs.shaders.IGlslShader
+import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -30,8 +35,19 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
-        pinky = Pinky(model, listOf(testShow1), network, FakeDmxUniverse(), StubBeatSource(), FakeClock(), FakeFs(),
-            PermissiveFirmwareDaddy(), StubPinkyDisplay(), StubSoundAnalyzer())
+        pinky = Pinky(
+            model,
+            listOf(testShow1),
+            network,
+            FakeDmxUniverse(),
+            StubBeatSource(),
+            FakeClock(),
+            FakeFs(),
+            PermissiveFirmwareDaddy(),
+            StubPinkyDisplay(),
+            StubSoundAnalyzer(),
+            glslRenderer = GlslRenderer(FakeGlslContext(), GlslRendererTest.UvTranslatorForTest)
+        )
         pinkyLink = network.links.only()
     }
 
@@ -154,7 +170,7 @@ class PinkyTest {
 
     class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
-        val solidShader = SolidShader()
+        val solidShader = FakeShader()
 
         override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
             return ShowRenderer(showContext).also { createdShows.add(it) }
@@ -165,7 +181,9 @@ class PinkyTest {
                 showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, solidShader) }.toMutableMap()
 
             override fun nextFrame() {
-                shaderBuffers.values.forEach { it.color = Color.WHITE }
+                shaderBuffers.values.forEach {
+//                TODO    it.color = Color.WHITE
+                }
             }
 
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
@@ -191,5 +209,15 @@ class StubSoundAnalyzer : SoundAnalyzer {
     }
 
     override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
+    }
+}
+
+class FakeShader(
+    override val glslProgram: GlslProgram =
+        GlslProgram(FakeGlslContext(), Patch(emptyMap(), emptyList()))
+            .apply { bind { uniformPortRef -> null } }
+) : IGlslShader {
+    override fun createRenderer(): GlslRenderer {
+        return GlslRenderer(glslProgram.gl, GlslRendererTest.UvTranslatorForTest)
     }
 }

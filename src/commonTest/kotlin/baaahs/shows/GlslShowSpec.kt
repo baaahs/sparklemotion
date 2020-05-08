@@ -47,15 +47,15 @@ object GlslShowSpec : Spek({
 
         context("port wiring") {
             it("wires up UV texture stuff") {
-                val fragCoordVal = fakeProgram.getUniform("in_sm_uvCoordsTexture")
-                val textureInfo = fakeGlslContext.getTexture(fragCoordVal as Int)!!
+                val fragCoordTextureUnit = fakeProgram.getUniform("in_sm_uvCoordsTexture") as Int
+                val textureConfig = fakeGlslContext.getTextureConfig(fragCoordTextureUnit)
 
-                expect(200 to 1) { textureInfo.width to textureInfo.height }
-                expect(GL_R32F) { textureInfo.internalFormat }
-                expect(GL_RED) { textureInfo.format }
-                expect(GL_FLOAT) { textureInfo.type }
-                expect(GL_NEAREST) { textureInfo.params[GL_TEXTURE_MIN_FILTER] }
-                expect(GL_NEAREST) { textureInfo.params[GL_TEXTURE_MAG_FILTER] }
+                expect(200 to 1) { textureConfig.width to textureConfig.height }
+                expect(GL_R32F) { textureConfig.internalFormat }
+                expect(GL_RED) { textureConfig.format }
+                expect(GL_FLOAT) { textureConfig.type }
+                expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MIN_FILTER] }
+                expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MAG_FILTER] }
             }
 
             context("for vec4 uniforms") {

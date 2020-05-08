@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.shaders.GlslShader
+import baaahs.shaders.IGlslShader
+
 interface ShowContext {
     val allSurfaces: List<Surface>
     val allUnusedSurfaces: List<Surface>
@@ -17,7 +20,7 @@ interface ShowContext {
      * @param shader The type of shader.
      * @return A shader buffer of the appropriate type.
      */
-    fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B
+    fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer
 
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer
 

@@ -1,13 +1,7 @@
-import React, {
-  useRef,
-  useEffect,
-  useContext,
-  useCallback,
-  useState,
-} from 'react';
+import React, {useContext, useEffect, useRef, useState,} from 'react';
 import styles from './SheepVisualizerWindow.scss';
-import { store } from '../../../store';
-import { FormGroup, FormControlLabel, Switch } from '@material-ui/core';
+import {store} from '../../../store';
+import {FormControlLabel, Switch} from '@material-ui/core';
 import {useResizeListener} from "../../../app/hooks/useResizeListener";
 
 const SheepVisualizerWindow = () => {
@@ -28,6 +22,10 @@ const SheepVisualizerWindow = () => {
   useResizeListener(sheepViewEl, () => {
     sheepSimulator?.visualizer.resize();
   });
+
+  setTimeout(() => {
+    sheepSimulator?.visualizer.resize();
+  }, 50);
 
   return (
     <div ref={sheepViewEl}>

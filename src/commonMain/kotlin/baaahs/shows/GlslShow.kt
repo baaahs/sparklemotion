@@ -34,7 +34,7 @@ open class GlslShow(
 
         return object : Renderer {
             override fun nextFrame() {
-                program.prepareToDraw()
+                program.updateUniforms()
 
 //                buffers.values.forEach { buffer ->
 //                    val bufferValues = paramDataSources.map { it.getValue() }

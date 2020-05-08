@@ -1,8 +1,10 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Color
+import baaahs.Model
+import baaahs.Show
+import baaahs.ShowContext
 import baaahs.gadgets.PalettePicker
-import baaahs.shaders.SolidShader
 
 object PanelTweenShow : Show("PanelTweenShow") {
     override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
@@ -17,24 +19,24 @@ object PanelTweenShow : Show("PanelTweenShow") {
         return object : Renderer {
             val palettePicker = showContext.getGadget("palette", PalettePicker("Palette", initialColors))
 
-            val solidShader = SolidShader()
-
-            val shaderBuffers = showContext.allSurfaces.map { surface ->
-                showContext.getShaderBuffer(surface, solidShader)
-            }
-            val fadeTimeMs = 500
+//            val solidShader = SolidShader()
+//
+//            val shaderBuffers = showContext.allSurfaces.map { surface ->
+//                showContext.getShaderBuffer(surface, solidShader)
+//            }
+//            val fadeTimeMs = 500
 
             override fun nextFrame() {
-                val now = getTimeMillis().and(0xfffffff).toInt()
-                val colors = palettePicker.colors
-                shaderBuffers.forEachIndexed() { number, buf ->
-                    val colorIndex = (now / fadeTimeMs + number) % colors.size
-                    val startColor = colors[colorIndex]
-                    val endColor = colors[(colorIndex + 1) % colors.size]
-                    val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
-
-                    buf.color = tweenedColor
-                }
+//                val now = getTimeMillis().and(0xfffffff).toInt()
+//                val colors = palettePicker.colors
+//                shaderBuffers.forEachIndexed() { number, buf ->
+//                    val colorIndex = (now / fadeTimeMs + number) % colors.size
+//                    val startColor = colors[colorIndex]
+//                    val endColor = colors[(colorIndex + 1) % colors.size]
+//                    val tweenedColor = startColor.fade(endColor, (now % fadeTimeMs) / fadeTimeMs.toFloat())
+//
+//                    buf.color = tweenedColor
+//                }
             }
         }
     }
