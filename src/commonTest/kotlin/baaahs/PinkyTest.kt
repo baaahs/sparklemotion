@@ -20,6 +20,7 @@ import kotlin.test.expect
 
 @InternalCoroutinesApi
 class PinkyTest {
+    private lateinit var fakeGlslContext: FakeGlslContext
     private lateinit var network: TestNetwork
     private lateinit var clientAddress: Network.Address
     private val clientPort = 1234
@@ -32,6 +33,7 @@ class PinkyTest {
 
     @BeforeTest
     fun setUp() {
+        fakeGlslContext = FakeGlslContext()
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
@@ -46,7 +48,7 @@ class PinkyTest {
             PermissiveFirmwareDaddy(),
             StubPinkyDisplay(),
             StubSoundAnalyzer(),
-            glslRenderer = GlslRenderer(FakeGlslContext(), GlslRendererTest.UvTranslatorForTest)
+            glslRenderer = GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
         )
         pinkyLink = network.links.only()
     }
@@ -168,9 +170,9 @@ class PinkyTest {
         expect(panel17.name) { (surface as IdentifiedSurface).name }
     }
 
-    class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
+    inner class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
-        val solidShader = FakeShader()
+        val shader = fakeGlslContext.fakeShader()
 
         override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
             return ShowRenderer(showContext).also { createdShows.add(it) }
@@ -178,7 +180,7 @@ class PinkyTest {
 
         inner class ShowRenderer(private val showContext: ShowContext) : Renderer {
             val shaderBuffers =
-                showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, solidShader) }.toMutableMap()
+                showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, shader) }.toMutableMap()
 
             override fun nextFrame() {
                 shaderBuffers.values.forEach {
@@ -191,7 +193,7 @@ class PinkyTest {
                     super.surfacesChanged(newSurfaces, removedSurfaces)
                 } else {
                     removedSurfaces.forEach { shaderBuffers.remove(it) }
-                    newSurfaces.forEach { shaderBuffers[it] = showContext.getShaderBuffer(it, solidShader) }
+                    newSurfaces.forEach { shaderBuffers[it] = showContext.getShaderBuffer(it, shader) }
                 }
             }
         }
@@ -212,9 +214,9 @@ class StubSoundAnalyzer : SoundAnalyzer {
     }
 }
 
-class FakeShader(
-    override val glslProgram: GlslProgram =
-        GlslProgram(FakeGlslContext(), Patch(emptyMap(), emptyList()))
-            .apply { bind { uniformPortRef -> null } }
-) : IGlslShader {
-}
+fun FakeGlslContext.fakeShader() = FakeShader(
+    GlslProgram(this, Patch(emptyMap(), emptyList()))
+        .apply { bind { _ -> null } }
+)
+
+class FakeShader(override val glslProgram: GlslProgram) : IGlslShader

@@ -22,24 +22,27 @@ class ShowRunnerTest {
     private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
     private lateinit var showRunner: ShowRunner
 
-    private val testShow1 = TestShow1()
+    private lateinit var testShow1: TestShow1
     private val surface1Messages = mutableListOf<Pixels>()
     private val surface1Receiver =
         FakeSurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
     private val surface2Messages = mutableListOf<Pixels>()
     private val surface2Receiver =
         FakeSurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
+    private lateinit var fakeGlslContext: FakeGlslContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel()
 
     @BeforeTest
     fun setUp() {
+        fakeGlslContext = FakeGlslContext()
+        testShow1 = TestShow1()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         showRunner = ShowRunner(
             sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse,
-            movingHeadManager, FakeClock(), GlslRenderer(FakeGlslContext(), GlslRendererTest.UvTranslatorForTest)
+            movingHeadManager, FakeClock(), GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
         )
         surface1Messages.clear()
         surface2Messages.clear()
@@ -199,19 +202,6 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun whenShowLeavesHangingBuffersForASurface_shouldReportError() {
-        testShow1.onCreateShow = {
-            showRunner.allSurfaces.forEach { surface ->
-                showRunner.getShaderBuffer(surface, FakeShader())
-            }
-        }
-
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-        assertTrue { e.message!!.startsWith("Too many shader buffers for Panel surface 1") }
-    }
-
-    @Test
     fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() {
         testShow1.supportsSurfaceChange = true
 
@@ -234,7 +224,7 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getShaderBuffer(surface1Receiver.surface, FakeShader())
+            showRunner.getShaderBuffer(surface1Receiver.surface, fakeGlslContext.fakeShader())
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
@@ -292,14 +282,14 @@ class ShowRunnerTest {
         showRunner.nextFrame()
     }
 
-    class TestShow1(
+    inner class TestShow1(
         var supportsSurfaceChange: Boolean = true,
         var onCreateShow: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
     ) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
-        val fakeShader = FakeShader()
+        val fakeShader = fakeGlslContext.fakeShader()
 
         override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
             return ShowRenderer(showContext).also { createdShows.add(it) }
