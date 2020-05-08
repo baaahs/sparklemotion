@@ -29,7 +29,7 @@ object GlslShowSpec : Spek({
         val fakeGlslContext by value { FakeGlslContext() }
         val glslShow by value { GlslShow("test show", shaderSrc, fakeGlslContext) }
         val model by value { TestModel() }
-        val showContext by value { FakeShowContext() }
+        val showContext by value { FakeShowContext(fakeGlslContext) }
         val showRenderer by value {
             glslShow.createRenderer(model, showContext).apply {
                 surfacesChanged(listOf(FakeSurface(100)), emptyList())
