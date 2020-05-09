@@ -32,6 +32,7 @@ class Quad(private val gl: GlslContext, rects: List<Rect>) {
     private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
     internal fun prepareToRender(vertexAttr: Int, fn: () -> Unit) {
+        gl.check { bindVertexArray(vao) } // <- required on lwjgl, not on webgl :-(
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
         gl.check { vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
         gl.check { enableVertexAttribArray(vertexAttr) }
@@ -40,6 +41,7 @@ class Quad(private val gl: GlslContext, rects: List<Rect>) {
 
         gl.check { disableVertexAttribArray(vertexAttr) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
+        gl.check { bindVertexArray(null) }
     }
 
     internal fun renderRect(rectIndex: Int) {

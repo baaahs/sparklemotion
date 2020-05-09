@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.ShowContext
+import baaahs.glsl.GlslContext
 
 class Plugins(private val byPackage: Map<String, Plugin>) {
     // name would be in form:
@@ -11,8 +12,8 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     //   baaahs.SoundAnalysis:coq
     fun matchUniformProvider(
         uniformPort: Patch.UniformPortRef,
-        program: GlslProgram,
-        showContext: ShowContext
+        showContext: ShowContext,
+        glslContext: GlslContext
     ): GlslProgram.DataSourceProvider? {
         val pluginId = uniformPort.pluginId
         val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
@@ -23,7 +24,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
             getPlugin(default) to pluginId
         }
 
-        return arg?.let { plugin.matchUniformProvider(it, uniformPort, program, showContext) }
+        return arg?.let { plugin.matchUniformProvider(it, uniformPort, showContext, glslContext) }
     }
 
     private fun getPlugin(packageName: String): Plugin {

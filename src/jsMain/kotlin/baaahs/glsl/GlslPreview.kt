@@ -99,13 +99,14 @@ class GlslPreview(
             mapOf("color" to GlslAnalyzer().asShader(shaderSrc))
         )
         val links = patch.links
-        private val program = GlslProgram(gl, patch)
+        private val program: GlslProgram
+
         val gadgets = linkedMapOf<String, Gadget>()
 
         init {
             val plugins = Plugins.findAll()
-            program.bind { uniformPort ->
-                plugins.matchUniformProvider(uniformPort, program, FakeShowContext())
+            program = GlslProgram(gl, patch) { uniformPort ->
+                plugins.matchUniformProvider(uniformPort, FakeShowContext(), gl)
             }
             program.setResolution(canvas.width.toFloat(), canvas.height.toFloat())
         }

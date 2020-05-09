@@ -11,7 +11,9 @@ class CompiledShader(
     internal val id: Shader,
     private val source: String
 ) {
-    val logger = Logger("baaahs.glsl.Shader")
+    companion object {
+        val logger = Logger("baaahs.glsl.Shader")
+    }
 
     init {
         compile()

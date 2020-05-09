@@ -7,10 +7,11 @@ import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.GlslShader
 import baaahs.shows.FakeShowContext
 import kotlin.math.abs
 import kotlin.random.Random
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
 
@@ -28,7 +29,24 @@ class GlslRendererTest {
         return available
     }
 
-    private val glslContext = GlslShader.globalRenderContext
+    private lateinit var glslContext: GlslContext
+    private lateinit var glslRenderer: GlslRenderer
+
+    @BeforeTest
+    fun setUp() {
+        if (glslAvailable()) {
+            glslContext = GlslBase.manager.createContext()
+            glslRenderer = GlslRenderer(glslContext, UvTranslatorForTest)
+        }
+    }
+
+    @AfterTest
+    fun tearDown() {
+        if (glslAvailable()) {
+            glslContext.release()
+            glslRenderer.release()
+        }
+    }
 
     @Test
     fun testSimpleRendering() {
@@ -44,11 +62,9 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderer = GlslRenderer(glslContext, UvTranslatorForTest)
+        val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        val renderSurface = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-
-        renderer.draw()
+        glslRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -75,12 +91,10 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderer = GlslRenderer(glslContext, UvTranslatorForTest)
-
-        val renderSurface = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
 //        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
-        renderer.draw()
+        glslRenderer.draw()
         expectColor(listOf(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
@@ -88,7 +102,7 @@ class GlslRendererTest {
         )) { renderSurface.pixels.toList() }
 
 //        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-        renderer.draw()
+        glslRenderer.draw()
         expectColor(listOf(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
@@ -110,13 +124,12 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderer = GlslRenderer(glslContext, UvTranslatorForTest)
 
-        val renderSurface1 = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
-        val renderSurface3 = renderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface1 = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = glslRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface3 = glslRenderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
-        renderer.draw()
+        glslRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -145,12 +158,9 @@ class GlslRendererTest {
         val plugins = Plugins(mapOf(corePlugin.packageName to corePlugin))
         val showContext = FakeShowContext(glslContext)
 
-        return AutoWirer().autoWire(program).compile(glslContext)
-            .apply {
-                bind { uniformPortRef ->
-                    plugins.matchUniformProvider(uniformPortRef, this, showContext)
-                }
-            }
+        return AutoWirer().autoWire(program).compile(glslContext) { uniformPortRef ->
+            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
+        }
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.
@@ -185,16 +195,15 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderer = GlslRenderer(glslContext, UvTranslatorForTest)
 
-        val renderSurface1 = renderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = renderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface1 = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = glslRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
 //        renderSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
 //        renderSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
-        renderer.draw()
+        glslRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .2f),

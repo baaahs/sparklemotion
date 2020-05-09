@@ -25,6 +25,10 @@ abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
 
     fun createVertexShader(source: String): CompiledShader {
         val shaderId = check { createShader(GL_VERTEX_SHADER) } ?: throw IllegalStateException()
+        val info = kgl.getShaderInfoLog(shaderId) ?: ""
+        if (info.isNotEmpty()) {
+            throw CompiledShader.CompilationException(info)
+        }
         return CompiledShader(kgl, shaderId, source)
     }
 
@@ -95,5 +99,9 @@ abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
         val result = kgl.fn()
         kgl.checkForGlError()
         return result
+    }
+
+    fun release() {
+//        TODO("not implemented")
     }
 }

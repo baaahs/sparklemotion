@@ -215,8 +215,7 @@ class StubSoundAnalyzer : SoundAnalyzer {
 }
 
 fun FakeGlslContext.fakeShader() = FakeShader(
-    GlslProgram(this, Patch(emptyMap(), emptyList()))
-        .apply { bind { _ -> null } }
+    GlslProgram(this, Patch(emptyMap(), emptyList())) { null }
 )
 
 class FakeShader(override val glslProgram: GlslProgram) : IGlslShader
