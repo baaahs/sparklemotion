@@ -205,6 +205,9 @@ open class GlslRenderer(
     }
 
     inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<RenderSurface>) {
+        init {
+            println("Creating arrangement with $pixelCount")
+        }
         val pixWidth = pixelCount.bufWidth
         val pixHeight = pixelCount.bufHeight
 

@@ -4,6 +4,7 @@ import baaahs.MovingHead
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
 import baaahs.glshaders.override
+import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
 import baaahs.shaders.FakeSurface
@@ -29,7 +30,7 @@ object GlslShowSpec : Spek({
         val fakeGlslContext by value { FakeGlslContext() }
         val glslShow by value { GlslShow("test show", shaderSrc, fakeGlslContext) }
         val model by value { TestModel() }
-        val showContext by value { FakeShowContext(fakeGlslContext) }
+        val showContext by value { FakeShowContext(GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)) }
         val showRenderer by value {
             glslShow.createRenderer(model, showContext).apply {
                 surfacesChanged(listOf(FakeSurface(100)), emptyList())
