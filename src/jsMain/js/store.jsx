@@ -14,7 +14,7 @@ const initialState = {
       direction: 'row',
       splitPercentage: 35,
       first: 'Simulator Settings',
-      second: 'Show Editor',
+      second: 'Shader Editor',
     },
   },
   selectedShow: '',

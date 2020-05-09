@@ -7,14 +7,14 @@ import SheepVisualizerWindow from './simulator/windows/SheepVisualizerWindow/She
 import SimulatorSettingsWindow from './simulator/windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
 import MosiacMenuBar from './mosiac/MosiacMenuBar/MosiacMenuBar';
 import { StateProvider, store } from './store';
-import ShowEditorWindow from './simulator/windows/ShowEditorWindow/ShowEditorWindow';
+import ShaderEditorWindow from './simulator/windows/ShaderEditorWindow/ShaderEditorWindow';
 import GlslPreviewWindow from "./simulator/windows/GlslPreviewWindow/GlslPreviewWindow";
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
 
 const WINDOWS_BY_TYPE = {
-  'Show Editor': ShowEditorWindow,
+  'Shader Editor': ShaderEditorWindow,
   'Sheep Visualizer': SheepVisualizerWindow,
   'Simulator Settings': SimulatorSettingsWindow,
   'Glsl Preview': GlslPreviewWindow,
