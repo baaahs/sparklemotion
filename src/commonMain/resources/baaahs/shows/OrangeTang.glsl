@@ -16,7 +16,7 @@ uniform float mouseY;
 //varying vec2 surfacePosition;
 
 void main( void ) {
-	vec2 p = gl_FragCoord;
+	vec2 p = gl_FragCoord.xy;
 	float speed = 0.25;
 	vec3 color = vec3(1.,0.5,.25);
 	vec2 loc = vec2(

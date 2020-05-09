@@ -17,7 +17,7 @@ uniform vec2 resolution;
 void main(void){
 
     float PI = 3.141592;
-    vec2 p = gl_FragCoord.xy*2.;
+    vec2 p = gl_FragCoord.xy/resolution*2.;
 
     float time = time + length(p)*cos(time/4. - .0001*length(p)*cos(time/PI + .0001*length(p)*cos(time*time/PI)));
     vec3 color = vec3(0., length(p), 0.);

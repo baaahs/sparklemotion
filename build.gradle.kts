@@ -15,6 +15,8 @@ val ktor_version = "1.3.1"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
 val lwjglVersion = "3.2.3"
+val spek_version = "2.0.11-rc.1" // custom build with LetValues enabled
+val atrium_version = "0.10.0"
 
 buildscript {
     val kotlin_version = "1.3.70"
@@ -60,6 +62,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
+    maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
 //    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
@@ -95,6 +98,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("spek:spek-dsl:$spek_version")
             }
         }
 
@@ -136,9 +140,18 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
+
+                runtimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
+                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
+                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
                 implementation("io.mockk:mockk:1.9.3")
+
+                // For RunOpenGLTests:
+                implementation("org.junit.platform:junit-platform-launcher:1.6.2")
             }
         }
 
@@ -166,7 +179,7 @@ kotlin {
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
-                implementation(npm("@material-ui/core", "^4.1.1"))
+                implementation(npm("@material-ui/core", "~4.8"))
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.8.6"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
@@ -188,6 +201,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
+                implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:$atrium_version")
             }
         }
 
@@ -217,6 +231,7 @@ tasks.withType(Kotlin2JsCompile::class) {
 
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true
+    inputs.dir("src/jsMain/js")
 }
 
 tasks.withType(KotlinCompile::class) {
@@ -290,12 +305,11 @@ tasks.create<JavaExec>("runBridgeJvm") {
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
-    dependsOn("compileKotlinJvm")
-    main = "org.junit.runner.JUnitCore"
+    dependsOn("compileTestKotlinJvm")
+    main = "baaahs.RunOpenGLTestsKt"
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
-    args = listOf("baaahs.glsl.GlslRendererTest")
     if (isMac()) {
         jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
@@ -321,8 +335,15 @@ tasks.create<ShadowJar>("shadowJar") {
     }
 }
 
+tasks.withType(Test::class) {
+    useJUnitPlatform {
+        includeEngines.add("junit-vintage")
+        includeEngines.add("spek2")
+    }
+}
+
 tasks.named<Test>("jvmTest") {
-    dependsOn("runGlslJvmTests")
+//    dependsOn("runGlslJvmTests")
 }
 
 tasks.withType<DependencyUpdatesTask> {

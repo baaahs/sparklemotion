@@ -1,8 +1,9 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
-import baaahs.shaders.CompositingMode
-import baaahs.shaders.CompositorShader
+import baaahs.glsl.GlslRenderer
+import baaahs.shaders.GlslShader
+import baaahs.shaders.IGlslShader
 
 class ShowRunner(
     private val model: Model<*>,
@@ -11,8 +12,9 @@ class ShowRunner(
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
-    internal val clock: Clock
-) {
+    internal val clock: Clock,
+    private val glslRenderer: GlslRenderer
+) : ShowContext {
     var nextShow: Show? = initialShow
     private var currentShow: Show? = null
     private var currentShowRenderer: Show.Renderer? = null
@@ -20,12 +22,13 @@ class ShowRunner(
     private var totalSurfaceReceivers = 0
     private var performedHousekeeping: Boolean = false
 
-    val allSurfaces: List<Surface> get() = surfaceReceivers.keys.toList()
-    val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(shaderBuffers.keys)
+    override val allSurfaces: List<Surface> get() = surfaceBinders.keys.toList()
+    override val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(
+        surfaceBinders.values.filter { !it.hasBuffer() }.map { it.surface })
 
-    val allMovingHeads: List<MovingHead> get() = model.movingHeads
+    override val allMovingHeads: List<MovingHead> get() = model.movingHeads
 
-    private val shaderBuffers: MutableMap<Surface, MutableList<Shader.Buffer>> = hashMapOf()
+    private val surfaceBinders: MutableMap<Surface, SurfaceBinder> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
@@ -33,23 +36,14 @@ class ShowRunner(
     private var gadgetsLocked = true
 
     // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
-    val currentBeat: Float
+    override val currentBeat: Float
         get() = beatSource.getBeatData().beatWithinMeasure(clock)
 
-    fun getBeatSource(): BeatSource = beatSource
+    override fun getBeatSource(): BeatSource = beatSource
 
-    private fun recordShader(surface: Surface, shaderBuffer: Shader.Buffer) {
-        val buffersForSurface = shaderBuffers.getOrPut(surface) { mutableListOf() }
-
-        if (shaderBuffer is CompositorShader.Buffer) {
-            if (!buffersForSurface.remove(shaderBuffer.bufferA)
-                || !buffersForSurface.remove(shaderBuffer.bufferB)
-            ) {
-                throw IllegalStateException("Composite of unknown shader buffers!")
-            }
-        }
-
-        buffersForSurface += shaderBuffer
+    private fun recordShader(surface: Surface, shaderBuffer: GlslShader.Buffer) {
+        val surfaceBinder = surfaceBinders[surface] ?: throw IllegalStateException("unknown surface $surface")
+        surfaceBinder.setBuffer(shaderBuffer)
     }
 
     /**
@@ -59,41 +53,19 @@ class ShowRunner(
      * @param shader The type of shader.
      * @return A shader buffer of the appropriate type.
      */
-    fun <B : Shader.Buffer> getShaderBuffer(surface: Surface, shader: Shader<B>): B {
+    override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
         if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
         val buffer = shader.createBuffer(surface)
         recordShader(surface, buffer)
         return buffer
     }
 
-    /**
-     * Obtain a compositing shader buffer which can be used to blend two other shaders together.
-     *
-     * The shaders must already have been obtained using [getShaderBuffer].
-     */
-    fun getCompositorBuffer(
-        surface: Surface,
-        bufferA: Shader.Buffer,
-        bufferB: Shader.Buffer,
-        mode: CompositingMode = CompositingMode.NORMAL,
-        fade: Float = 0.5f
-    ): CompositorShader.Buffer {
-        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
-        return CompositorShader(bufferA.shader, bufferB.shader)
-            .createBuffer(bufferA, bufferB)
-            .also {
-                it.mode = mode
-                it.fade = fade
-                recordShader(surface, it)
-            }
-    }
-
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
+    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
-        val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
+        val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
         val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
 
         movingHeadManager.listen(movingHead) { updated ->
@@ -111,7 +83,7 @@ class ShowRunner(
      * @param name Symbolic name for this gadget; must be unique within the show.
      * @param gadget The gadget to display.
      */
-    fun <T : Gadget> getGadget(name: String, gadget: T): T {
+    override fun <T : Gadget> getGadget(name: String, gadget: T): T {
         if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
         val oldValue = requestedGadgets.put(name, gadget)
         if (oldValue != null) throw IllegalStateException("Gadget names must be unique ($name)")
@@ -129,14 +101,13 @@ class ShowRunner(
         // afterward, to avoid frame lag.
         currentShowRenderer?.let {
             it.nextFrame()
-            send()
+            glslRenderer.draw()
+            sendFrame()
         }
 
         housekeeping()
         performedHousekeeping = true
     }
-
-    private val surfaceReceivers = mutableMapOf<Surface, MutableList<SurfaceReceiver>>()
 
     private fun housekeeping() {
         for ((added, removed) in changedSurfaces) {
@@ -151,7 +122,7 @@ class ShowRunner(
 
                     logger.info {
                         "Show ${currentShow!!.name} updated; " +
-                                "${shaderBuffers.size} surfaces"
+                                "${surfaceBinders.size} surfaces"
                     }
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
@@ -172,7 +143,7 @@ class ShowRunner(
     }
 
     private fun createShowRenderer(startingShow: Show) {
-        shaderBuffers.clear()
+        surfaceBinders.values.forEach { it.releaseBuffer() }
 
         val restartingSameShow = nextShow == currentShow
         val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
@@ -183,7 +154,7 @@ class ShowRunner(
 
         logger.info {
             "New show ${startingShow.name} created; " +
-                    "${shaderBuffers.size} surfaces " +
+                    "${surfaceBinders.size} surfaces " +
                     "and ${requestedGadgets.size} gadgets"
         }
 
@@ -204,32 +175,44 @@ class ShowRunner(
     }
 
     private fun addReceiver(receiver: SurfaceReceiver) {
-        receiversFor(receiver.surface).add(receiver)
+        val surface = receiver.surface
+        val binder = surfaceBinders.getOrPut(surface) {
+            SurfaceBinder(surface, glslRenderer.addSurface(surface))
+        }
+        binder.receivers.add(receiver)
+
         totalSurfaceReceivers++
     }
 
     private fun removeReceiver(receiver: SurfaceReceiver) {
-        receiversFor(receiver.surface).remove(receiver)
-        shaderBuffers.remove(receiver.surface)
+        val surface = receiver.surface
+        val surfaceBinder = surfaceBinders.get(surface)
+            ?: throw IllegalStateException("huh? no SurfaceBinder for $surface")
+
+        if (!surfaceBinder.receivers.remove(receiver)) {
+            throw IllegalStateException("huh? receiver not registered for $surface")
+        }
+
+        if (surfaceBinder.receivers.isEmpty()) {
+            glslRenderer.removeSurface(surfaceBinder.renderSurface)
+            surfaceBinder.release()
+            surfaceBinders.remove(surface)
+        }
+
         totalSurfaceReceivers--
     }
 
-    private fun receiversFor(surface: Surface): MutableList<SurfaceReceiver> {
-        return surfaceReceivers.getOrPut(surface) { mutableListOf() }
-    }
+    fun sendFrame() {
+        surfaceBinders.values.forEach { surfaceBinder ->
+//            if (shaderBuffers.size != 1) {
+//                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
+//            }
 
-    fun send() {
-        shaderBuffers.forEach { (surface, shaderBuffers) ->
-            if (shaderBuffers.size != 1) {
-                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
-            }
-            val shaderBuffer = shaderBuffers.first()
-
-            receiversFor(surface).forEach { receiver ->
+            surfaceBinder.receivers.forEach { receiver ->
                 // TODO: The send might return an error, at which point this receiver should be nuked
                 // from the list of receivers for this surface. I'm not quite sure the best way to do
                 // that so I'm leaving this note.
-                receiver.send(shaderBuffer)
+                receiver.send(surfaceBinder.renderSurface.pixels)
             }
         }
 
@@ -242,8 +225,9 @@ class ShowRunner(
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
 
-    open class SurfaceReceiver(val surface: Surface, private val sendFn: (Shader.Buffer) -> Unit) {
-        open fun send(shaderBuffer: Shader.Buffer) = sendFn(shaderBuffer)
+    interface SurfaceReceiver {
+        val surface: Surface
+        fun send(pixels: Pixels)
     }
 
     companion object {

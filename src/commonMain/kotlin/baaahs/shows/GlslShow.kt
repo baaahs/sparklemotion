@@ -1,84 +1,66 @@
 package baaahs.shows
 
 import baaahs.*
-import baaahs.gadgets.ColorPicker
-import baaahs.gadgets.Slider
-import baaahs.glsl.Program
+import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.Patch
+import baaahs.glshaders.Plugins
+import baaahs.glsl.GlslContext
+import baaahs.glsl.GlslRenderer
 import baaahs.shaders.GlslShader
 
-abstract class GlslShow(name: String) : Show(name) {
-    public abstract val program: Program
+open class GlslShow(
+    name: String,
+    val src: String,
+    val glslContext: GlslContext,
+    val isPreview: Boolean = false
+) : Show(name) {
+    override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
+        val patch = AutoWirer().autoWire(
+            mapOf(
+                "uv" to GlslRenderer.uvMapper,
+                "color" to GlslRenderer.glslAnalyzer.asShader(src)
+            )
+        )
 
-    override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-        val shader = GlslShader(program, model.defaultUvTranslator)
+        val plugins = Plugins.findAll()
+        val program = patch.compile(glslContext) { uniformPortRef: Patch.UniformPortRef ->
+            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
+        }
 
-        val paramDataSources = program.params.map { it.createDataSource(showRunner) }
-        val buffers = showRunner.allSurfaces.associateWithTo(hashMapOf()) { showRunner.getShaderBuffer(it, shader) }
+        val shader = GlslShader(program, model.defaultUvTranslator, glslContext)
+
+        val buffers = showContext.allSurfaces.associateWithTo(hashMapOf()) { showContext.getShaderBuffer(it, shader) }
 
         return object : Renderer {
             override fun nextFrame() {
-                buffers.values.forEach { buffer ->
-                    val bufferValues = paramDataSources.map { it.getValue() }
-                    buffer.update(bufferValues)
-                }
+                program.updateUniforms()
+
+//                buffers.values.forEach { buffer ->
+//                    val bufferValues = paramDataSources.map { it.getValue() }
+//                    buffer.update(bufferValues)
+//                }
             }
 
             override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
                 removedSurfaces.forEach { buffers.remove(it) }
-                newSurfaces.forEach { buffers[it] = showRunner.getShaderBuffer(it, shader) }
+                newSurfaces.forEach { buffers[it] = showContext.getShaderBuffer(it, shader) }
             }
         }
     }
 
-    fun GlslShader.Param.createDataSource(showRunner: ShowRunner): DataSource {
-        val config = config
-        val name = config.getPrimitive("name").contentOrNull ?: varName
+//    abstract class BeatDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
+//        override fun getValue(): Any {
+//            return beatData.fractionTillNextBeat(clock)
+//        }
+//    }
+//
+//    abstract class StartOfMeasureDataSource(val beatData: BeatData, val clock: Clock, binding: GlslProgram.Binding) : DataSource {
+//        override fun getValue(): Any {
+//            return beatData.fractionTillNextMeasure(clock)
+//        }
+//    }
 
-        return when (gadgetType) {
-            "Slider" -> {
-                GadgetDataSource(showRunner.getGadget("glsl_${varName}", Slider(
-                    name,
-                    initialValue = config.getPrimitiveOrNull("initialValue")?.float ?: 1f,
-                    minValue = config.getPrimitiveOrNull("minValue")?.float ?: 0f,
-                    maxValue = config.getPrimitiveOrNull("maxValue")?.float ?: 1f
-                )))
-            }
-            "ColorPicker" -> {
-                GadgetDataSource(showRunner.getGadget("glsl_${varName}", ColorPicker(name)))
-            }
-            "Beat" -> {
-                BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-            }
-            "StartOfMeasure" -> {
-                StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock)
-            }
-            else -> throw IllegalArgumentException("unknown gadget ${gadgetType}")
-        }
-    }
-
-    interface DataSource {
-        fun getValue(): Any
-    }
-
-    class GadgetDataSource(val gadget: Gadget) : DataSource {
-        override fun getValue(): Any {
-            return when (gadget) {
-                is Slider -> gadget.value
-                is ColorPicker -> gadget.color
-                else -> throw IllegalArgumentException("unsupported gadget $gadget")
-            }
-        }
-    }
-
-    class BeatDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
-        override fun getValue(): Any {
-            return beatData.fractionTillNextBeat(clock)
-        }
-    }
-
-    class StartOfMeasureDataSource(val beatData: BeatData, val clock: Clock) : DataSource {
-        override fun getValue(): Any {
-            return beatData.fractionTillNextMeasure(clock)
-        }
+    companion object {
+        val logger = Logger("GlslShow")
     }
 }

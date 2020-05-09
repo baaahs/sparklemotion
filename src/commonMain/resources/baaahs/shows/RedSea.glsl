@@ -5,18 +5,6 @@
  * Original shader from: https://www.shadertoy.com/view/3ty3Wy
  */
 
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-// glslsandbox uniforms
-uniform float time;
-uniform vec2 resolution;
-
-// shadertoy emulation
-#define iTime time
-#define iResolution resolution
-
 // --------[ Original ShaderToy begins here ]---------- //
 // GLSL textureless classic 3D noise "cnoise",
 // with an RSL-style periodic variant "pnoise".
@@ -159,18 +147,23 @@ void pR(inout vec2 p, float a) {
     p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
 
-vec3 mainImage(in vec2 fragCoord )
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord/iResolution.xy * 2. - 1.;
     uv.x *= iResolution.x / iResolution.y;
     vec3 ro = vec3(0, 2, -4);
     vec3 rd = normalize(vec3(uv, 1.77) + vec3(0,-1.5,0));
+    /*
+    pR(ro.xz, iTime*.1);
+    pR(rd.xz, iTime*.1);
+	//*/
     float t = 0., d;
 
 
     for(int i=0; i<16; i++) {
         d = f(ro+rd*t);
+        //if(d<0.) break;
         t+=d;
     }
 
@@ -182,12 +175,5 @@ vec3 mainImage(in vec2 fragCoord )
     col = pow(col, vec3(.4545));
 
     // Output to screen
-    return col;
-}
-// --------[ Original ShaderToy ends here ]---------- //
-
-void main(void)
-{
-    vec3 col = mainImage(gl_FragCoord.xy);
-    gl_FragColor = vec4(col.z, col.y * 0.5, col.z * 0.1,1.0);
+    fragColor = vec4(col,1.0);
 }

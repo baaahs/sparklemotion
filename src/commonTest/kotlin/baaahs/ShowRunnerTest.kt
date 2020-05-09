@@ -3,9 +3,10 @@ package baaahs
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
+import baaahs.glsl.GlslRenderer
+import baaahs.glsl.GlslRendererTest
 import baaahs.net.TestNetwork
-import baaahs.shaders.SolidShader
-import baaahs.shaders.SparkleShader
+import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -21,24 +22,27 @@ class ShowRunnerTest {
     private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
     private lateinit var showRunner: ShowRunner
 
-    private val testShow1 = TestShow1()
-    private val surface1Messages = mutableListOf<Shader.Buffer>()
+    private lateinit var testShow1: TestShow1
+    private val surface1Messages = mutableListOf<Pixels>()
     private val surface1Receiver =
-        SurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
-    private val surface2Messages = mutableListOf<Shader.Buffer>()
+        FakeSurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
+    private val surface2Messages = mutableListOf<Pixels>()
     private val surface2Receiver =
-        SurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
+        FakeSurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
+    private lateinit var fakeGlslContext: FakeGlslContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel()
 
     @BeforeTest
     fun setUp() {
+        fakeGlslContext = FakeGlslContext()
+        testShow1 = TestShow1()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         showRunner = ShowRunner(
             sheepModel, testShow1, gadgetManager, StubBeatSource(), dmxUniverse,
-            movingHeadManager, FakeClock()
+            movingHeadManager, FakeClock(), GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
         )
         surface1Messages.clear()
         surface2Messages.clear()
@@ -64,12 +68,12 @@ class ShowRunnerTest {
         expect(2) { surface1Messages.size }
 
         val buffer1 = surface1Messages[0]
-        expect(testShow1.solidShader) { buffer1.shader }
-        expect(Color.WHITE) { (buffer1 as SolidShader.Buffer).color }
+//        expect(testShow1.fakeShader) { buffer1.shader }
+//        expect(Color.WHITE) { buffer1.color }
 
         val buffer2 = surface1Messages[0]
-        expect(testShow1.solidShader) { buffer2.shader }
-        expect(Color.WHITE) { (buffer2 as SolidShader.Buffer).color }
+//        expect(testShow1.fakeShader) { buffer2.shader }
+//        expect(Color.WHITE) { (buffer2).color }
     }
 
     @Test
@@ -198,19 +202,6 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun whenShowLeavesHangingBuffersForASurface_shouldReportError() {
-        testShow1.onCreateShow = {
-            showRunner.allSurfaces.forEach { surface ->
-                showRunner.getShaderBuffer(surface, SolidShader())
-            }
-        }
-
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-        assertTrue { e.message!!.startsWith("Too many shader buffers for Panel surface 1") }
-    }
-
-    @Test
     fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() {
         testShow1.supportsSurfaceChange = true
 
@@ -233,7 +224,7 @@ class ShowRunnerTest {
 
         testShow1.onNextFrame = {
             // It's illegal to request a new ShaderBuffer during #nextFrame().
-            showRunner.getShaderBuffer(surface1Receiver.surface, SparkleShader())
+            showRunner.getShaderBuffer(surface1Receiver.surface, fakeGlslContext.fakeShader())
         }
 
         val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
@@ -291,30 +282,32 @@ class ShowRunnerTest {
         showRunner.nextFrame()
     }
 
-    class TestShow1(
+    inner class TestShow1(
         var supportsSurfaceChange: Boolean = true,
         var onCreateShow: () -> Unit = {},
         var onNextFrame: () -> Unit = {},
         var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
     ) : Show("TestShow1") {
         val createdShows = mutableListOf<ShowRenderer>()
-        val solidShader = SolidShader()
+        val fakeShader = fakeGlslContext.fakeShader()
 
-        override fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer {
-            return ShowRenderer(showRunner).also { createdShows.add(it) }
+        override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
+            return ShowRenderer(showContext).also { createdShows.add(it) }
         }
 
-        inner class ShowRenderer(private val showRunner: ShowRunner) : Renderer {
-            val slider = showRunner.getGadget("slider", Slider("slider"))
+        inner class ShowRenderer(private val showContext: ShowContext) : Renderer {
+            val slider = showContext.getGadget("slider", Slider("slider"))
             val shaderBuffers =
-                showRunner.allSurfaces.associateWith { showRunner.getShaderBuffer(it, solidShader) }.toMutableMap()
+                showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, fakeShader) }.toMutableMap()
 
             init {
                 onCreateShow()
             }
 
             override fun nextFrame() {
-                shaderBuffers.values.forEach { it.color = Color.WHITE }
+                shaderBuffers.values.forEach {
+//                TODO    it.color = Color.WHITE
+                }
                 onNextFrame()
             }
 
@@ -323,11 +316,15 @@ class ShowRunnerTest {
                     super.surfacesChanged(newSurfaces, removedSurfaces)
                 } else {
                     removedSurfaces.forEach { shaderBuffers.remove(it) }
-                    newSurfaces.forEach { shaderBuffers[it] = showRunner.getShaderBuffer(it, solidShader) }
+                    newSurfaces.forEach { shaderBuffers[it] = showContext.getShaderBuffer(it, fakeShader) }
                 }
 
                 onSurfacesChanged(newSurfaces, removedSurfaces)
             }
         }
+    }
+
+    class FakeSurfaceReceiver(override val surface: Surface, val sendFn: (Pixels) -> Unit) : SurfaceReceiver {
+        override fun send(pixels: Pixels) = sendFn(pixels)
     }
 }

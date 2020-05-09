@@ -26,14 +26,20 @@ public class ColorTest {
 
     @Test
     fun testFromRGBString() {
-        expect(Color.from(0xfffefdff.toInt())) { Color.from("#fefdff") }
+        expect(Color.from(0xfffefdfc.toInt())) { Color.from("#fefdfc") }
+
+        expect(Color.from(0xffeeddcc.toInt())) { Color.from("#edc") }
     }
 
     @Test
     fun testFromARGBString() {
-        expect(Color.from(0xfffefdff.toInt())) { Color.from("#fffefdff") }
-        expect(Color.from(0xf7fefdff.toInt())) { Color.from("#f7fefdff") }
-        expect(Color.from(0x00fefdff)) { Color.from("#00fefdff") }
+        expect(Color.from(0xfffefdfc.toInt())) { Color.from("#fffefdfc") }
+        expect(Color.from(0xf7fefdfc.toInt())) { Color.from("#f7fefdfc") }
+        expect(Color.from(0x00fefdfc)) { Color.from("#00fefdfc") }
+
+        expect(Color.from(0xffeeddcc.toInt())) { Color.from("#fedc") }
+        expect(Color.from(0x77eeddcc)) { Color.from("#7edc") }
+        expect(Color.from(0x00eeddcc)) { Color.from("#0edc") }
     }
 
     @Test

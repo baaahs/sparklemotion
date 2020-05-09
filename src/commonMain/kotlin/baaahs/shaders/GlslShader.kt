@@ -1,121 +1,35 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.Surface
+import baaahs.glshaders.GlslProgram
 import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslSurface
-import baaahs.glsl.Program
+import baaahs.glsl.GlslContext
 import baaahs.glsl.UvTranslator
-import baaahs.io.ByteArrayReader
-import baaahs.io.ByteArrayWriter
-import kotlinx.serialization.json.JsonObject
+import kotlin.js.JsName
 
 class GlslShader(
-    private val program: Program,
-    private val uvTranslator: UvTranslator
-) : Shader<GlslShader.Buffer>(ShaderId.GLSL_SHADER) {
-    companion object : ShaderReader<GlslShader> {
-        val renderContext by lazy { GlslBase.manager.createContext() }
+    override val glslProgram: GlslProgram,
+    val uvTranslator: UvTranslator,
+    private val renderContext: GlslContext = globalRenderContext
+) : IGlslShader {
 
-        override fun parse(reader: ByteArrayReader): GlslShader {
-            val glslProgram = reader.readString()
-            val program = renderContext.createProgram(glslProgram)
-            val uvTranslator = UvTranslator.parse(reader)
-            return GlslShader(program, uvTranslator)
+    companion object {
+        @JsName("globalRenderContext")
+        val globalRenderContext by lazy { GlslBase.manager.createContext() }
+    }
+
+    class Buffer(val shader: IGlslShader, val surface: Surface) {
+//        val values = Array<Any?>(patch.uniformInputs.size) { }
+
+        fun release() {
+//            TODO("not implemented")
         }
     }
 
-    override fun serializeConfig(writer: ByteArrayWriter) {
-        writer.writeString(program.fragShader)
-    }
+}
 
-    override fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer {
-        val poolKey = GlslShader::class to program
-        val pooledRenderer = renderContext.registerPooled(poolKey) { PooledRenderer(program, uvTranslator) }
-        val glslSurface = pooledRenderer.glslRenderer.addSurface(surface)
-        return Renderer(glslSurface)
-    }
+interface IGlslShader {
+    val glslProgram: GlslProgram
 
-    override fun createRenderer(surface: Surface): Renderer {
-        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
-        val glslSurface = glslRenderer.addSurface(surface)
-        return Renderer(glslSurface)
-    }
-
-    class Renderer(private val glslSurface: GlslSurface?) : Shader.Renderer<Buffer> {
-        override fun beginFrame(buffer: Buffer, pixelCount: Int) {
-            // update uniforms from buffer...
-            glslSurface?.uniforms?.updateFrom(buffer.values)
-        }
-
-        override fun draw(buffer: Buffer, pixelIndex: Int): Color {
-            return if (glslSurface != null) glslSurface.pixels[pixelIndex] else Color.BLACK
-        }
-    }
-
-    class PooledRenderer(program: Program, uvTranslator: UvTranslator) : baaahs.PooledRenderer {
-        val glslRenderer = renderContext.createRenderer(program, uvTranslator)
-
-        override fun preDraw() {
-            glslRenderer.draw()
-        }
-    }
-
-    override fun createBuffer(surface: Surface): Buffer = Buffer()
-
-    override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
-
-    inner class Buffer : Shader.Buffer {
-        override val shader: Shader<*> get() = this@GlslShader
-
-        val values = Array<Any?>(program.params.size) { }
-
-        fun update(values: List<Any?>) {
-            values.forEachIndexed { index, value -> this.values[index] = value }
-        }
-
-        override fun serialize(writer: ByteArrayWriter) {
-            uvTranslator.serialize(writer)
-
-            program.params.zip(values).forEach { (param, value) -> param.serializeValue(value, writer) }
-        }
-
-        override fun read(reader: ByteArrayReader) {
-            program.params.forEachIndexed { index, param -> values[index] = param.readValue(reader) }
-        }
-    }
-
-    class Param(val varName: String, val gadgetType: String, val valueType: Type, val config: JsonObject) {
-        enum class Type { INT, FLOAT, VEC3 }
-
-        fun serializeConfig(writer: ByteArrayWriter) {
-            writer.writeString(varName)
-            writer.writeByte(valueType.ordinal.toByte())
-        }
-
-        fun serializeValue(value: Any?, writer: ByteArrayWriter) {
-            when (valueType) {
-                Type.INT -> writer.writeInt(value as Int? ?: 0)
-                Type.FLOAT -> writer.writeFloat(value as Float)
-                Type.VEC3 -> writer.writeInt((value as Color? ?: Color.WHITE).argb)
-            }
-        }
-
-        fun readValue(reader: ByteArrayReader): Any {
-            return when (valueType) {
-                Type.INT -> reader.readInt()
-                Type.FLOAT -> reader.readFloat()
-                Type.VEC3 -> Color(reader.readInt())
-            }
-        }
-
-        companion object {
-            private val types = Type.values()
-
-            fun parse(reader: ByteArrayReader): Param {
-                val varName = reader.readString()
-                val valueType = types[reader.readByte().toInt()]
-                return Param(varName, "", valueType, JsonObject(emptyMap()))
-            }
-        }
-    }
+    fun createBuffer(surface: Surface): GlslShader.Buffer = GlslShader.Buffer(this, surface)
 }
