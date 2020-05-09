@@ -26,29 +26,26 @@ class LwjglGlslManager : GlslManager() {
     }
 
     inner class LwjglGlslContext(kgl: Kgl) : GlslContext(kgl, "330 core") {
-        var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
-            if (++nestLevel == 1) {
+            if (currentContext.get() !== this)
                 GLFW.glfwMakeContextCurrent(window)
-            }
-            try {
-                return fn()
-            } finally {
-                if (--nestLevel == 0) {
-                    GLFW.glfwMakeContextCurrent(0)
-                }
-            }
+
+            return fn()
         }
     }
 
     companion object {
         private val logger = Logger("LwjglGlslManager")
+
         private val glCapabilities: ThreadLocal<GLCapabilities> =
             ThreadLocal.withInitial { org.lwjgl.opengl.GL.createCapabilities() }
+
+        private val currentContext: ThreadLocal<LwjglGlslContext> = ThreadLocal()
 
         // This is initialization stuff that has to run on the main thread.
         private val glWindow: Long by lazy {
             println("init LwjglGlslManager")
+
             if (Thread.currentThread().name != "main") {
                 logger.warn { "GLSL not available. On a Mac, start java with `-XstartOnFirstThread`" }
                 0L
@@ -56,7 +53,6 @@ class LwjglGlslManager : GlslManager() {
                 logger.warn { "NO_GPU=true; GLSL not available." }
                 0L
             } else {
-//            GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
                 check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
                 GLFW.glfwDefaultWindowHints()
