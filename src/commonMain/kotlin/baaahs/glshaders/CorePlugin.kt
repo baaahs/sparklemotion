@@ -8,6 +8,7 @@ import baaahs.gadgets.Slider
 import baaahs.getTimeMillis
 import baaahs.glshaders.GlslProgram.DataSource
 import baaahs.glshaders.GlslProgram.DataSourceProvider
+import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
@@ -19,13 +20,13 @@ class CorePlugin : Plugin {
     override fun matchUniformProvider(
         name: String,
         uniformPort: Patch.UniformPortRef,
-        program: GlslProgram,
-        showContext: ShowContext
+        showContext: ShowContext,
+        glslContext: GlslContext
     ): DataSourceProvider? {
         return when (name) {
             "resolution" -> ResolutionProvider()
             "time" -> TimeProvider()
-            "uvCoords" -> UvCoordProvider(program)
+            "uvCoords" -> UvCoordProvider(glslContext)
 
             "xyCoord" -> XyPadProvider(uniformPort, showContext)
 
@@ -34,7 +35,7 @@ class CorePlugin : Plugin {
 
             "none" -> NoOpProvider(uniformPort.type)
 
-            else -> throw IllegalArgumentException("unknown type ${name}")
+            else -> throw IllegalArgumentException("unknown type $name")
         }
     }
 
@@ -75,12 +76,10 @@ class CorePlugin : Plugin {
         }
     }
 
-    class UvCoordProvider(
-        val program: GlslProgram
-    ) : DataSourceProvider, GlslRenderer.ArrangementListener {
+    class UvCoordProvider(glslContext: GlslContext) : DataSourceProvider, GlslRenderer.ArrangementListener {
         override val supportedTypes: List<String> = listOf("sampler2D")
 
-        private val gl = program.gl
+        private val gl = glslContext
         private val uvCoordTextureUnit = gl.getTextureUnit(UvCoordProvider::class)
         private val uvCoordTexture = gl.check { createTexture() }
 

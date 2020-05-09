@@ -11,7 +11,8 @@ import com.danielgergely.kgl.GL_TRUE
 
 class GlslProgram(
     internal val gl: GlslContext,
-    private val patch: Patch
+    private val patch: Patch,
+    resolver: Resolver
 ) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
@@ -40,6 +41,8 @@ class GlslProgram(
         gl.createFragmentShader("#version ${gl.glslVersion}\n\n${patch.toGlsl()}\n")
     }
 
+    private val bindings: List<Binding>
+
     init {
         gl.runInContext {
             gl.check { attachShader(id, vertexShader.id) }
@@ -50,21 +53,17 @@ class GlslProgram(
                 throw CompiledShader.CompilationException(infoLog ?: "huh?")
             }
         }
+
+        bindings = gl.runInContext { bind(resolver) }
     }
 
     val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    private lateinit var bindings: List<Binding>
-
-    fun bind(fn: (Patch.UniformPortRef) -> DataSourceProvider?) {
-        if (::bindings.isInitialized) {
-            throw IllegalStateException("program is already bound")
-        }
-
-        bindings = patch.uniformPorts.mapNotNull { uniformPort ->
-            val uniformProvider = fn(uniformPort)
+    private fun bind(resolver: Resolver): List<Binding> {
+        return patch.uniformPorts.mapNotNull { uniformPort ->
+            val uniformProvider = resolver.invoke(uniformPort)
             if (uniformProvider != null) {
                 val binding = Binding(uniformPort, uniformProvider)
                 if (binding.isValid) binding else {
@@ -190,3 +189,5 @@ class GlslProgram(
         val logger = Logger("GlslProgram")
     }
 }
+
+typealias Resolver = (Patch.UniformPortRef) -> GlslProgram.DataSourceProvider?

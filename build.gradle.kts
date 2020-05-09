@@ -310,7 +310,6 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
-    args = listOf("baaahs.glsl.GlslRendererTest", "baaahs.glshaders.GlslProgramSpec")
     if (isMac()) {
         jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }

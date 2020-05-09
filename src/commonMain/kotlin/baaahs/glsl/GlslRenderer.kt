@@ -28,10 +28,12 @@ open class GlslRenderer(
     val stats = Stats()
 
     init {
-        gl.check { clearColor(0f, .5f, 0f, 1f) }
+        gl.runInContext { gl.check { clearColor(0f, .5f, 0f, 1f) } }
 
-        arrangement = createArrangement(0, FloatArray(0), renderSurfaces)
-            .also { notifyListeners(it) }
+        arrangement = gl.runInContext {
+            createArrangement(0, FloatArray(0), renderSurfaces)
+                .also { notifyListeners(it) }
+        }
     }
 
     fun addSurface(surface: Surface): RenderSurface {
@@ -71,6 +73,7 @@ open class GlslRenderer(
 
     private fun render() {
         gl.check { viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight) }
+        gl.check { clearColor(0f, .5f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
@@ -79,8 +82,6 @@ open class GlslRenderer(
     }
 
     protected fun incorporateNewSurfaces() {
-        var changed = false
-
         if (surfacesToRemove.isNotEmpty()) {
 //            TODO("remove TBD")
         }

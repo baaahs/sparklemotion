@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.ShowContext
+import baaahs.glsl.GlslContext
 
 interface Plugin {
     val packageName: String
@@ -9,7 +10,7 @@ interface Plugin {
     fun matchUniformProvider(
         name: String,
         uniformPort: Patch.UniformPortRef,
-        program: GlslProgram,
-        showContext: ShowContext
+        showContext: ShowContext,
+        glslContext: GlslContext
     ): GlslProgram.DataSourceProvider?
 }

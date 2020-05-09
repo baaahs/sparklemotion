@@ -162,12 +162,11 @@ class FakeKgl : Kgl {
 
     override fun getProgramInfoLog(program: Program): String? = null
 
-    override fun getProgramParameter(program: Program, pname: Int): Int =
-        GL_TRUE
+    override fun getProgramParameter(program: Program, pname: Int): Int = GL_TRUE
 
-    override fun getShaderInfoLog(shaderId: Shader): String? = TODO()
+    override fun getShaderInfoLog(shaderId: Shader): String? = null
 
-    override fun getShaderParameter(shader: Shader, pname: Int): Int = 1
+    override fun getShaderParameter(shader: Shader, pname: Int): Int = GL_TRUE
 
     override fun getUniformLocation(programId: Program, name: String): UniformLocation? {
         @Suppress("CAST_NEVER_SUCCEEDS")

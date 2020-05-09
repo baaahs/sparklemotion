@@ -120,8 +120,8 @@ class Patch(
         return buf.toString()
     }
 
-    fun compile(glslContext: GlslContext): GlslProgram =
-        GlslProgram(glslContext, this)
+    fun compile(glslContext: GlslContext, resolver: Resolver): GlslProgram =
+        GlslProgram(glslContext, this, resolver)
 
     interface PortRef {
         val shaderId: String?

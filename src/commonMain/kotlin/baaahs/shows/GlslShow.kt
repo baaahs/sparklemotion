@@ -2,6 +2,7 @@ package baaahs.shows
 
 import baaahs.*
 import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.Patch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
@@ -21,11 +22,9 @@ open class GlslShow(
             )
         )
 
-        val program = patch.compile(glslContext)
-
         val plugins = Plugins.findAll()
-        program.bind { uniformPort ->
-            plugins.matchUniformProvider(uniformPort, program, showContext)
+        val program = patch.compile(glslContext) { uniformPortRef: Patch.UniformPortRef ->
+            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
         }
 
         val shader = GlslShader(program, model.defaultUvTranslator, glslContext)

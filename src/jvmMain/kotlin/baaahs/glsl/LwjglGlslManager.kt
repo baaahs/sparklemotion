@@ -26,12 +26,17 @@ class LwjglGlslManager : GlslManager() {
     }
 
     inner class LwjglGlslContext(kgl: Kgl) : GlslContext(kgl, "330 core") {
+        var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
-            GLFW.glfwMakeContextCurrent(window)
+            if (++nestLevel == 1) {
+                GLFW.glfwMakeContextCurrent(window)
+            }
             try {
                 return fn()
             } finally {
-                GLFW.glfwMakeContextCurrent(0)
+                if (--nestLevel == 0) {
+                    GLFW.glfwMakeContextCurrent(0)
+                }
             }
         }
     }
