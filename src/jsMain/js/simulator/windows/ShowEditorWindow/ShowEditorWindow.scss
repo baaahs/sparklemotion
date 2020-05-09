@@ -23,6 +23,27 @@
   }
 }
 
+.previewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .preview {}
+  .status {
+    white-space: pre;
+    height: 180px;
+    overflow: scroll;
+  }
+  .controls {
+    transform: scale(.5);
+    height: 180px;
+
+    div {
+      display: flex;
+    }
+  }
+}
+
 .buttons {
   display: flex;
 }

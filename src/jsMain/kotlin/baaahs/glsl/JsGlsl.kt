@@ -8,8 +8,8 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 actual object GlslBase {
-    actual val plugins: MutableList<GlslPlugin> = mutableListOf()
-    actual val manager: GlslManager by lazy { JsGlslManager() }
+    actual val manager: GlslManager by lazy { jsManager }
+    val jsManager: JsGlslManager by lazy { JsGlslManager() }
 
     class JsGlslManager : GlslManager() {
         override val available: Boolean by lazy {
@@ -20,6 +20,10 @@ actual object GlslBase {
 
         override fun createContext(): GlslContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
+            return createContext(canvas)
+        }
+
+        fun createContext(canvas: HTMLCanvasElement): JsGlslContext {
             val gl = canvas.getContext("webgl2") as WebGL2RenderingContext?
             if (gl == null) {
                 window.alert(

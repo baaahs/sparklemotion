@@ -1,5 +1,5 @@
 // Orange Snowflake
-// From http://glslsandbox.com/e#61105.0
+// Based on http://glslsandbox.com/e#61105.0
 
 /*
  * Original shader from: https://www.shadertoy.com/view/wl3XW8

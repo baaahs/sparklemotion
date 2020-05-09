@@ -12,7 +12,6 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
-import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -43,7 +42,7 @@ class BrainMain(private val args: Args) {
         val mySurface = if (args.anonymous) {
             null
         } else if (args.surfaceName == null) {
-            if (Random.nextBoolean()) model.allSurfaces.random()!! else null
+            if (Random.nextBoolean()) model.allSurfaces.random() else null
         } else {
             model.allSurfaces.find { it.name == args.surfaceName }
                 ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")

@@ -1,12 +1,11 @@
 package baaahs.shows
 
 import baaahs.getResource
-import baaahs.glsl.GlslBase
 import baaahs.shaders.GlslShader
 
 class AllShows {
     companion object {
-        val allGlslShows: List<GlslShow> by lazy {
+        private val allGlslShows: List<GlslShow> by lazy {
             getResource("_RESOURCE_FILES_")
                 .split("\n")
                 .filter { it.startsWith("baaahs/shows/") && it.endsWith(".glsl")}
@@ -17,27 +16,14 @@ class AllShows {
                         .split("/").last()
                         .replace(".glsl", "")
                         .replace("_", " ")
-                    object : GlslShow(name) {
-                        override val program = GlslShader.renderContext.createProgram(shaderSource)
-                    }
+                    GlslShow(name, shaderSource, glslContext = GlslShader.globalRenderContext)
                 }
         }
 
-        private val nonGlslShows = listOf(
-            SomeDumbShow,
-//            RandomShow,
-            CompositeShow,
-//            ThumpShow,
-            PanelTweenShow
-//            PixelTweenShow
-//            LifeyShow,
-//            SimpleSpatialShow,
-//            HeartbleatShow,
-//            CreepingPixelsShow
-        )
+        private val nonGlslShows = listOf(PanelTweenShow)
 
-        val allShows = listOf(
-            SolidColorShow
-        ) + (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() }
+        val allShows =
+            (nonGlslShows + allGlslShows).sortedBy { it.name.toLowerCase() } +
+            GuruMeditationErrorShow
     }
 }
