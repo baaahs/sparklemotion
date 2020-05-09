@@ -7,6 +7,7 @@ import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_bright';
 import {store} from '../../../store';
 import ShowControls from "../../../app/components/Shows/ShowControls";
+import {Button, Menu, MenuItem, Tab, Tabs} from '@material-ui/core';
 import {useResizeListener} from '../../../app/hooks/useResizeListener';
 import {baaahs} from 'sparklemotion';
 
@@ -20,6 +21,7 @@ const ShaderEditorWindow = (props) => {
   const [glslPreviewer, setGlslPreviewer] = useState(null);
   const [gadgets, setGadgets] = useState([]);
   const [openShaders, setOpenShaders] = useState([]);
+  const [menuEl, setMenuEl] = React.useState(null);
 
   // Anytime the sheepView div is resized,
   // ask the Visualizer to resize the 3D sheep canvas
@@ -95,6 +97,21 @@ const ShaderEditorWindow = (props) => {
     console.log(`previewShow!`);
   };
 
+  const handleTabChange = (event, newValue) => {
+    let src = openShaders[newValue].src;
+    console.log('src', src)
+    setShowStr(src);
+    updatePreview(src);
+  };
+
+  const handleMenuButton = (event) => {
+    setMenuEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuEl(null);
+  };
+
   useResizeListener(windowRootEl, () => {
     if (glslPreviewer) {
       // Tell Kotlin controller the window was resized
@@ -104,6 +121,39 @@ const ShaderEditorWindow = (props) => {
 
   return (
     <div className={styles.shaderEditorWindow} ref={windowRootEl}>
+      <Tabs
+          variant="scrollable"
+          onChange={handleTabChange}
+      >
+        {openShaders.map((shaderInfo) => {
+          return <Tab
+              label={shaderInfo.name}
+          />
+        })}
+
+        <div>
+          <Button
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              variant="contained"
+              onClick={handleMenuButton}>
+            …
+          </Button>
+          <Menu
+              anchorEl={menuEl}
+              keepMounted
+              open={Boolean(menuEl)}
+              onClose={handleMenuClose}
+          >
+            <MenuItem>New…</MenuItem>
+            <MenuItem>Open…</MenuItem>
+            <MenuItem>Save</MenuItem>
+            <MenuItem>Save As…</MenuItem>
+            <MenuItem>Close</MenuItem>
+          </Menu>
+        </div>
+      </Tabs>
+
       <div className={styles.toolbar}>
         <div className={styles.showName}>
           <i className="fas fa-chevron-right"></i>
