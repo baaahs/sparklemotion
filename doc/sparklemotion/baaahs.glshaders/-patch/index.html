@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Patch - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glshaders</a>&nbsp;/&nbsp;<a href="./index.html">Patch</a><br/>
+<br/>
+<h1>Patch</h1>
+<code><span class="keyword">class </span><span class="identifier">Patch</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-component/index.html">Component</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Component</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-link/index.html">Link</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-color/index.html">PixelColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">PixelColor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-port-ref/index.html">PortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">PortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-out/index.html">ShaderOut</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderOut</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-port-ref/index.html">ShaderPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-uniform-port-ref/index.html">UniformPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">UniformPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PortRef</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Patch</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Patch$<init>(kotlin.collections.Map((kotlin.String, baaahs.glshaders.ShaderFragment)), kotlin.collections.List((baaahs.glshaders.Patch.Link)))/shaderFragments">shaderFragments</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-shader-fragment/index.html"><span class="identifier">ShaderFragment</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.Patch$<init>(kotlin.collections.Map((kotlin.String, baaahs.glshaders.ShaderFragment)), kotlin.collections.List((baaahs.glshaders.Patch.Link)))/links">links</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Link</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="uniform-ports.html">uniformPorts</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uniformPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">UniformPortRef</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="compile.html">compile</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compile</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Patch$compile(baaahs.glsl.GlslContext, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/glslContext">glslContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.Patch$compile(baaahs.glsl.GlslContext, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-glsl.html">toGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toGlsl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -21,10 +21,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-context-switcher/index.html">ContextSwitcher</a></h4>
+<h4><a href="-arrangement-listener/index.html">ArrangementListener</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">ContextSwitcher</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">ArrangementListener</span></code></td>
 </tr>
 <tr>
 <td>
@@ -64,7 +64,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(com.danielgergely.kgl.Kgl, baaahs.glsl.GlslRenderer.ContextSwitcher, baaahs.glsl.Program, baaahs.glsl.UvTranslator)/gl">gl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(com.danielgergely.kgl.Kgl, baaahs.glsl.GlslRenderer.ContextSwitcher, baaahs.glsl.Program, baaahs.glsl.UvTranslator)/contextSwitcher">contextSwitcher</span><span class="symbol">:</span>&nbsp;<span class="identifier">ContextSwitcher</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(com.danielgergely.kgl.Kgl, baaahs.glsl.GlslRenderer.ContextSwitcher, baaahs.glsl.Program, baaahs.glsl.UvTranslator)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../-program/index.html"><span class="identifier">Program</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(com.danielgergely.kgl.Kgl, baaahs.glsl.GlslRenderer.ContextSwitcher, baaahs.glsl.Program, baaahs.glsl.UvTranslator)/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(baaahs.glsl.GlslContext, baaahs.glsl.UvTranslator)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslRenderer$<init>(baaahs.glsl.GlslContext, baaahs.glsl.UvTranslator)/uvTranslator">uvTranslator</span><span class="symbol">:</span>&nbsp;<a href="../-uv-translator/index.html"><span class="identifier">UvTranslator</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -104,7 +104,7 @@
 <h4><a href="gl.html">gl</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">gl</span><span class="symbol">: </span><span class="identifier">Kgl</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">gl</span><span class="symbol">: </span><a href="../-glsl-context/index.html"><span class="identifier">GlslContext</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -144,7 +144,7 @@
 <h4><a href="add-surface.html">addSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$addSurface(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-surface/index.html"><span class="identifier">GlslSurface</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$addSurface(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-render-surface/index.html"><span class="identifier">RenderSurface</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -152,13 +152,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">draw</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="gl.html">gl</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">gl</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$gl(kotlin.Function0((baaahs.glsl.GlslRenderer.gl.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
 </tr>
 <tr>
 <td>
@@ -173,6 +166,32 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-surface.html">removeSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslRenderer$removeSurface(baaahs.glsl.RenderSurface)/renderSurface">renderSurface</span><span class="symbol">:</span>&nbsp;<a href="../-render-surface/index.html"><span class="identifier">RenderSurface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="glsl-analyzer.html">glslAnalyzer</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">glslAnalyzer</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-glsl-analyzer/index.html"><span class="identifier">GlslAnalyzer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uv-mapper.html">uvMapper</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uvMapper</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-shader-fragment/index.html"><span class="identifier">ShaderFragment</span></a></code></td>
 </tr>
 </tbody>
 </table>

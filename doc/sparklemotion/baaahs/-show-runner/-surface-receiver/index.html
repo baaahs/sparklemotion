@@ -8,19 +8,7 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">ShowRunner</a>&nbsp;/&nbsp;<a href="./index.html">SurfaceReceiver</a><br/>
 <br/>
 <h1>SurfaceReceiver</h1>
-<code><span class="keyword">class </span><span class="identifier">SurfaceReceiver</span></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">SurfaceReceiver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner.SurfaceReceiver$<init>(baaahs.Surface, kotlin.Function1((baaahs.Shader.Buffer, kotlin.Unit)))/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowRunner.SurfaceReceiver$<init>(baaahs.Surface, kotlin.Function1((baaahs.Shader.Buffer, kotlin.Unit)))/sendFn">sendFn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">Buffer</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
+<code><span class="keyword">interface </span><span class="identifier">SurfaceReceiver</span></code>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -29,7 +17,7 @@
 <h4><a href="surface.html">surface</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">surface</span><span class="symbol">: </span><a href="../../-surface/index.html"><span class="identifier">Surface</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">surface</span><span class="symbol">: </span><a href="../../-surface/index.html"><span class="identifier">Surface</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -41,7 +29,7 @@
 <h4><a href="send.html">send</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner.SurfaceReceiver$send(baaahs.Shader.Buffer)/shaderBuffer">shaderBuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowRunner.SurfaceReceiver$send(baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

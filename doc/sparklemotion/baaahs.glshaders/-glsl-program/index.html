@@ -1,0 +1,171 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslProgram - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glshaders</a>&nbsp;/&nbsp;<a href="./index.html">GlslProgram</a><br/>
+<br/>
+<h1>GlslProgram</h1>
+<code><span class="keyword">class </span><span class="identifier">GlslProgram</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-binding/index.html">Binding</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Binding</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-data-source/index.html">DataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">DataSource</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-data-source-provider/index.html">DataSourceProvider</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">DataSourceProvider</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-gl-frag-coord/index.html">GlFragCoord</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">GlFragCoord</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-input-port-ref/index.html">InputPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">InputPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-resolution.html">Resolution</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Resolution</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-resolution-listener/index.html">ResolutionListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ResolutionListener</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-stock-uniform-port-ref/index.html">StockUniformPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">StockUniformPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-time.html">Time</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Time</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-uv-coords-texture.html">UvCoordsTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">UvCoordsTexture</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GlslProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/patch">patch</span><span class="symbol">:</span>&nbsp;<a href="../-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="arrangement-listeners.html">arrangementListeners</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">arrangementListeners</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">ArrangementListener</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolution-listeners.html">resolutionListeners</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">resolutionListeners</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">ResolutionListener</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vertex-attrib-location.html">vertexAttribLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">vertexAttribLocation</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-uniform.html">getUniform</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getUniform</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.GlslProgram$getUniform(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release.html">release</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-resolution.html">setResolution</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setResolution</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.GlslProgram$setResolution(kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$setResolution(kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-uniforms.html">updateUniforms</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">updateUniforms</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="logger.html">logger</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

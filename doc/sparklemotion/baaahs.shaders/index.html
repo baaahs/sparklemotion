@@ -13,33 +13,17 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="-compositing-mode/index.html">CompositingMode</a></h4>
-</td>
-<td>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">CompositingMode</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-compositor-shader/index.html">CompositorShader</a></h4>
-</td>
-<td>
-<p>A shader which combines the results of two sub-shaders according to a specified compositing mode and cross-fade
-value.</p>
-<code><span class="keyword">class </span><span class="identifier">CompositorShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-glsl-shader/index.html">GlslShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">GlslShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">GlslShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-i-glsl-shader/index.html"><span class="identifier">IGlslShader</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="-heart-shader/index.html">HeartShader</a></h4>
+<h4><a href="-i-glsl-shader/index.html">IGlslShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">HeartShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">IGlslShader</span></code></td>
 </tr>
 <tr>
 <td>
@@ -48,30 +32,6 @@ value.</p>
 <td>
 <p>A shader that allows control of individual pixels' colors directly from a show.</p>
 <code><span class="keyword">class </span><span class="identifier">PixelShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-random-shader/index.html">RandomShader</a></h4>
-</td>
-<td>
-<p>A shader that sets pixels to a random colors.</p>
-<code><span class="keyword">class </span><span class="identifier">RandomShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-simple-spatial-shader/index.html">SimpleSpatialShader</a></h4>
-</td>
-<td>
-<p>A shader that sets all pixels to a single color within x/y constraints.</p>
-<code><span class="keyword">class </span><span class="identifier">SimpleSpatialShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-sine-wave-shader/index.html">SineWaveShader</a></h4>
-</td>
-<td>
-<p>A shader that treats a surface's pixels as a linear strip and applies a configurable sine wave along the strip.</p>
-<code><span class="keyword">class </span><span class="identifier">SineWaveShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -86,15 +46,7 @@ value.</p>
 <h4><a href="-sound-analysis-plugin/index.html">SoundAnalysisPlugin</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">SoundAnalysisPlugin</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.glsl/-glsl-plugin/index.html"><span class="identifier">GlslPlugin</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-sparkle-shader/index.html">SparkleShader</a></h4>
-</td>
-<td>
-<p>A shader that randomly sets some pixels to white, changing with each frame.</p>
-<code><span class="keyword">class </span><span class="identifier">SparkleShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">SoundAnalysisPlugin</span></code></td>
 </tr>
 </tbody>
 </table>

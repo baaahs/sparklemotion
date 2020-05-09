@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CorePlugin.GadgetProvider - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.glshaders</a>&nbsp;/&nbsp;<a href="../index.html">CorePlugin</a>&nbsp;/&nbsp;<a href="./index.html">GadgetProvider</a><br/>
+<br/>
+<h1>GadgetProvider</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GadgetProvider</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">DataSourceProvider</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GadgetProvider</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$<init>(baaahs.glshaders.Patch.UniformPortRef, baaahs.ShowContext)/uniformPortRef">uniformPortRef</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$<init>(baaahs.glshaders.Patch.UniformPortRef, baaahs.ShowContext)/showContext">showContext</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-show-context/index.html"><span class="identifier">ShowContext</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="create-gadget.html">createGadget</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$createGadget(kotlin.String, kotlin.collections.Map((kotlin.String, )))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$createGadget(kotlin.String, kotlin.collections.Map((kotlin.String, )))/config">config</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="provide.html">provide</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">provide</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataSource</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$set(baaahs.glshaders.CorePlugin.GadgetProvider.T, baaahs.glsl.Uniform)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.CorePlugin.GadgetProvider$set(baaahs.glshaders.CorePlugin.GadgetProvider.T, baaahs.glsl.Uniform)/uniform">uniform</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

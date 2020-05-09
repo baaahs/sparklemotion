@@ -30,6 +30,7 @@
   var Random = Kotlin.kotlin.random.Random;
   var trimStart = Kotlin.kotlin.text.trimStart_wqw3xr$;
   var toInt = Kotlin.kotlin.text.toInt_6ic1pp$;
+  var repeat = Kotlin.kotlin.text.repeat_94bcnn$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var numberToInt = Kotlin.numberToInt;
   var PrimitiveKind = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.PrimitiveKind;
@@ -96,6 +97,7 @@
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
   var Collection = Kotlin.kotlin.collections.Collection;
   var checkCountOverflow = Kotlin.kotlin.collections.checkCountOverflow_za3lpa$;
+  var random = Kotlin.kotlin.collections.random_iscd7z$;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var wrapFunction = Kotlin.wrapFunction;
   var Comparator = Kotlin.kotlin.Comparator;
@@ -150,21 +152,46 @@
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.builtins.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
   var ReferenceArraySerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ReferenceArraySerializer;
-  var defineInlineFunction = Kotlin.defineInlineFunction;
+  var minus_0 = Kotlin.kotlin.collections.minus_4pa84t$;
+  var linkedMapOf = Kotlin.kotlin.collections.linkedMapOf_qfcya0$;
+  var map = Kotlin.kotlin.sequences.map_z5avom$;
+  var filter = Kotlin.kotlin.sequences.filter_euau3h$;
+  var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
+  var toSet = Kotlin.kotlin.collections.toSet_7wnvza$;
+  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
+  var plus_1 = Kotlin.kotlin.collections.plus_qloxvw$;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
+  var append = Kotlin.kotlin.text.append_4v9nlb$;
+  var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
   var L134217727 = Kotlin.Long.fromInt(134217727);
+  var FloatBuffer_init = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_q3cr5i$;
+  var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
+  var last = Kotlin.kotlin.collections.last_2p1efm$;
+  var removeLast = Kotlin.kotlin.collections.removeLast_vvxzk3$;
+  var contains = Kotlin.kotlin.text.contains_li3zpu$;
+  var toMutableList = Kotlin.kotlin.collections.toMutableList_4c7yge$;
+  var removeFirst = Kotlin.kotlin.collections.removeFirst_vvxzk3$;
+  var RegexOption = Kotlin.kotlin.text.RegexOption;
+  var Regex_init_0 = Kotlin.kotlin.text.Regex_init_sb3q2$;
+  var emptySet = Kotlin.kotlin.collections.emptySet_287e2$;
+  var StringBuilder_init_0 = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
+  var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
+  var plus_2 = Kotlin.kotlin.collections.plus_khz7k3$;
+  var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
+  var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
+  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
+  var plus_3 = Kotlin.kotlin.collections.plus_iwxh38$;
+  var trimEnd = Kotlin.kotlin.text.trimEnd_gw00vp$;
+  var defineInlineFunction = Kotlin.defineInlineFunction;
+  var distinct = Kotlin.kotlin.collections.distinct_7wnvza$;
   var get_indices = Kotlin.kotlin.collections.get_indices_gzk92b$;
   var ByteBuffer_init = $module$kgl.com.danielgergely.kgl.ByteBuffer_init_za3lpa$;
-  var FloatBuffer_init = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_q3cr5i$;
   var arrayCopy = Kotlin.kotlin.collections.arrayCopy;
-  var map = Kotlin.kotlin.sequences.map_z5avom$;
-  var toList_3 = Kotlin.kotlin.sequences.toList_veqyi0$;
-  var replace = Kotlin.kotlin.text.replace_680rmw$;
-  var IllegalStateException_init_0 = Kotlin.kotlin.IllegalStateException_init;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var joinToString_0 = Kotlin.kotlin.collections.joinToString_cgipc5$;
+  var Kgl = $module$kgl.com.danielgergely.kgl.Kgl;
   var toFloatArray = Kotlin.kotlin.collections.toFloatArray_zwy31$;
   var first_0 = Kotlin.kotlin.collections.first_7wnvza$;
-  var listOf_0 = Kotlin.kotlin.collections.listOf_mh5how$;
-  var random = Kotlin.kotlin.collections.random_iscd7z$;
   var toShort = Kotlin.toShort;
   var toChar = Kotlin.toChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -181,20 +208,11 @@
   var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
-  var zip_0 = Kotlin.kotlin.collections.zip_xiheex$;
-  var JsonObject = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonObject;
-  var Array_0 = Array;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
   var get_indices_1 = Kotlin.kotlin.collections.get_indices_m7z4lg$;
+  var Array_0 = Array;
   var FloatBuffer_init_0 = $module$kgl.com.danielgergely.kgl.FloatBuffer_init_za3lpa$;
-  var startsWith = Kotlin.kotlin.text.startsWith_7epoxm$;
-  var last = Kotlin.kotlin.collections.last_2p1efm$;
-  var plus_0 = Kotlin.kotlin.collections.plus_mydzjv$;
-  var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
-  var contains = Kotlin.kotlin.collections.contains_2ws7j4$;
-  var L268435455 = Kotlin.Long.fromInt(268435455);
-  var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
-  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
+  var replace = Kotlin.kotlin.text.replace_680rmw$;
   var coroutines_0 = Kotlin.kotlin.coroutines;
   var get_js = Kotlin.kotlin.js.get_js_1yb8b7$;
   var createElement = $module$react.createElement;
@@ -208,7 +226,6 @@
   var get_create = $module$kotlinx_html_js.kotlinx.html.dom.get_create_4wc2mh$;
   var asList = Kotlin.org.w3c.dom.asList_kt9thq$;
   var Matrix4 = $module$three.Matrix4;
-  var contains_0 = Kotlin.kotlin.text.contains_li3zpu$;
   var MapperIndex = $module$js_mapper_index_jsx.default;
   var getCallableRef = Kotlin.getCallableRef;
   var Vector3 = THREE.Vector3;
@@ -219,10 +236,11 @@
   var Mesh_init = THREE.Mesh;
   var LineBasicMaterial = THREE.LineBasicMaterial;
   var BufferGeometry = THREE.BufferGeometry;
-  var plus_1 = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
+  var plus_4 = $module$threejs_wrapper.info.laht.threekt.math.plus_gulir3$;
   var Line_init = THREE.Line;
   var SphereBufferGeometry = THREE.SphereBufferGeometry;
   var Box3 = THREE.Box3;
+  var roundToInt = Kotlin.kotlin.math.roundToInt_yrwdxr$;
   var Raycaster_init = $module$three.Raycaster;
   var Vector2 = THREE.Vector2;
   var first_1 = Kotlin.kotlin.collections.first_us0mfu$;
@@ -232,7 +250,7 @@
   var toDoubleArray = Kotlin.kotlin.collections.toDoubleArray_pnorak$;
   var toTypedArray = Kotlin.kotlin.collections.toTypedArray_bvy38s$;
   var List = Kotlin.kotlin.collections.List;
-  var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
+  var append_0 = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
   var Box2 = THREE.Box2;
   var Clock = THREE.Clock;
   var WebGLRenderer_init = THREE.WebGLRenderer;
@@ -258,7 +276,6 @@
   var SELECT_init = $module$kotlinx_html_js.kotlinx.html.SELECT;
   var CANVAS_init = $module$kotlinx_html_js.kotlinx.html.CANVAS;
   var FakeClientDevice = $module$js_FakeClientDevice_jsx.default;
-  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var L200000 = Kotlin.Long.fromInt(200000);
   var CoroutineScope_0 = $module$kotlinx_coroutines_core.kotlinx.coroutines.CoroutineScope_1fupul$;
   var AppIndex = $module$js_app_index_jsx.default;
@@ -268,13 +285,14 @@
   var attributesMapOf_1 = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.attributesMapOf_jyasbz$;
   var DIV_init_0 = $module$kotlin_react_dom.$$importsForInline$$['kotlinx-html-js'].kotlinx.html.DIV;
   var RDOMBuilder_init = $module$kotlin_react_dom.react.dom.RDOMBuilder;
+  var mapOf_0 = Kotlin.kotlin.collections.mapOf_x2b85n$;
   var KglJs = $module$kgl.com.danielgergely.kgl.KglJs;
   var HTMLCanvasElement_0 = HTMLCanvasElement;
   var promise = $module$kotlinx_coroutines_core.kotlinx.coroutines.promise_pda6u4$;
-  var trimEnd = Kotlin.kotlin.text.trimEnd_wqw3xr$;
+  var trimEnd_0 = Kotlin.kotlin.text.trimEnd_wqw3xr$;
   var toTypedArray_0 = Kotlin.kotlin.collections.toTypedArray_964n91$;
   var unboxChar = Kotlin.unboxChar;
-  var joinToString_0 = Kotlin.kotlin.collections.joinToString_s78119$;
+  var joinToString_1 = Kotlin.kotlin.collections.joinToString_s78119$;
   var contentHashCode = Kotlin.arrayHashCode;
   var replace_0 = Kotlin.kotlin.text.replace_r2fvfm$;
   var toMap_0 = Kotlin.kotlin.collections.toMap_6hr0sd$;
@@ -283,7 +301,7 @@
   var ConeBufferGeometry = THREE.ConeBufferGeometry;
   var OrbitControls = THREE.OrbitControls;
   var TextureLoader_init = THREE.TextureLoader;
-  var minus_0 = $module$threejs_wrapper.info.laht.threekt.math.minus_gulir3$;
+  var minus_1 = $module$threejs_wrapper.info.laht.threekt.math.minus_gulir3$;
   var Float32BufferAttribute = $module$three.Float32BufferAttribute;
   var BufferGeometryUtils$Companion = THREE.BufferGeometryUtils;
   var PlaneBufferGeometry = THREE.PlaneBufferGeometry;
@@ -293,8 +311,6 @@
   Mapper$TimeoutException.prototype.constructor = Mapper$TimeoutException;
   MovingHead$ColorMode.prototype = Object.create(Enum.prototype);
   MovingHead$ColorMode.prototype.constructor = MovingHead$ColorMode;
-  Pinky$PrerenderingSurfaceReceiver.prototype = Object.create(ShowRunner$SurfaceReceiver.prototype);
-  Pinky$PrerenderingSurfaceReceiver.prototype.constructor = Pinky$PrerenderingSurfaceReceiver;
   PubSub$Connection$ClientListener.prototype = Object.create(PubSub$Listener.prototype);
   PubSub$Connection$ClientListener.prototype.constructor = PubSub$Connection$ClientListener;
   PubSub$Connection.prototype = Object.create(PubSub$Origin.prototype);
@@ -339,6 +355,46 @@
   PalettePicker.prototype.constructor = PalettePicker;
   Slider.prototype = Object.create(Gadget.prototype);
   Slider.prototype.constructor = Slider;
+  ColorShader.prototype = Object.create(ShaderFragment$Base.prototype);
+  ColorShader.prototype.constructor = ColorShader;
+  ShaderToyColorShader.prototype = Object.create(ColorShader.prototype);
+  ShaderToyColorShader.prototype.constructor = ShaderToyColorShader;
+  GenericColorShader.prototype = Object.create(ColorShader.prototype);
+  GenericColorShader.prototype.constructor = GenericColorShader;
+  CorePlugin$SliderProvider.prototype = Object.create(CorePlugin$GadgetProvider.prototype);
+  CorePlugin$SliderProvider.prototype.constructor = CorePlugin$SliderProvider;
+  CorePlugin$ColorPickerProvider.prototype = Object.create(CorePlugin$GadgetProvider.prototype);
+  CorePlugin$ColorPickerProvider.prototype.constructor = CorePlugin$ColorPickerProvider;
+  GlslAnalyzer$ParseState$Statement.prototype = Object.create(GlslAnalyzer$ParseState.prototype);
+  GlslAnalyzer$ParseState$Statement.prototype.constructor = GlslAnalyzer$ParseState$Statement;
+  GlslAnalyzer$ParseState$Comment.prototype = Object.create(GlslAnalyzer$ParseState.prototype);
+  GlslAnalyzer$ParseState$Comment.prototype.constructor = GlslAnalyzer$ParseState$Comment;
+  GlslAnalyzer$ParseState$Block.prototype = Object.create(GlslAnalyzer$ParseState.prototype);
+  GlslAnalyzer$ParseState$Block.prototype.constructor = GlslAnalyzer$ParseState$Block;
+  GlslAnalyzer$ParseState$Directive.prototype = Object.create(GlslAnalyzer$ParseState.prototype);
+  GlslAnalyzer$ParseState$Directive.prototype.constructor = GlslAnalyzer$ParseState$Directive;
+  GlslCode$ContentType.prototype = Object.create(Enum.prototype);
+  GlslCode$ContentType.prototype.constructor = GlslCode$ContentType;
+  GlslProgram$StockUniformPortRef.prototype = Object.create(Patch$UniformPortRef.prototype);
+  GlslProgram$StockUniformPortRef.prototype.constructor = GlslProgram$StockUniformPortRef;
+  GlslProgram$Resolution.prototype = Object.create(GlslProgram$StockUniformPortRef.prototype);
+  GlslProgram$Resolution.prototype.constructor = GlslProgram$Resolution;
+  GlslProgram$Time.prototype = Object.create(GlslProgram$StockUniformPortRef.prototype);
+  GlslProgram$Time.prototype.constructor = GlslProgram$Time;
+  GlslProgram$GlFragCoord.prototype = Object.create(GlslProgram$StockUniformPortRef.prototype);
+  GlslProgram$GlFragCoord.prototype.constructor = GlslProgram$GlFragCoord;
+  GlslProgram$UvCoordsTexture.prototype = Object.create(GlslProgram$StockUniformPortRef.prototype);
+  GlslProgram$UvCoordsTexture.prototype.constructor = GlslProgram$UvCoordsTexture;
+  GlslProgram$InputPortRef.prototype = Object.create(Patch$UniformPortRef.prototype);
+  GlslProgram$InputPortRef.prototype.constructor = GlslProgram$InputPortRef;
+  ShaderFragment$Type.prototype = Object.create(Enum.prototype);
+  ShaderFragment$Type.prototype.constructor = ShaderFragment$Type;
+  UvShader.prototype = Object.create(ShaderFragment$Base.prototype);
+  UvShader.prototype.constructor = UvShader;
+  CompiledShader$CompilationException.prototype = Object.create(Exception.prototype);
+  CompiledShader$CompilationException.prototype.constructor = CompiledShader$CompilationException;
+  CompiledShader$LinkException.prototype = Object.create(Exception.prototype);
+  CompiledShader$LinkException.prototype.constructor = CompiledShader$LinkException;
   GlslRenderer$SurfacePixels.prototype = Object.create(SurfacePixels.prototype);
   GlslRenderer$SurfacePixels.prototype.constructor = GlslRenderer$SurfacePixels;
   RandomSurfacePixelStrategy.prototype = Object.create(SurfacePixelStrategy.prototype);
@@ -375,20 +431,6 @@
   BrainMappingMessage.prototype.constructor = BrainMappingMessage;
   PingMessage.prototype = Object.create(Message.prototype);
   PingMessage.prototype.constructor = PingMessage;
-  CompositorShader.prototype = Object.create(Shader.prototype);
-  CompositorShader.prototype.constructor = CompositorShader;
-  CompositingMode.prototype = Object.create(Enum.prototype);
-  CompositingMode.prototype.constructor = CompositingMode;
-  CompositingMode$NORMAL.prototype = Object.create(CompositingMode.prototype);
-  CompositingMode$NORMAL.prototype.constructor = CompositingMode$NORMAL;
-  CompositingMode$ADD.prototype = Object.create(CompositingMode.prototype);
-  CompositingMode$ADD.prototype.constructor = CompositingMode$ADD;
-  GlslShader$Param$Type.prototype = Object.create(Enum.prototype);
-  GlslShader$Param$Type.prototype.constructor = GlslShader$Param$Type;
-  GlslShader.prototype = Object.create(Shader.prototype);
-  GlslShader.prototype.constructor = GlslShader;
-  HeartShader.prototype = Object.create(Shader.prototype);
-  HeartShader.prototype.constructor = HeartShader;
   PixelShader$Encoding.prototype = Object.create(Enum.prototype);
   PixelShader$Encoding.prototype.constructor = PixelShader$Encoding;
   PixelShader$Encoding$DIRECT_ARGB.prototype = Object.create(PixelShader$Encoding.prototype);
@@ -411,42 +453,14 @@
   PixelShader$IndexedBuffer.prototype.constructor = PixelShader$IndexedBuffer;
   PixelShader.prototype = Object.create(Shader.prototype);
   PixelShader.prototype.constructor = PixelShader;
-  RandomShader.prototype = Object.create(Shader.prototype);
-  RandomShader.prototype.constructor = RandomShader;
-  SimpleSpatialShader.prototype = Object.create(Shader.prototype);
-  SimpleSpatialShader.prototype.constructor = SimpleSpatialShader;
-  SineWaveShader.prototype = Object.create(Shader.prototype);
-  SineWaveShader.prototype.constructor = SineWaveShader;
   SolidShader.prototype = Object.create(Shader.prototype);
   SolidShader.prototype.constructor = SolidShader;
-  SparkleShader.prototype = Object.create(Shader.prototype);
-  SparkleShader.prototype.constructor = SparkleShader;
   GlslShow.prototype = Object.create(Show.prototype);
   GlslShow.prototype.constructor = GlslShow;
-  AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.prototype = Object.create(GlslShow.prototype);
-  AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.prototype.constructor = AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral;
-  CompositeShow.prototype = Object.create(Show.prototype);
-  CompositeShow.prototype.constructor = CompositeShow;
-  CreepingPixelsShow.prototype = Object.create(Show.prototype);
-  CreepingPixelsShow.prototype.constructor = CreepingPixelsShow;
-  HeartbleatShow.prototype = Object.create(Show.prototype);
-  HeartbleatShow.prototype.constructor = HeartbleatShow;
-  LifeyShow.prototype = Object.create(Show.prototype);
-  LifeyShow.prototype.constructor = LifeyShow;
+  GuruMeditationErrorShow.prototype = Object.create(GlslShow.prototype);
+  GuruMeditationErrorShow.prototype.constructor = GuruMeditationErrorShow;
   PanelTweenShow.prototype = Object.create(Show.prototype);
   PanelTweenShow.prototype.constructor = PanelTweenShow;
-  PixelTweenShow.prototype = Object.create(Show.prototype);
-  PixelTweenShow.prototype.constructor = PixelTweenShow;
-  RandomShow.prototype = Object.create(Show.prototype);
-  RandomShow.prototype.constructor = RandomShow;
-  SimpleSpatialShow.prototype = Object.create(Show.prototype);
-  SimpleSpatialShow.prototype.constructor = SimpleSpatialShow;
-  SolidColorShow.prototype = Object.create(Show.prototype);
-  SolidColorShow.prototype.constructor = SolidColorShow;
-  SomeDumbShow.prototype = Object.create(Show.prototype);
-  SomeDumbShow.prototype.constructor = SomeDumbShow;
-  ThumpShow.prototype = Object.create(Show.prototype);
-  ThumpShow.prototype.constructor = ThumpShow;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
   AdminPage.prototype = Object.create(RComponent.prototype);
@@ -1300,19 +1314,33 @@
     return Color_init_1(r, g, b);
   };
   Color$Companion.prototype.fromString = function (hex) {
-    var tmp$;
+    var tmp$, tmp$_0;
     var hexDigits = {v: trimStart(hex, Kotlin.charArrayOf(35))};
-    if (hexDigits.v.length === 8) {
-      var $receiver = toInt(hexDigits.v.substring(0, 2), 16);
-      hexDigits.v = hexDigits.v.substring(2);
-      tmp$ = $receiver;
-    } else {
-      tmp$ = 255;
+    switch (hexDigits.v.length) {
+      case 8:
+        var $receiver = toInt(hexDigits.v.substring(0, 2), 16);
+        hexDigits.v = hexDigits.v.substring(2);
+        tmp$ = $receiver;
+        break;
+      case 4:
+        var $receiver_0 = toInt(hexDigits.v.substring(0, 1), 16) * 17 | 0;
+        hexDigits.v = hexDigits.v.substring(1);
+        tmp$ = $receiver_0;
+        break;
+      default:tmp$ = 255;
+        break;
     }
-    var alpha = tmp$;
-    if (hexDigits.v.length === 6) {
-      return new Color(alpha << 24 | toInt(hexDigits.v, 16));
-    }throw IllegalArgumentException_init('unknown color ' + '"' + hex + '"');
+    var alpha = tmp$ << 24;
+    switch (hexDigits.v.length) {
+      case 6:
+        tmp$_0 = new Color(alpha | toInt(hexDigits.v, 16));
+        break;
+      case 3:
+        tmp$_0 = new Color(alpha | toInt(repeat(String.fromCharCode(hexDigits.v.charCodeAt(0)), 2), 16) << 16 | toInt(repeat(String.fromCharCode(hexDigits.v.charCodeAt(1)), 2), 16) << 8 | toInt(repeat(String.fromCharCode(hexDigits.v.charCodeAt(2)), 2), 16));
+        break;
+      default:throw IllegalArgumentException_init('unknown color ' + '"' + hex + '"');
+    }
+    return tmp$_0;
   };
   Color$Companion.prototype.asArgb_1 = function (red, green, blue, alpha) {
     if (alpha === void 0)
@@ -3779,7 +3807,7 @@
             this.local$surfaceBallot = new Mapper$Ballot();
             var tries = 1000;
             while (this.local$surfaceBallot.totalVotes < 10 && (tmp$ = tries, tries = tmp$ - 1 | 0, tmp$) > 0) {
-              var tmp$_0 = ensureNotNull(random_0(this.local$sampleLocations));
+              var tmp$_0 = random(this.local$sampleLocations, Random.Default);
               var x = tmp$_0.component1()
               , y = tmp$_0.component2();
               var visibleSurface = this.$this.$outer.mapperUi_0.intersectingSurface_4c3mt7$(x, y, this.$this.visibleSurfaces);
@@ -5644,10 +5672,8 @@
     simpleName: 'MovingHeadDisplay',
     interfaces: []
   };
-  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, soundAnalyzer, prerenderPixels, switchShowAfterIdleSeconds, adjustShowAfterIdleSeconds) {
+  function Pinky(model, shows, network, dmxUniverse, beatSource, clock, fs, firmwareDaddy, display, soundAnalyzer, switchShowAfterIdleSeconds, adjustShowAfterIdleSeconds, glslRenderer) {
     Pinky$Companion_getInstance();
-    if (prerenderPixels === void 0)
-      prerenderPixels = false;
     if (switchShowAfterIdleSeconds === void 0)
       switchShowAfterIdleSeconds = 600;
     if (adjustShowAfterIdleSeconds === void 0)
@@ -5661,7 +5687,6 @@
     this.fs = fs;
     this.firmwareDaddy = firmwareDaddy;
     this.display = display;
-    this.prerenderPixels_0 = prerenderPixels;
     this.switchShowAfterIdleSeconds_0 = switchShowAfterIdleSeconds;
     this.adjustShowAfterIdleSeconds_0 = adjustShowAfterIdleSeconds;
     this.storage_0 = new Storage(this.fs);
@@ -5670,13 +5695,13 @@
     this.httpServer = this.link_0.startHttpServer_za3lpa$(8004);
     this.beatDisplayer_0 = new Pinky$PinkyBeatDisplayer(this, this.beatSource);
     this.mapperIsRunning_0 = false;
-    this.selectedShow_vpdlot$_0 = first(this.shows);
+    this.selectedShow_vpdlot$_0 = random(this.shows, Random.Default);
     var $receiver = new PubSub$Server(this.httpServer);
     $receiver.install_stpyu4$(gadgetModule);
     this.pubSub_0 = $receiver;
     this.gadgetManager_0 = new GadgetManager(this.pubSub_0);
     this.movingHeadManager_0 = new MovingHeadManager(this.fs, this.pubSub_0, this.model.movingHeads);
-    this.showRunner_0 = new ShowRunner(this.model, this.selectedShow_0, this.gadgetManager_0, this.beatSource, this.dmxUniverse, this.movingHeadManager_0, this.clock);
+    this.showRunner_0 = new ShowRunner(this.model, this.selectedShow_0, this.gadgetManager_0, this.beatSource, this.dmxUniverse, this.movingHeadManager_0, this.clock, glslRenderer);
     this.selectedShowChannel_0 = null;
     this.selectedNewShowAt_0 = DateTime.Companion.now();
     this.brainToSurfaceMap_CHEAT_0 = LinkedHashMap_init();
@@ -5700,8 +5725,6 @@
     }
     tmp$.publish_oiz02e$(tmp$_0, destination, Pinky_init$lambda_1);
     this.selectedShowChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.shows.get_za3lpa$(0).name, Pinky_init$lambda_2(this));
-    this.poolingRenderContext = new Pinky$PoolingRenderContext();
-    this.lastSentAt = L0;
   }
   Object.defineProperty(Pinky.prototype, 'selectedShow_0', {
     get: function () {
@@ -5878,7 +5901,7 @@
             }
 
           case 2:
-            return this.local$this$Pinky.switchToShow_q3rpgh$(SolidColorShow_getInstance()), Unit;
+            return this.local$this$Pinky.switchToShow_q3rpgh$(GuruMeditationErrorShow_getInstance()), Unit;
           case 3:
             this.state_0 = 4;
             continue;
@@ -5997,7 +6020,7 @@
     var now = DateTime.Companion.now();
     var secondsSinceUserInteraction = now.minus_mw5vjr$(this.gadgetManager_0.lastUserInteraction).seconds;
     if (this.switchShowAfterIdleSeconds_0 != null && now.minus_mw5vjr$(this.selectedNewShowAt_0).seconds > this.switchShowAfterIdleSeconds_0 && secondsSinceUserInteraction > this.switchShowAfterIdleSeconds_0) {
-      this.switchToShow_q3rpgh$(ensureNotNull(random_0(this.shows)));
+      this.switchToShow_q3rpgh$(random(this.shows, Random.Default));
       this.selectedNewShowAt_0 = now;
     }if (this.adjustShowAfterIdleSeconds_0 != null && secondsSinceUserInteraction > this.adjustShowAfterIdleSeconds_0) {
       this.gadgetManager_0.adjustSomething();
@@ -6041,14 +6064,8 @@
       this.pendingBrainInfos_0.clear();
     }this.display.brainCount = this.brainInfos_0.size;
   };
-  function Pinky$drawNextFrame$lambda(this$Pinky) {
-    return function () {
-      this$Pinky.showRunner_0.nextFrame();
-      return Unit;
-    };
-  }
   Pinky.prototype.drawNextFrame_8be2vx$ = function () {
-    this.aroundNextFrame_0(Pinky$drawNextFrame$lambda(this));
+    this.showRunner_0.nextFrame();
   };
   Pinky.prototype.disableDmx_0 = function () {
     this.dmxUniverse.allOff();
@@ -6106,8 +6123,31 @@
       return Unit;
     };
   }
+  function Pinky$foundBrain$ObjectLiteral(closure$sendFn, closure$surface, closure$pixelShader) {
+    this.closure$sendFn = closure$sendFn;
+    this.surface_6l2h09$_0 = closure$surface;
+    this.pixelBuffer_0 = closure$pixelShader.createBuffer_ppt8xj$(closure$surface);
+  }
+  Object.defineProperty(Pinky$foundBrain$ObjectLiteral.prototype, 'surface', {
+    get: function () {
+      return this.surface_6l2h09$_0;
+    }
+  });
+  Pinky$foundBrain$ObjectLiteral.prototype.send_bbfl1t$ = function (pixels) {
+    var tmp$;
+    tmp$ = this.pixelBuffer_0.indices.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.pixelBuffer_0.colors.set_wxm5ur$(element, pixels.get_za3lpa$(element));
+    }
+    this.closure$sendFn(this.pixelBuffer_0);
+  };
+  Pinky$foundBrain$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [ShowRunner$SurfaceReceiver]
+  };
   Pinky.prototype.foundBrain_0 = function (brainAddress, msg) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var brainId = new BrainId(msg.brainId);
     var surfaceName = msg.surfaceName;
     Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$foundBrain$lambda(brainId, this, brainAddress, msg));
@@ -6119,41 +6159,37 @@
     if (tmp$_0 == null) {
       tmp$_0 = this.mappingResults_0.dataFor_61zpoe$((tmp$ = msg.surfaceName) != null ? tmp$ : '__nope');
     }var dataFor = tmp$_0 != null ? tmp$_0 : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
-    var tmp$_4;
+    var tmp$_3;
     if (dataFor != null) {
-      var tmp$_5, tmp$_6, tmp$_7, tmp$_8;
-      var tmp$_9;
-      if ((tmp$_5 = dataFor.pixelLocations) != null) {
-        var destination = ArrayList_init_0(collectionSizeOrDefault(tmp$_5, 10));
-        var tmp$_10;
-        tmp$_10 = tmp$_5.iterator();
-        while (tmp$_10.hasNext()) {
-          var item = tmp$_10.next();
+      var tmp$_4, tmp$_5, tmp$_6, tmp$_7;
+      var tmp$_8;
+      if ((tmp$_4 = dataFor.pixelLocations) != null) {
+        var destination = ArrayList_init_0(collectionSizeOrDefault(tmp$_4, 10));
+        var tmp$_9;
+        tmp$_9 = tmp$_4.iterator();
+        while (tmp$_9.hasNext()) {
+          var item = tmp$_9.next();
           destination.add_11rb$(item != null ? item : new Vector3F(0.0, 0.0, 0.0));
         }
-        tmp$_9 = destination;
+        tmp$_8 = destination;
       } else
-        tmp$_9 = null;
-      var pixelLocations = (tmp$_6 = tmp$_9) != null ? tmp$_6 : emptyList();
-      var pixelCount = (tmp$_8 = (tmp$_7 = dataFor.pixelLocations) != null ? tmp$_7.size : null) != null ? tmp$_8 : 2048;
+        tmp$_8 = null;
+      var pixelLocations = (tmp$_5 = tmp$_8) != null ? tmp$_5 : emptyList();
+      var pixelCount = (tmp$_7 = (tmp$_6 = dataFor.pixelLocations) != null ? tmp$_6.size : null) != null ? tmp$_7 : 2048;
       if (!equals(msg.surfaceName, dataFor.surface.name)) {
         var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelLocations);
         this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
-      }tmp$_4 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
+      }tmp$_3 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
     } else
-      tmp$_4 = null;
-    var surface = (tmp$_1 = tmp$_4) != null ? tmp$_1 : new AnonymousSurface(brainId);
+      tmp$_3 = null;
+    var surface = (tmp$_1 = tmp$_3) != null ? tmp$_1 : new AnonymousSurface(brainId);
     var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
     if (priorBrainInfo != null) {
       if (((tmp$_2 = priorBrainInfo.brainId) != null ? tmp$_2.equals(brainId) : null) && equals(priorBrainInfo.surface, surface)) {
         return;
       }}var sendFn = Pinky$foundBrain$lambda_1(this, brainAddress, brainId);
-    if (this.prerenderPixels_0) {
-      tmp$_3 = new Pinky$PrerenderingSurfaceReceiver(this, surface, sendFn);
-    } else {
-      tmp$_3 = new ShowRunner$SurfaceReceiver(surface, sendFn);
-    }
-    var surfaceReceiver = tmp$_3;
+    var pixelShader = new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance());
+    var surfaceReceiver = new Pinky$foundBrain$ObjectLiteral(sendFn, surface, pixelShader);
     var brainInfo = new BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver);
     this.pendingBrainInfos_0.put_xwzc9p$(brainId, brainInfo);
   };
@@ -6269,184 +6305,22 @@
     simpleName: 'NetworkStats',
     interfaces: []
   };
-  function Pinky$PrerenderingSurfaceReceiver($outer, surface, sendFn) {
-    this.$outer = $outer;
-    ShowRunner$SurfaceReceiver.call(this, surface, sendFn);
-    this.currentRenderTree = null;
-    this.currentPoolKey_0 = null;
-    this.pixels = null;
-    this.currentBuffer = null;
+  function Pinky$RenderTree(shader, renderer, buffer) {
+    this.shader = shader;
+    this.renderer = renderer;
+    this.buffer = buffer;
   }
-  function Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral(closure$newPoolKey, this$Pinky) {
-    this.closure$newPoolKey = closure$newPoolKey;
-    this.this$Pinky = this$Pinky;
-  }
-  Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral.prototype.registerPooled_7d3fln$ = function (key, fn) {
-    this.closure$newPoolKey.v = key;
-    return this.this$Pinky.poolingRenderContext.registerPooled_7d3fln$(key, fn);
+  Pinky$RenderTree.prototype.draw_bbfl1t$ = function (pixels) {
+    this.renderer.draw();
+    pixels.finishedFrame();
   };
-  Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral.$metadata$ = {
+  Pinky$RenderTree.prototype.release = function () {
+    this.renderer.release();
+  };
+  Pinky$RenderTree.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [RenderContext]
-  };
-  Pinky$PrerenderingSurfaceReceiver.prototype.send_i8eued$ = function (shaderBuffer) {
-    var tmp$, tmp$_0, tmp$_1;
-    var shader = Kotlin.isType(tmp$ = shaderBuffer.shader, Shader) ? tmp$ : throwCCE();
-    var renderTree = this.currentRenderTree;
-    if (renderTree == null || !equals(renderTree.shader, shader)) {
-      var priorPoolKey = this.currentPoolKey_0;
-      var newPoolKey = {v: null};
-      var renderer = shader.createRenderer_omlfoo$(this.surface, new Pinky$PrerenderingSurfaceReceiver$send$ObjectLiteral(newPoolKey, this.$outer));
-      if (!equals(newPoolKey.v, priorPoolKey)) {
-        if (priorPoolKey != null) {
-          this.$outer.poolingRenderContext.decrement_za3rmp$(priorPoolKey);
-        }this.currentPoolKey_0 = newPoolKey.v;
-      }renderTree = new Brain$RenderTree(shader, renderer, shaderBuffer);
-      (tmp$_0 = this.currentRenderTree) != null ? (tmp$_0.release(), Unit) : null;
-      this.currentRenderTree = renderTree;
-      if (this.pixels == null) {
-        var pixelBuffer = (new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance())).createBuffer_ppt8xj$(this.surface);
-        this.pixels = new Pinky$PixelsAdapter(pixelBuffer);
-      }}var renderer_0 = Kotlin.isType(tmp$_1 = ensureNotNull(this.currentRenderTree).renderer, Shader$Renderer) ? tmp$_1 : throwCCE();
-    renderer_0.beginFrame_b23bvv$(shaderBuffer, ensureNotNull(this.pixels).size);
-    this.currentBuffer = shaderBuffer;
-  };
-  Pinky$PrerenderingSurfaceReceiver.prototype.actuallySend = function () {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
-    var renderTree = this.currentRenderTree;
-    if (renderTree != null) {
-      var renderer = Kotlin.isType(tmp$ = renderTree.renderer, Shader$Renderer) ? tmp$ : throwCCE();
-      var pixels = ensureNotNull(this.pixels);
-      var currentBuffer = ensureNotNull(this.currentBuffer);
-      tmp$_0 = pixels.indices;
-      tmp$_1 = tmp$_0.first;
-      tmp$_2 = tmp$_0.last;
-      tmp$_3 = tmp$_0.step;
-      for (var i = tmp$_1; i <= tmp$_2; i += tmp$_3) {
-        pixels.set_ibd5tj$(i, renderer.draw_b23bvv$(currentBuffer, i));
-      }
-      this.currentBuffer = null;
-      renderer.endFrame();
-      pixels.finishedFrame();
-      renderTree.draw_bbfl1t$(pixels);
-      ShowRunner$SurfaceReceiver.prototype.send_i8eued$.call(this, pixels.buffer_8be2vx$);
-      this.$outer.updateListeningVisualizers_0(this.surface, pixels.buffer_8be2vx$.colors);
-    }};
-  Pinky$PrerenderingSurfaceReceiver.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PrerenderingSurfaceReceiver',
-    interfaces: [ShowRunner$SurfaceReceiver]
-  };
-  function Pinky$aroundNextFrame$lambda(this$Pinky) {
-    return function () {
-      this$Pinky.poolingRenderContext.preDraw();
-      return Unit;
-    };
-  }
-  function Pinky$aroundNextFrame$lambda_0(this$Pinky) {
-    return function () {
-      var tmp$;
-      tmp$ = this$Pinky.brainInfos_0.values.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        var tmp$_0;
-        var surfaceReceiver = Kotlin.isType(tmp$_0 = element.surfaceReceiver, Pinky$PrerenderingSurfaceReceiver) ? tmp$_0 : throwCCE();
-        surfaceReceiver.actuallySend();
-      }
-      return Unit;
-    };
-  }
-  Pinky.prototype.aroundNextFrame_0 = function (callNextFrame) {
-    callNextFrame();
-    if (this.prerenderPixels_0) {
-      var preDrawElapsed = timeSync(Pinky$aroundNextFrame$lambda(this));
-      var sendElapsed = timeSync(Pinky$aroundNextFrame$lambda_0(this));
-    }var now = getTimeMillis();
-    var elapsedMs = now.subtract(this.lastSentAt);
-    this.lastSentAt = now;
-  };
-  function Pinky$PoolingRenderContext() {
-    this.pooledRenderers_0 = HashMap_init();
-  }
-  Pinky$PoolingRenderContext.prototype.registerPooled_7d3fln$ = function (key, fn) {
-    var tmp$;
-    var $receiver = this.pooledRenderers_0;
-    var tmp$_0;
-    var value = $receiver.get_11rb$(key);
-    if (value == null) {
-      var answer = new Pinky$PoolingRenderContext$Holder(fn());
-      $receiver.put_xwzc9p$(key, answer);
-      tmp$_0 = answer;
-    } else {
-      tmp$_0 = value;
-    }
-    var holder = tmp$_0;
-    holder.count = holder.count + 1 | 0;
-    return Kotlin.isType(tmp$ = holder.pooledRenderer, PooledRenderer) ? tmp$ : throwCCE();
-  };
-  function Pinky$PoolingRenderContext$decrement$lambda(closure$key) {
-    return function () {
-      return 'Removing pooled renderer for ' + closure$key.toString();
-    };
-  }
-  Pinky$PoolingRenderContext.prototype.decrement_za3rmp$ = function (key) {
-    var holder = ensureNotNull(this.pooledRenderers_0.get_11rb$(key));
-    holder.count = holder.count - 1 | 0;
-    if (holder.count === 0) {
-      Pinky$Companion_getInstance().logger.debug_h4ejuu$(Pinky$PoolingRenderContext$decrement$lambda(key));
-      this.pooledRenderers_0.remove_11rb$(key);
-    }};
-  Pinky$PoolingRenderContext.prototype.preDraw = function () {
-    var tmp$;
-    tmp$ = this.pooledRenderers_0.values.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.pooledRenderer.preDraw();
-    }
-  };
-  function Pinky$PoolingRenderContext$Holder(pooledRenderer, count) {
-    if (count === void 0)
-      count = 0;
-    this.pooledRenderer = pooledRenderer;
-    this.count = count;
-  }
-  Pinky$PoolingRenderContext$Holder.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Holder',
+    simpleName: 'RenderTree',
     interfaces: []
-  };
-  Pinky$PoolingRenderContext.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PoolingRenderContext',
-    interfaces: [RenderContext]
-  };
-  function Pinky$PixelsAdapter(buffer) {
-    this.buffer_8be2vx$ = buffer;
-    this.size_fczu5a$_0 = this.buffer_8be2vx$.colors.size;
-  }
-  Object.defineProperty(Pinky$PixelsAdapter.prototype, 'size', {
-    get: function () {
-      return this.size_fczu5a$_0;
-    }
-  });
-  Pinky$PixelsAdapter.prototype.get_za3lpa$ = function (i) {
-    return this.buffer_8be2vx$.colors.get_za3lpa$(i);
-  };
-  Pinky$PixelsAdapter.prototype.set_ibd5tj$ = function (i, color) {
-    this.buffer_8be2vx$.colors.set_wxm5ur$(i, color);
-  };
-  Pinky$PixelsAdapter.prototype.set_tmuqsv$ = function (colors) {
-    var tmp$;
-    var b = this.size;
-    tmp$ = Math_0.min(colors.length, b);
-    for (var i = 0; i < tmp$; i++) {
-      this.buffer_8be2vx$.colors.set_wxm5ur$(i, colors[i]);
-    }
-  };
-  Pinky$PixelsAdapter.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PixelsAdapter',
-    interfaces: [Pixels]
   };
   function Pinky$ListeningVisualizer($outer) {
     this.$outer = $outer;
@@ -7194,13 +7068,6 @@
     };
     ShaderId$SOLID_instance = new ShaderId('SOLID', 0, SolidShader$Companion_getInstance());
     ShaderId$PIXEL_instance = new ShaderId('PIXEL', 1, PixelShader$Companion_getInstance());
-    ShaderId$SINE_WAVE_instance = new ShaderId('SINE_WAVE', 2, SineWaveShader$Companion_getInstance());
-    ShaderId$COMPOSITOR_instance = new ShaderId('COMPOSITOR', 3, CompositorShader$Companion_getInstance());
-    ShaderId$SPARKLE_instance = new ShaderId('SPARKLE', 4, SparkleShader$Companion_getInstance());
-    ShaderId$SIMPLE_SPATIAL_instance = new ShaderId('SIMPLE_SPATIAL', 5, SimpleSpatialShader$Companion_getInstance());
-    ShaderId$HEART_instance = new ShaderId('HEART', 6, HeartShader$Companion_getInstance());
-    ShaderId$RANDOM_instance = new ShaderId('RANDOM', 7, RandomShader$Companion_getInstance());
-    ShaderId$GLSL_SHADER_instance = new ShaderId('GLSL_SHADER', 8, GlslShader$Companion_getInstance());
     ShaderId$Companion_getInstance();
   }
   var ShaderId$SOLID_instance;
@@ -7212,41 +7079,6 @@
   function ShaderId$PIXEL_getInstance() {
     ShaderId_initFields();
     return ShaderId$PIXEL_instance;
-  }
-  var ShaderId$SINE_WAVE_instance;
-  function ShaderId$SINE_WAVE_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$SINE_WAVE_instance;
-  }
-  var ShaderId$COMPOSITOR_instance;
-  function ShaderId$COMPOSITOR_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$COMPOSITOR_instance;
-  }
-  var ShaderId$SPARKLE_instance;
-  function ShaderId$SPARKLE_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$SPARKLE_instance;
-  }
-  var ShaderId$SIMPLE_SPATIAL_instance;
-  function ShaderId$SIMPLE_SPATIAL_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$SIMPLE_SPATIAL_instance;
-  }
-  var ShaderId$HEART_instance;
-  function ShaderId$HEART_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$HEART_instance;
-  }
-  var ShaderId$RANDOM_instance;
-  function ShaderId$RANDOM_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$RANDOM_instance;
-  }
-  var ShaderId$GLSL_SHADER_instance;
-  function ShaderId$GLSL_SHADER_getInstance() {
-    ShaderId_initFields();
-    return ShaderId$GLSL_SHADER_instance;
   }
   function ShaderId$Companion() {
     ShaderId$Companion_instance = this;
@@ -7275,7 +7107,7 @@
     interfaces: [Enum]
   };
   function ShaderId$values() {
-    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance(), ShaderId$SINE_WAVE_getInstance(), ShaderId$COMPOSITOR_getInstance(), ShaderId$SPARKLE_getInstance(), ShaderId$SIMPLE_SPATIAL_getInstance(), ShaderId$HEART_getInstance(), ShaderId$RANDOM_getInstance(), ShaderId$GLSL_SHADER_getInstance()];
+    return [ShaderId$SOLID_getInstance(), ShaderId$PIXEL_getInstance()];
   }
   ShaderId.values = ShaderId$values;
   function ShaderId$valueOf(name) {
@@ -7284,20 +7116,6 @@
         return ShaderId$SOLID_getInstance();
       case 'PIXEL':
         return ShaderId$PIXEL_getInstance();
-      case 'SINE_WAVE':
-        return ShaderId$SINE_WAVE_getInstance();
-      case 'COMPOSITOR':
-        return ShaderId$COMPOSITOR_getInstance();
-      case 'SPARKLE':
-        return ShaderId$SPARKLE_getInstance();
-      case 'SIMPLE_SPATIAL':
-        return ShaderId$SIMPLE_SPATIAL_getInstance();
-      case 'HEART':
-        return ShaderId$HEART_getInstance();
-      case 'RANDOM':
-        return ShaderId$RANDOM_getInstance();
-      case 'GLSL_SHADER':
-        return ShaderId$GLSL_SHADER_getInstance();
       default:throwISE('No enum constant baaahs.ShaderId.' + name);
     }
   }
@@ -8065,7 +7883,14 @@
     simpleName: 'Show',
     interfaces: []
   };
-  function ShowRunner(model, initialShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock) {
+  function ShowContext() {
+  }
+  ShowContext.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ShowContext',
+    interfaces: []
+  };
+  function ShowRunner(model, initialShow, gadgetManager, beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer) {
     ShowRunner$Companion_getInstance();
     this.model_0 = model;
     this.gadgetManager_0 = gadgetManager;
@@ -8073,26 +7898,43 @@
     this.dmxUniverse_0 = dmxUniverse;
     this.movingHeadManager_0 = movingHeadManager;
     this.clock_8be2vx$ = clock;
+    this.glslRenderer_0 = glslRenderer;
     this.nextShow = initialShow;
     this.currentShow_0 = null;
     this.currentShowRenderer_0 = null;
     this.changedSurfaces_0 = ArrayList_init();
     this.totalSurfaceReceivers_0 = 0;
     this.performedHousekeeping_0 = false;
-    this.shaderBuffers_0 = HashMap_init();
+    this.surfaceBinders_0 = HashMap_init();
     this.requestedGadgets_0 = LinkedHashMap_init();
     this.shadersLocked_0 = true;
     this.gadgetsLocked_0 = true;
-    this.surfaceReceivers_0 = LinkedHashMap_init();
   }
   Object.defineProperty(ShowRunner.prototype, 'allSurfaces', {
     get: function () {
-      return toList_0(this.surfaceReceivers_0.keys);
+      return toList_0(this.surfaceBinders_0.keys);
     }
   });
   Object.defineProperty(ShowRunner.prototype, 'allUnusedSurfaces', {
     get: function () {
-      return minus(this.allSurfaces, this.shaderBuffers_0.keys);
+      var tmp$ = this.allSurfaces;
+      var $receiver = this.surfaceBinders_0.values;
+      var destination = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = $receiver.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (!element.hasBuffer())
+          destination.add_11rb$(element);
+      }
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
+      var tmp$_1;
+      tmp$_1 = destination.iterator();
+      while (tmp$_1.hasNext()) {
+        var item = tmp$_1.next();
+        destination_0.add_11rb$(item.surface);
+      }
+      return minus(tmp$, destination_0);
     }
   });
   Object.defineProperty(ShowRunner.prototype, 'allMovingHeads', {
@@ -8109,41 +7951,19 @@
     return this.beatSource_0;
   };
   ShowRunner.prototype.recordShader_0 = function (surface, shaderBuffer) {
-    var $receiver = this.shaderBuffers_0;
     var tmp$;
-    var value = $receiver.get_11rb$(surface);
-    if (value == null) {
-      var answer = ArrayList_init();
-      $receiver.put_xwzc9p$(surface, answer);
-      tmp$ = answer;
-    } else {
-      tmp$ = value;
-    }
-    var buffersForSurface = tmp$;
-    if (Kotlin.isType(shaderBuffer, CompositorShader$Buffer)) {
-      if (!buffersForSurface.remove_11rb$(shaderBuffer.bufferA) || !buffersForSurface.remove_11rb$(shaderBuffer.bufferB)) {
-        throw IllegalStateException_init('Composite of unknown shader buffers!');
-      }}buffersForSurface.add_11rb$(shaderBuffer);
+    tmp$ = this.surfaceBinders_0.get_11rb$(surface);
+    if (tmp$ == null) {
+      throw IllegalStateException_init('unknown surface ' + surface);
+    }var surfaceBinder = tmp$;
+    surfaceBinder.setBuffer_nuk5zb$(shaderBuffer);
   };
-  ShowRunner.prototype.getShaderBuffer_9rhubp$ = function (surface, shader) {
+  ShowRunner.prototype.getShaderBuffer_6g43xn$ = function (surface, shader) {
     if (this.shadersLocked_0)
       throw IllegalStateException_init("Shaders can't be obtained during #nextFrame()");
     var buffer = shader.createBuffer_ppt8xj$(surface);
     this.recordShader_0(surface, buffer);
     return buffer;
-  };
-  ShowRunner.prototype.getCompositorBuffer_cn6wln$ = function (surface, bufferA, bufferB, mode, fade) {
-    if (mode === void 0)
-      mode = CompositingMode$NORMAL_getInstance();
-    if (fade === void 0)
-      fade = 0.5;
-    if (this.shadersLocked_0)
-      throw IllegalStateException_init("Shaders can't be obtained during #nextFrame()");
-    var $receiver = (new CompositorShader(bufferA.shader, bufferB.shader)).createBuffer_ytrflg$(bufferA, bufferB);
-    $receiver.mode = mode;
-    $receiver.fade = fade;
-    this.recordShader_0(surface, $receiver);
-    return $receiver;
   };
   ShowRunner.prototype.getDmxBuffer_0 = function (baseChannel, channelCount) {
     return this.dmxUniverse_0.writer_vux9f0$(baseChannel, channelCount);
@@ -8157,9 +7977,16 @@
     };
   }
   ShowRunner.prototype.getMovingHeadBuffer_d2e776$ = function (movingHead) {
+    var tmp$;
     if (this.shadersLocked_0)
       throw IllegalStateException_init("Moving heads can't be obtained during #nextFrame()");
-    var baseChannel = ensureNotNull(Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name));
+    var tmp$_0;
+    if ((tmp$ = Config$Companion_getInstance().DMX_DEVICES.get_11rb$(movingHead.name)) != null)
+      tmp$_0 = tmp$;
+    else {
+      throw IllegalStateException_init(('no DMX device for ' + movingHead.name).toString());
+    }
+    var baseChannel = tmp$_0;
     var movingHeadBuffer = new Shenzarpy(this.getDmxBuffer_0(baseChannel, 16));
     this.movingHeadManager_0.listen_proz6e$(movingHead, ShowRunner$getMovingHeadBuffer$lambda(movingHead, movingHeadBuffer));
     return movingHeadBuffer;
@@ -8183,13 +8010,14 @@
       this.performedHousekeeping_0 = false;
     if ((tmp$ = this.currentShowRenderer_0) != null) {
       tmp$.nextFrame();
-      this.send();
+      this.glslRenderer_0.draw();
+      this.sendFrame();
     }this.housekeeping_0();
     this.performedHousekeeping_0 = true;
   };
   function ShowRunner$housekeeping$lambda(this$ShowRunner) {
     return function () {
-      return 'Show ' + ensureNotNull(this$ShowRunner.currentShow_0).name + ' updated; ' + (this$ShowRunner.shaderBuffers_0.size.toString() + ' surfaces');
+      return 'Show ' + ensureNotNull(this$ShowRunner.currentShow_0).name + ' updated; ' + (this$ShowRunner.surfaceBinders_0.size.toString() + ' surfaces');
     };
   }
   ShowRunner.prototype.housekeeping_0 = function () {
@@ -8246,17 +8074,22 @@
     }};
   function ShowRunner$createShowRenderer$lambda(closure$startingShow, this$ShowRunner) {
     return function () {
-      this$ShowRunner.currentShowRenderer_0 = closure$startingShow.createRenderer_ccj26o$(this$ShowRunner.model_0, this$ShowRunner);
+      this$ShowRunner.currentShowRenderer_0 = closure$startingShow.createRenderer_xhhghb$(this$ShowRunner.model_0, this$ShowRunner);
       return Unit;
     };
   }
   function ShowRunner$createShowRenderer$lambda_0(closure$startingShow, this$ShowRunner) {
     return function () {
-      return 'New show ' + closure$startingShow.name + ' created; ' + (this$ShowRunner.shaderBuffers_0.size.toString() + ' surfaces ') + ('and ' + this$ShowRunner.requestedGadgets_0.size + ' gadgets');
+      return 'New show ' + closure$startingShow.name + ' created; ' + (this$ShowRunner.surfaceBinders_0.size.toString() + ' surfaces ') + ('and ' + this$ShowRunner.requestedGadgets_0.size + ' gadgets');
     };
   }
   ShowRunner.prototype.createShowRenderer_0 = function (startingShow) {
-    this.shaderBuffers_0.clear();
+    var tmp$;
+    tmp$ = this.surfaceBinders_0.values.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.releaseBuffer();
+    }
     var restartingSameShow = equals(this.nextShow, this.currentShow_0);
     var gadgetsState = restartingSameShow ? this.gadgetManager_0.getGadgetsState() : emptyMap();
     this.unlockShadersAndGadgets_0(ShowRunner$createShowRenderer$lambda(startingShow, this));
@@ -8275,42 +8108,46 @@
     }
   };
   ShowRunner.prototype.addReceiver_0 = function (receiver) {
-    this.receiversFor_0(receiver.surface).add_11rb$(receiver);
-    this.totalSurfaceReceivers_0 = this.totalSurfaceReceivers_0 + 1 | 0;
-  };
-  ShowRunner.prototype.removeReceiver_0 = function (receiver) {
-    this.receiversFor_0(receiver.surface).remove_11rb$(receiver);
-    this.shaderBuffers_0.remove_11rb$(receiver.surface);
-    this.totalSurfaceReceivers_0 = this.totalSurfaceReceivers_0 - 1 | 0;
-  };
-  ShowRunner.prototype.receiversFor_0 = function (surface) {
-    var $receiver = this.surfaceReceivers_0;
+    var surface = receiver.surface;
+    var $receiver = this.surfaceBinders_0;
     var tmp$;
     var value = $receiver.get_11rb$(surface);
     if (value == null) {
-      var answer = ArrayList_init();
+      var answer = new SurfaceBinder(surface, this.glslRenderer_0.addSurface_ppt8xj$(surface));
       $receiver.put_xwzc9p$(surface, answer);
       tmp$ = answer;
     } else {
       tmp$ = value;
     }
-    return tmp$;
+    var binder = tmp$;
+    binder.receivers.add_11rb$(receiver);
+    this.totalSurfaceReceivers_0 = this.totalSurfaceReceivers_0 + 1 | 0;
   };
-  ShowRunner.prototype.send = function () {
+  ShowRunner.prototype.removeReceiver_0 = function (receiver) {
     var tmp$;
-    tmp$ = this.shaderBuffers_0.entries.iterator();
+    var surface = receiver.surface;
+    tmp$ = this.surfaceBinders_0.get_11rb$(surface);
+    if (tmp$ == null) {
+      throw IllegalStateException_init('huh? no SurfaceBinder for ' + surface);
+    }var surfaceBinder = tmp$;
+    if (!surfaceBinder.receivers.remove_11rb$(receiver)) {
+      throw IllegalStateException_init('huh? receiver not registered for ' + surface);
+    }if (surfaceBinder.receivers.isEmpty()) {
+      this.glslRenderer_0.removeSurface_evx3kl$(surfaceBinder.renderSurface);
+      surfaceBinder.release();
+      this.surfaceBinders_0.remove_11rb$(surface);
+    }this.totalSurfaceReceivers_0 = this.totalSurfaceReceivers_0 - 1 | 0;
+  };
+  ShowRunner.prototype.sendFrame = function () {
+    var tmp$;
+    tmp$ = this.surfaceBinders_0.values.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      var surface = element.key;
-      var shaderBuffers = element.value;
-      if (shaderBuffers.size !== 1) {
-        throw IllegalStateException_init('Too many shader buffers for ' + surface.describe() + ': ' + shaderBuffers);
-      }var shaderBuffer = first(shaderBuffers);
       var tmp$_0;
-      tmp$_0 = this.receiversFor_0(surface).iterator();
+      tmp$_0 = element.receivers.iterator();
       while (tmp$_0.hasNext()) {
         var element_0 = tmp$_0.next();
-        element_0.send_i8eued$(shaderBuffer);
+        element_0.send_bbfl1t$(element.renderSurface.pixels);
       }
     }
     this.dmxUniverse_0.sendFrame();
@@ -8348,15 +8185,10 @@
   ShowRunner$SurfacesChanges.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.added, other.added) && Kotlin.equals(this.removed, other.removed)))));
   };
-  function ShowRunner$SurfaceReceiver(surface, sendFn) {
-    this.surface = surface;
-    this.sendFn_24k43f$_0 = sendFn;
+  function ShowRunner$SurfaceReceiver() {
   }
-  ShowRunner$SurfaceReceiver.prototype.send_i8eued$ = function (shaderBuffer) {
-    this.sendFn_24k43f$_0(shaderBuffer);
-  };
   ShowRunner$SurfaceReceiver.$metadata$ = {
-    kind: Kind_CLASS,
+    kind: Kind_INTERFACE,
     simpleName: 'SurfaceReceiver',
     interfaces: []
   };
@@ -8378,7 +8210,7 @@
   ShowRunner.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ShowRunner',
-    interfaces: []
+    interfaces: [ShowContext]
   };
   function SoundAnalyzer() {
   }
@@ -8486,6 +8318,38 @@
     kind: Kind_CLASS,
     simpleName: 'AnonymousSurface',
     interfaces: [Surface]
+  };
+  function SurfaceBinder(surface, renderSurface) {
+    this.surface = surface;
+    this.renderSurface = renderSurface;
+    this.buffer_0 = null;
+    this.receivers = ArrayList_init();
+  }
+  SurfaceBinder.prototype.release = function () {
+    this.releaseBuffer();
+  };
+  SurfaceBinder.prototype.setBuffer_nuk5zb$ = function (buffer) {
+    if (this.buffer_0 != null)
+      throw IllegalStateException_init('buffer already bound for ' + this.surface);
+    this.buffer_0 = buffer;
+    this.renderSurface.program = buffer.shader.glslProgram;
+  };
+  SurfaceBinder.prototype.releaseBuffer = function () {
+    var tmp$;
+    (tmp$ = this.buffer_0) != null ? (tmp$.release(), Unit) : null;
+    this.buffer_0 = null;
+  };
+  SurfaceBinder.prototype.hasBuffer = function () {
+    return this.buffer_0 != null;
+  };
+  SurfaceBinder.prototype.updateRenderSurface = function () {
+    var tmp$, tmp$_0;
+    this.renderSurface.program = (tmp$_0 = (tmp$ = this.buffer_0) != null ? tmp$.shader : null) != null ? tmp$_0.glslProgram : null;
+  };
+  SurfaceBinder.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfaceBinder',
+    interfaces: []
   };
   function Topics() {
     Topics_instance = this;
@@ -10348,6 +10212,7 @@
   };
   function Vector3F$Companion() {
     Vector3F$Companion_instance = this;
+    this.origin = new Vector3F(0.0, 0.0, 0.0);
   }
   Vector3F$Companion.prototype.parse_100t80$ = function (reader) {
     return new Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat());
@@ -10501,6 +10366,3894 @@
     var max = accumulator_0;
     return new Pair(min, max);
   }
+  function AutoWirer() {
+    this.defaultBindings_0 = mapOf([to(GlslCode$ContentType$UvCoordinateTexture_getInstance(), GlslProgram$UvCoordsTexture_getInstance()), to(GlslCode$ContentType$UvCoordinate_getInstance(), GlslProgram$GlFragCoord_getInstance()), to(GlslCode$ContentType$Time_getInstance(), GlslProgram$Time_getInstance()), to(GlslCode$ContentType$Resolution_getInstance(), GlslProgram$Resolution_getInstance())]);
+  }
+  AutoWirer.prototype.autoWire_61zpoe$ = function (colorShader) {
+    var tmp$;
+    return this.autoWire_wdc2tb$(Kotlin.isType(tmp$ = GlslRenderer$Companion_getInstance().glslAnalyzer.asShader_61zpoe$(colorShader), ColorShader) ? tmp$ : throwCCE());
+  };
+  AutoWirer.prototype.autoWire_wdc2tb$ = function (colorShader) {
+    return this.autoWire_sas1p3$(mapOf([to('uv', GlslRenderer$Companion_getInstance().uvMapper), to('color', colorShader)]));
+  };
+  AutoWirer.prototype.autoWire_sas1p3$ = function (shaders) {
+    var $receiver = shaders.entries;
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var shaderId = element.key;
+      var shaderFragment = element.value;
+      var pair = to(shaderFragment.shaderType.outContentType, new Patch$ShaderOut(shaderId));
+      destination.put_xwzc9p$(pair.first, pair.second);
+    }
+    var localDefaults = minus_0(destination, GlslCode$ContentType$Color_getInstance());
+    var links = ArrayList_init();
+    var tmp$_0;
+    tmp$_0 = shaders.entries.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      var name = element_0.key;
+      var shaderFragment_0 = element_0.value;
+      var tmp$_1;
+      tmp$_1 = shaderFragment_0.inputPorts.iterator();
+      while (tmp$_1.hasNext()) {
+        var element_1 = tmp$_1.next();
+        var tmp$_2, tmp$_3;
+        var uniformInput = (tmp$_3 = (tmp$_2 = localDefaults.get_11rb$(element_1.contentType)) != null ? tmp$_2 : this.defaultBindings_0.get_11rb$(element_1.contentType)) != null ? tmp$_3 : new GlslProgram$InputPortRef(element_1.type, element_1.name, element_1.pluginId, element_1.pluginConfig);
+        links.add_11rb$(new Patch$Link(uniformInput, new Patch$ShaderPortRef(name, element_1.name)));
+      }
+    }
+    return new Patch(shaders, links);
+  };
+  AutoWirer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'AutoWirer',
+    interfaces: []
+  };
+  function ColorShader(glslCode) {
+    ShaderFragment$Base.call(this, glslCode);
+    this.shaderType_f26re4$_0 = ShaderFragment$Type$Color_getInstance();
+  }
+  Object.defineProperty(ColorShader.prototype, 'shaderType', {
+    get: function () {
+      return this.shaderType_f26re4$_0;
+    }
+  });
+  ColorShader.prototype.guessInputPort_2ojiqn$ = function (it, desc) {
+    if (desc === void 0)
+      desc = this.nameify_pdl1vz$(it.name);
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    switch (it.type) {
+      case 'float':
+        tmp$ = GlslCode$ContentType$Float_getInstance();
+        break;
+      case 'vec2':
+        tmp$ = GlslCode$ContentType$XyCoordinate_getInstance();
+        break;
+      case 'vec3':
+        tmp$ = GlslCode$ContentType$Color_getInstance();
+        break;
+      case 'vec4':
+        tmp$ = GlslCode$ContentType$Color_getInstance();
+        break;
+      default:tmp$ = GlslCode$ContentType$Unknown_getInstance();
+        break;
+    }
+    var contentType = tmp$;
+    return new InputPort(it.type, it.name, desc, contentType, (tmp$_1 = (tmp$_0 = it.hint) != null ? tmp$_0.plugin : null) != null ? tmp$_1 : contentType.pluginId, (tmp$_3 = (tmp$_2 = it.hint) != null ? tmp$_2.map : null) != null ? tmp$_3 : emptyMap());
+  };
+  ColorShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorShader',
+    interfaces: [ShaderFragment$Base]
+  };
+  function ShaderToyColorShader(glslCode) {
+    ShaderToyColorShader$Companion_getInstance();
+    ColorShader.call(this, glslCode);
+    var $receiver = glslCode.functions;
+    var firstOrNull$result;
+    firstOrNull$break: do {
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (equals(element.name, 'mainImage')) {
+          firstOrNull$result = element;
+          break firstOrNull$break;
+        }}
+      firstOrNull$result = null;
+    }
+     while (false);
+    this.entryPoint_p40abe$_0 = ensureNotNull(firstOrNull$result);
+    this.inputPorts_bbxxyc$_0 = lazy(ShaderToyColorShader$inputPorts$lambda(glslCode, this));
+  }
+  function ShaderToyColorShader$Companion() {
+    ShaderToyColorShader$Companion_instance = this;
+    this.magicUniforms = linkedMapOf([to('iResolution', new InputPort('vec3', 'iResolution', 'Resolution', GlslCode$ContentType$Resolution_getInstance())), to('iTime', new InputPort('float', 'iTime', 'Time', GlslCode$ContentType$Time_getInstance())), to('iGlobalTime', new InputPort('float', 'iGlobalTime', 'Global Time', GlslCode$ContentType$Time_getInstance())), to('iTimeDelta', new InputPort('float', 'iTimeDelta', 'Time Delta', GlslCode$ContentType$Float_getInstance())), to('iFrame', new InputPort('float', 'iFrame', 'Frame', GlslCode$ContentType$Float_getInstance())), to('iFrameRate', new InputPort('float', 'iFrameRate', 'Frame Rate', GlslCode$ContentType$Float_getInstance())), to('iChannelTime', new InputPort('float[4]', 'iChannelTime', 'Channel Time', GlslCode$ContentType$Float_getInstance())), to('iMouse', new InputPort('vec2', 'iMouse', 'Mouse', GlslCode$ContentType$XyCoordinate_getInstance())), to('iDate', new InputPort('vec4', 'iDate', 'Date', GlslCode$ContentType$Float_getInstance())), to('iSampleRate', new InputPort('float', 'iSampleRate', 'Sample Rate', GlslCode$ContentType$Float_getInstance())), to('iChannelResolution', new InputPort('vec3[4]', 'iChannelResolution', 'Channel Resolution', GlslCode$ContentType$Float_getInstance())), to('iChannel0', new InputPort('sampleXX', 'iChannel0', 'Channel 0', GlslCode$ContentType$Float_getInstance())), to('iChannel1', new InputPort('sampleXX', 'iChannel1', 'Channel 1', GlslCode$ContentType$Float_getInstance())), to('iChannel2', new InputPort('sampleXX', 'iChannel2', 'Channel 2', GlslCode$ContentType$Float_getInstance())), to('iChannel3', new InputPort('sampleXX', 'iChannel3', 'Channel 3', GlslCode$ContentType$Float_getInstance()))]);
+    this.uvCoordPort = new InputPort('vec2', 'sm_FragCoord', 'Coordinates', GlslCode$ContentType$UvCoordinate_getInstance());
+  }
+  ShaderToyColorShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var ShaderToyColorShader$Companion_instance = null;
+  function ShaderToyColorShader$Companion_getInstance() {
+    if (ShaderToyColorShader$Companion_instance === null) {
+      new ShaderToyColorShader$Companion();
+    }return ShaderToyColorShader$Companion_instance;
+  }
+  Object.defineProperty(ShaderToyColorShader.prototype, 'entryPoint', {
+    get: function () {
+      return this.entryPoint_p40abe$_0;
+    }
+  });
+  Object.defineProperty(ShaderToyColorShader.prototype, 'inputPorts', {
+    get: function () {
+      return this.inputPorts_bbxxyc$_0.value;
+    }
+  });
+  Object.defineProperty(ShaderToyColorShader.prototype, 'outputPorts', {
+    get: function () {
+      return emptyList();
+    }
+  });
+  ShaderToyColorShader.prototype.invocationGlsl_8wpk4i$$default = function (namespace, portMap) {
+    var tmp$;
+    return namespace.qualify_61zpoe$(this.entryPoint.name) + ('(sm_pixelColor, ' + ((tmp$ = portMap.get_11rb$('sm_FragCoord')) != null ? tmp$ : 'sm_FragCoord') + '.xy)');
+  };
+  function ShaderToyColorShader$inputPorts$lambda$lambda$lambda(it) {
+    return it.value;
+  }
+  function ShaderToyColorShader$inputPorts$lambda$lambda$lambda_0(word) {
+    return ShaderToyColorShader$Companion_getInstance().magicUniforms.containsKey_11rb$(word);
+  }
+  function ShaderToyColorShader$inputPorts$lambda$lambda$lambda_1(closure$it, this$ShaderToyColorShader) {
+    return function () {
+      var tmp$ = this$ShaderToyColorShader;
+      var $receiver = closure$it.name;
+      var desc = tmp$.nameify_pdl1vz$(Regex_init('^i').replace_x2uqeu$($receiver, ''));
+      return this$ShaderToyColorShader.guessInputPort_2ojiqn$(closure$it, desc);
+    };
+  }
+  function ShaderToyColorShader$inputPorts$lambda(closure$glslCode, this$ShaderToyColorShader) {
+    return function () {
+      var $receiver = closure$glslCode.functions;
+      var destination = ArrayList_init();
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var list = toList_3(filter(map(Regex_init('\\w+').findAll_905azu$(element.fullText), ShaderToyColorShader$inputPorts$lambda$lambda$lambda), ShaderToyColorShader$inputPorts$lambda$lambda$lambda_0));
+        addAll(destination, list);
+      }
+      var iVars = toSet(destination);
+      var $receiver_0 = closure$glslCode.uniforms;
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+      var tmp$_0;
+      tmp$_0 = $receiver_0.iterator();
+      while (tmp$_0.hasNext()) {
+        var item = tmp$_0.next();
+        var tmp$_1 = destination_0.add_11rb$;
+        var this$ShaderToyColorShader_0 = this$ShaderToyColorShader;
+        var tmp$_2, tmp$_3;
+        tmp$_1.call(destination_0, (tmp$_3 = (tmp$_2 = ShaderToyColorShader$Companion_getInstance().magicUniforms.get_11rb$(item.name)) != null ? tmp$_2.copy_xilr8c$(item.type, void 0, void 0, void 0, void 0, void 0, item) : null) != null ? tmp$_3 : ShaderToyColorShader$inputPorts$lambda$lambda$lambda_1(item, this$ShaderToyColorShader_0)());
+      }
+      var explicitUniforms = destination_0;
+      var $receiver_1 = ShaderToyColorShader$Companion_getInstance().magicUniforms;
+      var destination_1 = ArrayList_init();
+      var tmp$_4;
+      tmp$_4 = $receiver_1.entries.iterator();
+      while (tmp$_4.hasNext()) {
+        var element_0 = tmp$_4.next();
+        var tmp$_0_0;
+        var k = element_0.key;
+        var v = element_0.value;
+        if ((tmp$_0_0 = iVars.contains_11rb$(k) ? v : null) != null) {
+          destination_1.add_11rb$(tmp$_0_0);
+        }}
+      var implicitUniforms = destination_1;
+      return plus_1(plus_0(explicitUniforms, implicitUniforms), ShaderToyColorShader$Companion_getInstance().uvCoordPort);
+    };
+  }
+  ShaderToyColorShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderToyColorShader',
+    interfaces: [ColorShader]
+  };
+  function GenericColorShader(glslCode) {
+    GenericColorShader$Companion_getInstance();
+    ColorShader.call(this, glslCode);
+    var $receiver = glslCode.functions;
+    var firstOrNull$result;
+    firstOrNull$break: do {
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (equals(element.name, 'main')) {
+          firstOrNull$result = element;
+          break firstOrNull$break;
+        }}
+      firstOrNull$result = null;
+    }
+     while (false);
+    this.entryPoint_54b0bc$_0 = ensureNotNull(firstOrNull$result);
+    this.inputPorts_8nrc1q$_0 = lazy(GenericColorShader$inputPorts$lambda(glslCode, this));
+    this.outputPorts_t57ctf$_0 = listOf_0(new OutputPort('vec4', 'gl_FragColor', 'Output Color', GlslCode$ContentType$UvCoordinate_getInstance()));
+  }
+  function GenericColorShader$Companion() {
+    GenericColorShader$Companion_instance = this;
+    var $receiver = listOf([new InputPort('vec4', 'gl_FragCoord', 'Coordinates', GlslCode$ContentType$UvCoordinate_getInstance()), new InputPort('vec2', 'resolution', 'Resolution', GlslCode$ContentType$Resolution_getInstance()), new InputPort('vec2', 'mouse', 'Mouse', GlslCode$ContentType$XyCoordinate_getInstance()), new InputPort('float', 'time', 'Time', GlslCode$ContentType$Time_getInstance())]);
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      destination.put_xwzc9p$(element.name, element);
+    }
+    this.magicUniforms = destination;
+    this.uvCoordPort = new InputPort('vec4', 'gl_FragCoord', 'Coordinates', GlslCode$ContentType$UvCoordinate_getInstance());
+  }
+  GenericColorShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GenericColorShader$Companion_instance = null;
+  function GenericColorShader$Companion_getInstance() {
+    if (GenericColorShader$Companion_instance === null) {
+      new GenericColorShader$Companion();
+    }return GenericColorShader$Companion_instance;
+  }
+  Object.defineProperty(GenericColorShader.prototype, 'entryPoint', {
+    get: function () {
+      return this.entryPoint_54b0bc$_0;
+    }
+  });
+  Object.defineProperty(GenericColorShader.prototype, 'inputPorts', {
+    get: function () {
+      return this.inputPorts_8nrc1q$_0.value;
+    }
+  });
+  Object.defineProperty(GenericColorShader.prototype, 'outputPorts', {
+    get: function () {
+      return this.outputPorts_t57ctf$_0;
+    }
+  });
+  GenericColorShader.prototype.invocationGlsl_8wpk4i$$default = function (namespace, portMap) {
+    var $receiver = StringBuilder_init();
+    append($receiver, [namespace.qualify_61zpoe$(this.entryPoint.name), '()']);
+    return $receiver.toString();
+  };
+  function GenericColorShader$inputPorts$lambda(closure$glslCode, this$GenericColorShader) {
+    return function () {
+      var $receiver = closure$glslCode.uniforms;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        var tmp$_0 = destination.add_11rb$;
+        var this$GenericColorShader_0 = this$GenericColorShader;
+        var tmp$_1, tmp$_2;
+        tmp$_0.call(destination, (tmp$_2 = (tmp$_1 = GenericColorShader$Companion_getInstance().magicUniforms.get_11rb$(item.name)) != null ? tmp$_1.copy_xilr8c$(item.type, void 0, void 0, void 0, void 0, void 0, item) : null) != null ? tmp$_2 : this$GenericColorShader_0.guessInputPort_2ojiqn$(item));
+      }
+      return plus_1(destination, GenericColorShader$Companion_getInstance().uvCoordPort);
+    };
+  }
+  GenericColorShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GenericColorShader',
+    interfaces: [ColorShader]
+  };
+  function CorePlugin() {
+    this.packageName_ksp4ck$_0 = 'baaahs.Core';
+    this.name_s9736s$_0 = 'SparkleMotion Core';
+  }
+  Object.defineProperty(CorePlugin.prototype, 'packageName', {
+    get: function () {
+      return this.packageName_ksp4ck$_0;
+    }
+  });
+  Object.defineProperty(CorePlugin.prototype, 'name', {
+    get: function () {
+      return this.name_s9736s$_0;
+    }
+  });
+  CorePlugin.prototype.matchUniformProvider_qtsgbw$ = function (name, uniformPort, showContext, glslContext) {
+    var tmp$;
+    switch (name) {
+      case 'resolution':
+        tmp$ = new CorePlugin$ResolutionProvider();
+        break;
+      case 'time':
+        tmp$ = new CorePlugin$TimeProvider();
+        break;
+      case 'uvCoords':
+        tmp$ = new CorePlugin$UvCoordProvider(glslContext);
+        break;
+      case 'xyCoord':
+        tmp$ = new CorePlugin$XyPadProvider(uniformPort, showContext);
+        break;
+      case 'Slider':
+        tmp$ = new CorePlugin$SliderProvider(uniformPort, showContext);
+        break;
+      case 'ColorPicker':
+        tmp$ = new CorePlugin$ColorPickerProvider(uniformPort, showContext);
+        break;
+      case 'none':
+        tmp$ = new CorePlugin$NoOpProvider(uniformPort.type);
+        break;
+      default:throw IllegalArgumentException_init('unknown type ' + name);
+    }
+    return tmp$;
+  };
+  function CorePlugin$NoOpProvider(forType) {
+    this.supportedTypes_w01wef$_0 = listOf_0(forType);
+  }
+  Object.defineProperty(CorePlugin$NoOpProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_w01wef$_0;
+    }
+  });
+  CorePlugin$NoOpProvider.prototype.provide = function () {
+    return this;
+  };
+  CorePlugin$NoOpProvider.prototype.set_i9pfe0$ = function (uniform) {
+  };
+  CorePlugin$NoOpProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'NoOpProvider',
+    interfaces: [GlslProgram$DataSource, GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$ResolutionProvider() {
+    this.supportedTypes_9kt8a9$_0 = listOf_0('vec2');
+    this.x = 1.0;
+    this.y = 1.0;
+  }
+  Object.defineProperty(CorePlugin$ResolutionProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_9kt8a9$_0;
+    }
+  });
+  CorePlugin$ResolutionProvider.prototype.onResolution_dleff0$ = function (x, y) {
+    this.x = x;
+    this.y = y;
+  };
+  CorePlugin$ResolutionProvider.prototype.provide = function () {
+    return this;
+  };
+  CorePlugin$ResolutionProvider.prototype.set_i9pfe0$ = function (uniform) {
+    uniform.set_dleff0$(this.x, this.y);
+  };
+  CorePlugin$ResolutionProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ResolutionProvider',
+    interfaces: [GlslProgram$ResolutionListener, GlslProgram$DataSource, GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$TimeProvider() {
+    this.supportedTypes_kgfpua$_0 = listOf_0('float');
+  }
+  Object.defineProperty(CorePlugin$TimeProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_kgfpua$_0;
+    }
+  });
+  CorePlugin$TimeProvider.prototype.provide = function () {
+    return this;
+  };
+  CorePlugin$TimeProvider.prototype.set_i9pfe0$ = function (uniform) {
+    var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
+    uniform.set_mx4ult$(thisTime);
+  };
+  CorePlugin$TimeProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TimeProvider',
+    interfaces: [GlslProgram$DataSource, GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$UvCoordProvider(glslContext) {
+    this.supportedTypes_hnnhzn$_0 = listOf_0('sampler2D');
+    this.gl_0 = glslContext;
+    this.uvCoordTextureUnit_0 = this.gl_0.getTextureUnit_za3rmp$(getKClass(CorePlugin$UvCoordProvider));
+    this.uvCoordTexture_0 = this.gl_0.check_342fqd$(CorePlugin$UvCoordProvider$uvCoordTexture$lambda);
+  }
+  Object.defineProperty(CorePlugin$UvCoordProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_hnnhzn$_0;
+    }
+  });
+  CorePlugin$UvCoordProvider.prototype.onArrangementChange_1t2y5l$ = function (arrangement) {
+    if (arrangement.uvCoords.length === 0)
+      return;
+    var pixWidth = arrangement.pixWidth;
+    var pixHeight = arrangement.pixHeight;
+    var floatBuffer = FloatBuffer_init(arrangement.uvCoords);
+    var $receiver = this.uvCoordTextureUnit_0;
+    $receiver.bindTexture_za3rmp$(this.uvCoordTexture_0);
+    $receiver.configure_vux9f0$(9728, 9728);
+    $receiver.uploadTexture_mc3zcb$(0, 33326, pixWidth * 2 | 0, pixHeight, 0, 6403, 5126, floatBuffer);
+  };
+  function CorePlugin$UvCoordProvider$provide$ObjectLiteral(this$UvCoordProvider) {
+    this.this$UvCoordProvider = this$UvCoordProvider;
+  }
+  CorePlugin$UvCoordProvider$provide$ObjectLiteral.prototype.set_i9pfe0$ = function (uniform) {
+    uniform.set_cdq9yu$(this.this$UvCoordProvider.uvCoordTextureUnit_0);
+  };
+  function CorePlugin$UvCoordProvider$provide$ObjectLiteral$release$lambda(this$UvCoordProvider) {
+    return function ($receiver) {
+      $receiver.deleteTexture_za3rmp$(this$UvCoordProvider.uvCoordTexture_0);
+      return Unit;
+    };
+  }
+  CorePlugin$UvCoordProvider$provide$ObjectLiteral.prototype.release = function () {
+    this.this$UvCoordProvider.gl_0.check_342fqd$(CorePlugin$UvCoordProvider$provide$ObjectLiteral$release$lambda(this.this$UvCoordProvider));
+  };
+  CorePlugin$UvCoordProvider$provide$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [GlslProgram$DataSource]
+  };
+  CorePlugin$UvCoordProvider.prototype.provide = function () {
+    return new CorePlugin$UvCoordProvider$provide$ObjectLiteral(this);
+  };
+  function CorePlugin$UvCoordProvider$uvCoordTexture$lambda($receiver) {
+    return $receiver.createTexture();
+  }
+  CorePlugin$UvCoordProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UvCoordProvider',
+    interfaces: [GlslRenderer$ArrangementListener, GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$GadgetProvider(uniformPortRef, showContext) {
+    this.uniformPortRef_g7v1lu$_0 = uniformPortRef;
+    this.showContext_qt5y6y$_0 = showContext;
+  }
+  function CorePlugin$GadgetProvider$provide$ObjectLiteral(this$GadgetProvider, closure$gadget) {
+    this.this$GadgetProvider = this$GadgetProvider;
+    this.closure$gadget = closure$gadget;
+  }
+  CorePlugin$GadgetProvider$provide$ObjectLiteral.prototype.set_i9pfe0$ = function (uniform) {
+    this.this$GadgetProvider.set_6rolzw$(this.closure$gadget, uniform);
+  };
+  CorePlugin$GadgetProvider$provide$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [GlslProgram$DataSource]
+  };
+  CorePlugin$GadgetProvider.prototype.provide = function () {
+    var varName = this.uniformPortRef_g7v1lu$_0.varName;
+    var gadgetId = 'glsl_' + varName;
+    var displayName = capitalize(this.uniformPortRef_g7v1lu$_0.name);
+    var gadget = this.showContext_qt5y6y$_0.getGadget_vedre8$(gadgetId, this.createGadget_mvjluj$(displayName, this.uniformPortRef_g7v1lu$_0.pluginConfig));
+    return new CorePlugin$GadgetProvider$provide$ObjectLiteral(this, gadget);
+  };
+  CorePlugin$GadgetProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GadgetProvider',
+    interfaces: [GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$SliderProvider(uniformPortRef, showContext) {
+    CorePlugin$GadgetProvider.call(this, uniformPortRef, showContext);
+    this.supportedTypes_1l23a2$_0 = listOf_0('float');
+  }
+  Object.defineProperty(CorePlugin$SliderProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_1l23a2$_0;
+    }
+  });
+  CorePlugin$SliderProvider.prototype.createGadget_mvjluj$ = function (name, config) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    return new Slider(name, (tmp$_0 = (tmp$ = config.get_11rb$('default')) != null ? toDouble(tmp$) : null) != null ? tmp$_0 : 1.0, (tmp$_2 = (tmp$_1 = config.get_11rb$('min')) != null ? toDouble(tmp$_1) : null) != null ? tmp$_2 : 0.0, (tmp$_4 = (tmp$_3 = config.get_11rb$('max')) != null ? toDouble(tmp$_3) : null) != null ? tmp$_4 : 1.0, (tmp$_6 = (tmp$_5 = config.get_11rb$('step')) != null ? toDouble(tmp$_5) : null) != null ? tmp$_6 : 0.01);
+  };
+  CorePlugin$SliderProvider.prototype.set_6rolzw$ = function (gadget, uniform) {
+    uniform.set_mx4ult$(gadget.value);
+  };
+  CorePlugin$SliderProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SliderProvider',
+    interfaces: [CorePlugin$GadgetProvider]
+  };
+  function CorePlugin$XyPadProvider(uniformPortRef, showContext) {
+    this.showContext_0 = showContext;
+    this.varName_0 = uniformPortRef.varName;
+    this.gadgetIdPrefix_0 = 'glsl_' + this.varName_0;
+    this.displayName_0 = capitalize(uniformPortRef.name);
+    this.supportedTypes_sc4zdd$_0 = listOf_0('vec2');
+  }
+  Object.defineProperty(CorePlugin$XyPadProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_sc4zdd$_0;
+    }
+  });
+  function CorePlugin$XyPadProvider$provide$ObjectLiteral(this$XyPadProvider) {
+    this.xControl = this$XyPadProvider.showContext_0.getGadget_vedre8$(this$XyPadProvider.gadgetIdPrefix_0 + '_x', new Slider(this$XyPadProvider.displayName_0 + ' X', 0.5, 0.0, 1.0));
+    this.yControl = this$XyPadProvider.showContext_0.getGadget_vedre8$(this$XyPadProvider.gadgetIdPrefix_0 + '_y', new Slider(this$XyPadProvider.displayName_0 + ' Y', 0.5, 0.0, 1.0));
+  }
+  CorePlugin$XyPadProvider$provide$ObjectLiteral.prototype.set_i9pfe0$ = function (uniform) {
+    uniform.set_dleff0$(this.xControl.value, this.yControl.value);
+  };
+  CorePlugin$XyPadProvider$provide$ObjectLiteral.$metadata$ = {
+    kind: Kind_CLASS,
+    interfaces: [GlslProgram$DataSource]
+  };
+  CorePlugin$XyPadProvider.prototype.provide = function () {
+    return new CorePlugin$XyPadProvider$provide$ObjectLiteral(this);
+  };
+  CorePlugin$XyPadProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'XyPadProvider',
+    interfaces: [GlslProgram$DataSourceProvider]
+  };
+  function CorePlugin$ColorPickerProvider(uniformPortRef, showContext) {
+    CorePlugin$GadgetProvider.call(this, uniformPortRef, showContext);
+    this.uniformType_0 = uniformPortRef.type;
+    this.supportedTypes_pnmzzk$_0 = listOf(['vec3', 'vec4']);
+  }
+  Object.defineProperty(CorePlugin$ColorPickerProvider.prototype, 'supportedTypes', {
+    get: function () {
+      return this.supportedTypes_pnmzzk$_0;
+    }
+  });
+  CorePlugin$ColorPickerProvider.prototype.createGadget_mvjluj$ = function (name, config) {
+    var tmp$, tmp$_0;
+    return new ColorPicker(name, (tmp$_0 = (tmp$ = config.get_11rb$('default')) != null ? Color$Companion_getInstance().fromString(tmp$) : null) != null ? tmp$_0 : Color$Companion_getInstance().WHITE);
+  };
+  CorePlugin$ColorPickerProvider.prototype.set_6rolzw$ = function (gadget, uniform) {
+    var color = gadget.color;
+    switch (this.uniformType_0) {
+      case 'vec3':
+        uniform.set_y2kzbl$(color.redF, color.greenF, color.blueF);
+        break;
+      case 'vec4':
+        uniform.set_7b5o5w$(color.redF, color.greenF, color.blueF, color.alphaF);
+        break;
+    }
+  };
+  CorePlugin$ColorPickerProvider.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorPickerProvider',
+    interfaces: [CorePlugin$GadgetProvider]
+  };
+  CorePlugin.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CorePlugin',
+    interfaces: [Plugin]
+  };
+  function Vec2(x, y) {
+    Vec2$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+  }
+  function Vec2$Companion() {
+    Vec2$Companion_instance = this;
+  }
+  Vec2$Companion.prototype.serializer = function () {
+    return Vec2$$serializer_getInstance();
+  };
+  Vec2$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec2$Companion_instance = null;
+  function Vec2$Companion_getInstance() {
+    if (Vec2$Companion_instance === null) {
+      new Vec2$Companion();
+    }return Vec2$Companion_instance;
+  }
+  function Vec2$$serializer() {
+    this.descriptor_wql08c$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec2', this, 2);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    Vec2$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec2$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_wql08c$_0;
+    }
+  });
+  Vec2$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeIntElement_4wpqag$(this.descriptor, 0, value.x);
+    output.encodeIntElement_4wpqag$(this.descriptor, 1, value.y);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec2$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeIntElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec2_init(bitMask0, local0, local1, null);
+  };
+  Vec2$$serializer.prototype.childSerializers = function () {
+    return [internal.IntSerializer, internal.IntSerializer];
+  };
+  Vec2$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec2$$serializer_instance = null;
+  function Vec2$$serializer_getInstance() {
+    if (Vec2$$serializer_instance === null) {
+      new Vec2$$serializer();
+    }return Vec2$$serializer_instance;
+  }
+  function Vec2_init(seen1, x, y, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec2.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    return $this;
+  }
+  Vec2.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec2',
+    interfaces: []
+  };
+  function Vec2_init_0(v, $this) {
+    $this = $this || Object.create(Vec2.prototype);
+    Vec2.call($this, v, v);
+    return $this;
+  }
+  Vec2.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec2.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec2.prototype.copy_vux9f0$ = function (x, y) {
+    return new Vec2(x === void 0 ? this.x : x, y === void 0 ? this.y : y);
+  };
+  Vec2.prototype.toString = function () {
+    return 'Vec2(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + ')';
+  };
+  Vec2.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    return result;
+  };
+  Vec2.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
+  };
+  function Vec3(x, y, z) {
+    Vec3$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+  function Vec3$Companion() {
+    Vec3$Companion_instance = this;
+  }
+  Vec3$Companion.prototype.serializer = function () {
+    return Vec3$$serializer_getInstance();
+  };
+  Vec3$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec3$Companion_instance = null;
+  function Vec3$Companion_getInstance() {
+    if (Vec3$Companion_instance === null) {
+      new Vec3$Companion();
+    }return Vec3$Companion_instance;
+  }
+  function Vec3$$serializer() {
+    this.descriptor_1m4sr7$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec3', this, 3);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    this.descriptor.addElement_ivxn3r$('z', false);
+    Vec3$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec3$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_1m4sr7$_0;
+    }
+  });
+  Vec3$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeIntElement_4wpqag$(this.descriptor, 0, value.x);
+    output.encodeIntElement_4wpqag$(this.descriptor, 1, value.y);
+    output.encodeIntElement_4wpqag$(this.descriptor, 2, value.z);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec3$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeIntElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeIntElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec3_init(bitMask0, local0, local1, local2, null);
+  };
+  Vec3$$serializer.prototype.childSerializers = function () {
+    return [internal.IntSerializer, internal.IntSerializer, internal.IntSerializer];
+  };
+  Vec3$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec3$$serializer_instance = null;
+  function Vec3$$serializer_getInstance() {
+    if (Vec3$$serializer_instance === null) {
+      new Vec3$$serializer();
+    }return Vec3$$serializer_instance;
+  }
+  function Vec3_init(seen1, x, y, z, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec3.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('z');
+    else
+      $this.z = z;
+    return $this;
+  }
+  Vec3.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec3',
+    interfaces: []
+  };
+  function Vec3_init_0(v, $this) {
+    $this = $this || Object.create(Vec3.prototype);
+    Vec3.call($this, v, v, v);
+    return $this;
+  }
+  Vec3.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec3.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec3.prototype.component3 = function () {
+    return this.z;
+  };
+  Vec3.prototype.copy_qt1dr2$ = function (x, y, z) {
+    return new Vec3(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z);
+  };
+  Vec3.prototype.toString = function () {
+    return 'Vec3(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + ')';
+  };
+  Vec3.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    result = result * 31 + Kotlin.hashCode(this.z) | 0;
+    return result;
+  };
+  Vec3.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
+  };
+  function Vec4(x, y, z, w) {
+    Vec4$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.w = w;
+  }
+  function Vec4$Companion() {
+    Vec4$Companion_instance = this;
+  }
+  Vec4$Companion.prototype.serializer = function () {
+    return Vec4$$serializer_getInstance();
+  };
+  Vec4$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec4$Companion_instance = null;
+  function Vec4$Companion_getInstance() {
+    if (Vec4$Companion_instance === null) {
+      new Vec4$Companion();
+    }return Vec4$Companion_instance;
+  }
+  function Vec4$$serializer() {
+    this.descriptor_z29g8e$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec4', this, 4);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    this.descriptor.addElement_ivxn3r$('z', false);
+    this.descriptor.addElement_ivxn3r$('w', false);
+    Vec4$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec4$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_z29g8e$_0;
+    }
+  });
+  Vec4$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeIntElement_4wpqag$(this.descriptor, 0, value.x);
+    output.encodeIntElement_4wpqag$(this.descriptor, 1, value.y);
+    output.encodeIntElement_4wpqag$(this.descriptor, 2, value.z);
+    output.encodeIntElement_4wpqag$(this.descriptor, 3, value.w);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec4$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeIntElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeIntElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeIntElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case 3:
+          local3 = input.decodeIntElement_3zr2iy$(this.descriptor, 3);
+          bitMask0 |= 8;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec4_init(bitMask0, local0, local1, local2, local3, null);
+  };
+  Vec4$$serializer.prototype.childSerializers = function () {
+    return [internal.IntSerializer, internal.IntSerializer, internal.IntSerializer, internal.IntSerializer];
+  };
+  Vec4$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec4$$serializer_instance = null;
+  function Vec4$$serializer_getInstance() {
+    if (Vec4$$serializer_instance === null) {
+      new Vec4$$serializer();
+    }return Vec4$$serializer_instance;
+  }
+  function Vec4_init(seen1, x, y, z, w, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec4.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('z');
+    else
+      $this.z = z;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('w');
+    else
+      $this.w = w;
+    return $this;
+  }
+  Vec4.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec4',
+    interfaces: []
+  };
+  function Vec4_init_0(v, $this) {
+    $this = $this || Object.create(Vec4.prototype);
+    Vec4.call($this, v, v, v, v);
+    return $this;
+  }
+  Vec4.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec4.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec4.prototype.component3 = function () {
+    return this.z;
+  };
+  Vec4.prototype.component4 = function () {
+    return this.w;
+  };
+  Vec4.prototype.copy_tjonv8$ = function (x, y, z, w) {
+    return new Vec4(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z, w === void 0 ? this.w : w);
+  };
+  Vec4.prototype.toString = function () {
+    return 'Vec4(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + (', w=' + Kotlin.toString(this.w)) + ')';
+  };
+  Vec4.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    result = result * 31 + Kotlin.hashCode(this.z) | 0;
+    result = result * 31 + Kotlin.hashCode(this.w) | 0;
+    return result;
+  };
+  Vec4.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z) && Kotlin.equals(this.w, other.w)))));
+  };
+  function Vec2F(x, y) {
+    Vec2F$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+  }
+  function Vec2F$Companion() {
+    Vec2F$Companion_instance = this;
+  }
+  Vec2F$Companion.prototype.serializer = function () {
+    return Vec2F$$serializer_getInstance();
+  };
+  Vec2F$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec2F$Companion_instance = null;
+  function Vec2F$Companion_getInstance() {
+    if (Vec2F$Companion_instance === null) {
+      new Vec2F$Companion();
+    }return Vec2F$Companion_instance;
+  }
+  function Vec2F$$serializer() {
+    this.descriptor_8jknno$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec2F', this, 2);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    Vec2F$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec2F$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_8jknno$_0;
+    }
+  });
+  Vec2F$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, value.x);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, value.y);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec2F$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec2F_init(bitMask0, local0, local1, null);
+  };
+  Vec2F$$serializer.prototype.childSerializers = function () {
+    return [internal.FloatSerializer, internal.FloatSerializer];
+  };
+  Vec2F$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec2F$$serializer_instance = null;
+  function Vec2F$$serializer_getInstance() {
+    if (Vec2F$$serializer_instance === null) {
+      new Vec2F$$serializer();
+    }return Vec2F$$serializer_instance;
+  }
+  function Vec2F_init(seen1, x, y, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec2F.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    return $this;
+  }
+  Vec2F.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec2F',
+    interfaces: []
+  };
+  function Vec2F_init_0(v, $this) {
+    $this = $this || Object.create(Vec2F.prototype);
+    Vec2F.call($this, v, v);
+    return $this;
+  }
+  Vec2F.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec2F.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec2F.prototype.copy_dleff0$ = function (x, y) {
+    return new Vec2F(x === void 0 ? this.x : x, y === void 0 ? this.y : y);
+  };
+  Vec2F.prototype.toString = function () {
+    return 'Vec2F(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + ')';
+  };
+  Vec2F.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    return result;
+  };
+  Vec2F.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
+  };
+  function Vec3F(x, y, z) {
+    Vec3F$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+  function Vec3F$Companion() {
+    Vec3F$Companion_instance = this;
+  }
+  Vec3F$Companion.prototype.serializer = function () {
+    return Vec3F$$serializer_getInstance();
+  };
+  Vec3F$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec3F$Companion_instance = null;
+  function Vec3F$Companion_getInstance() {
+    if (Vec3F$Companion_instance === null) {
+      new Vec3F$Companion();
+    }return Vec3F$Companion_instance;
+  }
+  function Vec3F$$serializer() {
+    this.descriptor_921ioz$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec3F', this, 3);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    this.descriptor.addElement_ivxn3r$('z', false);
+    Vec3F$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec3F$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_921ioz$_0;
+    }
+  });
+  Vec3F$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, value.x);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, value.y);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 2, value.z);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec3F$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeFloatElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec3F_init(bitMask0, local0, local1, local2, null);
+  };
+  Vec3F$$serializer.prototype.childSerializers = function () {
+    return [internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer];
+  };
+  Vec3F$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec3F$$serializer_instance = null;
+  function Vec3F$$serializer_getInstance() {
+    if (Vec3F$$serializer_instance === null) {
+      new Vec3F$$serializer();
+    }return Vec3F$$serializer_instance;
+  }
+  function Vec3F_init(seen1, x, y, z, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec3F.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('z');
+    else
+      $this.z = z;
+    return $this;
+  }
+  Vec3F.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec3F',
+    interfaces: []
+  };
+  function Vec3F_init_0(v, $this) {
+    $this = $this || Object.create(Vec3F.prototype);
+    Vec3F.call($this, v, v, v);
+    return $this;
+  }
+  Vec3F.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec3F.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec3F.prototype.component3 = function () {
+    return this.z;
+  };
+  Vec3F.prototype.copy_y2kzbl$ = function (x, y, z) {
+    return new Vec3F(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z);
+  };
+  Vec3F.prototype.toString = function () {
+    return 'Vec3F(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + ')';
+  };
+  Vec3F.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    result = result * 31 + Kotlin.hashCode(this.z) | 0;
+    return result;
+  };
+  Vec3F.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z)))));
+  };
+  function Vec4F(x, y, z, w) {
+    Vec4F$Companion_getInstance();
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.w = w;
+  }
+  function Vec4F$Companion() {
+    Vec4F$Companion_instance = this;
+  }
+  Vec4F$Companion.prototype.serializer = function () {
+    return Vec4F$$serializer_getInstance();
+  };
+  Vec4F$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec4F$Companion_instance = null;
+  function Vec4F$Companion_getInstance() {
+    if (Vec4F$Companion_instance === null) {
+      new Vec4F$Companion();
+    }return Vec4F$Companion_instance;
+  }
+  function Vec4F$$serializer() {
+    this.descriptor_9kidqa$_0 = new SerialClassDescImpl('baaahs.glshaders.Vec4F', this, 4);
+    this.descriptor.addElement_ivxn3r$('x', false);
+    this.descriptor.addElement_ivxn3r$('y', false);
+    this.descriptor.addElement_ivxn3r$('z', false);
+    this.descriptor.addElement_ivxn3r$('w', false);
+    Vec4F$$serializer_instance = this;
+  }
+  Object.defineProperty(Vec4F$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_9kidqa$_0;
+    }
+  });
+  Vec4F$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 0, value.x);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 1, value.y);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 2, value.z);
+    output.encodeFloatElement_t7qhdx$(this.descriptor, 3, value.w);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  Vec4F$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeFloatElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeFloatElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeFloatElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case 3:
+          local3 = input.decodeFloatElement_3zr2iy$(this.descriptor, 3);
+          bitMask0 |= 8;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return Vec4F_init(bitMask0, local0, local1, local2, local3, null);
+  };
+  Vec4F$$serializer.prototype.childSerializers = function () {
+    return [internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer, internal.FloatSerializer];
+  };
+  Vec4F$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var Vec4F$$serializer_instance = null;
+  function Vec4F$$serializer_getInstance() {
+    if (Vec4F$$serializer_instance === null) {
+      new Vec4F$$serializer();
+    }return Vec4F$$serializer_instance;
+  }
+  function Vec4F_init(seen1, x, y, z, w, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(Vec4F.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('x');
+    else
+      $this.x = x;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('y');
+    else
+      $this.y = y;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('z');
+    else
+      $this.z = z;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('w');
+    else
+      $this.w = w;
+    return $this;
+  }
+  Vec4F.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vec4F',
+    interfaces: []
+  };
+  function Vec4F_init_0(v, $this) {
+    $this = $this || Object.create(Vec4F.prototype);
+    Vec4F.call($this, v, v, v, v);
+    return $this;
+  }
+  Vec4F.prototype.component1 = function () {
+    return this.x;
+  };
+  Vec4F.prototype.component2 = function () {
+    return this.y;
+  };
+  Vec4F.prototype.component3 = function () {
+    return this.z;
+  };
+  Vec4F.prototype.component4 = function () {
+    return this.w;
+  };
+  Vec4F.prototype.copy_7b5o5w$ = function (x, y, z, w) {
+    return new Vec4F(x === void 0 ? this.x : x, y === void 0 ? this.y : y, z === void 0 ? this.z : z, w === void 0 ? this.w : w);
+  };
+  Vec4F.prototype.toString = function () {
+    return 'Vec4F(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + (', z=' + Kotlin.toString(this.z)) + (', w=' + Kotlin.toString(this.w)) + ')';
+  };
+  Vec4F.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    result = result * 31 + Kotlin.hashCode(this.z) | 0;
+    result = result * 31 + Kotlin.hashCode(this.w) | 0;
+    return result;
+  };
+  Vec4F.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y) && Kotlin.equals(this.z, other.z) && Kotlin.equals(this.w, other.w)))));
+  };
+  function GlslAnalyzer() {
+    GlslAnalyzer$Companion_getInstance();
+  }
+  GlslAnalyzer.prototype.analyze_61zpoe$ = function (shaderText) {
+    var tmp$, tmp$_0, tmp$_1;
+    var statements = this.findStatements_y4putb$(shaderText);
+    var title = (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('^// (.*)').find_905azu$(shaderText)) != null ? tmp$.groupValues : null) != null ? tmp$_0.get_za3lpa$(1) : null) != null ? tmp$_1 : 'Unknown';
+    return new GlslCode(title, null, statements);
+  };
+  GlslAnalyzer.prototype.asShader_61zpoe$ = function (shaderText) {
+    var tmp$, tmp$_0;
+    var glslObj = this.analyze_61zpoe$(shaderText);
+    tmp$_0 = (tmp$ = ShaderFragment$Companion_getInstance().tryColorShader_pfhwa4$(glslObj)) != null ? tmp$ : ShaderFragment$Companion_getInstance().tryUvTranslatorShader_pfhwa4$(glslObj);
+    if (tmp$_0 == null) {
+      throw IllegalArgumentException_init('huh? unknown sort of shader');
+    }return tmp$_0;
+  };
+  GlslAnalyzer.prototype.findStatements_y4putb$ = function (shaderText) {
+    var context = new GlslAnalyzer$Context();
+    var state = {v: GlslAnalyzer$ParseState$Companion_getInstance().initial_8fi0q6$(context)};
+    var tmp$;
+    tmp$ = Regex_init('(.*?)(//|[;{}\n#])').findAll_905azu$(shaderText).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var before = element.groupValues.get_za3lpa$(1);
+      var token = element.groupValues.get_za3lpa$(2);
+      if (equals(token, '\n')) {
+        context.lineNumber = context.lineNumber + 1 | 0;
+      }if (before.length > 0)
+        state.v.visitText_61zpoe$(before);
+      state.v = state.v.visit_61zpoe$(token);
+    }
+    state.v.visitEof();
+    return context.statements;
+  };
+  function GlslAnalyzer$Companion() {
+    GlslAnalyzer$Companion_instance = this;
+    this.wordRegex = Regex_init('([A-Za-z][A-Za-z0-9_]*)');
+  }
+  GlslAnalyzer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslAnalyzer$Companion_instance = null;
+  function GlslAnalyzer$Companion_getInstance() {
+    if (GlslAnalyzer$Companion_instance === null) {
+      new GlslAnalyzer$Companion();
+    }return GlslAnalyzer$Companion_instance;
+  }
+  function GlslAnalyzer$Context() {
+    this.defines = HashMap_init();
+    this.statements = ArrayList_init();
+    this.outputEnabled = true;
+    this.enabledStack = ArrayList_init();
+    this.lineNumber = 1;
+  }
+  GlslAnalyzer$Context.prototype.doDefine_mhpeer$ = function (args) {
+    if (this.outputEnabled) {
+      switch (args.size) {
+        case 0:
+          throw IllegalArgumentException_init('#define without args?');
+        case 1:
+          var $receiver = this.defines;
+          var key = args.get_za3lpa$(0);
+          $receiver.put_xwzc9p$(key, '');
+          break;
+        default:var $receiver_0 = this.defines;
+          var key_0 = args.get_za3lpa$(0);
+          var value = joinToString(args.subList_vux9f0$(1, args.size), ' ');
+          $receiver_0.put_xwzc9p$(key_0, value);
+          break;
+      }
+    }};
+  GlslAnalyzer$Context.prototype.doUndef_mhpeer$ = function (args) {
+    if (this.outputEnabled) {
+      if (args.size !== 1)
+        throw IllegalArgumentException_init('huh? #undef ' + joinToString(args, ' '));
+      this.defines.remove_11rb$(args.get_za3lpa$(0));
+    }};
+  GlslAnalyzer$Context.prototype.doIfdef_mhpeer$ = function (args) {
+    if (args.size !== 1)
+      throw IllegalArgumentException_init('huh? #ifdef ' + joinToString(args, ' '));
+    this.enabledStack.add_11rb$(this.outputEnabled);
+    this.outputEnabled = (this.outputEnabled && this.defines.containsKey_11rb$(first(args)));
+  };
+  GlslAnalyzer$Context.prototype.doIfndef_mhpeer$ = function (args) {
+    if (args.size !== 1)
+      throw IllegalArgumentException_init('huh? #ifndef ' + joinToString(args, ' '));
+    this.enabledStack.add_11rb$(this.outputEnabled);
+    this.outputEnabled = (this.outputEnabled && !this.defines.containsKey_11rb$(first(args)));
+  };
+  GlslAnalyzer$Context.prototype.doElse_mhpeer$ = function (args) {
+    if (!args.isEmpty())
+      throw IllegalArgumentException_init('huh? #else ' + joinToString(args, ' '));
+    this.outputEnabled = (last(this.enabledStack) && !this.outputEnabled);
+  };
+  GlslAnalyzer$Context.prototype.doEndif_mhpeer$ = function (args) {
+    if (!args.isEmpty())
+      throw IllegalArgumentException_init('huh? #endif ' + joinToString(args, ' '));
+    this.outputEnabled = removeLast(this.enabledStack);
+  };
+  GlslAnalyzer$Context.prototype.doLine_mhpeer$ = function (args) {
+  };
+  GlslAnalyzer$Context.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Context',
+    interfaces: []
+  };
+  function GlslAnalyzer$ParseState(context) {
+    GlslAnalyzer$ParseState$Companion_getInstance();
+    this.context = context;
+    this.text_0 = StringBuilder_init();
+  }
+  function GlslAnalyzer$ParseState$Companion() {
+    GlslAnalyzer$ParseState$Companion_instance = this;
+  }
+  GlslAnalyzer$ParseState$Companion.prototype.initial_8fi0q6$ = function (context) {
+    return new GlslAnalyzer$ParseState$Statement(context);
+  };
+  GlslAnalyzer$ParseState$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslAnalyzer$ParseState$Companion_instance = null;
+  function GlslAnalyzer$ParseState$Companion_getInstance() {
+    if (GlslAnalyzer$ParseState$Companion_instance === null) {
+      new GlslAnalyzer$ParseState$Companion();
+    }return GlslAnalyzer$ParseState$Companion_instance;
+  }
+  Object.defineProperty(GlslAnalyzer$ParseState.prototype, 'textAsString', {
+    get: function () {
+      return this.text_0.toString();
+    }
+  });
+  GlslAnalyzer$ParseState.prototype.textIsEmpty = function () {
+    return this.text_0.length === 0;
+  };
+  GlslAnalyzer$ParseState.prototype.appendText_61zpoe$ = function (value) {
+    this.text_0.append_61zpoe$(value);
+  };
+  GlslAnalyzer$ParseState.prototype.visit_61zpoe$ = function (token) {
+    var tmp$;
+    switch (token) {
+      case '//':
+        tmp$ = this.visitComment();
+        break;
+      case ';':
+        tmp$ = this.visitSemicolon();
+        break;
+      case '{':
+        tmp$ = this.visitLeftCurlyBrace();
+        break;
+      case '}':
+        tmp$ = this.visitRightCurlyBrace();
+        break;
+      case '#':
+        tmp$ = this.visitDirective();
+        break;
+      case '\n':
+        tmp$ = this.visitNewline();
+        break;
+      default:throw IllegalStateException_init('unknown token ' + token);
+    }
+    return tmp$;
+  };
+  GlslAnalyzer$ParseState.prototype.visitText_61zpoe$ = function (value) {
+    if (this.context.outputEnabled || equals(value, '\n')) {
+      var regex = GlslAnalyzer$Companion_getInstance().wordRegex;
+      var replace_20wsma$result;
+      replace_20wsma$break: do {
+        var match = regex.find_905azu$(value);
+        if (match == null) {
+          replace_20wsma$result = value.toString();
+          break replace_20wsma$break;
+        }var lastStart = 0;
+        var length = value.length;
+        var sb = StringBuilder_init_0(length);
+        do {
+          var foundMatch = ensureNotNull(match);
+          sb.append_ezbsdh$(value, lastStart, foundMatch.range.start);
+          var tmp$;
+          sb.append_gw00v9$((tmp$ = this.context.defines.get_11rb$(foundMatch.value)) != null ? tmp$ : foundMatch.value);
+          lastStart = foundMatch.range.endInclusive + 1 | 0;
+          match = foundMatch.next();
+        }
+         while (lastStart < length && match != null);
+        if (lastStart < length) {
+          sb.append_ezbsdh$(value, lastStart, length);
+        }replace_20wsma$result = sb.toString();
+      }
+       while (false);
+      var substituted = replace_20wsma$result;
+      this.appendText_61zpoe$(substituted);
+    }return this;
+  };
+  GlslAnalyzer$ParseState.prototype.visitComment = function () {
+    return this.visitText_61zpoe$('//');
+  };
+  GlslAnalyzer$ParseState.prototype.visitSemicolon = function () {
+    return this.visitText_61zpoe$(';');
+  };
+  GlslAnalyzer$ParseState.prototype.visitLeftCurlyBrace = function () {
+    return this.visitText_61zpoe$('{');
+  };
+  GlslAnalyzer$ParseState.prototype.visitRightCurlyBrace = function () {
+    return this.visitText_61zpoe$('}');
+  };
+  GlslAnalyzer$ParseState.prototype.visitDirective = function () {
+    return this.visitText_61zpoe$('#');
+  };
+  GlslAnalyzer$ParseState.prototype.visitNewline = function () {
+    return this.visitText_61zpoe$('\n');
+  };
+  GlslAnalyzer$ParseState.prototype.visitEof = function () {
+  };
+  GlslAnalyzer$ParseState.prototype.addComment_61zpoe$ = function (comment) {
+  };
+  function GlslAnalyzer$ParseState$Statement(context, precedingStatement) {
+    if (precedingStatement === void 0)
+      precedingStatement = null;
+    GlslAnalyzer$ParseState.call(this, context);
+    this.precedingStatement = precedingStatement;
+    this.lineNumber = context.lineNumber;
+    this.comments = ArrayList_init();
+  }
+  GlslAnalyzer$ParseState$Statement.prototype.visitComment = function () {
+    var parentParseState = !contains(this.textAsString, '\n') && this.precedingStatement != null ? this.precedingStatement : this;
+    return new GlslAnalyzer$ParseState$Comment(this.context, parentParseState, this);
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.visitSemicolon = function () {
+    this.visitText_61zpoe$(';');
+    this.finishStatement();
+    return new GlslAnalyzer$ParseState$Statement(this.context, this);
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.visitLeftCurlyBrace = function () {
+    var $receiver = new GlslAnalyzer$ParseState$Block(this.context, this);
+    this.visitText_61zpoe$('{');
+    return $receiver;
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.visitDirective = function () {
+    return new GlslAnalyzer$ParseState$Directive(this.context, this);
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.visitNewline = function () {
+    var tmp$;
+    if (this.textIsEmpty() && this.comments.isEmpty()) {
+      this.lineNumber = this.context.lineNumber;
+      tmp$ = this;
+    } else {
+      tmp$ = GlslAnalyzer$ParseState.prototype.visitNewline.call(this);
+    }
+    return tmp$;
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.visitEof = function () {
+    if (!this.isEmpty())
+      this.finishStatement();
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.addComment_61zpoe$ = function (comment) {
+    this.comments.add_11rb$(comment);
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.finishStatement = function () {
+    this.context.statements.add_11rb$(new GlslAnalyzer$GlslStatement(this.textAsString, this.comments, this.lineNumber));
+  };
+  GlslAnalyzer$ParseState$Statement.prototype.isEmpty = function () {
+    return this.textAsString.length === 0 && this.comments.isEmpty();
+  };
+  GlslAnalyzer$ParseState$Statement.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Statement',
+    interfaces: [GlslAnalyzer$ParseState]
+  };
+  function GlslAnalyzer$ParseState$Comment(context, parentParseState, nextParseState) {
+    GlslAnalyzer$ParseState.call(this, context);
+    this.parentParseState = parentParseState;
+    this.nextParseState = nextParseState;
+    this.parts = ArrayList_init();
+  }
+  GlslAnalyzer$ParseState$Comment.prototype.visitText_61zpoe$ = function (value) {
+    this.parts.add_11rb$(value);
+    return this;
+  };
+  GlslAnalyzer$ParseState$Comment.prototype.visitNewline = function () {
+    this.parentParseState.addComment_61zpoe$(joinToString(this.parts, ''));
+    return this.nextParseState;
+  };
+  GlslAnalyzer$ParseState$Comment.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Comment',
+    interfaces: [GlslAnalyzer$ParseState]
+  };
+  function GlslAnalyzer$ParseState$Block(context, priorParseState) {
+    GlslAnalyzer$ParseState.call(this, context);
+    this.priorParseState = priorParseState;
+    this.nestLevel = 1;
+  }
+  GlslAnalyzer$ParseState$Block.prototype.visitLeftCurlyBrace = function () {
+    this.nestLevel = this.nestLevel + 1 | 0;
+    return GlslAnalyzer$ParseState.prototype.visitLeftCurlyBrace.call(this);
+  };
+  GlslAnalyzer$ParseState$Block.prototype.visitRightCurlyBrace = function () {
+    var tmp$;
+    this.nestLevel = this.nestLevel - 1 | 0;
+    GlslAnalyzer$ParseState.prototype.visitRightCurlyBrace.call(this);
+    if (this.nestLevel === 0) {
+      this.finishStatement_0();
+      tmp$ = new GlslAnalyzer$ParseState$Statement(this.context);
+    } else {
+      tmp$ = this;
+    }
+    return tmp$;
+  };
+  GlslAnalyzer$ParseState$Block.prototype.visitDirective = function () {
+    return new GlslAnalyzer$ParseState$Directive(this.context, this);
+  };
+  GlslAnalyzer$ParseState$Block.prototype.visitEof = function () {
+    if (!this.priorParseState.isEmpty())
+      this.finishStatement_0();
+  };
+  GlslAnalyzer$ParseState$Block.prototype.finishStatement_0 = function () {
+    this.priorParseState.visitText_61zpoe$(this.textAsString);
+    this.priorParseState.finishStatement();
+  };
+  GlslAnalyzer$ParseState$Block.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Block',
+    interfaces: [GlslAnalyzer$ParseState]
+  };
+  function GlslAnalyzer$ParseState$Directive(context, priorParseState) {
+    GlslAnalyzer$ParseState.call(this, context);
+    this.priorParseState = priorParseState;
+  }
+  GlslAnalyzer$ParseState$Directive.prototype.visitText_61zpoe$ = function (value) {
+    this.appendText_61zpoe$(value);
+    return this;
+  };
+  GlslAnalyzer$ParseState$Directive.prototype.visitNewline = function () {
+    var str = this.textAsString;
+    var args = toMutableList(Regex_init('\\s+').split_905azu$(str, 0));
+    var directive = removeFirst(args);
+    switch (directive) {
+      case 'define':
+        this.context.doDefine_mhpeer$(args);
+        break;
+      case 'undef':
+        this.context.doUndef_mhpeer$(args);
+        break;
+      case 'ifdef':
+        this.context.doIfdef_mhpeer$(args);
+        break;
+      case 'ifndef':
+        this.context.doIfndef_mhpeer$(args);
+        break;
+      case 'else':
+        this.context.doElse_mhpeer$(args);
+        break;
+      case 'endif':
+        this.context.doEndif_mhpeer$(args);
+        break;
+      case 'line':
+        this.context.doLine_mhpeer$(args);
+        break;
+      default:throw IllegalArgumentException_init('unknown directive #' + str);
+    }
+    this.priorParseState.visitText_61zpoe$('\n');
+    return this.priorParseState;
+  };
+  GlslAnalyzer$ParseState$Directive.prototype.visitEof = function () {
+    this.visitNewline();
+  };
+  GlslAnalyzer$ParseState$Directive.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Directive',
+    interfaces: [GlslAnalyzer$ParseState]
+  };
+  GlslAnalyzer$ParseState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ParseState',
+    interfaces: []
+  };
+  function GlslAnalyzer$GlslStatement(text, comments, lineNumber) {
+    if (comments === void 0)
+      comments = emptyList();
+    if (lineNumber === void 0)
+      lineNumber = null;
+    this.text = text;
+    this.comments = comments;
+    this.lineNumber = lineNumber;
+  }
+  GlslAnalyzer$GlslStatement.prototype.asSpecialOrNull = function () {
+    var tmp$;
+    var tmp$_0 = Regex_init_0('^(struct|precision)\\s+.*;', RegexOption.MULTILINE);
+    var tmp$_1;
+    var $receiver = this.text;
+    var tmp$_2;
+    if ((tmp$ = tmp$_0.find_905azu$(trim(Kotlin.isCharSequence(tmp$_2 = $receiver) ? tmp$_2 : throwCCE()).toString())) != null) {
+      var keyword = tmp$.destructured.match.groupValues.get_za3lpa$(1);
+      tmp$_1 = new GlslCode$GlslOther(keyword, this.text, this.lineNumber, this.comments);
+    } else
+      tmp$_1 = null;
+    return tmp$_1;
+  };
+  GlslAnalyzer$GlslStatement.prototype.asVarOrNull = function () {
+    var tmp$;
+    if (contains(this.text, '{'))
+      return null;
+    var tmp$_0 = Regex_init_0('((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);', RegexOption.MULTILINE);
+    var tmp$_1;
+    var $receiver = this.text;
+    var tmp$_2;
+    if ((tmp$ = tmp$_0.find_905azu$(trim(Kotlin.isCharSequence(tmp$_2 = $receiver) ? tmp$_2 : throwCCE()).toString())) != null) {
+      var tmp$_3 = tmp$.destructured;
+      var qualifier = tmp$_3.match.groupValues.get_za3lpa$(2);
+      var type = tmp$_3.match.groupValues.get_za3lpa$(3);
+      var name = tmp$_3.match.groupValues.get_za3lpa$(4);
+      var constValue = tmp$_3.match.groupValues.get_za3lpa$(5);
+      if (contains(constValue, '('))
+        return null;
+      var tmp$_4 = to(false, false);
+      var isConst = tmp$_4.component1()
+      , isUniform = tmp$_4.component2();
+      switch (qualifier) {
+        case 'const':
+          isConst = true;
+          break;
+        case 'uniform':
+          isUniform = true;
+          break;
+      }
+      tmp$_1 = new GlslCode$GlslVar(type, name, this.text, isConst, isUniform, this.lineNumber, this.comments);
+    } else
+      tmp$_1 = null;
+    return tmp$_1;
+  };
+  GlslAnalyzer$GlslStatement.prototype.asFunctionOrNull_ywdfdh$ = function (globalVars) {
+    if (globalVars === void 0)
+      globalVars = emptySet();
+    var tmp$;
+    var tmp$_0 = Regex_init_0('(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})', RegexOption.MULTILINE);
+    var tmp$_1;
+    var $receiver = this.text;
+    var tmp$_2;
+    if ((tmp$ = tmp$_0.find_905azu$(trim(Kotlin.isCharSequence(tmp$_2 = $receiver) ? tmp$_2 : throwCCE()).toString())) != null) {
+      var tmp$_3 = tmp$.destructured;
+      var returnType = tmp$_3.match.groupValues.get_za3lpa$(1);
+      var name = tmp$_3.match.groupValues.get_za3lpa$(2);
+      var params = tmp$_3.match.groupValues.get_za3lpa$(3);
+      var body = tmp$_3.match.groupValues.get_za3lpa$(4);
+      tmp$_1 = new GlslCode$GlslFunction(returnType, name, params, this.text, this.lineNumber, globalVars, this.comments);
+    } else
+      tmp$_1 = null;
+    return tmp$_1;
+  };
+  GlslAnalyzer$GlslStatement.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslStatement',
+    interfaces: []
+  };
+  GlslAnalyzer$GlslStatement.prototype.component1 = function () {
+    return this.text;
+  };
+  GlslAnalyzer$GlslStatement.prototype.component2 = function () {
+    return this.comments;
+  };
+  GlslAnalyzer$GlslStatement.prototype.component3 = function () {
+    return this.lineNumber;
+  };
+  GlslAnalyzer$GlslStatement.prototype.copy_okabbe$ = function (text, comments, lineNumber) {
+    return new GlslAnalyzer$GlslStatement(text === void 0 ? this.text : text, comments === void 0 ? this.comments : comments, lineNumber === void 0 ? this.lineNumber : lineNumber);
+  };
+  GlslAnalyzer$GlslStatement.prototype.toString = function () {
+    return 'GlslStatement(text=' + Kotlin.toString(this.text) + (', comments=' + Kotlin.toString(this.comments)) + (', lineNumber=' + Kotlin.toString(this.lineNumber)) + ')';
+  };
+  GlslAnalyzer$GlslStatement.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.text) | 0;
+    result = result * 31 + Kotlin.hashCode(this.comments) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lineNumber) | 0;
+    return result;
+  };
+  GlslAnalyzer$GlslStatement.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.text, other.text) && Kotlin.equals(this.comments, other.comments) && Kotlin.equals(this.lineNumber, other.lineNumber)))));
+  };
+  GlslAnalyzer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslAnalyzer',
+    interfaces: []
+  };
+  function GlslCode(title, description, glslStatements) {
+    GlslCode$Companion_getInstance();
+    if (description === void 0)
+      description = null;
+    this.title = title;
+    this.description = description;
+    this.globalVarNames_8be2vx$ = HashSet_init();
+    this.functionNames_8be2vx$ = HashSet_init();
+    var destination = ArrayList_init_0(collectionSizeOrDefault(glslStatements, 10));
+    var tmp$;
+    tmp$ = glslStatements.iterator();
+    while (tmp$.hasNext()) {
+      var item = tmp$.next();
+      var tmp$_0 = destination.add_11rb$;
+      var tmp$_1, tmp$_2, tmp$_3, tmp$_4;
+      var tmp$_5;
+      if ((tmp$_2 = item.asSpecialOrNull()) != null)
+        tmp$_5 = tmp$_2;
+      else {
+        var tmp$_6;
+        if ((tmp$_1 = item.asVarOrNull()) != null) {
+          this.globalVarNames_8be2vx$.add_11rb$(tmp$_1.name);
+          tmp$_6 = tmp$_1;
+        } else
+          tmp$_6 = null;
+        tmp$_5 = tmp$_6;
+      }
+      var tmp$_7;
+      if ((tmp$_4 = tmp$_5) != null)
+        tmp$_7 = tmp$_4;
+      else {
+        var tmp$_8;
+        if ((tmp$_3 = item.asFunctionOrNull_ywdfdh$()) != null) {
+          this.functionNames_8be2vx$.add_11rb$(tmp$_3.name);
+          tmp$_8 = tmp$_3;
+        } else
+          tmp$_8 = null;
+        tmp$_7 = tmp$_8;
+      }
+      tmp$_0.call(destination, tmp$_7);
+    }
+    this.statements = destination;
+    this.symbolNames = plus_2(this.globalVarNames_8be2vx$, this.functionNames_8be2vx$);
+  }
+  Object.defineProperty(GlslCode.prototype, 'globalVars', {
+    get: function () {
+      var $receiver = this.statements;
+      var destination = ArrayList_init();
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (Kotlin.isType(element, GlslCode$GlslVar))
+          destination.add_11rb$(element);
+      }
+      return destination;
+    }
+  });
+  Object.defineProperty(GlslCode.prototype, 'uniforms', {
+    get: function () {
+      var $receiver = this.globalVars;
+      var destination = ArrayList_init();
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (element.isUniform)
+          destination.add_11rb$(element);
+      }
+      return destination;
+    }
+  });
+  Object.defineProperty(GlslCode.prototype, 'functions', {
+    get: function () {
+      var $receiver = this.statements;
+      var destination = ArrayList_init();
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (Kotlin.isType(element, GlslCode$GlslFunction))
+          destination.add_11rb$(element);
+      }
+      return destination;
+    }
+  });
+  function GlslCode$Companion() {
+    GlslCode$Companion_instance = this;
+  }
+  GlslCode$Companion.prototype.replaceCodeWords_x84c5q$ = function (originalText, replaceFn) {
+    var buf = StringBuilder_init();
+    var inComment = {v: false};
+    var tmp$;
+    tmp$ = Regex_init_0('(.*?)(\\w+|//|\n|\\Z|$)', RegexOption.MULTILINE).findAll_905azu$(originalText).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0 = element.destructured;
+      var before = tmp$_0.match.groupValues.get_za3lpa$(1);
+      var str = tmp$_0.match.groupValues.get_za3lpa$(2);
+      buf.append_61zpoe$(before);
+      switch (str) {
+        case '//':
+          inComment.v = true;
+          buf.append_61zpoe$(str);
+          break;
+        case '\n':
+          inComment.v = false;
+          buf.append_61zpoe$(str);
+          break;
+        default:buf.append_61zpoe$(inComment.v ? str : replaceFn(str));
+          break;
+      }
+    }
+    return buf.toString();
+  };
+  GlslCode$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslCode$Companion_instance = null;
+  function GlslCode$Companion_getInstance() {
+    if (GlslCode$Companion_instance === null) {
+      new GlslCode$Companion();
+    }return GlslCode$Companion_instance;
+  }
+  function GlslCode$Statement() {
+  }
+  function GlslCode$Statement$toGlsl$lambda(closure$symbolMap, this$Statement, closure$symbolsToNamespace, closure$namespace) {
+    return function (it) {
+      var tmp$, tmp$_0;
+      tmp$_0 = closure$symbolMap.get_11rb$(it);
+      if (tmp$_0 == null) {
+        if (equals(it, this$Statement.name) || closure$symbolsToNamespace.contains_11rb$(it)) {
+          tmp$ = closure$namespace.qualify_61zpoe$(it);
+        } else {
+          tmp$ = it;
+        }
+        tmp$_0 = tmp$;
+      }return tmp$_0;
+    };
+  }
+  GlslCode$Statement.prototype.toGlsl_698fpp$ = function (namespace, symbolsToNamespace, symbolMap) {
+    return toString_0(this.lineNumber != null ? '\n' + '#line ' + toString_0(this.lineNumber) + '\n' : null) + GlslCode$Companion_getInstance().replaceCodeWords_x84c5q$(this.fullText, GlslCode$Statement$toGlsl$lambda(symbolMap, this, symbolsToNamespace, namespace));
+  };
+  GlslCode$Statement.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Statement',
+    interfaces: []
+  };
+  function GlslCode$GlslOther(name, fullText, lineNumber, comments) {
+    if (comments === void 0)
+      comments = emptyList();
+    this.name_or96nb$_0 = name;
+    this.fullText_p1j4bc$_0 = fullText;
+    this.lineNumber_tatlhj$_0 = lineNumber;
+    this.comments_luvrqo$_0 = comments;
+  }
+  Object.defineProperty(GlslCode$GlslOther.prototype, 'name', {
+    get: function () {
+      return this.name_or96nb$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslOther.prototype, 'fullText', {
+    get: function () {
+      return this.fullText_p1j4bc$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslOther.prototype, 'lineNumber', {
+    get: function () {
+      return this.lineNumber_tatlhj$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslOther.prototype, 'comments', {
+    get: function () {
+      return this.comments_luvrqo$_0;
+    }
+  });
+  GlslCode$GlslOther.prototype.stripSource = function () {
+    return this.copy_p9yde0$(void 0, '', null);
+  };
+  GlslCode$GlslOther.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslOther',
+    interfaces: [GlslCode$Statement]
+  };
+  GlslCode$GlslOther.prototype.component1 = function () {
+    return this.name;
+  };
+  GlslCode$GlslOther.prototype.component2 = function () {
+    return this.fullText;
+  };
+  GlslCode$GlslOther.prototype.component3 = function () {
+    return this.lineNumber;
+  };
+  GlslCode$GlslOther.prototype.component4 = function () {
+    return this.comments;
+  };
+  GlslCode$GlslOther.prototype.copy_p9yde0$ = function (name, fullText, lineNumber, comments) {
+    return new GlslCode$GlslOther(name === void 0 ? this.name : name, fullText === void 0 ? this.fullText : fullText, lineNumber === void 0 ? this.lineNumber : lineNumber, comments === void 0 ? this.comments : comments);
+  };
+  GlslCode$GlslOther.prototype.toString = function () {
+    return 'GlslOther(name=' + Kotlin.toString(this.name) + (', fullText=' + Kotlin.toString(this.fullText)) + (', lineNumber=' + Kotlin.toString(this.lineNumber)) + (', comments=' + Kotlin.toString(this.comments)) + ')';
+  };
+  GlslCode$GlslOther.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.fullText) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lineNumber) | 0;
+    result = result * 31 + Kotlin.hashCode(this.comments) | 0;
+    return result;
+  };
+  GlslCode$GlslOther.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.fullText, other.fullText) && Kotlin.equals(this.lineNumber, other.lineNumber) && Kotlin.equals(this.comments, other.comments)))));
+  };
+  function GlslCode$GlslVar(type, name, fullText, isConst, isUniform, lineNumber, comments) {
+    if (fullText === void 0)
+      fullText = '';
+    if (isConst === void 0)
+      isConst = false;
+    if (isUniform === void 0)
+      isUniform = false;
+    if (lineNumber === void 0)
+      lineNumber = null;
+    if (comments === void 0)
+      comments = emptyList();
+    this.type = type;
+    this.name_3ilp0w$_0 = name;
+    this.fullText_aiwls1$_0 = fullText;
+    this.isConst = isConst;
+    this.isUniform = isUniform;
+    this.lineNumber_clceaq$_0 = lineNumber;
+    this.comments_7c997d$_0 = comments;
+    this.hint_3fg2gk$_0 = lazy(GlslCode$GlslVar$hint$lambda(this));
+  }
+  Object.defineProperty(GlslCode$GlslVar.prototype, 'name', {
+    get: function () {
+      return this.name_3ilp0w$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslVar.prototype, 'fullText', {
+    get: function () {
+      return this.fullText_aiwls1$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslVar.prototype, 'lineNumber', {
+    get: function () {
+      return this.lineNumber_clceaq$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslVar.prototype, 'comments', {
+    get: function () {
+      return this.comments_7c997d$_0;
+    }
+  });
+  GlslCode$GlslVar.prototype.stripSource = function () {
+    return this.copy_ou9ngm$(void 0, void 0, '', void 0, void 0, null);
+  };
+  Object.defineProperty(GlslCode$GlslVar.prototype, 'hint', {
+    get: function () {
+      return this.hint_3fg2gk$_0.value;
+    }
+  });
+  function GlslCode$GlslVar$hint$lambda$lambda(it) {
+    var tmp$;
+    return trim(Kotlin.isCharSequence(tmp$ = it) ? tmp$ : throwCCE()).toString();
+  }
+  function GlslCode$GlslVar$hint$lambda(this$GlslVar) {
+    return function () {
+      var tmp$, tmp$_0;
+      var commentString = joinToString(this$GlslVar.comments, ' ', void 0, void 0, void 0, void 0, GlslCode$GlslVar$hint$lambda$lambda);
+      var parts = split(commentString, [' ']);
+      if (!parts.isEmpty() && startsWith(first(parts), '@@')) {
+        var type = trimStart(first(parts), Kotlin.charArrayOf(64));
+        var tmp$_1;
+        if ((tmp$ = Regex_init('(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)').matchEntire_6bul2c$(type)) != null) {
+          var tmp$_2 = tmp$.destructured;
+          var prefix = tmp$_2.match.groupValues.get_za3lpa$(1);
+          var pluginClass = tmp$_2.match.groupValues.get_za3lpa$(2);
+          var arg = tmp$_2.match.groupValues.get_za3lpa$(3);
+          tmp$_1 = (prefix.length === 0 ? 'baaahs.' : prefix) + (pluginClass.length === 0 ? 'Core' : pluginClass) + ':' + arg;
+        } else
+          tmp$_1 = null;
+        var fullType = (tmp$_0 = tmp$_1) != null ? tmp$_0 : type;
+        var $receiver = parts.subList_vux9f0$(1, parts.size);
+        var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+        var destination = LinkedHashMap_init_0(capacity);
+        var tmp$_3;
+        tmp$_3 = $receiver.iterator();
+        while (tmp$_3.hasNext()) {
+          var element = tmp$_3.next();
+          var kv = split(element, ['=']);
+          var pair = to(first(kv), joinToString(kv.subList_vux9f0$(1, kv.size), '='));
+          destination.put_xwzc9p$(pair.first, pair.second);
+        }
+        var map = destination;
+        return new GlslCode$Hint(fullType, map);
+      } else
+        return null;
+    };
+  }
+  GlslCode$GlslVar.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslVar',
+    interfaces: [GlslCode$Statement]
+  };
+  GlslCode$GlslVar.prototype.component1 = function () {
+    return this.type;
+  };
+  GlslCode$GlslVar.prototype.component2 = function () {
+    return this.name;
+  };
+  GlslCode$GlslVar.prototype.component3 = function () {
+    return this.fullText;
+  };
+  GlslCode$GlslVar.prototype.component4 = function () {
+    return this.isConst;
+  };
+  GlslCode$GlslVar.prototype.component5 = function () {
+    return this.isUniform;
+  };
+  GlslCode$GlslVar.prototype.component6 = function () {
+    return this.lineNumber;
+  };
+  GlslCode$GlslVar.prototype.component7 = function () {
+    return this.comments;
+  };
+  GlslCode$GlslVar.prototype.copy_ou9ngm$ = function (type, name, fullText, isConst, isUniform, lineNumber, comments) {
+    return new GlslCode$GlslVar(type === void 0 ? this.type : type, name === void 0 ? this.name : name, fullText === void 0 ? this.fullText : fullText, isConst === void 0 ? this.isConst : isConst, isUniform === void 0 ? this.isUniform : isUniform, lineNumber === void 0 ? this.lineNumber : lineNumber, comments === void 0 ? this.comments : comments);
+  };
+  GlslCode$GlslVar.prototype.toString = function () {
+    return 'GlslVar(type=' + Kotlin.toString(this.type) + (', name=' + Kotlin.toString(this.name)) + (', fullText=' + Kotlin.toString(this.fullText)) + (', isConst=' + Kotlin.toString(this.isConst)) + (', isUniform=' + Kotlin.toString(this.isUniform)) + (', lineNumber=' + Kotlin.toString(this.lineNumber)) + (', comments=' + Kotlin.toString(this.comments)) + ')';
+  };
+  GlslCode$GlslVar.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.type) | 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.fullText) | 0;
+    result = result * 31 + Kotlin.hashCode(this.isConst) | 0;
+    result = result * 31 + Kotlin.hashCode(this.isUniform) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lineNumber) | 0;
+    result = result * 31 + Kotlin.hashCode(this.comments) | 0;
+    return result;
+  };
+  GlslCode$GlslVar.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.type, other.type) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.fullText, other.fullText) && Kotlin.equals(this.isConst, other.isConst) && Kotlin.equals(this.isUniform, other.isUniform) && Kotlin.equals(this.lineNumber, other.lineNumber) && Kotlin.equals(this.comments, other.comments)))));
+  };
+  function GlslCode$GlslFunction(returnType, name, params, fullText, lineNumber, symbols, comments) {
+    if (lineNumber === void 0)
+      lineNumber = null;
+    if (symbols === void 0)
+      symbols = emptySet();
+    if (comments === void 0)
+      comments = emptyList();
+    this.returnType = returnType;
+    this.name_tnha1d$_0 = name;
+    this.params = params;
+    this.fullText_1xxig0$_0 = fullText;
+    this.lineNumber_49mrcx$_0 = lineNumber;
+    this.symbols = symbols;
+    this.comments_18pu4o$_0 = comments;
+  }
+  Object.defineProperty(GlslCode$GlslFunction.prototype, 'name', {
+    get: function () {
+      return this.name_tnha1d$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslFunction.prototype, 'fullText', {
+    get: function () {
+      return this.fullText_1xxig0$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslFunction.prototype, 'lineNumber', {
+    get: function () {
+      return this.lineNumber_49mrcx$_0;
+    }
+  });
+  Object.defineProperty(GlslCode$GlslFunction.prototype, 'comments', {
+    get: function () {
+      return this.comments_18pu4o$_0;
+    }
+  });
+  GlslCode$GlslFunction.prototype.stripSource = function () {
+    return this.copy_xrq5wn$(void 0, void 0, void 0, void 0, null, emptySet());
+  };
+  GlslCode$GlslFunction.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslFunction',
+    interfaces: [GlslCode$Statement]
+  };
+  GlslCode$GlslFunction.prototype.component1 = function () {
+    return this.returnType;
+  };
+  GlslCode$GlslFunction.prototype.component2 = function () {
+    return this.name;
+  };
+  GlslCode$GlslFunction.prototype.component3 = function () {
+    return this.params;
+  };
+  GlslCode$GlslFunction.prototype.component4 = function () {
+    return this.fullText;
+  };
+  GlslCode$GlslFunction.prototype.component5 = function () {
+    return this.lineNumber;
+  };
+  GlslCode$GlslFunction.prototype.component6 = function () {
+    return this.symbols;
+  };
+  GlslCode$GlslFunction.prototype.component7 = function () {
+    return this.comments;
+  };
+  GlslCode$GlslFunction.prototype.copy_xrq5wn$ = function (returnType, name, params, fullText, lineNumber, symbols, comments) {
+    return new GlslCode$GlslFunction(returnType === void 0 ? this.returnType : returnType, name === void 0 ? this.name : name, params === void 0 ? this.params : params, fullText === void 0 ? this.fullText : fullText, lineNumber === void 0 ? this.lineNumber : lineNumber, symbols === void 0 ? this.symbols : symbols, comments === void 0 ? this.comments : comments);
+  };
+  GlslCode$GlslFunction.prototype.toString = function () {
+    return 'GlslFunction(returnType=' + Kotlin.toString(this.returnType) + (', name=' + Kotlin.toString(this.name)) + (', params=' + Kotlin.toString(this.params)) + (', fullText=' + Kotlin.toString(this.fullText)) + (', lineNumber=' + Kotlin.toString(this.lineNumber)) + (', symbols=' + Kotlin.toString(this.symbols)) + (', comments=' + Kotlin.toString(this.comments)) + ')';
+  };
+  GlslCode$GlslFunction.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.returnType) | 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.params) | 0;
+    result = result * 31 + Kotlin.hashCode(this.fullText) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lineNumber) | 0;
+    result = result * 31 + Kotlin.hashCode(this.symbols) | 0;
+    result = result * 31 + Kotlin.hashCode(this.comments) | 0;
+    return result;
+  };
+  GlslCode$GlslFunction.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.returnType, other.returnType) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.params, other.params) && Kotlin.equals(this.fullText, other.fullText) && Kotlin.equals(this.lineNumber, other.lineNumber) && Kotlin.equals(this.symbols, other.symbols) && Kotlin.equals(this.comments, other.comments)))));
+  };
+  function GlslCode$Hint(plugin, map) {
+    this.plugin = plugin;
+    this.map = map;
+  }
+  GlslCode$Hint.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Hint',
+    interfaces: []
+  };
+  GlslCode$Hint.prototype.component1 = function () {
+    return this.plugin;
+  };
+  GlslCode$Hint.prototype.component2 = function () {
+    return this.map;
+  };
+  GlslCode$Hint.prototype.copy_mvjluj$ = function (plugin, map) {
+    return new GlslCode$Hint(plugin === void 0 ? this.plugin : plugin, map === void 0 ? this.map : map);
+  };
+  GlslCode$Hint.prototype.toString = function () {
+    return 'Hint(plugin=' + Kotlin.toString(this.plugin) + (', map=' + Kotlin.toString(this.map)) + ')';
+  };
+  GlslCode$Hint.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.plugin) | 0;
+    result = result * 31 + Kotlin.hashCode(this.map) | 0;
+    return result;
+  };
+  GlslCode$Hint.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.plugin, other.plugin) && Kotlin.equals(this.map, other.map)))));
+  };
+  function GlslCode$ContentType(name, ordinal, description, pluginId) {
+    if (pluginId === void 0)
+      pluginId = null;
+    Enum.call(this);
+    this.description = description;
+    this.pluginId = pluginId;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function GlslCode$ContentType_initFields() {
+    GlslCode$ContentType_initFields = function () {
+    };
+    GlslCode$ContentType$RasterCoordinate_instance = new GlslCode$ContentType('RasterCoordinate', 0, 'Raster Coordinate');
+    GlslCode$ContentType$UvCoordinate_instance = new GlslCode$ContentType('UvCoordinate', 1, 'U/V Coordinate');
+    GlslCode$ContentType$UvCoordinateTexture_instance = new GlslCode$ContentType('UvCoordinateTexture', 2, 'U/V Coordinates Texture', 'baaahs.Core:uvCoords');
+    GlslCode$ContentType$XyCoordinate_instance = new GlslCode$ContentType('XyCoordinate', 3, 'X/Y Coordinate', 'baaahs.Core:xyCoord');
+    GlslCode$ContentType$XyzCoordinate_instance = new GlslCode$ContentType('XyzCoordinate', 4, 'X/Y/Z Coordinate');
+    GlslCode$ContentType$Color_instance = new GlslCode$ContentType('Color', 5, 'Color', 'baaahs.Core:ColorPicker');
+    GlslCode$ContentType$Time_instance = new GlslCode$ContentType('Time', 6, 'Time', 'baaahs.Core:time');
+    GlslCode$ContentType$Resolution_instance = new GlslCode$ContentType('Resolution', 7, 'Resolution', 'baaahs.Core:resolution');
+    GlslCode$ContentType$Float_instance = new GlslCode$ContentType('Float', 8, 'Float', 'baaahs.Core:Slider');
+    GlslCode$ContentType$Int_instance = new GlslCode$ContentType('Int', 9, 'Integer');
+    GlslCode$ContentType$Unknown_instance = new GlslCode$ContentType('Unknown', 10, 'Unknown');
+  }
+  var GlslCode$ContentType$RasterCoordinate_instance;
+  function GlslCode$ContentType$RasterCoordinate_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$RasterCoordinate_instance;
+  }
+  var GlslCode$ContentType$UvCoordinate_instance;
+  function GlslCode$ContentType$UvCoordinate_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$UvCoordinate_instance;
+  }
+  var GlslCode$ContentType$UvCoordinateTexture_instance;
+  function GlslCode$ContentType$UvCoordinateTexture_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$UvCoordinateTexture_instance;
+  }
+  var GlslCode$ContentType$XyCoordinate_instance;
+  function GlslCode$ContentType$XyCoordinate_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$XyCoordinate_instance;
+  }
+  var GlslCode$ContentType$XyzCoordinate_instance;
+  function GlslCode$ContentType$XyzCoordinate_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$XyzCoordinate_instance;
+  }
+  var GlslCode$ContentType$Color_instance;
+  function GlslCode$ContentType$Color_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Color_instance;
+  }
+  var GlslCode$ContentType$Time_instance;
+  function GlslCode$ContentType$Time_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Time_instance;
+  }
+  var GlslCode$ContentType$Resolution_instance;
+  function GlslCode$ContentType$Resolution_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Resolution_instance;
+  }
+  var GlslCode$ContentType$Float_instance;
+  function GlslCode$ContentType$Float_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Float_instance;
+  }
+  var GlslCode$ContentType$Int_instance;
+  function GlslCode$ContentType$Int_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Int_instance;
+  }
+  var GlslCode$ContentType$Unknown_instance;
+  function GlslCode$ContentType$Unknown_getInstance() {
+    GlslCode$ContentType_initFields();
+    return GlslCode$ContentType$Unknown_instance;
+  }
+  GlslCode$ContentType.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ContentType',
+    interfaces: [Enum]
+  };
+  function GlslCode$ContentType$values() {
+    return [GlslCode$ContentType$RasterCoordinate_getInstance(), GlslCode$ContentType$UvCoordinate_getInstance(), GlslCode$ContentType$UvCoordinateTexture_getInstance(), GlslCode$ContentType$XyCoordinate_getInstance(), GlslCode$ContentType$XyzCoordinate_getInstance(), GlslCode$ContentType$Color_getInstance(), GlslCode$ContentType$Time_getInstance(), GlslCode$ContentType$Resolution_getInstance(), GlslCode$ContentType$Float_getInstance(), GlslCode$ContentType$Int_getInstance(), GlslCode$ContentType$Unknown_getInstance()];
+  }
+  GlslCode$ContentType.values = GlslCode$ContentType$values;
+  function GlslCode$ContentType$valueOf(name) {
+    switch (name) {
+      case 'RasterCoordinate':
+        return GlslCode$ContentType$RasterCoordinate_getInstance();
+      case 'UvCoordinate':
+        return GlslCode$ContentType$UvCoordinate_getInstance();
+      case 'UvCoordinateTexture':
+        return GlslCode$ContentType$UvCoordinateTexture_getInstance();
+      case 'XyCoordinate':
+        return GlslCode$ContentType$XyCoordinate_getInstance();
+      case 'XyzCoordinate':
+        return GlslCode$ContentType$XyzCoordinate_getInstance();
+      case 'Color':
+        return GlslCode$ContentType$Color_getInstance();
+      case 'Time':
+        return GlslCode$ContentType$Time_getInstance();
+      case 'Resolution':
+        return GlslCode$ContentType$Resolution_getInstance();
+      case 'Float':
+        return GlslCode$ContentType$Float_getInstance();
+      case 'Int':
+        return GlslCode$ContentType$Int_getInstance();
+      case 'Unknown':
+        return GlslCode$ContentType$Unknown_getInstance();
+      default:throwISE('No enum constant baaahs.glshaders.GlslCode.ContentType.' + name);
+    }
+  }
+  GlslCode$ContentType.valueOf_61zpoe$ = GlslCode$ContentType$valueOf;
+  function GlslCode$Namespace(prefix) {
+    this.prefix_0 = prefix;
+  }
+  GlslCode$Namespace.prototype.qualify_61zpoe$ = function (name) {
+    return this.prefix_0 + '_' + name;
+  };
+  GlslCode$Namespace.prototype.internalQualify_61zpoe$ = function (name) {
+    return this.prefix_0 + 'i_' + name;
+  };
+  GlslCode$Namespace.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Namespace',
+    interfaces: []
+  };
+  GlslCode.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslCode',
+    interfaces: []
+  };
+  function GlslProgram(gl, patch, resolver) {
+    GlslProgram$Companion_getInstance();
+    this.gl_8be2vx$ = gl;
+    this.patch_0 = patch;
+    this.id_8be2vx$ = this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$id$lambda(this));
+    this.vertexShader_0 = this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$vertexShader$lambda(this));
+    this.fragShader_0 = this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$fragShader$lambda(this));
+    this.bindings_0 = null;
+    this.gl_8be2vx$.runInContext_klfg04$(GlslProgram_init$lambda(this));
+    this.bindings_0 = this.gl_8be2vx$.runInContext_klfg04$(GlslProgram_init$lambda_0(resolver, this));
+    this.vertexAttribLocation = this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$vertexAttribLocation$lambda(this));
+  }
+  function GlslProgram$bind$lambda$lambda(closure$uniformPort) {
+    return function () {
+      return 'unused uniform for ' + closure$uniformPort;
+    };
+  }
+  function GlslProgram$bind$lambda$lambda_0(closure$uniformPort) {
+    return function () {
+      return 'no UniformProvider bound for ' + closure$uniformPort;
+    };
+  }
+  GlslProgram.prototype.bind_0 = function (resolver) {
+    var $receiver = this.patch_0.uniformPorts;
+    var destination = ArrayList_init();
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var tmp$_0;
+      var transform$result;
+      var uniformProvider = resolver(element);
+      if (uniformProvider != null) {
+        var binding = new GlslProgram$Binding(this, element, uniformProvider);
+        if (binding.isValid) {
+          transform$result = binding;
+        } else {
+          GlslProgram$Companion_getInstance().logger.warn_h4ejuu$(GlslProgram$bind$lambda$lambda(element));
+          binding.release();
+          transform$result = null;
+        }
+      } else {
+        GlslProgram$Companion_getInstance().logger.warn_h4ejuu$(GlslProgram$bind$lambda$lambda_0(element));
+        transform$result = null;
+      }
+      if ((tmp$_0 = transform$result) != null) {
+        destination.add_11rb$(tmp$_0);
+      }}
+    return destination;
+  };
+  GlslProgram.prototype.bindingsOf_0 = wrapFunction(function () {
+    var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+    var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+    var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+    return function (T_0, isT) {
+      var $receiver = this.bindings_0;
+      var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(item.dataSourceProvider_8be2vx$);
+      }
+      var destination_0 = ArrayList_init_0();
+      var tmp$_0;
+      tmp$_0 = destination.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (isT(element))
+          destination_0.add_11rb$(element);
+      }
+      return destination_0;
+    };
+  });
+  Object.defineProperty(GlslProgram.prototype, 'arrangementListeners', {
+    get: function () {
+      var $receiver = this.bindings_0;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(item.dataSourceProvider_8be2vx$);
+      }
+      var destination_0 = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = destination.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (Kotlin.isType(element, GlslRenderer$ArrangementListener))
+          destination_0.add_11rb$(element);
+      }
+      return destination_0;
+    }
+  });
+  Object.defineProperty(GlslProgram.prototype, 'resolutionListeners', {
+    get: function () {
+      var $receiver = this.bindings_0;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(item.dataSourceProvider_8be2vx$);
+      }
+      var destination_0 = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = destination.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (Kotlin.isType(element, GlslProgram$ResolutionListener))
+          destination_0.add_11rb$(element);
+      }
+      return destination_0;
+    }
+  });
+  GlslProgram.prototype.setResolution_dleff0$ = function (x, y) {
+    var tmp$;
+    tmp$ = this.resolutionListeners.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.onResolution_dleff0$(x, y);
+    }
+  };
+  function GlslProgram$updateUniforms$lambda(this$GlslProgram) {
+    return function () {
+      this$GlslProgram.gl_8be2vx$.useProgram_4cj8zn$(this$GlslProgram);
+      var tmp$;
+      tmp$ = this$GlslProgram.bindings_0.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        element.setUniform();
+      }
+      return Unit;
+    };
+  }
+  GlslProgram.prototype.updateUniforms = function () {
+    this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$updateUniforms$lambda(this));
+  };
+  GlslProgram.prototype.release = function () {
+    var tmp$;
+    tmp$ = this.bindings_0.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      element.release();
+    }
+  };
+  function GlslProgram$getUniform$lambda$lambda(this$GlslProgram, closure$name) {
+    return function ($receiver) {
+      return $receiver.getUniformLocation_hwpqgh$(this$GlslProgram.id_8be2vx$, closure$name);
+    };
+  }
+  function GlslProgram$getUniform$lambda$lambda_0(closure$name) {
+    return function () {
+      return 'no such uniform ' + closure$name;
+    };
+  }
+  function GlslProgram$getUniform$lambda(this$GlslProgram, closure$name) {
+    return function () {
+      this$GlslProgram.gl_8be2vx$.useProgram_4cj8zn$(this$GlslProgram);
+      var uniformLoc = this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram$getUniform$lambda$lambda(this$GlslProgram, closure$name));
+      if (uniformLoc == null) {
+        GlslProgram$Companion_getInstance().logger.warn_h4ejuu$(GlslProgram$getUniform$lambda$lambda_0(closure$name));
+      }var tmp$;
+      tmp$ = uniformLoc != null ? new Uniform(this$GlslProgram, uniformLoc) : null;
+      return tmp$;
+    };
+  }
+  GlslProgram.prototype.getUniform_61zpoe$ = function (name) {
+    return this.gl_8be2vx$.runInContext_klfg04$(GlslProgram$getUniform$lambda(this, name));
+  };
+  function GlslProgram$Binding($outer, uniformPort, dataSourceProvider) {
+    this.$outer = $outer;
+    this.uniformPort_0 = uniformPort;
+    this.dataSourceProvider_8be2vx$ = dataSourceProvider;
+    var supportedTypes = this.dataSourceProvider_8be2vx$.supportedTypes;
+    if (!supportedTypes.contains_11rb$(this.uniformPort_0.type)) {
+      throw new CompiledShader$LinkException("can't set uniform " + this.uniformPort_0.type + ' ' + this.uniformPort_0.name + ': expected ' + supportedTypes + ')');
+    }this.uniformLocation_0 = this.$outer.getUniform_61zpoe$(this.uniformPort_0.varName);
+    var tmp$;
+    if (this.isValid) {
+      tmp$ = this.dataSourceProvider_8be2vx$.provide();
+    } else
+      tmp$ = null;
+    this.dataSource_0 = tmp$;
+  }
+  Object.defineProperty(GlslProgram$Binding.prototype, 'isValid', {
+    get: function () {
+      return this.uniformLocation_0 != null;
+    }
+  });
+  function GlslProgram$Binding$setUniform$lambda(this$Binding) {
+    return function () {
+      return 'failed to set ' + this$Binding.uniformPort_0.name + ' from ' + toString_0(this$Binding.dataSource_0);
+    };
+  }
+  GlslProgram$Binding.prototype.setUniform = function () {
+    var tmp$;
+    try {
+      if ((tmp$ = this.uniformLocation_0) != null) {
+        var tmp$_0;
+        (tmp$_0 = this.dataSource_0) != null && (tmp$_0.set_i9pfe0$(tmp$), Unit);
+      }} catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        GlslProgram$Companion_getInstance().logger.error_l35kib$(e, GlslProgram$Binding$setUniform$lambda(this));
+      } else
+        throw e;
+    }
+  };
+  GlslProgram$Binding.prototype.release = function () {
+    var tmp$;
+    return (tmp$ = this.dataSource_0) != null ? (tmp$.release(), Unit) : null;
+  };
+  GlslProgram$Binding.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Binding',
+    interfaces: []
+  };
+  function GlslProgram$DataSourceProvider() {
+  }
+  GlslProgram$DataSourceProvider.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'DataSourceProvider',
+    interfaces: []
+  };
+  function GlslProgram$DataSource() {
+  }
+  GlslProgram$DataSource.prototype.release = function () {
+  };
+  GlslProgram$DataSource.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'DataSource',
+    interfaces: []
+  };
+  function GlslProgram$ResolutionListener() {
+  }
+  GlslProgram$ResolutionListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ResolutionListener',
+    interfaces: []
+  };
+  function GlslProgram$Resolution() {
+    GlslProgram$Resolution_instance = this;
+    GlslProgram$StockUniformPortRef.call(this, 'vec2', 'resolution', ensureNotNull(GlslCode$ContentType$Resolution_getInstance().pluginId));
+  }
+  GlslProgram$Resolution.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Resolution',
+    interfaces: [GlslProgram$StockUniformPortRef]
+  };
+  var GlslProgram$Resolution_instance = null;
+  function GlslProgram$Resolution_getInstance() {
+    if (GlslProgram$Resolution_instance === null) {
+      new GlslProgram$Resolution();
+    }return GlslProgram$Resolution_instance;
+  }
+  function GlslProgram$Time() {
+    GlslProgram$Time_instance = this;
+    GlslProgram$StockUniformPortRef.call(this, 'float', 'time', ensureNotNull(GlslCode$ContentType$Time_getInstance().pluginId));
+  }
+  GlslProgram$Time.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Time',
+    interfaces: [GlslProgram$StockUniformPortRef]
+  };
+  var GlslProgram$Time_instance = null;
+  function GlslProgram$Time_getInstance() {
+    if (GlslProgram$Time_instance === null) {
+      new GlslProgram$Time();
+    }return GlslProgram$Time_instance;
+  }
+  function GlslProgram$GlFragCoord() {
+    GlslProgram$GlFragCoord_instance = this;
+    GlslProgram$StockUniformPortRef.call(this, 'vec4', 'gl_FragCoord', 'baaahs.Core:none');
+    this.varName_nimnlj$_0 = this.name;
+    this.isImplicit_73pc2y$_0 = true;
+  }
+  Object.defineProperty(GlslProgram$GlFragCoord.prototype, 'varName', {
+    get: function () {
+      return this.varName_nimnlj$_0;
+    }
+  });
+  Object.defineProperty(GlslProgram$GlFragCoord.prototype, 'isImplicit', {
+    get: function () {
+      return this.isImplicit_73pc2y$_0;
+    }
+  });
+  GlslProgram$GlFragCoord.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GlFragCoord',
+    interfaces: [GlslProgram$StockUniformPortRef]
+  };
+  var GlslProgram$GlFragCoord_instance = null;
+  function GlslProgram$GlFragCoord_getInstance() {
+    if (GlslProgram$GlFragCoord_instance === null) {
+      new GlslProgram$GlFragCoord();
+    }return GlslProgram$GlFragCoord_instance;
+  }
+  function GlslProgram$UvCoordsTexture() {
+    GlslProgram$UvCoordsTexture_instance = this;
+    GlslProgram$StockUniformPortRef.call(this, 'sampler2D', 'sm_uvCoordsTexture', ensureNotNull(GlslCode$ContentType$UvCoordinateTexture_getInstance().pluginId));
+  }
+  GlslProgram$UvCoordsTexture.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'UvCoordsTexture',
+    interfaces: [GlslProgram$StockUniformPortRef]
+  };
+  var GlslProgram$UvCoordsTexture_instance = null;
+  function GlslProgram$UvCoordsTexture_getInstance() {
+    if (GlslProgram$UvCoordsTexture_instance === null) {
+      new GlslProgram$UvCoordsTexture();
+    }return GlslProgram$UvCoordsTexture_instance;
+  }
+  function GlslProgram$StockUniformPortRef(type, name, pluginId) {
+    Patch$UniformPortRef.call(this, type, name, pluginId);
+    this.shaderId_lihy4v$_0 = null;
+  }
+  Object.defineProperty(GlslProgram$StockUniformPortRef.prototype, 'shaderId', {
+    get: function () {
+      return this.shaderId_lihy4v$_0;
+    }
+  });
+  GlslProgram$StockUniformPortRef.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'StockUniformPortRef',
+    interfaces: [Patch$UniformPortRef]
+  };
+  function GlslProgram$InputPortRef(type, name, pluginId, pluginConfig) {
+    if (pluginId === void 0)
+      pluginId = null;
+    if (pluginConfig === void 0)
+      pluginConfig = emptyMap();
+    Patch$UniformPortRef.call(this, type, name, pluginId, pluginConfig);
+  }
+  GlslProgram$InputPortRef.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'InputPortRef',
+    interfaces: [Patch$UniformPortRef]
+  };
+  function GlslProgram$Companion() {
+    GlslProgram$Companion_instance = this;
+    this.logger = new Logger('GlslProgram');
+  }
+  GlslProgram$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslProgram$Companion_instance = null;
+  function GlslProgram$Companion_getInstance() {
+    if (GlslProgram$Companion_instance === null) {
+      new GlslProgram$Companion();
+    }return GlslProgram$Companion_instance;
+  }
+  function GlslProgram$id$lambda$lambda($receiver) {
+    var tmp$;
+    tmp$ = $receiver.createProgram();
+    if (tmp$ == null) {
+      throw IllegalStateException_init_0();
+    }return tmp$;
+  }
+  function GlslProgram$id$lambda(this$GlslProgram) {
+    return function () {
+      return this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram$id$lambda$lambda);
+    };
+  }
+  function GlslProgram$vertexShader$lambda(this$GlslProgram) {
+    return function () {
+      return this$GlslProgram.gl_8be2vx$.createVertexShader_61zpoe$(trimIndent('\n' + '            #version ' + this$GlslProgram.gl_8be2vx$.glslVersion + '\n' + '                ' + '\n' + '            precision lowp float;' + '\n' + '            ' + '\n' + '            // xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + '            in vec2 Vertex;' + '\n' + '            ' + '\n' + '            const vec2 scale = vec2(0.5, 0.5);' + '\n' + '            ' + '\n' + '            void main()' + '\n' + '            {' + '\n' + '                vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '                gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '            }' + '\n' + '            '));
+    };
+  }
+  function GlslProgram$fragShader$lambda(this$GlslProgram) {
+    return function () {
+      return this$GlslProgram.gl_8be2vx$.createFragmentShader_61zpoe$('#version ' + this$GlslProgram.gl_8be2vx$.glslVersion + '\n' + '\n' + this$GlslProgram.patch_0.toGlsl() + '\n');
+    };
+  }
+  function GlslProgram_init$lambda$lambda(this$GlslProgram) {
+    return function ($receiver) {
+      $receiver.attachShader_wn2jw4$(this$GlslProgram.id_8be2vx$, this$GlslProgram.vertexShader_0.id_8be2vx$);
+      return Unit;
+    };
+  }
+  function GlslProgram_init$lambda$lambda_0(this$GlslProgram) {
+    return function ($receiver) {
+      $receiver.attachShader_wn2jw4$(this$GlslProgram.id_8be2vx$, this$GlslProgram.fragShader_0.id_8be2vx$);
+      return Unit;
+    };
+  }
+  function GlslProgram_init$lambda$lambda_1(this$GlslProgram) {
+    return function ($receiver) {
+      $receiver.linkProgram_za3rmp$(this$GlslProgram.id_8be2vx$);
+      return Unit;
+    };
+  }
+  function GlslProgram_init$lambda$lambda_2(this$GlslProgram) {
+    return function ($receiver) {
+      return $receiver.getProgramParameter_wn2dyp$(this$GlslProgram.id_8be2vx$, 35714);
+    };
+  }
+  function GlslProgram_init$lambda$lambda_3(this$GlslProgram) {
+    return function ($receiver) {
+      return $receiver.getProgramInfoLog_za3rmp$(this$GlslProgram.id_8be2vx$);
+    };
+  }
+  function GlslProgram_init$lambda(this$GlslProgram) {
+    return function () {
+      this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram_init$lambda$lambda(this$GlslProgram));
+      this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram_init$lambda$lambda_0(this$GlslProgram));
+      this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram_init$lambda$lambda_1(this$GlslProgram));
+      if (this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram_init$lambda$lambda_2(this$GlslProgram)) !== 1) {
+        var infoLog = this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram_init$lambda$lambda_3(this$GlslProgram));
+        throw new CompiledShader$CompilationException(infoLog != null ? infoLog : 'huh?');
+      }return Unit;
+    };
+  }
+  function GlslProgram_init$lambda_0(closure$resolver, this$GlslProgram) {
+    return function () {
+      return this$GlslProgram.bind_0(closure$resolver);
+    };
+  }
+  function GlslProgram$vertexAttribLocation$lambda$lambda(this$GlslProgram) {
+    return function ($receiver) {
+      return $receiver.getAttribLocation_hwpqgh$(this$GlslProgram.id_8be2vx$, 'Vertex');
+    };
+  }
+  function GlslProgram$vertexAttribLocation$lambda(this$GlslProgram) {
+    return function () {
+      return this$GlslProgram.gl_8be2vx$.check_342fqd$(GlslProgram$vertexAttribLocation$lambda$lambda(this$GlslProgram));
+    };
+  }
+  GlslProgram.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslProgram',
+    interfaces: []
+  };
+  function InputPort(type, name, description, contentType, pluginId, pluginConfig, glslVar) {
+    if (pluginId === void 0)
+      pluginId = contentType.pluginId;
+    if (pluginConfig === void 0)
+      pluginConfig = emptyMap();
+    if (glslVar === void 0)
+      glslVar = null;
+    this.type = type;
+    this.name = name;
+    this.description = description;
+    this.contentType = contentType;
+    this.pluginId = pluginId;
+    this.pluginConfig = pluginConfig;
+    this.glslVar = glslVar;
+  }
+  InputPort.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'InputPort',
+    interfaces: []
+  };
+  InputPort.prototype.component1 = function () {
+    return this.type;
+  };
+  InputPort.prototype.component2 = function () {
+    return this.name;
+  };
+  InputPort.prototype.component3 = function () {
+    return this.description;
+  };
+  InputPort.prototype.component4 = function () {
+    return this.contentType;
+  };
+  InputPort.prototype.component5 = function () {
+    return this.pluginId;
+  };
+  InputPort.prototype.component6 = function () {
+    return this.pluginConfig;
+  };
+  InputPort.prototype.component7 = function () {
+    return this.glslVar;
+  };
+  InputPort.prototype.copy_xilr8c$ = function (type, name, description, contentType, pluginId, pluginConfig, glslVar) {
+    return new InputPort(type === void 0 ? this.type : type, name === void 0 ? this.name : name, description === void 0 ? this.description : description, contentType === void 0 ? this.contentType : contentType, pluginId === void 0 ? this.pluginId : pluginId, pluginConfig === void 0 ? this.pluginConfig : pluginConfig, glslVar === void 0 ? this.glslVar : glslVar);
+  };
+  InputPort.prototype.toString = function () {
+    return 'InputPort(type=' + Kotlin.toString(this.type) + (', name=' + Kotlin.toString(this.name)) + (', description=' + Kotlin.toString(this.description)) + (', contentType=' + Kotlin.toString(this.contentType)) + (', pluginId=' + Kotlin.toString(this.pluginId)) + (', pluginConfig=' + Kotlin.toString(this.pluginConfig)) + (', glslVar=' + Kotlin.toString(this.glslVar)) + ')';
+  };
+  InputPort.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.type) | 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.description) | 0;
+    result = result * 31 + Kotlin.hashCode(this.contentType) | 0;
+    result = result * 31 + Kotlin.hashCode(this.pluginId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.pluginConfig) | 0;
+    result = result * 31 + Kotlin.hashCode(this.glslVar) | 0;
+    return result;
+  };
+  InputPort.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.type, other.type) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.description, other.description) && Kotlin.equals(this.contentType, other.contentType) && Kotlin.equals(this.pluginId, other.pluginId) && Kotlin.equals(this.pluginConfig, other.pluginConfig) && Kotlin.equals(this.glslVar, other.glslVar)))));
+  };
+  function OutputPort(type, name, description, contentType) {
+    this.type = type;
+    this.name = name;
+    this.description = description;
+    this.contentType = contentType;
+  }
+  OutputPort.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'OutputPort',
+    interfaces: []
+  };
+  OutputPort.prototype.component1 = function () {
+    return this.type;
+  };
+  OutputPort.prototype.component2 = function () {
+    return this.name;
+  };
+  OutputPort.prototype.component3 = function () {
+    return this.description;
+  };
+  OutputPort.prototype.component4 = function () {
+    return this.contentType;
+  };
+  OutputPort.prototype.copy_yt3kxi$ = function (type, name, description, contentType) {
+    return new OutputPort(type === void 0 ? this.type : type, name === void 0 ? this.name : name, description === void 0 ? this.description : description, contentType === void 0 ? this.contentType : contentType);
+  };
+  OutputPort.prototype.toString = function () {
+    return 'OutputPort(type=' + Kotlin.toString(this.type) + (', name=' + Kotlin.toString(this.name)) + (', description=' + Kotlin.toString(this.description)) + (', contentType=' + Kotlin.toString(this.contentType)) + ')';
+  };
+  OutputPort.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.type) | 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.description) | 0;
+    result = result * 31 + Kotlin.hashCode(this.contentType) | 0;
+    return result;
+  };
+  OutputPort.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.type, other.type) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.description, other.description) && Kotlin.equals(this.contentType, other.contentType)))));
+  };
+  function Patch(shaderFragments, links) {
+    this.links_8be2vx$ = links;
+    this.components_0 = null;
+    this.fromGlobal_0 = null;
+    this.toGlobal_0 = null;
+    var tmp$, tmp$_0;
+    var fromById = HashMap_init();
+    var toById = HashMap_init();
+    var tmp$_1;
+    tmp$_1 = this.links_8be2vx$.iterator();
+    while (tmp$_1.hasNext()) {
+      var element = tmp$_1.next();
+      var from = element.component1()
+      , to = element.component2();
+      var key = from.shaderId;
+      var tmp$_2;
+      var value = fromById.get_11rb$(key);
+      if (value == null) {
+        var answer = ArrayList_init();
+        fromById.put_xwzc9p$(key, answer);
+        tmp$_2 = answer;
+      } else {
+        tmp$_2 = value;
+      }
+      tmp$_2.add_11rb$(element);
+      var key_0 = to.shaderId;
+      var tmp$_3;
+      var value_0 = toById.get_11rb$(key_0);
+      if (value_0 == null) {
+        var answer_0 = ArrayList_init();
+        toById.put_xwzc9p$(key_0, answer_0);
+        tmp$_3 = answer_0;
+      } else {
+        tmp$_3 = value_0;
+      }
+      tmp$_3.add_11rb$(element);
+    }
+    var $receiver = shaderFragments.entries;
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+    var tmp$_4, tmp$_0_0;
+    var index = 0;
+    tmp$_4 = $receiver.iterator();
+    while (tmp$_4.hasNext()) {
+      var item = tmp$_4.next();
+      var tmp$_5 = destination.add_11rb$;
+      var i = checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0));
+      var shaderId = item.key;
+      var shaderFragment = item.value;
+      var tmp$_6, tmp$_7;
+      tmp$_5.call(destination, new Patch$Component(this, i, shaderId, shaderFragment, (tmp$_6 = toById.get_11rb$(shaderId)) != null ? tmp$_6 : emptyList(), (tmp$_7 = fromById.get_11rb$(shaderId)) != null ? tmp$_7 : emptyList()));
+    }
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault(destination, 10)), 16);
+    var destination_0 = LinkedHashMap_init_0(capacity);
+    var tmp$_8;
+    tmp$_8 = destination.iterator();
+    while (tmp$_8.hasNext()) {
+      var element_0 = tmp$_8.next();
+      destination_0.put_xwzc9p$(element_0.shaderId, element_0);
+    }
+    this.components_0 = destination_0;
+    this.fromGlobal_0 = (tmp$ = fromById.get_11rb$(null)) != null ? tmp$ : emptyList();
+    this.toGlobal_0 = (tmp$_0 = toById.get_11rb$(null)) != null ? tmp$_0 : emptyList();
+  }
+  Object.defineProperty(Patch.prototype, 'uniformPorts', {
+    get: function () {
+      var $receiver = this.fromGlobal_0;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(item.from);
+      }
+      var destination_0 = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = destination.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (Kotlin.isType(element, Patch$UniformPortRef))
+          destination_0.add_11rb$(element);
+      }
+      return destination_0;
+    }
+  });
+  function Patch$Component($outer, index, shaderId, shaderFragment, incomingLinks, outgoingLinks) {
+    this.$outer = $outer;
+    this.index = index;
+    this.shaderId = shaderId;
+    this.shaderFragment_0 = shaderFragment;
+    this.prefix_0 = 'p' + this.index;
+    this.namespace_0 = new GlslCode$Namespace(this.prefix_0);
+    this.portMap_0 = null;
+    var tmpPortMap = HashMap_init();
+    this.$outer;
+    var tmp$;
+    tmp$ = incomingLinks.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var this$Patch = this.$outer;
+      var from = element.component1()
+      , to = element.component2();
+      if (Kotlin.isType(to, Patch$ShaderPortRef)) {
+        if (Kotlin.isType(from, Patch$ShaderOut)) {
+          var key = to.portName;
+          tmpPortMap.put_xwzc9p$(key, Patch$Patch$Component_init$lambda$lambda(this$Patch, from));
+        } else if (Kotlin.isType(from, Patch$UniformPortRef)) {
+          var key_0 = to.portName;
+          tmpPortMap.put_xwzc9p$(key_0, Patch$Patch$Component_init$lambda$lambda_0(from));
+        }}}
+    var key_1 = 'gl_FragColor';
+    tmpPortMap.put_xwzc9p$(key_1, Patch$Patch$Component_init$lambda);
+    this.portMap_0 = tmpPortMap;
+    var any$result;
+    any$break: do {
+      var tmp$_0;
+      if (Kotlin.isType(outgoingLinks, Collection) && outgoingLinks.isEmpty()) {
+        any$result = false;
+        break any$break;
+      }tmp$_0 = outgoingLinks.iterator();
+      while (tmp$_0.hasNext()) {
+        var element_0 = tmp$_0.next();
+        var from_0 = element_0.component1();
+        if (Kotlin.isType(from_0, Patch$ShaderOut)) {
+          any$result = true;
+          break any$break;
+        }}
+      any$result = false;
+    }
+     while (false);
+    this.saveResult = any$result;
+    this.resultVar = this.namespace_0.internalQualify_61zpoe$('result');
+    this.resolvedPortMap_8hafxz$_0 = lazy(Patch$Component$resolvedPortMap$lambda(this));
+  }
+  Object.defineProperty(Patch$Component.prototype, 'resolvedPortMap', {
+    get: function () {
+      return this.resolvedPortMap_8hafxz$_0.value;
+    }
+  });
+  Patch$Component.prototype.appendDeclaratoryLines_irqrwq$ = function (buf) {
+    append(buf, ['// Shader ID: ', this.shaderId, '; namespace: ', this.prefix_0, '\n']);
+    append(buf, ['// ', this.shaderFragment_0.name, '\n']);
+    if (this.saveResult) {
+      buf.append_61zpoe$('\n');
+      buf.append_61zpoe$(this.shaderFragment_0.entryPoint.returnType + ' ' + this.resultVar + ';' + '\n');
+    }append(buf, [this.shaderFragment_0.toGlsl_8wpk4i$(this.namespace_0, this.resolvedPortMap), '\n']);
+  };
+  Patch$Component.prototype.appendMainLines_irqrwq$ = function (buf) {
+    buf.append_61zpoe$('  ');
+    if (this.saveResult) {
+      append(buf, [this.resultVar, ' = ']);
+    }buf.append_61zpoe$(this.shaderFragment_0.invocationGlsl_8wpk4i$(this.namespace_0, this.resolvedPortMap));
+    buf.append_61zpoe$(';\n');
+  };
+  function Patch$Patch$Component_init$lambda$lambda(this$Patch, closure$from) {
+    return function () {
+      var tmp$, tmp$_0;
+      var tmp$_1;
+      if ((tmp$_0 = (tmp$ = this$Patch.components_0.get_11rb$(closure$from.shaderId)) != null ? tmp$.resultVar : null) != null)
+        tmp$_1 = tmp$_0;
+      else {
+        throw IllegalStateException_init(('huh? no ' + closure$from.shaderId + '?').toString());
+      }
+      return tmp$_1;
+    };
+  }
+  function Patch$Patch$Component_init$lambda$lambda_0(closure$from) {
+    return function () {
+      return closure$from.varName;
+    };
+  }
+  function Patch$Patch$Component_init$lambda() {
+    return 'sm_pixelColor';
+  }
+  function Patch$Component$resolvedPortMap$lambda(this$Component) {
+    return function () {
+      var $receiver = this$Component.portMap_0.entries;
+      var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+      var destination = LinkedHashMap_init_0(capacity);
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var k = element.key;
+        var v = element.value;
+        var pair = to(k, v());
+        destination.put_xwzc9p$(pair.first, pair.second);
+      }
+      return destination;
+    };
+  }
+  Patch$Component.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Component',
+    interfaces: []
+  };
+  Patch.prototype.toGlsl = function () {
+    var buf = StringBuilder_init();
+    buf.append_61zpoe$('#ifdef GL_ES\n');
+    buf.append_61zpoe$('precision mediump float;\n');
+    buf.append_61zpoe$('#endif\n');
+    buf.append_61zpoe$('\n');
+    buf.append_61zpoe$('// SparkleMotion generated GLSL\n');
+    buf.append_61zpoe$('\n');
+    buf.append_61zpoe$('layout(location = 0) out vec4 sm_pixelColor;\n');
+    buf.append_61zpoe$('\n');
+    var tmp$;
+    tmp$ = this.uniformPorts.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (!element.isImplicit)
+        buf.append_61zpoe$('uniform ' + element.type + ' ' + element.varName + ';' + '\n');
+    }
+    buf.append_61zpoe$('\n');
+    var tmp$_0;
+    tmp$_0 = this.components_0.values.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      element_0.appendDeclaratoryLines_irqrwq$(buf);
+    }
+    buf.append_61zpoe$('\n#line 10001\n');
+    buf.append_61zpoe$('void main() {\n');
+    var tmp$_1;
+    tmp$_1 = this.components_0.values.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_1 = tmp$_1.next();
+      element_1.appendMainLines_irqrwq$(buf);
+    }
+    buf.append_61zpoe$('}\n');
+    return buf.toString();
+  };
+  Patch.prototype.compile_bh8y7y$ = function (glslContext, resolver) {
+    return new GlslProgram(glslContext, this, resolver);
+  };
+  function Patch$PortRef() {
+  }
+  Patch$PortRef.prototype.linkTo_cep6n7$ = function (other) {
+    return new Patch$Link(this, other);
+  };
+  Patch$PortRef.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'PortRef',
+    interfaces: []
+  };
+  function Patch$ShaderOut(shaderId) {
+    this.shaderId_dclfyy$_0 = shaderId;
+  }
+  Object.defineProperty(Patch$ShaderOut.prototype, 'shaderId', {
+    get: function () {
+      return this.shaderId_dclfyy$_0;
+    }
+  });
+  Patch$ShaderOut.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderOut',
+    interfaces: [Patch$PortRef]
+  };
+  Patch$ShaderOut.prototype.component1 = function () {
+    return this.shaderId;
+  };
+  Patch$ShaderOut.prototype.copy_61zpoe$ = function (shaderId) {
+    return new Patch$ShaderOut(shaderId === void 0 ? this.shaderId : shaderId);
+  };
+  Patch$ShaderOut.prototype.toString = function () {
+    return 'ShaderOut(shaderId=' + Kotlin.toString(this.shaderId) + ')';
+  };
+  Patch$ShaderOut.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.shaderId) | 0;
+    return result;
+  };
+  Patch$ShaderOut.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.shaderId, other.shaderId))));
+  };
+  function Patch$PixelColor() {
+    Patch$PixelColor_instance = this;
+    this.shaderId_7e1p6w$_0 = null;
+  }
+  Object.defineProperty(Patch$PixelColor.prototype, 'shaderId', {
+    get: function () {
+      return this.shaderId_7e1p6w$_0;
+    }
+  });
+  Patch$PixelColor.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'PixelColor',
+    interfaces: [Patch$PortRef]
+  };
+  var Patch$PixelColor_instance = null;
+  function Patch$PixelColor_getInstance() {
+    if (Patch$PixelColor_instance === null) {
+      new Patch$PixelColor();
+    }return Patch$PixelColor_instance;
+  }
+  function Patch$UniformPortRef(type, name, pluginId, pluginConfig) {
+    if (pluginId === void 0)
+      pluginId = null;
+    if (pluginConfig === void 0)
+      pluginConfig = emptyMap();
+    this.type = type;
+    this.name = name;
+    this.pluginId = pluginId;
+    this.pluginConfig = pluginConfig;
+    this.shaderId_2b7apz$_0 = null;
+    this.isImplicit_so4vd6$_0 = false;
+  }
+  Object.defineProperty(Patch$UniformPortRef.prototype, 'shaderId', {
+    get: function () {
+      return this.shaderId_2b7apz$_0;
+    }
+  });
+  Object.defineProperty(Patch$UniformPortRef.prototype, 'varName', {
+    get: function () {
+      return 'in_' + this.name;
+    }
+  });
+  Object.defineProperty(Patch$UniformPortRef.prototype, 'isImplicit', {
+    get: function () {
+      return this.isImplicit_so4vd6$_0;
+    }
+  });
+  Patch$UniformPortRef.prototype.equals = function (other) {
+    if (this === other)
+      return true;
+    if (!Kotlin.isType(other, Patch$UniformPortRef))
+      return false;
+    if (!equals(this.type, other.type))
+      return false;
+    if (!equals(this.name, other.name))
+      return false;
+    if (!equals(this.pluginId, other.pluginId))
+      return false;
+    if (!equals(this.pluginConfig, other.pluginConfig))
+      return false;
+    if (!equals(this.shaderId, other.shaderId))
+      return false;
+    if (this.isImplicit !== other.isImplicit)
+      return false;
+    return true;
+  };
+  Patch$UniformPortRef.prototype.hashCode = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var result = hashCode(this.type);
+    result = (31 * result | 0) + hashCode(this.name) | 0;
+    result = (31 * result | 0) + ((tmp$_0 = (tmp$ = this.pluginId) != null ? hashCode(tmp$) : null) != null ? tmp$_0 : 0) | 0;
+    result = (31 * result | 0) + hashCode(this.pluginConfig) | 0;
+    result = (31 * result | 0) + ((tmp$_2 = (tmp$_1 = this.shaderId) != null ? hashCode(tmp$_1) : null) != null ? tmp$_2 : 0) | 0;
+    result = (31 * result | 0) + hashCode(this.isImplicit) | 0;
+    return result;
+  };
+  Patch$UniformPortRef.prototype.toString = function () {
+    return "UniformPortRef(type='" + this.type + "', name='" + this.name + "', pluginId=" + toString_0(this.pluginId) + ', pluginConfig=' + this.pluginConfig + ', shaderId=' + toString_0(this.shaderId) + ', isImplicit=' + this.isImplicit + ')';
+  };
+  Patch$UniformPortRef.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UniformPortRef',
+    interfaces: [Patch$PortRef]
+  };
+  function Patch$ShaderPortRef(shaderId, portName) {
+    this.shaderId_dc4b9y$_0 = shaderId;
+    this.portName = portName;
+  }
+  Object.defineProperty(Patch$ShaderPortRef.prototype, 'shaderId', {
+    get: function () {
+      return this.shaderId_dc4b9y$_0;
+    }
+  });
+  Patch$ShaderPortRef.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShaderPortRef',
+    interfaces: [Patch$PortRef]
+  };
+  Patch$ShaderPortRef.prototype.component1 = function () {
+    return this.shaderId;
+  };
+  Patch$ShaderPortRef.prototype.component2 = function () {
+    return this.portName;
+  };
+  Patch$ShaderPortRef.prototype.copy_puj7f4$ = function (shaderId, portName) {
+    return new Patch$ShaderPortRef(shaderId === void 0 ? this.shaderId : shaderId, portName === void 0 ? this.portName : portName);
+  };
+  Patch$ShaderPortRef.prototype.toString = function () {
+    return 'ShaderPortRef(shaderId=' + Kotlin.toString(this.shaderId) + (', portName=' + Kotlin.toString(this.portName)) + ')';
+  };
+  Patch$ShaderPortRef.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.shaderId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.portName) | 0;
+    return result;
+  };
+  Patch$ShaderPortRef.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.shaderId, other.shaderId) && Kotlin.equals(this.portName, other.portName)))));
+  };
+  function Patch$Link(from, to) {
+    this.from = from;
+    this.to = to;
+  }
+  Patch$Link.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Link',
+    interfaces: []
+  };
+  Patch$Link.prototype.component1 = function () {
+    return this.from;
+  };
+  Patch$Link.prototype.component2 = function () {
+    return this.to;
+  };
+  Patch$Link.prototype.copy_4uw5dg$ = function (from, to) {
+    return new Patch$Link(from === void 0 ? this.from : from, to === void 0 ? this.to : to);
+  };
+  Patch$Link.prototype.toString = function () {
+    return 'Link(from=' + Kotlin.toString(this.from) + (', to=' + Kotlin.toString(this.to)) + ')';
+  };
+  Patch$Link.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.from) | 0;
+    result = result * 31 + Kotlin.hashCode(this.to) | 0;
+    return result;
+  };
+  Patch$Link.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.from, other.from) && Kotlin.equals(this.to, other.to)))));
+  };
+  Patch.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Patch',
+    interfaces: []
+  };
+  function Plugin() {
+  }
+  Plugin.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Plugin',
+    interfaces: []
+  };
+  function Plugins(byPackage) {
+    Plugins$Companion_getInstance();
+    this.byPackage_0 = byPackage;
+  }
+  Plugins.prototype.matchUniformProvider_67zkti$ = function (uniformPort, showContext, glslContext) {
+    var tmp$;
+    var pluginId = uniformPort.pluginId;
+    var result = pluginId != null ? Regex_init('(([\\w.]+):)?(\\w+)').matchEntire_6bul2c$(pluginId) : null;
+    if (result != null) {
+      var tmp$_0 = result.destructured;
+      var pluginPackage = tmp$_0.match.groupValues.get_za3lpa$(2);
+      var pluginArg = tmp$_0.match.groupValues.get_za3lpa$(3);
+      tmp$ = to(this.getPlugin_0(pluginPackage), pluginArg);
+    } else {
+      tmp$ = to(this.getPlugin_0(Plugins$Companion_getInstance().default_0), pluginId);
+    }
+    var tmp$_1 = tmp$;
+    var plugin = tmp$_1.component1()
+    , arg = tmp$_1.component2();
+    return arg != null ? plugin.matchUniformProvider_qtsgbw$(arg, uniformPort, showContext, glslContext) : null;
+  };
+  Plugins.prototype.getPlugin_0 = function (packageName) {
+    var tmp$;
+    var tmp$_0;
+    if ((tmp$ = this.byPackage_0.get_11rb$(packageName)) != null)
+      tmp$_0 = tmp$;
+    else {
+      throw IllegalStateException_init(('no such plugin ' + '"' + packageName + '"').toString());
+    }
+    return tmp$_0;
+  };
+  function Plugins$Companion() {
+    Plugins$Companion_instance = this;
+    this.default_0 = 'baaahs.Core';
+    var $receiver = listOf_0(new CorePlugin());
+    var keySelector = getPropertyCallableRef('packageName', 1, function ($receiver) {
+      return $receiver.packageName;
+    });
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      destination.put_xwzc9p$(keySelector(element), element);
+    }
+    this.plugins_0 = new Plugins(destination);
+  }
+  Plugins$Companion.prototype.findAll = function () {
+    return this.plugins_0;
+  };
+  Plugins$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Plugins$Companion_instance = null;
+  function Plugins$Companion_getInstance() {
+    if (Plugins$Companion_instance === null) {
+      new Plugins$Companion();
+    }return Plugins$Companion_instance;
+  }
+  Plugins.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Plugins',
+    interfaces: []
+  };
+  function ShaderFragment() {
+    ShaderFragment$Companion_getInstance();
+  }
+  function ShaderFragment$Type(name, ordinal, outContentType) {
+    Enum.call(this);
+    this.outContentType = outContentType;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function ShaderFragment$Type_initFields() {
+    ShaderFragment$Type_initFields = function () {
+    };
+    ShaderFragment$Type$Color_instance = new ShaderFragment$Type('Color', 0, GlslCode$ContentType$Color_getInstance());
+    ShaderFragment$Type$Projection_instance = new ShaderFragment$Type('Projection', 1, GlslCode$ContentType$UvCoordinate_getInstance());
+    ShaderFragment$Type$Transformer_instance = new ShaderFragment$Type('Transformer', 2, GlslCode$ContentType$UvCoordinate_getInstance());
+    ShaderFragment$Type$Filter_instance = new ShaderFragment$Type('Filter', 3, GlslCode$ContentType$Color_getInstance());
+  }
+  var ShaderFragment$Type$Color_instance;
+  function ShaderFragment$Type$Color_getInstance() {
+    ShaderFragment$Type_initFields();
+    return ShaderFragment$Type$Color_instance;
+  }
+  var ShaderFragment$Type$Projection_instance;
+  function ShaderFragment$Type$Projection_getInstance() {
+    ShaderFragment$Type_initFields();
+    return ShaderFragment$Type$Projection_instance;
+  }
+  var ShaderFragment$Type$Transformer_instance;
+  function ShaderFragment$Type$Transformer_getInstance() {
+    ShaderFragment$Type_initFields();
+    return ShaderFragment$Type$Transformer_instance;
+  }
+  var ShaderFragment$Type$Filter_instance;
+  function ShaderFragment$Type$Filter_getInstance() {
+    ShaderFragment$Type_initFields();
+    return ShaderFragment$Type$Filter_instance;
+  }
+  ShaderFragment$Type.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Type',
+    interfaces: [Enum]
+  };
+  function ShaderFragment$Type$values() {
+    return [ShaderFragment$Type$Color_getInstance(), ShaderFragment$Type$Projection_getInstance(), ShaderFragment$Type$Transformer_getInstance(), ShaderFragment$Type$Filter_getInstance()];
+  }
+  ShaderFragment$Type.values = ShaderFragment$Type$values;
+  function ShaderFragment$Type$valueOf(name) {
+    switch (name) {
+      case 'Color':
+        return ShaderFragment$Type$Color_getInstance();
+      case 'Projection':
+        return ShaderFragment$Type$Projection_getInstance();
+      case 'Transformer':
+        return ShaderFragment$Type$Transformer_getInstance();
+      case 'Filter':
+        return ShaderFragment$Type$Filter_getInstance();
+      default:throwISE('No enum constant baaahs.glshaders.ShaderFragment.Type.' + name);
+    }
+  }
+  ShaderFragment$Type.valueOf_61zpoe$ = ShaderFragment$Type$valueOf;
+  ShaderFragment.prototype.toGlsl_8wpk4i$ = function (namespace, portMap, callback$default) {
+    if (portMap === void 0)
+      portMap = emptyMap();
+    return callback$default ? callback$default(namespace, portMap) : this.toGlsl_8wpk4i$$default(namespace, portMap);
+  };
+  ShaderFragment.prototype.invocationGlsl_8wpk4i$ = function (namespace, portMap, callback$default) {
+    if (portMap === void 0)
+      portMap = emptyMap();
+    return callback$default ? callback$default(namespace, portMap) : this.invocationGlsl_8wpk4i$$default(namespace, portMap);
+  };
+  function ShaderFragment$Base(glslCode) {
+    this.glslCode = glslCode;
+    this.id_sfd9n6$_0 = this.glslCode.title;
+    this.name_skgise$_0 = this.glslCode.title;
+    this.description_dmaydn$_0 = null;
+  }
+  Object.defineProperty(ShaderFragment$Base.prototype, 'id', {
+    get: function () {
+      return this.id_sfd9n6$_0;
+    }
+  });
+  Object.defineProperty(ShaderFragment$Base.prototype, 'name', {
+    get: function () {
+      return this.name_skgise$_0;
+    }
+  });
+  Object.defineProperty(ShaderFragment$Base.prototype, 'description', {
+    get: function () {
+      return this.description_dmaydn$_0;
+    }
+  });
+  ShaderFragment$Base.prototype.toGlsl_8wpk4i$$default = function (namespace, portMap) {
+    var buf = StringBuilder_init();
+    var nonUniformGlobalsMap = HashMap_init();
+    var tmp$;
+    tmp$ = this.glslCode.globalVars.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (!element.isUniform) {
+        var key = element.name;
+        var value = namespace.qualify_61zpoe$(element.name);
+        nonUniformGlobalsMap.put_xwzc9p$(key, value);
+        buf.append_61zpoe$(element.toGlsl_698fpp$(namespace, this.glslCode.symbolNames, emptyMap()));
+        buf.append_61zpoe$('\n');
+      }}
+    var symbolsToNamespace = toSet(this.glslCode.symbolNames);
+    var symbolMap = plus_3(portMap, nonUniformGlobalsMap);
+    var tmp$_0;
+    tmp$_0 = this.glslCode.functions.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      buf.append_61zpoe$(element_0.toGlsl_698fpp$(namespace, symbolsToNamespace, symbolMap));
+      buf.append_61zpoe$('\n');
+    }
+    return buf.toString();
+  };
+  ShaderFragment$Base.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Base',
+    interfaces: [ShaderFragment]
+  };
+  function ShaderFragment$Companion() {
+    ShaderFragment$Companion_instance = this;
+  }
+  ShaderFragment$Companion.prototype.tryColorShader_pfhwa4$ = function (glslCode) {
+    var tmp$;
+    if (glslCode.functionNames_8be2vx$.contains_11rb$('main'))
+      tmp$ = new GenericColorShader(glslCode);
+    else if (glslCode.functionNames_8be2vx$.contains_11rb$('mainImage'))
+      tmp$ = new ShaderToyColorShader(glslCode);
+    else
+      tmp$ = null;
+    return tmp$;
+  };
+  ShaderFragment$Companion.prototype.tryUvTranslatorShader_pfhwa4$ = function (glslCode) {
+    var tmp$;
+    if (glslCode.functionNames_8be2vx$.contains_11rb$('mainUvFromRaster'))
+      tmp$ = new UvShader(glslCode);
+    else
+      tmp$ = null;
+    return tmp$;
+  };
+  ShaderFragment$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var ShaderFragment$Companion_instance = null;
+  function ShaderFragment$Companion_getInstance() {
+    if (ShaderFragment$Companion_instance === null) {
+      new ShaderFragment$Companion();
+    }return ShaderFragment$Companion_instance;
+  }
+  ShaderFragment.prototype.nameify_pdl1vz$ = function ($receiver) {
+    var regex = Regex_init('[A-Z]+');
+    var replace_20wsma$result;
+    replace_20wsma$break: do {
+      var match = regex.find_905azu$($receiver);
+      if (match == null) {
+        replace_20wsma$result = $receiver.toString();
+        break replace_20wsma$break;
+      }var lastStart = 0;
+      var length = $receiver.length;
+      var sb = StringBuilder_init_0(length);
+      do {
+        var foundMatch = ensureNotNull(match);
+        sb.append_ezbsdh$($receiver, lastStart, foundMatch.range.start);
+        sb.append_gw00v9$(' ' + foundMatch.value);
+        lastStart = foundMatch.range.endInclusive + 1 | 0;
+        match = foundMatch.next();
+      }
+       while (lastStart < length && match != null);
+      if (lastStart < length) {
+        sb.append_ezbsdh$($receiver, lastStart, length);
+      }replace_20wsma$result = sb.toString();
+    }
+     while (false);
+    var $receiver_0 = replace_20wsma$result;
+    var tmp$;
+    return capitalize(trim(Kotlin.isCharSequence(tmp$ = $receiver_0) ? tmp$ : throwCCE()).toString());
+  };
+  ShaderFragment.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ShaderFragment',
+    interfaces: []
+  };
+  function UvShader(glslCode) {
+    UvShader$Companion_getInstance();
+    ShaderFragment$Base.call(this, glslCode);
+    this.shaderType_v2n5zw$_0 = ShaderFragment$Type$Projection_getInstance();
+    var $receiver = glslCode.functions;
+    var firstOrNull$result;
+    firstOrNull$break: do {
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        if (equals(element.name, 'mainUvFromRaster')) {
+          firstOrNull$result = element;
+          break firstOrNull$break;
+        }}
+      firstOrNull$result = null;
+    }
+     while (false);
+    this.entryPoint_r6ngxv$_0 = ensureNotNull(firstOrNull$result);
+    this.inputPorts_del4kt$_0 = lazy(UvShader$inputPorts$lambda(glslCode, this));
+    this.outputPorts_2ut4go$_0 = listOf_0(new OutputPort('vec2', 'uvCoord', 'U/V Coordinate', GlslCode$ContentType$UvCoordinate_getInstance()));
+  }
+  function UvShader$Companion() {
+    UvShader$Companion_instance = this;
+    var $receiver = listOf_0(new InputPort('sampler2D', 'sm_uvCoordsTexture', 'U/V Coordinates Texture', GlslCode$ContentType$UvCoordinateTexture_getInstance()));
+    var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16);
+    var destination = LinkedHashMap_init_0(capacity);
+    var tmp$;
+    tmp$ = $receiver.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      destination.put_xwzc9p$(element.name, element);
+    }
+    this.magicUniforms = destination;
+  }
+  UvShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var UvShader$Companion_instance = null;
+  function UvShader$Companion_getInstance() {
+    if (UvShader$Companion_instance === null) {
+      new UvShader$Companion();
+    }return UvShader$Companion_instance;
+  }
+  Object.defineProperty(UvShader.prototype, 'shaderType', {
+    get: function () {
+      return this.shaderType_v2n5zw$_0;
+    }
+  });
+  Object.defineProperty(UvShader.prototype, 'entryPoint', {
+    get: function () {
+      return this.entryPoint_r6ngxv$_0;
+    }
+  });
+  Object.defineProperty(UvShader.prototype, 'inputPorts', {
+    get: function () {
+      return this.inputPorts_del4kt$_0.value;
+    }
+  });
+  Object.defineProperty(UvShader.prototype, 'outputPorts', {
+    get: function () {
+      return this.outputPorts_2ut4go$_0;
+    }
+  });
+  UvShader.prototype.invocationGlsl_8wpk4i$$default = function (namespace, portMap) {
+    var buf = StringBuilder_init();
+    append(buf, [namespace.qualify_61zpoe$(this.entryPoint.name), '(gl_FragCoord.xy)']);
+    return buf.toString();
+  };
+  function UvShader$inputPorts$lambda(closure$glslCode, this$UvShader) {
+    return function () {
+      var $receiver = closure$glslCode.uniforms;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        var tmp$_0 = destination.add_11rb$;
+        var this$UvShader_0 = this$UvShader;
+        var tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+        tmp$_5 = (tmp$_1 = UvShader$Companion_getInstance().magicUniforms.get_11rb$(item.name)) != null ? tmp$_1.copy_xilr8c$(item.type, void 0, void 0, void 0, void 0, void 0, item) : null;
+        if (tmp$_5 == null) {
+          tmp$_5 = new InputPort(item.type, item.name, this$UvShader_0.nameify_pdl1vz$(item.name), GlslCode$ContentType$Float_getInstance(), (tmp$_2 = item.hint) != null ? tmp$_2.plugin : null, (tmp$_4 = (tmp$_3 = item.hint) != null ? tmp$_3.map : null) != null ? tmp$_4 : emptyMap(), item);
+        }tmp$_0.call(destination, tmp$_5);
+      }
+      return destination;
+    };
+  }
+  UvShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'UvShader',
+    interfaces: [ShaderFragment$Base]
+  };
+  function CompiledShader(gl, id, source) {
+    CompiledShader$Companion_getInstance();
+    this.gl_0 = gl;
+    this.id_8be2vx$ = id;
+    this.source_0 = source;
+    this.compile_0();
+  }
+  function CompiledShader$Companion() {
+    CompiledShader$Companion_instance = this;
+    this.logger = new Logger('baaahs.glsl.Shader');
+  }
+  CompiledShader$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var CompiledShader$Companion_instance = null;
+  function CompiledShader$Companion_getInstance() {
+    if (CompiledShader$Companion_instance === null) {
+      new CompiledShader$Companion();
+    }return CompiledShader$Companion_instance;
+  }
+  function CompiledShader$compile$lambda(closure$infoLog, this$CompiledShader) {
+    return function () {
+      return 'Failed to compile shader: ' + toString_0(closure$infoLog) + '\n' + 'Version: ${gl.getParameter(GL_VERSION)}\n' + 'GLSL Version: ${gl.getParameter(GL_SHADING_LANGUAGE_VERSION)}\n' + '\n' + this$CompiledShader.source_0;
+    };
+  }
+  CompiledShader.prototype.compile_0 = function () {
+    this.gl_0.shaderSource_hwpqgh$(this.id_8be2vx$, this.source_0);
+    this.gl_0.compileShader_za3rmp$(this.id_8be2vx$);
+    if (this.gl_0.getShaderParameter_wn2dyp$(this.id_8be2vx$, 35713) !== 1) {
+      var infoLog = this.gl_0.getShaderInfoLog_za3rmp$(this.id_8be2vx$);
+      CompiledShader$Companion_getInstance().logger.error_h4ejuu$(CompiledShader$compile$lambda(infoLog, this));
+      throw new CompiledShader$CompilationException(infoLog != null ? infoLog : 'huh?');
+    }};
+  function CompiledShader$CompilationException(errorMessage) {
+    CompiledShader$CompilationException$Companion_getInstance();
+    Exception_init('GLSL Compilation Error: ' + errorMessage, this);
+    this.errorMessage = errorMessage;
+    this.name = 'CompiledShader$CompilationException';
+  }
+  CompiledShader$CompilationException.prototype.getErrors = function () {
+    var $receiver = this.errorMessage;
+    var tmp$;
+    var $receiver_0 = split(trimEnd(Kotlin.isCharSequence(tmp$ = $receiver) ? tmp$ : throwCCE()).toString(), ['\n']);
+    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+    var tmp$_0;
+    tmp$_0 = $receiver_0.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      var tmp$_1 = destination.add_11rb$;
+      var tmp$_2, tmp$_3, tmp$_4;
+      var tmp$_5;
+      if ((tmp$_3 = (tmp$_2 = CompiledShader$CompilationException$Companion_getInstance().pattern.matchEntire_6bul2c$(item)) != null ? tmp$_2.groupValues : null) != null) {
+        var file = toInt_0(tmp$_3.get_za3lpa$(1));
+        var row = toInt_0(tmp$_3.get_za3lpa$(2));
+        var message = tmp$_3.get_za3lpa$(3);
+        tmp$_5 = new CompiledShader$GlslError(row, 0, message);
+      } else
+        tmp$_5 = null;
+      tmp$_1.call(destination, (tmp$_4 = tmp$_5) != null ? tmp$_4 : new CompiledShader$GlslError(-1, -1, item));
+    }
+    return destination;
+  };
+  function CompiledShader$CompilationException$Companion() {
+    CompiledShader$CompilationException$Companion_instance = this;
+    this.pattern = Regex_init('^ERROR: (\\d+):(\\d+): (.*)$');
+  }
+  CompiledShader$CompilationException$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var CompiledShader$CompilationException$Companion_instance = null;
+  function CompiledShader$CompilationException$Companion_getInstance() {
+    if (CompiledShader$CompilationException$Companion_instance === null) {
+      new CompiledShader$CompilationException$Companion();
+    }return CompiledShader$CompilationException$Companion_instance;
+  }
+  CompiledShader$CompilationException.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CompilationException',
+    interfaces: [Exception]
+  };
+  function CompiledShader$LinkException(errorMessage) {
+    Exception_init('GLSL Link Error: ' + errorMessage, this);
+    this.name = 'CompiledShader$LinkException';
+  }
+  CompiledShader$LinkException.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LinkException',
+    interfaces: [Exception]
+  };
+  function CompiledShader$GlslError(row, column, message) {
+    this.row = row;
+    this.column = column;
+    this.message = message;
+  }
+  CompiledShader$GlslError.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslError',
+    interfaces: []
+  };
+  CompiledShader.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CompiledShader',
+    interfaces: []
+  };
   var check = defineInlineFunction('sparklemotion.baaahs.glsl.check_56a5t8$', wrapFunction(function () {
     var checkForGlError = _.baaahs.glsl.checkForGlError_t0jnzc$;
     return function ($receiver, fn) {
@@ -10509,6 +14262,11 @@
       return result;
     };
   }));
+  function checkForGlError$lambda(closure$code) {
+    return function () {
+      return 'OpenGL Error: ' + closure$code;
+    };
+  }
   function checkForGlError($receiver) {
     var tmp$;
     while (true) {
@@ -10536,41 +14294,191 @@
           break;
       }
       var code = tmp$;
-      if (error !== 0)
+      if (error !== 0) {
+        var logger = new Logger('GlslBase');
+        logger.error_h4ejuu$(checkForGlError$lambda(code));
         throw RuntimeException_init('OpenGL Error: ' + code);
-      else
+      } else
         return;
     }
   }
   function GlslContext(kgl, glslVersion) {
     this.kgl_xaboz$_0 = kgl;
-    this.glslVersion_xb7c7d$_0 = glslVersion;
+    this.glslVersion = glslVersion;
+    this.maxTextureUnit_1s3qdm$_0 = 31;
+    this.textureUnits_n4yh19$_0 = LinkedHashMap_init();
+    this.activeTextureUnit_o6rb92$_0 = null;
+    this.activeProgram_a9hal7$_0 = null;
+    this.stats = new GlslContext$Stats();
   }
-  function GlslContext$createProgram$lambda(this$GlslContext, closure$fragShader) {
-    return function () {
-      return new Program(this$GlslContext.kgl_xaboz$_0, closure$fragShader, this$GlslContext.glslVersion_xb7c7d$_0, GlslBase_getInstance().plugins);
-    };
+  function GlslContext$Stats() {
+    this.activeTexture = 0;
+    this.bindTexture = 0;
+    this.texImage2D = 0;
   }
-  GlslContext.prototype.createProgram_61zpoe$ = function (fragShader) {
-    return this.runInContext_klfg04$(GlslContext$createProgram$lambda(this, fragShader));
-  };
-  function GlslContext$createRenderer$lambda$ObjectLiteral(this$GlslContext) {
-    this.this$GlslContext = this$GlslContext;
-  }
-  GlslContext$createRenderer$lambda$ObjectLiteral.prototype.inContext_klfg04$ = function (fn) {
-    return this.this$GlslContext.runInContext_klfg04$(fn);
-  };
-  GlslContext$createRenderer$lambda$ObjectLiteral.$metadata$ = {
+  GlslContext$Stats.$metadata$ = {
     kind: Kind_CLASS,
-    interfaces: [GlslRenderer$ContextSwitcher]
+    simpleName: 'Stats',
+    interfaces: []
   };
-  function GlslContext$createRenderer$lambda(this$GlslContext, closure$program, closure$uvTranslator) {
+  function GlslContext$createRenderer$lambda(this$GlslContext, closure$uvTranslator) {
     return function () {
-      return new GlslRenderer(this$GlslContext.kgl_xaboz$_0, new GlslContext$createRenderer$lambda$ObjectLiteral(this$GlslContext), closure$program, closure$uvTranslator);
+      return new GlslRenderer(this$GlslContext, closure$uvTranslator);
     };
   }
-  GlslContext.prototype.createRenderer_41a8d7$ = function (program, uvTranslator) {
-    return this.runInContext_klfg04$(GlslContext$createRenderer$lambda(this, program, uvTranslator));
+  GlslContext.prototype.createRenderer_yi0p5l$ = function (uvTranslator) {
+    return this.runInContext_klfg04$(GlslContext$createRenderer$lambda(this, uvTranslator));
+  };
+  function GlslContext$createVertexShader$lambda($receiver) {
+    return $receiver.createShader_za3lpa$(35633);
+  }
+  GlslContext.prototype.createVertexShader_61zpoe$ = function (source) {
+    var tmp$, tmp$_0;
+    tmp$ = this.check_342fqd$(GlslContext$createVertexShader$lambda);
+    if (tmp$ == null) {
+      throw IllegalStateException_init_0();
+    }var shaderId = tmp$;
+    var info = (tmp$_0 = this.kgl_xaboz$_0.getShaderInfoLog_za3rmp$(shaderId)) != null ? tmp$_0 : '';
+    if (info.length > 0) {
+      throw new CompiledShader$CompilationException(info);
+    }return new CompiledShader(this.kgl_xaboz$_0, shaderId, source);
+  };
+  function GlslContext$createFragmentShader$lambda($receiver) {
+    var tmp$;
+    tmp$ = $receiver.createShader_za3lpa$(35632);
+    if (tmp$ == null) {
+      throw IllegalStateException_init_0();
+    }return tmp$;
+  }
+  GlslContext.prototype.createFragmentShader_61zpoe$ = function (source) {
+    var shaderId = this.check_342fqd$(GlslContext$createFragmentShader$lambda);
+    return new CompiledShader(this.kgl_xaboz$_0, shaderId, source);
+  };
+  function GlslContext$useProgram$lambda(closure$glslProgram) {
+    return function ($receiver) {
+      $receiver.useProgram_za3rmp$(closure$glslProgram.id_8be2vx$);
+      return Unit;
+    };
+  }
+  GlslContext.prototype.useProgram_4cj8zn$ = function (glslProgram) {
+    if (this.activeProgram_a9hal7$_0 !== glslProgram) {
+      this.check_342fqd$(GlslContext$useProgram$lambda(glslProgram));
+      this.activeProgram_a9hal7$_0 = glslProgram;
+    }};
+  GlslContext.prototype.getTextureUnit_za3rmp$ = function (key) {
+    var tmp$;
+    var tmp$_0;
+    if ((tmp$ = this.textureUnits_n4yh19$_0.get_11rb$(key)) != null)
+      tmp$_0 = tmp$;
+    else {
+      var $receiver = this.allocTextureUnit_ed3w3r$_0();
+      this.textureUnits_n4yh19$_0.put_xwzc9p$(key, $receiver);
+      tmp$_0 = $receiver;
+    }
+    return tmp$_0;
+  };
+  GlslContext.prototype.allocTextureUnit_ed3w3r$_0 = function () {
+    var nextTextureUnit = this.textureUnits_n4yh19$_0.size;
+    if (!(nextTextureUnit <= this.maxTextureUnit_1s3qdm$_0)) {
+      var message = 'too many texture units';
+      throw IllegalStateException_init(message.toString());
+    }return new GlslContext$TextureUnit(this, nextTextureUnit);
+  };
+  function GlslContext$TextureUnit($outer, unitNumber) {
+    this.$outer = $outer;
+    this.unitNumber_0 = unitNumber;
+    this.boundTexture = null;
+  }
+  function GlslContext$TextureUnit$activate$lambda(this$TextureUnit) {
+    return function ($receiver) {
+      $receiver.activeTexture_za3lpa$(33984 + this$TextureUnit.unitNumber_0 | 0);
+      return Unit;
+    };
+  }
+  GlslContext$TextureUnit.prototype.activate_0 = function () {
+    if (this.$outer.activeTextureUnit_o6rb92$_0 !== this) {
+      var tmp$;
+      tmp$ = this.$outer.stats;
+      tmp$.activeTexture = tmp$.activeTexture + 1 | 0;
+      this.$outer.check_342fqd$(GlslContext$TextureUnit$activate$lambda(this));
+      this.$outer.activeTextureUnit_o6rb92$_0 = this;
+    }};
+  function GlslContext$TextureUnit$bindTexture$lambda(closure$texture) {
+    return function ($receiver) {
+      $receiver.bindTexture_6t2rgq$(3553, closure$texture);
+      return Unit;
+    };
+  }
+  GlslContext$TextureUnit.prototype.bindTexture_za3rmp$ = function (texture) {
+    if (this.boundTexture !== texture) {
+      this.activate_0();
+      var tmp$;
+      tmp$ = this.$outer.stats;
+      tmp$.bindTexture = tmp$.bindTexture + 1 | 0;
+      this.$outer.check_342fqd$(GlslContext$TextureUnit$bindTexture$lambda(texture));
+      this.boundTexture = texture;
+    }};
+  function GlslContext$TextureUnit$uploadTexture$lambda(closure$level, closure$internalFormat, closure$width, closure$height, closure$border, closure$format, closure$type, closure$buffer, closure$offset) {
+    return function ($receiver) {
+      $receiver.texImage2D_e7c6np$(3553, closure$level, closure$internalFormat, closure$width, closure$height, closure$border, closure$format, closure$type, closure$buffer, closure$offset);
+      return Unit;
+    };
+  }
+  GlslContext$TextureUnit.prototype.uploadTexture_mc3zcb$ = function (level, internalFormat, width, height, border, format, type, buffer, offset) {
+    if (offset === void 0)
+      offset = 0;
+    var tmp$;
+    tmp$ = this.$outer.stats;
+    tmp$.texImage2D = tmp$.texImage2D + 1 | 0;
+    this.$outer.check_342fqd$(GlslContext$TextureUnit$uploadTexture$lambda(level, internalFormat, width, height, border, format, type, buffer, offset));
+  };
+  function GlslContext$TextureUnit$configure$lambda(closure$minFilter) {
+    return function ($receiver) {
+      $receiver.texParameteri_qt1dr2$(3553, 10241, closure$minFilter);
+      return Unit;
+    };
+  }
+  function GlslContext$TextureUnit$configure$lambda_0(closure$maxFilter) {
+    return function ($receiver) {
+      $receiver.texParameteri_qt1dr2$(3553, 10240, closure$maxFilter);
+      return Unit;
+    };
+  }
+  function GlslContext$TextureUnit$configure$lambda_1($receiver) {
+    $receiver.texParameteri_qt1dr2$(3553, 10242, 33071);
+    return Unit;
+  }
+  function GlslContext$TextureUnit$configure$lambda_2($receiver) {
+    $receiver.texParameteri_qt1dr2$(3553, 10243, 33071);
+    return Unit;
+  }
+  GlslContext$TextureUnit.prototype.configure_vux9f0$ = function (minFilter, maxFilter) {
+    if (minFilter === void 0)
+      minFilter = 9729;
+    if (maxFilter === void 0)
+      maxFilter = 9729;
+    this.$outer.check_342fqd$(GlslContext$TextureUnit$configure$lambda(minFilter));
+    this.$outer.check_342fqd$(GlslContext$TextureUnit$configure$lambda_0(maxFilter));
+    this.$outer.check_342fqd$(GlslContext$TextureUnit$configure$lambda_1);
+    this.$outer.check_342fqd$(GlslContext$TextureUnit$configure$lambda_2);
+  };
+  GlslContext$TextureUnit.prototype.setUniform_i9pfe0$ = function (uniform) {
+    uniform.set_za3lpa$(this.unitNumber_0);
+  };
+  GlslContext$TextureUnit.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TextureUnit',
+    interfaces: []
+  };
+  GlslContext.prototype.noCheck_342fqd$ = function (fn) {
+    return fn(this.kgl_xaboz$_0);
+  };
+  GlslContext.prototype.check_342fqd$ = function (fn) {
+    var result = fn(this.kgl_xaboz$_0);
+    checkForGlError(this.kgl_xaboz$_0);
+    return result;
+  };
+  GlslContext.prototype.release = function () {
   };
   GlslContext.$metadata$ = {
     kind: Kind_CLASS,
@@ -10584,84 +14492,33 @@
     simpleName: 'GlslManager',
     interfaces: []
   };
-  function GlslPlugin() {
-  }
-  function GlslPlugin$ProgramContext() {
-  }
-  GlslPlugin$ProgramContext.prototype.afterCompile = function () {
-  };
-  GlslPlugin$ProgramContext.prototype.release = function () {
-  };
-  GlslPlugin$ProgramContext.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ProgramContext',
-    interfaces: []
-  };
-  function GlslPlugin$RenderContext() {
-  }
-  GlslPlugin$RenderContext.prototype.before = function () {
-  };
-  GlslPlugin$RenderContext.prototype.after = function () {
-  };
-  GlslPlugin$RenderContext.prototype.release = function () {
-  };
-  GlslPlugin$RenderContext.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'RenderContext',
-    interfaces: []
-  };
-  GlslPlugin.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'GlslPlugin',
-    interfaces: []
-  };
-  function GlslRenderer(gl, contextSwitcher, program, uvTranslator) {
+  function GlslRenderer(gl, uvTranslator) {
     GlslRenderer$Companion_getInstance();
     this.gl = gl;
-    this.contextSwitcher_8zrvqj$_0 = contextSwitcher;
-    this.program_4yv7rr$_0 = program;
     this.uvTranslator_7f5fm$_0 = uvTranslator;
     this.surfacesToAdd_vfxuyj$_0 = ArrayList_init();
+    this.surfacesToRemove_69ybt8$_0 = ArrayList_init();
     this.fbMaxPixWidth_99u0r8$_0 = 1024;
     this.pixelCount = 0;
     this.nextPixelOffset = 0;
     this.nextRectOffset = 0;
-    this.glslSurfaces_vgfiet$_0 = ArrayList_init();
-    this.uvCoordTextureId_c5rmnd$_0 = this.program_4yv7rr$_0.obtainTextureId();
-    var $receiver = this.program_4yv7rr$_0.plugins;
-    var destination = ArrayList_init();
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var tmp$_0;
-      if ((tmp$_0 = element.forRender()) != null) {
-        destination.add_11rb$(tmp$_0);
-      }}
-    this.rendererPlugins_8k6ftu$_0 = destination;
+    this.renderSurfaces_pinqsj$_0 = ArrayList_init();
     this.arrangement = null;
-    var result = GlslRenderer$uvCoordsUniform$lambda(this)();
-    checkForGlError(this.gl);
-    this.uvCoordsUniform_67qhwm$_0 = result;
-    var result_0 = GlslRenderer$resolutionUniform$lambda(this)();
-    checkForGlError(this.gl);
-    this.resolutionUniform_bo22rx$_0 = result_0;
-    var result_1 = GlslRenderer$timeUniform$lambda(this)();
-    checkForGlError(this.gl);
-    this.timeUniform_2ukqek$_0 = result_1;
     this.stats = new GlslRenderer$Stats();
-    var result_2 = GlslRenderer_init$lambda(this)();
-    checkForGlError(this.gl);
-    this.arrangement = this.createArrangement_58qqz3$_0(0, new Float32Array(0), this.glslSurfaces_vgfiet$_0);
+    this.gl.runInContext_klfg04$(GlslRenderer_init$lambda(this));
+    this.arrangement = this.gl.runInContext_klfg04$(GlslRenderer_init$lambda_0(this));
   }
   GlslRenderer.prototype.addSurface_ppt8xj$ = function (surface) {
     var surfacePixels = new GlslRenderer$SurfacePixels(this, surface, this.nextPixelOffset);
     var rects = GlslRenderer$Companion_getInstance().mapSurfaceToRects_j2z8d6$(this.nextPixelOffset, this.fbMaxPixWidth_99u0r8$_0, surface);
-    var glslSurface = new GlslSurface(surfacePixels, new GlslRenderer$Uniforms(this), this.nextRectOffset, rects, this.uvTranslator_7f5fm$_0);
+    var renderSurface = new RenderSurface(null, surfacePixels, this.nextRectOffset, rects, this.uvTranslator_7f5fm$_0);
     this.nextPixelOffset = this.nextPixelOffset + surface.pixelCount | 0;
-    this.nextRectOffset = this.nextRectOffset + glslSurface.rects.size | 0;
-    this.surfacesToAdd_vfxuyj$_0.add_11rb$(glslSurface);
-    return glslSurface;
+    this.nextRectOffset = this.nextRectOffset + renderSurface.rects.size | 0;
+    this.surfacesToAdd_vfxuyj$_0.add_11rb$(renderSurface);
+    return renderSurface;
+  };
+  GlslRenderer.prototype.removeSurface_evx3kl$ = function (renderSurface) {
+    this.surfacesToRemove_69ybt8$_0.add_11rb$(renderSurface);
   };
   function GlslRenderer$SurfacePixels($outer, surface, pixel0Index) {
     this.$outer = $outer;
@@ -10675,7 +14532,7 @@
     simpleName: 'SurfacePixels',
     interfaces: [SurfacePixels]
   };
-  GlslRenderer.prototype.createArrangement_58qqz3$_0 = function (pixelCount, uvCoords, surfaceCount) {
+  GlslRenderer.prototype.createArrangement_relorr$_0 = function (pixelCount, uvCoords, surfaceCount) {
     return new GlslRenderer$Arrangement(this, pixelCount, uvCoords, toList_0(surfaceCount));
   };
   function GlslRenderer$draw$lambda$lambda(this$GlslRenderer) {
@@ -10705,7 +14562,6 @@
   function GlslRenderer$draw$lambda(this$GlslRenderer) {
     return function () {
       var tmp$, tmp$_0, tmp$_1, tmp$_2;
-      this$GlslRenderer.program_4yv7rr$_0.bind();
       tmp$ = this$GlslRenderer.stats;
       tmp$.addSurfacesMs = tmp$.addSurfacesMs + timeSync(GlslRenderer$draw$lambda$lambda(this$GlslRenderer)) | 0;
       tmp$_0 = this$GlslRenderer.stats;
@@ -10718,43 +14574,38 @@
     };
   }
   GlslRenderer.prototype.draw = function () {
-    this.withGlContext_plvbf1$_0(GlslRenderer$draw$lambda(this));
+    this.gl.runInContext_klfg04$(GlslRenderer$draw$lambda(this));
     var tmp$;
     tmp$ = this.stats;
     tmp$.frameCount = tmp$.frameCount + 1 | 0;
   };
-  GlslRenderer.prototype.render_orvbml$_0 = function () {
-    var tmp$, tmp$_0, tmp$_1;
-    var thisTime = getTimeMillis().and(L134217727).toNumber() / 1000.0;
-    (tmp$ = this.resolutionUniform_bo22rx$_0) != null ? (tmp$.set_dleff0$(1.0, 1.0), Unit) : null;
-    (tmp$_0 = this.timeUniform_2ukqek$_0) != null ? (tmp$_0.set_mx4ult$(thisTime), Unit) : null;
-    this.arrangement.bindUvCoordTexture_i9pfe0$(this.uvCoordsUniform_67qhwm$_0);
-    var tmp$_2;
-    tmp$_2 = this.rendererPlugins_8k6ftu$_0.iterator();
-    while (tmp$_2.hasNext()) {
-      var element = tmp$_2.next();
-      element.before();
-    }
-    this.gl.viewport_tjonv8$(0, 0, this.arrangement.pixWidth, this.arrangement.pixHeight);
-    this.gl.clear_za3lpa$(16640);
-    this.arrangement.render();
-    var tmp$_3;
-    tmp$_3 = this.rendererPlugins_8k6ftu$_0.iterator();
-    while (tmp$_3.hasNext()) {
-      var element_0 = tmp$_3.next();
-      element_0.after();
-    }
-    this.gl.finish();
-    var programLog = (tmp$_1 = this.program_4yv7rr$_0.getInfoLog()) != null ? tmp$_1 : '';
-    if (programLog.length > 0)
-      println('ProgramInfoLog: ' + programLog);
-  };
-  function GlslRenderer$incorporateNewSurfaces$lambda$lambda(closure$surface, closure$outOfBounds, closure$uvTranslator, closure$outOfBoundsU, closure$outOfBoundsV) {
-    return function () {
-      return 'Surface ' + closure$surface.describe() + ' has ' + closure$outOfBounds.v + ' points (of ' + closure$uvTranslator.pixelCount + ')' + (' outside the model (u=' + closure$outOfBoundsU.v + ' v=' + closure$outOfBoundsV.v + ')');
+  function GlslRenderer$render$lambda(this$GlslRenderer) {
+    return function ($receiver) {
+      $receiver.viewport_tjonv8$(0, 0, this$GlslRenderer.arrangement.pixWidth, this$GlslRenderer.arrangement.pixHeight);
+      return Unit;
     };
   }
+  function GlslRenderer$render$lambda_0($receiver) {
+    $receiver.clearColor_7b5o5w$(0.0, 0.5, 0.0, 1.0);
+    return Unit;
+  }
+  function GlslRenderer$render$lambda_1($receiver) {
+    $receiver.clear_za3lpa$(16640);
+    return Unit;
+  }
+  function GlslRenderer$render$lambda_2($receiver) {
+    $receiver.finish();
+    return Unit;
+  }
+  GlslRenderer.prototype.render_orvbml$_0 = function () {
+    this.gl.check_342fqd$(GlslRenderer$render$lambda(this));
+    this.gl.check_342fqd$(GlslRenderer$render$lambda_0);
+    this.gl.check_342fqd$(GlslRenderer$render$lambda_1);
+    this.arrangement.render();
+    this.gl.check_342fqd$(GlslRenderer$render$lambda_2);
+  };
   GlslRenderer.prototype.incorporateNewSurfaces = function () {
+    this.surfacesToRemove_69ybt8$_0.isEmpty();
     if (!this.surfacesToAdd_vfxuyj$_0.isEmpty()) {
       var oldUvCoords = this.arrangement.uvCoords;
       var newPixelCount = this.nextPixelOffset;
@@ -10765,52 +14616,91 @@
       tmp$ = this.surfacesToAdd_vfxuyj$_0.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
-        var tmp$_0;
-        var surface = element.pixels.surface;
-        var pixelLocations = LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
-        var uvTranslator = element.uvTranslator.forPixels_fvukwm$(pixelLocations);
-        var outOfBounds = {v: 0};
-        var outOfBoundsU = {v: 0};
-        var outOfBoundsV = {v: 0};
-        tmp$_0 = uvTranslator.pixelCount;
-        for (var i = 0; i < tmp$_0; i++) {
-          var uvOffset = (element.pixels.pixel0Index + i | 0) * 2 | 0;
-          var tmp$_1 = uvTranslator.getUV_za3lpa$(i);
-          var u = tmp$_1.component1()
-          , v = tmp$_1.component2();
-          newUvCoords[uvOffset] = u;
-          newUvCoords[uvOffset + 1 | 0] = v;
-          var uOut = u < 0.0 || u > 1.0;
-          var vOut = v < 0.0 || v > 1.0;
-          if (uOut || vOut) {
-            outOfBounds.v = outOfBounds.v + 1 | 0;
-          }if (uOut) {
-            outOfBoundsU.v = outOfBoundsU.v + 1 | 0;
-          }if (vOut) {
-            outOfBoundsV.v = outOfBoundsV.v + 1 | 0;
-          }}
-        if (outOfBoundsU.v > 0 || outOfBoundsV.v > 0) {
-          GlslRenderer$Companion_getInstance().logger_0.warn_h4ejuu$(GlslRenderer$incorporateNewSurfaces$lambda$lambda(surface, outOfBounds, uvTranslator, outOfBoundsU, outOfBoundsV));
-        }}
-      this.glslSurfaces_vgfiet$_0.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
+        this.putUvCoords_sivtzw$_0(element, newUvCoords);
+      }
+      this.renderSurfaces_pinqsj$_0.addAll_brywnq$(this.surfacesToAdd_vfxuyj$_0);
       this.surfacesToAdd_vfxuyj$_0.clear();
-      this.arrangement = this.createArrangement_58qqz3$_0(newPixelCount, newUvCoords, this.glslSurfaces_vgfiet$_0);
-      this.arrangement.bindUvCoordTexture_i9pfe0$(this.uvCoordsUniform_67qhwm$_0);
+      var $receiver = this.createArrangement_relorr$_0(newPixelCount, newUvCoords, this.renderSurfaces_pinqsj$_0);
+      this.notifyListeners_3phl4i$_0($receiver);
+      this.arrangement = $receiver;
       this.pixelCount = newPixelCount;
       println('Now managing ' + this.pixelCount + ' pixels.');
     }};
-  GlslRenderer.prototype.release = function () {
+  function GlslRenderer$putUvCoords$lambda(closure$surface, closure$outOfBounds, closure$uvTranslator, closure$outOfBoundsU, closure$outOfBoundsV) {
+    return function () {
+      return 'Surface ' + closure$surface.describe() + ' has ' + closure$outOfBounds.v + ' points (of ' + closure$uvTranslator.pixelCount + ')' + (' outside the model (u=' + closure$outOfBoundsU.v + ' v=' + closure$outOfBoundsV.v + ')');
+    };
+  }
+  GlslRenderer.prototype.putUvCoords_sivtzw$_0 = function (renderSurface, newUvCoords) {
     var tmp$;
-    tmp$ = this.rendererPlugins_8k6ftu$_0.iterator();
+    var surface = renderSurface.pixels.surface;
+    var pixelLocations = LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface);
+    var uvTranslator = renderSurface.uvTranslator.forPixels_fvukwm$(pixelLocations);
+    var outOfBounds = {v: 0};
+    var outOfBoundsU = {v: 0};
+    var outOfBoundsV = {v: 0};
+    tmp$ = uvTranslator.pixelCount;
+    for (var i = 0; i < tmp$; i++) {
+      var uvOffset = (renderSurface.pixels.pixel0Index + i | 0) * 2 | 0;
+      var tmp$_0 = uvTranslator.getUV_za3lpa$(i);
+      var u = tmp$_0.component1()
+      , v = tmp$_0.component2();
+      newUvCoords[uvOffset] = u;
+      newUvCoords[uvOffset + 1 | 0] = v;
+      var uOut = u < 0.0 || u > 1.0;
+      var vOut = v < 0.0 || v > 1.0;
+      if (uOut || vOut) {
+        outOfBounds.v = outOfBounds.v + 1 | 0;
+      }if (uOut) {
+        outOfBoundsU.v = outOfBoundsU.v + 1 | 0;
+      }if (vOut) {
+        outOfBoundsV.v = outOfBoundsV.v + 1 | 0;
+      }}
+    if (outOfBoundsU.v > 0 || outOfBoundsV.v > 0) {
+      GlslRenderer$Companion_getInstance().logger_0.warn_h4ejuu$(GlslRenderer$putUvCoords$lambda(surface, outOfBounds, uvTranslator, outOfBoundsU, outOfBoundsV));
+    }};
+  GlslRenderer.prototype.release = function () {
+    this.arrangement.release();
+  };
+  GlslRenderer.prototype.notifyListeners_3phl4i$_0 = function (arrangement) {
+    var $receiver = this.renderSurfaces_pinqsj$_0;
+    var destination = ArrayList_init();
+    var tmp$;
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      element.release();
+      var tmp$_0;
+      if ((tmp$_0 = element.program) != null) {
+        destination.add_11rb$(tmp$_0);
+      }}
+    var $receiver_0 = distinct(destination);
+    var destination_0 = ArrayList_init();
+    var tmp$_1;
+    tmp$_1 = $receiver_0.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      var list = element_0.arrangementListeners;
+      addAll(destination_0, list);
     }
-    this.arrangement.release();
+    var tmp$_2;
+    tmp$_2 = distinct(destination_0).iterator();
+    while (tmp$_2.hasNext()) {
+      var element_1 = tmp$_2.next();
+      element_1.onArrangementChange_1t2y5l$(arrangement);
+    }
+  };
+  function GlslRenderer$ArrangementListener() {
+  }
+  GlslRenderer$ArrangementListener.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'ArrangementListener',
+    interfaces: []
   };
   function GlslRenderer$Companion() {
     GlslRenderer$Companion_instance = this;
     this.logger_0 = new Logger('GlslRenderer');
+    this.glslAnalyzer = new GlslAnalyzer();
+    this.uvMapper = this.glslAnalyzer.asShader_61zpoe$(trimIndent('\n            uniform sampler2D sm_uvCoordsTexture;\n            \n            vec2 mainUvFromRaster(vec2 rasterCoord) {\n                int rasterX = int(rasterCoord.x);\n                int rasterY = int(rasterCoord.y);\n                \n                vec2 uvCoord = vec2(\n                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u\n                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v\n                );\n                return uvCoord;\n            }\n            '));
   }
   function GlslRenderer$Companion$mapSurfaceToRects$makeQuad(closure$pixWidth) {
     return function (offsetPix, widthPix) {
@@ -10853,209 +14743,122 @@
     this.pixelCount = pixelCount;
     this.uvCoords = uvCoords;
     this.surfaces = surfaces;
+    println('Creating arrangement with ' + this.pixelCount);
     this.pixWidth = this.$outer.get_bufWidth_s8ev3n$(this.pixelCount);
     this.pixHeight = this.$outer.get_bufHeight_s8ev3n$(this.pixelCount);
-    var $receiver = this.$outer.program_4yv7rr$_0.params;
-    this.$outer;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(new UniformSetter(this.$outer.program_4yv7rr$_0, item));
-    }
-    this.uniformSetters_0 = destination;
-    var $this = this.$outer;
-    var result = GlslRenderer$Arrangement$uvCoordTexture$lambda(this.$outer)();
-    checkForGlError($this.gl);
-    this.uvCoordTexture_0 = result;
-    var $this_0 = this.$outer;
-    var result_0 = GlslRenderer$Arrangement$frameBuffer$lambda(this.$outer)();
-    checkForGlError($this_0.gl);
-    this.frameBuffer_0 = result_0;
-    var $this_1 = this.$outer;
-    var result_1 = GlslRenderer$Arrangement$renderBuffer$lambda(this.$outer)();
-    checkForGlError($this_1.gl);
-    this.renderBuffer_0 = result_1;
+    this.frameBuffer_0 = this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$frameBuffer$lambda);
+    this.renderBuffer_0 = this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$renderBuffer$lambda);
     this.pixelBuffer_0 = ByteBuffer_init(this.$outer.get_bufSize_s8ev3n$(this.pixelCount) * 4 | 0);
-    this.uvCoordsFloatBuffer_0 = FloatBuffer_init(this.uvCoords);
-    var $this_2 = this.$outer;
-    var result_2 = GlslRenderer$Arrangement$quad$lambda(this.$outer, this)();
-    checkForGlError($this_2.gl);
-    this.quad_0 = result_2;
+    var tmp$ = this.$outer.gl;
+    var $receiver = this.surfaces;
+    var destination = ArrayList_init();
+    var tmp$_0;
+    tmp$_0 = $receiver.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      var $receiver_0 = element.rects;
+      var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+      var tmp$_1;
+      tmp$_1 = $receiver_0.iterator();
+      while (tmp$_1.hasNext()) {
+        var item = tmp$_1.next();
+        destination_0.add_11rb$(new Quad$Rect(-(item.top / this.pixHeight * 2 - 1), item.left / this.pixWidth * 2 - 1, -(item.bottom / this.pixHeight * 2 - 1), item.right / this.pixWidth * 2 - 1));
+      }
+      var list = destination_0;
+      addAll(destination, list);
+    }
+    this.quad_0 = new Quad(tmp$, destination);
   }
-  function GlslRenderer$Arrangement$bindFramebuffer$lambda(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.bindFramebuffer_6t2rgq$(36160, this$Arrangement.frameBuffer_0);
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda($receiver) {
+    checkForGlError($receiver);
+    return Unit;
+  }
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.bindFramebuffer_6t2rgq$(36160, this$Arrangement.frameBuffer_0);
       return Unit;
     };
   }
-  function GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.bindRenderbuffer_6t2rgq$(36161, this$Arrangement.renderBuffer_0);
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.bindRenderbuffer_6t2rgq$(36161, this$Arrangement.renderBuffer_0);
       return Unit;
     };
   }
-  function GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.renderbufferStorage_tjonv8$(36161, GlslRenderer$GlConst_getInstance().GL_RGBA8, this$Arrangement.pixWidth, this$Arrangement.pixHeight);
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.renderbufferStorage_tjonv8$(36161, GlslRenderer$GlConst_getInstance().GL_RGBA8, this$Arrangement.pixWidth, this$Arrangement.pixHeight);
       return Unit;
     };
   }
-  function GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.framebufferRenderbuffer_tjotsn$(36160, 36064, 36161, this$Arrangement.renderBuffer_0);
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.framebufferRenderbuffer_tjotsn$(36160, 36064, 36161, this$Arrangement.renderBuffer_0);
       return Unit;
     };
   }
-  function GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this$GlslRenderer) {
-    return function () {
-      return this$GlslRenderer.gl.checkFramebufferStatus_za3lpa$(36160);
-    };
+  function GlslRenderer$Arrangement$bindFramebuffer$lambda_4($receiver) {
+    return $receiver.checkFramebufferStatus_za3lpa$(36160);
   }
   GlslRenderer$Arrangement.prototype.bindFramebuffer = function () {
-    checkForGlError(this.$outer.gl);
-    var $this = this.$outer;
-    var result = GlslRenderer$Arrangement$bindFramebuffer$lambda(this.$outer, this)();
-    checkForGlError($this.gl);
-    var $this_0 = this.$outer;
-    var result_0 = GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this.$outer, this)();
-    checkForGlError($this_0.gl);
-    var $this_1 = this.$outer;
-    var result_1 = GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this.$outer, this)();
-    checkForGlError($this_1.gl);
-    var $this_2 = this.$outer;
-    var result_2 = GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this.$outer, this)();
-    checkForGlError($this_2.gl);
-    var $this_3 = this.$outer;
-    var result_3 = GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this.$outer)();
-    checkForGlError($this_3.gl);
-    var status = result_3;
+    this.$outer.gl.noCheck_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda);
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda_0(this));
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda_1(this));
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda_2(this));
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda_3(this));
+    var status = this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$bindFramebuffer$lambda_4);
     if (status !== 36053) {
       println(RuntimeException_init('FrameBuffer huh? ' + status).message);
     }};
-  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.activeTexture_za3lpa$(33984 + this$GlslRenderer.uvCoordTextureId_c5rmnd$_0 | 0);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_0(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.bindTexture_6t2rgq$(3553, this$Arrangement.uvCoordTexture_0);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_1(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.texParameteri_qt1dr2$(3553, 10241, 9728);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_2(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.texParameteri_qt1dr2$(3553, 10240, 9728);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.texImage2D_e7c6np$(3553, 0, 33326, this$Arrangement.pixWidth * 2 | 0, this$Arrangement.pixHeight, 0, 6403, 5126, this$Arrangement.uvCoordsFloatBuffer_0);
-      return Unit;
-    };
-  }
-  GlslRenderer$Arrangement.prototype.bindUvCoordTexture_i9pfe0$ = function (uvCoordsLocation) {
-    var $this = this.$outer;
-    var result = GlslRenderer$Arrangement$bindUvCoordTexture$lambda(this.$outer)();
-    checkForGlError($this.gl);
-    var $this_0 = this.$outer;
-    var result_0 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_0(this.$outer, this)();
-    checkForGlError($this_0.gl);
-    var $this_1 = this.$outer;
-    var result_1 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_1(this.$outer)();
-    checkForGlError($this_1.gl);
-    var $this_2 = this.$outer;
-    var result_2 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_2(this.$outer)();
-    checkForGlError($this_2.gl);
-    var $this_3 = this.$outer;
-    var result_3 = GlslRenderer$Arrangement$bindUvCoordTexture$lambda_3(this.$outer, this)();
-    checkForGlError($this_3.gl);
-    uvCoordsLocation.set_za3lpa$(this.$outer.uvCoordTextureId_c5rmnd$_0);
-  };
   GlslRenderer$Arrangement.prototype.getPixel_za3lpa$ = function (pixelIndex) {
     var offset = pixelIndex * 4 | 0;
     return Color_init_2(this.pixelBuffer_0.get_za3lpa$(offset), this.pixelBuffer_0.get_za3lpa$(offset + 1 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 2 | 0), this.pixelBuffer_0.get_za3lpa$(offset + 3 | 0));
   };
+  function GlslRenderer$Arrangement$copyToPixelBuffer$lambda(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.readPixels_idctqj$(0, 0, this$Arrangement.pixWidth, this$Arrangement.pixHeight, 6408, 5121, this$Arrangement.pixelBuffer_0);
+      return Unit;
+    };
+  }
   GlslRenderer$Arrangement.prototype.copyToPixelBuffer = function () {
-    this.$outer.gl.readPixels_idctqj$(0, 0, this.pixWidth, this.pixHeight, 6408, 5121, this.pixelBuffer_0);
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$copyToPixelBuffer$lambda(this));
   };
-  function GlslRenderer$Arrangement$release$lambda(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.bindRenderbuffer_6t2rgq$(36161, null);
+  function GlslRenderer$Arrangement$release$lambda($receiver) {
+    $receiver.bindRenderbuffer_6t2rgq$(36161, null);
+    return Unit;
+  }
+  function GlslRenderer$Arrangement$release$lambda_0($receiver) {
+    $receiver.bindFramebuffer_6t2rgq$(36160, null);
+    return Unit;
+  }
+  function GlslRenderer$Arrangement$release$lambda_1(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.deleteFramebuffer_za3rmp$(this$Arrangement.frameBuffer_0);
       return Unit;
     };
   }
-  function GlslRenderer$Arrangement$release$lambda_0(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.bindFramebuffer_6t2rgq$(36160, null);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$release$lambda_1(this$GlslRenderer) {
-    return function () {
-      this$GlslRenderer.gl.bindTexture_6t2rgq$(3553, null);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$release$lambda_2(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.deleteFramebuffer_za3rmp$(this$Arrangement.frameBuffer_0);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$release$lambda_3(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.deleteRenderbuffer_za3rmp$(this$Arrangement.renderBuffer_0);
-      return Unit;
-    };
-  }
-  function GlslRenderer$Arrangement$release$lambda_4(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      this$GlslRenderer.gl.deleteTexture_za3rmp$(this$Arrangement.uvCoordTexture_0);
+  function GlslRenderer$Arrangement$release$lambda_2(this$Arrangement) {
+    return function ($receiver) {
+      $receiver.deleteRenderbuffer_za3rmp$(this$Arrangement.renderBuffer_0);
       return Unit;
     };
   }
   GlslRenderer$Arrangement.prototype.release = function () {
     println('Release ' + this + ' with ' + this.pixelCount + ' pixels and ' + this.uvCoords.length + ' uvs');
     this.quad_0.release();
-    var $this = this.$outer;
-    var result = GlslRenderer$Arrangement$release$lambda(this.$outer)();
-    checkForGlError($this.gl);
-    var $this_0 = this.$outer;
-    var result_0 = GlslRenderer$Arrangement$release$lambda_0(this.$outer)();
-    checkForGlError($this_0.gl);
-    var $this_1 = this.$outer;
-    var result_1 = GlslRenderer$Arrangement$release$lambda_1(this.$outer)();
-    checkForGlError($this_1.gl);
-    var $this_2 = this.$outer;
-    var result_2 = GlslRenderer$Arrangement$release$lambda_2(this.$outer, this)();
-    checkForGlError($this_2.gl);
-    var $this_3 = this.$outer;
-    var result_3 = GlslRenderer$Arrangement$release$lambda_3(this.$outer, this)();
-    checkForGlError($this_3.gl);
-    var $this_4 = this.$outer;
-    var result_4 = GlslRenderer$Arrangement$release$lambda_4(this.$outer, this)();
-    checkForGlError($this_4.gl);
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$release$lambda);
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$release$lambda_0);
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$release$lambda_1(this));
+    this.$outer.gl.check_342fqd$(GlslRenderer$Arrangement$release$lambda_2(this));
   };
-  function GlslRenderer$Arrangement$render$lambda(this$Arrangement) {
+  function GlslRenderer$Arrangement$render$lambda$lambda(closure$surfaces, this$Arrangement) {
     return function () {
-      var $receiver = this$Arrangement.surfaces;
+      var $receiver = closure$surfaces;
       var tmp$;
       tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         var this$Arrangement_0 = this$Arrangement;
-        this$Arrangement_0.updateUniformsForSurface_0(element);
         var tmp$_0;
         tmp$_0 = get_indices(element.rects).iterator();
         while (tmp$_0.hasNext()) {
@@ -11067,60 +14870,44 @@
     };
   }
   GlslRenderer$Arrangement.prototype.render = function () {
-    this.quad_0.prepareToRender_ls4sck$(GlslRenderer$Arrangement$render$lambda(this));
-  };
-  GlslRenderer$Arrangement.prototype.updateUniformsForSurface_0 = function (surface) {
-    var tmp$, tmp$_0;
-    var index = 0;
-    tmp$ = this.$outer.program_4yv7rr$_0.params.iterator();
+    var $receiver = this.surfaces;
+    var destination = LinkedHashMap_init();
+    var tmp$;
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var paramIndex = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-      var tmp$_1;
-      var value = (tmp$_1 = surface.uniforms.values) != null ? tmp$_1[paramIndex] : null;
-      if (value != null) {
-        this.uniformSetters_0.get_za3lpa$(paramIndex).set_s8jyv4$(value);
+      var element = tmp$.next();
+      var key = element.program;
+      var tmp$_0;
+      var value = destination.get_11rb$(key);
+      if (value == null) {
+        var answer = ArrayList_init();
+        destination.put_xwzc9p$(key, answer);
+        tmp$_0 = answer;
+      } else {
+        tmp$_0 = value;
+      }
+      var list = tmp$_0;
+      list.add_11rb$(element);
+    }
+    this.$outer;
+    var tmp$_1;
+    tmp$_1 = destination.entries.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      var this$GlslRenderer = this.$outer;
+      var program = element_0.key;
+      var surfaces = element_0.value;
+      if (program != null) {
+        this$GlslRenderer.gl.useProgram_4cj8zn$(program);
+        program.updateUniforms();
+        this.quad_0.prepareToRender_4layb8$(program.vertexAttribLocation, GlslRenderer$Arrangement$render$lambda$lambda(surfaces, this));
       }}
   };
-  function GlslRenderer$Arrangement$uvCoordTexture$lambda(this$GlslRenderer) {
-    return function () {
-      return this$GlslRenderer.gl.createTexture();
-    };
+  function GlslRenderer$Arrangement$frameBuffer$lambda($receiver) {
+    return $receiver.createFramebuffer();
   }
-  function GlslRenderer$Arrangement$frameBuffer$lambda(this$GlslRenderer) {
-    return function () {
-      return this$GlslRenderer.gl.createFramebuffer();
-    };
-  }
-  function GlslRenderer$Arrangement$renderBuffer$lambda(this$GlslRenderer) {
-    return function () {
-      return this$GlslRenderer.gl.createRenderbuffer();
-    };
-  }
-  function GlslRenderer$Arrangement$quad$lambda(this$GlslRenderer, this$Arrangement) {
-    return function () {
-      var tmp$ = this$GlslRenderer.gl;
-      var tmp$_0 = this$GlslRenderer.program_4yv7rr$_0;
-      var $receiver = this$Arrangement.surfaces;
-      var destination = ArrayList_init();
-      var tmp$_1;
-      tmp$_1 = $receiver.iterator();
-      while (tmp$_1.hasNext()) {
-        var element = tmp$_1.next();
-        var this$Arrangement_0 = this$Arrangement;
-        var $receiver_0 = element.rects;
-        var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-        var tmp$_2;
-        tmp$_2 = $receiver_0.iterator();
-        while (tmp$_2.hasNext()) {
-          var item = tmp$_2.next();
-          destination_0.add_11rb$(new Quad$Rect(-(item.top / this$Arrangement_0.pixHeight * 2 - 1), item.left / this$Arrangement_0.pixWidth * 2 - 1, -(item.bottom / this$Arrangement_0.pixHeight * 2 - 1), item.right / this$Arrangement_0.pixWidth * 2 - 1));
-        }
-        var list = destination_0;
-        addAll(destination, list);
-      }
-      return new Quad(tmp$, tmp$_0, destination);
-    };
+  function GlslRenderer$Arrangement$renderBuffer$lambda($receiver) {
+    return $receiver.createRenderbuffer();
   }
   GlslRenderer$Arrangement.$metadata$ = {
     kind: Kind_CLASS,
@@ -11148,29 +14935,6 @@
   GlslRenderer$Uniforms.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Uniforms',
-    interfaces: []
-  };
-  GlslRenderer.prototype.gl_klfg04$ = defineInlineFunction('sparklemotion.baaahs.glsl.GlslRenderer.gl_klfg04$', wrapFunction(function () {
-    var checkForGlError = _.baaahs.glsl.checkForGlError_t0jnzc$;
-    return function (fn) {
-      var result = fn();
-      checkForGlError(this.gl);
-      return result;
-    };
-  }));
-  function GlslRenderer$withGlContext$lambda(closure$fn) {
-    return function () {
-      return closure$fn();
-    };
-  }
-  GlslRenderer.prototype.withGlContext_plvbf1$_0 = function (fn) {
-    return this.contextSwitcher_8zrvqj$_0.inContext_klfg04$(GlslRenderer$withGlContext$lambda(fn));
-  };
-  function GlslRenderer$ContextSwitcher() {
-  }
-  GlslRenderer$ContextSwitcher.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'ContextSwitcher',
     interfaces: []
   };
   function GlslRenderer$Stats() {
@@ -11250,29 +15014,21 @@
       new GlslRenderer$GlConst();
     }return GlslRenderer$GlConst_instance;
   }
-  function GlslRenderer$uvCoordsUniform$lambda(this$GlslRenderer) {
-    return function () {
-      var tmp$;
-      tmp$ = Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'sm_uvCoords');
-      if (tmp$ == null) {
-        throw Exception_init('no sm_uvCoords uniform!');
-      }return tmp$;
-    };
-  }
-  function GlslRenderer$resolutionUniform$lambda(this$GlslRenderer) {
-    return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'resolution');
-    };
-  }
-  function GlslRenderer$timeUniform$lambda(this$GlslRenderer) {
-    return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$GlslRenderer.program_4yv7rr$_0, 'time');
-    };
+  function GlslRenderer_init$lambda$lambda($receiver) {
+    $receiver.clearColor_7b5o5w$(0.0, 0.5, 0.0, 1.0);
+    return Unit;
   }
   function GlslRenderer_init$lambda(this$GlslRenderer) {
     return function () {
-      this$GlslRenderer.gl.clearColor_7b5o5w$(0.0, 0.5, 0.0, 1.0);
+      this$GlslRenderer.gl.check_342fqd$(GlslRenderer_init$lambda$lambda);
       return Unit;
+    };
+  }
+  function GlslRenderer_init$lambda_0(this$GlslRenderer) {
+    return function () {
+      var $receiver = this$GlslRenderer.createArrangement_relorr$_0(0, new Float32Array(0), this$GlslRenderer.renderSurfaces_pinqsj$_0);
+      this$GlslRenderer.notifyListeners_3phl4i$_0($receiver);
+      return $receiver;
     };
   }
   GlslRenderer.$metadata$ = {
@@ -11280,170 +15036,383 @@
     simpleName: 'GlslRenderer',
     interfaces: []
   };
-  function GlslSurface(pixels, uniforms, rect0Index, rects, uvTranslator) {
-    this.pixels = pixels;
-    this.uniforms = uniforms;
-    this.rect0Index = rect0Index;
-    this.rects = rects;
-    this.uvTranslator = uvTranslator;
+  function KglTracer(kgl) {
+    KglTracer$Companion_getInstance();
+    this.kgl_0 = kgl;
   }
-  GlslSurface.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'GlslSurface',
+  function KglTracer$Companion() {
+    KglTracer$Companion_instance = this;
+    this.logger = new Logger('KglTracer');
+  }
+  KglTracer$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
     interfaces: []
   };
-  function SurfacePixels(surface, pixel0Index) {
-    this.surface = surface;
-    this.pixel0Index = pixel0Index;
-    this.size_l2kxw9$_0 = this.surface.pixelCount;
+  var KglTracer$Companion_instance = null;
+  function KglTracer$Companion_getInstance() {
+    if (KglTracer$Companion_instance === null) {
+      new KglTracer$Companion();
+    }return KglTracer$Companion_instance;
   }
-  Object.defineProperty(SurfacePixels.prototype, 'size', {
-    get: function () {
-      return this.size_l2kxw9$_0;
-    }
-  });
-  SurfacePixels.prototype.set_ibd5tj$ = function (i, color) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  SurfacePixels.prototype.set_tmuqsv$ = function (colors) {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
-  };
-  SurfacePixels.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SurfacePixels',
-    interfaces: [Pixels]
-  };
-  function Program(gl, fragShader, glslVersion, plugins) {
-    if (plugins === void 0)
-      plugins = GlslBase_getInstance().plugins;
-    this.gl_0 = gl;
-    this.fragShader = fragShader;
-    this.glslVersion_0 = glslVersion;
-    var $receiver = this.gl_0;
-    var result = Program$id$lambda(this)();
-    checkForGlError($receiver);
-    this.id_0 = result;
-    this.params = null;
-    var $receiver_0 = plugins;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$;
-    tmp$ = $receiver_0.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(item.forProgram_4xpcsd$(this.gl_0, this));
-    }
-    this.plugins = destination;
-    this.gadgetPattern_0 = Regex_init('\\s*//\\s*SPARKLEMOTION GADGET:\\s*([^\\s]+)\\s+(\\{.*})\\s*\n' + '\\s*uniform\\s+([^\\s]+)\\s+([^\\s]+);');
-    this.json_0 = new Json(JsonConfiguration.Companion.Stable.copy_bjakrj$(void 0, void 0, true));
-    this.nextTextureId_0 = 0;
-    this.attachVertexShader_0();
-    var src = this.buildFragmentShader_0();
-    println(src);
-    this.params = this.findParams_61zpoe$(src);
-    var fragmentShader = Shader$Companion_getInstance_0().createFragmentShader_oiaex5$(this.gl_0, src);
-    this.attachShader_6f59td$(fragmentShader);
-    if (!this.link()) {
-      var infoLog = this.getInfoLog();
-      throw RuntimeException_init('ProgramInfoLog: ' + toString_0(infoLog));
-    }var tmp$_0;
-    tmp$_0 = this.plugins.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      element.afterCompile();
-    }
-  }
-  Program.prototype.obtainTextureId = function () {
-    var tmp$;
-    if (!(this.nextTextureId_0 <= 31)) {
-      var message = 'too many textures!';
-      throw IllegalStateException_init(message.toString());
-    }return tmp$ = this.nextTextureId_0, this.nextTextureId_0 = tmp$ + 1 | 0, tmp$;
-  };
-  function Program$findParams$lambda(this$Program) {
-    return function (matchResult) {
-      var tmp$;
-      println('matches: ' + matchResult.groupValues);
-      var tmp$_0 = matchResult.destructured;
-      var gadgetType = tmp$_0.match.groupValues.get_za3lpa$(1);
-      var configJson = tmp$_0.match.groupValues.get_za3lpa$(2);
-      var valueTypeName = tmp$_0.match.groupValues.get_za3lpa$(3);
-      var varName = tmp$_0.match.groupValues.get_za3lpa$(4);
-      var configData = this$Program.json_0.parseJson_61zpoe$(configJson);
-      switch (valueTypeName) {
-        case 'int':
-          tmp$ = GlslShader$Param$Type$INT_getInstance();
-          break;
-        case 'float':
-          tmp$ = GlslShader$Param$Type$FLOAT_getInstance();
-          break;
-        case 'vec3':
-          tmp$ = GlslShader$Param$Type$VEC3_getInstance();
-          break;
-        default:throw IllegalArgumentException_init('unsupported type ' + valueTypeName);
-      }
-      var valueType = tmp$;
-      return new GlslShader$Param(varName, gadgetType, valueType, configData.jsonObject);
-    };
-  }
-  Program.prototype.findParams_61zpoe$ = function (glslFragmentShader) {
-    return toList_3(map(this.gadgetPattern_0.findAll_905azu$(glslFragmentShader), Program$findParams$lambda(this)));
-  };
-  Program.prototype.getInfoLog = function () {
-    return this.gl_0.getProgramInfoLog_za3rmp$(this.id_0);
-  };
-  Program.prototype.attachShader_6f59td$ = function (shader) {
-    this.gl_0.attachShader_wn2jw4$(this.id_0, shader.id_8be2vx$);
-  };
-  Program.prototype.link = function () {
-    this.gl_0.linkProgram_za3rmp$(this.id_0);
-    return this.gl_0.getProgramParameter_wn2dyp$(this.id_0, 35714) === 1;
-  };
-  Program.prototype.bind = function () {
-    this.gl_0.useProgram_za3rmp$(this.id_0);
-  };
-  Program.prototype.getUniform_61zpoe$ = function (name) {
-    var tmp$;
-    return (tmp$ = this.gl_0.getUniformLocation_hwpqgh$(this.id_0, name)) != null ? new Uniform(this.gl_0, tmp$) : null;
-  };
-  Program.prototype.attachVertexShader_0 = function () {
-    var vertexShaderSource = '#version ' + this.glslVersion_0 + '\n' + '    ' + '\n' + 'precision lowp float;' + '\n' + '\n' + '// xy = vertex position in normalized device coordinates ([-1,+1] range).' + '\n' + 'in vec2 Vertex;' + '\n' + '\n' + 'const vec2 scale = vec2(0.5, 0.5);' + '\n' + '\n' + 'void main()' + '\n' + '{' + '\n' + '    vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range' + '\n' + '    gl_Position = vec4(Vertex, 0.0, 1.0);' + '\n' + '}' + '\n';
-    var vertexShader = Shader$Companion_getInstance_0().createVertexShader_oiaex5$(this.gl_0, vertexShaderSource);
-    this.attachShader_6f59td$(vertexShader);
-  };
-  Program.prototype.getVertexAttribLocation = function () {
-    return this.gl_0.getAttribLocation_hwpqgh$(this.id_0, 'Vertex');
-  };
-  Program.prototype.buildFragmentShader_0 = function () {
-    var tmp$ = '#version ' + this.glslVersion_0 + '\n' + '    ' + '\n' + '#ifdef GL_ES' + '\n' + 'precision mediump float;' + '\n' + '#endif' + '\n' + '\n' + 'uniform sampler2D sm_uvCoords;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'u scale' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 3 }' + '\n' + 'uniform float sm_uScale;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'v scale' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 3 }' + '\n' + 'uniform float sm_vScale;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: StartOfMeasure { ' + '"' + 'name' + '"' + ': ' + '"' + 'startOfMeasure' + '"' + ' }' + '\n' + 'uniform float sm_startOfMeasure;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Beat { ' + '"' + 'name' + '"' + ': ' + '"' + 'beat' + '"' + ' }' + '\n' + 'uniform float sm_beat;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'Brightness' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 1 }' + '\n' + 'uniform float sm_brightness;' + '\n' + '\n' + '// SPARKLEMOTION GADGET: Slider { ' + '"' + 'name' + '"' + ': ' + '"' + 'Saturation' + '"' + ', ' + '"' + 'minValue' + '"' + ': 0, ' + '"' + 'maxValue' + '"' + ': 1 }' + '\n' + 'uniform float sm_saturation;' + '\n' + '\n';
-    var $receiver = this.plugins;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(item.glslPreamble);
-    }
-    var tmp$_1 = tmp$ + joinToString(destination, '\n') + '\n' + '\n' + 'out vec4 sm_fragColor;' + '\n' + '\n';
-    var $receiver_0 = this.fragShader;
-    var regex = Regex_init('void main\\s*\\(\\s*(void\\s*)?\\)');
-    var replacement = 'void sm_main(vec2 sm_pixelCoord)';
-    return tmp$_1 + replace(replace(regex.replace_x2uqeu$($receiver_0, replacement), 'gl_FragCoord', 'sm_pixelCoord'), 'gl_FragColor', 'sm_fragColor') + '\n' + '\n' + '// Coming in, `gl_FragCoord` is a vec2 where `x` and `y` correspond to positions in `sm_uvCoords`.' + '\n' + '// We look up the `u` and `v` coordinates (which should be floats `[0..1]` in the mapping space) and' + '\n' + "// pass them to the shader's original `main()` method." + '\n' + 'void main(void) {' + '\n' + '    int uvX = int(gl_FragCoord.x);' + '\n' + '    int uvY = int(gl_FragCoord.y);' + '\n' + '    ' + '\n' + '    vec2 pixelCoord = vec2(' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2, uvY), 0).r * sm_uScale,    // u' + '\n' + '        texelFetch(sm_uvCoords, ivec2(uvX * 2 + 1, uvY), 0).r * sm_vScale // v' + '\n' + '    );' + '\n' + '\n' + '    sm_main(pixelCoord);' + '\n' + '}' + '\n';
-  };
-  function Program$id$lambda(this$Program) {
+  function KglTracer$log$lambda(closure$name, closure$args, closure$fn) {
     return function () {
       var tmp$;
-      tmp$ = this$Program.gl_0.createProgram();
-      if (tmp$ == null) {
-        throw IllegalStateException_init_0();
-      }return tmp$;
+      var tmp$_0 = closure$name + '(' + joinToString_0(closure$args, ', ') + ')';
+      var tmp$_1;
+      tmp$_1 = closure$fn != null ? ' => ' + toString_0(closure$fn()) : null;
+      return tmp$_0 + ((tmp$ = tmp$_1) != null ? tmp$ : '');
     };
   }
-  Program.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Program',
-    interfaces: []
+  KglTracer.prototype.log_0 = function (name, args, fn) {
+    if (fn === void 0)
+      fn = null;
+    KglTracer$Companion_getInstance().logger.debug_h4ejuu$(KglTracer$log$lambda(name, args, fn));
   };
-  function Quad(gl, program, rects) {
+  KglTracer.prototype.activeTexture_za3lpa$ = function (texture) {
+    this.log_0('activeTexture', [texture]);
+    return this.kgl_0.activeTexture_za3lpa$(texture);
+  };
+  KglTracer.prototype.attachShader_wn2jw4$ = function (programId, shaderId) {
+    this.log_0('attachShader', [programId, shaderId]);
+    return this.kgl_0.attachShader_wn2jw4$(programId, shaderId);
+  };
+  KglTracer.prototype.bindAttribLocation_piykpr$ = function (programId, index, name) {
+    this.log_0('bindAttribLocation', [programId, index, name]);
+    return this.kgl_0.bindAttribLocation_piykpr$(programId, index, name);
+  };
+  KglTracer.prototype.bindBuffer_6t2rgq$ = function (target, bufferId) {
+    this.log_0('bindBuffer', [target, bufferId]);
+    return this.kgl_0.bindBuffer_6t2rgq$(target, bufferId);
+  };
+  KglTracer.prototype.bindFramebuffer_6t2rgq$ = function (target, framebuffer) {
+    this.log_0('bindFramebuffer', [target, framebuffer]);
+    return this.kgl_0.bindFramebuffer_6t2rgq$(target, framebuffer);
+  };
+  KglTracer.prototype.bindRenderbuffer_6t2rgq$ = function (target, renderbuffer) {
+    this.log_0('bindRenderbuffer', [target, renderbuffer]);
+    return this.kgl_0.bindRenderbuffer_6t2rgq$(target, renderbuffer);
+  };
+  KglTracer.prototype.bindTexture_6t2rgq$ = function (target, texture) {
+    this.log_0('bindTexture', [target, texture]);
+    return this.kgl_0.bindTexture_6t2rgq$(target, texture);
+  };
+  KglTracer.prototype.bindVertexArray_s8jyv4$ = function (vertexArrayObject) {
+    this.log_0('bindVertexArray', [vertexArrayObject]);
+    return this.kgl_0.bindVertexArray_s8jyv4$(vertexArrayObject);
+  };
+  KglTracer.prototype.blendFunc_vux9f0$ = function (sFactor, dFactor) {
+    this.log_0('blendFunc', [sFactor, dFactor]);
+    return this.kgl_0.blendFunc_vux9f0$(sFactor, dFactor);
+  };
+  KglTracer.prototype.bufferData_8en9n9$$default = function (target, sourceData, size, usage, offset) {
+    this.log_0('bufferData', [target, sourceData, size, usage, offset]);
+    return this.kgl_0.bufferData_8en9n9$(target, sourceData, size, usage, offset);
+  };
+  KglTracer.prototype.checkFramebufferStatus_za3lpa$ = function (target) {
+    this.log_0('checkFramebufferStatus', [target]);
+    return this.kgl_0.checkFramebufferStatus_za3lpa$(target);
+  };
+  KglTracer.prototype.clear_za3lpa$ = function (mask) {
+    this.log_0('clear', [mask]);
+    return this.kgl_0.clear_za3lpa$(mask);
+  };
+  KglTracer.prototype.clearColor_7b5o5w$ = function (r, g, b, a) {
+    this.log_0('clearColor', [r, g, b, a]);
+    return this.kgl_0.clearColor_7b5o5w$(r, g, b, a);
+  };
+  KglTracer.prototype.compileShader_za3rmp$ = function (shaderId) {
+    this.log_0('compileShader', [shaderId]);
+    return this.kgl_0.compileShader_za3rmp$(shaderId);
+  };
+  function KglTracer$createBuffer$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createBuffer = function () {
+    var $receiver = this.kgl_0.createBuffer();
+    this.log_0('createBuffer', [], KglTracer$createBuffer$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createBuffers$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createBuffers_za3lpa$ = function (count) {
+    var $receiver = this.kgl_0.createBuffers_za3lpa$(count);
+    this.log_0('createBuffers', [count], KglTracer$createBuffers$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createFramebuffer$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createFramebuffer = function () {
+    var $receiver = this.kgl_0.createFramebuffer();
+    this.log_0('createFramebuffer', [], KglTracer$createFramebuffer$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createProgram$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createProgram = function () {
+    var $receiver = this.kgl_0.createProgram();
+    this.log_0('createProgram', [], KglTracer$createProgram$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createRenderbuffer$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createRenderbuffer = function () {
+    var $receiver = this.kgl_0.createRenderbuffer();
+    this.log_0('createRenderbuffer', [], KglTracer$createRenderbuffer$lambda$lambda($receiver));
+    return $receiver;
+  };
+  KglTracer.prototype.createShader_za3lpa$ = function (type) {
+    this.log_0('createShader', [type]);
+    return this.kgl_0.createShader_za3lpa$(type);
+  };
+  function KglTracer$createTexture$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createTexture = function () {
+    var $receiver = this.kgl_0.createTexture();
+    this.log_0('createTexture', [], KglTracer$createTexture$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createTextures$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createTextures_za3lpa$ = function (n) {
+    var $receiver = this.kgl_0.createTextures_za3lpa$(n);
+    this.log_0('createTextures', [n], KglTracer$createTextures$lambda$lambda($receiver));
+    return $receiver;
+  };
+  function KglTracer$createVertexArray$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.createVertexArray = function () {
+    var $receiver = this.kgl_0.createVertexArray();
+    this.log_0('createVertexArray', [], KglTracer$createVertexArray$lambda$lambda($receiver));
+    return $receiver;
+  };
+  KglTracer.prototype.cullFace_za3lpa$ = function (mode) {
+    this.log_0('cullFace', [mode]);
+    return this.kgl_0.cullFace_za3lpa$(mode);
+  };
+  KglTracer.prototype.deleteBuffer_za3rmp$ = function (buffer) {
+    this.log_0('deleteBuffer', [buffer]);
+    return this.kgl_0.deleteBuffer_za3rmp$(buffer);
+  };
+  KglTracer.prototype.deleteFramebuffer_za3rmp$ = function (framebuffer) {
+    this.log_0('deleteFramebuffer', [framebuffer]);
+    return this.kgl_0.deleteFramebuffer_za3rmp$(framebuffer);
+  };
+  KglTracer.prototype.deleteRenderbuffer_za3rmp$ = function (renderbuffer) {
+    this.log_0('deleteRenderbuffer', [renderbuffer]);
+    return this.kgl_0.deleteRenderbuffer_za3rmp$(renderbuffer);
+  };
+  KglTracer.prototype.deleteShader_za3rmp$ = function (shaderId) {
+    this.log_0('deleteShader', [shaderId]);
+    return this.kgl_0.deleteShader_za3rmp$(shaderId);
+  };
+  KglTracer.prototype.deleteTexture_za3rmp$ = function (texture) {
+    this.log_0('deleteTexture', [texture]);
+    return this.kgl_0.deleteTexture_za3rmp$(texture);
+  };
+  KglTracer.prototype.deleteVertexArray_za3rmp$ = function (vertexArrayObject) {
+    this.log_0('deleteVertexArray', [vertexArrayObject]);
+    return this.kgl_0.deleteVertexArray_za3rmp$(vertexArrayObject);
+  };
+  KglTracer.prototype.disable_za3lpa$ = function (cap) {
+    this.log_0('disable', [cap]);
+    return this.kgl_0.disable_za3lpa$(cap);
+  };
+  KglTracer.prototype.disableVertexAttribArray_za3lpa$ = function (location) {
+    this.log_0('disableVertexAttribArray', [location]);
+    return this.kgl_0.disableVertexAttribArray_za3lpa$(location);
+  };
+  KglTracer.prototype.drawArrays_qt1dr2$ = function (mode, first, count) {
+    this.log_0('drawArrays', [mode, first, count]);
+    return this.kgl_0.drawArrays_qt1dr2$(mode, first, count);
+  };
+  KglTracer.prototype.enable_za3lpa$ = function (cap) {
+    this.log_0('enable', [cap]);
+    return this.kgl_0.enable_za3lpa$(cap);
+  };
+  KglTracer.prototype.enableVertexAttribArray_za3lpa$ = function (location) {
+    this.log_0('enableVertexAttribArray', [location]);
+    return this.kgl_0.enableVertexAttribArray_za3lpa$(location);
+  };
+  KglTracer.prototype.finish = function () {
+    this.log_0('finish', []);
+    return this.kgl_0.finish();
+  };
+  KglTracer.prototype.framebufferRenderbuffer_tjotsn$ = function (target, attachment, renderbuffertarget, renderbuffer) {
+    this.log_0('framebufferRenderbuffer', [target, attachment, renderbuffertarget, renderbuffer]);
+    return this.kgl_0.framebufferRenderbuffer_tjotsn$(target, attachment, renderbuffertarget, renderbuffer);
+  };
+  KglTracer.prototype.framebufferTexture2D_b9tebp$ = function (target, attachment, textarget, texture, level) {
+    this.log_0('framebufferTexture2D', [target, attachment, textarget, texture, level]);
+    return this.kgl_0.framebufferTexture2D_b9tebp$(target, attachment, textarget, texture, level);
+  };
+  KglTracer.prototype.generateMipmap_za3lpa$ = function (target) {
+    this.log_0('generateMipmap', [target]);
+    return this.kgl_0.generateMipmap_za3lpa$(target);
+  };
+  function KglTracer$getAttribLocation$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.getAttribLocation_hwpqgh$ = function (programId, name) {
+    var $receiver = this.kgl_0.getAttribLocation_hwpqgh$(programId, name);
+    this.log_0('getAttribLocation', [programId, name], KglTracer$getAttribLocation$lambda$lambda($receiver));
+    return $receiver;
+  };
+  KglTracer.prototype.getError = function () {
+    var error = this.kgl_0.getError();
+    if (error !== 0)
+      this.log_0('getError() => ' + error, []);
+    return error;
+  };
+  KglTracer.prototype.getProgramInfoLog_za3rmp$ = function (program) {
+    this.log_0('getProgramInfoLog', [program]);
+    return this.kgl_0.getProgramInfoLog_za3rmp$(program);
+  };
+  KglTracer.prototype.getProgramParameter_wn2dyp$ = function (program, pname) {
+    this.log_0('getProgramParameter', [program, pname]);
+    return this.kgl_0.getProgramParameter_wn2dyp$(program, pname);
+  };
+  KglTracer.prototype.getShaderInfoLog_za3rmp$ = function (shaderId) {
+    this.log_0('getShaderInfoLog', [shaderId]);
+    return this.kgl_0.getShaderInfoLog_za3rmp$(shaderId);
+  };
+  KglTracer.prototype.getShaderParameter_wn2dyp$ = function (shader, pname) {
+    this.log_0('getShaderParameter', [shader, pname]);
+    return this.kgl_0.getShaderParameter_wn2dyp$(shader, pname);
+  };
+  function KglTracer$getUniformLocation$lambda$lambda(closure$it) {
+    return function () {
+      return closure$it;
+    };
+  }
+  KglTracer.prototype.getUniformLocation_hwpqgh$ = function (programId, name) {
+    var $receiver = this.kgl_0.getUniformLocation_hwpqgh$(programId, name);
+    this.log_0('getUniformLocation', [programId, name], KglTracer$getUniformLocation$lambda$lambda($receiver));
+    return $receiver;
+  };
+  KglTracer.prototype.isFramebuffer_za3rmp$ = function (framebuffer) {
+    this.log_0('isFramebuffer', [framebuffer]);
+    return this.kgl_0.isFramebuffer_za3rmp$(framebuffer);
+  };
+  KglTracer.prototype.isRenderbuffer_za3rmp$ = function (renderbuffer) {
+    this.log_0('isRenderbuffer', [renderbuffer]);
+    return this.kgl_0.isRenderbuffer_za3rmp$(renderbuffer);
+  };
+  KglTracer.prototype.linkProgram_za3rmp$ = function (programId) {
+    this.log_0('linkProgram', [programId]);
+    return this.kgl_0.linkProgram_za3rmp$(programId);
+  };
+  KglTracer.prototype.readPixels_idctqj$$default = function (x, y, width, height, format, type, buffer, offset) {
+    this.log_0('readPixels', [x, y, width, height, format, type, buffer, offset]);
+    return this.kgl_0.readPixels_idctqj$(x, y, width, height, format, type, buffer, offset);
+  };
+  KglTracer.prototype.renderbufferStorage_tjonv8$ = function (target, internalformat, width, height) {
+    this.log_0('renderbufferStorage', [target, internalformat, width, height]);
+    return this.kgl_0.renderbufferStorage_tjonv8$(target, internalformat, width, height);
+  };
+  KglTracer.prototype.shaderSource_hwpqgh$ = function (shaderId, source) {
+    this.log_0('shaderSource', [shaderId, source]);
+    return this.kgl_0.shaderSource_hwpqgh$(shaderId, source);
+  };
+  KglTracer.prototype.texImage2D_ot366o$ = function (target, level, internalFormat, border, resource) {
+    this.log_0('texImage2D', [target, level, internalFormat, border, resource]);
+    return this.kgl_0.texImage2D_ot366o$(target, level, internalFormat, border, resource);
+  };
+  KglTracer.prototype.texImage2D_e7c6np$$default = function (target, level, internalFormat, width, height, border, format, type, buffer, offset) {
+    this.log_0('texImage2D', [target, level, internalFormat, width, height, border, format, type, buffer, offset]);
+    return this.kgl_0.texImage2D_e7c6np$(target, level, internalFormat, width, height, border, format, type, buffer, offset);
+  };
+  KglTracer.prototype.texParameteri_qt1dr2$ = function (target, pname, value) {
+    this.log_0('texParameteri', [target, pname, value]);
+    return this.kgl_0.texParameteri_qt1dr2$(target, pname, value);
+  };
+  KglTracer.prototype.uniform1f_rvcsvw$ = function (location, f) {
+    this.log_0('uniform1f', [location, f]);
+    return this.kgl_0.uniform1f_rvcsvw$(location, f);
+  };
+  KglTracer.prototype.uniform1i_wn2dyp$ = function (location, i) {
+    this.log_0('uniform1i', [location, i]);
+    return this.kgl_0.uniform1i_wn2dyp$(location, i);
+  };
+  KglTracer.prototype.uniform2f_zcqyrj$ = function (location, x, y) {
+    this.log_0('uniform2f', [location, x, y]);
+    return this.kgl_0.uniform2f_zcqyrj$(location, x, y);
+  };
+  KglTracer.prototype.uniform2i_47d3mp$ = function (location, x, y) {
+    this.log_0('uniform2i', [location, x, y]);
+    return this.kgl_0.uniform2i_47d3mp$(location, x, y);
+  };
+  KglTracer.prototype.uniform3f_ig0gt8$ = function (location, x, y, z) {
+    this.log_0('uniform3f', [location, x, y, z]);
+    return this.kgl_0.uniform3f_ig0gt8$(location, x, y, z);
+  };
+  KglTracer.prototype.uniform3fv_8iqxz7$ = function (location, value) {
+    this.log_0('uniform3fv', [location, value]);
+    return this.kgl_0.uniform3fv_8iqxz7$(location, value);
+  };
+  KglTracer.prototype.uniform3i_ab551r$ = function (location, x, y, z) {
+    this.log_0('uniform3i', [location, x, y, z]);
+    return this.kgl_0.uniform3i_ab551r$(location, x, y, z);
+  };
+  KglTracer.prototype.uniform4f_k644h$ = function (location, x, y, z, w) {
+    this.log_0('uniform4f', [location, x, y, z, w]);
+    return this.kgl_0.uniform4f_k644h$(location, x, y, z, w);
+  };
+  KglTracer.prototype.uniform4i_tiwvvj$ = function (location, x, y, z, w) {
+    this.log_0('uniform4i', [location, x, y, z, w]);
+    return this.kgl_0.uniform4i_tiwvvj$(location, x, y, z, w);
+  };
+  KglTracer.prototype.uniformMatrix3fv_fzejoa$ = function (location, transpose, value) {
+    this.log_0('uniformMatrix3fv', [location, transpose, value]);
+    return this.kgl_0.uniformMatrix3fv_fzejoa$(location, transpose, value);
+  };
+  KglTracer.prototype.uniformMatrix4fv_fzejoa$ = function (location, transpose, value) {
+    this.log_0('uniformMatrix4fv', [location, transpose, value]);
+    return this.kgl_0.uniformMatrix4fv_fzejoa$(location, transpose, value);
+  };
+  KglTracer.prototype.useProgram_za3rmp$ = function (programId) {
+    this.log_0('useProgram', [programId]);
+    return this.kgl_0.useProgram_za3rmp$(programId);
+  };
+  KglTracer.prototype.vertexAttribPointer_owihk5$ = function (location, size, type, normalized, stride, offset) {
+    this.log_0('vertexAttribPointer', [location, size, type, normalized, stride, offset]);
+    return this.kgl_0.vertexAttribPointer_owihk5$(location, size, type, normalized, stride, offset);
+  };
+  KglTracer.prototype.viewport_tjonv8$ = function (x, y, width, height) {
+    this.log_0('viewport', [x, y, width, height]);
+    return this.kgl_0.viewport_tjonv8$(x, y, width, height);
+  };
+  KglTracer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'KglTracer',
+    interfaces: [Kgl]
+  };
+  function Quad(gl, rects) {
     this.gl_0 = gl;
     var destination = ArrayList_init();
     var tmp$;
@@ -11454,80 +15423,96 @@
       addAll(destination, list);
     }
     this.vertices_0 = toFloatArray(destination);
-    this.vao_0 = this.gl_klfg04$(Quad$vao$lambda(this));
-    this.quadVertexBuffer_0 = this.gl_klfg04$(Quad$quadVertexBuffer$lambda(this));
-    this.vertexAttr_0 = this.gl_klfg04$(Quad$vertexAttr$lambda(program));
-    this.gl_klfg04$(Quad_init$lambda(this));
-    this.gl_klfg04$(Quad_init$lambda_0(this));
-    this.gl_klfg04$(Quad_init$lambda_1(this));
-    this.gl_klfg04$(Quad_init$lambda_2(this));
-    this.gl_klfg04$(Quad_init$lambda_3(this));
-    this.gl_klfg04$(Quad_init$lambda_4(this));
-    this.gl_klfg04$(Quad_init$lambda_5(this));
+    this.vao_0 = this.gl_0.check_342fqd$(Quad$vao$lambda);
+    this.quadVertexBuffer_0 = this.gl_0.check_342fqd$(Quad$quadVertexBuffer$lambda);
+    this.sourceData_0 = this.bufferOf_0(this.vertices_0);
+    this.released_0 = false;
+    this.gl_0.check_342fqd$(Quad_init$lambda(this));
+    this.gl_0.check_342fqd$(Quad_init$lambda_0(this));
+    this.gl_0.check_342fqd$(Quad_init$lambda_1(this));
+    this.gl_0.check_342fqd$(Quad_init$lambda_2);
+    this.gl_0.check_342fqd$(Quad_init$lambda_3);
   }
   Quad.prototype.bufferOf_0 = function (floats) {
     return FloatBuffer_init(floats);
   };
   function Quad$prepareToRender$lambda(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindVertexArray_s8jyv4$(this$Quad.vao_0);
+    return function ($receiver) {
+      $receiver.bindVertexArray_s8jyv4$(this$Quad.vao_0);
       return Unit;
     };
   }
   function Quad$prepareToRender$lambda_0(this$Quad) {
-    return function () {
-      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
+    return function ($receiver) {
+      $receiver.bindBuffer_6t2rgq$(34962, this$Quad.quadVertexBuffer_0);
       return Unit;
     };
   }
-  function Quad$prepareToRender$lambda_1(this$Quad) {
-    return function () {
-      this$Quad.gl_0.disableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
+  function Quad$prepareToRender$lambda_1(closure$vertexAttr) {
+    return function ($receiver) {
+      $receiver.vertexAttribPointer_owihk5$(closure$vertexAttr, 2, 5126, false, 0, 0);
       return Unit;
     };
   }
-  function Quad$prepareToRender$lambda_2(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
+  function Quad$prepareToRender$lambda_2(closure$vertexAttr) {
+    return function ($receiver) {
+      $receiver.enableVertexAttribArray_za3lpa$(closure$vertexAttr);
       return Unit;
     };
   }
-  Quad.prototype.prepareToRender_ls4sck$ = function (fn) {
-    this.gl_klfg04$(Quad$prepareToRender$lambda(this));
-    this.gl_klfg04$(Quad$prepareToRender$lambda_0(this));
+  function Quad$prepareToRender$lambda_3(closure$vertexAttr) {
+    return function ($receiver) {
+      $receiver.disableVertexAttribArray_za3lpa$(closure$vertexAttr);
+      return Unit;
+    };
+  }
+  function Quad$prepareToRender$lambda_4($receiver) {
+    $receiver.bindBuffer_6t2rgq$(34962, null);
+    return Unit;
+  }
+  function Quad$prepareToRender$lambda_5($receiver) {
+    $receiver.bindVertexArray_s8jyv4$(null);
+    return Unit;
+  }
+  Quad.prototype.prepareToRender_4layb8$ = function (vertexAttr, fn) {
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda(this));
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_0(this));
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_1(vertexAttr));
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_2(vertexAttr));
     fn();
-    this.gl_klfg04$(Quad$prepareToRender$lambda_1(this));
-    this.gl_klfg04$(Quad$prepareToRender$lambda_2(this));
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_3(vertexAttr));
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_4);
+    this.gl_0.check_342fqd$(Quad$prepareToRender$lambda_5);
   };
-  function Quad$renderRect$lambda(this$Quad, closure$rectIndex) {
-    return function () {
-      this$Quad.gl_0.drawArrays_qt1dr2$(4, closure$rectIndex * 6 | 0, 6);
+  function Quad$renderRect$lambda(closure$rectIndex) {
+    return function ($receiver) {
+      $receiver.drawArrays_qt1dr2$(4, closure$rectIndex * 6 | 0, 6);
       return Unit;
     };
   }
   Quad.prototype.renderRect_kcn2v3$ = function (rectIndex) {
-    this.gl_klfg04$(Quad$renderRect$lambda(this, rectIndex));
+    this.gl_0.check_342fqd$(Quad$renderRect$lambda(rectIndex));
   };
   function Quad$release$lambda(this$Quad) {
-    return function () {
-      this$Quad.gl_0.deleteBuffer_za3rmp$(this$Quad.quadVertexBuffer_0);
+    return function ($receiver) {
+      $receiver.deleteBuffer_za3rmp$(this$Quad.quadVertexBuffer_0);
       return Unit;
     };
   }
   function Quad$release$lambda_0(this$Quad) {
-    return function () {
-      this$Quad.gl_0.deleteVertexArray_za3rmp$(this$Quad.vao_0);
+    return function ($receiver) {
+      $receiver.deleteVertexArray_za3rmp$(this$Quad.vao_0);
       return Unit;
     };
   }
   Quad.prototype.release = function () {
-    this.gl_klfg04$(Quad$release$lambda(this));
-    this.gl_klfg04$(Quad$release$lambda_0(this));
-  };
-  Quad.prototype.gl_klfg04$ = function (fn) {
-    var result = fn();
-    checkForGlError(this.gl_0);
-    return result;
+    if (!this.released_0) {
+      this.gl_0.check_342fqd$(Quad$release$lambda(this));
+      this.gl_0.check_342fqd$(Quad$release$lambda_0(this));
+      this.released_0 = true;
+    }};
+  Quad.prototype.finalize = function () {
+    this.release();
   };
   function Quad$Rect(top, left, bottom, right) {
     this.top = top;
@@ -11569,128 +15554,77 @@
   Quad$Rect.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.top, other.top) && Kotlin.equals(this.left, other.left) && Kotlin.equals(this.bottom, other.bottom) && Kotlin.equals(this.right, other.right)))));
   };
-  function Quad$vao$lambda(this$Quad) {
-    return function () {
-      return this$Quad.gl_0.createVertexArray();
-    };
+  function Quad$vao$lambda($receiver) {
+    return $receiver.createVertexArray();
   }
-  function Quad$quadVertexBuffer$lambda(this$Quad) {
-    return function () {
-      return this$Quad.gl_0.createBuffers_za3lpa$(1)[0];
-    };
-  }
-  function Quad$vertexAttr$lambda(closure$program) {
-    return function () {
-      return closure$program.getVertexAttribLocation();
-    };
+  function Quad$quadVertexBuffer$lambda($receiver) {
+    return $receiver.createBuffers_za3lpa$(1)[0];
   }
   function Quad_init$lambda(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindVertexArray_s8jyv4$(this$Quad.vao_0);
+    return function ($receiver) {
+      $receiver.bindVertexArray_s8jyv4$(this$Quad.vao_0);
       return Unit;
     };
   }
   function Quad_init$lambda_0(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindBuffer_6t2rgq$(34962, this$Quad.quadVertexBuffer_0);
+    return function ($receiver) {
+      $receiver.bindBuffer_6t2rgq$(34962, this$Quad.quadVertexBuffer_0);
       return Unit;
     };
   }
   function Quad_init$lambda_1(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bufferData_8en9n9$(34962, this$Quad.bufferOf_0(this$Quad.vertices_0), this$Quad.vertices_0.length, 35044);
+    return function ($receiver) {
+      $receiver.bufferData_8en9n9$(34962, this$Quad.sourceData_0, this$Quad.vertices_0.length, 35044);
       return Unit;
     };
   }
-  function Quad_init$lambda_2(this$Quad) {
-    return function () {
-      this$Quad.gl_0.vertexAttribPointer_owihk5$(this$Quad.vertexAttr_0, 2, 5126, false, 0, 0);
-      return Unit;
-    };
+  function Quad_init$lambda_2($receiver) {
+    $receiver.bindBuffer_6t2rgq$(34962, null);
+    return Unit;
   }
-  function Quad_init$lambda_3(this$Quad) {
-    return function () {
-      this$Quad.gl_0.enableVertexAttribArray_za3lpa$(this$Quad.vertexAttr_0);
-      return Unit;
-    };
-  }
-  function Quad_init$lambda_4(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindBuffer_6t2rgq$(34962, null);
-      return Unit;
-    };
-  }
-  function Quad_init$lambda_5(this$Quad) {
-    return function () {
-      this$Quad.gl_0.bindVertexArray_s8jyv4$(null);
-      return Unit;
-    };
+  function Quad_init$lambda_3($receiver) {
+    $receiver.bindVertexArray_s8jyv4$(null);
+    return Unit;
   }
   Quad.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Quad',
     interfaces: []
   };
-  function Shader_0(gl, id, source) {
-    Shader$Companion_getInstance_0();
-    this.gl_0 = gl;
-    this.id_8be2vx$ = id;
-    this.source_0 = source;
-    this.logger = new Logger('baaahs.glsl.Shader');
-    this.compile_0();
+  function RenderSurface(program, pixels, rect0Index, rects, uvTranslator) {
+    if (program === void 0)
+      program = null;
+    this.program = program;
+    this.pixels = pixels;
+    this.rect0Index = rect0Index;
+    this.rects = rects;
+    this.uvTranslator = uvTranslator;
   }
-  function Shader$compile$lambda(closure$infoLog, this$Shader) {
-    return function () {
-      return 'Failed to compile shader: ' + toString_0(closure$infoLog) + '\n' + 'Version: ${gl.getParameter(GL_VERSION)}\n' + 'GLSL Version: ${gl.getParameter(GL_SHADING_LANGUAGE_VERSION)}\n' + '\n' + this$Shader.source_0;
-    };
-  }
-  Shader_0.prototype.compile_0 = function () {
-    this.gl_0.shaderSource_hwpqgh$(this.id_8be2vx$, this.source_0);
-    this.gl_0.compileShader_za3rmp$(this.id_8be2vx$);
-    if (this.gl_0.getShaderParameter_wn2dyp$(this.id_8be2vx$, 35713) !== 1) {
-      var infoLog = this.gl_0.getShaderInfoLog_za3rmp$(this.id_8be2vx$);
-      this.logger.warn_h4ejuu$(Shader$compile$lambda(infoLog, this));
-      throw RuntimeException_init('Failed to compile shader: ' + toString_0(infoLog));
-    }};
-  function Shader$Companion_0() {
-    Shader$Companion_instance_0 = this;
-  }
-  function Shader$Companion$createVertexShader$lambda(closure$gl) {
-    return function () {
-      return closure$gl.createShader_za3lpa$(35633);
-    };
-  }
-  Shader$Companion_0.prototype.createVertexShader_oiaex5$ = function (gl, source) {
-    var result = Shader$Companion$createVertexShader$lambda(gl)();
-    checkForGlError(gl);
-    if (result == null) {
-      throw IllegalStateException_init_0();
-    }var shaderId = result;
-    return new Shader_0(gl, shaderId, source);
-  };
-  Shader$Companion_0.prototype.createFragmentShader_oiaex5$ = function (gl, source) {
-    var tmp$;
-    tmp$ = gl.createShader_za3lpa$(35632);
-    if (tmp$ == null) {
-      throw IllegalStateException_init_0();
-    }var shaderId = tmp$;
-    return new Shader_0(gl, shaderId, source);
-  };
-  Shader$Companion_0.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Shader$Companion_instance_0 = null;
-  function Shader$Companion_getInstance_0() {
-    if (Shader$Companion_instance_0 === null) {
-      new Shader$Companion_0();
-    }return Shader$Companion_instance_0;
-  }
-  Shader_0.$metadata$ = {
+  RenderSurface.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Shader',
+    simpleName: 'RenderSurface',
     interfaces: []
+  };
+  function SurfacePixels(surface, pixel0Index) {
+    this.surface = surface;
+    this.pixel0Index = pixel0Index;
+    this.size_l2kxw9$_0 = this.surface.pixelCount;
+  }
+  Object.defineProperty(SurfacePixels.prototype, 'size', {
+    get: function () {
+      return this.size_l2kxw9$_0;
+    }
+  });
+  SurfacePixels.prototype.set_ibd5tj$ = function (i, color) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.prototype.set_tmuqsv$ = function (colors) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'set not implemented');
+  };
+  SurfacePixels.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfacePixels',
+    interfaces: [Pixels]
   };
   function SurfacePixelStrategy() {
   }
@@ -11777,6 +15711,8 @@
     } else if (Kotlin.isType(surface, IdentifiedSurface)) {
       this.logger.debug_h4ejuu$(LinearSurfacePixelStrategy$forSurface$lambda_0(surface));
       var surfaceVertices = surface.modelSurface.allVertices();
+      if (surfaceVertices.isEmpty())
+        return emptyList();
       var surfaceCenter = this.average_0(surfaceVertices);
       var vertex1 = first_0(surfaceVertices);
       tmp$ = this.interpolate_0(vertex1, surfaceCenter, pixelCount);
@@ -11792,6 +15728,8 @@
     return tmp$;
   };
   LinearSurfacePixelStrategy.prototype.average_0 = function ($receiver) {
+    if ($receiver.isEmpty())
+      return Vector3F$Companion_getInstance().origin;
     var iterator = $receiver.iterator();
     if (!iterator.hasNext())
       throw UnsupportedOperationException_init("Empty collection can't be reduced.");
@@ -11833,122 +15771,83 @@
       new LinearSurfacePixelStrategy();
     }return LinearSurfacePixelStrategy_instance;
   }
-  function Uniform(gl, uniformLocation) {
-    Uniform$Companion_getInstance();
-    this.gl_0 = gl;
-    this.uniformLocation = uniformLocation;
+  function Uniform(glslProgram, uniformLocation) {
+    this.glslProgram_0 = glslProgram;
+    this.uniformLocation_0 = uniformLocation;
   }
   function Uniform$set$lambda(this$Uniform, closure$x) {
-    return function () {
-      this$Uniform.gl_0.uniform1i_wn2dyp$(this$Uniform.uniformLocation, closure$x);
+    return function ($receiver) {
+      $receiver.uniform1i_wn2dyp$(this$Uniform.uniformLocation_0, closure$x);
       return Unit;
     };
   }
   Uniform.prototype.set_za3lpa$ = function (x) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda(this, x)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda(this, x));
   };
   function Uniform$set$lambda_0(this$Uniform, closure$x, closure$y) {
-    return function () {
-      this$Uniform.gl_0.uniform2i_47d3mp$(this$Uniform.uniformLocation, closure$x, closure$y);
+    return function ($receiver) {
+      $receiver.uniform2i_47d3mp$(this$Uniform.uniformLocation_0, closure$x, closure$y);
       return Unit;
     };
   }
   Uniform.prototype.set_vux9f0$ = function (x, y) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda_0(this, x, y)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda_0(this, x, y));
   };
   function Uniform$set$lambda_1(this$Uniform, closure$x, closure$y, closure$z) {
-    return function () {
-      this$Uniform.gl_0.uniform3i_ab551r$(this$Uniform.uniformLocation, closure$x, closure$y, closure$z);
+    return function ($receiver) {
+      $receiver.uniform3i_ab551r$(this$Uniform.uniformLocation_0, closure$x, closure$y, closure$z);
       return Unit;
     };
   }
   Uniform.prototype.set_qt1dr2$ = function (x, y, z) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda_1(this, x, y, z)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda_1(this, x, y, z));
   };
   function Uniform$set$lambda_2(this$Uniform, closure$x) {
-    return function () {
-      this$Uniform.gl_0.uniform1f_rvcsvw$(this$Uniform.uniformLocation, closure$x);
+    return function ($receiver) {
+      $receiver.uniform1f_rvcsvw$(this$Uniform.uniformLocation_0, closure$x);
       return Unit;
     };
   }
   Uniform.prototype.set_mx4ult$ = function (x) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda_2(this, x)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda_2(this, x));
   };
   function Uniform$set$lambda_3(this$Uniform, closure$x, closure$y) {
-    return function () {
-      this$Uniform.gl_0.uniform2f_zcqyrj$(this$Uniform.uniformLocation, closure$x, closure$y);
+    return function ($receiver) {
+      $receiver.uniform2f_zcqyrj$(this$Uniform.uniformLocation_0, closure$x, closure$y);
       return Unit;
     };
   }
   Uniform.prototype.set_dleff0$ = function (x, y) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda_3(this, x, y)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda_3(this, x, y));
   };
   function Uniform$set$lambda_4(this$Uniform, closure$x, closure$y, closure$z) {
-    return function () {
-      this$Uniform.gl_0.uniform3f_ig0gt8$(this$Uniform.uniformLocation, closure$x, closure$y, closure$z);
+    return function ($receiver) {
+      $receiver.uniform3f_ig0gt8$(this$Uniform.uniformLocation_0, closure$x, closure$y, closure$z);
       return Unit;
     };
   }
   Uniform.prototype.set_y2kzbl$ = function (x, y, z) {
-    var $receiver = this.gl_0;
-    var result = Uniform$set$lambda_4(this, x, y, z)();
-    checkForGlError($receiver);
+    this.withProgram_0(Uniform$set$lambda_4(this, x, y, z));
   };
-  function Uniform$Companion() {
-    Uniform$Companion_instance = this;
+  function Uniform$set$lambda_5(this$Uniform, closure$x, closure$y, closure$z, closure$w) {
+    return function ($receiver) {
+      $receiver.uniform4f_k644h$(this$Uniform.uniformLocation_0, closure$x, closure$y, closure$z, closure$w);
+      return Unit;
+    };
   }
-  Uniform$Companion.prototype.find_m36rd6$ = function (program, name) {
-    return program.getUniform_61zpoe$(name);
+  Uniform.prototype.set_7b5o5w$ = function (x, y, z, w) {
+    this.withProgram_0(Uniform$set$lambda_5(this, x, y, z, w));
   };
-  Uniform$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
+  Uniform.prototype.set_cdq9yu$ = function (textureUnit) {
+    textureUnit.setUniform_i9pfe0$(this);
   };
-  var Uniform$Companion_instance = null;
-  function Uniform$Companion_getInstance() {
-    if (Uniform$Companion_instance === null) {
-      new Uniform$Companion();
-    }return Uniform$Companion_instance;
-  }
+  Uniform.prototype.withProgram_0 = function (fn) {
+    this.glslProgram_0.gl_8be2vx$.useProgram_4cj8zn$(this.glslProgram_0);
+    return this.glslProgram_0.gl_8be2vx$.check_342fqd$(fn);
+  };
   Uniform.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Uniform',
-    interfaces: []
-  };
-  function UniformSetter(program, param) {
-    this.param_0 = param;
-    this.uniformLocation_0 = program.getUniform_61zpoe$(this.param_0.varName);
-  }
-  UniformSetter.prototype.set_s8jyv4$ = function (value) {
-    var tmp$, tmp$_0, tmp$_1;
-    if (value != null && this.uniformLocation_0 != null) {
-      switch (this.param_0.valueType.name) {
-        case 'INT':
-          this.uniformLocation_0.set_za3lpa$(typeof (tmp$ = value) === 'number' ? tmp$ : throwCCE());
-          break;
-        case 'FLOAT':
-          this.uniformLocation_0.set_mx4ult$(typeof (tmp$_0 = value) === 'number' ? tmp$_0 : throwCCE());
-          break;
-        case 'VEC3':
-          var color = Kotlin.isType(tmp$_1 = value, Color) ? tmp$_1 : throwCCE();
-          this.uniformLocation_0.set_y2kzbl$(color.redF, color.greenF, color.blueF);
-          break;
-      }
-    }};
-  UniformSetter.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'UniformSetter',
     interfaces: []
   };
   function UvTranslator(id) {
@@ -14361,233 +18260,35 @@
     simpleName: 'Message',
     interfaces: []
   };
-  function CompositorShader(aShader, bShader) {
-    CompositorShader$Companion_getInstance();
-    Shader.call(this, ShaderId$COMPOSITOR_getInstance());
-    this.aShader = aShader;
-    this.bShader = bShader;
+  function GlslShader(glslProgram, uvTranslator, renderContext) {
+    GlslShader$Companion_getInstance();
+    if (renderContext === void 0)
+      renderContext = GlslShader$Companion_getInstance().globalRenderContext;
+    this.glslProgram_bn18ud$_0 = glslProgram;
+    this.uvTranslator = uvTranslator;
+    this.renderContext_0 = renderContext;
   }
-  CompositorShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new CompositorShader$Buffer(this, this.aShader.createBuffer_ppt8xj$(surface), this.bShader.createBuffer_ppt8xj$(surface));
-  };
-  CompositorShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
-    this.aShader.serialize_3kjoo0$(writer);
-    this.bShader.serialize_3kjoo0$(writer);
-  };
-  CompositorShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
-    var rendererA = this.aShader.createRenderer_omlfoo$(surface, renderContext);
-    var rendererB = this.bShader.createRenderer_omlfoo$(surface, renderContext);
-    return new CompositorShader$Renderer(rendererA, rendererB);
-  };
-  CompositorShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var rendererA = this.aShader.createRenderer_ppt8xj$(surface);
-    var rendererB = this.bShader.createRenderer_ppt8xj$(surface);
-    return new CompositorShader$Renderer(rendererA, rendererB);
-  };
-  CompositorShader.prototype.readBuffer_100t80$ = function (reader) {
-    return new CompositorShader$Buffer(this, this.aShader.readBuffer_100t80$(reader), this.bShader.readBuffer_100t80$(reader), CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte()), reader.readFloat());
-  };
-  CompositorShader.prototype.createBuffer_ytrflg$ = function (bufferA, bufferB) {
-    return new CompositorShader$Buffer(this, bufferA, bufferB);
-  };
-  function CompositorShader$Companion() {
-    CompositorShader$Companion_instance = this;
-  }
-  CompositorShader$Companion.prototype.parse_100t80$ = function (reader) {
-    var shaderA = Shader$Companion_getInstance().parse_100t80$(reader);
-    var shaderB = Shader$Companion_getInstance().parse_100t80$(reader);
-    return new CompositorShader(shaderA, shaderB);
-  };
-  CompositorShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var CompositorShader$Companion_instance = null;
-  function CompositorShader$Companion_getInstance() {
-    if (CompositorShader$Companion_instance === null) {
-      new CompositorShader$Companion();
-    }return CompositorShader$Companion_instance;
-  }
-  function CompositorShader$Buffer($outer, bufferA, bufferB, mode, fade) {
-    this.$outer = $outer;
-    if (mode === void 0)
-      mode = CompositingMode$NORMAL_getInstance();
-    if (fade === void 0)
-      fade = 0.5;
-    this.bufferA = bufferA;
-    this.bufferB = bufferB;
-    this.mode = mode;
-    this.fade = fade;
-    this.shader_20svf$_0 = this.$outer;
-  }
-  Object.defineProperty(CompositorShader$Buffer.prototype, 'shader', {
+  Object.defineProperty(GlslShader.prototype, 'glslProgram', {
     get: function () {
-      return this.shader_20svf$_0;
+      return this.glslProgram_bn18ud$_0;
     }
   });
-  CompositorShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.bufferA.serialize_3kjoo0$(writer);
-    this.bufferB.serialize_3kjoo0$(writer);
-    writer.writeByte_s8j3t7$(toByte(this.mode.ordinal));
-    writer.writeFloat_mx4ult$(this.fade);
-  };
-  CompositorShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.bufferA.read_100t80$(reader);
-    this.bufferB.read_100t80$(reader);
-    this.mode = CompositingMode$Companion_getInstance().get_s8j3t7$(reader.readByte());
-    this.fade = reader.readFloat();
-  };
-  CompositorShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function CompositorShader$Renderer(rendererA, rendererB) {
-    this.rendererA_0 = rendererA;
-    this.rendererB_0 = rendererB;
-  }
-  CompositorShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-    var tmp$, tmp$_0;
-    this.rendererA_0.beginFrame_b23bvv$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), pixelCount);
-    this.rendererB_0.beginFrame_b23bvv$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), pixelCount);
-  };
-  CompositorShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    var tmp$, tmp$_0;
-    var dest = this.rendererA_0.draw_b23bvv$(Kotlin.isType(tmp$ = buffer.bufferA, Shader$Buffer) ? tmp$ : throwCCE(), pixelIndex);
-    var src = this.rendererB_0.draw_b23bvv$(Kotlin.isType(tmp$_0 = buffer.bufferB, Shader$Buffer) ? tmp$_0 : throwCCE(), pixelIndex);
-    return dest.fade_6zkv30$(buffer.mode.composite_dggbqs$(src, dest), buffer.fade);
-  };
-  CompositorShader$Renderer.prototype.endFrame = function () {
-    this.rendererA_0.endFrame();
-    this.rendererB_0.endFrame();
-  };
-  CompositorShader$Renderer.prototype.release = function () {
-    this.rendererA_0.release();
-    this.rendererB_0.release();
-  };
-  CompositorShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  CompositorShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'CompositorShader',
-    interfaces: [Shader]
-  };
-  function CompositingMode(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function CompositingMode_initFields() {
-    CompositingMode_initFields = function () {
-    };
-    new CompositingMode$NORMAL();
-    new CompositingMode$ADD();
-    CompositingMode$Companion_getInstance();
-  }
-  function CompositingMode$NORMAL() {
-    CompositingMode$NORMAL_instance = this;
-    CompositingMode.call(this, 'NORMAL', 0);
-  }
-  CompositingMode$NORMAL.prototype.composite_dggbqs$ = function (src, dest) {
-    return src;
-  };
-  CompositingMode$NORMAL.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'NORMAL',
-    interfaces: [CompositingMode]
-  };
-  var CompositingMode$NORMAL_instance = null;
-  function CompositingMode$NORMAL_getInstance() {
-    CompositingMode_initFields();
-    return CompositingMode$NORMAL_instance;
-  }
-  function CompositingMode$ADD() {
-    CompositingMode$ADD_instance = this;
-    CompositingMode.call(this, 'ADD', 1);
-  }
-  CompositingMode$ADD.prototype.composite_dggbqs$ = function (src, dest) {
-    return dest.plus_rny0jj$(src);
-  };
-  CompositingMode$ADD.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ADD',
-    interfaces: [CompositingMode]
-  };
-  var CompositingMode$ADD_instance = null;
-  function CompositingMode$ADD_getInstance() {
-    CompositingMode_initFields();
-    return CompositingMode$ADD_instance;
-  }
-  function CompositingMode$Companion() {
-    CompositingMode$Companion_instance = this;
-    this.values = CompositingMode$values();
-  }
-  CompositingMode$Companion.prototype.get_s8j3t7$ = function (i) {
-    return this.values[i];
-  };
-  CompositingMode$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var CompositingMode$Companion_instance = null;
-  function CompositingMode$Companion_getInstance() {
-    CompositingMode_initFields();
-    if (CompositingMode$Companion_instance === null) {
-      new CompositingMode$Companion();
-    }return CompositingMode$Companion_instance;
-  }
-  CompositingMode.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'CompositingMode',
-    interfaces: [Enum]
-  };
-  function CompositingMode$values() {
-    return [CompositingMode$NORMAL_getInstance(), CompositingMode$ADD_getInstance()];
-  }
-  CompositingMode.values = CompositingMode$values;
-  function CompositingMode$valueOf(name) {
-    switch (name) {
-      case 'NORMAL':
-        return CompositingMode$NORMAL_getInstance();
-      case 'ADD':
-        return CompositingMode$ADD_getInstance();
-      default:throwISE('No enum constant baaahs.shaders.CompositingMode.' + name);
-    }
-  }
-  CompositingMode.valueOf_61zpoe$ = CompositingMode$valueOf;
-  function GlslShader(program, uvTranslator) {
-    GlslShader$Companion_getInstance();
-    Shader.call(this, ShaderId$GLSL_SHADER_getInstance());
-    this.program_0 = program;
-    this.uvTranslator_0 = uvTranslator;
-  }
   function GlslShader$Companion() {
     GlslShader$Companion_instance = this;
-    this.renderContext_o01z06$_0 = lazy(GlslShader$Companion$renderContext$lambda);
+    this.globalRenderContext_n7q4i5$_0 = lazy(GlslShader$Companion$globalRenderContext$lambda);
   }
-  Object.defineProperty(GlslShader$Companion.prototype, 'renderContext', {
+  Object.defineProperty(GlslShader$Companion.prototype, 'globalRenderContext', {
     get: function () {
-      return this.renderContext_o01z06$_0.value;
+      return this.globalRenderContext_n7q4i5$_0.value;
     }
   });
-  GlslShader$Companion.prototype.parse_100t80$ = function (reader) {
-    var glslProgram = reader.readString();
-    var program = this.renderContext.createProgram_61zpoe$(glslProgram);
-    var uvTranslator = UvTranslator$Companion_getInstance().parse_100t80$(reader);
-    return new GlslShader(program, uvTranslator);
-  };
-  function GlslShader$Companion$renderContext$lambda() {
+  function GlslShader$Companion$globalRenderContext$lambda() {
     return GlslBase_getInstance().manager.createContext();
   }
   GlslShader$Companion.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Companion',
-    interfaces: [ShaderReader]
+    interfaces: []
   };
   var GlslShader$Companion_instance = null;
   function GlslShader$Companion_getInstance() {
@@ -14595,349 +18296,31 @@
       new GlslShader$Companion();
     }return GlslShader$Companion_instance;
   }
-  GlslShader.prototype.serializeConfig_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.program_0.fragShader);
-  };
-  function GlslShader$createRenderer$lambda(this$GlslShader) {
-    return function () {
-      return new GlslShader$PooledRenderer(this$GlslShader.program_0, this$GlslShader.uvTranslator_0);
-    };
+  function GlslShader$Buffer(shader, surface) {
+    this.shader = shader;
+    this.surface = surface;
   }
-  GlslShader.prototype.createRenderer_omlfoo$ = function (surface, renderContext) {
-    var poolKey = to(getKClass(GlslShader), this.program_0);
-    var pooledRenderer = renderContext.registerPooled_7d3fln$(poolKey, GlslShader$createRenderer$lambda(this));
-    var glslSurface = pooledRenderer.glslRenderer.addSurface_ppt8xj$(surface);
-    return new GlslShader$Renderer(glslSurface);
-  };
-  GlslShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    var glslRenderer = GlslShader$Companion_getInstance().renderContext.createRenderer_41a8d7$(this.program_0, this.uvTranslator_0);
-    var glslSurface = glslRenderer.addSurface_ppt8xj$(surface);
-    return new GlslShader$Renderer(glslSurface);
-  };
-  function GlslShader$Renderer(glslSurface) {
-    this.glslSurface_0 = glslSurface;
-  }
-  GlslShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-    var tmp$, tmp$_0;
-    (tmp$_0 = (tmp$ = this.glslSurface_0) != null ? tmp$.uniforms : null) != null ? (tmp$_0.updateFrom_eg9ycu$(buffer.values), Unit) : null;
-  };
-  GlslShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return this.glslSurface_0 != null ? this.glslSurface_0.pixels.get_za3lpa$(pixelIndex) : Color$Companion_getInstance().BLACK;
-  };
-  GlslShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  function GlslShader$PooledRenderer(program, uvTranslator) {
-    this.glslRenderer = GlslShader$Companion_getInstance().renderContext.createRenderer_41a8d7$(program, uvTranslator);
-  }
-  GlslShader$PooledRenderer.prototype.preDraw = function () {
-    this.glslRenderer.draw();
-  };
-  GlslShader$PooledRenderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'PooledRenderer',
-    interfaces: [PooledRenderer]
-  };
-  GlslShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new GlslShader$Buffer(this);
-  };
-  GlslShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new GlslShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  function GlslShader$Buffer($outer) {
-    this.$outer = $outer;
-    var array = Array_0(this.$outer.program_0.params.size);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = Unit;
-    }
-    this.values = array;
-  }
-  Object.defineProperty(GlslShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.$outer;
-    }
-  });
-  GlslShader$Buffer.prototype.update_giv38x$ = function (values) {
-    var tmp$, tmp$_0;
-    var index = 0;
-    tmp$ = values.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      this.values[checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0))] = item;
-    }
-  };
-  GlslShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.$outer.uvTranslator_0.serialize_3kjoo0$(writer);
-    var tmp$;
-    tmp$ = zip_0(this.$outer.program_0.params, this.values).iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var param = element.component1()
-      , value = element.component2();
-      param.serializeValue_8f9ar8$(value, writer);
-    }
-  };
-  GlslShader$Buffer.prototype.read_100t80$ = function (reader) {
-    var tmp$, tmp$_0;
-    var index = 0;
-    tmp$ = this.$outer.program_0.params.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      this.values[checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0))] = item.readValue_100t80$(reader);
-    }
+  GlslShader$Buffer.prototype.release = function () {
   };
   GlslShader$Buffer.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function GlslShader$Param(varName, gadgetType, valueType, config) {
-    GlslShader$Param$Companion_getInstance();
-    this.varName = varName;
-    this.gadgetType = gadgetType;
-    this.valueType = valueType;
-    this.config = config;
-  }
-  function GlslShader$Param$Type(name, ordinal) {
-    Enum.call(this);
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function GlslShader$Param$Type_initFields() {
-    GlslShader$Param$Type_initFields = function () {
-    };
-    GlslShader$Param$Type$INT_instance = new GlslShader$Param$Type('INT', 0);
-    GlslShader$Param$Type$FLOAT_instance = new GlslShader$Param$Type('FLOAT', 1);
-    GlslShader$Param$Type$VEC3_instance = new GlslShader$Param$Type('VEC3', 2);
-  }
-  var GlslShader$Param$Type$INT_instance;
-  function GlslShader$Param$Type$INT_getInstance() {
-    GlslShader$Param$Type_initFields();
-    return GlslShader$Param$Type$INT_instance;
-  }
-  var GlslShader$Param$Type$FLOAT_instance;
-  function GlslShader$Param$Type$FLOAT_getInstance() {
-    GlslShader$Param$Type_initFields();
-    return GlslShader$Param$Type$FLOAT_instance;
-  }
-  var GlslShader$Param$Type$VEC3_instance;
-  function GlslShader$Param$Type$VEC3_getInstance() {
-    GlslShader$Param$Type_initFields();
-    return GlslShader$Param$Type$VEC3_instance;
-  }
-  GlslShader$Param$Type.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Type',
-    interfaces: [Enum]
-  };
-  function GlslShader$Param$Type$values() {
-    return [GlslShader$Param$Type$INT_getInstance(), GlslShader$Param$Type$FLOAT_getInstance(), GlslShader$Param$Type$VEC3_getInstance()];
-  }
-  GlslShader$Param$Type.values = GlslShader$Param$Type$values;
-  function GlslShader$Param$Type$valueOf(name) {
-    switch (name) {
-      case 'INT':
-        return GlslShader$Param$Type$INT_getInstance();
-      case 'FLOAT':
-        return GlslShader$Param$Type$FLOAT_getInstance();
-      case 'VEC3':
-        return GlslShader$Param$Type$VEC3_getInstance();
-      default:throwISE('No enum constant baaahs.shaders.GlslShader.Param.Type.' + name);
-    }
-  }
-  GlslShader$Param$Type.valueOf_61zpoe$ = GlslShader$Param$Type$valueOf;
-  GlslShader$Param.prototype.serializeConfig_3kjoo0$ = function (writer) {
-    writer.writeString_61zpoe$(this.varName);
-    writer.writeByte_s8j3t7$(toByte(this.valueType.ordinal));
-  };
-  GlslShader$Param.prototype.serializeValue_8f9ar8$ = function (value, writer) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
-    switch (this.valueType.name) {
-      case 'INT':
-        writer.writeInt_za3lpa$((tmp$_0 = (tmp$ = value) == null || typeof tmp$ === 'number' ? tmp$ : throwCCE()) != null ? tmp$_0 : 0);
-        break;
-      case 'FLOAT':
-        writer.writeFloat_mx4ult$(typeof (tmp$_1 = value) === 'number' ? tmp$_1 : throwCCE());
-        break;
-      case 'VEC3':
-        writer.writeInt_za3lpa$(((tmp$_3 = (tmp$_2 = value) == null || Kotlin.isType(tmp$_2, Color) ? tmp$_2 : throwCCE()) != null ? tmp$_3 : Color$Companion_getInstance().WHITE).argb);
-        break;
-    }
-  };
-  GlslShader$Param.prototype.readValue_100t80$ = function (reader) {
-    var tmp$;
-    switch (this.valueType.name) {
-      case 'INT':
-        tmp$ = reader.readInt();
-        break;
-      case 'FLOAT':
-        tmp$ = reader.readFloat();
-        break;
-      case 'VEC3':
-        tmp$ = new Color(reader.readInt());
-        break;
-      default:tmp$ = Kotlin.noWhenBranchMatched();
-        break;
-    }
-    return tmp$;
-  };
-  function GlslShader$Param$Companion() {
-    GlslShader$Param$Companion_instance = this;
-    this.types_0 = GlslShader$Param$Type$values();
-  }
-  GlslShader$Param$Companion.prototype.parse_100t80$ = function (reader) {
-    var varName = reader.readString();
-    var valueType = this.types_0[reader.readByte()];
-    return new GlslShader$Param(varName, '', valueType, new JsonObject(emptyMap()));
-  };
-  GlslShader$Param$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var GlslShader$Param$Companion_instance = null;
-  function GlslShader$Param$Companion_getInstance() {
-    if (GlslShader$Param$Companion_instance === null) {
-      new GlslShader$Param$Companion();
-    }return GlslShader$Param$Companion_instance;
-  }
-  GlslShader$Param.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Param',
     interfaces: []
   };
   GlslShader.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslShader',
-    interfaces: [Shader]
+    interfaces: [IGlslShader]
   };
-  function HeartShader() {
-    HeartShader$Companion_getInstance();
-    Shader.call(this, ShaderId$HEART_getInstance());
+  function IGlslShader() {
   }
-  HeartShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new HeartShader$Buffer(this);
+  IGlslShader.prototype.createBuffer_ppt8xj$ = function (surface) {
+    return new GlslShader$Buffer(this, surface);
   };
-  HeartShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new HeartShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  HeartShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new HeartShader$Renderer(surface);
-  };
-  function HeartShader$Companion() {
-    HeartShader$Companion_instance = this;
-  }
-  HeartShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new HeartShader();
-  };
-  HeartShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var HeartShader$Companion_instance = null;
-  function HeartShader$Companion_getInstance() {
-    if (HeartShader$Companion_instance === null) {
-      new HeartShader$Companion();
-    }return HeartShader$Companion_instance;
-  }
-  function HeartShader$Buffer($outer) {
-    this.$outer = $outer;
-    this.edgeColor = Color$Companion_getInstance().RED;
-    this.centerColor = Color$Companion_getInstance().RED.fade_6zkv30$(Color$Companion_getInstance().WHITE, 0.2);
-    this.heartSize = 1.0;
-    this.strokeSize = 1.0;
-    this.xOff = 0.0;
-    this.yOff = 0.0;
-  }
-  Object.defineProperty(HeartShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.$outer;
-    }
-  });
-  HeartShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    writer.writeFloat_mx4ult$(this.heartSize);
-    writer.writeFloat_mx4ult$(this.strokeSize);
-    writer.writeFloat_mx4ult$(this.xOff);
-    writer.writeFloat_mx4ult$(this.yOff);
-  };
-  HeartShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.heartSize = reader.readFloat();
-    this.strokeSize = reader.readFloat();
-    this.xOff = reader.readFloat();
-    this.yOff = reader.readFloat();
-  };
-  HeartShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function HeartShader$Renderer(surface) {
-    var tmp$;
-    if (Kotlin.isType(surface, IdentifiedSurface)) {
-      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
-    } else
-      tmp$ = null;
-    this.uvTranslator_0 = tmp$;
-  }
-  HeartShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    var tmp$, tmp$_0;
-    if (this.uvTranslator_0 == null)
-      return Color$Companion_getInstance().BLACK;
-    var tmp$_1 = this.uvTranslator_0.getUV_za3lpa$(pixelIndex);
-    var x = tmp$_1.component1()
-    , y = tmp$_1.component2();
-    x -= 0.5 + buffer.xOff - 0.5;
-    x *= 1.1;
-    y -= 0.5 + buffer.yOff - 0.5;
-    x /= buffer.heartSize;
-    y /= buffer.heartSize;
-    var $receiver = Math_0.abs(x) - 1;
-    var upperCurveDist = y - (1 - Math_0.pow($receiver, 2));
-    var x_0 = 1 - Math_0.abs(x);
-    var lowerCurveDist = y - (Math_0.acos(x_0) - math.PI);
-    if (y >= 0) {
-      if (upperCurveDist < 0) {
-        if (Math_0.abs(upperCurveDist) < buffer.strokeSize) {
-          tmp$ = 0.0;
-        } else {
-          var x_1 = upperCurveDist / buffer.heartSize;
-          tmp$ = Math_0.abs(x_1);
-        }
-        var fadeAmount = tmp$;
-        return buffer.edgeColor.fade_6zkv30$(buffer.centerColor, fadeAmount);
-      } else {
-        return Color$Companion_getInstance().TRANSPARENT;
-      }
-    } else if (lowerCurveDist > 0) {
-      if (lowerCurveDist < buffer.strokeSize) {
-        tmp$_0 = 1.0;
-      } else {
-        tmp$_0 = lowerCurveDist / buffer.heartSize;
-      }
-      var fadeAmount_0 = tmp$_0;
-      return buffer.edgeColor.fade_6zkv30$(buffer.centerColor, fadeAmount_0);
-    } else {
-      return Color$Companion_getInstance().TRANSPARENT;
-    }
-  };
-  HeartShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  HeartShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'HeartShader',
-    interfaces: [Shader]
+  IGlslShader.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'IGlslShader',
+    interfaces: []
   };
   function PixelShader(encoding) {
     PixelShader$Companion_getInstance();
@@ -15458,249 +18841,6 @@
     simpleName: 'PixelShader',
     interfaces: [Shader]
   };
-  function RandomShader() {
-    RandomShader$Companion_getInstance();
-    Shader.call(this, ShaderId$RANDOM_getInstance());
-  }
-  RandomShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new RandomShader$Buffer(this);
-  };
-  RandomShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new RandomShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  RandomShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new RandomShader$Renderer();
-  };
-  function RandomShader$Companion() {
-    RandomShader$Companion_instance = this;
-  }
-  RandomShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new RandomShader();
-  };
-  RandomShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var RandomShader$Companion_instance = null;
-  function RandomShader$Companion_getInstance() {
-    if (RandomShader$Companion_instance === null) {
-      new RandomShader$Companion();
-    }return RandomShader$Companion_instance;
-  }
-  function RandomShader$Buffer($outer) {
-    this.$outer = $outer;
-  }
-  Object.defineProperty(RandomShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.$outer;
-    }
-  });
-  RandomShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-  };
-  RandomShader$Buffer.prototype.read_100t80$ = function (reader) {
-  };
-  RandomShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function RandomShader$Renderer() {
-  }
-  RandomShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    return Color$Companion_getInstance().fromInt(Random.Default.nextInt_za3lpa$(16777215) | 0);
-  };
-  RandomShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  RandomShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'RandomShader',
-    interfaces: [Shader]
-  };
-  function SimpleSpatialShader() {
-    SimpleSpatialShader$Companion_getInstance();
-    Shader.call(this, ShaderId$SIMPLE_SPATIAL_getInstance());
-  }
-  SimpleSpatialShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new SimpleSpatialShader$Buffer(this);
-  };
-  SimpleSpatialShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new SimpleSpatialShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  SimpleSpatialShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new SimpleSpatialShader$Renderer(surface);
-  };
-  function SimpleSpatialShader$Companion() {
-    SimpleSpatialShader$Companion_instance = this;
-  }
-  SimpleSpatialShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new SimpleSpatialShader();
-  };
-  SimpleSpatialShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var SimpleSpatialShader$Companion_instance = null;
-  function SimpleSpatialShader$Companion_getInstance() {
-    if (SimpleSpatialShader$Companion_instance === null) {
-      new SimpleSpatialShader$Companion();
-    }return SimpleSpatialShader$Companion_instance;
-  }
-  function SimpleSpatialShader$Buffer($outer) {
-    this.$outer = $outer;
-    this.color = Color$Companion_getInstance().WHITE;
-    this.centerX = 0.5;
-    this.centerY = 0.5;
-    this.radius = 0.75;
-  }
-  Object.defineProperty(SimpleSpatialShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.$outer;
-    }
-  });
-  SimpleSpatialShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.color.serialize_3kjoo0$(writer);
-    writer.writeFloat_mx4ult$(this.centerX);
-    writer.writeFloat_mx4ult$(this.centerY);
-    writer.writeFloat_mx4ult$(this.radius);
-  };
-  SimpleSpatialShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.color = Color$Companion_getInstance().parse_100t80$(reader);
-    this.centerX = reader.readFloat();
-    this.centerY = reader.readFloat();
-    this.radius = reader.readFloat();
-  };
-  SimpleSpatialShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function SimpleSpatialShader$Renderer(surface) {
-    var tmp$;
-    if (Kotlin.isType(surface, IdentifiedSurface)) {
-      tmp$ = PanelSpaceUvTranslator_getInstance().forPixels_fvukwm$(LinearSurfacePixelStrategy_getInstance().forSurface_ppt8xj$(surface));
-    } else
-      tmp$ = null;
-    this.uvTranslator_0 = tmp$;
-  }
-  SimpleSpatialShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    var tmp$;
-    if (this.uvTranslator_0 == null)
-      return Color$Companion_getInstance().BLACK;
-    var tmp$_0 = this.uvTranslator_0.getUV_za3lpa$(pixelIndex);
-    var pixX = tmp$_0.component1()
-    , pixY = tmp$_0.component2();
-    var distX = pixX - buffer.centerX;
-    var distY = pixY - buffer.centerY;
-    var x = distX * distX + distY * distY;
-    var dist = Math_0.sqrt(x);
-    if (dist < buffer.radius - 0.025)
-      tmp$ = buffer.color;
-    else if (dist < buffer.radius + 0.025)
-      tmp$ = Color$Companion_getInstance().BLACK;
-    else
-      tmp$ = buffer.color.fade_6zkv30$(Color$Companion_getInstance().BLACK, dist * 2);
-    return tmp$;
-  };
-  SimpleSpatialShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  SimpleSpatialShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SimpleSpatialShader',
-    interfaces: [Shader]
-  };
-  function SineWaveShader() {
-    SineWaveShader$Companion_getInstance();
-    Shader.call(this, ShaderId$SINE_WAVE_getInstance());
-  }
-  SineWaveShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new SineWaveShader$Buffer(this);
-  };
-  SineWaveShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new SineWaveShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  SineWaveShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new SineWaveShader$Renderer();
-  };
-  function SineWaveShader$Companion() {
-    SineWaveShader$Companion_instance = this;
-  }
-  SineWaveShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new SineWaveShader();
-  };
-  SineWaveShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var SineWaveShader$Companion_instance = null;
-  function SineWaveShader$Companion_getInstance() {
-    if (SineWaveShader$Companion_instance === null) {
-      new SineWaveShader$Companion();
-    }return SineWaveShader$Companion_instance;
-  }
-  function SineWaveShader$Buffer($outer) {
-    this.$outer = $outer;
-    this.color = Color$Companion_getInstance().WHITE;
-    this.theta = 0.0;
-    this.density = 1.0;
-  }
-  Object.defineProperty(SineWaveShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.$outer;
-    }
-  });
-  SineWaveShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.color.serialize_3kjoo0$(writer);
-    writer.writeFloat_mx4ult$(this.theta);
-    writer.writeFloat_mx4ult$(this.density);
-  };
-  SineWaveShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.color = Color$Companion_getInstance().parse_100t80$(reader);
-    this.theta = reader.readFloat();
-    this.density = reader.readFloat();
-  };
-  SineWaveShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function SineWaveShader$Renderer() {
-    this.pixelCount_0 = 1;
-  }
-  SineWaveShader$Renderer.prototype.beginFrame_b23bvv$ = function (buffer, pixelCount) {
-    this.pixelCount_0 = pixelCount;
-  };
-  SineWaveShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    var theta = buffer.theta;
-    var density = buffer.density;
-    var x = theta + 2 * math.PI * (pixelIndex / this.pixelCount_0 * density);
-    var v = Math_0.sin(x) / 2 + 0.5;
-    return Color$Companion_getInstance().BLACK.fade_6zkv30$(buffer.color, v);
-  };
-  SineWaveShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  SineWaveShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SineWaveShader',
-    interfaces: [Shader]
-  };
   function SolidShader() {
     SolidShader$Companion_getInstance();
     Shader.call(this, ShaderId$SOLID_getInstance());
@@ -15777,31 +18917,17 @@
     this.textureGlBuffer_0 = FloatBuffer_init_0(0);
     this.soundAnalyzer.listen_iuqfe5$(new SoundAnalysisPlugin_init$ObjectLiteral(this));
   }
-  SoundAnalysisPlugin.prototype.forProgram_4xpcsd$ = function (gl, program) {
+  SoundAnalysisPlugin.prototype.forProgram_663nyq$ = function (gl, program) {
     return new SoundAnalysisPlugin$ProgramContext(this, gl, program);
   };
   function SoundAnalysisPlugin$ProgramContext($outer, gl, program) {
     this.$outer = $outer;
     this.gl_0 = gl;
     this.program_0 = program;
-    this.glslPreamble_74lc9r$_0 = 'uniform sampler2D sm_soundAnalysis;';
+    this.glslPreamble = 'uniform sampler2D sm_soundAnalysis;';
     this.soundAnalysisUniform_0 = null;
   }
-  Object.defineProperty(SoundAnalysisPlugin$ProgramContext.prototype, 'glslPreamble', {
-    get: function () {
-      return this.glslPreamble_74lc9r$_0;
-    }
-  });
-  function SoundAnalysisPlugin$ProgramContext$afterCompile$lambda(this$ProgramContext) {
-    return function () {
-      return Uniform$Companion_getInstance().find_m36rd6$(this$ProgramContext.program_0, 'sm_soundAnalysis');
-    };
-  }
   SoundAnalysisPlugin$ProgramContext.prototype.afterCompile = function () {
-    var $receiver = this.gl_0;
-    var result = SoundAnalysisPlugin$ProgramContext$afterCompile$lambda(this)();
-    checkForGlError($receiver);
-    this.soundAnalysisUniform_0 = result;
   };
   SoundAnalysisPlugin$ProgramContext.prototype.forRender = function () {
     var analysisBufferSize = this.$outer.soundAnalyzer.frequencies.length;
@@ -15815,85 +18941,16 @@
   };
   function SoundAnalysisPlugin$ProgramContext$RenderContext($outer, uniform) {
     this.$outer = $outer;
-    var $receiver = this.$outer.gl_0;
-    var result = SoundAnalysisPlugin$ProgramContext$RenderContext$texture$lambda(this.$outer)();
-    checkForGlError($receiver);
-    this.texture_0 = result;
-    this.textureId_0 = this.$outer.program_0.obtainTextureId();
-    this.$outer.$outer.textureGlBuffer_0.position = 0;
-    this.$outer.$outer.textureGlBuffer_0.put_q3cr5i$(this.$outer.$outer.textureBuffer_0);
-    var $receiver_0 = this.$outer.gl_0;
-    var result_0 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda(this.$outer, this)();
-    checkForGlError($receiver_0);
-    var $receiver_1 = this.$outer.gl_0;
-    var result_1 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_0(this.$outer, this)();
-    checkForGlError($receiver_1);
-    var $receiver_2 = this.$outer.gl_0;
-    var result_2 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_1(this.$outer)();
-    checkForGlError($receiver_2);
-    var $receiver_3 = this.$outer.gl_0;
-    var result_3 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_2(this.$outer)();
-    checkForGlError($receiver_3);
-    var $receiver_4 = this.$outer.gl_0;
-    var result_4 = SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_3(this.$outer, this.$outer.$outer)();
-    checkForGlError($receiver_4);
-    uniform.set_za3lpa$(this.textureId_0);
-  }
-  function SoundAnalysisPlugin$ProgramContext$RenderContext$release$lambda(this$ProgramContext, this$RenderContext) {
-    return function () {
-      this$ProgramContext.gl_0.deleteTexture_za3rmp$(this$RenderContext.texture_0);
-      return Unit;
-    };
-  }
-  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.release = function () {
-    var $receiver = this.$outer.gl_0;
-    var result = SoundAnalysisPlugin$ProgramContext$RenderContext$release$lambda(this.$outer, this)();
-    checkForGlError($receiver);
-  };
-  function SoundAnalysisPlugin$ProgramContext$RenderContext$texture$lambda(this$ProgramContext) {
-    return function () {
-      return this$ProgramContext.gl_0.createTexture();
-    };
-  }
-  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda(this$ProgramContext, this$RenderContext) {
-    return function () {
-      this$ProgramContext.gl_0.activeTexture_za3lpa$(33984 + this$RenderContext.textureId_0 | 0);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_0(this$ProgramContext, this$RenderContext) {
-    return function () {
-      this$ProgramContext.gl_0.bindTexture_6t2rgq$(3553, this$RenderContext.texture_0);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_1(this$ProgramContext) {
-    return function () {
-      this$ProgramContext.gl_0.texParameteri_qt1dr2$(3553, 10241, 9728);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_2(this$ProgramContext) {
-    return function () {
-      this$ProgramContext.gl_0.texParameteri_qt1dr2$(3553, 10240, 9728);
-      return Unit;
-    };
-  }
-  function SoundAnalysisPlugin$ProgramContext$SoundAnalysisPlugin$ProgramContext$RenderContext_init$lambda_3(this$ProgramContext, this$SoundAnalysisPlugin) {
-    return function () {
-      this$ProgramContext.gl_0.texImage2D_e7c6np$(3553, 0, 33326, this$SoundAnalysisPlugin.soundAnalyzer.frequencies.length, this$SoundAnalysisPlugin.historySize, 0, 6403, 5126, this$SoundAnalysisPlugin.textureGlBuffer_0);
-      return Unit;
-    };
   }
   SoundAnalysisPlugin$ProgramContext$RenderContext.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RenderContext',
-    interfaces: [GlslPlugin$RenderContext]
+    interfaces: []
   };
   SoundAnalysisPlugin$ProgramContext.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ProgramContext',
-    interfaces: [GlslPlugin$ProgramContext]
+    interfaces: []
   };
   function SoundAnalysisPlugin_init$ObjectLiteral(this$SoundAnalysisPlugin) {
     this.this$SoundAnalysisPlugin = this$SoundAnalysisPlugin;
@@ -15921,84 +18978,7 @@
   SoundAnalysisPlugin.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'SoundAnalysisPlugin',
-    interfaces: [GlslPlugin]
-  };
-  function SparkleShader() {
-    SparkleShader$Companion_getInstance();
-    Shader.call(this, ShaderId$SPARKLE_getInstance());
-  }
-  SparkleShader.prototype.createBuffer_ppt8xj$ = function (surface) {
-    return new SparkleShader$Buffer(this);
-  };
-  SparkleShader.prototype.readBuffer_100t80$ = function (reader) {
-    var $receiver = new SparkleShader$Buffer(this);
-    $receiver.read_100t80$(reader);
-    return $receiver;
-  };
-  SparkleShader.prototype.createRenderer_ppt8xj$ = function (surface) {
-    return new SparkleShader$Renderer();
-  };
-  function SparkleShader$Companion() {
-    SparkleShader$Companion_instance = this;
-  }
-  SparkleShader$Companion.prototype.parse_100t80$ = function (reader) {
-    return new SparkleShader();
-  };
-  SparkleShader$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: [ShaderReader]
-  };
-  var SparkleShader$Companion_instance = null;
-  function SparkleShader$Companion_getInstance() {
-    if (SparkleShader$Companion_instance === null) {
-      new SparkleShader$Companion();
-    }return SparkleShader$Companion_instance;
-  }
-  function SparkleShader$Buffer($outer) {
-    this.$outer = $outer;
-    this.shader_g8lvgi$_0 = this.$outer;
-    this.color = Color$Companion_getInstance().WHITE;
-    this.sparkliness = 0.1;
-  }
-  Object.defineProperty(SparkleShader$Buffer.prototype, 'shader', {
-    get: function () {
-      return this.shader_g8lvgi$_0;
-    }
-  });
-  SparkleShader$Buffer.prototype.serialize_3kjoo0$ = function (writer) {
-    this.color.serialize_3kjoo0$(writer);
-    writer.writeFloat_mx4ult$(this.sparkliness);
-  };
-  SparkleShader$Buffer.prototype.read_100t80$ = function (reader) {
-    this.color = Color$Companion_getInstance().parse_100t80$(reader);
-    this.sparkliness = reader.readFloat();
-  };
-  SparkleShader$Buffer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Buffer',
-    interfaces: [Shader$Buffer]
-  };
-  function SparkleShader$Renderer() {
-  }
-  SparkleShader$Renderer.prototype.draw_b23bvv$ = function (buffer, pixelIndex) {
-    var tmp$;
-    if (Random.Default.nextFloat() < buffer.sparkliness) {
-      tmp$ = buffer.color;
-    } else {
-      tmp$ = Color$Companion_getInstance().BLACK;
-    }
-    return tmp$;
-  };
-  SparkleShader$Renderer.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Renderer',
-    interfaces: [Shader$Renderer]
-  };
-  SparkleShader.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SparkleShader',
-    interfaces: [Shader]
+    interfaces: []
   };
   function Comparator$ObjectLiteral_1(closure$comparison) {
     this.closure$comparison = closure$comparison;
@@ -16022,27 +19002,14 @@
   function AllShows$Companion() {
     AllShows$Companion_instance = this;
     this.allGlslShows_su854s$_0 = lazy(AllShows$Companion$allGlslShows$lambda);
-    this.nonGlslShows_0 = listOf([SomeDumbShow_getInstance(), CompositeShow_getInstance(), PanelTweenShow_getInstance()]);
-    this.allShows = plus_0(listOf_0(SolidColorShow_getInstance()), sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))));
+    this.nonGlslShows_0 = listOf_0(PanelTweenShow_getInstance());
+    this.allShows = plus_1(sortedWith(plus_0(this.nonGlslShows_0, this.allGlslShows_0), new Comparator$ObjectLiteral_1(compareBy$lambda_0(AllShows$Companion$allShows$lambda))), GuruMeditationErrorShow_getInstance());
   }
-  Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows', {
+  Object.defineProperty(AllShows$Companion.prototype, 'allGlslShows_0', {
     get: function () {
       return this.allGlslShows_su854s$_0.value;
     }
   });
-  function AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral(closure$shaderSource, name) {
-    GlslShow.call(this, name);
-    this.program_oxrn8f$_0 = GlslShader$Companion_getInstance().renderContext.createProgram_61zpoe$(closure$shaderSource);
-  }
-  Object.defineProperty(AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.prototype, 'program', {
-    get: function () {
-      return this.program_oxrn8f$_0;
-    }
-  });
-  AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [GlslShow]
-  };
   function AllShows$Companion$allGlslShows$lambda() {
     var $receiver = split(getResource('_RESOURCE_FILES_'), ['\n']);
     var destination = ArrayList_init();
@@ -16063,7 +19030,7 @@
       var shaderSource = getResource(item);
       var nameFromGlsl = (tmp$_3 = (tmp$_2 = Regex_init('^// (.*)').find_905azu$(shaderSource)) != null ? tmp$_2.groupValues : null) != null ? tmp$_3.get_za3lpa$(1) : null;
       var name = nameFromGlsl != null ? nameFromGlsl : replace(replace(last(split(item, ['/'])), '.glsl', ''), '_', ' ');
-      tmp$_1.call(destination_0, new AllShows$Companion$allGlslShows$lambda$lambda$ObjectLiteral(shaderSource, name));
+      tmp$_1.call(destination_0, new GlslShow(name, shaderSource, GlslShader$Companion_getInstance().globalRenderContext));
     }
     return destination_0;
   }
@@ -16086,189 +19053,28 @@
     simpleName: 'AllShows',
     interfaces: []
   };
-  function CompositeShow() {
-    CompositeShow_instance = this;
-    Show.call(this, 'Composite');
-  }
-  function CompositeShow$createRenderer$ObjectLiteral(closure$showRunner) {
-    this.closure$showRunner = closure$showRunner;
-    this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color', Color$Companion_getInstance().BLUE));
-    this.solidShader = new SolidShader();
-    this.sineWaveShader = new SineWaveShader();
-    var $receiver = closure$showRunner.allSurfaces;
-    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      result.put_xwzc9p$(element, this.shaderBufsFor_0(element));
-    }
-    this.shaderBufs_0 = toMutableMap(result);
-    var $receiver_0 = closure$showRunner.allMovingHeads;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item));
-    }
-    this.movingHeadBuffers_0 = destination;
-  }
-  CompositeShow$createRenderer$ObjectLiteral.prototype.shaderBufsFor_0 = function (surface) {
-    var solidShaderBuffer = this.closure$showRunner.getShaderBuffer_9rhubp$(surface, this.solidShader);
-    var $receiver = this.closure$showRunner.getShaderBuffer_9rhubp$(surface, this.sineWaveShader);
-    $receiver.density = Random.Default.nextFloat() * 20;
-    var sineWaveShaderBuffer = $receiver;
-    var compositorShaderBuffer = this.closure$showRunner.getCompositorBuffer_cn6wln$(surface, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance());
-    return new CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer);
-  };
-  CompositeShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var theta = getTimeMillis().modulo(Kotlin.Long.fromInt(10000)).toNumber() / 1000.0 % (2 * math.PI);
-    var i = {v: 0};
-    var tmp$;
-    tmp$ = this.shaderBufs_0.values.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var tmp$_0;
-      element.solidShaderBuffer.color = this.colorPicker.color;
-      element.sineWaveShaderBuffer.color = Color$Companion_getInstance().WHITE;
-      element.sineWaveShaderBuffer.theta = theta + (tmp$_0 = i.v, i.v = tmp$_0 + 1 | 0, tmp$_0);
-      element.compositorShaderBuffer.mode = CompositingMode$ADD_getInstance();
-      element.compositorShaderBuffer.fade = 1.0;
-    }
-    var tmp$_1;
-    tmp$_1 = this.movingHeadBuffers_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var element_0 = tmp$_1.next();
-      element_0.color = this.colorPicker.color;
-      element_0.pan = math.PI / 2;
-      element_0.tilt = theta / 2;
-    }
-  };
-  CompositeShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
-    var tmp$;
-    tmp$ = removedSurfaces.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      this.shaderBufs_0.remove_11rb$(element);
-    }
-    var tmp$_0;
-    tmp$_0 = newSurfaces.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      var $receiver = this.shaderBufs_0;
-      var value = this.shaderBufsFor_0(element_0);
-      $receiver.put_xwzc9p$(element_0, value);
-    }
-  };
-  CompositeShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  CompositeShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    return new CompositeShow$createRenderer$ObjectLiteral(showRunner);
-  };
-  function CompositeShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
-    this.solidShaderBuffer = solidShaderBuffer;
-    this.sineWaveShaderBuffer = sineWaveShaderBuffer;
-    this.compositorShaderBuffer = compositorShaderBuffer;
-  }
-  CompositeShow$ShaderBufs.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ShaderBufs',
-    interfaces: []
-  };
-  CompositeShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'CompositeShow',
-    interfaces: [Show]
-  };
-  var CompositeShow_instance = null;
-  function CompositeShow_getInstance() {
-    if (CompositeShow_instance === null) {
-      new CompositeShow();
-    }return CompositeShow_instance;
-  }
-  function CreepingPixelsShow() {
-    CreepingPixelsShow_instance = this;
-    Show.call(this, 'Creeping Pixels');
-  }
-  function CreepingPixelsShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers) {
-    this.closure$colorPicker = closure$colorPicker;
-    this.closure$shaderBuffers = closure$shaderBuffers;
-    this.i = 0;
-  }
-  CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var color = this.closure$colorPicker.color;
-    var tmp$;
-    tmp$ = this.closure$shaderBuffers.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.palette[1] = color;
-      element.setAll_za3lpa$(0);
-      element.set_vux9f0$(this.i % element.colors.size, 1);
-    }
-    this.i = this.i + 1 | 0;
-  };
-  CreepingPixelsShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  CreepingPixelsShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    var shader = new PixelShader(PixelShader$Encoding$INDEXED_2_getInstance());
-    var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var tmp$_0 = destination.add_11rb$;
-      var $receiver_0 = showRunner.getShaderBuffer_9rhubp$(item, shader);
-      $receiver_0.palette[0] = Color$Companion_getInstance().BLACK;
-      tmp$_0.call(destination, $receiver_0);
-    }
-    var shaderBuffers = destination;
-    return new CreepingPixelsShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers);
-  };
-  CreepingPixelsShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'CreepingPixelsShow',
-    interfaces: [Show]
-  };
-  var CreepingPixelsShow_instance = null;
-  function CreepingPixelsShow_getInstance() {
-    if (CreepingPixelsShow_instance === null) {
-      new CreepingPixelsShow();
-    }return CreepingPixelsShow_instance;
-  }
-  function GlslShow(name) {
+  function GlslShow(name, src, glslContext, isPreview) {
+    GlslShow$Companion_getInstance();
+    if (isPreview === void 0)
+      isPreview = false;
     Show.call(this, name);
+    this.src = src;
+    this.glslContext = glslContext;
+    this.isPreview = isPreview;
   }
-  function GlslShow$createRenderer$ObjectLiteral(closure$buffers, closure$paramDataSources, closure$showRunner, closure$shader) {
+  function GlslShow$createRenderer$lambda(closure$plugins, closure$showContext, this$GlslShow) {
+    return function (uniformPortRef) {
+      return closure$plugins.matchUniformProvider_67zkti$(uniformPortRef, closure$showContext, this$GlslShow.glslContext);
+    };
+  }
+  function GlslShow$createRenderer$ObjectLiteral(closure$program, closure$buffers, closure$showContext, closure$shader) {
+    this.closure$program = closure$program;
     this.closure$buffers = closure$buffers;
-    this.closure$paramDataSources = closure$paramDataSources;
-    this.closure$showRunner = closure$showRunner;
+    this.closure$showContext = closure$showContext;
     this.closure$shader = closure$shader;
   }
   GlslShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var $receiver = this.closure$buffers.values;
-    this.closure$paramDataSources;
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var $receiver_0 = this.closure$paramDataSources;
-      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-      var tmp$_0;
-      tmp$_0 = $receiver_0.iterator();
-      while (tmp$_0.hasNext()) {
-        var item = tmp$_0.next();
-        destination.add_11rb$(item.getValue());
-      }
-      var bufferValues = destination;
-      element.update_giv38x$(bufferValues);
-    }
+    this.closure$program.updateUniforms();
   };
   GlslShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = function (newSurfaces, removedSurfaces) {
     this.closure$buffers;
@@ -16278,17 +19084,17 @@
       var element = tmp$.next();
       this.closure$buffers.remove_11rb$(element);
     }
-    this.closure$showRunner;
+    this.closure$showContext;
     this.closure$shader;
     this.closure$buffers;
     var tmp$_0;
     tmp$_0 = newSurfaces.iterator();
     while (tmp$_0.hasNext()) {
       var element_0 = tmp$_0.next();
-      var closure$showRunner = this.closure$showRunner;
+      var closure$showContext = this.closure$showContext;
       var closure$shader = this.closure$shader;
       var $receiver = this.closure$buffers;
-      var value = closure$showRunner.getShaderBuffer_9rhubp$(element_0, closure$shader);
+      var value = closure$showContext.getShaderBuffer_6g43xn$(element_0, closure$shader);
       $receiver.put_xwzc9p$(element_0, value);
     }
   };
@@ -16296,399 +19102,73 @@
     kind: Kind_CLASS,
     interfaces: [Show$Renderer]
   };
-  GlslShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var shader = new GlslShader(this.program, model.defaultUvTranslator);
-    var $receiver = this.program.params;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(this.createDataSource_r8brig$(item, showRunner));
+  GlslShow.prototype.createRenderer_xhhghb$ = function (model, showContext) {
+    var patch = (new AutoWirer()).autoWire_sas1p3$(mapOf([to('uv', GlslRenderer$Companion_getInstance().uvMapper), to('color', GlslRenderer$Companion_getInstance().glslAnalyzer.asShader_61zpoe$(this.src))]));
+    var plugins = Plugins$Companion_getInstance().findAll();
+    var program = patch.compile_bh8y7y$(this.glslContext, GlslShow$createRenderer$lambda(plugins, showContext, this));
+    var shader = new GlslShader(program, model.defaultUvTranslator, this.glslContext);
+    var tmp$ = showContext.allSurfaces;
+    var destination = HashMap_init();
+    var tmp$_0;
+    tmp$_0 = tmp$.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      destination.put_xwzc9p$(element, showContext.getShaderBuffer_6g43xn$(element, shader));
     }
-    var paramDataSources = destination;
-    var tmp$_0 = showRunner.allSurfaces;
-    var destination_0 = HashMap_init();
-    var tmp$_1;
-    tmp$_1 = tmp$_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var element = tmp$_1.next();
-      destination_0.put_xwzc9p$(element, showRunner.getShaderBuffer_9rhubp$(element, shader));
-    }
-    var buffers = destination_0;
-    return new GlslShow$createRenderer$ObjectLiteral(buffers, paramDataSources, showRunner, shader);
+    var buffers = destination;
+    return new GlslShow$createRenderer$ObjectLiteral(program, buffers, showContext, shader);
   };
-  GlslShow.prototype.createDataSource_r8brig$ = function ($receiver, showRunner) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
-    var config = $receiver.config;
-    var name = (tmp$ = config.getPrimitive_61zpoe$('name').contentOrNull) != null ? tmp$ : $receiver.varName;
-    switch ($receiver.gadgetType) {
-      case 'Slider':
-        tmp$_6 = new GlslShow$GadgetDataSource(showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, new Slider(name, (tmp$_1 = (tmp$_0 = config.getPrimitiveOrNull_61zpoe$('initialValue')) != null ? tmp$_0.float : null) != null ? tmp$_1 : 1.0, (tmp$_3 = (tmp$_2 = config.getPrimitiveOrNull_61zpoe$('minValue')) != null ? tmp$_2.float : null) != null ? tmp$_3 : 0.0, (tmp$_5 = (tmp$_4 = config.getPrimitiveOrNull_61zpoe$('maxValue')) != null ? tmp$_4.float : null) != null ? tmp$_5 : 1.0)));
-        break;
-      case 'ColorPicker':
-        tmp$_6 = new GlslShow$GadgetDataSource(showRunner.getGadget_vedre8$('glsl_' + $receiver.varName, new ColorPicker(name)));
-        break;
-      case 'Beat':
-        tmp$_6 = new GlslShow$BeatDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock_8be2vx$);
-        break;
-      case 'StartOfMeasure':
-        tmp$_6 = new GlslShow$StartOfMeasureDataSource(showRunner.getBeatSource().getBeatData(), showRunner.clock_8be2vx$);
-        break;
-      default:throw IllegalArgumentException_init('unknown gadget ' + $receiver.gadgetType);
-    }
-    return tmp$_6;
-  };
-  function GlslShow$DataSource() {
+  function GlslShow$Companion() {
+    GlslShow$Companion_instance = this;
+    this.logger = new Logger('GlslShow');
   }
-  GlslShow$DataSource.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'DataSource',
+  GlslShow$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
     interfaces: []
   };
-  function GlslShow$GadgetDataSource(gadget) {
-    this.gadget = gadget;
+  var GlslShow$Companion_instance = null;
+  function GlslShow$Companion_getInstance() {
+    if (GlslShow$Companion_instance === null) {
+      new GlslShow$Companion();
+    }return GlslShow$Companion_instance;
   }
-  GlslShow$GadgetDataSource.prototype.getValue = function () {
-    var tmp$, tmp$_0;
-    tmp$ = this.gadget;
-    if (Kotlin.isType(tmp$, Slider))
-      tmp$_0 = this.gadget.value;
-    else if (Kotlin.isType(tmp$, ColorPicker))
-      tmp$_0 = this.gadget.color;
-    else
-      throw IllegalArgumentException_init('unsupported gadget ' + this.gadget);
-    return tmp$_0;
-  };
-  GlslShow$GadgetDataSource.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'GadgetDataSource',
-    interfaces: [GlslShow$DataSource]
-  };
-  function GlslShow$BeatDataSource(beatData, clock) {
-    this.beatData = beatData;
-    this.clock = clock;
-  }
-  GlslShow$BeatDataSource.prototype.getValue = function () {
-    return this.beatData.fractionTillNextBeat_rnw5ii$(this.clock);
-  };
-  GlslShow$BeatDataSource.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'BeatDataSource',
-    interfaces: [GlslShow$DataSource]
-  };
-  function GlslShow$StartOfMeasureDataSource(beatData, clock) {
-    this.beatData = beatData;
-    this.clock = clock;
-  }
-  GlslShow$StartOfMeasureDataSource.prototype.getValue = function () {
-    return this.beatData.fractionTillNextMeasure_rnw5ii$(this.clock);
-  };
-  GlslShow$StartOfMeasureDataSource.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'StartOfMeasureDataSource',
-    interfaces: [GlslShow$DataSource]
-  };
   GlslShow.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'GlslShow',
     interfaces: [Show]
   };
-  function HeartbleatShow() {
-    HeartbleatShow_instance = this;
-    Show.call(this, 'Heartbleat');
+  function GuruMeditationErrorShow() {
+    GuruMeditationErrorShow_instance = this;
+    GlslShow.call(this, '\u03A9 Guru Meditation Error \u03A9', trimIndent('\n    uniform float time;\n    void main() {\n        gl_FragColor = (mod(time, 2.) < 1.)\n            ? vec4(.75, 0., 0., 1.)\n            : vec4(.25, 0., 0., 1.);\n    }\n'), GlslShader$Companion_getInstance().globalRenderContext);
   }
-  function HeartbleatShow$createRenderer$ObjectLiteral(closure$showRunner) {
-    this.closure$showRunner = closure$showRunner;
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init();
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      if (Kotlin.isType(element, IdentifiedSurface) && HeartbleatShow_getInstance().get_number_kki6pr$(element) === 7)
-        destination.add_11rb$(element);
-    }
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault(destination, 10));
-    var tmp$_0;
-    tmp$_0 = destination.iterator();
-    while (tmp$_0.hasNext()) {
-      var item = tmp$_0.next();
-      destination_0.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new HeartShader()));
-    }
-    this.hearts = destination_0;
-    this.heartSizeGadget = closure$showRunner.getGadget_vedre8$('heartSize', new Slider('Heart Size', 0.16));
-    this.strokeSize = closure$showRunner.getGadget_vedre8$('strokeSize', new Slider('Stroke Size', 0.5));
-    this.xOff = closure$showRunner.getGadget_vedre8$('xOff', new Slider('X Offset', 0.4));
-    this.yOff = closure$showRunner.getGadget_vedre8$('yOff', new Slider('Y Offset', 0.67));
-    var $receiver_0 = closure$showRunner.allUnusedSurfaces;
-    var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_1;
-    tmp$_1 = $receiver_0.iterator();
-    while (tmp$_1.hasNext()) {
-      var item_0 = tmp$_1.next();
-      destination_1.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item_0, new SolidShader()));
-    }
-    this.otherSurfaces = destination_1;
-  }
-  HeartbleatShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var tmp$, tmp$_0;
-    var currentBeat = this.closure$showRunner.currentBeat;
-    var phase = currentBeat % 1.0 * 3.0;
-    tmp$_0 = this.heartSizeGadget.value;
-    if (phase > 1.5 && phase < 2.5) {
-      var x = phase - 2;
-      tmp$ = 1.0 + (0.5 - Math_0.abs(x)) / 4;
-    } else if (phase > 2.5 || phase < 0.5) {
-      if (phase > 2.5)
-        phase -= 3;
-      tmp$ = 1.0 + (0.5 - Math_0.abs(phase)) / 2;
-    } else {
-      tmp$ = 1.0;
-    }
-    var heartSize = tmp$_0 * tmp$;
-    var tmp$_1;
-    tmp$_1 = this.hearts.iterator();
-    while (tmp$_1.hasNext()) {
-      var element = tmp$_1.next();
-      element.heartSize = heartSize;
-      element.strokeSize = this.strokeSize.value;
-      element.xOff = this.xOff.value;
-      element.yOff = this.yOff.value;
-    }
-    var tmp$_2;
-    tmp$_2 = this.otherSurfaces.iterator();
-    while (tmp$_2.hasNext()) {
-      var element_0 = tmp$_2.next();
-      var tmp$_3 = Color_init_0(0.25, 0.25, 0.25);
-      var tmp$_4 = Color_init_0(0.75, 0.3, 0.3);
-      var x_0 = currentBeat / 4.0 * math.PI;
-      element_0.color = tmp$_3.fade_6zkv30$(tmp$_4, Math_0.sin(x_0));
-    }
-  };
-  HeartbleatShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  HeartbleatShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var tmp$;
-    Kotlin.isType(tmp$ = model, SheepModel) ? tmp$ : throwCCE();
-    return new HeartbleatShow$createRenderer$ObjectLiteral(showRunner);
-  };
-  HeartbleatShow.prototype.get_number_kki6pr$ = function ($receiver) {
-    var tmp$, tmp$_0, tmp$_1;
-    return (tmp$_1 = (tmp$_0 = (tmp$ = Regex_init('\\d+').find_905azu$($receiver.name)) != null ? tmp$.value : null) != null ? toInt_0(tmp$_0) : null) != null ? tmp$_1 : -1;
-  };
-  HeartbleatShow.$metadata$ = {
+  GuruMeditationErrorShow.$metadata$ = {
     kind: Kind_OBJECT,
-    simpleName: 'HeartbleatShow',
-    interfaces: [Show]
+    simpleName: 'GuruMeditationErrorShow',
+    interfaces: [GlslShow]
   };
-  var HeartbleatShow_instance = null;
-  function HeartbleatShow_getInstance() {
-    if (HeartbleatShow_instance === null) {
-      new HeartbleatShow();
-    }return HeartbleatShow_instance;
-  }
-  function LifeyShow() {
-    LifeyShow_instance = this;
-    Show.call(this, 'Lifey');
-  }
-  function LifeyShow$createRenderer$neighbors(closure$model) {
-    return function ($receiver) {
-      return closure$model.neighborsOf_ckpk7g$($receiver);
-    };
-  }
-  function LifeyShow$createRenderer$isSelected(closure$selectedPanels) {
-    return function ($receiver) {
-      return closure$selectedPanels.contains_11rb$($receiver);
-    };
-  }
-  function LifeyShow$createRenderer$neighborsSelected(closure$neighbors, closure$selectedPanels) {
-    return function ($receiver) {
-      var $receiver_0 = closure$neighbors($receiver);
-      var destination = ArrayList_init();
-      var tmp$;
-      tmp$ = $receiver_0.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        if (closure$selectedPanels.contains_11rb$(element))
-          destination.add_11rb$(element);
-      }
-      return destination.size;
-    };
-  }
-  function LifeyShow$createRenderer$ObjectLiteral(closure$speedSlider, closure$lastUpdateMs, closure$selectedPanels, closure$model, closure$isSelected, closure$neighborsSelected, closure$neighbors, closure$shaderBuffers) {
-    this.closure$speedSlider = closure$speedSlider;
-    this.closure$lastUpdateMs = closure$lastUpdateMs;
-    this.closure$selectedPanels = closure$selectedPanels;
-    this.closure$model = closure$model;
-    this.closure$isSelected = closure$isSelected;
-    this.closure$neighborsSelected = closure$neighborsSelected;
-    this.closure$neighbors = closure$neighbors;
-    this.closure$shaderBuffers = closure$shaderBuffers;
-  }
-  LifeyShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var nowMs = getTimeMillis();
-    var intervalMs = Kotlin.Long.fromNumber((1.0 - this.closure$speedSlider.value) * 1000);
-    if (nowMs.compareTo_11rb$(this.closure$lastUpdateMs.v.add(intervalMs)) > 0) {
-      if (this.closure$selectedPanels.isEmpty()) {
-        var tmp$ = this.closure$selectedPanels;
-        var $receiver = this.closure$model.allPanels;
-        var destination = ArrayList_init();
-        var tmp$_0;
-        tmp$_0 = $receiver.iterator();
-        while (tmp$_0.hasNext()) {
-          var element = tmp$_0.next();
-          if (Random.Default.nextFloat() < 0.5)
-            destination.add_11rb$(element);
-        }
-        tmp$.addAll_brywnq$(destination);
-      } else {
-        var newSelectedPanels = ArrayList_init();
-        var $receiver_0 = this.closure$selectedPanels;
-        this.closure$isSelected;
-        this.closure$neighborsSelected;
-        this.closure$neighbors;
-        var tmp$_1;
-        tmp$_1 = $receiver_0.iterator();
-        while (tmp$_1.hasNext()) {
-          var element_0 = tmp$_1.next();
-          var closure$isSelected = this.closure$isSelected;
-          var closure$neighborsSelected = this.closure$neighborsSelected;
-          var closure$neighbors = this.closure$neighbors;
-          var living = closure$isSelected(element_0);
-          var neighborsSelected = closure$neighborsSelected(element_0);
-          if (living) {
-            if (neighborsSelected < 1 || neighborsSelected > 3) {
-              living = false;
-              if (neighborsSelected === 0) {
-                var moveToNeighbor = random_0(closure$neighbors(element_0));
-                if (moveToNeighbor != null) {
-                  newSelectedPanels.add_11rb$(moveToNeighbor);
-                }living = false;
-              }}} else {
-            if (neighborsSelected === 2 || neighborsSelected === 3) {
-              living = true;
-            }}
-          if (Random.Default.nextFloat() < 0.1) {
-            living = !living;
-          }if (living) {
-            newSelectedPanels.add_11rb$(element_0);
-          }}
-        this.closure$selectedPanels.clear();
-        this.closure$selectedPanels.addAll_brywnq$(newSelectedPanels);
-      }
-      this.closure$lastUpdateMs.v = nowMs;
-    }var $receiver_1 = this.closure$shaderBuffers;
-    this.closure$selectedPanels;
-    var tmp$_2;
-    tmp$_2 = $receiver_1.entries.iterator();
-    while (tmp$_2.hasNext()) {
-      var element_1 = tmp$_2.next();
-      var closure$selectedPanels = this.closure$selectedPanels;
-      var surface = element_1.key;
-      var buffer = element_1.value;
-      buffer.color = Kotlin.isType(surface, IdentifiedSurface) && contains(closure$selectedPanels, surface.modelSurface) ? Color$Companion_getInstance().WHITE : Color$Companion_getInstance().BLACK;
-    }
-  };
-  LifeyShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  LifeyShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var tmp$;
-    Kotlin.isType(tmp$ = model, SheepModel) ? tmp$ : throwCCE();
-    var speedSlider = showRunner.getGadget_vedre8$('speed', new Slider('Speed', 0.25));
-    var shader = new SolidShader();
-    var $receiver = showRunner.allSurfaces;
-    var result = LinkedHashMap_init_0(coerceAtLeast(mapCapacity(collectionSizeOrDefault($receiver, 10)), 16));
-    var tmp$_0;
-    tmp$_0 = $receiver.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      var tmp$_1 = result.put_xwzc9p$;
-      var $receiver_0 = showRunner.getShaderBuffer_9rhubp$(element, shader);
-      $receiver_0.color = Color$Companion_getInstance().WHITE;
-      tmp$_1.call(result, element, $receiver_0);
-    }
-    var shaderBuffers = result;
-    var selectedPanels = ArrayList_init();
-    var lastUpdateMs = {v: L0};
-    var neighbors = LifeyShow$createRenderer$neighbors(model);
-    var isSelected = LifeyShow$createRenderer$isSelected(selectedPanels);
-    var neighborsSelected = LifeyShow$createRenderer$neighborsSelected(neighbors, selectedPanels);
-    return new LifeyShow$createRenderer$ObjectLiteral(speedSlider, lastUpdateMs, selectedPanels, model, isSelected, neighborsSelected, neighbors, shaderBuffers);
-  };
-  LifeyShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'LifeyShow',
-    interfaces: [Show]
-  };
-  var LifeyShow_instance = null;
-  function LifeyShow_getInstance() {
-    if (LifeyShow_instance === null) {
-      new LifeyShow();
-    }return LifeyShow_instance;
+  var GuruMeditationErrorShow_instance = null;
+  function GuruMeditationErrorShow_getInstance() {
+    if (GuruMeditationErrorShow_instance === null) {
+      new GuruMeditationErrorShow();
+    }return GuruMeditationErrorShow_instance;
   }
   function PanelTweenShow() {
     PanelTweenShow_instance = this;
     Show.call(this, 'PanelTweenShow');
   }
-  function PanelTweenShow$createRenderer$ObjectLiteral(closure$showRunner, closure$initialColors) {
-    this.palettePicker = closure$showRunner.getGadget_vedre8$('palette', new PalettePicker('Palette', closure$initialColors));
-    this.slider = closure$showRunner.getGadget_vedre8$('sparkliness', new Slider('Sparkliness', 0.01, 0.0, 1.0, 0.01));
-    this.solidShader = new SolidShader();
-    this.sparkleShader = new SparkleShader();
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var tmp$_0 = destination.add_11rb$;
-      var solidShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(item, this.solidShader);
-      var sparkleShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(item, this.sparkleShader);
-      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_cn6wln$(item, solidShaderBuffer, sparkleShaderBuffer, CompositingMode$ADD_getInstance(), 1.0);
-      tmp$_0.call(destination, new PanelTweenShow$Shaders(solidShaderBuffer, sparkleShaderBuffer, compositorShaderBuffer));
-    }
-    this.shaderBuffers = destination;
-    this.fadeTimeMs = 500;
+  function PanelTweenShow$createRenderer$ObjectLiteral(closure$showContext, closure$initialColors) {
+    this.palettePicker = closure$showContext.getGadget_vedre8$('palette', new PalettePicker('Palette', closure$initialColors));
   }
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var now = getTimeMillis().and(L268435455).toInt();
-    var colors = this.palettePicker.colors;
-    var tmp$, tmp$_0;
-    var index = 0;
-    tmp$ = this.shaderBuffers.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % colors.size;
-      var startColor = colors.get_za3lpa$(colorIndex);
-      var endColor = colors.get_za3lpa$((colorIndex + 1 | 0) % colors.size);
-      var tweenedColor = startColor.fade_6zkv30$(endColor, now % this.fadeTimeMs / this.fadeTimeMs);
-      item.solidShader.color = tweenedColor;
-      item.sparkleShader.color = Color$Companion_getInstance().WHITE;
-      item.sparkleShader.sparkliness = this.slider.value / 3;
-    }
   };
   PanelTweenShow$createRenderer$ObjectLiteral.$metadata$ = {
     kind: Kind_CLASS,
     interfaces: [Show$Renderer]
   };
-  PanelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
+  PanelTweenShow.prototype.createRenderer_xhhghb$ = function (model, showContext) {
     var initialColors = listOf([Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')]);
-    return new PanelTweenShow$createRenderer$ObjectLiteral(showRunner, initialColors);
-  };
-  function PanelTweenShow$Shaders(solidShader, sparkleShader, compositorShader) {
-    this.solidShader = solidShader;
-    this.sparkleShader = sparkleShader;
-    this.compositorShader = compositorShader;
-  }
-  PanelTweenShow$Shaders.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Shaders',
-    interfaces: []
+    return new PanelTweenShow$createRenderer$ObjectLiteral(showContext, initialColors);
   };
   PanelTweenShow.$metadata$ = {
     kind: Kind_OBJECT,
@@ -16700,425 +19180,6 @@
     if (PanelTweenShow_instance === null) {
       new PanelTweenShow();
     }return PanelTweenShow_instance;
-  }
-  function PixelTweenShow() {
-    PixelTweenShow_instance = this;
-    Show.call(this, 'PixelTweenShow');
-  }
-  function PixelTweenShow$createRenderer$ObjectLiteral(closure$colorArray, closure$showRunner) {
-    this.closure$colorArray = closure$colorArray;
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new PixelShader()));
-    }
-    this.shaderBuffers = destination;
-    this.fadeTimeMs = 1000;
-  }
-  PixelTweenShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var now = getTimeMillis().and(L268435455).toInt();
-    var $receiver = this.shaderBuffers;
-    this.closure$colorArray;
-    var tmp$, tmp$_0;
-    var index = 0;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var closure$colorArray = this.closure$colorArray;
-      var colorIndex = ((now / this.fadeTimeMs | 0) + checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0)) | 0) % closure$colorArray.length;
-      var startColor = closure$colorArray[colorIndex];
-      var endColor = closure$colorArray[(colorIndex + 1 | 0) % closure$colorArray.length];
-      var colors = item.colors;
-      var tmp$_1, tmp$_0_0;
-      var index_0 = 0;
-      tmp$_1 = colors.iterator();
-      while (tmp$_1.hasNext()) {
-        var item_0 = tmp$_1.next();
-        var index_1 = checkIndexOverflow((tmp$_0_0 = index_0, index_0 = tmp$_0_0 + 1 | 0, tmp$_0_0));
-        if (Random.Default.nextFloat() < 0.1) {
-          colors.set_wxm5ur$(index_1, Color$Companion_getInstance().WHITE);
-        } else {
-          var tweenedColor = startColor.fade_6zkv30$(endColor, (now + index_1 | 0) % this.fadeTimeMs / this.fadeTimeMs);
-          colors.set_wxm5ur$(index_1, tweenedColor);
-        }
-      }
-    }
-  };
-  PixelTweenShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  PixelTweenShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var colorArray = [Color$Companion_getInstance().fromString('#FF8A47'), Color$Companion_getInstance().fromString('#FC6170'), Color$Companion_getInstance().fromString('#8CEEEE'), Color$Companion_getInstance().fromString('#26BFBF'), Color$Companion_getInstance().fromString('#FFD747')];
-    return new PixelTweenShow$createRenderer$ObjectLiteral(colorArray, showRunner);
-  };
-  PixelTweenShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'PixelTweenShow',
-    interfaces: [Show]
-  };
-  var PixelTweenShow_instance = null;
-  function PixelTweenShow_getInstance() {
-    if (PixelTweenShow_instance === null) {
-      new PixelTweenShow();
-    }return PixelTweenShow_instance;
-  }
-  function RandomShow() {
-    RandomShow_instance = this;
-    Show.call(this, 'Random');
-  }
-  function RandomShow$createRenderer$ObjectLiteral(closure$showRunner, closure$model) {
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, new RandomShader()));
-    }
-    var $receiver_0 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
-    }
-    this.movingHeadBuffers = destination_0;
-  }
-  RandomShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var tmp$;
-    tmp$ = this.movingHeadBuffers.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.color = Color$Companion_getInstance().random();
-      element.pan = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().panRange.endInclusive;
-      element.tilt = Random.Default.nextFloat() * Shenzarpy$Companion_getInstance().tiltRange.endInclusive;
-    }
-  };
-  RandomShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  RandomShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    return new RandomShow$createRenderer$ObjectLiteral(showRunner, model);
-  };
-  RandomShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'RandomShow',
-    interfaces: [Show]
-  };
-  var RandomShow_instance = null;
-  function RandomShow_getInstance() {
-    if (RandomShow_instance === null) {
-      new RandomShow();
-    }return RandomShow_instance;
-  }
-  function SimpleSpatialShow() {
-    SimpleSpatialShow_instance = this;
-    Show.call(this, 'Spatial');
-  }
-  function SimpleSpatialShow$createRenderer$ObjectLiteral(closure$shaderBuffers, closure$colorPicker, closure$centerXSlider, closure$centerYSlider, closure$radiusSlider) {
-    this.closure$shaderBuffers = closure$shaderBuffers;
-    this.closure$colorPicker = closure$colorPicker;
-    this.closure$centerXSlider = closure$centerXSlider;
-    this.closure$centerYSlider = closure$centerYSlider;
-    this.closure$radiusSlider = closure$radiusSlider;
-  }
-  SimpleSpatialShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var $receiver = this.closure$shaderBuffers;
-    this.closure$colorPicker;
-    this.closure$centerXSlider;
-    this.closure$centerYSlider;
-    this.closure$radiusSlider;
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var closure$colorPicker = this.closure$colorPicker;
-      var closure$centerXSlider = this.closure$centerXSlider;
-      var closure$centerYSlider = this.closure$centerYSlider;
-      var closure$radiusSlider = this.closure$radiusSlider;
-      element.color = closure$colorPicker.color;
-      element.centerX = closure$centerXSlider.value;
-      element.centerY = closure$centerYSlider.value;
-      element.radius = closure$radiusSlider.value;
-    }
-  };
-  SimpleSpatialShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  SimpleSpatialShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    var centerXSlider = showRunner.getGadget_vedre8$('centerX', new Slider('center X', 0.5, 0.0, 1.0, 0.01));
-    var centerYSlider = showRunner.getGadget_vedre8$('centerY', new Slider('center Y', 0.5, 0.0, 1.0, 0.01));
-    var radiusSlider = showRunner.getGadget_vedre8$('radius', new Slider('radius', 0.25, 0.0, 1.0, 0.01));
-    var shader = new SimpleSpatialShader();
-    var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(showRunner.getShaderBuffer_9rhubp$(item, shader));
-    }
-    var shaderBuffers = destination;
-    return new SimpleSpatialShow$createRenderer$ObjectLiteral(shaderBuffers, colorPicker, centerXSlider, centerYSlider, radiusSlider);
-  };
-  SimpleSpatialShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'SimpleSpatialShow',
-    interfaces: [Show]
-  };
-  var SimpleSpatialShow_instance = null;
-  function SimpleSpatialShow_getInstance() {
-    if (SimpleSpatialShow_instance === null) {
-      new SimpleSpatialShow();
-    }return SimpleSpatialShow_instance;
-  }
-  function SolidColorShow() {
-    SolidColorShow_instance = this;
-    Show.call(this, 'Solid Color');
-  }
-  function SolidColorShow$createRenderer$ObjectLiteral(closure$colorPicker, closure$shaderBuffers, closure$saturationPicker, closure$brightnessPicker, closure$eyes) {
-    this.closure$colorPicker = closure$colorPicker;
-    this.closure$shaderBuffers = closure$shaderBuffers;
-    this.closure$saturationPicker = closure$saturationPicker;
-    this.closure$brightnessPicker = closure$brightnessPicker;
-    this.closure$eyes = closure$eyes;
-  }
-  SolidColorShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var color = {v: this.closure$colorPicker.color};
-    var $receiver = this.closure$shaderBuffers;
-    this.closure$saturationPicker;
-    this.closure$brightnessPicker;
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var closure$saturationPicker = this.closure$saturationPicker;
-      var closure$brightnessPicker = this.closure$brightnessPicker;
-      element.color = color.v.withSaturation_mx4ult$(closure$saturationPicker.value).withBrightness_mx4ult$(closure$brightnessPicker.value);
-    }
-    var tmp$_0;
-    tmp$_0 = this.closure$eyes.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      element_0.color = color.v;
-    }
-  };
-  SolidColorShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  SolidColorShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    var colorPicker = showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    var saturationPicker = showRunner.getGadget_vedre8$('sm_saturation', new Slider('Saturation'));
-    var brightnessPicker = showRunner.getGadget_vedre8$('sm_brightness', new Slider('Brightness'));
-    var shader = new SolidShader();
-    var $receiver = showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var tmp$_0 = destination.add_11rb$;
-      var $receiver_0 = showRunner.getShaderBuffer_9rhubp$(item, shader);
-      $receiver_0.color = Color$Companion_getInstance().ORANGE;
-      tmp$_0.call(destination, $receiver_0);
-    }
-    var shaderBuffers = destination;
-    var $receiver_1 = model.movingHeads;
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
-    var tmp$_1;
-    tmp$_1 = $receiver_1.iterator();
-    while (tmp$_1.hasNext()) {
-      var item_0 = tmp$_1.next();
-      destination_0.add_11rb$(showRunner.getMovingHeadBuffer_d2e776$(item_0));
-    }
-    var eyes = destination_0;
-    return new SolidColorShow$createRenderer$ObjectLiteral(colorPicker, shaderBuffers, saturationPicker, brightnessPicker, eyes);
-  };
-  SolidColorShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'SolidColorShow',
-    interfaces: [Show]
-  };
-  var SolidColorShow_instance = null;
-  function SolidColorShow_getInstance() {
-    if (SolidColorShow_instance === null) {
-      new SolidColorShow();
-    }return SolidColorShow_instance;
-  }
-  function SomeDumbShow() {
-    SomeDumbShow_instance = this;
-    Show.call(this, 'SomeDumbShow');
-  }
-  function SomeDumbShow$createRenderer$ObjectLiteral(closure$showRunner, closure$model) {
-    this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    this.pixelShader = new PixelShader();
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      destination.add_11rb$(closure$showRunner.getShaderBuffer_9rhubp$(item, this.pixelShader));
-    }
-    this.pixelShaderBuffers = destination;
-    var $receiver_0 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
-    var tmp$_0;
-    tmp$_0 = $receiver_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var item_0 = tmp$_0.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
-    }
-    this.movingHeads = destination_0;
-  }
-  function SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$nextTimeShiftedFloat(closure$now) {
-    return function ($receiver) {
-      var x = $receiver.nextFloat() + closure$now.toNumber() / 1000.0;
-      return Math_0.sin(x);
-    };
-  }
-  function SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$desaturateRandomishly($receiver, baseSaturation, seed) {
-    var x = seed.nextFloat();
-    return $receiver.withSaturation_mx4ult$(baseSaturation * Math_0.abs(x));
-  }
-  SomeDumbShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var seed = Random_0(0);
-    var now = getTimeMillis();
-    var nextTimeShiftedFloat = SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$nextTimeShiftedFloat(now);
-    var desaturateRandomishly = SomeDumbShow$createRenderer$ObjectLiteral$nextFrame$desaturateRandomishly;
-    var tmp$;
-    tmp$ = this.pixelShaderBuffers.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      var tmp$_0;
-      var baseSaturation = seed.nextFloat();
-      var panelColor = nextTimeShiftedFloat(seed) < 0.1 ? Color$Companion_getInstance().random() : this.colorPicker.color;
-      tmp$_0 = element.colors;
-      for (var i = 0; i !== tmp$_0.size; ++i) {
-        element.colors.set_wxm5ur$(i, desaturateRandomishly(panelColor, baseSaturation, seed));
-      }
-    }
-    var tmp$_1;
-    tmp$_1 = this.movingHeads.iterator();
-    while (tmp$_1.hasNext()) {
-      var element_0 = tmp$_1.next();
-      element_0.color = this.colorPicker.color;
-      element_0.pan = element_0.pan + (nextTimeShiftedFloat(seed) - 0.5) / 5;
-      element_0.tilt = element_0.tilt + (nextTimeShiftedFloat(seed) - 0.5) / 5;
-    }
-  };
-  SomeDumbShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  SomeDumbShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    return new SomeDumbShow$createRenderer$ObjectLiteral(showRunner, model);
-  };
-  SomeDumbShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'SomeDumbShow',
-    interfaces: [Show]
-  };
-  var SomeDumbShow_instance = null;
-  function SomeDumbShow_getInstance() {
-    if (SomeDumbShow_instance === null) {
-      new SomeDumbShow();
-    }return SomeDumbShow_instance;
-  }
-  function ThumpShow() {
-    ThumpShow_instance = this;
-    Show.call(this, 'Thump');
-  }
-  function ThumpShow$createRenderer$ObjectLiteral(closure$showRunner, closure$model) {
-    this.closure$showRunner = closure$showRunner;
-    this.beatSource_0 = closure$showRunner.getBeatSource();
-    this.colorPicker = closure$showRunner.getGadget_vedre8$('color', new ColorPicker('Color'));
-    this.solidShader = new SolidShader();
-    this.sineWaveShader = new SineWaveShader();
-    this.compositorShader = new CompositorShader(this.solidShader, this.sineWaveShader);
-    var $receiver = closure$showRunner.allSurfaces;
-    var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
-    var tmp$;
-    tmp$ = $receiver.iterator();
-    while (tmp$.hasNext()) {
-      var item = tmp$.next();
-      var tmp$_0 = destination.add_11rb$;
-      var solidShaderBuffer = closure$showRunner.getShaderBuffer_9rhubp$(item, this.solidShader);
-      var $receiver_0 = closure$showRunner.getShaderBuffer_9rhubp$(item, this.sineWaveShader);
-      $receiver_0.density = Random.Default.nextFloat() * 20;
-      var sineWaveShaderBuffer = $receiver_0;
-      var compositorShaderBuffer = closure$showRunner.getCompositorBuffer_cn6wln$(item, solidShaderBuffer, sineWaveShaderBuffer, CompositingMode$ADD_getInstance(), 1.0);
-      tmp$_0.call(destination, new ThumpShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer));
-    }
-    this.shaderBufs_0 = destination;
-    var $receiver_1 = closure$model.movingHeads;
-    var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
-    var tmp$_1;
-    tmp$_1 = $receiver_1.iterator();
-    while (tmp$_1.hasNext()) {
-      var item_0 = tmp$_1.next();
-      destination_0.add_11rb$(closure$showRunner.getMovingHeadBuffer_d2e776$(item_0));
-    }
-    this.movingHeadBuffers_0 = destination_0;
-  }
-  ThumpShow$createRenderer$ObjectLiteral.prototype.nextFrame = function () {
-    var beat = this.closure$showRunner.currentBeat;
-    var i = 0;
-    var beatColor = Color$Companion_getInstance().WHITE.fade_6zkv30$(this.colorPicker.color, beat % 1);
-    var tmp$;
-    tmp$ = this.shaderBufs_0.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      element.solidShaderBuffer.color = beatColor;
-      element.sineWaveShaderBuffer.color = beatColor;
-      element.compositorShaderBuffer.mode = CompositingMode$ADD_getInstance();
-      element.compositorShaderBuffer.fade = 1.0;
-    }
-    var tmp$_0;
-    tmp$_0 = this.movingHeadBuffers_0.iterator();
-    while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      element_0.color = beatColor;
-      element_0.pan = roundToInt(beat) / 2;
-      element_0.tilt = roundToInt(beat) / 2;
-    }
-  };
-  ThumpShow$createRenderer$ObjectLiteral.$metadata$ = {
-    kind: Kind_CLASS,
-    interfaces: [Show$Renderer]
-  };
-  ThumpShow.prototype.createRenderer_ccj26o$ = function (model, showRunner) {
-    return new ThumpShow$createRenderer$ObjectLiteral(showRunner, model);
-  };
-  function ThumpShow$ShaderBufs(solidShaderBuffer, sineWaveShaderBuffer, compositorShaderBuffer) {
-    this.solidShaderBuffer = solidShaderBuffer;
-    this.sineWaveShaderBuffer = sineWaveShaderBuffer;
-    this.compositorShaderBuffer = compositorShaderBuffer;
-  }
-  ThumpShow$ShaderBufs.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'ShaderBufs',
-    interfaces: []
-  };
-  ThumpShow.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'ThumpShow',
-    interfaces: [Show]
-  };
-  var ThumpShow_instance = null;
-  function ThumpShow_getInstance() {
-    if (ThumpShow_instance === null) {
-      new ThumpShow();
-    }return ThumpShow_instance;
   }
   function FakeDmxUniverse() {
     Dmx$Universe.call(this);
@@ -17814,12 +19875,6 @@
     simpleName: 'FakeNetwork',
     interfaces: [Network]
   };
-  function random_0($receiver) {
-    return $receiver.size > 0 ? $receiver.get_za3lpa$(Random.Default.nextInt_za3lpa$($receiver.size)) : null;
-  }
-  function random_1($receiver, random) {
-    return $receiver.size > 0 ? $receiver.get_za3lpa$(random.nextInt_za3lpa$($receiver.size)) : null;
-  }
   function only($receiver, description) {
     if (description === void 0)
       description = 'item';
@@ -18834,7 +20889,7 @@
     tmp$_1 = $receiver.iterator();
     while (tmp$_1.hasNext()) {
       var element_0 = tmp$_1.next();
-      if (contains_0(element_0.name, pattern, true))
+      if (contains(element_0.name, pattern, true))
         destination.add_11rb$(element_0);
     }
     tmp$_0.addAll_brywnq$(destination);
@@ -18971,7 +21026,7 @@
         tmp$_3 = $receiver_2.iterator();
         while (tmp$_3.hasNext()) {
           var item_0 = tmp$_3.next();
-          destination_0.add_11rb$(plus_1(new Vector3(item_0.x, item_0.y, item_0.z), surfaceNormal));
+          destination_0.add_11rb$(plus_4(new Vector3(item_0.x, item_0.y, item_0.z), surfaceNormal));
         }
         lineGeom.setFromPoints(copyToArray(destination_0));
         this.wireframe_0.add(new Line_init(lineGeom, lineMaterial));
@@ -19281,7 +21336,7 @@
     var firstGuess = first(orderedPanels);
     (Kotlin.isType(tmp$_0 = firstGuess.first.panelInfo.mesh.material, MeshBasicMaterial) ? tmp$_0 : throwCCE()).color.r = (Kotlin.isType(tmp$_0 = firstGuess.first.panelInfo.mesh.material, MeshBasicMaterial) ? tmp$_0 : throwCCE()).color.r + 0.25;
     clear(this.table_0);
-    append(this.table_0, JsMapperUi$showCandidates$lambda(orderedPanels));
+    append_0(this.table_0, JsMapperUi$showCandidates$lambda(orderedPanels));
   };
   JsMapperUi.prototype.intersectingSurface_4c3mt7$ = function (x, y, visibleSurfaces) {
     var raycaster = new Raycaster_init();
@@ -19944,9 +21999,9 @@
     this.fs_0 = new FakeFs();
     this.bridgeClient_0 = new BridgeClient(window.location.hostname + ':' + '8006');
     this.pinkyDisplay_0 = this.display_0.forPinky();
-    GlslBase_getInstance().plugins.add_11rb$(new SoundAnalysisPlugin(this.bridgeClient_0.soundAnalyzer));
     this.shows = AllShows$Companion_getInstance().allShows;
-    this.pinky_0 = new Pinky(this.model_0, this.shows, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, true);
+    this.glslContext = GlslShader$Companion_getInstance().globalRenderContext;
+    this.pinky_0 = new Pinky(this.model_0, this.shows, this.network_0, this.dmxUniverse_0, this.bridgeClient_0.beatSource, new JsClock(), this.fs_0, new PermissiveFirmwareDaddy(), this.pinkyDisplay_0, this.bridgeClient_0.soundAnalyzer, void 0, void 0, new GlslRenderer(this.glslContext, this.model_0.defaultUvTranslator));
     this.pinkyScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.brainScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
     this.mapperScope_0 = CoroutineScope_0(coroutines.Dispatchers.Main);
@@ -20304,6 +22359,9 @@
   SheepSimulator.prototype.start = function () {
     doRunBlocking(SheepSimulator$start$lambda(this));
   };
+  SheepSimulator.prototype.switchToShow = function (show) {
+    this.pinky_0.switchToShow_q3rpgh$(show);
+  };
   function SheepSimulator$NullPixels() {
     SheepSimulator$NullPixels_instance = this;
     this.size_dint0g$_0 = 0;
@@ -20645,14 +22703,241 @@
     simpleName: 'Vector2',
     interfaces: []
   };
+  function GlslPreview(baseEl, statusEl, shaderSrc) {
+    GlslPreview$Companion_getInstance();
+    if (shaderSrc === void 0)
+      shaderSrc = null;
+    this.baseEl_0 = baseEl;
+    this.statusEl_0 = statusEl;
+    this.running_0 = false;
+    var tmp$;
+    this.canvas_0 = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
+    this.gl_0 = GlslBase_getInstance().jsManager.createContext_ap7jt0$(this.canvas_0);
+    this.quadRect_0 = new Quad$Rect(1.0, -1.0, -1.0, 1.0);
+    this.scene_0 = null;
+    this.baseEl_0.appendChild(this.canvas_0);
+    this.setShaderSrc(shaderSrc);
+  }
+  GlslPreview.prototype.start = function () {
+    this.running_0 = true;
+    this.render();
+  };
+  GlslPreview.prototype.stop = function () {
+    this.running_0 = false;
+  };
+  GlslPreview.prototype.destroy = function () {
+    this.baseEl_0.removeChild(this.canvas_0);
+  };
+  function GlslPreview$setShaderSrc$lambda(f, f_0) {
+    return Unit;
+  }
+  GlslPreview.prototype.setShaderSrc = function (src, callback) {
+    if (callback === void 0)
+      callback = GlslPreview$setShaderSrc$lambda;
+    var tmp$;
+    (tmp$ = this.scene_0) != null ? (tmp$.release(), Unit) : null;
+    this.scene_0 = null;
+    clear(this.statusEl_0);
+    if (src != null) {
+      block$break: do {
+        var tmp$_0;
+        try {
+          var $receiver = new GlslPreview$Scene(this, src);
+          appendText(this.statusEl_0, 'Inputs:\n');
+          var tmp$_1;
+          tmp$_1 = $receiver.links.iterator();
+          while (tmp$_1.hasNext()) {
+            var element = tmp$_1.next();
+            var from = element.component1()
+            , to = element.component2();
+            if (Kotlin.isType(from, GlslProgram$InputPortRef)) {
+              appendText(this.statusEl_0, from.toString());
+              appendText(this.statusEl_0, '\n');
+            }}
+          var $receiver_0 = $receiver.gadgets.entries;
+          var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+          var tmp$_2;
+          tmp$_2 = $receiver_0.iterator();
+          while (tmp$_2.hasNext()) {
+            var item = tmp$_2.next();
+            var tmp$_3 = destination.add_11rb$;
+            var name = item.key;
+            var gadget = item.value;
+            tmp$_3.call(destination, new GadgetData(name, gadget, '/preview/gadgets/' + name));
+          }
+          var gadgetDatas = copyToArray(destination);
+          callback(gadgetDatas, []);
+          this.scene_0 = $receiver;
+        } catch (e) {
+          if (Kotlin.isType(e, CompiledShader$CompilationException)) {
+            callback([], copyToArray(e.getErrors()));
+            appendText(this.statusEl_0, e.errorMessage);
+            break block$break;
+          } else if (Kotlin.isType(e, Exception)) {
+            appendText(this.statusEl_0, (tmp$_0 = e.message) != null ? tmp$_0 : e.toString());
+            GlslPreview$Companion_getInstance().logger.error_ldd2zj$('failed to compile shader', e);
+            break block$break;
+          } else
+            throw e;
+        }
+      }
+       while (false);
+    }};
+  function GlslPreview$render$lambda$lambda(this$GlslPreview) {
+    return function (it) {
+      this$GlslPreview.render();
+      return Unit;
+    };
+  }
+  function GlslPreview$render$lambda(this$GlslPreview) {
+    return function () {
+      return window.requestAnimationFrame(GlslPreview$render$lambda$lambda(this$GlslPreview));
+    };
+  }
+  GlslPreview.prototype.render = function () {
+    var tmp$;
+    if (!this.running_0)
+      return;
+    window.setTimeout(GlslPreview$render$lambda(this), 10);
+    (tmp$ = this.scene_0) != null ? (tmp$.render(), Unit) : null;
+  };
+  GlslPreview.prototype.resize = function () {
+    console.log('resize!!!');
+  };
+  function GlslPreview$Scene($outer, shaderSrc) {
+    this.$outer = $outer;
+    this.patch = (new AutoWirer()).autoWire_sas1p3$(mapOf_0(to('color', (new GlslAnalyzer()).asShader_61zpoe$(shaderSrc))));
+    this.links = this.patch.links_8be2vx$;
+    this.program_0 = null;
+    this.gadgets = LinkedHashMap_init();
+    var plugins = Plugins$Companion_getInstance().findAll();
+    this.program_0 = new GlslProgram(this.$outer.gl_0, this.patch, GlslPreview$GlslPreview$Scene_init$lambda(plugins, this, this.$outer));
+    this.program_0.setResolution_dleff0$(this.$outer.canvas_0.width, this.$outer.canvas_0.height);
+    this.quad_0 = new Quad(this.$outer.gl_0, listOf_0(this.$outer.quadRect_0));
+  }
+  function GlslPreview$Scene$render$lambda$lambda(this$GlslPreview) {
+    return function ($receiver) {
+      $receiver.viewport_tjonv8$(0, 0, this$GlslPreview.canvas_0.width, this$GlslPreview.canvas_0.height);
+      return Unit;
+    };
+  }
+  function GlslPreview$Scene$render$lambda$lambda_0($receiver) {
+    $receiver.clearColor_7b5o5w$(1.0, 0.0, 0.0, 1.0);
+    return Unit;
+  }
+  function GlslPreview$Scene$render$lambda$lambda_1($receiver) {
+    $receiver.clear_za3lpa$(16640);
+    return Unit;
+  }
+  function GlslPreview$Scene$render$lambda$lambda_2(this$Scene) {
+    return function () {
+      this$Scene.quad_0.renderRect_kcn2v3$(0);
+      return Unit;
+    };
+  }
+  function GlslPreview$Scene$render$lambda(this$GlslPreview, this$Scene) {
+    return function () {
+      this$GlslPreview.gl_0.check_342fqd$(GlslPreview$Scene$render$lambda$lambda(this$GlslPreview));
+      this$GlslPreview.gl_0.check_342fqd$(GlslPreview$Scene$render$lambda$lambda_0);
+      this$GlslPreview.gl_0.check_342fqd$(GlslPreview$Scene$render$lambda$lambda_1);
+      this$Scene.program_0.updateUniforms();
+      this$Scene.quad_0.prepareToRender_4layb8$(this$Scene.program_0.vertexAttribLocation, GlslPreview$Scene$render$lambda$lambda_2(this$Scene));
+      return Unit;
+    };
+  }
+  GlslPreview$Scene.prototype.render = function () {
+    this.$outer.gl_0.runInContext_klfg04$(GlslPreview$Scene$render$lambda(this.$outer, this));
+  };
+  GlslPreview$Scene.prototype.release = function () {
+    this.quad_0.release();
+    this.program_0.release();
+  };
+  function GlslPreview$Scene$FakeShowContext($outer) {
+    this.$outer = $outer;
+  }
+  Object.defineProperty(GlslPreview$Scene$FakeShowContext.prototype, 'allSurfaces', {
+    get: function () {
+      throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+    }
+  });
+  Object.defineProperty(GlslPreview$Scene$FakeShowContext.prototype, 'allUnusedSurfaces', {
+    get: function () {
+      throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+    }
+  });
+  Object.defineProperty(GlslPreview$Scene$FakeShowContext.prototype, 'allMovingHeads', {
+    get: function () {
+      throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+    }
+  });
+  Object.defineProperty(GlslPreview$Scene$FakeShowContext.prototype, 'currentBeat', {
+    get: function () {
+      throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+    }
+  });
+  GlslPreview$Scene$FakeShowContext.prototype.getBeatSource = function () {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+  };
+  GlslPreview$Scene$FakeShowContext.prototype.getShaderBuffer_6g43xn$ = function (surface, shader) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+  };
+  GlslPreview$Scene$FakeShowContext.prototype.getMovingHeadBuffer_d2e776$ = function (movingHead) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented');
+  };
+  GlslPreview$Scene$FakeShowContext.prototype.getGadget_vedre8$ = function (name, gadget) {
+    if (this.$outer.gadgets.containsKey_11rb$(name)) {
+      throw new CompiledShader$LinkException('multiple gadgets with the same name (' + name + ')');
+    }this.$outer.gadgets.put_xwzc9p$(name, gadget);
+    return gadget;
+  };
+  GlslPreview$Scene$FakeShowContext.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeShowContext',
+    interfaces: [ShowContext]
+  };
+  function GlslPreview$GlslPreview$Scene_init$lambda(closure$plugins, this$Scene, this$GlslPreview) {
+    return function (uniformPort) {
+      return closure$plugins.matchUniformProvider_67zkti$(uniformPort, new GlslPreview$Scene$FakeShowContext(this$Scene), this$GlslPreview.gl_0);
+    };
+  }
+  GlslPreview$Scene.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Scene',
+    interfaces: []
+  };
+  function GlslPreview$Companion() {
+    GlslPreview$Companion_instance = this;
+    this.logger = new Logger('GlslPreview');
+  }
+  GlslPreview$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var GlslPreview$Companion_instance = null;
+  function GlslPreview$Companion_getInstance() {
+    if (GlslPreview$Companion_instance === null) {
+      new GlslPreview$Companion();
+    }return GlslPreview$Companion_instance;
+  }
+  GlslPreview.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GlslPreview',
+    interfaces: []
+  };
   function GlslBase() {
     GlslBase_instance = this;
-    this.plugins = ArrayList_init();
-    this.manager_cd4dvk$_0 = lazy(GlslBase$manager$lambda);
+    this.manager_cd4dvk$_0 = lazy(GlslBase$manager$lambda(this));
+    this.jsManager_4ok4nr$_0 = lazy(GlslBase$jsManager$lambda);
   }
   Object.defineProperty(GlslBase.prototype, 'manager', {
     get: function () {
       return this.manager_cd4dvk$_0.value;
+    }
+  });
+  Object.defineProperty(GlslBase.prototype, 'jsManager', {
+    get: function () {
+      return this.jsManager_4ok4nr$_0.value;
     }
   });
   function GlslBase$JsGlslManager() {
@@ -20665,9 +22950,13 @@
     }
   });
   GlslBase$JsGlslManager.prototype.createContext = function () {
-    var tmp$, tmp$_0;
+    var tmp$;
     var canvas = Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
-    var gl = (tmp$_0 = canvas.getContext('webgl2')) == null || Kotlin.isType(tmp$_0, WebGL2RenderingContext) ? tmp$_0 : throwCCE();
+    return this.createContext_ap7jt0$(canvas);
+  };
+  GlslBase$JsGlslManager.prototype.createContext_ap7jt0$ = function (canvas) {
+    var tmp$;
+    var gl = (tmp$ = canvas.getContext('webgl2')) == null || Kotlin.isType(tmp$, WebGL2RenderingContext) ? tmp$ : throwCCE();
     if (gl == null) {
       window.alert('Running GLSL shows on iOS requires WebGL 2.0.\n' + '\n' + 'Go to Settings \u2192 Safari \u2192 Advanced \u2192 Experimental Features and enable WebGL 2.0.');
       throw Exception_init('WebGL 2 not supported');
@@ -20695,7 +22984,12 @@
     simpleName: 'JsGlslContext',
     interfaces: [GlslContext]
   };
-  function GlslBase$manager$lambda() {
+  function GlslBase$manager$lambda(this$GlslBase) {
+    return function () {
+      return this$GlslBase.jsManager;
+    };
+  }
+  function GlslBase$jsManager$lambda() {
     return new GlslBase$JsGlslManager();
   }
   GlslBase.$metadata$ = {
@@ -21136,7 +23430,7 @@
   }
   BrowserNetwork$link$ObjectLiteral.prototype.connectWebSocket_t0j9bj$ = function (toAddress, port, path, webSocketListener) {
     var tmp$;
-    var webSocket = new WebSocket(trimEnd((Kotlin.isType(tmp$ = toAddress, BrowserNetwork$BrowserAddress) ? tmp$ : throwCCE()).urlString, Kotlin.charArrayOf(47)) + path);
+    var webSocket = new WebSocket(trimEnd_0((Kotlin.isType(tmp$ = toAddress, BrowserNetwork$BrowserAddress) ? tmp$ : throwCCE()).urlString, Kotlin.charArrayOf(47)) + path);
     webSocket.binaryType = 'arraybuffer';
     var tcpConnection = new BrowserNetwork$link$ObjectLiteral$connectWebSocket$ObjectLiteral(port, webSocket, this);
     webSocket.onopen = BrowserNetwork$link$ObjectLiteral$connectWebSocket$lambda(webSocketListener, tcpConnection);
@@ -21285,7 +23579,7 @@
     return (it & 255).toString();
   }
   BrowserUdpProxy$UdpProxyAddress.prototype.toString = function () {
-    return joinToString_0(this.bytes, '.', void 0, void 0, void 0, void 0, BrowserUdpProxy$UdpProxyAddress$toString$lambda);
+    return joinToString_1(this.bytes, '.', void 0, void 0, void 0, void 0, BrowserUdpProxy$UdpProxyAddress$toString$lambda);
   };
   BrowserUdpProxy$UdpProxyAddress.prototype.equals = function (other) {
     var tmp$;
@@ -22497,7 +24791,7 @@
     panelGeom.computeBoundingBox();
     var boundingBox = ensureNotNull(panelGeom.boundingBox);
     var min = boundingBox.min;
-    var size = minus_0(boundingBox.max, boundingBox.min);
+    var size = minus_1(boundingBox.max, boundingBox.min);
     var translate = (new Matrix4()).makeTranslation(-min.x, -min.y, -min.z);
     panelGeom.applyMatrix(translate);
     pixGeom.applyMatrix(translate);
@@ -22704,8 +24998,7 @@
   package$baaahs.MovingHeadDisplay = MovingHeadDisplay;
   Pinky.PinkyBeatDisplayer = Pinky$PinkyBeatDisplayer;
   Pinky.NetworkStats = Pinky$NetworkStats;
-  Pinky$PoolingRenderContext.Holder = Pinky$PoolingRenderContext$Holder;
-  Pinky.PoolingRenderContext = Pinky$PoolingRenderContext;
+  Pinky.RenderTree = Pinky$RenderTree;
   Pinky.ListeningVisualizer = Pinky$ListeningVisualizer;
   Object.defineProperty(Pinky, 'Companion', {
     get: Pinky$Companion_getInstance
@@ -22737,27 +25030,6 @@
   Object.defineProperty(ShaderId, 'PIXEL', {
     get: ShaderId$PIXEL_getInstance
   });
-  Object.defineProperty(ShaderId, 'SINE_WAVE', {
-    get: ShaderId$SINE_WAVE_getInstance
-  });
-  Object.defineProperty(ShaderId, 'COMPOSITOR', {
-    get: ShaderId$COMPOSITOR_getInstance
-  });
-  Object.defineProperty(ShaderId, 'SPARKLE', {
-    get: ShaderId$SPARKLE_getInstance
-  });
-  Object.defineProperty(ShaderId, 'SIMPLE_SPATIAL', {
-    get: ShaderId$SIMPLE_SPATIAL_getInstance
-  });
-  Object.defineProperty(ShaderId, 'HEART', {
-    get: ShaderId$HEART_getInstance
-  });
-  Object.defineProperty(ShaderId, 'RANDOM', {
-    get: ShaderId$RANDOM_getInstance
-  });
-  Object.defineProperty(ShaderId, 'GLSL_SHADER', {
-    get: ShaderId$GLSL_SHADER_getInstance
-  });
   Object.defineProperty(ShaderId, 'Companion', {
     get: ShaderId$Companion_getInstance
   });
@@ -22787,6 +25059,7 @@
   Show.Renderer = Show$Renderer;
   Show.RestartShowException = Show$RestartShowException;
   package$baaahs.Show = Show;
+  package$baaahs.ShowContext = ShowContext;
   ShowRunner.SurfacesChanges = ShowRunner$SurfacesChanges;
   ShowRunner.SurfaceReceiver = ShowRunner$SurfaceReceiver;
   Object.defineProperty(ShowRunner, 'Companion', {
@@ -22802,6 +25075,7 @@
   package$baaahs.Surface = Surface;
   package$baaahs.IdentifiedSurface = IdentifiedSurface;
   package$baaahs.AnonymousSurface = AnonymousSurface;
+  package$baaahs.SurfaceBinder = SurfaceBinder;
   Object.defineProperty(package$baaahs, 'Topics', {
     get: Topics_getInstance
   });
@@ -23015,36 +25289,228 @@
   package$geom.Vector3F = Vector3F;
   package$geom.center_21sjvd$ = center;
   package$geom.boundingBox_21sjvd$ = boundingBox;
+  var package$glshaders = package$baaahs.glshaders || (package$baaahs.glshaders = {});
+  package$glshaders.AutoWirer = AutoWirer;
+  package$glshaders.ColorShader = ColorShader;
+  Object.defineProperty(ShaderToyColorShader, 'Companion', {
+    get: ShaderToyColorShader$Companion_getInstance
+  });
+  package$glshaders.ShaderToyColorShader = ShaderToyColorShader;
+  Object.defineProperty(GenericColorShader, 'Companion', {
+    get: GenericColorShader$Companion_getInstance
+  });
+  package$glshaders.GenericColorShader = GenericColorShader;
+  CorePlugin.NoOpProvider = CorePlugin$NoOpProvider;
+  CorePlugin.ResolutionProvider = CorePlugin$ResolutionProvider;
+  CorePlugin.TimeProvider = CorePlugin$TimeProvider;
+  CorePlugin.UvCoordProvider = CorePlugin$UvCoordProvider;
+  CorePlugin.GadgetProvider = CorePlugin$GadgetProvider;
+  CorePlugin.SliderProvider = CorePlugin$SliderProvider;
+  CorePlugin.XyPadProvider = CorePlugin$XyPadProvider;
+  CorePlugin.ColorPickerProvider = CorePlugin$ColorPickerProvider;
+  package$glshaders.CorePlugin = CorePlugin;
+  Object.defineProperty(Vec2, 'Companion', {
+    get: Vec2$Companion_getInstance
+  });
+  Object.defineProperty(Vec2, '$serializer', {
+    get: Vec2$$serializer_getInstance
+  });
+  package$glshaders.Vec2_init_y4apw$ = Vec2_init;
+  package$glshaders.Vec2_init_za3lpa$ = Vec2_init_0;
+  package$glshaders.Vec2 = Vec2;
+  Object.defineProperty(Vec3, 'Companion', {
+    get: Vec3$Companion_getInstance
+  });
+  Object.defineProperty(Vec3, '$serializer', {
+    get: Vec3$$serializer_getInstance
+  });
+  package$glshaders.Vec3_init_ies85i$ = Vec3_init;
+  package$glshaders.Vec3_init_za3lpa$ = Vec3_init_0;
+  package$glshaders.Vec3 = Vec3;
+  Object.defineProperty(Vec4, 'Companion', {
+    get: Vec4$Companion_getInstance
+  });
+  Object.defineProperty(Vec4, '$serializer', {
+    get: Vec4$$serializer_getInstance
+  });
+  package$glshaders.Vec4_init_qbyruk$ = Vec4_init;
+  package$glshaders.Vec4_init_za3lpa$ = Vec4_init_0;
+  package$glshaders.Vec4 = Vec4;
+  Object.defineProperty(Vec2F, 'Companion', {
+    get: Vec2F$Companion_getInstance
+  });
+  Object.defineProperty(Vec2F, '$serializer', {
+    get: Vec2F$$serializer_getInstance
+  });
+  package$glshaders.Vec2F_init_y4axo$ = Vec2F_init;
+  package$glshaders.Vec2F_init_mx4ult$ = Vec2F_init_0;
+  package$glshaders.Vec2F = Vec2F;
+  Object.defineProperty(Vec3F, 'Companion', {
+    get: Vec3F$Companion_getInstance
+  });
+  Object.defineProperty(Vec3F, '$serializer', {
+    get: Vec3F$$serializer_getInstance
+  });
+  package$glshaders.Vec3F_init_vvq1nx$ = Vec3F_init;
+  package$glshaders.Vec3F_init_mx4ult$ = Vec3F_init_0;
+  package$glshaders.Vec3F = Vec3F;
+  Object.defineProperty(Vec4F, 'Companion', {
+    get: Vec4F$Companion_getInstance
+  });
+  Object.defineProperty(Vec4F, '$serializer', {
+    get: Vec4F$$serializer_getInstance
+  });
+  package$glshaders.Vec4F_init_cp3pdw$ = Vec4F_init;
+  package$glshaders.Vec4F_init_mx4ult$ = Vec4F_init_0;
+  package$glshaders.Vec4F = Vec4F;
+  Object.defineProperty(GlslAnalyzer, 'Companion', {
+    get: GlslAnalyzer$Companion_getInstance
+  });
+  GlslAnalyzer.GlslStatement = GlslAnalyzer$GlslStatement;
+  package$glshaders.GlslAnalyzer = GlslAnalyzer;
+  Object.defineProperty(GlslCode, 'Companion', {
+    get: GlslCode$Companion_getInstance
+  });
+  GlslCode.Statement = GlslCode$Statement;
+  GlslCode.GlslOther = GlslCode$GlslOther;
+  GlslCode.GlslVar = GlslCode$GlslVar;
+  GlslCode.GlslFunction = GlslCode$GlslFunction;
+  GlslCode.Hint = GlslCode$Hint;
+  Object.defineProperty(GlslCode$ContentType, 'RasterCoordinate', {
+    get: GlslCode$ContentType$RasterCoordinate_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'UvCoordinate', {
+    get: GlslCode$ContentType$UvCoordinate_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'UvCoordinateTexture', {
+    get: GlslCode$ContentType$UvCoordinateTexture_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'XyCoordinate', {
+    get: GlslCode$ContentType$XyCoordinate_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'XyzCoordinate', {
+    get: GlslCode$ContentType$XyzCoordinate_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Color', {
+    get: GlslCode$ContentType$Color_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Time', {
+    get: GlslCode$ContentType$Time_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Resolution', {
+    get: GlslCode$ContentType$Resolution_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Float', {
+    get: GlslCode$ContentType$Float_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Int', {
+    get: GlslCode$ContentType$Int_getInstance
+  });
+  Object.defineProperty(GlslCode$ContentType, 'Unknown', {
+    get: GlslCode$ContentType$Unknown_getInstance
+  });
+  GlslCode.ContentType = GlslCode$ContentType;
+  GlslCode.Namespace = GlslCode$Namespace;
+  package$glshaders.GlslCode = GlslCode;
+  $$importsForInline$$.sparklemotion = _;
+  GlslProgram.Binding = GlslProgram$Binding;
+  GlslProgram.DataSourceProvider = GlslProgram$DataSourceProvider;
+  GlslProgram.DataSource = GlslProgram$DataSource;
+  GlslProgram.ResolutionListener = GlslProgram$ResolutionListener;
+  Object.defineProperty(GlslProgram, 'Resolution', {
+    get: GlslProgram$Resolution_getInstance
+  });
+  Object.defineProperty(GlslProgram, 'Time', {
+    get: GlslProgram$Time_getInstance
+  });
+  Object.defineProperty(GlslProgram, 'GlFragCoord', {
+    get: GlslProgram$GlFragCoord_getInstance
+  });
+  Object.defineProperty(GlslProgram, 'UvCoordsTexture', {
+    get: GlslProgram$UvCoordsTexture_getInstance
+  });
+  GlslProgram.StockUniformPortRef = GlslProgram$StockUniformPortRef;
+  GlslProgram.InputPortRef = GlslProgram$InputPortRef;
+  Object.defineProperty(GlslProgram, 'Companion', {
+    get: GlslProgram$Companion_getInstance
+  });
+  package$glshaders.GlslProgram = GlslProgram;
+  package$glshaders.InputPort = InputPort;
+  package$glshaders.OutputPort = OutputPort;
+  Patch.Component = Patch$Component;
+  Patch.PortRef = Patch$PortRef;
+  Patch.ShaderOut = Patch$ShaderOut;
+  Object.defineProperty(Patch, 'PixelColor', {
+    get: Patch$PixelColor_getInstance
+  });
+  Patch.UniformPortRef = Patch$UniformPortRef;
+  Patch.ShaderPortRef = Patch$ShaderPortRef;
+  Patch.Link = Patch$Link;
+  package$glshaders.Patch = Patch;
+  package$glshaders.Plugin = Plugin;
+  Object.defineProperty(Plugins, 'Companion', {
+    get: Plugins$Companion_getInstance
+  });
+  package$glshaders.Plugins = Plugins;
+  Object.defineProperty(ShaderFragment$Type, 'Color', {
+    get: ShaderFragment$Type$Color_getInstance
+  });
+  Object.defineProperty(ShaderFragment$Type, 'Projection', {
+    get: ShaderFragment$Type$Projection_getInstance
+  });
+  Object.defineProperty(ShaderFragment$Type, 'Transformer', {
+    get: ShaderFragment$Type$Transformer_getInstance
+  });
+  Object.defineProperty(ShaderFragment$Type, 'Filter', {
+    get: ShaderFragment$Type$Filter_getInstance
+  });
+  ShaderFragment.Type = ShaderFragment$Type;
+  ShaderFragment.Base = ShaderFragment$Base;
+  Object.defineProperty(ShaderFragment, 'Companion', {
+    get: ShaderFragment$Companion_getInstance
+  });
+  package$glshaders.ShaderFragment = ShaderFragment;
+  Object.defineProperty(UvShader, 'Companion', {
+    get: UvShader$Companion_getInstance
+  });
+  package$glshaders.UvShader = UvShader;
+  Object.defineProperty(CompiledShader, 'Companion', {
+    get: CompiledShader$Companion_getInstance
+  });
+  Object.defineProperty(CompiledShader$CompilationException, 'Companion', {
+    get: CompiledShader$CompilationException$Companion_getInstance
+  });
+  CompiledShader.CompilationException = CompiledShader$CompilationException;
+  CompiledShader.LinkException = CompiledShader$LinkException;
+  CompiledShader.GlslError = CompiledShader$GlslError;
   var package$glsl = package$baaahs.glsl || (package$baaahs.glsl = {});
+  package$glsl.CompiledShader = CompiledShader;
   package$glsl.checkForGlError_t0jnzc$ = checkForGlError;
   package$glsl.check_56a5t8$ = check;
+  GlslContext.Stats = GlslContext$Stats;
+  GlslContext.TextureUnit = GlslContext$TextureUnit;
   package$glsl.GlslContext = GlslContext;
   package$glsl.GlslManager = GlslManager;
-  GlslPlugin.ProgramContext = GlslPlugin$ProgramContext;
-  GlslPlugin.RenderContext = GlslPlugin$RenderContext;
-  package$glsl.GlslPlugin = GlslPlugin;
   GlslRenderer.SurfacePixels = GlslRenderer$SurfacePixels;
+  GlslRenderer.ArrangementListener = GlslRenderer$ArrangementListener;
   Object.defineProperty(GlslRenderer, 'Companion', {
     get: GlslRenderer$Companion_getInstance
   });
-  $$importsForInline$$.sparklemotion = _;
   GlslRenderer.Arrangement = GlslRenderer$Arrangement;
   GlslRenderer.Uniforms = GlslRenderer$Uniforms;
-  GlslRenderer.ContextSwitcher = GlslRenderer$ContextSwitcher;
   GlslRenderer.Stats = GlslRenderer$Stats;
   Object.defineProperty(GlslRenderer, 'GlConst', {
     get: GlslRenderer$GlConst_getInstance
   });
   package$glsl.GlslRenderer = GlslRenderer;
-  package$glsl.GlslSurface = GlslSurface;
-  package$glsl.SurfacePixels = SurfacePixels;
-  package$glsl.Program = Program;
+  Object.defineProperty(KglTracer, 'Companion', {
+    get: KglTracer$Companion_getInstance
+  });
+  package$glsl.KglTracer = KglTracer;
   Quad.Rect = Quad$Rect;
   package$glsl.Quad = Quad;
-  Object.defineProperty(Shader_0, 'Companion', {
-    get: Shader$Companion_getInstance_0
-  });
-  package$glsl.Shader = Shader_0;
+  package$glsl.RenderSurface = RenderSurface;
+  package$glsl.SurfacePixels = SurfacePixels;
   package$glsl.SurfacePixelStrategy = SurfacePixelStrategy;
   Object.defineProperty(package$glsl, 'RandomSurfacePixelStrategy', {
     get: RandomSurfacePixelStrategy_getInstance
@@ -23052,11 +25518,7 @@
   Object.defineProperty(package$glsl, 'LinearSurfacePixelStrategy', {
     get: LinearSurfacePixelStrategy_getInstance
   });
-  Object.defineProperty(Uniform, 'Companion', {
-    get: Uniform$Companion_getInstance
-  });
   package$glsl.Uniform = Uniform;
-  package$glsl.UniformSetter = UniformSetter;
   Object.defineProperty(UvTranslator$Id, 'PANEL_SPACE_UV_TRANSLATOR', {
     get: UvTranslator$Id$PANEL_SPACE_UV_TRANSLATOR_getInstance
   });
@@ -23219,50 +25681,13 @@
   });
   package$proto.PingMessage = PingMessage;
   package$proto.Message = Message;
-  Object.defineProperty(CompositorShader, 'Companion', {
-    get: CompositorShader$Companion_getInstance
-  });
-  CompositorShader.Buffer = CompositorShader$Buffer;
-  CompositorShader.Renderer = CompositorShader$Renderer;
-  var package$shaders = package$baaahs.shaders || (package$baaahs.shaders = {});
-  package$shaders.CompositorShader = CompositorShader;
-  Object.defineProperty(CompositingMode, 'NORMAL', {
-    get: CompositingMode$NORMAL_getInstance
-  });
-  Object.defineProperty(CompositingMode, 'ADD', {
-    get: CompositingMode$ADD_getInstance
-  });
-  Object.defineProperty(CompositingMode, 'Companion', {
-    get: CompositingMode$Companion_getInstance
-  });
-  package$shaders.CompositingMode = CompositingMode;
   Object.defineProperty(GlslShader, 'Companion', {
     get: GlslShader$Companion_getInstance
   });
-  GlslShader.Renderer = GlslShader$Renderer;
-  GlslShader.PooledRenderer = GlslShader$PooledRenderer;
   GlslShader.Buffer = GlslShader$Buffer;
-  Object.defineProperty(GlslShader$Param$Type, 'INT', {
-    get: GlslShader$Param$Type$INT_getInstance
-  });
-  Object.defineProperty(GlslShader$Param$Type, 'FLOAT', {
-    get: GlslShader$Param$Type$FLOAT_getInstance
-  });
-  Object.defineProperty(GlslShader$Param$Type, 'VEC3', {
-    get: GlslShader$Param$Type$VEC3_getInstance
-  });
-  GlslShader$Param.Type = GlslShader$Param$Type;
-  Object.defineProperty(GlslShader$Param, 'Companion', {
-    get: GlslShader$Param$Companion_getInstance
-  });
-  GlslShader.Param = GlslShader$Param;
+  var package$shaders = package$baaahs.shaders || (package$baaahs.shaders = {});
   package$shaders.GlslShader = GlslShader;
-  Object.defineProperty(HeartShader, 'Companion', {
-    get: HeartShader$Companion_getInstance
-  });
-  HeartShader.Buffer = HeartShader$Buffer;
-  HeartShader.Renderer = HeartShader$Renderer;
-  package$shaders.HeartShader = HeartShader;
+  package$shaders.IGlslShader = IGlslShader;
   Object.defineProperty(PixelShader$Encoding, 'DIRECT_ARGB', {
     get: PixelShader$Encoding$DIRECT_ARGB_getInstance
   });
@@ -23290,24 +25715,6 @@
   PixelShader.IndexedBuffer = PixelShader$IndexedBuffer;
   PixelShader.Renderer = PixelShader$Renderer;
   package$shaders.PixelShader = PixelShader;
-  Object.defineProperty(RandomShader, 'Companion', {
-    get: RandomShader$Companion_getInstance
-  });
-  RandomShader.Buffer = RandomShader$Buffer;
-  RandomShader.Renderer = RandomShader$Renderer;
-  package$shaders.RandomShader = RandomShader;
-  Object.defineProperty(SimpleSpatialShader, 'Companion', {
-    get: SimpleSpatialShader$Companion_getInstance
-  });
-  SimpleSpatialShader.Buffer = SimpleSpatialShader$Buffer;
-  SimpleSpatialShader.Renderer = SimpleSpatialShader$Renderer;
-  package$shaders.SimpleSpatialShader = SimpleSpatialShader;
-  Object.defineProperty(SineWaveShader, 'Companion', {
-    get: SineWaveShader$Companion_getInstance
-  });
-  SineWaveShader.Buffer = SineWaveShader$Buffer;
-  SineWaveShader.Renderer = SineWaveShader$Renderer;
-  package$shaders.SineWaveShader = SineWaveShader;
   Object.defineProperty(SolidShader, 'Companion', {
     get: SolidShader$Companion_getInstance
   });
@@ -23317,57 +25724,20 @@
   SoundAnalysisPlugin$ProgramContext.RenderContext = SoundAnalysisPlugin$ProgramContext$RenderContext;
   SoundAnalysisPlugin.ProgramContext = SoundAnalysisPlugin$ProgramContext;
   package$shaders.SoundAnalysisPlugin = SoundAnalysisPlugin;
-  Object.defineProperty(SparkleShader, 'Companion', {
-    get: SparkleShader$Companion_getInstance
-  });
-  SparkleShader.Buffer = SparkleShader$Buffer;
-  SparkleShader.Renderer = SparkleShader$Renderer;
-  package$shaders.SparkleShader = SparkleShader;
   Object.defineProperty(AllShows, 'Companion', {
     get: AllShows$Companion_getInstance
   });
   var package$shows = package$baaahs.shows || (package$baaahs.shows = {});
   package$shows.AllShows = AllShows;
-  CompositeShow.prototype.ShaderBufs = CompositeShow$ShaderBufs;
-  Object.defineProperty(package$shows, 'CompositeShow', {
-    get: CompositeShow_getInstance
+  Object.defineProperty(GlslShow, 'Companion', {
+    get: GlslShow$Companion_getInstance
   });
-  Object.defineProperty(package$shows, 'CreepingPixelsShow', {
-    get: CreepingPixelsShow_getInstance
-  });
-  GlslShow.DataSource = GlslShow$DataSource;
-  GlslShow.GadgetDataSource = GlslShow$GadgetDataSource;
-  GlslShow.BeatDataSource = GlslShow$BeatDataSource;
-  GlslShow.StartOfMeasureDataSource = GlslShow$StartOfMeasureDataSource;
   package$shows.GlslShow = GlslShow;
-  Object.defineProperty(package$shows, 'HeartbleatShow', {
-    get: HeartbleatShow_getInstance
+  Object.defineProperty(package$shows, 'GuruMeditationErrorShow', {
+    get: GuruMeditationErrorShow_getInstance
   });
-  Object.defineProperty(package$shows, 'LifeyShow', {
-    get: LifeyShow_getInstance
-  });
-  PanelTweenShow.prototype.Shaders = PanelTweenShow$Shaders;
   Object.defineProperty(package$shows, 'PanelTweenShow', {
     get: PanelTweenShow_getInstance
-  });
-  Object.defineProperty(package$shows, 'PixelTweenShow', {
-    get: PixelTweenShow_getInstance
-  });
-  Object.defineProperty(package$shows, 'RandomShow', {
-    get: RandomShow_getInstance
-  });
-  Object.defineProperty(package$shows, 'SimpleSpatialShow', {
-    get: SimpleSpatialShow_getInstance
-  });
-  Object.defineProperty(package$shows, 'SolidColorShow', {
-    get: SolidColorShow_getInstance
-  });
-  Object.defineProperty(package$shows, 'SomeDumbShow', {
-    get: SomeDumbShow_getInstance
-  });
-  ThumpShow.prototype.ShaderBufs = ThumpShow$ShaderBufs;
-  Object.defineProperty(package$shows, 'ThumpShow', {
-    get: ThumpShow_getInstance
   });
   var package$sim = package$baaahs.sim || (package$baaahs.sim = {});
   package$sim.FakeDmxUniverse = FakeDmxUniverse;
@@ -23382,8 +25752,6 @@
     get: FakeNetwork$Companion_getInstance
   });
   package$sim.FakeNetwork = FakeNetwork;
-  package$baaahs.random_2p1efm$ = random_0;
-  package$baaahs.random_hhb8gh$ = random_1;
   package$baaahs.only_hxlr6s$ = only;
   package$baaahs.toRadians_mx4ult$ = toRadians;
   package$baaahs.constrain_y2kzbl$ = constrain;
@@ -23436,6 +25804,12 @@
   var package$browser = package$baaahs.browser || (package$baaahs.browser = {});
   package$browser.RealMediaDevices = RealMediaDevices;
   package$geom.Vector2 = Vector2_0;
+  GlslPreview$Scene.FakeShowContext = GlslPreview$Scene$FakeShowContext;
+  GlslPreview.Scene = GlslPreview$Scene;
+  Object.defineProperty(GlslPreview, 'Companion', {
+    get: GlslPreview$Companion_getInstance
+  });
+  package$glsl.GlslPreview = GlslPreview;
   GlslBase.prototype.JsGlslManager = GlslBase$JsGlslManager;
   GlslBase.prototype.JsGlslContext = GlslBase$JsGlslContext;
   Object.defineProperty(package$glsl, 'GlslBase', {
@@ -23497,9 +25871,6 @@
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MovingHead$MovingHeadPosition$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MovingHead$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
-  Object.defineProperty(Pinky$PixelsAdapter.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
-  Pinky$PixelsAdapter.prototype.finishedFrame = Pixels.prototype.finishedFrame;
-  Pinky$PixelsAdapter.prototype.iterator = Pixels.prototype.iterator;
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'supportsFinePositioning', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'supportsFinePositioning'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'pan', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'pan'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'tilt', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'tilt'));
@@ -23524,50 +25895,55 @@
   Matrix4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Vector3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  ShaderFragment$Base.prototype.nameify_pdl1vz$ = ShaderFragment.prototype.nameify_pdl1vz$;
+  ShaderFragment$Base.prototype.toGlsl_8wpk4i$ = ShaderFragment.prototype.toGlsl_8wpk4i$;
+  ShaderFragment$Base.prototype.invocationGlsl_8wpk4i$ = ShaderFragment.prototype.invocationGlsl_8wpk4i$;
+  CorePlugin$NoOpProvider.prototype.release = GlslProgram$DataSource.prototype.release;
+  CorePlugin$ResolutionProvider.prototype.release = GlslProgram$DataSource.prototype.release;
+  CorePlugin$TimeProvider.prototype.release = GlslProgram$DataSource.prototype.release;
+  CorePlugin$GadgetProvider$provide$ObjectLiteral.prototype.release = GlslProgram$DataSource.prototype.release;
+  CorePlugin$XyPadProvider$provide$ObjectLiteral.prototype.release = GlslProgram$DataSource.prototype.release;
+  Vec2$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vec3$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vec4$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vec2F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vec3F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  Vec4F$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  GlslCode$GlslOther.prototype.toGlsl_698fpp$ = GlslCode$Statement.prototype.toGlsl_698fpp$;
+  GlslCode$GlslVar.prototype.toGlsl_698fpp$ = GlslCode$Statement.prototype.toGlsl_698fpp$;
+  GlslCode$GlslFunction.prototype.toGlsl_698fpp$ = GlslCode$Statement.prototype.toGlsl_698fpp$;
+  Patch$UniformPortRef.prototype.linkTo_cep6n7$ = Patch$PortRef.prototype.linkTo_cep6n7$;
+  Patch$ShaderOut.prototype.linkTo_cep6n7$ = Patch$PortRef.prototype.linkTo_cep6n7$;
+  Patch$PixelColor.prototype.linkTo_cep6n7$ = Patch$PortRef.prototype.linkTo_cep6n7$;
+  Patch$ShaderPortRef.prototype.linkTo_cep6n7$ = Patch$PortRef.prototype.linkTo_cep6n7$;
   Object.defineProperty(SurfacePixels.prototype, 'indices', Object.getOwnPropertyDescriptor(Pixels.prototype, 'indices'));
   SurfacePixels.prototype.finishedFrame = Pixels.prototype.finishedFrame;
   SurfacePixels.prototype.iterator = Pixels.prototype.iterator;
+  KglTracer.prototype.uniform_rvcsvw$ = Kgl.prototype.uniform_rvcsvw$;
+  KglTracer.prototype.uniform_zcqyrj$ = Kgl.prototype.uniform_zcqyrj$;
+  KglTracer.prototype.uniform_ig0gt8$ = Kgl.prototype.uniform_ig0gt8$;
+  KglTracer.prototype.uniform_k644h$ = Kgl.prototype.uniform_k644h$;
+  KglTracer.prototype.uniform_wn2dyp$ = Kgl.prototype.uniform_wn2dyp$;
+  KglTracer.prototype.uniform_47d3mp$ = Kgl.prototype.uniform_47d3mp$;
+  KglTracer.prototype.uniform_ab551r$ = Kgl.prototype.uniform_ab551r$;
+  KglTracer.prototype.uniform_tiwvvj$ = Kgl.prototype.uniform_tiwvvj$;
+  KglTracer.prototype.bufferData_8en9n9$ = Kgl.prototype.bufferData_8en9n9$;
+  KglTracer.prototype.readPixels_idctqj$ = Kgl.prototype.readPixels_idctqj$;
+  KglTracer.prototype.texImage2D_e7c6np$ = Kgl.prototype.texImage2D_e7c6np$;
   DateTimeSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$PixelData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MappingSession$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MappingSession$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   FragmentingUdpLink$FragmentingUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FragmentingUdpLink$FragmentingUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
-  GlslShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  GlslShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  HeartShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
-  HeartShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  HeartShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
+  GlslShader.prototype.createBuffer_ppt8xj$ = IGlslShader.prototype.createBuffer_ppt8xj$;
   PixelShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   PixelShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   PixelShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  RandomShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
-  RandomShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  RandomShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  SimpleSpatialShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
-  SimpleSpatialShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  SimpleSpatialShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  SineWaveShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  SineWaveShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
   SolidShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
   SolidShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
   SolidShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.before = GlslPlugin$RenderContext.prototype.before;
-  SoundAnalysisPlugin$ProgramContext$RenderContext.prototype.after = GlslPlugin$RenderContext.prototype.after;
-  SoundAnalysisPlugin$ProgramContext.prototype.release = GlslPlugin$ProgramContext.prototype.release;
-  SparkleShader$Renderer.prototype.beginFrame_b23bvv$ = Shader$Renderer.prototype.beginFrame_b23bvv$;
-  SparkleShader$Renderer.prototype.endFrame = Shader$Renderer.prototype.endFrame;
-  SparkleShader$Renderer.prototype.release = Shader$Renderer.prototype.release;
-  CreepingPixelsShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  HeartbleatShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  LifeyShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  PixelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  RandomShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  SimpleSpatialShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  SolidColorShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  SomeDumbShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
-  ThumpShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   FakeFs.prototype.createFile_7x97xx$ = Fs.prototype.createFile_7x97xx$;
   FakeFs.prototype.createFile_qz9155$ = Fs.prototype.createFile_qz9155$;
   FakeNetwork$FakeLink$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;

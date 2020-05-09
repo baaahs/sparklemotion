@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslPreview.Scene.FakeShowContext - sparklemotion</title>
+<link rel="stylesheet" href="../../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="../../index.html">GlslPreview</a>&nbsp;/&nbsp;<a href="../index.html">Scene</a>&nbsp;/&nbsp;<a href="./index.html">FakeShowContext</a><br/>
+<br/>
+<h1>FakeShowContext</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FakeShowContext</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../../baaahs/-show-context/index.html"><span class="identifier">ShowContext</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">FakeShowContext</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="all-moving-heads.html">allMovingHeads</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">allMovingHeads</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../../baaahs/-moving-head/index.html"><span class="identifier">MovingHead</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="all-surfaces.html">allSurfaces</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">allSurfaces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="all-unused-surfaces.html">allUnusedSurfaces</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">allUnusedSurfaces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="current-beat.html">currentBeat</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">currentBeat</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-beat-source.html">getBeatSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getBeatSource</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../../../baaahs/-beat-source/index.html"><span class="identifier">BeatSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-gadget.html">getGadget</a></h4>
+</td>
+<td>
+<p>Obtain a gadget that can be used to receive input from a user. The gadget will be displayed in the show's UI.</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">getGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview.Scene.FakeShowContext$getGadget(kotlin.String, baaahs.glsl.GlslPreview.Scene.FakeShowContext.getGadget.T)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview.Scene.FakeShowContext$getGadget(kotlin.String, baaahs.glsl.GlslPreview.Scene.FakeShowContext.getGadget.T)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-moving-head-buffer.html">getMovingHeadBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getMovingHeadBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview.Scene.FakeShowContext$getMovingHeadBuffer(baaahs.MovingHead)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs/-moving-head/index.html"><span class="identifier">MovingHead</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-shader-buffer.html">getShaderBuffer</a></h4>
+</td>
+<td>
+<p>Obtain a shader buffer which can be used to control the illumination of a surface.</p>
+<code><span class="keyword">fun </span><span class="identifier">getShaderBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview.Scene.FakeShowContext$getShaderBuffer(baaahs.Surface, baaahs.shaders.IGlslShader)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview.Scene.FakeShowContext$getShaderBuffer(baaahs.Surface, baaahs.shaders.IGlslShader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../../../baaahs.shaders/-i-glsl-shader/index.html"><span class="identifier">IGlslShader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
