@@ -146,7 +146,7 @@ class GlslRendererTest {
         val actual = actualFn()
         val nearlyEqual = expected.zip(actual) { exp, act ->
             val diff = exp - act
-            (diff.redI <= 1 || diff.greenI <= 1 || diff.blueI <= 1)
+            (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
         }.all { it }
         if (!nearlyEqual) {
             kotlin.test.expect(expected, actualFn)
