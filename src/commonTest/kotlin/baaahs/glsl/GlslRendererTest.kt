@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.*
+import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
@@ -10,10 +11,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.shows.FakeShowContext
 import kotlin.math.abs
 import kotlin.random.Random
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.expect
+import kotlin.test.*
 
 class GlslRendererTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
@@ -31,12 +29,14 @@ class GlslRendererTest {
 
     private lateinit var glslContext: GlslContext
     private lateinit var glslRenderer: GlslRenderer
+    private lateinit var showContext: FakeShowContext
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glslContext = GlslBase.manager.createContext()
             glslRenderer = GlslRenderer(glslContext, UvTranslatorForTest)
+            showContext = FakeShowContext(glslRenderer)
         }
     }
 
@@ -93,16 +93,18 @@ class GlslRendererTest {
         val glslProgram = compileAndBind(program)
         val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-//        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .1f))
-        glslRenderer.draw()
+        showContext.getGadget<Slider>("glsl_in_blue").value = .1f
+        showContext.drawFrame()
+
         expectColor(listOf(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
         )) { renderSurface.pixels.toList() }
 
-//        renderSurface.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-        glslRenderer.draw()
+        showContext.getGadget<Slider>("glsl_in_blue").value = .2f
+        showContext.drawFrame()
+
         expectColor(listOf(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
@@ -153,32 +155,7 @@ class GlslRendererTest {
 //        )) { renderSurface3.pixels.toList() }
     }
 
-    private fun compileAndBind(program: String): GlslProgram {
-        val corePlugin = CorePlugin()
-        val plugins = Plugins(mapOf(corePlugin.packageName to corePlugin))
-        val showContext = FakeShowContext(glslContext)
-
-        return AutoWirer().autoWire(program).compile(glslContext) { uniformPortRef ->
-            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
-        }
-    }
-
-    // More forgiving color equality checking, allows each channel to be off by one.
-    fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
-        val actual = actualFn()
-        val nearlyEqual = expected.zip(actual) { exp, act ->
-            val diff = exp - act
-            (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
-        }.all { it }
-        if (!nearlyEqual) {
-            kotlin.test.expect(expected, actualFn)
-        }
-    }
-
-    operator fun Color.minus(other: Color) =
-        Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
-
-    @Test
+    @Ignore @Test // TODO: Per-surface uniform control TBD
     fun testRenderingSurfacesWithDifferentBufferValues() {
         if (!glslAvailable()) return
 
@@ -268,6 +245,30 @@ class GlslRendererTest {
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
         )
     }
+
+    private fun compileAndBind(program: String): GlslProgram {
+        val corePlugin = CorePlugin()
+        val plugins = Plugins(mapOf(corePlugin.packageName to corePlugin))
+
+        return AutoWirer().autoWire(program).compile(glslContext) { uniformPortRef ->
+            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
+        }
+    }
+
+    // More forgiving color equality checking, allows each channel to be off by one.
+    fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
+        val actual = actualFn()
+        val nearlyEqual = expected.zip(actual) { exp, act ->
+            val diff = exp - act
+            (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
+        }.all { it }
+        if (!nearlyEqual) {
+            kotlin.test.expect(expected, actualFn)
+        }
+    }
+
+    operator fun Color.minus(other: Color) =
+        Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
 
     object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
         override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")

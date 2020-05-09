@@ -1,15 +1,12 @@
 package baaahs.shows
 
 import baaahs.*
-import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
-import baaahs.glsl.GlslRendererTest
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 
-class FakeShowContext(glslContext: GlslContext) : ShowContext {
+class FakeShowContext(private val glslRenderer: GlslRenderer) : ShowContext {
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-    val glslRenderer = GlslRenderer(glslContext, GlslRendererTest.UvTranslatorForTest)
 
     override val allSurfaces: List<Surface> = emptyList()
     override val allUnusedSurfaces: List<Surface> = emptyList()
@@ -45,5 +42,9 @@ class FakeShowContext(glslContext: GlslContext) : ShowContext {
             surfaceBinder.updateRenderSurface()
         }
         glslRenderer.draw()
+    }
+
+    fun <T : Gadget> getGadget(name: String): T {
+        return gadgets[name] as T
     }
 }
