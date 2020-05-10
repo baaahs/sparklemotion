@@ -20,8 +20,6 @@ import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.*
-import kotlin.math.min
 
 class Pinky(
     val model: Model<*>,
@@ -43,7 +41,7 @@ class Pinky(
 
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
-    private val mdns = link.mdns
+
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
@@ -79,7 +77,6 @@ class Pinky(
     private val listeningVisualizers = hashSetOf<ListeningVisualizer>()
 
     init {
-        PinkyHttp(httpServer).register(brainInfos, mappingResults, model)
         httpServer.listenWebSocket("/ws/api") {
             WebSocketRouter { PinkyMapperHandlers(storage).register(this) }
         }
@@ -90,11 +87,6 @@ class Pinky(
         selectedShowChannel = pubSub.publish(Topics.selectedShow, shows[0].name) { selectedShow ->
             this.selectedShow = shows.find { it.name == selectedShow }!!
         }
-
-        // save these if we want to explicitly unregister them or update their TXT records later
-        mdns.register(link.myHostname, "_sparklemotion-pinky", "_udp", Ports.PINKY, "local.", mutableMapOf(Pair("MAX_UDP_SIZE", "1450")))
-        mdns.register(link.myHostname, "_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP, "local.")
-        mdns.listen("_sparklemotion-brain", "_udp", "local.", MdnsBrainListenHandler())
     }
 
     suspend fun run(): Show.Renderer {
@@ -228,14 +220,14 @@ class Pinky(
 
         logger.info {
             "Hello from ${brainId.uuid}" +
-                    " (${mappingResults.dataForBrain(brainId)?.surface?.name ?: "[unknown]"})" +
+                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
                     " at $brainAddress: $msg"
         }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
             logger.info {
                 "The firmware daddy doesn't like $brainId" +
-                        " (${mappingResults.dataForBrain(brainId)?.surface?.name ?: "[unknown]"})" +
+                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
                         " having ${msg.firmwareVersion}" +
                         " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
             }
@@ -245,8 +237,8 @@ class Pinky(
 
 
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val dataFor = mappingResults.dataForBrain(brainId)
-            ?: mappingResults.dataForSurface(msg.surfaceName ?: "__nope")?.get(brainId)
+        val dataFor = mappingResults.dataFor(brainId)
+            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
             ?: findMappingInfo_CHEAT(surfaceName, brainId)
 
         val surface = dataFor?.let {
@@ -406,23 +398,6 @@ class Pinky(
 //        lastSentAt = now
 //    }
 
-    private inner class MdnsBrainListenHandler : Network.MdnsListenHandler {
-        override fun resolved(service: Network.MdnsService) {
-            val brainId = service.hostname
-            val address = service.getAddress()
-            if (address != null) {
-                val version = service.getTXT("version")
-                val idfVersion = service.getTXT("idf_ver")
-                val msg = BrainHelloMessage(brainId, null, version, idfVersion)
-                foundBrain(address, msg)
-            }
-        }
-
-        override fun removed(service: Network.MdnsService) {
-            TODO("not implemented: What do when brain disconnects?")
-        }
-    }
-
     inner class ListeningVisualizer : Network.WebSocketListener {
         lateinit var tcpConnection: Network.TcpConnection
 
@@ -483,14 +458,7 @@ class Pinky(
     }
 }
 
-@Serializable(with = BrainIdSerializer::class)
 data class BrainId(val uuid: String)
-
-class BrainIdSerializer : KSerializer<BrainId> {
-    override val descriptor: SerialDescriptor = PrimitiveDescriptor("BrainId", PrimitiveKind.STRING)
-    override fun deserialize(decoder: Decoder): BrainId = BrainId(decoder.decodeString())
-    override fun serialize(encoder: Encoder, value: BrainId) = encoder.encodeString(value.uuid)
-}
 
 class BrainInfo(
     val address: Network.Address,

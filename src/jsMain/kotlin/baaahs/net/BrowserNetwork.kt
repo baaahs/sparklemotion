@@ -13,7 +13,6 @@ import org.w3c.dom.WebSocket
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(): Network.Link = object : Network.Link {
         override val myAddress: Network.Address = object : Network.Address {}
-        override val myHostname: String get() = "Browser"
 
         var udpProxy: BrowserUdpProxy? = null
         init {
@@ -26,11 +25,6 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             return udpProxy!!.listenUdp(port, udpListener)
-        }
-
-        override val mdns: Network.Mdns get() {
-            // this can, in fact, be implemented if we want, at least for browsing/discovery
-            TODO("BrowserNetwork.mdns not yet implemented")
         }
 
         override fun startHttpServer(port: Int): Network.HttpServer =

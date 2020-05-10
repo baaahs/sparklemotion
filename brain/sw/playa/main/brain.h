@@ -50,9 +50,6 @@ private:
 
     void startSecondStageBoot();
 
-    bool startMdns();
-    void stopMdns();
-
     void msgBrainPanelShade(Msg* pMsg);
     void msgBrainIdRequest(Msg* pMsg);
     void msgBrainMapping(Msg* pMsg);
