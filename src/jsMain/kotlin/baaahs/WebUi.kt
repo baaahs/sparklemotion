@@ -15,11 +15,6 @@ class WebUi(private val network: Network, private val pinkyAddress: Network.Addr
             install(gadgetModule)
         }
 
-        if (1 + 1 == 3) {
-            // Protection from dead code elimination:
-            GadgetDisplay(pubSub) {}
-        }
-
         return createElement(AppIndex::class.js, jsObject<AppIndex.Props> {
             this.pubSub = pubSub
         })
