@@ -4,52 +4,14 @@
   <meta charset="UTF-8">
   <title>Simulator | sparklemotion</title>
   <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="react-mosaic-component.css"/>
   <link rel="stylesheet" href="./fontawesome-free/css/all.min.css">
+  <link href="https://unpkg.com/normalize.css@^7.0.0" rel="stylesheet" />
+  <link href="https://unpkg.com/@blueprintjs/icons@^3.4.0/lib/css/blueprint-icons.css" rel="stylesheet" />
+  <link href="https://unpkg.com/@blueprintjs/core@^3.10.0/lib/css/blueprint.css" rel="stylesheet" />
 </head>
 <body>
-<div id="sheepView"></div>
-
-<div id="simulatorView">
-  <h3>BAAAHS Simulator FUCK YEAH</h3>
-
-  <div id="launcher" class="simulatorSection">
-  </div>
-
-  <table id="networkView" class="simulatorSection" style="table-layout: fixed; width: 100%;">
-    <tr><th colspan="2" style="text-align: left;">Network</th></tr>
-    <tr><td>Packet loss rate:</td><td id="networkPacketLossRate"></td></tr>
-    <tr><td>Packets received:</td><td id="networkPacketsReceived"></td></tr>
-    <tr><td>Packets dropped:</td><td id="networkPacketsDropped"></td></tr>
-  </table>
-
-  <table id="framerateView" class="simulatorSection" style="table-layout: fixed; width: 100%;">
-    <tr><th colspan="2" style="text-align: left;">Effective frame rate</th><th>Elapsed</th></tr>
-    <tr><td>Show:</td><td id="showFramerate"></td><td id="showElapsedMs"></td></tr>
-    <tr><td>Visualizer:</td><td id="visualizerFramerate"></td><td id="visualizerElapsedMs"></td></tr>
-    <tr><td>Brains:</td><td id="brainsFramerate">tbd</td><td id="brainsElapsedMs"></td></tr>
-  </table>
-
-  <div class="simulatorSection">
-    <b>Pinky:</b>
-    <div id="pinkyView"></div>
-  </div>
-
-  <div class="visualizerSection">
-    <b>Visualizer:</b>
-    <input type="checkbox" id="vizRotation" checked/> <label for="vizRotation">Rotate</label>
-    <div id="selectionInfo"></div>
-    <div>Pixel count: <span id="visualizerPixelCount">n/a</span></div>
-  </div>
-
-  <div class="simulatorSection">
-    <b>Brains:</b>
-    <div id="brainsView"></div>
-    <div id="brainDetails"></div>
-  </div>
-</div>
-
-<select id="panelSelect"></select>
-<div id="info2"></div>
+<div id="app"></div>
 
 <script type="application/javascript" src="three.js"></script>
 <script type="application/javascript" src="lib/BufferGeometryUtils.js"></script>

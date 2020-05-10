@@ -1,13 +1,6 @@
 // Colorgasm
 // From: https://www.shadertoy.com/view/4dffRs
 
-// shadertoy emulation
-#define iTime time
-#define iResolution resolution
-
-uniform float time;
-uniform vec2 resolution;
-
 /*
 others did lab color space better than THIS:
 https://www.shadertoy.com/results?query=lab
@@ -77,10 +70,14 @@ const vec3 lab1=vec3(100., 50.,-50.);
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     vec2 A; // First gradient point.
+    if(iMouse.z > 0.0) {
+        A = vec2(iMouse);
+    } else {
         A = vec2(
-        (sin(iTime * (0.1)) * 0.5 + .5) * iResolution.x,
-        (cos(iTime * (0.3)) * 0.5 + .5) * iResolution.y
+        (sin(iTime * 0.1) * 0.5 + .5) * iResolution.x,
+        (cos(iTime * 0.3) * 0.5 + .5) * iResolution.y
         );
+    }
     vec2 B = vec2(
     (sin(-iTime * -0.2) * 0.5 + .50) * iResolution.x,
     (-cos(iTime * -0.1) * 0.5 + .50) * iResolution.y
@@ -93,14 +90,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 
     // color = pow(color, vec3(1.0/1.0)); // sRGB gamma encode.
     fragColor = vec4(lab2rgb(vec3(
-    (sin(iTime + s * 20.0) + 1.0) / 2.0 * 50.0 * sm_beat + (25.0),
+    (sin(iTime + s * 20.0) + 1.0) / 2.0 * 50.0 + 25.0,
     cos(s + iTime) * 100.0,
     sin(s * 6.283) * 100.0
     )), 1.0);
 }
-
-
-void main() {
-    mainImage(gl_FragColor, gl_FragCoord);
-}
-

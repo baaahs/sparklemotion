@@ -33,17 +33,11 @@ class Visualizer(
     model: Model<*>,
     private val display: VisualizerDisplay,
     private val container: HTMLDivElement,
-    private val selectionInfo: HTMLDivElement? = null,
-    private val rotationCheckbox: HTMLInputElement? = null
+    private val selectionInfo: HTMLDivElement? = null
 ): JsMapperUi.StatusListener {
 
     var stopRendering: Boolean = false
-
-    private var rotate: Boolean
-        get() = rotationCheckbox?.checked ?: false
-        set(value) {
-            rotationCheckbox?.checked = value
-        }
+    var rotate: Boolean = false
 
     var mapperIsRunning = false
         set(isRunning) {
@@ -217,15 +211,13 @@ class Visualizer(
             }
         }
 
-        if (!mapperIsRunning) {
-            if (rotationCheckbox?.checked == true) {
-                val rotSpeed = .01
-                val x = camera.position.x
-                val z = camera.position.z
-                camera.position.x = x * cos(rotSpeed) + z * sin(rotSpeed)
-                camera.position.z = z * cos(rotSpeed * 2) - x * sin(rotSpeed * 2)
-                camera.lookAt(scene.position)
-            }
+        if (!mapperIsRunning && rotate) {
+            val rotSpeed = .01
+            val x = camera.position.x
+            val z = camera.position.z
+            camera.position.x = x * cos(rotSpeed) + z * sin(rotSpeed)
+            camera.position.z = z * cos(rotSpeed * 2) - x * sin(rotSpeed * 2)
+            camera.lookAt(scene.position)
         }
 
         controls.update()

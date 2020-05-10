@@ -13,6 +13,8 @@ precision mediump float;
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
+// SPARKLEMOTION GADGET: Beat { "name": "beat" }
+uniform float sm_beat;
 
 vec2 hash( vec2 p ) { p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))); return fract(sin(p)*18.5453); }
 

@@ -1,0 +1,59 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .showName {
+    flex: 1 1;
+    padding: 0 8px;
+    display: flex;
+  }
+
+  .showNameInput {
+    display: flex;
+    background: none;
+    border: none;
+    padding: 0 8px;
+    color: white;
+    flex: 1 1;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.previewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .preview {}
+  .status {
+    white-space: pre;
+    height: 180px;
+    overflow: scroll;
+  }
+  .controls {
+    transform: scale(.5);
+    height: 180px;
+
+    div {
+      display: flex;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+}
+
+.iconButton {
+  color: white;
+  padding: 8px;
+
+  &:hover {
+    cursor: pointer;
+    color: #d7d7d7;
+  }
+}

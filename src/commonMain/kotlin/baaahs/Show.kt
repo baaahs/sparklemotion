@@ -3,7 +3,7 @@ package baaahs
 /** A show takes input from gadgets and uses it to configure shaders, creating pretty stuff on surfaces. */
 abstract class Show(val name: String) {
 
-    abstract fun createRenderer(model: Model<*>, showRunner: ShowRunner): Renderer
+    abstract fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer
 
     override fun toString(): String = name
 

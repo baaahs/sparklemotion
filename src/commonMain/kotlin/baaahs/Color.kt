@@ -179,17 +179,22 @@ data class Color(val argb: Int) {
         @JsName("fromString")
         fun from(hex: String): Color {
             var hexDigits = hex.trimStart('#')
-            val alpha = if (hexDigits.length == 8) {
-                hexDigits.substring(0, 2).toInt(16).also { hexDigits = hexDigits.substring(2) }
-            } else {
-                0xff
-            }
 
-            if (hexDigits.length == 6) {
-                // huh? that's not an Int already? I'm supposed to do twos-complement math and negate? blech Kotlin.
-                return Color(alpha shl 24 or hexDigits.toInt(16))
+            val alpha = when (hexDigits.length) {
+                8 -> hexDigits.substring(0, 2).toInt(16).also { hexDigits = hexDigits.substring(2) }
+                4 -> (hexDigits.substring(0, 1).toInt(16) * 0x11).also { hexDigits = hexDigits.substring(1) }
+                else -> 0xff
+            }.shl(24)
+
+            return when (hexDigits.length) {
+                6 -> Color(alpha or hexDigits.toInt(16))
+                3 -> Color(alpha
+                        or hexDigits[0].toString().repeat(2).toInt(16).shl(16)
+                        or hexDigits[1].toString().repeat(2).toInt(16).shl(8)
+                        or hexDigits[2].toString().repeat(2).toInt(16)
+                )
+                else -> throw IllegalArgumentException("unknown color \"$hex\"")
             }
-            throw IllegalArgumentException("unknown color \"$hex\"")
         }
 
         private fun asArgb(red: Float, green: Float, blue: Float, alpha: Float = 1f): Int {

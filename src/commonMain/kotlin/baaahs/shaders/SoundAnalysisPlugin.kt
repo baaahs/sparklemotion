@@ -1,11 +1,12 @@
 package baaahs.shaders
 
 import baaahs.SoundAnalyzer
-import baaahs.glsl.*
-import baaahs.glsl.Program
-import com.danielgergely.kgl.*
+import baaahs.glshaders.GlslProgram
+import baaahs.glsl.Uniform
+import com.danielgergely.kgl.FloatBuffer
+import com.danielgergely.kgl.Kgl
 
-class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) : GlslPlugin {
+class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int = 300) {
     private var textureBuffer = FloatArray(0)
     private var textureGlBuffer = FloatBuffer(0)
 
@@ -30,48 +31,56 @@ class SoundAnalysisPlugin(val soundAnalyzer: SoundAnalyzer, val historySize: Int
         })
     }
 
-    override fun forRenderer(renderer: GlslRenderer): GlslPlugin.RendererPlugin {
-        return RendererPlugin(renderer)
+    fun forProgram(gl: Kgl, program: GlslProgram): ProgramContext {
+        return ProgramContext(gl, program)
     }
 
-    inner class RendererPlugin(val renderer: GlslRenderer) : GlslPlugin.RendererPlugin {
-        override val glslPreamble: String = "uniform sampler2D sm_soundAnalysis;"
+    inner class ProgramContext(private val gl: Kgl, private val program: GlslProgram) {
+        val glslPreamble: String = "uniform sampler2D sm_soundAnalysis;"
 
-        private val gl = renderer.gl
-        private val texture = gl.check { gl.createTexture() }
-        private val textureId = renderer.getTextureId()
         private var soundAnalysisUniform: Uniform? = null
 
-        override fun afterCompile(program: Program) {
-            soundAnalysisUniform = gl.check { Uniform.find(program, "sm_soundAnalysis") }
+        fun afterCompile() {
+//            soundAnalysisUniform = gl.check { Uniform.find(program, "sm_soundAnalysis") }
         }
 
-        override fun beforeRender() {
+        fun forRender(): RenderContext? {
             val analysisBufferSize = soundAnalyzer.frequencies.size
             val expectedBufferSize = analysisBufferSize * historySize
 
             val uniform = soundAnalysisUniform
-            if (uniform == null || textureBuffer.size != expectedBufferSize) return
-
-            textureGlBuffer.position = 0
-            textureGlBuffer.put(textureBuffer)
-
-            gl.check { gl.activeTexture(GL_TEXTURE0 + textureId) }
-            gl.check { gl.bindTexture(GL_TEXTURE_2D, texture) }
-            gl.check { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
-            gl.check { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
-            gl.check {
-                gl.texImage2D(
-                    GL_TEXTURE_2D, 0,
-                    GL_R32F, soundAnalyzer.frequencies.size, historySize, 0,
-                    GL_RED, GL_FLOAT, textureGlBuffer
-                )
+            if (uniform == null || textureBuffer.size != expectedBufferSize) {
+                return null
+            } else {
+                return RenderContext(uniform)
             }
-            uniform.set(textureId)
         }
 
-        override fun release() {
-            gl.check { gl.deleteTexture(texture) }
+        inner class RenderContext(uniform: Uniform) {
+//            private val texture = gl.check { gl.createTexture() }
+//            private val textureId = program.obtainTextureId()
+//
+//            init {
+//                textureGlBuffer.position = 0
+//                textureGlBuffer.put(textureBuffer)
+//
+//                gl.check { gl.activeTexture(GL_TEXTURE0 + textureId) }
+//                gl.check { gl.bindTexture(GL_TEXTURE_2D, texture) }
+//                gl.check { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST) }
+//                gl.check { gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST) }
+//                gl.check {
+//                    gl.texImage2D(
+//                        GL_TEXTURE_2D, 0,
+//                        GL_R32F, soundAnalyzer.frequencies.size, historySize, 0,
+//                        GL_RED, GL_FLOAT, textureGlBuffer
+//                    )
+//                }
+//                uniform.set(textureId)
+//            }
+//
+//            fun release() {
+//                gl.check { gl.deleteTexture(texture) }
+//            }
         }
     }
 }

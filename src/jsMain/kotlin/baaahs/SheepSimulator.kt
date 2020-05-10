@@ -1,7 +1,9 @@
 package baaahs
 
 import baaahs.geom.Vector3F
+import baaahs.glsl.GlslRenderer
 import baaahs.proto.Ports
+import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
@@ -13,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLInputElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -25,26 +26,41 @@ class SheepSimulator {
     private val network = FakeNetwork(display = display.forNetwork())
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
-
-    private val shows = AllShows.allShows
-    private val visualizer = Visualizer(
+    val visualizer = Visualizer(
         model,
         display.forVisualizer(),
         document.getElementById("sheepView")!! as HTMLDivElement,
-        document.getElementById("selectionInfo")!! as HTMLDivElement,
-        document.getElementById("vizRotation") as HTMLInputElement
+        document.getElementById("selectionInfo")!! as HTMLDivElement
     )
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     private val pinkyDisplay = display.forPinky()
+    init {
+//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
+    }
+    public val shows = AllShows.allShows
+    val glslContext = GlslShader.globalRenderContext
     private val pinky = Pinky(
-        model, shows, network, dmxUniverse, bridgeClient.beatSource, JsClock(), fs,
-        PermissiveFirmwareDaddy(), pinkyDisplay, bridgeClient.soundAnalyzer,
-        prerenderPixels = true
+        model,
+        shows,
+        network,
+        dmxUniverse,
+        bridgeClient.beatSource,
+        JsClock(),
+        fs,
+        PermissiveFirmwareDaddy(),
+        pinkyDisplay,
+        bridgeClient.soundAnalyzer,
+        glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
     )
 
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
+
+    fun getPubSub(): PubSub.Client =
+        PubSub.Client(network.link(), pinky.address, Ports.PINKY_UI_TCP).apply {
+            install(gadgetModule)
+        }
 
     fun start() = doRunBlocking {
         pinkyScope.launch { pinky.run() }
@@ -112,6 +128,11 @@ class SheepSimulator {
         doRunBlocking {
             delay(200000L)
         }
+    }
+
+    @JsName("switchToShow")
+    fun switchToShow(show: Show) {
+        pinky.switchToShow(show)
     }
 
     object NullPixels : Pixels {
