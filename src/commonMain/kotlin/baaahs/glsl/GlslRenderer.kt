@@ -228,7 +228,6 @@ open class GlslRenderer(
         })
 
         fun bindFramebuffer() {
-            gl.noCheck { checkForGlError() }
             gl.check { bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
 
             gl.check { bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }

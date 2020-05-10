@@ -1,9 +1,14 @@
 package baaahs.glsl
 
+import baaahs.Logger
 import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.*
 
-abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
+abstract class GlslContext(
+    private val kgl: Kgl,
+    val glslVersion: String,
+    var checkForErrors: Boolean = false
+) {
     abstract fun <T> runInContext(fn: () -> T): T
 
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
@@ -97,8 +102,31 @@ abstract class GlslContext(private val kgl: Kgl, val glslVersion: String) {
 
     fun <T> check(fn: Kgl.() -> T): T {
         val result = kgl.fn()
-        kgl.checkForGlError()
+
+        if (checkForErrors) checkForGlError()
+
         return result
+    }
+
+    private fun checkForGlError() {
+        val error = kgl.getError()
+
+        val code = when (error) {
+            GL_INVALID_ENUM -> "GL_INVALID_ENUM"
+            GL_INVALID_VALUE -> "GL_INVALID_VALUE"
+            GL_INVALID_OPERATION -> "GL_INVALID_OPERATION"
+            GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION"
+            GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT -> "FRAMEBUFFER_INCOMPLETE_ATTACHMENT"
+//            GL_CONTEXT_LOST_WEBGL -> "GL_CONTEXT_LOST_WEBGL"
+            GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
+            else -> "unknown error $error"
+        }
+
+        if (error != 0) {
+            val logger = Logger("GlslBase")
+            logger.error { "OpenGL Error: $code" }
+            throw RuntimeException("OpenGL Error: $code")
+        }
     }
 
     fun release() {
