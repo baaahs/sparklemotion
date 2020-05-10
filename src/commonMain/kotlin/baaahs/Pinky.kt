@@ -372,31 +372,6 @@ class Pinky(
         }
     }
 
-//    var lastSentAt: Long = 0
-//
-//    private fun aroundNextFrame(callNextFrame: () -> Unit) {
-//        /**
-//         * [ShowRunner.SurfaceReceiver.send] is called here; if [prerenderPixels] is true, it won't
-//         * actually send; we need to do that ourselves.
-//         */
-//
-//        val preDrawElapsed = timeSync {
-//            showRunner.preDraw()
-//        }
-//
-//        val sendElapsed = timeSync {
-//            brainInfos.values.forEach { brainInfo ->
-//                val surfaceReceiver = brainInfo.surfaceReceiver.send()
-//                surfaceReceiver.actuallySend()
-//            }
-//        }
-//
-////            println("preDraw took ${preDrawElapsed}ms, send took ${sendElapsed}ms")
-//        val now = getTimeMillis()
-//        val elapsedMs = now - lastSentAt
-////        println("It's been $elapsedMs")
-//        lastSentAt = now
-//    }
 
     inner class ListeningVisualizer : Network.WebSocketListener {
         lateinit var tcpConnection: Network.TcpConnection
