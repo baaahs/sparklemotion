@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>JvmNetwork.RealLink.JvmMdns - sparklemotion</title>
+<link rel="stylesheet" href="../../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../../index.html">baaahs.net</a>&nbsp;/&nbsp;<a href="../../index.html">JvmNetwork</a>&nbsp;/&nbsp;<a href="../index.html">RealLink</a>&nbsp;/&nbsp;<a href="./index.html">JvmMdns</a><br/>
+<br/>
+<h1>JvmMdns</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">JvmMdns</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Mdns</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-jvm-mdns-service/index.html">JvmMdnsService</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">JvmMdnsService</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">MdnsService</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-jvm-registered-service/index.html">JvmRegisteredService</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">JvmRegisteredService</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">JvmMdnsService</span><span class="symbol">, </span><span class="identifier">MdnsRegisteredService</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">JvmMdns</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="listen.html">listen</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$listen(kotlin.String, kotlin.String, kotlin.String, baaahs.net.Network.MdnsListenHandler)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$listen(kotlin.String, kotlin.String, kotlin.String, baaahs.net.Network.MdnsListenHandler)/proto">proto</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$listen(kotlin.String, kotlin.String, kotlin.String, baaahs.net.Network.MdnsListenHandler)/domain">domain</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$listen(kotlin.String, kotlin.String, kotlin.String, baaahs.net.Network.MdnsListenHandler)/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">MdnsListenHandler</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="register.html">register</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">register</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/hostname">hostname</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/proto">proto</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/port">port</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/domain">domain</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$register(kotlin.String, kotlin.String, kotlin.String, kotlin.Int, kotlin.String, kotlin.collections.MutableMap((kotlin.String, )))/params">params</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">MdnsRegisteredService</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="unregister.html">unregister</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unregister</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.JvmNetwork.RealLink.JvmMdns$unregister(baaahs.net.Network.MdnsRegisteredService)/inst">inst</span><span class="symbol">:</span>&nbsp;<span class="identifier">MdnsRegisteredService</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

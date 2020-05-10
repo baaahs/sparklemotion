@@ -108,6 +108,12 @@
   var coroutines = $module$kotlinx_coroutines_core.kotlinx.coroutines;
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
+  var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
+  var indexOf = Kotlin.kotlin.collections.indexOf_2ws7j4$;
+  var get_list = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.builtins.get_list_gekvwj$;
+  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
+  var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
+  var LinkedHashMapSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.LinkedHashMapSerializer;
   var json = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json;
   var removeAll_0 = Kotlin.kotlin.collections.removeAll_qafx1e$;
   var plus = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.modules.plus_7n7cf$;
@@ -121,7 +127,6 @@
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var toInt_0 = Kotlin.kotlin.text.toInt_pdl1vz$;
   var hashCode = Kotlin.hashCode;
-  var toList_0 = Kotlin.kotlin.collections.toList_7wnvza$;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
@@ -130,8 +135,7 @@
   var minus = Kotlin.kotlin.collections.minus_q4559j$;
   var ArrayList_init_1 = Kotlin.kotlin.collections.ArrayList_init_mqih57$;
   var toList_1 = Kotlin.kotlin.collections.toList_abgq59$;
-  var get_list = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.builtins.get_list_gekvwj$;
-  var indexOf = Kotlin.kotlin.text.indexOf_l5u8uk$;
+  var indexOf_0 = Kotlin.kotlin.text.indexOf_l5u8uk$;
   var JsonPrimitive = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.JsonPrimitive_pdl1vj$;
   var jsonArray = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.json.jsonArray_mb52fq$;
   var encodeToByteArray = Kotlin.kotlin.text.encodeToByteArray_pdl1vz$;
@@ -147,7 +151,6 @@
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_yni7l$;
   var toList_2 = Kotlin.kotlin.collections.toList_us0mfu$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
-  var ArrayListSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.ArrayListSerializer;
   var kotlin_js_internal_FloatCompanionObject = Kotlin.kotlin.js.internal.FloatCompanionObject;
   var serializer_0 = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.builtins.serializer_y9phqa$;
   var PrimitiveClasses$doubleClass = Kotlin.kotlin.reflect.js.internal.PrimitiveClasses.doubleClass;
@@ -205,7 +208,6 @@
   var get_indices_0 = Kotlin.kotlin.collections.get_indices_i2lc79$;
   var reversed = Kotlin.kotlin.ranges.reversed_zf1xzc$;
   var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_tmsbgo$;
-  var NullableSerializer = $module$kotlinx_serialization_kotlinx_serialization_runtime.kotlinx.serialization.internal.NullableSerializer;
   var DateFormat = $module$klock_root_klock.com.soywiz.klock.DateFormat;
   var endsWith = Kotlin.kotlin.text.endsWith_7epoxm$;
   var AbstractMutableList = Kotlin.kotlin.collections.AbstractMutableList;
@@ -305,7 +307,7 @@
   var Float32BufferAttribute = $module$three.Float32BufferAttribute;
   var BufferGeometryUtils$Companion = THREE.BufferGeometryUtils;
   var PlaneBufferGeometry = THREE.PlaneBufferGeometry;
-  var indexOf_0 = Kotlin.kotlin.collections.indexOf_mjy6jw$;
+  var indexOf_1 = Kotlin.kotlin.collections.indexOf_mjy6jw$;
   var sorted_0 = Kotlin.kotlin.collections.sorted_pbinho$;
   Mapper$TimeoutException.prototype = Object.create(Exception.prototype);
   Mapper$TimeoutException.prototype.constructor = Mapper$TimeoutException;
@@ -463,6 +465,8 @@
   PanelTweenShow.prototype.constructor = PanelTweenShow;
   FakeDmxUniverse.prototype = Object.create(Dmx$Universe.prototype);
   FakeDmxUniverse.prototype.constructor = FakeDmxUniverse;
+  FakeMdns$FakeRegisteredService.prototype = Object.create(FakeMdns$FakeMdnsService.prototype);
+  FakeMdns$FakeRegisteredService.prototype.constructor = FakeMdns$FakeRegisteredService;
   AdminPage.prototype = Object.create(RComponent.prototype);
   AdminPage.prototype.constructor = AdminPage;
   Vector2_0.prototype = Object.create(Vector2.prototype);
@@ -828,6 +832,7 @@
           case 0:
             this.$this.link_0 = new FragmentingUdpLink(this.$this.network_0.link());
             this.$this.udpSocket_0 = this.$this.link_0.listenUdp_a6m852$(8003, this.$this);
+            this.$this.link_0.mdns.register_e5yw4$(this.$this.id, '_sparklemotion-brain', '_udp', 8003);
             this.$this.display_0.id = this.$this.id;
             this.$this.display_0.haveLink_9m0ekx$(this.$this.link_0);
             this.$this.display_0.onReset = Brain$run$lambda(this.$this);
@@ -5693,6 +5698,7 @@
     this.mappingResults_0 = this.storage_0.loadMappingData_ld9ij$(this.model);
     this.link_0 = new FragmentingUdpLink(this.network.link());
     this.httpServer = this.link_0.startHttpServer_za3lpa$(8004);
+    this.mdns_0 = this.link_0.mdns;
     this.beatDisplayer_0 = new Pinky$PinkyBeatDisplayer(this, this.beatSource);
     this.mapperIsRunning_0 = false;
     this.selectedShow_vpdlot$_0 = random(this.shows, Random.Default);
@@ -5711,6 +5717,7 @@
     this.networkStats_0 = new Pinky$NetworkStats();
     this.udpSocket_0 = this.link_0.listenUdp_a6m852$(8002, this);
     this.listeningVisualizers_0 = HashSet_init();
+    (new PinkyHttp(this.httpServer)).register_4bybjx$(this.brainInfos_0, this.mappingResults_0, this.model);
     this.httpServer.listenWebSocket_brdh44$('/ws/api', Pinky_init$lambda(this));
     this.httpServer.listenWebSocket_brdh44$('/ws/visualizer', Pinky_init$lambda_0(this));
     var tmp$ = this.pubSub_0;
@@ -5725,6 +5732,9 @@
     }
     tmp$.publish_oiz02e$(tmp$_0, destination, Pinky_init$lambda_1);
     this.selectedShowChannel_0 = this.pubSub_0.publish_oiz02e$(Topics_getInstance().selectedShow, this.shows.get_za3lpa$(0).name, Pinky_init$lambda_2(this));
+    this.mdns_0.register_e5yw4$(this.link_0.myHostname, '_sparklemotion-pinky', '_udp', 8002, 'local.', mutableMapOf([new Pair('MAX_UDP_SIZE', '1450')]));
+    this.mdns_0.register_e5yw4$(this.link_0.myHostname, '_sparklemotion-pinky', '_tcp', 8004, 'local.');
+    this.mdns_0.listen_r1izi4$('_sparklemotion-brain', '_udp', 'local.', new Pinky$MdnsBrainListenHandler(this));
   }
   Object.defineProperty(Pinky.prototype, 'selectedShow_0', {
     get: function () {
@@ -6089,13 +6099,13 @@
   function Pinky$foundBrain$lambda(closure$brainId, this$Pinky, closure$brainAddress, closure$msg) {
     return function () {
       var tmp$, tmp$_0, tmp$_1;
-      return 'Hello from ' + closure$brainId.uuid + (' (' + ((tmp$_1 = (tmp$_0 = (tmp$ = this$Pinky.mappingResults_0.dataFor_77gxvx$(closure$brainId)) != null ? tmp$.surface : null) != null ? tmp$_0.name : null) != null ? tmp$_1 : '[unknown]') + ')') + (' at ' + closure$brainAddress + ': ' + closure$msg);
+      return 'Hello from ' + closure$brainId.uuid + (' (' + ((tmp$_1 = (tmp$_0 = (tmp$ = this$Pinky.mappingResults_0.dataForBrain_77gxvx$(closure$brainId)) != null ? tmp$.surface : null) != null ? tmp$_0.name : null) != null ? tmp$_1 : '[unknown]') + ')') + (' at ' + closure$brainAddress + ': ' + closure$msg);
     };
   }
   function Pinky$foundBrain$lambda_0(closure$brainId, this$Pinky, closure$msg) {
     return function () {
       var tmp$, tmp$_0, tmp$_1;
-      return "The firmware daddy doesn't like " + closure$brainId + (' (' + ((tmp$_1 = (tmp$_0 = (tmp$ = this$Pinky.mappingResults_0.dataFor_77gxvx$(closure$brainId)) != null ? tmp$.surface : null) != null ? tmp$_0.name : null) != null ? tmp$_1 : '[unknown]') + ')') + (' having ' + toString_0(closure$msg.firmwareVersion)) + (" so we'll send " + this$Pinky.firmwareDaddy.urlForPreferredVersion);
+      return "The firmware daddy doesn't like " + closure$brainId + (' (' + ((tmp$_1 = (tmp$_0 = (tmp$ = this$Pinky.mappingResults_0.dataForBrain_77gxvx$(closure$brainId)) != null ? tmp$.surface : null) != null ? tmp$_0.name : null) != null ? tmp$_1 : '[unknown]') + ')') + (' having ' + toString_0(closure$msg.firmwareVersion)) + (" so we'll send " + this$Pinky.firmwareDaddy.urlForPreferredVersion);
     };
   }
   function Pinky$foundBrain$lambda_1(this$Pinky, closure$brainAddress, closure$brainId) {
@@ -6147,7 +6157,7 @@
     interfaces: [ShowRunner$SurfaceReceiver]
   };
   Pinky.prototype.foundBrain_0 = function (brainAddress, msg) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     var brainId = new BrainId(msg.brainId);
     var surfaceName = msg.surfaceName;
     Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$foundBrain$lambda(brainId, this, brainAddress, msg));
@@ -6155,37 +6165,37 @@
       Pinky$Companion_getInstance().logger.info_h4ejuu$(Pinky$foundBrain$lambda_0(brainId, this, msg));
       var newHotness = new UseFirmwareMessage(this.firmwareDaddy.urlForPreferredVersion);
       this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, newHotness);
-    }tmp$_0 = this.mappingResults_0.dataFor_77gxvx$(brainId);
-    if (tmp$_0 == null) {
-      tmp$_0 = this.mappingResults_0.dataFor_61zpoe$((tmp$ = msg.surfaceName) != null ? tmp$ : '__nope');
-    }var dataFor = tmp$_0 != null ? tmp$_0 : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
-    var tmp$_3;
+    }tmp$_1 = this.mappingResults_0.dataForBrain_77gxvx$(brainId);
+    if (tmp$_1 == null) {
+      tmp$_1 = (tmp$_0 = this.mappingResults_0.dataForSurface_61zpoe$((tmp$ = msg.surfaceName) != null ? tmp$ : '__nope')) != null ? tmp$_0.get_11rb$(brainId) : null;
+    }var dataFor = tmp$_1 != null ? tmp$_1 : this.findMappingInfo_CHEAT_0(surfaceName, brainId);
+    var tmp$_4;
     if (dataFor != null) {
-      var tmp$_4, tmp$_5, tmp$_6, tmp$_7;
-      var tmp$_8;
-      if ((tmp$_4 = dataFor.pixelLocations) != null) {
-        var destination = ArrayList_init_0(collectionSizeOrDefault(tmp$_4, 10));
-        var tmp$_9;
-        tmp$_9 = tmp$_4.iterator();
-        while (tmp$_9.hasNext()) {
-          var item = tmp$_9.next();
+      var tmp$_5, tmp$_6, tmp$_7, tmp$_8;
+      var tmp$_9;
+      if ((tmp$_5 = dataFor.pixelLocations) != null) {
+        var destination = ArrayList_init_0(collectionSizeOrDefault(tmp$_5, 10));
+        var tmp$_10;
+        tmp$_10 = tmp$_5.iterator();
+        while (tmp$_10.hasNext()) {
+          var item = tmp$_10.next();
           destination.add_11rb$(item != null ? item : new Vector3F(0.0, 0.0, 0.0));
         }
-        tmp$_8 = destination;
+        tmp$_9 = destination;
       } else
-        tmp$_8 = null;
-      var pixelLocations = (tmp$_5 = tmp$_8) != null ? tmp$_5 : emptyList();
-      var pixelCount = (tmp$_7 = (tmp$_6 = dataFor.pixelLocations) != null ? tmp$_6.size : null) != null ? tmp$_7 : 2048;
+        tmp$_9 = null;
+      var pixelLocations = (tmp$_6 = tmp$_9) != null ? tmp$_6 : emptyList();
+      var pixelCount = (tmp$_8 = (tmp$_7 = dataFor.pixelLocations) != null ? tmp$_7.size : null) != null ? tmp$_8 : 2048;
       if (!equals(msg.surfaceName, dataFor.surface.name)) {
         var mappingMsg = new BrainMappingMessage(brainId, dataFor.surface.name, null, new Vector2F(0.0, 0.0), new Vector2F(0.0, 0.0), pixelCount, pixelLocations);
         this.udpSocket_0.sendUdp_wpmaqi$(brainAddress, 8003, mappingMsg);
-      }tmp$_3 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
+      }tmp$_4 = new IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations);
     } else
-      tmp$_3 = null;
-    var surface = (tmp$_1 = tmp$_3) != null ? tmp$_1 : new AnonymousSurface(brainId);
+      tmp$_4 = null;
+    var surface = (tmp$_2 = tmp$_4) != null ? tmp$_2 : new AnonymousSurface(brainId);
     var priorBrainInfo = this.brainInfos_0.get_11rb$(brainId);
     if (priorBrainInfo != null) {
-      if (((tmp$_2 = priorBrainInfo.brainId) != null ? tmp$_2.equals(brainId) : null) && equals(priorBrainInfo.surface, surface)) {
+      if (((tmp$_3 = priorBrainInfo.brainId) != null ? tmp$_3.equals(brainId) : null) && equals(priorBrainInfo.surface, surface)) {
         return;
       }}var sendFn = Pinky$foundBrain$lambda_1(this, brainAddress, brainId);
     var pixelShader = new PixelShader(PixelShader$Encoding$DIRECT_RGB_getInstance());
@@ -6321,6 +6331,26 @@
     kind: Kind_CLASS,
     simpleName: 'RenderTree',
     interfaces: []
+  };
+  function Pinky$MdnsBrainListenHandler($outer) {
+    this.$outer = $outer;
+  }
+  Pinky$MdnsBrainListenHandler.prototype.resolved_hb042s$ = function (service) {
+    var brainId = service.hostname;
+    var address = service.getAddress();
+    if (address != null) {
+      var version = service.getTXT_61zpoe$('version');
+      var idfVersion = service.getTXT_61zpoe$('idf_ver');
+      var msg = new BrainHelloMessage(brainId, null, version, idfVersion);
+      this.$outer.foundBrain_0(address, msg);
+    }};
+  Pinky$MdnsBrainListenHandler.prototype.removed_hb042s$ = function (service) {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'not implemented: What do when brain disconnects?');
+  };
+  Pinky$MdnsBrainListenHandler.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MdnsBrainListenHandler',
+    interfaces: [Network$MdnsListenHandler]
   };
   function Pinky$ListeningVisualizer($outer) {
     this.$outer = $outer;
@@ -6460,7 +6490,25 @@
     interfaces: [Network$UdpListener]
   };
   function BrainId(uuid) {
+    BrainId$Companion_getInstance();
     this.uuid = uuid;
+  }
+  function BrainId$Companion() {
+    BrainId$Companion_instance = this;
+  }
+  BrainId$Companion.prototype.serializer = function () {
+    return new BrainIdSerializer();
+  };
+  BrainId$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var BrainId$Companion_instance = null;
+  function BrainId$Companion_getInstance() {
+    if (BrainId$Companion_instance === null) {
+      new BrainId$Companion();
+    }return BrainId$Companion_instance;
   }
   BrainId.$metadata$ = {
     kind: Kind_CLASS,
@@ -6484,6 +6532,25 @@
   BrainId.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.uuid, other.uuid))));
   };
+  function BrainIdSerializer() {
+    this.descriptor_symqt8$_0 = PrimitiveDescriptor('BrainId', PrimitiveKind.STRING);
+  }
+  Object.defineProperty(BrainIdSerializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_symqt8$_0;
+    }
+  });
+  BrainIdSerializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    return new BrainId(decoder.decodeString());
+  };
+  BrainIdSerializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    encoder.encodeString_61zpoe$(value.uuid);
+  };
+  BrainIdSerializer.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainIdSerializer',
+    interfaces: [KSerializer]
+  };
   function BrainInfo(address, brainId, surface, firmwareVersion, idfVersion, surfaceReceiver, hadException) {
     if (hadException === void 0)
       hadException = false;
@@ -6498,6 +6565,677 @@
   BrainInfo.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'BrainInfo',
+    interfaces: []
+  };
+  function PinkyHttp(httpServer) {
+    this.httpServer = httpServer;
+    this.json_0 = new Json(JsonConfiguration.Companion.Stable);
+  }
+  function PinkyHttp$register$lambda$lambda(closure$brainInfos, closure$mappingResults, this$PinkyHttp) {
+    return function (call) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7;
+      var tmp$_8;
+      tmp$_8 = (tmp$ = call.param_61zpoe$('name')) != null ? closure$brainInfos.get_11rb$(new BrainId(tmp$)) : null;
+      var brainInfo = tmp$_8;
+      var tmp$_9;
+      tmp$_9 = (tmp$_0 = call.param_61zpoe$('name')) != null ? closure$mappingResults.dataForBrain_77gxvx$(new BrainId(tmp$_0)) : null;
+      var mappedInfo = tmp$_9;
+      if (brainInfo == null && mappedInfo == null) {
+        return new Network$TextResponse(404, 'not found');
+      } else {
+        var brainData = new PinkyHttp$BrainData(call.param_61zpoe$('name'), (tmp$_4 = (tmp$_1 = mappedInfo != null ? mappedInfo.surface : null) != null ? tmp$_1.name : null) != null ? tmp$_4 : (tmp$_3 = Kotlin.isType(tmp$_2 = brainInfo != null ? brainInfo.surface : null, IdentifiedSurface) ? tmp$_2 : null) != null ? tmp$_3.name : null, (tmp$_6 = (tmp$_5 = mappedInfo != null ? mappedInfo.pixelLocations : null) != null ? !tmp$_5.isEmpty() : null) != null ? tmp$_6 : false, brainInfo != null, (tmp$_7 = mappedInfo != null ? mappedInfo.pixelLocations : null) != null ? tmp$_7 : emptyList());
+        return Network$JsonResponse$Companion_getInstance().create_s3d568$(this$PinkyHttp.json_0, 200, brainData, PinkyHttp$BrainData$Companion_getInstance().serializer());
+      }
+    };
+  }
+  function PinkyHttp$register$lambda$lambda$lambda(closure$allBrains) {
+    return function (it) {
+      var tmp$, tmp$_0;
+      var $receiver = closure$allBrains;
+      var key = it.key;
+      var tmp$_1;
+      var value = $receiver.get_11rb$(key);
+      if (value == null) {
+        var answer = new PinkyHttp$TerseBrainData(null, false, false);
+        $receiver.put_xwzc9p$(key, answer);
+        tmp$_1 = answer;
+      } else {
+        tmp$_1 = value;
+      }
+      var info = tmp$_1;
+      var surfaceName = it.value.surface.name;
+      var hasPixels = (tmp$_0 = (tmp$ = it.value.pixelLocations) != null ? !tmp$.isEmpty() : null) != null ? tmp$_0 : false;
+      var $receiver_0 = closure$allBrains;
+      var key_0 = it.key;
+      var value_0 = info.copy_r0su5d$(surfaceName, hasPixels);
+      $receiver_0.put_xwzc9p$(key_0, value_0);
+      return Unit;
+    };
+  }
+  function PinkyHttp$register$lambda$lambda_0(closure$brainInfos, closure$mappingResults, this$PinkyHttp) {
+    return function (it) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+      var allBrains = LinkedHashMap_init();
+      tmp$ = closure$brainInfos.entries.iterator();
+      while (tmp$.hasNext()) {
+        var tmp$_6 = tmp$.next();
+        var k = tmp$_6.key;
+        var v = tmp$_6.value;
+        var tmp$_7;
+        var value = allBrains.get_11rb$(k);
+        if (value == null) {
+          var answer = new PinkyHttp$TerseBrainData(null, false, false);
+          allBrains.put_xwzc9p$(k, answer);
+          tmp$_7 = answer;
+        } else {
+          tmp$_7 = value;
+        }
+        var info = tmp$_7;
+        var surfaceName = (tmp$_1 = Kotlin.isType(tmp$_0 = v.surface, IdentifiedSurface) ? tmp$_0 : null) != null ? tmp$_1.name : null;
+        var hasPixels = (tmp$_5 = (tmp$_4 = (tmp$_3 = Kotlin.isType(tmp$_2 = v.surface, IdentifiedSurface) ? tmp$_2 : null) != null ? tmp$_3.pixelLocations : null) != null ? !tmp$_4.isEmpty() : null) != null ? tmp$_5 : false;
+        var value_0 = info.copy_r0su5d$(surfaceName, hasPixels, true);
+        allBrains.put_xwzc9p$(k, value_0);
+      }
+      closure$mappingResults.forEachBrain_u1rnzl$(PinkyHttp$register$lambda$lambda$lambda(allBrains));
+      return Network$JsonResponse$Companion_getInstance().create_s3d568$(this$PinkyHttp.json_0, 200, allBrains, MapSerializer(BrainId$Companion_getInstance().serializer(), PinkyHttp$TerseBrainData$Companion_getInstance().serializer()));
+    };
+  }
+  function PinkyHttp$register$lambda$lambda_1(closure$model, closure$mappingResults, this$PinkyHttp, closure$brainInfos) {
+    return function (call) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
+      var tmp$_9;
+      tmp$_9 = (tmp$ = call.param_61zpoe$('name')) != null ? closure$model.findModelSurface_61zpoe$(tmp$) : null;
+      var surface = tmp$_9;
+      if (surface != null) {
+        var allVertices = closure$model.geomVertices;
+        var vertices = surface.allVertices();
+        var mappedBrains = closure$mappingResults.dataForSurface_61zpoe$(surface.name);
+        tmp$_8 = Network$JsonResponse$Companion_getInstance();
+        tmp$_0 = this$PinkyHttp.json_0;
+        tmp$_1 = surface.name;
+        tmp$_2 = surface.description;
+        tmp$_4 = (tmp$_3 = surface.expectedPixelCount) != null ? tmp$_3 : -1;
+        tmp$_5 = toList_0(vertices);
+        var $receiver = surface.faces;
+        var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+        var tmp$_10;
+        tmp$_10 = $receiver.iterator();
+        while (tmp$_10.hasNext()) {
+          var item = tmp$_10.next();
+          var tmp$_11 = destination.add_11rb$;
+          var $receiver_0 = item.vertexIds;
+          var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+          var tmp$_12;
+          tmp$_12 = $receiver_0.iterator();
+          while (tmp$_12.hasNext()) {
+            var item_0 = tmp$_12.next();
+            destination_0.add_11rb$(indexOf(vertices, allVertices.get_za3lpa$(item_0)));
+          }
+          tmp$_11.call(destination, destination_0);
+        }
+        var $receiver_1 = surface.lines;
+        var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
+        var tmp$_13;
+        tmp$_13 = $receiver_1.iterator();
+        while (tmp$_13.hasNext()) {
+          var item_1 = tmp$_13.next();
+          var tmp$_14 = destination_1.add_11rb$;
+          var $receiver_2 = item_1.vertices;
+          var destination_2 = ArrayList_init_0(collectionSizeOrDefault($receiver_2, 10));
+          var tmp$_15;
+          tmp$_15 = $receiver_2.iterator();
+          while (tmp$_15.hasNext()) {
+            var item_2 = tmp$_15.next();
+            destination_2.add_11rb$(indexOf(vertices, item_2));
+          }
+          tmp$_14.call(destination_1, destination_2);
+        }
+        var tmp$_16;
+        if ((tmp$_6 = mappedBrains != null ? mappedBrains.entries : null) != null) {
+          var capacity = coerceAtLeast(mapCapacity(collectionSizeOrDefault(tmp$_6, 10)), 16);
+          var destination_3 = LinkedHashMap_init_0(capacity);
+          var tmp$_17;
+          tmp$_17 = tmp$_6.iterator();
+          while (tmp$_17.hasNext()) {
+            var element = tmp$_17.next();
+            var closure$brainInfos_0 = closure$brainInfos;
+            var brainId = element.key;
+            var info = element.value;
+            var tmp$_18, tmp$_19;
+            var pair = to(brainId, new PinkyHttp$TerseBrainData(null, (tmp$_19 = (tmp$_18 = info.pixelLocations) != null ? !tmp$_18.isEmpty() : null) != null ? tmp$_19 : false, closure$brainInfos_0.get_11rb$(brainId) != null));
+            destination_3.put_xwzc9p$(pair.first, pair.second);
+          }
+          tmp$_16 = destination_3;
+        } else
+          tmp$_16 = null;
+        return tmp$_8.create_s3d568$(tmp$_0, 200, new PinkyHttp$SurfaceData(tmp$_1, tmp$_2, tmp$_4, tmp$_5, destination, destination_1, (tmp$_7 = tmp$_16) != null ? tmp$_7 : emptyMap()), PinkyHttp$SurfaceData$Companion_getInstance().serializer());
+      } else {
+        return new Network$TextResponse(404, 'not found');
+      }
+    };
+  }
+  function PinkyHttp$register$lambda$lambda_2(this$PinkyHttp, closure$model) {
+    return function (it) {
+      var tmp$ = Network$JsonResponse$Companion_getInstance();
+      var tmp$_0 = this$PinkyHttp.json_0;
+      var $receiver = closure$model.allSurfaces;
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
+      var tmp$_1;
+      tmp$_1 = $receiver.iterator();
+      while (tmp$_1.hasNext()) {
+        var item = tmp$_1.next();
+        destination.add_11rb$(item.name);
+      }
+      return tmp$.create_s3d568$(tmp$_0, 200, destination, get_list(serializer(kotlin_js_internal_StringCompanionObject)));
+    };
+  }
+  function PinkyHttp$register$lambda(closure$brainInfos, closure$mappingResults, this$PinkyHttp, closure$model) {
+    return function ($receiver) {
+      $receiver.get_4md68d$('/brains/{name}', PinkyHttp$register$lambda$lambda(closure$brainInfos, closure$mappingResults, this$PinkyHttp));
+      $receiver.get_4md68d$('/brains', PinkyHttp$register$lambda$lambda_0(closure$brainInfos, closure$mappingResults, this$PinkyHttp));
+      $receiver.get_4md68d$('/surfaces/{name}', PinkyHttp$register$lambda$lambda_1(closure$model, closure$mappingResults, this$PinkyHttp, closure$brainInfos));
+      $receiver.get_4md68d$('/surfaces', PinkyHttp$register$lambda$lambda_2(this$PinkyHttp, closure$model));
+      return Unit;
+    };
+  }
+  PinkyHttp.prototype.register_4bybjx$ = function (brainInfos, mappingResults, model) {
+    this.httpServer.routing_9f2myn$(PinkyHttp$register$lambda(brainInfos, mappingResults, this, model));
+  };
+  function PinkyHttp$BrainData(name, surface, mapped, online, pixels) {
+    PinkyHttp$BrainData$Companion_getInstance();
+    this.name = name;
+    this.surface = surface;
+    this.mapped = mapped;
+    this.online = online;
+    this.pixels = pixels;
+  }
+  function PinkyHttp$BrainData$Companion() {
+    PinkyHttp$BrainData$Companion_instance = this;
+  }
+  PinkyHttp$BrainData$Companion.prototype.serializer = function () {
+    return PinkyHttp$BrainData$$serializer_getInstance();
+  };
+  PinkyHttp$BrainData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PinkyHttp$BrainData$Companion_instance = null;
+  function PinkyHttp$BrainData$Companion_getInstance() {
+    if (PinkyHttp$BrainData$Companion_instance === null) {
+      new PinkyHttp$BrainData$Companion();
+    }return PinkyHttp$BrainData$Companion_instance;
+  }
+  function PinkyHttp$BrainData$$serializer() {
+    this.descriptor_wh1l8e$_0 = new SerialClassDescImpl('baaahs.PinkyHttp.BrainData', this, 5);
+    this.descriptor.addElement_ivxn3r$('name', false);
+    this.descriptor.addElement_ivxn3r$('surface', false);
+    this.descriptor.addElement_ivxn3r$('mapped', false);
+    this.descriptor.addElement_ivxn3r$('online', false);
+    this.descriptor.addElement_ivxn3r$('pixels', false);
+    PinkyHttp$BrainData$$serializer_instance = this;
+  }
+  Object.defineProperty(PinkyHttp$BrainData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_wh1l8e$_0;
+    }
+  });
+  PinkyHttp$BrainData$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 0, internal.StringSerializer, value.name);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 1, internal.StringSerializer, value.surface);
+    output.encodeBooleanElement_w1b0nl$(this.descriptor, 2, value.mapped);
+    output.encodeBooleanElement_w1b0nl$(this.descriptor, 3, value.online);
+    output.encodeSerializableElement_blecud$(this.descriptor, 4, new ArrayListSerializer(new NullableSerializer(Vector3F$$serializer_getInstance())), value.pixels);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  PinkyHttp$BrainData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3
+    , local4;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = (bitMask0 & 1) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 0, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 0, internal.StringSerializer, local0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = (bitMask0 & 2) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 1, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 1, internal.StringSerializer, local1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeBooleanElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case 3:
+          local3 = input.decodeBooleanElement_3zr2iy$(this.descriptor, 3);
+          bitMask0 |= 8;
+          break;
+        case 4:
+          local4 = (bitMask0 & 16) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 4, new ArrayListSerializer(new NullableSerializer(Vector3F$$serializer_getInstance()))) : input.updateSerializableElement_ehubvl$(this.descriptor, 4, new ArrayListSerializer(new NullableSerializer(Vector3F$$serializer_getInstance())), local4);
+          bitMask0 |= 16;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return PinkyHttp$PinkyHttp$BrainData_init(bitMask0, local0, local1, local2, local3, local4, null);
+  };
+  PinkyHttp$BrainData$$serializer.prototype.childSerializers = function () {
+    return [new NullableSerializer(internal.StringSerializer), new NullableSerializer(internal.StringSerializer), internal.BooleanSerializer, internal.BooleanSerializer, new ArrayListSerializer(new NullableSerializer(Vector3F$$serializer_getInstance()))];
+  };
+  PinkyHttp$BrainData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var PinkyHttp$BrainData$$serializer_instance = null;
+  function PinkyHttp$BrainData$$serializer_getInstance() {
+    if (PinkyHttp$BrainData$$serializer_instance === null) {
+      new PinkyHttp$BrainData$$serializer();
+    }return PinkyHttp$BrainData$$serializer_instance;
+  }
+  function PinkyHttp$PinkyHttp$BrainData_init(seen1, name, surface, mapped, online, pixels, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(PinkyHttp$BrainData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('name');
+    else
+      $this.name = name;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('surface');
+    else
+      $this.surface = surface;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('mapped');
+    else
+      $this.mapped = mapped;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('online');
+    else
+      $this.online = online;
+    if ((seen1 & 16) === 0)
+      throw new MissingFieldException('pixels');
+    else
+      $this.pixels = pixels;
+    return $this;
+  }
+  PinkyHttp$BrainData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BrainData',
+    interfaces: []
+  };
+  PinkyHttp$BrainData.prototype.component1 = function () {
+    return this.name;
+  };
+  PinkyHttp$BrainData.prototype.component2 = function () {
+    return this.surface;
+  };
+  PinkyHttp$BrainData.prototype.component3 = function () {
+    return this.mapped;
+  };
+  PinkyHttp$BrainData.prototype.component4 = function () {
+    return this.online;
+  };
+  PinkyHttp$BrainData.prototype.component5 = function () {
+    return this.pixels;
+  };
+  PinkyHttp$BrainData.prototype.copy_t8kh7u$ = function (name, surface, mapped, online, pixels) {
+    return new PinkyHttp$BrainData(name === void 0 ? this.name : name, surface === void 0 ? this.surface : surface, mapped === void 0 ? this.mapped : mapped, online === void 0 ? this.online : online, pixels === void 0 ? this.pixels : pixels);
+  };
+  PinkyHttp$BrainData.prototype.toString = function () {
+    return 'BrainData(name=' + Kotlin.toString(this.name) + (', surface=' + Kotlin.toString(this.surface)) + (', mapped=' + Kotlin.toString(this.mapped)) + (', online=' + Kotlin.toString(this.online)) + (', pixels=' + Kotlin.toString(this.pixels)) + ')';
+  };
+  PinkyHttp$BrainData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.surface) | 0;
+    result = result * 31 + Kotlin.hashCode(this.mapped) | 0;
+    result = result * 31 + Kotlin.hashCode(this.online) | 0;
+    result = result * 31 + Kotlin.hashCode(this.pixels) | 0;
+    return result;
+  };
+  PinkyHttp$BrainData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.surface, other.surface) && Kotlin.equals(this.mapped, other.mapped) && Kotlin.equals(this.online, other.online) && Kotlin.equals(this.pixels, other.pixels)))));
+  };
+  function PinkyHttp$TerseBrainData(surface, mapped, online) {
+    PinkyHttp$TerseBrainData$Companion_getInstance();
+    this.surface = surface;
+    this.mapped = mapped;
+    this.online = online;
+  }
+  function PinkyHttp$TerseBrainData$Companion() {
+    PinkyHttp$TerseBrainData$Companion_instance = this;
+  }
+  PinkyHttp$TerseBrainData$Companion.prototype.serializer = function () {
+    return PinkyHttp$TerseBrainData$$serializer_getInstance();
+  };
+  PinkyHttp$TerseBrainData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PinkyHttp$TerseBrainData$Companion_instance = null;
+  function PinkyHttp$TerseBrainData$Companion_getInstance() {
+    if (PinkyHttp$TerseBrainData$Companion_instance === null) {
+      new PinkyHttp$TerseBrainData$Companion();
+    }return PinkyHttp$TerseBrainData$Companion_instance;
+  }
+  function PinkyHttp$TerseBrainData$$serializer() {
+    this.descriptor_dmby49$_0 = new SerialClassDescImpl('baaahs.PinkyHttp.TerseBrainData', this, 3);
+    this.descriptor.addElement_ivxn3r$('surface', false);
+    this.descriptor.addElement_ivxn3r$('mapped', false);
+    this.descriptor.addElement_ivxn3r$('online', false);
+    PinkyHttp$TerseBrainData$$serializer_instance = this;
+  }
+  Object.defineProperty(PinkyHttp$TerseBrainData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_dmby49$_0;
+    }
+  });
+  PinkyHttp$TerseBrainData$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 0, internal.StringSerializer, value.surface);
+    output.encodeBooleanElement_w1b0nl$(this.descriptor, 1, value.mapped);
+    output.encodeBooleanElement_w1b0nl$(this.descriptor, 2, value.online);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  PinkyHttp$TerseBrainData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = (bitMask0 & 1) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 0, internal.StringSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 0, internal.StringSerializer, local0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeBooleanElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = input.decodeBooleanElement_3zr2iy$(this.descriptor, 2);
+          bitMask0 |= 4;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return PinkyHttp$PinkyHttp$TerseBrainData_init(bitMask0, local0, local1, local2, null);
+  };
+  PinkyHttp$TerseBrainData$$serializer.prototype.childSerializers = function () {
+    return [new NullableSerializer(internal.StringSerializer), internal.BooleanSerializer, internal.BooleanSerializer];
+  };
+  PinkyHttp$TerseBrainData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var PinkyHttp$TerseBrainData$$serializer_instance = null;
+  function PinkyHttp$TerseBrainData$$serializer_getInstance() {
+    if (PinkyHttp$TerseBrainData$$serializer_instance === null) {
+      new PinkyHttp$TerseBrainData$$serializer();
+    }return PinkyHttp$TerseBrainData$$serializer_instance;
+  }
+  function PinkyHttp$PinkyHttp$TerseBrainData_init(seen1, surface, mapped, online, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(PinkyHttp$TerseBrainData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('surface');
+    else
+      $this.surface = surface;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('mapped');
+    else
+      $this.mapped = mapped;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('online');
+    else
+      $this.online = online;
+    return $this;
+  }
+  PinkyHttp$TerseBrainData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TerseBrainData',
+    interfaces: []
+  };
+  PinkyHttp$TerseBrainData.prototype.component1 = function () {
+    return this.surface;
+  };
+  PinkyHttp$TerseBrainData.prototype.component2 = function () {
+    return this.mapped;
+  };
+  PinkyHttp$TerseBrainData.prototype.component3 = function () {
+    return this.online;
+  };
+  PinkyHttp$TerseBrainData.prototype.copy_r0su5d$ = function (surface, mapped, online) {
+    return new PinkyHttp$TerseBrainData(surface === void 0 ? this.surface : surface, mapped === void 0 ? this.mapped : mapped, online === void 0 ? this.online : online);
+  };
+  PinkyHttp$TerseBrainData.prototype.toString = function () {
+    return 'TerseBrainData(surface=' + Kotlin.toString(this.surface) + (', mapped=' + Kotlin.toString(this.mapped)) + (', online=' + Kotlin.toString(this.online)) + ')';
+  };
+  PinkyHttp$TerseBrainData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.surface) | 0;
+    result = result * 31 + Kotlin.hashCode(this.mapped) | 0;
+    result = result * 31 + Kotlin.hashCode(this.online) | 0;
+    return result;
+  };
+  PinkyHttp$TerseBrainData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.surface, other.surface) && Kotlin.equals(this.mapped, other.mapped) && Kotlin.equals(this.online, other.online)))));
+  };
+  function PinkyHttp$SurfaceData(name, description, expectedPixelCount, vertices, faces, lines, brains) {
+    PinkyHttp$SurfaceData$Companion_getInstance();
+    this.name = name;
+    this.description = description;
+    this.expectedPixelCount = expectedPixelCount;
+    this.vertices = vertices;
+    this.faces = faces;
+    this.lines = lines;
+    this.brains = brains;
+  }
+  function PinkyHttp$SurfaceData$Companion() {
+    PinkyHttp$SurfaceData$Companion_instance = this;
+  }
+  PinkyHttp$SurfaceData$Companion.prototype.serializer = function () {
+    return PinkyHttp$SurfaceData$$serializer_getInstance();
+  };
+  PinkyHttp$SurfaceData$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PinkyHttp$SurfaceData$Companion_instance = null;
+  function PinkyHttp$SurfaceData$Companion_getInstance() {
+    if (PinkyHttp$SurfaceData$Companion_instance === null) {
+      new PinkyHttp$SurfaceData$Companion();
+    }return PinkyHttp$SurfaceData$Companion_instance;
+  }
+  function PinkyHttp$SurfaceData$$serializer() {
+    this.descriptor_4wexmd$_0 = new SerialClassDescImpl('baaahs.PinkyHttp.SurfaceData', this, 7);
+    this.descriptor.addElement_ivxn3r$('name', false);
+    this.descriptor.addElement_ivxn3r$('description', false);
+    this.descriptor.addElement_ivxn3r$('expectedPixelCount', false);
+    this.descriptor.addElement_ivxn3r$('vertices', false);
+    this.descriptor.addElement_ivxn3r$('faces', false);
+    this.descriptor.addElement_ivxn3r$('lines', false);
+    this.descriptor.addElement_ivxn3r$('brains', false);
+    PinkyHttp$SurfaceData$$serializer_instance = this;
+  }
+  Object.defineProperty(PinkyHttp$SurfaceData$$serializer.prototype, 'descriptor', {
+    get: function () {
+      return this.descriptor_4wexmd$_0;
+    }
+  });
+  PinkyHttp$SurfaceData$$serializer.prototype.serialize_awe97i$ = function (encoder, value) {
+    var output = encoder.beginStructure_r0sa6z$(this.descriptor, []);
+    output.encodeStringElement_bgm7zs$(this.descriptor, 0, value.name);
+    output.encodeStringElement_bgm7zs$(this.descriptor, 1, value.description);
+    output.encodeNullableSerializableElement_orpvvi$(this.descriptor, 2, internal.IntSerializer, value.expectedPixelCount);
+    output.encodeSerializableElement_blecud$(this.descriptor, 3, new ArrayListSerializer(Vector3F$$serializer_getInstance()), value.vertices);
+    output.encodeSerializableElement_blecud$(this.descriptor, 4, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), value.faces);
+    output.encodeSerializableElement_blecud$(this.descriptor, 5, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), value.lines);
+    output.encodeSerializableElement_blecud$(this.descriptor, 6, new LinkedHashMapSerializer(new BrainIdSerializer(), PinkyHttp$TerseBrainData$$serializer_getInstance()), value.brains);
+    output.endStructure_qatsm0$(this.descriptor);
+  };
+  PinkyHttp$SurfaceData$$serializer.prototype.deserialize_nts5qn$ = function (decoder) {
+    var index;
+    var bitMask0 = 0;
+    var local0
+    , local1
+    , local2
+    , local3
+    , local4
+    , local5
+    , local6;
+    var input = decoder.beginStructure_r0sa6z$(this.descriptor, []);
+    loopLabel: while (true) {
+      index = input.decodeElementIndex_qatsm0$(this.descriptor);
+      switch (index) {
+        case 0:
+          local0 = input.decodeStringElement_3zr2iy$(this.descriptor, 0);
+          bitMask0 |= 1;
+          break;
+        case 1:
+          local1 = input.decodeStringElement_3zr2iy$(this.descriptor, 1);
+          bitMask0 |= 2;
+          break;
+        case 2:
+          local2 = (bitMask0 & 4) === 0 ? input.decodeNullableSerializableElement_cwlm4k$(this.descriptor, 2, internal.IntSerializer) : input.updateNullableSerializableElement_u33s02$(this.descriptor, 2, internal.IntSerializer, local2);
+          bitMask0 |= 4;
+          break;
+        case 3:
+          local3 = (bitMask0 & 8) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 3, new ArrayListSerializer(Vector3F$$serializer_getInstance())) : input.updateSerializableElement_ehubvl$(this.descriptor, 3, new ArrayListSerializer(Vector3F$$serializer_getInstance()), local3);
+          bitMask0 |= 8;
+          break;
+        case 4:
+          local4 = (bitMask0 & 16) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 4, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer))) : input.updateSerializableElement_ehubvl$(this.descriptor, 4, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), local4);
+          bitMask0 |= 16;
+          break;
+        case 5:
+          local5 = (bitMask0 & 32) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 5, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer))) : input.updateSerializableElement_ehubvl$(this.descriptor, 5, new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), local5);
+          bitMask0 |= 32;
+          break;
+        case 6:
+          local6 = (bitMask0 & 64) === 0 ? input.decodeSerializableElement_s44l7r$(this.descriptor, 6, new LinkedHashMapSerializer(new BrainIdSerializer(), PinkyHttp$TerseBrainData$$serializer_getInstance())) : input.updateSerializableElement_ehubvl$(this.descriptor, 6, new LinkedHashMapSerializer(new BrainIdSerializer(), PinkyHttp$TerseBrainData$$serializer_getInstance()), local6);
+          bitMask0 |= 64;
+          break;
+        case -1:
+          break loopLabel;
+        default:throw new UnknownFieldException(index);
+      }
+    }
+    input.endStructure_qatsm0$(this.descriptor);
+    return PinkyHttp$PinkyHttp$SurfaceData_init(bitMask0, local0, local1, local2, local3, local4, local5, local6, null);
+  };
+  PinkyHttp$SurfaceData$$serializer.prototype.childSerializers = function () {
+    return [internal.StringSerializer, internal.StringSerializer, new NullableSerializer(internal.IntSerializer), new ArrayListSerializer(Vector3F$$serializer_getInstance()), new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), new ArrayListSerializer(new ArrayListSerializer(internal.IntSerializer)), new LinkedHashMapSerializer(new BrainIdSerializer(), PinkyHttp$TerseBrainData$$serializer_getInstance())];
+  };
+  PinkyHttp$SurfaceData$$serializer.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: '$serializer',
+    interfaces: [GeneratedSerializer]
+  };
+  var PinkyHttp$SurfaceData$$serializer_instance = null;
+  function PinkyHttp$SurfaceData$$serializer_getInstance() {
+    if (PinkyHttp$SurfaceData$$serializer_instance === null) {
+      new PinkyHttp$SurfaceData$$serializer();
+    }return PinkyHttp$SurfaceData$$serializer_instance;
+  }
+  function PinkyHttp$PinkyHttp$SurfaceData_init(seen1, name, description, expectedPixelCount, vertices, faces, lines, brains, serializationConstructorMarker) {
+    var $this = serializationConstructorMarker || Object.create(PinkyHttp$SurfaceData.prototype);
+    if ((seen1 & 1) === 0)
+      throw new MissingFieldException('name');
+    else
+      $this.name = name;
+    if ((seen1 & 2) === 0)
+      throw new MissingFieldException('description');
+    else
+      $this.description = description;
+    if ((seen1 & 4) === 0)
+      throw new MissingFieldException('expectedPixelCount');
+    else
+      $this.expectedPixelCount = expectedPixelCount;
+    if ((seen1 & 8) === 0)
+      throw new MissingFieldException('vertices');
+    else
+      $this.vertices = vertices;
+    if ((seen1 & 16) === 0)
+      throw new MissingFieldException('faces');
+    else
+      $this.faces = faces;
+    if ((seen1 & 32) === 0)
+      throw new MissingFieldException('lines');
+    else
+      $this.lines = lines;
+    if ((seen1 & 64) === 0)
+      throw new MissingFieldException('brains');
+    else
+      $this.brains = brains;
+    return $this;
+  }
+  PinkyHttp$SurfaceData.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SurfaceData',
+    interfaces: []
+  };
+  PinkyHttp$SurfaceData.prototype.component1 = function () {
+    return this.name;
+  };
+  PinkyHttp$SurfaceData.prototype.component2 = function () {
+    return this.description;
+  };
+  PinkyHttp$SurfaceData.prototype.component3 = function () {
+    return this.expectedPixelCount;
+  };
+  PinkyHttp$SurfaceData.prototype.component4 = function () {
+    return this.vertices;
+  };
+  PinkyHttp$SurfaceData.prototype.component5 = function () {
+    return this.faces;
+  };
+  PinkyHttp$SurfaceData.prototype.component6 = function () {
+    return this.lines;
+  };
+  PinkyHttp$SurfaceData.prototype.component7 = function () {
+    return this.brains;
+  };
+  PinkyHttp$SurfaceData.prototype.copy_jlj4im$ = function (name, description, expectedPixelCount, vertices, faces, lines, brains) {
+    return new PinkyHttp$SurfaceData(name === void 0 ? this.name : name, description === void 0 ? this.description : description, expectedPixelCount === void 0 ? this.expectedPixelCount : expectedPixelCount, vertices === void 0 ? this.vertices : vertices, faces === void 0 ? this.faces : faces, lines === void 0 ? this.lines : lines, brains === void 0 ? this.brains : brains);
+  };
+  PinkyHttp$SurfaceData.prototype.toString = function () {
+    return 'SurfaceData(name=' + Kotlin.toString(this.name) + (', description=' + Kotlin.toString(this.description)) + (', expectedPixelCount=' + Kotlin.toString(this.expectedPixelCount)) + (', vertices=' + Kotlin.toString(this.vertices)) + (', faces=' + Kotlin.toString(this.faces)) + (', lines=' + Kotlin.toString(this.lines)) + (', brains=' + Kotlin.toString(this.brains)) + ')';
+  };
+  PinkyHttp$SurfaceData.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.description) | 0;
+    result = result * 31 + Kotlin.hashCode(this.expectedPixelCount) | 0;
+    result = result * 31 + Kotlin.hashCode(this.vertices) | 0;
+    result = result * 31 + Kotlin.hashCode(this.faces) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lines) | 0;
+    result = result * 31 + Kotlin.hashCode(this.brains) | 0;
+    return result;
+  };
+  PinkyHttp$SurfaceData.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.description, other.description) && Kotlin.equals(this.expectedPixelCount, other.expectedPixelCount) && Kotlin.equals(this.vertices, other.vertices) && Kotlin.equals(this.faces, other.faces) && Kotlin.equals(this.lines, other.lines) && Kotlin.equals(this.brains, other.brains)))));
+  };
+  PinkyHttp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PinkyHttp',
     interfaces: []
   };
   function Pluggables() {
@@ -8473,7 +9211,7 @@
             this.local$filename = Storage$Companion_getInstance().formatDateTime_mw5vjr$(this.local$sessionStartTime) + '/' + this.local$name + '.webp';
             var dataUrl = this.local$bitmap.toDataUrl();
             var startOfData = ';base64,';
-            var i = indexOf(dataUrl, startOfData);
+            var i = indexOf_0(dataUrl, startOfData);
             if (i === -1) {
               throw IllegalArgumentException_init('failed to save image ' + dataUrl);
             }
@@ -16750,7 +17488,8 @@
   };
   function SessionMappingResults(model, mappingSessions) {
     SessionMappingResults$Companion_getInstance();
-    this.brainData = LinkedHashMap_init();
+    this.byBrain_0 = LinkedHashMap_init();
+    this.bySurface_0 = LinkedHashMap_init();
     var tmp$;
     tmp$ = mappingSessions.iterator();
     while (tmp$.hasNext()) {
@@ -16772,9 +17511,20 @@
             destination.add_11rb$(item != null ? item.modelPosition : null);
           }
           var pixelLocations = destination;
-          var $receiver_0 = this.brainData;
-          var value = new MappingResults$Info(modelSurface, pixelLocations);
-          $receiver_0.put_xwzc9p$(brainId, value);
+          var info = new MappingResults$Info(modelSurface, pixelLocations);
+          var $receiver_0 = this.bySurface_0;
+          var tmp$_2;
+          var value = $receiver_0.get_11rb$(surfaceName);
+          if (value == null) {
+            var answer = LinkedHashMap_init();
+            $receiver_0.put_xwzc9p$(surfaceName, answer);
+            tmp$_2 = answer;
+          } else {
+            tmp$_2 = value;
+          }
+          var map = tmp$_2;
+          this.byBrain_0.put_xwzc9p$(brainId, info);
+          map.put_xwzc9p$(brainId, info);
         } catch (e) {
           if (Kotlin.isType(e, Exception)) {
             SessionMappingResults$Companion_getInstance().logger_0.warn_l35kib$(e, SessionMappingResults_init$lambda$lambda$lambda(surfaceName));
@@ -16784,25 +17534,28 @@
       }
     }
   }
-  SessionMappingResults.prototype.dataFor_77gxvx$ = function (brainId) {
-    return this.brainData.get_11rb$(brainId);
+  SessionMappingResults.prototype.dataForBrain_77gxvx$ = function (brainId) {
+    return this.byBrain_0.get_11rb$(brainId);
   };
-  SessionMappingResults.prototype.dataFor_61zpoe$ = function (surfaceName) {
-    var $receiver = this.brainData.values;
-    var firstOrNull$result;
-    firstOrNull$break: do {
-      var tmp$;
-      tmp$ = $receiver.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        if (equals(element.surface.name, surfaceName)) {
-          firstOrNull$result = element;
-          break firstOrNull$break;
-        }}
-      firstOrNull$result = null;
+  SessionMappingResults.prototype.dataForSurface_61zpoe$ = function (surfaceName) {
+    var tmp$;
+    return (tmp$ = this.bySurface_0.get_11rb$(surfaceName)) != null ? toMap(tmp$) : null;
+  };
+  SessionMappingResults.prototype.forEachBrain_u1rnzl$ = function (f) {
+    var tmp$;
+    tmp$ = this.byBrain_0.entries.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      f(element);
     }
-     while (false);
-    return firstOrNull$result;
+  };
+  SessionMappingResults.prototype.forEachSurface_boa373$ = function (f) {
+    var tmp$;
+    tmp$ = this.bySurface_0.entries.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      f(element);
+    }
   };
   function SessionMappingResults$Companion() {
     SessionMappingResults$Companion_instance = this;
@@ -17497,10 +18250,16 @@
     this.mtu_0 = this.wrappedLink_0.udpMtu;
     this.nextMessageId_0 = 0;
     this.fragments_0 = ArrayList_init();
+    this.mdns_h5imni$_0 = this.wrappedLink_0.mdns;
   }
   Object.defineProperty(FragmentingUdpLink.prototype, 'myAddress', {
     get: function () {
       return this.wrappedLink_0.myAddress;
+    }
+  });
+  Object.defineProperty(FragmentingUdpLink.prototype, 'myHostname', {
+    get: function () {
+      return this.wrappedLink_0.myHostname;
     }
   });
   Object.defineProperty(FragmentingUdpLink.prototype, 'udpMtu', {
@@ -17619,6 +18378,11 @@
   FragmentingUdpLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     return new FragmentingUdpLink$FragmentingUdpSocket(this, this.wrappedLink_0.listenUdp_a6m852$(port, new FragmentingUdpLink$listenUdp$ObjectLiteral(udpListener, this)));
   };
+  Object.defineProperty(FragmentingUdpLink.prototype, 'mdns', {
+    get: function () {
+      return this.mdns_h5imni$_0;
+    }
+  });
   function FragmentingUdpLink$removeMessageId$lambda$lambda(closure$messageId, closure$myFragments) {
     return function (fragment) {
       var remove = fragment.messageId === closure$messageId;
@@ -17723,6 +18487,49 @@
     simpleName: 'Link',
     interfaces: []
   };
+  function Network$Mdns() {
+  }
+  Network$Mdns.prototype.register_e5yw4$ = function (hostname, type, proto, port, domain, params, callback$default) {
+    if (domain === void 0)
+      domain = 'local.';
+    if (params === void 0) {
+      params = LinkedHashMap_init();
+    }return callback$default ? callback$default(hostname, type, proto, port, domain, params) : this.register_e5yw4$$default(hostname, type, proto, port, domain, params);
+  };
+  Network$Mdns.prototype.normalizeMdnsDomain_pdl1vz$ = function ($receiver) {
+    var dom = $receiver;
+    if (startsWith(dom, '.')) {
+      dom = dom.substring(1);
+    }if (!endsWith(dom, '.')) {
+      dom += '.';
+    }return dom;
+  };
+  Network$Mdns.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Mdns',
+    interfaces: []
+  };
+  function Network$MdnsService() {
+  }
+  Network$MdnsService.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'MdnsService',
+    interfaces: []
+  };
+  function Network$MdnsRegisteredService() {
+  }
+  Network$MdnsRegisteredService.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'MdnsRegisteredService',
+    interfaces: [Network$MdnsService]
+  };
+  function Network$MdnsListenHandler() {
+  }
+  Network$MdnsListenHandler.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'MdnsListenHandler',
+    interfaces: []
+  };
   function Network$Address() {
   }
   Network$Address.$metadata$ = {
@@ -17770,10 +18577,106 @@
   Network$HttpServer.prototype.listenWebSocket_w9i1ik$ = function (path, webSocketListener) {
     this.listenWebSocket_brdh44$(path, Network$HttpServer$listenWebSocket$lambda(webSocketListener));
   };
+  function Network$HttpServer$HttpRequest() {
+  }
+  Network$HttpServer$HttpRequest.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'HttpRequest',
+    interfaces: []
+  };
+  function Network$HttpServer$HttpRouting() {
+  }
+  Network$HttpServer$HttpRouting.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'HttpRouting',
+    interfaces: []
+  };
   Network$HttpServer.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'HttpServer',
     interfaces: []
+  };
+  function Network$HttpResponse() {
+  }
+  Network$HttpResponse.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'HttpResponse',
+    interfaces: []
+  };
+  function Network$TextResponse(statusCode, body) {
+    if (statusCode === void 0)
+      statusCode = 200;
+    this.statusCode_8xg0vk$_0 = statusCode;
+    this.body_d6hbzh$_0 = encodeToByteArray(body);
+    this.contentType_kpjj3i$_0 = 'text/plain';
+  }
+  Object.defineProperty(Network$TextResponse.prototype, 'statusCode', {
+    get: function () {
+      return this.statusCode_8xg0vk$_0;
+    }
+  });
+  Object.defineProperty(Network$TextResponse.prototype, 'body', {
+    get: function () {
+      return this.body_d6hbzh$_0;
+    }
+  });
+  Object.defineProperty(Network$TextResponse.prototype, 'contentType', {
+    get: function () {
+      return this.contentType_kpjj3i$_0;
+    }
+  });
+  Network$TextResponse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TextResponse',
+    interfaces: [Network$HttpResponse]
+  };
+  function Network$JsonResponse(json, statusCode, element) {
+    Network$JsonResponse$Companion_getInstance();
+    if (statusCode === void 0)
+      statusCode = 200;
+    this.json = json;
+    this.statusCode_mcjuln$_0 = statusCode;
+    this.body_8dfsew$_0 = encodeToByteArray(this.json.stringify_tf03ej$(JsonElement.Companion.serializer(), element));
+    this.contentType_uvx9hl$_0 = 'application/json';
+  }
+  Object.defineProperty(Network$JsonResponse.prototype, 'statusCode', {
+    get: function () {
+      return this.statusCode_mcjuln$_0;
+    }
+  });
+  function Network$JsonResponse$Companion() {
+    Network$JsonResponse$Companion_instance = this;
+  }
+  Network$JsonResponse$Companion.prototype.create_s3d568$ = function (json, statusCode, data, serializer) {
+    if (statusCode === void 0)
+      statusCode = 200;
+    return new Network$JsonResponse(json, statusCode, json.toJson_tf03ej$(serializer, data));
+  };
+  Network$JsonResponse$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Network$JsonResponse$Companion_instance = null;
+  function Network$JsonResponse$Companion_getInstance() {
+    if (Network$JsonResponse$Companion_instance === null) {
+      new Network$JsonResponse$Companion();
+    }return Network$JsonResponse$Companion_instance;
+  }
+  Object.defineProperty(Network$JsonResponse.prototype, 'body', {
+    get: function () {
+      return this.body_8dfsew$_0;
+    }
+  });
+  Object.defineProperty(Network$JsonResponse.prototype, 'contentType', {
+    get: function () {
+      return this.contentType_uvx9hl$_0;
+    }
+  });
+  Network$JsonResponse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'JsonResponse',
+    interfaces: [Network$HttpResponse]
   };
   function Network$WebSocketListener() {
   }
@@ -19286,6 +20189,133 @@
     simpleName: 'FakeFs',
     interfaces: [Fs]
   };
+  function FakeMdns(createAddress) {
+    this.createAddress = createAddress;
+    this.services_0 = LinkedHashMap_init();
+    this.listeners_0 = LinkedHashMap_init();
+    this.nextServiceId_0 = 0;
+  }
+  FakeMdns.prototype.register_e5yw4$$default = function (hostname, type, proto, port, domain, params) {
+    var fullname = hostname + '.' + type + '.' + proto + '.' + this.normalizeMdnsDomain_pdl1vz$(domain);
+    var inst = new FakeMdns$FakeRegisteredService(this, hostname, type, proto, port, this.normalizeMdnsDomain_pdl1vz$(domain), params);
+    this.services_0.put_xwzc9p$(fullname, inst);
+    inst.announceResolved_8be2vx$();
+    return inst;
+  };
+  FakeMdns.prototype.unregister_he3mo3$ = function (inst) {
+    inst != null ? (inst.unregister(), Unit) : null;
+  };
+  FakeMdns.prototype.listen_r1izi4$ = function (type, proto, domain, handler) {
+    var $receiver = this.listeners_0;
+    var key = type + '.' + proto + '.' + this.normalizeMdnsDomain_pdl1vz$(domain);
+    var tmp$;
+    var value = $receiver.get_11rb$(key);
+    if (value == null) {
+      var answer = ArrayList_init();
+      $receiver.put_xwzc9p$(key, answer);
+      tmp$ = answer;
+    } else {
+      tmp$ = value;
+    }
+    tmp$.add_11rb$(handler);
+  };
+  function FakeMdns$FakeMdnsService($outer, hostname, type, proto, port, domain, params) {
+    this.$outer = $outer;
+    this.hostname_x75c91$_0 = hostname;
+    this.type_70h1uc$_0 = type;
+    this.proto_2bb2wu$_0 = proto;
+    this.port_6y3jfx$_0 = port;
+    this.domain_ytoipi$_0 = domain;
+    this.params = params;
+    var tmp$;
+    this.id_vp9iy5$_0 = (tmp$ = this.$outer.nextServiceId_0, this.$outer.nextServiceId_0 = tmp$ + 1 | 0, tmp$);
+  }
+  Object.defineProperty(FakeMdns$FakeMdnsService.prototype, 'hostname', {
+    get: function () {
+      return this.hostname_x75c91$_0;
+    }
+  });
+  Object.defineProperty(FakeMdns$FakeMdnsService.prototype, 'type', {
+    get: function () {
+      return this.type_70h1uc$_0;
+    }
+  });
+  Object.defineProperty(FakeMdns$FakeMdnsService.prototype, 'proto', {
+    get: function () {
+      return this.proto_2bb2wu$_0;
+    }
+  });
+  Object.defineProperty(FakeMdns$FakeMdnsService.prototype, 'port', {
+    get: function () {
+      return this.port_6y3jfx$_0;
+    }
+  });
+  Object.defineProperty(FakeMdns$FakeMdnsService.prototype, 'domain', {
+    get: function () {
+      return this.domain_ytoipi$_0;
+    }
+  });
+  FakeMdns$FakeMdnsService.prototype.getAddress = function () {
+    return this.$outer.createAddress(this.id_vp9iy5$_0);
+  };
+  FakeMdns$FakeMdnsService.prototype.getTXT_61zpoe$ = function (key) {
+    return this.params.get_11rb$(key);
+  };
+  FakeMdns$FakeMdnsService.prototype.getAllTXTs = function () {
+    return this.params;
+  };
+  FakeMdns$FakeMdnsService.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeMdnsService',
+    interfaces: [Network$MdnsService]
+  };
+  function FakeMdns$FakeRegisteredService($outer, hostname, type, proto, port, domain, params) {
+    this.$outer = $outer;
+    FakeMdns$FakeMdnsService.call(this, this.$outer, hostname, type, proto, port, this.$outer.normalizeMdnsDomain_pdl1vz$(domain), params);
+  }
+  FakeMdns$FakeRegisteredService.prototype.unregister = function () {
+    var tmp$, tmp$_0;
+    var fullname = this.hostname + '.' + this.type + '.' + this.proto + '.' + this.$outer.normalizeMdnsDomain_pdl1vz$(this.domain);
+    (tmp$_0 = Kotlin.isType(tmp$ = this.$outer.services_0.remove_11rb$(fullname), FakeMdns$FakeRegisteredService) ? tmp$ : null) != null ? (tmp$_0.announceRemoved_8be2vx$(), Unit) : null;
+  };
+  FakeMdns$FakeRegisteredService.prototype.updateTXT_gtra9a$ = function (txt) {
+    this.params.putAll_a2k3zr$(txt);
+    this.announceResolved_8be2vx$();
+  };
+  FakeMdns$FakeRegisteredService.prototype.updateTXT_puj7f4$ = function (key, value) {
+    this.params.put_xwzc9p$(key, value);
+    this.announceResolved_8be2vx$();
+  };
+  FakeMdns$FakeRegisteredService.prototype.announceResolved_8be2vx$ = function () {
+    var tmp$;
+    if ((tmp$ = this.$outer.listeners_0.get_11rb$(this.type + '.' + this.proto + '.' + this.$outer.normalizeMdnsDomain_pdl1vz$(this.domain))) != null) {
+      var tmp$_0;
+      tmp$_0 = tmp$.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        element.resolved_hb042s$(this);
+      }
+    }};
+  FakeMdns$FakeRegisteredService.prototype.announceRemoved_8be2vx$ = function () {
+    var tmp$;
+    if ((tmp$ = this.$outer.listeners_0.get_11rb$(this.type + '.' + this.proto + '.' + this.$outer.normalizeMdnsDomain_pdl1vz$(this.domain))) != null) {
+      var tmp$_0;
+      tmp$_0 = tmp$.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        element.removed_hb042s$(this);
+      }
+    }};
+  FakeMdns$FakeRegisteredService.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeRegisteredService',
+    interfaces: [Network$MdnsRegisteredService, FakeMdns$FakeMdnsService]
+  };
+  FakeMdns.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FakeMdns',
+    interfaces: [Network$Mdns]
+  };
   function FakeNetwork(networkDelay, display, coroutineContext) {
     FakeNetwork$Companion_getInstance();
     if (networkDelay === void 0)
@@ -19301,6 +20331,7 @@
     this.udpListeners_0 = HashMap_init();
     this.udpListenersByPort_0 = HashMap_init();
     this.httpServersByPort_0 = HashMap_init();
+    this.mdns_0 = new FakeMdns(FakeNetwork$mdns$lambda);
   }
   FakeNetwork.prototype.link = function () {
     var tmp$;
@@ -19321,9 +20352,11 @@
     this.$outer = $outer;
     this.myAddress_npb8zl$_0 = myAddress;
     this.udpMtu_jnv15u$_0 = 1500;
+    this.myHostname_1m8yic$_0 = 'FakeHost';
     this.nextAvailablePort_0 = 65000;
     this.webSocketListeners = ArrayList_init();
     this.tcpConnections = ArrayList_init();
+    this.mdns_pn53w1$_0 = this.$outer.mdns_0;
   }
   Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myAddress', {
     get: function () {
@@ -19333,6 +20366,11 @@
   Object.defineProperty(FakeNetwork$FakeLink.prototype, 'udpMtu', {
     get: function () {
       return this.udpMtu_jnv15u$_0;
+    }
+  });
+  Object.defineProperty(FakeNetwork$FakeLink.prototype, 'myHostname', {
+    get: function () {
+      return this.myHostname_1m8yic$_0;
     }
   });
   FakeNetwork$FakeLink.prototype.listenUdp_a6m852$ = function (port, udpListener) {
@@ -19353,6 +20391,11 @@
     portListeners.add_11rb$(udpListener);
     return new FakeNetwork$FakeLink$FakeUdpSocket(this, serverPort);
   };
+  Object.defineProperty(FakeNetwork$FakeLink.prototype, 'mdns', {
+    get: function () {
+      return this.mdns_pn53w1$_0;
+    }
+  });
   FakeNetwork$FakeLink.prototype.startHttpServer_za3lpa$ = function (port) {
     var fakeHttpServer = new FakeNetwork$FakeLink$FakeHttpServer(this, port);
     var $receiver = this.$outer.httpServersByPort_0;
@@ -19749,6 +20792,8 @@
     this.port = port;
     this.webSocketListeners = LinkedHashMap_init();
   }
+  FakeNetwork$FakeLink$FakeHttpServer.prototype.routing_9f2myn$ = function (config) {
+  };
   FakeNetwork$FakeLink$FakeHttpServer.prototype.listenWebSocket_brdh44$ = function (path, onConnect) {
     this.webSocketListeners.put_xwzc9p$(path, onConnect);
   };
@@ -19870,6 +20915,9 @@
     kind: Kind_CLASS,
     interfaces: [CoroutineScope]
   };
+  function FakeNetwork$mdns$lambda(id) {
+    return new FakeNetwork$FakeAddress(id);
+  }
   FakeNetwork.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'FakeNetwork',
@@ -23357,6 +24405,11 @@
       return this.myAddress_4sgley$_0;
     }
   });
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'myHostname', {
+    get: function () {
+      return 'Browser';
+    }
+  });
   Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'udpMtu', {
     get: function () {
       return this.udpMtu_1mlzjd$_0;
@@ -23365,6 +24418,11 @@
   BrowserNetwork$link$ObjectLiteral.prototype.listenUdp_a6m852$ = function (port, udpListener) {
     return ensureNotNull(this.udpProxy).listenUdp_a6m852$(port, udpListener);
   };
+  Object.defineProperty(BrowserNetwork$link$ObjectLiteral.prototype, 'mdns', {
+    get: function () {
+      throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.mdns not yet implemented');
+    }
+  });
   BrowserNetwork$link$ObjectLiteral.prototype.startHttpServer_za3lpa$ = function (port) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'BrowserNetwork.startHttpServer not implemented');
   };
@@ -24538,7 +25596,7 @@
         var item_0 = tmp$_2.next();
         var tmp$_3 = destination_0.add_11rb$;
         var v = this.geom_0.vertices[item_0];
-        var lvi = indexOf_0(panelVertices, v);
+        var lvi = indexOf_1(panelVertices, v);
         if (lvi === -1) {
           lvi = panelVertices.length;
           panelVertices.push(v);
@@ -25004,8 +26062,37 @@
     get: Pinky$Companion_getInstance
   });
   package$baaahs.Pinky = Pinky;
+  Object.defineProperty(BrainId, 'Companion', {
+    get: BrainId$Companion_getInstance
+  });
   package$baaahs.BrainId = BrainId;
+  package$baaahs.BrainIdSerializer = BrainIdSerializer;
   package$baaahs.BrainInfo = BrainInfo;
+  Object.defineProperty(PinkyHttp$BrainData, 'Companion', {
+    get: PinkyHttp$BrainData$Companion_getInstance
+  });
+  Object.defineProperty(PinkyHttp$BrainData, '$serializer', {
+    get: PinkyHttp$BrainData$$serializer_getInstance
+  });
+  PinkyHttp.BrainData_init_8uerd9$ = PinkyHttp$PinkyHttp$BrainData_init;
+  PinkyHttp.BrainData = PinkyHttp$BrainData;
+  Object.defineProperty(PinkyHttp$TerseBrainData, 'Companion', {
+    get: PinkyHttp$TerseBrainData$Companion_getInstance
+  });
+  Object.defineProperty(PinkyHttp$TerseBrainData, '$serializer', {
+    get: PinkyHttp$TerseBrainData$$serializer_getInstance
+  });
+  PinkyHttp.TerseBrainData_init_zeab97$ = PinkyHttp$PinkyHttp$TerseBrainData_init;
+  PinkyHttp.TerseBrainData = PinkyHttp$TerseBrainData;
+  Object.defineProperty(PinkyHttp$SurfaceData, 'Companion', {
+    get: PinkyHttp$SurfaceData$Companion_getInstance
+  });
+  Object.defineProperty(PinkyHttp$SurfaceData, '$serializer', {
+    get: PinkyHttp$SurfaceData$$serializer_getInstance
+  });
+  PinkyHttp.SurfaceData_init_atjmaw$ = PinkyHttp$PinkyHttp$SurfaceData_init;
+  PinkyHttp.SurfaceData = PinkyHttp$SurfaceData;
+  package$baaahs.PinkyHttp = PinkyHttp;
   Object.defineProperty(package$baaahs, 'Pluggables', {
     get: Pluggables_getInstance
   });
@@ -25612,11 +26699,23 @@
   var package$net = package$baaahs.net || (package$baaahs.net = {});
   package$net.FragmentingUdpLink = FragmentingUdpLink;
   Network.Link = Network$Link;
+  Network.Mdns = Network$Mdns;
+  Network.MdnsService = Network$MdnsService;
+  Network.MdnsRegisteredService = Network$MdnsRegisteredService;
+  Network.MdnsListenHandler = Network$MdnsListenHandler;
   Network.Address = Network$Address;
   Network.UdpListener = Network$UdpListener;
   Network.UdpSocket = Network$UdpSocket;
   Network.TcpConnection = Network$TcpConnection;
+  Network$HttpServer.HttpRequest = Network$HttpServer$HttpRequest;
+  Network$HttpServer.HttpRouting = Network$HttpServer$HttpRouting;
   Network.HttpServer = Network$HttpServer;
+  Network.HttpResponse = Network$HttpResponse;
+  Network.TextResponse = Network$TextResponse;
+  Object.defineProperty(Network$JsonResponse, 'Companion', {
+    get: Network$JsonResponse$Companion_getInstance
+  });
+  Network.JsonResponse = Network$JsonResponse;
   Network.WebSocketListener = Network$WebSocketListener;
   Object.defineProperty(Network, 'UdpProxy', {
     get: Network$UdpProxy_getInstance
@@ -25745,6 +26844,9 @@
     get: FakeFs$Companion_getInstance
   });
   package$sim.FakeFs = FakeFs;
+  FakeMdns.FakeMdnsService = FakeMdns$FakeMdnsService;
+  FakeMdns.FakeRegisteredService = FakeMdns$FakeRegisteredService;
+  package$sim.FakeMdns = FakeMdns;
   FakeNetwork$FakeLink.FakeTcpConnection = FakeNetwork$FakeLink$FakeTcpConnection;
   FakeNetwork$FakeLink.FakeHttpServer = FakeNetwork$FakeLink$FakeHttpServer;
   FakeNetwork.FakeLink = FakeNetwork$FakeLink;
@@ -25871,6 +26973,10 @@
   GadgetData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MovingHead$MovingHeadPosition$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   MovingHead$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  BrainIdSerializer.prototype.patch_mynpiu$ = KSerializer.prototype.patch_mynpiu$;
+  PinkyHttp$BrainData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  PinkyHttp$TerseBrainData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
+  PinkyHttp$SurfaceData$$serializer.prototype.patch_mynpiu$ = GeneratedSerializer.prototype.patch_mynpiu$;
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'supportsFinePositioning', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'supportsFinePositioning'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'pan', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'pan'));
   Object.defineProperty(LixadaMiniMovingHead.prototype, 'tilt', Object.getOwnPropertyDescriptor(MovingHead$Buffer.prototype, 'tilt'));
@@ -25946,6 +27052,8 @@
   PanelTweenShow$createRenderer$ObjectLiteral.prototype.surfacesChanged_yroyvo$ = Show$Renderer.prototype.surfacesChanged_yroyvo$;
   FakeFs.prototype.createFile_7x97xx$ = Fs.prototype.createFile_7x97xx$;
   FakeFs.prototype.createFile_qz9155$ = Fs.prototype.createFile_qz9155$;
+  FakeMdns.prototype.normalizeMdnsDomain_pdl1vz$ = Network$Mdns.prototype.normalizeMdnsDomain_pdl1vz$;
+  FakeMdns.prototype.register_e5yw4$ = Network$Mdns.prototype.register_e5yw4$;
   FakeNetwork$FakeLink$FakeTcpConnection.prototype.send_chrig3$ = Network$TcpConnection.prototype.send_chrig3$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.sendUdp_wpmaqi$ = Network$UdpSocket.prototype.sendUdp_wpmaqi$;
   FakeNetwork$FakeLink$FakeUdpSocket.prototype.broadcastUdp_68hu5j$ = Network$UdpSocket.prototype.broadcastUdp_68hu5j$;
