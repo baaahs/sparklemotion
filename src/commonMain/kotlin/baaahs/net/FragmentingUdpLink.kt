@@ -35,6 +35,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
 
     override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
         return FragmentingUdpSocket(wrappedLink.listenUdp(port, object : Network.UdpListener {
+            private var incompleteCount = 0
+
             override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 // reassemble fragmented payloads...
                 val reader = ByteArrayReader(bytes)
@@ -73,12 +75,17 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
 
                             udpListener.receive(fromAddress, fromPort, reassembleBytes)
                         } else {
-                            // todo: this should probably be a warn, not an error...
-                            logger.warn {
-                                "incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
-                                        " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
-                                        " for messageId=$messageId" +
-                                        " (have ${myFragments.map { it.bytes.size }.joinToString(",")})"
+                            if (incompleteCount++ < 5) {
+                                val maybeFinal = if (incompleteCount == 5) {
+                                    "FINAL WARNING: "
+                                } else ""
+
+                                logger.warn {
+                                    "${maybeFinal}incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
+                                            " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
+                                            " for messageId=$messageId" +
+                                            " (have ${myFragments.map { it.bytes.size }.joinToString(",")})"
+                                }
                             }
 
                             synchronized(fragments) {
