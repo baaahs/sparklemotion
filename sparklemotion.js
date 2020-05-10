@@ -222,6 +222,7 @@
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
+  var Any = Object;
   var MosaicUI = $module$js_MosaicUI_jsx.default;
   var render = $module$react_dom.render;
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
@@ -21644,12 +21645,23 @@
     simpleName: 'JsVisualizerDisplay',
     interfaces: [VisualizerDisplay]
   };
+  function main$nuffin() {
+    var tmp$;
+    return (tmp$ = null) == null || Kotlin.isType(tmp$, Any) ? tmp$ : throwCCE();
+  }
+  function main$lambda(it) {
+    return Unit;
+  }
   function main$lambda$lambda() {
     return new SheepSimulator();
   }
   function main(args) {
     var tmp$, tmp$_0, tmp$_1;
-    var mode = (tmp$ = document['sparklemotionMode']) != null ? tmp$ : 'test';
+    if (2 === 3) {
+      var nuffin = main$nuffin;
+      new GadgetDisplay(nuffin(), main$lambda);
+      new GlslPreview(nuffin(), nuffin(), null);
+    }var mode = (tmp$ = document['sparklemotionMode']) != null ? tmp$ : 'test';
     println('args = ' + args + ', mode = ' + mode.toString());
     var pinkyAddress = new BrowserNetwork$BrowserAddress(websocketsUrl());
     var network = new BrowserNetwork(pinkyAddress, 8002);
@@ -23486,17 +23498,12 @@
     this.network_0 = network;
     this.pinkyAddress_0 = pinkyAddress;
   }
-  function WebUi$render$lambda(it) {
-    return Unit;
-  }
   WebUi.prototype.render = function () {
     var webUiClientLink = this.network_0.link();
     var $receiver = new PubSub$Client(webUiClientLink, this.pinkyAddress_0, 8004);
     $receiver.install_stpyu4$(gadgetModule);
     var pubSub = $receiver;
-    if (2 === 3) {
-      new GadgetDisplay(pubSub, WebUi$render$lambda);
-    }var tmp$ = get_js(getKClass(AppIndex));
+    var tmp$ = get_js(getKClass(AppIndex));
     var obj = {};
     obj.pubSub = pubSub;
     return createElement(tmp$, obj);
