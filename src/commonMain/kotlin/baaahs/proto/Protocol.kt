@@ -1,11 +1,13 @@
 package baaahs.proto
 
 import baaahs.BrainId
+import baaahs.Pixels
 import baaahs.Shader
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.shaders.PixelShader
 
 object Ports {
     const val PINKY = 8002
@@ -70,8 +72,10 @@ class BrainHelloMessage(val brainId: String, val surfaceName: String?, val firmw
 }
 
 class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val pongData: ByteArray? = null) :
-    Message(Type.BRAIN_PANEL_SHADE) {
+    Message(TYPE) {
     companion object {
+        val TYPE = Type.BRAIN_PANEL_SHADE
+
         /**
          * Suboptimal parser; on the Brain we'll do better than this.
          */
@@ -82,12 +86,27 @@ class BrainShaderMessage(val shader: Shader<*>, val buffer: Shader.Buffer, val p
             val buffer = shader.readBuffer(reader)
             return BrainShaderMessage(shader, buffer, pongData)
         }
+
+        private val direct24RgbShader = PixelShader(PixelShader.Encoding.DIRECT_RGB)
+
+        fun writeDirect24(writer: ByteArrayWriter, pixels: Pixels, pongData: ByteArray? = null) {
+            writePreface(writer, direct24RgbShader, pongData)
+
+            writer.writeShort(pixels.size)
+            pixels.indices.forEach { i ->
+                pixels[i].serializeWithoutAlpha(writer)
+            }
+        }
+
+        private fun writePreface(writer: ByteArrayWriter, shader: Shader<*>, pongData: ByteArray?) {
+            writer.writeBoolean(pongData != null)
+            if (pongData != null) writer.writeBytes(pongData)
+            writer.writeBytes(shader.descriptorBytes)
+        }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
-        writer.writeBoolean(pongData != null)
-        if (pongData != null) writer.writeBytes(pongData)
-        writer.writeBytes(shader.descriptorBytes)
+        writePreface(writer, shader, pongData)
         buffer.serialize(writer)
     }
 }
@@ -212,7 +231,7 @@ open class Message(val type: Type) {
     // TODO: send message length as the first four bytes, plus maybe sequence/reassembly info for UDP
     fun toBytes(): ByteArray {
         val writer = ByteArrayWriter(1 + size())
-        writer.writeByte(type.ordinal.toByte())
+        writeType(writer, type)
         serialize(writer)
         return writer.toBytes()
     }
@@ -221,4 +240,10 @@ open class Message(val type: Type) {
     }
 
     open fun size(): Int = 127
+
+    companion object {
+        fun writeType(writer: ByteArrayWriter, type: Type) {
+            writer.writeByte(type.ordinal.toByte())
+        }
+    }
 }

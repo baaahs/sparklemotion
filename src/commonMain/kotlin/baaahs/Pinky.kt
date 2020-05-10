@@ -13,7 +13,6 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.PixelShader
 import baaahs.shows.GuruMeditationErrorShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
@@ -210,6 +209,8 @@ class Pinky(
         }
     }
 
+    val brainPixelsOutBuf = ByteArrayWriter(4096)
+
     private fun foundBrain(
         brainAddress: Network.Address,
         msg: BrainHelloMessage
@@ -273,33 +274,28 @@ class Pinky(
 //            )
         }
 
-        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer ->
-            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
-            try {
-                udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
-            } catch (e: Exception) {
-                // Couldn't send to Brain? Schedule to remove it.
-                val brainInfo = brainInfos[brainId]!!
-                brainInfo.hadException = true
-                pendingBrainInfos[brainId] = brainInfo
-
-                logger.error("Error sending to $brainId, will take offline", e)
-            }
-
-            networkStats.packetsSent++
-            networkStats.bytesSent += message.size
-        }
-
-        val pixelShader = PixelShader(PixelShader.Encoding.DIRECT_RGB)
         val surfaceReceiver = object : ShowRunner.SurfaceReceiver {
             override val surface = surface
-            private val pixelBuffer = pixelShader.createBuffer(surface)
 
             override fun send(pixels: Pixels) {
-                pixelBuffer.indices.forEach { i ->
-                    pixelBuffer.colors[i] = pixels[i]
+                brainPixelsOutBuf.offset = 0
+                Message.writeType(brainPixelsOutBuf, BrainShaderMessage.TYPE)
+                BrainShaderMessage.writeDirect24(brainPixelsOutBuf, pixels)
+
+                val bytes = brainPixelsOutBuf.toBytes()
+                try {
+                    udpSocket.sendUdp(brainAddress, Ports.BRAIN, bytes)
+                } catch (e: Exception) {
+                    // Couldn't send to Brain? Schedule to remove it.
+                    val brainInfo = brainInfos[brainId]!!
+                    brainInfo.hadException = true
+                    pendingBrainInfos[brainId] = brainInfo
+
+                    logger.error("Error sending to $brainId, will take offline", e)
                 }
-                sendFn(pixelBuffer)
+
+                networkStats.packetsSent++
+                networkStats.bytesSent += bytes.size
             }
         }
 
