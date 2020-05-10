@@ -138,8 +138,6 @@ kotlin {
                 implementation("org.jogamp.gluegen:gluegen-rt-main:$joglVersion")
                 implementation("org.jogamp.jogl:jogl-all-main:$joglVersion")
                 implementation("com.danielgergely.kgl:kgl-jogl:$kglVersion")
-
-                implementation("com.github.jmdns:jmdns:jmdns-3.5.5")
             }
         }
         @Suppress("UNUSED_VARIABLE")

@@ -25,8 +25,6 @@ class FakeNetwork(
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
-    private val mdns = FakeMdns { id -> FakeAddress(id) }
-
     override fun link(): FakeLink {
         val address = FakeAddress(nextAddress++)
         return FakeLink(address)
@@ -38,7 +36,6 @@ class FakeNetwork(
 
     inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
-        override val myHostname = "FakeHost"
         private var nextAvailablePort = 65000
         var webSocketListeners = mutableListOf<Network.WebSocketListener>()
         var tcpConnections = mutableListOf<Network.TcpConnection>()
@@ -50,8 +47,6 @@ class FakeNetwork(
             portListeners.add(udpListener)
             return FakeUdpSocket(serverPort)
         }
-
-        override val mdns = this@FakeNetwork.mdns
 
         override fun startHttpServer(port: Int): Network.HttpServer {
             val fakeHttpServer = FakeHttpServer(port)
@@ -167,10 +162,6 @@ class FakeNetwork(
         internal inner class FakeHttpServer(val port: Int) : Network.HttpServer {
             val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
                 mutableMapOf()
-
-            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
-//                TODO("not implemented")
-            }
 
             override fun listenWebSocket(
                 path: String,

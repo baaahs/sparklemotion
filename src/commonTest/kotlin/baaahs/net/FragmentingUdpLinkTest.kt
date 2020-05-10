@@ -9,11 +9,10 @@ class FragmentingUdpLinkTest {
     private val port = 1234
     private val mtu = 1400
 
-    private val network = TestNetwork(mtu)
     private val receivedPayloads = mutableListOf<ByteArray>()
-    private val sendTestLink = network.link()
+    private val sendTestLink = TestNetwork.Link(mtu)
     private val sendLink = FragmentingUdpLink(sendTestLink)
-    private val recvTestLink = network.link()
+    private val recvTestLink = TestNetwork.Link(mtu)
     private val recvLink = FragmentingUdpLink(recvTestLink)
 
     @BeforeTest
