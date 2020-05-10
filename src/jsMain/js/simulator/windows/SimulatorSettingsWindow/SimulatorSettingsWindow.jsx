@@ -51,6 +51,11 @@ const SimulatorSettingsWindow = (props) => {
             <td id="showElapsedMs"></td>
           </tr>
           <tr>
+            <td>&nbsp;&nbsp;average:</td>
+            <td id="showAvgFramerate"></td>
+            <td id="showAvgElapsedMs"></td>
+          </tr>
+          <tr>
             <td>Visualizer:</td>
             <td id="visualizerFramerate"></td>
             <td id="visualizerElapsedMs"></td>

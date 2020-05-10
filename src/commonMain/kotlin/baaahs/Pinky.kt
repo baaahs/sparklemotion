@@ -13,7 +13,6 @@ import baaahs.mapper.Storage
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import baaahs.shows.GuruMeditationErrorShow
 import com.soywiz.klock.DateTime
@@ -360,18 +359,6 @@ class Pinky(
             packetsSent = 0
         }
     }
-
-    class RenderTree(val shader: GlslShader, val renderer: GlslRenderer, val buffer: GlslShader.Buffer) {
-        fun draw(pixels: Pixels) {
-            renderer.draw()
-            pixels.finishedFrame()
-        }
-
-        fun release() {
-            renderer.release()
-        }
-    }
-
 
     inner class ListeningVisualizer : Network.WebSocketListener {
         lateinit var tcpConnection: Network.TcpConnection

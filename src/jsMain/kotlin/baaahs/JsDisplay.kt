@@ -12,6 +12,7 @@ import kotlin.dom.addClass
 import kotlin.dom.appendElement
 import kotlin.dom.appendText
 import kotlin.dom.clear
+import kotlin.math.roundToInt
 
 class JsDisplay : Display {
     override fun forNetwork(): NetworkDisplay = JsNetworkDisplay(document)
@@ -76,9 +77,24 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
 
     override var showFrameMs: Int = 0
         set(value) {
+            val framerate = 1000f / value
+
+            // Probably means this is the first datapoint we've received.
+            if (field == 0) {
+                showAvgFramerate = framerate
+                showAvgElapsedMs = value.toFloat()
+            }
+
             field = value
-            showFramerate.textContent = "${1000 / value}fps"
+
+            showFramerate.textContent = "${framerate.roundToInt()}fps"
             showElapsedMs.textContent = "${value}ms"
+
+            showAvgFramerate = (showAvgFramerate * 99 + framerate) / 100
+            showAvgFramerateEl.textContent = "${showAvgFramerate.roundToInt()}fps"
+
+            showAvgElapsedMs = (showAvgElapsedMs * 99 + value) / 100
+            showAvgElapsedMsEl.textContent = "${showAvgElapsedMs.roundToInt()}ms"
         }
 
     override var stats: Pinky.NetworkStats? = null
@@ -99,6 +115,10 @@ class JsPinkyDisplay(element: Element) : PinkyDisplay {
     private val showListInput: HTMLSelectElement
     private var showFramerate: Element = document.getElementById("showFramerate")!!
     private var showElapsedMs: Element = document.getElementById("showElapsedMs")!!
+    private var showAvgFramerateEl: Element = document.getElementById("showAvgFramerate")!!
+    private var showAvgElapsedMsEl: Element = document.getElementById("showAvgElapsedMs")!!
+    private var showAvgFramerate = 0f
+    private var showAvgElapsedMs = 0f
     private var statsSpan: Element
 
     init {
