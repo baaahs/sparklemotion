@@ -1,11 +1,10 @@
 .gadget-view {
-  float: left;
 }
 
 .current-show__label {
   float: right;
   padding: 5px;
-  font-size: 28px;
+  font-size: 1.2em;
 }
 
 .show-picker__wrapper {
@@ -13,7 +12,7 @@
 }
 
 .show-picker__button {
-  font-size: 40px;
+  font-size: 1.2em;
   color: #00CCC0;
   border: none;
   background: none;
@@ -22,6 +21,9 @@
 .show-controls__wrapper {
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
+}
+
+.show-controls__wrapper div {
+  display: flex;
 }

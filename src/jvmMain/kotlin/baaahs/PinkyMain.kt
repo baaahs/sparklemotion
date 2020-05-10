@@ -2,8 +2,10 @@ package baaahs
 
 import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
+import baaahs.glsl.GlslRenderer
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
+import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
@@ -23,7 +25,6 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
     mainBody(PinkyMain::class.simpleName) {
@@ -35,7 +36,7 @@ class PinkyMain(private val args: Args) {
     private val logger = Logger("PinkyMain")
 
     fun run() {
-        logger.info { "Are you thinking what I'm thinking?" }
+        logger.info { "Are you pondering what I'm pondering?" }
 
         GlslBase.manager // Need to wake up OpenGL on the main thread.
 
@@ -51,12 +52,17 @@ class PinkyMain(private val args: Args) {
 
         val dmxUniverse = findDmxUniverse()
 
-        val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
-        thread(name = "BeatLinkBeatSource startup") { beatLinkBeatSource.start() }
+        val beatSource = if (args.enableBeatLink) {
+            BeatLinkBeatSource(SystemClock()).also { it.start() }
+        } else {
+            BeatSource.None
+        }
 
         val fwUrlBase = "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
         val shows = AllShows.allShows.filter { args.showName == null || args.showName == it.name }
+        val soundAnalyzer = JvmSoundAnalyzer()
+//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         val display = object : StubPinkyDisplay() {
             override fun listShows(shows: List<Show>) {
@@ -71,12 +77,13 @@ class PinkyMain(private val args: Args) {
             override var showFrameMs: Int = 0
         }
 
+        val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)
         val pinky = Pinky(
-            model, shows, network, dmxUniverse, beatLinkBeatSource, SystemClock(),
-            fs, daddy, display, JvmSoundAnalyzer(),
-            prerenderPixels = true,
+            model, shows, network, dmxUniverse, beatSource, SystemClock(),
+            fs, daddy, display, soundAnalyzer,
             switchShowAfterIdleSeconds = args.switchShowAfter,
-            adjustShowAfterIdleSeconds = args.adjustShowAfter
+            adjustShowAfterIdleSeconds = args.adjustShowAfter,
+            glslRenderer = glslRenderer
         )
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
@@ -129,6 +136,15 @@ class PinkyMain(private val args: Args) {
             pinky.run()
         }
 
+        val responses = listOf(
+            "I think so, Brain, but Lederhosen won't stretch that far.",
+            "Yeah, but I thought Madonna already had a steady bloke!",
+            "I think so, Brain, but what would goats be doing in red leather turbans?",
+            "I think so, Brain... but how would we ever determine Sandra Bullock's shoe size?",
+            "Yes, Brain, I think so. But how do we get Twiggy to pose with an electric goose?"
+        )
+        logger.info { responses.random() }
+
         doRunBlocking {
             delay(200000L)
         }
@@ -176,5 +192,7 @@ class PinkyMain(private val args: Args) {
             "Start adjusting show inputs after no input for x seconds",
             transform = { if (isNullOrEmpty()) null else toInt() })
             .default<Int?>(null)
+
+        val enableBeatLink by parser.flagging("Enable beat detection").default(true)
     }
 }

@@ -1,14 +1,7 @@
 package baaahs.glsl
 
-import baaahs.shaders.GlslShader
+abstract class GlslManager {
+    abstract val available: Boolean
 
-interface GlslManager {
-    val available: Boolean
-
-    fun createRenderer(
-        fragShader: String,
-        uvTranslator: UvTranslator,
-        adjustableValues: List<GlslShader.AdjustableValue>,
-        plugins: List<GlslPlugin> = GlslBase.plugins
-    ): GlslRenderer
+    abstract fun createContext(): GlslContext
 }

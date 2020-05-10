@@ -1,0 +1,24 @@
+.panelToolbar {
+  padding: 0 8px;
+}
+
+.windowContainer {
+  display: flex;
+  align-items: stretch;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  > * {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}

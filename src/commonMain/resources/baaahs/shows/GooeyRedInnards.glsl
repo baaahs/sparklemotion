@@ -10,25 +10,6 @@
  * Original shader from: https://www.shadertoy.com/view/WlcSR2
  */
 
-#define TOY
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-// glslsandbox uniforms
-uniform float time;
-uniform vec2 resolution;
-
-// shadertoy emulation
-float iTime = 0.0;
-vec3  iResolution = vec3(0.0);
-const vec4 iMouse = vec4(0.0);
-
-// Protect glslsandbox uniform names
-#define time        stemu_time
-#define resolution  stemu_resolution
-
 // Emulate a black texture
 #define texelFetch(s, uv, lod) vec4(0.0)
 
@@ -223,12 +204,12 @@ float print(ivec2 pos, vec2 v)
     return c;
 }
 
-    //float print(int x, int y, int v)   { return print(ivec2(text.size.x*x,text.size.y*y), float(v)); }
-    //float print(int x, int y, float v) { return print(ivec2(text.size.x*x,text.size.y*y), v); }
-    //float print(int x, int y, vec4 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
-    //fl//oat print(int x, int y, vec3 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
-    //float print(int x, int y, vec2 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
-    //float print(int x, int y, ivec3 v) { return print(ivec2(text.size.x*x,text.size.y*y), vec3(v)); }
+float print(int x, int y, int v)   { return print(ivec2(text.size.x*x,text.size.y*y), float(v)); }
+float print(int x, int y, float v) { return print(ivec2(text.size.x*x,text.size.y*y), v); }
+float print(int x, int y, vec4 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
+float print(int x, int y, vec3 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
+float print(int x, int y, vec2 v)  { return print(ivec2(text.size.x*x,text.size.y*y), v); }
+float print(int x, int y, ivec3 v) { return print(ivec2(text.size.x*x,text.size.y*y), vec3(v)); }
     #endif
 
 // 000   000   0000000    0000000  000   000
@@ -683,11 +664,13 @@ vec4 postProc(vec3 col, bool dither, bool gamma, bool vignette)
     return vec4(col, 1.0);
 }
 
-    #define keys(x,y)  texelFetch(iChannel0, ivec2(x,y), 0)
+// https://www.shadertoy.com/view/4lyGzR 'Biomine' by Shane
+
+#define keys(x,y)  texelFetch(iChannel0, ivec2(x,y), 0)
 bool keyState(int key) { return keys(key, 2).x < 0.5; }
 bool keyDown(int key)  { return keys(key, 0).x > 0.5; }
 
-    #define ZERO 0
+    #define ZERO min(iFrame,0)
     #define CAM_DIST   0.01
     #define MAX_STEPS  256
     #define MIN_DIST   0.001
@@ -698,15 +681,13 @@ bool keyDown(int key)  { return keys(key, 0).x > 0.5; }
     #define HEAD 2
     #define TAIL 3
 
-bool space = false, anim = false, soft = false, occl = false,
-light = false, dither = false, foggy = false, rotate = false,
-normal = false, depthb = false;
+bool space, anim, soft, occl, light, dither, foggy, rotate, normal, depthb;
 
 float hash(float n) { return fract(cos(n)*45758.5453); }
 mat2  rot2(float a) { vec2 v = sin(vec2(1.570796, 0) + a); return mat2(v, -v.y, v.x); }
 
-float at = 0.0;
-int screen = 0;
+float at;
+int screen;
 
 float noise3D(in vec3 p)
 {
@@ -804,8 +785,8 @@ float map(vec3 p)
 
     gyro();
 
-    //if (gl.march) flyer();
-    //
+    if (gl.march) flyer();
+
     return gl.sdf.dist;
 }
 
@@ -842,7 +823,7 @@ vec3 doBumpMap(in vec3 p, in vec3 nor, float factor)
 float march(in vec3 ro, in vec3 rd)
 {
     float t = 0.0, h;
-    for(int i = ZERO; i < 36; i++)
+    for(int i = ZERO; i < 72; i++)
     {
         h = map(ro+rd*t);
         if (abs(h)<0.001*max(t*.25, 1.) || t>MAX_DIST) break;
@@ -868,7 +849,7 @@ float softShadow(vec3 ro, vec3 rd, float start, float end, float k)
     float shade = 1.0;
     float dist = start;
 
-    for (int i=ZERO; i<4; i++)
+    for (int i=ZERO; i<16; i++)
     {
         float h = map(ro + rd*dist);
         shade = min(shade, k*h/dist);
@@ -918,18 +899,21 @@ vec3 getLight(vec3 p, vec3 n, vec3 rd, float d)
 
     int mat = gl.sdf.mat;
 
-    if (mat == GYRO)
+    switch (mat)
     {
+        case GYRO:
         col = vec3(1,0,0);
         frc = vec3(0.8, 0.5, 0);
         n = doBumpMap(p, n, dither ? 0.006 : 0.008);
         ff = 32.0 * atten * atten * atten;
-    }
-    else if (mat == HEAD || mat == TAIL) {
+        break;
+        case HEAD:
+        case TAIL:
         col = vec3(1,0.5,0);
         frc = vec3(1,0.5,0);
         ff = mat == HEAD ? 100.0 : 18.0;
         p2l -= cam.dir*0.2;
+        break;
     }
 
     float ao = occl ? calculateAO(p, n) : 1.0;
@@ -972,7 +956,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     initGlobal(fragCoord, iResolution, iMouse, iTime);
     gl.zero = ZERO;
-    //for (int i = KEY_1; i <= KEY_9; i++) { if (keyDown(i)) { gl.option = i-KEY_1+1; break; } }
+    for (int i = KEY_1; i <= KEY_9; i++) { if (keyDown(i)) { gl.option = i-KEY_1+1; break; } }
 
     rotate =  keyState(KEY_R);
     anim   =  keyState(KEY_RIGHT);
@@ -998,7 +982,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     lookAtFrom(vec3(-at,0,2.5), vec3(-at,0,2.5) + rotAxisAngle(vec3(0,0,-2.5-1.5*gl.mp.y), vy, gl.mp.x*90.0));
 
     #ifndef TOY
-    //if (space) lookAtFrom(iCenter, iCamera);
+    if (space) lookAtFrom(iCenter, iCamera);
     #endif
 
     gl.uv = (2.0*fragCoord-iResolution.xy)/iResolution.y;
@@ -1015,9 +999,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if (normal || depthb)
     {
-        //vec3 nc = normal ? d >= MAX_DIST ? black : n : white;
-        //vec3 zc = depthb ? vec3(1.0-pow(d/MAX_DIST,0.1)) : white;
-        //col = nc*zc;
+        vec3 nc = normal ? d >= MAX_DIST ? black : n : white;
+        vec3 zc = depthb ? vec3(1.0-pow(d/MAX_DIST,0.1)) : white;
+        col = nc*zc;
     }
     else
     {
@@ -1025,19 +1009,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
         #ifndef TOY
-        //col += vec3(print(0,0,vec2(iFrameRate, iTime)));
-        #endif
+    col += vec3(print(0,0,vec2(iFrameRate, iTime)));
+    #endif
 
     fragColor = vec4(sqrt(clamp(col, 0., 1.)), 1.0);
-}
-    // --------[ Original ShaderToy ends here ]---------- //
-
-    #undef time
-    #undef resolution
-
-void main(void)
-{
-    iTime = time;
-    iResolution = vec3(resolution, 0.0);
-    mainImage(gl_FragColor, gl_FragCoord.xy);
 }

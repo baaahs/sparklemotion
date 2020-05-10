@@ -2,55 +2,64 @@ package baaahs.glsl
 
 import com.danielgergely.kgl.*
 
-class Quad(private val gl: Kgl, private val program: Program) {
-    private val vertices = arrayOf(
-        // First triangle:
-        1.0f, 1.0f,
-        -1.0f, 1.0f,
-        -1.0f, -1.0f,
-        // Second triangle:
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        1.0f, 1.0f
-    ).toFloatArray()
+class Quad(private val gl: GlslContext, rects: List<Rect>) {
+    private val vertices = rects.flatMap { rect ->
+        listOf(
+            // First triangle:
+            rect.right, rect.top,
+            rect.left, rect.top,
+            rect.left, rect.bottom,
+            // Second triangle:
+            rect.left, rect.bottom,
+            rect.right, rect.bottom,
+            rect.right, rect.top
+        )
+    }.toFloatArray()
 
-    private var vao: VertexArrayObject = gl { gl.createVertexArray()!! }
-    private var quadVertexBuffer: GlBuffer = gl { gl.createBuffers(1)[0] }
+    private var vao: VertexArrayObject = gl.check { createVertexArray() }
+    private var quadVertexBuffer: GlBuffer = gl.check { createBuffers(1)[0] }
+    private val sourceData = bufferOf(vertices)
+    private var released = false
 
     init {
-        gl { gl.bindVertexArray(vao) }
-        gl { gl.bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
-        gl { gl.bufferData(GL_ARRAY_BUFFER, bufferOf(vertices), vertices.size, GL_STATIC_DRAW) }
-
-        val vertexAttr = gl { gl.getAttribLocation(program.id, "Vertex") }
-        gl { gl.vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
-        gl { gl.enableVertexAttribArray(vertexAttr) }
-
-        gl { gl.bindBuffer(GL_ARRAY_BUFFER, null) }
-        gl { gl.bindVertexArray(null) }
+        gl.check { bindVertexArray(vao) }
+        gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
+        gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
+        gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
+        gl.check { bindVertexArray(null) }
     }
 
     private fun bufferOf(floats: FloatArray): Buffer = FloatBuffer(floats)
 
-    internal fun render() {
-        gl { gl.bindVertexArray(vao) }
-        gl { gl.enableVertexAttribArray(0) }
+    internal fun prepareToRender(vertexAttr: Int, fn: () -> Unit) {
+        gl.check { bindVertexArray(vao) } // <- required on lwjgl, not on webgl :-(
+        gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
+        gl.check { vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
+        gl.check { enableVertexAttribArray(vertexAttr) }
 
+        fn()
+
+        gl.check { disableVertexAttribArray(vertexAttr) }
+        gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
+        gl.check { bindVertexArray(null) }
+    }
+
+    internal fun renderRect(rectIndex: Int) {
         // Draw the triangles
-        gl { gl.drawArrays(GL_TRIANGLES, 0, 6) }
-
-        gl { gl.disableVertexAttribArray(0) }
-        gl { gl.bindVertexArray(null) }
+        gl.check { drawArrays(GL_TRIANGLES, rectIndex * 6, 6) }
     }
 
-    private fun release() {
-        gl { gl.deleteBuffer(quadVertexBuffer) }
-        gl { gl.deleteVertexArray(vao) }
+    fun release() {
+        if (!released) {
+            gl.check { deleteBuffer(quadVertexBuffer) }
+            gl.check { deleteVertexArray(vao) }
+            released = true
+        }
     }
 
-    fun <T> gl(fn: () -> T): T {
-        val result = fn.invoke()
-        gl.checkForGlError()
-        return result
+    fun finalize() {
+        release()
     }
+
+    data class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
 }

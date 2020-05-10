@@ -57,6 +57,8 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
                 logger.debug { "Surface ${surface.name} doesn't have mapped pixels."}
                 // Generate pixel locations along a line from one vertex to the surface's center.
                 val surfaceVertices = surface.modelSurface.allVertices()
+                if (surfaceVertices.isEmpty()) return emptyList()
+
                 val surfaceCenter = surfaceVertices.average()
                 val vertex1 = surfaceVertices.first()
 
@@ -78,6 +80,8 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
     }
 
     private fun Collection<Vector3F>.average(): Vector3F {
+        if (isEmpty()) return Vector3F.origin
+
         return reduce { acc, vector3F -> acc + vector3F } / size.toFloat()
     }
 

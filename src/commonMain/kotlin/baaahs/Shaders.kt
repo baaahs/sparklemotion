@@ -2,18 +2,13 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.*
+import baaahs.shaders.GlslShader
+import baaahs.shaders.PixelShader
+import baaahs.shaders.SolidShader
 
 enum class ShaderId(val reader: ShaderReader<*>) {
     SOLID(SolidShader),
-    PIXEL(PixelShader),
-    SINE_WAVE(SineWaveShader),
-    COMPOSITOR(CompositorShader),
-    SPARKLE(SparkleShader),
-    SIMPLE_SPATIAL(SimpleSpatialShader),
-    HEART(HeartShader),
-    RANDOM(RandomShader),
-    GLSL_SHADER(GlslShader);
+    PIXEL(PixelShader);
 
     companion object {
         val values = values()
@@ -31,7 +26,7 @@ interface ShaderReader<T : Shader<*>> {
 }
 
 interface RenderContext {
-    fun <T : PooledRenderer> registerPooled(key: Any, fn: () -> T): T
+    fun <T : PooledRenderer> registerPooled(glslShader: GlslShader, fn: () -> T): T
 }
 
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {

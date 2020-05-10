@@ -15,6 +15,8 @@ val ktor_version = "1.3.1"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
 val lwjglVersion = "3.2.3"
+val spek_version = "2.0.11-rc.1" // custom build with LetValues enabled
+val atrium_version = "0.10.0"
 
 buildscript {
     val kotlin_version = "1.3.70"
@@ -60,6 +62,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
+    maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
 //    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
@@ -95,6 +98,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("spek:spek-dsl:$spek_version")
             }
         }
 
@@ -108,7 +112,7 @@ kotlin {
                 implementation("io.ktor:ktor-websockets:$ktor_version")
                 implementation("ch.qos.logback:logback-classic:1.2.3")
                 implementation("com.xenomachina:kotlin-argparser:2.0.7")
-                implementation("org.deepsymmetry:beat-link:0.5.5")
+                implementation("org.deepsymmetry:beat-link:0.6.1")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
@@ -138,9 +142,18 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
+
+                runtimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
+                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
+                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
                 implementation("io.mockk:mockk:1.9.3")
+
+                // For RunOpenGLTests:
+                implementation("org.junit.platform:junit-platform-launcher:1.6.2")
             }
         }
 
@@ -163,27 +176,34 @@ kotlin {
                 implementation(npm("@babel/plugin-proposal-object-rest-spread", "^7.4.4"))
                 implementation(npm("@babel/preset-env", "^7.4.5"))
                 implementation(npm("@babel/preset-react", "^7.0.0"))
+                implementation(npm("prettier", "1.19.1"))
 
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
-                implementation(npm("@material-ui/core", "^4.1.1"))
+                implementation(npm("@material-ui/core", "~4.8"))
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.8.6"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
                 implementation(npm("react-dom", "^16.8.6"))
                 implementation(npm("react-draggable", "^3.3.0"))
                 implementation(npm("react-hot-loader", "^4.11.0"))
-                implementation(npm("requirejs", "^2.3.6"))
                 implementation(npm("sass-loader", "^7.1.0"))
                 implementation(npm("style-loader", "^0.23.1"))
                 implementation(npm("three", "^0.102.1"))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
+                implementation(npm("react-mosaic-component", "^4.0.0"))
+                implementation(npm("resize-observer-polyfill", "^1.5.1"))
+                implementation(npm("react-ace", "^8.1.0"))
+                implementation(npm("ace-builds", "^1.4.6"))
+                implementation(npm("@blueprintjs/core", "^3.24.0"))
+                implementation(npm("@blueprintjs/icons", "^3.14.0"))
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
+                implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:$atrium_version")
             }
         }
 
@@ -213,6 +233,7 @@ tasks.withType(Kotlin2JsCompile::class) {
 
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true
+    inputs.dir("src/jsMain/js")
 }
 
 tasks.withType(KotlinCompile::class) {
@@ -262,7 +283,10 @@ tasks.create<JavaExec>("runPinkyJvm") {
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
     if (isMac()) {
-        jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+        jvmArgs = listOf(
+            "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
+        )
     }
 }
 
@@ -283,12 +307,11 @@ tasks.create<JavaExec>("runBridgeJvm") {
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
-    dependsOn("compileKotlinJvm")
-    main = "org.junit.runner.JUnitCore"
+    dependsOn("compileTestKotlinJvm")
+    main = "baaahs.RunOpenGLTestsKt"
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
-    args = listOf("baaahs.glsl.GlslRendererTest")
     if (isMac()) {
         jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
@@ -314,8 +337,15 @@ tasks.create<ShadowJar>("shadowJar") {
     }
 }
 
+tasks.withType(Test::class) {
+    useJUnitPlatform {
+        includeEngines.add("junit-vintage")
+        includeEngines.add("spek2")
+    }
+}
+
 tasks.named<Test>("jvmTest") {
-    dependsOn("runGlslJvmTests")
+//    dependsOn("runGlslJvmTests")
 }
 
 tasks.withType<DependencyUpdatesTask> {
