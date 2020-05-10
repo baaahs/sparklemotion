@@ -63,6 +63,11 @@ jobs:
               mkdir -p build/gh-pages/doc
               cp -r build/javadoc/* build/gh-pages/doc/.
 
+              # don't ignore files starting with _
+              touch build/gh-pages/.nojekyll
+
+              date > build/gh-pages/BUILT.txt
+
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
               
