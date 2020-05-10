@@ -66,6 +66,7 @@ const ShaderEditorWindow = (props) => {
     }
   }, [selectedShow, isConnected, glslPreviewer]);
 
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [showStr, setShowStr] = useState('');
   const onChange = useCallback(
     (newValue) => {
@@ -98,8 +99,9 @@ const ShaderEditorWindow = (props) => {
   };
 
   const handleTabChange = (event, newValue) => {
-    let src = openShaders[newValue].src;
-    console.log('src', src)
+    const { src } = openShaders[newValue];
+
+    setSelectedTabIndex(newValue);
     setShowStr(src);
     updatePreview(src);
   };
@@ -123,6 +125,7 @@ const ShaderEditorWindow = (props) => {
     <div className={styles.shaderEditorWindow} ref={windowRootEl}>
       <Tabs
           variant="scrollable"
+          value={selectedTabIndex}
           onChange={handleTabChange}
       >
         {openShaders.map((shaderInfo) => {
