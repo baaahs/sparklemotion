@@ -25,7 +25,7 @@ class Brain(
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
         udpSocket = link.listenUdp(Ports.BRAIN, this)
-
+        link.mdns.register(id, "_sparklemotion-brain", "_udp", Ports.BRAIN)
         display.id = id
         display.haveLink(link)
         display.onReset = {
