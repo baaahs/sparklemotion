@@ -11,11 +11,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
 #include "esp_https_ota.h"
+#include "mdns.h"
 
 #define MAX_URL_SIZE 512
 #define MAX_OTA_SECONDS 300
 
 static const uint16_t BRAIN_PORT = 8003;
+static const char* BRAIN_SVC_NAME = "_sparklemotion-brain";
+static const char* BRAIN_SVC_PROTO = "_udp";
 
 static const char* TAG = TAG_BRAIN;
 
@@ -349,6 +352,8 @@ void Brain::startSecondStageBoot() {
     ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());
     ESP_LOGE(TAG, "getFrameDuration() = %d", m_timeBase.getFrameDuration());
 
+    if (!startMdns()) { return; }
+
     // Do this last!
     m_httpServer.start();
 }
@@ -357,10 +362,50 @@ bool Brain::otaStarted() {
     return m_otaStartedAt.tv_sec != 0;
 }
 
+bool Brain::startMdns() {
+    // start mDNS service
+    esp_err_t err = mdns_init();
+    if (err) {
+        ESP_LOGE(TAG, "failed to start mdns service: %d", err);
+        return false;
+    }
+
+    // set mDNS hostname
+    err = mdns_hostname_set(m_brainId);
+    if (err) {
+        ESP_LOGE(TAG, "failed to set mdns hostname: %d", err);
+        return false;
+    }
+
+    // add service
+    auto desc = esp_ota_get_app_description();
+    mdns_txt_item_t txtData[5] = {
+        {"version", desc->version},
+        {"project_name", desc->project_name},
+        {"time", desc->time},
+        {"date", desc->date},
+        {"idf_ver", desc->idf_ver}
+    };
+    err = mdns_service_add(NULL, BRAIN_SVC_NAME, BRAIN_SVC_PROTO, BRAIN_PORT, txtData, 5);
+    if (err) {
+        ESP_LOGE(TAG, "failed to add mdns service description: %d", err);
+        return false;
+    }
+    return true;
+}
+
+void Brain::stopMdns() {
+    // remove all service descriptions
+    mdns_service_remove_all();
+    // deallocate mdns service
+    mdns_free();
+}
+
 void Brain::stopEverythingForOTA() {
     m_msgSlinger.stop();
     m_shadeTree.stop();
     m_ledRenderer.stop();
+    stopMdns();
     // m_httpServer.stop();
 
 }

@@ -6,9 +6,10 @@ import baaahs.Model
 import baaahs.geom.Vector3F
 
 interface MappingResults {
-    fun dataFor(brainId: BrainId): Info?
-
-    fun dataFor(surfaceName: String): Info?
+    fun dataForBrain(brainId: BrainId): Info?
+    fun dataForSurface(surfaceName: String) : Map<BrainId, Info>?
+    fun forEachBrain(f: (Map.Entry<BrainId, Info>) -> Unit)
+    fun forEachSurface(f: (Map.Entry<String, MutableMap<BrainId, Info>>) -> Unit)
 
     class Info(
         val surface: Model.Surface,
@@ -19,7 +20,8 @@ interface MappingResults {
 }
 
 class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSession>) : MappingResults {
-    val brainData = mutableMapOf<BrainId, MappingResults.Info>()
+    private val byBrain = mutableMapOf<BrainId, MappingResults.Info>()
+    private val bySurface = mutableMapOf<String, MutableMap<BrainId, MappingResults.Info>>()
 
     init {
         mappingSessions.forEach { mappingSession ->
@@ -30,8 +32,10 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
                 try {
                     val modelSurface = model.findModelSurface(surfaceName)
                     val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
-
-                    brainData[brainId] = MappingResults.Info(modelSurface, pixelLocations)
+                    val info = MappingResults.Info(modelSurface, pixelLocations)
+                    val map = bySurface.getOrPut(surfaceName, { mutableMapOf() })
+                    byBrain[brainId] = info
+                    map[brainId] = info
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $surfaceName" }
                 }
@@ -39,11 +43,10 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
         }
     }
 
-    override fun dataFor(brainId: BrainId): MappingResults.Info? = brainData[brainId]
-
-    override fun dataFor(surfaceName: String): MappingResults.Info? {
-        return brainData.values.find { it.surface.name == surfaceName }
-    }
+    override fun dataForBrain(brainId: BrainId): MappingResults.Info? = byBrain[brainId]
+    override fun dataForSurface(surfaceName: String) : Map<BrainId, MappingResults.Info>? = bySurface[surfaceName]?.toMap()
+    override fun forEachBrain(f: (Map.Entry<BrainId, MappingResults.Info>) -> Unit) = byBrain.forEach(f)
+    override fun forEachSurface(f: (Map.Entry<String, MutableMap<BrainId, MappingResults.Info>>) -> Unit) = bySurface.forEach(f)
 
     companion object {
         private val logger = Logger("SessionMappingResults")

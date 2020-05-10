@@ -1,14 +1,18 @@
 package baaahs.net
 
+import baaahs.sim.FakeMdns
+
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
     val links = mutableListOf<Link>()
+    private val mdns = FakeMdns { serviceId -> Address("test-svc-$serviceId")}
 
     override fun link(): Link {
         return Link(defaultMtu).also { links.add(it) }
     }
 
-    class Link(mtu: Int) : Network.Link {
+    inner class Link(mtu: Int) : Network.Link {
         override val myAddress = Address()
+        override val myHostname: String get() = "TestHost"
         val packetsToSend = mutableListOf<ByteArray>()
         val receviedPackets = mutableListOf<ByteArray>()
 
@@ -33,6 +37,8 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             return TestUdpSocket(port)
         }
 
+        override val mdns = this@TestNetwork.mdns
+
         inner class TestUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 packetsToSend += bytes
@@ -45,6 +51,11 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         }
 
         override fun startHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+//                TODO("not implemented")
+            }
+
             override fun listenWebSocket(
                 path: String,
                 onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
@@ -63,10 +74,7 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         }
     }
 
-
     class Address(private val name: String = "some address") : Network.Address {
-        override fun toString(): String {
-            return name
-        }
+        override fun toString(): String =  name
     }
 }
