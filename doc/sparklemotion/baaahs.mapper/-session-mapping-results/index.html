@@ -21,36 +21,28 @@
 </tr>
 </tbody>
 </table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="brain-data.html">brainData</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">brainData</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Info</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Functions</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<h4><a href="data-for-brain.html">dataForBrain</a></h4>
+<h4><a href="data-for.html">dataFor</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">dataForBrain</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$dataForBrain(baaahs.BrainId)/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Info</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="data-for-surface.html">dataForSurface</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">dataForSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$dataForSurface(kotlin.String)/surfaceName">surfaceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Info</span><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="for-each-brain.html">forEachBrain</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">forEachBrain</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$forEachBrain(kotlin.Function1((kotlin.collections.Map.Entry((baaahs.BrainId, baaahs.mapper.MappingResults.Info)), kotlin.Unit)))/f">f</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html"><span class="identifier">Entry</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Info</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="for-each-surface.html">forEachSurface</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">forEachSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$forEachSurface(kotlin.Function1((kotlin.collections.Map.Entry((kotlin.String, kotlin.collections.MutableMap((baaahs.BrainId, baaahs.mapper.MappingResults.Info)))), kotlin.Unit)))/f">f</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html"><span class="identifier">Entry</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Info</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">dataFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$dataFor(baaahs.BrainId)/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Info</span><span class="symbol">?</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">dataFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.SessionMappingResults$dataFor(kotlin.String)/surfaceName">surfaceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Info</span><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>
