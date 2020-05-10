@@ -7,11 +7,11 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlin_version = "1.3.70"
-val coroutines_version = "1.3.3"
+val kotlin_version = "1.3.72"
+val coroutines_version = "1.3.6"
 val serialization_version = kotlin_version
 val serialization_runtime_version = "0.20.0"
-val ktor_version = "1.3.1"
+val ktor_version = "1.3.2"
 val kglVersion = "0.3-baaahs"
 val joglVersion = "2.3.2"
 val lwjglVersion = "3.2.3"
@@ -36,9 +36,10 @@ buildscript {
     }
 }
 
-val lwjglNatives = when (OperatingSystem.current()) {
-    OperatingSystem.LINUX -> "natives-linux"
-    OperatingSystem.MAC_OS -> "natives-macos"
+val os = OperatingSystem.current()
+val lwjglNatives = when {
+    os.isLinux -> "natives-linux"
+    os.isMacOsX -> "natives-macos"
     else -> throw IllegalArgumentException()
 }
 
@@ -83,6 +84,7 @@ kotlin {
     }
 
     sourceSets {
+        @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
@@ -94,6 +96,7 @@ kotlin {
                 api("com.danielgergely.kgl:kgl-metadata:$kglVersion")
             }
         }
+        @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
@@ -102,6 +105,7 @@ kotlin {
             }
         }
 
+        @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
@@ -138,6 +142,7 @@ kotlin {
                 implementation("com.github.jmdns:jmdns:jmdns-3.5.5")
             }
         }
+        @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -157,6 +162,7 @@ kotlin {
             }
         }
 
+        @Suppress("UNUSED_VARIABLE")
         val jsMain by getting {
             kotlin.srcDir("src/jsMain/js")
 
@@ -200,6 +206,7 @@ kotlin {
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
             }
         }
+        @Suppress("UNUSED_VARIABLE")
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
