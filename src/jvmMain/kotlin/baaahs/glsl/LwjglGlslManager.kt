@@ -19,7 +19,7 @@ class LwjglGlslManager : GlslManager() {
     override fun createContext(): GlslContext {
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
-        glCapabilities.get() // because it's expensive and only has to happen once per thread
+        checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
         return LwjglGlslContext(KglLwjgl())
@@ -30,11 +30,13 @@ class LwjglGlslManager : GlslManager() {
         override fun <T> runInContext(fn: () -> T): T {
             if (++nestLevel == 1) {
                 GLFW.glfwMakeContextCurrent(window)
+                checkCapabilities()
             }
             try {
                 return fn()
             } finally {
                 if (--nestLevel == 0) {
+                    logger.info { "CONTEXT OUT $this" }
                     GLFW.glfwMakeContextCurrent(0)
                 }
             }
@@ -78,6 +80,11 @@ class LwjglGlslManager : GlslManager() {
 
                 glwfWindow
             }
+        }
+
+        // get via ThreadLocal because it's expensive and only has to happen once per thread
+        private fun checkCapabilities() {
+            glCapabilities.get()
         }
     }
 }
