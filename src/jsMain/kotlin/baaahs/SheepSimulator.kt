@@ -23,7 +23,7 @@ import kotlin.js.Date
 class SheepSimulator {
     private val queryParams = decodeQueryParams(document.location!!)
     private val display = JsDisplay()
-    private val network = FakeNetwork(display = display.forNetwork())
+    val network = FakeNetwork()
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
     val visualizer = Visualizer(

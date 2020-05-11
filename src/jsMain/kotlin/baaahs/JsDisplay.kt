@@ -3,7 +3,6 @@ package baaahs
 import baaahs.net.Network
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLSelectElement
 import org.w3c.dom.get
@@ -15,8 +14,6 @@ import kotlin.dom.clear
 import kotlin.math.roundToInt
 
 class JsDisplay : Display {
-    override fun forNetwork(): NetworkDisplay = JsNetworkDisplay(document)
-
     override fun forPinky(): PinkyDisplay =
         JsPinkyDisplay(document.getElementById("pinkyView")!!)
 
@@ -27,41 +24,6 @@ class JsDisplay : Display {
         )
 
     override fun forVisualizer(): VisualizerDisplay = JsVisualizerDisplay()
-}
-
-class JsNetworkDisplay(document: Document) : NetworkDisplay {
-    private val packetLossRateSpan = document.getElementById("networkPacketLossRate")!!.apply {
-        addEventListener("click", {
-            packetLossRate = kotlin.browser.window.prompt(
-                "Packet loss rate (%):", "${(packetLossRate * 100).toInt()}"
-            )!!.toFloat() / 100
-        })
-    }
-
-    override var packetLossRate: Float = 0.05f
-        set(value) {
-            packetLossRateSpan.textContent = "${(value * 100).toInt()}%"
-            field = value
-        }
-
-    init {
-//        packetLossRate = 0.05f
-        packetLossRate = 0.0f
-    }
-
-    private val packetsReceivedSpan = document.getElementById("networkPacketsReceived")!!
-    private val packetsDroppedSpan = document.getElementById("networkPacketsDropped")!!
-
-    private var packetsReceived = 0
-    private var packetsDropped = 0
-
-    override fun receivedPacket() {
-        packetsReceivedSpan.textContent = packetsReceived++.toString()
-    }
-
-    override fun droppedPacket() {
-        packetsDroppedSpan.textContent = packetsDropped++.toString()
-    }
 }
 
 class JsPinkyDisplay(element: Element) : PinkyDisplay {
