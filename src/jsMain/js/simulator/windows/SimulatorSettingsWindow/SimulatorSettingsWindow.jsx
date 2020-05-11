@@ -1,37 +1,16 @@
 import React from 'react';
+import {store} from '../../../store';
 import styles from './SimulatorSettingsWindow.scss';
+import {baaahs} from 'sparklemotion';
 
 const SimulatorSettingsWindow = (props) => {
-  return (
+    const NetworkPanel = baaahs.sim.ui.NetworkPanel;
+    const { state } = React.useContext(store);
+
+    console.log("NetworkPanel SimulatorSettingsWindow: store state is ", state);
+    return (
     <div id="simulatorView" className={styles.simulatorSettings}>
-      <table
-        id="networkView"
-        className="simulatorSection"
-        style={{ tableLayout: 'fixed', width: '100%' }}
-      >
-        <tbody>
-          <tr>
-            <th colSpan="2" style={{ textAlign: 'left' }}>
-              Network
-            </th>
-          </tr>
-          <tr>
-            <td>Packet loss rate:</td>
-            <td
-              id="networkPacketLossRate"
-              className={styles.networkPacketLossRate}
-            ></td>
-          </tr>
-          <tr>
-            <td>Packets received:</td>
-            <td id="networkPacketsReceived"></td>
-          </tr>
-          <tr>
-            <td>Packets dropped:</td>
-            <td id="networkPacketsDropped"></td>
-          </tr>
-        </tbody>
-      </table>
+      <NetworkPanel simulator={state.sheepSimulator}/>
 
       <table
         id="framerateView"

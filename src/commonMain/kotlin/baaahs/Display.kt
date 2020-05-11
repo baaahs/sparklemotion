@@ -3,7 +3,6 @@ package baaahs
 import baaahs.net.Network
 
 interface Display {
-    fun forNetwork(): NetworkDisplay
     fun forPinky(): PinkyDisplay
     fun forBrain(): BrainDisplay
     fun forVisualizer(): VisualizerDisplay
