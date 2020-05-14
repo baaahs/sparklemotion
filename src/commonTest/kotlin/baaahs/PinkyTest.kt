@@ -46,7 +46,6 @@ class PinkyTest {
             FakeClock(),
             FakeFs(),
             PermissiveFirmwareDaddy(),
-            StubPinkyDisplay(),
             StubSoundAnalyzer(),
             glslRenderer = GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
         )
