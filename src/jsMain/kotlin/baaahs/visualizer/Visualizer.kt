@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.*
 import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.sim.FakeDmxUniverse
+import baaahs.util.Framerate
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
@@ -20,7 +21,6 @@ import info.laht.threekt.objects.Points
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.MouseEvent
 import three.Matrix4
 import three.OrbitControls
@@ -31,10 +31,9 @@ import kotlin.math.sin
 
 class Visualizer(
     model: Model<*>,
-    private val display: VisualizerDisplay,
-    private val container: HTMLDivElement,
-    private val selectionInfo: HTMLDivElement? = null
+    private val container: HTMLDivElement
 ): JsMapperUi.StatusListener {
+    val facade = Facade()
 
     var stopRendering: Boolean = false
     var rotate: Boolean = false
@@ -203,9 +202,9 @@ class Visualizer(
             val intersections = raycaster.intersectObjects(scene.children, false)
             intersections.forEach { intersection ->
                 val intersectedObject = intersection.`object`
-                val vizPanel = VizSurface.getFromObject(intersectedObject)
-                vizPanel?.let {
-                    selectionInfo?.innerText = "Selected: " + vizPanel.name
+                VizSurface.getFromObject(intersectedObject)?.let {
+                    facade.selectedSurface = it
+                    facade.notifyChanged()
                     return@forEach
                 }
             }
@@ -224,7 +223,7 @@ class Visualizer(
 
         val startMs = getTimeMillis()
         renderer.render(scene, camera)
-        display.renderMs = (getTimeMillis() - startMs).toInt()
+        facade.framerate.elapsed((getTimeMillis() - startMs).toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
         rendererListeners.forEach { value -> value() }
@@ -247,5 +246,11 @@ class Visualizer(
     interface FrameListener {
         @JsName("onFrameReady")
         fun onFrameReady(scene: Scene, camera: Camera)
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        var selectedSurface: VizSurface? = null
+
+        val framerate = Framerate()
     }
 }
