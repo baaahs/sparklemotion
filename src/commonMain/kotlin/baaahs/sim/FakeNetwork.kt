@@ -13,6 +13,8 @@ class FakeNetwork(
     private val networkDelay: Int = 1,
     coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) : Network {
+    val facade = Facade()
+
     private val coroutineScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = coroutineContext
     }
@@ -28,7 +30,7 @@ class FakeNetwork(
         return FakeLink(address)
     }
 
-    var packetLossRate: Float = 0f
+    var packetLossRate: Float = .05f
     var packetsReceived: Int = 0
     var packetsDropped: Int = 0
 
@@ -186,8 +188,6 @@ class FakeNetwork(
         val logger = Logger("FakeNetwork")
     }
 
-    val facade = Facade()
-
     inner class Facade : baaahs.ui.Facade() {
         var packetLossRate: Float
             get() = this@FakeNetwork.packetLossRate
@@ -197,5 +197,5 @@ class FakeNetwork(
     }
 
     @Suppress("unused")
-    fun Any?.updates(facade: Facade) = facade.notify()
+    fun Any?.updates(facade: Facade) = facade.notifyChanged()
 }

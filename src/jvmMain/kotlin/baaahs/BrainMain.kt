@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.net.JvmNetwork
-import baaahs.net.Network
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -30,14 +29,7 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brain = Brain(brainId, network, object : BrainDisplay {
-            override var id: String? = null
-            override var surface: Surface? = null
-            override var onReset: suspend () -> Unit = {}
-            override fun haveLink(link: Network.Link) {
-                println("Brain has a link!")
-            }
-        }, JvmPixelsDisplay(2000))
+        val brain = Brain(brainId, network, JvmPixelsDisplay(2000))
 
         val mySurface = if (args.anonymous) {
             null

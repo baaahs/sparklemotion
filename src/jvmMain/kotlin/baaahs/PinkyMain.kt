@@ -74,7 +74,6 @@ class PinkyMain(private val args: Args) {
                     field = value; println("selectedShow: $value")
                 }
 
-            override var showFrameMs: Int = 0
         }
 
         val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)

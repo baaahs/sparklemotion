@@ -21,20 +21,19 @@ import kotlin.js.Date
 
 @JsName("SheepSimulator")
 class SheepSimulator {
+    @Suppress("unused")
+    val facade = Facade()
+
     private val queryParams = decodeQueryParams(document.location!!)
-    private val display = JsDisplay()
     val network = FakeNetwork()
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
     val visualizer = Visualizer(
         model,
-        display.forVisualizer(),
-        document.getElementById("sheepView")!! as HTMLDivElement,
-        document.getElementById("selectionInfo")!! as HTMLDivElement
+        document.getElementById("sheepView")!! as HTMLDivElement
     )
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
-    private val pinkyDisplay = display.forPinky()
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
@@ -49,10 +48,10 @@ class SheepSimulator {
         JsClock(),
         fs,
         PermissiveFirmwareDaddy(),
-        pinkyDisplay,
         bridgeClient.soundAnalyzer,
         glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
     )
+    private val brains: MutableList<Brain> = mutableListOf()
 
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
@@ -104,7 +103,8 @@ class SheepSimulator {
             }
             pinky.providePixelMapping_CHEAT(surface, pixelLocations)
 
-            val brain = Brain("brain//$index", network, display.forBrain(), vizPanel.vizPixels ?: NullPixels)
+            val brain = Brain("brain//$index", network, vizPanel.vizPixels ?: NullPixels)
+            brains.add(brain)
             pinky.providePanelMapping_CHEAT(BrainId(brain.id), surface)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
@@ -113,17 +113,14 @@ class SheepSimulator {
             visualizer.addMovingHead(movingHead, dmxUniverse)
         }
 
-        val showName = queryParams.get("show")
-        showName?.let {
-            val show = shows.find { it.name == showName }
-            show?.let {
-                pinky.switchToShow(show)
-                pinkyDisplay.selectedShow = show
-            }
+        queryParams["show"]?.let { showName ->
+            shows.find { it.name == showName }?.let { show -> pinky.switchToShow(show) }
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }
 //        println("users = ${users}")
+
+        facade.notifyChanged()
 
         doRunBlocking {
             delay(200000L)
@@ -146,6 +143,17 @@ class SheepSimulator {
     private val pinkyScope = CoroutineScope(Dispatchers.Main)
     private val brainScope = CoroutineScope(Dispatchers.Main)
     private val mapperScope = CoroutineScope(Dispatchers.Main)
+
+    inner class Facade : baaahs.ui.Facade() {
+        val pinky: Pinky.Facade
+            get() = this@SheepSimulator.pinky.facade
+        val network: FakeNetwork.Facade
+            get() = this@SheepSimulator.network.facade
+        val visualizer: Visualizer.Facade
+            get() = this@SheepSimulator.visualizer.facade
+        val brains: List<Brain.Facade>
+            get() = this@SheepSimulator.brains.map { it.facade }
+    }
 }
 
 class JsClock : Clock {
