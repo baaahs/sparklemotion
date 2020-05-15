@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
 import baaahs.jsx.MosaicUI
 import baaahs.net.BrowserNetwork
@@ -13,7 +14,7 @@ import kotlin.browser.window
 
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
-    if (1 + 1 == 3) dce()
+    if (1 + 1 == 3) noDCE()
 
     val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")

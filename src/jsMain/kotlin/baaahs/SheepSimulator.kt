@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -28,10 +27,7 @@ class SheepSimulator {
     val network = FakeNetwork()
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
-    val visualizer = Visualizer(
-        model,
-        document.getElementById("sheepView")!! as HTMLDivElement
-    )
+    val visualizer = Visualizer(model)
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
