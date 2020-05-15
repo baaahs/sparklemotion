@@ -10,8 +10,6 @@ import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.geometries.ConeBufferGeometry
 import info.laht.threekt.geometries.SphereBufferGeometry
-import info.laht.threekt.materials.LineBasicMaterial
-import info.laht.threekt.materials.Material
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.materials.PointsMaterial
 import info.laht.threekt.math.Vector2
@@ -29,11 +27,19 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(
-    model: Model<*>,
-    private val container: HTMLDivElement
-): JsMapperUi.StatusListener {
+class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
     val facade = Facade()
+
+    private var container: HTMLDivElement? = null
+        set(value) {
+            if (value != null) {
+                field = value
+                containerAttached()
+            } else {
+                containerWillDetach()
+                field = value
+            }
+        }
 
     var stopRendering: Boolean = false
     var rotate: Boolean = false
@@ -51,18 +57,19 @@ class Visualizer(
 
     private val frameListeners = mutableListOf<FrameListener>()
 
-    private val controls: OrbitControls
-    private val camera: PerspectiveCamera
-    private val scene: Scene
-    private val renderer: WebGLRenderer
-    private val geom: Geometry
+    private var controls: OrbitControls? = null
+    private val camera: PerspectiveCamera =
+        PerspectiveCamera(45, 1.0, 1, 10000).apply {
+            position.z = 1000.0
+        }
+    private val scene: Scene = Scene()
+    private val renderer = WebGLRenderer()
+    private val geom = Geometry()
 
     private var obj: Object3D = Object3D()
-    private val pointMaterial: Material
-    private val lineMaterial: Material
-    private val panelMaterial: Material
+    private val pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
 
-    private val raycaster: three.Raycaster
+    private val raycaster = three.Raycaster()
     private var mouse: Vector2? = null
     private val sphere: Mesh
 
@@ -71,25 +78,9 @@ class Visualizer(
     private var vizPanels = mutableListOf<VizSurface>()
 
     init {
-        container.addEventListener("mousedown", { event -> onMouseDown(event as MouseEvent) }, false)
-        camera = PerspectiveCamera(45, container.offsetWidth.toDouble() / container.offsetHeight, 1, 10000)
-        camera.position.z = 1000.0
-        controls = OrbitControls(camera, container)
-        controls.minPolarAngle = PI / 2 - .25 // radians
-        controls.maxPolarAngle = PI / 2 + .25 // radians
-
-        scene = Scene()
-        pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
-        lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
-        panelMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa); linewidth = 3.0 }
         scene.add(camera)
-        renderer = WebGLRenderer()
         renderer.setPixelRatio(window.devicePixelRatio)
-        resize()
 
-        container.appendChild(renderer.domElement)
-        geom = Geometry()
-        raycaster = three.Raycaster()
         raycaster.asDynamic().params.Points.threshold = 1
         sphere = Mesh(
             SphereBufferGeometry(1, 32, 32),
@@ -101,8 +92,6 @@ class Visualizer(
         model.geomVertices.forEach { v ->
             geom.vertices.asDynamic().push(Vector3(v.x, v.y, v.z))
         }
-
-        startRender()
 
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
@@ -117,6 +106,24 @@ class Visualizer(
         })
     }
 
+    private fun containerAttached() {
+        container!!.appendChild(renderer.domElement)
+
+        controls = OrbitControls(camera, container!!).apply {
+            minPolarAngle = PI / 2 - .25 // radians
+            maxPolarAngle = PI / 2 + .25 // radians
+        }
+
+        resize()
+        startRender()
+    }
+
+    private fun containerWillDetach() {
+        container?.removeChild(renderer.domElement)
+        stopRendering = true
+        controls = null
+    }
+
     fun addFrameListener(frameListener: FrameListener) {
         frameListeners.add(frameListener)
     }
@@ -126,10 +133,12 @@ class Visualizer(
     }
 
     fun onMouseDown(event: MouseEvent) {
-        mouse = Vector2(
-            (event.clientX.toDouble() / container.offsetWidth) * 2 - 1,
-            -(event.clientY.toDouble() / container.offsetHeight) * 2 + 1
-        )
+        container?.let {
+            mouse = Vector2(
+                (event.clientX.toDouble() / it.offsetWidth) * 2 - 1,
+                -(event.clientY.toDouble() / it.offsetHeight) * 2 + 1
+            )
+        }
     }
 
     fun addSurface(p: Model.Surface): VizSurface {
@@ -181,9 +190,10 @@ class Visualizer(
         this.obj = Points().apply { geometry = geom; material = pointMaterial }
         scene.add(obj)
         val target = geom.boundingSphere.asDynamic().center.clone()
-        controls.target = target
+        controls?.target = target
         camera.lookAt(target)
 
+        stopRendering = false
         render()
     }
 
@@ -219,7 +229,7 @@ class Visualizer(
             camera.lookAt(scene.position)
         }
 
-        controls.update()
+        controls?.update()
 
         val startMs = getTimeMillis()
         renderer.render(scene, camera)
@@ -234,9 +244,11 @@ class Visualizer(
     private val resizeDelay = 100
 
     fun resize() {
-        camera.aspect = container.offsetWidth.toDouble() / container.offsetHeight
-        camera.updateProjectionMatrix()
-        renderer.setSize(container.offsetWidth, container.offsetHeight)
+        container?.let {
+            camera.aspect = it.offsetWidth.toDouble() / it.offsetHeight
+            camera.updateProjectionMatrix()
+            renderer.setSize(it.offsetWidth, it.offsetHeight)
+        }
     }
 
     override fun mapperStatusChanged(isRunning: Boolean) {
@@ -249,8 +261,19 @@ class Visualizer(
     }
 
     inner class Facade : baaahs.ui.Facade() {
+        var container: HTMLDivElement?
+            get() = this@Visualizer.container
+            set(value) { this@Visualizer.container = value }
+
+        var rotate: Boolean
+            get() = this@Visualizer.rotate
+            set(value) { this@Visualizer.rotate = value}
+
         var selectedSurface: VizSurface? = null
 
         val framerate = Framerate()
+
+        fun resize() = this@Visualizer.resize()
+        fun onMouseDown(event: MouseEvent) = this@Visualizer.onMouseDown(event)
     }
 }
