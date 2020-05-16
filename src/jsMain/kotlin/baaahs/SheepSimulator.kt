@@ -8,7 +8,7 @@ import baaahs.shows.AllShows
 import baaahs.sim.*
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VizSurface
+import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +88,7 @@ class SheepSimulator {
 
             val vizPanel = visualizer.addSurface(surface)
             val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizSurface.VizPixels(vizPanel, pixelPositions)
+            vizPanel.vizPixels = VizPixels(vizPanel, pixelPositions)
 
             totalPixels += pixelPositions.size
             document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()

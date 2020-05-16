@@ -46,7 +46,7 @@ class VisualizerListenerClient(
                     val pixelLocations = (0 until pixelCount).map {
                         Vector3F.parse(reader).let { Vector3(it.x, it.y, it.z) }
                     }.toTypedArray()
-                    vizSurface.vizPixels = VizSurface.VizPixels(vizSurface, pixelLocations)
+                    vizSurface.vizPixels = VizPixels(vizSurface, pixelLocations)
                 }
             }
 
