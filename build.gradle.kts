@@ -19,7 +19,7 @@ val spek_version = "2.0.11-rc.1" // custom build with LetValues enabled
 val atrium_version = "0.10.0"
 
 buildscript {
-    val kotlin_version = "1.3.70"
+    val kotlin_version = "1.3.72"
 
     repositories {
         jcenter()
@@ -44,7 +44,7 @@ val lwjglNatives = when {
 }
 
 plugins {
-    val kotlin_version = "1.3.70"
+    val kotlin_version = "1.3.72"
 
     id("org.jetbrains.kotlin.multiplatform") version kotlin_version
     id("org.jetbrains.kotlin.plugin.serialization") version kotlin_version
@@ -169,10 +169,16 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_runtime_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
+
                 implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
-                implementation("org.jetbrains:kotlin-react:16.13.0-pre.92-kotlin-1.3.61")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.92-kotlin-1.3.61")
                 implementation("com.danielgergely.kgl:kgl-js:$kglVersion")
+
+                // kotlin react:
+                implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
+                implementation(npm("styled-components"))
+                implementation(npm("inline-style-prefixer"))
 
                 implementation(npm("babel-loader", "^8.0.6"))
                 implementation(npm("@babel/core", "^7.4.5"))
@@ -187,9 +193,9 @@ kotlin {
                 implementation(npm("css-loader", "^2.1.1"))
                 implementation(npm("@material-ui/core", "~4.8"))
                 implementation(npm("node-sass", "^4.12.0"))
-                implementation(npm("react", "^16.8.6"))
+                implementation(npm("react", "^16.13.1"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
-                implementation(npm("react-dom", "^16.8.6"))
+                implementation(npm("react-dom", "^16.13.1"))
                 implementation(npm("react-draggable", "^3.3.0"))
                 implementation(npm("react-hot-loader", "^4.11.0"))
                 implementation(npm("sass-loader", "^7.1.0"))

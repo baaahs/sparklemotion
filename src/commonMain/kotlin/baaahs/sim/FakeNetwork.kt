@@ -1,7 +1,6 @@
 package baaahs.sim
 
 import baaahs.Logger
-import baaahs.NetworkDisplay
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -12,9 +11,10 @@ import kotlin.random.Random
 
 class FakeNetwork(
     private val networkDelay: Int = 1,
-    private val display: NetworkDisplay? = null,
     coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) : Network {
+    val facade = Facade()
+
     private val coroutineScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = coroutineContext
     }
@@ -30,9 +30,12 @@ class FakeNetwork(
         return FakeLink(address)
     }
 
-    private fun sendPacketSuccess() = Random.nextFloat() > packetLossRate() / 2
-    private fun receivePacketSuccess() = Random.nextFloat() > packetLossRate() / 2
-    private fun packetLossRate() = display?.packetLossRate ?: 0f
+    var packetLossRate: Float = .05f
+    var packetsReceived: Int = 0
+    var packetsDropped: Int = 0
+
+    private fun sendPacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
+    private fun receivePacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
 
     inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
         override val udpMtu = 1500
@@ -120,8 +123,8 @@ class FakeNetwork(
 
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-                if (!sendPacketSuccess()) {
-                    display?.droppedPacket()
+                if (!sendPacketShouldSucceed()) {
+                    packetsDropped++.updates(facade)
                     return
                 }
 
@@ -130,8 +133,8 @@ class FakeNetwork(
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
-                if (!sendPacketSuccess()) {
-                    display?.droppedPacket()
+                if (!sendPacketShouldSucceed()) {
+                    packetsDropped++.updates(facade)
                     return
                 }
 
@@ -149,10 +152,11 @@ class FakeNetwork(
                 coroutineScope.launch {
                     networkDelay()
 
-                    if (!receivePacketSuccess()) {
-                        display?.droppedPacket()
+                    if (!receivePacketShouldSucceed()) {
+                        packetsDropped++.updates(facade)
                     } else {
-                        display?.receivedPacket()
+                        packetsReceived++.updates(facade)
+
                         udpListener.receive(fromAddress, fromPort, bytes)
                     }
                 }
@@ -183,4 +187,15 @@ class FakeNetwork(
     companion object {
         val logger = Logger("FakeNetwork")
     }
+
+    inner class Facade : baaahs.ui.Facade() {
+        var packetLossRate: Float
+            get() = this@FakeNetwork.packetLossRate
+            set(value) { this@FakeNetwork.packetLossRate = value }
+        val packetsReceived: Int get() = this@FakeNetwork.packetsReceived
+        val packetsDropped: Int get() = this@FakeNetwork.packetsDropped
+    }
+
+    @Suppress("unused")
+    fun Any?.updates(facade: Facade) = facade.notifyChanged()
 }

@@ -15,6 +15,7 @@ import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelShader
 import baaahs.shows.GuruMeditationErrorShow
+import baaahs.util.Framerate
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -29,12 +30,13 @@ class Pinky(
     val clock: Clock,
     val fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
-    val display: PinkyDisplay,
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
     glslRenderer: GlslRenderer
 ) : Network.UdpListener {
+    val facade = Facade()
+
     private val storage = Storage(fs)
     private val mappingResults = storage.loadMappingData(model)
 
@@ -47,8 +49,9 @@ class Pinky(
     private var selectedShow = shows.random()
         set(value) {
             field = value
-            display.selectedShow = value
+            facade.notifyChanged()
             showRunner.nextShow = selectedShow
+            selectedShowChannel.onChange(selectedShow.name)
         }
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply { install(gadgetModule) }
@@ -101,11 +104,6 @@ class Pinky(
             }
         }
 
-        display.listShows(shows)
-        display.selectedShow = selectedShow
-
-        display.onShowChange = { switchToShow(display.selectedShow!!) }
-
         while (true) {
             if (mapperIsRunning) {
                 disableDmx()
@@ -125,8 +123,8 @@ class Pinky(
                     switchToShow(GuruMeditationErrorShow)
                 }
             }
-            display.showFrameMs = elapsedMs.toInt()
-            display.stats = networkStats
+            facade.notifyChanged()
+            facade.framerate.elapsed(elapsedMs.toInt())
 
             maybeChangeThingsIfUsersAreIdle()
 
@@ -154,7 +152,6 @@ class Pinky(
 
     fun switchToShow(nextShow: Show) {
         this.selectedShow = nextShow
-        selectedShowChannel.onChange(nextShow.name)
     }
 
     internal fun updateSurfaces() {
@@ -185,9 +182,9 @@ class Pinky(
             }
 
             pendingBrainInfos.clear()
-        }
 
-        display.brainCount = brainInfos.size
+            facade.notifyChanged()
+        }
     }
 
     internal fun drawNextFrame() {
@@ -217,14 +214,14 @@ class Pinky(
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
 
-        logger.info {
+        logger.debug {
             "Hello from ${brainId.uuid}" +
                     " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
                     " at $brainAddress: $msg"
         }
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.info {
+            logger.debug {
                 "The firmware daddy doesn't like $brainId" +
                         " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
                         " having ${msg.firmwareVersion}" +
@@ -341,13 +338,17 @@ class Pinky(
         surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 
-    inner class PinkyBeatDisplayer(val beatSource: BeatSource) {
+    inner class PinkyBeatDisplayer(private val beatSource: BeatSource) {
+        private var previousBeatData = beatSource.getBeatData()
+
         suspend fun run() {
             while (true) {
                 val beatData = beatSource.getBeatData()
-                display.beat = beatData.beatWithinMeasure(clock).toInt()
-                display.bpm = beatData.bpm
-                display.beatConfidence = beatData.confidence
+                if (beatData != previousBeatData) {
+                    facade.notifyChanged()
+                    previousBeatData = beatData
+                }
+
                 delay(10)
             }
         }
@@ -417,6 +418,29 @@ class Pinky(
 
     companion object {
         val logger = Logger("Pinky")
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val shows: List<Show>
+            get() = this@Pinky.shows
+
+        var selectedShow: Show
+            get() = this@Pinky.selectedShow
+            set(value) { this@Pinky.selectedShow = value }
+
+        val networkStats: NetworkStats
+            get() = this@Pinky.networkStats
+
+        val brains: List<BrainInfo>
+            get() = this@Pinky.brainInfos.values.toList()
+
+        val beatData: BeatData
+            get() = this@Pinky.beatSource.getBeatData()
+
+        val clock: Clock
+            get() = this@Pinky.clock
+
+        val framerate = Framerate()
     }
 }
 

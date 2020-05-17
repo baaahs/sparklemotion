@@ -64,23 +64,10 @@ class PinkyMain(private val args: Args) {
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val display = object : StubPinkyDisplay() {
-            override fun listShows(shows: List<Show>) {
-                println("shows = $shows")
-            }
-
-            override var selectedShow: Show? = null
-                set(value) {
-                    field = value; println("selectedShow: $value")
-                }
-
-            override var showFrameMs: Int = 0
-        }
-
         val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)
         val pinky = Pinky(
             model, shows, network, dmxUniverse, beatSource, SystemClock(),
-            fs, daddy, display, soundAnalyzer,
+            fs, daddy, soundAnalyzer,
             switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter,
             glslRenderer = glslRenderer
