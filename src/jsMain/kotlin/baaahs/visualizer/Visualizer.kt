@@ -145,7 +145,7 @@ class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
         // if (p.name !== '15R') return
         // if (omitPanels.includes(p.name)) return
 
-        val vizPanel = VizSurface(p, geom, scene)
+        val vizPanel = VizSurface(p, scene)
         vizPanels.add(vizPanel)
         return vizPanel
     }
