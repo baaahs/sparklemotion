@@ -2,6 +2,8 @@ package baaahs
 
 import baaahs.dmx.Shenzarpy
 import baaahs.glsl.GlslRenderer
+import baaahs.model.Model
+import baaahs.model.MovingHead
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 

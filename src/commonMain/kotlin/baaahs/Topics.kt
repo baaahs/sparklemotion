@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.model.MovingHead
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.serializer

@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.glsl.GlslRenderer
+import baaahs.model.Model
 import baaahs.proto.Ports
 import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows

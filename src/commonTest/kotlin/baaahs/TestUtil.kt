@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.geom.Vector3F
+import baaahs.model.Model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration

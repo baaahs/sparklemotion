@@ -2,9 +2,9 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.Logger
-import baaahs.Model
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
 import info.laht.threekt.math.Vector3

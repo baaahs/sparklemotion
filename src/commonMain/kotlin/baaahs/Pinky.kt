@@ -10,6 +10,7 @@ import baaahs.io.Fs
 import baaahs.mapper.MappingResults
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.Storage
+import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*

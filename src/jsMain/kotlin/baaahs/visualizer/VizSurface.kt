@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
-import baaahs.Model
 import baaahs.geom.Vector2
+import baaahs.model.Model
 import info.laht.threekt.THREE.FrontSide
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry

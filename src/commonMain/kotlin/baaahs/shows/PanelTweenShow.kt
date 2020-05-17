@@ -1,10 +1,10 @@
 package baaahs.shows
 
 import baaahs.Color
-import baaahs.Model
 import baaahs.Show
 import baaahs.ShowContext
 import baaahs.gadgets.PalettePicker
+import baaahs.model.Model
 
 object PanelTweenShow : Show("PanelTweenShow") {
     override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {

@@ -1,8 +1,8 @@
 package baaahs.mapper;
 
 import baaahs.Logger
-import baaahs.Model
 import baaahs.io.Fs
+import baaahs.model.Model
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.json.Json

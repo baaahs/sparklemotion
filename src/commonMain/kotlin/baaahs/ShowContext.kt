@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.model.MovingHead
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 
