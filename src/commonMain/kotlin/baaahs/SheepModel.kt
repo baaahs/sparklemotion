@@ -50,14 +50,25 @@ abstract class Model<T : Model.Surface> {
 
     data class Line(val vertices: List<Vector3F>)
 
-    class Face(val vertexIds: List<Int>)
+    class Face(
+        private val allVertices: List<Vector3F>,
+        val vertexA: Int,
+        val vertexB: Int,
+        val vertexC: Int
+    ) {
+        val a: Vector3F get() = allVertices[vertexA]
+        val b: Vector3F get() = allVertices[vertexB]
+        val c: Vector3F get() = allVertices[vertexC]
+
+        val vertices: Array<Vector3F> = arrayOf(a, b, c)
+    }
 }
 
 class Decom2019Model : ObjModel<Model.Surface>("decom-2019-panels.obj") {
     override val name: String = "Decom2019"
     override val defaultUvTranslator: UvTranslator by lazy { LinearModelSpaceUvTranslator(this) }
 
-    override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
+    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface {
         return SheepModel.Panel(name, 16 * 60, faces, lines)
     }
 }
@@ -66,7 +77,7 @@ class SuiGenerisModel : ObjModel<Model.Surface>("sui-generis.obj") {
     override val name: String = "Decom2019" // todo: it's weird that we're reusing Decom2019 here.
     override val defaultUvTranslator: UvTranslator by lazy { LinearModelSpaceUvTranslator(this) }
 
-    override fun createSurface(name: String, faces: MutableList<Face>, lines: MutableList<Line>): Surface {
+    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface {
         return SheepModel.Panel(name, 10 * 60, faces, lines)
     }
 }
@@ -85,11 +96,7 @@ class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
         super.load()
     }
 
-    override fun createSurface(
-        name: String,
-        faces: MutableList<Face>,
-        lines: MutableList<Line>
-    ): Panel {
+    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Panel {
         val expectedPixelCount = pixelsPerPanel[name]
         if (expectedPixelCount == null) {
             logger.warn { "No pixel count found for $name" }
@@ -132,17 +139,13 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
     lateinit var surfaceNeighbors: Map<T, List<T>>
     private val surfacesByName = mutableMapOf<String, T>()
 
-    abstract fun createSurface(
-        name: String,
-        faces: MutableList<Face>,
-        lines: MutableList<Line>
-    ): T
+    abstract fun createSurface(name: String, faces: List<Face>, lines: List<Line>): T
 
     open fun load() {
         val vertices: MutableList<Vector3F> = mutableListOf()
         val panels: MutableList<T> = mutableListOf()
         var surfaceName: String? = null
-        var faces = mutableListOf<Face>()
+        var faceVerts = mutableListOf<List<Int>>()
         var lines = mutableListOf<Line>()
 
         val surfacesByEdge = mutableMapOf<List<Int>, MutableList<String>>()
@@ -150,12 +153,13 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
 
         fun buildSurface() {
             surfaceName?.let {
+                val faces = faceVerts.map { Face(vertices, it[0], it[1], it[2])}
                 val surface = createSurface(it, faces, lines)
                 panels.add(surface)
                 surfacesByName[it] = surface
 
                 surfaceName = null
-                faces = mutableListOf()
+                faceVerts = mutableListOf()
                 lines = mutableListOf()
             }
         }
@@ -176,23 +180,17 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
                     }
                     "o" -> {
                         buildSurface()
-
-                        val name = args.joinToString(" ")
-                        surfaceName = name
+                        surfaceName = args.joinToString(" ")
                     }
                     "f" -> {
                         val verts = args.map { it.toInt() - 1 }
-                        faces.add(Face(verts))
+                        faceVerts.add(verts)
                     }
                     "l" -> {
-                        val verts = args.map { it.toInt() - 1 }
-                        val points = mutableListOf<Vector3F>()
-                        for (vi in verts) {
-                            val v = vertices[vi]
-                            points.add(v)
-                        }
+                        val vertIs = args.map { it.toInt() - 1 }
+                        val points = vertIs.map { vi -> vertices[vi] }
 
-                        val sortedVerts = verts.sorted()
+                        val sortedVerts = vertIs.sorted()
                         surfacesByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(surfaceName!!)
                         edgesBySurface.getOrPut(surfaceName!!) { mutableListOf() }.add(sortedVerts)
 

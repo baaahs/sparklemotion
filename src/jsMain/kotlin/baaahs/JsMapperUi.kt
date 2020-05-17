@@ -298,20 +298,18 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         val vertices = model.geomVertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
         model.allSurfaces.forEach { surface ->
             val geom = Geometry()
-            val allFaces = mutableListOf<Face3>()
             geom.vertices = vertices
 
-            val panelFaces = mutableListOf<Face3>()
             val faceNormalAcc = Vector3()
-            surface.faces.forEach { face ->
-                val face3 = Face3(face.vertexIds[0], face.vertexIds[1], face.vertexIds[2], Vector3(0, 0, 0))
-                allFaces.add(face3)
-                panelFaces.add(face3)
+            val panelFaces = surface.faces.map { face ->
+                val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3())
 
                 // just compute this face's normal
                 geom.faces = arrayOf(face3)
                 geom.computeFaceNormals()
                 faceNormalAcc.add(face3.normal!!)
+
+                face3
             }
             val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
 
@@ -338,7 +336,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
                 wireframe.add(Line(lineGeom, lineMaterial))
             }
 
-            geom.faces = allFaces.toTypedArray()
+            geom.faces = panelFaces.toTypedArray()
             geom.computeFaceNormals()
             geom.computeVertexNormals()
 

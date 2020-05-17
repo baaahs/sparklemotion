@@ -13,10 +13,8 @@ import info.laht.threekt.math.Vector3
 import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
 import info.laht.threekt.scenes.Scene
-import org.w3c.dom.get
-import kotlin.browser.document
 
-class VizSurface(panel: Model.Surface, private val geom: Geometry, private val scene: Scene) {
+class VizSurface(panel: Model.Surface, private val scene: Scene) {
     companion object {
         fun getFromObject(object3D: Object3D): VizSurface? =
             object3D.userData.asDynamic()["VizPanel"] as VizSurface?
@@ -42,35 +40,21 @@ class VizSurface(panel: Model.Surface, private val geom: Geometry, private val s
 
     init {
         val panelGeometry = this.geometry
-        val panelVertices = panelGeometry.vertices
-
-        val triangle = Triangle() // for computing area...
+        val panelVertices = mutableListOf<Vector3>()
 
         val faceAreas = mutableListOf<Float>()
         panelGeometry.faces = panel.faces.map { face ->
-            val localVerts = face.vertexIds.map { vi ->
-                val v = geom.vertices[vi]
-                var lvi = panelVertices.indexOf(v)
-                if (lvi == -1) {
-                    lvi = panelVertices.size
-                    panelVertices.asDynamic().push(v)
-                }
-                lvi
-            }
+            val localVerts = face.vertices.map { v -> panelVertices.findOrAdd(v.toVector3()) }
 
-            triangle.set(
-                panelVertices[localVerts[0]],
-                panelVertices[localVerts[1]],
-                panelVertices[localVerts[2]]
-            )
-
-            val faceArea = triangle.asDynamic().getArea() as Float
+            val faceArea = Triangle(
+                face.a.toVector3(), face.b.toVector3(), face.c.toVector3()
+            ).getArea()
             faceAreas.add(faceArea)
             this.area += faceArea
 
-            val normal: Vector3 = document["non-existant-key"]
-            Face3(localVerts[0], localVerts[1], localVerts[2], normal)
+            Face3(localVerts[0], localVerts[1], localVerts[2], Vector3())
         }.toTypedArray()
+        panelGeometry.vertices = panelVertices.toTypedArray()
 
         isMultiFaced = panelGeometry.faces.size > 1
 
@@ -91,8 +75,6 @@ class VizSurface(panel: Model.Surface, private val geom: Geometry, private val s
             }
         }
         this.edgeNeighbors = edgeNeighbors
-
-        geom.computeVertexNormals() // todo: why is this here?
 
         val lines = panel.lines.map { line ->
             val lineGeo = Geometry()
