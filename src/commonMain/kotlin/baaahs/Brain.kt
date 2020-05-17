@@ -5,34 +5,32 @@ import baaahs.io.ByteArrayReader
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class Brain(
     val id: String,
     private val network: Network,
-    private val display: BrainDisplay,
     private val pixels: Pixels
 ) : Network.UdpListener {
+    val facade = Facade()
+
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAtMs: Long = 0
     private var surfaceName : String? = null
     private var surface : Surface = AnonymousSurface(BrainId(id))
-        set(value) { field = value; display.surface = value }
+        set(value) { field = value; facade.notifyChanged() }
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
+    private val state: State = State.Unknown
+
+    enum class State { Unknown, Link, Online }
 
     suspend fun run() {
         link = FragmentingUdpLink(network.link())
         udpSocket = link.listenUdp(Ports.BRAIN, this)
-
-        display.id = id
-        display.haveLink(link)
-        display.onReset = {
-            logger.info { "Resetting Brain $id!" }
-            reset()
-        }
-
         sendHello()
     }
 
@@ -177,6 +175,20 @@ class Brain(
 
         override val faces: List<Model.Face> = emptyList()
         override val lines: List<Model.Line> = emptyList()
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val id: String
+            get() = this@Brain.id
+        val state: State
+            get() = this@Brain.state
+        val surface: Surface
+            get() = this@Brain.surface
+
+        fun reset() {
+            logger.info { "Resetting Brain $id!" }
+            GlobalScope.launch { this@Brain.reset() }
+        }
     }
 
     companion object {

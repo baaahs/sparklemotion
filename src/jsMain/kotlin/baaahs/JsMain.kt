@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.browser.RealMediaDevices
-import baaahs.glsl.GlslPreview
 import baaahs.jsx.MosaicUI
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
@@ -14,17 +13,7 @@ import kotlin.browser.window
 
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
-    if (1 + 1 == 3) {
-        // Protection from dead code elimination, these aren't actually called here:
-
-        fun <T> nuffin(): T {
-            @Suppress("UNCHECKED_CAST")
-            return null as T
-        }
-        GadgetDisplay(nuffin()) {}
-
-        GlslPreview(nuffin(), nuffin(), null)
-    }
+    if (1 + 1 == 3) dce()
 
     val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")

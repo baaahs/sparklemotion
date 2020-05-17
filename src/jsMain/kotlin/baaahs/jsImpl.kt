@@ -20,7 +20,7 @@ actual fun getResource(name: String): String {
     xhr.open("GET", "$resourcesBase/$name", false)
     xhr.send()
 
-    if (xhr.status.equals(200)) {
+    if (xhr.status.toInt() == 200) {
         return xhr.responseText
     }
 
@@ -42,7 +42,7 @@ private fun logMessage(level: String, message: String, exception: Throwable?) {
         "ERROR" -> console.error(message, exception)
         "WARN" -> console.warn(message, exception)
         "INFO" -> console.info(message, exception)
-        "DEBUG" -> console.log(message, exception)
+        "DEBUG" -> console.asDynamic().debug(message, exception)
         else -> console.log(message, exception)
     }
 }
