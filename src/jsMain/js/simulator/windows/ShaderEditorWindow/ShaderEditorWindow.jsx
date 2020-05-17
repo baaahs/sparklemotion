@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useRef, useState,} from 'react';
 import AceEditor from 'react-ace';
 import classNames from 'classnames';
-import styles from './ShowEditorWindow.scss';
+import styles from './ShaderEditorWindow.scss';
 import 'ace-builds/src-noconflict/mode-glsl';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_bright';
@@ -10,7 +10,7 @@ import ShowControls from "../../../app/components/Shows/ShowControls";
 import {useResizeListener} from '../../../app/hooks/useResizeListener';
 import {baaahs} from 'sparklemotion';
 
-const ShowEditorWindow = (props) => {
+const ShaderEditorWindow = (props) => {
   const { state } = useContext(store);
   const { sheepSimulator, selectedShow, isConnected } = state;
   const aceEditor = useRef(null);
@@ -19,6 +19,7 @@ const ShowEditorWindow = (props) => {
   const statusContainerEl = useRef(null);
   const [glslPreviewer, setGlslPreviewer] = useState(null);
   const [gadgets, setGadgets] = useState([]);
+  const [openShaders, setOpenShaders] = useState([]);
 
   // Anytime the sheepView div is resized,
   // ask the Visualizer to resize the 3D sheep canvas
@@ -55,6 +56,11 @@ const ShowEditorWindow = (props) => {
       let shaderSource = currentShow?.src;
       setShowStr(shaderSource);
       updatePreview(shaderSource);
+
+      setOpenShaders([
+        ...openShaders,
+        { name: currentShow.name, src: currentShow.src, show: currentShow }
+      ])
     }
   }, [selectedShow, isConnected, glslPreviewer]);
 
@@ -97,7 +103,7 @@ const ShowEditorWindow = (props) => {
   });
 
   return (
-    <div className={styles.showEditorWindow} ref={windowRootEl}>
+    <div className={styles.shaderEditorWindow} ref={windowRootEl}>
       <div className={styles.toolbar}>
         <div className={styles.showName}>
           <i className="fas fa-chevron-right"></i>
@@ -127,10 +133,10 @@ const ShowEditorWindow = (props) => {
         setAutoScrollEditorIntoView={true}
         onChange={onChange}
         value={showStr}
-        name="ShowEditorWindow"
+        name="ShaderEditorWindow"
         editorProps={{ $blockScrolling: true }}
       />
     </div>
   );
 };
-export default ShowEditorWindow;
+export default ShaderEditorWindow;

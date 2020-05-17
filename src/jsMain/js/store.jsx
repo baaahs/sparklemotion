@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, {createContext, useReducer} from 'react';
 
 const initialState = {
   currentNode: {
@@ -14,7 +14,7 @@ const initialState = {
       direction: 'row',
       splitPercentage: 35,
       first: 'Simulator Settings',
-      second: 'Show Editor',
+      second: 'Shader Editor',
     },
   },
   selectedShow: '',
