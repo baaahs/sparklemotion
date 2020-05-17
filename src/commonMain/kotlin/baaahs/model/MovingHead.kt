@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.model
 
+import baaahs.Color
+import baaahs.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.Vector3F
 import kotlinx.serialization.Serializable

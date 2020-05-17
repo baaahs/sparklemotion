@@ -1,5 +1,9 @@
 package baaahs
 
+import baaahs.model.Model
+import baaahs.models.Decom2019Model
+import baaahs.models.SheepModel
+import baaahs.models.SuiGenerisModel
 import kotlin.js.JsName
 
 object Pluggables {

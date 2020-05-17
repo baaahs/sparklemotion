@@ -7,6 +7,7 @@ import baaahs.imaging.CanvasBitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.jsx.MapperIndex
+import baaahs.model.Model
 import baaahs.visualizer.Rotator
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera

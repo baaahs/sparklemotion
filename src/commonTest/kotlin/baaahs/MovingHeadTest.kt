@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
+import baaahs.model.MovingHead
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

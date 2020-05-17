@@ -4,6 +4,8 @@ import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
+import baaahs.model.Model
+import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.net.TestNetwork

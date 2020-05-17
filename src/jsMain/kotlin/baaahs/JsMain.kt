@@ -3,6 +3,7 @@ package baaahs
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
 import baaahs.jsx.MosaicUI
+import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import kotlinext.js.jsObject

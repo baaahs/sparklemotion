@@ -1,7 +1,11 @@
 package baaahs.visualizer
 
-import baaahs.*
+import baaahs.Config
+import baaahs.JsMapperUi
 import baaahs.dmx.LixadaMiniMovingHead
+import baaahs.getTimeMillis
+import baaahs.model.Model
+import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Framerate
 import info.laht.threekt.cameras.Camera

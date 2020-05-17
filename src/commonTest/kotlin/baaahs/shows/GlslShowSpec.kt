@@ -1,12 +1,12 @@
 import baaahs.Color
-import baaahs.Model
-import baaahs.MovingHead
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
 import baaahs.glshaders.override
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
+import baaahs.model.Model
+import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.shows.FakeGlslContext
 import baaahs.shows.FakeShowContext

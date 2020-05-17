@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.admin.AdminPage
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VisualizerListenerClient
