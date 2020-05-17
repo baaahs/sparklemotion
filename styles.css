@@ -136,14 +136,6 @@ body.noScroll {
     height: 250px;
 }
 
-.sparklemotion-ui #simulatorView {
-    left: auto;
-    bottom: auto;
-    padding: 1em;
-    right: 50%;
-    background-color: #4F4F4F;
-}
-
 video {
     display: block;
     position: absolute;

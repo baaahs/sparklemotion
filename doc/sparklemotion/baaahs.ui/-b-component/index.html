@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BComponent - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.ui</a>&nbsp;/&nbsp;<a href="./index.html">BComponent</a><br/>
+<br/>
+<h1>BComponent</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BComponent</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">, </span><span class="identifier">S</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-observer/index.html"><span class="identifier">Observer</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">BComponent</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.BComponent$<init>(baaahs.ui.BComponent.P)/props">props</span><span class="symbol">:</span>&nbsp;<span class="identifier">P</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="component-did-mount.html">componentDidMount</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">componentDidMount</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="component-will-unmount.html">componentWillUnmount</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">componentWillUnmount</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="component-will-update.html">componentWillUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">componentWillUpdate</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.BComponent$componentWillUpdate(baaahs.ui.BComponent.P, baaahs.ui.BComponent.S)/nextProps">nextProps</span><span class="symbol">:</span>&nbsp;<span class="identifier">P</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui.BComponent$componentWillUpdate(baaahs.ui.BComponent.P, baaahs.ui.BComponent.S)/nextState">nextState</span><span class="symbol">:</span>&nbsp;<span class="identifier">S</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="notify-changed.html">notifyChanged</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">notifyChanged</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="observing.html">observing</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">observing</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.BComponent$observing(baaahs.ui.BComponent.P, baaahs.ui.BComponent.S)/props">props</span><span class="symbol">:</span>&nbsp;<span class="identifier">P</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui.BComponent$observing(baaahs.ui.BComponent.P, baaahs.ui.BComponent.S)/state">state</span><span class="symbol">:</span>&nbsp;<span class="identifier">S</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../baaahs.sim.ui/-brain-indicator/index.html">BrainIndicator</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">BrainIndicator</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><span class="identifier">Props</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.sim.ui/-console/index.html">Console</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Console</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><span class="identifier">Props</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.sim.ui/-framerate-panel/index.html">FrameratePanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FrameratePanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><span class="identifier">Props</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.sim.ui/-network-panel/index.html">NetworkPanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">NetworkPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><span class="identifier">Props</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.sim.ui/-pinky-panel/index.html">PinkyPanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PinkyPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><span class="identifier">Props</span><span class="symbol">,</span>&nbsp;<span class="identifier">State</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-facade/index.html">Facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-fake-link/index.html">FakeLink</a></h4>
 </td>
 <td>
@@ -29,7 +36,40 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">FakeNetwork</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork$<init>(kotlin.Int, baaahs.NetworkDisplay, kotlin.coroutines.CoroutineContext)/networkDelay">networkDelay</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork$<init>(kotlin.Int, baaahs.NetworkDisplay, kotlin.coroutines.CoroutineContext)/display">display</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-network-display/index.html"><span class="identifier">NetworkDisplay</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork$<init>(kotlin.Int, baaahs.NetworkDisplay, kotlin.coroutines.CoroutineContext)/coroutineContext">coroutineContext</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><span class="identifier">CoroutineContext</span></a>&nbsp;<span class="symbol">=</span>&nbsp;EmptyCoroutineContext<span class="symbol">)</span></code></td>
+<code><span class="identifier">FakeNetwork</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork$<init>(kotlin.Int, kotlin.coroutines.CoroutineContext)/networkDelay">networkDelay</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1<span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeNetwork$<init>(kotlin.Int, kotlin.coroutines.CoroutineContext)/coroutineContext">coroutineContext</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><span class="identifier">CoroutineContext</span></a>&nbsp;<span class="symbol">=</span>&nbsp;EmptyCoroutineContext<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="facade.html">facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="packet-loss-rate.html">packetLossRate</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">packetLossRate</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="packets-dropped.html">packetsDropped</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">packetsDropped</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="packets-received.html">packetsReceived</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">packetsReceived</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -42,6 +82,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">FakeLink</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="updates.html">updates</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">.</span><span class="identifier">updates</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeNetwork$updates(kotlin.Any, baaahs.sim.FakeNetwork.Facade)/facade">facade</span><span class="symbol">:</span>&nbsp;<span class="identifier">Facade</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
