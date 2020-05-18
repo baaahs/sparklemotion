@@ -12,8 +12,8 @@ import {useResizeListener} from '../../../app/hooks/useResizeListener';
 import {baaahs} from 'sparklemotion';
 
 const ShaderEditorWindow = (props) => {
-  const { state } = useContext(store);
-  const { sheepSimulator, selectedShow, isConnected } = state;
+  const {state} = useContext(store);
+  const {sheepSimulator, selectedShow, isConnected} = state;
   const aceEditor = useRef(null);
   const windowRootEl = useRef(null);
   const canvasContainerEl = useRef(null);
@@ -21,7 +21,12 @@ const ShaderEditorWindow = (props) => {
   const [glslPreviewer, setGlslPreviewer] = useState(null);
   const [gadgets, setGadgets] = useState([]);
   const [openShaders, setOpenShaders] = useState([]);
-  const [extractionCandidate, setExtractionCandidate] = useState(null);
+  const [extractionCandidate, setExtractionCandidate] = useState({
+    text: null, range: null
+  });
+  const [extractionState, setExtractionState] = useState({
+    extracting: false
+  });
   let glslNumberMarker = null;
 
   // Anytime the sheepView div is resized,
@@ -35,11 +40,11 @@ const ShaderEditorWindow = (props) => {
 
     glslPreviewer?.setShaderSrc(src, (pGadgets, errors) => {
       aceEditor.current.editor.getSession().setAnnotations(errors.map(e => ({
-          row: e.row,
-          column: e.column,
-          text: e.message,
-          type: "error"
-        })));
+        row: e.row,
+        column: e.column,
+        text: e.message,
+        type: "error"
+      })));
 
       if (errors.length === 0) {
         setGadgets(pGadgets);
@@ -53,7 +58,7 @@ const ShaderEditorWindow = (props) => {
   useEffect(() => {
     // Look up the text for the show
     const allShows = sheepSimulator?.shows.toArray() || [];
-    const currentShow = allShows.find(({ name }) => name === selectedShow);
+    const currentShow = allShows.find(({name}) => name === selectedShow);
 
     if (currentShow && !currentShow.isPreview) {
       let shaderSource = currentShow?.src;
@@ -62,7 +67,7 @@ const ShaderEditorWindow = (props) => {
 
       setOpenShaders([
         ...openShaders,
-        { name: currentShow.name, src: currentShow.src, show: currentShow }
+        {name: currentShow.name, src: currentShow.src, show: currentShow}
       ])
     }
   }, [selectedShow, isConnected, glslPreviewer]);
@@ -82,7 +87,7 @@ const ShaderEditorWindow = (props) => {
 
   const glslNumberRegex = /[0-9.]/;
   const glslIllegalRegex = /[A-Za-z_]/;
-  const glslFloatRegex = /([0-9]+\.[0-9]*|[0-9]*\.[0-9]+)/;
+  const glslFloatOrIntRegex = /([0-9]+\.[0-9]*|[0-9]*\.[0-9]+|[0-9]+)/;
   const onCursorChange = useCallback(
     (selection) => {
       const session = selection.session;
@@ -99,19 +104,49 @@ const ShaderEditorWindow = (props) => {
       let badCharBefore = start > 0 && glslIllegalRegex.test(line.charAt(start - 1));
       let badCharAfter = end < line.length - 1 && glslIllegalRegex.test(line.charAt(end));
       const candidate = line.substring(start, end);
-      let looksLikeFloatOrInt = glslFloatRegex.test(candidate);
+      let looksLikeFloatOrInt = glslFloatOrIntRegex.test(candidate);
       if (badCharBefore || badCharAfter || !looksLikeFloatOrInt) {
-        if (extractionCandidate?.text !== null) setExtractionCandidate({text: null, range: null});
+        if (extractionCandidate.text) setExtractionCandidate({text: null, range: null});
       } else {
         const range = new Range(cursor.row, start, cursor.row, end);
         glslNumberMarker = session.addMarker(range, styles.glslNumber, "text", false);
 
-        if (extractionCandidate?.text !== candidate) {
+        if (extractionCandidate.text !== candidate) {
           setExtractionCandidate({text: candidate, range: range});
         }
       }
     },
     [setShowStr, glslPreviewer]
+  );
+
+  const extractUniform = useCallback(
+    () => {
+      let editor = aceEditor.current.editor;
+      let session = editor.getSession();
+
+      let originalText = extractionCandidate.text;
+      const type = (originalText.indexOf('.') > -1) ? 'float' : 'int';
+      let prefix = `${type}Uniform`
+      let num = 0;
+      while (showStr.indexOf(`${prefix}${num}`) > -1) num++;
+      const uniformName = `${prefix}${num}`;
+
+      session.markUndoGroup();
+      const lastUniform = editor.find({
+        needle: 'uniform',
+        backwards: true,
+        caseSensitive: true,
+        wholeWord: true
+      });
+
+      const max = parseFloat(originalText) * 2;
+
+      session.replace(extractionCandidate.range, uniformName);
+      session.insert({row: lastUniform.start.row + 1, column: 0},
+        `uniform ${type} ${uniformName}; // @@Slider default=${originalText} max=${max}\n`)
+      session.markUndoGroup();
+    }
+
   );
 
   useEffect(() => {
@@ -144,7 +179,7 @@ const ShaderEditorWindow = (props) => {
       <div className={styles.toolbar}>
         <div className={styles.showName}>
           <i className="fas fa-chevron-right"></i>
-          <input className={styles.showNameInput} defaultValue={selectedShow} />
+          <input className={styles.showNameInput} defaultValue={selectedShow}/>
         </div>
         <div className={styles.buttons}>
           <i
@@ -172,9 +207,15 @@ const ShaderEditorWindow = (props) => {
         onCursorChange={onCursorChange}
         value={showStr}
         name="ShaderEditorWindow"
-        editorProps={{ $blockScrolling: true }}
+        editorProps={{$blockScrolling: true}}
       />
-      <div>Extract {extractionCandidate?.text}?</div>
+      {(extractionCandidate?.text)
+        ? <div>
+          Extract {extractionCandidate?.text}?
+          <button onClick={extractUniform}>Sure!</button>
+        </div>
+        : ""
+      }
     </div>
   );
 };
