@@ -13,6 +13,7 @@ import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RProps
 import react.RState
+import react.ReactElement
 import react.dom.tbody
 import react.dom.td
 import react.dom.tr
@@ -21,8 +22,8 @@ import styled.styledTable
 import styled.styledTd
 import styled.styledTh
 
-class NetworkPanel(props: Props) : BComponent<NetworkPanel.Props, NetworkPanel.State>(props), Observer {
-    override fun observing(props: Props, state: State): List<Observable?> {
+class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RState>(props), Observer {
+    override fun observing(props: NetworkPanelProps, state: RState): List<Observable?> {
         return listOf(props.network)
     }
 
@@ -69,11 +70,11 @@ class NetworkPanel(props: Props) : BComponent<NetworkPanel.Props, NetworkPanel.S
             }
         }
     }
-
-    class Props(
-        var network: FakeNetwork.Facade?
-    ) : RProps
-
-    class State : RState
-
 }
+
+external interface NetworkPanelProps : RProps {
+    var network: FakeNetwork.Facade?
+}
+
+fun RBuilder.networkPanel(handler: NetworkPanelProps.() -> Unit): ReactElement =
+    child(NetworkPanel::class) { this.attrs(handler) }
