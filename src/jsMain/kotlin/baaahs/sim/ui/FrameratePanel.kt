@@ -10,6 +10,7 @@ import kotlinx.html.id
 import react.RBuilder
 import react.RProps
 import react.RState
+import react.ReactElement
 import react.dom.tbody
 import react.dom.td
 import react.dom.th
@@ -18,8 +19,8 @@ import styled.css
 import styled.styledTable
 import styled.styledTh
 
-class FrameratePanel(props: Props) : BComponent<FrameratePanel.Props, FrameratePanel.State>(props), Observer {
-    override fun observing(props: Props, state: State): List<Observable?> {
+class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProps, RState>(props), Observer {
+    override fun observing(props: FrameratePanelProps, state: RState): List<Observable?> {
         return listOf(
             props.pinkyFramerate,
             props.visualizerFramerate
@@ -64,12 +65,12 @@ class FrameratePanel(props: Props) : BComponent<FrameratePanel.Props, FramerateP
             }
         }
     }
-
-    class Props(
-        var pinkyFramerate: Framerate,
-        var visualizerFramerate: Framerate
-    ) : RProps
-
-    class State : RState
-
 }
+
+external interface FrameratePanelProps : RProps {
+    var pinkyFramerate: Framerate
+    var visualizerFramerate: Framerate
+}
+
+fun RBuilder.frameratePanel(handler: FrameratePanelProps.() -> Unit): ReactElement =
+    child(FrameratePanel::class) { this.attrs(handler) }

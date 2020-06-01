@@ -17,11 +17,12 @@ abstract class BComponent<P : RProps, S : RState>(props: P) : RComponent<P, S>(p
 
     override fun componentWillUnmount() {
         observing(props, state).forEach { it?.removeObserver(this) }
+        pendingUpdates.remove(this)
     }
 
-    override fun componentWillUpdate(nextProps: P, nextState: S) {
-        observing(props, state).forEach { it?.removeObserver(this) }
-        observing(nextProps, nextState).forEach { it?.addObserver(this) }
+    override fun componentDidUpdate(prevProps: P, prevState: S, snapshot: Any) {
+        observing(prevProps, prevState).forEach { it?.removeObserver(this) }
+        observing(props, state).forEach { it?.addObserver(this) }
     }
 
     override fun notifyChanged() {

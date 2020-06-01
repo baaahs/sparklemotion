@@ -11,7 +11,10 @@ import baaahs.util.percent
 import kotlinx.html.id
 import kotlinx.html.js.onChangeFunction
 import org.w3c.dom.HTMLSelectElement
-import react.*
+import react.RBuilder
+import react.RProps
+import react.RState
+import react.ReactElement
 import react.dom.*
 import styled.css
 import styled.styledDiv
@@ -19,16 +22,9 @@ import styled.styledSelect
 import styled.styledSpan
 import kotlin.math.roundToInt
 
-class PinkyPanel(props: Props) : BComponent<PinkyPanel.Props, PinkyPanel.State>(props), Observer {
-    override fun observing(props: Props, state: State): List<Observable?> {
+class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(props), Observer {
+    override fun observing(props: PinkyPanelProps, state: RState): List<Observable?> {
         return listOf(props.pinky)
-    }
-
-    inline fun <reified T : RComponent<P, *>, reified P: RProps> RBuilder.render(
-        props: P,
-        noinline block: RBuilder.() -> Unit = {}
-    ) {
-        child(createElement(T::class.js, props, block))
     }
 
     override fun RBuilder.render() {
@@ -52,20 +48,23 @@ class PinkyPanel(props: Props) : BComponent<PinkyPanel.Props, PinkyPanel.State>(
                     }
 
                     val selectedShow = pinky.selectedShow
+                    var selection = ""
                     shows.forEachIndexed { index, show ->
                         option {
                             +show.name
                             attrs.key = index.toString()
                             attrs.value = index.toString()
                             if (selectedShow.name == show.name) {
-                                attrs.selected = true
+                                selection = index.toString()
                             }
                         }
                     }
+                    // workaround for https://github.com/JetBrains/kotlin-wrappers/issues/92
+                    attrs["value"] = selection
                 }
             }
 
-            br {  }
+            br { }
             +"Brains online: "
 
             span {
@@ -122,11 +121,11 @@ class PinkyPanel(props: Props) : BComponent<PinkyPanel.Props, PinkyPanel.State>(
             }
         }
     }
-
-    class Props(
-        var pinky: Pinky.Facade
-    ) : RProps
-
-    class State() : RState
-
 }
+
+external interface PinkyPanelProps : RProps {
+    var pinky: Pinky.Facade
+}
+
+fun RBuilder.pinkyPanel(handler: PinkyPanelProps.() -> Unit): ReactElement =
+    child(PinkyPanel::class) { this.attrs(handler) }
