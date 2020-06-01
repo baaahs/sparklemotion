@@ -109,6 +109,7 @@ private class FakeShowContext : ShowContext {
 
 external interface PatchPreviewProps : RProps {
     var patch: Patch?
+    var onSuccess: () -> Unit
     var onGadgetsChange: (Array<GadgetData>) -> Unit
     var onError: (Array<CompiledShader.GlslError>) -> Unit
 }

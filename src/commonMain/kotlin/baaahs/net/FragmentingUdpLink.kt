@@ -112,10 +112,10 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
             val offsets = hashSetOf<Int>()
             myFragments.removeAll { fragment ->
                 val alreadyThere = !offsets.add(fragment.offset)
-                if (alreadyThere) {
-                    println("already there: ${fragment}")
-                    println("from: $myFragments")
-                }
+//                if (alreadyThere) {
+//                    println("already there: ${fragment}")
+//                    println("from: $myFragments")
+//                }
                 alreadyThere // duplicate, ignore
             }
 
