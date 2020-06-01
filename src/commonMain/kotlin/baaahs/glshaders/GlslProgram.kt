@@ -62,17 +62,19 @@ class GlslProgram(
     }
 
     private fun bind(resolver: Resolver): List<Binding> {
-        return patch.uniformPorts.mapNotNull { uniformPort ->
-            val uniformProvider = resolver.invoke(uniformPort)
+        return patch.uniformPorts.mapNotNull { uniformPortRef ->
+            if (uniformPortRef.isImplicit) return@mapNotNull null
+
+            val uniformProvider = resolver.invoke(uniformPortRef)
             if (uniformProvider != null) {
-                val binding = Binding(uniformPort, uniformProvider)
+                val binding = Binding(uniformPortRef, uniformProvider)
                 if (binding.isValid) binding else {
-                    logger.warn { "unused uniform for $uniformPort" }
+                    logger.debug { "unused uniform for $uniformPortRef?" }
                     binding.release()
                     null
                 }
             } else {
-                logger.warn { "no UniformProvider bound for $uniformPort" }
+                logger.warn { "no UniformProvider bound for $uniformPortRef" }
                 null
             }
         }
@@ -111,25 +113,25 @@ class GlslProgram(
         gl.useProgram(this)
         val uniformLoc = gl.check { getUniformLocation(id, name) }
         if (uniformLoc == null) {
-            logger.warn { "no such uniform $name" }
+            logger.debug { "no such uniform $name" }
         }
         uniformLoc?.let { Uniform(this@GlslProgram, it) }
     }
 
     inner class Binding(
-        private val uniformPort: Patch.UniformPortRef,
+        private val uniformPortRef: Patch.UniformPortRef,
         internal val dataSourceProvider: DataSourceProvider
     ) {
         init {
             val supportedTypes = dataSourceProvider.supportedTypes
-            if (!supportedTypes.contains(uniformPort.type)) {
+            if (!supportedTypes.contains(uniformPortRef.type)) {
                 throw CompiledShader.LinkException(
-                    "can't set uniform ${uniformPort.type} ${uniformPort.name}: expected $supportedTypes)"
+                    "can't set uniform ${uniformPortRef.type} ${uniformPortRef.name}: expected $supportedTypes)"
                 )
             }
         }
 
-        private val uniformLocation = getUniform(uniformPort.varName)
+        private val uniformLocation = getUniform(uniformPortRef.varName)
 
         val isValid: Boolean get() = uniformLocation != null
 
@@ -141,7 +143,7 @@ class GlslProgram(
             try {
                 uniformLocation?.let { dataSource?.set(it) }
             } catch (e: Exception) {
-                logger.error(e) { "failed to set ${uniformPort.name} from $dataSource" }
+                logger.error(e) { "failed to set ${uniformPortRef.name} from $dataSource" }
             }
         }
 

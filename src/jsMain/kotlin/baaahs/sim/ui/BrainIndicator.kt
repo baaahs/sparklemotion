@@ -11,11 +11,12 @@ import kotlinx.html.js.onMouseOverFunction
 import react.RBuilder
 import react.RProps
 import react.RState
+import react.ReactElement
 import styled.css
 import styled.styledDiv
 
-class BrainIndicator(props: Props) : BComponent<BrainIndicator.Props, BrainIndicator.State>(props), Observer {
-    override fun observing(props: Props, state: State): List<Observable?> {
+class BrainIndicator(props: BrainIndicatorProps) : BComponent<BrainIndicatorProps, RState>(props), Observer {
+    override fun observing(props: BrainIndicatorProps, state: RState): List<Observable?> {
         return listOf(props.brain)
     }
 
@@ -35,12 +36,12 @@ class BrainIndicator(props: Props) : BComponent<BrainIndicator.Props, BrainIndic
             }
         }
     }
-
-    class Props(
-        var brain: Brain.Facade,
-        var brainSelectionListener: (Brain.Facade) -> Unit
-    ) : RProps
-
-    class State : RState
-
 }
+
+external interface BrainIndicatorProps : RProps {
+    var brain: Brain.Facade
+    var brainSelectionListener: (Brain.Facade) -> Unit
+}
+
+fun RBuilder.brainIndicator(handler: BrainIndicatorProps.() -> Unit): ReactElement =
+    child(BrainIndicator::class) { this.attrs(handler) }

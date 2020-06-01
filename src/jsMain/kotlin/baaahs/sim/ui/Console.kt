@@ -3,7 +3,10 @@ package baaahs.sim.ui
 import baaahs.Brain
 import baaahs.SheepSimulator
 import baaahs.Show
-import baaahs.ui.*
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.SimulatorStyles
 import baaahs.ui.SimulatorStyles.console
 import react.RBuilder
 import react.RProps
@@ -15,13 +18,13 @@ import react.setState
 import styled.css
 import styled.styledDiv
 
-class Console(props: Props) : BComponent<Console.Props, Console.State>(props), Observer {
-    override fun observing(props: Props, state: State): List<Observable?> {
+class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(props), Observer {
+    override fun observing(props: ConsoleProps, state: ConsoleState): List<Observable?> {
         return listOf(props.simulator)
     }
 
     private fun brainSelectionListener(brain: Brain.Facade) =
-        setState { selectedBrain = brain}
+        setState { selectedBrain = brain }
 
     override fun RBuilder.render() {
         val simulator = props.simulator
@@ -33,40 +36,36 @@ class Console(props: Props) : BComponent<Console.Props, Console.State>(props), O
         styledDiv {
             css { +console }
 
-            add<NetworkPanel, NetworkPanel.Props>(
-                NetworkPanel.Props(network = simulator.network)
-            )
+            networkPanel {
+                network = simulator.network
+            }
 
-            add<FrameratePanel, FrameratePanel.Props>(
-                FrameratePanel.Props(
-                    pinkyFramerate = simulator.pinky.framerate,
-                    visualizerFramerate = simulator.visualizer.framerate
-                )
-            )
+            frameratePanel {
+                pinkyFramerate = simulator.pinky.framerate
+                visualizerFramerate = simulator.visualizer.framerate
+            }
 
-            add<PinkyPanel, PinkyPanel.Props>(
-                PinkyPanel.Props(pinky = simulator.pinky)
-            )
+            pinkyPanel {
+                pinky = simulator.pinky
+            }
 
             styledDiv {
                 css { +SimulatorStyles.section }
                 b { +"Brains:" }
                 div {
                     simulator.brains.forEach { brain ->
-                        add<BrainIndicator, BrainIndicator.Props>(
-                            BrainIndicator.Props(
-                                brain = brain,
-                                brainSelectionListener = ::brainSelectionListener
-                            )
-                        )
+                         brainIndicator {
+                             this.brain = brain
+                             brainSelectionListener = ::brainSelectionListener
+                         }
                     }
                 }
                 div {
                     val selectedBrain = state.selectedBrain
                     if (selectedBrain != null) {
                         hr {}
-                        b { +"Brain ${selectedBrain.id}"}
-                        div { +"Surface: ${selectedBrain.surface.describe()}"}
+                        b { +"Brain ${selectedBrain.id}" }
+                        div { +"Surface: ${selectedBrain.surface.describe()}" }
                     }
                 }
 
@@ -78,14 +77,13 @@ class Console(props: Props) : BComponent<Console.Props, Console.State>(props), O
             }
         }
     }
+}
 
-    class Props(
-        var simulator: SheepSimulator.Facade?
-    ) : RProps
+external interface ConsoleProps : RProps {
+    var simulator: SheepSimulator.Facade?
+}
 
-    class State(
-        var selectedShow: Show,
-        var selectedBrain: Brain.Facade? = null
-    ) : RState
-
+external interface ConsoleState : RState {
+    var selectedShow: Show
+    var selectedBrain: Brain.Facade?
 }

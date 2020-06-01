@@ -174,10 +174,10 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:$kglVersion")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
-                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
-                implementation(npm("styled-components"))
+                implementation("org.jetbrains:kotlin-react:16.13.1-pre.106-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.106-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.106-kotlin-1.3.72")
+                implementation(npm("styled-components", "^4.4.1"))
                 implementation(npm("inline-style-prefixer"))
 
                 implementation(npm("babel-loader", "^8.0.6"))
@@ -204,8 +204,8 @@ kotlin {
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
-                implementation(npm("react-ace", "^8.1.0"))
-                implementation(npm("ace-builds", "^1.4.6"))
+                implementation(npm("react-ace", "^9.0.0"))
+                implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
             }
