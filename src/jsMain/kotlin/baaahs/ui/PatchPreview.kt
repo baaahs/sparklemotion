@@ -16,8 +16,8 @@ import react.dom.canvas
 
 val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     val canvas = useRef<HTMLCanvasElement>()
-    val (gl, setGl) = useState<GlslContext>()
-    val (glslPreview, setGlslPreview) = useState<GlslPreview>()
+    var gl by useState<GlslContext>(nuffin())
+    var glslPreview by useState<GlslPreview>(nuffin())
 
     val compile = useCallback({ patch: Patch ->
         val plugins = Plugins.findAll()
@@ -45,11 +45,11 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     useEffectWithCleanup(arrayListOf(canvas)) {
         val canvasEl = canvas.current
         val glslContext = GlslBase.jsManager.createContext(canvasEl)
-        setGl(glslContext)
+        gl = glslContext
 
         val preview = GlslPreview(glslContext, canvasEl.width, canvasEl.height)
         preview.start()
-        setGlslPreview(preview)
+        glslPreview = preview
 
         return@useEffectWithCleanup {
             preview.destroy()

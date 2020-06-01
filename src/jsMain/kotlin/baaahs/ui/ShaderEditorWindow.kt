@@ -47,12 +47,12 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
     val aceEditor = useRef<AceEditor>()
     val statusContainerEl = useRef<Element>()
-    val (gadgets, setGadgets) = useState<Array<GadgetData>>(arrayOf())
-    val (showStr, setShowStr) = useState("")
-    val (patch, setPatch) = useState<Patch?>(null)
-    val (openShaders, setOpenShaders) = useState<List<OpenShader>>(arrayListOf())
-    val (extractionCandidate, setExtractionCandidate) = useState(ExtractionCandidate())
-    var glslNumberMarker: Number? = null
+    var gadgets by useState<Array<GadgetData>>(arrayOf())
+    var showStr by useState("")
+    var patch by useState<Patch?>(null)
+    var openShaders by useState<List<OpenShader>>(arrayListOf())
+    var extractionCandidate by useState(ExtractionCandidate())
+    var glslNumberMarker by useState<Number?>(null)
 
     useResizeListener(windowRootEl) {
         aceEditor.current.editor.resize()
@@ -66,10 +66,8 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
     fun updatePreview(src: String) {
         aceEditor.current.editor.getSession().setAnnotations(emptyArray())
-        setPatch(
-            AutoWirer().autoWire(
-                mapOf("color" to GlslAnalyzer().asShader(src)))
-        )
+        patch = AutoWirer().autoWire(
+            mapOf("color" to GlslAnalyzer().asShader(src)))
     }
 
     useEffect(listOf(selectedShow)) {
@@ -79,19 +77,16 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
         if (currentShow != null && currentShow is GlslShow && !currentShow.isPreview) {
             val shaderSource = currentShow.src
-            setShowStr(shaderSource)
+            showStr = shaderSource
             updatePreview(shaderSource)
 
-            setOpenShaders(
-                openShaders
-                        + OpenShader(currentShow.name, currentShow.src, currentShow)
-            )
+            openShaders += OpenShader(currentShow.name, currentShow.src, currentShow)
         }
     }
 
     val onChange: (String, Any) -> Unit = useCallback(
         fun(newValue: String, event: Any) {
-            setShowStr(newValue)
+            showStr = newValue
             try {
                 updatePreview(newValue)
             } catch (e: Exception) {
@@ -121,14 +116,14 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         val candidate = line.substring(start, end)
         val looksLikeFloatOrInt = glslFloatOrIntRegex.matches(candidate)
         if (badCharBefore || badCharAfter || !looksLikeFloatOrInt) {
-            if (extractionCandidate.text != null) setExtractionCandidate(ExtractionCandidate())
+            if (extractionCandidate.text != null) extractionCandidate = ExtractionCandidate()
         } else {
             val range = Range(cursor.row, start, cursor.row, end)
             glslNumberMarker = session.addMarker(range, glslNumber.toString(), "text", false)
 
-            setExtractionCandidate(ExtractionCandidate(range, candidate))
+            extractionCandidate = ExtractionCandidate(range, candidate)
         }
-    }, arrayOf())
+    }, arrayOf(extractionCandidate, glslNumberMarker))
 
     val extractUniform = useCallback({ event: Event ->
         val editor = aceEditor.current.editor
@@ -178,7 +173,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     }, arrayOf(showStr))
 
     val handleGadgetsChange = useCallback({ newGadgets: Array<GadgetData> ->
-        setGadgets(newGadgets)
+        gadgets = newGadgets
     }, arrayOf())
 
     div {
