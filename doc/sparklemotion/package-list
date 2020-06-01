@@ -6,6 +6,8 @@ $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotl
 $dokka.location:baaahs.util$percent(kotlin.Float)baaahs.util/kotlin.-float/percent.html
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
+Ace
+ReactAce.Ace
 baaahs
 baaahs.admin
 baaahs.api.ws

@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SyntaxMode - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">Ace</a>&nbsp;/&nbsp;<a href="./index.html">SyntaxMode</a><br/>
+<br/>
+<h1>SyntaxMode</h1>
+<code><span class="keyword">interface </span><span class="identifier">SyntaxMode</span></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="auto-outdent.html">autoOutdent</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">autoOutdent</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$autoOutdent(kotlin.Any, Ace.Document, kotlin.Number)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$autoOutdent(kotlin.Any, Ace.Document, kotlin.Number)/doc">doc</span><span class="symbol">:</span>&nbsp;<a href="../-document/index.html"><span class="identifier">Document</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$autoOutdent(kotlin.Any, Ace.Document, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="check-outdent.html">checkOutdent</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">checkOutdent</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$checkOutdent(kotlin.Any, kotlin.String, kotlin.String)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$checkOutdent(kotlin.Any, kotlin.String, kotlin.String)/line">line</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$checkOutdent(kotlin.Any, kotlin.String, kotlin.String)/input">input</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-mode-delegates.html">createModeDelegates</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createModeDelegates</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$createModeDelegates(Ace.T$3)/mapping">mapping</span><span class="symbol">:</span>&nbsp;<a href="../-t$3/index.html"><span class="identifier">T$3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-worker.html">createWorker</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createWorker</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$createWorker(Ace.EditSession)/session">session</span><span class="symbol">:</span>&nbsp;<a href="../-edit-session/index.html"><span class="identifier">EditSession</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-completions.html">getCompletions</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getCompletions</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$getCompletions(kotlin.String, Ace.EditSession, Ace.Point, kotlin.String)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$getCompletions(kotlin.String, Ace.EditSession, Ace.Point, kotlin.String)/session">session</span><span class="symbol">:</span>&nbsp;<a href="../-edit-session/index.html"><span class="identifier">EditSession</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$getCompletions(kotlin.String, Ace.EditSession, Ace.Point, kotlin.String)/pos">pos</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$getCompletions(kotlin.String, Ace.EditSession, Ace.Point, kotlin.String)/prefix">prefix</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-completion/index.html"><span class="identifier">Completion</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-keywords.html">getKeywords</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getKeywords</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$getKeywords(kotlin.Boolean)/append">append</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="keyword">dynamic</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-next-line-indent.html">getNextLineIndent</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getNextLineIndent</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$getNextLineIndent(kotlin.Any, kotlin.String, kotlin.String)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$getNextLineIndent(kotlin.Any, kotlin.String, kotlin.String)/line">line</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$getNextLineIndent(kotlin.Any, kotlin.String, kotlin.String)/tab">tab</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-tokenizer.html">getTokenizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getTokenizer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-tokenizer/index.html"><span class="identifier">Tokenizer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="toggle-block-comment.html">toggleBlockComment</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">toggleBlockComment</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$toggleBlockComment(kotlin.Any, Ace.EditSession, Ace.Range, Ace.Point)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleBlockComment(kotlin.Any, Ace.EditSession, Ace.Range, Ace.Point)/session">session</span><span class="symbol">:</span>&nbsp;<a href="../-edit-session/index.html"><span class="identifier">EditSession</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleBlockComment(kotlin.Any, Ace.EditSession, Ace.Range, Ace.Point)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleBlockComment(kotlin.Any, Ace.EditSession, Ace.Range, Ace.Point)/cursor">cursor</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="toggle-comment-lines.html">toggleCommentLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">toggleCommentLines</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$toggleCommentLines(kotlin.Any, Ace.EditSession, kotlin.Number, kotlin.Number)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleCommentLines(kotlin.Any, Ace.EditSession, kotlin.Number, kotlin.Number)/session">session</span><span class="symbol">:</span>&nbsp;<a href="../-edit-session/index.html"><span class="identifier">EditSession</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleCommentLines(kotlin.Any, Ace.EditSession, kotlin.Number, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$toggleCommentLines(kotlin.Any, Ace.EditSession, kotlin.Number, kotlin.Number)/endRow">endRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="transform-action.html">transformAction</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">transformAction</span><span class="symbol">(</span><span class="identifier" id="Ace.SyntaxMode$transformAction(kotlin.String, kotlin.String, Ace.Editor, Ace.EditSession, kotlin.String)/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$transformAction(kotlin.String, kotlin.String, Ace.Editor, Ace.EditSession, kotlin.String)/action">action</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$transformAction(kotlin.String, kotlin.String, Ace.Editor, Ace.EditSession, kotlin.String)/editor">editor</span><span class="symbol">:</span>&nbsp;<a href="../-editor/index.html"><span class="identifier">Editor</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$transformAction(kotlin.String, kotlin.String, Ace.Editor, Ace.EditSession, kotlin.String)/session">session</span><span class="symbol">:</span>&nbsp;<a href="../-edit-session/index.html"><span class="identifier">EditSession</span></a><span class="symbol">, </span><span class="identifier" id="Ace.SyntaxMode$transformAction(kotlin.String, kotlin.String, Ace.Editor, Ace.EditSession, kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

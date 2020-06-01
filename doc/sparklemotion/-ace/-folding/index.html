@@ -1,0 +1,223 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Folding - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">Ace</a>&nbsp;/&nbsp;<a href="./index.html">Folding</a><br/>
+<br/>
+<h1>Folding</h1>
+<code><span class="keyword">interface </span><span class="identifier">Folding</span></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-fold.html">addFold</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addFold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$addFold(kotlin.String, Ace.Range)/placeholder">placeholder</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$addFold(kotlin.String, Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-fold/index.html"><span class="identifier">Fold</span></a></code><br/>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addFold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$addFold(Ace.Fold, Ace.Range)/placeholder">placeholder</span><span class="symbol">:</span>&nbsp;<a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$addFold(Ace.Fold, Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-fold/index.html"><span class="identifier">Fold</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-folds.html">addFolds</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addFolds</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$addFolds(kotlin.Array((Ace.Fold)))/folds">folds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-fold.html">expandFold</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">expandFold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$expandFold(Ace.Fold)/fold">fold</span><span class="symbol">:</span>&nbsp;<a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-folds.html">expandFolds</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">expandFolds</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$expandFolds(kotlin.Array((Ace.Fold)))/folds">folds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="fold-all.html">foldAll</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">foldAll</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$foldAll(kotlin.Number, kotlin.Number, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="Ace.Folding$foldAll(kotlin.Number, kotlin.Number, kotlin.Number)/endRow">endRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="Ace.Folding$foldAll(kotlin.Number, kotlin.Number, kotlin.Number)/depth">depth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-all-folds.html">getAllFolds</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getAllFolds</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-comment-fold-range.html">getCommentFoldRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getCommentFoldRange</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getCommentFoldRange(kotlin.Number, kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getCommentFoldRange(kotlin.Number, kotlin.Number, kotlin.Number)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getCommentFoldRange(kotlin.Number, kotlin.Number, kotlin.Number)/dir">dir</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-display-line.html">getDisplayLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getDisplayLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getDisplayLine(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getDisplayLine(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/endColumn">endColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getDisplayLine(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getDisplayLine(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/startColumn">startColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-at.html">getFoldAt</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldAt</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldAt(kotlin.Number, kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldAt(kotlin.Number, kotlin.Number, kotlin.Number)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldAt(kotlin.Number, kotlin.Number, kotlin.Number)/side">side</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-fold/index.html"><span class="identifier">Fold</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-display-line.html">getFoldDisplayLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldDisplayLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldDisplayLine(Ace.FoldLine, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/foldLine">foldLine</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldDisplayLine(Ace.FoldLine, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/endRow">endRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldDisplayLine(Ace.FoldLine, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/endColumn">endColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldDisplayLine(Ace.FoldLine, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldDisplayLine(Ace.FoldLine, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/startColumn">startColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-folded-row-count.html">getFoldedRowCount</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldedRowCount</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldedRowCount(kotlin.Number, kotlin.Number)/first">first</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldedRowCount(kotlin.Number, kotlin.Number)/last">last</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-line.html">getFoldLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldLine(kotlin.Number, Ace.FoldLine)/docRow">docRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldLine(kotlin.Number, Ace.FoldLine)/startFoldLine">startFoldLine</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-row-end.html">getFoldRowEnd</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldRowEnd</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldRowEnd(kotlin.Number, Ace.FoldLine)/docRow">docRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldRowEnd(kotlin.Number, Ace.FoldLine)/startFoldRow">startFoldRow</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-row-start.html">getFoldRowStart</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldRowStart</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldRowStart(kotlin.Number, Ace.FoldLine)/docRow">docRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldRowStart(kotlin.Number, Ace.FoldLine)/startFoldRow">startFoldRow</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-folds-in-range.html">getFoldsInRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldsInRange</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldsInRange(Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-folds-in-range-list.html">getFoldsInRangeList</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldsInRangeList</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldsInRangeList(kotlin.Array((Ace.Range)))/ranges">ranges</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-fold-string-at.html">getFoldStringAt</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getFoldStringAt</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getFoldStringAt(kotlin.Number, kotlin.Number, kotlin.Number, Ace.FoldLine)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldStringAt(kotlin.Number, kotlin.Number, kotlin.Number, Ace.FoldLine)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldStringAt(kotlin.Number, kotlin.Number, kotlin.Number, Ace.FoldLine)/trim">trim</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="Ace.Folding$getFoldStringAt(kotlin.Number, kotlin.Number, kotlin.Number, Ace.FoldLine)/foldLine">foldLine</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-next-fold-line.html">getNextFoldLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getNextFoldLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getNextFoldLine(kotlin.Number, Ace.FoldLine)/docRow">docRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getNextFoldLine(kotlin.Number, Ace.FoldLine)/startFoldLine">startFoldLine</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-parent-fold-range-data.html">getParentFoldRangeData</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getParentFoldRangeData</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$getParentFoldRangeData(kotlin.Number, kotlin.Boolean)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$getParentFoldRangeData(kotlin.Number, kotlin.Boolean)/ignoreCurrent">ignoreCurrent</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-t$1/index.html"><span class="identifier">T$1</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-row-folded.html">isRowFolded</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">isRowFolded</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$isRowFolded(kotlin.Number, Ace.FoldLine)/docRow">docRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$isRowFolded(kotlin.Number, Ace.FoldLine)/startFoldRow">startFoldRow</span><span class="symbol">:</span>&nbsp;<a href="../-fold-line/index.html"><span class="identifier">FoldLine</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-fold.html">removeFold</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeFold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$removeFold(Ace.Fold)/fold">fold</span><span class="symbol">:</span>&nbsp;<a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-folds.html">removeFolds</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeFolds</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$removeFolds(kotlin.Array((Ace.Fold)))/folds">folds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-fold-style.html">setFoldStyle</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setFoldStyle</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$setFoldStyle(kotlin.String)/style">style</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="toggle-fold.html">toggleFold</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">toggleFold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$toggleFold(kotlin.Boolean)/tryToUnfold">tryToUnfold</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="toggle-fold-widget.html">toggleFoldWidget</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">toggleFoldWidget</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$toggleFoldWidget(kotlin.Boolean)/toggleParent">toggleParent</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="unfold.html">unfold</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unfold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$unfold(kotlin.Nothing, kotlin.Boolean)/location">location</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html"><span class="identifier">Nothing</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="Ace.Folding$unfold(kotlin.Nothing, kotlin.Boolean)/expandInner">expandInner</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code><br/>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unfold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$unfold(kotlin.Number, kotlin.Boolean)/location">location</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$unfold(kotlin.Number, kotlin.Boolean)/expandInner">expandInner</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code><br/>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unfold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$unfold(Ace.Point, kotlin.Boolean)/location">location</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$unfold(Ace.Point, kotlin.Boolean)/expandInner">expandInner</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code><br/>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unfold</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$unfold(Ace.Range, kotlin.Boolean)/location">location</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Folding$unfold(Ace.Range, kotlin.Boolean)/expandInner">expandInner</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-fold/index.html"><span class="identifier">Fold</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-fold-widgets.html">updateFoldWidgets</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">updateFoldWidgets</span><span class="symbol">(</span><span class="identifier" id="Ace.Folding$updateFoldWidgets(Ace.Delta)/delta">delta</span><span class="symbol">:</span>&nbsp;<a href="../-delta/index.html"><span class="identifier">Delta</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-edit-session/index.html">EditSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditSession</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-event-emitter/index.html"><span class="identifier">EventEmitter</span></a><span class="symbol">, </span><a href="../-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">Folding</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

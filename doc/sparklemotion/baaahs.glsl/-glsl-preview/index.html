@@ -29,7 +29,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslPreview</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(org.w3c.dom.Element, org.w3c.dom.Element, kotlin.String)/baseEl">baseEl</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html"><span class="identifier">Element</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(org.w3c.dom.Element, org.w3c.dom.Element, kotlin.String)/statusEl">statusEl</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-element/index.html"><span class="identifier">Element</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(org.w3c.dom.Element, org.w3c.dom.Element, kotlin.String)/shaderSrc">shaderSrc</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslPreview</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.Int)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -55,14 +55,14 @@
 <h4><a href="resize.html">resize</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">resize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">resize</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview$resize(kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$resize(kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="set-shader-src.html">setShaderSrc</a></h4>
+<h4><a href="set-program.html">setProgram</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">setShaderSrc</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview$setShaderSrc(kotlin.String, kotlin.Function2((kotlin.Array((baaahs.GadgetData)), kotlin.Array((baaahs.glsl.CompiledShader.GlslError)), kotlin.Unit)))/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.GlslPreview$setShaderSrc(kotlin.String, kotlin.Function2((kotlin.Array((baaahs.GadgetData)), kotlin.Array((baaahs.glsl.CompiledShader.GlslError)), kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-gadget-data/index.html"><span class="identifier">GadgetData</span></a><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">GlslError</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;{ _, _ -&gt; }<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">setProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.GlslPreview$setProgram(baaahs.glshaders.GlslProgram)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -77,18 +77,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Companion Object Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="logger.html">logger</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
 </tr>
 </tbody>
 </table>

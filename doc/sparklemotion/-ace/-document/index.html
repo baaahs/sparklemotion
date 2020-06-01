@@ -1,0 +1,228 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Document - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">Ace</a>&nbsp;/&nbsp;<a href="./index.html">Document</a><br/>
+<br/>
+<h1>Document</h1>
+<code><span class="keyword">interface </span><span class="identifier">Document</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="apply-delta.html">applyDelta</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">applyDelta</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$applyDelta(Ace.Delta, kotlin.Boolean)/delta">delta</span><span class="symbol">:</span>&nbsp;<a href="../-delta/index.html"><span class="identifier">Delta</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$applyDelta(Ace.Delta, kotlin.Boolean)/doNotValidate">doNotValidate</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="apply-deltas.html">applyDeltas</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">applyDeltas</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$applyDeltas(kotlin.Array((Ace.Delta)))/deltas">deltas</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-delta/index.html"><span class="identifier">Delta</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clipped-pos.html">clippedPos</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">clippedPos</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$clippedPos(kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$clippedPos(kotlin.Number, kotlin.Number)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clone-pos.html">clonePos</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">clonePos</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$clonePos(Ace.Point)/pos">pos</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-anchor.html">createAnchor</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">createAnchor</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$createAnchor(kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$createAnchor(kotlin.Number, kotlin.Number)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-anchor/index.html"><span class="identifier">Anchor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-all-lines.html">getAllLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getAllLines</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-line.html">getLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$getLine(kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-lines.html">getLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getLines</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$getLines(kotlin.Number, kotlin.Number)/firstRow">firstRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$getLines(kotlin.Number, kotlin.Number)/lastRow">lastRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-lines-for-range.html">getLinesForRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getLinesForRange</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$getLinesForRange(Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-new-line-character.html">getNewLineCharacter</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getNewLineCharacter</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-new-line-mode.html">getNewLineMode</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getNewLineMode</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-text-range.html">getTextRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getTextRange</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$getTextRange(Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-value.html">getValue</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getValue</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="index-to-position.html">indexToPosition</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">indexToPosition</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$indexToPosition(kotlin.Number, kotlin.Number)/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$indexToPosition(kotlin.Number, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="insert.html">insert</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">insert</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$insert(Ace.Point, kotlin.String)/position">position</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$insert(Ace.Point, kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="insert-full-lines.html">insertFullLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">insertFullLines</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$insertFullLines(kotlin.Number, kotlin.Array((kotlin.String)))/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$insertFullLines(kotlin.Number, kotlin.Array((kotlin.String)))/lines">lines</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="insert-in-line.html">insertInLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">insertInLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$insertInLine(Ace.Point, kotlin.String)/position">position</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$insertInLine(Ace.Point, kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="insert-merged-lines.html">insertMergedLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">insertMergedLines</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$insertMergedLines(Ace.Point, kotlin.Array((kotlin.String)))/position">position</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$insertMergedLines(Ace.Point, kotlin.Array((kotlin.String)))/lines">lines</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-new-line.html">isNewLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">isNewLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$isNewLine(kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pos.html">pos</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">pos</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$pos(kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$pos(kotlin.Number, kotlin.Number)/column">column</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="position-to-index.html">positionToIndex</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">positionToIndex</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$positionToIndex(Ace.Point, kotlin.Number)/pos">pos</span><span class="symbol">:</span>&nbsp;<a href="../-point/index.html"><span class="identifier">Point</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$positionToIndex(Ace.Point, kotlin.Number)/startRow">startRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove.html">remove</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">remove</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$remove(Ace.Range)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-full-lines.html">removeFullLines</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeFullLines</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$removeFullLines(kotlin.Number, kotlin.Number)/firstRow">firstRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$removeFullLines(kotlin.Number, kotlin.Number)/lastRow">lastRow</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-in-line.html">removeInLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeInLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$removeInLine(kotlin.Number, kotlin.Number, kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$removeInLine(kotlin.Number, kotlin.Number, kotlin.Number)/startColumn">startColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$removeInLine(kotlin.Number, kotlin.Number, kotlin.Number)/endColumn">endColumn</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-new-line.html">removeNewLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeNewLine</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$removeNewLine(kotlin.Number)/row">row</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="replace.html">replace</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">replace</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$replace(Ace.Range, kotlin.String)/range">range</span><span class="symbol">:</span>&nbsp;<a href="../-range/index.html"><span class="identifier">Range</span></a><span class="symbol">, </span><span class="identifier" id="Ace.Document$replace(Ace.Range, kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-point/index.html"><span class="identifier">Point</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="revert-delta.html">revertDelta</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">revertDelta</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$revertDelta(Ace.Delta)/delta">delta</span><span class="symbol">:</span>&nbsp;<a href="../-delta/index.html"><span class="identifier">Delta</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="revert-deltas.html">revertDeltas</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">revertDeltas</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$revertDeltas(kotlin.Array((Ace.Delta)))/deltas">deltas</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-delta/index.html"><span class="identifier">Delta</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-new-line-mode.html">setNewLineMode</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setNewLineMode</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$setNewLineMode(kotlin.String)/newLineMode">newLineMode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-value.html">setValue</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setValue</span><span class="symbol">(</span><span class="identifier" id="Ace.Document$setValue(kotlin.String)/text">text</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
