@@ -58,15 +58,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         aceEditor.current.editor.resize()
     }
 
-    useEffectWithCleanup {
-        println("shaderEditorWindow hihi!")
-
-        return@useEffectWithCleanup {
-            println("shaderEditorWindow byebye!")
-        }
-    }
-
-    fun updateSimulatorWithAlteredShader(src: String) {
+    fun previewShaderOnSimulator(src: String) {
         sheepSimulator?.switchToShow(
             GlslShow(selectedShow, src, GlslShader.globalRenderContext, true)
         )
@@ -78,8 +70,6 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             AutoWirer().autoWire(
                 mapOf("color" to GlslAnalyzer().asShader(src)))
         )
-
-        updateSimulatorWithAlteredShader(src)
     }
 
     useEffect(listOf(selectedShow)) {
@@ -183,6 +173,10 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         )
     }, arrayOf(aceEditor))
 
+    val handlePatchPreviewSuccess = useCallback({
+        previewShaderOnSimulator(showStr)
+    }, arrayOf(showStr))
+
     val handleGadgetsChange = useCallback({ newGadgets: Array<GadgetData> ->
         setGadgets(newGadgets)
     }, arrayOf())
@@ -213,6 +207,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
             patchPreview {
                 this.patch = patch
+                onSuccess = handlePatchPreviewSuccess
                 onGadgetsChange = handleGadgetsChange
                 onError = handleGlslErrors
             }
