@@ -80,7 +80,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                                     "FINAL WARNING: "
                                 } else ""
 
-                                logger.warn {
+                                logger.debug {
                                     "${maybeFinal}incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
                                             " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
                                             " for messageId=$messageId" +

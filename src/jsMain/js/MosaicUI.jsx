@@ -7,18 +7,10 @@ import SheepVisualizerWindow from './simulator/windows/SheepVisualizerWindow/She
 import SimulatorSettingsWindow from './simulator/windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
 import MosiacMenuBar from './mosiac/MosiacMenuBar/MosiacMenuBar';
 import {StateProvider, store} from './store';
-import ShaderEditorWindow from './simulator/windows/ShaderEditorWindow/ShaderEditorWindow';
 import GlslPreviewWindow from "./simulator/windows/GlslPreviewWindow/GlslPreviewWindow";
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
-
-const WINDOWS_BY_TYPE = {
-  'Shader Editor': ShaderEditorWindow,
-  'Sheep Visualizer': SheepVisualizerWindow,
-  'Simulator Settings': SimulatorSettingsWindow,
-  'Glsl Preview': GlslPreviewWindow,
-};
 
 const MosaicApp = (props) => {
   return (
@@ -29,6 +21,13 @@ const MosaicApp = (props) => {
 };
 
 const MosaicUI = (props) => {
+  const WINDOWS_BY_TYPE = {
+    'Shader Editor': baaahs.ui.ShaderEditorWindow,
+    'Sheep Visualizer': SheepVisualizerWindow,
+    'Simulator Settings': SimulatorSettingsWindow,
+    'Glsl Preview': GlslPreviewWindow,
+  };
+
   const { getSheepSimulator } = props;
   const { state, dispatch } = useContext(store);
   const [pubSub, setPubSub] = useState(null);

@@ -48,16 +48,19 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(p
                     }
 
                     val selectedShow = pinky.selectedShow
+                    var selection = ""
                     shows.forEachIndexed { index, show ->
                         option {
                             +show.name
                             attrs.key = index.toString()
                             attrs.value = index.toString()
                             if (selectedShow.name == show.name) {
-                                attrs.selected = true
+                                selection = index.toString()
                             }
                         }
                     }
+                    // workaround for https://github.com/JetBrains/kotlin-wrappers/issues/92
+                    attrs["value"] = selection
                 }
             }
 
