@@ -174,49 +174,53 @@ const ShaderEditorWindow = (props) => {
     }
   });
 
-  return (
-    <div className={styles.shaderEditorWindow} ref={windowRootEl}>
-      <div className={styles.toolbar}>
-        <div className={styles.showName}>
-          <i className="fas fa-chevron-right"></i>
-          <input className={styles.showNameInput} defaultValue={selectedShow}/>
+  try {
+    return (
+      <div className={styles.shaderEditorWindow} ref={windowRootEl}>
+        <div className={styles.toolbar}>
+          <div className={styles.showName}>
+            <i className="fas fa-chevron-right"></i>
+            <input className={styles.showNameInput} defaultValue={selectedShow}/>
+          </div>
+          <div className={styles.buttons}>
+            <i
+              className={classNames('fas', 'fa-play', styles.iconButton)}
+              onClick={previewShow}
+            />
+          </div>
         </div>
-        <div className={styles.buttons}>
-          <i
-            className={classNames('fas', 'fa-play', styles.iconButton)}
-            onClick={previewShow}
-          />
+        <div className={styles.previewBar}>
+          <div className={styles.preview} ref={canvasContainerEl}/>
+          <div className={styles.status} ref={statusContainerEl}/>
+          <div className={styles.controls}>
+            <ShowControls gadgets={gadgets}/>
+          </div>
         </div>
+        <AceEditor
+          ref={aceEditor}
+          mode="glsl"
+          theme="tomorrow_night_bright"
+          width="100%"
+          height="100%"
+          showGutter={true}
+          setAutoScrollEditorIntoView={true}
+          onChange={onChange}
+          onCursorChange={onCursorChange}
+          value={showStr}
+          name="ShaderEditorWindow"
+          editorProps={{$blockScrolling: true}}
+        />
+        {(extractionCandidate?.text)
+          ? <div>
+            Extract {extractionCandidate?.text}?
+            <button onClick={extractUniform}>Sure!</button>
+          </div>
+          : ""
+        }
       </div>
-      <div className={styles.previewBar}>
-        <div className={styles.preview} ref={canvasContainerEl}/>
-        <div className={styles.status} ref={statusContainerEl}/>
-        <div className={styles.controls}>
-          <ShowControls gadgets={gadgets}/>
-        </div>
-      </div>
-      <AceEditor
-        ref={aceEditor}
-        mode="glsl"
-        theme="tomorrow_night_bright"
-        width="100%"
-        height="100%"
-        showGutter={true}
-        setAutoScrollEditorIntoView={true}
-        onChange={onChange}
-        onCursorChange={onCursorChange}
-        value={showStr}
-        name="ShaderEditorWindow"
-        editorProps={{$blockScrolling: true}}
-      />
-      {(extractionCandidate?.text)
-        ? <div>
-          Extract {extractionCandidate?.text}?
-          <button onClick={extractUniform}>Sure!</button>
-        </div>
-        : ""
-      }
-    </div>
-  );
+    );
+  } finally {
+    console.log("shaderEditorWindow finished-jsx")
+  }
 };
 export default ShaderEditorWindow;
