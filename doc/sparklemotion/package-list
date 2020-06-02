@@ -6,6 +6,7 @@ $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotl
 $dokka.location:baaahs.util$percent(kotlin.Float)baaahs.util/kotlin.-float/percent.html
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
+$dokka.location:baaahs.visualizer$findOrAdd(kotlin.collections.MutableList((baaahs.visualizer.findOrAdd.T)), baaahs.visualizer.findOrAdd.T)baaahs.visualizer/kotlin.collections.-mutable-list/find-or-add.html
 Ace
 ReactAce.Ace
 baaahs
@@ -21,6 +22,8 @@ baaahs.imaging
 baaahs.io
 baaahs.jsx
 baaahs.mapper
+baaahs.model
+baaahs.models
 baaahs.net
 baaahs.proto
 baaahs.shaders
@@ -30,4 +33,5 @@ baaahs.sim.ui
 baaahs.ui
 baaahs.util
 baaahs.visualizer
+baaahs.visualizer.ui
 three

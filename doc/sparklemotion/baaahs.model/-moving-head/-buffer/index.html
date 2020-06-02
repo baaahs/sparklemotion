@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>MovingHead.Buffer - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.model</a>&nbsp;/&nbsp;<a href="../index.html">MovingHead</a>&nbsp;/&nbsp;<a href="./index.html">Buffer</a><br/>
+<br/>
+<h1>Buffer</h1>
+<code><span class="keyword">interface </span><span class="identifier">Buffer</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="buffer.html">buffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">buffer</span><span class="symbol">: </span><span class="identifier">Buffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="color.html">color</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">color</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="color-mode.html">colorMode</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">colorMode</span><span class="symbol">: </span><span class="identifier">ColorMode</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="color-wheel-colors.html">colorWheelColors</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">colorWheelColors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">WheelColor</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dimmer.html">dimmer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">dimmer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dimmer-channel.html">dimmerChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">dimmerChannel</span><span class="symbol">: </span><span class="identifier">Channel</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pan.html">pan</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">pan</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pan-channel.html">panChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">panChannel</span><span class="symbol">: </span><span class="identifier">Channel</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pan-fine-channel.html">panFineChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">panFineChannel</span><span class="symbol">: </span><span class="identifier">Channel</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-fine-positioning.html">supportsFinePositioning</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">supportsFinePositioning</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tilt.html">tilt</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">tilt</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tilt-channel.html">tiltChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">tiltChannel</span><span class="symbol">: </span><span class="identifier">Channel</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tilt-fine-channel.html">tiltFineChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">tiltFineChannel</span><span class="symbol">: </span><span class="identifier">Channel</span><span class="symbol">?</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="closest-color-for.html">closestColorFor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">closestColorFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.model.MovingHead.Buffer$closestColorFor(baaahs.Color)/color">color</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte/index.html"><span class="identifier">Byte</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
