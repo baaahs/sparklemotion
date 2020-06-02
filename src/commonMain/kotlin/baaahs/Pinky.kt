@@ -29,7 +29,7 @@ class Pinky(
     val dmxUniverse: Dmx.Universe,
     val beatSource: BeatSource,
     val clock: Clock,
-    val fs: Fs,
+    fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
@@ -39,7 +39,7 @@ class Pinky(
     val facade = Facade()
 
     private val storage = Storage(fs)
-    private val mappingResults = storage.loadMappingData(model)
+    private val mappingResults by lazy { storage.loadMappingData(model) }
 
     private val link = FragmentingUdpLink(network.link())
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
@@ -64,9 +64,6 @@ class Pinky(
 
     private val selectedShowChannel: PubSub.Channel<String>
     private var selectedNewShowAt = DateTime.now()
-
-    private val brainToSurfaceMap_CHEAT = mutableMapOf<BrainId, Model.Surface>()
-    private val surfaceToPixelLocationMap_CHEAT = mutableMapOf<Model.Surface, List<Vector3F>>()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -236,7 +233,7 @@ class Pinky(
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
         val dataFor = mappingResults.dataFor(brainId)
             ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
-            ?: findMappingInfo_CHEAT(surfaceName, brainId)
+            ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
 
         val surface = dataFor?.let {
             val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
@@ -309,15 +306,6 @@ class Pinky(
 
     }
 
-    private fun findMappingInfo_CHEAT(surfaceName: String?, brainId: BrainId): MappingResults.Info? {
-        val modelSurface = surfaceName?.let { model.findModelSurface(surfaceName) } ?: brainToSurfaceMap_CHEAT[brainId]
-        return if (modelSurface != null) {
-            MappingResults.Info(modelSurface, surfaceToPixelLocationMap_CHEAT[modelSurface])
-        } else {
-            null
-        }
-    }
-
     /** If we want a pong back from a [BrainShaderMessage], send this. */
     private fun generatePongPayload(): ByteArray {
         return ByteArrayWriter().apply {
@@ -329,14 +317,6 @@ class Pinky(
         val originalSentAt = ByteArrayReader(message.data).readLong()
         val elapsedMs = getTimeMillis() - originalSentAt
         logger.debug { "Shader pong from $fromAddress took ${elapsedMs}ms" }
-    }
-
-    fun providePanelMapping_CHEAT(brainId: BrainId, surface: Model.Surface) {
-        brainToSurfaceMap_CHEAT[brainId] = surface
-    }
-
-    fun providePixelMapping_CHEAT(surface: Model.Surface, pixelLocations: List<Vector3F>) {
-        surfaceToPixelLocationMap_CHEAT[surface] = pixelLocations
     }
 
     inner class PinkyBeatDisplayer(private val beatSource: BeatSource) {

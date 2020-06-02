@@ -1,9 +1,13 @@
 package baaahs
 
+import baaahs.geom.Matrix4
+import baaahs.geom.Vector3F
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
+import baaahs.mapper.MappingSession
+import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
@@ -32,6 +36,7 @@ class PinkyTest {
     private lateinit var testShow1: TestShow1
     private lateinit var pinky: Pinky
     private lateinit var pinkyLink: TestNetwork.Link
+    private lateinit var fakeFs: FakeFs
 
     @BeforeTest
     fun setUp() {
@@ -39,6 +44,7 @@ class PinkyTest {
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
         testShow1 = TestShow1()
+        fakeFs = FakeFs()
         pinky = Pinky(
             model,
             listOf(testShow1),
@@ -46,7 +52,7 @@ class PinkyTest {
             FakeDmxUniverse(),
             StubBeatSource(),
             FakeClock(),
-            FakeFs(),
+            fakeFs,
             PermissiveFirmwareDaddy(),
             StubSoundAnalyzer(),
             glslRenderer = GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
@@ -69,7 +75,7 @@ class PinkyTest {
 
     @Test
     fun whenUnmappedBrainKnownToPinkyComesOnline_showShouldBeNotifiedAndBrainShouldReceiveMapping() {
-        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+        injectPanelMapping(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
@@ -86,7 +92,7 @@ class PinkyTest {
 
     @Test
     fun whenPinkySideMappedBrainComesOnline_showShouldBeNotified() {
-        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+        injectPanelMapping(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
@@ -100,7 +106,7 @@ class PinkyTest {
 
     @Test
     fun whenBrainSideMappedBrainComesOnline_showShouldBeNotified() {
-        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+        injectPanelMapping(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
@@ -114,7 +120,7 @@ class PinkyTest {
 
     @Test
     fun asBrainsComeOnlineAndAreMapped_showShouldBeNotified() {
-        pinky.providePanelMapping_CHEAT(BrainId("brain1"), panel17)
+        injectPanelMapping(BrainId("brain1"), panel17)
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
         pinky.updateSurfaces()
@@ -198,6 +204,17 @@ class PinkyTest {
                 }
             }
         }
+    }
+
+    private fun injectPanelMapping(brainId: BrainId, surface: Model.Surface) {
+        val mappingSessionPath = Storage(fakeFs).saveSession(
+            MappingSession(0.0, listOf(
+                MappingSession.SurfaceData(brainId.uuid, surface.name,
+                    emptyList(), null, null, null
+                )
+            ), Matrix4(emptyArray()), null, notes = "Simulated pixels")
+        )
+        fakeFs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
     }
 }
 
