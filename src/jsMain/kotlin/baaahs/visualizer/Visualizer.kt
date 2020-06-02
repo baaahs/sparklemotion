@@ -145,11 +145,11 @@ class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
         }
     }
 
-    fun addSurface(p: Model.Surface): VizSurface {
+    fun addSurface(surfaceGeometry: SurfaceGeometry): VizSurface {
         // if (p.name !== '15R') return
         // if (omitPanels.includes(p.name)) return
 
-        val vizPanel = VizSurface(p, scene)
+        val vizPanel = VizSurface(surfaceGeometry, scene)
         vizPanels.add(vizPanel)
         return vizPanel
     }

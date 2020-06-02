@@ -14,36 +14,21 @@ import info.laht.threekt.objects.Line
 import info.laht.threekt.objects.Mesh
 import info.laht.threekt.scenes.Scene
 
-class VizSurface(panel: Model.Surface, private val scene: Scene) {
-    companion object {
-        fun getFromObject(object3D: Object3D): VizSurface? =
-            object3D.userData.asDynamic()["VizPanel"] as VizSurface?
-    }
-
-    val name = panel.name
+class SurfaceGeometry(surface: Model.Surface) {
+    val name = surface.name
     internal val geometry = Geometry()
     var area = 0.0f
     var panelNormal: Vector3
     val isMultiFaced: Boolean
     internal var edgeNeighbors: Map<String, List<Face3>>
-    private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
-    internal var faceMaterial: MeshBasicMaterial
-    private var mesh: Mesh
-    private var lines: List<Line>
-    var vizPixels: VizPixels? = null
-        set(value) {
-            field?.removeFromScene(scene)
-            value?.addToScene(scene)
-
-            field = value
-        }
+    var lines: List<Geometry>
 
     init {
         val panelGeometry = this.geometry
         val panelVertices = mutableListOf<Vector3>()
 
         val faceAreas = mutableListOf<Float>()
-        panelGeometry.faces = panel.faces.map { face ->
+        panelGeometry.faces = surface.faces.map { face ->
             val localVerts = face.vertices.map { v -> panelVertices.findOrAdd(v.toVector3()) }
 
             val faceArea = Triangle(
@@ -76,34 +61,47 @@ class VizSurface(panel: Model.Surface, private val scene: Scene) {
         }
         this.edgeNeighbors = edgeNeighbors
 
-        val lines = panel.lines.map { line ->
+        lines = surface.lines.map { line ->
             val lineGeo = Geometry()
             lineGeo.vertices = line.vertices.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
             lineGeo
         }
+    }
+}
 
-        this.faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
+class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
+    val name: String get() = surfaceGeometry.name
+    private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
+    internal var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
+    private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
+    private val lines: List<Line>
+    val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
+    val geometry: Geometry get() = surfaceGeometry.geometry
+
+    var vizPixels: VizPixels? = null
+        set(value) {
+            field?.removeFromScene(scene)
+            value?.addToScene(scene)
+
+            field = value
+        }
+
+    init {
         this.faceMaterial.side = FrontSide
         this.faceMaterial.transparent = false
 
-        this.mesh = Mesh(panelGeometry, this.faceMaterial)
-        mesh.asDynamic().name = "Surface: $name"
+        mesh.asDynamic().name = "Surface: ${surfaceGeometry.name}"
 
         // so we can get back to the VizPanel from a raycaster intersection:
         this.mesh.userData.asDynamic()["VizPanel"] = this
 
         scene.add(this.mesh)
 
-        this.lines = lines.map { line -> Line(line.asDynamic(), lineMaterial) }
+        this.lines = surfaceGeometry.lines.map { line -> Line(line.asDynamic(), lineMaterial) }
 
         this.lines.forEach { line ->
             scene.add(line)
         }
-    }
-
-    class Point2(val x: Float, val y: Float) {
-        operator fun component1() = x
-        operator fun component2() = y
     }
 
     fun getPixelLocationsInPanelSpace(): Array<Vector2>? {
@@ -113,4 +111,10 @@ class VizSurface(panel: Model.Surface, private val scene: Scene) {
     fun getPixelLocationsInModelSpace(): Array<Vector3>? {
         return vizPixels?.getPixelLocationsInModelSpace(this)
     }
+
+    companion object {
+        fun getFromObject(object3D: Object3D): VizSurface? =
+            object3D.userData.asDynamic()["VizPanel"] as VizSurface?
+    }
+
 }

@@ -7,10 +7,12 @@ import baaahs.proto.Ports
 import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.*
+import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
+import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,7 +36,7 @@ class SheepSimulator {
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
-    public val shows = AllShows.allShows
+    val shows = AllShows.allShows
     val glslContext = GlslShader.globalRenderContext
     private val pinky = Pinky(
         model,
@@ -59,6 +61,29 @@ class SheepSimulator {
         }
 
     fun start() = doRunBlocking {
+        val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
+        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
+        val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
+        var totalPixels = 0
+
+        val simSurfaces = model.allSurfaces.sortedBy(Model.Surface::name).map { surface ->
+            //            if (panel.name != "17L") return@forEachIndexed
+
+            val surfaceGeometry = SurfaceGeometry(surface)
+            val pixelPositions = pixelArranger.arrangePixels(surfaceGeometry)
+
+            totalPixels += pixelPositions.size
+            document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
+
+            // This part is cheating... TODO: don't cheat!
+            val pixelPositions3F = pixelPositions.map {
+                Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
+            }
+            pinky.providePixelMapping_CHEAT(surface, pixelPositions3F)
+
+            SimSurface(surface, surfaceGeometry, pixelPositions)
+        }
+
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
@@ -79,30 +104,13 @@ class SheepSimulator {
             AdminUi(network, pinky.address)
         }
 
-        val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
-        val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
-        var totalPixels = 0
-
-        model.allSurfaces.sortedBy(Model.Surface::name).forEachIndexed { index, surface ->
-            //            if (panel.name != "17L") return@forEachIndexed
-
-            val vizPanel = visualizer.addSurface(surface)
-            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizPixels(vizPanel, pixelPositions)
-
-            totalPixels += pixelPositions.size
-            document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
-
-            // This part is cheating... TODO: don't cheat!
-            val pixelLocations = vizPanel.getPixelLocationsInModelSpace()!!.map {
-                Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
-            }
-            pinky.providePixelMapping_CHEAT(surface, pixelLocations)
+        simSurfaces.forEachIndexed { index, simSurface ->
+            val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
+            vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
 
             val brain = Brain("brain//$index", network, vizPanel.vizPixels ?: NullPixels)
             brains.add(brain)
-            pinky.providePanelMapping_CHEAT(BrainId(brain.id), surface)
+            pinky.providePanelMapping_CHEAT(BrainId(brain.id), simSurface.surface)
             brainScope.launch { randomDelay(1000); brain.run() }
         }
 
@@ -123,6 +131,11 @@ class SheepSimulator {
             delay(200000L)
         }
     }
+
+    class SimSurface(
+        val surface: Model.Surface,
+        val surfaceGeometry: SurfaceGeometry,
+        val pixelPositions: Array<Vector3>)
 
     @JsName("switchToShow")
     fun switchToShow(show: Show) {

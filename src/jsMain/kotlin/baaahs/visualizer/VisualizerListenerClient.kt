@@ -21,7 +21,7 @@ class VisualizerListenerClient(
     Network.WebSocketListener, CoroutineScope by MainScope() {
 
     private val vizSurfaces = model.allSurfaces.associate { surface ->
-        surface.name to visualizer.addSurface(surface)
+        surface.name to visualizer.addSurface(SurfaceGeometry(surface))
     }
 
     private lateinit var tcpConnection: Network.TcpConnection
