@@ -25,11 +25,11 @@ class Storage(val fs: Fs) {
         return fs.listFiles("mapping-sessions").filter { it.endsWith(".json") }
     }
 
-    fun saveSession(mappingSession: MappingSession) {
-        fs.createFile(
-            "mapping-sessions/${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json",
-            json.stringify(MappingSession.serializer(), mappingSession)
-        )
+    fun saveSession(mappingSession: MappingSession): String {
+        val path =
+            "mapping-sessions/${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
+        fs.createFile(path, json.stringify(MappingSession.serializer(), mappingSession))
+        return path
     }
 
     fun saveImage(name: String, imageData: ByteArray) {
