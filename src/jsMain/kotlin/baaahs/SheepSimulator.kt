@@ -1,20 +1,26 @@
 package baaahs
 
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.glsl.GlslRenderer
+import baaahs.mapper.MappingSession
+import baaahs.mapper.MappingSession.SurfaceData.PixelData
+import baaahs.mapper.Storage
+import baaahs.model.Model
 import baaahs.proto.Ports
 import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
 import baaahs.sim.*
+import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VizSurface
+import baaahs.visualizer.VizPixels
 import decodeQueryParams
+import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.HTMLDivElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -28,24 +34,22 @@ class SheepSimulator {
     val network = FakeNetwork()
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
-    val visualizer = Visualizer(
-        model,
-        document.getElementById("sheepView")!! as HTMLDivElement
-    )
+    val visualizer = Visualizer(model)
     private val fs = FakeFs()
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
-    public val shows = AllShows.allShows
+    val shows = AllShows.allShows
     val glslContext = GlslShader.globalRenderContext
+    val clock = JsClock()
     private val pinky = Pinky(
         model,
         shows,
         network,
         dmxUniverse,
         bridgeClient.beatSource,
-        JsClock(),
+        clock,
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
@@ -62,6 +66,8 @@ class SheepSimulator {
         }
 
     fun start() = doRunBlocking {
+        val simSurfaces = prepareSurfaces()
+
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
@@ -82,30 +88,13 @@ class SheepSimulator {
             AdminUi(network, pinky.address)
         }
 
-        val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
-        val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
-        var totalPixels = 0
+        simSurfaces.forEach { simSurface ->
+            val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
+            vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
 
-        model.allSurfaces.sortedBy(Model.Surface::name).forEachIndexed { index, surface ->
-            //            if (panel.name != "17L") return@forEachIndexed
-
-            val vizPanel = visualizer.addSurface(surface)
-            val pixelPositions = pixelArranger.arrangePixels(vizPanel)
-            vizPanel.vizPixels = VizSurface.VizPixels(vizPanel, pixelPositions)
-
-            totalPixels += pixelPositions.size
-            document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
-
-            // This part is cheating... TODO: don't cheat!
-            val pixelLocations = vizPanel.getPixelLocationsInModelSpace()!!.map {
-                Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
-            }
-            pinky.providePixelMapping_CHEAT(surface, pixelLocations)
-
-            val brain = Brain("brain//$index", network, vizPanel.vizPixels ?: NullPixels)
+            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels)
             brains.add(brain)
-            pinky.providePanelMapping_CHEAT(BrainId(brain.id), surface)
+
             brainScope.launch { randomDelay(1000); brain.run() }
         }
 
@@ -126,6 +115,42 @@ class SheepSimulator {
             delay(200000L)
         }
     }
+
+    private fun prepareSurfaces(): List<SimSurface> {
+        val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
+        val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
+        val pixelArranger = SwirlyPixelArranger(pixelDensity, pixelSpacing)
+        var totalPixels = 0
+
+        val simSurfaces = model.allSurfaces.sortedBy(Model.Surface::name).mapIndexed { index, surface ->
+            //            if (panel.name != "17L") return@forEachIndexed
+
+            val surfaceGeometry = SurfaceGeometry(surface)
+            val pixelPositions = pixelArranger.arrangePixels(surfaceGeometry)
+            totalPixels += pixelPositions.size
+            SimSurface(surface, surfaceGeometry, pixelPositions, BrainId("brain//$index"))
+        }
+        document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
+
+        val mappingSessionPath = Storage(fs).saveSession(
+            MappingSession(clock.now(), simSurfaces.map { simSurface ->
+                MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
+                    simSurface.pixelPositions.map {
+                        PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
+                    }, null, null, null
+                )
+            }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
+        )
+        fs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
+        return simSurfaces
+    }
+
+    class SimSurface(
+        val surface: Model.Surface,
+        val surfaceGeometry: SurfaceGeometry,
+        val pixelPositions: Array<Vector3>,
+        val brainId: BrainId
+    )
 
     @JsName("switchToShow")
     fun switchToShow(show: Show) {

@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.geom.Vector3F
+import baaahs.model.Model
 
 /**
  * Represents a surface whose lighting can be controlled.

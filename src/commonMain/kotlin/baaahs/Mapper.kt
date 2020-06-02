@@ -9,6 +9,7 @@ import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
 import baaahs.mapper.MappingSession
+import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*

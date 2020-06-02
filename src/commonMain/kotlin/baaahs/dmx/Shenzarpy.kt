@@ -2,7 +2,7 @@ package baaahs.dmx
 
 import baaahs.Color
 import baaahs.Dmx
-import baaahs.MovingHead
+import baaahs.model.MovingHead
 import baaahs.toRadians
 
 class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.DeviceType(16), MovingHead.Buffer {

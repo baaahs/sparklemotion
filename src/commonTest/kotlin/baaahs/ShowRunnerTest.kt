@@ -5,6 +5,9 @@ import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
+import baaahs.model.Model
+import baaahs.model.MovingHead
+import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse

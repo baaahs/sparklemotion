@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
+import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*

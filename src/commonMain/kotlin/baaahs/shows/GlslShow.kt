@@ -1,11 +1,15 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Logger
+import baaahs.Show
+import baaahs.ShowContext
+import baaahs.Surface
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.Patch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
+import baaahs.model.Model
 import baaahs.shaders.GlslShader
 
 open class GlslShow(

@@ -2,9 +2,9 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.Logger
-import baaahs.Model
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
 import info.laht.threekt.math.Vector3
@@ -21,7 +21,7 @@ class VisualizerListenerClient(
     Network.WebSocketListener, CoroutineScope by MainScope() {
 
     private val vizSurfaces = model.allSurfaces.associate { surface ->
-        surface.name to visualizer.addSurface(surface)
+        surface.name to visualizer.addSurface(SurfaceGeometry(surface))
     }
 
     private lateinit var tcpConnection: Network.TcpConnection
@@ -46,7 +46,7 @@ class VisualizerListenerClient(
                     val pixelLocations = (0 until pixelCount).map {
                         Vector3F.parse(reader).let { Vector3(it.x, it.y, it.z) }
                     }.toTypedArray()
-                    vizSurface.vizPixels = VizSurface.VizPixels(vizSurface, pixelLocations)
+                    vizSurface.vizPixels = VizPixels(vizSurface, pixelLocations)
                 }
             }
 

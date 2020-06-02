@@ -8,6 +8,7 @@ import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
+import baaahs.model.MovingHead
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 import org.w3c.dom.HTMLCanvasElement

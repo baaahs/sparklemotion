@@ -1,9 +1,9 @@
 package baaahs.glsl
 
-import baaahs.Model
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.model.Model
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2

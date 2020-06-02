@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.admin.AdminPage
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VisualizerListenerClient
@@ -14,11 +15,12 @@ class AdminUi(network: Network, pinkyAddress: Network.Address) : HostedWebApp {
     private val clientLink = network.link()
     private val container = document.createElement("div") as HTMLDivElement
     private val model = selectModel()
-    private val visualizer = Visualizer(model, container)
+    private val visualizer = Visualizer(model)
     private val visualizerListenerClient = VisualizerListenerClient(clientLink, pinkyAddress, visualizer, model)
 
     init {
         container.className = "adminModelVisualizerContainer"
+        visualizer.facade.container = container
         visualizer.render()
     }
 
