@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.SparkleMotion
+import baaahs.geom.Vector2F
 import info.laht.threekt.core.Face3
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.math.Line3
@@ -12,14 +13,14 @@ import kotlin.random.Random
 
 class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pixelSpacing : Float = 2f) {
 
-    fun arrangePixels(vizSurface: VizSurface): Array<Vector3> = PanelArranger(vizSurface).arrangePixels()
+    fun arrangePixels(surfaceGeometry: SurfaceGeometry): Array<Vector3> = PanelArranger(surfaceGeometry).arrangePixels()
 
-    inner class PanelArranger(vizSurface: VizSurface) {
-        private val pixelCount = min(SparkleMotion.MAX_PIXEL_COUNT, floor(vizSurface.area * pixelDensity).toInt())
-        private val panelGeometry = vizSurface.geometry.clone()
+    inner class PanelArranger(surfaceGeometry: SurfaceGeometry) {
+        private val pixelCount = min(SparkleMotion.MAX_PIXEL_COUNT, floor(surfaceGeometry.area * pixelDensity).toInt())
+        private val panelGeometry = surfaceGeometry.geometry.clone()
         private val vertices = panelGeometry.vertices
-        private val isMultiFaced = vizSurface.isMultiFaced
-        private val edgeNeighbors = vizSurface.edgeNeighbors
+        private val isMultiFaced = surfaceGeometry.isMultiFaced
+        private val edgeNeighbors = surfaceGeometry.edgeNeighbors
 
         fun arrangePixels(): Array<Vector3> {
             panelGeometry.computeFaceNormals()
@@ -139,7 +140,7 @@ class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pi
             )
         }
 
-        fun isInside(point: VizSurface.Point2, vs: Array<VizSurface.Point2>): Boolean {
+        fun isInside(point: Vector2F, vs: Array<Vector2F>): Boolean {
             // ray-casting algorithm based on
             // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 
@@ -167,7 +168,7 @@ class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pi
             return inside
         }
 
-        fun xy(v: Vector3) = VizSurface.Point2(v.x.toFloat(), v.y.toFloat())
+        fun xy(v: Vector3) = Vector2F(v.x.toFloat(), v.y.toFloat())
 
         // we've tried to add a pixel that's not inside curFace; figure out which face it corresponds to...
         internal fun getFaceForPoint(curFace: Face3, v: Vector3): Face3? {
