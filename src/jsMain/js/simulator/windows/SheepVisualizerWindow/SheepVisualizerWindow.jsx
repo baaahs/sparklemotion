@@ -3,29 +3,29 @@ import styles from './SheepVisualizerWindow.scss';
 import {store} from '../../../store';
 import {FormControlLabel, Switch} from '@material-ui/core';
 import {useResizeListener} from "../../../app/hooks/useResizeListener";
+import {baaahs} from 'sparklemotion';
 
 const SheepVisualizerWindow = () => {
-  const { state } = useContext(store);
-  const { sheepSimulator } = state;
+  const {state} = useContext(store);
+  const VisualizerPanel = baaahs.visualizer.ui.VisualizerPanel;
+  const simulator = state.sheepSimulator?.facade;
   const sheepViewEl = useRef(null);
-  const [rotate, setRotate] = useState(
-    sheepSimulator?.visualizer.rotate || false
-  );
+  const visualizer = simulator?.visualizer;
+
+  const [rotate, setRotate] = useState(visualizer?.rotate || false);
 
   // Sync the rotate checkbox back to the simulator
   useEffect(() => {
-    if (sheepSimulator) sheepSimulator.visualizer.rotate = rotate;
+    if (visualizer) visualizer.rotate = rotate;
   }, [rotate]);
 
   // Anytime the sheepView div is resized,
   // ask the Visualizer to resize the 3D sheep canvas
   useResizeListener(sheepViewEl, () => {
-    sheepSimulator?.visualizer.resize();
+    visualizer?.resize();
   });
 
-  setTimeout(() => {
-    sheepSimulator?.visualizer.resize();
-  }, 50);
+  if (!simulator) return "Loading...";
 
   return (
     <div ref={sheepViewEl}>
@@ -41,7 +41,8 @@ const SheepVisualizerWindow = () => {
           label="Rotate"
         />
       </div>
-      <div id="sheepView" className={styles.sheepView} />
+
+      <VisualizerPanel visualizer={visualizer}/>
     </div>
   );
 };

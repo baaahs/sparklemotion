@@ -3,8 +3,8 @@ import {store} from '../../../store';
 import {baaahs} from 'sparklemotion';
 
 const SimulatorSettingsWindow = (props) => {
-    const Console = baaahs.sim.ui.Console;
     const {state} = React.useContext(store);
+    const Console = baaahs.sim.ui.Console;
     let simulator = state.sheepSimulator?.facade;
     return <Console simulator={simulator}/>;
 };

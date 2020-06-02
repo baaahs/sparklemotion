@@ -7,8 +7,14 @@ class FakeFs : Fs {
     private val files = mutableMapOf<String, ByteArray>()
 
     override fun listFiles(path: String): List<String> {
-        logger.debug { "FakeFs.listFiles($path)" }
-        return files.keys.filter { it.startsWith("$path/") }
+        val entries = files.keys.filter { it.startsWith("$path/") }.map {
+            val inPath = it.substring(path.length + 1)
+            val slash = inPath.indexOf('/')
+            val entry = if (slash == -1) inPath else inPath.substring(0, slash)
+            entry
+        }.distinct()
+        logger.debug { "FakeFs.listFiles($path) -> $entries" }
+        return entries
     }
 
     override fun loadFile(path: String): String? {
@@ -30,6 +36,10 @@ class FakeFs : Fs {
             throw Exception("$path already exists")
         }
         files[path] = content
+    }
+
+    fun renameFile(from: String, to: String) {
+        files[to] = files.remove(from)!!
     }
 
     companion object {

@@ -2,6 +2,7 @@ package baaahs.shows
 
 import baaahs.*
 import baaahs.glsl.GlslRenderer
+import baaahs.model.MovingHead
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 

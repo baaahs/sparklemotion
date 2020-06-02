@@ -2,8 +2,8 @@ package baaahs.mapper
 
 import baaahs.BrainId
 import baaahs.Logger
-import baaahs.Model
 import baaahs.geom.Vector3F
+import baaahs.model.Model
 
 interface MappingResults {
     fun dataFor(brainId: BrainId): Info?

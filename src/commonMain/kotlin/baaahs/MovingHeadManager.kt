@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.io.Fs
+import baaahs.model.MovingHead
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlin.js.JsName

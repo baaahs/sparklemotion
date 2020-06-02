@@ -2,7 +2,7 @@ package baaahs.dmx
 
 import baaahs.Color
 import baaahs.Dmx
-import baaahs.MovingHead
+import baaahs.model.MovingHead
 
 class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9), MovingHead.Buffer {
     override val panChannel get() = Channel.PAN
