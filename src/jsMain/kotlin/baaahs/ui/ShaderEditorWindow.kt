@@ -16,28 +16,24 @@ import baaahs.jsx.store
 import baaahs.jsx.useResizeListener
 import baaahs.shaders.GlslShader
 import baaahs.shows.GlslShow
-import baaahs.ui.Styles.buttons
 import baaahs.ui.Styles.controls
 import baaahs.ui.Styles.glslNumber
-import baaahs.ui.Styles.iconButton
 import baaahs.ui.Styles.previewBar
-import baaahs.ui.Styles.showName
-import baaahs.ui.Styles.showNameInput
 import baaahs.ui.Styles.status
-import baaahs.ui.Styles.toolbar
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
+import materialui.components.iconbutton.enums.IconButtonEdge
+import materialui.components.iconbutton.iconButton
+import materialui.components.tab.tab
+import materialui.components.tabs.enums.TabsVariant
+import materialui.components.tabs.tabs
+import materialui.components.toolbar.toolbar
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.button
-import react.dom.defaultValue
-import react.dom.div
-import react.dom.i
+import react.dom.*
 import styled.css
 import styled.styledDiv
-import styled.styledI
-import styled.styledInput
 
 val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val windowRootEl = useRef<Element>()
@@ -48,9 +44,9 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val aceEditor = useRef<AceEditor>()
     val statusContainerEl = useRef<Element>()
     var gadgets by useState<Array<GadgetData>>(arrayOf())
-    var showStr by useState("")
-    var patch by useState<Patch?>(null)
     var openShaders by useState<List<OpenShader>>(arrayListOf())
+    var selectedShaderIndex by useState(-1)
+    var patch by useState<Patch?>(null)
     var extractionCandidate by useState(ExtractionCandidate())
     var glslNumberMarker by useState<Number?>(null)
 
@@ -58,43 +54,70 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         aceEditor.current.editor.resize()
     }
 
-    fun previewShaderOnSimulator(src: String) {
+    fun previewShaderOnSimulator(shader: OpenShader) {
         sheepSimulator?.switchToShow(
-            GlslShow(selectedShow, src, GlslShader.globalRenderContext, true)
+            GlslShow(selectedShow, shader.src, GlslShader.globalRenderContext, true)
         )
     }
 
-    fun updatePreview(src: String) {
-        aceEditor.current.editor.getSession().setAnnotations(emptyArray())
-        patch = AutoWirer().autoWire(
-            mapOf("color" to GlslAnalyzer().asShader(src)))
+    val showGlslErrors = useCallback(aceEditor) { glslErrors: Array<CompiledShader.GlslError> ->
+        val editor = aceEditor.current.editor
+        editor.getSession().setAnnotations(
+            glslErrors.map { error ->
+                jsObject<Annotation> {
+                    row = error.row
+                    column = error.column
+                    text = error.message
+                    type = "error"
+                }
+            }.toTypedArray()
+        )
     }
 
-    useEffect(listOf(selectedShow)) {
+    useEffect(selectedShow, name = "show change") {
         // Look up the text for the show
         val allShows = sheepSimulator?.shows?.toTypedArray() ?: emptyArray()
         val currentShow = allShows.find { it.name == selectedShow }
 
         if (currentShow != null && currentShow is GlslShow && !currentShow.isPreview) {
-            val shaderSource = currentShow.src
-            showStr = shaderSource
-            updatePreview(shaderSource)
-
-            openShaders += OpenShader(currentShow.name, currentShow.src, currentShow)
+            val existingShaderIdx = openShaders.indexOfFirst { it.name == selectedShow }
+            val shader = if (existingShaderIdx == -1) {
+                val newShader = OpenShader(currentShow.name, currentShow.src, currentShow)
+                openShaders += newShader
+                selectedShaderIndex = openShaders.size - 1
+                newShader
+            } else {
+                selectedShaderIndex = existingShaderIdx
+                openShaders[existingShaderIdx]
+            }
         }
     }
 
+    useEffect(openShaders, selectedShaderIndex, showGlslErrors, name = "shaders change") {
+        if (selectedShaderIndex == -1) return@useEffect
+        val selectedShader = openShaders[selectedShaderIndex]
+        val editor = aceEditor.current.editor
+
+        selectedShader.lastCursorPosition?.let { editor.moveCursorToPosition(it) }
+        selectedShader.lastCursorPosition = null
+        showGlslErrors(selectedShader.glslErrors)
+
+        if (selectedShader.patch == null) {
+            selectedShader.patch = AutoWirer().autoWire(
+                mapOf("color" to GlslAnalyzer().asShader(selectedShader.src)))
+        }
+        patch = selectedShader.patch
+    }
+
     val onChange: (String, Any) -> Unit = useCallback(
-        fun(newValue: String, event: Any) {
-            showStr = newValue
-            try {
-                updatePreview(newValue)
-            } catch (e: Exception) {
-                console.error("Uncaught exception in editor onChange", e)
-            }
-        },
-        arrayOf(showStr)
-    )
+        openShaders, selectedShaderIndex
+    ) { newValue: String, event: Any ->
+        val origShaders = openShaders
+        openShaders = openShaders.replace(selectedShaderIndex) {
+            it.copy(src = newValue)
+        }
+        println("Changed? ${origShaders === openShaders} with == ${origShaders == openShaders}")
+    }
 
     val glslNumberRegex = Regex("[0-9.]")
     val glslIllegalRegex = Regex("[A-Za-z_]")
@@ -133,7 +156,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         val type = if (originalText.indexOf('.') > -1) "float" else "int"
         val prefix = "${type}Uniform"
         var num = 0
-        while (showStr.indexOf("${prefix}${num}") > -1) num++
+        while (session.getDocument().getValue().indexOf("${prefix}${num}") > -1) num++
         val uniformName = "${prefix}${num}"
 
         session.markUndoGroup()
@@ -154,45 +177,68 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         session.markUndoGroup()
     }, arrayOf(aceEditor, extractionCandidate))
 
-    val handleGlslErrors = useCallback({ glslErrors: Array<CompiledShader.GlslError> ->
-        val editor = aceEditor.current.editor
-        editor.getSession().setAnnotations(
-            glslErrors.map { error ->
-                jsObject<Annotation> {
-                    row = error.row
-                    column = error.column
-                    text = error.message
-                    type = "error"
-                }
-            }.toTypedArray()
-        )
-    }, arrayOf(aceEditor))
+    val handleGlslErrors = useCallback(
+        aceEditor, openShaders, selectedShaderIndex, showGlslErrors
+    ) { glslErrors: Array<CompiledShader.GlslError> ->
+        val selectedShader = openShaders[selectedShaderIndex]
+        selectedShader.glslErrors = glslErrors
+        showGlslErrors(glslErrors)
+    }
 
-    val handlePatchPreviewSuccess = useCallback({
-        previewShaderOnSimulator(showStr)
-    }, arrayOf(showStr))
+    val handlePatchPreviewSuccess = useCallback(openShaders, selectedShaderIndex) {
+        val selectedShader = openShaders[selectedShaderIndex]
+        selectedShader.glslErrors = emptyArray()
+        previewShaderOnSimulator(selectedShader)
+    }
 
-    val handleGadgetsChange = useCallback({ newGadgets: Array<GadgetData> ->
+    val handleGadgetsChange = useCallback() { newGadgets: Array<GadgetData> ->
         gadgets = newGadgets
+    }
+
+    val handleTabChange = useCallback({ event: Event, tabIndex: Int ->
+        if (selectedShaderIndex != -1) {
+            val selectedShader = openShaders[selectedShaderIndex]
+            selectedShader.lastCursorPosition = aceEditor.current.editor.getCursorPosition()
+        }
+
+        selectedShaderIndex = tabIndex
     }, arrayOf())
 
+    val handleMenuButton = useCallback() { event: Event ->
+//        setMenuEl(event.currentTarget)
+    }
+
+    val handleMenuClose = useCallback() { event: Event ->
+//        setMenuEl(null)
+    }
+
+    val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
+
+    println("ShaderEditorWindow: render patch from ${selectedShader?.name}")
     div {
         ref = windowRootEl
-        styledDiv {
-            css { +toolbar }
 
-            styledDiv { css { +showName } }
-
-            i("fas fa-chevron-right") {}
-            styledInput {
-                css { +showNameInput }
-                attrs.defaultValue = selectedShow
+        toolbar {
+            iconButton {
+                attrs.edge = IconButtonEdge.start
+                +"Menu"
             }
 
-            styledDiv {
-                css { +buttons }
-                styledI {
-                    css { +"fas"; +"fa-play"; +iconButton }
+            button { +"New…" }
+            button { +"Open…" }
+            button { +"Save" }
+            button { +"Save As…" }
+            button { +"Close" }
+        }
+
+        tabs {
+            attrs.variant = TabsVariant.scrollable
+            attrs.value = if (selectedShaderIndex == -1) 0 else selectedShaderIndex
+            attrs.onChange = handleTabChange
+
+            openShaders.forEach { openShader ->
+                tab {
+                    attrs.label = openShader.name.asTextNode()
                 }
             }
         }
@@ -223,13 +269,14 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
                 showGutter = true
                 this.onChange = onChange
                 this.onCursorChange = onCursorChange
-                value = showStr
+                value = selectedShader?.src ?: ""
                 name = "ShaderEditorWindow"
                 setOptions = jsObject {
                     autoScrollEditorIntoView = true
                 }
                 editorProps = jsObject {
                     `$blockScrolling` = true
+                    readOnly = selectedShader == null
                 }
             }
         }
@@ -256,7 +303,11 @@ data class OpenShader(
     val name: String,
     val src: String,
     val show: GlslShow
-)
+) {
+    var patch: Patch? = null
+    var glslErrors: Array<CompiledShader.GlslError> = emptyArray()
+    var lastCursorPosition: Point? = null
+}
 
 
 external interface ShaderEditorWindowProps : RProps
