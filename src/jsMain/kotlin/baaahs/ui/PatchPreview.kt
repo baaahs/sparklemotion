@@ -57,7 +57,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         }
     }
 
-    useEffect(listOf(props.patch, glslPreview)) {
+    useEffect(props.patch, glslPreview, name = "patch") {
         props.patch?.let { patch ->
             compile(patch)?.let { program ->
                 glslPreview.setProgram(program)

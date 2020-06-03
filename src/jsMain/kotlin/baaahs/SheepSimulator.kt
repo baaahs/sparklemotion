@@ -35,7 +35,8 @@ class SheepSimulator {
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
     val visualizer = Visualizer(model)
-    private val fs = FakeFs()
+    private val mapperFs = FakeFs()
+    private val fs = MergedFs(BrowserSandboxFs(), mapperFs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
@@ -132,7 +133,7 @@ class SheepSimulator {
         }
         document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
-        val mappingSessionPath = Storage(fs).saveSession(
+        val mappingSessionPath = Storage(mapperFs).saveSession(
             MappingSession(clock.now(), simSurfaces.map { simSurface ->
                 MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
                     simSurface.pixelPositions.map {
@@ -141,7 +142,7 @@ class SheepSimulator {
                 )
             }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
         )
-        fs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
+        mapperFs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
         return simSurfaces
     }
 
