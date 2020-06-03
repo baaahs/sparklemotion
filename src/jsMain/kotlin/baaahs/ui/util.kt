@@ -28,6 +28,9 @@ fun <T> List<T>.replace(index: Int, newValueBlock: (T) -> T): List<T> =
 
 fun String.asTextNode(): ReactElement = asDynamic()
 
+fun Array<*>.truncateStrings(length: Int): List<String?> {
+    return map { it?.toString()?.truncate(length) }
+}
 fun String?.truncate(length: Int): String? {
     return if (this != null && this.length >= length) {
         substring(0, length - 1) + "…"

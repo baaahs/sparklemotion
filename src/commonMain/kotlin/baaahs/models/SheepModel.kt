@@ -27,7 +27,7 @@ class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
     override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Panel {
         val expectedPixelCount = pixelsPerPanel[name]
         if (expectedPixelCount == null) {
-            logger.warn { "No pixel count found for $name" }
+            logger.debug { "No pixel count found for $name" }
         }
         return Panel(name, expectedPixelCount, faces, lines)
     }

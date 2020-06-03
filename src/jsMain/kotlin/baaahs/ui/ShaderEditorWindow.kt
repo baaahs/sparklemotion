@@ -40,15 +40,17 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val contextState = useContext(store).state
     val sheepSimulator = contextState.sheepSimulator
     val selectedShow = contextState.selectedShow
+    
+    val preact = Preact()
 
     val aceEditor = useRef<AceEditor>()
     val statusContainerEl = useRef<Element>()
-    var gadgets by useState<Array<GadgetData>>(arrayOf())
-    var openShaders by useState<List<OpenShader>>(arrayListOf())
-    var selectedShaderIndex by useState(-1)
-    var patch by useState<Patch?>(null)
-    var extractionCandidate by useState(ExtractionCandidate())
-    var glslNumberMarker by useState<Number?>(null)
+    var gadgets by preact.state<Array<GadgetData>> { arrayOf() }
+    var openShaders by preact.state<List<OpenShader>> { arrayListOf() }
+    var selectedShaderIndex by preact.state { -1 }
+    var patch by preact.state<Patch?> { null }
+    var extractionCandidate by preact.state { ExtractionCandidate() }
+    var glslNumberMarker by preact.state<Number?> { null }
 
     useResizeListener(windowRootEl) {
         aceEditor.current.editor.resize()
@@ -74,10 +76,10 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         )
     }
 
-    useEffect(selectedShow, name = "show change") {
+    preact.sideEffect("show change", selectedShow) {
         // Look up the text for the show
         val allShows = sheepSimulator?.shows?.toTypedArray() ?: emptyArray()
-        val currentShow = allShows.find { it.name == selectedShow }
+        val currentShow = allShows.find { it.name == contextState.selectedShow }
 
         if (currentShow != null && currentShow is GlslShow && !currentShow.isPreview) {
             val existingShaderIdx = openShaders.indexOfFirst { it.name == selectedShow }
@@ -93,8 +95,8 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         }
     }
 
-    useEffect(openShaders, selectedShaderIndex, showGlslErrors, name = "shaders change") {
-        if (selectedShaderIndex == -1) return@useEffect
+    preact.sideEffect("shaders change", openShaders, selectedShaderIndex, showGlslErrors) {
+        if (selectedShaderIndex == -1) return@sideEffect
         val selectedShader = openShaders[selectedShaderIndex]
         val editor = aceEditor.current.editor
 
@@ -292,7 +294,6 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         }
     }
 }
-
 
 data class ExtractionCandidate(
     val range: Range? = null,
