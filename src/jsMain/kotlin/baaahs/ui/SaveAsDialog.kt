@@ -21,8 +21,8 @@ private val SaveAsDialog = functionalComponent<SaveAsDialogProps> { props ->
     val preact = Preact()
     var selectedFs by preact.state { props.defaultTarget?.fs ?: props.filesystems.first() }
     var name by preact.state { props.defaultTarget?.name }
-    var currentDir by preact.state { "" }
-    var filesInDir by preact.state { emptyList<String>() }
+    var currentDir by preact.state { selectedFs.fs.rootFile }
+    var filesInDir by preact.state { emptyList<Fs.File>() }
 
     val handleClose = useCallback(props.onCancel) { event: Event, reason: String ->
         props.onCancel()
@@ -65,7 +65,7 @@ private val SaveAsDialog = functionalComponent<SaveAsDialogProps> { props ->
                         list {
                             filesInDir.forEach {
                                 listItem {
-                                    listItemText { attrs.primary = it.asTextNode() }
+                                    listItemText { attrs.primary = it.name.asTextNode() }
                                 }
                             }
                         }

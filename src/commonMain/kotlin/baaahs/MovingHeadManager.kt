@@ -15,7 +15,7 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
     private val movingHeadPresets = mutableMapOf<String, MovingHead.MovingHeadPosition>()
     private val json = Json(JsonConfiguration.Stable)
 
-    private val presetsFileName = "presets/moving-head-positions.json"
+    private val presetsFileName = fs.resolve("presets/moving-head-positions.json")
 
     init {
         val presetsJson = fs.loadFile(presetsFileName)
@@ -31,7 +31,7 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
                 "Disco Balls" to MovingHead.MovingHeadPosition(123, 200)
             )
         ) { map ->
-            fs.createFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
+            fs.saveFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
             println("Saved $map to disk!")
         }
 
