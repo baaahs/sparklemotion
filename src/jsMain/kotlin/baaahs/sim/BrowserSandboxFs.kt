@@ -7,12 +7,13 @@ class BrowserSandboxFs : Fs {
     private val storage = window.localStorage
 
     private fun keys(): List<String> {
-        return (storage.getItem("sm.fs:keys") ?: "").split("\n")
+        return (storage.getItem("sm.fs:keys") ?: "").split("\n").filter { it.isNotEmpty() }
     }
 
     override fun listFiles(path: String): List<String> {
-        val entries = keys().filter { it.startsWith("$path/") }.map {
-            val inPath = it.substring(path.length + 1)
+        val prefix = if (path.isEmpty()) "" else "$path/"
+        val entries = keys().filter { it.startsWith(prefix) }.map {
+            val inPath = it.substring(path.length).trimStart('/')
             val slash = inPath.indexOf('/')
             val entry = if (slash == -1) inPath else inPath.substring(0, slash)
             entry

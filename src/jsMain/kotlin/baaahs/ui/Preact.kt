@@ -4,17 +4,17 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class Preact {
-    var firstTime = false
-    var dataIndex = 0
-    var sideEffectIndex = 0
-    val state = react.useState {
+    private var firstTime = false
+    private var dataIndex = 0
+    private var sideEffectIndex = 0
+    private val state = react.useState {
         firstTime = true
         Context()
     }
-    val counter = react.useState { 0 }
-    var internalCounter = 0
+    private val counter = react.useState { 0 }
+    private var internalCounter = 0
 
-    fun <T> state(valueInitializer: () -> T): Data<T> {
+    fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
             val data = Data(valueInitializer()) {
@@ -55,12 +55,12 @@ class Preact {
         }
     }
 
-    class Context {
+    private class Context {
         val data: MutableList<Data<*>> = mutableListOf()
         val sideEffects: MutableList<SideEffect> = mutableListOf()
     }
 
-    class Data<T>(initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
+    private class Data<T>(initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
         var value: T = initialValue
 
         override operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -74,7 +74,7 @@ class Preact {
         }
     }
 
-    class SideEffect(
+    private class SideEffect(
         var lastWatchValues: Array<out Any?>
     )
 }

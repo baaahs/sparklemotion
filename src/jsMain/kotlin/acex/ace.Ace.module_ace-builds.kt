@@ -1,6 +1,7 @@
-@file:JsQualifier("Ace")
+@file:JsModule("ace-builds")
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION")
-package Ace
+
+package acex
 
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
@@ -125,7 +126,8 @@ external interface Folding {
     fun updateFoldWidgets(delta: Delta)
 }
 
-external interface Range {
+@JsName("Range")
+external class Range constructor(startRow: Number, startColumn: Number, endRow: Number, endColumn: Number) {
     var start: Point
     var end: Point
     fun isEqual(range: Range): Boolean
