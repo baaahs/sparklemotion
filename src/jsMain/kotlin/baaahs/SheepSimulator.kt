@@ -48,7 +48,7 @@ class SheepSimulator {
         shows.forEach { show ->
             if (show !is GlslShow) return@forEach
             try {
-                fs.createFile("shaders/${show.name}.glsl", show.src)
+                fs.saveFile(fs.resolve("shaders", "${show.name}.glsl"), show.src)
             } catch (e: Exception) {
             }
         }
@@ -154,7 +154,9 @@ class SheepSimulator {
                 )
             }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
         )
-        mapperFs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
+        mapperFs.renameFile(
+            mappingSessionPath,
+            fs.resolve("mapping", model.name, mappingSessionPath.name))
         return simSurfaces
     }
 

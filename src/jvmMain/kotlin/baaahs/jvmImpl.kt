@@ -21,8 +21,8 @@ actual fun decodeBase64(s: String): ByteArray = Base64.getDecoder().decode(s)
 
 class RealFs(private val basePath: Path) : Fs {
 
-    override fun listFiles(path: String): List<String> {
-        val dir = resolve(path)
+    override fun listFiles(parent: Fs.File): List<String> {
+        val dir = resolve(parent)
         if (Files.isDirectory(dir)) {
             return Files.list(dir).map { it.fileName.toString() }.toList()
         } else {
@@ -30,8 +30,8 @@ class RealFs(private val basePath: Path) : Fs {
         }
     }
 
-    override fun loadFile(path: String): String? {
-        val destPath = resolve(path)
+    override fun loadFile(file: Fs.File): String? {
+        val destPath = resolve(file)
         try {
             return Files.readAllBytes(destPath).decodeToString()
         } catch (e: java.nio.file.NoSuchFileException) {
@@ -39,14 +39,14 @@ class RealFs(private val basePath: Path) : Fs {
         }
     }
 
-    override fun createFile(path: String, content: ByteArray, allowOverwrite: Boolean) {
-        val destPath = resolve(path)
+    override fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
+        val destPath = resolve(file)
         Files.createDirectories(destPath.parent)
         Files.write(destPath, content, if (allowOverwrite) StandardOpenOption.CREATE else StandardOpenOption.CREATE_NEW)
     }
 
-    override fun createFile(path: String, content: String, allowOverwrite: Boolean) {
-        createFile(path, content.encodeToByteArray(), allowOverwrite)
+    override fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
+        saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
     private fun resolve(path: String): Path {
