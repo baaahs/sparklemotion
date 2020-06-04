@@ -102,10 +102,10 @@ external interface IAceEditorProps : RProps {
     var onInput: ((event: Any) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onLoad: ((editor: Ace.Editor) -> Unit)?
+    var onLoad: ((editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onValidate: ((annotations: Array<Ace.Annotation>) -> Unit)?
+    var onValidate: ((annotations: Array<acex.Annotation>) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
     var onBeforeLoad: ((ace: Any) -> Unit)?
@@ -123,10 +123,10 @@ external interface IAceEditorProps : RProps {
     var onPaste: ((value: String) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onFocus: ((event: Any, editor: Ace.Editor) -> Unit)?
+    var onFocus: ((event: Any, editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onBlur: ((event: Any, editor: Ace.Editor) -> Unit)?
+    var onBlur: ((event: Any, editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
     var onScroll: ((editor: IEditorProps) -> Unit)?
@@ -144,7 +144,7 @@ external interface IAceEditorProps : RProps {
     var commands: Array<ICommand>?
         get() = definedExternally
         set(value) = definedExternally
-    var annotations: Array<Ace.Annotation>?
+    var annotations: Array<acex.Annotation>?
         get() = definedExternally
         set(value) = definedExternally
     var markers: Array<IMarker>?
@@ -243,10 +243,10 @@ external interface IAceEditorPropsPartial {
     var onInput: ((event: Any) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onLoad: ((editor: Ace.Editor) -> Unit)?
+    var onLoad: ((editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onValidate: ((annotations: Array<Ace.Annotation>) -> Unit)?
+    var onValidate: ((annotations: Array<acex.Annotation>) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
     var onBeforeLoad: ((ace: Any) -> Unit)?
@@ -264,10 +264,10 @@ external interface IAceEditorPropsPartial {
     var onPaste: ((value: String) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onFocus: ((event: Any, editor: Ace.Editor) -> Unit)?
+    var onFocus: ((event: Any, editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
-    var onBlur: ((event: Any, editor: Ace.Editor) -> Unit)?
+    var onBlur: ((event: Any, editor: acex.Editor) -> Unit)?
         get() = definedExternally
         set(value) = definedExternally
     var onScroll: ((editor: IEditorProps) -> Unit)?
@@ -285,7 +285,7 @@ external interface IAceEditorPropsPartial {
     var commands: Array<ICommand>?
         get() = definedExternally
         set(value) = definedExternally
-    var annotations: Array<Ace.Annotation>?
+    var annotations: Array<acex.Annotation>?
         get() = definedExternally
         set(value) = definedExternally
     var markers: Array<IMarker>?

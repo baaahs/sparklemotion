@@ -285,7 +285,7 @@ external interface IAnnotation {
     var type: String
 }
 
-external interface IRenderer : Ace.VirtualRenderer {
+external interface IRenderer : acex.VirtualRenderer {
     var placeholderNode: HTMLDivElement?
         get() = definedExternally
         set(value) = definedExternally

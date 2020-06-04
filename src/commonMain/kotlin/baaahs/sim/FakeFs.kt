@@ -6,9 +6,10 @@ import baaahs.io.Fs
 class FakeFs : Fs {
     private val files = mutableMapOf<String, ByteArray>()
 
-    override fun listFiles(path: String): List<String> {
-        val entries = files.keys.filter { it.startsWith("$path/") }.map {
-            val inPath = it.substring(path.length + 1)
+    override fun listFiles(path: String): List<Fs.File> {
+        val prefix = if (path.isEmpty()) "" else "$path/"
+        val entries = files.keys.filter { it.startsWith(prefix) }.map {
+            val inPath = it.substring(path.length).trimStart('/')
             val slash = inPath.indexOf('/')
             val entry = if (slash == -1) inPath else inPath.substring(0, slash)
             entry

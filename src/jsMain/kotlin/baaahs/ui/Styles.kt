@@ -67,7 +67,7 @@ object Styles : StyleSheet("UI", isStatic = true) {
 
     val glslNumber by css {
         display = Display.block
-        backgroundColor = Color("#050")
+        backgroundColor = Color("#0D0")
         position = Position.absolute
         zIndex = 10
     }

@@ -1,9 +1,9 @@
 package baaahs.ui
 
-import Ace.AceEditor
-import Ace.Annotation
-import Ace.Point
-import Ace.Range
+import acex.AceEditor
+import acex.Annotation
+import acex.Point
+import acex.Range
 import ReactAce.Ace.reactAce
 import baaahs.GadgetData
 import baaahs.glshaders.AutoWirer
@@ -16,11 +16,13 @@ import baaahs.jsx.store
 import baaahs.jsx.useResizeListener
 import baaahs.shaders.GlslShader
 import baaahs.shows.GlslShow
+import baaahs.sim.FakeFs
 import baaahs.ui.Styles.controls
 import baaahs.ui.Styles.glslNumber
 import baaahs.ui.Styles.previewBar
 import baaahs.ui.Styles.status
 import kotlinext.js.jsObject
+import kotlinx.css.CSSBuilder
 import kotlinx.html.js.onClickFunction
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
@@ -31,9 +33,14 @@ import materialui.components.toolbar.toolbar
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.button
+import react.dom.div
 import styled.css
 import styled.styledDiv
+import kotlin.browser.window
+
+private val glslNumberClassName =
+    CSSBuilder().apply { +glslNumber }.classes.joinToString(" ")
 
 val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val windowRootEl = useRef<Element>()
@@ -49,8 +56,9 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     var openShaders by preact.state<List<OpenShader>> { arrayListOf() }
     var selectedShaderIndex by preact.state { -1 }
     var patch by preact.state<Patch?> { null }
-    var extractionCandidate by preact.state { ExtractionCandidate() }
+    var extractionCandidate by preact.state<ExtractionCandidate?> { null }
     var glslNumberMarker by preact.state<Number?> { null }
+    var saveAsOpen by preact.state { false }
 
     useResizeListener(windowRootEl) {
         aceEditor.current.editor.resize()
@@ -96,7 +104,10 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     }
 
     preact.sideEffect("shaders change", openShaders, selectedShaderIndex, showGlslErrors) {
-        if (selectedShaderIndex == -1) return@sideEffect
+        if (selectedShaderIndex == -1) {
+            patch = null
+            return@sideEffect
+        }
         val selectedShader = openShaders[selectedShaderIndex]
         val editor = aceEditor.current.editor
 
@@ -114,11 +125,9 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val onChange: (String, Any) -> Unit = useCallback(
         openShaders, selectedShaderIndex
     ) { newValue: String, event: Any ->
-        val origShaders = openShaders
         openShaders = openShaders.replace(selectedShaderIndex) {
-            it.copy(src = newValue)
+            it.copy(src = newValue, isModified = true)
         }
-        println("Changed? ${origShaders === openShaders} with == ${origShaders == openShaders}")
     }
 
     val glslNumberRegex = Regex("[0-9.]")
@@ -126,7 +135,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
     val onCursorChange = useCallback({ value: Any, event: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-        val selection = value as Ace.Selection
+        val selection = value as acex.Selection
         val session = selection.session
         glslNumberMarker?.let { session.removeMarker(it) }
 
@@ -141,20 +150,21 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         val candidate = line.substring(start, end)
         val looksLikeFloatOrInt = glslFloatOrIntRegex.matches(candidate)
         if (badCharBefore || badCharAfter || !looksLikeFloatOrInt) {
-            if (extractionCandidate.text != null) extractionCandidate = ExtractionCandidate()
+            extractionCandidate = null
         } else {
             val range = Range(cursor.row, start, cursor.row, end)
-            glslNumberMarker = session.addMarker(range, glslNumber.toString(), "text", false)
-
+            glslNumberMarker = session.addMarker(range, glslNumberClassName, "text", false)
             extractionCandidate = ExtractionCandidate(range, candidate)
         }
-    }, arrayOf(extractionCandidate, glslNumberMarker))
+    }, arrayOf(glslNumberMarker))
 
     val extractUniform = useCallback({ event: Event ->
+        val extraction = extractionCandidate ?: return@useCallback
+
         val editor = aceEditor.current.editor
         val session = editor.getSession()
 
-        val originalText = extractionCandidate.text ?: error("no text")
+        val originalText = extraction.text
         val type = if (originalText.indexOf('.') > -1) "float" else "int"
         val prefix = "${type}Uniform"
         var num = 0
@@ -171,7 +181,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
         val max = originalText.toFloat() * 2f
 
-        session.replace(extractionCandidate.range ?: error("no range"), uniformName)
+        session.replace(extraction.range, uniformName)
         session.insert(
             Point(lastUniform.start.row.toInt() + 1, 0),
             "uniform $type $uniformName; // @@Slider default=${originalText} max=${max}\n"
@@ -206,12 +216,35 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         selectedShaderIndex = tabIndex
     }, arrayOf())
 
-    val handleMenuButton = useCallback() { event: Event ->
-//        setMenuEl(event.currentTarget)
+    val handleNewShader = useCallback() { type: NewShaderType ->
+        val newShader = OpenShader(
+            type.newName,
+            "// ${type.newName}\n\n${type.template}",
+            isModified = true
+        )
+        openShaders += newShader
+        selectedShaderIndex = openShaders.size - 1
     }
 
-    val handleMenuClose = useCallback() { event: Event ->
-//        setMenuEl(null)
+    val handleSaveAs = useCallback(openShaders, selectedShaderIndex) { event: Event ->
+        if (selectedShaderIndex != -1) {
+            val selectedShader = openShaders[selectedShaderIndex]
+            saveAsOpen = true
+        }
+    }
+
+    val handleSaveAsCancel = useCallback { saveAsOpen = false }
+
+    val handleClose = useCallback(openShaders, selectedShaderIndex) { event: Event ->
+        if (selectedShaderIndex != -1) {
+            val selectedShader = openShaders[selectedShaderIndex]
+            if (selectedShader.isModified) {
+                window.alert("You should save first.")
+                return@useCallback
+            }
+            openShaders = openShaders.filterIndexed { index, openShader -> index != selectedShaderIndex }
+            selectedShaderIndex = kotlin.math.min(openShaders.size - 1, selectedShaderIndex)
+        }
     }
 
     val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
@@ -226,11 +259,41 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
                 +"Menu"
             }
 
-            button { +"New…" }
-            button { +"Open…" }
-            button { +"Save" }
-            button { +"Save As…" }
-            button { +"Close" }
+            menuButton {
+                name = "New…"
+
+                items = listOf(
+                    MenuItem("New Color Shader…") {
+                        handleNewShader(NewShaderType.COLOR)
+                    },
+                    MenuItem("New Transform Shader…") {
+                        handleNewShader(NewShaderType.TRANSFORM)
+                    },
+                    MenuItem("New Filter Shader…") {
+                        handleNewShader(NewShaderType.FILTER)
+                    },
+                    MenuItem("Import…") { }
+                )
+            }
+
+            button {
+                +"Open…"
+//                attrs.onClickFunction
+            }
+            button {
+                +"Save"
+                attrs.disabled = selectedShader == null || !selectedShader.isModified
+            }
+            button {
+                +"Save As…"
+                attrs.disabled = selectedShader == null
+                attrs.onClickFunction = handleSaveAs
+            }
+            button {
+                +"Close"
+                attrs.disabled = openShaders.size == 0
+                attrs.onClickFunction = handleClose
+            }
         }
 
         tabs {
@@ -240,7 +303,9 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
             openShaders.forEach { openShader ->
                 tab {
-                    attrs.label = openShader.name.asTextNode()
+                    var name = openShader.name
+                    if (openShader.isModified) name += " *"
+                    attrs.label = name.asTextNode()
                 }
             }
         }
@@ -283,27 +348,37 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             }
         }
 
-        if (extractionCandidate.text != null) {
+        extractionCandidate?.let { extraction ->
             div {
-                +"Extract ${extractionCandidate.text}?"
+                +"Extract ${extraction.text}?"
                 button {
                     attrs.onClickFunction = extractUniform
                     +"Sure!"
                 }
             }
         }
+
+        saveAsDialog {
+            open = saveAsOpen
+            onCancel = handleSaveAsCancel
+            filesystems = listOf(
+                SaveAsFs("Shader Library", sheepSimulator?.fs ?: FakeFs()),
+                SaveAsFs("Show", FakeFs())
+            )
+        }
     }
 }
 
 data class ExtractionCandidate(
-    val range: Range? = null,
-    val text: String? = null
+    val range: Range,
+    val text: String
 )
 
 data class OpenShader(
     val name: String,
     val src: String,
-    val show: GlslShow
+    val show: GlslShow? = null,
+    val isModified: Boolean = false
 ) {
     var patch: Patch? = null
     var glslErrors: Array<CompiledShader.GlslError> = emptyArray()
@@ -316,15 +391,26 @@ external interface ShaderEditorWindowProps : RProps
 fun Point(row: Number, column: Number): Point =
     jsObject { this.row = row; this.column = column }
 
-fun Range(startRow: Number, startCol: Number, endRow: Number, endCol: Number): Range =
-    jsObject {
-        start = Point(startRow, startCol)
-        end = Point(endRow, endCol)
-    }
-
-
 fun RBuilder.showControls(handler: ShowControlsProps.() -> Unit): ReactElement =
     ShowControls { attrs { handler() } }
 
 fun RBuilder.shaderEditorWindow(handler: ShaderEditorWindowProps.() -> Unit): ReactElement =
     child(ShaderEditorWindow) { attrs { handler() } }
+
+enum class NewShaderType(val newName: String, val template: String) {
+    COLOR("New Color Shader", """
+        uniform float time;
+
+        void main(void) {
+            gl_FragColor = vec4(1., 1., 1., 1.);
+        }
+    """.trimIndent()),
+
+    TRANSFORM("New Translate Shader", """
+        
+    """.trimIndent()),
+
+    FILTER("New Fader Shader", """
+        
+    """.trimIndent())
+}

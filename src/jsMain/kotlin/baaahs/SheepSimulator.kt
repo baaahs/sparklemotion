@@ -10,6 +10,7 @@ import baaahs.model.Model
 import baaahs.proto.Ports
 import baaahs.shaders.GlslShader
 import baaahs.shows.AllShows
+import baaahs.shows.GlslShow
 import baaahs.sim.*
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
@@ -36,12 +37,23 @@ class SheepSimulator {
     private val model = selectModel()
     val visualizer = Visualizer(model)
     private val mapperFs = FakeFs()
-    private val fs = MergedFs(BrowserSandboxFs(), mapperFs)
+    val fs = MergedFs(BrowserSandboxFs(), mapperFs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
     val shows = AllShows.allShows
+
+    init {
+        shows.forEach { show ->
+            if (show !is GlslShow) return@forEach
+            try {
+                fs.createFile("shaders/${show.name}.glsl", show.src)
+            } catch (e: Exception) {
+            }
+        }
+    }
+
     val glslContext = GlslShader.globalRenderContext
     val clock = JsClock()
     private val pinky = Pinky(
