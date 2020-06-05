@@ -8,37 +8,28 @@ const initialState = {
       direction: 'column',
       splitPercentage: 50,
       first: 'Sheep Visualizer',
-      second: 'Glsl Preview',
+      second: 'Simulator Console',
     },
-    second: {
-      direction: 'row',
-      splitPercentage: 35,
-      first: 'Simulator Settings',
-      second: 'Shader Editor',
-    },
+    second: 'Shader Editor',
   },
   selectedShow: '',
   currentTheme: 'Blueprint',
-  sheepSimulator: null,
+  simulator: null,
   isConnected: false,
 };
 
 const store = createContext(initialState);
 const { Provider } = store;
 
-const StateProvider = ({ children }) => {
+const StateProvider = ({ simulator, children }) => {
+  initialState.simulator = simulator;
+
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case 'SET_STATE':
         return {
           ...state,
           ...action.payload,
-        };
-      case 'SET_SHEEP_SIMULATOR':
-        const { sheepSimulator } = action.payload;
-        return {
-          ...state,
-          sheepSimulator,
         };
       default:
         throw new Error(`Action with Unknown Type: "${action.type}"`);

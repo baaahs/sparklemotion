@@ -1,7 +1,7 @@
-@file:JsModule("js/store.jsx")
+@file:JsModule("js/simulator/store.jsx")
 @file:JsNonModule
 
-package baaahs.jsx
+package baaahs.jsx.sim
 
 import baaahs.SheepSimulator
 import react.RContext
@@ -11,7 +11,7 @@ external interface Store {
 }
 
 external interface StoreState {
-    val sheepSimulator: SheepSimulator?
+    val simulator: SheepSimulator
     val selectedShow: String
     val isConnected: Boolean
 }

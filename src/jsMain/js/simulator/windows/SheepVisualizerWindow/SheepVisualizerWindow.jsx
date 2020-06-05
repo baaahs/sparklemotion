@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState,} from 'react';
 import styles from './SheepVisualizerWindow.scss';
-import {store} from '../../../store';
+import {store} from '../../store';
 import {FormControlLabel, Switch} from '@material-ui/core';
 import {useResizeListener} from "../../../app/hooks/useResizeListener";
 import {baaahs} from 'sparklemotion';
@@ -8,7 +8,7 @@ import {baaahs} from 'sparklemotion';
 const SheepVisualizerWindow = () => {
   const {state} = useContext(store);
   const VisualizerPanel = baaahs.visualizer.ui.VisualizerPanel;
-  const simulator = state.sheepSimulator?.facade;
+  const simulator = state.simulator.facade;
   const sheepViewEl = useRef(null);
   const visualizer = simulator?.visualizer;
 

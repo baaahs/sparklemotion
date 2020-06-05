@@ -26,7 +26,6 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
-@JsName("SheepSimulator")
 class SheepSimulator {
     @Suppress("unused")
     val facade = Facade()

@@ -13,7 +13,7 @@ import baaahs.glsl.CompiledShader
 import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
-import baaahs.jsx.store
+import baaahs.jsx.sim.store
 import baaahs.jsx.useResizeListener
 import baaahs.shaders.GlslShader
 import baaahs.shows.GlslShow
@@ -45,7 +45,7 @@ private val glslNumberClassName = glslNumber.getName()
 val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val windowRootEl = useRef<Element>()
     val contextState = useContext(store).state
-    val sheepSimulator = contextState.sheepSimulator
+    val simulator = contextState.simulator
     val selectedShow = contextState.selectedShow
     
     val preact = Preact()
@@ -62,7 +62,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     var fileDialogIsSaveAs by preact.state { false }
     val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
     val saveAsFilesystems = listOf(
-        SaveAsFs("Shader Library", sheepSimulator?.fs ?: FakeFs()),
+        SaveAsFs("Shader Library", simulator.fs),
         SaveAsFs("Show", FakeFs())
     )
 
@@ -71,7 +71,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     }
 
     fun previewShaderOnSimulator(shader: OpenShader) {
-        sheepSimulator?.switchToShow(
+        simulator.switchToShow(
             GlslShow(selectedShow, shader.src, GlslShader.globalRenderContext, true)
         )
     }
@@ -92,7 +92,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
     preact.sideEffect("show change", selectedShow) {
         // Look up the text for the show
-        val allShows = sheepSimulator?.shows?.toTypedArray() ?: emptyArray()
+        val allShows = simulator.shows.toTypedArray()
         val currentShow = allShows.find { it.name == contextState.selectedShow }
 
         if (currentShow != null && currentShow is GlslShow && !currentShow.isPreview) {

@@ -3,18 +3,17 @@ import styles from './MosaicUI.scss';
 import {baaahs} from 'sparklemotion';
 import React, {useContext, useEffect, useState} from 'react';
 import {Mosaic, MosaicWindow, MosaicZeroState} from 'react-mosaic-component';
-import SheepVisualizerWindow from './simulator/windows/SheepVisualizerWindow/SheepVisualizerWindow';
-import SimulatorSettingsWindow from './simulator/windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
-import MosiacMenuBar from './mosiac/MosiacMenuBar/MosiacMenuBar';
+import SheepVisualizerWindow from './windows/SheepVisualizerWindow/SheepVisualizerWindow';
+import SimulatorSettingsWindow from './windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
+import MosiacMenuBar from '../mosiac/MosiacMenuBar/MosiacMenuBar';
 import {StateProvider, store} from './store';
-import GlslPreviewWindow from "./simulator/windows/GlslPreviewWindow/GlslPreviewWindow";
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
 
 const MosaicApp = (props) => {
   return (
-    <StateProvider>
+    <StateProvider simulator={props.simulator}>
       <MosaicUI {...props} />
     </StateProvider>
   );
@@ -24,22 +23,16 @@ const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
     'Shader Editor': baaahs.ui.ShaderEditorWindow,
     'Sheep Visualizer': SheepVisualizerWindow,
-    'Simulator Settings': SimulatorSettingsWindow,
-    'Glsl Preview': GlslPreviewWindow,
+    'Simulator Console': SimulatorSettingsWindow,
   };
 
-  const { getSheepSimulator } = props;
+  const { simulator } = props;
   const { state, dispatch } = useContext(store);
   const [pubSub, setPubSub] = useState(null);
 
   useEffect(() => {
-    if (state.sheepSimulator) return;
-
-    const sheepSimulator = getSheepSimulator();
-    setPubSub(sheepSimulator.getPubSub());
-    sheepSimulator.start();
-
-    dispatch({ type: 'SET_SHEEP_SIMULATOR', payload: { sheepSimulator } });
+    setPubSub(simulator.getPubSub());
+    simulator.start();
   }, []);
 
   useEffect(() => {
