@@ -2,13 +2,13 @@ package baaahs.ui
 
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
+import materialui.components.button.button
 import materialui.components.clickawaylistener.clickAwayListener
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.button
 import react.dom.div
 
 private val MenuButton = functionalComponent<MenuButtonProps> { props ->

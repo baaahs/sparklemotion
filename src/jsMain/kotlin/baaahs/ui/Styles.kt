@@ -71,4 +71,9 @@ object Styles : StyleSheet("UI", isStatic = true) {
         position = Position.absolute
         zIndex = 10
     }
+
+    val fileDialogFileList by css {
+        height = 50.vh
+        overflowY = Overflow.scroll
+    }
 }

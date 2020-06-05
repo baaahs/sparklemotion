@@ -40,20 +40,26 @@ abstract class BaseFakeFs : Fs {
     protected abstract val keys: List<String>
 
     override fun listFiles(parent: Fs.File): List<Fs.File> {
-        val prefix = "${parent.fullPath}/"
+        val prefix = if (parent.isRoot) "" else "${parent.fullPath}/"
         val entries = keys
             .filter { parent.isRoot || it.startsWith(prefix) }
             .map {
                 val inPath = it.substring(prefix.length)
                 val slash = inPath.indexOf('/')
                 if (slash == -1) {
-                    Fs.File(this, inPath, false)
+                    parent.resolve(inPath, false)
                 } else {
-                    Fs.File(this, inPath.substring(0, slash), true)
+                    parent.resolve(inPath.substring(0, slash), true)
                 }
             }.distinct()
         logger.debug { "FakeFs.listFiles($parent) -> $entries" }
         return entries
+    }
+
+    override fun exists(file: Fs.File): Boolean {
+        val allKeys = keys
+        return allKeys.contains(file.fullPath) ||
+                allKeys.any { resolve(it).isWithin(file) }
     }
 
     companion object {

@@ -32,8 +32,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
                 props.onError.invoke(e.getErrors().toTypedArray())
                 null
             } catch (e: Exception) {
-                val glslError =
-                    CompiledShader.GlslError(-1, -1, e.message ?: e.toString())
+                val glslError = CompiledShader.GlslError(e.message ?: e.toString())
                 props.onError.invoke(arrayOf(glslError))
                 null
             }
