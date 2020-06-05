@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.Logger
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
 import react.RMutableRef
@@ -17,9 +18,11 @@ fun <T : Function<*>> useCallback(vararg dependencies: dynamic, callback: T): T 
 
 fun useEffect(vararg dependencies: dynamic, name: String? = "Effect", effect: () -> Unit) {
     return react.useEffect(dependencies.toList()) {
-        println("useEffect $name run due to change: ${dependencies.map {
-            it?.toString().truncate(12)
-        }}")
+        logger.debug {
+            "useEffect $name run due to change: ${dependencies.map {
+                it?.toString().truncate(12)
+            }}"
+        }
         effect()
     }
 }
@@ -44,3 +47,5 @@ fun String?.truncate(length: Int): String? {
 fun RuleSet.getName(): String {
     return CSSBuilder().apply { +this@getName }.classes.joinToString(" ")
 }
+
+private val logger = Logger("util.kt")

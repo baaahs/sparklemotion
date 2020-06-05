@@ -19,7 +19,6 @@ private val MenuButton = functionalComponent<MenuButtonProps> { props ->
     }
 
     val handleClickAway = useCallback { event: Event ->
-        println("Clicked away!")
         anchorEl = null
     }
 
