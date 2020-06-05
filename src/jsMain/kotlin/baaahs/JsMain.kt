@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
-import baaahs.jsx.MosaicUI
+import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
@@ -26,15 +26,12 @@ fun main(args: Array<String>) {
 
     when (mode) {
         "Simulator" -> {
-            // Instead of starting the simulator directly, pass the JS
-            // a function that it can use to get and start the simulator.
-            // We do this so the JS can create the HTML templates before
-            // the JsDisplay tries to find them.
-            val props = jsObject<MosaicUI.Props> {
-                getSheepSimulator = { SheepSimulator() }
+            val simulator = SheepSimulator()
+            val props = jsObject<MosaicApp.Props> {
+                this.simulator = simulator
             }
             val simulatorEl = document.getElementById("app")
-            render(createElement(MosaicUI::class.js, props), simulatorEl)
+            render(createElement(MosaicApp::class.js, props), simulatorEl)
         }
 
         "Admin" -> {

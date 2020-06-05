@@ -28,10 +28,6 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
 
     override fun RBuilder.render() {
         val simulator = props.simulator
-        if (simulator == null) {
-            +"Loading..."
-            return
-        }
 
         styledDiv {
             css { +console }
@@ -80,7 +76,7 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
 }
 
 external interface ConsoleProps : RProps {
-    var simulator: SheepSimulator.Facade?
+    var simulator: SheepSimulator.Facade
 }
 
 external interface ConsoleState : RState {
