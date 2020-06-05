@@ -10,6 +10,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.Patch
 import baaahs.glsl.CompiledShader
+import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.jsx.store
@@ -22,7 +23,6 @@ import baaahs.ui.Styles.glslNumber
 import baaahs.ui.Styles.previewBar
 import baaahs.ui.Styles.status
 import kotlinext.js.jsObject
-import kotlinx.css.CSSBuilder
 import kotlinx.html.js.onClickFunction
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
@@ -38,9 +38,9 @@ import react.dom.div
 import styled.css
 import styled.styledDiv
 import kotlin.browser.window
+import kotlin.math.min
 
-private val glslNumberClassName =
-    CSSBuilder().apply { +glslNumber }.classes.joinToString(" ")
+private val glslNumberClassName = glslNumber.getName()
 
 val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     val windowRootEl = useRef<Element>()
@@ -58,7 +58,13 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     var patch by preact.state<Patch?> { null }
     var extractionCandidate by preact.state<ExtractionCandidate?> { null }
     var glslNumberMarker by preact.state<Number?> { null }
-    var saveAsOpen by preact.state { false }
+    var fileDialogOpen by preact.state { false }
+    var fileDialogIsSaveAs by preact.state { false }
+    val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
+    val saveAsFilesystems = listOf(
+        SaveAsFs("Shader Library", sheepSimulator?.fs ?: FakeFs()),
+        SaveAsFs("Show", FakeFs())
+    )
 
     useResizeListener(windowRootEl) {
         aceEditor.current.editor.resize()
@@ -116,8 +122,15 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         showGlslErrors(selectedShader.glslErrors)
 
         if (selectedShader.patch == null) {
-            selectedShader.patch = AutoWirer().autoWire(
-                mapOf("color" to GlslAnalyzer().asShader(selectedShader.src)))
+            try {
+                selectedShader.patch = AutoWirer().autoWire(
+                    mapOf("color" to GlslAnalyzer().asShader(selectedShader.src))
+                )
+            } catch (e: Exception) {
+                selectedShader.glslErrors = arrayOf(
+                    CompiledShader.GlslError(e.message ?: e.toString())
+                )
+            }
         }
         patch = selectedShader.patch
     }
@@ -226,28 +239,60 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         selectedShaderIndex = openShaders.size - 1
     }
 
-    val handleSaveAs = useCallback(openShaders, selectedShaderIndex) { event: Event ->
-        if (selectedShaderIndex != -1) {
-            val selectedShader = openShaders[selectedShaderIndex]
-            saveAsOpen = true
+    val handleOpen = useCallback { event: Event ->
+        fileDialogOpen = true
+        fileDialogIsSaveAs = false
+    }
+
+    val handleSave = useCallback(selectedShader, openShaders, selectedShaderIndex) { event: Event ->
+        selectedShader?.file?.let { saveToFile ->
+            saveToFile.fs.saveFile(saveToFile, selectedShader.src, true)
+            openShaders = openShaders.replace(selectedShaderIndex) {
+                OpenShader(it.name, selectedShader.src, null, false, saveToFile)
+            }
+        }
+        Unit
+    }
+
+    val handleSaveAs = useCallback(selectedShader) { event: Event ->
+        if (selectedShader != null) {
+            fileDialogOpen = true
+            fileDialogIsSaveAs = true
         }
     }
 
-    val handleSaveAsCancel = useCallback { saveAsOpen = false }
+    val handleFileSelected = useCallback(
+        fileDialogIsSaveAs, selectedShader, openShaders, selectedShaderIndex
+    ) { file: Fs.File ->
+        fileDialogOpen = false
 
-    val handleClose = useCallback(openShaders, selectedShaderIndex) { event: Event ->
-        if (selectedShaderIndex != -1) {
-            val selectedShader = openShaders[selectedShaderIndex]
+        if (fileDialogIsSaveAs) {
+            selectedShader!!
+            file.fs.saveFile(file, selectedShader.src, true)
+            openShaders = openShaders.replace(selectedShaderIndex) {
+                OpenShader(file.name, selectedShader.src, null, false, file)
+            }
+        } else {
+            val src = file.fs.loadFile(file)!!
+            val newShader = OpenShader(file.name, src, null, false, file)
+            openShaders += newShader
+            selectedShaderIndex = openShaders.size - 1
+        }
+    }
+
+    val handleSaveAsCancel = useCallback { fileDialogOpen = false }
+
+    val handleClose = useCallback(selectedShader, openShaders, selectedShaderIndex) { event: Event ->
+        if (selectedShader != null) {
             if (selectedShader.isModified) {
-                window.alert("You should save first.")
-                return@useCallback
+                if (!window.confirm("Discard changes to ${selectedShader.name}?")) {
+                    return@useCallback
+                }
             }
             openShaders = openShaders.filterIndexed { index, openShader -> index != selectedShaderIndex }
-            selectedShaderIndex = kotlin.math.min(openShaders.size - 1, selectedShaderIndex)
+            selectedShaderIndex = min(openShaders.size - 1, selectedShaderIndex)
         }
     }
-
-    val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
 
     println("ShaderEditorWindow: render patch from ${selectedShader?.name}")
     div {
@@ -278,11 +323,12 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
             button {
                 +"Open…"
-//                attrs.onClickFunction
+                attrs.onClickFunction = handleOpen
             }
             button {
                 +"Save"
                 attrs.disabled = selectedShader == null || !selectedShader.isModified
+                attrs.onClickFunction = handleSave
             }
             button {
                 +"Save As…"
@@ -291,7 +337,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             }
             button {
                 +"Close"
-                attrs.disabled = openShaders.size == 0
+                attrs.disabled = openShaders.isEmpty()
                 attrs.onClickFunction = handleClose
             }
         }
@@ -358,13 +404,16 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             }
         }
 
-        saveAsDialog {
-            open = saveAsOpen
+        fileDialog {
+            isOpen = fileDialogOpen
+            title = if (fileDialogIsSaveAs) "Save Shader" else "Open Shader"
+            isSaveAs = fileDialogIsSaveAs
+            onSelect = handleFileSelected
             onCancel = handleSaveAsCancel
-            filesystems = listOf(
-                SaveAsFs("Shader Library", sheepSimulator?.fs ?: FakeFs()),
-                SaveAsFs("Show", FakeFs())
-            )
+            filesystems = saveAsFilesystems
+            defaultTarget = selectedShader?.file?.let { file ->
+                SaveAsTarget(saveAsFilesystems.find { it.fs == file.fs }, file.name)
+            }
         }
     }
 }
@@ -378,7 +427,8 @@ data class OpenShader(
     val name: String,
     val src: String,
     val show: GlslShow? = null,
-    val isModified: Boolean = false
+    val isModified: Boolean = false,
+    val file: Fs.File? = null
 ) {
     var patch: Patch? = null
     var glslErrors: Array<CompiledShader.GlslError> = emptyArray()

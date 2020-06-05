@@ -1,6 +1,7 @@
 package baaahs.ui
 
-import org.w3c.dom.svg.SVGAnimatedLength
+import kotlinx.css.CSSBuilder
+import kotlinx.css.RuleSet
 import react.RMutableRef
 import react.ReactElement
 
@@ -31,10 +32,15 @@ fun String.asTextNode(): ReactElement = asDynamic()
 fun Array<*>.truncateStrings(length: Int): List<String?> {
     return map { it?.toString()?.truncate(length) }
 }
+
 fun String?.truncate(length: Int): String? {
     return if (this != null && this.length >= length) {
         substring(0, length - 1) + "…"
     } else {
         this
     }
+}
+
+fun RuleSet.getName(): String {
+    return CSSBuilder().apply { +this@getName }.classes.joinToString(" ")
 }
