@@ -156,7 +156,7 @@ class SheepSimulator {
         )
         mapperFs.renameFile(
             mappingSessionPath,
-            fs.resolve("mapping", model.name, mappingSessionPath.name))
+            fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
         return simSurfaces
     }
 
