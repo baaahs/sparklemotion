@@ -1,10 +1,10 @@
 package baaahs.ui
 
+import ReactAce.Ace.reactAce
 import acex.AceEditor
 import acex.Annotation
 import acex.Point
 import acex.Range
-import ReactAce.Ace.reactAce
 import baaahs.GadgetData
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
@@ -109,12 +109,11 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         }
     }
 
-    preact.sideEffect("shaders change", openShaders, selectedShaderIndex, showGlslErrors) {
-        if (selectedShaderIndex == -1) {
+    preact.sideEffect("shaders change", selectedShader, showGlslErrors) {
+        if (selectedShader == null) {
             patch = null
             return@sideEffect
         }
-        val selectedShader = openShaders[selectedShaderIndex]
         val editor = aceEditor.current.editor
 
         selectedShader.lastCursorPosition?.let { editor.moveCursorToPosition(it) }
@@ -203,33 +202,33 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     }, arrayOf(aceEditor, extractionCandidate))
 
     val handleGlslErrors = useCallback(
-        aceEditor, openShaders, selectedShaderIndex, showGlslErrors
+        aceEditor, selectedShader, showGlslErrors
     ) { glslErrors: Array<CompiledShader.GlslError> ->
-        val selectedShader = openShaders[selectedShaderIndex]
-        selectedShader.glslErrors = glslErrors
+        selectedShader?.glslErrors = glslErrors
         showGlslErrors(glslErrors)
     }
 
-    val handlePatchPreviewSuccess = useCallback(openShaders, selectedShaderIndex) {
-        val selectedShader = openShaders[selectedShaderIndex]
-        selectedShader.glslErrors = emptyArray()
-        previewShaderOnSimulator(selectedShader)
+    val handlePatchPreviewSuccess = useCallback(selectedShader) {
+        selectedShader?.let { shader ->
+            shader.glslErrors = emptyArray()
+            previewShaderOnSimulator(shader)
+        }
+        Unit
     }
 
     val handleGadgetsChange = useCallback() { newGadgets: Array<GadgetData> ->
         gadgets = newGadgets
     }
 
-    val handleTabChange = useCallback({ event: Event, tabIndex: Int ->
-        if (selectedShaderIndex != -1) {
-            val selectedShader = openShaders[selectedShaderIndex]
-            selectedShader.lastCursorPosition = aceEditor.current.editor.getCursorPosition()
+    val handleTabChange = useCallback(selectedShader) { event: Event, tabIndex: Int ->
+        selectedShader?.let { shader ->
+            shader.lastCursorPosition = aceEditor.current.editor.getCursorPosition()
         }
 
         selectedShaderIndex = tabIndex
-    }, arrayOf())
+    }
 
-    val handleNewShader = useCallback() { type: NewShaderType ->
+    val handleNewShader = useCallback(openShaders) { type: NewShaderType ->
         val newShader = OpenShader(
             type.newName,
             "// ${type.newName}\n\n${type.template}",

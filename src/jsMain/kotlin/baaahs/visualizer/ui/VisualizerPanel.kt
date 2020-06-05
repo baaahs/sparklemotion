@@ -7,7 +7,7 @@ import baaahs.visualizer.Visualizer
 import kotlinx.html.id
 import kotlinx.html.js.onMouseDownFunction
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
 import react.RState
@@ -34,8 +34,8 @@ class VisualizerPanel(props: Props) : BComponent<VisualizerPanel.Props, Visualiz
             ref = container
             css { +"sheepView" }
             attrs.id = "sheepView"
-            attrs.onMouseDownFunction = { event ->
-                props.visualizer.onMouseDown(event as MouseEvent)
+            attrs.onMouseDownFunction = { event: Event ->
+                props.visualizer.onMouseDown(event.asDynamic())
             }
         }
     }

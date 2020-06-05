@@ -27,6 +27,8 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
             try {
                 patch.compile(gl) { uniformPort ->
                     plugins.matchUniformProvider(uniformPort, fakeShowContext, gl)
+                }.also {
+                    props.onSuccess()
                 }
             } catch (e: CompiledShader.CompilationException) {
                 props.onError.invoke(e.getErrors().toTypedArray())
