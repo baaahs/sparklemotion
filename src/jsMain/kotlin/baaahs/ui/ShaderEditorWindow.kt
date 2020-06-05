@@ -294,7 +294,6 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         }
     }
 
-    println("ShaderEditorWindow: render patch from ${selectedShader?.name}")
     div {
         ref = windowRootEl
 

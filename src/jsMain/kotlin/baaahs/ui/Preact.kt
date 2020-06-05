@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.Logger
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -44,11 +45,15 @@ class Preact {
                         a === b
                     }
             }) {
-                println("Not running side effect $name " +
-                        "(${watch.truncateStrings(12)} == ${sideEffect.lastWatchValues.truncateStrings(12)}")
+                logger.debug {
+                    "Not running side effect $name " +
+                            "(${watch.truncateStrings(12)} == ${sideEffect.lastWatchValues.truncateStrings(12)}"
+                }
             } else {
-                println("Running side effect $name " +
-                        "(${watch.truncateStrings(12)} != ${sideEffect.lastWatchValues.truncateStrings(12)}")
+                logger.debug {
+                    "Running side effect $name " +
+                            "(${watch.truncateStrings(12)} != ${sideEffect.lastWatchValues.truncateStrings(12)}"
+                }
                 sideEffect.lastWatchValues = watch
                 callback()
             }
@@ -68,7 +73,7 @@ class Preact {
         }
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            println("${property.name} := ${value?.toString()?.truncate(12)}")
+            logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
             this.value = value
             onChange()
         }
@@ -77,5 +82,9 @@ class Preact {
     private class SideEffect(
         var lastWatchValues: Array<out Any?>
     )
+
+    companion object {
+        private val logger = Logger("Preact")
+    }
 }
 
