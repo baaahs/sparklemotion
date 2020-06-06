@@ -10,7 +10,7 @@ const initialState = {
       first: 'Sheep Visualizer',
       second: 'Simulator Console',
     },
-    second: 'Shader Editor',
+    second: 'Web UI',
   },
   selectedShow: '',
   currentTheme: 'Blueprint',
