@@ -21,9 +21,9 @@ const MosaicApp = (props) => {
 
 const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
-    'Shader Editor': baaahs.ui.ShaderEditorWindow,
     'Sheep Visualizer': SheepVisualizerWindow,
     'Simulator Console': SimulatorSettingsWindow,
+    'Web UI': baaahs.ui.AppWindow,
   };
 
   const { simulator } = props;

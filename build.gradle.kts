@@ -198,6 +198,7 @@ kotlin {
                     version { strictly("1.0.0-pre.104-kotlin-1.3.72") }
                 }
                 implementation(npm("@material-ui/core", "~4.8"))
+                implementation(npm("@material-ui/icons", "~4.9"))
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
@@ -210,6 +211,7 @@ kotlin {
                 implementation(npm("three", "^0.102.1"))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
+                implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
