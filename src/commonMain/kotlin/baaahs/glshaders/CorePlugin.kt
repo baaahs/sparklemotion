@@ -1,58 +1,80 @@
 package baaahs.glshaders
 
 import baaahs.Color
-import baaahs.Gadget
-import baaahs.ShowContext
+import baaahs.ShowResources
 import baaahs.gadgets.ColorPicker
+import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
 import baaahs.getTimeMillis
-import baaahs.glshaders.GlslProgram.DataSource
-import baaahs.glshaders.GlslProgram.DataSourceProvider
-import baaahs.glsl.GlslContext
+import baaahs.glshaders.GlslProgram.DataFeed
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
+import baaahs.ports.InputPortRef
+import baaahs.ports.inputPortRef
+import baaahs.show.DataSource
 import com.danielgergely.kgl.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 class CorePlugin : Plugin {
     override val packageName: String = "baaahs.Core"
-    override val name: String = "SparkleMotion Core"
+    override val title: String = "SparkleMotion Core"
 
-    override fun matchUniformProvider(
-        name: String,
-        uniformPort: Patch.UniformPortRef,
-        showContext: ShowContext,
-        glslContext: GlslContext
-    ): DataSourceProvider? {
-        return when (name) {
-            "resolution" -> ResolutionProvider()
-            "time" -> TimeProvider()
-            "uvCoords" -> UvCoordProvider(glslContext)
+    override fun findDataSource(
+        resourceName: String,
+        inputPortRef: InputPortRef
+    ): DataSource? {
+        return when (resourceName) {
+            "resolution" -> Resolution(inputPortRef.id)
+            "time" -> Time(inputPortRef.id)
+            "uvCoords" -> UvCoord(inputPortRef.id)
 
-            "xyCoord" -> XyPadProvider(uniformPort, showContext)
+            "xyCoord" -> XyPad(inputPortRef)
 
-            "Slider" -> SliderProvider(uniformPort, showContext)
-            "ColorPicker" -> ColorPickerProvider(uniformPort, showContext)
+            "Slider" -> SliderProvider(inputPortRef)
+            "ColorPicker" -> ColorPickerProvider(inputPortRef)
+            "RadioButtonStrip" -> RadioButtonStripProvider(inputPortRef)
 
-            "none" -> NoOpProvider(uniformPort.type)
+            "Scenes" -> Scenes(inputPortRef)
+            "Patches" -> Patches(inputPortRef)
 
-            else -> throw IllegalArgumentException("unknown type $name")
+            "none" -> NoOp(inputPortRef)
+            "invalid" -> error("no provider for $inputPortRef")
+
+            else -> throw IllegalArgumentException("unknown type $resourceName")
         }
     }
 
-    class NoOpProvider(forType: String) : DataSourceProvider, DataSource {
-        override val supportedTypes = listOf(forType)
+    @Serializable
+    class NoOp : DataSource, DataFeed {
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.supportedTypes = listOf(inputPortRef.type)
+        }
 
-        override fun provide(): DataSource = this
+        override val id: String
+        override val supportedTypes: List<String>
+
+        override fun create(showResources: ShowResources): DataFeed = this
 
         override fun set(uniform: Uniform) {
             // no-op
         }
     }
 
-    class ResolutionProvider : DataSourceProvider, DataSource, GlslProgram.ResolutionListener {
-        override val supportedTypes: List<String> = listOf("vec2")
+    @Serializable
+    class Resolution : DataSource, DataFeed, GlslProgram.ResolutionListener {
+        constructor(id: String) {
+            this.id = id
+            this.supportedTypes = listOf("vec2")
+        }
 
+        override val id: String
+        override val supportedTypes: List<String>
+
+        @Transient
         var x = 1f
+        @Transient
         var y = 1f
 
         override fun onResolution(x: Float, y: Float) {
@@ -60,15 +82,22 @@ class CorePlugin : Plugin {
             this.y = y
         }
 
-        override fun provide(): DataSource = this
+        override fun create(showResources: ShowResources): DataFeed = this
 
         override fun set(uniform: Uniform) = uniform.set(x, y)
     }
 
-    class TimeProvider : DataSourceProvider, DataSource {
-        override val supportedTypes: List<String> = listOf("float")
+    @Serializable
+    class Time : DataSource, DataFeed {
+        constructor(id: String) {
+            this.id = id
+            this.supportedTypes = listOf("float")
+        }
 
-        override fun provide(): DataSource = this
+        override val id: String
+        override val supportedTypes: List<String>
+
+        override fun create(showResources: ShowResources): DataFeed = this
 
         override fun set(uniform: Uniform) {
             val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
@@ -76,70 +105,83 @@ class CorePlugin : Plugin {
         }
     }
 
-    class UvCoordProvider(glslContext: GlslContext) : DataSourceProvider, GlslRenderer.ArrangementListener {
-        override val supportedTypes: List<String> = listOf("sampler2D")
-
-        private val gl = glslContext
-        private val uvCoordTextureUnit = gl.getTextureUnit(UvCoordProvider::class)
-        private val uvCoordTexture = gl.check { createTexture() }
-
-        override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
-            if (arrangement.uvCoords.isEmpty()) return
-
-            val pixWidth = arrangement.pixWidth
-            val pixHeight = arrangement.pixHeight
-            val floatBuffer = FloatBuffer(arrangement.uvCoords)
-
-            with(uvCoordTextureUnit) {
-                bindTexture(uvCoordTexture)
-                configure(GL_NEAREST, GL_NEAREST)
-                uploadTexture(0, GL_R32F, pixWidth * 2, pixHeight, 0, GL_RED, GL_FLOAT, floatBuffer)
-            }
+    @Serializable
+    class UvCoord : DataSource {
+        constructor(id: String) {
+            this.id = id
+            this.supportedTypes = listOf("sampler2D")
         }
 
-        override fun provide(): DataSource = object : DataSource {
-            override fun set(uniform: Uniform) {
-                uniform.set(uvCoordTextureUnit)
-            }
+        override val id: String
+        override val supportedTypes: List<String>
 
-            override fun release() {
-                gl.check { deleteTexture(uvCoordTexture) }
+        override fun create(showResources: ShowResources): DataFeed =
+            object : DataFeed, GlslRenderer.ArrangementListener {
+                private val gl = showResources.glslContext
+                private val uvCoordTextureUnit = gl.getTextureUnit(UvCoord::class)
+                private val uvCoordTexture = gl.check { createTexture() }
+
+                override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
+                    if (arrangement.uvCoords.isEmpty()) return
+
+                    val pixWidth = arrangement.pixWidth
+                    val pixHeight = arrangement.pixHeight
+                    val floatBuffer = FloatBuffer(arrangement.uvCoords)
+
+                    with(uvCoordTextureUnit) {
+                        bindTexture(uvCoordTexture)
+                        configure(GL_NEAREST, GL_NEAREST)
+                        uploadTexture(0, GL_R32F, pixWidth * 2, pixHeight, 0, GL_RED, GL_FLOAT, floatBuffer)
+                    }
+                }
+
+                override fun set(uniform: Uniform) {
+                    uniform.set(uvCoordTextureUnit)
+                }
+
+                override fun release() {
+                    gl.check { deleteTexture(uvCoordTexture) }
+                }
             }
-        }
     }
 
-    abstract class GadgetProvider<T : Gadget>(
-        private val uniformPortRef: Patch.UniformPortRef,
-        private val showContext: ShowContext
-    ) : DataSourceProvider {
-        abstract fun createGadget(name: String, config: Map<String, String>): T
+    @Serializable
+    abstract class Gadget<T : baaahs.Gadget> : DataSource {
+        abstract val inputPortRef: InputPortRef
+        abstract fun createGadget(title: String, config: Map<String, String>): T
         abstract fun set(gadget: T, uniform: Uniform)
 
-        final override fun provide(): DataSource {
-            val varName = uniformPortRef.varName
-            val gadgetId = "glsl_$varName"
-            val displayName = uniformPortRef.name.capitalize()
-            val gadget = showContext.getGadget(
-                gadgetId,
-                createGadget(displayName, uniformPortRef.pluginConfig)
-            )
-            return object : DataSource {
+        override fun create(showResources: ShowResources): DataFeed {
+            val varName = inputPortRef.varName
+            val displayName = inputPortRef.title
+            val gadget = createGadget(showResources)
+            showResources.createdGadget(id, gadget)
+            return object : DataFeed {
                 override fun set(uniform: Uniform) {
-                    this@GadgetProvider.set(gadget, uniform)
+                    this@Gadget.set(gadget, uniform)
                 }
             }
         }
+
+        open fun createGadget(showResources: ShowResources) =
+            createGadget(inputPortRef.title, inputPortRef.pluginConfig)
     }
 
-    class SliderProvider(
-        uniformPortRef: Patch.UniformPortRef,
-        showContext: ShowContext
-    ) : GadgetProvider<Slider>(uniformPortRef, showContext) {
-        override val supportedTypes: List<String> = listOf("float")
+    @Serializable
+    class SliderProvider : Gadget<Slider> {
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.inputPortRef = inputPortRef
+        }
 
-        override fun createGadget(name: String, config: Map<String, String>): Slider =
+        override val id: String
+        override val inputPortRef: InputPortRef
+        override val supportedTypes: List<String> = listOf("float")
+        override fun getRenderType(): String? = "Slider"
+
+        override fun createGadget(title: String, config: Map<String, String>): Slider =
             Slider(
-                name,
+                title,
                 initialValue = config["default"]?.toFloat() ?: 1f,
                 minValue = config["min"]?.toFloat() ?: 0f,
                 maxValue = config["max"]?.toFloat() ?: 1f,
@@ -152,35 +194,28 @@ class CorePlugin : Plugin {
         }
     }
 
-    class XyPadProvider(
-        uniformPortRef: Patch.UniformPortRef,
-        private val showContext: ShowContext
-    ) : DataSourceProvider {
-        private val varName = uniformPortRef.varName
-        private val gadgetIdPrefix = "glsl_$varName"
-        private val displayName = uniformPortRef.name.capitalize()
+    @Serializable
+    class XyPad : DataSource {
+        override val id: String
 
-        override val supportedTypes: List<String> = listOf("vec2")
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.varName = inputPortRef.varName
+            this.gadgetIdPrefix = "glsl_$varName"
+            this.displayName = inputPortRef.title.capitalize()
+            this.supportedTypes = listOf("vec2")
+        }
 
-        override fun provide(): DataSource {
-            return object : DataSource {
-                val xControl = showContext.getGadget(
-                    "${gadgetIdPrefix}_x", Slider(
-                        "$displayName X",
-                        initialValue = .5f,
-                        minValue = 0f,
-                        maxValue = 1f
-                    )
-                )
+        private val varName: String
+        private val gadgetIdPrefix: String
+        private val displayName: String
 
-                val yControl = showContext.getGadget(
-                    "${gadgetIdPrefix}_y", Slider(
-                        "$displayName Y",
-                        initialValue = .5f,
-                        minValue = 0f,
-                        maxValue = 1f
-                    )
-                )
+        override val supportedTypes: List<String>
+
+        override fun create(showResources: ShowResources): DataFeed {
+            return object : DataFeed {
+                val xControl = showResources.useGadget<Slider>("${gadgetIdPrefix}_x")
+                val yControl = showResources.useGadget<Slider>("${gadgetIdPrefix}_y")
 
                 override fun set(uniform: Uniform) {
                     uniform.set(xControl.value, yControl.value)
@@ -189,26 +224,95 @@ class CorePlugin : Plugin {
         }
     }
 
-    class ColorPickerProvider(
-        uniformPortRef: Patch.UniformPortRef,
-        showContext: ShowContext
-    ) : GadgetProvider<ColorPicker>(uniformPortRef, showContext) {
-        private val uniformType = uniformPortRef.type
+    @Serializable
+    class ColorPickerProvider : Gadget<ColorPicker> {
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.inputPortRef = inputPortRef
+            this.supportedTypes = listOf("vec3", "vec4")
+        }
 
-        override val supportedTypes: List<String> = listOf("vec3", "vec4")
+        override val id: String
+        override val inputPortRef: InputPortRef
+        override val supportedTypes: List<String>
+        override fun getRenderType(): String? = "ColorPicker"
 
-        override fun createGadget(name: String, config: Map<String, String>): ColorPicker =
+        override fun createGadget(title: String, config: Map<String, String>): ColorPicker =
             ColorPicker(
-                name,
+                title,
                 initialValue = config["default"]?.let { Color.from(it) } ?: Color.WHITE
             )
 
         override fun set(gadget: ColorPicker, uniform: Uniform) {
             val color = gadget.color
-            when (uniformType) {
+            when (inputPortRef.type) {
                 "vec3" -> uniform.set(color.redF, color.greenF, color.blueF)
                 "vec4" -> uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
             }
+        }
+    }
+
+    @Serializable
+    class RadioButtonStripProvider : Gadget<RadioButtonStrip> {
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.inputPortRef = inputPortRef
+        }
+
+        override val id: String
+        override val inputPortRef: InputPortRef
+        override val supportedTypes: List<String> = listOf("int")
+
+        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
+            return RadioButtonStrip(title, config["options"] as List<String>, 0)
+        }
+
+        override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
+            TODO("not implemented")
+        }
+    }
+
+    @Serializable
+    class Scenes : Gadget<RadioButtonStrip> {
+        constructor(id: InputPortRef) {
+            this.id = inputPortRef.id
+        }
+
+        override val id: String
+        override val inputPortRef: InputPortRef =
+            inputPortRef("currentScene", "int", "Scenes")
+        override val supportedTypes: List<String> = listOf("int")
+        override fun getRenderType(): String? = "SceneList"
+
+        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
+            // TODO: this should be a custom gadget for scenes
+            return RadioButtonStrip(title, listOf("Scene 1", "Scene 2"), 0)
+        }
+
+        override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
+            TODO("not implemented")
+        }
+    }
+
+    @Serializable
+    class Patches : Gadget<RadioButtonStrip> {
+        constructor(inputPortRef: InputPortRef) {
+            this.id = inputPortRef.id
+            this.inputPortRef = inputPortRef
+        }
+
+        override val id: String
+        override val inputPortRef: InputPortRef
+        override val supportedTypes: List<String> = listOf("int")
+        override fun getRenderType(): String? = "PatchList"
+
+        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
+            // TODO: this should be a custom gadget for patches
+            return RadioButtonStrip(title, listOf("Patch 1", "Patch 2"), 0)
+        }
+
+        override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
+            TODO("not implemented")
         }
     }
 }

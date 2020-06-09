@@ -1,45 +1,46 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslContext
+import baaahs.ports.*
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 class Patch(
     shaderFragments: Map<String, ShaderFragment>,
-    internal val links: List<Link>
+    val links: List<Link>
 ) {
-    private val components: Map<String, Component>
-
-    private val fromGlobal: List<Link>
-    private val toGlobal: List<Link>
+    val components: Map<String, Component>
 
     init {
-        val fromById = hashMapOf<String?, ArrayList<Link>>()
-        val toById = hashMapOf<String?, ArrayList<Link>>()
+        val fromById = hashMapOf<String, ArrayList<Link>>()
+        val toById = hashMapOf<String, ArrayList<Link>>()
 
         links.forEach { link ->
             val (from, to) = link
-            fromById.getOrPut(from.shaderId) { arrayListOf() }.add(link)
-            toById.getOrPut(to.shaderId) { arrayListOf() }.add(link)
+            if (from is ShaderPortRef) fromById.getOrPut(from.shaderId) { arrayListOf() }.add(link)
+            if (to is ShaderPortRef) toById.getOrPut(to.shaderId) { arrayListOf() }.add(link)
         }
+        val shaderIdsInUse = fromById.keys + toById.keys
 
-        components = shaderFragments.entries.mapIndexed { i, (shaderId, shaderFragment) ->
-            Component(
-                i, shaderId, shaderFragment,
-                toById[shaderId] ?: emptyList(),
-                fromById[shaderId] ?: emptyList()
-            )
+        components = shaderFragments.entries.mapIndexedNotNull { i, (shaderId, shaderFragment) ->
+            if (shaderIdsInUse.contains(shaderId)) {
+                Component(
+                    i, shaderId, shaderFragment,
+                    toById[shaderId] ?: emptyList(),
+                    fromById[shaderId] ?: emptyList()
+                )
+            } else null
         }.associateBy { it.shaderId }
-
-        fromGlobal = fromById[null] ?: emptyList()
-        toGlobal = toById[null] ?: emptyList()
     }
 
-    val uniformPorts: List<UniformPortRef>
-        get() = fromGlobal.map { it.from }.filterIsInstance<UniformPortRef>()
+    val inputPortRefs: List<InputPortRef>
+        get() = links.map { it.from }.filterIsInstance<InputPortRef>()
 
     inner class Component(
         val index: Int,
         val shaderId: String,
-        private val shaderFragment: ShaderFragment,
+        val shaderFragment: ShaderFragment,
         incomingLinks: List<Link>,
         outgoingLinks: List<Link>
     ) {
@@ -51,11 +52,11 @@ class Patch(
             val tmpPortMap = hashMapOf<String, () -> String>()
 
             incomingLinks.forEach { (from, to) ->
-                if (to is ShaderPortRef) {
-                    if (from is ShaderOut) {
+                if (to is ShaderInPortRef) {
+                    if (from is ShaderOutPortRef) {
                         tmpPortMap[to.portName] =
                             { components[from.shaderId]?.resultVar ?: error("huh? no ${from.shaderId}?") }
-                    } else if (from is UniformPortRef) {
+                    } else if (from is InputPortRef) {
                         tmpPortMap[to.portName] =
                             { from.varName }
                     }
@@ -66,13 +67,13 @@ class Patch(
             portMap = tmpPortMap
         }
 
-        val saveResult = outgoingLinks.any { (from, _) -> from is ShaderOut }
+        val saveResult = outgoingLinks.any { (from, _) -> from is ShaderOutPortRef }
         val resultVar = namespace.internalQualify("result")
-        val resolvedPortMap by lazy { portMap.entries.associate { (k, v) -> k to v() } }
+        val resolvedPortMap by lazy { portMap.mapValues { (_, v) -> v() } }
 
         fun appendDeclaratoryLines(buf: StringBuilder) {
             buf.append("// Shader ID: ", shaderId, "; namespace: ", prefix, "\n")
-            buf.append("// ", shaderFragment.name, "\n")
+            buf.append("// ", shaderFragment.title, "\n")
 
             if (saveResult) {
                 buf.append("\n")
@@ -101,7 +102,7 @@ class Patch(
         buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
         buf.append("\n")
 
-        uniformPorts.forEach {
+        inputPortRefs.forEach {
             if (!it.isImplicit)
                 buf.append("uniform ${it.type} ${it.varName};\n")
         }
@@ -122,60 +123,4 @@ class Patch(
 
     fun compile(glslContext: GlslContext, resolver: Resolver): GlslProgram =
         GlslProgram(glslContext, this, resolver)
-
-    interface PortRef {
-        val shaderId: String?
-
-        infix fun linkTo(other: PortRef): Link = Link(this, other)
-    }
-
-    data class ShaderOut(override val shaderId: String) : PortRef
-
-    object PixelColor : PortRef {
-        override val shaderId: String? = null
-    }
-
-    open class UniformPortRef(
-        val type: String,
-        val name: String,
-        val pluginId: String? = null,
-        val pluginConfig: Map<String, String> = emptyMap()
-    ) : PortRef {
-        override val shaderId: String? = null
-
-        open val varName: String get() = "in_$name"
-        open val isImplicit = false
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is UniformPortRef) return false
-
-            if (type != other.type) return false
-            if (name != other.name) return false
-            if (pluginId != other.pluginId) return false
-            if (pluginConfig != other.pluginConfig) return false
-            if (shaderId != other.shaderId) return false
-            if (isImplicit != other.isImplicit) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = type.hashCode()
-            result = 31 * result + name.hashCode()
-            result = 31 * result + (pluginId?.hashCode() ?: 0)
-            result = 31 * result + pluginConfig.hashCode()
-            result = 31 * result + (shaderId?.hashCode() ?: 0)
-            result = 31 * result + isImplicit.hashCode()
-            return result
-        }
-
-        override fun toString(): String {
-            return "UniformPortRef(type='$type', name='$name', pluginId=$pluginId, pluginConfig=$pluginConfig, shaderId=$shaderId, isImplicit=$isImplicit)"
-        }
-    }
-
-    data class ShaderPortRef(override val shaderId: String, val portName: String) : PortRef
-
-    data class Link(val from: PortRef, val to: PortRef)
 }

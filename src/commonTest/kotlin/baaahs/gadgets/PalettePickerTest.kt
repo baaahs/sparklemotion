@@ -14,7 +14,7 @@ class PalettePickerTest {
         palettePicker.colors = listOf(Color(654321), Color(234156))
 
         val otherPalettePicker = serializationRoundTrip(PalettePicker.serializer(), palettePicker)
-        expect("name") { otherPalettePicker.name }
+        expect("name") { otherPalettePicker.title }
         expect(listOf(Color(123456))) { otherPalettePicker.colors }
 
         otherPalettePicker.state.putAll(palettePicker.state)

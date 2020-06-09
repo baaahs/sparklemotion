@@ -88,8 +88,13 @@ class GadgetManager(private val pubSub: PubSub.Server) {
         }
     }
 
-    internal fun findGadget(name: String) = gadgets[name]?.gadgetData?.gadget
-    internal fun findGadgetInfo(name: String) = gadgets[name]
+    fun findGadget(name: String) = gadgets[name]?.gadgetData?.gadget
+
+    fun <T : Gadget> getGadget(name: String): T =
+        (findGadget(name) as? T)
+            ?: error("no such gadget \"$name\" among [${gadgets.keys}]")
+
+    fun findGadgetInfo(name: String) = gadgets[name]
 
     fun adjustSomething() {
         val priorLastUserInteraction = lastUserInteraction

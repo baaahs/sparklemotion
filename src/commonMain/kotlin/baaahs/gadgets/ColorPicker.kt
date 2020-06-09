@@ -10,7 +10,7 @@ import kotlin.random.Random
 @Serializable
 data class ColorPicker(
     /** The name for this color picker. */
-    val name: String,
+    val title: String,
 
     /** The initial value for this color picker. */
     val initialValue: Color = Color.WHITE

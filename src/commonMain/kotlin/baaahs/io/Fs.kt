@@ -24,7 +24,7 @@ interface Fs {
         /** If this is known to be a directory or not then `true` or `false`, otherwise `null` */
         internal val isDirectory: Boolean? = null
     ): Comparable<File> {
-        val pathParts = fullPath.split("/").filter { it.isNotEmpty() }
+        val pathParts = fullPath.split("/").filter { it.isNotEmpty() && it != "." && it != ".." }
         val fullPath: String get() = pathParts.joinToString("/")
         val parentPath: String get() = pathParts.subList(0, pathParts.size - 1).joinToString("/")
         val name: String get() = pathParts.last()

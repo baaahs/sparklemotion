@@ -39,7 +39,7 @@ open class GlslRenderer(
     fun addSurface(surface: Surface): RenderSurface {
         val surfacePixels = SurfacePixels(surface, nextPixelOffset)
         val rects = mapSurfaceToRects(nextPixelOffset, fbMaxPixWidth, surface)
-        val renderSurface = RenderSurface(null, surfacePixels, nextRectOffset, rects, uvTranslator)
+        val renderSurface = RenderSurface(surfacePixels, nextRectOffset, rects, uvTranslator)
         nextPixelOffset += surface.pixelCount
         nextRectOffset += renderSurface.rects.size
 
@@ -188,15 +188,15 @@ open class GlslRenderer(
         val uvMapper = glslAnalyzer.asShader(
             /**language=glsl*/
             """
-            uniform sampler2D sm_uvCoordsTexture;
+            uniform sampler2D uvCoordsTexture;
             
             vec2 mainUvFromRaster(vec2 rasterCoord) {
                 int rasterX = int(rasterCoord.x);
                 int rasterY = int(rasterCoord.y);
                 
                 vec2 uvCoord = vec2(
-                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
+                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
+                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
                 );
                 return uvCoord;
             }

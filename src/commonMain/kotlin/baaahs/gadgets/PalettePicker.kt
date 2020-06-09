@@ -9,7 +9,7 @@ import kotlinx.serialization.builtins.list
 @Serializable
 data class PalettePicker(
     /** The name for the palette picker. */
-    val name: String,
+    val title: String,
 
     val initialColors: List<Color> = emptyList()
 ) : Gadget() {

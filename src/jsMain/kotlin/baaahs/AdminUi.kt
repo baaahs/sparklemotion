@@ -12,7 +12,7 @@ import react.createElement
 import kotlin.browser.document
 
 class AdminUi(network: Network, pinkyAddress: Network.Address) : HostedWebApp {
-    private val clientLink = network.link()
+    private val clientLink = network.link("admin")
     private val container = document.createElement("div") as HTMLDivElement
     private val model = selectModel()
     private val visualizer = Visualizer(model)

@@ -2,16 +2,29 @@ package baaahs.glsl
 
 import baaahs.Color
 import baaahs.Pixels
+import baaahs.ShowRunner
 import baaahs.Surface
 import baaahs.glshaders.GlslProgram
 
 class RenderSurface(
-    var program: GlslProgram? = null,
     val pixels: SurfacePixels,
     val rect0Index: Int,
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
     val uvTranslator: UvTranslator
-)
+) {
+    var program: GlslProgram? = null
+    val receivers = mutableListOf<ShowRunner.SurfaceReceiver>()
+
+    fun useProgram(program: GlslProgram?) {
+        if (program != null && this.program != null)
+            throw IllegalStateException("buffer already bound")
+        this.program = program
+    }
+
+    fun release() {
+        useProgram(null)
+    }
+}
 
 abstract class SurfacePixels(val surface: Surface, val pixel0Index: Int) : Pixels {
     override val size: Int = surface.pixelCount

@@ -11,11 +11,12 @@ import react.*
 val SceneList = functionalComponent<SceneListProps> { props ->
     buttonGroup {
         attrs.variant = ButtonVariant.outlined
-        props.scenes.forEach { scene ->
+        props.scenes.forEachIndexed { index, scene ->
             button {
-                +scene.name
-                attrs.disabled = scene == props.currentScene
-                attrs.onClickFunction = { props.onSelect(scene) }
+                +scene.title
+//                (attrs as Tag).disabled = scene == props.currentScene
+                attrs["disabled"] = index == props.selected
+                attrs.onClickFunction = { props.onSelect(index) }
             }
         }
     }
@@ -24,8 +25,8 @@ val SceneList = functionalComponent<SceneListProps> { props ->
 external interface SceneListProps: RProps {
     var pubSub: PubSub.Client
     var scenes: List<Scene>
-    var currentScene: Scene
-    var onSelect: (Scene) -> Unit
+    var selected: Int
+    var onSelect: (Int) -> Unit
 }
 
 fun RBuilder.sceneList(handler: SceneListProps.() -> Unit): ReactElement =

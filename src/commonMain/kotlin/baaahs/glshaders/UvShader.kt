@@ -2,9 +2,13 @@ package baaahs.glshaders
 
 class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     companion object {
-        val magicUniforms = listOf(
-            InputPort("sampler2D", "sm_uvCoordsTexture", "U/V Coordinates Texture", GlslCode.ContentType.UvCoordinateTexture)
-        ).associateBy { it.name }
+        val uvCoordsTextureInputPort = InputPort(
+            "sampler2D",
+            "uvCoordsTexture",
+            "U/V Coordinates Texture",
+            GlslCode.ContentType.UvCoordinateTexture
+        )
+        val magicUniforms = listOf(uvCoordsTextureInputPort).associateBy { it.id }
     }
 
     override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Projection
@@ -15,8 +19,8 @@ class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
-                ?: InputPort(it.type, it.name, it.name.nameify(), GlslCode.ContentType.Float,
-                    it.hint?.plugin, it.hint?.map ?: emptyMap(), it)
+                ?: InputPort(it.type, it.name, it.name.capitalize(), GlslCode.ContentType.Float,
+                    it.hint?.plugin ?: "baaahs.Core:invalid", it.hint?.map ?: emptyMap(), it)
         }
     }
 

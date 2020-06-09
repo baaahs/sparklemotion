@@ -3,6 +3,7 @@ package baaahs.glshaders
 class GlslCode(
     val title: String,
     val description: String? = null,
+    val src: String,
     glslStatements: List<GlslAnalyzer.GlslStatement>
 ) {
     internal val globalVarNames = hashSetOf<String>()
@@ -119,18 +120,18 @@ class GlslCode(
 
     data class Hint(val plugin: String, val map: Map<String, String>)
 
-    enum class ContentType(val description: String?, val pluginId: String? = null) {
-        RasterCoordinate("Raster Coordinate"),
-        UvCoordinate("U/V Coordinate"),
+    enum class ContentType(val description: String, val pluginId: String) {
+        RasterCoordinate("Raster Coordinate", "baaahs.Core:invalid"),
+        UvCoordinate("U/V Coordinate", "baaahs.Core:invalid"),
         UvCoordinateTexture("U/V Coordinates Texture", "baaahs.Core:uvCoords"),
         XyCoordinate("X/Y Coordinate", "baaahs.Core:xyCoord"),
-        XyzCoordinate("X/Y/Z Coordinate"),
+        XyzCoordinate("X/Y/Z Coordinate", "baaahs.Core:invalid"),
         Color("Color", "baaahs.Core:ColorPicker"),
         Time("Time", "baaahs.Core:time"),
         Resolution("Resolution", "baaahs.Core:resolution"),
         Float("Float", "baaahs.Core:Slider"),
-        Int("Integer"),
-        Unknown("Unknown")
+        Int("Integer", "baaahs.Core:invalid"),
+        Unknown("Unknown", "baaahs.Core:invalid")
     }
 
     class Namespace(private val prefix: String) {

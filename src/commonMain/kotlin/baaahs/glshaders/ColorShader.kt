@@ -1,11 +1,12 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.ContentType
+import kotlinx.serialization.Serializable
 
 abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Color
 
-    protected fun guessInputPort(it: GlslCode.GlslVar, desc: String = it.name.nameify()): InputPort {
+    protected fun guessInputPort(it: GlslCode.GlslVar, title: String = it.name.capitalize()): InputPort {
         val contentType = when (it.type) {
             "float" -> ContentType.Float
             "vec2" -> ContentType.XyCoordinate
@@ -14,7 +15,7 @@ abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
             else -> ContentType.Unknown
         }
         return InputPort(
-            it.type, it.name, desc, contentType,
+            it.type, it.name, title, contentType,
             it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
         )
     }
@@ -80,7 +81,7 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         val explicitUniforms = glslCode.uniforms.map {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
                 ?: {
-                    val desc = it.name.replace(Regex("^i"), "").nameify()
+                    val desc = it.name.replace(Regex("^i"), "").capitalize()
                     guessInputPort(it, desc)
                 }()
         }
@@ -106,7 +107,7 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
             InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
             InputPort("float", "time", "Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
-        ).associateBy { it.name }
+        ).associateBy { it.id }
 
         val uvCoordPort = InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
     }

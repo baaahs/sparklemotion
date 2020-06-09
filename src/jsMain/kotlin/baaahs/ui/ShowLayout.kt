@@ -3,6 +3,9 @@ package baaahs.ui
 import baaahs.show.Layout
 import external.mosaic.*
 import kotlinx.css.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonElementSerializer
 import react.*
 import styled.css
 import styled.styledDiv
@@ -85,8 +88,13 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
             }
 
 //        zeroStateView={<MosaicZeroState createNode={createNode} />}
+            val jsonInst = Json(JsonConfiguration.Stable)
+            val layoutRoot = props.layout.rootNode
+            val asJson = jsonInst.stringify(JsonElementSerializer, layoutRoot)
+            val layoutRootJs = JSON.parse<dynamic>(asJson)
+            println("asJson = ${asJson}")
             @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
-            value = props.layout.mosaicConfig as MosaicParent<String>
+            value = layoutRootJs as MosaicParent<String>
             //            onChange = { onChange }
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
@@ -95,11 +103,11 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
 
 }
 
-typealias ControlRenderer = RBuilder.() -> Unit
+typealias GadgetRenderer = RBuilder.() -> Unit
 
 external interface ShowLayoutProps : RProps {
     var layout: Layout
-    var layoutControls: Map<String, List<ControlRenderer>>
+    var layoutControls: Map<String, List<GadgetRenderer>>
 }
 
 fun RBuilder.showLayout(handler: ShowLayoutProps.() -> Unit): ReactElement =
@@ -110,19 +118,3 @@ fun <T> RBuilder.mosaic(handler: MosaicControlledProps<T>.() -> Unit): ReactElem
 
 fun <T> RBuilder.mosaicWindow(handler: MosaicWindowProps<T>.() -> Unit): ReactElement =
     child(MosaicWindow::class as KClass<out Component<MosaicWindowProps<T>, *>>) { attrs { handler() } }
-
-var <T> MosaicParent<T>.firstItem: T
-    get() = first
-    set(value) { first = value }
-
-var <T> MosaicParent<T>.firstSplit: MosaicParent<T>
-    get() = first
-    set(value) { first = value }
-
-var <T> MosaicParent<T>.secondItem: T
-    get() = second
-    set(value) { second = value }
-
-var <T> MosaicParent<T>.secondSplit: MosaicParent<T>
-    get() = second
-    set(value) { second = value }

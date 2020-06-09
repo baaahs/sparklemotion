@@ -2,6 +2,14 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.emptyMap
+import kotlin.collections.forEach
+import kotlin.collections.hashMapOf
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.toSet
 
 interface ShaderFragment {
     enum class Type(val outContentType: GlslCode.ContentType) {
@@ -11,8 +19,9 @@ interface ShaderFragment {
         Filter(GlslCode.ContentType.Color)
     }
 
-    val id: String
-    val name: String
+    val src: String get() = glslCode.src
+    val glslCode: GlslCode
+    val title: String
     val description: String?
     val shaderType: Type
     val entryPoint: GlslFunction
@@ -23,9 +32,8 @@ interface ShaderFragment {
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
     fun invocationGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
 
-    abstract class Base(protected val glslCode: GlslCode) : ShaderFragment {
-        override val id: String = glslCode.title
-        override val name: String = glslCode.title
+    abstract class Base(final override val glslCode: GlslCode) : ShaderFragment {
+        override val title: String = glslCode.title
         override val description: String? = null
 
         override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
@@ -72,10 +80,5 @@ interface ShaderFragment {
                 else -> null
             }
         }
-    }
-
-    fun String.nameify(): String {
-        return replace(Regex("[A-Z]+")) { match -> " ${match.value}"}
-            .trim().capitalize()
     }
 }

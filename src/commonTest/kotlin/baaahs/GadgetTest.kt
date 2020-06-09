@@ -12,8 +12,8 @@ import kotlin.test.expect
 class GadgetTest {
     private val testCoroutineContext = TestCoroutineContext("network")
     private val network = FakeNetwork(0, coroutineContext = testCoroutineContext)
-    private val serverLink = network.link()
-    private val clientLink = network.link()
+    private val serverLink = network.link("test")
+    private val clientLink = network.link("test")
 
     @Test
     fun whenGadgetValuesChange_shouldNotifyListeners() {
@@ -64,7 +64,7 @@ class GadgetTest {
 
         expect(.4321f) { serverSlider.value }
 
-        val client2Link = network.link()
+        val client2Link = network.link("test")
         val pubSubClient2 = PubSub.connect(client2Link, serverLink.myAddress, 1234)
         pubSubClient2.install(gadgetModule)
 

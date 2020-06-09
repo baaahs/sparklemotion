@@ -6,6 +6,8 @@ import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
+import baaahs.sim.FakeFs
+import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
@@ -52,7 +54,11 @@ fun main(args: Array<String>) {
         }
 
         "UI" -> {
-            val uiApp = WebUi(network, pinkyAddress)
+            val filesystems = listOf(
+                SaveAsFs("Shader Library (busted!)", FakeFs()),
+                SaveAsFs("Show", FakeFs())
+            )
+            val uiApp = WebUi(network, pinkyAddress, filesystems)
             render(uiApp.render(), contentDiv)
         }
 

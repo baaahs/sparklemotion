@@ -1,16 +1,16 @@
 package baaahs.ui
 
 import baaahs.*
+import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
 import baaahs.glshaders.Plugins
+import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
 import baaahs.model.MovingHead
-import baaahs.shaders.GlslShader
-import baaahs.shaders.IGlslShader
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -22,11 +22,28 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
 
     val compile = useCallback({ patch: Patch ->
         val plugins = Plugins.findAll()
+        val showResources = object : ShowResources {
+            val gadgets: MutableMap<String, Gadget> = hashMapOf()
+            override val glslContext: GlslContext get() = gl
+            override val dataSources: Map<String, GlslProgram.DataFeed>
+                get() = emptyMap()
+            override val shaders: Map<String, ShaderFragment>
+                get() = patch.components.mapValues { (_, component) -> component.shaderFragment }
+
+            override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+                gadgets[id] = gadget
+            }
+
+            override fun <T : Gadget> useGadget(id: String): T {
+                return gadgets[id] as T
+            }
+
+        }
         val fakeShowContext = FakeShowContext()
         val program =
             try {
                 patch.compile(gl) { uniformPort ->
-                    plugins.matchUniformProvider(uniformPort, fakeShowContext, gl)
+                    plugins.findDataSource(uniformPort)?.create(showResources)
                 }.also {
                     props.onSuccess()
                 }
@@ -81,18 +98,12 @@ private class FakeShowContext : ShowContext {
 
     override val allSurfaces: List<Surface>
         get() = TODO("not implemented")
-    override val allUnusedSurfaces: List<Surface>
-        get() = TODO("not implemented")
     override val allMovingHeads: List<MovingHead>
         get() = TODO("not implemented")
     override val currentBeat: Float
         get() = TODO("not implemented")
 
     override fun getBeatSource(): BeatSource {
-        TODO("not implemented")
-    }
-
-    override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
         TODO("not implemented")
     }
 
