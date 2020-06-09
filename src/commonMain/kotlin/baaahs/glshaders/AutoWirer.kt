@@ -1,40 +1,61 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslRenderer
+import baaahs.ports.*
 
-class AutoWirer {
-    fun autoWire(colorShader: String): Patch {
-        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader)
+class AutoWirer(val plugins: Plugins) {
+    fun autoWire(colorShader: String, shaderId: String = "color"): Patch {
+        return autoWire(
+            GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader,
+            shaderId
+        )
     }
 
-    fun autoWire(colorShader: ColorShader): Patch {
+    fun autoWire(colorShader: ColorShader, shaderId: String = "color"): Patch {
         return autoWire(mapOf(
             "uv" to GlslRenderer.uvMapper,
-            "color" to colorShader
+            shaderId to colorShader
         ))
     }
 
     fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
         val localDefaults = shaders.entries.associate { (shaderId, shaderFragment) ->
-            shaderFragment.shaderType.outContentType to Patch.ShaderOut(shaderId)
+            shaderFragment.shaderType.outContentType to ShaderOutPortRef(shaderId)
         }.minus(GlslCode.ContentType.Color)
 
-        val links = arrayListOf<Patch.Link>()
+        val links = arrayListOf<Link>()
         shaders.forEach { (name, shaderFragment) ->
             shaderFragment.inputPorts.forEach { inputPort ->
                 val uniformInput =
                     localDefaults[inputPort.contentType]
                         ?: defaultBindings[inputPort.contentType]
-                        ?: GlslProgram.InputPortRef(
-                            inputPort.type, inputPort.name, inputPort.pluginId, inputPort.pluginConfig)
+                        ?: suggestInputPortRef(inputPort)
+                val canonicalPortRef =
+                    when (uniformInput) {
+                        is InputPortRef -> plugins.validateAndCanonicalize(uniformInput)
+                        else -> uniformInput
+                    }
 
-                links.add(Patch.Link(uniformInput, Patch.ShaderPortRef(name, inputPort.name)))
+                links.add(Link(canonicalPortRef, ShaderInPortRef(name, inputPort.id)))
             }
         }
         return Patch(shaders, links)
     }
 
-    private val defaultBindings = mapOf<GlslCode.ContentType, Patch.UniformPortRef>(
+    private fun suggestInputPortRef(inputPort: InputPort): InputPortRef {
+        val postfix = PluginRef(inputPort.pluginId).resource
+        val id = inputPort.id.decapitalize() + postfix.capitalize()
+        return inputPortRef(
+            id,
+            inputPort.type,
+            inputPort.title,
+            inputPort.pluginId,
+            inputPort.pluginConfig,
+            "in_$id"
+        )
+    }
+
+    private val defaultBindings = mapOf(
         GlslCode.ContentType.UvCoordinateTexture to GlslProgram.UvCoordsTexture,
         GlslCode.ContentType.UvCoordinate to GlslProgram.GlFragCoord,
 //            ContentType.XyCoordinate to { TODO() },

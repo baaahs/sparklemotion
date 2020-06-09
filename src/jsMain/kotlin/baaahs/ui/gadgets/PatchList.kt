@@ -2,7 +2,6 @@ package baaahs.ui.gadgets
 
 import baaahs.PubSub
 import baaahs.show.PatchSet
-import kotlinx.html.Tag
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
@@ -15,12 +14,13 @@ val PatchSetList = functionalComponent<PatchSetListProps> { props ->
     buttonGroup {
         attrs.variant = ButtonVariant.outlined
         attrs.orientation = ButtonGroupOrientation.vertical
-        props.patchSets.forEach { patchSet ->
+        props.patchSets.forEachIndexed { index, patchSet ->
             button {
-                +patchSet.name
+                +patchSet.title
                 attrs.color = ButtonColor.primary
-                (attrs as Tag).disabled = patchSet == props.currentPatchSet
-                attrs.onClickFunction = { props.onSelect(patchSet) }
+//                (attrs as Tag).disabled = patchSet == props.currentPatchSet
+                attrs["disabled"] = index == props.selected
+                attrs.onClickFunction = { props.onSelect(index) }
             }
         }
     }
@@ -29,8 +29,8 @@ val PatchSetList = functionalComponent<PatchSetListProps> { props ->
 external interface PatchSetListProps: RProps {
     var pubSub: PubSub.Client
     var patchSets: List<PatchSet>
-    var currentPatchSet: PatchSet
-    var onSelect: (PatchSet) -> Unit
+    var selected: Int
+    var onSelect: (Int) -> Unit
 }
 
 fun RBuilder.patchSetList(handler: PatchSetListProps.() -> Unit): ReactElement =

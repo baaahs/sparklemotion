@@ -40,7 +40,7 @@ class JvmNetwork : Network {
 
     }
 
-    override fun link(): RealLink = link
+    override fun link(name: String): RealLink = link
 
     inner class RealLink : Network.Link {
 

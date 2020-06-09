@@ -13,6 +13,10 @@ fun <E> Collection<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
+    return this.mapIndexed { i, t -> if (i == index) replacement else t }
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
 fun constrain(value: Float, minValue: Float, maxValue: Float): Float {

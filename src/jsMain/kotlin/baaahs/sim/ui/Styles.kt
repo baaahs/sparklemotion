@@ -14,11 +14,8 @@ object SimulatorStyles : StyleSheet("SimulatorView", isStatic = true) {
         fontSize = 10.pt
         fontFamily = "Helvetica"
 
-        top = 0.px
-        left = 0.px
         width = 100.pct
         height = 100.pct
-        position = Position.absolute
     }
 
     val section by css {

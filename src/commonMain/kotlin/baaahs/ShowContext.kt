@@ -1,27 +1,18 @@
 package baaahs
 
+import baaahs.glshaders.GlslProgram
 import baaahs.model.MovingHead
 import baaahs.shaders.GlslShader
 import baaahs.shaders.IGlslShader
 
 interface ShowContext {
     val allSurfaces: List<Surface>
-    val allUnusedSurfaces: List<Surface>
     val allMovingHeads: List<MovingHead>
 
     // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
     val currentBeat: Float
 
     fun getBeatSource(): BeatSource
-
-    /**
-     * Obtain a shader buffer which can be used to control the illumination of a surface.
-     *
-     * @param surface The surface we're shading.
-     * @param shader The type of shader.
-     * @return A shader buffer of the appropriate type.
-     */
-    fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer
 
     fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer
 

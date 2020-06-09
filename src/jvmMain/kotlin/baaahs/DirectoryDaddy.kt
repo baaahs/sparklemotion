@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.io.Fs
+import baaahs.io.RealFs
+
 class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
     private var preferredVersion: String?
 
@@ -11,18 +14,18 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
 
     private fun findPreferredFirmware(): String? {
         try {
-            val files = fs.listFiles("")
+            val files = fs.listFiles(fs.rootFile)
             logger.debug { "Found the following firmware files:" }
 
             var currentNum = 0
-            var currentFile: String? = null
+            var currentFile: Fs.File? = null
 
             for (f in files) {
-                if (!f.endsWith(".bin")) continue
+                if (!f.name.endsWith(".bin")) continue
 
                 println("  $f");
 
-                val tokens = f.split("-")
+                val tokens = f.name.split("-")
                 if (tokens.size > 2) {
                     val num = tokens[1].toInt()
                     if (num > currentNum) {
@@ -36,7 +39,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
                 logger.warn { "  ** No .bin file is named with a proper firmware version like '0.0.1-450-gad9451b-dirty'" }
             } else {
                 logger.debug { "Selected firmware ====> $currentFile" }
-                return currentFile.substring(0, currentFile.length - 4);
+                return currentFile.name.substring(0, currentFile.name.length - 4);
             }
         } catch (e: Exception) {
             // Probably the directory doesn't exist

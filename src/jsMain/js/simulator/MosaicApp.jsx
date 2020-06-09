@@ -23,7 +23,7 @@ const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
     'Sheep Visualizer': SheepVisualizerWindow,
     'Simulator Console': SimulatorSettingsWindow,
-    'Web UI': baaahs.ui.AppWindow,
+    'Web UI': baaahs.sim.ui.AppWindow,
   };
 
   const { simulator } = props;
@@ -31,31 +31,31 @@ const MosaicUI = (props) => {
   const [pubSub, setPubSub] = useState(null);
 
   useEffect(() => {
-    setPubSub(simulator.getPubSub());
+    // setPubSub(simulator.getPubSub());
     simulator.start();
   }, []);
 
   useEffect(() => {
     if (!pubSub) return;
 
-    const onPubSubStateChange = () => {
-      dispatch({
-        type: 'SET_STATE',
-        payload: { isConnected: pubSub.isConnected },
-      });
-    };
-    pubSub.addStateChangeListener(onPubSubStateChange);
+    // const onPubSubStateChange = () => {
+    //   dispatch({
+    //     type: 'SET_STATE',
+    //     payload: { isConnected: pubSub.isConnected },
+    //   });
+    // };
+    // pubSub.addStateChangeListener(onPubSubStateChange);
 
-    const selectedShowChannel = pubSub.subscribe(
-      baaahs.Topics.selectedShow,
-      (selectedShow) => {
-        dispatch({ type: 'SET_STATE', payload: { selectedShow } });
-      }
-    );
+    // const selectedShowChannel = pubSub.subscribe(
+    //   baaahs.Topics.selectedShow,
+    //   (selectedShow) => {
+    //     dispatch({ type: 'SET_STATE', payload: { selectedShow } });
+    //   }
+    // );
 
     return () => {
-      selectedShowChannel.unsubscribe();
-      pubSub.removeStateChangeListener(onPubSubStateChange);
+      // selectedShowChannel.unsubscribe();
+      // pubSub.removeStateChangeListener(onPubSubStateChange);
     };
   }, [pubSub]);
 

@@ -30,7 +30,7 @@ class Brain(
     enum class State { Unknown, Link, Online }
 
     suspend fun run() {
-        link = FragmentingUdpLink(network.link())
+        link = FragmentingUdpLink(network.link("brain"))
         udpSocket = link.listenUdp(Ports.BRAIN, this)
         sendHello()
     }

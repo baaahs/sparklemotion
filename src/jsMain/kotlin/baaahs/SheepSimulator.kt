@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
+import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
@@ -9,9 +10,11 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.proto.Ports
 import baaahs.shaders.GlslShader
-import baaahs.shows.AllShows
-import baaahs.shows.GlslShow
+import baaahs.show.SampleData
+import baaahs.show.Show
+import baaahs.shows.BakedInShaders
 import baaahs.sim.*
+import baaahs.ui.SaveAsFs
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -41,23 +44,27 @@ class SheepSimulator {
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
-    val shows = AllShows.allShows
 
     init {
-        shows.forEach { show ->
-            if (show !is GlslShow) return@forEach
+        BakedInShaders.all.forEach { show ->
             try {
-                fs.saveFile(fs.resolve("shaders", "${show.name}.glsl"), show.src)
+                val file = fs.resolve("shaders", "${show.name}.glsl")
+                if (!fs.exists(file)) {
+                    fs.saveFile(file, show.src)
+                }
             } catch (e: Exception) {
+                console.warn("huh? failed:", e)
             }
         }
     }
 
     val glslContext = GlslShader.globalRenderContext
     val clock = JsClock()
+    val show = SampleData.sampleShow
+    val plugins = Plugins.findAll()
     private val pinky = Pinky(
         model,
-        shows,
+        show,
         network,
         dmxUniverse,
         bridgeClient.beatSource,
@@ -65,17 +72,23 @@ class SheepSimulator {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
+        glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator),
+        plugins = plugins
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
-    fun getPubSub(): PubSub.Client =
-        PubSub.Client(network.link(), pinky.address, Ports.PINKY_UI_TCP).apply {
+    fun getPubSub(): PubSub.Client {
+        val link = network.link("simApp")
+        println("SheepSimulator: new client link is ${link.myAddress}")
+
+        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP).apply {
             install(gadgetModule)
+            install(plugins.serialModule)
         }
+    }
 
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
@@ -83,8 +96,12 @@ class SheepSimulator {
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
+        val filesystems = listOf(
+            SaveAsFs("Shader Library", fs),
+            SaveAsFs("Show", FakeFs())
+        )
         launcher.add("Web UI") {
-            WebUi(network, pinky.address)
+            WebUi(network, pinky.address, filesystems)
         }.also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
@@ -109,13 +126,14 @@ class SheepSimulator {
 
             brainScope.launch { randomDelay(1000); brain.run() }
         }
+        pinky.pixelCount = simSurfaces.sumBy { it.pixelPositions.size }
 
         model.movingHeads.forEach { movingHead ->
             visualizer.addMovingHead(movingHead, dmxUniverse)
         }
 
         queryParams["show"]?.let { showName ->
-            shows.find { it.name == showName }?.let { show -> pinky.switchToShow(show) }
+//      TODO      shows.find { it.name == showName }?.let { show -> pinky.switchToShow(show) }
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }
@@ -142,7 +160,6 @@ class SheepSimulator {
             totalPixels += pixelPositions.size
             SimSurface(surface, surfaceGeometry, pixelPositions, BrainId("brain//$index"))
         }
-        document.getElementById("visualizerPixelCount").asDynamic().innerText = totalPixels.toString()
 
         val mappingSessionPath = Storage(mapperFs).saveSession(
             MappingSession(clock.now(), simSurfaces.map { simSurface ->

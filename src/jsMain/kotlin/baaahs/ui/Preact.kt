@@ -15,6 +15,14 @@ class Preact {
     private val counter = react.useState { 0 }
     private var internalCounter = 0
 
+    init {
+        react.useEffectWithCleanup(emptyList()) {
+            return@useEffectWithCleanup {
+                state.first.sideEffects.forEach { it.runCleanups() }
+            }
+        }
+    }
+
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
@@ -29,13 +37,14 @@ class Preact {
         }
     }
 
-    fun sideEffect(name: String, vararg watch: Any?, callback: () -> Unit) {
-        if (firstTime) {
+    fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
+        return if (firstTime) {
             val sideEffect = SideEffect(watch)
             state.first.sideEffects.add(sideEffect)
-            callback()
+            sideEffect.callback()
         } else {
             val sideEffect = state.first.sideEffects[sideEffectIndex++]
+            sideEffect.firstTime = false
             if (watch.zip(sideEffect.lastWatchValues).all { (a, b) ->
                     if (a is String && b is String) {
                         a == b
@@ -54,8 +63,9 @@ class Preact {
                     "Running side effect $name " +
                             "(${watch.truncateStrings(12)} != ${sideEffect.lastWatchValues.truncateStrings(12)}"
                 }
+                sideEffect.runCleanups()
                 sideEffect.lastWatchValues = watch
-                callback()
+                sideEffect.callback()
             }
         }
     }
@@ -79,9 +89,25 @@ class Preact {
         }
     }
 
-    private class SideEffect(
-        var lastWatchValues: Array<out Any?>
-    )
+    class SideEffect(
+        internal var lastWatchValues: Array<out Any?>
+    ) {
+        internal var firstTime: Boolean = true
+        internal var cleanups: MutableList<() -> Unit>? = null
+
+        fun withCleanup(cleanup: () -> Unit) {
+            if (firstTime) {
+                if (cleanups == null) cleanups = mutableListOf()
+                cleanups!!.add(cleanup)
+            }
+        }
+
+        internal fun runCleanups() {
+            cleanups?.forEach { it.invoke() }
+            cleanups?.clear()
+            firstTime = true // re-collect cleanups
+        }
+    }
 
     companion object {
         private val logger = Logger("Preact")

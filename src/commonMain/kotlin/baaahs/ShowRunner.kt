@@ -1,36 +1,45 @@
 package baaahs
 
 import baaahs.dmx.Shenzarpy
+import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
+import baaahs.glsl.RenderSurface
 import baaahs.model.Model
 import baaahs.model.MovingHead
-import baaahs.shaders.GlslShader
-import baaahs.shaders.IGlslShader
+import baaahs.ports.InputPortRef
+import baaahs.show.PatchMapping
+import baaahs.show.PatchSet
 
 class ShowRunner(
     private val model: Model<*>,
-    initialShow: Show,
-    private val gadgetManager: GadgetManager,
+    initialPatchSet: PatchSet,
+    private val show: baaahs.show.Show,
+    private val showResources: ShowResources,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
-    private val glslRenderer: GlslRenderer
+    private val glslRenderer: GlslRenderer,
+    pubSub: PubSub.Server
 ) : ShowContext {
-    var nextShow: Show? = initialShow
-    private var currentShow: Show? = null
-    private var currentShowRenderer: Show.Renderer? = null
+    private var nextPatchSet: PatchSet? = initialPatchSet
+
+    var showState = ShowState(0, show.scenes.map { 0 })
+    private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
+        this.showState = showState
+        nextPatchSet = showState.findPatchSet(show)
+    }
+
+    private var currentPatchSet: PatchSet? = null
+    private var currentRenderPlan: RenderPlan? = null
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
-    private var performedHousekeeping: Boolean = false
 
-    override val allSurfaces: List<Surface> get() = surfaceBinders.keys.toList()
-    override val allUnusedSurfaces: List<Surface> get() = allSurfaces.minus(
-        surfaceBinders.values.filter { !it.hasBuffer() }.map { it.surface })
-
+    override val allSurfaces: List<Surface> get() = renderSurfaces.keys.toList()
     override val allMovingHeads: List<MovingHead> get() = model.movingHeads
 
-    private val surfaceBinders: MutableMap<Surface, SurfaceBinder> = hashMapOf()
+    internal val renderSurfaces: MutableMap<Surface, RenderSurface> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
@@ -42,25 +51,6 @@ class ShowRunner(
         get() = beatSource.getBeatData().beatWithinMeasure(clock)
 
     override fun getBeatSource(): BeatSource = beatSource
-
-    private fun recordShader(surface: Surface, shaderBuffer: GlslShader.Buffer) {
-        val surfaceBinder = surfaceBinders[surface] ?: throw IllegalStateException("unknown surface $surface")
-        surfaceBinder.setBuffer(shaderBuffer)
-    }
-
-    /**
-     * Obtain a shader buffer which can be used to control the illumination of a surface.
-     *
-     * @param surface The surface we're shading.
-     * @param shader The type of shader.
-     * @return A shader buffer of the appropriate type.
-     */
-    override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
-        if (shadersLocked) throw IllegalStateException("Shaders can't be obtained during #nextFrame()")
-        val buffer = shader.createBuffer(surface)
-        recordShader(surface, buffer)
-        return buffer
-    }
 
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
@@ -96,72 +86,107 @@ class ShowRunner(
         changedSurfaces.add(SurfacesChanges(ArrayList(addedSurfaces), ArrayList(removedSurfaces)))
     }
 
-    fun nextFrame() {
-        if (!performedHousekeeping) housekeeping() else performedHousekeeping = false
+    fun nextFrame(dontProcrastinate: Boolean = true) {
+        // Unless otherwise instructed, = generate and send the next frame right away,
+        // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
+        if (dontProcrastinate) housekeeping()
 
-        // Always generate and send the next frame right away, then perform any housekeeping tasks immediately
-        // afterward, to avoid frame lag.
-        currentShowRenderer?.let {
-            it.nextFrame()
-            glslRenderer.draw()
+        currentRenderPlan?.let {
+            it.render(glslRenderer)
             sendFrame()
         }
 
-        housekeeping()
-        performedHousekeeping = true
+        if (!dontProcrastinate) housekeeping()
     }
 
     private fun housekeeping() {
+        var remapToSurfaces = false
         for ((added, removed) in changedSurfaces) {
             println("ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed")
             for (receiver in removed) removeReceiver(receiver)
             for (receiver in added) addReceiver(receiver)
 
-            if (nextShow == null) {
+            if (nextPatchSet == null) {
                 shadersLocked = false
                 try {
-                    currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
+// TODO                   currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
 
                     logger.info {
-                        "Show ${currentShow!!.name} updated; " +
-                                "${surfaceBinders.size} surfaces"
+                        "Show ${currentPatchSet!!.title} updated; " +
+                                "${renderSurfaces.size} surfaces"
                     }
                 } catch (e: Show.RestartShowException) {
                     // Show doesn't support changing surfaces, just restart it cold.
-                    nextShow = currentShow ?: nextShow
+                    nextPatchSet = currentPatchSet ?: nextPatchSet
                 }
                 shadersLocked = true
             }
+            remapToSurfaces = true
         }
         changedSurfaces.clear()
 
         // Maybe switch to a new show.
-        nextShow?.let { startingShow ->
-            createShowRenderer(startingShow)
+        nextPatchSet?.let { startingPatchSet ->
+            switchTo(startingPatchSet)
 
-            currentShow = nextShow
-            nextShow = null
+            currentPatchSet = nextPatchSet
+            nextPatchSet = null
+            remapToSurfaces = true
+        }
+
+        if (remapToSurfaces) {
+            renderSurfaces.values.forEach { it.useProgram(null) }
+
+            currentRenderPlan?.programs?.forEach { (patchMapping, program) ->
+                renderSurfaces.forEach { (surface, renderSurface) ->
+                    if (patchMapping.matches(surface)) {
+                        renderSurface.useProgram(program)
+                    }
+                }
+            }
         }
     }
 
-    private fun createShowRenderer(startingShow: Show) {
-        surfaceBinders.values.forEach { it.releaseBuffer() }
+    fun switchTo(scene: Int, patchSet: Int) {
+        nextPatchSet = show.scenes[scene].patchSets[patchSet]
+    }
 
-        val restartingSameShow = nextShow == currentShow
-        val gadgetsState = if (restartingSameShow) gadgetManager.getGadgetsState() else emptyMap()
+    private fun switchTo(newPatchSet: PatchSet) {
+        renderSurfaces.values.forEach { it.release() }
 
-        unlockShadersAndGadgets {
-            currentShowRenderer = startingShow.createRenderer(model, this)
-        }
+        currentRenderPlan = prepare(newPatchSet)
 
         logger.info {
-            "New show ${startingShow.name} created; " +
-                    "${surfaceBinders.size} surfaces " +
+            "New show ${newPatchSet.title} created; " +
+                    "${renderSurfaces.size} surfaces " +
                     "and ${requestedGadgets.size} gadgets"
         }
 
-        gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
+//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
         requestedGadgets.clear()
+    }
+
+    private fun prepare(newPatchSet: PatchSet): RenderPlan {
+        val glslContext = glslRenderer.gl
+
+        val activeDataSources = mutableSetOf<GlslProgram.DataFeed>()
+        val programs = newPatchSet.patchMappings.map { patchMapping ->
+            val patch = Patch(showResources.shaders, patchMapping.links)
+            val program = patch.compile(glslContext) { inputPortRef: InputPortRef ->
+                val dataSource = showResources.dataSources[inputPortRef.id]
+                    ?: error("unknown datasource \"${inputPortRef.id}\" among [${showResources.dataSources.keys.sorted()}]")
+                activeDataSources.add(dataSource)
+                dataSource
+            }
+            patchMapping to program
+        }
+        return RenderPlan(programs)
+    }
+
+    class RenderPlan(val programs: List<Pair<PatchMapping, GlslProgram>>) {
+        fun render(glslRenderer: GlslRenderer) {
+            glslRenderer.draw()
+        }
     }
 
     private fun unlockShadersAndGadgets(fn: () -> Unit) {
@@ -178,43 +203,43 @@ class ShowRunner(
 
     private fun addReceiver(receiver: SurfaceReceiver) {
         val surface = receiver.surface
-        val binder = surfaceBinders.getOrPut(surface) {
-            SurfaceBinder(surface, glslRenderer.addSurface(surface))
+        val renderSurface = renderSurfaces.getOrPut(surface) {
+            glslRenderer.addSurface(surface)
         }
-        binder.receivers.add(receiver)
+        renderSurface.receivers.add(receiver)
 
         totalSurfaceReceivers++
     }
 
     private fun removeReceiver(receiver: SurfaceReceiver) {
         val surface = receiver.surface
-        val surfaceBinder = surfaceBinders.get(surface)
+        val renderSurface = renderSurfaces.get(surface)
             ?: throw IllegalStateException("huh? no SurfaceBinder for $surface")
 
-        if (!surfaceBinder.receivers.remove(receiver)) {
+        if (!renderSurface.receivers.remove(receiver)) {
             throw IllegalStateException("huh? receiver not registered for $surface")
         }
 
-        if (surfaceBinder.receivers.isEmpty()) {
-            glslRenderer.removeSurface(surfaceBinder.renderSurface)
-            surfaceBinder.release()
-            surfaceBinders.remove(surface)
+        if (renderSurface.receivers.isEmpty()) {
+            glslRenderer.removeSurface(renderSurface)
+            renderSurface.release()
+            renderSurfaces.remove(surface)
         }
 
         totalSurfaceReceivers--
     }
 
     fun sendFrame() {
-        surfaceBinders.values.forEach { surfaceBinder ->
+        renderSurfaces.values.forEach { renderSurface ->
 //            if (shaderBuffers.size != 1) {
 //                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
 //            }
 
-            surfaceBinder.receivers.forEach { receiver ->
+            renderSurface.receivers.forEach { receiver ->
                 // TODO: The send might return an error, at which point this receiver should be nuked
                 // from the list of receivers for this surface. I'm not quite sure the best way to do
                 // that so I'm leaving this note.
-                receiver.send(surfaceBinder.renderSurface.pixels)
+                receiver.send(renderSurface.pixels)
             }
         }
 
@@ -222,7 +247,7 @@ class ShowRunner(
     }
 
     fun shutDown() {
-        gadgetManager.clear()
+        // TODO gadgetManager.clear()
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)

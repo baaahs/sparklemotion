@@ -4,6 +4,8 @@ import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
 import baaahs.visualizer.Visualizer
+import kotlinx.css.height
+import kotlinx.css.pct
 import kotlinx.html.id
 import kotlinx.html.js.onMouseDownFunction
 import org.w3c.dom.HTMLDivElement
@@ -32,7 +34,10 @@ class VisualizerPanel(props: Props) : BComponent<VisualizerPanel.Props, Visualiz
     override fun RBuilder.render() {
         styledDiv {
             ref = container
-            css { +"sheepView" }
+            css {
+                +"sheepView"
+                height = 100.pct
+            }
             attrs.id = "sheepView"
             attrs.onMouseDownFunction = { event: Event ->
                 props.visualizer.onMouseDown(event.asDynamic())

@@ -9,14 +9,14 @@ import baaahs.GadgetData
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.Patch
+import baaahs.glshaders.Plugins
 import baaahs.glsl.CompiledShader
 import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.jsx.sim.store
 import baaahs.jsx.useResizeListener
-import baaahs.shaders.GlslShader
-import baaahs.shows.GlslShow
+import baaahs.shows.BakedInShaders
 import baaahs.sim.FakeFs
 import baaahs.ui.Styles.controls
 import baaahs.ui.Styles.glslNumber
@@ -42,12 +42,9 @@ import kotlin.math.min
 
 private val glslNumberClassName = glslNumber.getName()
 
-val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
+val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
     val windowRootEl = useRef<Element>()
-    val contextState = useContext(store).state
-    val simulator = contextState.simulator
-    val selectedShow = contextState.selectedShow
-    
+
     val preact = Preact()
 
     val aceEditor = useRef<AceEditor>()
@@ -61,19 +58,15 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
     var fileDialogOpen by preact.state { false }
     var fileDialogIsSaveAs by preact.state { false }
     val selectedShader = if (selectedShaderIndex == -1) null else openShaders[selectedShaderIndex]
-    val saveAsFilesystems = listOf(
-        SaveAsFs("Shader Library", simulator.fs),
-        SaveAsFs("Show", FakeFs())
-    )
 
     useResizeListener(windowRootEl) {
         aceEditor.current.editor.resize()
     }
 
     fun previewShaderOnSimulator(shader: OpenShader) {
-        simulator.switchToShow(
-            GlslShow(selectedShow, shader.src, GlslShader.globalRenderContext, true)
-        )
+//     TODO   simulator.switchToShow(
+//            GlslShow(selectedShow, shader.src, GlslShader.globalRenderContext, true)
+//        )
     }
 
     val showGlslErrors = useCallback(aceEditor) { glslErrors: Array<CompiledShader.GlslError> ->
@@ -90,24 +83,24 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         )
     }
 
-    preact.sideEffect("show change", selectedShow) {
-        // Look up the text for the show
-        val allShows = simulator.shows.toTypedArray()
-        val currentShow = allShows.find { it.name == contextState.selectedShow }
-
-        if (currentShow != null && currentShow is GlslShow && !currentShow.isPreview) {
-            val existingShaderIdx = openShaders.indexOfFirst { it.name == selectedShow }
-            val shader = if (existingShaderIdx == -1) {
-                val newShader = OpenShader(currentShow.name, currentShow.src, currentShow)
-                openShaders += newShader
-                selectedShaderIndex = openShaders.size - 1
-                newShader
-            } else {
-                selectedShaderIndex = existingShaderIdx
-                openShaders[existingShaderIdx]
-            }
-        }
-    }
+//    preact.sideEffect("show change", selectedShow) {
+//        // Look up the text for the show
+//        val allShows = BakedInShaders.all.toTypedArray()
+//        val currentShow = allShows.find { it.name == contextState.selectedShow }
+//
+//        if (currentShow != null && currentShow is BakedInShaders.BakedInShader/* && !currentShow.isPreview*/) {
+//            val existingShaderIdx = openShaders.indexOfFirst { it.name == selectedShow }
+//            val shader = if (existingShaderIdx == -1) {
+//                val newShader = OpenShader(currentShow.name, currentShow.src)
+//                openShaders += newShader
+//                selectedShaderIndex = openShaders.size - 1
+//                newShader
+//            } else {
+//                selectedShaderIndex = existingShaderIdx
+//                openShaders[existingShaderIdx]
+//            }
+//        }
+//    }
 
     preact.sideEffect("shaders change", selectedShader, showGlslErrors) {
         if (selectedShader == null) {
@@ -122,7 +115,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
 
         if (selectedShader.patch == null) {
             try {
-                selectedShader.patch = AutoWirer().autoWire(
+                selectedShader.patch = AutoWirer(Plugins.findAll()).autoWire(
                     mapOf("color" to GlslAnalyzer().asShader(selectedShader.src))
                 )
             } catch (e: Exception) {
@@ -247,7 +240,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
         selectedShader?.file?.let { saveToFile ->
             saveToFile.fs.saveFile(saveToFile, selectedShader.src, true)
             openShaders = openShaders.replace(selectedShaderIndex) {
-                OpenShader(it.name, selectedShader.src, null, false, saveToFile)
+                OpenShader(it.name, selectedShader.src, false, saveToFile)
             }
         }
         Unit
@@ -269,11 +262,11 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             selectedShader!!
             file.fs.saveFile(file, selectedShader.src, true)
             openShaders = openShaders.replace(selectedShaderIndex) {
-                OpenShader(file.name, selectedShader.src, null, false, file)
+                OpenShader(file.name, selectedShader.src, false, file)
             }
         } else {
             val src = file.fs.loadFile(file)!!
-            val newShader = OpenShader(file.name, src, null, false, file)
+            val newShader = OpenShader(file.name, src, false, file)
             openShaders += newShader
             selectedShaderIndex = openShaders.size - 1
         }
@@ -408,9 +401,9 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> {
             isSaveAs = fileDialogIsSaveAs
             onSelect = handleFileSelected
             onCancel = handleSaveAsCancel
-            filesystems = saveAsFilesystems
+            filesystems = props.filesystems
             defaultTarget = selectedShader?.file?.let { file ->
-                SaveAsTarget(saveAsFilesystems.find { it.fs == file.fs }, file.name)
+                SaveAsTarget(props.filesystems.find { it.fs == file.fs }, file.name)
             }
         }
     }
@@ -424,7 +417,6 @@ data class ExtractionCandidate(
 data class OpenShader(
     val name: String,
     val src: String,
-    val show: GlslShow? = null,
     val isModified: Boolean = false,
     val file: Fs.File? = null
 ) {
@@ -434,7 +426,9 @@ data class OpenShader(
 }
 
 
-external interface ShaderEditorWindowProps : RProps
+external interface ShaderEditorWindowProps : RProps {
+    var filesystems: List<SaveAsFs>
+}
 
 fun Point(row: Number, column: Number): Point =
     jsObject { this.row = row; this.column = column }
