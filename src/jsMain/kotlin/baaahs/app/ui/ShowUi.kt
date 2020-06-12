@@ -4,7 +4,7 @@ import baaahs.PubSub
 import baaahs.ShowState
 import baaahs.gadgets.Slider
 import baaahs.jsx.RangeSlider
-import baaahs.show.DataSource
+import baaahs.ports.DataSourceRef
 import baaahs.show.Show
 import baaahs.ui.GadgetRenderer
 import baaahs.ui.gadgets.patchSetList
@@ -53,12 +53,12 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
             dataSourceProvider.id to renderer
         }
 
-    fun addControlsToPanels(layoutControls: Map<String, List<DataSource>>) {
-        layoutControls.forEach { (panelName, controls) ->
-            controls.forEach { control ->
+    fun addControlsToPanels(layoutControls: Map<String, List<DataSourceRef>>) {
+        layoutControls.forEach { (panelName, dataSourceRefs) ->
+            dataSourceRefs.forEach { dataSourceRef ->
                 val panelItems = layoutRenderers[panelName] ?: error("unknown panel $panelName")
-                val controlRenderer = controlRenderers[control.id]
-                    ?: error("no such control \"${control.id}\" among [${controlRenderers.keys}]")
+                val controlRenderer = controlRenderers[dataSourceRef.id]
+                    ?: error("no such control \"${dataSourceRef.id}\" among [${controlRenderers.keys}]")
                 panelItems.add(controlRenderer)
             }
         }
