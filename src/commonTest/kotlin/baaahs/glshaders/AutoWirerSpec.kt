@@ -1,9 +1,9 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslRenderer
+import baaahs.ports.DataSourceRef
 import baaahs.ports.ShaderInPortRef
 import baaahs.ports.ShaderOutPortRef
-import baaahs.ports.inputPortRef
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -35,42 +35,69 @@ object AutoWirerSpec : Spek({
             }
             val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
             val shaders by value { mapOf("color" to shader) }
-            val patch by value { AutoWirer(Plugins.safe()).autoWire(shaders) }
+            val patch by value { AutoWirer(Plugins.safe()).autoWire(shaders).resolve() }
 
             it("creates a reasonable guess patch") {
                 expect(
+                    setOf(
+                        CorePlugin.Time("time"),
+                        CorePlugin.Resolution("resolution"),
+                        CorePlugin.SliderDataSource("blueness", "Blueness",
+                            1f, 0f, 1f, 0.01f),
+                        CorePlugin.ScreenUvCoord("gl_FragCoord")
+                    )
+                ) { patch.dataSources.toSet() }
+
+                expect(
                     listOf(
-                        GlslProgram.Time
+                        DataSourceRef("time")
                                 linkTo ShaderInPortRef("color", "time"),
-                        GlslProgram.Resolution
+                        DataSourceRef("resolution")
                                 linkTo ShaderInPortRef("color", "resolution"),
-                        inputPortRef("bluenessSlider", "float", "Blueness", "baaahs.Core:Slider", varName = "in_bluenessSlider")
+                        DataSourceRef("blueness")
                                 linkTo ShaderInPortRef("color", "blueness"),
-                        GlslProgram.GlFragCoord
+                        DataSourceRef("gl_FragCoord")
                                 linkTo ShaderInPortRef("color", "gl_FragCoord")
                     )
                 ) { patch.links }
             }
 
             context("with a UV projection shader") {
-                val uvShader= GlslRenderer.uvMapper
+                val uvShader = GlslRenderer.uvMapper
 
                 override(shaders) {
                     mapOf("color" to shader, "uv" to uvShader)
                 }
 
                 it("creates a reasonable guess patch") {
+                    expect(
+                        setOf(
+                            CorePlugin.Time("time"),
+                            CorePlugin.Resolution("resolution"),
+                            CorePlugin.SliderDataSource("blueness", "Blueness",
+                                1f, 0f, 1f, 0.01f),
+                            CorePlugin.UvCoordTexture("uvCoordsTexture")
+                        )
+                    ) { patch.dataSources.toSet() }
+
                     expects(
                         listOf(
-                            GlslProgram.Time
+                            DataSourceRef("time")
                                     linkTo ShaderInPortRef("color", "time"),
-                            GlslProgram.Resolution
+                            DataSourceRef("resolution")
                                     linkTo ShaderInPortRef("color", "resolution"),
-                            inputPortRef("bluenessSlider", "float", "Blueness", "baaahs.Core:Slider", varName = "in_bluenessSlider")
+                            DataSourceRef("blueness")
                                     linkTo ShaderInPortRef("color", "blueness"),
                             ShaderOutPortRef("uv")
                                     linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                            inputPortRef("uvCoordsTexture", "sampler2D", "U/V Coordinates Texture", "baaahs.Core:uvCoords", varName = "in_uvCoordsTexture")
+                            DataSourceRef("uvCoordsTexture")
+//                            inputPortRef(
+//                                "uvCoordsTexture",
+//                                "sampler2D",
+//                                "U/V Coordinates Texture",
+//                                "baaahs.Core:uvCoords",
+//                                varName = "in_uvCoordsTexture"
+//                            )
                                     linkTo ShaderInPortRef("uv", "uvCoordsTexture")
                         )
                     ) { patch.links }

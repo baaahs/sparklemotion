@@ -1,27 +1,29 @@
 package baaahs.glshaders
 
-import baaahs.glsl.CompiledShader
-import baaahs.ports.InputPortRef
 import baaahs.ports.portRefModule
 import baaahs.show.DataSource
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
 
-class PluginRef(type: String) {
-    val pluginId: String
-    val resource: String
+@Serializable
+data class PluginRef(
+    val pluginId: String,
+    val resourceName: String
+) {
+    companion object {
+        val Unknown = PluginRef(CorePlugin.id, "unknown")
 
-    init {
-        val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(type)
-        if (result != null) {
-            val (_, pluginPackage, pluginArg) = result.destructured
-            pluginId = pluginPackage
-            resource = pluginArg
-        } else {
-            pluginId = Plugins.default
-            resource = pluginId
+        fun from(identString: String): PluginRef {
+            val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
+            return if (result != null) {
+                val (_, pluginId, resourceName) = result.destructured
+                PluginRef(pluginId, resourceName)
+            } else {
+                PluginRef(CorePlugin.id, identString)
+            }
         }
     }
 }
@@ -38,9 +40,17 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
         context = serialModule
     )
 
-    fun validateAndCanonicalize(uniformInput: InputPortRef): InputPortRef {
-        // TODO
-        return uniformInput
+    private fun findPlugin(pluginRef: PluginRef): Plugin {
+        return byPackage[pluginRef.pluginId]
+            ?: error("unknown plugin \"${pluginRef.pluginId}\"")
+    }
+
+    fun suggestDataSources(inputPort: InputPort): List<DataSource> {
+        return if (inputPort.pluginRef != null) {
+            findPlugin(inputPort.pluginRef).suggestDataSources(inputPort)
+        } else {
+            byPackage.values.map { plugin -> plugin.suggestDataSources(inputPort) }.flatten()
+        }
     }
 
     // name would be in form:
@@ -49,8 +59,8 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     //   [baaahs.Core:]uvCoords
     //   com.example.Plugin:data
     //   baaahs.SoundAnalysis:coq
-    fun findDataSource(inputPortRef: InputPortRef): DataSource? {
-        val pluginRef = inputPortRef.pluginId?.let { PluginRef(it) }
+    fun findDataSource(inputPort: InputPort): DataSource? {
+        val pluginRef = inputPort.pluginRef
 //        val (plugin, arg) = if (pluginRef != null) {
 //            pluginRef
 //        } else {
@@ -59,19 +69,19 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
 //        val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
         val plugin = byPackage[pluginRef!!.pluginId]
 
-        val dataSourceProvider = pluginRef.resource.let {
-            plugin!!.findDataSource(it, inputPortRef)
+        val dataSource = pluginRef.resourceName.let {
+            plugin!!.findDataSource(it, inputPort)
         }
 
-        dataSourceProvider?.let {
-            val supportedTypes = dataSourceProvider.supportedTypes
-            if (!supportedTypes.contains(inputPortRef.type)) {
-                throw CompiledShader.LinkException(
-                    "can't set uniform ${inputPortRef.type} ${inputPortRef.title}: expected $supportedTypes)"
-                )
-            }
+        dataSource?.let {
+//            val supportedTypes = dataSourceProvider.supportedTypes
+//            if (!supportedTypes.contains(inputPort.type)) {
+//                throw CompiledShader.LinkException(
+//                    "can't set uniform ${inputPort.type} ${inputPort.title}: expected $supportedTypes)"
+//                )
+//            }
         }
-        return dataSourceProvider
+        return dataSource
     }
 
 //    fun createDataSourceProvider(dataSourceDescription: DataSourceDescription): DataSourceProvider?

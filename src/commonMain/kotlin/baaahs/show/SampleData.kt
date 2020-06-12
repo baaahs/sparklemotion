@@ -1,9 +1,9 @@
 package baaahs.show
 
+import baaahs.Color
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
-import baaahs.ports.inputPortRef
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -37,21 +37,25 @@ object SampleData {
 
     private val plugins = Plugins.findAll()
     private val autoWirer = AutoWirer(plugins)
-    val samplePatch = autoWirer.autoWire("""
+    val samplePatch = autoWirer.autoWire(
+        """
         // GLSL Hue Test Pattern
         uniform vec2 resolution;
         void main(void) {
             gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
         }
-    """.trimIndent(), "redGreen")
+    """.trimIndent(), "redGreen"
+    )
 
-    val samplePatch2 = autoWirer.autoWire("""
+    val samplePatch2 = autoWirer.autoWire(
+        """
         // Other GLSL Hue Test Pattern
         uniform vec2 resolution;
         void main(void) {
             gl_FragColor = vec4(0.0, gl_FragCoord.xy / resolution, 1.0);
         }
-    """.trimIndent(), "blueGreen")
+    """.trimIndent(), "blueGreen"
+    )
 
     val fireBallPatch = autoWirer.autoWire(SampleShaders.fireBallGlsl, "fire")
 
@@ -61,34 +65,16 @@ object SampleData {
         mapOf("default" to defaultLayout)
     )
 
-    val scenesControl = CorePlugin.Scenes(inputPortRef("scenes", "int", "Scenes"))
-    val patchesControl = CorePlugin.Patches(inputPortRef("patches", "int", "Patches"))
-    val colorControl = CorePlugin.ColorPickerProvider(
-        inputPortRef(
-            "colorColorPicker",
-            "vec4",
-            "Color",
-            "ColorPicker",
-            emptyMap()
-        )
+    val scenesControl = CorePlugin.Scenes("scenes", "Scenes")
+    val patchesControl = CorePlugin.Patches("patches", "Patches")
+    val colorControl = CorePlugin.ColorPickerProvider("color", "Color", Color.WHITE)
+    val brightnessControl = CorePlugin.SliderDataSource(
+        "brightnessSlider", "Brightness",
+        1f, 0f, 1f, 0.01f
     )
-    val brightnessControl = CorePlugin.SliderProvider(
-        inputPortRef(
-            "brightnessSlider",
-            "float",
-            "Brightness",
-            "Slider",
-            emptyMap()
-        )
-    )
-    val intensityControl = CorePlugin.SliderProvider(
-        inputPortRef(
-            "intensitySlider",
-            "float",
-            "Intensity",
-            "Slider",
-            emptyMap()
-        )
+    val intensityControl = CorePlugin.SliderDataSource(
+        "intensitySlider", "Intensity",
+        1f, 0f, 1f, 0.01f
     )
 
     val sampleShow = Show(
@@ -154,7 +140,7 @@ object SampleData {
             intensityControl,
             CorePlugin.Resolution("resolution"),
             CorePlugin.Time("time"),
-            CorePlugin.UvCoord("uvCoordsTexture")
+            CorePlugin.UvCoordTexture("uvCoordsTexture")
         ),
         layouts = layouts,
         controlLayout = mapOf(

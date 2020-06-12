@@ -2,21 +2,14 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.emptyMap
-import kotlin.collections.forEach
-import kotlin.collections.hashMapOf
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.toSet
 
 interface ShaderFragment {
-    enum class Type(val outContentType: GlslCode.ContentType) {
-        Color(GlslCode.ContentType.Color),
-        Projection(GlslCode.ContentType.UvCoordinate),
-        Transformer(GlslCode.ContentType.UvCoordinate),
-        Filter(GlslCode.ContentType.Color)
+    enum class Type(val outContentType: ContentType) {
+        Color(ContentType.Color),
+        Projection(ContentType.UvCoordinate),
+        Transformer(ContentType.UvCoordinate),
+        Filter(ContentType.Color)
     }
 
     val src: String get() = glslCode.src

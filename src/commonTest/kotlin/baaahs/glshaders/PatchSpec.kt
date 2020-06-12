@@ -1,9 +1,9 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslRenderer
+import baaahs.ports.DataSourceRef
 import baaahs.ports.ShaderInPortRef
 import baaahs.ports.ShaderOutPortRef
-import baaahs.ports.inputPortRef
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -41,13 +41,20 @@ object PatchSpec : Spek({
                     Patch(
                         mapOf("color" to shader),
                         listOf(
-                            GlslProgram.GlFragCoord
+                            CorePlugin.ScreenUvCoord("gl_FragCoord"),
+                            CorePlugin.Resolution("resolution"),
+                            CorePlugin.Time("time"),
+                            CorePlugin.SliderDataSource(
+                                "bluenessSlider", "Blueness", 0f, 0f, 1f, 0.01f)
+                        ),
+                        listOf(
+                            DataSourceRef("gl_FragCoord")
                                     linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                            GlslProgram.Resolution
+                            DataSourceRef("resolution")
                                     linkTo ShaderInPortRef("color", "resolution"),
-                            GlslProgram.Time
+                            DataSourceRef("time")
                                     linkTo ShaderInPortRef("color", "time"),
-                            inputPortRef("bluenessSlider", "float", "Blueness")
+                            DataSourceRef("bluenessSlider")
                                     linkTo ShaderInPortRef("color", "blueness"),
                             ShaderInPortRef("color", "gl_FragColor")
                                     linkTo GlslProgram.PixelColor
@@ -125,15 +132,22 @@ object PatchSpec : Spek({
                                 "color" to shader
                             ),
                             listOf(
-                                inputPortRef("uvCoordsTexture", "sampler2D", "U/V Coords Texture", "baaahs.Core:uvCoordsTexture")
+                                CorePlugin.UvCoordTexture("uvCoordsTexture"),
+                                CorePlugin.Resolution("resolution"),
+                                CorePlugin.Time("time"),
+                                CorePlugin.SliderDataSource(
+                                    "bluenessSlider", "Blueness", 0f, 0f, 1f, 0.01f)
+                            ),
+                            listOf(
+                                DataSourceRef("uvCoordsTexture")
                                         linkTo ShaderInPortRef("uv", "uvCoordsTexture"),
                                 ShaderOutPortRef("uv")
                                         linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                                GlslProgram.Resolution
+                                DataSourceRef("resolution")
                                         linkTo ShaderInPortRef("color", "resolution"),
-                                GlslProgram.Time
+                                DataSourceRef("time")
                                         linkTo ShaderInPortRef("color", "time"),
-                                inputPortRef("bluenessSlider", "float", "Blueness")
+                                DataSourceRef("bluenessSlider")
                                         linkTo ShaderInPortRef("color", "blueness")
                             )
                         )

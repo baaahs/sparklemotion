@@ -4,7 +4,6 @@ import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
@@ -247,11 +246,8 @@ class GlslRendererTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val corePlugin = CorePlugin()
-        val plugins = Plugins(mapOf(corePlugin.packageName to corePlugin))
-
-        return AutoWirer(Plugins.safe()).autoWire(program).compile(glslContext) { uniformPortRef ->
-            plugins.findDataSource(uniformPortRef)?.create(fakeShowResources)
+        return AutoWirer(Plugins.safe()).autoWire(program).compile(glslContext) { dataSource ->
+            dataSource.create(fakeShowResources)
         }
     }
 

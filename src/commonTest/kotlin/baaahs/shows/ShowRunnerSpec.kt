@@ -36,7 +36,6 @@ object ShowRunnerSpec : Spek({
         val model by value { TestModel() }
         val patch by value { AutoWirer(Plugins.safe()).autoWire(shaderSrc) }
         val surfaces by value { listOf(FakeSurface(100)) }
-        val plugins by value { Plugins.safe() }
         val patchSet by value {
             PatchSet(
                 "test patch set",
@@ -47,7 +46,7 @@ object ShowRunnerSpec : Spek({
         }
         val show by value {
             val p = patch
-            val ipr = p.inputPortRefs
+            val ipr = p.dataSourceRefs
             println("ipr = ${ipr}")
             Show("test show",
                 listOf(
@@ -55,7 +54,7 @@ object ShowRunnerSpec : Spek({
                 ),
                 listOf(patchSet),
                 listOf(),
-                patch.inputPortRefs.mapNotNull { plugins.findDataSource(it) },
+                patch.dataSources,
                 Layouts(listOf(), mapOf()),
                 mapOf(),
                 patch.components.mapValues { (_, component) ->
@@ -112,7 +111,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 val colorPickerGadget by value {
-                    showResources.useGadget<ColorPicker>("colorColorPicker")
+                    showResources.useGadget<ColorPicker>("color")
                 }
 
                 it("wires it up as a color picker") {
@@ -121,7 +120,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 it("sets the uniform from the gadget's initial value") {
-                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
+                    val colorUniform = fakeProgram.getUniform("in_color")
                     expect(arrayListOf(1f, 1f, 1f, 1f)) { colorUniform }
                 }
 
@@ -129,7 +128,7 @@ object ShowRunnerSpec : Spek({
                     colorPickerGadget.color = Color.YELLOW
 
                     showRunner.nextFrame()
-                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
+                    val colorUniform = fakeProgram.getUniform("in_color")
                     expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
                 }
             }
