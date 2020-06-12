@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
+import baaahs.ports.DataSourceRef
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -77,6 +78,8 @@ object SampleData {
         1f, 0f, 1f, 0.01f
     )
 
+    fun DataSource.ref() = DataSourceRef(id)
+
     val sampleShow = Show(
         title = "Xian's Show",
         scenes = listOf(
@@ -104,7 +107,7 @@ object SampleData {
                         ),
                         eventBindings = listOf(),
                         controlLayout = mapOf(
-                            "Patches" to listOf(intensityControl)
+                            "Patches" to listOf(intensityControl.ref())
                         )
                     )
                 ),
@@ -144,11 +147,11 @@ object SampleData {
         ),
         layouts = layouts,
         controlLayout = mapOf(
-            "Scenes" to listOf(scenesControl),
-            "Patches" to listOf(patchesControl),
+            "Scenes" to listOf(scenesControl.ref()),
+            "Patches" to listOf(patchesControl.ref()),
             "More Controls" to listOf(
-                colorControl,
-                brightnessControl
+                colorControl.ref(),
+                brightnessControl.ref()
             )
         ),
         shaderFragments = (samplePatch.components + samplePatch2.components + fireBallPatch.components)

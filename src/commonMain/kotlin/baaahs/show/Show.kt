@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.Surface
 import baaahs.glshaders.Plugins
+import baaahs.ports.DataSourceRef
 import baaahs.ports.Link
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -15,7 +16,7 @@ data class Show(
     val eventBindings: List<EventBinding>,
     val dataSources: List<DataSource>,
     val layouts: Layouts,
-    val controlLayout: Map<String, List<DataSource>>,
+    val controlLayout: Map<String, List<DataSourceRef>>,
     val shaderFragments: Map<String, String>
 ) {
     fun toJson(plugins: Plugins): JsonElement {
@@ -34,7 +35,7 @@ data class Scene(
     val title: String,
     val patchSets: List<PatchSet>,
     val eventBindings: List<EventBinding>,
-    val controlLayout: Map<String, List<DataSource>>
+    val controlLayout: Map<String, List<DataSourceRef>>
 )
 
 @Serializable
@@ -42,7 +43,7 @@ data class PatchSet(
     val title: String,
     val patchMappings: List<PatchMapping>,
     val eventBindings: List<EventBinding>,
-    val controlLayout: Map<String, List<DataSource>>
+    val controlLayout: Map<String, List<DataSourceRef>>
 )
 
 @Serializable
@@ -59,7 +60,7 @@ data class PatchMapping(
 data class EventBinding(
     val inputType: String,
     val inputData: JsonElement,
-    val target: DataSource
+    val target: DataSourceRef
 )
 
 @Serializable
