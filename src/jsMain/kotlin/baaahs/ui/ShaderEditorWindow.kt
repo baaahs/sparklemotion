@@ -14,10 +14,7 @@ import baaahs.glsl.CompiledShader
 import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
-import baaahs.jsx.sim.store
 import baaahs.jsx.useResizeListener
-import baaahs.shows.BakedInShaders
-import baaahs.sim.FakeFs
 import baaahs.ui.Styles.controls
 import baaahs.ui.Styles.glslNumber
 import baaahs.ui.Styles.previewBar
@@ -117,7 +114,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
             try {
                 selectedShader.patch = AutoWirer(Plugins.findAll()).autoWire(
                     mapOf("color" to GlslAnalyzer().asShader(selectedShader.src))
-                )
+                ).resolve()
             } catch (e: Exception) {
                 selectedShader.glslErrors = arrayOf(
                     CompiledShader.GlslError(e.message ?: e.toString())

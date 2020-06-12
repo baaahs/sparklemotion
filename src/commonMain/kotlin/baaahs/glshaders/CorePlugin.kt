@@ -9,116 +9,136 @@ import baaahs.getTimeMillis
 import baaahs.glshaders.GlslProgram.DataFeed
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
-import baaahs.ports.InputPortRef
-import baaahs.ports.inputPortRef
 import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import com.danielgergely.kgl.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.json.float
 
 class CorePlugin : Plugin {
-    override val packageName: String = "baaahs.Core"
+    override val packageName: String = id
     override val title: String = "SparkleMotion Core"
+
+    override fun suggestDataSources(inputPort: InputPort): List<DataSource> {
+        val explicit = inputPort.pluginRef?.let {
+            val dataSourceBuilder = dataSourceBuildersByName[inputPort.pluginRef.resourceName]
+                ?: error("unknown resource \"${inputPort.pluginRef.resourceName}\"")
+            dataSourceBuilder.build(inputPort)
+        }
+
+        val suggestion = explicit
+            ?: inputPort.contentType?.let { supportedContentTypes[it]?.build(inputPort) }
+
+        return suggestion?.let { listOf(it) }
+            ?: supportedContentTypes.values.map { it.suggestDataSources(inputPort) }.flatten()
+    }
 
     override fun findDataSource(
         resourceName: String,
-        inputPortRef: InputPortRef
+        inputPort: InputPort
     ): DataSource? {
-        return when (resourceName) {
-            "resolution" -> Resolution(inputPortRef.id)
-            "time" -> Time(inputPortRef.id)
-            "uvCoords" -> UvCoord(inputPortRef.id)
+        val dataSourceBuilder = dataSourceBuildersByName[resourceName]
+            ?: error("unknown plugin resource $resourceName")
+        return dataSourceBuilder.build(inputPort)
+//        return when (resourceName) {
+//            "resolution" -> Resolution(inputPort.id)
+//            "time" -> Time(inputPort.id)
+//            "uvCoords" -> UvCoord(inputPort.id)
+//
+//            "xyCoord" -> XyPad(inputPort)
+//
+//            "Slider" -> SliderProvider(inputPort)
+//            "ColorPicker" -> ColorPickerProvider(inputPort)
+//            "RadioButtonStrip" -> RadioButtonStripProvider(inputPort)
+//
+//            "Scenes" -> Scenes(inputPort)
+//            "Patches" -> Patches(inputPort)
+//
+//            "none" -> NoOp(inputPort)
+//            "invalid" -> error("no provider for $inputPort")
+//
+//            else -> throw IllegalArgumentException("unknown type $resourceName")
+//        }
+    }
 
-            "xyCoord" -> XyPad(inputPortRef)
+//    @Serializable
+//    class NoOp : DataSource, DataFeed {
+//        constructor(inputPortRef: InputPortRef) {
+//            this.id = inputPortRef.id
+//            this.supportedTypes = listOf(inputPortRef.type)
+//        }
+//
+//        override val id: String
+//        override val dataSourceName: String
+//            get() =
+//        override val supportedTypes: List<String>
+//
+//        override fun create(showResources: ShowResources): DataFeed = this
+//
+//        override fun set(uniform: Uniform) {
+//            // no-op
+//        }
+//    }
 
-            "Slider" -> SliderProvider(inputPortRef)
-            "ColorPicker" -> ColorPickerProvider(inputPortRef)
-            "RadioButtonStrip" -> RadioButtonStripProvider(inputPortRef)
+    @Serializable
+    data class Resolution(override val id: String) : DataSource {
+        companion object : DataSourceBuilder<Resolution> {
+            override val resourceName: String get() = "Resolution"
+            override fun suggestDataSources(inputPort: InputPort): List<Resolution> = emptyList()
+            override fun build(inputPort: InputPort): Resolution = Resolution(inputPort.id)
+        }
 
-            "Scenes" -> Scenes(inputPortRef)
-            "Patches" -> Patches(inputPortRef)
+        override val dataSourceName: String get() = "Resolution"
+        override fun getType(): String = "vec2"
 
-            "none" -> NoOp(inputPortRef)
-            "invalid" -> error("no provider for $inputPortRef")
+        override fun create(showResources: ShowResources): DataFeed =
+            object : DataFeed, GlslProgram.ResolutionListener {
+                var x = 1f
+                var y = 1f
 
-            else -> throw IllegalArgumentException("unknown type $resourceName")
+                override fun set(uniform: Uniform) = uniform.set(x, y)
+
+                override fun onResolution(x: Float, y: Float) {
+                    this.x = x
+                    this.y = y
+                }
+            }
+    }
+
+    @Serializable
+    data class Time(override val id: String) : DataSource {
+        companion object : DataSourceBuilder<Time> {
+            override val resourceName: String get() = "Time"
+            override fun suggestDataSources(inputPort: InputPort): List<Time> = emptyList()
+            override fun build(inputPort: InputPort): Time = Time(inputPort.id)
+        }
+
+        override val dataSourceName: String get() = "Time"
+        override fun getType(): String = "float"
+
+        override fun create(showResources: ShowResources): DataFeed = object : DataFeed {
+            override fun set(uniform: Uniform) {
+                val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
+                uniform.set(thisTime)
+            }
         }
     }
 
     @Serializable
-    class NoOp : DataSource, DataFeed {
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.supportedTypes = listOf(inputPortRef.type)
+    data class UvCoordTexture(override val id: String) : DataSource {
+        companion object : DataSourceBuilder<UvCoordTexture> {
+            override val resourceName: String get() = "UvCoords"
+            override fun suggestDataSources(inputPort: InputPort): List<UvCoordTexture> = emptyList()
+            override fun build(inputPort: InputPort): UvCoordTexture = UvCoordTexture(inputPort.id)
         }
 
-        override val id: String
-        override val supportedTypes: List<String>
-
-        override fun create(showResources: ShowResources): DataFeed = this
-
-        override fun set(uniform: Uniform) {
-            // no-op
-        }
-    }
-
-    @Serializable
-    class Resolution : DataSource, DataFeed, GlslProgram.ResolutionListener {
-        constructor(id: String) {
-            this.id = id
-            this.supportedTypes = listOf("vec2")
-        }
-
-        override val id: String
-        override val supportedTypes: List<String>
-
-        @Transient
-        var x = 1f
-        @Transient
-        var y = 1f
-
-        override fun onResolution(x: Float, y: Float) {
-            this.x = x
-            this.y = y
-        }
-
-        override fun create(showResources: ShowResources): DataFeed = this
-
-        override fun set(uniform: Uniform) = uniform.set(x, y)
-    }
-
-    @Serializable
-    class Time : DataSource, DataFeed {
-        constructor(id: String) {
-            this.id = id
-            this.supportedTypes = listOf("float")
-        }
-
-        override val id: String
-        override val supportedTypes: List<String>
-
-        override fun create(showResources: ShowResources): DataFeed = this
-
-        override fun set(uniform: Uniform) {
-            val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
-            uniform.set(thisTime)
-        }
-    }
-
-    @Serializable
-    class UvCoord : DataSource {
-        constructor(id: String) {
-            this.id = id
-            this.supportedTypes = listOf("sampler2D")
-        }
-
-        override val id: String
-        override val supportedTypes: List<String>
+        override val dataSourceName: String get() = "U/V Coordinates Texture"
+        override fun getType(): String = "sampler2D"
 
         override fun create(showResources: ShowResources): DataFeed =
             object : DataFeed, GlslRenderer.ArrangementListener {
                 private val gl = showResources.glslContext
-                private val uvCoordTextureUnit = gl.getTextureUnit(UvCoord::class)
+                private val uvCoordTextureUnit = gl.getTextureUnit(UvCoordTexture::class)
                 private val uvCoordTexture = gl.check { createTexture() }
 
                 override fun onArrangementChange(arrangement: GlslRenderer.Arrangement) {
@@ -146,48 +166,79 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    abstract class Gadget<T : baaahs.Gadget> : DataSource {
-        abstract val inputPortRef: InputPortRef
-        abstract fun createGadget(title: String, config: Map<String, String>): T
-        abstract fun set(gadget: T, uniform: Uniform)
+    data class ScreenUvCoord(override val id: String) : DataSource {
+        companion object : DataSourceBuilder<ScreenUvCoord> {
+            override val resourceName: String get() = "U/V Coordinate"
+            override fun suggestDataSources(inputPort: InputPort): List<ScreenUvCoord> = emptyList()
+            override fun build(inputPort: InputPort): ScreenUvCoord = ScreenUvCoord(inputPort.id)
+        }
+
+        override val dataSourceName: String get() = "U/V Coordinate"
+        override fun getType(): String = error("huh?")
+        override fun isImplicit(): Boolean = true
+        override fun getVarName(): String = "gl_FragCoord"
+
+        override fun getRenderType(): String? = null
 
         override fun create(showResources: ShowResources): DataFeed {
-            val varName = inputPortRef.varName
-            val displayName = inputPortRef.title
+            return object : DataFeed {
+                override fun set(uniform: Uniform) {
+                    // No-op.
+                }
+            }
+        }
+    }
+
+    interface GadgetDataSource<T : baaahs.Gadget> : DataSource {
+        fun createGadget(showResources: ShowResources): T
+
+        fun set(gadget: T, uniform: Uniform)
+
+        override fun create(showResources: ShowResources): DataFeed {
             val gadget = createGadget(showResources)
             showResources.createdGadget(id, gadget)
             return object : DataFeed {
                 override fun set(uniform: Uniform) {
-                    this@Gadget.set(gadget, uniform)
+                    this@GadgetDataSource.set(gadget, uniform)
                 }
             }
         }
-
-        open fun createGadget(showResources: ShowResources) =
-            createGadget(inputPortRef.title, inputPortRef.pluginConfig)
     }
 
     @Serializable
-    class SliderProvider : Gadget<Slider> {
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.inputPortRef = inputPortRef
+    data class SliderDataSource(
+        override val id: String,
+        val title: String,
+        val initialValue: Float,
+        val minValue: Float,
+        val maxValue: Float,
+        val stepValue: Float
+    ) : GadgetDataSource<Slider> {
+        companion object : DataSourceBuilder<SliderDataSource> {
+            override val resourceName: String get() = "Slider"
+            override fun suggestDataSources(inputPort: InputPort): List<SliderDataSource> {
+                return buildIf(inputPort.type == "float", inputPort)
+            }
+
+            override fun build(inputPort: InputPort): SliderDataSource {
+                val config = inputPort.pluginConfig
+                return SliderDataSource(
+                    inputPort.id,
+                    inputPort.title,
+                    initialValue = config?.get("default")?.float ?: 1f,
+                    minValue = config?.get("min")?.float ?: 0f,
+                    maxValue = config?.get("max")?.float ?: 1f,
+                    stepValue = config?.get("step")?.float ?: .01f
+                )
+            }
         }
 
-        override val id: String
-        override val inputPortRef: InputPortRef
-        override val supportedTypes: List<String> = listOf("float")
+        override val dataSourceName: String get() = resourceName
+        override fun getType(): String = "float"
         override fun getRenderType(): String? = "Slider"
 
-        override fun createGadget(title: String, config: Map<String, String>): Slider =
-            Slider(
-                title,
-                initialValue = config["default"]?.toFloat() ?: 1f,
-                minValue = config["min"]?.toFloat() ?: 0f,
-                maxValue = config["max"]?.toFloat() ?: 1f,
-                stepValue = config["step"]?.toFloat() ?: .01f
-                // ,scale = config["scale"] ?: "linear"
-            )
+        override fun createGadget(showResources: ShowResources): Slider =
+            Slider(title, initialValue, minValue, maxValue, stepValue)
 
         override fun set(gadget: Slider, uniform: Uniform) {
             uniform.set(gadget.value)
@@ -195,27 +246,28 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    class XyPad : DataSource {
-        override val id: String
+    data class XyPad(
+        override val id: String,
+        val title: String,
+        val varPrefix: String
+    ) : DataSource {
+        companion object : DataSourceBuilder<XyPad> {
+            override val resourceName: String get() = "XyPad"
+            override fun suggestDataSources(inputPort: InputPort): List<XyPad> {
+                return buildIf(inputPort.type == "vec2", inputPort)
+            }
 
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.varName = inputPortRef.varName
-            this.gadgetIdPrefix = "glsl_$varName"
-            this.displayName = inputPortRef.title.capitalize()
-            this.supportedTypes = listOf("vec2")
+            override fun build(inputPort: InputPort): XyPad =
+                XyPad(inputPort.id, inputPort.title, inputPort.suggestVarName())
         }
 
-        private val varName: String
-        private val gadgetIdPrefix: String
-        private val displayName: String
-
-        override val supportedTypes: List<String>
+        override val dataSourceName: String get() = "XY Pad"
+        override fun getType(): String = "vec2"
 
         override fun create(showResources: ShowResources): DataFeed {
             return object : DataFeed {
-                val xControl = showResources.useGadget<Slider>("${gadgetIdPrefix}_x")
-                val yControl = showResources.useGadget<Slider>("${gadgetIdPrefix}_y")
+                val xControl = showResources.useGadget<Slider>("${varPrefix}_x")
+                val yControl = showResources.useGadget<Slider>("${varPrefix}_y")
 
                 override fun set(uniform: Uniform) {
                     uniform.set(xControl.value, yControl.value)
@@ -225,46 +277,83 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    class ColorPickerProvider : Gadget<ColorPicker> {
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.inputPortRef = inputPortRef
-            this.supportedTypes = listOf("vec3", "vec4")
+    data class ColorPickerProvider(
+        override val id: String,
+        val title: String,
+        val initialValue: Color
+    ) : GadgetDataSource<ColorPicker> {
+        companion object : DataSourceBuilder<ColorPickerProvider> {
+            override val resourceName: String get() = "ColorPicker"
+
+            override fun suggestDataSources(inputPort: InputPort): List<ColorPickerProvider> {
+                return buildIf(inputPort.type == "vec4", inputPort)
+            }
+
+            override fun build(inputPort: InputPort): ColorPickerProvider {
+                val default = inputPort.pluginConfig?.get("default")?.primitive?.contentOrNull
+
+                return ColorPickerProvider(
+                    inputPort.id,
+                    inputPort.title,
+                    initialValue = default?.let { Color.from(it) } ?: Color.WHITE
+                )
+            }
         }
 
-        override val id: String
-        override val inputPortRef: InputPortRef
-        override val supportedTypes: List<String>
+        override val dataSourceName: String get() = "Color Picker"
+        override fun getType(): String = "vec4"
         override fun getRenderType(): String? = "ColorPicker"
 
-        override fun createGadget(title: String, config: Map<String, String>): ColorPicker =
-            ColorPicker(
-                title,
-                initialValue = config["default"]?.let { Color.from(it) } ?: Color.WHITE
-            )
+        override fun createGadget(showResources: ShowResources): ColorPicker = ColorPicker(title, initialValue)
 
         override fun set(gadget: ColorPicker, uniform: Uniform) {
             val color = gadget.color
-            when (inputPortRef.type) {
-                "vec3" -> uniform.set(color.redF, color.greenF, color.blueF)
-                "vec4" -> uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
+//            when (inputPortRef.type) {
+//                "vec3" -> uniform.set(color.redF, color.greenF, color.blueF)
+//                "vec4" ->
+            uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
+//            }
+        }
+    }
+
+    @Serializable
+    data class RadioButtonStripProvider(
+        override val id: String,
+        val title: String,
+        val options: List<String>,
+        val initialSelectionIndex: Int
+    ) : GadgetDataSource<RadioButtonStrip> {
+        companion object : DataSourceBuilder<RadioButtonStripProvider> {
+            override val resourceName: String get() = "Radio Button Strip"
+
+            override fun suggestDataSources(inputPort: InputPort): List<RadioButtonStripProvider> {
+                return buildIf(inputPort.type == "int", inputPort)
+            }
+
+            override fun build(inputPort: InputPort): RadioButtonStripProvider {
+                val config = inputPort.pluginConfig
+
+                val initialSelectionIndex = config?.getPrimitive("default")?.int ?: 0
+
+                val options = config
+                    ?.getArrayOrNull("options")
+                    ?.map { it.primitive.content }
+                    ?: error("no options given")
+
+                return RadioButtonStripProvider(
+                    inputPort.id,
+                    inputPort.title,
+                    options,
+                    initialSelectionIndex
+                )
             }
         }
-    }
 
-    @Serializable
-    class RadioButtonStripProvider : Gadget<RadioButtonStrip> {
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.inputPortRef = inputPortRef
-        }
+        override val dataSourceName: String get() = resourceName
+        override fun getType(): String = "int"
 
-        override val id: String
-        override val inputPortRef: InputPortRef
-        override val supportedTypes: List<String> = listOf("int")
-
-        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
-            return RadioButtonStrip(title, config["options"] as List<String>, 0)
+        override fun createGadget(showResources: ShowResources): RadioButtonStrip {
+            return RadioButtonStrip(title, options, initialSelectionIndex)
         }
 
         override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
@@ -273,46 +362,80 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    class Scenes : Gadget<RadioButtonStrip> {
-        constructor(id: InputPortRef) {
-            this.id = inputPortRef.id
+    data class Scenes(
+        override val id: String,
+        val title: String = "Scenes"
+    ) : GadgetDataSource<RadioButtonStrip> {
+        companion object : DataSourceBuilder<Scenes> {
+            override val resourceName: String get() = "SceneList"
+            override fun suggestDataSources(inputPort: InputPort): List<Scenes> = emptyList()
+            override fun build(inputPort: InputPort): Scenes = Scenes(inputPort.id)
         }
 
-        override val id: String
-        override val inputPortRef: InputPortRef =
-            inputPortRef("currentScene", "int", "Scenes")
-        override val supportedTypes: List<String> = listOf("int")
+        override val dataSourceName: String get() = "Scene List"
+        override fun isImplicit(): Boolean = true
+        override fun getType(): String = error("huh?")
         override fun getRenderType(): String? = "SceneList"
 
-        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
+        override fun createGadget(showResources: ShowResources): RadioButtonStrip {
             // TODO: this should be a custom gadget for scenes
-            return RadioButtonStrip(title, listOf("Scene 1", "Scene 2"), 0)
+            return RadioButtonStrip("Scenes", listOf("Scene 1", "Scene 2"), 0)
         }
 
-        override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
-            TODO("not implemented")
+        override fun set(gadget: RadioButtonStrip, uniform: Uniform) { /* No-pp.*/
         }
     }
 
     @Serializable
-    class Patches : Gadget<RadioButtonStrip> {
-        constructor(inputPortRef: InputPortRef) {
-            this.id = inputPortRef.id
-            this.inputPortRef = inputPortRef
+    data class Patches(
+        override val id: String,
+        val title: String = "Patches"
+    ) : GadgetDataSource<RadioButtonStrip> {
+        companion object : DataSourceBuilder<Patches> {
+            override val resourceName: String get() = "PatchList"
+            override fun suggestDataSources(inputPort: InputPort): List<Patches> = emptyList()
+            override fun build(inputPort: InputPort): Patches = Patches(inputPort.id)
+
         }
 
-        override val id: String
-        override val inputPortRef: InputPortRef
-        override val supportedTypes: List<String> = listOf("int")
+        override val dataSourceName: String get() = "Patch List"
+        override fun isImplicit(): Boolean = true
+        override fun getType(): String = error("huh?")
         override fun getRenderType(): String? = "PatchList"
 
-        override fun createGadget(title: String, config: Map<String, String>): RadioButtonStrip {
+        override fun createGadget(showResources: ShowResources): RadioButtonStrip {
             // TODO: this should be a custom gadget for patches
             return RadioButtonStrip(title, listOf("Patch 1", "Patch 2"), 0)
         }
 
-        override fun set(gadget: RadioButtonStrip, uniform: Uniform) {
-            TODO("not implemented")
+        override fun set(gadget: RadioButtonStrip, uniform: Uniform) { /* No-pp.*/
+        }
+    }
+
+    companion object {
+        val id = "baaahs.Core"
+
+        val supportedContentTypes = mapOf(
+            ContentType.UvCoordinateTexture to UvCoordTexture,
+            ContentType.UvCoordinate to ScreenUvCoord,
+//            UvCoordinate,
+            ContentType.Mouse to XyPad,
+//            XyzCoordinate,
+            ContentType.Color to ColorPickerProvider,
+            ContentType.Time to Time,
+            ContentType.Resolution to Resolution,
+            ContentType.Float to SliderDataSource
+//            Int,
+//            Unknown
+        )
+        val dataSourceBuildersByName = supportedContentTypes.values.associateBy { it.resourceName }
+
+        private fun <T : DataSource> DataSourceBuilder<T>.buildIf(matches: Boolean, inputPort: InputPort): List<T> {
+            return if (matches) {
+                listOf(build(inputPort))
+            } else {
+                emptyList()
+            }
         }
     }
 }

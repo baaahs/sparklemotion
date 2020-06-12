@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.ShowResources
 import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.InputPort
 import baaahs.glshaders.Plugins
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer
@@ -9,10 +10,20 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObjectSerializer
 
+
+interface DataSourceBuilder<T : DataSource> {
+    val resourceName: String
+    fun suggestDataSources(inputPort: InputPort): List<T>
+    fun build(inputPort: InputPort): T
+}
+
 interface DataSource {
     val id: String
+    val dataSourceName: String
+    fun isImplicit(): Boolean = false
+    fun getType(): String
+    fun getVarName(): String = "in_$id"
 
-    val supportedTypes: List<String>
     fun getRenderType(): String? = null
     fun create(showResources: ShowResources): GlslProgram.DataFeed
 }

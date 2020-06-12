@@ -197,7 +197,7 @@ class StubSoundAnalyzer : SoundAnalyzer {
     }
 }
 
-fun FakeGlslContext.fakeProgram() = GlslProgram(this, Patch(emptyMap(), emptyList())) { null }
+fun FakeGlslContext.fakeProgram() = GlslProgram(this, Patch(emptyMap(), emptyList(), emptyList())) { null }
 fun FakeGlslContext.fakeShader() = FakeShader(fakeProgram())
 
 class FakeShader(override val glslProgram: GlslProgram) : IGlslShader

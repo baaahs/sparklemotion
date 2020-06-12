@@ -1,11 +1,21 @@
 package baaahs.glshaders
 
+import kotlinx.serialization.json.JsonObject
+
 data class InputPort(
-    val type: String,
     val id: String,
+    val type: String,
     val title: String,
-    val contentType: GlslCode.ContentType,
-    val pluginId: String = contentType.pluginId,
-    val pluginConfig: Map<String, String> = emptyMap(),
-    val glslVar: GlslCode.GlslVar? = null
-)
+    val contentType: ContentType? = null,
+    val pluginRef: PluginRef? = null,
+    val pluginConfig: JsonObject? = null,
+    val glslVar: GlslCode.GlslVar? = null,
+    val varName: String = id,
+    val isImplicit: Boolean = false
+) {
+
+    fun suggestVarName(): String {
+        val postfix = pluginRef?.resourceName ?: type
+        return id.decapitalize() + postfix.capitalize()
+    }
+}

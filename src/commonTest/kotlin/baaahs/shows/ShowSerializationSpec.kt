@@ -1,14 +1,13 @@
 package baaahs.shows
 
 import baaahs.glshaders.CorePlugin
+import baaahs.glshaders.InputPort
 import baaahs.glshaders.Plugins
-import baaahs.show.DataSource
 import baaahs.ports.*
 import baaahs.show.*
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
@@ -105,71 +104,55 @@ fun jsonFor(controlLayout: Map<String, List<DataSource>>): JsonObject {
 
 fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
-        is CorePlugin.SliderProvider -> {
+        is CorePlugin.SliderDataSource -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.SliderProvider"
+                "#type" to "baaahs.glshaders.CorePlugin.SliderDataSource"
                 "id" to dataSource.id
-                "inputPortRef" to jsonFor(dataSource.inputPortRef)
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
+                "title" to dataSource.title
+                "initialValue" to dataSource.initialValue
+                "minValue" to dataSource.minValue
+                "maxValue" to dataSource.maxValue
+                "stepValue" to dataSource.stepValue
             }
         }
         is CorePlugin.ColorPickerProvider -> {
             json {
                 "#type" to "baaahs.glshaders.CorePlugin.ColorPickerProvider"
                 "id" to dataSource.id
-                "inputPortRef" to jsonFor(dataSource.inputPortRef)
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
+                "title" to dataSource.title
+                "initialValue" to dataSource.initialValue.toInt()
             }
         }
         is CorePlugin.Scenes -> {
             json {
                 "#type" to "baaahs.glshaders.CorePlugin.Scenes"
                 "id" to dataSource.id
-                "inputPortRef" to jsonFor(dataSource.inputPortRef)
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
+                "title" to dataSource.title
             }
         }
         is CorePlugin.Patches -> {
             json {
                 "#type" to "baaahs.glshaders.CorePlugin.Patches"
                 "id" to dataSource.id
-                "inputPortRef" to jsonFor(dataSource.inputPortRef)
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
+                "title" to dataSource.title
             }
         }
         is CorePlugin.Resolution -> {
             json {
                 "#type" to "baaahs.glshaders.CorePlugin.Resolution"
                 "id" to dataSource.id
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
             }
         }
         is CorePlugin.Time -> {
             json {
                 "#type" to "baaahs.glshaders.CorePlugin.Time"
                 "id" to dataSource.id
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
             }
         }
-        is CorePlugin.UvCoord -> {
+        is CorePlugin.UvCoordTexture -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.UvCoord"
+                "#type" to "baaahs.glshaders.CorePlugin.UvCoordTexture"
                 "id" to dataSource.id
-                "supportedTypes" to jsonArray {
-                    dataSource.supportedTypes.forEach { +it }
-                }
             }
         }
         else -> json { "#type" to "unknown" }
@@ -196,29 +179,23 @@ private fun jsonFor(it: Link): JsonObject {
     }
 }
 
-private fun jsonFor(inputPortRef: InputPortRef): JsonObject {
+private fun jsonFor(inputPort: InputPort): JsonObject {
     return json {
-        "id" to inputPortRef.id
-        "type" to inputPortRef.type
-        "title" to inputPortRef.title
-        "pluginId" to inputPortRef.pluginId
-        "pluginConfig" to json { inputPortRef.pluginConfig.forEach { (k, v) -> k to v } }
-        "varName" to inputPortRef.varName
-        "isImplicit" to inputPortRef.isImplicit
+        "id" to inputPort.id
+        "type" to inputPort.type
+        "title" to inputPort.title
+        "pluginRef" to inputPort.pluginRef
+        "pluginConfig" to inputPort.pluginConfig?.forEach { (k, v) -> k to v }
+        "varName" to inputPort.varName
+        "isImplicit" to inputPort.isImplicit
     }
 }
 
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
-        is InputPortRef -> json {
-            "#type" to "baaahs.ports.InputPortRef"
+        is DataSourceRef -> json {
+            "#type" to "baaahs.ports.DataSourceRef"
             "id" to portRef.id
-            "type" to portRef.type
-            "title" to portRef.title
-            "pluginId" to portRef.pluginId
-            "pluginConfig" to json { portRef.pluginConfig.forEach { (k, v) -> k to v } }
-            "varName" to portRef.varName
-            "isImplicit" to portRef.isImplicit
         }
         is ShaderInPortRef -> json {
             "#type" to "baaahs.ports.ShaderInPortRef"

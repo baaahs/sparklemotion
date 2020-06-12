@@ -2,12 +2,15 @@ package baaahs.glshaders
 
 import baaahs.glsl.GlslContext
 import baaahs.ports.*
+import baaahs.show.DataSource
+import baaahs.unknown
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
 class Patch(
     shaderFragments: Map<String, ShaderFragment>,
+    val dataSources: List<DataSource>,
     val links: List<Link>
 ) {
     val components: Map<String, Component>
@@ -34,8 +37,8 @@ class Patch(
         }.associateBy { it.shaderId }
     }
 
-    val inputPortRefs: List<InputPortRef>
-        get() = links.map { it.from }.filterIsInstance<InputPortRef>()
+    val dataSourceRefs: List<DataSourceRef>
+        get() = links.map { it.from }.filterIsInstance<DataSourceRef>()
 
     inner class Component(
         val index: Int,
@@ -49,16 +52,24 @@ class Patch(
         private val portMap: Map<String, () -> String>
 
         init {
+            val dataSourcesById = dataSources.associateBy { it.id }
             val tmpPortMap = hashMapOf<String, () -> String>()
 
             incomingLinks.forEach { (from, to) ->
                 if (to is ShaderInPortRef) {
                     if (from is ShaderOutPortRef) {
                         tmpPortMap[to.portName] =
-                            { components[from.shaderId]?.resultVar ?: error("huh? no ${from.shaderId}?") }
-                    } else if (from is InputPortRef) {
+                            {
+                                components[from.shaderId]?.resultVar
+                                    ?: error(unknown("shader", from.shaderId, components.keys))
+                            }
+                    } else if (from is DataSourceRef) {
                         tmpPortMap[to.portName] =
-                            { from.varName }
+                            {
+                                val dataSource = dataSourcesById[from.id]
+                                    ?: error(unknown("datasource", from.id, dataSourcesById.keys))
+                                dataSource.getVarName()
+                            }
                     }
                 }
             }
@@ -102,9 +113,9 @@ class Patch(
         buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
         buf.append("\n")
 
-        inputPortRefs.forEach {
-            if (!it.isImplicit)
-                buf.append("uniform ${it.type} ${it.varName};\n")
+        dataSources.forEach {
+            if (!it.isImplicit())
+                buf.append("uniform ${it.getType()} ${it.getVarName()};\n")
         }
         buf.append("\n")
 

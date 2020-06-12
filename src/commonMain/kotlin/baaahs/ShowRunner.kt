@@ -7,7 +7,7 @@ import baaahs.glsl.GlslRenderer
 import baaahs.glsl.RenderSurface
 import baaahs.model.Model
 import baaahs.model.MovingHead
-import baaahs.ports.InputPortRef
+import baaahs.show.DataSource
 import baaahs.show.PatchMapping
 import baaahs.show.PatchSet
 
@@ -169,14 +169,14 @@ class ShowRunner(
     private fun prepare(newPatchSet: PatchSet): RenderPlan {
         val glslContext = glslRenderer.gl
 
-        val activeDataSources = mutableSetOf<GlslProgram.DataFeed>()
+        val activeDataSources = mutableSetOf<String>()
         val programs = newPatchSet.patchMappings.map { patchMapping ->
-            val patch = Patch(showResources.shaders, patchMapping.links)
-            val program = patch.compile(glslContext) { inputPortRef: InputPortRef ->
-                val dataSource = showResources.dataSources[inputPortRef.id]
-                    ?: error("unknown datasource \"${inputPortRef.id}\" among [${showResources.dataSources.keys.sorted()}]")
-                activeDataSources.add(dataSource)
-                dataSource
+            val patch = Patch(showResources.shaders, show.dataSources, patchMapping.links)
+            val program = patch.compile(glslContext) { dataSource: DataSource ->
+                val dataSourceFeed = showResources.dataSources[dataSource.id]
+                    ?: error(unknown("datasource", dataSource.id, showResources.dataSources.keys))
+                activeDataSources.add(dataSource.id)
+                dataSourceFeed
             }
             patchMapping to program
         }

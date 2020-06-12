@@ -3,7 +3,6 @@ package baaahs.ui
 import baaahs.*
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
-import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslBase
@@ -21,7 +20,6 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     var glslPreview by useState<GlslPreview>(nuffin())
 
     val compile = useCallback({ patch: Patch ->
-        val plugins = Plugins.findAll()
         val showResources = object : ShowResources {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
             override val glslContext: GlslContext get() = gl
@@ -42,8 +40,8 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         val fakeShowContext = FakeShowContext()
         val program =
             try {
-                patch.compile(gl) { uniformPort ->
-                    plugins.findDataSource(uniformPort)?.create(showResources)
+                patch.compile(gl) { dataSource ->
+                    dataSource.create(showResources)
                 }.also {
                     props.onSuccess()
                 }

@@ -1,6 +1,5 @@
 package baaahs.ports
 
-import baaahs.glshaders.InputPort
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -9,7 +8,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 val portRefModule = SerializersModule {
     polymorphic(PortRef::class) {
-        InputPortRef::class with InputPortRef.serializer()
+        DataSourceRef::class with DataSourceRef.serializer()
         ShaderInPortRef::class with ShaderInPortRef.serializer()
         ShaderOutPortRef::class with ShaderOutPortRef.serializer()
         OutputPortRef::class with OutputPortRef.serializer()
@@ -22,35 +21,9 @@ interface PortRef {
         Link(this, other)
 }
 
-fun inputPortRef(inputPort: InputPort): InputPortRef =
-    inputPortRef(
-        inputPort.id,
-        inputPort.type,
-        inputPort.title,
-        inputPort.pluginId,
-        inputPort.pluginConfig
-    )
-
-// Workaround for https://github.com/Kotlin/kotlinx.serialization/issues/133
-fun inputPortRef(
-    id: String,
-    type: String,
-    title: String,
-    pluginId: String? = null,
-    pluginConfig: Map<String, String> = emptyMap(),
-    varName: String = "in_$id",
-    isImplicit: Boolean = false
-) = InputPortRef(id, type, title, pluginId, pluginConfig, varName, isImplicit)
-
 @Serializable
-data class InputPortRef(
-    val id: String,
-    val type: String,
-    val title: String,
-    val pluginId: String? = null,
-    val pluginConfig: Map<String, String> = emptyMap(),
-    val varName: String,
-    val isImplicit: Boolean = false
+data class DataSourceRef(
+    val id: String
 ) : PortRef
 
 interface ShaderPortRef: PortRef {

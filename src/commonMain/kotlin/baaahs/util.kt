@@ -27,6 +27,10 @@ suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
 
+fun unknown(type: String, name: String, among: Collection<String>): String {
+    return "unknown $type \"$name\" among [${among.sorted().joinToString(", ")}]"
+}
+
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
 
 class Logger(val id: String) {
