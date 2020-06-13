@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Build
           command: |
-            ./gradlew build dokka
+            ./gradlew build dokka -x jsBrowserTest
 
       - add_ssh_keys:
           fingerprints:
