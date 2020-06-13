@@ -12,6 +12,10 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
+import materialui.exclusive
+import materialui.selected
+import materialui.toggleButton
+import materialui.toggleButtonGroup
 import org.w3c.dom.events.Event
 import react.*
 
@@ -19,16 +23,17 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     var editingPatchSet by state<EditSpec<PatchSet>?> { null }
 
     card {
-        buttonGroup {
+        toggleButtonGroup {
+            attrs.exclusive = true
             attrs.variant = ButtonVariant.outlined
             attrs.orientation = ButtonGroupOrientation.vertical
             println("Rendering patchSets: ${props.patchSets.map { it.title }}")
             props.patchSets.forEachIndexed { index, patchSet ->
-                button {
+                toggleButton {
                     +patchSet.title
 //                attrs.color = ButtonColor.primary
 //                (attrs as Tag).disabled = patchSet == props.currentPatchSet
-                    attrs["disabled"] = index == props.selected
+                    attrs.selected = index == props.selected
                     attrs.onClickFunction = { props.onSelect(index) }
                     if (props.editMode) {
                         attrs.onContextMenuFunction = { event: Event ->
