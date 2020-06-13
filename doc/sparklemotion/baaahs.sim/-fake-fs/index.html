@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="./index.html">FakeFs</a><br/>
 <br/>
 <h1>FakeFs</h1>
-<code><span class="keyword">class </span><span class="identifier">FakeFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">FakeFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-base-fake-fs/index.html"><span class="identifier">BaseFakeFs</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -21,49 +21,42 @@
 </tr>
 </tbody>
 </table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="keys.html">keys</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">keys</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Functions</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<h4><a href="create-file.html">createFile</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">createFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.ByteArray, kotlin.Boolean)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.ByteArray, kotlin.Boolean)/content">content</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.ByteArray, kotlin.Boolean)/allowOverwrite">allowOverwrite</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">createFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.String, kotlin.Boolean)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.String, kotlin.Boolean)/content">content</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$createFile(kotlin.String, kotlin.String, kotlin.Boolean)/allowOverwrite">allowOverwrite</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="list-files.html">listFiles</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">listFiles</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$listFiles(kotlin.String)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="load-file.html">loadFile</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">loadFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$loadFile(kotlin.String)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">loadFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$loadFile(baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="rename-file.html">renameFile</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">renameFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$renameFile(kotlin.String, kotlin.String)/from">from</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$renameFile(kotlin.String, kotlin.String)/to">to</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">renameFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$renameFile(baaahs.io.Fs.File, baaahs.io.Fs.File)/from">from</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$renameFile(baaahs.io.Fs.File, baaahs.io.Fs.File)/to">to</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
-</tbody>
-</table>
-<h3>Companion Object Properties</h3>
-<table>
-<tbody>
 <tr>
 <td>
-<h4><a href="logger.html">logger</a></h4>
+<h4><a href="save-file.html">saveFile</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">saveFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.ByteArray, kotlin.Boolean)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.ByteArray, kotlin.Boolean)/content">content</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.ByteArray, kotlin.Boolean)/allowOverwrite">allowOverwrite</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">saveFile</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.String, kotlin.Boolean)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.String, kotlin.Boolean)/content">content</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FakeFs$saveFile(baaahs.io.Fs.File, kotlin.String, kotlin.Boolean)/allowOverwrite">allowOverwrite</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

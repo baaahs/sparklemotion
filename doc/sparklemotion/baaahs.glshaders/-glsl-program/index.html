@@ -21,38 +21,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-data-source/index.html">DataSource</a></h4>
+<h4><a href="-data-feed/index.html">DataFeed</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">DataSource</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">DataFeed</span></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="-data-source-provider/index.html">DataSourceProvider</a></h4>
+<h4><a href="-data-types/index.html">DataTypes</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">DataSourceProvider</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gl-frag-coord/index.html">GlFragCoord</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">GlFragCoord</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-input-port-ref/index.html">InputPortRef</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">InputPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-resolution.html">Resolution</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Resolution</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">DataTypes</span></code></td>
 </tr>
 <tr>
 <td>
@@ -60,27 +39,6 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">ResolutionListener</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-stock-uniform-port-ref/index.html">StockUniformPortRef</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">StockUniformPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-time.html">Time</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Time</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-uv-coords-texture.html">UvCoordsTexture</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">UvCoordsTexture</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StockUniformPortRef</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -92,7 +50,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/patch">patch</span><span class="symbol">:</span>&nbsp;<a href="../-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.glshaders.Patch.UniformPortRef, baaahs.glshaders.GlslProgram.DataSourceProvider)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/patch">patch</span><span class="symbol">:</span>&nbsp;<a href="../-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.GlslProgram$<init>(baaahs.glsl.GlslContext, baaahs.glshaders.Patch, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -160,10 +118,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="logger.html">logger</a></h4>
+<h4><a href="-pixel-color.html">PixelColor</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">PixelColor</span><span class="symbol">: </span><a href="../../baaahs.ports/-output-port-ref/index.html"><span class="identifier">OutputPortRef</span></a></code></td>
 </tr>
 </tbody>
 </table>

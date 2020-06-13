@@ -1,0 +1,423 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>acex - sparklemotion</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">acex</a><br/>
+<br/>
+<h2>Package acex</h2>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-ace-editor.html">AceEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">AceEditor</span>&nbsp;<span class="symbol">=</span>&nbsp;<a href="-t$13/index.html"><span class="identifier">T$13</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-anchor/index.html">Anchor</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Anchor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-annotation/index.html">Annotation</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Annotation</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-command/index.html">Command</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Command</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-command-manager/index.html">CommandManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CommandManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-command-map/index.html">CommandMap</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CommandMap</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-completer/index.html">Completer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Completer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-completer-callback.html">CompleterCallback</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">CompleterCallback</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">error</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">completions</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-completion/index.html"><span class="identifier">Completion</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-completion/index.html">Completion</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Completion</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-config/index.html">Config</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Config</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-delta/index.html">Delta</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Delta</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-document/index.html">Document</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Document</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-editor/index.html">Editor</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Editor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-editor-options/index.html">EditorOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditorOptions</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-edit-session-options/index.html"><span class="identifier">EditSessionOptions</span></a><span class="symbol">, </span><a href="-mouse-handler-options/index.html"><span class="identifier">MouseHandlerOptions</span></a><span class="symbol">, </span><a href="-virtual-renderer-options/index.html"><span class="identifier">VirtualRendererOptions</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-editor-options-partial/index.html">EditorOptionsPartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditorOptionsPartial</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-edit-session-options-partial/index.html"><span class="identifier">EditSessionOptionsPartial</span></a><span class="symbol">, </span><a href="-mouse-handler-options-partial/index.html"><span class="identifier">MouseHandlerOptionsPartial</span></a><span class="symbol">, </span><a href="-virtual-renderer-options-partial/index.html"><span class="identifier">VirtualRendererOptionsPartial</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-edit-session/index.html">EditSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditSession</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a><span class="symbol">, </span><a href="-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="-folding/index.html"><span class="identifier">Folding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-edit-session-options/index.html">EditSessionOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditSessionOptions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-edit-session-options-partial/index.html">EditSessionOptionsPartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditSessionOptionsPartial</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-event-emitter/index.html">EventEmitter</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EventEmitter</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="exec-event-handler.html">execEventHandler</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">execEventHandler</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">obj</span><span class="symbol">:</span>&nbsp;<a href="-t$13/index.html"><span class="identifier">T$13</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-fold/index.html">Fold</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Fold</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-folding/index.html">Folding</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Folding</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-fold-line/index.html">FoldLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">FoldLine</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-key-binding/index.html">KeyBinding</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">KeyBinding</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-keyboard-handler/index.html">KeyboardHandler</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">KeyboardHandler</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-marker-like/index.html">MarkerLike</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MarkerLike</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-marker-renderer.html">MarkerRenderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">MarkerRenderer</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">html</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<span class="identifier">range</span><span class="symbol">:</span>&nbsp;<a href="-range/index.html"><span class="identifier">Range</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">left</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">top</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">config</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mouse-handler-options/index.html">MouseHandlerOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MouseHandlerOptions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mouse-handler-options-partial/index.html">MouseHandlerOptionsPartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MouseHandlerOptionsPartial</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-options-provider/index.html">OptionsProvider</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">OptionsProvider</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-point/index.html">Point</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Point</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-range/index.html">Range</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Range</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-saved-selection/index.html">SavedSelection</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SavedSelection</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-search-options/index.html">SearchOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SearchOptions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-search-options-partial/index.html">SearchOptionsPartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SearchOptionsPartial</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-selection/index.html">Selection</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Selection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-syntax-mode/index.html">SyntaxMode</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SyntaxMode</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$0/index.html">T$0</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$0</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$1/index.html">T$1</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$1</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$10/index.html">T$10</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$10</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$11/index.html">T$11</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$11</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$12/index.html">T$12</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$12</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$13/index.html">T$13</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$13</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$2/index.html">T$2</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$2</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$3/index.html">T$3</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$3</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$4/index.html">T$4</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$4</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$5/index.html">T$5</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$5</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$6/index.html">T$6</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$6</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$7/index.html">T$7</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$7</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$8/index.html">T$8</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$8</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$9/index.html">T$9</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$9</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-token/index.html">Token</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Token</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-token-iterator/index.html">TokenIterator</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">TokenIterator</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-tokenizer/index.html">Tokenizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Tokenizer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-undo-manager/index.html">UndoManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">UndoManager</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-virtual-renderer/index.html">VirtualRenderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VirtualRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="-event-emitter/index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-virtual-renderer-options/index.html">VirtualRendererOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VirtualRendererOptions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-virtual-renderer-options-partial/index.html">VirtualRendererOptionsPartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VirtualRendererOptionsPartial</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

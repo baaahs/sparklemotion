@@ -11,13 +11,6 @@
 <a name="baaahs.Gadget$&lt;init&gt;()"></a>
 <code><span class="identifier">Gadget</span><span class="symbol">(</span><span class="symbol">)</span></code>
 <p>Base class for user input gadgets.</p>
-<p>Gadgets may be requested by a <a href="../-show/index.html">Show</a>:</p>
-<pre><code class="lang-kotlin">val sparklinessSlider = showRunner.getGadget(Slider("Sparkliness"))
-
-fun nextFrame() {
-  println("Sparkliness is ${sparklinessSlider.value}.")
-}
-</code></pre>
 <p>Mutable values in a gadget should be declared like this:</p>
 <pre><code class="lang-kotlin">    var value: Float by updatable("value", initialValue, Float.serializer())
 </code></pre>

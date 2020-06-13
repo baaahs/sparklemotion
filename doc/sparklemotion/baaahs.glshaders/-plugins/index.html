@@ -21,15 +21,60 @@
 </tr>
 </tbody>
 </table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="json.html">json</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">json</span><span class="symbol">: </span><span class="identifier">Json</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serial-module.html">serialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Functions</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<h4><a href="match-uniform-provider.html">matchUniformProvider</a></h4>
+<h4><a href="decode-data-source.html">decodeDataSource</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">matchUniformProvider</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Plugins$matchUniformProvider(baaahs.glshaders.Patch.UniformPortRef, baaahs.ShowContext, baaahs.glsl.GlslContext)/uniformPort">uniformPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformPortRef</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.Plugins$matchUniformProvider(baaahs.glshaders.Patch.UniformPortRef, baaahs.ShowContext, baaahs.glsl.GlslContext)/showContext">showContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-context/index.html"><span class="identifier">ShowContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.Plugins$matchUniformProvider(baaahs.glshaders.Patch.UniformPortRef, baaahs.ShowContext, baaahs.glsl.GlslContext)/glslContext">glslContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataSourceProvider</span><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">decodeDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Plugins$decodeDataSource(kotlin.String, kotlinx.serialization.json.JsonObject)/pluginId">pluginId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.Plugins$decodeDataSource(kotlin.String, kotlinx.serialization.json.JsonObject)/pluginData">pluginData</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonObject</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-data-source.html">findDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Plugins$findDataSource(baaahs.glshaders.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest-data-sources.html">suggestDataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">suggestDataSources</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.Plugins$suggestDataSources(baaahs.glshaders.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="default.html">default</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">default</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -42,6 +87,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">findAll</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="safe.html">safe</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">safe</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
 </tr>
 </tbody>
 </table>

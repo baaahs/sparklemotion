@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>external.mosaic - sparklemotion</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">external.mosaic</a><br/>
+<br/>
+<h2>Package external.mosaic</h2>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-corner/index.html">Corner</a></h4>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Corner</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-create-node.html">CreateNode</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">CreateNode</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-enabled-resize-options/index.html">EnabledResizeOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EnabledResizeOptions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic/index.html">Mosaic</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Mosaic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-base-props/index.html">MosaicBaseProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicBaseProps</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-button-props/index.html">MosaicButtonProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicButtonProps</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-context/index.html">MosaicContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicContext</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-controlled-props/index.html">MosaicControlledProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicControlledProps</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mosaic-base-props/index.html"><span class="identifier">MosaicBaseProps</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-parent/index.html">MosaicParent</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicParent</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-path.html">MosaicPath</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">MosaicPath</span>&nbsp;<span class="symbol">=</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-root-actions/index.html">MosaicRootActions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicRootActions</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-state/index.html">MosaicState</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicState</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-state-partial/index.html">MosaicStatePartial</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicStatePartial</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-uncontrolled-props/index.html">MosaicUncontrolledProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicUncontrolledProps</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mosaic-base-props/index.html"><span class="identifier">MosaicBaseProps</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-update/index.html">MosaicUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicUpdate</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-window-actions/index.html">MosaicWindowActions</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicWindowActions</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-window-context/index.html">MosaicWindowContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicWindowContext</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-window-props/index.html">MosaicWindowProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicWindowProps</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-zero-state/index.html">MosaicZeroState</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">MosaicZeroState</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-mosaic-zero-state-props/index.html">MosaicZeroStateProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MosaicZeroStateProps</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-t$0/index.html">T$0</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">T$0</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-tile-renderer.html">TileRenderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">TileRenderer</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">t</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">,</span>&nbsp;<span class="identifier">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-mosaic-window.html">MosaicWindow</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">MosaicWindow</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-mosaic-window-props/index.html"><span class="identifier">MosaicWindowProps</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="build-spec-from-update.html">buildSpecFromUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">buildSpecFromUpdate</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$buildSpecFromUpdate(external.mosaic.MosaicUpdate((external.mosaic.buildSpecFromUpdate.T)))/mosaicUpdate">mosaicUpdate</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-balanced-tree-from-leaves.html">createBalancedTreeFromLeaves</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createBalancedTreeFromLeaves</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createBalancedTreeFromLeaves(kotlin.Array((kotlin.Any)), kotlin.String)/leaves">leaves</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="keyword">dynamic</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$createBalancedTreeFromLeaves(kotlin.Array((kotlin.Any)), kotlin.String)/startDirection">startDirection</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-drag-to-updates.html">createDragToUpdates</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createDragToUpdates</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.MosaicParent((external.mosaic.createDragToUpdates.T)), kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/root">root</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.MosaicParent((external.mosaic.createDragToUpdates.T)), kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/sourcePath">sourcePath</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.MosaicParent((external.mosaic.createDragToUpdates.T)), kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/destinationPath">destinationPath</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.MosaicParent((external.mosaic.createDragToUpdates.T)), kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/position">position</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createDragToUpdates</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.createDragToUpdates.T, kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/root">root</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.createDragToUpdates.T, kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/sourcePath">sourcePath</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.createDragToUpdates.T, kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/destinationPath">destinationPath</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$createDragToUpdates(external.mosaic.createDragToUpdates.T, kotlin.Array((kotlin.String)), kotlin.Array((kotlin.String)), kotlin.String)/position">position</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-expand-update.html">createExpandUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createExpandUpdate</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createExpandUpdate(kotlin.Array((kotlin.String)), kotlin.Number)/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$createExpandUpdate(kotlin.Array((kotlin.String)), kotlin.Number)/percentage">percentage</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-hide-update.html">createHideUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createHideUpdate</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createHideUpdate(kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-remove-update.html">createRemoveUpdate</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createRemoveUpdate</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createRemoveUpdate(external.mosaic.MosaicParent((external.mosaic.createRemoveUpdate.T)), kotlin.Array((kotlin.String)))/root">root</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$createRemoveUpdate(external.mosaic.MosaicParent((external.mosaic.createRemoveUpdate.T)), kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">createRemoveUpdate</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$createRemoveUpdate(external.mosaic.createRemoveUpdate.T, kotlin.Array((kotlin.String)))/root">root</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$createRemoveUpdate(external.mosaic.createRemoveUpdate.T, kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-and-assert-node-at-path-exists.html">getAndAssertNodeAtPathExists</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getAndAssertNodeAtPathExists</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getAndAssertNodeAtPathExists(external.mosaic.MosaicParent((external.mosaic.getAndAssertNodeAtPathExists.T)), kotlin.Array((kotlin.String)))/tree">tree</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$getAndAssertNodeAtPathExists(external.mosaic.MosaicParent((external.mosaic.getAndAssertNodeAtPathExists.T)), kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getAndAssertNodeAtPathExists</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getAndAssertNodeAtPathExists(external.mosaic.getAndAssertNodeAtPathExists.T, kotlin.Array((kotlin.String)))/tree">tree</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$getAndAssertNodeAtPathExists(external.mosaic.getAndAssertNodeAtPathExists.T, kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-leaves.html">getLeaves</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getLeaves</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getLeaves(external.mosaic.MosaicParent((external.mosaic.getLeaves.T)))/tree">tree</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getLeaves</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getLeaves(external.mosaic.getLeaves.T)/tree">tree</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-node-at-path.html">getNodeAtPath</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getNodeAtPath</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getNodeAtPath(external.mosaic.MosaicParent((external.mosaic.getNodeAtPath.T)), kotlin.Array((kotlin.String)))/tree">tree</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$getNodeAtPath(external.mosaic.MosaicParent((external.mosaic.getNodeAtPath.T)), kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">getNodeAtPath</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getNodeAtPath(external.mosaic.getNodeAtPath.T, kotlin.Array((kotlin.String)))/tree">tree</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$getNodeAtPath(external.mosaic.getNodeAtPath.T, kotlin.Array((kotlin.String)))/path">path</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-other-branch.html">getOtherBranch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getOtherBranch</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getOtherBranch(kotlin.String)/branch">branch</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-other-direction.html">getOtherDirection</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getOtherDirection</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getOtherDirection(kotlin.String)/direction">direction</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-path-to-corner.html">getPathToCorner</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getPathToCorner</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getPathToCorner(external.mosaic.MosaicParent((kotlin.Any)), external.mosaic.Corner)/tree">tree</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$getPathToCorner(external.mosaic.MosaicParent((kotlin.Any)), external.mosaic.Corner)/corner">corner</span><span class="symbol">:</span>&nbsp;<a href="-corner/index.html"><span class="identifier">Corner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">getPathToCorner</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$getPathToCorner(kotlin.Any, external.mosaic.Corner)/tree">tree</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="external.mosaic$getPathToCorner(kotlin.Any, external.mosaic.Corner)/corner">corner</span><span class="symbol">:</span>&nbsp;<a href="-corner/index.html"><span class="identifier">Corner</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-mosaic-path.html"><span class="identifier">MosaicPath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-parent.html">isParent</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">isParent</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$isParent(external.mosaic.MosaicParent((external.mosaic.isParent.T)))/node">node</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">isParent</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$isParent(external.mosaic.isParent.T)/node">node</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-tree.html">updateTree</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">updateTree</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$updateTree(external.mosaic.MosaicParent((external.mosaic.updateTree.T)), kotlin.Array((external.mosaic.MosaicUpdate((external.mosaic.updateTree.T)))))/root">root</span><span class="symbol">:</span>&nbsp;<a href="-mosaic-parent/index.html"><span class="identifier">MosaicParent</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$updateTree(external.mosaic.MosaicParent((external.mosaic.updateTree.T)), kotlin.Array((external.mosaic.MosaicUpdate((external.mosaic.updateTree.T)))))/updates">updates</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">updateTree</span><span class="symbol">(</span><span class="identifier" id="external.mosaic$updateTree(external.mosaic.updateTree.T, kotlin.Array((external.mosaic.MosaicUpdate((external.mosaic.updateTree.T)))))/root">root</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="external.mosaic$updateTree(external.mosaic.updateTree.T, kotlin.Array((external.mosaic.MosaicUpdate((external.mosaic.updateTree.T)))))/updates">updates</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="-mosaic-update/index.html"><span class="identifier">MosaicUpdate</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

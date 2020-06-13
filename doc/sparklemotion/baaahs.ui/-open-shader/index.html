@@ -17,13 +17,41 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">OpenShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, baaahs.shows.GlslShow)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, baaahs.shows.GlslShow)/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, baaahs.shows.GlslShow)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.shows/-glsl-show/index.html"><span class="identifier">GlslShow</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">OpenShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, kotlin.Boolean, baaahs.io.Fs.File)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, kotlin.Boolean, baaahs.io.Fs.File)/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, kotlin.Boolean, baaahs.io.Fs.File)/isModified">isModified</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.ui.OpenShader$<init>(kotlin.String, kotlin.String, kotlin.Boolean, baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="file.html">file</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">file</span><span class="symbol">: </span><span class="identifier">File</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="glsl-errors.html">glslErrors</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">glslErrors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">GlslError</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-modified.html">isModified</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isModified</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="last-cursor-position.html">lastCursorPosition</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">lastCursorPosition</span><span class="symbol">: </span><a href="../../acex/-point/index.html"><span class="identifier">Point</span></a><span class="symbol">?</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="name.html">name</a></h4>
@@ -33,10 +61,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="show.html">show</a></h4>
+<h4><a href="patch.html">patch</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">show</span><span class="symbol">: </span><a href="../../baaahs.shows/-glsl-show/index.html"><span class="identifier">GlslShow</span></a></code></td>
+<code><span class="keyword">var </span><span class="identifier">patch</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>

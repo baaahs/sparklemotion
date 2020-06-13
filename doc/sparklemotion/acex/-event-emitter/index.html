@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>EventEmitter - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">acex</a>&nbsp;/&nbsp;<a href="./index.html">EventEmitter</a><br/>
+<br/>
+<h1>EventEmitter</h1>
+<code><span class="keyword">interface </span><span class="identifier">EventEmitter</span></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-event-listener.html">addEventListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addEventListener</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$addEventListener(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$addEventListener(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$addEventListener(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/capturing">capturing</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="off.html">off</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">off</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$off(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$off(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on.html">on</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">on</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$on(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$on(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$on(kotlin.String, kotlin.Function((kotlin.Any)), kotlin.Boolean)/capturing">capturing</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="once.html">once</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">once</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$once(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$once(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-default-handler.html">removeDefaultHandler</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeDefaultHandler</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$removeDefaultHandler(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$removeDefaultHandler(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-event-listener.html">removeEventListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeEventListener</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$removeEventListener(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$removeEventListener(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-listener.html">removeListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeListener</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$removeListener(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$removeListener(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-default-handler.html">setDefaultHandler</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setDefaultHandler</span><span class="symbol">(</span><span class="identifier" id="acex.EventEmitter$setDefaultHandler(kotlin.String, kotlin.Function((kotlin.Any)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="acex.EventEmitter$setDefaultHandler(kotlin.String, kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-anchor/index.html">Anchor</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Anchor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-command-manager/index.html">CommandManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CommandManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-document/index.html">Document</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Document</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-editor/index.html">Editor</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Editor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-edit-session/index.html">EditSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">EditSession</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventEmitter</span></a><span class="symbol">, </span><a href="../-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="../-folding/index.html"><span class="identifier">Folding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-selection/index.html">Selection</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Selection</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-virtual-renderer/index.html">VirtualRenderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VirtualRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-options-provider/index.html"><span class="identifier">OptionsProvider</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">EventEmitter</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

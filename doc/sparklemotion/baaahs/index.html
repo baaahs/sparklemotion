@@ -28,6 +28,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-base-show-resources/index.html">BaseShowResources</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mutable-show-resources/index.html"><span class="identifier">MutableShowResources</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-beat-data/index.html">BeatData</a></h4>
 </td>
 <td>
@@ -78,6 +85,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-client-show-resources/index.html">ClientShowResources</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ClientShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-base-show-resources/index.html"><span class="identifier">BaseShowResources</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-clock/index.html">Clock</a></h4>
 </td>
 <td>
@@ -93,10 +107,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-color-picker-type/index.html">ColorPickerType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">ColorPickerType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-config/index.html">Config</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">Config</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-control-type/index.html">ControlType</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ControlType</span></code></td>
 </tr>
 <tr>
 <td>
@@ -263,10 +291,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-mutable-show-resources/index.html">MutableShowResources</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MutableShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-show-resources/index.html"><span class="identifier">ShowResources</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-panel-info/index.html">PanelInfo</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">PanelInfo</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-patch-set-list-type/index.html">PatchSetListType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">PatchSetListType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -305,15 +347,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-pooled-renderer/index.html">PooledRenderer</a></h4>
-</td>
-<td>
-<p>If a <a href="-shader/-renderer/index.html">Shader.Renderer</a> implements <a href="-pooled-renderer/index.html">PooledRenderer</a> and pixel prerendering is enabled on Pinky,
-then the drawing cycle will look like this:</p>
-<code><span class="keyword">interface </span><span class="identifier">PooledRenderer</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-pub-sub/index.html">PubSub</a></h4>
 </td>
 <td>
@@ -321,17 +354,17 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<h4><a href="-real-fs/index.html">RealFs</a></h4>
+<h4><a href="-radio-button-strip-type/index.html">RadioButtonStripType</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">RealFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code></td>
+<code><span class="keyword">object </span><span class="identifier">RadioButtonStripType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="-render-context/index.html">RenderContext</a></h4>
+<h4><a href="-scene-list-type/index.html">SceneListType</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">RenderContext</span></code></td>
+<code><span class="keyword">object </span><span class="identifier">SceneListType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -363,25 +396,38 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<h4><a href="-show/index.html">Show</a></h4>
+<h4><a href="-show-controller/index.html">ShowController</a></h4>
 </td>
 <td>
-<p>A show takes input from gadgets and uses it to configure shaders, creating pretty stuff on surfaces.</p>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Show</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">ShowController</span></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="-show-context/index.html">ShowContext</a></h4>
+<h4><a href="-show-manager/index.html">ShowManager</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">ShowContext</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">ShowManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-base-show-resources/index.html"><span class="identifier">BaseShowResources</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-resources/index.html">ShowResources</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShowResources</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-show-runner/index.html">ShowRunner</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">ShowRunner</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-show-context/index.html"><span class="identifier">ShowContext</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">ShowRunner</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-state/index.html">ShowState</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShowState</span></code></td>
 </tr>
 <tr>
 <td>
@@ -389,6 +435,13 @@ then the drawing cycle will look like this:</p>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SimulatorBridge</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-slider-type/index.html">SliderType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">SliderType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -421,13 +474,6 @@ then the drawing cycle will look like this:</p>
 </tr>
 <tr>
 <td>
-<h4><a href="-surface-binder/index.html">SurfaceBinder</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SurfaceBinder</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-system-clock/index.html">SystemClock</a></h4>
 </td>
 <td>
@@ -452,6 +498,7 @@ then the drawing cycle will look like this:</p>
 <h4><a href="-web-ui/index.html">WebUi</a></h4>
 </td>
 <td>
+<p>Changes here should also be applied to <a href="../baaahs.sim.ui/-app-window.html">baaahs.sim.ui.AppWindow</a>.</p>
 <code><span class="keyword">class </span><span class="identifier">WebUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
 </tr>
 </tbody>
@@ -462,6 +509,13 @@ then the drawing cycle will look like this:</p>
 <tr>
 <td>
 <h4><a href="kotlin.collections.-collection/index.html">kotlin.collections.Collection</a></h4>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<h4><a href="kotlin.collections.-list/index.html">kotlin.collections.List</a></h4>
 </td>
 <td>
 </td>
@@ -485,6 +539,13 @@ then the drawing cycle will look like this:</p>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="control-types.html">controlTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">controlTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="-gadget-data-serializer.html">GadgetDataSerializer</a></h4>
@@ -602,6 +663,13 @@ then the drawing cycle will look like this:</p>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">toRadians</span><span class="symbol">(</span><span class="identifier" id="baaahs$toRadians(kotlin.Float)/degrees">degrees</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="unknown.html">unknown</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">unknown</span><span class="symbol">(</span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/among">among</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
