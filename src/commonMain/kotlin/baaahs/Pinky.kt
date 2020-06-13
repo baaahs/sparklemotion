@@ -48,11 +48,12 @@ class Pinky(
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
+    private var showHasBeenModified = false
     private var show = show
         set(value) {
             field = value
             facade.notifyChanged()
-            showRunner.switchTo(0, 0)
+            showRunner.switchTo(value)
             currentShowChannel.onChange(show)
         }
 
@@ -71,7 +72,9 @@ class Pinky(
 
     var currentShow = show
     private val currentShowChannel = pubSub.publish(Topics.currentShow, currentShow) { show ->
-        error("nope")
+        println("Received show change: $show")
+        showHasBeenModified = true
+        this.show = show
 //            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
     }
 

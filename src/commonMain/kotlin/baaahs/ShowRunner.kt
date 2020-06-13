@@ -14,7 +14,7 @@ import baaahs.show.PatchSet
 class ShowRunner(
     private val model: Model<*>,
     initialPatchSet: PatchSet,
-    private val show: baaahs.show.Show,
+    private var show: baaahs.show.Show,
     private val showResources: ShowResources,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
@@ -147,6 +147,11 @@ class ShowRunner(
         }
     }
 
+    fun switchTo(newShow: baaahs.show.Show) {
+        show = newShow
+        nextPatchSet = showState.findPatchSet(show)
+    }
+
     fun switchTo(scene: Int, patchSet: Int) {
         nextPatchSet = show.scenes[scene].patchSets[patchSet]
     }
@@ -173,8 +178,8 @@ class ShowRunner(
         val programs = newPatchSet.patchMappings.map { patchMapping ->
             val patch = Patch(showResources.shaders, show.dataSources, patchMapping.links)
             val program = patch.compile(glslContext) { dataSource: DataSource ->
-                val dataSourceFeed = showResources.dataSources[dataSource.id]
-                    ?: error(unknown("datasource", dataSource.id, showResources.dataSources.keys))
+                val dataSourceFeed = showResources.dataFeeds[dataSource.id]
+                    ?: error(unknown("datasource", dataSource.id, showResources.dataFeeds.keys))
                 activeDataSources.add(dataSource.id)
                 dataSourceFeed
             }

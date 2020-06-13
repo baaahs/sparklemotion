@@ -3,6 +3,7 @@ package baaahs
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.glshaders.Plugins
+import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
@@ -101,8 +102,9 @@ class SheepSimulator {
             SaveAsFs("Show", FakeFs())
         )
         launcher.add("Web UI") {
-            WebUi(network, pinky.address, filesystems)
-        }.also { delay(1000); it.click() }
+            val showResources = ClientShowResources(GlslBase.manager.createContext(), Show("Loading..."))
+            WebUi(network, pinky.address, filesystems, showResources)
+        } // .also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
             val mapperUi = JsMapperUi(visualizer)

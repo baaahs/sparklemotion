@@ -30,28 +30,70 @@ data class ShowState(
 
 interface ShowResources {
     val glslContext: GlslContext
-    val dataSources: Map<String, GlslProgram.DataFeed>
+    val dataFeeds: Map<String, GlslProgram.DataFeed>
     val shaders: Map<String, ShaderFragment>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
     fun <T : Gadget> useGadget(id: String): T
 }
 
-class ShowManager(
-    val show: Show,
-    val pubSub: PubSub.Server,
-    override val glslContext: GlslContext
-) : ShowResources {
-    override val shaders = show.shaderFragments.mapValues { (_, src) ->
-        GlslAnalyzer().asShader(src)
-    }
-    private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
-    var lastUserInteraction = DateTime.now()
+interface MutableShowResources : ShowResources {
+    fun switchTo(show: Show)
+}
 
-    override val dataSources =
-        show.dataSources.associate { dataSourceProvider ->
+abstract class BaseShowResources(initialShow: Show) : MutableShowResources {
+    val glslAnalyzer = GlslAnalyzer()
+
+    override val dataFeeds: MutableMap<String, GlslProgram.DataFeed> by lazy {
+        calculateDataFeeds(initialShow).toMutableMap()
+    }
+
+    private fun calculateDataFeeds(show: Show): Map<String, GlslProgram.DataFeed> {
+        return show.dataSources.associate { dataSourceProvider ->
             dataSourceProvider.id to dataSourceProvider.create(this)
         }
+    }
+
+    override val shaders: MutableMap<String, ShaderFragment> by lazy {
+        calculateShaders(initialShow).toMutableMap()
+    }
+
+    private fun calculateShaders(show: Show) =
+        show.shaderFragments.mapValues { (_, src) -> glslAnalyzer.asShader(src) }
+
+    override fun switchTo(show: Show) {
+        // TODO: Do something more efficient here.
+        dataFeeds.values.forEach { it.release() }
+        dataFeeds.clear()
+        dataFeeds.putAll(calculateDataFeeds(show))
+
+        println("Switch to ${show.title}; old shaders: ${shaders.keys}")
+        shaders.clear()
+        val newShaders = calculateShaders(show)
+        println("  new shaders: ${newShaders.keys}")
+        shaders.putAll(newShaders)
+    }
+}
+
+class ClientShowResources(override val glslContext: GlslContext, show: Show) : BaseShowResources(show) {
+    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
+
+    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+        gadgets[id] = gadget
+    }
+
+    override fun <T : Gadget> useGadget(id: String): T {
+        return gadgets[id] as T
+    }
+}
+
+class ShowManager(
+    show: Show,
+    val pubSub: PubSub.Server,
+    override val glslContext: GlslContext
+) : BaseShowResources(show) {
+    private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
+    var lastUserInteraction = DateTime.now()
 
     var currentScene = show.scenes.first()
     var currentPatchSet = currentScene.patchSets.first()

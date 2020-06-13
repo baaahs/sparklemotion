@@ -10,10 +10,12 @@ import kotlinext.js.jsObject
 import react.ReactElement
 import react.createElement
 
+/** Changes here should also be applied to [baaahs.sim.ui.AppWindow]. */
 class WebUi(
     private val network: Network,
     private val pinkyAddress: Network.Address,
-    private val filesystems: List<SaveAsFs>
+    private val filesystems: List<SaveAsFs>,
+    private val showResources: MutableShowResources
 ) : HostedWebApp {
 
     override fun render(): ReactElement {
@@ -28,6 +30,7 @@ class WebUi(
             this.id = "Client Window"
             this.pubSub = pubSub
             this.filesystems = this@WebUi.filesystems
+            this.showResources = this@WebUi.showResources
         })
     }
 
