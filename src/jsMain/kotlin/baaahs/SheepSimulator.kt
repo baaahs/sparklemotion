@@ -10,7 +10,6 @@ import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.proto.Ports
-import baaahs.shaders.GlslShader
 import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.shows.BakedInShaders
@@ -59,7 +58,7 @@ class SheepSimulator {
         }
     }
 
-    val glslContext = GlslShader.globalRenderContext
+    val glslContext = GlslBase.manager.createContext()
     val clock = JsClock()
     val show = SampleData.sampleShow
     val plugins = Plugins.findAll()

@@ -22,7 +22,7 @@ class ShowRunner(
     internal val clock: Clock,
     private val glslRenderer: GlslRenderer,
     pubSub: PubSub.Server
-) : ShowContext {
+) {
     private var nextPatchSet: PatchSet? = initialPatchSet
 
     var showState = ShowState(0, show.scenes.map { 0 })
@@ -36,27 +36,20 @@ class ShowRunner(
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
 
-    override val allSurfaces: List<Surface> get() = renderSurfaces.keys.toList()
-    override val allMovingHeads: List<MovingHead> get() = model.movingHeads
-
     internal val renderSurfaces: MutableMap<Surface, RenderSurface> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
-    private var shadersLocked = true
-    private var gadgetsLocked = true
-
+    // TODO: Get beat sync working again.
     // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
-    override val currentBeat: Float
+    val currentBeat: Float
         get() = beatSource.getBeatData().beatWithinMeasure(clock)
-
-    override fun getBeatSource(): BeatSource = beatSource
 
     private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
         dmxUniverse.writer(baseChannel, channelCount)
 
-    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-        if (shadersLocked) throw IllegalStateException("Moving heads can't be obtained during #nextFrame()")
+    // TODO: Get moving heads working again.
+    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
         val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
         val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
 
@@ -67,19 +60,6 @@ class ShowRunner(
         }
 
         return movingHeadBuffer
-    }
-
-    /**
-     * Obtain a gadget that can be used to receive input from a user. The gadget will be displayed in the show's UI.
-     *
-     * @param name Symbolic name for this gadget; must be unique within the show.
-     * @param gadget The gadget to display.
-     */
-    override fun <T : Gadget> getGadget(name: String, gadget: T): T {
-        if (gadgetsLocked) throw IllegalStateException("Gadgets can't be obtained during #nextFrame()")
-        val oldValue = requestedGadgets.put(name, gadget)
-        if (oldValue != null) throw IllegalStateException("Gadget names must be unique ($name)")
-        return gadget
     }
 
     fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
@@ -102,25 +82,9 @@ class ShowRunner(
     private fun housekeeping() {
         var remapToSurfaces = false
         for ((added, removed) in changedSurfaces) {
-            println("ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed")
+            logger.info { "ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed" }
             for (receiver in removed) removeReceiver(receiver)
             for (receiver in added) addReceiver(receiver)
-
-            if (nextPatchSet == null) {
-                shadersLocked = false
-                try {
-// TODO                   currentShowRenderer?.surfacesChanged(added.map { it.surface }, removed.map { it.surface })
-
-                    logger.info {
-                        "Show ${currentPatchSet!!.title} updated; " +
-                                "${renderSurfaces.size} surfaces"
-                    }
-                } catch (e: Show.RestartShowException) {
-                    // Show doesn't support changing surfaces, just restart it cold.
-                    nextPatchSet = currentPatchSet ?: nextPatchSet
-                }
-                shadersLocked = true
-            }
             remapToSurfaces = true
         }
         changedSurfaces.clear()
@@ -191,18 +155,6 @@ class ShowRunner(
     class RenderPlan(val programs: List<Pair<PatchMapping, GlslProgram>>) {
         fun render(glslRenderer: GlslRenderer) {
             glslRenderer.draw()
-        }
-    }
-
-    private fun unlockShadersAndGadgets(fn: () -> Unit) {
-        shadersLocked = false
-        gadgetsLocked = false
-
-        try {
-            fn()
-        } finally {
-            shadersLocked = true
-            gadgetsLocked = true
         }
     }
 

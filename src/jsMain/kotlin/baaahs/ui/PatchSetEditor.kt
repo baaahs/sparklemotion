@@ -65,7 +65,7 @@ val PatchSetEditor = xComponent<PatchSetEditorProps>("PatchSetEditor") { props -
                 }
 
                 table {
-                    attrs["stickyHeader"] = "stickyHeader"
+                    attrs["stickyHeader"] = true
 
                     tableHead {
                         tableRow {

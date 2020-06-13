@@ -1,6 +1,8 @@
 package baaahs.ui
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.GadgetData
+import baaahs.ShowResources
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
 import baaahs.glshaders.ShaderFragment
@@ -9,7 +11,6 @@ import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
-import baaahs.model.MovingHead
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -37,7 +38,6 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
             }
 
         }
-        val fakeShowContext = FakeShowContext()
         val program =
             try {
                 patch.compile(gl) { dataSource ->
@@ -53,8 +53,8 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
                 props.onError.invoke(arrayOf(glslError))
                 null
             }
-        props.onGadgetsChange(fakeShowContext.gadgets.map { (name, gadget) ->
-            GadgetData(name, gadget, "/preview/gadgets/$name")
+        props.onGadgetsChange(showResources.gadgets.map { (id, gadget) ->
+            GadgetData(id, gadget, "/preview/gadgets/$id")
         }.toTypedArray())
         program
     }, arrayOf(gl, props.onError))
@@ -88,33 +88,6 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
 
     canvas {
         ref = canvas
-    }
-}
-
-private class FakeShowContext : ShowContext {
-    val gadgets = linkedMapOf<String, Gadget>()
-
-    override val allSurfaces: List<Surface>
-        get() = TODO("not implemented")
-    override val allMovingHeads: List<MovingHead>
-        get() = TODO("not implemented")
-    override val currentBeat: Float
-        get() = TODO("not implemented")
-
-    override fun getBeatSource(): BeatSource {
-        TODO("not implemented")
-    }
-
-    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-        TODO("not implemented")
-    }
-
-    override fun <T : Gadget> getGadget(name: String, gadget: T): T {
-        if (gadgets.containsKey(name)) {
-            throw CompiledShader.LinkException("multiple gadgets with the same name ($name)")
-        }
-        gadgets[name] = gadget
-        return gadget
     }
 }
 
