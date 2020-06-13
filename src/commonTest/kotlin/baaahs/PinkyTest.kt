@@ -1,8 +1,6 @@
 package baaahs
 
 import baaahs.geom.Matrix4
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.mapper.MappingSession
@@ -14,7 +12,6 @@ import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
-import baaahs.shaders.IGlslShader
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
@@ -196,8 +193,3 @@ class StubSoundAnalyzer : SoundAnalyzer {
     override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
     }
 }
-
-fun FakeGlslContext.fakeProgram() = GlslProgram(this, Patch(emptyMap(), emptyList(), emptyList())) { null }
-fun FakeGlslContext.fakeShader() = FakeShader(fakeProgram())
-
-class FakeShader(override val glslProgram: GlslProgram) : IGlslShader

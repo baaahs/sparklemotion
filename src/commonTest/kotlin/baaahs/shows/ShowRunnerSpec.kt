@@ -25,6 +25,7 @@ import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
+@Suppress("unused")
 object ShowRunnerSpec : Spek({
     describe<ShowRunner> {
         val shaderSrc by value {
@@ -52,12 +53,8 @@ object ShowRunnerSpec : Spek({
                 listOf(
                     Scene("test scene", listOf(patchSet), listOf(), mapOf())
                 ),
-                listOf(patchSet),
-                listOf(),
-                patch.dataSources,
-                Layouts(listOf(), mapOf()),
-                mapOf(),
-                patch.components.mapValues { (_, component) ->
+                dataSources = patch.dataSources,
+                shaderFragments = patch.components.mapValues { (_, component) ->
                     component.shaderFragment.src
                 }
             )

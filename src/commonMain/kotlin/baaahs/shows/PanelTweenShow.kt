@@ -5,7 +5,7 @@
 //import baaahs.ShowContext
 //import baaahs.gadgets.PalettePicker
 //import baaahs.model.Model
-//
+// TODO: Reimplement using GLSL.
 //object PanelTweenShow : Show("PanelTweenShow") {
 //    override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
 //        val initialColors = listOf(

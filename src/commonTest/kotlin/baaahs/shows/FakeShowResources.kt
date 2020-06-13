@@ -14,7 +14,6 @@ class FakeShowResources(override val glslContext: GlslContext
         get() = TODO("not implemented")
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
-        TODO("not implemented")
     }
 
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()

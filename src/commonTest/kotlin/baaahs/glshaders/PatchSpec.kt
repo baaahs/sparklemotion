@@ -171,11 +171,11 @@ object PatchSpec : Spek({
                             uniform float in_bluenessSlider;
                             
                             // Shader ID: uv; namespace: p0
-                            // Unknown Shader
+                            // Cylindrical Projection
                             
                             vec2 p0i_result;
                             
-                            #line 3
+                            #line 6
                             vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
                                 int rasterX = int(rasterCoord.x);
                                 int rasterY = int(rasterCoord.y);

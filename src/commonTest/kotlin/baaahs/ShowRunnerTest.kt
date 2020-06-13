@@ -5,7 +5,6 @@ import baaahs.gadgets.Slider
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.RenderSurface
-import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.show.SampleData
@@ -269,113 +268,6 @@ class ShowRunnerTest {
         showRunner.nextFrame() // Creates new buffer for surface1.
 
         showRunner.nextFrame() // Renders frame, expect no exceptions due to too many buffers.
-    }
-
-//    @Test
-//    fun whenShowAttemptsToObtainShaderBufferDuringNextFrame_shouldThrowException() {
-//        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-//        showRunner.nextFrame()
-//
-//        renderSurfaces.onNextFrame = {
-//            // It's illegal to request a new ShaderBuffer during #nextFrame().
-////            showRunner.getShaderBuffer(surface1Receiver.surface, fakeGlslContext.fakeShader())
-//        }
-//
-//        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-//        assertTrue { e.message!!.startsWith("Shaders can't be obtained during #nextFrame()") }
-//    }
-
-//    @Test
-//    fun whenShowAttemptsToObtainMovingHeadDuringNextFrame_shouldThrowException() {
-//        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-//        showRunner.nextFrame()
-//
-//        renderSurfaces.onNextFrame = {
-//            // It's illegal to request a new ShaderBuffer during #nextFrame().
-//            showRunner.getMovingHeadBuffer(
-//                MovingHead(
-//                    "leftEye",
-//                    Vector3F(-163.738f, 204.361f, 439.302f)
-//                )
-//            )
-//        }
-//
-//        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-//        expect("Moving heads can't be obtained during #nextFrame()") { e.message!! }
-//    }
-
-//    @Test
-//    fun whenShowAttemptsToObtainGadgetDuringNextFrame_shouldThrowException() {
-//        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-//        showRunner.nextFrame()
-//
-//        renderSurfaces.onNextFrame = {
-//            // It's illegal to request a new Gadget during #nextFrame().
-//            showRunner.getGadget("another-gadget", Slider("Another Gadget"))
-//        }
-//
-//        val e = assertFailsWith(IllegalStateException::class) { showRunner.nextFrame() }
-//        assertTrue { e.message!!.startsWith("Gadgets can't be obtained during #nextFrame()") }
-//    }
-
-//    @Test
-//    fun whenShowThrowsExceptionDuringNextFrame_shouldPerformHousekeepingImmediatelyOnNextFrame() {
-//        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-//        showRunner.nextFrame()
-//
-//        renderSurfaces.onNextFrame = {
-//            throw Exception("fake exception from show")
-//        }
-//
-//        val e = assertFailsWith(Exception::class) { showRunner.nextFrame() }
-//        assertTrue { e.message!!.startsWith("fake exception from show") }
-//
-//        // When a show throws an exception, Pinky will switch to a safe show (e.g. SolidColorShow);
-//        // we should use it to render the next frame.
-////        showRunner.nextPatchSet = TestShow1()
-//        showRunner.nextFrame()
-//    }
-
-    inner class TestShow1(
-        var supportsSurfaceChange: Boolean = true,
-        var onCreateShow: () -> Unit = {},
-        var onNextFrame: () -> Unit = {},
-        var onSurfacesChanged: (List<Surface>, List<Surface>) -> Unit = { _, _ -> }
-    ) : Show("TestShow1") {
-        val createdShows = mutableListOf<ShowRenderer>()
-        val fakeShader = fakeGlslContext.fakeShader()
-
-        override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
-            return ShowRenderer(showContext).also { createdShows.add(it) }
-        }
-
-        inner class ShowRenderer(private val showContext: ShowContext) : Renderer {
-            val slider = showContext.getGadget("slider", Slider("slider"))
-//            val shaderBuffers =
-//                showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, fakeShader) }.toMutableMap()
-
-            init {
-                onCreateShow()
-            }
-
-            override fun nextFrame() {
-//                shaderBuffers.values.forEach {
-////                TODO    it.color = Color.WHITE
-//                }
-//                onNextFrame()
-            }
-
-            override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
-                if (!supportsSurfaceChange) {
-                    super.surfacesChanged(newSurfaces, removedSurfaces)
-                } else {
-//                    removedSurfaces.forEach { shaderBuffers.remove(it) }
-//                    newSurfaces.forEach { shaderBuffers[it] = showContext.getShaderBuffer(it, fakeShader) }
-                }
-
-                onSurfacesChanged(newSurfaces, removedSurfaces)
-            }
-        }
     }
 }
 

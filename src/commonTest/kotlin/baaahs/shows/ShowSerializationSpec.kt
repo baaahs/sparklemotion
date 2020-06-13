@@ -9,6 +9,7 @@ import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@Suppress("unused")
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
         val plugins by value { Plugins.safe() }
@@ -43,7 +44,6 @@ private fun forJson(show: Show): JsonObject {
         "scenes" to jsonArray {
             show.scenes.forEach { +jsonFor(it) }
         }
-        "patchSets" to jsonArray { }
         "eventBindings" to jsonArray { show.eventBindings.forEach { +jsonFor(it) } }
         "dataSources" to jsonArray { show.dataSources.forEach { +jsonFor(it) } }
         "layouts" to json {
@@ -94,10 +94,10 @@ fun jsonFor(patchSet: PatchSet): JsonElement {
 
 private fun jsonFor(eventBinding: EventBinding) = json { }
 
-fun jsonFor(controlLayout: Map<String, List<DataSource>>): JsonObject {
+fun jsonFor(controlLayout: Map<String, List<DataSourceRef>>): JsonObject {
     return json {
         controlLayout.forEach { (k, v) ->
-            k to jsonArray { v.forEach { +jsonFor(it) } }
+            k to jsonArray { v.forEach { +json { "id" to it.id } } }
         }
     }
 }
@@ -213,4 +213,8 @@ private fun jsonFor(portRef: PortRef): JsonObject {
     }
 }
 
-expect fun expectJson(expected: JsonElement, block: () -> JsonElement)
+fun expectJson(expected: JsonElement, block: () -> JsonElement) {
+    val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))
+    fun JsonElement.toStr() = json.stringify(JsonElementSerializer, this)
+    kotlin.test.expect(expected.toStr()) { block().toStr() }
+}

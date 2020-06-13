@@ -23,16 +23,6 @@ import kotlin.reflect.KProperty
 /**
  * Base class for user input gadgets.
  *
- * Gadgets may be requested by a [Show]:
- *
- * ```kotlin
- * val sparklinessSlider = showRunner.getGadget(Slider("Sparkliness"))
- *
- * fun nextFrame() {
- *   println("Sparkliness is ${sparklinessSlider.value}.")
- * }
- * ```
- *
  * Mutable values in a gadget should be declared like this:
  *
  * ```kotlin

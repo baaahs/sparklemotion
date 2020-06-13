@@ -1,7 +1,6 @@
 package baaahs.shows
 
 import baaahs.getResource
-import baaahs.shaders.GlslShader
 
 class BakedInShaders {
     companion object {

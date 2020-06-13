@@ -6,7 +6,6 @@ import baaahs.glsl.GlslRenderer
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
-import baaahs.shaders.GlslShader
 import baaahs.show.SampleData
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
@@ -65,7 +64,8 @@ class PinkyMain(private val args: Args) {
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)
+        val glslContext = GlslBase.manager.createContext()
+        val glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
         val pinky = Pinky(
             model, show, network, dmxUniverse, beatSource, SystemClock(),
             fs, daddy, soundAnalyzer,
