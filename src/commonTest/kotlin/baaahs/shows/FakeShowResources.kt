@@ -8,7 +8,7 @@ import baaahs.glsl.RenderSurface
 
 class FakeShowResources(override val glslContext: GlslContext
 ) : ShowResources {
-    override val dataSources: Map<String, GlslProgram.DataFeed>
+    override val dataFeeds: Map<String, GlslProgram.DataFeed>
         get() = TODO("not implemented")
     override val shaders: Map<String, ShaderFragment>
         get() = TODO("not implemented")

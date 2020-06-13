@@ -1,26 +1,30 @@
 package baaahs.app.ui
 
-import baaahs.PubSub
-import baaahs.ShowState
-import baaahs.Topics
+import baaahs.*
 import baaahs.net.Network
 import baaahs.show.Show
 import baaahs.ui.*
 import kotlinx.css.*
+import kotlinx.css.Color
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.Menu
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
+import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
 import materialui.components.portal.portal
 import materialui.components.svgicon.SvgIconProps
+import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import org.w3c.dom.events.Event
 import react.*
+import react.dom.*
 import styled.css
 import styled.styledDiv
+import styled.styledTd
 import kotlin.reflect.KClass
 
 val AppIndex = functionalComponent<AppIndexProps> { props ->
@@ -28,7 +32,7 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
     val id = props.id
     println("AppIndex $id: about to render")
 
-    val preact = Preact()
+    val preact = XBuilder()
 
     var isConnected by preact.state { pubSub.isConnected }
     val handlePubSubStateChange = useCallback(pubSub) {
@@ -52,15 +56,20 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
         }
 
     var show by preact.state<Show?> { null }
+    val showChannel = useRef<PubSub.Channel<Show>>(nuffin())
     preact.sideEffect("currentShow subscription", pubSub) {
         println("AppIndex $id: subscribe to ${Topics.currentShow.name}")
         val channel = pubSub.subscribe(Topics.currentShow) {
             println("New incoming show: $it")
             show = it
+            props.showResources.switchTo(it)
         }
+        showChannel.current = channel
+
         withCleanup {
             println("AppIndex $id: unsubscribe from ${Topics.currentShow.name}")
             channel.unsubscribe()
+            showChannel.current = nuffin()
         }
     }
 
@@ -77,11 +86,20 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
             showStateChannel.current = nuffin()
         }
     }
+    println("AppIndex: show = ${show?.title} showState = ${showState}")
 
     val handleShowStateChange = useCallback { newShowState: ShowState ->
         showState = newShowState
         showStateChannel.current.onChange(newShowState)
     }
+
+    val handleShowChange = useCallback { newShow: Show ->
+        show = newShow
+        showChannel.current.onChange(newShow)
+    }
+
+    var editMode by preact.state { false }
+    val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
 
     styledDiv {
         css {
@@ -97,11 +115,31 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
     }
 
     toolbar {
-        iconButton {
-            attrs.edge = IconButtonEdge.end
-            attrs.onClickFunction = handleShaderEditorDrawerToggle
-            Menu { }
-            +"Shader Editor"
+        table {
+            tbody {
+                tr {
+                    td {
+                        formControlLabel {
+                            attrs.control {
+                                switch {
+                                    attrs.checked = editMode
+                                    attrs.onChangeFunction = handleEditModeChange
+                                }
+                            }
+                            attrs.label = "Edit Mode".asTextNode()
+                        }
+                    }
+                    styledTd {
+                        if (!editMode) css { opacity = 0 }
+                        iconButton {
+                            attrs.edge = IconButtonEdge.end
+                            attrs.onClickFunction = handleShaderEditorDrawerToggle
+                            Menu { }
+                            +"Shader Editor"
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -111,8 +149,11 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
         showUi {
             this.pubSub = props.pubSub
             this.show = show!!
+            this.showResources = props.showResources
             this.showState = showState!!
             this.onShowStateChange = handleShowStateChange
+            this.editMode = editMode
+            this.onChange = handleShowChange
         }
     }
 
@@ -137,6 +178,7 @@ external interface AppIndexProps : RProps {
     var network: Network
     var pubSub: PubSub.Client
     var filesystems: List<SaveAsFs>
+    var showResources: MutableShowResources
 }
 
 fun RBuilder.appIndex(handler: AppIndexProps.() -> Unit): ReactElement =

@@ -1,59 +1,76 @@
 package baaahs.ui
 
 import baaahs.Logger
+import react.RMutableRef
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class Preact {
+/**
+ * Get functional component from [func]
+ */
+fun <P : react.RProps> xComponent(
+    name: String,
+    func: XBuilder.(props: P) -> Unit
+): react.FunctionalComponent<P> {
+    val component = { props: P ->
+        react.buildElements {
+            val xBuilder = XBuilder()
+            xBuilder.func(props)
+            this.childList.addAll(xBuilder.childList)
+            xBuilder.renderFinished()
+        }
+    }
+    component.asDynamic().displayName = name
+    return component
+}
+
+class XBuilder : react.RBuilder() {
     private var firstTime = false
     private var dataIndex = 0
     private var sideEffectIndex = 0
-    private val state = react.useState {
+
+    private val context = react.useMemo({
         firstTime = true
         Context()
-    }
+    }, emptyArray())
+
     private val counter = react.useState { 0 }
     private var internalCounter = 0
 
     init {
         react.useEffectWithCleanup(emptyList()) {
             return@useEffectWithCleanup {
-                state.first.sideEffects.forEach { it.runCleanups() }
+                context.sideEffects.forEach { it.runCleanups() }
             }
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
 
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
             val data = Data(valueInitializer()) {
-                counter.second(internalCounter++)
+                counter.second(++internalCounter)
             }
-            state.first.data.add(data)
+            context.data.add(data)
             return data
         } else {
             @Suppress("UNCHECKED_CAST")
-            return state.first.data[dataIndex++] as Data<T>
+            return context.data[dataIndex++] as Data<T>
         }
     }
 
     fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
         return if (firstTime) {
             val sideEffect = SideEffect(watch)
-            state.first.sideEffects.add(sideEffect)
+            context.sideEffects.add(sideEffect)
             sideEffect.callback()
         } else {
-            val sideEffect = state.first.sideEffects[sideEffectIndex++]
+            val sideEffect = context.sideEffects[sideEffectIndex++]
             sideEffect.firstTime = false
-            if (watch.zip(sideEffect.lastWatchValues).all { (a, b) ->
-                    if (a is String && b is String) {
-                        a == b
-                    } else if (a is Number && b is Number) {
-                        a == b
-                    } else {
-                        a === b
-                    }
-            }) {
+            if (areSame(watch, sideEffect.lastWatchValues)) {
                 logger.debug {
                     "Not running side effect $name " +
                             "(${watch.truncateStrings(12)} == ${sideEffect.lastWatchValues.truncateStrings(12)}"
@@ -70,10 +87,42 @@ class Preact {
         }
     }
 
+    fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
+        val handler = context.handlers.getOrPut(name) { Handler(watch, block) }
+        return if (areSame(watch, handler.lastWatchValues)) {
+            handler.block.unsafeCast<T>()
+        } else {
+            handler.block = block
+            block
+        }
+    }
+
+    fun renderFinished() {
+        firstTime = false
+    }
+
+    private fun areSame(currentWatchValues: Array<out Any?>, priorWatchValues: Array<out Any?>): Boolean {
+        return currentWatchValues.zip(priorWatchValues).all { (a, b) ->
+            if (a is String && b is String) {
+                a == b
+            } else if (a is Number && b is Number) {
+                a == b
+            } else {
+                a === b
+            }
+        }
+    }
+
     private class Context {
         val data: MutableList<Data<*>> = mutableListOf()
         val sideEffects: MutableList<SideEffect> = mutableListOf()
+        val handlers: MutableMap<String, Handler> = mutableMapOf()
     }
+
+    private class Handler(
+        internal var lastWatchValues: Array<out Any?>,
+        var block: Function<*>
+    )
 
     private class Data<T>(initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
         var value: T = initialValue

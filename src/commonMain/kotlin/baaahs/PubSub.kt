@@ -182,7 +182,7 @@ abstract class PubSub {
         }
 
         private fun debug(message: String) {
-            logger.debug { "[$name ${if (!isConnected) "(not connected)" else ""}]: $message" }
+            logger.info { "[$name ${if (!isConnected) "(not connected)" else ""}]: $message" }
         }
 
         override fun toString(): String = "Connection from $name"

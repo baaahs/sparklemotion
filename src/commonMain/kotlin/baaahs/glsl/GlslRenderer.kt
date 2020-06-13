@@ -188,18 +188,21 @@ open class GlslRenderer(
         val uvMapper = glslAnalyzer.asShader(
             /**language=glsl*/
             """
-            uniform sampler2D uvCoordsTexture;
-            
-            vec2 mainUvFromRaster(vec2 rasterCoord) {
-                int rasterX = int(rasterCoord.x);
-                int rasterY = int(rasterCoord.y);
+                // Cylindrical Projection
+                // !SparkleMotion:internal
                 
-                vec2 uvCoord = vec2(
-                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
-                );
-                return uvCoord;
-            }
+                uniform sampler2D uvCoordsTexture;
+                
+                vec2 mainUvFromRaster(vec2 rasterCoord) {
+                    int rasterX = int(rasterCoord.x);
+                    int rasterY = int(rasterCoord.y);
+                    
+                    vec2 uvCoord = vec2(
+                        texelFetch(uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
+                        texelFetch(uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
+                    );
+                    return uvCoord;
+                }
             """.trimIndent()
         )
     }

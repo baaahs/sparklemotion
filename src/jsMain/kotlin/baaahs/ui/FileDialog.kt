@@ -23,7 +23,7 @@ import kotlin.browser.window
 
 private val FileDialog = functionalComponent<FileDialogProps> { props ->
     val dialogEl = useRef(null)
-    val preact = Preact()
+    val preact = XBuilder()
     var selectedFs by preact.state { props.defaultTarget?.fs ?: props.filesystems.first() }
     var name by preact.state { props.defaultTarget?.name }
     var currentDir by preact.state { selectedFs.fs.rootFile }

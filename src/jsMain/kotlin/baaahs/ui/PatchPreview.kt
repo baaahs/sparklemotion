@@ -23,7 +23,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         val showResources = object : ShowResources {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
             override val glslContext: GlslContext get() = gl
-            override val dataSources: Map<String, GlslProgram.DataFeed>
+            override val dataFeeds: Map<String, GlslProgram.DataFeed>
                 get() = emptyMap()
             override val shaders: Map<String, ShaderFragment>
                 get() = patch.components.mapValues { (_, component) -> component.shaderFragment }

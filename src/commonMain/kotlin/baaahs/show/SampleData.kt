@@ -93,9 +93,7 @@ object SampleData {
                                 samplePatch.links,
                                 Surfaces("All Surfaces")
                             )
-                        ),
-                        eventBindings = listOf(),
-                        controlLayout = mapOf()
+                        )
                     ),
                     PatchSet(
                         title = "Fire",
@@ -105,14 +103,11 @@ object SampleData {
                                 Surfaces("All Surfaces")
                             )
                         ),
-                        eventBindings = listOf(),
                         controlLayout = mapOf(
                             "Patches" to listOf(intensityControl.ref())
                         )
                     )
-                ),
-                eventBindings = listOf(),
-                controlLayout = mapOf()
+                )
             ),
             Scene(
                 title = "Holocene",
@@ -124,17 +119,11 @@ object SampleData {
                                 samplePatch2.links,
                                 Surfaces("All Surfaces")
                             )
-                        ),
-                        eventBindings = listOf(),
-                        controlLayout = mapOf()
+                        )
                     )
-                ),
-                eventBindings = listOf(),
-                controlLayout = mapOf()
+                )
             )
         ),
-        patchSets = listOf(),
-        eventBindings = listOf(),
         dataSources = listOf(
             scenesControl,
             patchesControl,

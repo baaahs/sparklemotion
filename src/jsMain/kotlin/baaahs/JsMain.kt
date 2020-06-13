@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
+import baaahs.glsl.GlslBase
 import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
@@ -58,7 +59,8 @@ fun main(args: Array<String>) {
                 SaveAsFs("Shader Library (busted!)", FakeFs()),
                 SaveAsFs("Show", FakeFs())
             )
-            val uiApp = WebUi(network, pinkyAddress, filesystems)
+            val uiApp = WebUi(network, pinkyAddress, filesystems,
+                ClientShowResources(GlslBase.jsManager.createContext(), baaahs.show.Show("Loading...")))
             render(uiApp.render(), contentDiv)
         }
 

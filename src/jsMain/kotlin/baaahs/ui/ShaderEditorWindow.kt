@@ -42,7 +42,7 @@ private val glslNumberClassName = glslNumber.getName()
 val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
     val windowRootEl = useRef<Element>()
 
-    val preact = Preact()
+    val preact = XBuilder()
 
     val aceEditor = useRef<AceEditor>()
     val statusContainerEl = useRef<Element>()
