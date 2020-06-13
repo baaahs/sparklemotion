@@ -3,7 +3,7 @@ package baaahs.net
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
     val links = mutableListOf<Link>()
 
-    override fun link(): Link {
+    override fun link(name: String): Link {
         return Link(defaultMtu).also { links.add(it) }
     }
 

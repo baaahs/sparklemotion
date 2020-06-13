@@ -51,10 +51,10 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(p
                     var selection = ""
                     shows.forEachIndexed { index, show ->
                         option {
-                            +show.name
+                            +show.title
                             attrs.key = index.toString()
                             attrs.value = index.toString()
-                            if (selectedShow.name == show.name) {
+                            if (selectedShow.title == show.title) {
                                 selection = index.toString()
                             }
                         }
@@ -114,8 +114,7 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(p
                 css { +"pixelCount " }
                 +"Pixel count:"
                 span {
-                    attrs.id = "visualizerPixelCount"
-                    +"n/a"
+                    +pinky.pixelCount.toString()
                 }
 
             }

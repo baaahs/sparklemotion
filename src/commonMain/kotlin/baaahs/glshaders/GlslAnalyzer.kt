@@ -7,10 +7,10 @@ class GlslAnalyzer {
     fun analyze(shaderText: String): GlslCode {
         val statements = findStatements(shaderText)
         val title = Regex("^// (.*)").find(shaderText)?.groupValues?.get(1)
-            ?: "Unknown"
+            ?: "Unknown Shader"
 //            ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
 
-        return GlslCode(title, null, statements)
+        return GlslCode(title, null, shaderText, statements)
     }
 
     fun asShader(shaderText: String): ShaderFragment {

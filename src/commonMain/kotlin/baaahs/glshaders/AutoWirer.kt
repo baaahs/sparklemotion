@@ -1,47 +1,66 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslRenderer
+import baaahs.ports.*
+import baaahs.show.DataSource
 
-class AutoWirer {
-    fun autoWire(colorShader: String): Patch {
-        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader)
+class AutoWirer(val plugins: Plugins) {
+    fun autoWire(colorShader: String, shaderId: String = "color"): Patch {
+        return autoWire(
+            GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader,
+            shaderId
+        )
     }
 
-    fun autoWire(colorShader: ColorShader): Patch {
+    fun autoWire(colorShader: ColorShader, shaderId: String = "color"): Patch {
         return autoWire(mapOf(
             "uv" to GlslRenderer.uvMapper,
-            "color" to colorShader
-        ))
+            shaderId to colorShader
+        )).resolve()
     }
 
-    fun autoWire(shaders: Map<String, ShaderFragment>): Patch {
-        val localDefaults = shaders.entries.associate { (shaderId, shaderFragment) ->
-            shaderFragment.shaderType.outContentType to Patch.ShaderOut(shaderId)
-        }.minus(GlslCode.ContentType.Color)
+    fun autoWire(shaders: Map<String, ShaderFragment>): UnresolvedPatch {
+        val locallyAvailable: MutableMap<ContentType, MutableList<ShaderOutPortRef>> = mutableMapOf()
 
-        val links = arrayListOf<Patch.Link>()
-        shaders.forEach { (name, shaderFragment) ->
-            shaderFragment.inputPorts.forEach { inputPort ->
-                val uniformInput =
-                    localDefaults[inputPort.contentType]
-                        ?: defaultBindings[inputPort.contentType]
-                        ?: GlslProgram.InputPortRef(
-                            inputPort.type, inputPort.name, inputPort.pluginId, inputPort.pluginConfig)
+        shaders.entries.forEach { (shaderId, shaderFragment) ->
+            val contentType = shaderFragment.shaderType.outContentType
+            val options = locallyAvailable.getOrPut(contentType) { mutableListOf() }
+            options.add(ShaderOutPortRef(shaderId))
+        }
+        locallyAvailable.remove(ContentType.Color) // TODO: why?
 
-                links.add(Patch.Link(uniformInput, Patch.ShaderPortRef(name, inputPort.name)))
+        val dataSources = hashSetOf<DataSource>()
+        val linkOptions = shaders.flatMap { (name, shaderFragment) ->
+            shaderFragment.inputPorts.map { inputPort ->
+                val localSuggestions: List<PortRef>? = locallyAvailable[inputPort.contentType]
+                val suggestions =
+                    localSuggestions ?: plugins.suggestDataSources(inputPort).map {
+                        dataSources.add(it)
+                        DataSourceRef(it.id)
+                    }
+
+                UnresolvedPatch.LinkOptions(suggestions, ShaderInPortRef(name, inputPort.id))
             }
         }
-        return Patch(shaders, links)
+        return UnresolvedPatch(shaders, dataSources.toList(), linkOptions)
     }
 
-    private val defaultBindings = mapOf<GlslCode.ContentType, Patch.UniformPortRef>(
-        GlslCode.ContentType.UvCoordinateTexture to GlslProgram.UvCoordsTexture,
-        GlslCode.ContentType.UvCoordinate to GlslProgram.GlFragCoord,
-//            ContentType.XyCoordinate to { TODO() },
-//            ContentType.XyzCoordinate to { TODO() },
-//            ContentType.Color to { TODO() },
-        GlslCode.ContentType.Time to GlslProgram.Time,
-        GlslCode.ContentType.Resolution to GlslProgram.Resolution
-//            ContentType.Unknown to { TODO() }
-    )
+    data class UnresolvedPatch(
+        private val shaders: Map<String, ShaderFragment>,
+        private val dataSources: List<DataSource>,
+        private val linkOptions: List<LinkOptions>
+    ) {
+        fun isAmbiguous() = linkOptions.any { it.isAmbiguous() }
+
+        fun resolve(): Patch {
+            if (isAmbiguous()) {
+                error("ambiguous! ${linkOptions.filter { it.isAmbiguous() }}")
+            }
+            return Patch(shaders, dataSources, linkOptions.map { Link(it.from.first(), it.to) })
+        }
+
+        data class LinkOptions(val from: List<PortRef>, val to: PortRef) {
+            fun isAmbiguous() = from.size != 1
+        }
+    }
 }

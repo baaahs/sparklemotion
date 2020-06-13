@@ -2,6 +2,7 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
 import baaahs.only
+import kotlinx.serialization.json.json
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -236,10 +237,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("float", "time", "Time", GlslCode.ContentType.Time),
-                                InputPort("vec2", "resolution", "Resolution", GlslCode.ContentType.Resolution),
-                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Float),
-                                InputPort("vec4", "gl_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
+                                InputPort("time", "float", "Time", ContentType.Time),
+                                InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
+                                InputPort("blueness", "float", "Blueness"),
+                                InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -269,10 +270,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("float", "blueness", "Blueness", GlslCode.ContentType.Float),
-                                InputPort("vec3", "iResolution", "Resolution", GlslCode.ContentType.Resolution),
-                                InputPort("float", "iTime", "Time", GlslCode.ContentType.Time),
-                                InputPort("vec2", "sm_FragCoord", "Coordinates", GlslCode.ContentType.UvCoordinate)
+                                InputPort("blueness", "float", "Blueness"),
+                                InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
+                                InputPort("iTime", "float", "Time", ContentType.Time),
+                                InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -292,15 +293,15 @@ object GlslAnalyzerSpec : Spek({
             }
 
             it("parses hints") {
-                expect("whatever.package.Plugin:Thing") { glslVar.hint!!.plugin }
-                expect(mapOf("key" to "value", "key2" to "value2")) { glslVar.hint!!.map }
+                expect(PluginRef("whatever.package.Plugin", "Thing")) { glslVar.hint!!.pluginRef }
+                expect(json { "key" to "value"; "key2" to "value2" }) { glslVar.hint!!.config }
             }
 
             context("when package is unspecified") {
                 override(hintClassStr) { "Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect("baaahs.Core:Thing") { glslVar.hint!!.plugin }
+                    expect(PluginRef("baaahs.Core", "Thing")) { glslVar.hint!!.pluginRef }
                 }
             }
 
@@ -308,7 +309,7 @@ object GlslAnalyzerSpec : Spek({
                 override(hintClassStr) { "FooPlugin:Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect("baaahs.FooPlugin:Thing") { glslVar.hint!!.plugin }
+                    expect(PluginRef("baaahs.FooPlugin", "Thing")) { glslVar.hint!!.pluginRef }
                 }
             }
         }

@@ -28,7 +28,9 @@ abstract class PubSub {
         val logger = Logger("PubSub")
     }
 
-    open class Origin
+    open class Origin(val id: String) {
+        override fun toString(): String ="Origin($id)"
+    }
 
     interface Channel<T> {
         @JsName("onChange")
@@ -46,7 +48,7 @@ abstract class PubSub {
         val serializer: KSerializer<T>
     )
 
-    abstract class Listener(private val origin: Origin) {
+    abstract class Listener(val origin: Origin) {
         fun onUpdate(data: JsonElement, fromOrigin: Origin) {
             if (origin !== fromOrigin) {
                 onUpdate(data)
@@ -71,14 +73,14 @@ abstract class PubSub {
         private val name: String,
         private val topics: MutableMap<String, TopicInfo>,
         private val json: Json
-    ) : Origin(), Network.WebSocketListener {
+    ) : Origin("connection $name"), Network.WebSocketListener {
         var isConnected: Boolean = false
 
         protected var connection: Network.TcpConnection? = null
         private val cleanup: MutableList<() -> Unit> = mutableListOf()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
-            debug("connection $this established")
+            debug("connection $name established")
             connection = tcpConnection
             isConnected = true
         }
@@ -139,7 +141,7 @@ abstract class PubSub {
                 writer.writeString(json.stringify(JsonElementSerializer, data))
                 sendCommand(writer.toBytes())
             } else {
-                debug("not connected to server, so no update $name $data")
+                debug("not connected, so no update $name $data")
             }
         }
 
@@ -152,7 +154,7 @@ abstract class PubSub {
                 writer.writeString(topicName)
                 sendCommand(writer.toBytes())
             } else {
-                debug("not connected to server, so no sub $topicName")
+                debug("not connected, so no sub $topicName")
             }
         }
 
@@ -165,7 +167,7 @@ abstract class PubSub {
                 writer.writeString(topicName)
                 sendCommand(writer.toBytes())
             } else {
-                debug("not connected to server, so no sub $topicName")
+                debug("not connected, so no unsub $topicName")
             }
         }
 
@@ -180,8 +182,10 @@ abstract class PubSub {
         }
 
         private fun debug(message: String) {
-            logger.debug { "[PubSub $name -> ${connection?.toAddress ?: "(deferred)"}]: $message" }
+            logger.info { "[$name ${if (!isConnected) "(not connected)" else ""}]: $message" }
         }
+
+        override fun toString(): String = "Connection from $name"
     }
 
     open class Endpoint {
@@ -190,21 +194,22 @@ abstract class PubSub {
 
         fun install(toInstall: SerialModule) {
             serialModule = serialModule.plus(toInstall)
-            json = Json(JsonConfiguration.Stable, serialModule)
+            json = Json(JsonConfiguration.Stable.copy(classDiscriminator = "#type"), serialModule)
         }
     }
 
     class Server(httpServer: Network.HttpServer) : Endpoint() {
+        private val publisher = Origin("Server")
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
-                Connection("server at ${incomingConnection.toAddress}", topics, json)
+                Connection("server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}", topics, json)
+                    .apply { connected(incomingConnection) }
             }
         }
 
         fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
-            val publisher = Origin()
             val topicName = topic.name
             val jsonData = json.toJson(topic.serializer, data)
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topicName) }
@@ -241,18 +246,18 @@ abstract class PubSub {
     }
 
     class Client(
-        link: Network.Link,
+        val link: Network.Link,
         serverAddress: Network.Address,
         port: Int,
         coroutineScope: CoroutineScope = GlobalScope
     ) : Endpoint() {
         @JsName("isConnected")
         val isConnected: Boolean
-            get() = server.isConnected
+            get() = connectionToServer.isConnected
         private val stateChangeListeners = mutableListOf<() -> Unit>()
 
         private val topics: MutableMap<String, TopicInfo> = hashMapOf()
-        private var server: Connection = object : Connection("client at ${link.myAddress}", topics, json) {
+        private var connectionToServer: Connection = object : Connection("client ${link.myAddress} to $serverAddress", topics, json) {
             override fun connected(tcpConnection: Network.TcpConnection) {
                 super.connected(tcpConnection)
 
@@ -278,22 +283,23 @@ abstract class PubSub {
         }
 
         private fun connectWebSocket(link: Network.Link, serverAddress: Network.Address, port: Int) {
-            link.connectWebSocket(serverAddress, port, "/sm/ws", server)
+            link.connectWebSocket(serverAddress, port, "/sm/ws", connectionToServer)
         }
 
         @JsName("subscribe")
         fun <T> subscribe(topic: Topic<T>, onUpdate: (T) -> Unit): Channel<T> {
-            val subscriber = Origin()
+            val subscriber = Origin("Subscriber at ${link.myAddress}")
 
             val topicName = topic.name
             val topicInfo = topics.getOrPut(topicName) {
                 TopicInfo(topicName)
                     .apply {
-                        listeners.add(object : Listener(server) {
-                            override fun onUpdate(data: JsonElement) = server.sendTopicUpdate(topicName, data)
+                        listeners.add(object : Listener(connectionToServer) {
+                            override fun onUpdate(data: JsonElement) =
+                                connectionToServer.sendTopicUpdate(topicName, data)
                         })
                     }
-                    .also { server.sendTopicSub(topicName) }
+                    .also { connectionToServer.sendTopicSub(topicName) }
             }
 
             val listener = object : Listener(subscriber) {
@@ -320,7 +326,7 @@ abstract class PubSub {
 
                     // If there's only one listener left, it's the server listener, and we can safely go away.
                     if (topicInfo.listeners.size == 1) {
-                        server.sendTopicUnsub(topicName)
+                        connectionToServer.sendTopicUnsub(topicName)
                     }
                 }
             }

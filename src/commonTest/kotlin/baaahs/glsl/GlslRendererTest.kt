@@ -4,11 +4,10 @@ import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
-import baaahs.shows.FakeShowContext
+import baaahs.shows.FakeShowResources
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.*
@@ -29,14 +28,14 @@ class GlslRendererTest {
 
     private lateinit var glslContext: GlslContext
     private lateinit var glslRenderer: GlslRenderer
-    private lateinit var showContext: FakeShowContext
+    private lateinit var fakeShowResources: FakeShowResources
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glslContext = GlslBase.manager.createContext()
             glslRenderer = GlslRenderer(glslContext, UvTranslatorForTest)
-            showContext = FakeShowContext(glslRenderer)
+            fakeShowResources = FakeShowResources(glslContext)
         }
     }
 
@@ -93,8 +92,8 @@ class GlslRendererTest {
         val glslProgram = compileAndBind(program)
         val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        showContext.getGadget<Slider>("glsl_in_blue").value = .1f
-        showContext.drawFrame()
+        fakeShowResources.getGadget<Slider>("glsl_in_blue").value = .1f
+        fakeShowResources.drawFrame()
 
         expectColor(listOf(
             Color(0f, .1f, .1f),
@@ -102,8 +101,8 @@ class GlslRendererTest {
             Color(.4f, .5f, .1f)
         )) { renderSurface.pixels.toList() }
 
-        showContext.getGadget<Slider>("glsl_in_blue").value = .2f
-        showContext.drawFrame()
+        fakeShowResources.getGadget<Slider>("glsl_in_blue").value = .2f
+        fakeShowResources.drawFrame()
 
         expectColor(listOf(
             Color(0f, .1f, .2f),
@@ -247,11 +246,8 @@ class GlslRendererTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val corePlugin = CorePlugin()
-        val plugins = Plugins(mapOf(corePlugin.packageName to corePlugin))
-
-        return AutoWirer().autoWire(program).compile(glslContext) { uniformPortRef ->
-            plugins.matchUniformProvider(uniformPortRef, showContext, glslContext)
+        return AutoWirer(Plugins.safe()).autoWire(program).compile(glslContext) { dataSource ->
+            dataSource.create(fakeShowResources)
         }
     }
 

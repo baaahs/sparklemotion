@@ -13,7 +13,7 @@ class SliderTest {
         slider.value = .75f
 
         val otherSlider = serializationRoundTrip(Slider.serializer(), slider)
-        expect("name") { otherSlider.name }
+        expect("name") { otherSlider.title }
         expect(.25f) { otherSlider.value }
 
         otherSlider.state.putAll(slider.state)

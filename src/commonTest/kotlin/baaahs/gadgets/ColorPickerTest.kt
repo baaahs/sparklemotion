@@ -14,7 +14,7 @@ class ColorPickerTest {
         slider.color = Color(654321)
 
         val otherColorPicker = serializationRoundTrip(ColorPicker.serializer(), slider)
-        expect("name") { otherColorPicker.name }
+        expect("name") { otherColorPicker.title }
         expect(Color(123456)) { otherColorPicker.color }
 
         otherColorPicker.state.putAll(slider.state)

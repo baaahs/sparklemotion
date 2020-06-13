@@ -1,43 +1,110 @@
 package baaahs.glshaders
 
-import baaahs.ShowContext
-import baaahs.glsl.GlslContext
+import baaahs.ports.portRefModule
+import baaahs.show.DataSource
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.modules.SerializersModule
+
+@Serializable
+data class PluginRef(
+    val pluginId: String,
+    val resourceName: String
+) {
+    companion object {
+        val Unknown = PluginRef(CorePlugin.id, "unknown")
+
+        fun from(identString: String): PluginRef {
+            val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
+            return if (result != null) {
+                val (_, pluginId, resourceName) = result.destructured
+                PluginRef(pluginId, resourceName)
+            } else {
+                PluginRef(CorePlugin.id, identString)
+            }
+        }
+    }
+}
 
 class Plugins(private val byPackage: Map<String, Plugin>) {
+    val serialModule = SerializersModule {
+        include(portRefModule)
+        include(dataSourceProviderModule)
+//            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
+    }
+
+    val json = Json(
+        JsonConfiguration.Stable.copy(classDiscriminator = "#type"),
+        context = serialModule
+    )
+
+    private fun findPlugin(pluginRef: PluginRef): Plugin {
+        return byPackage[pluginRef.pluginId]
+            ?: error("unknown plugin \"${pluginRef.pluginId}\"")
+    }
+
+    fun suggestDataSources(inputPort: InputPort): List<DataSource> {
+        return if (inputPort.pluginRef != null) {
+            findPlugin(inputPort.pluginRef).suggestDataSources(inputPort)
+        } else {
+            byPackage.values.map { plugin -> plugin.suggestDataSources(inputPort) }.flatten()
+        }
+    }
+
     // name would be in form:
     //   [baaahs.Core:]resolution
     //   [baaahs.Core:]time
     //   [baaahs.Core:]uvCoords
     //   com.example.Plugin:data
     //   baaahs.SoundAnalysis:coq
-    fun matchUniformProvider(
-        uniformPort: Patch.UniformPortRef,
-        showContext: ShowContext,
-        glslContext: GlslContext
-    ): GlslProgram.DataSourceProvider? {
-        val pluginId = uniformPort.pluginId
-        val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
-        val (plugin, arg) = if (result != null) {
-            val (_, pluginPackage, pluginArg) = result.destructured
-            getPlugin(pluginPackage) to pluginArg
-        } else {
-            getPlugin(default) to pluginId
+    fun findDataSource(inputPort: InputPort): DataSource? {
+        val pluginRef = inputPort.pluginRef
+//        val (plugin, arg) = if (pluginRef != null) {
+//            pluginRef
+//        } else {
+//            PluginType()
+//        }
+//        val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
+        val plugin = byPackage[pluginRef!!.pluginId]
+
+        val dataSource = pluginRef.resourceName.let {
+            plugin!!.findDataSource(it, inputPort)
         }
 
-        return arg?.let { plugin.matchUniformProvider(it, uniformPort, showContext, glslContext) }
+        dataSource?.let {
+//            val supportedTypes = dataSourceProvider.supportedTypes
+//            if (!supportedTypes.contains(inputPort.type)) {
+//                throw CompiledShader.LinkException(
+//                    "can't set uniform ${inputPort.type} ${inputPort.title}: expected $supportedTypes)"
+//                )
+//            }
+        }
+        return dataSource
     }
+
+//    fun createDataSourceProvider(dataSourceDescription: DataSourceDescription): DataSourceProvider?
 
     private fun getPlugin(packageName: String): Plugin {
         return byPackage[packageName]
             ?: error("no such plugin \"$packageName\"")
     }
 
+    fun decodeDataSource(pluginId: String, pluginData: JsonObject): DataSource {
+        TODO("not implemented")
+    }
+
     companion object {
-        private val default = "baaahs.Core"
+        val default = "baaahs.Core"
         private val plugins = Plugins(
             listOf(CorePlugin())
                 .associateBy(Plugin::packageName)
         )
+
+        fun safe(): Plugins {
+            return Plugins(mapOf(default to CorePlugin()))
+        }
 
         fun findAll(): Plugins {
             return plugins

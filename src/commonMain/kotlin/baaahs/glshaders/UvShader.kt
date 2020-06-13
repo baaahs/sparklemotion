@@ -2,9 +2,13 @@ package baaahs.glshaders
 
 class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     companion object {
-        val magicUniforms = listOf(
-            InputPort("sampler2D", "sm_uvCoordsTexture", "U/V Coordinates Texture", GlslCode.ContentType.UvCoordinateTexture)
-        ).associateBy { it.name }
+        val uvCoordsTextureInputPort = InputPort(
+            "uvCoordsTexture",
+            "sampler2D",
+            "U/V Coordinates Texture",
+            ContentType.UvCoordinateTexture
+        )
+        val magicUniforms = listOf(uvCoordsTextureInputPort).associateBy { it.id }
     }
 
     override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Projection
@@ -15,13 +19,16 @@ class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
             magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
-                ?: InputPort(it.type, it.name, it.name.nameify(), GlslCode.ContentType.Float,
-                    it.hint?.plugin, it.hint?.map ?: emptyMap(), it)
+                ?: InputPort(
+                    it.name, it.type, it.name.capitalize(),
+                    pluginRef = it.hint?.pluginRef,
+                    pluginConfig = it.hint?.config
+                )
         }
     }
 
     override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec2", "uvCoord", "U/V Coordinate", GlslCode.ContentType.UvCoordinate))
+            = listOf(OutputPort("vec2", "uvCoords", "U/V Coordinate", ContentType.UvCoordinate))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         val buf = StringBuilder()

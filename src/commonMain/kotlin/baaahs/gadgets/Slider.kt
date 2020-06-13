@@ -11,7 +11,7 @@ import kotlin.random.Random
 @Serializable
 data class Slider(
     /** The name for this slider. */
-    val name: String,
+    val title: String,
 
     /** The initial value for this slider. */
     val initialValue: Float = 1f,

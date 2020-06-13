@@ -1,13 +1,16 @@
 package baaahs.glshaders
 
 import baaahs.Logger
-import baaahs.glshaders.GlslCode.ContentType
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
+import baaahs.ports.OutputPortRef
+import baaahs.show.DataSource
+import baaahs.unknown
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
+import kotlinx.serialization.modules.SerializersModule
 
 class GlslProgram(
     internal val gl: GlslContext,
@@ -62,19 +65,23 @@ class GlslProgram(
     }
 
     private fun bind(resolver: Resolver): List<Binding> {
-        return patch.uniformPorts.mapNotNull { uniformPortRef ->
-            if (uniformPortRef.isImplicit) return@mapNotNull null
+        val dataSourcesById = patch.dataSources.associateBy { it.id }
 
-            val uniformProvider = resolver.invoke(uniformPortRef)
-            if (uniformProvider != null) {
-                val binding = Binding(uniformPortRef, uniformProvider)
+        return patch.dataSourceRefs.mapNotNull { dataSourceRef ->
+            val dataSource = (dataSourcesById[dataSourceRef.id]
+                ?: error(unknown("datasource", dataSourceRef.id, dataSourcesById.keys)))
+            val dataSourceFeed = resolver.invoke(dataSource)
+            if (dataSource.isImplicit()) return@mapNotNull null
+
+            if (dataSourceFeed != null) {
+                val binding = Binding(dataSource, dataSourceFeed)
                 if (binding.isValid) binding else {
-                    logger.debug { "unused uniform for $uniformPortRef?" }
+                    logger.debug { "unused uniform for $dataSourceRef?" }
                     binding.release()
                     null
                 }
             } else {
-                logger.warn { "no UniformProvider bound for $uniformPortRef" }
+                logger.warn { "no UniformProvider bound for $dataSourceRef" }
                 null
             }
         }
@@ -82,7 +89,7 @@ class GlslProgram(
 
     private inline fun <reified T> bindingsOf(): List<T> {
         return bindings
-            .map { it.dataSourceProvider }
+            .map { it.dataFeed }
             .filterIsInstance<T>()
     }
 
@@ -119,43 +126,32 @@ class GlslProgram(
     }
 
     inner class Binding(
-        private val uniformPortRef: Patch.UniformPortRef,
-        internal val dataSourceProvider: DataSourceProvider
+        private val dataSource: DataSource,
+        val dataFeed: DataFeed
     ) {
-        init {
-            val supportedTypes = dataSourceProvider.supportedTypes
-            if (!supportedTypes.contains(uniformPortRef.type)) {
-                throw CompiledShader.LinkException(
-                    "can't set uniform ${uniformPortRef.type} ${uniformPortRef.name}: expected $supportedTypes)"
-                )
-            }
-        }
-
-        private val uniformLocation = getUniform(uniformPortRef.varName)
+        private val uniformLocation = getUniform(dataSource.getVarName())
 
         val isValid: Boolean get() = uniformLocation != null
 
-        private val dataSource: DataSource? = if (isValid) {
-            dataSourceProvider.provide()
-        } else null
-
         fun setUniform() {
             try {
-                uniformLocation?.let { dataSource?.set(it) }
+                uniformLocation?.let { dataFeed.set(it) }
             } catch (e: Exception) {
-                logger.error(e) { "failed to set ${uniformPortRef.name} from $dataSource" }
+                logger.error(e) { "failed to set ${dataSource.getType()} ${dataSource.id} from $dataFeed" }
             }
         }
 
-        fun release() = dataSource?.release()
+        fun release() = dataFeed.release()
     }
 
-    interface DataSourceProvider {
-        val supportedTypes: List<String>
-        fun provide(): DataSource
+    enum class DataTypes {
+        float,
+        vec2,
+        vec3,
+        vec4
     }
 
-    interface DataSource {
+    interface DataFeed {
         fun set(uniform: Uniform)
         fun release() {}
     }
@@ -164,32 +160,50 @@ class GlslProgram(
         fun onResolution(x: Float, y: Float)
     }
 
-    object Resolution : StockUniformPortRef("vec2", "resolution", ContentType.Resolution.pluginId!!)
-
-    object Time : StockUniformPortRef("float", "time", ContentType.Time.pluginId!!)
-
-    object GlFragCoord : StockUniformPortRef("vec4", "gl_FragCoord", "baaahs.Core:none") {
-        override val varName: String = name
-        override val isImplicit = true
-    }
-
-    object UvCoordsTexture : StockUniformPortRef("sampler2D", "sm_uvCoordsTexture", ContentType.UvCoordinateTexture.pluginId!!)
-
-    open class StockUniformPortRef(type: String, name: String, pluginId: String) : Patch.UniformPortRef(type, name, pluginId) {
-        override val shaderId: String? = null
-    }
-
-    class InputPortRef(
-        type: String,
-        name: String,
-        pluginId: String? = null,
-        pluginConfig: Map<String, String> = emptyMap()
-    ) : Patch.UniformPortRef(type, name, pluginId, pluginConfig)
-
-
     companion object {
-        val logger = Logger("GlslProgram")
+        private val logger = Logger("GlslProgram")
+
+//        val Resolution = inputPortRef(
+//            "resolution",
+//            "vec2",
+//            "resolution",
+//            ContentType.Resolution.pluginId
+//        )
+//
+//        val Time = inputPortRef(
+//            "time",
+//            "float",
+//            "time",
+//            ContentType.Time.pluginId
+//        )
+//
+//        val GlFragCoord = inputPortRef(
+//            "glFragCoord",
+//            "vec4",
+//            "gl_FragCoord",
+//            "baaahs.Core:none",
+//            varName = "gl_FragCoord",
+//            isImplicit = true
+//        )
+
+        val PixelColor = OutputPortRef("vec4", "gl_FragColor")
     }
 }
 
-typealias Resolver = (Patch.UniformPortRef) -> GlslProgram.DataSourceProvider?
+typealias Resolver = (DataSource) -> GlslProgram.DataFeed?
+
+val dataSourceProviderModule = SerializersModule {
+    polymorphic(DataSource::class) {
+//        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
+        CorePlugin.Resolution::class with CorePlugin.Resolution.serializer()
+        CorePlugin.Time::class with CorePlugin.Time.serializer()
+        CorePlugin.UvCoordTexture::class with CorePlugin.UvCoordTexture.serializer()
+        CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
+        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
+        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
+        CorePlugin.RadioButtonStripProvider::class with CorePlugin.RadioButtonStripProvider.serializer()
+        CorePlugin.Scenes::class with CorePlugin.Scenes.serializer()
+        CorePlugin.Patches::class with CorePlugin.Patches.serializer()
+        CorePlugin.XyPad::class with CorePlugin.XyPad.serializer()
+    }
+}

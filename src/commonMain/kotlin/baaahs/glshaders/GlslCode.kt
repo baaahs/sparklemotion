@@ -1,8 +1,12 @@
 package baaahs.glshaders
 
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.json
+
 class GlslCode(
     val title: String,
     val description: String? = null,
+    val src: String,
     glslStatements: List<GlslAnalyzer.GlslStatement>
 ) {
     internal val globalVarNames = hashSetOf<String>()
@@ -89,19 +93,37 @@ class GlslCode(
 
         val hint: Hint? by lazy {
             val commentString = comments.joinToString(" ") { it.trim() }
-            val parts = commentString.split(" ")
-            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
-                val type = parts.first().trimStart('@')
-                val fullType = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
-                    val (prefix, pluginClass, arg) = it.destructured
-                    "${prefix.ifEmpty { "baaahs." }}${pluginClass .ifEmpty { "Core" }}:$arg"
-                } ?: type
-                val map = parts.subList(1, parts.size).associate { s ->
+            if (commentString.startsWith("@@")) {
+                Hint(commentString.trimStart('@').trim())
+            } else {
+                null
+            }
+//            val parts = commentString.split(" ")
+//            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
+//            } else null
+        }
+    }
+
+    class Hint(string: String) {
+        val pluginRef: PluginRef
+        val config: JsonObject
+
+        init {
+            val parts = string.split(" ")
+            val type = parts.first()
+            pluginRef = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
+                val (pluginPackage, pluginClass, resourceName) = it.destructured
+                PluginRef(
+                    "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
+                    resourceName)
+            } ?: error("don't understand hint: $string")
+
+            config = json {
+                parts.subList(1, parts.size).forEach { s ->
                     val kv = s.split("=")
                     kv.first() to kv.subList(1, kv.size).joinToString("=")
                 }
-                Hint(fullType, map)
-            } else null
+            }
         }
     }
 
@@ -115,22 +137,6 @@ class GlslCode(
         override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
-    }
-
-    data class Hint(val plugin: String, val map: Map<String, String>)
-
-    enum class ContentType(val description: String?, val pluginId: String? = null) {
-        RasterCoordinate("Raster Coordinate"),
-        UvCoordinate("U/V Coordinate"),
-        UvCoordinateTexture("U/V Coordinates Texture", "baaahs.Core:uvCoords"),
-        XyCoordinate("X/Y Coordinate", "baaahs.Core:xyCoord"),
-        XyzCoordinate("X/Y/Z Coordinate"),
-        Color("Color", "baaahs.Core:ColorPicker"),
-        Time("Time", "baaahs.Core:time"),
-        Resolution("Resolution", "baaahs.Core:resolution"),
-        Float("Float", "baaahs.Core:Slider"),
-        Int("Integer"),
-        Unknown("Unknown")
     }
 
     class Namespace(private val prefix: String) {

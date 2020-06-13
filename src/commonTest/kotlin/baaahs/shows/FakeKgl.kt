@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.glsl.GlslContext
+import baaahs.unknown
 import com.danielgergely.kgl.*
 
 class FakeGlslContext(private val kgl: FakeKgl = FakeKgl()) : GlslContext(kgl, "1234") {
@@ -38,7 +39,9 @@ class FakeKgl : Kgl {
         }
 
         fun getUniform(name: String): Any? {
-            return uniforms[uniformIdsByName[name] ?: error("unknown uniform $name")]
+            val i = uniformIdsByName[name]
+                ?: error(unknown("uniform", name, uniformIdsByName.keys))
+            return uniforms[i]
         }
     }
 

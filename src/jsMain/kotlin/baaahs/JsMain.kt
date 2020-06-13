@@ -2,10 +2,13 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
-import baaahs.jsx.MosaicUI
+import baaahs.glsl.GlslBase
+import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
+import baaahs.sim.FakeFs
+import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
@@ -26,15 +29,12 @@ fun main(args: Array<String>) {
 
     when (mode) {
         "Simulator" -> {
-            // Instead of starting the simulator directly, pass the JS
-            // a function that it can use to get and start the simulator.
-            // We do this so the JS can create the HTML templates before
-            // the JsDisplay tries to find them.
-            val props = jsObject<MosaicUI.Props> {
-                getSheepSimulator = { SheepSimulator() }
+            val simulator = SheepSimulator()
+            val props = jsObject<MosaicApp.Props> {
+                this.simulator = simulator
             }
             val simulatorEl = document.getElementById("app")
-            render(createElement(MosaicUI::class.js, props), simulatorEl)
+            render(createElement(MosaicApp::class.js, props), simulatorEl)
         }
 
         "Admin" -> {
@@ -55,7 +55,12 @@ fun main(args: Array<String>) {
         }
 
         "UI" -> {
-            val uiApp = WebUi(network, pinkyAddress)
+            val filesystems = listOf(
+                SaveAsFs("Shader Library (busted!)", FakeFs()),
+                SaveAsFs("Show", FakeFs())
+            )
+            val uiApp = WebUi(network, pinkyAddress, filesystems,
+                ClientShowResources(GlslBase.jsManager.createContext(), baaahs.show.Show("Loading...")))
             render(uiApp.render(), contentDiv)
         }
 
