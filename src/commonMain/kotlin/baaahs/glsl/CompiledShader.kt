@@ -5,7 +5,6 @@ import com.danielgergely.kgl.GL_COMPILE_STATUS
 import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.Shader
-
 class CompiledShader(
     private val gl: Kgl,
     internal val id: Shader,
@@ -57,5 +56,8 @@ class CompiledShader(
 
     class LinkException(errorMessage: String) : Exception("GLSL Link Error: $errorMessage")
 
-    class GlslError(val row: Int, val column: Int, val message: String)
+    class GlslError(val row: Int, val column: Int, val message: String) {
+        constructor(message: String) : this(0, 0, message)
+    }
 }
+

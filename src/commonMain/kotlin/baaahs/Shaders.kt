@@ -2,7 +2,6 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.GlslShader
 import baaahs.shaders.PixelShader
 import baaahs.shaders.SolidShader
 
@@ -25,15 +24,7 @@ interface ShaderReader<T : Shader<*>> {
     fun parse(reader: ByteArrayReader): T
 }
 
-interface RenderContext {
-    fun <T : PooledRenderer> registerPooled(glslShader: GlslShader, fn: () -> T): T
-}
-
 abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
-    open fun createRenderer(surface: Surface, renderContext: RenderContext): Renderer<B> {
-        return createRenderer(surface)
-    }
-
     abstract fun createRenderer(surface: Surface): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
@@ -82,20 +73,6 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
         fun endFrame() {}
         fun release() {}
     }
-}
-
-/**
- * If a [Shader.Renderer] implements [PooledRenderer] and pixel prerendering is enabled on Pinky,
- * then the drawing cycle will look like this:
- *
- * - shader.createRenderer()
- * - rendererN*.beginFrame()
- * - pooledRenderer.preDraw()
- * - rendererN*.draw()
- * - rendererN*.endFrame()
- */
-interface PooledRenderer {
-    fun preDraw()
 }
 
 interface Pixels : Iterable<Color> {

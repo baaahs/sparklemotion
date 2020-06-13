@@ -1,6 +1,5 @@
 package baaahs.glshaders
 
-import baaahs.glshaders.GlslCode.ContentType
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -36,11 +35,11 @@ object ColorShaderSpec : Spek({
 
             it("finds magic uniforms") {
                 expect(listOf(
-                    InputPort("float", "time", "Time", ContentType.Time),
-                    InputPort("vec2", "resolution", "Resolution", ContentType.Resolution),
-                    InputPort("vec2", "mouse", "Mouse", ContentType.XyCoordinate),
-                    InputPort("float", "blueness", "Blueness", ContentType.Float, "baaahs.Core:Slider"),
-                    InputPort("vec4", "gl_FragCoord", "Coordinates", ContentType.UvCoordinate)
+                    InputPort("time", "float", "Time", ContentType.Time),
+                    InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
+                    InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
+                    InputPort("blueness", "float", "Blueness"),
+                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
@@ -101,11 +100,11 @@ object ColorShaderSpec : Spek({
             describe("#inputPorts") {
                 it("finds magic uniforms") {
                     expect(listOf(
-                        InputPort("float", "blueness", "Blueness", ContentType.Float, "baaahs.Core:Slider"),
-                        InputPort("vec3", "iResolution", "Resolution", ContentType.Resolution),
-                        InputPort("float", "iTime", "Time", ContentType.Time),
-                        InputPort("vec2", "iMouse", "Mouse", ContentType.XyCoordinate),
-                        InputPort("vec2", "sm_FragCoord", "Coordinates", ContentType.UvCoordinate)
+                        InputPort("blueness", "float", "Blueness"),
+                        InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
+                        InputPort("iTime", "float", "Time", ContentType.Time),
+                        InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
+                        InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
                     )) { shader.inputPorts.map { it.copy(glslVar = null) } }
                 }
             }

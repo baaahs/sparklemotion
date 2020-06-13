@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.sim.ui.AppWindow
 import baaahs.sim.ui.Console
 import baaahs.visualizer.ui.VisualizerPanel
 
@@ -10,6 +11,7 @@ object DeadCodeEliminationDefeater {
         GadgetDisplay(nuffin()) {}
         Console(nuffin())
         VisualizerPanel(nuffin())
+        AppWindow(nuffin())
     }
 
     @Suppress("UNCHECKED_CAST")

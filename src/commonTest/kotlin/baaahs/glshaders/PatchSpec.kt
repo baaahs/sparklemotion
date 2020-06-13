@@ -1,6 +1,9 @@
 package baaahs.glshaders
 
-import baaahs.glshaders.GlslProgram.*
+import baaahs.glsl.GlslRenderer
+import baaahs.ports.DataSourceRef
+import baaahs.ports.ShaderInPortRef
+import baaahs.ports.ShaderOutPortRef
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -38,16 +41,23 @@ object PatchSpec : Spek({
                     Patch(
                         mapOf("color" to shader),
                         listOf(
-                            GlFragCoord
-                                    linkTo Patch.ShaderPortRef("color", "gl_FragCoord"),
-                            Resolution
-                                    linkTo Patch.ShaderPortRef("color", "resolution"),
-                            Time
-                                    linkTo Patch.ShaderPortRef("color", "time"),
-                            InputPortRef("float", "blueness")
-                                    linkTo Patch.ShaderPortRef("color", "blueness"),
-                            Patch.ShaderPortRef("color", "gl_FragColor")
-                                    linkTo Patch.PixelColor
+                            CorePlugin.ScreenUvCoord("gl_FragCoord"),
+                            CorePlugin.Resolution("resolution"),
+                            CorePlugin.Time("time"),
+                            CorePlugin.SliderDataSource(
+                                "bluenessSlider", "Blueness", 0f, 0f, 1f, 0.01f)
+                        ),
+                        listOf(
+                            DataSourceRef("gl_FragCoord")
+                                    linkTo ShaderInPortRef("color", "gl_FragCoord"),
+                            DataSourceRef("resolution")
+                                    linkTo ShaderInPortRef("color", "resolution"),
+                            DataSourceRef("time")
+                                    linkTo ShaderInPortRef("color", "time"),
+                            DataSourceRef("bluenessSlider")
+                                    linkTo ShaderInPortRef("color", "blueness"),
+                            ShaderInPortRef("color", "gl_FragColor")
+                                    linkTo GlslProgram.PixelColor
                         )
                     )
                 }
@@ -66,7 +76,7 @@ object PatchSpec : Spek({
 
                         uniform vec2 in_resolution;
                         uniform float in_time;
-                        uniform float in_blueness;
+                        uniform float in_bluenessSlider;
                         
                         // Shader ID: color; namespace: p0
                         // This Shader's Name
@@ -84,7 +94,7 @@ object PatchSpec : Spek({
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             p0_someGlobalVar = p0_anotherFunc(p0_someConstVar);
-                            sm_pixelColor = vec4(uv.xy, in_blueness, 1.);
+                            sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
                         }
 
 
@@ -100,21 +110,21 @@ object PatchSpec : Spek({
                     val uvShaderSrc by value {
                         /**language=glsl*/
                         """
-                            uniform sampler2D sm_uvCoordsTexture;
+                            uniform sampler2D uvCoordsTexture;
                             
                             vec2 mainUvFromRaster(vec2 rasterCoord) {
                                 int rasterX = int(rasterCoord.x);
                                 int rasterY = int(rasterCoord.y);
                                 
                                 vec2 uvCoord = vec2(
-                                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                                    texelFetch(sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
+                                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
+                                    texelFetch(uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
                                 );
                                 return uvCoord;
                             }
                         """.trimIndent()
                     }
-                    val uvShaderFragment by value { GlslAnalyzer().asShader(uvShaderSrc) }
+                    val uvShaderFragment = GlslRenderer.uvMapper
                     override(patch) {
                         Patch(
                             mapOf(
@@ -122,16 +132,23 @@ object PatchSpec : Spek({
                                 "color" to shader
                             ),
                             listOf(
-                                Patch.UniformPortRef("sampler2D", "sm_uvCoordsTexture", "baaahs.Core:uvCoordsTexture")
-                                        linkTo Patch.ShaderPortRef("uv", "sm_uvCoordsTexture"),
-                                Patch.ShaderOut("uv")
-                                        linkTo Patch.ShaderPortRef("color", "gl_FragCoord"),
-                                Resolution
-                                        linkTo Patch.ShaderPortRef("color", "resolution"),
-                                Time
-                                        linkTo Patch.ShaderPortRef("color", "time"),
-                                InputPortRef("float", "blueness")
-                                        linkTo Patch.ShaderPortRef("color", "blueness")
+                                CorePlugin.UvCoordTexture("uvCoordsTexture"),
+                                CorePlugin.Resolution("resolution"),
+                                CorePlugin.Time("time"),
+                                CorePlugin.SliderDataSource(
+                                    "bluenessSlider", "Blueness", 0f, 0f, 1f, 0.01f)
+                            ),
+                            listOf(
+                                DataSourceRef("uvCoordsTexture")
+                                        linkTo ShaderInPortRef("uv", "uvCoordsTexture"),
+                                ShaderOutPortRef("uv")
+                                        linkTo ShaderInPortRef("color", "gl_FragCoord"),
+                                DataSourceRef("resolution")
+                                        linkTo ShaderInPortRef("color", "resolution"),
+                                DataSourceRef("time")
+                                        linkTo ShaderInPortRef("color", "time"),
+                                DataSourceRef("bluenessSlider")
+                                        linkTo ShaderInPortRef("color", "blueness")
                             )
                         )
                     }
@@ -148,24 +165,24 @@ object PatchSpec : Spek({
     
                             layout(location = 0) out vec4 sm_pixelColor;
     
-                            uniform sampler2D in_sm_uvCoordsTexture;
+                            uniform sampler2D in_uvCoordsTexture;
                             uniform vec2 in_resolution;
                             uniform float in_time;
-                            uniform float in_blueness;
+                            uniform float in_bluenessSlider;
                             
                             // Shader ID: uv; namespace: p0
-                            // Unknown
+                            // Cylindrical Projection
                             
                             vec2 p0i_result;
                             
-                            #line 3
+                            #line 6
                             vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
                                 int rasterX = int(rasterCoord.x);
                                 int rasterY = int(rasterCoord.y);
                                 
                                 vec2 uvCoord = vec2(
-                                    texelFetch(in_sm_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                                    texelFetch(in_sm_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
+                                    texelFetch(in_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
+                                    texelFetch(in_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
                                 );
                                 return uvCoord;
                             }
@@ -186,7 +203,7 @@ object PatchSpec : Spek({
                             void p1_main( void ) {
                                 vec2 uv = p0i_result.xy / in_resolution.xy;
                                 p1_someGlobalVar = p1_anotherFunc(p1_someConstVar);
-                                sm_pixelColor = vec4(uv.xy, in_blueness, 1.);
+                                sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
                             }
     
     

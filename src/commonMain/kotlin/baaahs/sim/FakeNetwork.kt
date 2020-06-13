@@ -13,20 +13,22 @@ class FakeNetwork(
     private val networkDelay: Int = 1,
     coroutineContext: CoroutineContext = EmptyCoroutineContext
 ) : Network {
+    private val addressCounters = hashMapOf<String, Int>()
     val facade = Facade()
 
     private val coroutineScope: CoroutineScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = coroutineContext
     }
-    private var nextAddress = 0xb00f
     private val udpListeners: MutableMap<Pair<Network.Address, Int>, Network.UdpListener> = hashMapOf()
     private val udpListenersByPort: MutableMap<Int, MutableList<Network.UdpListener>> = hashMapOf()
 
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
-    override fun link(): FakeLink {
-        val address = FakeAddress(nextAddress++)
+    override fun link(name: String): FakeLink {
+        val next = addressCounters.getOrElse(name) { 1 }
+        addressCounters[name] = next + 1
+        val address = FakeAddress("$name$next")
         return FakeLink(address)
     }
 
@@ -180,8 +182,8 @@ class FakeNetwork(
         if (networkDelay != 0) delay(networkDelay.toLong())
     }
 
-    private data class FakeAddress(val id: Int) : Network.Address {
-        override fun toString(): String = "x${id.toString(16)}"
+    private data class FakeAddress(val name: String) : Network.Address {
+        override fun toString(): String = name
     }
 
     companion object {

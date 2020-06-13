@@ -174,9 +174,9 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:$kglVersion")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:16.13.1-pre.106-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.106-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.106-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react:16.13.1-pre.104-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.104-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.104-kotlin-1.3.72")
                 implementation(npm("styled-components", "^4.4.1"))
                 implementation(npm("inline-style-prefixer"))
 
@@ -191,7 +191,15 @@ kotlin {
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
+
+                implementation("subroh0508.net.kotlinmaterialui:core:0.4.1")
+                implementation("org.jetbrains:kotlin-css-js") {
+                    // pre.104 is required by subroh0508.net.kotlinmaterialui:core:0.4.1
+                    version { strictly("1.0.0-pre.104-kotlin-1.3.72") }
+                }
                 implementation(npm("@material-ui/core", "~4.8"))
+                implementation(npm("@material-ui/icons", "~4.9"))
+
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
@@ -203,6 +211,7 @@ kotlin {
                 implementation(npm("three", "^0.102.1"))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
+                implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))

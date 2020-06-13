@@ -11,7 +11,7 @@ import org.w3c.dom.WebSocket
  * Uses WebSockets for TCP, and proxies UDP via Pinky.
  */
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
-    override fun link(): Network.Link = object : Network.Link {
+    override fun link(name: String): Network.Link = object : Network.Link {
         override val myAddress: Network.Address = object : Network.Address {}
 
         var udpProxy: BrowserUdpProxy? = null

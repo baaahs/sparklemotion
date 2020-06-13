@@ -1,16 +1,15 @@
 package baaahs.glshaders
 
-import baaahs.ShowContext
-import baaahs.glsl.GlslContext
+import baaahs.show.DataSource
 
 interface Plugin {
     val packageName: String
-    val name: String
+    val title: String
 
-    fun matchUniformProvider(
-        name: String,
-        uniformPort: Patch.UniformPortRef,
-        showContext: ShowContext,
-        glslContext: GlslContext
-    ): GlslProgram.DataSourceProvider?
+    fun suggestDataSources(inputPort: InputPort): List<DataSource>
+
+    fun findDataSource(
+        resourceName: String,
+        inputPort: InputPort
+    ): DataSource?
 }

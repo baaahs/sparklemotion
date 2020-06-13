@@ -3,7 +3,7 @@ package baaahs.net
 import baaahs.proto.Message
 
 interface Network {
-    fun link(): Link
+    fun link(name: String): Link
 
     interface Link {
         val myAddress: Address

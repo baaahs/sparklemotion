@@ -3,10 +3,10 @@ package baaahs
 import baaahs.dmx.DmxDevice
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslRenderer
+import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
-import baaahs.shaders.GlslShader
-import baaahs.shows.AllShows
+import baaahs.show.SampleData
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
@@ -58,15 +58,16 @@ class PinkyMain(private val args: Args) {
             BeatSource.None
         }
 
-        val fwUrlBase = "http://${network.link().myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
+        val fwUrlBase = "http://${network.link("pinky").myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
-        val shows = AllShows.allShows.filter { args.showName == null || args.showName == it.name }
+        val show = SampleData.sampleShow
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val glslRenderer = GlslRenderer(GlslShader.globalRenderContext, model.defaultUvTranslator)
+        val glslContext = GlslBase.manager.createContext()
+        val glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
         val pinky = Pinky(
-            model, shows, network, dmxUniverse, beatSource, SystemClock(),
+            model, show, network, dmxUniverse, beatSource, SystemClock(),
             fs, daddy, soundAnalyzer,
             switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter,

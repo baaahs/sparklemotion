@@ -67,8 +67,13 @@ object Styles : StyleSheet("UI", isStatic = true) {
 
     val glslNumber by css {
         display = Display.block
-        backgroundColor = Color("#050")
+        backgroundColor = Color("#0D0")
         position = Position.absolute
         zIndex = 10
+    }
+
+    val fileDialogFileList by css {
+        height = 50.vh
+        overflowY = Overflow.scroll
     }
 }

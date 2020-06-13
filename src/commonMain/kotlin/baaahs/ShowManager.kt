@@ -1,0 +1,216 @@
+package baaahs
+
+import baaahs.gadgets.ColorPicker
+import baaahs.gadgets.RadioButtonStrip
+import baaahs.gadgets.Slider
+import baaahs.glshaders.GlslAnalyzer
+import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.ShaderFragment
+import baaahs.glsl.GlslContext
+import baaahs.show.PatchSet
+import baaahs.show.Scene
+import baaahs.show.Show
+import com.soywiz.klock.DateTime
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ShowState(
+    val selectedScene: Int,
+    val patchSetSelections: List<Int>
+) {
+    val selectedPatchSet: Int get() = patchSetSelections[selectedScene]
+
+    fun findPatchSet(show: Show): PatchSet {
+        return show.scenes[selectedScene].patchSets[selectedPatchSet]
+    }
+
+    fun withScene(i: Int) = copy(selectedScene = i)
+    fun withPatchSet(i: Int) = copy(patchSetSelections = patchSetSelections.replacing(selectedScene, i))
+}
+
+interface ShowResources {
+    val glslContext: GlslContext
+    val dataFeeds: Map<String, GlslProgram.DataFeed>
+    val shaders: Map<String, ShaderFragment>
+
+    fun <T : Gadget> createdGadget(id: String, gadget: T)
+    fun <T : Gadget> useGadget(id: String): T
+}
+
+interface MutableShowResources : ShowResources {
+    fun switchTo(show: Show)
+}
+
+abstract class BaseShowResources(initialShow: Show) : MutableShowResources {
+    val glslAnalyzer = GlslAnalyzer()
+
+    override val dataFeeds: MutableMap<String, GlslProgram.DataFeed> by lazy {
+        calculateDataFeeds(initialShow).toMutableMap()
+    }
+
+    private fun calculateDataFeeds(show: Show): Map<String, GlslProgram.DataFeed> {
+        return show.dataSources.associate { dataSourceProvider ->
+            dataSourceProvider.id to dataSourceProvider.create(this)
+        }
+    }
+
+    override val shaders: MutableMap<String, ShaderFragment> by lazy {
+        calculateShaders(initialShow).toMutableMap()
+    }
+
+    private fun calculateShaders(show: Show) =
+        show.shaderFragments.mapValues { (_, src) -> glslAnalyzer.asShader(src) }
+
+    override fun switchTo(show: Show) {
+        // TODO: Do something more efficient here.
+        dataFeeds.values.forEach { it.release() }
+        dataFeeds.clear()
+        dataFeeds.putAll(calculateDataFeeds(show))
+
+        println("Switch to ${show.title}; old shaders: ${shaders.keys}")
+        shaders.clear()
+        val newShaders = calculateShaders(show)
+        println("  new shaders: ${newShaders.keys}")
+        shaders.putAll(newShaders)
+    }
+}
+
+class ClientShowResources(override val glslContext: GlslContext, show: Show) : BaseShowResources(show) {
+    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
+
+    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+        gadgets[id] = gadget
+    }
+
+    override fun <T : Gadget> useGadget(id: String): T {
+        return gadgets[id] as T
+    }
+}
+
+class ShowManager(
+    show: Show,
+    val pubSub: PubSub.Server,
+    override val glslContext: GlslContext
+) : BaseShowResources(show) {
+    private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
+    var lastUserInteraction = DateTime.now()
+
+    var currentScene = show.scenes.first()
+    var currentPatchSet = currentScene.patchSets.first()
+
+    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+        val topic =
+            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+        val channel = pubSub.publish(topic, gadget.state) { updated ->
+            gadget.state.putAll(updated)
+            lastUserInteraction = DateTime.now()
+        }
+        val gadgetChannelListener: (Gadget) -> Unit = { gadget1 ->
+            channel.onChange(gadget1.state)
+        }
+        gadget.listen(gadgetChannelListener)
+        val gadgetData = GadgetData(id, gadget, topic.name)
+        gadgets[id] = GadgetManager.GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
+    }
+
+    override fun <T : Gadget> useGadget(id: String): T {
+        return (gadgets[id]?.gadgetData?.gadget
+            ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
+    }
+}
+
+val controlTypes = listOf(
+    SliderType,
+    ColorPickerType,
+    RadioButtonStripType,
+    SceneListType,
+    PatchSetListType
+).associateBy { it.name }
+
+interface ShowController {
+    val scenes: List<Scene>
+    var currentSceneIndex: Int
+    var currentPatchSetIndex: Int
+}
+
+object SliderType : ControlType("Slider") {
+    override fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget {
+        return Slider(
+            name,
+            initialValue = data["default"] as? Float ?: 1f,
+            minValue = data["min"] as? Float ?: 0f,
+            maxValue = data["max"] as? Float ?: 1f,
+            stepValue = data["step"] as? Float ?: 0.01f
+        )
+    }
+}
+
+object ColorPickerType : ControlType("ColorPicker") {
+    override fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget {
+        return ColorPicker(
+            name,
+            initialValue = data["default"] as? Color ?: Color.WHITE
+        )
+    }
+}
+
+object SceneListType : ControlType("SceneList") {
+    override fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget {
+        return RadioButtonStrip(
+            name,
+            showController.scenes.map { it.title },
+            showController.currentSceneIndex
+        )
+    }
+}
+
+object PatchSetListType : ControlType("PatchSetList") {
+    override fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget {
+        return RadioButtonStrip(
+            name,
+            showController
+                .scenes[showController.currentSceneIndex]
+                .patchSets.map { it.title },
+            showController.currentPatchSetIndex
+        )
+    }
+}
+
+object RadioButtonStripType : ControlType("RadioButtonStrip") {
+    override fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget {
+        return RadioButtonStrip(
+            name,
+            (data["options"] as Array<*>?)?.map { it.toString() } ?: emptyList(),
+            0
+        )
+    }
+
+}
+
+abstract class ControlType(val name: String) {
+    abstract fun createGadget(
+        name: String,
+        data: Map<String, Any?>,
+        showController: ShowController
+    ): Gadget
+}

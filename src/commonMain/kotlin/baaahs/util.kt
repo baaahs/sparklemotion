@@ -13,6 +13,10 @@ fun <E> Collection<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
+    return this.mapIndexed { i, t -> if (i == index) replacement else t }
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
 fun constrain(value: Float, minValue: Float, maxValue: Float): Float {
@@ -21,6 +25,10 @@ fun constrain(value: Float, minValue: Float, maxValue: Float): Float {
 
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
+}
+
+fun unknown(type: String, name: String, among: Collection<String>): String {
+    return "unknown $type \"$name\" among [${among.sorted().joinToString(", ")}]"
 }
 
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)

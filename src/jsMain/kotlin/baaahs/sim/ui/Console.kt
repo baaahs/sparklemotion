@@ -2,7 +2,7 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.SheepSimulator
-import baaahs.Show
+import baaahs.show.PatchSet
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
@@ -28,10 +28,6 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
 
     override fun RBuilder.render() {
         val simulator = props.simulator
-        if (simulator == null) {
-            +"Loading..."
-            return
-        }
 
         styledDiv {
             css { +console }
@@ -80,10 +76,10 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
 }
 
 external interface ConsoleProps : RProps {
-    var simulator: SheepSimulator.Facade?
+    var simulator: SheepSimulator.Facade
 }
 
 external interface ConsoleState : RState {
-    var selectedShow: Show
+    var selectedPatchSet: PatchSet
     var selectedBrain: Brain.Facade?
 }

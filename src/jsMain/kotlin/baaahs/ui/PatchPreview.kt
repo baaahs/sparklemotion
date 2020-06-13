@@ -1,16 +1,16 @@
 package baaahs.ui
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.GadgetData
+import baaahs.ShowResources
+import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
-import baaahs.glshaders.Plugins
+import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
-import baaahs.model.MovingHead
-import baaahs.shaders.GlslShader
-import baaahs.shaders.IGlslShader
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -21,24 +21,40 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     var glslPreview by useState<GlslPreview>(nuffin())
 
     val compile = useCallback({ patch: Patch ->
-        val plugins = Plugins.findAll()
-        val fakeShowContext = FakeShowContext()
+        val showResources = object : ShowResources {
+            val gadgets: MutableMap<String, Gadget> = hashMapOf()
+            override val glslContext: GlslContext get() = gl
+            override val dataFeeds: Map<String, GlslProgram.DataFeed>
+                get() = emptyMap()
+            override val shaders: Map<String, ShaderFragment>
+                get() = patch.components.mapValues { (_, component) -> component.shaderFragment }
+
+            override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+                gadgets[id] = gadget
+            }
+
+            override fun <T : Gadget> useGadget(id: String): T {
+                return gadgets[id] as T
+            }
+
+        }
         val program =
             try {
-                patch.compile(gl) { uniformPort ->
-                    plugins.matchUniformProvider(uniformPort, fakeShowContext, gl)
+                patch.compile(gl) { dataSource ->
+                    dataSource.create(showResources)
+                }.also {
+                    props.onSuccess()
                 }
             } catch (e: CompiledShader.CompilationException) {
                 props.onError.invoke(e.getErrors().toTypedArray())
                 null
             } catch (e: Exception) {
-                val glslError =
-                    CompiledShader.GlslError(-1, -1, e.message ?: e.toString())
+                val glslError = CompiledShader.GlslError(e.message ?: e.toString())
                 props.onError.invoke(arrayOf(glslError))
                 null
             }
-        props.onGadgetsChange(fakeShowContext.gadgets.map { (name, gadget) ->
-            GadgetData(name, gadget, "/preview/gadgets/$name")
+        props.onGadgetsChange(showResources.gadgets.map { (id, gadget) ->
+            GadgetData(id, gadget, "/preview/gadgets/$id")
         }.toTypedArray())
         program
     }, arrayOf(gl, props.onError))
@@ -57,7 +73,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         }
     }
 
-    useEffect(listOf(props.patch, glslPreview)) {
+    useEffect(props.patch, glslPreview, name = "patch") {
         props.patch?.let { patch ->
             compile(patch)?.let { program ->
                 glslPreview.setProgram(program)
@@ -72,39 +88,6 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
 
     canvas {
         ref = canvas
-    }
-}
-
-private class FakeShowContext : ShowContext {
-    val gadgets = linkedMapOf<String, Gadget>()
-
-    override val allSurfaces: List<Surface>
-        get() = TODO("not implemented")
-    override val allUnusedSurfaces: List<Surface>
-        get() = TODO("not implemented")
-    override val allMovingHeads: List<MovingHead>
-        get() = TODO("not implemented")
-    override val currentBeat: Float
-        get() = TODO("not implemented")
-
-    override fun getBeatSource(): BeatSource {
-        TODO("not implemented")
-    }
-
-    override fun getShaderBuffer(surface: Surface, shader: IGlslShader): GlslShader.Buffer {
-        TODO("not implemented")
-    }
-
-    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-        TODO("not implemented")
-    }
-
-    override fun <T : Gadget> getGadget(name: String, gadget: T): T {
-        if (gadgets.containsKey(name)) {
-            throw CompiledShader.LinkException("multiple gadgets with the same name ($name)")
-        }
-        gadgets[name] = gadget
-        return gadget
     }
 }
 

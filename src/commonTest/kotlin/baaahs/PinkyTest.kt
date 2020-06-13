@@ -1,9 +1,6 @@
 package baaahs
 
 import baaahs.geom.Matrix4
-import baaahs.geom.Vector3F
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.mapper.MappingSession
@@ -15,7 +12,7 @@ import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
-import baaahs.shaders.IGlslShader
+import baaahs.show.SampleData
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -33,7 +30,7 @@ class PinkyTest {
 
     private val panel17 = SheepModel.Panel("17")
     private val model = SheepModel().apply { panels = listOf(panel17); eyes = emptyList() } as Model<*>
-    private lateinit var testShow1: TestShow1
+    private lateinit var showRunner: ShowRunner
     private lateinit var pinky: Pinky
     private lateinit var pinkyLink: TestNetwork.Link
     private lateinit var fakeFs: FakeFs
@@ -43,11 +40,10 @@ class PinkyTest {
         fakeGlslContext = FakeGlslContext()
         network = TestNetwork(1_000_000)
         clientAddress = TestNetwork.Address("client")
-        testShow1 = TestShow1()
         fakeFs = FakeFs()
         pinky = Pinky(
             model,
-            listOf(testShow1),
+            SampleData.sampleShow,
             network,
             FakeDmxUniverse(),
             StubBeatSource(),
@@ -57,6 +53,7 @@ class PinkyTest {
             StubSoundAnalyzer(),
             glslRenderer = GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
         )
+        showRunner = pinky.showRunner
         pinkyLink = network.links.only()
     }
 
@@ -66,8 +63,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        val show = testShow1.createdShows.only()
-        expect(1) { show.shaderBuffers.size }
+        expect(1) { showRunner.renderSurfaces.size }
 
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
@@ -81,10 +77,9 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        val show = testShow1.createdShows.only()
-        expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is IdentifiedSurface }
-        expect(panel17.name) { (show.shaderBuffers.keys.only() as IdentifiedSurface).name }
+        val surface = showRunner.renderSurfaces.keys.only()
+        expect(true) { surface is IdentifiedSurface }
+        expect(panel17.name) { (surface as IdentifiedSurface).name }
 
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send a mapping packet.
@@ -98,8 +93,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        val show = testShow1.createdShows.only()
-        expect(1) { show.shaderBuffers.size }
+        expect(1) { showRunner.renderSurfaces.size }
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send a mapping packet.
     }
@@ -112,8 +106,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        val show = testShow1.createdShows.only()
-        expect(1) { show.shaderBuffers.size }
+        expect(1) { showRunner.renderSurfaces.size }
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
     }
@@ -127,18 +120,16 @@ class PinkyTest {
         pinky.drawNextFrame()
         pinky.drawNextFrame()
 
-        val show = testShow1.createdShows.only()
-        expect(1) { show.shaderBuffers.size }
-        expect(true) { show.shaderBuffers.keys.only() is IdentifiedSurface }
+        expect(1) { showRunner.renderSurfaces.size }
+        expect(true) { showRunner.renderSurfaces.keys.only() is IdentifiedSurface }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
-        expect(1) { show.shaderBuffers.size }
-        val surface = show.shaderBuffers.keys.only()
-        expect(true) { surface is IdentifiedSurface }
-        expect(panel17.name) { (surface as IdentifiedSurface).name }
+        expect(1) { showRunner.renderSurfaces.size }
+        expect(true) { showRunner.renderSurfaces.keys.only() is IdentifiedSurface }
+        expect(panel17.name) { (showRunner.renderSurfaces.keys.only() as IdentifiedSurface).name }
     }
 
     @Test
@@ -147,7 +138,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
-        val show = testShow1.createdShows.only()
+        val renderSurfaces = showRunner.renderSurfaces
 
         // Remap to 17L...
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
@@ -164,46 +155,17 @@ class PinkyTest {
         pinky.drawNextFrame()
         pinky.drawNextFrame()
 
-        expect(1) { show.shaderBuffers.size }
-        expect(true) { (show.shaderBuffers.keys.only() as IdentifiedSurface).modelSurface == panel17 }
+        expect(1) { renderSurfaces.size }
+        expect(true) { (renderSurfaces.keys.only() as IdentifiedSurface).modelSurface == panel17 }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
-        expect(1) { show.shaderBuffers.size }
-        val surface = show.shaderBuffers.keys.only()
+        expect(1) { renderSurfaces.size }
+        val surface = renderSurfaces.keys.only()
         expect(true) { surface is IdentifiedSurface }
         expect(panel17.name) { (surface as IdentifiedSurface).name }
-    }
-
-    inner class TestShow1(var supportsSurfaceChange: Boolean = true) : Show("TestShow1") {
-        val createdShows = mutableListOf<ShowRenderer>()
-        val shader = fakeGlslContext.fakeShader()
-
-        override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
-            return ShowRenderer(showContext).also { createdShows.add(it) }
-        }
-
-        inner class ShowRenderer(private val showContext: ShowContext) : Renderer {
-            val shaderBuffers =
-                showContext.allSurfaces.associateWith { showContext.getShaderBuffer(it, shader) }.toMutableMap()
-
-            override fun nextFrame() {
-                shaderBuffers.values.forEach {
-//                TODO    it.color = Color.WHITE
-                }
-            }
-
-            override fun surfacesChanged(newSurfaces: List<Surface>, removedSurfaces: List<Surface>) {
-                if (!supportsSurfaceChange) {
-                    super.surfacesChanged(newSurfaces, removedSurfaces)
-                } else {
-                    removedSurfaces.forEach { shaderBuffers.remove(it) }
-                    newSurfaces.forEach { shaderBuffers[it] = showContext.getShaderBuffer(it, shader) }
-                }
-            }
-        }
     }
 
     private fun injectPanelMapping(brainId: BrainId, surface: Model.Surface) {
@@ -214,7 +176,7 @@ class PinkyTest {
                 )
             ), Matrix4(emptyArray()), null, notes = "Simulated pixels")
         )
-        fakeFs.renameFile(mappingSessionPath, "mapping/${model.name}/$mappingSessionPath")
+        fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
     }
 }
 
@@ -231,9 +193,3 @@ class StubSoundAnalyzer : SoundAnalyzer {
     override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
     }
 }
-
-fun FakeGlslContext.fakeShader() = FakeShader(
-    GlslProgram(this, Patch(emptyMap(), emptyList())) { null }
-)
-
-class FakeShader(override val glslProgram: GlslProgram) : IGlslShader

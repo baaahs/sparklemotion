@@ -10,7 +10,7 @@ class PinkyMapperHandlers(val storage: Storage) {
     fun register(builder: WebSocketRouter.HandlerBuilder) {
         builder.apply {
             handle("listSessions") {
-                json.toJson(String.serializer().list, storage.listSessions())
+                json.toJson(String.serializer().list, storage.listSessions().map { it.name })
             }
 
             handle("saveImage") { args ->
