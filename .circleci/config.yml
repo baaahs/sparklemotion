@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Deploy to gh-pages
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
               mkdir -p build/gh-pages/.circleci
               cp .circleci/gh-pages-config.yml build/gh-pages/.circleci/config.yml
 
