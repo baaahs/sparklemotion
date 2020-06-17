@@ -11,7 +11,6 @@ import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.show.*
-import baaahs.show.Show
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -59,10 +58,8 @@ object ShowRunnerSpec : Spek({
                 }
             )
         }
-        val pubSub by value {
-            PubSub.Server(FakeNetwork().link("test").startHttpServer(0)).apply { install(gadgetModule) }
-        }
-        val showResources by value { ShowManager(show, pubSub, fakeGlslContext) }
+        val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
+        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, show) }
         val showRunner by value {
             ShowRunner(
                 model,

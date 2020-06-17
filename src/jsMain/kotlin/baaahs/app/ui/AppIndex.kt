@@ -1,11 +1,13 @@
 package baaahs.app.ui
 
-import baaahs.*
+import baaahs.MutableShowResources
+import baaahs.PubSub
+import baaahs.ShowState
+import baaahs.Topics
 import baaahs.net.Network
 import baaahs.show.Show
 import baaahs.ui.*
 import kotlinx.css.*
-import kotlinx.css.Color
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.Menu
@@ -21,7 +23,10 @@ import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.table
+import react.dom.tbody
+import react.dom.td
+import react.dom.tr
 import styled.css
 import styled.styledDiv
 import styled.styledTd
@@ -58,8 +63,9 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
     var show by preact.state<Show?> { null }
     val showChannel = useRef<PubSub.Channel<Show>>(nuffin())
     preact.sideEffect("currentShow subscription", pubSub) {
-        println("AppIndex $id: subscribe to ${Topics.currentShow.name}")
-        val channel = pubSub.subscribe(Topics.currentShow) {
+        val currentShowTopic = props.showResources.currentShowTopic
+        println("AppIndex $id: subscribe to ${currentShowTopic.name}")
+        val channel = pubSub.subscribe(currentShowTopic) {
             println("New incoming show: $it")
             show = it
             props.showResources.switchTo(it)
@@ -67,7 +73,7 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
         showChannel.current = channel
 
         withCleanup {
-            println("AppIndex $id: unsubscribe from ${Topics.currentShow.name}")
+            println("AppIndex $id: unsubscribe from ${currentShowTopic.name}")
             channel.unsubscribe()
             showChannel.current = nuffin()
         }

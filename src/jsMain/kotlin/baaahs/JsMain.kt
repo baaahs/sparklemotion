@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
+import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslBase
 import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
@@ -26,6 +27,7 @@ fun main(args: Array<String>) {
     val pinkyAddress = BrowserAddress(websocketsUrl())
     val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
     val contentDiv = document.getElementById("content")
+    val plugins = Plugins.findAll()
 
     when (mode) {
         "Simulator" -> {
@@ -60,7 +62,7 @@ fun main(args: Array<String>) {
                 SaveAsFs("Show", FakeFs())
             )
             val uiApp = WebUi(network, pinkyAddress, filesystems,
-                ClientShowResources(GlslBase.jsManager.createContext(), baaahs.show.Show("Loading...")))
+                ClientShowResources(plugins, GlslBase.jsManager.createContext(), baaahs.show.Show("Loading...")))
             render(uiApp.render(), contentDiv)
         }
 

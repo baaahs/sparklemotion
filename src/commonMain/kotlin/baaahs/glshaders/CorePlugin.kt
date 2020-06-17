@@ -217,7 +217,7 @@ class CorePlugin : Plugin {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
             override fun suggestDataSources(inputPort: InputPort): List<SliderDataSource> {
-                return buildIf(inputPort.type == "float", inputPort)
+                return buildIf(inputPort.dataType == "float", inputPort)
             }
 
             override fun build(inputPort: InputPort): SliderDataSource {
@@ -254,7 +254,7 @@ class CorePlugin : Plugin {
         companion object : DataSourceBuilder<XyPad> {
             override val resourceName: String get() = "XyPad"
             override fun suggestDataSources(inputPort: InputPort): List<XyPad> {
-                return buildIf(inputPort.type == "vec2", inputPort)
+                return buildIf(inputPort.dataType == "vec2", inputPort)
             }
 
             override fun build(inputPort: InputPort): XyPad =
@@ -286,7 +286,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "ColorPicker"
 
             override fun suggestDataSources(inputPort: InputPort): List<ColorPickerProvider> {
-                return buildIf(inputPort.type == "vec4", inputPort)
+                return buildIf(inputPort.dataType == "vec4", inputPort)
             }
 
             override fun build(inputPort: InputPort): ColorPickerProvider {
@@ -327,7 +327,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "Radio Button Strip"
 
             override fun suggestDataSources(inputPort: InputPort): List<RadioButtonStripProvider> {
-                return buildIf(inputPort.type == "int", inputPort)
+                return buildIf(inputPort.dataType == "int", inputPort)
             }
 
             override fun build(inputPort: InputPort): RadioButtonStripProvider {

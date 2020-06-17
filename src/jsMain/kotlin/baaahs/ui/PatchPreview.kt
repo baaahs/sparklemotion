@@ -2,15 +2,18 @@ package baaahs.ui
 
 import baaahs.Gadget
 import baaahs.GadgetData
+import baaahs.PubSub
 import baaahs.ShowResources
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Patch
+import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
+import baaahs.show.Show
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -23,7 +26,11 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     val compile = useCallback({ patch: Patch ->
         val showResources = object : ShowResources {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
+            override val plugins: Plugins
+                get() = Plugins.safe()
             override val glslContext: GlslContext get() = gl
+            override val currentShowTopic: PubSub.Topic<Show>
+                get() = TODO("Not yet implemented")
             override val dataFeeds: Map<String, GlslProgram.DataFeed>
                 get() = emptyMap()
             override val shaders: Map<String, ShaderFragment>

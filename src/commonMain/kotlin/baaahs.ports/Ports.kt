@@ -39,7 +39,7 @@ data class ShaderOutPortRef(override val shaderId: String) : ShaderPortRef
 
 @Serializable
 data class OutputPortRef(
-    val type: String,
+    val dataType: String,
     val name: String,
     val pluginId: String? = null,
     val pluginConfig: JsonElement = JsonNull
