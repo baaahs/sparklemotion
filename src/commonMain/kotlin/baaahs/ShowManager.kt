@@ -5,6 +5,7 @@ import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.GlslContext
 import baaahs.show.PatchSet
@@ -29,7 +30,9 @@ data class ShowState(
 }
 
 interface ShowResources {
+    val plugins: Plugins
     val glslContext: GlslContext
+    val currentShowTopic: PubSub.Topic<Show>
     val dataFeeds: Map<String, GlslProgram.DataFeed>
     val shaders: Map<String, ShaderFragment>
 
@@ -41,8 +44,13 @@ interface MutableShowResources : ShowResources {
     fun switchTo(show: Show)
 }
 
-abstract class BaseShowResources(initialShow: Show) : MutableShowResources {
+abstract class BaseShowResources(
+    final override val plugins: Plugins,
+    initialShow: Show
+) : MutableShowResources {
     val glslAnalyzer = GlslAnalyzer()
+    override val currentShowTopic: PubSub.Topic<Show> =
+        PubSub.Topic("currentShow", Show.serializer(), plugins.serialModule)
 
     override val dataFeeds: MutableMap<String, GlslProgram.DataFeed> by lazy {
         calculateDataFeeds(initialShow).toMutableMap()
@@ -75,7 +83,11 @@ abstract class BaseShowResources(initialShow: Show) : MutableShowResources {
     }
 }
 
-class ClientShowResources(override val glslContext: GlslContext, show: Show) : BaseShowResources(show) {
+class ClientShowResources(
+    plugins: Plugins,
+    override val glslContext: GlslContext,
+    show: Show
+) : BaseShowResources(plugins, show) {
     private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
@@ -88,10 +100,11 @@ class ClientShowResources(override val glslContext: GlslContext, show: Show) : B
 }
 
 class ShowManager(
-    show: Show,
+    plugins: Plugins,
+    override val glslContext: GlslContext,
     val pubSub: PubSub.Server,
-    override val glslContext: GlslContext
-) : BaseShowResources(show) {
+    show: Show
+) : BaseShowResources(plugins, show) {
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 

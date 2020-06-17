@@ -18,9 +18,9 @@ class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
 
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
-            magicUniforms[it.name]?.copy(type = it.type, glslVar = it)
+            magicUniforms[it.name]?.copy(dataType = it.dataType, glslVar = it)
                 ?: InputPort(
-                    it.name, it.type, it.name.capitalize(),
+                    it.name, it.dataType, it.name.capitalize(),
                     pluginRef = it.hint?.pluginRef,
                     pluginConfig = it.hint?.config
                 )

@@ -89,7 +89,7 @@ class PubSubTest {
         }
 
         val serverTopicInfo = server.getTopicInfo(topic1.name)!!
-        assertEquals(1, serverTopicInfo.listeners.size) // assume
+        assertEquals(1, serverTopicInfo.listeners_TEST_ONLY.size) // assume
 
         val client1TopicObserver1 = client1.subscribe(topic1) { client1Log.add("topic1 changed1: $it") }
         val client1TopicObserver2 = client1.subscribe(topic1) { client1Log2.add("topic1 changed2: $it") }
@@ -97,7 +97,7 @@ class PubSubTest {
 
         client1Log.assertContents("topic1 changed1: value")
         client1Log2.assertContents("topic1 changed2: value")
-        assertEquals(2, serverTopicInfo.listeners.size) // sanity check
+        assertEquals(2, serverTopicInfo.listeners_TEST_ONLY.size) // sanity check
 
         client1TopicObserver1.unsubscribe()
         serverTopicObserver.onChange("new value")
@@ -105,7 +105,7 @@ class PubSubTest {
 
         client1Log.assertEmpty()
         client1Log2.assertContents("topic1 changed2: new value")
-        assertEquals(2, serverTopicInfo.listeners.size)
+        assertEquals(2, serverTopicInfo.listeners_TEST_ONLY.size)
 
         client1TopicObserver2.unsubscribe()
         serverTopicObserver.onChange("another new value")
@@ -113,7 +113,7 @@ class PubSubTest {
 
         client1Log.assertEmpty()
         client1Log2.assertEmpty()
-        assertEquals(1, serverTopicInfo.listeners.size)
+        assertEquals(1, serverTopicInfo.listeners_TEST_ONLY.size)
     }
 
     @Test

@@ -1,13 +1,22 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.PubSub
+import baaahs.ShowResources
+import baaahs.Surface
 import baaahs.glshaders.GlslProgram
+import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFragment
 import baaahs.glsl.GlslContext
 import baaahs.glsl.RenderSurface
+import baaahs.show.Show
 
 class FakeShowResources(override val glslContext: GlslContext
 ) : ShowResources {
+    override val plugins: Plugins
+        get() = Plugins.safe()
+    override val currentShowTopic: PubSub.Topic<Show> =
+        PubSub.Topic("currentShow", Show.serializer(), plugins.serialModule)
     override val dataFeeds: Map<String, GlslProgram.DataFeed>
         get() = TODO("not implemented")
     override val shaders: Map<String, ShaderFragment>

@@ -2,7 +2,6 @@ package baaahs
 
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
-import baaahs.glshaders.Plugins
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.ui.SaveAsFs
@@ -21,10 +20,7 @@ class WebUi(
     override fun render(): ReactElement {
         val webUiClientLink = network.link("app")
         println("WebUi: my link is ${webUiClientLink.myAddress}")
-        val pubSub = PubSub.Client(webUiClientLink, pinkyAddress, Ports.PINKY_UI_TCP).apply {
-            install(gadgetModule)
-            install(Plugins.findAll().serialModule)
-        }
+        val pubSub = PubSub.Client(webUiClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
 
         return createElement(AppIndex, jsObject<AppIndexProps> {
             this.id = "Client Window"

@@ -5,7 +5,7 @@ abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
 
     protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
         return InputPort(
-            it.name, it.type, it.name.capitalize(),
+            it.name, it.dataType, it.name.capitalize(),
             pluginRef = it.hint?.pluginRef,
             pluginConfig = it.hint?.config,
             glslVar = it
@@ -111,7 +111,7 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
-            wellKnownInputPorts[it.name]?.copy(type = it.type, glslVar = it)
+            wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
                 ?: toInputPort(it)
         } + uvCoordPort
     }

@@ -123,7 +123,7 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
                 gadget.listen(listener)
 
                 channels[topicName] =
-                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer)) { json ->
+                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer, gadgetModule)) { json ->
                         gadget.apply {
                             withoutTriggering(listener) {
                                 gadget.state.putAll(json)

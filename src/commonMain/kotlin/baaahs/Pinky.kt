@@ -57,13 +57,10 @@ class Pinky(
             currentShowChannel.onChange(show)
         }
 
-    private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply {
-        install(gadgetModule)
-        install(plugins.serialModule)
-    }
+    private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(show, pubSub, glslRenderer.gl)
+    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, show)
     internal val showRunner = ShowRunner(
         model, this.show.scenes[0].patchSets[0], show,
         showManager, beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
@@ -71,7 +68,7 @@ class Pinky(
     )
 
     var currentShow = show
-    private val currentShowChannel = pubSub.publish(Topics.currentShow, currentShow) { show ->
+    private val currentShowChannel = pubSub.publish(showManager.currentShowTopic, currentShow) { show ->
         println("Received show change: $show")
         showHasBeenModified = true
         this.show = show
