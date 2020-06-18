@@ -1,7 +1,7 @@
 package baaahs.glshaders
 
 data class OutputPort(
-    val type: String,
+    val dataType: String,
     val name: String,
     val description: String?,
     val contentType: ContentType

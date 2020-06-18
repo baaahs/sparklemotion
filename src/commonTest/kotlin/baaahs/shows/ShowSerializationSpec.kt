@@ -106,7 +106,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
         is CorePlugin.SliderDataSource -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.SliderDataSource"
+                "type" to "baaahs.glshaders.CorePlugin.SliderDataSource"
                 "id" to dataSource.id
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue
@@ -117,7 +117,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         }
         is CorePlugin.ColorPickerProvider -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.ColorPickerProvider"
+                "type" to "baaahs.glshaders.CorePlugin.ColorPickerProvider"
                 "id" to dataSource.id
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue.toInt()
@@ -125,37 +125,37 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         }
         is CorePlugin.Scenes -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.Scenes"
+                "type" to "baaahs.glshaders.CorePlugin.Scenes"
                 "id" to dataSource.id
                 "title" to dataSource.title
             }
         }
         is CorePlugin.Patches -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.Patches"
+                "type" to "baaahs.glshaders.CorePlugin.Patches"
                 "id" to dataSource.id
                 "title" to dataSource.title
             }
         }
         is CorePlugin.Resolution -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.Resolution"
+                "type" to "baaahs.glshaders.CorePlugin.Resolution"
                 "id" to dataSource.id
             }
         }
         is CorePlugin.Time -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.Time"
+                "type" to "baaahs.glshaders.CorePlugin.Time"
                 "id" to dataSource.id
             }
         }
         is CorePlugin.UvCoordTexture -> {
             json {
-                "#type" to "baaahs.glshaders.CorePlugin.UvCoordTexture"
+                "type" to "baaahs.glshaders.CorePlugin.UvCoordTexture"
                 "id" to dataSource.id
             }
         }
-        else -> json { "#type" to "unknown" }
+        else -> json { "type" to "unknown" }
     }
 }
 
@@ -182,7 +182,7 @@ private fun jsonFor(it: Link): JsonObject {
 private fun jsonFor(inputPort: InputPort): JsonObject {
     return json {
         "id" to inputPort.id
-        "type" to inputPort.type
+        "type" to inputPort.dataType
         "title" to inputPort.title
         "pluginRef" to inputPort.pluginRef
         "pluginConfig" to inputPort.pluginConfig?.forEach { (k, v) -> k to v }
@@ -194,20 +194,20 @@ private fun jsonFor(inputPort: InputPort): JsonObject {
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
         is DataSourceRef -> json {
-            "#type" to "baaahs.ports.DataSourceRef"
+            "type" to "baaahs.ports.DataSourceRef"
             "id" to portRef.id
         }
         is ShaderInPortRef -> json {
-            "#type" to "baaahs.ports.ShaderInPortRef"
+            "type" to "baaahs.ports.ShaderInPortRef"
             "shaderId" to portRef.shaderId
             "portName" to portRef.portName
         }
         is ShaderOutPortRef -> json {
-            "#type" to "baaahs.ports.ShaderOutPortRef"
+            "type" to "baaahs.ports.ShaderOutPortRef"
             "shaderId" to portRef.shaderId
         }
         is OutputPortRef -> json {
-            "#type" to "baaahs.ports.OutputPortRef"
+            "type" to "baaahs.ports.OutputPortRef"
         }
         else -> error("huh? $portRef")
     }

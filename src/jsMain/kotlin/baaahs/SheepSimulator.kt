@@ -84,10 +84,7 @@ class SheepSimulator {
         val link = network.link("simApp")
         println("SheepSimulator: new client link is ${link.myAddress}")
 
-        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP).apply {
-            install(gadgetModule)
-            install(plugins.serialModule)
-        }
+        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP)
     }
 
     fun start() = doRunBlocking {
@@ -101,7 +98,7 @@ class SheepSimulator {
             SaveAsFs("Show", FakeFs())
         )
         launcher.add("Web UI") {
-            val showResources = ClientShowResources(GlslBase.manager.createContext(), Show("Loading..."))
+            val showResources = ClientShowResources(plugins, GlslBase.manager.createContext(), Show("Loading..."))
             WebUi(network, pinky.address, filesystems, showResources)
         } // .also { delay(1000); it.click() }
 

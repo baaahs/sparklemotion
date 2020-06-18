@@ -1,6 +1,6 @@
 # Sparkle Motion
 
-[![CircleCI:master](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
+[![CircleCI:main](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
 ## Documentation
 * [Show API](show_api.md)

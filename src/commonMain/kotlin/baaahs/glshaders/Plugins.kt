@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.gadgetModule
 import baaahs.ports.portRefModule
 import baaahs.show.DataSource
 import kotlinx.serialization.Serializable
@@ -14,8 +15,6 @@ data class PluginRef(
     val resourceName: String
 ) {
     companion object {
-        val Unknown = PluginRef(CorePlugin.id, "unknown")
-
         fun from(identString: String): PluginRef {
             val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
             return if (result != null) {
@@ -30,15 +29,13 @@ data class PluginRef(
 
 class Plugins(private val byPackage: Map<String, Plugin>) {
     val serialModule = SerializersModule {
+        include(gadgetModule)
         include(portRefModule)
         include(dataSourceProviderModule)
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 
-    val json = Json(
-        JsonConfiguration.Stable.copy(classDiscriminator = "#type"),
-        context = serialModule
-    )
+    val json = Json(JsonConfiguration.Stable, context = serialModule)
 
     private fun findPlugin(pluginRef: PluginRef): Plugin {
         return byPackage[pluginRef.pluginId]

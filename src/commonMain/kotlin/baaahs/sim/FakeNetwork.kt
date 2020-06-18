@@ -98,13 +98,10 @@ class FakeNetwork(
 
             coroutineScope.launch {
                 networkDelay()
+                serverListener.connected(serverSideConnection)
                 webSocketListener.connected(clientSideConnection)
             }
 
-            coroutineScope.launch {
-                networkDelay()
-                serverListener.connected(serverSideConnection)
-            }
             tcpConnections.add(clientSideConnection)
             return clientSideConnection
         }

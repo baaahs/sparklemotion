@@ -18,6 +18,7 @@ import react.useMemo
 val AppWindow = functionalComponent<AppIndexProps> { props_DO_NOT_USE ->
     val contextState = useContext(store).state
     val pubSub = useMemo({ contextState.simulator.getPubSub() }, arrayOf(contextState.simulator))
+    val plugins = contextState.simulator.plugins
     val saveAsFilesystems = listOf(
         SaveAsFs("Shader Library", contextState.simulator.fs),
         SaveAsFs("Show", FakeFs())
@@ -30,7 +31,11 @@ val AppWindow = functionalComponent<AppIndexProps> { props_DO_NOT_USE ->
             this.id = "Simulator Window"
             this.pubSub = pubSub
             this.filesystems = saveAsFilesystems
-            this.showResources = ClientShowResources(GlslBase.manager.createContext(), Show("Loading..."))
+            this.showResources = ClientShowResources(
+                plugins,
+                GlslBase.manager.createContext(),
+                Show("Loading...")
+            )
         }
     }
 }

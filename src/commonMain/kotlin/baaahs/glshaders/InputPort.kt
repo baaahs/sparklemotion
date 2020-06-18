@@ -4,7 +4,7 @@ import kotlinx.serialization.json.JsonObject
 
 data class InputPort(
     val id: String,
-    val type: String,
+    val dataType: String,
     val title: String,
     val contentType: ContentType? = null,
     val pluginRef: PluginRef? = null,
@@ -15,7 +15,7 @@ data class InputPort(
 ) {
 
     fun suggestVarName(): String {
-        val postfix = pluginRef?.resourceName ?: type
+        val postfix = pluginRef?.resourceName ?: dataType
         return id.decapitalize() + postfix.capitalize()
     }
 }
