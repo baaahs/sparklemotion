@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
+import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.RenderSurface
@@ -21,7 +22,7 @@ import kotlin.test.expect
 class ShowRunnerTest {
     private val network = TestNetwork(0)
     private val serverNetwork = network.link("test")
-    private val server = PubSub.listen(serverNetwork.startHttpServer(1234)).apply { install(gadgetModule) }
+    private val server = PubSub.listen(serverNetwork.startHttpServer(1234))
 
     private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
     private lateinit var showRunner: ShowRunner
@@ -45,7 +46,7 @@ class ShowRunnerTest {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val show = SampleData.sampleShow
-        showManager = ShowManager(show, server, fakeGlslContext)
+        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server, show)
         showRunner = ShowRunner(
             sheepModel,
             show.scenes[0].patchSets[0],

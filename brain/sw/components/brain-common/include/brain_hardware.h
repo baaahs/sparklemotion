@@ -22,13 +22,13 @@
  * Rev D, the variants should all be commented out.
  *
  * Once we have Rev E boards in hand that will become the default
- * on master, and we should leave things checked in that way. At
+ * on main, and we should leave things checked in that way. At
  * that point we might make all the Rev D stuff a variant of Rev E
  * defaults but whatever. If someone gets to it, great.
  *
  * If you have a derivative project, feel free to define an
  * additional variant following this pattern. These can be
- * safely stored on the master branch without conflict.
+ * safely stored on the main branch without conflict.
  */
 #define BRAIN_VARIANT_REV_E
 //#define BRAIN_VARIANT_REV_D_REWORKED

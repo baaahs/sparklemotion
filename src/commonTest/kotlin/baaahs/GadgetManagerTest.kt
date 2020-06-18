@@ -20,7 +20,7 @@ class GadgetManagerTest {
 
     @Test
     fun forInitialGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer)
         val gadgetManager = GadgetManager(pubSub)
 
         val first = Slider("first")
@@ -29,15 +29,15 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to first, "second" to second, "third" to third))
 
         val expectedActiveGadgets = jsonArray {
-            +json { "name" to "first"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "first"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/first" }
-            +json { "name" to "second"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "second"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/second" }
-            +json { "name" to "third"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "third"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/third" }
+            +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "first"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/first" }
+            +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "second"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/second" }
+            +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "third"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/third" }
         }
-        expect(expectedActiveGadgets) { pubSub.getTopicInfo("activeGadgets")!!.data }
+        expect(expectedActiveGadgets) { pubSub.getTopicInfo("activeGadgets")!!.jsonValue }
 
-        expect(json { }) { pubSub.getTopicInfo("/gadgets/first")!!.data }
-        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.data }
-        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.data }
+        expect(json { }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
 
         expect("{first={}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
@@ -46,7 +46,7 @@ class GadgetManagerTest {
 
     @Test
     fun forDifferentGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer)
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
@@ -55,7 +55,9 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstA, "second" to secondA, "third" to thirdA))
 
         val activeGadgetsListener = Listener()
-        pubSub.getTopicInfo("activeGadgets")!!.listeners.add(activeGadgetsListener)
+        pubSub.getTopicInfo("activeGadgets")!!.addListener(activeGadgetsListener)
+        expect(1) { activeGadgetsListener.events.size }
+        activeGadgetsListener.events.clear()
 
         val firstB = Slider("uno")
         val secondB = Slider("dos").apply { value = 0.123f }
@@ -64,20 +66,20 @@ class GadgetManagerTest {
 
         expect(
             jsonArray {
-                +json { "name" to "first"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/first"}
-                +json { "name" to "second"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/second"}
-                +json { "name" to "third"; "gadget" to json { "#type" to "baaahs.gadgets.Slider"; "title" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/third"}
+                +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/first"}
+                +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/second"}
+                +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/third"}
 
             }
-        ) { activeGadgetsListener.events.map { json.parseJson(it) }.first() }
-        expect(json {}) { pubSub.getTopicInfo("/gadgets/first")!!.data }
-        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/second")!!.data }
-        expect(json {}) { pubSub.getTopicInfo("/gadgets/third")!!.data }
+        ) { activeGadgetsListener.events.map { json.parseJson(it) }.only() }
+        expect(json {}) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(json {}) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
     }
 
     @Test
     fun forSameGadgetsWithDifferentState_sync_shouldSyncOnlyGadgetState() {
-        val pubSub = PubSub.Server(httpServer).apply { install(gadgetModule) }
+        val pubSub = PubSub.Server(httpServer)
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
@@ -86,13 +88,21 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstA, "second" to secondA, "third" to thirdA))
 
         val activeGadgetsListener = Listener()
-        pubSub.getTopicInfo("activeGadgets")!!.listeners.add(activeGadgetsListener)
+        pubSub.getTopicInfo("activeGadgets")!!.addListener(activeGadgetsListener)
+        expect(1) { activeGadgetsListener.events.size }
+        activeGadgetsListener.events.clear()
+
         val firstListener = Listener()
-        pubSub.getTopicInfo("/gadgets/first")!!.listeners.add(firstListener)
+        pubSub.getTopicInfo("/gadgets/first")!!.addListener(firstListener)
+        firstListener.events.clear()
+
         val secondListener = Listener()
-        pubSub.getTopicInfo("/gadgets/second")!!.listeners.add(secondListener)
+        pubSub.getTopicInfo("/gadgets/second")!!.addListener(secondListener)
+        secondListener.events.clear()
+
         val thirdListener = Listener()
-        pubSub.getTopicInfo("/gadgets/third")!!.listeners.add(thirdListener)
+        pubSub.getTopicInfo("/gadgets/third")!!.addListener(thirdListener)
+        thirdListener.events.clear()
 
         val firstB = Slider("first").apply { value = .123f }
         val secondB = Slider("second").apply { value = .234f }
@@ -105,16 +115,16 @@ class GadgetManagerTest {
         expect(listOf("{\"value\":0.234}")) { secondListener.events }
         expect(emptyList<String>()) { thirdListener.events }
 
-        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/first")!!.data }
-        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.data }
-        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.data }
+        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
 
         expect("{first={value=0.123}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
         }
 
         // New gadget should receive updates from PubSub.
-        pubSub.getTopicInfo("/gadgets/third")!!.listeners.first().onUpdate(json { "value" to .987 })
+        pubSub.getTopicInfo("/gadgets/third")!!.listeners_TEST_ONLY.first().onUpdate(json { "value" to .987 })
         expect(0.987f) { thirdB.value }
     }
 
