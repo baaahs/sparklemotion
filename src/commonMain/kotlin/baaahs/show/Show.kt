@@ -5,6 +5,7 @@ import baaahs.glshaders.Plugins
 import baaahs.ports.DataSourceRef
 import baaahs.ports.Link
 import baaahs.ports.ShaderPortRef
+import baaahs.replacing
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -21,6 +22,22 @@ data class Show(
 ) {
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.toJson(serializer(), this)
+    }
+
+    fun replacingPatchSet(sceneIndex: Int, patchSetIndex: Int, newPatchSet: PatchSet): Show {
+        return replacingScene(sceneIndex) { oldScene ->
+            oldScene.copy(patchSets = oldScene.patchSets.replacing(patchSetIndex, newPatchSet))
+        }
+    }
+
+    fun appendingPatchSet(sceneIndex: Int, newPatchSet: PatchSet): Show {
+        return replacingScene(sceneIndex) { oldScene ->
+            oldScene.copy(patchSets = oldScene.patchSets + newPatchSet)
+        }
+    }
+
+    private fun replacingScene(sceneIndex: Int, block: (Scene) -> Scene): Show {
+        return copy(scenes = scenes.replacing(sceneIndex, block(scenes[sceneIndex])))
     }
 
     companion object {

@@ -6,8 +6,6 @@ import baaahs.ShowState
 import baaahs.gadgets.Slider
 import baaahs.jsx.RangeSlider
 import baaahs.ports.DataSourceRef
-import baaahs.replacing
-import baaahs.show.PatchSet
 import baaahs.show.Show
 import baaahs.ui.GadgetRenderer
 import baaahs.ui.gadgets.patchSetList
@@ -23,20 +21,8 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
     val currentLayoutName = "default"
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
 
-    val modifyShow = useCallback(show, props.onChange) { handler: (Show) -> Show ->
-        props.onChange(handler(show))
-    }
-
-    val handleChangePatchSet = useCallback(show, modifyShow, showState) { newPatchSets: List<PatchSet> ->
-        val currentScene = show.scenes[showState.selectedScene]
-        modifyShow {
-            it.copy(
-                scenes = show.scenes.replacing(
-                    showState.selectedScene,
-                    currentScene.copy(patchSets = newPatchSets)
-                )
-            )
-        }
+    val handleEdit = useCallback(props.onChange) { newShow: Show, newShowState: ShowState ->
+        props.onChange(newShow, newShowState)
     }
 
     val layoutRenderers =
@@ -47,23 +33,22 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
                 when (dataSourceProvider.getRenderType()) {
                     "SceneList" -> {
                         sceneList {
-                            this.pubSub = pubSub
-                            this.scenes = show.scenes
-                            this.selected = showState.selectedScene
+                            this.show = show
+                            this.showState = showState
                             onSelect = { props.onShowStateChange(showState.withScene(it)) }
                             this.editMode = props.editMode
+                            onChange = handleEdit
                         }
                     }
                     "PatchList" -> {
                         println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
                         patchSetList {
-                            this.pubSub = pubSub
+                            this.show = show
+                            this.showState = showState
                             this.showResources = props.showResources
-                            this.patchSets = show.scenes[showState.selectedScene].patchSets
-                            this.selected = showState.selectedPatchSet
                             onSelect = { props.onShowStateChange(showState.withPatchSet(it)) }
                             this.editMode = props.editMode
-                            onChange = handleChangePatchSet
+                            onChange = handleEdit
                         }
                     }
                     "Slider" -> {
@@ -103,12 +88,12 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
 
 external interface ShowUiProps : RProps {
     var pubSub: PubSub.Client
-    var show: Show
     var showResources: ShowResources
+    var show: Show
     var showState: ShowState
-    var onShowStateChange: (ShowState) -> Unit
     var editMode: Boolean
-    var onChange: (Show) -> Unit
+    var onChange: (Show, ShowState) -> Unit
+    var onShowStateChange: (ShowState) -> Unit
 }
 
 fun RBuilder.showUi(handler: ShowUiProps.() -> Unit): ReactElement =

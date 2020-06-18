@@ -10,11 +10,12 @@ import baaahs.model.MovingHead
 import baaahs.show.DataSource
 import baaahs.show.PatchMapping
 import baaahs.show.PatchSet
+import baaahs.show.Show
 
 class ShowRunner(
     private val model: Model<*>,
-    initialPatchSet: PatchSet,
-    private var show: baaahs.show.Show,
+    private var show: Show,
+    private var showState: ShowState,
     private val showResources: ShowResources,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
@@ -23,9 +24,8 @@ class ShowRunner(
     private val glslRenderer: GlslRenderer,
     pubSub: PubSub.Server
 ) {
-    private var nextPatchSet: PatchSet? = initialPatchSet
+    private var nextPatchSet: PatchSet? = showState.findPatchSet(show)
 
-    var showState = ShowState(0, show.scenes.map { 0 })
     private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
         this.showState = showState
         nextPatchSet = showState.findPatchSet(show)
@@ -111,13 +111,9 @@ class ShowRunner(
         }
     }
 
-    fun switchTo(newShow: baaahs.show.Show) {
+    fun switchTo(newShow: Show) {
         show = newShow
         nextPatchSet = showState.findPatchSet(show)
-    }
-
-    fun switchTo(scene: Int, patchSet: Int) {
-        nextPatchSet = show.scenes[scene].patchSets[patchSet]
     }
 
     private fun switchTo(newPatchSet: PatchSet) {

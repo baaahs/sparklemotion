@@ -54,26 +54,29 @@ class Pinky(
             field = value
             facade.notifyChanged()
             showRunner.switchTo(value)
-            currentShowChannel.onChange(show)
+            showWithStateChannel.onChange(show.withState(showState))
         }
+
+    private var showState = ShowState.forShow(show)
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, show)
     internal val showRunner = ShowRunner(
-        model, this.show.scenes[0].patchSets[0], show,
-        showManager, beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
+        model, show, showState, showManager,
+        beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
         pubSub
     )
 
-    var currentShow = show
-    private val currentShowChannel = pubSub.publish(showManager.currentShowTopic, currentShow) { show ->
-        println("Received show change: $show")
-        showHasBeenModified = true
-        this.show = show
+    private val showWithStateChannel =
+        pubSub.publish(showManager.showWithStateTopic, show.withState(showState)) { incomingShowWithState ->
+            println("Received show change: $incomingShowWithState")
+            showHasBeenModified = true
+            this.show = incomingShowWithState.show
+            this.showState = incomingShowWithState.showState
 //            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
-    }
+        }
 
     private var selectedNewShowAt = DateTime.now()
 

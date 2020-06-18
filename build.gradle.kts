@@ -203,6 +203,7 @@ kotlin {
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
+                implementation(npm("react-beautiful-dnd", "^13.0.0"))
                 implementation(npm("react-compound-slider", "^2.0.0"))
                 implementation(npm("react-dom", "^16.13.1"))
                 implementation(npm("react-draggable", "^3.3.0"))

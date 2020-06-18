@@ -19,6 +19,10 @@ import kotlin.js.JsName
 abstract class PubSub {
 
     companion object {
+        fun stopHere() {
+            println()
+        }
+
         fun listen(httpServer: Network.HttpServer): Server {
             return Server(httpServer)
         }

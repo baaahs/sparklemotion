@@ -63,8 +63,8 @@ object ShowRunnerSpec : Spek({
         val showRunner by value {
             ShowRunner(
                 model,
-                patchSet,
-                SampleData.sampleShow,
+                show,
+                ShowState.forShow(show),
                 showResources,
                 StubBeatSource(),
                 FakeDmxUniverse(),
