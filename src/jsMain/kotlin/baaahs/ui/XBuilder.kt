@@ -133,8 +133,10 @@ class XBuilder : react.RBuilder() {
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
             logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
-            this.value = value
-            onChange()
+            if (this.value != value) {
+                this.value = value
+                onChange()
+            }
         }
     }
 

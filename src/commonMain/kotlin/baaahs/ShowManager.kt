@@ -13,6 +13,7 @@ import baaahs.show.Scene
 import baaahs.show.Show
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 @Serializable
 data class ShowState(
@@ -22,22 +23,66 @@ data class ShowState(
     val selectedPatchSet: Int get() = patchSetSelections[selectedScene]
 
     fun findPatchSet(show: Show): PatchSet {
-        return show.scenes[selectedScene].patchSets[selectedPatchSet]
+        if (selectedScene >= show.scenes.size) {
+            error("scene $selectedScene out of bounds (have ${show.scenes.size})")
+        }
+
+        val scene = show.scenes[selectedScene]
+        if (selectedScene >= patchSetSelections.size) {
+            error("scene $selectedScene patch set out of bounds (have ${patchSetSelections.size})")
+        }
+
+        if (selectedPatchSet >= scene.patchSets.size) {
+            error("patch set $selectedPatchSet patch set out of bounds " +
+                    "(have ${patchSetSelections.size} for scene $selectedScene)")
+        }
+
+        return scene.patchSets[selectedPatchSet]
     }
 
     fun withScene(i: Int) = copy(selectedScene = i)
     fun withPatchSet(i: Int) = copy(patchSetSelections = patchSetSelections.replacing(selectedScene, i))
+    fun withPatchSetSelections(selections: List<Int>) = copy(patchSetSelections = selections)
+
+    /**
+     * Returns a ShowState whose parameters fit within the specified [Show].
+     */
+    fun boundedBy(show: Show): ShowState {
+        return ShowState(
+            selectedScene = min(selectedScene, show.scenes.size - 1),
+            patchSetSelections = show.scenes.mapIndexed { index, scene ->
+                min(
+                    patchSetSelections.getOrNull(index) ?: 0,
+                    scene.patchSets.size - 1)
+            }
+        )
+    }
+
+    companion object {
+        fun forShow(show: Show): ShowState = ShowState(0, show.scenes.map { 0 })
+    }
 }
 
 interface ShowResources {
     val plugins: Plugins
     val glslContext: GlslContext
-    val currentShowTopic: PubSub.Topic<Show>
+    val showWithStateTopic: PubSub.Topic<ShowWithState>
     val dataFeeds: Map<String, GlslProgram.DataFeed>
     val shaders: Map<String, ShaderFragment>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
     fun <T : Gadget> useGadget(id: String): T
+
+    fun createShowWithStateTopic(): PubSub.Topic<ShowWithState> {
+        return PubSub.Topic("showWithState", ShowWithState.serializer(), plugins.serialModule)
+    }
+}
+
+@Serializable
+data class ShowWithState(val show: Show, val showState: ShowState)
+
+fun Show.withState(showState: ShowState): ShowWithState {
+    return ShowWithState(this, showState.boundedBy(this))
 }
 
 interface MutableShowResources : ShowResources {
@@ -49,14 +94,14 @@ abstract class BaseShowResources(
     initialShow: Show
 ) : MutableShowResources {
     val glslAnalyzer = GlslAnalyzer()
-    override val currentShowTopic: PubSub.Topic<Show> =
-        PubSub.Topic("currentShow", Show.serializer(), plugins.serialModule)
+    override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
 
     override val dataFeeds: MutableMap<String, GlslProgram.DataFeed> by lazy {
         calculateDataFeeds(initialShow).toMutableMap()
     }
 
     private fun calculateDataFeeds(show: Show): Map<String, GlslProgram.DataFeed> {
+        PubSub.stopHere()
         return show.dataSources.associate { dataSourceProvider ->
             dataSourceProvider.id to dataSourceProvider.create(this)
         }

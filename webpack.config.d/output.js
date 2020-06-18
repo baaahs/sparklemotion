@@ -48,6 +48,10 @@ config.resolve.alias = {
 
 if (config.devServer) {
     config.devServer.hot = true;
+    config.devServer.watchOptions = {
+      aggregateTimeout: 2000,
+      poll: 1000
+    };
 } else {
     // Otherwise we get "unknown module and require" from production build.
     config.optimization = {

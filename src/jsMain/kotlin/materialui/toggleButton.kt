@@ -1,10 +1,13 @@
 package materialui
 
+import kotlinext.js.jsObject
 import kotlinx.html.BUTTON
 import kotlinx.html.Tag
 import kotlinx.html.TagConsumer
 import kotlinx.html.attributes.Attribute
+import kotlinx.html.attributes.BooleanAttribute
 import kotlinx.html.attributes.TickerAttribute
+import materialui.components.button.enums.ButtonStyle
 import materialui.components.buttonbase.ButtonBaseProps
 import react.RBuilder
 import react.RClass
@@ -21,10 +24,15 @@ external interface ToggleButtonProps : ButtonBaseProps {
 @Suppress("UnsafeCastFromDynamic")
 private val toggleButtonComponent: RClass<ToggleButtonProps> = toggleButtonModule.default
 
+fun RBuilder.toggleButton(vararg classMap: Pair<ButtonStyle, String>, block: ToggleButtonElementBuilder<BUTTON>.() -> Unit)
+        = child(ToggleButtonElementBuilder(toggleButtonComponent, classMap.toList()) { BUTTON(mapOf(), it) }.apply(block).create())
+
 fun RBuilder.toggleButton(
-    vararg classMap: Pair<ToggleButtonStyle, String>,
-    block: ToggleButtonElementBuilder<BUTTON>.() -> Unit
-) = child(ToggleButtonElementBuilder(toggleButtonComponent, classMap.toList()) { BUTTON(mapOf(), it) }.apply(block).create())
+    attrs: ToggleButtonProps.() -> Unit,
+    children: RBuilder.() -> Any
+): ReactElement =
+    child(toggleButtonComponent, jsObject<ToggleButtonProps>().apply { attrs() },
+        RBuilder().apply { children() }.childList)
 
 fun <T : Tag> RBuilder.toggleButton(
     vararg classMap: Pair<ToggleButtonStyle, String>,
@@ -32,11 +40,12 @@ fun <T : Tag> RBuilder.toggleButton(
     block: ToggleButtonElementBuilder<T>.() -> Unit
 ) = child(ToggleButtonElementBuilder(toggleButtonComponent, classMap.toList(), factory).apply(block).create())
 
+internal val attributeBooleanBoolean : Attribute<Boolean> = BooleanAttribute()
 val attributeBooleanTicker : Attribute<Boolean> = TickerAttribute()
 
 var BUTTON.selected : Boolean
-    get() = attributeBooleanTicker.get(this, "selected")
-    set(newValue) = attributeBooleanTicker.set(this, "selected", newValue)
+    get() = attributeBooleanBoolean.get(this, "selected")
+    set(newValue) = attributeBooleanBoolean.set(this, "selected", newValue)
 
 @Suppress("EnumEntryName")
 enum class ToggleButtonStyle {

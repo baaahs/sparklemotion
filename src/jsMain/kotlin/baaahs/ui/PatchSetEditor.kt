@@ -58,6 +58,7 @@ val PatchSetEditor = xComponent<PatchSetEditorProps>("PatchSetEditor") { props -
 
                 textField {
                     ref = textField
+                    attrs.autoFocus = true
                     attrs.variant = FormControlVariant.outlined
                     attrs.label = "Title".asTextNode()
                     attrs.value = currentPatchSet.title

@@ -49,8 +49,8 @@ class ShowRunnerTest {
         showManager = ShowManager(Plugins.safe(), fakeGlslContext, server, show)
         showRunner = ShowRunner(
             sheepModel,
-            show.scenes[0].patchSets[0],
             show,
+            ShowState.forShow(show),
             showManager,
             StubBeatSource(),
             dmxUniverse,
