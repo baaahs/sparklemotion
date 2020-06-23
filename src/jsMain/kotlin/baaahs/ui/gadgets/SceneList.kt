@@ -1,5 +1,6 @@
 package baaahs.ui.gadgets
 
+import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.icon
 import baaahs.show.Show
@@ -31,8 +32,6 @@ fun <T> eventHandler(block: Event.(T) -> Unit): (Event) -> Unit {
 }
 
 val SceneList = xComponent<SceneListProps>("SceneList") { props ->
-    val scenes = props.show.scenes
-
     card {
         dragDropContext({
             onDragEnd = { dropResult: DropResult, responderProvided: ResponderProvided ->
@@ -43,17 +42,11 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                     val sourceIndex = dropResult.source.index
                     val destIndex = dropResult.destination!!.index
 
-                    val newScenes = scenes.toMutableList().apply {
-                        removeAt(sourceIndex).also { add(destIndex, it) }
+                    props.show.edit(props.showState).apply {
+                        moveScene(sourceIndex, destIndex)
+                    }.also { editor ->
+                        props.onChange(editor.getShow(), editor.getShowState())
                     }
-
-                    val newPatchSetSelections = props.showState.patchSetSelections.toMutableList().apply {
-                        removeAt(sourceIndex).also { add(destIndex, it) }
-                    }
-                    props.onChange(
-                        props.show.copy(scenes = newScenes),
-                        props.showState.withPatchSetSelections(newPatchSetSelections)
-                    )
                 }
             }
         }) {
@@ -128,7 +121,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 }
 
 external interface SceneListProps : RProps {
-    var show: Show
+    var show: OpenShow
     var showState: ShowState
     var onSelect: (Int) -> Unit
     var editMode: Boolean

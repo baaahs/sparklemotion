@@ -1,13 +1,19 @@
 package baaahs.app.ui
 
 import baaahs.*
+import baaahs.app.ui.Styles.buttons
+import baaahs.glshaders.AutoWirer
 import baaahs.net.Network
 import baaahs.show.Show
+import baaahs.show.ShowEditor
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.css.Color
+import kotlinx.css.properties.Timing
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.Menu
@@ -18,7 +24,9 @@ import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
+import materialui.components.iconbutton.enums.IconButtonStyle.root
 import materialui.components.iconbutton.iconButton
+import materialui.components.paper.paper
 import materialui.components.portal.portal
 import materialui.components.svgicon.SvgIconProps
 import materialui.components.switches.switch
@@ -63,12 +71,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     var show by state<Show?> { null }
     var showState by state<ShowState?> { null }
+    var openShow by state<OpenShow?> { null }
 
     val showWithStateChannel = useRef<PubSub.Channel<ShowWithState>>(nuffin())
     sideEffect("showWithState subscription", pubSub) {
         val currentShowTopic = props.showResources.showWithStateTopic
         println("AppIndex $id: subscribe to ${currentShowTopic.name}")
         val channel = pubSub.subscribe(currentShowTopic) {
+            openShow = props.showResources.swapAndRelease(openShow, it.show)
             show = it.show
             showState = it.showState
             undoStack.reset(it)
@@ -135,77 +145,90 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     sideEffect("Show -> ShowResources", show, props.showResources) {
-        show?.let { props.showResources.switchTo(it) }
+        show?.let {
+            openShow = props.showResources.swapAndRelease(openShow, it)
+        }
     }
 
     var editMode by state { false }
     val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
 
-    styledDiv {
-        css {
-            width = 100.pct
-            height = 5.vh
-            color = Color.black
-            backgroundColor = Color.pink
-            textAlign = TextAlign.center
-            fontSize = 2.em
-            display = if (isConnected) Display.none else Display.block
+    paper {
+
+        styledDiv {
+            css {
+                width = 100.pct
+                height = 5.vh
+                color = Color.black
+                backgroundColor = Color.pink
+                textAlign = TextAlign.center
+                fontSize = 2.em
+                display = if (isConnected) Display.none else Display.block
+            }
+            +"Connecting…"
         }
-        +"Connecting…"
-    }
 
-    toolbar {
-        table {
-            tbody {
-                tr {
-                    td {
-                        formControlLabel {
-                            attrs.control {
-                                switch {
-                                    attrs.checked = editMode
-                                    attrs.onChangeFunction = handleEditModeChange
+        toolbar {
+            table {
+                tbody {
+                    tr {
+                        td {
+                            formControlLabel {
+                                attrs.control {
+                                    switch {
+                                        attrs.checked = editMode
+                                        attrs.onChangeFunction = handleEditModeChange
+                                    }
                                 }
+                                attrs.label = "Design Mode".asTextNode()
                             }
-                            attrs.label = "Design Mode".asTextNode()
                         }
-                    }
-                    styledTd {
-                        if (!editMode) css { opacity = 0 }
-                        iconButton {
-                            attrs.edge = IconButtonEdge.end
-                            attrs.onClickFunction = handleShaderEditorDrawerToggle
-                            Menu { }
-                            +"Shader Editor"
-                        }
+                        styledTd {
+                            if (!editMode) css { opacity = 0 }
+                            css {
+                                transition("opacity", duration = .5.s, timing = Timing.linear)
+                            }
 
-                        iconButton {
-                            icon(Undo) { }
-                            attrs["disabled"] = !undoStack.canUndo()
-                            attrs.onClickFunction = handleUndo
-                        }
+                            iconButton(root to buttons.getName()) {
+                                icon(Undo) { }
+                                attrs["disabled"] = !undoStack.canUndo()
+                                attrs.onClickFunction = handleUndo
 
-                        iconButton {
-                            icon(Redo) { }
-                            attrs["disabled"] = !undoStack.canRedo()
-                            attrs.onClickFunction = handleRedo
+                                +"Undo"
+                            }
+
+                            iconButton(root to buttons.getName()) {
+                                icon(Redo) { }
+                                attrs["disabled"] = !undoStack.canRedo()
+                                attrs.onClickFunction = handleRedo
+
+                                +"Redo"
+                            }
+
+                            iconButton(root to buttons.getName()) {
+                                attrs.edge = IconButtonEdge.end
+                                attrs.onClickFunction = handleShaderEditorDrawerToggle
+                                Menu { }
+                                +"Shader Editor"
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    if (show == null || showState == null) {
-        styledDiv { +"Loading Show…" }
-    } else {
-        showUi {
-            this.pubSub = props.pubSub
-            this.show = show!!
-            this.showResources = props.showResources
-            this.showState = showState!!
-            this.onShowStateChange = handleShowStateChange
-            this.editMode = editMode
-            this.onChange = handleShowEdit
+        if (show == null || showState == null) {
+            styledDiv { +"Loading Show…" }
+        } else {
+            showUi {
+                this.pubSub = props.pubSub
+                this.show = openShow!!
+                this.showResources = props.showResources
+                this.showState = showState!!
+                this.onShowStateChange = handleShowStateChange
+                this.editMode = editMode
+                this.onChange = handleShowEdit
+            }
         }
     }
 
@@ -220,6 +243,21 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             shaderEditorWindow {
                 this.filesystems = props.filesystems
+                this.onAddToPatch = { shader ->
+                    val curShow = show!!
+                    val curState = showState!!
+
+                    val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
+                    val editor = ShowEditor(curShow, curState).editScene(curState.selectedScene) {
+                        editPatchSet(curState.selectedPatchSet) {
+                            editPatch(0) {
+                                links = newPatch.links.toMutableList()
+                                surfaces = newPatch.surfaces
+                            }
+                        }
+                    }
+                    handleShowEdit(editor.getShow(), editor.getShowState())
+                }
             }
         }
     }
@@ -230,7 +268,7 @@ external interface AppIndexProps : RProps {
     var network: Network
     var pubSub: PubSub.Client
     var filesystems: List<SaveAsFs>
-    var showResources: MutableShowResources
+    var showResources: ShowResources
 }
 
 fun RBuilder.appIndex(handler: AppIndexProps.() -> Unit): ReactElement =

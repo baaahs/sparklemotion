@@ -1,11 +1,9 @@
 package baaahs.glshaders
 
-import baaahs.Color
-import baaahs.ShowResources
+import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
-import baaahs.getTimeMillis
 import baaahs.glshaders.GlslProgram.DataFeed
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
@@ -13,6 +11,7 @@ import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import com.danielgergely.kgl.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.float
 
 class CorePlugin : Plugin {
@@ -81,18 +80,18 @@ class CorePlugin : Plugin {
 //    }
 
     @Serializable
-    data class Resolution(override val id: String) : DataSource {
+    data class Resolution(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Resolution> {
             override val resourceName: String get() = "Resolution"
             override fun suggestDataSources(inputPort: InputPort): List<Resolution> = emptyList()
-            override fun build(inputPort: InputPort): Resolution = Resolution(inputPort.id)
+            override fun build(inputPort: InputPort): Resolution = Resolution()
         }
 
         override val dataSourceName: String get() = "Resolution"
         override fun getType(): String = "vec2"
 
-        override fun create(showResources: ShowResources): DataFeed =
-            object : DataFeed, GlslProgram.ResolutionListener {
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+            object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
                 var x = 1f
                 var y = 1f
 
@@ -106,37 +105,40 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class Time(override val id: String) : DataSource {
+    data class Time(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Time> {
             override val resourceName: String get() = "Time"
             override fun suggestDataSources(inputPort: InputPort): List<Time> = emptyList()
-            override fun build(inputPort: InputPort): Time = Time(inputPort.id)
+            override fun build(inputPort: InputPort): Time = Time()
         }
 
         override val dataSourceName: String get() = "Time"
         override fun getType(): String = "float"
 
-        override fun create(showResources: ShowResources): DataFeed = object : DataFeed {
-            override fun set(uniform: Uniform) {
-                val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
-                uniform.set(thisTime)
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+            object : DataFeed, RefCounted by RefCounter() {
+
+                override fun set(uniform: Uniform) {
+                    val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
+                    uniform.set(thisTime)
+                }
             }
-        }
     }
 
     @Serializable
-    data class UvCoordTexture(override val id: String) : DataSource {
+    data class UvCoordTexture(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<UvCoordTexture> {
             override val resourceName: String get() = "UvCoords"
             override fun suggestDataSources(inputPort: InputPort): List<UvCoordTexture> = emptyList()
-            override fun build(inputPort: InputPort): UvCoordTexture = UvCoordTexture(inputPort.id)
+            override fun build(inputPort: InputPort): UvCoordTexture = UvCoordTexture()
         }
 
         override val dataSourceName: String get() = "U/V Coordinates Texture"
         override fun getType(): String = "sampler2D"
+        override fun suggestId(): String = "uvCoordsTexture"
 
-        override fun create(showResources: ShowResources): DataFeed =
-            object : DataFeed, GlslRenderer.ArrangementListener {
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+            object : DataFeed, GlslRenderer.ArrangementListener, RefCounted by RefCounter() {
                 private val gl = showResources.glslContext
                 private val uvCoordTextureUnit = gl.getTextureUnit(UvCoordTexture::class)
                 private val uvCoordTexture = gl.check { createTexture() }
@@ -166,22 +168,23 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class ScreenUvCoord(override val id: String) : DataSource {
+    data class ScreenUvCoord(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ScreenUvCoord> {
             override val resourceName: String get() = "U/V Coordinate"
             override fun suggestDataSources(inputPort: InputPort): List<ScreenUvCoord> = emptyList()
-            override fun build(inputPort: InputPort): ScreenUvCoord = ScreenUvCoord(inputPort.id)
+            override fun build(inputPort: InputPort): ScreenUvCoord = ScreenUvCoord()
         }
 
         override val dataSourceName: String get() = "U/V Coordinate"
         override fun getType(): String = error("huh?")
         override fun isImplicit(): Boolean = true
-        override fun getVarName(): String = "gl_FragCoord"
+        override fun getVarName(id: String): String = "gl_FragCoord"
 
         override fun getRenderType(): String? = null
 
-        override fun create(showResources: ShowResources): DataFeed {
-            return object : DataFeed {
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+            return object : DataFeed, RefCounted by RefCounter() {
+
                 override fun set(uniform: Uniform) {
                     // No-op.
                 }
@@ -189,15 +192,16 @@ class CorePlugin : Plugin {
         }
     }
 
-    interface GadgetDataSource<T : baaahs.Gadget> : DataSource {
+    interface GadgetDataSource<T : Gadget> : DataSource {
         fun createGadget(showResources: ShowResources): T
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun create(showResources: ShowResources): DataFeed {
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
             val gadget = createGadget(showResources)
             showResources.createdGadget(id, gadget)
-            return object : DataFeed {
+            return object : DataFeed, RefCounted by RefCounter() {
+
                 override fun set(uniform: Uniform) {
                     this@GadgetDataSource.set(gadget, uniform)
                 }
@@ -207,7 +211,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class SliderDataSource(
-        override val id: String,
         val title: String,
         val initialValue: Float,
         val minValue: Float,
@@ -223,7 +226,6 @@ class CorePlugin : Plugin {
             override fun build(inputPort: InputPort): SliderDataSource {
                 val config = inputPort.pluginConfig
                 return SliderDataSource(
-                    inputPort.id,
                     inputPort.title,
                     initialValue = config?.get("default")?.float ?: 1f,
                     minValue = config?.get("min")?.float ?: 0f,
@@ -236,6 +238,7 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = resourceName
         override fun getType(): String = "float"
         override fun getRenderType(): String? = "Slider"
+        override fun suggestId(): String = "$title Slider".camelize()
 
         override fun createGadget(showResources: ShowResources): Slider =
             Slider(title, initialValue, minValue, maxValue, stepValue)
@@ -247,7 +250,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class XyPad(
-        override val id: String,
         val title: String,
         val varPrefix: String
     ) : DataSource {
@@ -258,14 +260,15 @@ class CorePlugin : Plugin {
             }
 
             override fun build(inputPort: InputPort): XyPad =
-                XyPad(inputPort.id, inputPort.title, inputPort.suggestVarName())
+                XyPad(inputPort.title, inputPort.suggestVarName())
         }
 
         override val dataSourceName: String get() = "XY Pad"
         override fun getType(): String = "vec2"
+        override fun suggestId(): String = "$title XY Pad".camelize()
 
-        override fun create(showResources: ShowResources): DataFeed {
-            return object : DataFeed {
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+            return object : DataFeed, RefCounted by RefCounter() {
                 val xControl = showResources.useGadget<Slider>("${varPrefix}_x")
                 val yControl = showResources.useGadget<Slider>("${varPrefix}_y")
 
@@ -278,7 +281,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class ColorPickerProvider(
-        override val id: String,
         val title: String,
         val initialValue: Color
     ) : GadgetDataSource<ColorPicker> {
@@ -293,7 +295,6 @@ class CorePlugin : Plugin {
                 val default = inputPort.pluginConfig?.get("default")?.primitive?.contentOrNull
 
                 return ColorPickerProvider(
-                    inputPort.id,
                     inputPort.title,
                     initialValue = default?.let { Color.from(it) } ?: Color.WHITE
                 )
@@ -303,6 +304,7 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "Color Picker"
         override fun getType(): String = "vec4"
         override fun getRenderType(): String? = "ColorPicker"
+        override fun suggestId(): String = "$title Color Picker".camelize()
 
         override fun createGadget(showResources: ShowResources): ColorPicker = ColorPicker(title, initialValue)
 
@@ -318,7 +320,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class RadioButtonStripProvider(
-        override val id: String,
         val title: String,
         val options: List<String>,
         val initialSelectionIndex: Int
@@ -341,7 +342,6 @@ class CorePlugin : Plugin {
                     ?: error("no options given")
 
                 return RadioButtonStripProvider(
-                    inputPort.id,
                     inputPort.title,
                     options,
                     initialSelectionIndex
@@ -363,7 +363,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class Scenes(
-        override val id: String,
         val title: String = "Scenes"
     ) : GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<Scenes> {
@@ -388,7 +387,6 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class Patches(
-        override val id: String,
         val title: String = "Patches"
     ) : GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<Patches> {

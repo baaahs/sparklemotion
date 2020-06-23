@@ -185,7 +185,7 @@ open class GlslRenderer(
 
         val glslAnalyzer = GlslAnalyzer()
 
-        val uvMapper = glslAnalyzer.asShader(
+        val cylindricalUvMapper = GlslAnalyzer().asShader(
             /**language=glsl*/
             """
                 // Cylindrical Projection

@@ -8,6 +8,7 @@ import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
+import baaahs.show.Show
 import baaahs.sim.FakeFs
 import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
@@ -62,7 +63,7 @@ fun main(args: Array<String>) {
                 SaveAsFs("Show", FakeFs())
             )
             val uiApp = WebUi(network, pinkyAddress, filesystems,
-                ClientShowResources(plugins, GlslBase.jsManager.createContext(), baaahs.show.Show("Loading...")))
+                ClientShowResources(plugins, GlslBase.jsManager.createContext(), Show("Loading...")))
             render(uiApp.render(), contentDiv)
         }
 

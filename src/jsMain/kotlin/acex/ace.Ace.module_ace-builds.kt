@@ -1094,7 +1094,7 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun replace(replacement: String, options: SearchOptionsPartial = definedExternally): Number
     fun replaceAll(replacement: String, options: SearchOptionsPartial = definedExternally): Number
     fun getLastSearchOptions(): SearchOptionsPartial
-    fun find(needle: String, options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally): Range
+    fun find(needle: String, options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally): Range?
     fun findNext(options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally)
     fun findPrevious(options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally)
     fun undo()

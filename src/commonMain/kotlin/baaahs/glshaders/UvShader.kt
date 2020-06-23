@@ -1,6 +1,8 @@
 package baaahs.glshaders
 
-class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
+import baaahs.show.ShaderOutPortRef
+
+class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
     companion object {
         val uvCoordsTextureInputPort = InputPort(
             "uvCoordsTexture",
@@ -11,7 +13,7 @@ class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
         val magicUniforms = listOf(uvCoordsTextureInputPort).associateBy { it.id }
     }
 
-    override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Projection
+    override val shaderType: OpenShader.Type = OpenShader.Type.Projection
 
     override val entryPoint: GlslCode.GlslFunction
             = glslCode.functions.find { it.name == "mainUvFromRaster" }!!
@@ -28,7 +30,7 @@ class UvShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
     }
 
     override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec2", "uvCoords", "U/V Coordinate", ContentType.UvCoordinate))
+            = listOf(OutputPort("vec2", ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         val buf = StringBuilder()

@@ -14,7 +14,7 @@ class WebUi(
     private val network: Network,
     private val pinkyAddress: Network.Address,
     private val filesystems: List<SaveAsFs>,
-    private val showResources: MutableShowResources
+    private val showResources: ShowResources
 ) : HostedWebApp {
 
     override fun render(): ReactElement {

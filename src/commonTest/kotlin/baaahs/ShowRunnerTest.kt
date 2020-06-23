@@ -46,7 +46,7 @@ class ShowRunnerTest {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val show = SampleData.sampleShow
-        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server, show)
+        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server)
         showRunner = ShowRunner(
             sheepModel,
             show,

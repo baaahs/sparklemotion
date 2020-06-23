@@ -1,7 +1,6 @@
 package baaahs.glshaders
 
 import baaahs.gadgetModule
-import baaahs.ports.portRefModule
 import baaahs.show.DataSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -30,7 +29,7 @@ data class PluginRef(
 class Plugins(private val byPackage: Map<String, Plugin>) {
     val serialModule = SerializersModule {
         include(gadgetModule)
-        include(portRefModule)
+//        include(portRefModule)
         include(dataSourceProviderModule)
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }

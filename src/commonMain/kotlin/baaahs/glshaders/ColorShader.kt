@@ -1,7 +1,7 @@
 package baaahs.glshaders
 
-abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
-    override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Color
+abstract class ColorShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
+    override val shaderType: OpenShader.Type = OpenShader.Type.Color
 
     protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
         return InputPort(
