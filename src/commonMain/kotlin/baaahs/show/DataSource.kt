@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.ShowResources
+import baaahs.camelize
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.InputPort
 import baaahs.glshaders.Plugins
@@ -18,14 +19,14 @@ interface DataSourceBuilder<T : DataSource> {
 }
 
 interface DataSource {
-    val id: String
     val dataSourceName: String
     fun isImplicit(): Boolean = false
     fun getType(): String
-    fun getVarName(): String = "in_$id"
+    fun getVarName(id: String): String = "in_$id"
 
     fun getRenderType(): String? = null
-    fun create(showResources: ShowResources): GlslProgram.DataFeed
+    fun createFeed(showResources: ShowResources, id: String): GlslProgram.DataFeed
+    fun suggestId(): String = dataSourceName.camelize()
 }
 
 class DataSourceSerializer(val plugins: Plugins): KSerializer<DataSource> {

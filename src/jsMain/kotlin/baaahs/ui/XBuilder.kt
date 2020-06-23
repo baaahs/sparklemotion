@@ -1,6 +1,7 @@
 package baaahs.ui
 
 import baaahs.Logger
+import org.w3c.dom.events.Event
 import react.RMutableRef
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -62,6 +63,10 @@ class XBuilder : react.RBuilder() {
         }
     }
 
+    fun forceRender() {
+        counter.second(++internalCounter)
+    }
+
     fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
         return if (firstTime) {
             val sideEffect = SideEffect(watch)
@@ -95,6 +100,15 @@ class XBuilder : react.RBuilder() {
             handler.block = block
             block
         }
+    }
+
+    fun eventHandler(name: String, vararg watch: Any?, block: (Event) -> Unit): (Event) -> Unit {
+        return handler(name, watch = *watch, block = block)
+    }
+
+    fun eventHandler(block: Function<*>): (Event) -> Unit {
+        @Suppress("UNCHECKED_CAST")
+        return handler("event handler", block, block = block as (Event) -> Unit)
     }
 
     fun renderFinished() {

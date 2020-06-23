@@ -1,11 +1,13 @@
 package baaahs.app.ui
 
+import baaahs.OpenShow
 import baaahs.PubSub
 import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.gadgets.Slider
+import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
-import baaahs.ports.DataSourceRef
+import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.ui.GadgetRenderer
 import baaahs.ui.gadgets.patchSetList
@@ -27,52 +29,55 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
 
     val layoutRenderers =
         show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
-    val controlRenderers: Map<String, GadgetRenderer> =
-        show.dataSources.associate { dataSourceProvider ->
-            val renderer: GadgetRenderer = {
-                when (dataSourceProvider.getRenderType()) {
-                    "SceneList" -> {
-                        sceneList {
-                            this.show = show
-                            this.showState = showState
-                            onSelect = { props.onShowStateChange(showState.withScene(it)) }
-                            this.editMode = props.editMode
-                            onChange = handleEdit
-                        }
-                    }
-                    "PatchList" -> {
-                        println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
-                        patchSetList {
-                            this.show = show
-                            this.showState = showState
-                            this.showResources = props.showResources
-                            onSelect = { props.onShowStateChange(showState.withPatchSet(it)) }
-                            this.editMode = props.editMode
-                            onChange = handleEdit
-                        }
-                    }
-                    "Slider" -> {
-                        RangeSlider {
-                            attrs.pubSub = props.pubSub
-                            attrs.gadget = Slider(dataSourceProvider.id)
-                        }
-                        if (props.editMode) {
-                            +"Edit…"
-                        }
+    fun getControlRenderer(dataSource: DataSource): GadgetRenderer {
+        return {
+            when (dataSource.getRenderType()) {
+                "SceneList" -> {
+                    sceneList {
+                        this.show = show
+                        this.showState = showState
+                        onSelect = { props.onShowStateChange(showState.selectScene(it)) }
+                        this.editMode = props.editMode
+                        onChange = handleEdit
                     }
                 }
-                p { +"Control: ${dataSourceProvider.getRenderType()}" }
+                "PatchList" -> {
+                    println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
+                    patchSetList {
+                        this.show = show
+                        this.showState = showState
+                        this.showResources = props.showResources
+                        onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
+                        this.editMode = props.editMode
+                        onChange = handleEdit
+                    }
+                }
+                "Slider" -> {
+                    dataSource as CorePlugin.SliderDataSource
+                    RangeSlider {
+                        attrs.pubSub = props.pubSub
+                        attrs.gadget = Slider(
+                            dataSource.title,
+                            dataSource.initialValue,
+                            dataSource.minValue,
+                            dataSource.maxValue,
+                            dataSource.stepValue
+                        )
+                    }
+                    if (props.editMode) {
+                        +"Edit…"
+                    }
+                }
             }
-            dataSourceProvider.id to renderer
+            p { +"Control: ${dataSource.getRenderType()}" }
         }
+    }
 
-    fun addControlsToPanels(layoutControls: Map<String, List<DataSourceRef>>) {
-        layoutControls.forEach { (panelName, dataSourceRefs) ->
-            dataSourceRefs.forEach { dataSourceRef ->
+    fun addControlsToPanels(layoutControls: Map<String, List<DataSource>>) {
+        layoutControls.forEach { (panelName, dataSources) ->
+            dataSources.forEach { dataSource ->
                 val panelItems = layoutRenderers[panelName] ?: error("unknown panel $panelName")
-                val controlRenderer = controlRenderers[dataSourceRef.id]
-                    ?: error("no such control \"${dataSourceRef.id}\" among [${controlRenderers.keys}]")
-                panelItems.add(controlRenderer)
+                panelItems.add(getControlRenderer(dataSource))
             }
         }
     }
@@ -89,7 +94,7 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
 external interface ShowUiProps : RProps {
     var pubSub: PubSub.Client
     var showResources: ShowResources
-    var show: Show
+    var show: OpenShow
     var showState: ShowState
     var editMode: Boolean
     var onChange: (Show, ShowState) -> Unit

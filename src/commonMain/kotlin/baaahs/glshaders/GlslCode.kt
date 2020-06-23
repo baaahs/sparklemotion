@@ -139,7 +139,7 @@ class GlslCode(
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
-    class Namespace(private val prefix: String) {
+    class Namespace(val prefix: String) {
         fun qualify(name: String) = "${prefix}_$name"
         fun internalQualify(name: String) = "${prefix}i_$name"
     }

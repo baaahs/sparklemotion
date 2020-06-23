@@ -1,10 +1,10 @@
 package baaahs.ui.gadgets
 
+import baaahs.OpenShow
 import baaahs.ShowResources
 import baaahs.ShowState
-import baaahs.show.PatchSet
 import baaahs.show.Show
-import baaahs.ui.EditSpec
+import baaahs.show.ShowEditor.SceneEditor.PatchSetEditor
 import baaahs.ui.patchSetEditor
 import baaahs.ui.useCallback
 import baaahs.ui.xComponent
@@ -23,19 +23,17 @@ import react.ReactElement
 import react.child
 
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
-    var editingPatchSet by state<EditSpec<PatchSet>?> { null }
+    var patchSetEditor by state<PatchSetEditor?> { null }
 
-    val patchSets = props.show.scenes[props.showState.selectedScene].patchSets
+    val selectedScene = props.showState.selectedScene
+    val patchSets = props.show.scenes[selectedScene].patchSets
 
     val onContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
-        editingPatchSet = EditSpec(
-            model = patchSets[index],
-            onSave = { newPatchSet ->
-                val newShow = props.show.replacingPatchSet(props.showState.selectedScene, index, newPatchSet)
-                props.onChange(newShow, props.showState)
-                editingPatchSet = null
-            },
-            onCancel = { editingPatchSet = null })
+        props.show.edit(props.showState).editScene(selectedScene) {
+            editPatchSet(index) {
+                patchSetEditor = this
+            }
+        }
         event.preventDefault()
     }
 
@@ -64,33 +62,32 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                 button {
                     +"+"
                     attrs.onClickFunction = { _: Event ->
-                        editingPatchSet = EditSpec(
-                            model = PatchSet("Untitled"),
-                            onSave = { newPatchSet ->
-                                val newShow = props.show.appendingPatchSet(props.showState.selectedScene, newPatchSet)
-                                props.onChange(newShow, props.showState.boundedBy(newShow))
-                                editingPatchSet = null
-                            },
-                            onCancel = { editingPatchSet = null }
-                        )
+                        props.show.edit(props.showState).editScene(selectedScene) {
+                            addPatchSet("Untitled") {
+                                patchSetEditor = this
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    editingPatchSet?.let { editSpec ->
+    patchSetEditor?.let { editor ->
         patchSetEditor {
             showResources = props.showResources
-            patchSet = editSpec.model
-            onSave = editSpec.onSave
-            onClose = handler("patchSetEditor.onClose") { editingPatchSet = null }
+            this.editor = editor
+            onSave = {
+                props.onChange(editor.getShow(), editor.getShowState())
+                patchSetEditor = null
+            }
+            onCancel = handler("patchSetEditor.onClose") { patchSetEditor = null }
         }
     }
 }
 
 external interface PatchSetListProps : RProps {
-    var show: Show
+    var show: OpenShow
     var showState: ShowState
     var showResources: ShowResources
     var onSelect: (Int) -> Unit

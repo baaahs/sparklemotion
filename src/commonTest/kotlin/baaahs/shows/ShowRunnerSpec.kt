@@ -10,7 +10,8 @@ import baaahs.glsl.UvTranslator
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
-import baaahs.show.*
+import baaahs.show.ShowBuilder
+import baaahs.show.ShowEditor
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -36,30 +37,18 @@ object ShowRunnerSpec : Spek({
         val model by value { TestModel() }
         val patch by value { AutoWirer(Plugins.safe()).autoWire(shaderSrc) }
         val surfaces by value { listOf(FakeSurface(100)) }
-        val patchSet by value {
-            PatchSet(
-                "test patch set",
-                listOf(PatchMapping(patch.links, Surfaces.AllSurfaces)),
-                emptyList(),
-                emptyMap()
-            )
-        }
         val show by value {
-            val p = patch
-            val ipr = p.dataSourceRefs
-            println("ipr = ${ipr}")
-            Show("test show",
-                listOf(
-                    Scene("test scene", listOf(patchSet), listOf(), mapOf())
-                ),
-                dataSources = patch.dataSources,
-                shaderFragments = patch.components.mapValues { (_, component) ->
-                    component.shaderFragment.src
+            ShowEditor("test show").apply {
+                addScene("test scene") {
+                    addPatchSet("test patchset") {
+                        val p = patch
+                        addPatch(p)
+                    }
                 }
-            )
+            }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, show) }
+        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub) }
         val showRunner by value {
             ShowRunner(
                 model,
@@ -105,7 +94,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 val colorPickerGadget by value {
-                    showResources.useGadget<ColorPicker>("color")
+                    showResources.useGadget<ColorPicker>("colorColorPicker")
                 }
 
                 it("wires it up as a color picker") {
@@ -114,7 +103,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 it("sets the uniform from the gadget's initial value") {
-                    val colorUniform = fakeProgram.getUniform("in_color")
+                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
                     expect(arrayListOf(1f, 1f, 1f, 1f)) { colorUniform }
                 }
 
@@ -122,7 +111,7 @@ object ShowRunnerSpec : Spek({
                     colorPickerGadget.color = Color.YELLOW
 
                     showRunner.nextFrame()
-                    val colorUniform = fakeProgram.getUniform("in_color")
+                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
                     expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
                 }
             }

@@ -62,7 +62,7 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, show)
+    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub)
     internal val showRunner = ShowRunner(
         model, show, showState, showManager,
         beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,

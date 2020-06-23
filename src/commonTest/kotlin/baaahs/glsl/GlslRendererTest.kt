@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.DataBinding
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
@@ -246,8 +247,9 @@ class GlslRendererTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        return AutoWirer(Plugins.safe()).autoWire(program).compile(glslContext) { dataSource ->
-            dataSource.create(fakeShowResources)
+        return AutoWirer(Plugins.safe()).autoWire(program).open().compile(glslContext) { dataSource ->
+            val id = dataSource.suggestId()
+            DataBinding(id, dataSource.createFeed(fakeShowResources, id))
         }
     }
 
