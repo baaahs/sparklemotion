@@ -15,7 +15,7 @@ import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.PixelShader
+import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
 import com.soywiz.klock.DateTime
@@ -282,8 +282,8 @@ class Pinky(
 //            )
         }
 
-        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer ->
-            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+        val sendFn: (BrainShader.Buffer) -> Unit = { shaderBuffer ->
+            val message = BrainShaderMessage(shaderBuffer.brainShader, shaderBuffer).toBytes()
             try {
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
             } catch (e: Exception) {
@@ -299,7 +299,7 @@ class Pinky(
             networkStats.bytesSent += message.size
         }
 
-        val pixelShader = PixelShader(PixelShader.Encoding.DIRECT_RGB)
+        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
         val surfaceReceiver = object : ShowRunner.SurfaceReceiver {
             override val surface = surface
             private val pixelBuffer = pixelShader.createBuffer(surface)

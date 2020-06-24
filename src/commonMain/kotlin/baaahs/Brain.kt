@@ -93,7 +93,7 @@ class Brain(
                         currentShaderDesc = shaderDesc
 
                         @Suppress("UNCHECKED_CAST")
-                        val shader = Shader.parse(ByteArrayReader(shaderDesc)) as Shader<Shader.Buffer>
+                        val shader = BrainShader.parse(ByteArrayReader(shaderDesc)) as BrainShader<BrainShader.Buffer>
                         val newRenderTree = RenderTree(
                             shader,
                             shader.createRenderer(surface),
@@ -152,7 +152,7 @@ class Brain(
         }
     }
 
-    class RenderTree<B : Shader.Buffer>(val shader: Shader<B>, val renderer: Shader.Renderer<B>, val buffer: B) {
+    class RenderTree<B : BrainShader.Buffer>(val brainShader: BrainShader<B>, val renderer: BrainShader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
 
         fun draw(pixels: Pixels) {

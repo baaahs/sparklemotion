@@ -10,31 +10,31 @@ import kotlin.math.min
  *
  * This is a suboptimal shader for most purposes, consider writing a custom shader instead!
  */
-class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shader<PixelShader.Buffer>(ShaderId.PIXEL) {
+class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : BrainShader<PixelBrainShader.Buffer>(BrainShaderId.PIXEL) {
 
     enum class Encoding {
         DIRECT_ARGB {
-            override fun createBuffer(shader: PixelShader, pixelCount: Int) =
+            override fun createBuffer(shader: PixelBrainShader, pixelCount: Int) =
                 shader.DirectColorBuffer(pixelCount)
         },
         DIRECT_RGB {
-            override fun createBuffer(shader: PixelShader, pixelCount: Int) =
+            override fun createBuffer(shader: PixelBrainShader, pixelCount: Int) =
                 shader.DirectColorBuffer(pixelCount, true)
         },
         INDEXED_2 {
-            override fun createBuffer(shader: PixelShader, pixelCount: Int) =
+            override fun createBuffer(shader: PixelBrainShader, pixelCount: Int) =
                 shader.IndexedBuffer(1, pixelCount)
         },
         INDEXED_4 {
-            override fun createBuffer(shader: PixelShader, pixelCount: Int) =
+            override fun createBuffer(shader: PixelBrainShader, pixelCount: Int) =
                 shader.IndexedBuffer(2, pixelCount)
         },
         INDEXED_16 {
-            override fun createBuffer(shader: PixelShader, pixelCount: Int) =
+            override fun createBuffer(shader: PixelBrainShader, pixelCount: Int) =
                 shader.IndexedBuffer(4, pixelCount)
         };
 
-        abstract fun createBuffer(shader: PixelShader, pixelCount: Int): Buffer
+        abstract fun createBuffer(shader: PixelBrainShader, pixelCount: Int): Buffer
 
         companion object {
             val values = values()
@@ -58,7 +58,7 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         return encoding.createBuffer(this, pixelCount)
     }
 
-    override fun createRenderer(surface: Surface): Shader.Renderer<Buffer> = Renderer()
+    override fun createRenderer(surface: Surface): BrainShader.Renderer<Buffer> = Renderer()
 
     override fun readBuffer(reader: ByteArrayReader): Buffer {
         val incomingPixelCount = reader.readShort().toInt()
@@ -67,16 +67,16 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         return buf
     }
 
-    companion object : ShaderReader<PixelShader> {
-        override fun parse(reader: ByteArrayReader): PixelShader {
+    companion object : BrainShaderReader<PixelBrainShader> {
+        override fun parse(reader: ByteArrayReader): PixelBrainShader {
             val encoding = Encoding.get(reader.readByte())
-            return PixelShader(encoding)
+            return PixelBrainShader(encoding)
         }
     }
 
-    abstract inner class Buffer : Shader.Buffer {
-        override val shader: Shader<*>
-            get() = this@PixelShader
+    abstract inner class Buffer : BrainShader.Buffer {
+        override val brainShader: BrainShader<*>
+            get() = this@PixelBrainShader
 
         override fun read(reader: ByteArrayReader) {
             val incomingPixelCount = reader.readShort().toInt()
@@ -277,7 +277,7 @@ class PixelShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : Shade
         }
     }
 
-    class Renderer : Shader.Renderer<Buffer> {
+    class Renderer : BrainShader.Renderer<Buffer> {
         override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.colors[pixelIndex]
     }
 

@@ -2,16 +2,16 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.shaders.PixelShader
-import baaahs.shaders.SolidShader
+import baaahs.shaders.PixelBrainShader
+import baaahs.shaders.SolidBrainShader
 
-enum class ShaderId(val reader: ShaderReader<*>) {
-    SOLID(SolidShader),
-    PIXEL(PixelShader);
+enum class BrainShaderId(val reader: BrainShaderReader<*>) {
+    SOLID(SolidBrainShader),
+    PIXEL(PixelBrainShader);
 
     companion object {
         val values = values()
-        fun get(i: Byte): ShaderId {
+        fun get(i: Byte): BrainShaderId {
             if (i > values.size || i < 0) {
                 throw Throwable("bad index for ShaderId: $i")
             }
@@ -20,11 +20,11 @@ enum class ShaderId(val reader: ShaderReader<*>) {
     }
 }
 
-interface ShaderReader<T : Shader<*>> {
+interface BrainShaderReader<T : BrainShader<*>> {
     fun parse(reader: ByteArrayReader): T
 }
 
-abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
+abstract class BrainShader<B : BrainShader.Buffer>(val idBrain: BrainShaderId) {
     abstract fun createRenderer(surface: Surface): Renderer<B>
 
     abstract fun createBuffer(surface: Surface): B
@@ -32,7 +32,7 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
     val descriptorBytes: ByteArray by lazy { toBytes() }
 
     fun serialize(writer: ByteArrayWriter) {
-        writer.writeByte(id.ordinal.toByte())
+        writer.writeByte(idBrain.ordinal.toByte())
         serializeConfig(writer)
     }
 
@@ -49,15 +49,15 @@ abstract class Shader<B : Shader.Buffer>(val id: ShaderId) {
     abstract fun readBuffer(reader: ByteArrayReader): B
 
     companion object {
-        fun parse(reader: ByteArrayReader): Shader<*> {
+        fun parse(reader: ByteArrayReader): BrainShader<*> {
             val shaderTypeI = reader.readByte()
-            val shaderType = ShaderId.get(shaderTypeI)
+            val shaderType = BrainShaderId.get(shaderTypeI)
             return shaderType.reader.parse(reader)
         }
     }
 
     interface Buffer {
-        val shader: Shader<*>
+        val brainShader: BrainShader<*>
 
         fun serialize(writer: ByteArrayWriter)
 
