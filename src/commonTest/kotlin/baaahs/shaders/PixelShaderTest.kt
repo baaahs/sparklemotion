@@ -24,14 +24,14 @@ class PixelShaderTest {
 
     @Test
     fun forDirect32Bit_shouldTransmitAndRender() {
-        val dstBuf = transmit(directBuffer(argbColors, PixelShader.Encoding.DIRECT_ARGB), surface)
+        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_ARGB), surface)
         expect("#111111,#333333,#77777777,#cccccc,#00ffffff") { dstBuf.getColors() }
         expect("#111111,#333333,#77777777,#cccccc,#00ffffff") { render(dstBuf, surface).getColors() }
     }
 
     @Test
     fun forDirect24Bit_shouldTransmitAndRenderIgnoringAlpha() {
-        val dstBuf = transmit(directBuffer(argbColors, PixelShader.Encoding.DIRECT_RGB), surface)
+        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_RGB), surface)
         expect("#111111,#333333,#777777,#cccccc,#ffffff") { dstBuf.getColors() }
         expect("#111111,#333333,#777777,#cccccc,#ffffff") { render(dstBuf, surface).getColors() }
     }
@@ -39,8 +39,8 @@ class PixelShaderTest {
     @Test
     fun forIndexed2_shouldSetDataBufCorrectly() {
         val dstBuf = indexedBuffer(
-            arrayOf(Color.BLACK, Color.YELLOW), arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_2
-        ) as PixelShader.IndexedBuffer
+            arrayOf(Color.BLACK, Color.YELLOW), arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_2
+        ) as PixelBrainShader.IndexedBuffer
         expect(1) { dstBuf.dataBuf.size }
         expect(0x00) { dstBuf.byte(0) }
 
@@ -56,8 +56,8 @@ class PixelShaderTest {
     fun forIndexed4_shouldSetDataBufCorrectly() {
         val dstBuf = indexedBuffer(
             arrayOf(Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN),
-            arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_4
-        ) as PixelShader.IndexedBuffer
+            arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_4
+        ) as PixelBrainShader.IndexedBuffer
 
         expect(2) { dstBuf.dataBuf.size }
         expect("00 00") { dstBuf.bytes() }
@@ -80,8 +80,8 @@ class PixelShaderTest {
     fun forIndexed16_shouldSetDataBufCorrectly() {
         val dstBuf = indexedBuffer(
             arrayOf(Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE),
-            arrayOf(0, 0, 0, 0, 0), PixelShader.Encoding.INDEXED_16
-        ) as PixelShader.IndexedBuffer
+            arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_16
+        ) as PixelBrainShader.IndexedBuffer
 
         expect(3) { dstBuf.dataBuf.size }
         expect("00 00 00") { dstBuf.bytes() }
@@ -106,7 +106,7 @@ class PixelShaderTest {
             indexedBuffer(
                 arrayOf(Color.BLACK, Color.YELLOW),
                 arrayOf(0, 1, 0, 1, 0),
-                PixelShader.Encoding.INDEXED_2
+                PixelBrainShader.Encoding.INDEXED_2
             ), surface
         )
         expect("#000000,#ffff00,#000000,#ffff00,#000000") { dstBuf.getColors() }
@@ -131,9 +131,9 @@ class PixelShaderTest {
 
     private fun directBuffer(
         colors: Array<Color>,
-        encoding: PixelShader.Encoding = PixelShader.Encoding.DIRECT_ARGB
-    ): PixelShader.Buffer {
-        val shader = PixelShader(encoding)
+        encoding: PixelBrainShader.Encoding = PixelBrainShader.Encoding.DIRECT_ARGB
+    ): PixelBrainShader.Buffer {
+        val shader = PixelBrainShader(encoding)
         return shader.createBuffer(surface).apply {
             (0 until 5).forEach { i -> this.colors[i] = colors[i] }
         }
@@ -142,18 +142,18 @@ class PixelShaderTest {
     private fun indexedBuffer(
         palette: Array<Color>,
         colorIndices: Array<Int>,
-        encoding: PixelShader.Encoding
-    ): PixelShader.Buffer {
-        val shader = PixelShader(encoding)
+        encoding: PixelBrainShader.Encoding
+    ): PixelBrainShader.Buffer {
+        val shader = PixelBrainShader(encoding)
         return shader.createBuffer(surface).apply {
             palette.forEachIndexed { index, color -> this.palette[index] = color }
             colorIndices.forEachIndexed { pixelIndex, colorIndex -> this[pixelIndex] = colorIndex }
         }
     }
 
-    private fun PixelShader.Buffer.getColors() = colors.map { it.toHexString() }.joinToString(",")
+    private fun PixelBrainShader.Buffer.getColors() = colors.map { it.toHexString() }.joinToString(",")
     private fun Pixels.getColors() = map { it.toHexString() }.joinToString(",")
-    private fun PixelShader.IndexedBuffer.byte(index: Int) = dataBuf[index].toInt() and 0xFF
-    private fun PixelShader.IndexedBuffer.bytes() =
+    private fun PixelBrainShader.IndexedBuffer.byte(index: Int) = dataBuf[index].toInt() and 0xFF
+    private fun PixelBrainShader.IndexedBuffer.bytes() =
         dataBuf.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 }

@@ -7,20 +7,20 @@ import baaahs.io.ByteArrayWriter
 /**
  * A shader that sets all pixels to a single color.
  */
-class SolidShader : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
+class SolidBrainShader : BrainShader<SolidBrainShader.Buffer>(BrainShaderId.SOLID) {
     override fun createBuffer(surface: Surface): Buffer = Buffer()
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
     override fun createRenderer(surface: Surface): Renderer = Renderer()
 
-    companion object : ShaderReader<SolidShader> {
-        override fun parse(reader: ByteArrayReader) = SolidShader()
+    companion object : BrainShaderReader<SolidBrainShader> {
+        override fun parse(reader: ByteArrayReader) = SolidBrainShader()
     }
 
-    inner class Buffer : Shader.Buffer {
-        override val shader: Shader<*>
-            get() = this@SolidShader
+    inner class Buffer : BrainShader.Buffer {
+        override val brainShader: BrainShader<*>
+            get() = this@SolidBrainShader
 
         var color: Color = Color.WHITE
 
@@ -33,7 +33,7 @@ class SolidShader : Shader<SolidShader.Buffer>(ShaderId.SOLID) {
         }
     }
 
-    class Renderer : Shader.Renderer<Buffer> {
+    class Renderer : BrainShader.Renderer<Buffer> {
         override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.color
     }
 }
