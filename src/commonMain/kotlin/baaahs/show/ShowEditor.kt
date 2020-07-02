@@ -160,8 +160,9 @@ class ShowEditor(
                 return this
             }
 
-            fun editPatch(index: Int, block: PatchEditor.() -> Unit) {
-                TODO()
+            fun editPatch(index: Int, block: PatchEditor.() -> Unit): PatchSetEditor {
+                patchMappings[index].block()
+                return this
             }
 
             fun isChanged(): Boolean {

@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.Logger
 import baaahs.getBang
 import baaahs.glsl.GlslRenderer
 import baaahs.show.*
@@ -70,5 +71,9 @@ class AutoWirer(val plugins: Plugins) {
         data class LinkOptions(val from: List<LinkEditor.Port>, val to: LinkEditor.Port) {
             fun isAmbiguous() = from.size != 1
         }
+    }
+
+    companion object {
+        private val logger = Logger("AutoWirer")
     }
 }

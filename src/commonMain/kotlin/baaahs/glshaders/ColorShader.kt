@@ -81,8 +81,8 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         explicitUniforms + implicitUniforms + uvCoordPort
     }
 
-    override val outputPorts: List<OutputPort>
-        get() = listOf()
+    override val outputPorts: List<OutputPort> =
+        listOf(OutputPort("vec4", "<arg0>", "Output Color", ContentType.Color))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return namespace.qualify(entryPoint.name) +
@@ -118,8 +118,8 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 //    it.type, it.name, title, contentType,
 //    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
 
-    override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
+    override val outputPorts: List<OutputPort> =
+        listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return StringBuilder().apply {

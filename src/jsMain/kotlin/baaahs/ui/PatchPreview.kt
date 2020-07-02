@@ -17,13 +17,13 @@ import react.dom.canvas
 
 val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     val canvas = useRef<HTMLCanvasElement>()
-    var gl by useState<GlslContext>(nuffin())
-    var glslPreview by useState<GlslPreview>(nuffin())
+    var gl by useState<GlslContext?>(null)
+    var glslPreview by useState<GlslPreview?>(null)
 
     val compile = useCallback({ openPatch: OpenPatch ->
         val showResources = object : BaseShowResources(Plugins.safe()) {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
-            override val glslContext: GlslContext get() = gl
+            override val glslContext: GlslContext get() = gl!!
 
             override fun <T : Gadget> createdGadget(id: String, gadget: T) {
                 gadgets[id] = gadget
@@ -36,7 +36,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         }
         val program =
             try {
-                openPatch.compile(gl) { dataSource ->
+                openPatch.compile(gl!!) { dataSource ->
                     val id = dataSource.suggestId()
                     DataBinding(id, dataSource.createFeed(showResources, id))
                 }.also {
@@ -57,6 +57,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     }, arrayOf(gl, props.onError))
 
     useEffectWithCleanup(arrayListOf(canvas)) {
+        println("canvas = ${canvas}; create context and glslpreview")
         val canvasEl = canvas.current
         val glslContext = GlslBase.jsManager.createContext(canvasEl)
         gl = glslContext
@@ -71,10 +72,11 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     }
 
     useEffect(props.patch, glslPreview, gl, name = "patch") {
+        println("have patch ${props.patch}! gl == $gl")
         if (gl == null) return@useEffect
         props.patch?.let { patch ->
             compile(patch)?.let { program ->
-                glslPreview.setProgram(program)
+                glslPreview!!.setProgram(program)
             }
         }
     }
