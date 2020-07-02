@@ -8,6 +8,7 @@ import acex.Range
 import baaahs.GadgetData
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
+import baaahs.glshaders.OpenPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.CompiledShader
 import baaahs.io.Fs
@@ -47,7 +48,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
     var gadgets by preact.state<Array<GadgetData>> { arrayOf() }
     var openShaders by preact.state<List<EditingShader>> { arrayListOf() }
     var selectedShaderIndex by preact.state { -1 }
-    var patchEditor by preact.state<PatchEditor?> { null }
+    var curPatch by preact.state<OpenPatch?> { null }
     var extractionCandidate by preact.state<ExtractionCandidate?> { null }
     var glslNumberMarker by preact.state<Number?> { null }
     var fileDialogOpen by preact.state { false }
@@ -99,7 +100,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
 
     preact.sideEffect("shaders change", selectedShader, showGlslErrors) {
         if (selectedShader == null) {
-            patchEditor = null
+            curPatch = null
             return@sideEffect
         }
         val editor = aceEditor.current.editor
@@ -119,7 +120,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
                 )
             }
         }
-        patchEditor = selectedShader.patch
+        curPatch = selectedShader.patch?.open()
     }
 
     val onChange: (String, Any) -> Unit = useCallback(
@@ -182,7 +183,7 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
         val max = originalText.toFloat() * 2f
 
         session.replace(extraction.range, uniformName)
-        val insertionRow = lastUniform?.let { it.start.row.toInt() + 1 } ?: 1
+        val insertionRow = lastUniform?.let { it.start.row.toInt() + 1 } ?: 0
         session.insert(
             Point(insertionRow, 0),
             "uniform $type $uniformName; // @@Slider default=${originalText} max=${max}\n"
@@ -358,7 +359,8 @@ val ShaderEditorWindow = functionalComponent<ShaderEditorWindowProps> { props ->
             css { +previewBar }
 
             patchPreview {
-                this.patch = patchEditor?.open()
+                println("rerender ShaderEditorWindow")
+                this.patch = curPatch
                 onSuccess = handlePatchPreviewSuccess
                 onGadgetsChange = handleGadgetsChange
                 onError = handleGlslErrors

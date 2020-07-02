@@ -250,9 +250,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
                     val editor = ShowEditor(curShow, curState).editScene(curState.selectedScene) {
                         editPatchSet(curState.selectedPatchSet) {
-                            editPatch(0) {
-                                links = newPatch.links.toMutableList()
-                                surfaces = newPatch.surfaces
+                            if (this.patchMappings.isEmpty()) {
+                                addPatch {
+                                    links = newPatch.links.toMutableList()
+                                    surfaces = newPatch.surfaces
+                                }
+                            } else {
+                                editPatch(0) {
+                                    links = newPatch.links.toMutableList()
+                                    surfaces = newPatch.surfaces
+                                }
                             }
                         }
                     }
