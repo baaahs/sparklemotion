@@ -2,13 +2,10 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslBase
 import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
-import baaahs.show.Show
 import baaahs.sim.FakeFs
 import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
@@ -28,7 +25,6 @@ fun main(args: Array<String>) {
     val pinkyAddress = BrowserAddress(websocketsUrl())
     val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
     val contentDiv = document.getElementById("content")
-    val plugins = Plugins.findAll()
 
     when (mode) {
         "Simulator" -> {
@@ -62,8 +58,7 @@ fun main(args: Array<String>) {
                 SaveAsFs("Shader Library (busted!)", FakeFs()),
                 SaveAsFs("Show", FakeFs())
             )
-            val uiApp = WebUi(network, pinkyAddress, filesystems,
-                ClientShowResources(plugins, GlslBase.jsManager.createContext(), Show("Loading...")))
+            val uiApp = WebUi(network, pinkyAddress, filesystems)
             render(uiApp.render(), contentDiv)
         }
 

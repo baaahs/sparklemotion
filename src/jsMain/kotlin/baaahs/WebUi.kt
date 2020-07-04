@@ -2,6 +2,9 @@ package baaahs
 
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
+import baaahs.client.ClientShowResources
+import baaahs.glshaders.Plugins
+import baaahs.glsl.GlslBase
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.ui.SaveAsFs
@@ -11,16 +14,18 @@ import react.createElement
 
 /** Changes here should also be applied to [baaahs.sim.ui.AppWindow]. */
 class WebUi(
-    private val network: Network,
-    private val pinkyAddress: Network.Address,
+    network: Network,
+    pinkyAddress: Network.Address,
     private val filesystems: List<SaveAsFs>,
-    private val showResources: ShowResources
+    plugins: Plugins = Plugins.findAll()
 ) : HostedWebApp {
+    private val webUiClientLink = network.link("app")
+    private val pubSub = PubSub.Client(webUiClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
+    private val glslContext = GlslBase.jsManager.createContext()
+    private val showResources = ClientShowResources(plugins, glslContext, pubSub)
 
     override fun render(): ReactElement {
-        val webUiClientLink = network.link("app")
         println("WebUi: my link is ${webUiClientLink.myAddress}")
-        val pubSub = PubSub.Client(webUiClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
 
         return createElement(AppIndex, jsObject<AppIndexProps> {
             this.id = "Client Window"

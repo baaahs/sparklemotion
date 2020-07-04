@@ -17,6 +17,7 @@ abstract class GlslContext(
     private var activeTextureUnit: TextureUnit? = null
 
     private var activeProgram: GlslProgram? = null
+    private var activeRenderBuffer: RenderBuffer? = null
 
     class Stats {
         var activeTexture = 0
@@ -46,6 +47,62 @@ abstract class GlslContext(
         if (activeProgram !== glslProgram) {
             check { useProgram(glslProgram.id) }
             activeProgram = glslProgram
+        }
+    }
+
+    fun createRenderBuffer(): RenderBuffer {
+        val frameBuffer = check { createFramebuffer() }
+        val renderBuffer = check { createRenderbuffer() }
+
+        return RenderBuffer(frameBuffer, renderBuffer)
+    }
+
+    inner class RenderBuffer(
+        private val framebuffer: Framebuffer,
+        private val renderbuffer: Renderbuffer
+    ) {
+        var curRenderbufferStorageArgs = emptyList<Any>()
+        var curFramebufferRenderbufferArgs = emptyList<Any>()
+
+        fun bind(
+            internalformat: Int, width: Int, height: Int,
+            attachment: Int, renderbuffertarget: Int
+        ) {
+            if (activeRenderBuffer != this) {
+                check { bindFramebuffer(GL_FRAMEBUFFER, framebuffer) }
+                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
+                activeRenderBuffer = this
+            }
+
+            val newRenderbufferStorageArgs = listOf(internalformat, width, height)
+            if (newRenderbufferStorageArgs != curRenderbufferStorageArgs) {
+                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
+                curRenderbufferStorageArgs = newRenderbufferStorageArgs
+            }
+
+            val newFramebufferRenderbufferArgs = listOf(attachment, renderbuffertarget)
+            if (newRenderbufferStorageArgs != curFramebufferRenderbufferArgs) {
+                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
+                curFramebufferRenderbufferArgs = newFramebufferRenderbufferArgs
+                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, renderbuffertarget, renderbuffer) }
+            }
+
+            if (checkForErrors) {
+                val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
+                if (status != GL_FRAMEBUFFER_COMPLETE) {
+                    logger.warn { "FrameBuffer huh? $status" }
+                }
+            }
+        }
+
+        fun release() {
+            if (activeRenderBuffer == this) {
+                check { bindRenderbuffer(GL_RENDERBUFFER, null) }
+                check { bindFramebuffer(GL_FRAMEBUFFER, null) }
+            }
+
+            check { deleteFramebuffer(framebuffer) }
+            check { deleteRenderbuffer(renderbuffer) }
         }
     }
 
@@ -123,7 +180,6 @@ abstract class GlslContext(
         }
 
         if (error != 0) {
-            val logger = Logger("GlslBase")
             logger.error { "OpenGL Error: $code" }
             throw RuntimeException("OpenGL Error: $code")
         }
@@ -131,5 +187,9 @@ abstract class GlslContext(
 
     fun release() {
 //        TODO("not implemented")
+    }
+
+    companion object {
+        private val logger = Logger("GlslContext")
     }
 }
