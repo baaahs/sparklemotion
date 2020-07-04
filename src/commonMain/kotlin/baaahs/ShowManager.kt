@@ -124,22 +124,6 @@ abstract class BaseShowResources(
     }
 }
 
-class ClientShowResources(
-    plugins: Plugins,
-    override val glslContext: GlslContext,
-    show: Show
-) : BaseShowResources(plugins) {
-    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-
-    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
-        gadgets[id] = gadget
-    }
-
-    override fun <T : Gadget> useGadget(id: String): T {
-        return gadgets[id] as T
-    }
-}
-
 class ShowManager(
     plugins: Plugins,
     override val glslContext: GlslContext,

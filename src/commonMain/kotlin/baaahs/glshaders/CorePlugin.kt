@@ -200,13 +200,20 @@ class CorePlugin : Plugin {
         override fun createFeed(showResources: ShowResources, id: String): DataFeed {
             val gadget = createGadget(showResources)
             showResources.createdGadget(id, gadget)
-            return object : DataFeed, RefCounted by RefCounter() {
+            return object : GadgetDataFeed, RefCounted by RefCounter() {
+                override val id: String = id
+                override val gadget: Gadget = gadget
 
                 override fun set(uniform: Uniform) {
                     this@GadgetDataSource.set(gadget, uniform)
                 }
             }
         }
+    }
+
+    interface GadgetDataFeed : DataFeed {
+        val id: String
+        val gadget: Gadget
     }
 
     @Serializable
