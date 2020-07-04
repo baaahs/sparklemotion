@@ -23,7 +23,7 @@ const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
     'Sheep Visualizer': SheepVisualizerWindow,
     'Simulator Console': SimulatorSettingsWindow,
-    'Web UI': baaahs.sim.ui.AppWindow,
+    'Web UI': baaahs.sim.ui.WebClientWindow,
   };
 
   const { simulator } = props;
