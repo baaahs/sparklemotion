@@ -98,8 +98,7 @@ class SheepSimulator {
             SaveAsFs("Show", FakeFs())
         )
         launcher.add("Web UI") {
-            val showResources = ClientShowResources(plugins, GlslBase.manager.createContext(), Show("Loading..."))
-            WebUi(network, pinky.address, filesystems, showResources)
+            WebUi(network, pinky.address, filesystems, plugins)
         } // .also { delay(1000); it.click() }
 
         launcher.add("Mapper") {

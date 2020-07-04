@@ -1,11 +1,10 @@
 package baaahs.sim.ui
 
-import baaahs.ClientShowResources
 import baaahs.app.ui.AppIndexProps
 import baaahs.app.ui.appIndex
+import baaahs.client.ClientShowResources
 import baaahs.glsl.GlslBase
 import baaahs.jsx.sim.store
-import baaahs.show.Show
 import baaahs.sim.FakeFs
 import baaahs.ui.ErrorDisplay
 import baaahs.ui.SaveAsFs
@@ -19,6 +18,10 @@ val AppWindow = functionalComponent<AppIndexProps> { props_DO_NOT_USE ->
     val contextState = useContext(store).state
     val pubSub = useMemo({ contextState.simulator.getPubSub() }, arrayOf(contextState.simulator))
     val plugins = contextState.simulator.plugins
+    val glslContext = useMemo({ GlslBase.manager.createContext() }, arrayOf())
+    val clientShowResources = useMemo({
+        ClientShowResources(plugins, glslContext, pubSub)
+    }, arrayOf())
     val saveAsFilesystems = listOf(
         SaveAsFs("Shader Library", contextState.simulator.fs),
         SaveAsFs("Show", FakeFs())
@@ -31,11 +34,7 @@ val AppWindow = functionalComponent<AppIndexProps> { props_DO_NOT_USE ->
             this.id = "Simulator Window"
             this.pubSub = pubSub
             this.filesystems = saveAsFilesystems
-            this.showResources = ClientShowResources(
-                plugins,
-                GlslBase.manager.createContext(),
-                Show("Loading...")
-            )
+            this.showResources = clientShowResources
         }
     }
 }

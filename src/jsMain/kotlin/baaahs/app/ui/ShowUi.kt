@@ -1,10 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.OpenShow
-import baaahs.PubSub
-import baaahs.ShowResources
-import baaahs.ShowState
-import baaahs.gadgets.Slider
+import baaahs.*
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
 import baaahs.show.DataSource
@@ -13,17 +9,32 @@ import baaahs.ui.GadgetRenderer
 import baaahs.ui.gadgets.patchSetList
 import baaahs.ui.gadgets.sceneList
 import baaahs.ui.showLayout
-import baaahs.ui.useCallback
-import react.*
+import baaahs.ui.xComponent
+import react.RBuilder
+import react.RProps
+import react.ReactElement
+import react.child
 import react.dom.p
 
-val ShowUi = functionalComponent<ShowUiProps> { props ->
+val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val show = props.show
     val showState = props.showState
     val currentLayoutName = "default"
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
+    val gadgets by state<MutableMap<DataSource, Gadget>>() { mutableMapOf() }
 
-    val handleEdit = useCallback(props.onChange) { newShow: Show, newShowState: ShowState ->
+    sideEffect("show change", show) {
+        show.dataFeeds.forEach { (dataSource, dataFeed) ->
+            if (dataSource is CorePlugin.GadgetDataSource<*>) {
+                dataFeed as CorePlugin.GadgetDataFeed
+                val gadget = dataFeed.gadget
+                props.showResources.createdGadget(dataFeed.id, gadget)
+                gadgets[dataSource] = gadget
+            }
+        }
+    }
+
+    val handleEdit = handler("edit", props.onChange) { newShow: Show, newShowState: ShowState ->
         props.onChange(newShow, newShowState)
     }
 
@@ -56,13 +67,7 @@ val ShowUi = functionalComponent<ShowUiProps> { props ->
                     dataSource as CorePlugin.SliderDataSource
                     RangeSlider {
                         attrs.pubSub = props.pubSub
-                        attrs.gadget = Slider(
-                            dataSource.title,
-                            dataSource.initialValue,
-                            dataSource.minValue,
-                            dataSource.maxValue,
-                            dataSource.stepValue
-                        )
+                        attrs.gadget = gadgets.getBang(dataSource, "gadget")
                     }
                     if (props.editMode) {
                         +"Edit…"
