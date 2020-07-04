@@ -25,7 +25,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
     private val mtu = wrappedLink.udpMtu
     private var nextMessageId: Short = 0
 
-    private var fragments = arrayListOf<Fragment>()
+    private var fragments = mutableListOf<Fragment>()
 
     class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray) {
         override fun toString(): String {
@@ -55,6 +55,10 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                 if (offset == 0 && size == totalSize) {
                     udpListener.receive(fromAddress, fromPort, frameBytes)
                 } else {
+                    val fragmentCount = fragments.size
+                    if (fragmentCount > 200) {
+                        fragments = fragments.subList(fragmentCount - 50, fragmentCount)
+                    }
                     val thisFragment = Fragment(messageId, offset, frameBytes)
                     synchronized(fragments) {
                         fragments.add(thisFragment)
