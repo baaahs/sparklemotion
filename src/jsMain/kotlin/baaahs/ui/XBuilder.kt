@@ -3,6 +3,7 @@ package baaahs.ui
 import baaahs.Logger
 import org.w3c.dom.events.Event
 import react.RMutableRef
+import react.useMemo
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -49,6 +50,10 @@ class XBuilder : react.RBuilder() {
     @Suppress("UNCHECKED_CAST")
     fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
 
+    fun <T> memo(vararg watch: Any?, block: () -> T): T {
+        return useMemo(block, watch)
+    }
+
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
@@ -61,10 +66,6 @@ class XBuilder : react.RBuilder() {
             @Suppress("UNCHECKED_CAST")
             return context.data[dataIndex++] as Data<T>
         }
-    }
-
-    fun forceRender() {
-        counter.second(++internalCounter)
     }
 
     fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
@@ -111,7 +112,11 @@ class XBuilder : react.RBuilder() {
         return handler("event handler", block, block = block as (Event) -> Unit)
     }
 
-    fun renderFinished() {
+    fun forceRender() {
+        counter.second(++internalCounter)
+    }
+
+    internal fun renderFinished() {
         firstTime = false
     }
 
