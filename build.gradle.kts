@@ -7,20 +7,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlin_version = "1.3.72"
-val coroutines_version = "1.3.6"
-val serialization_version = kotlin_version
-val serialization_runtime_version = "0.20.0"
-val ktor_version = "1.3.2"
-val kglVersion = "0.3-baaahs"
-val joglVersion = "2.3.2"
-val lwjglVersion = "3.2.3"
-val spek_version = "2.0.11-rc.1" // custom build with LetValues enabled
-val atrium_version = "0.10.0"
-
 buildscript {
-    val kotlin_version = "1.3.72"
-
     repositories {
         jcenter()
         maven("https://kotlin.bintray.com/kotlinx")
@@ -29,8 +16,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.10.1")
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
     }
@@ -44,10 +31,8 @@ val lwjglNatives = when {
 }
 
 plugins {
-    val kotlin_version = "1.3.72"
-
-    id("org.jetbrains.kotlin.multiplatform") version kotlin_version
-    id("org.jetbrains.kotlin.plugin.serialization") version kotlin_version
+    id("org.jetbrains.kotlin.multiplatform") version Versions.kotlin
+    id("org.jetbrains.kotlin.plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.github.ben-manes.versions") version "0.28.0"
@@ -88,12 +73,12 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_runtime_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_runtime_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.serialization_runtime}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.serialization_runtime}")
                 implementation("com.soywiz.korlibs.klock:klock:1.5.0")
-                api("com.danielgergely.kgl:kgl-metadata:$kglVersion")
+                api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -101,7 +86,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation("spek:spek-dsl:$spek_version")
+                implementation("spek:spek-dsl:${Versions.spek}")
             }
         }
 
@@ -109,11 +94,11 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("io.ktor:ktor-server-core:$ktor_version")
-                implementation("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-server-host-common:$ktor_version")
-                implementation("io.ktor:ktor-websockets:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("io.ktor:ktor-server-core:${Versions.ktor}")
+                implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
+                implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
+                implementation("io.ktor:ktor-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.2.3")
                 implementation("com.xenomachina:kotlin-argparser:2.0.7")
                 implementation("org.deepsymmetry:beat-link:0.6.1")
@@ -124,20 +109,20 @@ kotlin {
 
                 implementation("org.joml:joml:1.9.20")
 
-                implementation("com.danielgergely.kgl:kgl-jvm:$kglVersion")
+                implementation("com.danielgergely.kgl:kgl-jvm:${Versions.kgl}")
 
                 // GLSL support via LWJGL:
-                implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion")
-                implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")
-                runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives")
-                runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives")
-                runtimeOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives")
-                implementation("com.danielgergely.kgl:kgl-lwjgl:$kglVersion")
+                implementation("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}")
+                implementation("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}")
+                runtimeOnly("org.lwjgl:lwjgl:${Versions.lwjgl}:$lwjglNatives")
+                runtimeOnly("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}:$lwjglNatives")
+                runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$lwjglNatives")
+                implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
 
                 // GLSL support via JOGL:
-                implementation("org.jogamp.gluegen:gluegen-rt-main:$joglVersion")
-                implementation("org.jogamp.jogl:jogl-all-main:$joglVersion")
-                implementation("com.danielgergely.kgl:kgl-jogl:$kglVersion")
+                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
+                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
+                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -148,11 +133,11 @@ kotlin {
                 implementation(kotlin("test-junit5"))
 
                 runtimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
-                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
-                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
+                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}")
                 implementation("io.mockk:mockk:1.9.3")
 
                 // For RunOpenGLTests:
@@ -166,12 +151,12 @@ kotlin {
 
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_runtime_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.serialization_runtime}")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
 
                 implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
-                implementation("com.danielgergely.kgl:kgl-js:$kglVersion")
+                implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
                 implementation("org.jetbrains:kotlin-react:16.13.1-pre.104-kotlin-1.3.72")
@@ -225,7 +210,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:$atrium_version")
+                implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:${Versions.atrium}")
             }
         }
 
