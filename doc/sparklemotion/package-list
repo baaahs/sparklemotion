@@ -1,7 +1,9 @@
 $dokka.format:html
 $dokka.linkExtension:html
 $dokka.location:baaahs$array(kotlinx.serialization.KSerializer((baaahs.array.T)), kotlin.reflect.KClass((baaahs.array.T)))baaahs/kotlinx.serialization.-k-serializer/array.html
+$dokka.location:baaahs$camelize(kotlin.String)baaahs/kotlin.-string/camelize.html
 $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/disabled.html
+$dokka.location:baaahs$getBang(kotlin.collections.Map((baaahs.getBang.K, baaahs.getBang.V)), baaahs.getBang.K, kotlin.String)baaahs/kotlin.collections.-map/get-bang.html
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$replacing(kotlin.collections.List((baaahs.replacing.T)), kotlin.Int, baaahs.replacing.T)baaahs/kotlin.collections.-list/replacing.html
 $dokka.location:baaahs.ui$asTextNode(kotlin.String)baaahs.ui/kotlin.-string/as-text-node.html
@@ -20,6 +22,7 @@ baaahs.admin
 baaahs.api.ws
 baaahs.app.ui
 baaahs.browser
+baaahs.client
 baaahs.dmx
 baaahs.gadgets
 baaahs.geom
@@ -33,7 +36,6 @@ baaahs.mapper
 baaahs.model
 baaahs.models
 baaahs.net
-baaahs.ports
 baaahs.proto
 baaahs.shaders
 baaahs.show
@@ -48,4 +50,5 @@ baaahs.visualizer.ui
 external
 external.mosaic
 materialui
+materialui.components.buttongroup
 three

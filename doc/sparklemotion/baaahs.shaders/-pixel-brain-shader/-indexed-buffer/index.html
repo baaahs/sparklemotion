@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PixelBrainShader.IndexedBuffer - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.shaders</a>&nbsp;/&nbsp;<a href="../index.html">PixelBrainShader</a>&nbsp;/&nbsp;<a href="./index.html">IndexedBuffer</a><br/>
+<br/>
+<h1>IndexedBuffer</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">IndexedBuffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">IndexedBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$<init>(kotlin.Int, kotlin.Int)/bitsPerPixel">bitsPerPixel</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$<init>(kotlin.Int, kotlin.Int)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="colors.html">colors</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">colors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="indices.html">indices</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">indices</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.ranges/-int-range/index.html"><span class="identifier">IntRange</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="palette.html">palette</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">palette</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get.html">get</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$get(kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read.html">read</a></h4>
+</td>
+<td>
+<p><a href="serialize.html">serialize</a> and <a href="read.html">read</a> are asymmetrical because pixel count is read in <a href="../-buffer/read.html">Buffer.read</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">read</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$read(baaahs.io.ByteArrayReader, kotlin.Int)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$read(baaahs.io.ByteArrayReader, kotlin.Int)/incomingPixelCount">incomingPixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serialize.html">serialize</a></h4>
+</td>
+<td>
+<p><a href="serialize.html">serialize</a> and <a href="read.html">read</a> are asymmetrical because pixel count is read in <a href="../-buffer/read.html">Buffer.read</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$serialize(baaahs.io.ByteArrayWriter)/writer">writer</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.io/-byte-array-writer/index.html"><span class="identifier">ByteArrayWriter</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$set(kotlin.Int, baaahs.Color)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$set(kotlin.Int, baaahs.Color)/color">color</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-all.html">setAll</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setAll</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$setAll(baaahs.Color)/color">color</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">setAll</span><span class="symbol">(</span><span class="identifier" id="baaahs.shaders.PixelBrainShader.IndexedBuffer$setAll(kotlin.Int)/paletteIndex">paletteIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -31,7 +31,7 @@
 <h4><a href="-base-show-resources/index.html">BaseShowResources</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-mutable-show-resources/index.html"><span class="identifier">MutableShowResources</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-show-resources/index.html"><span class="identifier">ShowResources</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -85,10 +85,24 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-client-show-resources/index.html">ClientShowResources</a></h4>
+<h4><a href="-brain-shader/index.html">BrainShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">ClientShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-base-show-resources/index.html"><span class="identifier">BaseShowResources</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BrainShader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-brain-shader-id/index.html">BrainShaderId</a></h4>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">BrainShaderId</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-brain-shader-reader/index.html">BrainShaderReader</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">BrainShaderReader</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-brain-shader/index.html"><span class="identifier">BrainShader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -291,10 +305,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-mutable-show-resources/index.html">MutableShowResources</a></h4>
+<h4><a href="-open-controllables/index.html">OpenControllables</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">MutableShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-show-resources/index.html"><span class="identifier">ShowResources</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">OpenControllables</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-open-show/index.html">OpenShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">OpenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-ref-counted/index.html"><span class="identifier">RefCounted</span></a><span class="symbol">, </span><a href="-open-controllables/index.html"><span class="identifier">OpenControllables</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -361,31 +382,31 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-ref-counted/index.html">RefCounted</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">RefCounted</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-ref-counter/index.html">RefCounter</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RefCounter</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-render-plan/index.html">RenderPlan</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RenderPlan</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-scene-list-type/index.html">SceneListType</a></h4>
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SceneListType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-control-type/index.html"><span class="identifier">ControlType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader/index.html">Shader</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Shader</span><span class="symbol">&lt;</span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-id/index.html">ShaderId</a></h4>
-</td>
-<td>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">ShaderId</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-reader/index.html">ShaderReader</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderReader</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -428,6 +449,13 @@
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShowState</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-with-state/index.html">ShowWithState</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShowWithState</span></code></td>
 </tr>
 <tr>
 <td>
@@ -493,14 +521,6 @@
 <td>
 <code><span class="keyword">object </span><span class="identifier">Topics</span></code></td>
 </tr>
-<tr>
-<td>
-<h4><a href="-web-ui/index.html">WebUi</a></h4>
-</td>
-<td>
-<p>Changes here should also be applied to <a href="../baaahs.sim.ui/-app-window.html">baaahs.sim.ui.AppWindow</a>.</p>
-<code><span class="keyword">class </span><span class="identifier">WebUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Extensions for External Classes</h3>
@@ -516,6 +536,20 @@
 <tr>
 <td>
 <h4><a href="kotlin.collections.-list/index.html">kotlin.collections.List</a></h4>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<h4><a href="kotlin.collections.-map/index.html">kotlin.collections.Map</a></h4>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<h4><a href="kotlin.-string/index.html">kotlin.String</a></h4>
 </td>
 <td>
 </td>
@@ -669,7 +703,14 @@
 <h4><a href="unknown.html">unknown</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">unknown</span><span class="symbol">(</span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, kotlin.String, kotlin.collections.Collection((kotlin.String)))/among">among</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">unknown</span><span class="symbol">(</span><span class="identifier" id="baaahs$unknown(kotlin.String, baaahs.unknown.T, kotlin.collections.Collection((baaahs.unknown.T)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, baaahs.unknown.T, kotlin.collections.Collection((baaahs.unknown.T)))/key">key</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs$unknown(kotlin.String, baaahs.unknown.T, kotlin.collections.Collection((baaahs.unknown.T)))/among">among</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="with-state.html">withState</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">.</span><span class="identifier">withState</span><span class="symbol">(</span><span class="identifier" id="baaahs$withState(baaahs.show.Show, baaahs.ShowState)/showState">showState</span><span class="symbol">:</span>&nbsp;<a href="-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-show-with-state/index.html"><span class="identifier">ShowWithState</span></a></code></td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>OpenPatch - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glshaders</a>&nbsp;/&nbsp;<a href="./index.html">OpenPatch</a><br/>
+<br/>
+<h1>OpenPatch</h1>
+<code><span class="keyword">class </span><span class="identifier">OpenPatch</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-component/index.html">Component</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Component</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">OpenPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch$<init>(baaahs.show.Patch, kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/patch">patch</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch$<init>(baaahs.show.Patch, kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/shadersById">shadersById</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch$<init>(baaahs.show.Patch, kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/dataSourcesById">dataSourcesById</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bind.html">bind</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch$bind(baaahs.glshaders.GlslProgram, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.DataBinding)))/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch$bind(baaahs.glshaders.GlslProgram, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.DataBinding)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../-data-binding/index.html"><span class="identifier">DataBinding</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Binding</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compile.html">compile</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compile</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch$compile(baaahs.glsl.GlslContext, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.DataBinding)))/glslContext">glslContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch$compile(baaahs.glsl.GlslContext, kotlin.Function1((baaahs.show.DataSource, baaahs.glshaders.DataBinding)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-program.html">createProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch$createProgram(baaahs.glsl.GlslContext, kotlin.collections.Map((baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/glslContext">glslContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch$createProgram(baaahs.glsl.GlslContext, kotlin.collections.Map((baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/dataFeeds">dataFeeds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="matches.html">matches</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">matches</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch$matches(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-glsl.html">toGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toGlsl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

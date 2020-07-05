@@ -13,6 +13,20 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-controllables/index.html">Controllables</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Controllables</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-controllables-editor/index.html">ControllablesEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ControllablesEditor</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-data-source/index.html">DataSource</a></h4>
 </td>
 <td>
@@ -24,6 +38,20 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">DataSourceBuilder</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-data-source-editor/index.html">DataSourceEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DataSourceEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-data-source-ref/index.html">DataSourceRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DataSourceRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-port-ref/index.html"><span class="identifier">PortRef</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -41,6 +69,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-fixture-shaders/index.html">FixtureShaders</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">FixtureShaders</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-layout/index.html">Layout</a></h4>
 </td>
 <td>
@@ -55,17 +90,59 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-mapping/index.html">PatchMapping</a></h4>
+<h4><a href="-link/index.html">Link</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchMapping</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-link-editor/index.html">LinkEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">LinkEditor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-output-port-editor/index.html">OutputPortEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">OutputPortEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-output-port-ref/index.html">OutputPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">OutputPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-port-ref/index.html"><span class="identifier">PortRef</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-patch/index.html">Patch</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Patch</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-patch-editor/index.html">PatchEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PatchEditor</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-patch-set/index.html">PatchSet</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-port-ref/index.html">PortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">PortRef</span></code></td>
 </tr>
 <tr>
 <td>
@@ -76,24 +153,80 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-sample-shaders/index.html">SampleShaders</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">SampleShaders</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-scene/index.html">Scene</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader/index.html">Shader</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Shader</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-editor/index.html">ShaderEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderEditor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-in-port-ref/index.html">ShaderInPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderInPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-port-ref/index.html"><span class="identifier">PortRef</span></a><span class="symbol">, </span><a href="-shader-port-ref/index.html"><span class="identifier">ShaderPortRef</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-out-port-ref/index.html">ShaderOutPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderOutPortRef</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-port-ref/index.html"><span class="identifier">PortRef</span></a><span class="symbol">, </span><a href="-shader-port-ref/index.html"><span class="identifier">ShaderPortRef</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-port-editor/index.html">ShaderPortEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShaderPortEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-port-ref/index.html">ShaderPortRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShaderPortRef</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-show/index.html">Show</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-builder/index.html">ShowBuilder</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ShowBuilder</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-editor/index.html">ShowEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ShowEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables-editor/index.html"><span class="identifier">ControllablesEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-serial-module/index.html">ShowSerialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ShowSerialModule</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">SerialModule</span></code></td>
 </tr>
 <tr>
 <td>

@@ -29,20 +29,13 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Connection</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo)), kotlinx.serialization.json.Json)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo)), kotlinx.serialization.json.Json)/topics">topics</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo)), kotlinx.serialization.json.Json)/json">json</span><span class="symbol">:</span>&nbsp;<span class="identifier">Json</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Connection</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo((kotlin.Any)))))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo((kotlin.Any)))))/topics">topics</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<h4><a href="connection.html">connection</a></h4>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">connection</span><span class="symbol">: </span><span class="identifier">TcpConnection</span><span class="symbol">?</span></code></td>
-</tr>
 <tr>
 <td>
 <h4><a href="is-connected.html">isConnected</a></h4>
@@ -81,21 +74,21 @@
 <h4><a href="send-topic-sub.html">sendTopicSub</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">sendTopicSub</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicSub(kotlin.String)/topicName">topicName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">sendTopicSub</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicSub(baaahs.PubSub.TopicInfo((kotlin.Any)))/topicInfo">topicInfo</span><span class="symbol">:</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="send-topic-unsub.html">sendTopicUnsub</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">sendTopicUnsub</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUnsub(kotlin.String)/topicName">topicName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">sendTopicUnsub</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUnsub(baaahs.PubSub.TopicInfo((kotlin.Any)))/topicInfo">topicInfo</span><span class="symbol">:</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="send-topic-update.html">sendTopicUpdate</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">sendTopicUpdate</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUpdate(kotlin.String, kotlinx.serialization.json.JsonElement)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUpdate(kotlin.String, kotlinx.serialization.json.JsonElement)/data">data</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">sendTopicUpdate</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUpdate(baaahs.PubSub.TopicInfo((kotlin.Any)), kotlinx.serialization.json.JsonElement)/topicInfo">topicInfo</span><span class="symbol">:</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$sendTopicUpdate(baaahs.PubSub.TopicInfo((kotlin.Any)), kotlinx.serialization.json.JsonElement)/data">data</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

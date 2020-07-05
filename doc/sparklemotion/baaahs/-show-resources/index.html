@@ -14,13 +14,6 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="data-feeds.html">dataFeeds</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">dataFeeds</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="glsl-context.html">glslContext</a></h4>
 </td>
 <td>
@@ -28,10 +21,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="shaders.html">shaders</a></h4>
+<h4><a href="plugins.html">plugins</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.glshaders/-shader-fragment/index.html"><span class="identifier">ShaderFragment</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-plugins/index.html"><span class="identifier">Plugins</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-with-state-topic.html">showWithStateTopic</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">showWithStateTopic</span><span class="symbol">: </span><span class="identifier">Topic</span><span class="symbol">&lt;</span><a href="../-show-with-state/index.html"><span class="identifier">ShowWithState</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -47,6 +47,48 @@
 </tr>
 <tr>
 <td>
+<h4><a href="create-show-with-state-topic.html">createShowWithStateTopic</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">createShowWithStateTopic</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Topic</span><span class="symbol">&lt;</span><a href="../-show-with-state/index.html"><span class="identifier">ShowWithState</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-data-feed.html">openDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">openDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowResources$openDataFeed(kotlin.String, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowResources$openDataFeed(kotlin.String, baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowResources$openShader(baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release-unused.html">releaseUnused</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">releaseUnused</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="swap-and-release.html">swapAndRelease</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">swapAndRelease</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowResources$swapAndRelease(baaahs.OpenShow, baaahs.show.Show)/oldOpenShow">oldOpenShow</span><span class="symbol">:</span>&nbsp;<a href="../-open-show/index.html"><span class="identifier">OpenShow</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.ShowResources$swapAndRelease(baaahs.OpenShow, baaahs.show.Show)/newShow">newShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-open-show/index.html"><span class="identifier">OpenShow</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-data-feed.html">useDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">useDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowResources$useDataFeed(baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="use-gadget.html">useGadget</a></h4>
 </td>
 <td>
@@ -59,10 +101,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="../-mutable-show-resources/index.html">MutableShowResources</a></h4>
+<h4><a href="../-base-show-resources/index.html">BaseShowResources</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">MutableShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">ShowResources</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">ShowResources</span></a></code></td>
 </tr>
 </tbody>
 </table>

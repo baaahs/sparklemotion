@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">BaseShowResources</a><br/>
 <br/>
 <h1>BaseShowResources</h1>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-mutable-show-resources/index.html"><span class="identifier">MutableShowResources</span></a></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-show-resources/index.html"><span class="identifier">ShowResources</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,20 +17,13 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">BaseShowResources</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$<init>(baaahs.show.Show)/initialShow">initialShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">BaseShowResources</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$<init>(baaahs.glshaders.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<h4><a href="data-feeds.html">dataFeeds</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">dataFeeds</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span></code></td>
-</tr>
 <tr>
 <td>
 <h4><a href="glsl-analyzer.html">glslAnalyzer</a></h4>
@@ -40,10 +33,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="shaders.html">shaders</a></h4>
+<h4><a href="plugins.html">plugins</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">shaders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.glshaders/-shader-fragment/index.html"><span class="identifier">ShaderFragment</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-plugins/index.html"><span class="identifier">Plugins</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-with-state-topic.html">showWithStateTopic</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">showWithStateTopic</span><span class="symbol">: </span><span class="identifier">Topic</span><span class="symbol">&lt;</span><a href="../-show-with-state/index.html"><span class="identifier">ShowWithState</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -52,10 +52,31 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="switch-to.html">switchTo</a></h4>
+<h4><a href="open-data-feed.html">openDataFeed</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">switchTo</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$switchTo(baaahs.show.Show)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$openDataFeed(kotlin.String, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BaseShowResources$openDataFeed(kotlin.String, baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$openShader(baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release-unused.html">releaseUnused</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">releaseUnused</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-data-feed.html">useDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">useDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowResources$useDataFeed(baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -64,7 +85,7 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="../-client-show-resources/index.html">ClientShowResources</a></h4>
+<h4><a href="../../baaahs.client/-client-show-resources/index.html">ClientShowResources</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">ClientShowResources</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BaseShowResources</span></a></code></td>

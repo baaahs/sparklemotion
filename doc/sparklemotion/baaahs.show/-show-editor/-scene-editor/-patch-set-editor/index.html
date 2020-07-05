@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShowEditor.SceneEditor.PatchSetEditor - sparklemotion</title>
+<link rel="stylesheet" href="../../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../../index.html">baaahs.show</a>&nbsp;/&nbsp;<a href="../../index.html">ShowEditor</a>&nbsp;/&nbsp;<a href="../index.html">SceneEditor</a>&nbsp;/&nbsp;<a href="./index.html">PatchSetEditor</a><br/>
+<br/>
+<h1>PatchSetEditor</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PatchSetEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../-controllables-editor/index.html"><span class="identifier">ControllablesEditor</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">PatchSetEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$<init>(baaahs.show.PatchSet)/basePatchSet">basePatchSet</span><span class="symbol">:</span>&nbsp;<a href="../../../-patch-set/index.html"><span class="identifier">PatchSet</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="patch-mappings.html">patchMappings</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">patchMappings</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../../../-patch-editor/index.html"><span class="identifier">PatchEditor</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-patch.html">addPatch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$addPatch(kotlin.Function1((baaahs.show.PatchEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../../../-patch-editor/index.html"><span class="identifier">PatchEditor</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">PatchSetEditor</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">addPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$addPatch(baaahs.show.PatchEditor)/patch">patch</span><span class="symbol">:</span>&nbsp;<a href="../../../-patch-editor/index.html"><span class="identifier">PatchEditor</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">PatchSetEditor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="build.html">build</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$build(baaahs.show.ShowBuilder)/showBuilder">showBuilder</span><span class="symbol">:</span>&nbsp;<a href="../../../-show-builder/index.html"><span class="identifier">ShowBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../-patch-set/index.html"><span class="identifier">PatchSet</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="edit-patch.html">editPatch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">editPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$editPatch(kotlin.Int, kotlin.Function1((baaahs.show.PatchEditor, kotlin.Unit)))/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor.SceneEditor.PatchSetEditor$editPatch(kotlin.Int, kotlin.Function1((baaahs.show.PatchEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../../../-patch-editor/index.html"><span class="identifier">PatchEditor</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">PatchSetEditor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-data-sources.html">findDataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findDataSources</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../../-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-shaders.html">findShaders</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findShaders</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../../-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-show.html">getShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../../-show/index.html"><span class="identifier">Show</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-show-editor.html">getShowEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShowEditor</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../index.html"><span class="identifier">ShowEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-show-state.html">getShowState</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShowState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-changed.html">isChanged</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isChanged</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -8,7 +8,7 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">PubSub</a>&nbsp;/&nbsp;<a href="./index.html">TopicInfo</a><br/>
 <br/>
 <h1>TopicInfo</h1>
-<code><span class="keyword">class </span><span class="identifier">TopicInfo</span></code>
+<code><span class="keyword">class </span><span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">TopicInfo</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$<init>(kotlin.String, kotlinx.serialization.json.JsonElement)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.TopicInfo$<init>(kotlin.String, kotlinx.serialization.json.JsonElement)/data">data</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span>&nbsp;<span class="symbol">=</span>&nbsp;JsonNull<span class="symbol">)</span></code></td>
+<code><span class="identifier">TopicInfo</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$<init>(baaahs.PubSub.Topic((baaahs.PubSub.TopicInfo.T)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,17 +26,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="data.html">data</a></h4>
+<h4><a href="json-value.html">jsonValue</a></h4>
 </td>
 <td>
-<code><span class="keyword">var </span><span class="identifier">data</span><span class="symbol">: </span><span class="identifier">JsonElement</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="listeners.html">listeners</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">listeners</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><span class="identifier">Listener</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">jsonValue</span><span class="symbol">: </span><span class="identifier">JsonElement</span></code></td>
 </tr>
 <tr>
 <td>
@@ -52,10 +45,53 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-listener.html">addListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$addListener(baaahs.PubSub.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="deserialize.html">deserialize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deserialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$deserialize(kotlinx.serialization.json.JsonElement)/jsonElement">jsonElement</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="no-remaining-listeners.html">noRemainingListeners</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">noRemainingListeners</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="notify.html">notify</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">notify</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(kotlinx.serialization.json.JsonElement, baaahs.PubSub.Origin)/jsonData">jsonData</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(kotlinx.serialization.json.JsonElement, baaahs.PubSub.Origin)/origin">origin</span><span class="symbol">:</span>&nbsp;<span class="identifier">Origin</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">notify</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(baaahs.PubSub.TopicInfo.T, baaahs.PubSub.Origin)/newValue">newValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(baaahs.PubSub.TopicInfo.T, baaahs.PubSub.Origin)/origin">origin</span><span class="symbol">:</span>&nbsp;<span class="identifier">Origin</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">notify</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(kotlin.String, baaahs.PubSub.Origin)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.TopicInfo$notify(kotlin.String, baaahs.PubSub.Origin)/origin">origin</span><span class="symbol">:</span>&nbsp;<span class="identifier">Origin</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-listener.html">removeListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$removeListener(baaahs.PubSub.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-listeners.html">removeListeners</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeListeners</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$removeListeners(kotlin.Function1((baaahs.PubSub.Listener, kotlin.Boolean)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">Listener</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stringify.html">stringify</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">stringify</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.TopicInfo$stringify(kotlinx.serialization.json.JsonElement)/jsonElement">jsonElement</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>

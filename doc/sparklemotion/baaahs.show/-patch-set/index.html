@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show</a>&nbsp;/&nbsp;<a href="./index.html">PatchSet</a><br/>
 <br/>
 <h1>PatchSet</h1>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span></code>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-controllables/index.html"><span class="identifier">Controllables</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">PatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.PatchMapping)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.ports.DataSourceRef)))))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.PatchMapping)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.ports.DataSourceRef)))))/patchMappings">patchMappings</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-patch-mapping/index.html"><span class="identifier">PatchMapping</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.PatchMapping)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.ports.DataSourceRef)))))/eventBindings">eventBindings</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-event-binding/index.html"><span class="identifier">EventBinding</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.PatchMapping)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.ports.DataSourceRef)))))/controlLayout">controlLayout</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.ports/-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span></code></td>
+<code><span class="identifier">PatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.Patch)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.show.DataSourceRef)))))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.Patch)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.show.DataSourceRef)))))/patches">patches</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.Patch)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.show.DataSourceRef)))))/eventBindings">eventBindings</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-event-binding/index.html"><span class="identifier">EventBinding</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">, </span><span class="identifier" id="baaahs.show.PatchSet$<init>(kotlin.String, kotlin.collections.List((baaahs.show.Patch)), kotlin.collections.List((baaahs.show.EventBinding)), kotlin.collections.Map((kotlin.String, kotlin.collections.List((baaahs.show.DataSourceRef)))))/controlLayout">controlLayout</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -29,7 +29,7 @@
 <h4><a href="control-layout.html">controlLayout</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">controlLayout</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.ports/-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">controlLayout</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -40,10 +40,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="patch-mappings.html">patchMappings</a></h4>
+<h4><a href="patches.html">patches</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">patchMappings</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-patch-mapping/index.html"><span class="identifier">PatchMapping</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">patches</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-patch/index.html"><span class="identifier">Patch</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -51,6 +51,25 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="find-data-source-refs.html">findDataSourceRefs</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findDataSourceRefs</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-shader-port-refs.html">findShaderPortRefs</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findShaderPortRefs</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../-shader-port-ref/index.html"><span class="identifier">ShaderPortRef</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,137 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShowEditor - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show</a>&nbsp;/&nbsp;<a href="./index.html">ShowEditor</a><br/>
+<br/>
+<h1>ShowEditor</h1>
+<code><span class="keyword">class </span><span class="identifier">ShowEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-controllables-editor/index.html"><span class="identifier">ControllablesEditor</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-scene-editor/index.html">SceneEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SceneEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-controllables-editor/index.html"><span class="identifier">ControllablesEditor</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ShowEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$<init>(kotlin.String)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code><br/>
+<code><span class="identifier">ShowEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$<init>(baaahs.show.Show, baaahs.ShowState)/baseShow">baseShow</span><span class="symbol">:</span>&nbsp;<a href="../-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor$<init>(baaahs.show.Show, baaahs.ShowState)/baseShowState">baseShowState</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShowState.Empty<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="data-sources.html">dataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">dataSources</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-data-source-editor/index.html"><span class="identifier">DataSourceEditor</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="layouts.html">layouts</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">layouts</span><span class="symbol">: </span><a href="../-layouts/index.html"><span class="identifier">Layouts</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shaders.html">shaders</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-shader-editor/index.html"><span class="identifier">ShaderEditor</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-scene.html">addScene</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$addScene(kotlin.String, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor$addScene(kotlin.String, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">SceneEditor</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="build.html">build</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$build(baaahs.show.ShowBuilder)/showBuilder">showBuilder</span><span class="symbol">:</span>&nbsp;<a href="../-show-builder/index.html"><span class="identifier">ShowBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-show/index.html"><span class="identifier">Show</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="edit-scene.html">editScene</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">editScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$editScene(kotlin.Int, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/sceneIndex">sceneIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor$editScene(kotlin.Int, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">SceneEditor</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-show.html">getShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-show/index.html"><span class="identifier">Show</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-show-state.html">getShowState</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShowState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="invoke.html">invoke</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">invoke</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$invoke(kotlin.Function1((baaahs.show.ShowEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">ShowEditor</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="move-scene.html">moveScene</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">moveScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$moveScene(kotlin.Int, kotlin.Int)/fromIndex">fromIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor$moveScene(kotlin.Int, kotlin.Int)/toIndex">toIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="create.html">create</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">create</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor.Companion$create(kotlin.String)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-show/index.html"><span class="identifier">Show</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
