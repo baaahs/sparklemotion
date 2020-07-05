@@ -39,15 +39,11 @@ class GadgetTest {
     @Test
     fun testClientServerIntegration() {
         val pubSubServer = PubSub.listen(serverLink.startHttpServer(1234))
-        pubSubServer.install(gadgetModule)
-
         val gadgetManager = GadgetManager(pubSubServer)
         val serverSlider = Slider("fader", .1234f)
         gadgetManager.sync(listOf("fader" to serverSlider))
 
         val pubSubClient = PubSub.connect(clientLink, serverLink.myAddress, 1234)
-        pubSubClient.install(gadgetModule)
-
         val gadgetEvents = mutableListOf<String>()
 
         var clientAGadgets = listOf<Gadget>()
@@ -66,7 +62,6 @@ class GadgetTest {
 
         val client2Link = network.link("test")
         val pubSubClient2 = PubSub.connect(client2Link, serverLink.myAddress, 1234)
-        pubSubClient2.install(gadgetModule)
 
         var clientBGadgets = listOf<Gadget>()
         GadgetDisplay(pubSubClient2) { gadgets -> clientBGadgets = gadgets.map { it.gadget }.toMutableList() }

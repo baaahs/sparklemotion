@@ -15,7 +15,7 @@ import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
-import baaahs.shaders.PixelShader
+import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
 import com.soywiz.klock.DateTime
@@ -54,29 +54,28 @@ class Pinky(
             field = value
             facade.notifyChanged()
             showRunner.switchTo(value)
-            currentShowChannel.onChange(show)
         }
 
-    private val pubSub: PubSub.Server = PubSub.Server(httpServer).apply {
-        install(gadgetModule)
-        install(plugins.serialModule)
-    }
+    private var showState = ShowState.forShow(show)
+
+    private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(show, pubSub, glslRenderer.gl)
+    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub)
     internal val showRunner = ShowRunner(
-        model, this.show.scenes[0].patchSets[0], show,
-        showManager, beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
+        model, show, showState, showManager,
+        beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
         pubSub
     )
 
-    var currentShow = show
-    private val currentShowChannel = pubSub.publish(Topics.currentShow, currentShow) { show ->
-        println("Received show change: $show")
-        showHasBeenModified = true
-        this.show = show
+    private val showWithStateChannel =
+        pubSub.publish(showManager.showWithStateTopic, show.withState(showState)) { incomingShowWithState ->
+            println("Received show change: $incomingShowWithState")
+            showHasBeenModified = true
+            this.show = incomingShowWithState.show
+            this.showState = incomingShowWithState.showState
 //            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
-    }
+        }
 
     private var selectedNewShowAt = DateTime.now()
 
@@ -160,10 +159,6 @@ class Pinky(
         ) {
             gadgetManager.adjustSomething()
         }
-    }
-
-    fun switchToShow(nextShow: Show) {
-        this.show = nextShow
     }
 
     internal fun updateSurfaces() {
@@ -282,8 +277,8 @@ class Pinky(
 //            )
         }
 
-        val sendFn: (Shader.Buffer) -> Unit = { shaderBuffer ->
-            val message = BrainShaderMessage(shaderBuffer.shader, shaderBuffer).toBytes()
+        val sendFn: (BrainShader.Buffer) -> Unit = { shaderBuffer ->
+            val message = BrainShaderMessage(shaderBuffer.brainShader, shaderBuffer).toBytes()
             try {
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
             } catch (e: Exception) {
@@ -299,7 +294,7 @@ class Pinky(
             networkStats.bytesSent += message.size
         }
 
-        val pixelShader = PixelShader(PixelShader.Encoding.DIRECT_RGB)
+        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
         val surfaceReceiver = object : ShowRunner.SurfaceReceiver {
             override val surface = surface
             private val pixelBuffer = pixelShader.createBuffer(surface)

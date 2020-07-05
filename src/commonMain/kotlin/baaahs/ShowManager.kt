@@ -3,15 +3,13 @@ package baaahs
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
-import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.ShaderFragment
+import baaahs.glshaders.*
 import baaahs.glsl.GlslContext
-import baaahs.show.PatchSet
-import baaahs.show.Scene
-import baaahs.show.Show
+import baaahs.glsl.GlslRenderer
+import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 @Serializable
 data class ShowState(
@@ -20,83 +18,124 @@ data class ShowState(
 ) {
     val selectedPatchSet: Int get() = patchSetSelections[selectedScene]
 
-    fun findPatchSet(show: Show): PatchSet {
-        return show.scenes[selectedScene].patchSets[selectedPatchSet]
+    fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet {
+        if (selectedScene >= show.scenes.size) {
+            error("scene $selectedScene out of bounds (have ${show.scenes.size})")
+        }
+
+        val scene = show.scenes[selectedScene]
+        if (selectedScene >= patchSetSelections.size) {
+            error("scene $selectedScene patch set out of bounds (have ${patchSetSelections.size})")
+        }
+
+        if (selectedPatchSet >= scene.patchSets.size) {
+            error(
+                "patch set $selectedPatchSet out of bounds " +
+                        "(have ${patchSetSelections.size} for scene $selectedScene)"
+            )
+        }
+
+        return scene.patchSets[selectedPatchSet]
     }
 
-    fun withScene(i: Int) = copy(selectedScene = i)
-    fun withPatchSet(i: Int) = copy(patchSetSelections = patchSetSelections.replacing(selectedScene, i))
+    fun selectScene(i: Int) = copy(selectedScene = i)
+    fun selectPatchSet(i: Int) = copy(patchSetSelections = patchSetSelections.replacing(selectedScene, i))
+    fun withPatchSetSelections(selections: List<Int>) = copy(patchSetSelections = selections)
+
+    /**
+     * Returns a ShowState whose parameters fit within the specified [Show].
+     */
+    fun boundedBy(show: Show): ShowState {
+        return ShowState(
+            selectedScene = min(selectedScene, show.scenes.size - 1),
+            patchSetSelections = show.scenes.mapIndexed { index, scene ->
+                min(
+                    patchSetSelections.getOrNull(index) ?: 0,
+                    scene.patchSets.size - 1
+                )
+            }
+        )
+    }
+
+    companion object {
+        val Empty: ShowState = ShowState(0, emptyList())
+
+        fun forShow(show: Show): ShowState = ShowState(0, show.scenes.map { 0 })
+    }
 }
 
 interface ShowResources {
+    val plugins: Plugins
     val glslContext: GlslContext
-    val dataFeeds: Map<String, GlslProgram.DataFeed>
-    val shaders: Map<String, ShaderFragment>
+    val showWithStateTopic: PubSub.Topic<ShowWithState>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
     fun <T : Gadget> useGadget(id: String): T
+
+    fun openShader(shader: Shader): OpenShader
+    fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
+    fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
+
+    fun createShowWithStateTopic(): PubSub.Topic<ShowWithState> {
+        return PubSub.Topic("showWithState", ShowWithState.serializer(), plugins.serialModule)
+    }
+
+    fun releaseUnused()
+
+    fun swapAndRelease(oldOpenShow: OpenShow?, newShow: Show): OpenShow {
+        val newOpenShow = OpenShow(newShow, this)
+        oldOpenShow?.release()
+        releaseUnused()
+        return newOpenShow
+    }
 }
 
-interface MutableShowResources : ShowResources {
-    fun switchTo(show: Show)
+@Serializable
+data class ShowWithState(val show: Show, val showState: ShowState)
+
+fun Show.withState(showState: ShowState): ShowWithState {
+    return ShowWithState(this, showState.boundedBy(this))
 }
 
-abstract class BaseShowResources(initialShow: Show) : MutableShowResources {
+abstract class BaseShowResources(
+    final override val plugins: Plugins
+) : ShowResources {
     val glslAnalyzer = GlslAnalyzer()
+    override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
 
-    override val dataFeeds: MutableMap<String, GlslProgram.DataFeed> by lazy {
-        calculateDataFeeds(initialShow).toMutableMap()
+    private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
+    private val shaders = mutableMapOf<Shader, OpenShader>()
+
+    override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
+        return dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
     }
 
-    private fun calculateDataFeeds(show: Show): Map<String, GlslProgram.DataFeed> {
-        return show.dataSources.associate { dataSourceProvider ->
-            dataSourceProvider.id to dataSourceProvider.create(this)
+    override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {
+        return dataFeeds[dataSource]!!
+    }
+
+    override fun openShader(shader: Shader): OpenShader {
+        return shaders.getOrPut(shader) { glslAnalyzer.asShader(shader) }
+    }
+
+    override fun releaseUnused() {
+        ArrayList(dataFeeds.entries).forEach { (dataSource, dataFeed) ->
+            if (!dataFeed.inUse()) dataFeeds.remove(dataSource)
         }
-    }
 
-    override val shaders: MutableMap<String, ShaderFragment> by lazy {
-        calculateShaders(initialShow).toMutableMap()
-    }
-
-    private fun calculateShaders(show: Show) =
-        show.shaderFragments.mapValues { (_, src) -> glslAnalyzer.asShader(src) }
-
-    override fun switchTo(show: Show) {
-        // TODO: Do something more efficient here.
-        dataFeeds.values.forEach { it.release() }
-        dataFeeds.clear()
-        dataFeeds.putAll(calculateDataFeeds(show))
-
-        println("Switch to ${show.title}; old shaders: ${shaders.keys}")
-        shaders.clear()
-        val newShaders = calculateShaders(show)
-        println("  new shaders: ${newShaders.keys}")
-        shaders.putAll(newShaders)
-    }
-}
-
-class ClientShowResources(override val glslContext: GlslContext, show: Show) : BaseShowResources(show) {
-    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-
-    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
-        gadgets[id] = gadget
-    }
-
-    override fun <T : Gadget> useGadget(id: String): T {
-        return gadgets[id] as T
+        ArrayList(shaders.entries).forEach { (shader, openShader) ->
+            if (!openShader.inUse()) shaders.remove(shader)
+        }
     }
 }
 
 class ShowManager(
-    show: Show,
-    val pubSub: PubSub.Server,
-    override val glslContext: GlslContext
-) : BaseShowResources(show) {
+    plugins: Plugins,
+    override val glslContext: GlslContext,
+    val pubSub: PubSub.Server
+) : BaseShowResources(plugins) {
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
-
-    var currentScene = show.scenes.first()
-    var currentPatchSet = currentScene.patchSets.first()
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
         val topic =
@@ -116,6 +155,85 @@ class ShowManager(
     override fun <T : Gadget> useGadget(id: String): T {
         return (gadgets[id]?.gadgetData?.gadget
             ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
+    }
+}
+
+interface RefCounted {
+    fun inUse(): Boolean
+    fun use()
+    fun release()
+    fun onFullRelease()
+}
+
+class RefCounter : RefCounted {
+    var refCount: Int = 0
+
+    override fun inUse(): Boolean = refCount == 0
+
+    override fun use() {
+        refCount++
+    }
+
+    override fun release() {
+        refCount--
+
+        if (!inUse()) onFullRelease()
+    }
+
+    override fun onFullRelease() {
+    }
+}
+
+open class OpenControllables(
+    controllables: Controllables, private val dataSources: Map<String, DataSource>
+) {
+    val controlLayout: Map<String, List<DataSource>> = controllables.controlLayout.mapValues { (_, dataSourceRefs) ->
+        dataSourceRefs.map { dataSources.getBang(it.dataSourceId, "datasource") }
+    }
+}
+
+class OpenShow(
+    private val show: Show, private val showResources: ShowResources
+) : RefCounted by RefCounter(), OpenControllables(show, show.dataSources) {
+    val layouts get() = show.layouts
+    val shaders = show.shaders.mapValues { (_, shader) -> showResources.openShader(shader) }
+
+    val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
+        val dataFeed = showResources.openDataFeed(id, dataSource)
+        dataSource to dataFeed
+    }
+    val scenes = show.scenes.map { OpenScene(it) }
+
+    fun edit(showState: ShowState): ShowEditor = ShowEditor(show, showState)
+
+    override fun onFullRelease() {
+        shaders.values.forEach { it.release() }
+        dataFeeds.values.forEach { it.release() }
+    }
+
+    inner class OpenScene(scene: Scene) : OpenControllables(scene, show.dataSources) {
+        val title = scene.title
+        val patchSets = scene.patchSets.map { OpenPatchSet(it) }
+
+        inner class OpenPatchSet(patchSet: PatchSet) : OpenControllables(patchSet, show.dataSources) {
+            val title = patchSet.title
+            val patches = patchSet.patches.map { OpenPatch(it, shaders, show.dataSources) }
+
+            fun createRenderPlan(glslContext: GlslContext): RenderPlan {
+                val activeDataSources = mutableSetOf<String>()
+                val programs = patches.map { patch ->
+                    patch to patch.createProgram(glslContext, dataFeeds)
+                }
+                return RenderPlan(programs)
+
+            }
+        }
+    }
+}
+
+class RenderPlan(val programs: List<Pair<OpenPatch, GlslProgram>>) {
+    fun render(glslRenderer: GlslRenderer) {
+        glslRenderer.draw()
     }
 }
 

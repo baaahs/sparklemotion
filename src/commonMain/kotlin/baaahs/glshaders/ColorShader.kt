@@ -1,11 +1,11 @@
 package baaahs.glshaders
 
-abstract class ColorShader(glslCode: GlslCode) : ShaderFragment.Base(glslCode) {
-    override val shaderType: ShaderFragment.Type = ShaderFragment.Type.Color
+abstract class ColorShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
+    override val shaderType: OpenShader.Type = OpenShader.Type.Color
 
     protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
         return InputPort(
-            it.name, it.type, it.name.capitalize(),
+            it.name, it.dataType, it.name.capitalize(),
             pluginRef = it.hint?.pluginRef,
             pluginConfig = it.hint?.config,
             glslVar = it
@@ -81,8 +81,8 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         explicitUniforms + implicitUniforms + uvCoordPort
     }
 
-    override val outputPorts: List<OutputPort>
-        get() = listOf()
+    override val outputPorts: List<OutputPort> =
+        listOf(OutputPort("vec4", "<arg0>", "Output Color", ContentType.Color))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return namespace.qualify(entryPoint.name) +
@@ -111,15 +111,15 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
-            wellKnownInputPorts[it.name]?.copy(type = it.type, glslVar = it)
+            wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
                 ?: toInputPort(it)
         } + uvCoordPort
     }
 //    it.type, it.name, title, contentType,
 //    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
 
-    override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
+    override val outputPorts: List<OutputPort> =
+        listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return StringBuilder().apply {

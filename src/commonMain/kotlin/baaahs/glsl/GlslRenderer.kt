@@ -185,7 +185,7 @@ open class GlslRenderer(
 
         val glslAnalyzer = GlslAnalyzer()
 
-        val uvMapper = glslAnalyzer.asShader(
+        val cylindricalUvMapper = GlslAnalyzer().asShader(
             /**language=glsl*/
             """
                 // Cylindrical Projection
@@ -214,8 +214,7 @@ open class GlslRenderer(
         val pixWidth = pixelCount.bufWidth
         val pixHeight = pixelCount.bufHeight
 
-        private val frameBuffer = gl.check { createFramebuffer() }
-        private val renderBuffer = gl.check { createRenderbuffer() }
+        private val renderBuffer = gl.createRenderBuffer()
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
 
         private val quad: Quad = Quad(gl, surfaces.flatMap {
@@ -231,17 +230,7 @@ open class GlslRenderer(
         })
 
         fun bindFramebuffer() {
-            gl.check { bindFramebuffer(GL_FRAMEBUFFER, frameBuffer) }
-
-            gl.check { bindRenderbuffer(GL_RENDERBUFFER, renderBuffer) }
-//            logger.debug { "pixel count: $pixelCount ($pixWidth x $pixHeight = ${pixelCount.bufSize})" }
-            gl.check { renderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, pixWidth, pixHeight) }
-            gl.check { framebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderBuffer) }
-
-            val status = gl.check { checkFramebufferStatus(GL_FRAMEBUFFER) }
-            if (status != GL_FRAMEBUFFER_COMPLETE) {
-                println(RuntimeException("FrameBuffer huh? $status").message)
-            }
+            renderBuffer.bind(GL_RGBA8, pixWidth, pixHeight, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER)
         }
 
         fun getPixel(pixelIndex: Int): Color {
@@ -263,11 +252,7 @@ open class GlslRenderer(
 
             quad.release()
 
-            gl.check { bindRenderbuffer(GL_RENDERBUFFER, null) }
-            gl.check { bindFramebuffer(GL_FRAMEBUFFER, null) }
-
-            gl.check { deleteFramebuffer(frameBuffer) }
-            gl.check { deleteRenderbuffer(renderBuffer) }
+            renderBuffer.release()
         }
 
         fun render() {

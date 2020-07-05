@@ -1,7 +1,9 @@
 package baaahs.ui
 
 import baaahs.Logger
+import org.w3c.dom.events.Event
 import react.RMutableRef
+import react.useMemo
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -48,6 +50,10 @@ class XBuilder : react.RBuilder() {
     @Suppress("UNCHECKED_CAST")
     fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
 
+    fun <T> memo(vararg watch: Any?, block: () -> T): T {
+        return useMemo(block, watch)
+    }
+
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
@@ -59,6 +65,18 @@ class XBuilder : react.RBuilder() {
         } else {
             @Suppress("UNCHECKED_CAST")
             return context.data[dataIndex++] as Data<T>
+        }
+    }
+
+    fun observe(item: Observable) {
+        sideEffect("observe", item) {
+            val observer = object : Observer {
+                override fun notifyChanged() = forceRender()
+            }
+            item.addObserver(observer)
+            withCleanup {
+                item.removeObserver(observer)
+            }
         }
     }
 
@@ -97,7 +115,20 @@ class XBuilder : react.RBuilder() {
         }
     }
 
-    fun renderFinished() {
+    fun eventHandler(name: String, vararg watch: Any?, block: (Event) -> Unit): (Event) -> Unit {
+        return handler(name, watch = *watch, block = block)
+    }
+
+    fun eventHandler(block: Function<*>): (Event) -> Unit {
+        @Suppress("UNCHECKED_CAST")
+        return handler("event handler", block, block = block as (Event) -> Unit)
+    }
+
+    fun forceRender() {
+        counter.second(++internalCounter)
+    }
+
+    internal fun renderFinished() {
         firstTime = false
     }
 
@@ -133,8 +164,10 @@ class XBuilder : react.RBuilder() {
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
             logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
-            this.value = value
-            onChange()
+            if (this.value != value) {
+                this.value = value
+                onChange()
+            }
         }
     }
 

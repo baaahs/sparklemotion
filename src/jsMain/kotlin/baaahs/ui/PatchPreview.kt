@@ -1,11 +1,11 @@
 package baaahs.ui
 
+import baaahs.BaseShowResources
 import baaahs.Gadget
 import baaahs.GadgetData
-import baaahs.ShowResources
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
-import baaahs.glshaders.ShaderFragment
+import baaahs.glshaders.DataBinding
+import baaahs.glshaders.OpenPatch
+import baaahs.glshaders.Plugins
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
@@ -17,17 +17,13 @@ import react.dom.canvas
 
 val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     val canvas = useRef<HTMLCanvasElement>()
-    var gl by useState<GlslContext>(nuffin())
-    var glslPreview by useState<GlslPreview>(nuffin())
+    var gl by useState<GlslContext?>(null)
+    var glslPreview by useState<GlslPreview?>(null)
 
-    val compile = useCallback({ patch: Patch ->
-        val showResources = object : ShowResources {
+    val compile = useCallback({ openPatch: OpenPatch ->
+        val showResources = object : BaseShowResources(Plugins.safe()) {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
-            override val glslContext: GlslContext get() = gl
-            override val dataFeeds: Map<String, GlslProgram.DataFeed>
-                get() = emptyMap()
-            override val shaders: Map<String, ShaderFragment>
-                get() = patch.components.mapValues { (_, component) -> component.shaderFragment }
+            override val glslContext: GlslContext get() = gl!!
 
             override fun <T : Gadget> createdGadget(id: String, gadget: T) {
                 gadgets[id] = gadget
@@ -40,8 +36,9 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         }
         val program =
             try {
-                patch.compile(gl) { dataSource ->
-                    dataSource.create(showResources)
+                openPatch.compile(gl!!) { dataSource ->
+                    val id = dataSource.suggestId()
+                    DataBinding(id, dataSource.createFeed(showResources, id))
                 }.also {
                     props.onSuccess()
                 }
@@ -60,6 +57,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     }, arrayOf(gl, props.onError))
 
     useEffectWithCleanup(arrayListOf(canvas)) {
+        println("canvas = ${canvas}; create context and glslpreview")
         val canvasEl = canvas.current
         val glslContext = GlslBase.jsManager.createContext(canvasEl)
         gl = glslContext
@@ -73,10 +71,12 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
         }
     }
 
-    useEffect(props.patch, glslPreview, name = "patch") {
+    useEffect(props.patch, glslPreview, gl, name = "patch") {
+        println("have patch ${props.patch}! gl == $gl")
+        if (gl == null) return@useEffect
         props.patch?.let { patch ->
             compile(patch)?.let { program ->
-                glslPreview.setProgram(program)
+                glslPreview!!.setProgram(program)
             }
         }
     }
@@ -92,7 +92,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
 }
 
 external interface PatchPreviewProps : RProps {
-    var patch: Patch?
+    var patch: OpenPatch?
     var onSuccess: () -> Unit
     var onGadgetsChange: (Array<GadgetData>) -> Unit
     var onError: (Array<CompiledShader.GlslError>) -> Unit

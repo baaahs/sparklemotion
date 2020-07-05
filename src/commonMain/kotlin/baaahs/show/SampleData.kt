@@ -4,7 +4,6 @@ import baaahs.Color
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
-import baaahs.ports.DataSourceRef
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -38,27 +37,28 @@ object SampleData {
 
     private val plugins = Plugins.findAll()
     private val autoWirer = AutoWirer(plugins)
-    val samplePatch = autoWirer.autoWire(
+    val redYellowGreenPatch = autoWirer.autoWire(
         """
         // GLSL Hue Test Pattern
         uniform vec2 resolution;
         void main(void) {
             gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
         }
-    """.trimIndent(), "redGreen"
+    """.trimIndent()
     )
 
-    val samplePatch2 = autoWirer.autoWire(
+    val blueAquaGreenPatch = autoWirer.autoWire(
         """
         // Other GLSL Hue Test Pattern
         uniform vec2 resolution;
+        uniform float redness;
         void main(void) {
-            gl_FragColor = vec4(0.0, gl_FragCoord.xy / resolution, 1.0);
+            gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);
         }
-    """.trimIndent(), "blueGreen"
+    """.trimIndent()
     )
 
-    val fireBallPatch = autoWirer.autoWire(SampleShaders.fireBallGlsl, "fire")
+    val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
@@ -66,86 +66,43 @@ object SampleData {
         mapOf("default" to defaultLayout)
     )
 
-    val scenesControl = CorePlugin.Scenes("scenes", "Scenes")
-    val patchesControl = CorePlugin.Patches("patches", "Patches")
-    val colorControl = CorePlugin.ColorPickerProvider("color", "Color", Color.WHITE)
+    val scenesControl = CorePlugin.Scenes("Scenes")
+    val patchesControl = CorePlugin.Patches("Patches")
+    val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
     val brightnessControl = CorePlugin.SliderDataSource(
-        "brightnessSlider", "Brightness",
-        1f, 0f, 1f, 0.01f
+        "Brightness", 1f, 0f, 1f, 0.01f
     )
     val intensityControl = CorePlugin.SliderDataSource(
-        "intensitySlider", "Intensity",
-        1f, 0f, 1f, 0.01f
+        "Intensity", 1f, 0f, 1f, 0.01f
     )
 
-    fun DataSource.ref() = DataSourceRef(id)
+    val sampleShow = ShowEditor("Sample Show").apply {
+        this.layouts = SampleData.layouts
 
-    val sampleShow = Show(
-        title = "Xian's Show",
-        scenes = listOf(
-            Scene(
-                title = "Pleistocene",
-                patchSets = listOf(
-                    PatchSet(
-                        title = "Red Yellow Green",
-                        patchMappings = listOf(
-                            PatchMapping(
-                                samplePatch.links,
-                                Surfaces("All Surfaces")
-                            )
-                        )
-                    ),
-                    PatchSet(
-                        title = "Fire",
-                        patchMappings = listOf(
-                            PatchMapping(
-                                fireBallPatch.links,
-                                Surfaces("All Surfaces")
-                            )
-                        ),
-                        controlLayout = mapOf(
-                            "Patches" to listOf(intensityControl.ref())
-                        )
-                    )
-                )
-            ),
-            Scene(
-                title = "Holocene",
-                patchSets = listOf(
-                    PatchSet(
-                        title = "Blue Aqua Green",
-                        patchMappings = listOf(
-                            PatchMapping(
-                                samplePatch2.links,
-                                Surfaces("All Surfaces")
-                            )
-                        )
-                    )
-                )
-            )
-        ),
-        dataSources = listOf(
-            scenesControl,
-            patchesControl,
-            colorControl,
-            brightnessControl,
-            intensityControl,
-            CorePlugin.Resolution("resolution"),
-            CorePlugin.Time("time"),
-            CorePlugin.UvCoordTexture("uvCoordsTexture")
-        ),
-        layouts = layouts,
-        controlLayout = mapOf(
-            "Scenes" to listOf(scenesControl.ref()),
-            "Patches" to listOf(patchesControl.ref()),
-            "More Controls" to listOf(
-                colorControl.ref(),
-                brightnessControl.ref()
-            )
-        ),
-        shaderFragments = (samplePatch.components + samplePatch2.components + fireBallPatch.components)
-            .entries
-            .distinct()
-            .associate { (k, v) -> k to v.shaderFragment.src }
-    )
+        addScene("Pleistocene") {
+            addPatchSet("Red Yellow Green") {
+                addPatch(redYellowGreenPatch)
+            }
+            addPatchSet("Fire") {
+                addPatch(fireBallPatch)
+                addControl("Patches", intensityControl)
+            }
+        }
+        addScene("Holocene") {
+            addPatchSet("Blue Aqua Green") {
+                addPatch(blueAquaGreenPatch)
+
+                blueAquaGreenPatch.links.forEach { link ->
+                    if (link.from is DataSourceEditor && link.from.dataSource is CorePlugin.GadgetDataSource<*>) {
+                        addControl("Patches", link.from.dataSource)
+                    }
+                }
+            }
+        }
+
+        addControl("Scenes", scenesControl)
+        addControl("Patches", patchesControl)
+        addControl("More Controls", colorControl)
+        addControl("More Controls", brightnessControl)
+    }.getShow()
 }

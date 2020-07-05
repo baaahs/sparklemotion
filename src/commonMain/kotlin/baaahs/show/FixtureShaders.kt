@@ -1,6 +1,6 @@
 package baaahs.show
 
-object SampleShaders {
+object FixtureShaders {
     val fireBallGlsl = """
         // Fire Ball
         // From http://glslsandbox.com/e#61108.0

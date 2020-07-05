@@ -1,17 +1,21 @@
 package baaahs.glshaders
 
+import baaahs.RefCounted
+import baaahs.RefCounter
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
+import baaahs.show.Shader
 import kotlin.collections.set
 
-interface ShaderFragment {
-    enum class Type(val outContentType: ContentType) {
-        Color(ContentType.Color),
-        Projection(ContentType.UvCoordinate),
-        Transformer(ContentType.UvCoordinate),
-        Filter(ContentType.Color)
+interface OpenShader : RefCounted {
+    enum class Type(val sortOrder: Int) {
+        Color(1),
+        Projection(0),
+        Transformer(-1),
+        Filter(-1);
     }
 
+    val shader: Shader get() = Shader(src)
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
@@ -25,7 +29,7 @@ interface ShaderFragment {
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
     fun invocationGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
 
-    abstract class Base(final override val glslCode: GlslCode) : ShaderFragment {
+    abstract class Base(final override val glslCode: GlslCode) : OpenShader, RefCounted by RefCounter() {
         override val title: String = glslCode.title
         override val description: String? = null
 
@@ -50,6 +54,15 @@ interface ShaderFragment {
 
             return buf.toString()
         }
+
+        override fun equals(other: Any?): Boolean =
+            other != null
+                    && other is Base
+                    && this::class == other::class
+                    && this.src == other.src
+
+        override fun hashCode(): Int =
+            src.hashCode()
     }
 
     companion object {

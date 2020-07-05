@@ -27,8 +27,13 @@ suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }
 
-fun unknown(type: String, name: String, among: Collection<String>): String {
-    return "unknown $type \"$name\" among [${among.sorted().joinToString(", ")}]"
+fun <T> unknown(type: String, key: T, among: Collection<T>): String {
+    return "unknown $type \"$key\" among [${among.map { it.toString() }.sorted().joinToString(", ")}]"
+}
+
+fun <K, V> Map<K, V>.getBang(key: K, type: String): V {
+    return get(key)
+        ?: error(unknown(type, key, keys))
 }
 
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
@@ -91,3 +96,10 @@ internal fun timeSync(function: () -> Unit): Int {
     function.invoke()
     return (getTimeMillis() - now).toInt()
 }
+
+fun String.camelize(): String =
+    replace(Regex("([A-Z]+)"), " $1")
+        .split(Regex("[^A-Za-z0-9]+"))
+        .map { it.toLowerCase().capitalize() }
+        .joinToString("")
+        .decapitalize()

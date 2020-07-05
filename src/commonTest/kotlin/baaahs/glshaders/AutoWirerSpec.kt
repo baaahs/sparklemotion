@@ -1,9 +1,10 @@
 package baaahs.glshaders
 
 import baaahs.glsl.GlslRenderer
-import baaahs.ports.DataSourceRef
-import baaahs.ports.ShaderInPortRef
-import baaahs.ports.ShaderOutPortRef
+import baaahs.show.DataSourceEditor
+import baaahs.show.OutputPortEditor
+import baaahs.show.ShaderEditor
+import baaahs.show.ShaderOutPortRef
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -33,72 +34,52 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
-            val shaders by value { mapOf("color" to shader) }
-            val patch by value { AutoWirer(Plugins.safe()).autoWire(shaders).resolve() }
+            val colorShader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
+            val shaders by value { arrayOf(colorShader) }
+            val patch by value { AutoWirer(Plugins.safe()).autoWire(*shaders).resolve() }
 
             it("creates a reasonable guess patch") {
                 expect(
-                    setOf(
-                        CorePlugin.Time("time"),
-                        CorePlugin.Resolution("resolution"),
-                        CorePlugin.SliderDataSource("blueness", "Blueness",
-                            1f, 0f, 1f, 0.01f),
-                        CorePlugin.ScreenUvCoord("gl_FragCoord")
-                    )
-                ) { patch.dataSources.toSet() }
-
-                expect(
                     listOf(
-                        DataSourceRef("time")
-                                linkTo ShaderInPortRef("color", "time"),
-                        DataSourceRef("resolution")
-                                linkTo ShaderInPortRef("color", "resolution"),
-                        DataSourceRef("blueness")
-                                linkTo ShaderInPortRef("color", "blueness"),
-                        DataSourceRef("gl_FragCoord")
-                                linkTo ShaderInPortRef("color", "gl_FragCoord")
+                        DataSourceEditor(CorePlugin.Time())
+                                linkTo ShaderEditor(colorShader.shader).inputPort("time"),
+                        DataSourceEditor(CorePlugin.Resolution())
+                                linkTo ShaderEditor(colorShader.shader).inputPort("resolution"),
+                        DataSourceEditor(
+                            CorePlugin.SliderDataSource(
+                                "Blueness",
+                                1f, 0f, 1f, 0.01f
+                            )
+                        )
+                                linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
+                        DataSourceEditor(CorePlugin.ScreenUvCoord())
+                                linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
+                        ShaderEditor(colorShader.shader).outputPort("gl_FragColor")
+                                linkTo OutputPortEditor(GlslProgram.PixelColor.portId)
                     )
                 ) { patch.links }
             }
 
             context("with a UV projection shader") {
-                val uvShader = GlslRenderer.uvMapper
+                val uvShader = GlslRenderer.cylindricalUvMapper
 
-                override(shaders) {
-                    mapOf("color" to shader, "uv" to uvShader)
-                }
+                override(shaders) { arrayOf(colorShader, uvShader) }
 
                 it("creates a reasonable guess patch") {
-                    expect(
-                        setOf(
-                            CorePlugin.Time("time"),
-                            CorePlugin.Resolution("resolution"),
-                            CorePlugin.SliderDataSource("blueness", "Blueness",
-                                1f, 0f, 1f, 0.01f),
-                            CorePlugin.UvCoordTexture("uvCoordsTexture")
-                        )
-                    ) { patch.dataSources.toSet() }
-
                     expects(
                         listOf(
-                            DataSourceRef("time")
-                                    linkTo ShaderInPortRef("color", "time"),
-                            DataSourceRef("resolution")
-                                    linkTo ShaderInPortRef("color", "resolution"),
-                            DataSourceRef("blueness")
-                                    linkTo ShaderInPortRef("color", "blueness"),
-                            ShaderOutPortRef("uv")
-                                    linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                            DataSourceRef("uvCoordsTexture")
-//                            inputPortRef(
-//                                "uvCoordsTexture",
-//                                "sampler2D",
-//                                "U/V Coordinates Texture",
-//                                "baaahs.Core:uvCoords",
-//                                varName = "in_uvCoordsTexture"
-//                            )
-                                    linkTo ShaderInPortRef("uv", "uvCoordsTexture")
+                            DataSourceEditor(CorePlugin.Time())
+                                    linkTo ShaderEditor(colorShader.shader).inputPort("time"),
+                            DataSourceEditor(CorePlugin.Resolution())
+                                    linkTo ShaderEditor(colorShader.shader).inputPort("resolution"),
+                            DataSourceEditor(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, 0.01f))
+                                    linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
+                            ShaderEditor(uvShader.shader).outputPort(ShaderOutPortRef.ReturnValue)
+                                    linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
+                            DataSourceEditor(CorePlugin.UvCoordTexture())
+                                    linkTo ShaderEditor(uvShader.shader).inputPort("uvCoordsTexture"),
+                            ShaderEditor(colorShader.shader).outputPort("gl_FragColor")
+                                    linkTo OutputPortEditor(GlslProgram.PixelColor.portId)
                         )
                     ) { patch.links }
                 }

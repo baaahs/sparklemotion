@@ -1,47 +1,60 @@
 package baaahs.ui.gadgets
 
-import baaahs.PubSub
+import baaahs.OpenShow
 import baaahs.ShowResources
-import baaahs.replacing
-import baaahs.show.PatchSet
-import baaahs.ui.*
+import baaahs.ShowState
+import baaahs.show.Show
+import baaahs.show.ShowEditor.SceneEditor.PatchSetEditor
+import baaahs.ui.patchSetEditor
+import baaahs.ui.useCallback
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onContextMenuFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
-import materialui.components.buttongroup.buttonGroup
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
+import materialui.toggleButton
+import materialui.toggleButtonGroup
 import org.w3c.dom.events.Event
-import react.*
+import react.RBuilder
+import react.RProps
+import react.ReactElement
+import react.child
 
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
-    var editingPatchSet by state<EditSpec<PatchSet>?> { null }
+    var patchSetEditor by state<PatchSetEditor?> { null }
+
+    val selectedScene = props.showState.selectedScene
+    val patchSets = props.show.scenes[selectedScene].patchSets
+
+    val onContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
+        props.show.edit(props.showState).editScene(selectedScene) {
+            editPatchSet(index) {
+                patchSetEditor = this
+            }
+        }
+        event.preventDefault()
+    }
 
     card {
-        buttonGroup {
+        toggleButtonGroup {
             attrs.variant = ButtonVariant.outlined
             attrs.orientation = ButtonGroupOrientation.vertical
-            println("Rendering patchSets: ${props.patchSets.map { it.title }}")
-            props.patchSets.forEachIndexed { index, patchSet ->
-                button {
-                    +patchSet.title
+            attrs["exclusive"] = true
+//            attrs["value"] = props.selected // ... but this is busted.
+//            attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
+            patchSets.forEachIndexed { index, patchSet ->
+                toggleButton {
 //                attrs.color = ButtonColor.primary
 //                (attrs as Tag).disabled = patchSet == props.currentPatchSet
-                    attrs["disabled"] = index == props.selected
+                    attrs["value"] = index
+                    attrs["selected"] = index == props.showState.selectedPatchSet
                     attrs.onClickFunction = { props.onSelect(index) }
                     if (props.editMode) {
-                        attrs.onContextMenuFunction = { event: Event ->
-                            editingPatchSet = EditSpec(
-                                model = patchSet,
-                                onSave = { newPatchSet ->
-                                    props.onChange(props.patchSets.replacing(index, newPatchSet))
-                                    editingPatchSet = null
-                                },
-                                onCancel = { editingPatchSet = null })
-                            event.preventDefault()
-                        }
+                        attrs.onContextMenuFunction = { event: Event -> onContextClick(event, index) }
                     }
+                    +patchSet.title
                 }
             }
 
@@ -49,38 +62,37 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                 button {
                     +"+"
                     attrs.onClickFunction = { _: Event ->
-                        editingPatchSet = EditSpec(
-                            model = PatchSet("Untitled"),
-                            onSave = { newPatchSet ->
-                                props.onChange(props.patchSets + newPatchSet)
-                                editingPatchSet = null
-                            },
-                            onCancel = { editingPatchSet = null }
-                        )
+                        props.show.edit(props.showState).editScene(selectedScene) {
+                            addPatchSet("Untitled") {
+                                patchSetEditor = this
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    editingPatchSet?.let { editSpec ->
+    patchSetEditor?.let { editor ->
         patchSetEditor {
             showResources = props.showResources
-            patchSet = editSpec.model
-            onSave = editSpec.onSave
-            onClose = handler("patchSetEditor.onClose") { editingPatchSet = null }
+            this.editor = editor
+            onSave = {
+                props.onChange(editor.getShow(), editor.getShowState())
+                patchSetEditor = null
+            }
+            onCancel = handler("patchSetEditor.onClose") { patchSetEditor = null }
         }
     }
 }
 
 external interface PatchSetListProps : RProps {
-    var pubSub: PubSub.Client
+    var show: OpenShow
+    var showState: ShowState
     var showResources: ShowResources
-    var patchSets: List<PatchSet>
-    var selected: Int
     var onSelect: (Int) -> Unit
     var editMode: Boolean
-    var onChange: (List<PatchSet>) -> Unit
+    var onChange: (Show, ShowState) -> Unit
 }
 
 fun RBuilder.patchSetList(handler: PatchSetListProps.() -> Unit): ReactElement =

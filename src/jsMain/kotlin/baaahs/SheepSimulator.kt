@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.glshaders.Plugins
@@ -9,9 +10,9 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
+import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.show.SampleData
-import baaahs.show.Show
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
 import baaahs.ui.SaveAsFs
@@ -40,6 +41,10 @@ class SheepSimulator {
     val visualizer = Visualizer(model)
     private val mapperFs = FakeFs()
     val fs = MergedFs(BrowserSandboxFs(), mapperFs)
+    val filesystems = listOf(
+        SaveAsFs("Shader Library", fs),
+        SaveAsFs("Show", FakeFs())
+    )
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
@@ -80,14 +85,13 @@ class SheepSimulator {
     private fun selectModel(): Model<*> =
         Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
+    val pinkyAddress: Network.Address get() = pinky.address
+
     fun getPubSub(): PubSub.Client {
         val link = network.link("simApp")
         println("SheepSimulator: new client link is ${link.myAddress}")
 
-        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP).apply {
-            install(gadgetModule)
-            install(plugins.serialModule)
-        }
+        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP)
     }
 
     fun start() = doRunBlocking {
@@ -96,13 +100,8 @@ class SheepSimulator {
         pinkyScope.launch { pinky.run() }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
-        val filesystems = listOf(
-            SaveAsFs("Shader Library", fs),
-            SaveAsFs("Show", FakeFs())
-        )
         launcher.add("Web UI") {
-            val showResources = ClientShowResources(GlslBase.manager.createContext(), Show("Loading..."))
-            WebUi(network, pinky.address, filesystems, showResources)
+            WebClient(network, pinky.address, filesystems, plugins)
         } // .also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
@@ -183,11 +182,6 @@ class SheepSimulator {
         val pixelPositions: Array<Vector3>,
         val brainId: BrainId
     )
-
-    @JsName("switchToShow")
-    fun switchToShow(show: Show) {
-        pinky.switchToShow(show)
-    }
 
     object NullPixels : Pixels {
         override val size = 0
