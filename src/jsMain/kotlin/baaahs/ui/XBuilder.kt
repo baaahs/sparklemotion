@@ -68,6 +68,18 @@ class XBuilder : react.RBuilder() {
         }
     }
 
+    fun observe(item: Observable) {
+        sideEffect("observe", item) {
+            val observer = object : Observer {
+                override fun notifyChanged() = forceRender()
+            }
+            item.addObserver(observer)
+            withCleanup {
+                item.removeObserver(observer)
+            }
+        }
+    }
+
     fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
         return if (firstTime) {
             val sideEffect = SideEffect(watch)

@@ -18,7 +18,7 @@ fun <T : Function<*>> useCallback(vararg dependencies: dynamic, callback: T): T 
 
 fun useEffect(vararg dependencies: dynamic, name: String? = "Effect", effect: () -> Unit) {
     return react.useEffect(dependencies.toList()) {
-        logger.error {
+        logger.debug {
             "useEffect $name run due to change: ${dependencies.map {
                 it?.toString().truncate(12)
             }}"

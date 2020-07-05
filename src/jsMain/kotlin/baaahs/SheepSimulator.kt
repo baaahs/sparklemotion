@@ -13,7 +13,6 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.show.SampleData
-import baaahs.show.Show
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
 import baaahs.ui.SaveAsFs
@@ -183,11 +182,6 @@ class SheepSimulator {
         val pixelPositions: Array<Vector3>,
         val brainId: BrainId
     )
-
-    @JsName("switchToShow")
-    fun switchToShow(show: Show) {
-        pinky.switchToShow(show)
-    }
 
     object NullPixels : Pixels {
         override val size = 0

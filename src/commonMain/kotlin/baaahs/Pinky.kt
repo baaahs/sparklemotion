@@ -54,7 +54,6 @@ class Pinky(
             field = value
             facade.notifyChanged()
             showRunner.switchTo(value)
-            showWithStateChannel.onChange(show.withState(showState))
         }
 
     private var showState = ShowState.forShow(show)
@@ -160,10 +159,6 @@ class Pinky(
         ) {
             gadgetManager.adjustSomething()
         }
-    }
-
-    fun switchToShow(nextShow: Show) {
-        this.show = nextShow
     }
 
     internal fun updateSurfaces() {
