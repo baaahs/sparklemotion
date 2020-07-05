@@ -2,6 +2,7 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.GlslVar
+import baaahs.show.Shader
 
 class GlslAnalyzer {
     fun analyze(shaderText: String): GlslCode {
@@ -13,11 +14,13 @@ class GlslAnalyzer {
         return GlslCode(title, null, shaderText, statements)
     }
 
-    fun asShader(shaderText: String): ShaderFragment {
+    fun asShader(shader: Shader): OpenShader = asShader(shader.src)
+
+    fun asShader(shaderText: String): OpenShader {
         val glslObj = analyze(shaderText)
 
-        return ShaderFragment.tryColorShader(glslObj)
-            ?: ShaderFragment.tryUvTranslatorShader(glslObj)
+        return OpenShader.tryColorShader(glslObj)
+            ?: OpenShader.tryUvTranslatorShader(glslObj)
             ?: throw IllegalArgumentException("huh? unknown sort of shader")
     }
 

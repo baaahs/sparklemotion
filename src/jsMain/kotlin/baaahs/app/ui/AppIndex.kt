@@ -1,49 +1,56 @@
 package baaahs.app.ui
 
-import baaahs.*
-import baaahs.net.Network
+import baaahs.ShowResources
+import baaahs.ShowState
+import baaahs.ShowWithState
+import baaahs.app.ui.Styles.buttons
+import baaahs.client.WebClient
+import baaahs.glshaders.AutoWirer
 import baaahs.show.Show
+import baaahs.show.ShowEditor
 import baaahs.ui.*
+import baaahs.util.UndoStack
+import baaahs.withState
+import kotlinext.js.jsObject
 import kotlinx.css.*
-import kotlinx.css.Color
+import kotlinx.css.properties.Timing
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.Menu
+import materialui.Redo
+import materialui.Undo
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
+import materialui.components.iconbutton.enums.IconButtonStyle.root
 import materialui.components.iconbutton.iconButton
+import materialui.components.paper.paper
 import materialui.components.portal.portal
 import materialui.components.svgicon.SvgIconProps
 import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.table
+import react.dom.tbody
+import react.dom.td
+import react.dom.tr
 import styled.css
 import styled.styledDiv
 import styled.styledTd
-import kotlin.reflect.KClass
 
-val AppIndex = functionalComponent<AppIndexProps> { props ->
-    val pubSub = props.pubSub
+val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
+    val webClient = props.webClient
+    observe(webClient)
+
     val id = props.id
     println("AppIndex $id: about to render")
 
-    val preact = XBuilder()
-
-    var isConnected by preact.state { pubSub.isConnected }
-    val handlePubSubStateChange = useCallback(pubSub) {
-        isConnected = pubSub.isConnected
-    }
-    preact.sideEffect("pubSub changed", pubSub, handlePubSubStateChange) {
-        pubSub.addStateChangeListener(handlePubSubStateChange)
-        withCleanup { pubSub.removeStateChangeListener(handlePubSubStateChange) }
-    }
-
-    var shaderEditorDrawerOpen by preact.state { false }
+    var shaderEditorDrawerOpen by state { false }
 
     val handleShaderEditorDrawerToggle =
         useCallback(shaderEditorDrawerOpen) { event: Event ->
@@ -55,105 +62,113 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
             shaderEditorDrawerOpen = false
         }
 
-    var show by preact.state<Show?> { null }
-    val showChannel = useRef<PubSub.Channel<Show>>(nuffin())
-    preact.sideEffect("currentShow subscription", pubSub) {
-        println("AppIndex $id: subscribe to ${Topics.currentShow.name}")
-        val channel = pubSub.subscribe(Topics.currentShow) {
-            println("New incoming show: $it")
-            show = it
-            props.showResources.switchTo(it)
+    val undoStack = props.undoStack
+    val handleUndo = handler("handleUndo", undoStack) { event: Event ->
+        undoStack.undo().also {
+            webClient.onShowEdit(it)
         }
-        showChannel.current = channel
-
-        withCleanup {
-            println("AppIndex $id: unsubscribe from ${Topics.currentShow.name}")
-            channel.unsubscribe()
-            showChannel.current = nuffin()
-        }
+        Unit
     }
 
-    var showState by preact.state<ShowState?> { null }
-    val showStateChannel = useRef<PubSub.Channel<ShowState>>(nuffin())
-    preact.sideEffect("showState subscription", pubSub) {
-        val channel = pubSub.subscribe(Topics.showState) {
-            println("New incoming showState: $it")
-            showState = it
+    val handleRedo = handler("handleRedo", undoStack) { event: Event ->
+        undoStack.redo().also {
+            webClient.onShowEdit(it)
         }
-        showStateChannel.current = channel
-        withCleanup {
-            channel.unsubscribe()
-            showStateChannel.current = nuffin()
-        }
+        Unit
     }
-    println("AppIndex: show = ${show?.title} showState = ${showState}")
+
+    val handleShowEdit = useCallback { newShow: Show, newShowState: ShowState ->
+        val newShowWithState = newShow.withState(newShowState)
+        undoStack.changed(newShowWithState)
+        webClient.onShowEdit(newShowWithState)
+    }
+
+    val show = webClient.show
+    val showState = webClient.showState
+    println("AppIndex: show = ${show?.title} showState = $showState")
 
     val handleShowStateChange = useCallback { newShowState: ShowState ->
-        showState = newShowState
-        showStateChannel.current.onChange(newShowState)
+        webClient.onShowStateChange(newShowState)
     }
 
-    val handleShowChange = useCallback { newShow: Show ->
-        show = newShow
-        showChannel.current.onChange(newShow)
-    }
-
-    var editMode by preact.state { false }
+    var editMode by state { false }
     val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
 
-    styledDiv {
-        css {
-            width = 100.pct
-            height = 5.vh
-            color = Color.black
-            backgroundColor = Color.pink
-            textAlign = TextAlign.center
-            fontSize = 2.em
-            display = if (isConnected) Display.none else Display.block
-        }
-        +"Connecting…"
-    }
+    paper {
 
-    toolbar {
-        table {
-            tbody {
-                tr {
-                    td {
-                        formControlLabel {
-                            attrs.control {
-                                switch {
-                                    attrs.checked = editMode
-                                    attrs.onChangeFunction = handleEditModeChange
+        styledDiv {
+            css {
+                width = 100.pct
+                height = 5.vh
+                color = Color.black
+                backgroundColor = Color.pink
+                textAlign = TextAlign.center
+                fontSize = 2.em
+                display = if (webClient.isConnected) Display.none else Display.block
+            }
+            +"Connecting…"
+        }
+
+        toolbar {
+            table {
+                tbody {
+                    tr {
+                        td {
+                            formControlLabel {
+                                attrs.control {
+                                    switch {
+                                        attrs.checked = editMode
+                                        attrs.onChangeFunction = handleEditModeChange
+                                    }
                                 }
+                                attrs.label = "Design Mode".asTextNode()
                             }
-                            attrs.label = "Edit Mode".asTextNode()
                         }
-                    }
-                    styledTd {
-                        if (!editMode) css { opacity = 0 }
-                        iconButton {
-                            attrs.edge = IconButtonEdge.end
-                            attrs.onClickFunction = handleShaderEditorDrawerToggle
-                            Menu { }
-                            +"Shader Editor"
+                        styledTd {
+                            if (!editMode) css { opacity = 0 }
+                            css {
+                                transition("opacity", duration = .5.s, timing = Timing.linear)
+                            }
+
+                            iconButton(root to buttons.getName()) {
+                                icon(Undo) { }
+                                attrs["disabled"] = !undoStack.canUndo()
+                                attrs.onClickFunction = handleUndo
+
+                                +"Undo"
+                            }
+
+                            iconButton(root to buttons.getName()) {
+                                icon(Redo) { }
+                                attrs["disabled"] = !undoStack.canRedo()
+                                attrs.onClickFunction = handleRedo
+
+                                +"Redo"
+                            }
+
+                            iconButton(root to buttons.getName()) {
+                                attrs.edge = IconButtonEdge.end
+                                attrs.onClickFunction = handleShaderEditorDrawerToggle
+                                Menu { }
+                                +"Shader Editor"
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    if (show == null || showState == null) {
-        styledDiv { +"Loading Show…" }
-    } else {
-        showUi {
-            this.pubSub = props.pubSub
-            this.show = show!!
-            this.showResources = props.showResources
-            this.showState = showState!!
-            this.onShowStateChange = handleShowStateChange
-            this.editMode = editMode
-            this.onChange = handleShowChange
+        if (show == null || showState == null) {
+            styledDiv { +"Loading Show…" }
+        } else {
+            showUi {
+                this.show = webClient.openShow!!
+                this.showResources = props.showResources
+                this.showState = showState
+                this.onShowStateChange = handleShowStateChange
+                this.editMode = editMode
+                this.onChange = handleShowEdit
+            }
         }
     }
 
@@ -168,6 +183,28 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
 
             shaderEditorWindow {
                 this.filesystems = props.filesystems
+                this.onAddToPatch = { shader ->
+                    val curShow = show!!
+                    val curState = showState!!
+
+                    val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
+                    val editor = ShowEditor(curShow, curState).editScene(curState.selectedScene) {
+                        editPatchSet(curState.selectedPatchSet) {
+                            if (this.patchMappings.isEmpty()) {
+                                addPatch {
+                                    links = newPatch.links.toMutableList()
+                                    surfaces = newPatch.surfaces
+                                }
+                            } else {
+                                editPatch(0) {
+                                    links = newPatch.links.toMutableList()
+                                    surfaces = newPatch.surfaces
+                                }
+                            }
+                        }
+                    }
+                    handleShowEdit(editor.getShow(), editor.getShowState())
+                }
             }
         }
     }
@@ -175,14 +212,15 @@ val AppIndex = functionalComponent<AppIndexProps> { props ->
 
 external interface AppIndexProps : RProps {
     var id: String
-    var network: Network
-    var pubSub: PubSub.Client
+    var webClient: WebClient.Facade
+    var undoStack: UndoStack<ShowWithState>
     var filesystems: List<SaveAsFs>
-    var showResources: MutableShowResources
+    var showResources: ShowResources
 }
 
 fun RBuilder.appIndex(handler: AppIndexProps.() -> Unit): ReactElement =
     child(AppIndex) { attrs { handler() } }
 
-fun RBuilder.icon(icon: RClass<SvgIconProps>, handler: SvgIconProps.() -> Unit = { }): ReactElement =
-    child(icon::class as KClass<out Component<SvgIconProps, *>>) { attrs { handler() } }
+fun RBuilder.icon(icon: RComponent<SvgIconProps, RState>, handler: SvgIconProps.() -> Unit = { }): ReactElement {
+    return child(createElement(icon, jsObject(handler)))
+}

@@ -1,21 +1,18 @@
 package baaahs
 
+import baaahs.OpenShow.OpenScene.OpenPatchSet
 import baaahs.dmx.Shenzarpy
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.Patch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.RenderSurface
 import baaahs.model.Model
 import baaahs.model.MovingHead
-import baaahs.show.DataSource
-import baaahs.show.PatchMapping
-import baaahs.show.PatchSet
+import baaahs.show.Show
 
 class ShowRunner(
     private val model: Model<*>,
-    initialPatchSet: PatchSet,
-    private var show: baaahs.show.Show,
-    private val showResources: ShowResources,
+    private var show: Show,
+    private var showState: ShowState,
+    private val showManager: ShowManager,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
@@ -23,15 +20,15 @@ class ShowRunner(
     private val glslRenderer: GlslRenderer,
     pubSub: PubSub.Server
 ) {
-    private var nextPatchSet: PatchSet? = initialPatchSet
+    private var openShow: OpenShow = OpenShow(show, showManager)
+    private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
 
-    var showState = ShowState(0, show.scenes.map { 0 })
     private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
         this.showState = showState
-        nextPatchSet = showState.findPatchSet(show)
+        nextPatchSet = showState.findPatchSet(openShow)
     }
 
-    private var currentPatchSet: PatchSet? = null
+    private var currentPatchSet: OpenPatchSet? = null
     private var currentRenderPlan: RenderPlan? = null
     private val changedSurfaces = mutableListOf<SurfacesChanges>()
     private var totalSurfaceReceivers = 0
@@ -111,16 +108,14 @@ class ShowRunner(
         }
     }
 
-    fun switchTo(newShow: baaahs.show.Show) {
+    fun switchTo(newShow: Show) {
+        openShow = showManager.swapAndRelease(openShow, newShow)
         show = newShow
-        nextPatchSet = showState.findPatchSet(show)
+
+        nextPatchSet = showState.findPatchSet(openShow)
     }
 
-    fun switchTo(scene: Int, patchSet: Int) {
-        nextPatchSet = show.scenes[scene].patchSets[patchSet]
-    }
-
-    private fun switchTo(newPatchSet: PatchSet) {
+    private fun switchTo(newPatchSet: OpenPatchSet) {
         renderSurfaces.values.forEach { it.release() }
 
         currentRenderPlan = prepare(newPatchSet)
@@ -135,27 +130,9 @@ class ShowRunner(
         requestedGadgets.clear()
     }
 
-    private fun prepare(newPatchSet: PatchSet): RenderPlan {
+    private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
         val glslContext = glslRenderer.gl
-
-        val activeDataSources = mutableSetOf<String>()
-        val programs = newPatchSet.patchMappings.map { patchMapping ->
-            val patch = Patch(showResources.shaders, show.dataSources, patchMapping.links)
-            val program = patch.compile(glslContext) { dataSource: DataSource ->
-                val dataSourceFeed = showResources.dataFeeds[dataSource.id]
-                    ?: error(unknown("datasource", dataSource.id, showResources.dataFeeds.keys))
-                activeDataSources.add(dataSource.id)
-                dataSourceFeed
-            }
-            patchMapping to program
-        }
-        return RenderPlan(programs)
-    }
-
-    class RenderPlan(val programs: List<Pair<PatchMapping, GlslProgram>>) {
-        fun render(glslRenderer: GlslRenderer) {
-            glslRenderer.draw()
-        }
+        return newPatchSet.createRenderPlan(glslContext)
     }
 
     private fun addReceiver(receiver: SurfaceReceiver) {

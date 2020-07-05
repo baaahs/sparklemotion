@@ -1,66 +1,79 @@
 package baaahs.glshaders
 
+import baaahs.Logger
+import baaahs.getBang
 import baaahs.glsl.GlslRenderer
-import baaahs.ports.*
-import baaahs.show.DataSource
+import baaahs.show.*
 
 class AutoWirer(val plugins: Plugins) {
-    fun autoWire(colorShader: String, shaderId: String = "color"): Patch {
-        return autoWire(
-            GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader,
-            shaderId
-        )
+    fun autoWire(colorShader: String): PatchEditor {
+        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader)
     }
 
-    fun autoWire(colorShader: ColorShader, shaderId: String = "color"): Patch {
-        return autoWire(mapOf(
-            "uv" to GlslRenderer.uvMapper,
-            shaderId to colorShader
-        )).resolve()
+    fun autoWire(colorShader: ColorShader): PatchEditor {
+        return autoWire(GlslRenderer.cylindricalUvMapper, colorShader)
+            .resolve()
     }
 
-    fun autoWire(shaders: Map<String, ShaderFragment>): UnresolvedPatch {
-        val locallyAvailable: MutableMap<ContentType, MutableList<ShaderOutPortRef>> = mutableMapOf()
+    fun autoWire(vararg shaders: OpenShader): UnresolvedPatchEditor {
+        val shaderEditors = shaders.associate { it.shader to it.shader.edit() }
+        val locallyAvailable: MutableMap<ContentType, MutableList<LinkEditor.Port>> = mutableMapOf()
 
-        shaders.entries.forEach { (shaderId, shaderFragment) ->
-            val contentType = shaderFragment.shaderType.outContentType
-            val options = locallyAvailable.getOrPut(contentType) { mutableListOf() }
-            options.add(ShaderOutPortRef(shaderId))
-        }
-        locallyAvailable.remove(ContentType.Color) // TODO: why?
-
-        val dataSources = hashSetOf<DataSource>()
-        val linkOptions = shaders.flatMap { (name, shaderFragment) ->
-            shaderFragment.inputPorts.map { inputPort ->
-                val localSuggestions: List<PortRef>? = locallyAvailable[inputPort.contentType]
-                val suggestions =
-                    localSuggestions ?: plugins.suggestDataSources(inputPort).map {
-                        dataSources.add(it)
-                        DataSourceRef(it.id)
-                    }
-
-                UnresolvedPatch.LinkOptions(suggestions, ShaderInPortRef(name, inputPort.id))
+        shaders.forEach { openShader ->
+            val shaderEditor = shaderEditors.getBang(openShader.shader, "shader editor")
+            openShader.outputPorts.forEach { outputPort ->
+                val options = locallyAvailable.getOrPut(outputPort.contentType) { mutableListOf() }
+                options.add(shaderEditor.outputPort(outputPort.name))
             }
         }
-        return UnresolvedPatch(shaders, dataSources.toList(), linkOptions)
+
+        val dataSources = hashSetOf<DataSource>()
+        val linkOptions = shaders.flatMap { openShader ->
+            val shaderEditor = shaderEditors.getBang(openShader.shader, "shader editor")
+
+            openShader.inputPorts.map { inputPort ->
+                val localSuggestions: List<LinkEditor.Port>? = locallyAvailable[inputPort.contentType]
+                val suggestions: List<LinkEditor.Port> =
+                    localSuggestions ?: plugins.suggestDataSources(inputPort).map {
+                        dataSources.add(it)
+                        DataSourceEditor(it)
+                    }
+
+                UnresolvedPatchEditor.LinkOptions(
+                    suggestions,
+                    shaderEditor.inputPort(inputPort.id)
+                )
+            }
+        } + UnresolvedPatchEditor.LinkOptions(
+            locallyAvailable[ContentType.Color] ?: emptyList(),
+            OutputPortEditor(GlslProgram.PixelColor.portId)
+        )
+        return UnresolvedPatchEditor(shaders.toList(), dataSources.toList(), linkOptions)
     }
 
-    data class UnresolvedPatch(
-        private val shaders: Map<String, ShaderFragment>,
+    data class UnresolvedPatchEditor(
+        private val shaders: List<OpenShader>,
         private val dataSources: List<DataSource>,
         private val linkOptions: List<LinkOptions>
     ) {
         fun isAmbiguous() = linkOptions.any { it.isAmbiguous() }
 
-        fun resolve(): Patch {
+        fun resolve(): PatchEditor {
             if (isAmbiguous()) {
                 error("ambiguous! ${linkOptions.filter { it.isAmbiguous() }}")
             }
-            return Patch(shaders, dataSources, linkOptions.map { Link(it.from.first(), it.to) })
+            return PatchEditor(
+                linkOptions.map { LinkEditor(it.from.first(), it.to) },
+                Surfaces.AllSurfaces
+            )
         }
 
-        data class LinkOptions(val from: List<PortRef>, val to: PortRef) {
+        data class LinkOptions(val from: List<LinkEditor.Port>, val to: LinkEditor.Port) {
             fun isAmbiguous() = from.size != 1
         }
+    }
+
+    companion object {
+        private val logger = Logger("AutoWirer")
     }
 }

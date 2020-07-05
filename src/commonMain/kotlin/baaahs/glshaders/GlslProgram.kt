@@ -1,20 +1,20 @@
 package baaahs.glshaders
 
 import baaahs.Logger
+import baaahs.RefCounted
 import baaahs.glsl.CompiledShader
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
-import baaahs.ports.OutputPortRef
 import baaahs.show.DataSource
-import baaahs.unknown
+import baaahs.show.OutputPortRef
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
 import kotlinx.serialization.modules.SerializersModule
 
 class GlslProgram(
     internal val gl: GlslContext,
-    private val patch: Patch,
+    private val openPatch: OpenPatch,
     resolver: Resolver
 ) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
@@ -41,7 +41,7 @@ class GlslProgram(
     }
 
     private val fragShader = gl.runInContext {
-        gl.createFragmentShader("#version ${gl.glslVersion}\n\n${patch.toGlsl()}\n")
+        gl.createFragmentShader("#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n")
     }
 
     private val bindings: List<Binding>
@@ -65,26 +65,7 @@ class GlslProgram(
     }
 
     private fun bind(resolver: Resolver): List<Binding> {
-        val dataSourcesById = patch.dataSources.associateBy { it.id }
-
-        return patch.dataSourceRefs.mapNotNull { dataSourceRef ->
-            val dataSource = (dataSourcesById[dataSourceRef.id]
-                ?: error(unknown("datasource", dataSourceRef.id, dataSourcesById.keys)))
-            val dataSourceFeed = resolver.invoke(dataSource)
-            if (dataSource.isImplicit()) return@mapNotNull null
-
-            if (dataSourceFeed != null) {
-                val binding = Binding(dataSource, dataSourceFeed)
-                if (binding.isValid) binding else {
-                    logger.debug { "unused uniform for $dataSourceRef?" }
-                    binding.release()
-                    null
-                }
-            } else {
-                logger.warn { "no UniformProvider bound for $dataSourceRef" }
-                null
-            }
-        }
+        return openPatch.bind(this, resolver)
     }
 
     private inline fun <reified T> bindingsOf(): List<T> {
@@ -127,9 +108,10 @@ class GlslProgram(
 
     inner class Binding(
         private val dataSource: DataSource,
-        val dataFeed: DataFeed
+        val dataFeed: DataFeed,
+        val id: String
     ) {
-        private val uniformLocation = getUniform(dataSource.getVarName())
+        private val uniformLocation = getUniform(dataSource.getVarName(id))
 
         val isValid: Boolean get() = uniformLocation != null
 
@@ -137,7 +119,7 @@ class GlslProgram(
             try {
                 uniformLocation?.let { dataFeed.set(it) }
             } catch (e: Exception) {
-                logger.error(e) { "failed to set ${dataSource.getType()} ${dataSource.id} from $dataFeed" }
+                logger.error(e) { "failed to set ${dataSource.getType()} $id from $dataFeed" }
             }
         }
 
@@ -151,9 +133,8 @@ class GlslProgram(
         vec4
     }
 
-    interface DataFeed {
+    interface DataFeed : RefCounted {
         fun set(uniform: Uniform)
-        fun release() {}
     }
 
     interface ResolutionListener {
@@ -163,34 +144,13 @@ class GlslProgram(
     companion object {
         private val logger = Logger("GlslProgram")
 
-//        val Resolution = inputPortRef(
-//            "resolution",
-//            "vec2",
-//            "resolution",
-//            ContentType.Resolution.pluginId
-//        )
-//
-//        val Time = inputPortRef(
-//            "time",
-//            "float",
-//            "time",
-//            ContentType.Time.pluginId
-//        )
-//
-//        val GlFragCoord = inputPortRef(
-//            "glFragCoord",
-//            "vec4",
-//            "gl_FragCoord",
-//            "baaahs.Core:none",
-//            varName = "gl_FragCoord",
-//            isImplicit = true
-//        )
-
-        val PixelColor = OutputPortRef("vec4", "gl_FragColor")
+        val PixelColor = OutputPortRef("sm_pixelColor")
     }
 }
 
-typealias Resolver = (DataSource) -> GlslProgram.DataFeed?
+typealias Resolver = (DataSource) -> DataBinding?
+
+class DataBinding(val id: String, val dataFeed: GlslProgram.DataFeed)
 
 val dataSourceProviderModule = SerializersModule {
     polymorphic(DataSource::class) {

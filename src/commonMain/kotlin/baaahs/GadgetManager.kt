@@ -32,7 +32,7 @@ class GadgetManager(private val pubSub: PubSub.Server) {
                 val (name, oldGadget) = old
                 val newGadget = new.second
 
-                val gadgetInfo = gadgets[name]!!
+                val gadgetInfo = gadgets.getBang(name, "gadget")
                 gadgetInfo.channel.replaceOnUpdate { updated ->
                     incomingGadgetChange(newGadget, updated)
                 }

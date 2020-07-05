@@ -1,40 +1,40 @@
 package baaahs.shaders
 
+import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
-import baaahs.Shader
 import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.test.expect
 
-private fun <T : Shader.Buffer> send(srcShader: Shader<T>, srcBuf: T, surface: Surface): Pair<Shader<T>, T> {
+private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf: T, surface: Surface): Pair<BrainShader<T>, T> {
     val writer = ByteArrayWriter()
-    srcShader.serialize(writer)
+    srcBrainShader.serialize(writer)
     srcBuf.serialize(writer)
     val bytes = writer.toBytes()
 
     val reader = ByteArrayReader(bytes)
-    expect(srcShader.id.ordinal.toByte()) { reader.readByte() }
+    expect(srcBrainShader.idBrain.ordinal.toByte()) { reader.readByte() }
 
     @Suppress("UNCHECKED_CAST")
-    val dstShader: Shader<T> = srcShader.id.reader.parse(reader) as Shader<T>
-    val dstBuf = dstShader.createBuffer(surface)
+    val dstBrainShader: BrainShader<T> = srcBrainShader.idBrain.reader.parse(reader) as BrainShader<T>
+    val dstBuf = dstBrainShader.createBuffer(surface)
     dstBuf.read(reader)
-    return Pair(dstShader, dstBuf)
+    return Pair(dstBrainShader, dstBuf)
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : Shader.Buffer> transmit(srcBuf: T, surface: Surface): T {
-    val (_: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
+internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, surface: Surface): T {
+    val (_: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, surface)
     return dstBuf
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
-    val (dstShader: Shader<T>, dstBuf) = send(srcBuf.shader as Shader<T>, srcBuf, surface)
+internal fun <T : BrainShader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
+    val (dstBrainShader: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, surface)
     val pixels = FakePixels(surface.pixelCount)
-    val renderer = dstShader.createRenderer(surface)
+    val renderer = dstBrainShader.createRenderer(surface)
     renderer.beginFrame(dstBuf, pixels.size)
     for (i in pixels.indices) {
         pixels[i] = renderer.draw(dstBuf, i)
@@ -43,8 +43,8 @@ internal fun <T : Shader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
     return pixels
 }
 
-internal fun <T : Shader.Buffer> render(srcShaderAndBuffer: Pair<Shader<T>, T>, surface: Surface): Pixels =
-    render(srcShaderAndBuffer.second, surface)
+internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, surface: Surface): Pixels =
+    render(srcBrainShaderAndBuffer.second, surface)
 
 class FakeSurface(override val pixelCount: Int) : Surface {
     override fun describe(): String = "fake"
