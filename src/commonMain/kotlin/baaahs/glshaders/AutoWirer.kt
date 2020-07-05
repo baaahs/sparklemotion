@@ -2,16 +2,18 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.getBang
-import baaahs.glsl.GlslRenderer
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.*
 
 class AutoWirer(val plugins: Plugins) {
+    private val glslAnalyzer = GlslAnalyzer()
+
     fun autoWire(colorShader: String): PatchEditor {
-        return autoWire(GlslRenderer.glslAnalyzer.asShader(colorShader) as ColorShader)
+        return autoWire(glslAnalyzer.asShader(colorShader) as ColorShader)
     }
 
     fun autoWire(colorShader: ColorShader): PatchEditor {
-        return autoWire(GlslRenderer.cylindricalUvMapper, colorShader)
+        return autoWire(cylindricalUvMapper, colorShader)
             .resolve()
     }
 

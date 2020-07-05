@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.GlslRenderer
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.DataSourceEditor
 import baaahs.show.OutputPortEditor
 import baaahs.show.ShaderEditor
@@ -61,7 +61,7 @@ object AutoWirerSpec : Spek({
             }
 
             context("with a UV projection shader") {
-                val uvShader = GlslRenderer.cylindricalUvMapper
+                val uvShader = cylindricalUvMapper
 
                 override(shaders) { arrayOf(colorShader, uvShader) }
 
