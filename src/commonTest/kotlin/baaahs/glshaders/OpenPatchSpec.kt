@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.GlslRenderer
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -39,7 +39,7 @@ object OpenPatchSpec : Spek({
                 val shadersById by value {
                     mapOf(
                         "color" to openShader,
-                        "uvShader" to GlslRenderer.cylindricalUvMapper
+                        "uvShader" to cylindricalUvMapper
                     )
                 }
                 val dataSourcesById by value {
