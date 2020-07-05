@@ -1,6 +1,8 @@
 package baaahs.app.ui
 
-import baaahs.*
+import baaahs.OpenShow
+import baaahs.ShowResources
+import baaahs.ShowState
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
 import baaahs.show.DataSource
@@ -21,18 +23,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val showState = props.showState
     val currentLayoutName = "default"
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
-    val gadgets by state<MutableMap<DataSource, Gadget>>() { mutableMapOf() }
-
-    sideEffect("show change", show) {
-        show.dataFeeds.forEach { (dataSource, dataFeed) ->
-            if (dataSource is CorePlugin.GadgetDataSource<*>) {
-                dataFeed as CorePlugin.GadgetDataFeed
-                val gadget = dataFeed.gadget
-                props.showResources.createdGadget(dataFeed.id, gadget)
-                gadgets[dataSource] = gadget
-            }
-        }
-    }
 
     val handleEdit = handler("edit", props.onChange) { newShow: Show, newShowState: ShowState ->
         props.onChange(newShow, newShowState)
@@ -41,6 +31,8 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val layoutRenderers =
         show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
     fun getControlRenderer(dataSource: DataSource): GadgetRenderer {
+        val dataFeed = props.showResources.useDataFeed(dataSource)
+
         return {
             when (dataSource.getRenderType()) {
                 "SceneList" -> {
@@ -64,10 +56,8 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                     }
                 }
                 "Slider" -> {
-                    dataSource as CorePlugin.SliderDataSource
                     RangeSlider {
-                        attrs.pubSub = props.pubSub
-                        attrs.gadget = gadgets.getBang(dataSource, "gadget")
+                        attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
                     }
                     if (props.editMode) {
                         +"Edit…"
@@ -97,7 +87,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 }
 
 external interface ShowUiProps : RProps {
-    var pubSub: PubSub.Client
     var showResources: ShowResources
     var show: OpenShow
     var showState: ShowState

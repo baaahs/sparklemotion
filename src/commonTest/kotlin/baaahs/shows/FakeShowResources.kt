@@ -27,8 +27,10 @@ class FakeShowResources(
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed =
         dataFeeds.getBang(dataSource, "datafeed")
 
+    override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed =
+        dataFeeds.getBang(dataSource, "datafeed")
+
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
-        gadgets
     }
 
     override fun releaseUnused() {

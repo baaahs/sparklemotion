@@ -146,12 +146,10 @@ class RangeSlider extends React.Component {
 }
 
 RangeSlider.propTypes = {
-  pubSub: PropTypes.object,
   gadget: PropTypes.object,
 };
 
 RangeSlider.defaultProps = {
-  pubSub: {},
   gadget: {},
 };
 

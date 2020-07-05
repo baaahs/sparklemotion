@@ -1,16 +1,18 @@
 package baaahs.app.ui
 
-import baaahs.*
+import baaahs.ShowResources
+import baaahs.ShowState
+import baaahs.ShowWithState
 import baaahs.app.ui.Styles.buttons
+import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
-import baaahs.net.Network
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import baaahs.ui.*
 import baaahs.util.UndoStack
+import baaahs.withState
 import kotlinext.js.jsObject
 import kotlinx.css.*
-import kotlinx.css.Color
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
@@ -42,18 +44,11 @@ import styled.styledDiv
 import styled.styledTd
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
-    val pubSub = props.pubSub
+    val webClient = props.webClient
+    observe(webClient)
+
     val id = props.id
     println("AppIndex $id: about to render")
-
-    var isConnected by state { pubSub.isConnected }
-    val handlePubSubStateChange = useCallback(pubSub) {
-        isConnected = pubSub.isConnected
-    }
-    sideEffect("pubSub changed", pubSub, handlePubSubStateChange) {
-        pubSub.addStateChangeListener(handlePubSubStateChange)
-        withCleanup { pubSub.removeStateChangeListener(handlePubSubStateChange) }
-    }
 
     var shaderEditorDrawerOpen by state { false }
 
@@ -67,87 +62,33 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             shaderEditorDrawerOpen = false
         }
 
-    val undoStack by state { UndoStack<ShowWithState>() }
-
-    var show by state<Show?> { null }
-    var showState by state<ShowState?> { null }
-    var openShow by state<OpenShow?> { null }
-
-    val showWithStateChannel = useRef<PubSub.Channel<ShowWithState>>(nuffin())
-    sideEffect("showWithState subscription", pubSub) {
-        val currentShowTopic = props.showResources.showWithStateTopic
-        println("AppIndex $id: subscribe to ${currentShowTopic.name}")
-        val channel = pubSub.subscribe(currentShowTopic) {
-            openShow = props.showResources.swapAndRelease(openShow, it.show)
-            show = it.show
-            showState = it.showState
-            undoStack.reset(it)
-        }
-        showWithStateChannel.current = channel
-
-        withCleanup {
-            println("AppIndex $id: unsubscribe from ${currentShowTopic.name}")
-            channel.unsubscribe()
-            showWithStateChannel.current = nuffin()
-        }
-    }
-
+    val undoStack = props.undoStack
     val handleUndo = handler("handleUndo", undoStack) { event: Event ->
         undoStack.undo().also {
-            show = it.show
-            showState = it.showState
-            showWithStateChannel.current.onChange(it)
+            webClient.onShowEdit(it)
         }
         Unit
     }
 
     val handleRedo = handler("handleRedo", undoStack) { event: Event ->
         undoStack.redo().also {
-            show = it.show
-            showState = it.showState
-            showWithStateChannel.current.onChange(it)
+            webClient.onShowEdit(it)
         }
         Unit
     }
 
     val handleShowEdit = useCallback { newShow: Show, newShowState: ShowState ->
-        show = newShow
-        showState = newShowState
-
         val newShowWithState = newShow.withState(newShowState)
         undoStack.changed(newShowWithState)
-        showWithStateChannel.current.onChange(newShowWithState)
+        webClient.onShowEdit(newShowWithState)
     }
 
-    val showStateChannel = useRef<PubSub.Channel<ShowState>>(nuffin())
-    sideEffect("showState subscription", pubSub) {
-        val channel = pubSub.subscribe(Topics.showState) {
-            showState = it
-        }
-        showStateChannel.current = channel
-        withCleanup {
-            channel.unsubscribe()
-            showStateChannel.current = nuffin()
-        }
-    }
-    println("AppIndex: show = ${show?.title} showState = ${showState}")
+    val show = webClient.show
+    val showState = webClient.showState
+    println("AppIndex: show = ${show?.title} showState = $showState")
 
     val handleShowStateChange = useCallback { newShowState: ShowState ->
-        showState = newShowState
-    }
-
-    sideEffect("Validate ShowState", show, showState) {
-        show?.let { show -> showState?.boundedBy(show)?.let { showState = it } }
-    }
-
-    sideEffect("sync ShowState", showState) {
-        showState?.let { showStateChannel.current.onChange(it) }
-    }
-
-    sideEffect("Show -> ShowResources", show, props.showResources) {
-        show?.let {
-            openShow = props.showResources.swapAndRelease(openShow, it)
-        }
+        webClient.onShowStateChange(newShowState)
     }
 
     var editMode by state { false }
@@ -163,7 +104,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 backgroundColor = Color.pink
                 textAlign = TextAlign.center
                 fontSize = 2.em
-                display = if (isConnected) Display.none else Display.block
+                display = if (webClient.isConnected) Display.none else Display.block
             }
             +"Connecting…"
         }
@@ -221,10 +162,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             styledDiv { +"Loading Show…" }
         } else {
             showUi {
-                this.pubSub = props.pubSub
-                this.show = openShow!!
+                this.show = webClient.openShow!!
                 this.showResources = props.showResources
-                this.showState = showState!!
+                this.showState = showState
                 this.onShowStateChange = handleShowStateChange
                 this.editMode = editMode
                 this.onChange = handleShowEdit
@@ -272,8 +212,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
 external interface AppIndexProps : RProps {
     var id: String
-    var network: Network
-    var pubSub: PubSub.Client
+    var webClient: WebClient.Facade
+    var undoStack: UndoStack<ShowWithState>
     var filesystems: List<SaveAsFs>
     var showResources: ShowResources
 }
