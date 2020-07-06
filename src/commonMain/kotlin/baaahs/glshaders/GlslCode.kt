@@ -86,7 +86,7 @@ class GlslCode(
     data class GlslStruct(
         override val name: String,
         override val fullText: String,
-        override val lineNumber: Int?,
+        override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)

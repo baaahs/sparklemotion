@@ -28,6 +28,10 @@ object GlslAnalyzerSpec : Spek({
                     //   key2=value2
                     uniform vec2  resolution;
                     
+                    struct MovingHead {
+                        float pan;
+                        float tilt;
+                    };
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
                     {
                         vec2 uv = fragCoord.xy / resolution.xy;
@@ -60,16 +64,22 @@ object GlslAnalyzerSpec : Spek({
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslStatement(
+                                "struct MovingHead {\n" +
+                                        "    float pan;\n" +
+                                        "    float tilt;\n" +
+                                        "};", lineNumber = 12
+                            ),
+                            GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 12
+                                        "}", lineNumber = 16
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 18
+                                        "}", lineNumber = 22
                             )
                         ), { GlslAnalyzer().findStatements(shaderText) }, true
                     )
@@ -99,6 +109,14 @@ object GlslAnalyzerSpec : Spek({
                             "void main()"
                         )
                     ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
+                }
+
+                it("finds the structs") {
+                    expect(
+                        listOf(
+                            "struct MovingHead {\n    float pan;\n    float tilt;\n};"
+                        )
+                    ) { glslCode.structs.map { it.fullText } }
                 }
 
                 context("with #ifdefs") {

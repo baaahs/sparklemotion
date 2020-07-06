@@ -219,6 +219,16 @@ class GlslAnalyzer {
             val priorParseState: Statement
         ) : ParseState(context) {
             var nestLevel: Int = 1
+            var needsTrailingSemicolon = false
+
+            override fun visitSemicolon(): ParseState {
+                return if (nestLevel == 0 && needsTrailingSemicolon) {
+                    super.visitSemicolon()
+                    finishStatement()
+                } else {
+                    super.visitSemicolon()
+                }
+            }
 
             override fun visitLeftCurlyBrace(): ParseState {
                 nestLevel++
@@ -230,8 +240,13 @@ class GlslAnalyzer {
                 super.visitRightCurlyBrace()
 
                 return if (nestLevel == 0) {
-                    finishStatement()
-                    Statement(context)
+                    val isStruct = priorParseState.textAsString.contains(Regex("^\\s*struct\\s*"))
+                    if (isStruct) {
+                        needsTrailingSemicolon = true
+                        this
+                    } else {
+                        finishStatement()
+                    }
                 } else {
                     this
                 }
@@ -245,9 +260,10 @@ class GlslAnalyzer {
                 if (!priorParseState.isEmpty()) finishStatement()
             }
 
-            private fun finishStatement() {
+            private fun finishStatement(): Statement {
                 priorParseState.visitText(textAsString)
                 priorParseState.finishStatement()
+                return Statement(context)
             }
         }
 
