@@ -1,6 +1,5 @@
 package baaahs.show
 
-import baaahs.SceneListType
 import baaahs.ShowState
 import baaahs.glshaders.*
 import org.spekframework.spek2.Spek
@@ -49,7 +48,7 @@ object ShowEditorSpec : Spek({
 
             it("has the expected initial datasources") {
                 expect(
-                    setOf("U/V Coordinates Texture", "Time", "Resolution", "Slider", "Scene List")
+                    setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Slider", "Scene List")
                 ) { show.dataSources.values.map { it.dataSourceName }.toSet() }
             }
 

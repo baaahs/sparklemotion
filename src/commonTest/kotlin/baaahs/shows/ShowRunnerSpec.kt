@@ -4,10 +4,12 @@ import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.Plugins
 import baaahs.glshaders.override
+import baaahs.glsl.GlslContext.Companion.GL_RGB32F
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
 import baaahs.model.Model
+import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.show.ShowBuilder
@@ -48,7 +50,7 @@ object ShowRunnerSpec : Spek({
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub) }
+        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model) }
         val showRunner by value {
             ShowRunner(
                 model,
@@ -59,7 +61,7 @@ object ShowRunnerSpec : Spek({
                 FakeDmxUniverse(),
                 MovingHeadManager(FakeFs(), pubSub, emptyList()),
                 FakeClock(),
-                GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest),
+                GlslRenderer(fakeGlslContext, ModelInfo.Empty),
                 pubSub
             )
         }
@@ -73,12 +75,12 @@ object ShowRunnerSpec : Spek({
 
         context("port wiring") {
             it("wires up UV texture stuff") {
-                val fragCoordTextureUnit = fakeProgram.getUniform("in_uvCoordsTexture") as Int
-                val textureConfig = fakeGlslContext.getTextureConfig(fragCoordTextureUnit)
+                val pixelCoordsTextureUnit = fakeProgram.getUniform("in_pixelCoordsTexture") as Int
+                val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
 
-                expect(200 to 1) { textureConfig.width to textureConfig.height }
-                expect(GL_R32F) { textureConfig.internalFormat }
-                expect(GL_RED) { textureConfig.format }
+                expect(100 to 1) { textureConfig.width to textureConfig.height }
+                expect(GL_RGB32F) { textureConfig.internalFormat }
+                expect(GL_RGB) { textureConfig.format }
                 expect(GL_FLOAT) { textureConfig.type }
                 expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MIN_FILTER] }
                 expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MAG_FILTER] }

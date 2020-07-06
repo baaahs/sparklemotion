@@ -2,10 +2,10 @@ package baaahs
 
 import baaahs.geom.Matrix4
 import baaahs.glsl.GlslRenderer
-import baaahs.glsl.GlslRendererTest
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
+import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -51,7 +51,7 @@ class PinkyTest {
             fakeFs,
             PermissiveFirmwareDaddy(),
             StubSoundAnalyzer(),
-            glslRenderer = GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest)
+            glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
         )
         showRunner = pinky.showRunner
         pinkyLink = network.links.only()

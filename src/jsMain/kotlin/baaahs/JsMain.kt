@@ -44,7 +44,7 @@ fun main(args: Array<String>) {
 
         "Mapper" -> {
 
-            val model = Pluggables.loadModel(Pluggables.defaultModel) // todo: which model?
+            val model = Pluggables.getModel() // todo: not this
             (model as? ObjModel)?.load()
 
             val mapperUi = JsMapperUi();

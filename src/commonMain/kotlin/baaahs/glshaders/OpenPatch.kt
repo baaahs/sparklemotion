@@ -37,13 +37,11 @@ class OpenPatch {
         dataSources = patch.findDataSourceRefs().associate {
             it.dataSourceId to dataSourcesById.getBang(it.dataSourceId, "datasource")
         }
-        dataSourceToId = dataSources.entries.associate { (k, v) -> v to k }
         surfaces = patch.surfaces
     }
 
     private val components: Map<String, Component>
     private val dataSources: Map<String, DataSource>
-    private val dataSourceToId: Map<DataSource, String>
     private val surfaces: Surfaces
 
     inner class Component(
@@ -88,6 +86,18 @@ class OpenPatch {
         private val resultVar = namespace.internalQualify("result")
         private val resolvedPortMap by lazy { portMap.mapValues { (_, v) -> v.value } }
 
+        fun appendStructs(buf: StringBuilder) {
+            openShader.glslCode.structs.forEach { struct ->
+                // TODO: we really ought to namespace structs, but that's not straightforward because
+                // multiple shaders might share a uniform input (e.g. ModelInfo).
+
+//                val qualifiedName = namespace.qualify(struct.name)
+//                val structText = struct.fullText.replace(struct.name, qualifiedName)
+                val structText = struct.fullText
+                buf.append(structText, ";\n")
+            }
+        }
+
         fun appendDeclaratoryLines(buf: StringBuilder) {
             buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
             buf.append("// ", openShader.title, "\n")
@@ -121,6 +131,10 @@ class OpenPatch {
         buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
         buf.append("\n")
 
+        components.values.forEach { component ->
+            component.appendStructs(buf)
+        }
+
         dataSources.forEach { (id, dataSource) ->
             if (!dataSource.isImplicit())
                 buf.append("uniform ${dataSource.getType()} ${dataSource.getVarName(id)};\n")
@@ -131,7 +145,7 @@ class OpenPatch {
             component.appendDeclaratoryLines(buf)
         }
 
-        buf.append("\n#line 10001\n")
+        buf.append("\n#line -1\n")
         buf.append("void main() {\n")
         components.values.forEach { component ->
             component.appendMainLines(buf)
@@ -145,24 +159,20 @@ class OpenPatch {
 
     fun createProgram(
         glslContext: GlslContext,
-        dataFeeds: Map<DataSource, GlslProgram.DataFeed>
+        dataFeeds: Map<String, GlslProgram.DataFeed>
     ): GlslProgram {
-        return compile(glslContext) { dataSource: DataSource ->
-            DataBinding(
-                dataSourceToId.getBang(dataSource, "datasource id"),
-                dataFeeds.getBang(dataSource, "data feed"))
-        }
+        return compile(glslContext) { id, dataSource -> dataFeeds.getBang(id, "data feed") }
     }
 
     fun matches(surface: Surface): Boolean = this.surfaces.matches(surface)
 
-    fun bind(glslProgram: GlslProgram, resolver: (DataSource) -> DataBinding?): List<GlslProgram.Binding> {
-        return dataSources.mapNotNull { (_, dataSource) ->
+    fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
+        return dataSources.mapNotNull { (id, dataSource) ->
             if (dataSource.isImplicit()) return@mapNotNull null
-            val dataBinding = resolver.invoke(dataSource)
+            val dataFeed = resolver.invoke(id, dataSource)
 
-            if (dataBinding != null) {
-                val binding = glslProgram.Binding(dataSource, dataBinding.dataFeed, dataBinding.id)
+            if (dataFeed != null) {
+                val binding = dataFeed.bind(glslProgram)
                 if (binding.isValid) binding else {
                     logger.debug { "unused uniform for $dataSource?" }
                     binding.release()

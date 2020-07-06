@@ -65,7 +65,7 @@ class PinkyMain(private val args: Args) {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         val glslContext = GlslBase.manager.createContext()
-        val glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator)
+        val glslRenderer = GlslRenderer(glslContext, model)
         val pinky = Pinky(
             model, show, network, dmxUniverse, beatSource, SystemClock(),
             fs, daddy, soundAnalyzer,

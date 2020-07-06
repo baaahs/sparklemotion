@@ -45,7 +45,8 @@ object OpenPatchSpec : Spek({
                 val dataSourcesById by value {
                     mapOf(
                         "gl_FragCoord" to CorePlugin.ScreenUvCoord(),
-                        "uvCoordsTexture" to CorePlugin.UvCoordTexture(),
+                        "pixelCoordsTexture" to CorePlugin.PixelCoordsTexture(),
+                        "modelInfo" to CorePlugin.ModelInfoDataSource("ModelInfo"),
                         "resolution" to CorePlugin.Resolution(),
                         "time" to CorePlugin.Time(),
                         "bluenessSlider" to CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, 0.01f)
@@ -73,7 +74,9 @@ object OpenPatchSpec : Spek({
                         dataSourcesById
                     )
                 }
-                val glsl by value { openPatch.toGlsl().trim() }
+                val glsl by value {
+                    openPatch.toGlsl().trim()
+                }
 
                 it("generates GLSL") {
                     expect(
@@ -110,7 +113,7 @@ object OpenPatchSpec : Spek({
                         }
 
 
-                        #line 10001
+                        #line -1
                         void main() {
                           p0_main();
                         }
@@ -123,8 +126,10 @@ object OpenPatchSpec : Spek({
                         OpenPatch(
                             Patch(
                                 listOf(
-                                    DataSourceRef("uvCoordsTexture")
-                                            linkTo ShaderInPortRef("uvShader", "uvCoordsTexture"),
+                                    DataSourceRef("pixelCoordsTexture")
+                                            linkTo ShaderInPortRef("uvShader", "pixelCoordsTexture"),
+                                    DataSourceRef("modelInfo")
+                                            linkTo ShaderInPortRef("uvShader", "modelInfo"),
                                     ShaderOutPortRef("uvShader", ShaderOutPortRef.ReturnValue)
                                             linkTo ShaderInPortRef("color", "gl_FragCoord"),
                                     DataSourceRef("resolution")
@@ -154,7 +159,7 @@ object OpenPatchSpec : Spek({
     
                             layout(location = 0) out vec4 sm_pixelColor;
     
-                            uniform sampler2D in_uvCoordsTexture;
+                            uniform sampler2D in_pixelCoordsTexture;
                             uniform vec2 in_resolution;
                             uniform float in_time;
                             uniform float in_bluenessSlider;
@@ -196,7 +201,7 @@ object OpenPatchSpec : Spek({
                             }
     
     
-                            #line 10001
+                            #line -1
                             void main() {
                               p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy);
                               p1_main();

@@ -4,10 +4,10 @@ import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.DataBinding
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
+import baaahs.model.ModelInfo
 import baaahs.shows.FakeShowResources
 import kotlin.math.abs
 import kotlin.random.Random
@@ -35,7 +35,7 @@ class GlslRendererTest {
     fun setUp() {
         if (glslAvailable()) {
             glslContext = GlslBase.manager.createContext()
-            glslRenderer = GlslRenderer(glslContext, UvTranslatorForTest)
+            glslRenderer = GlslRenderer(glslContext, ModelInfoForTest)
             fakeShowResources = FakeShowResources(glslContext)
         }
     }
@@ -247,9 +247,8 @@ class GlslRendererTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        return AutoWirer(Plugins.safe()).autoWire(program).open().compile(glslContext) { dataSource ->
-            val id = dataSource.suggestId()
-            DataBinding(id, dataSource.createFeed(fakeShowResources, id))
+        return AutoWirer(Plugins.safe()).autoWire(program).open().compile(glslContext) { id, dataSource ->
+            dataSource.createFeed(fakeShowResources, id)
         }
     }
 
@@ -267,6 +266,8 @@ class GlslRendererTest {
 
     operator fun Color.minus(other: Color) =
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
+
+    val ModelInfoForTest = ModelInfo.Empty
 
     object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
         override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")

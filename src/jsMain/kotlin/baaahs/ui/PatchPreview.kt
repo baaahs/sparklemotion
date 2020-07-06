@@ -3,7 +3,6 @@ package baaahs.ui
 import baaahs.BaseShowResources
 import baaahs.Gadget
 import baaahs.GadgetData
-import baaahs.glshaders.DataBinding
 import baaahs.glshaders.OpenPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.CompiledShader
@@ -11,6 +10,7 @@ import baaahs.glsl.GlslBase
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslPreview
 import baaahs.jsx.useResizeListener
+import baaahs.model.ModelInfo
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -21,7 +21,7 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
     var glslPreview by useState<GlslPreview?>(null)
 
     val compile = useCallback({ openPatch: OpenPatch ->
-        val showResources = object : BaseShowResources(Plugins.safe()) {
+        val showResources = object : BaseShowResources(Plugins.safe(), ModelInfo.Empty) {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
             override val glslContext: GlslContext get() = gl!!
 
@@ -30,15 +30,15 @@ val PatchPreview = functionalComponent<PatchPreviewProps> { props ->
             }
 
             override fun <T : Gadget> useGadget(id: String): T {
+                @Suppress("UNCHECKED_CAST")
                 return gadgets[id] as T
             }
 
         }
         val program =
             try {
-                openPatch.compile(gl!!) { dataSource ->
-                    val id = dataSource.suggestId()
-                    DataBinding(id, dataSource.createFeed(showResources, id))
+                openPatch.compile(gl!!) { id, dataSource ->
+                    dataSource.createFeed(showResources, id)
                 }.also {
                     props.onSuccess()
                 }

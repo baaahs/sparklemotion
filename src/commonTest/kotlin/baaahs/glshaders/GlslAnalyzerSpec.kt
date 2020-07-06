@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
+import baaahs.glsl.Shaders
 import baaahs.only
 import kotlinx.serialization.json.json
 import org.spekframework.spek2.Spek
@@ -274,6 +275,23 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
                                 InputPort("iTime", "float", "Time", ContentType.Time),
                                 InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
+                            )
+                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                    }
+                }
+
+                context("with U/V translation shader") {
+                    override(shaderText) { Shaders.cylindricalUvMapper.src }
+
+                    it("identifies mainImage() as the entry point") {
+                        expect("mainUvFromRaster") { shader.entryPoint.name }
+                    }
+
+                    it("creates inputs for implicit uniforms") {
+                        expect(
+                            listOf(
+                                InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+                                InputPort("modelInfo", "ModelInfo", "ModelInfo", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
