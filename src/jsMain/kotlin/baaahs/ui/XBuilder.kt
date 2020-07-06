@@ -3,7 +3,7 @@ package baaahs.ui
 import baaahs.Logger
 import org.w3c.dom.events.Event
 import react.RMutableRef
-import react.useMemo
+import kotlin.browser.window
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -14,9 +14,10 @@ fun <P : react.RProps> xComponent(
     name: String,
     func: XBuilder.(props: P) -> Unit
 ): react.FunctionalComponent<P> {
+    val logger = Logger(name)
     val component = { props: P ->
         react.buildElements {
-            val xBuilder = XBuilder()
+            val xBuilder = XBuilder(logger)
             xBuilder.func(props)
             this.childList.addAll(xBuilder.childList)
             xBuilder.renderFinished()
@@ -26,7 +27,7 @@ fun <P : react.RProps> xComponent(
     return component
 }
 
-class XBuilder : react.RBuilder() {
+class XBuilder(val logger: Logger) : react.RBuilder() {
     private var firstTime = false
     private var dataIndex = 0
     private var sideEffectIndex = 0
@@ -51,7 +52,7 @@ class XBuilder : react.RBuilder() {
     fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
 
     fun <T> memo(vararg watch: Any?, block: () -> T): T {
-        return useMemo(block, watch)
+        return react.useMemo(block, watch)
     }
 
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
@@ -122,6 +123,22 @@ class XBuilder : react.RBuilder() {
     fun eventHandler(block: Function<*>): (Event) -> Unit {
         @Suppress("UNCHECKED_CAST")
         return handler("event handler", block, block = block as (Event) -> Unit)
+    }
+
+    fun whenMounted(block: SideEffect.() -> Unit) {
+        react.useEffectWithCleanup {
+            val sideEffect = SideEffect(emptyArray())
+            sideEffect.block()
+            return@useEffectWithCleanup { sideEffect.runCleanups() }
+        }
+    }
+
+    /**
+     * Useful when calling a prop function which might make an impermissible state change
+     * in a parent component from within a side effect.
+     */
+    fun later(block: () -> Unit) {
+        window.setTimeout(block, 0)
     }
 
     fun forceRender() {

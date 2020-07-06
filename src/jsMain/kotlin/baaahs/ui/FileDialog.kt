@@ -21,14 +21,13 @@ import react.*
 import react.dom.*
 import kotlin.browser.window
 
-private val FileDialog = functionalComponent<FileDialogProps> { props ->
+private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val dialogEl = useRef(null)
-    val preact = XBuilder()
-    var selectedFs by preact.state { props.defaultTarget?.fs ?: props.filesystems.first() }
-    var name by preact.state { props.defaultTarget?.name }
-    var currentDir by preact.state { selectedFs.fs.rootFile }
-    var filesInDir by preact.state { emptyList<Fs.File>() }
-    var selectedFile by preact.state<Fs.File?> { null }
+    var selectedFs by state { props.defaultTarget?.fs ?: props.filesystems.first() }
+    var name by state { props.defaultTarget?.name }
+    var currentDir by state { selectedFs.fs.rootFile }
+    var filesInDir by state { emptyList<Fs.File>() }
+    var selectedFile by state<Fs.File?> { null }
 
     val handleFsClick = useCallback { fs: SaveAsFs -> selectedFs = fs }
 
@@ -54,12 +53,12 @@ private val FileDialog = functionalComponent<FileDialogProps> { props ->
         }
     }
 
-    val handleFileNameChange = useCallback(currentDir) { event: Event ->
+    val handleFileNameChange = useCallback { event: Event ->
         val str = event.target!!.asDynamic().value as String
         selectedFile = currentDir.resolve(str)
     }
 
-    val handleConfirm = useCallback(selectedFile, props.onSelect) { event: Event ->
+    val handleConfirm = useCallback(props.onSelect) { event: Event ->
         selectedFile?.let { props.onSelect(it) }; Unit
     }
 
@@ -71,7 +70,7 @@ private val FileDialog = functionalComponent<FileDialogProps> { props ->
         props.onCancel()
     }
 
-    preact.sideEffect("selected fs/dir", props.isOpen, selectedFs, currentDir) {
+    sideEffect("selected fs/dir", props.isOpen) {
         filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
     }
 
