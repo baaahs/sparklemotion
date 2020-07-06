@@ -94,7 +94,7 @@ class OpenPatch {
 //                val qualifiedName = namespace.qualify(struct.name)
 //                val structText = struct.fullText.replace(struct.name, qualifiedName)
                 val structText = struct.fullText
-                buf.append(structText, ";\n")
+                buf.append(structText, "\n")
             }
         }
 
