@@ -2,7 +2,6 @@ package baaahs.glsl
 
 import baaahs.Logger
 import baaahs.glshaders.GlslProgram
-import baaahs.model.ModelInfo
 import com.danielgergely.kgl.*
 
 abstract class GlslContext(
@@ -27,21 +26,12 @@ abstract class GlslContext(
     }
     val stats = Stats()
 
-    fun createRenderer(modelInfo: ModelInfo) =
-        runInContext { GlslRenderer(this, modelInfo) }
-
     fun createVertexShader(source: String): CompiledShader {
-        val shaderId = check { createShader(GL_VERTEX_SHADER) } ?: throw IllegalStateException()
-        val info = kgl.getShaderInfoLog(shaderId) ?: ""
-        if (info.isNotEmpty()) {
-            throw CompiledShader.CompilationException(info)
-        }
-        return CompiledShader(kgl, shaderId, source)
+        return CompiledShader(this, GL_VERTEX_SHADER, source)
     }
 
     fun createFragmentShader(source: String): CompiledShader {
-        val shaderId = check { createShader(GL_FRAGMENT_SHADER) ?: throw IllegalStateException() }
-        return CompiledShader(kgl, shaderId, source)
+        return CompiledShader(this, GL_FRAGMENT_SHADER, source)
     }
 
     fun useProgram(glslProgram: GlslProgram) {

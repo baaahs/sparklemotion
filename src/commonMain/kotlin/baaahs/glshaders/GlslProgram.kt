@@ -2,7 +2,7 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.RefCounted
-import baaahs.glsl.CompiledShader
+import baaahs.glsl.CompilationException
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
@@ -19,7 +19,7 @@ class GlslProgram(
 ) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
-    private val vertexShader = gl.runInContext {
+    private val vertexShader =
         gl.createVertexShader(
             """
             #version ${gl.glslVersion}
@@ -38,22 +38,25 @@ class GlslProgram(
             }
             """.trimIndent()
         )
-    }
 
-    private val fragShader = gl.runInContext {
-        gl.createFragmentShader("#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n")
-    }
+    private val fragShader =
+        gl.createFragmentShader(
+            "#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n"
+        )
 
     private val bindings: List<Binding>
 
     init {
         gl.runInContext {
-            gl.check { attachShader(id, vertexShader.id) }
-            gl.check { attachShader(id, fragShader.id) }
+            gl.check { attachShader(id, vertexShader.shaderId) }
+            gl.check { attachShader(id, fragShader.shaderId) }
             gl.check { linkProgram(id) }
             if (gl.check { getProgramParameter(id, GL_LINK_STATUS) } != GL_TRUE) {
+                vertexShader.validate()
+                fragShader.validate()
+
                 val infoLog = gl.check { getProgramInfoLog(id) }
-                throw CompiledShader.CompilationException(infoLog ?: "huh?")
+                throw CompilationException(infoLog ?: "huh?")
             }
         }
 

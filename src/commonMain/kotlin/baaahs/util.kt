@@ -9,7 +9,8 @@ import kotlin.math.min
 import kotlin.random.Random
 
 fun <E> Collection<E>.only(description: String = "item"): E {
-    if (size != 1) throw IllegalArgumentException("Expected one $description, found $size: $this")
+    if (size != 1)
+        throw IllegalArgumentException("Expected one $description, found $size: $this")
     else return iterator().next()
 }
 
@@ -34,6 +35,14 @@ fun <T> unknown(type: String, key: T, among: Collection<T>): String {
 fun <K, V> Map<K, V>.getBang(key: K, type: String): V {
     return get(key)
         ?: error(unknown(type, key, keys))
+}
+
+fun Int.boundedBy(range: IntRange): Int {
+    return when {
+        this < range.first -> range.first
+        this > range.last -> range.last
+        else -> this
+    }
 }
 
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)

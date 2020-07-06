@@ -35,10 +35,7 @@ class GlslPreview(
 
     fun render() {
         if (!running) return
-        window.setTimeout({
-            window.requestAnimationFrame { render() }
-        }, 10)
-
+        window.requestAnimationFrame { render() }
         scene?.render()
     }
 

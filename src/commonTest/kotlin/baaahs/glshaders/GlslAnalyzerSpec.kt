@@ -127,24 +127,24 @@ object GlslAnalyzerSpec : Spek({
                         
                         #ifdef NOT_DEFINED
                         uniform float shouldNotBeDefined;
-                        #define NOT_DEFINED_A
+                        #define A_NOT_DEFINED
                         #define DEF_VAL shouldNotBeThis
                         #else
                         uniform float shouldBeDefined;
-                        #define NOT_DEFINED_B
+                        #define B_IS_DEFINED
                         #define DEF_VAL shouldBeThis
                         #endif
                         #define PI 3.14159
                         
                         uniform vec2 DEF_VAL;
-                        #ifdef NOT_DEFINED_A
+                        #ifdef A_NOT_DEFINED
                         void this_is_super_busted() {
                         #endif
-                        #ifndef NOT_DEFINED_B
+                        #ifndef B_IS_DEFINED
                         }
                         #endif
                         
-                        #ifdef NOT_DEFINED_B
+                        #ifdef B_IS_DEFINED
                         void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragColor = vec4(uv.xy, PI, 1.); }
                         #endif
                         #undef PI
@@ -181,12 +181,14 @@ object GlslAnalyzerSpec : Spek({
                             /**language=glsl*/
                             """
                                 #define iResolution resolution
+                                #define Circle(U,r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+
                                 uniform vec2 resolution;
                                 void main() {
                                 #ifdef xyz
                                     foo();
                                 #endif
-                                    gl_FragColor = iResolution.x;
+                                    gl_FragColor = Circle(gl_FragCoord, iResolution.x);
                                 }
                                 """.trimIndent()
                         }
@@ -197,12 +199,12 @@ object GlslAnalyzerSpec : Spek({
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
                             expect(
-                                "#line 3\n" +
+                                "#line 5\n" +
                                         "void ns_main() {\n" +
                                         "\n" +
                                         "\n" +
                                         "\n" +
-                                        "    gl_FragColor = resolution.x;\n" +
+                                        "    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );\n" +
                                         "}\n".trimIndent()
                             ) { glsl.trim() }
                         }
