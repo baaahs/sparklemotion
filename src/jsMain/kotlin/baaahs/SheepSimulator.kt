@@ -77,7 +77,7 @@ class SheepSimulator {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        glslRenderer = GlslRenderer(glslContext, model.defaultUvTranslator),
+        glslRenderer = GlslRenderer(glslContext, model),
         plugins = plugins
     )
     private val brains: MutableList<Brain> = mutableListOf()

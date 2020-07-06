@@ -287,10 +287,18 @@ class GlslAnalyzer {
         val lineNumber: Int? = null
     ) {
         fun asSpecialOrNull(): GlslCode.GlslOther? {
-            return Regex("^(struct|precision)\\s+.*;", RegexOption.MULTILINE)
+            return Regex("^(precision)\\s+.*;", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (keyword) = it.destructured
                     GlslCode.GlslOther(keyword, text, lineNumber, comments)
+                }
+        }
+
+        fun asStructOrNull(): GlslCode.GlslStruct? {
+            return Regex("^struct\\s+(\\w+)\\s+", RegexOption.MULTILINE)
+                .find(text.trim())?.let {
+                    val (name) = it.destructured
+                    GlslCode.GlslStruct(name, text, lineNumber, comments)
                 }
         }
 

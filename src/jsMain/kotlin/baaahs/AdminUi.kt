@@ -36,6 +36,5 @@ class AdminUi(network: Network, pinkyAddress: Network.Address) : HostedWebApp {
         visualizerListenerClient.close()
     }
 
-    private fun selectModel(): Model<*> =
-        Pluggables.loadModel(Pluggables.defaultModel)
+    private fun selectModel(): Model<*> = Pluggables.getModel()
 }

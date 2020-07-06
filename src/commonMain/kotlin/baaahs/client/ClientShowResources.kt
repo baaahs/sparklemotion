@@ -3,13 +3,15 @@ package baaahs.client
 import baaahs.*
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
+import baaahs.model.ModelInfo
 import kotlinx.serialization.json.JsonElement
 
 class ClientShowResources(
     plugins: Plugins,
     override val glslContext: GlslContext,
-    private val pubSub: PubSub.Client
-) : BaseShowResources(plugins) {
+    private val pubSub: PubSub.Client,
+    modelInfo: ModelInfo
+) : BaseShowResources(plugins, modelInfo) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {

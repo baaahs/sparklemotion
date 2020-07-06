@@ -4,8 +4,8 @@ import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
-import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.RenderSurface
+import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.show.SampleData
@@ -37,7 +37,7 @@ class ShowRunnerTest {
     private lateinit var fakeGlslContext: FakeGlslContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
-    private val sheepModel = SheepModel()
+    private val sheepModel = SheepModel().apply { panels = emptyList() }
     private lateinit var showManager: ShowManager
 
     @BeforeTest
@@ -46,7 +46,7 @@ class ShowRunnerTest {
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val show = SampleData.sampleShow
-        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server)
+        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server, sheepModel)
         showRunner = ShowRunner(
             sheepModel,
             show,
@@ -56,7 +56,7 @@ class ShowRunnerTest {
             dmxUniverse,
             movingHeadManager,
             FakeClock(),
-            GlslRenderer(fakeGlslContext, GlslRendererTest.UvTranslatorForTest),
+            GlslRenderer(fakeGlslContext, ModelInfo.Empty),
             PubSub.Server(serverNetwork.startHttpServer(0))
         )
         renderSurfaces = showRunner.renderSurfaces

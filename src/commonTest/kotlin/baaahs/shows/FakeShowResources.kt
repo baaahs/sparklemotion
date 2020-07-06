@@ -6,13 +6,15 @@ import baaahs.glshaders.OpenShader
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.RenderSurface
+import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
 
 class FakeShowResources(
     override val glslContext: GlslContext,
     val shaders: Map<Shader, OpenShader> = emptyMap(),
-    val dataFeeds: Map<DataSource, GlslProgram.DataFeed> = emptyMap()
+    val dataFeeds: Map<DataSource, GlslProgram.DataFeed> = emptyMap(),
+    override val modelInfo: ModelInfo = ModelInfo.Empty
 ) : ShowResources {
     override val plugins: Plugins
         get() = Plugins.safe()

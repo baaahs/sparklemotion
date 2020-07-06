@@ -76,8 +76,10 @@ object AutoWirerSpec : Spek({
                                     linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
                             ShaderEditor(uvShader.shader).outputPort(ShaderOutPortRef.ReturnValue)
                                     linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
-                            DataSourceEditor(CorePlugin.UvCoordTexture())
-                                    linkTo ShaderEditor(uvShader.shader).inputPort("uvCoordsTexture"),
+                            DataSourceEditor(CorePlugin.PixelCoordsTexture())
+                                    linkTo ShaderEditor(uvShader.shader).inputPort("pixelCoordsTexture"),
+                            DataSourceEditor(CorePlugin.ModelInfoDataSource("ModelInfo"))
+                                    linkTo ShaderEditor(uvShader.shader).inputPort("modelInfo"),
                             ShaderEditor(colorShader.shader).outputPort("gl_FragColor")
                                     linkTo OutputPortEditor(GlslProgram.PixelColor.portId)
                         )

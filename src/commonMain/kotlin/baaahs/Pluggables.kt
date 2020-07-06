@@ -19,4 +19,7 @@ object Pluggables {
             else -> throw IllegalArgumentException("unknown model \"$name\"")
         }.apply { load() }
     }
+
+    // TODO: not this
+    fun getModel() = loadModel(defaultModel)
 }
