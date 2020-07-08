@@ -52,7 +52,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     // name would be in form:
     //   [baaahs.Core:]resolution
     //   [baaahs.Core:]time
-    //   [baaahs.Core:]uvCoords
+    //   [baaahs.Core:]pixelCoords
     //   com.example.Plugin:data
     //   baaahs.SoundAnalysis:coq
     fun findDataSource(inputPort: InputPort): DataSource? {

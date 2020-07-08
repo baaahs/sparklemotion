@@ -28,12 +28,13 @@ class WebClient(
     init { pubSub.addStateChangeListener(pubSubListener) }
 
     private val glslContext = GlslBase.jsManager.createContext()
+    private val model = Pluggables.getModel()
 
     private var show: Show? = null
     private var openShow: OpenShow? = null
     private var showState: ShowState? = null
 
-    private val showResources = ClientShowResources(plugins, glslContext, pubSub)
+    private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
     private val showWithStateChannel = pubSub.subscribe(showResources.showWithStateTopic) {
         switchTo(it.show, it.showState)
         undoStack.reset(it)

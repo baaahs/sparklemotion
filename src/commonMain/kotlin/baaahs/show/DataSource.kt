@@ -14,7 +14,12 @@ import kotlinx.serialization.json.JsonObjectSerializer
 
 interface DataSourceBuilder<T : DataSource> {
     val resourceName: String
-    fun suggestDataSources(inputPort: InputPort): List<T>
+    fun suggestDataSources(inputPort: InputPort): List<T> {
+        return if (looksValid(inputPort)) {
+            listOf(build(inputPort))
+        } else emptyList()
+    }
+    fun looksValid(inputPort: InputPort): Boolean = false
     fun build(inputPort: InputPort): T
 }
 

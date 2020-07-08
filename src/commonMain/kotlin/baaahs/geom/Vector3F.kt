@@ -59,7 +59,9 @@ fun center(vectors: Collection<Vector3F>): Vector3F {
 }
 
 fun boundingBox(vectors: Collection<Vector3F>): Pair<Vector3F, Vector3F> {
+    if (vectors.isEmpty()) return Vector3F.origin to Vector3F.origin
+
     val min = vectors.reduce { acc, vector3F -> acc.min(vector3F) }
     val max = vectors.reduce { acc, vector3F -> acc.max(vector3F) }
-    return Pair(min, max)
+    return min to max
 }

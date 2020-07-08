@@ -2,6 +2,7 @@ package baaahs.glshaders
 
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.GlslVar
+import baaahs.glsl.AnalysisException
 import baaahs.show.Shader
 
 class GlslAnalyzer {
@@ -9,7 +10,7 @@ class GlslAnalyzer {
         val statements = findStatements(shaderText)
         val title = Regex("^// (.*)").find(shaderText)?.groupValues?.get(1)
             ?: "Unknown Shader"
-//            ?: throw IllegalArgumentException("Shader name must be in a comment on the first line")
+//            ?: throw glslError("Shader name must be in a comment on the first line")
 
         return GlslCode(title, null, shaderText, statements)
     }
@@ -26,69 +27,71 @@ class GlslAnalyzer {
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {
         val context = Context()
-        var state: ParseState = ParseState.initial(context)
-
-        Regex("(.*?)(//|[;{}\n#])").findAll(shaderText).forEach { matchResult ->
-            val before = matchResult.groupValues[1]
-            val token = matchResult.groupValues[2]
-
-            if (token == "\n") context.lineNumber++
-
-            if (before.isNotEmpty()) state.visitText(before)
-            state = state.visit(token)
-        }
-        state.visitEof()
-
+        context.parse(shaderText, ParseState.initial(context)).visitEof()
         return context.statements
     }
 
-    companion object {
-        val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
-    }
-
     private class Context {
-        val defines: MutableMap<String, String> = hashMapOf()
+        val macros: MutableMap<String, Macro> = hashMapOf()
         val statements: MutableList<GlslStatement> = arrayListOf()
         var outputEnabled = true
         val enabledStack = mutableListOf<Boolean>()
         var lineNumber = 1
+        var lineNumberForError = 1
 
-        fun doDefine(args: List<String>) {
-            if (outputEnabled) {
-                when (args.size) {
-                    0 -> throw IllegalArgumentException("#define without args?")
-                    1 -> defines[args[0]] = ""
-                    else -> defines[args[0]] = args.subList(1, args.size).joinToString(" ")
+        fun parse(
+            text: String,
+            initialState: ParseState,
+            freezeLineNumber: Boolean = false
+        ): ParseState {
+            var state = initialState
+            Regex("(.*?)(//|[;{}()#\n]|$)").findAll(text).forEach { matchResult ->
+                val (before, token) = matchResult.destructured
+
+                if (!freezeLineNumber && token == "\n") lineNumber++
+                lineNumberForError = lineNumber
+
+                if (before.isNotEmpty()) {
+                    // Further tokenize text blocks to isolate symbol strings.
+                    Regex("(.*?)([A-Za-z][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
+                        val (nonSymbol, symbol) = beforeMatch.destructured
+                        if (nonSymbol.isNotEmpty())
+                            state = state.visit(nonSymbol)
+                        if (symbol.isNotEmpty())
+                            state = state.visit(symbol)
+                    }
                 }
+                if (token.isNotEmpty()) state = state.visit(token)
             }
+            return state
         }
 
         fun doUndef(args: List<String>) {
             if (outputEnabled) {
-                if (args.size != 1) throw IllegalArgumentException("huh? #undef ${args.joinToString(" ")}")
-                defines.remove(args[0])
+                if (args.size != 1) throw glslError("#undef ${args.joinToString(" ")}")
+                macros.remove(args[0])
             }
         }
 
         fun doIfdef(args: List<String>) {
-            if (args.size != 1) throw IllegalArgumentException("huh? #ifdef ${args.joinToString(" ")}")
+            if (args.size != 1) throw glslError("#ifdef ${args.joinToString(" ")}")
             enabledStack.add(outputEnabled)
-            outputEnabled = outputEnabled && defines.containsKey(args.first())
+            outputEnabled = outputEnabled && macros.containsKey(args.first())
         }
 
         fun doIfndef(args: List<String>) {
-            if (args.size != 1) throw IllegalArgumentException("huh? #ifndef ${args.joinToString(" ")}")
+            if (args.size != 1) throw glslError("#ifndef ${args.joinToString(" ")}")
             enabledStack.add(outputEnabled)
-            outputEnabled = outputEnabled && !defines.containsKey(args.first())
+            outputEnabled = outputEnabled && !macros.containsKey(args.first())
         }
 
         fun doElse(args: List<String>) {
-            if (args.isNotEmpty()) throw IllegalArgumentException("huh? #else ${args.joinToString(" ")}")
+            if (args.isNotEmpty()) throw glslError("#else ${args.joinToString(" ")}")
             outputEnabled = enabledStack.last() && !outputEnabled
         }
 
         fun doEndif(args: List<String>) {
-            if (args.isNotEmpty()) throw IllegalArgumentException("huh? #endif ${args.joinToString(" ")}")
+            if (args.isNotEmpty()) throw glslError("#endif ${args.joinToString(" ")}")
             outputEnabled = enabledStack.removeLast()
         }
 
@@ -96,7 +99,15 @@ class GlslAnalyzer {
         fun doLine(args: List<String>) {
             // No-op.
         }
+
+        fun glslError(message: String) =
+            AnalysisException(message, lineNumberForError)
     }
+
+    private class Macro(
+        val params: List<String>?,
+        val replacement: String
+    )
 
     private sealed class ParseState(val context: Context) {
         companion object {
@@ -117,30 +128,38 @@ class GlslAnalyzer {
                 ";" -> visitSemicolon()
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
+                "(" -> visitLeftParen()
+                ")" -> visitRightParen()
                 "#" -> visitDirective()
                 "\n" -> visitNewline()
-                else -> throw IllegalStateException("unknown token $token")
+                "" -> visitEof()
+                else -> visitText(token)
             }
         }
 
         open fun visitText(value: String): ParseState {
-            if (context.outputEnabled || value == "\n") {
-                val substituted = value.replace(wordRegex) {
-                    context.defines[it.value] ?: it.value
+            return if (context.outputEnabled || value == "\n") {
+                val macro = context.macros[value]
+                if (macro == null) {
+                    appendText(value)
+                    this
+                } else if (macro.params == null) {
+                    context.parse(macro.replacement.trim(), this, freezeLineNumber = true)
+                } else {
+                    MacroExpansion(context, this, macro)
                 }
-
-                appendText(substituted)
-            }
-            return this
+            } else this
         }
 
         open fun visitComment(): ParseState = visitText("//")
         open fun visitSemicolon(): ParseState = visitText(";")
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
+        open fun visitLeftParen(): ParseState = visitText("(")
+        open fun visitRightParen(): ParseState = visitText(")")
         open fun visitDirective(): ParseState = visitText("#")
         open fun visitNewline(): ParseState = visitText("\n")
-        open fun visitEof(): Unit = Unit
+        open fun visitEof(): ParseState = this
 
         open fun addComment(comment: String) {}
 
@@ -149,22 +168,49 @@ class GlslAnalyzer {
             val precedingStatement: Statement? = null
         ) : ParseState(context) {
             var lineNumber = context.lineNumber
+            var braceNestLevel: Int = 0
+            var needsTrailingSemicolon = false
             val comments = mutableListOf<String>()
 
             override fun visitComment(): ParseState {
-                val parentParseState =
-                    if (!textAsString.contains("\n") && precedingStatement != null) precedingStatement else this
-                return Comment(context, parentParseState, this)
+                return if (braceNestLevel == 0) {
+                    val parentParseState =
+                        if (!textAsString.contains("\n") && precedingStatement != null) precedingStatement else this
+                    Comment(context, parentParseState, this)
+                } else {
+                    super.visitComment()
+                }
             }
 
-            override fun visitSemicolon(): Statement {
-                visitText(";")
-                finishStatement()
-                return Statement(context, this)
+            override fun visitSemicolon(): ParseState {
+                return if (braceNestLevel == 0) {
+                    visitText(";")
+                    finishStatement()
+                } else {
+                    visitText(";")
+                }
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
-                return Block(context, this).also { visitText("{") }
+                braceNestLevel++
+                return super.visitLeftCurlyBrace()
+            }
+
+            override fun visitRightCurlyBrace(): ParseState {
+                braceNestLevel--
+                super.visitRightCurlyBrace()
+
+                return if (braceNestLevel == 0) {
+                    val isStruct = textAsString.contains(Regex("^\\s*struct\\s*"))
+                    if (isStruct) {
+                        needsTrailingSemicolon = true
+                        this
+                    } else {
+                        finishStatement()
+                    }
+                } else {
+                    this
+                }
             }
 
             override fun visitDirective(): ParseState {
@@ -181,16 +227,18 @@ class GlslAnalyzer {
                 }
             }
 
-            override fun visitEof() {
+            override fun visitEof(): ParseState {
                 if (!isEmpty()) finishStatement()
+                return Statement(context, this)
             }
 
             override fun addComment(comment: String) {
                 comments.add(comment)
             }
 
-            fun finishStatement() {
+            fun finishStatement(): Statement {
                 context.statements.add(GlslStatement(textAsString, comments, lineNumber))
+                return Statement(context, this)
             }
 
             fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
@@ -201,82 +249,157 @@ class GlslAnalyzer {
             val parentParseState: ParseState,
             val nextParseState: ParseState
         ) : ParseState(context) {
-            val parts = mutableListOf<String>()
+            val commentText = StringBuilder()
 
             override fun visitText(value: String): ParseState {
-                parts.add(value)
+                commentText.append(value)
                 return this
             }
 
             override fun visitNewline(): ParseState {
-                parentParseState.addComment(parts.joinToString(""))
+                parentParseState.addComment(commentText.toString())
                 return nextParseState
-            }
-        }
-
-        private class Block(
-            context: Context,
-            val priorParseState: Statement
-        ) : ParseState(context) {
-            var nestLevel: Int = 1
-
-            override fun visitLeftCurlyBrace(): ParseState {
-                nestLevel++
-                return super.visitLeftCurlyBrace()
-            }
-
-            override fun visitRightCurlyBrace(): ParseState {
-                nestLevel--
-                super.visitRightCurlyBrace()
-
-                return if (nestLevel == 0) {
-                    finishStatement()
-                    Statement(context)
-                } else {
-                    this
-                }
-            }
-
-            override fun visitDirective(): ParseState {
-                return Directive(context, this)
-            }
-
-            override fun visitEof() {
-                if (!priorParseState.isEmpty()) finishStatement()
-            }
-
-            private fun finishStatement() {
-                priorParseState.visitText(textAsString)
-                priorParseState.finishStatement()
             }
         }
 
         private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
             override fun visitText(value: String): ParseState {
-                appendText(value)
-                return this
+                return if (textIsEmpty() && value == "define") {
+                    MacroDeclaration(context, priorParseState)
+                } else {
+                    appendText(value)
+                    this
+                }
             }
 
             override fun visitNewline(): ParseState {
+                context.lineNumberForError -= 1
+
                 val str = textAsString
                 val args = str.split(Regex("\\s+")).toMutableList()
                 val directive = args.removeFirst()
                 when (directive) {
-                    "define" -> context.doDefine(args)
+                    "define" -> throw IllegalStateException("This should be handled by MacroDeclaration.")
                     "undef" -> context.doUndef(args)
                     "ifdef" -> context.doIfdef(args)
                     "ifndef" -> context.doIfndef(args)
                     "else" -> context.doElse(args)
                     "endif" -> context.doEndif(args)
                     "line" -> context.doLine(args)
-                    else -> throw IllegalArgumentException("unknown directive #$str")
+                    else -> throw context.glslError("unknown directive #$str")
                 }
                 priorParseState.visitText("\n")
                 return priorParseState
             }
 
-            override fun visitEof() {
-                visitNewline()
+            override fun visitEof(): ParseState {
+                return visitNewline()
+            }
+        }
+
+        class MacroDeclaration(context: Context, val priorParseState: ParseState) : GlslAnalyzer.ParseState(context) {
+            enum class Mode { Initial, HaveName, InArgs, InReplacement}
+            private var mode = Mode.Initial
+            private var name: String? = null
+            private var args: MutableList<String>? = null
+
+            override fun visitText(value: String): ParseState {
+                when (mode) {
+                    Mode.Initial -> {
+                        if (value.isNotBlank()) {
+                            name = value
+                            mode = Mode.HaveName
+                        }
+                    }
+                    Mode.HaveName -> {
+                        mode = Mode.InReplacement
+                        super.visitText(value)
+                    }
+                    Mode.InArgs -> {
+                        if (value.isNotBlank() && value != ",") {
+                            args!!.add(value)
+                        }
+                    }
+                    Mode.InReplacement -> {
+                        super.visitText(value)
+                    }
+                }
+                return this
+            }
+
+            override fun visitLeftParen(): ParseState {
+                return if (mode == Mode.HaveName) {
+                    mode = Mode.InArgs
+                    args = arrayListOf()
+                    this
+                } else super.visitLeftParen()
+            }
+
+            override fun visitRightParen(): ParseState {
+                return if (mode == Mode.InArgs) {
+                    mode = Mode.InReplacement
+                    this
+                } else super.visitRightParen()
+            }
+
+            override fun visitNewline(): ParseState {
+                context.lineNumberForError -= 1
+                val name = name ?: throw context.glslError("#define with no macro name")
+                if (context.outputEnabled) {
+                    context.macros[name] = Macro(args, textAsString)
+                }
+                priorParseState.visitText("\n")
+                return priorParseState
+            }
+        }
+
+        private class MacroExpansion(
+            context: Context,
+            private val priorParseState: ParseState,
+            private val macro: Macro
+        ) : ParseState(context) {
+            private var parenCount = 0
+
+            override fun visitText(value: String): ParseState {
+                return if (parenCount == 0) {
+                    priorParseState.visitText(macro.replacement.trim())
+                    insertReplacement(value)
+                } else {
+                    super.appendText(value)
+                    this
+                }
+            }
+
+            override fun visitLeftParen(): ParseState {
+                parenCount++
+                return if (parenCount == 1) {
+                    this
+                } else {
+                    super.visitLeftParen()
+                }
+            }
+
+            override fun visitRightParen(): ParseState {
+                parenCount--
+
+                return if (parenCount == 0) {
+                    val args = textAsString.split(',').map { it.trim() }
+                    val subs = (macro.params ?: emptyList()).zip(args).associate { it }
+                    val substituted = macro.replacement.trim().replace(wordRegex) {
+                        subs[it.value] ?: it.value
+                    }
+                    insertReplacement(substituted)
+                } else {
+                    super.visitRightParen()
+                }
+            }
+
+            override fun visitNewline(): ParseState {
+                return priorParseState
+            }
+
+            private fun insertReplacement(value: String): ParseState {
+                return context.parse(value, priorParseState, freezeLineNumber = true)
             }
         }
     }
@@ -287,10 +410,18 @@ class GlslAnalyzer {
         val lineNumber: Int? = null
     ) {
         fun asSpecialOrNull(): GlslCode.GlslOther? {
-            return Regex("^(struct|precision)\\s+.*;", RegexOption.MULTILINE)
+            return Regex("^(precision)\\s+.*;", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (keyword) = it.destructured
                     GlslCode.GlslOther(keyword, text, lineNumber, comments)
+                }
+        }
+
+        fun asStructOrNull(): GlslCode.GlslStruct? {
+            return Regex("^struct\\s+(\\w+)\\s+", RegexOption.MULTILINE)
+                .find(text.trim())?.let {
+                    val (name) = it.destructured
+                    GlslCode.GlslStruct(name, text, lineNumber, comments)
                 }
         }
 
@@ -318,5 +449,9 @@ class GlslAnalyzer {
                     GlslFunction(returnType, name, params, text, lineNumber, globalVars, comments)
                 }
         }
+    }
+
+    companion object {
+        val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
     }
 }

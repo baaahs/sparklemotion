@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.GlslRenderer
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -39,13 +39,14 @@ object OpenPatchSpec : Spek({
                 val shadersById by value {
                     mapOf(
                         "color" to openShader,
-                        "uvShader" to GlslRenderer.cylindricalUvMapper
+                        "uvShader" to cylindricalUvMapper
                     )
                 }
                 val dataSourcesById by value {
                     mapOf(
                         "gl_FragCoord" to CorePlugin.ScreenUvCoord(),
-                        "uvCoordsTexture" to CorePlugin.UvCoordTexture(),
+                        "pixelCoordsTexture" to CorePlugin.PixelCoordsTexture(),
+                        "modelInfo" to CorePlugin.ModelInfoDataSource("ModelInfo"),
                         "resolution" to CorePlugin.Resolution(),
                         "time" to CorePlugin.Time(),
                         "bluenessSlider" to CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, 0.01f)
@@ -73,7 +74,9 @@ object OpenPatchSpec : Spek({
                         dataSourcesById
                     )
                 }
-                val glsl by value { openPatch.toGlsl().trim() }
+                val glsl by value {
+                    openPatch.toGlsl().trim()
+                }
 
                 it("generates GLSL") {
                     expect(
@@ -110,7 +113,7 @@ object OpenPatchSpec : Spek({
                         }
 
 
-                        #line 10001
+                        #line -1
                         void main() {
                           p0_main();
                         }
@@ -123,8 +126,10 @@ object OpenPatchSpec : Spek({
                         OpenPatch(
                             Patch(
                                 listOf(
-                                    DataSourceRef("uvCoordsTexture")
-                                            linkTo ShaderInPortRef("uvShader", "uvCoordsTexture"),
+                                    DataSourceRef("pixelCoordsTexture")
+                                            linkTo ShaderInPortRef("uvShader", "pixelCoordsTexture"),
+                                    DataSourceRef("modelInfo")
+                                            linkTo ShaderInPortRef("uvShader", "modelInfo"),
                                     ShaderOutPortRef("uvShader", ShaderOutPortRef.ReturnValue)
                                             linkTo ShaderInPortRef("color", "gl_FragCoord"),
                                     DataSourceRef("resolution")
@@ -146,61 +151,77 @@ object OpenPatchSpec : Spek({
                         expect(
                             /**language=glsl*/
                             """
-                            #ifdef GL_ES
-                            precision mediump float;
-                            #endif
-                            
-                            // SparkleMotion generated GLSL
-    
-                            layout(location = 0) out vec4 sm_pixelColor;
-    
-                            uniform sampler2D in_uvCoordsTexture;
-                            uniform vec2 in_resolution;
-                            uniform float in_time;
-                            uniform float in_bluenessSlider;
-                            
-                            // Shader: Cylindrical Projection; namespace: p0
-                            // Cylindrical Projection
-                            
-                            vec2 p0i_result;
-                            
-                            #line 6
-                            vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
-                                int rasterX = int(rasterCoord.x);
-                                int rasterY = int(rasterCoord.y);
-                                
-                                vec2 uvCoord = vec2(
-                                    texelFetch(in_uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                                    texelFetch(in_uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
-                                );
-                                return uvCoord;
-                            }
-                            
-                            // Shader: This Shader's Name; namespace: p1
-                            // This Shader's Name
-                            
-                            #line 7
-                            int p1_someGlobalVar;
-                            
-                            #line 8
-                            const int p1_someConstVar = 123;
-                            
-                            #line 10
-                            int p1_anotherFunc(int i) { return i; }
-                            
-                            #line 12
-                            void p1_main( void ) {
-                                vec2 uv = p0i_result.xy / in_resolution.xy;
-                                p1_someGlobalVar = p1_anotherFunc(p1_someConstVar);
-                                sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
-                            }
-    
-    
-                            #line 10001
-                            void main() {
-                              p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy);
-                              p1_main();
-                            }
+                                #ifdef GL_ES
+                                precision mediump float;
+                                #endif
+
+                                // SparkleMotion generated GLSL
+
+                                layout(location = 0) out vec4 sm_pixelColor;
+
+                                struct ModelInfo {
+                                    vec3 center;
+                                    vec3 extents;
+                                };
+                                uniform sampler2D in_pixelCoordsTexture;
+                                uniform ModelInfo in_modelInfo;
+                                uniform vec2 in_resolution;
+                                uniform float in_time;
+                                uniform float in_bluenessSlider;
+
+                                // Shader: Cylindrical Projection; namespace: p0
+                                // Cylindrical Projection
+
+                                vec2 p0i_result;
+
+                                #line 12
+                                const float p0_PI = 3.141592654;
+
+                                #line 14
+                                vec2 p0_project(vec3 pixelLocation) {
+                                    vec3 pixelOffset = pixelLocation - in_modelInfo.center;
+                                    vec3 normalDelta = normalize(pixelOffset);
+                                    float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
+                                    if (theta < 0.0) theta += (2.0f * p0_PI);                 // theta in range [0,2π)
+                                    float u = theta / (2.0f * p0_PI);                         // u in range [0,1)
+                                    float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
+                                    return vec2(u, v);
+                                }
+
+                                #line 24
+                                vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
+                                    int rasterX = int(rasterCoord.x);
+                                    int rasterY = int(rasterCoord.y);
+                                    
+                                    vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
+                                    return p0_project(pixelCoord);
+                                }
+
+                                // Shader: This Shader's Name; namespace: p1
+                                // This Shader's Name
+
+                                #line 7
+                                int p1_someGlobalVar;
+
+                                #line 8
+                                const int p1_someConstVar = 123;
+
+                                #line 10
+                                int p1_anotherFunc(int i) { return i; }
+
+                                #line 12
+                                void p1_main( void ) {
+                                    vec2 uv = p0i_result.xy / in_resolution.xy;
+                                    p1_someGlobalVar = p1_anotherFunc(p1_someConstVar);
+                                    sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                                }
+
+
+                                #line -1
+                                void main() {
+                                  p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy);
+                                  p1_main();
+                                }
                             """.trimIndent()
                         ) { glsl }
                     }

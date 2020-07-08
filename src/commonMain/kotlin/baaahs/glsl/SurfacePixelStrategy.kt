@@ -6,11 +6,11 @@ import baaahs.Surface
 import baaahs.geom.Vector3F
 import kotlin.random.Random
 
-abstract class SurfacePixelStrategy {
-    abstract fun forSurface(surface: Surface): List<Vector3F?>
+interface SurfacePixelStrategy {
+    fun forSurface(surface: Surface): List<Vector3F?>
 }
 
-object RandomSurfacePixelStrategy : SurfacePixelStrategy() {
+object RandomSurfacePixelStrategy : SurfacePixelStrategy {
     override fun forSurface(surface: Surface): List<Vector3F?> {
         return when {
             surface is IdentifiedSurface && surface.pixelLocations != null -> {
@@ -41,7 +41,7 @@ object RandomSurfacePixelStrategy : SurfacePixelStrategy() {
     }
 }
 
-object LinearSurfacePixelStrategy : SurfacePixelStrategy() {
+object LinearSurfacePixelStrategy : SurfacePixelStrategy {
     val logger = Logger("LinearSurfacePixelStrategy")
 
     override fun forSurface(surface: Surface): List<Vector3F?> {

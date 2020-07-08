@@ -2,7 +2,7 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.RefCounted
-import baaahs.glsl.CompiledShader
+import baaahs.glsl.CompilationException
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.Uniform
@@ -19,7 +19,7 @@ class GlslProgram(
 ) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
-    private val vertexShader = gl.runInContext {
+    private val vertexShader =
         gl.createVertexShader(
             """
             #version ${gl.glslVersion}
@@ -38,22 +38,25 @@ class GlslProgram(
             }
             """.trimIndent()
         )
-    }
 
-    private val fragShader = gl.runInContext {
-        gl.createFragmentShader("#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n")
-    }
+    private val fragShader =
+        gl.createFragmentShader(
+            "#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n"
+        )
 
     private val bindings: List<Binding>
 
     init {
         gl.runInContext {
-            gl.check { attachShader(id, vertexShader.id) }
-            gl.check { attachShader(id, fragShader.id) }
+            gl.check { attachShader(id, vertexShader.shaderId) }
+            gl.check { attachShader(id, fragShader.shaderId) }
             gl.check { linkProgram(id) }
             if (gl.check { getProgramParameter(id, GL_LINK_STATUS) } != GL_TRUE) {
+                vertexShader.validate()
+                fragShader.validate()
+
                 val infoLog = gl.check { getProgramInfoLog(id) }
-                throw CompiledShader.CompilationException(infoLog ?: "huh?")
+                throw CompilationException(infoLog ?: "huh?")
             }
         }
 
@@ -88,7 +91,7 @@ class GlslProgram(
         gl.runInContext {
             gl.useProgram(this)
 
-            bindings.forEach { it.setUniform() }
+            bindings.forEach { it.setOnProgram() }
         }
     }
 
@@ -106,35 +109,43 @@ class GlslProgram(
         uniformLoc?.let { Uniform(this@GlslProgram, it) }
     }
 
-    inner class Binding(
-        private val dataSource: DataSource,
-        val dataFeed: DataFeed,
-        val id: String
-    ) {
-        private val uniformLocation = getUniform(dataSource.getVarName(id))
+    interface Binding {
+        val dataFeed: DataFeed
+        val isValid: Boolean
 
-        val isValid: Boolean get() = uniformLocation != null
+        fun setOnProgram()
 
-        fun setUniform() {
-            try {
-                uniformLocation?.let { dataFeed.set(it) }
-            } catch (e: Exception) {
-                logger.error(e) { "failed to set ${dataSource.getType()} $id from $dataFeed" }
-            }
-        }
-
-        fun release() = dataFeed.release()
+        /**
+         * Only release any resources specifically allocated by this Binding, not by
+         * its parent [DataFeed].
+         */
+        fun release() {}
     }
 
-    enum class DataTypes {
-        float,
-        vec2,
-        vec3,
-        vec4
+    class SingleUniformBinding(
+        glslProgram: GlslProgram,
+        dataSource: DataSource,
+        val id: String,
+        override val dataFeed: DataFeed,
+        val setUniform: (Uniform) -> Unit
+    ) : Binding {
+        private val type: Any = dataSource.getType()
+        private val varName = dataSource.getVarName(id)
+        private val uniformLocation = glslProgram.getUniform(varName)
+
+        override val isValid: Boolean get() = uniformLocation != null
+
+        override fun setOnProgram() {
+            try {
+                uniformLocation?.let { setUniform(it) }
+            } catch (e: Exception) {
+                logger.error(e) { "failed to set uniform $type $varName for $id" }
+            }
+        }
     }
 
     interface DataFeed : RefCounted {
-        fun set(uniform: Uniform)
+        fun bind(glslProgram: GlslProgram): Binding
     }
 
     interface ResolutionListener {
@@ -148,16 +159,15 @@ class GlslProgram(
     }
 }
 
-typealias Resolver = (DataSource) -> DataBinding?
-
-class DataBinding(val id: String, val dataFeed: GlslProgram.DataFeed)
+typealias Resolver = (String, DataSource) -> GlslProgram.DataFeed?
 
 val dataSourceProviderModule = SerializersModule {
     polymorphic(DataSource::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
         CorePlugin.Resolution::class with CorePlugin.Resolution.serializer()
         CorePlugin.Time::class with CorePlugin.Time.serializer()
-        CorePlugin.UvCoordTexture::class with CorePlugin.UvCoordTexture.serializer()
+        CorePlugin.PixelCoordsTexture::class with CorePlugin.PixelCoordsTexture.serializer()
+        CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()
         CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
         CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
         CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()

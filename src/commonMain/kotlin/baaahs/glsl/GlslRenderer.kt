@@ -3,8 +3,8 @@ package baaahs.glsl
 import baaahs.Color
 import baaahs.Logger
 import baaahs.Surface
-import baaahs.glshaders.GlslAnalyzer
 import baaahs.glsl.GlslRenderer.GlConst.GL_RGBA8
+import baaahs.model.ModelInfo
 import baaahs.timeSync
 import com.danielgergely.kgl.*
 import kotlin.math.max
@@ -12,7 +12,7 @@ import kotlin.math.min
 
 open class GlslRenderer(
     val gl: GlslContext,
-    private val uvTranslator: UvTranslator
+    private val modelInfo: ModelInfo
 ) {
     private val surfacesToAdd: MutableList<RenderSurface> = mutableListOf()
     private val surfacesToRemove: MutableList<RenderSurface> = mutableListOf()
@@ -39,7 +39,7 @@ open class GlslRenderer(
     fun addSurface(surface: Surface): RenderSurface {
         val surfacePixels = SurfacePixels(surface, nextPixelOffset)
         val rects = mapSurfaceToRects(nextPixelOffset, fbMaxPixWidth, surface)
-        val renderSurface = RenderSurface(surfacePixels, nextRectOffset, rects, uvTranslator)
+        val renderSurface = RenderSurface(surfacePixels, nextRectOffset, rects, modelInfo)
         nextPixelOffset += surface.pixelCount
         nextRectOffset += renderSurface.rects.size
 
@@ -57,8 +57,8 @@ open class GlslRenderer(
         override fun get(i: Int): Color = arrangement.getPixel(pixel0Index + i)
     }
 
-    private fun createArrangement(pixelCount: Int, uvCoords: FloatArray, surfaceCount: List<RenderSurface>): Arrangement =
-        Arrangement(pixelCount, uvCoords, surfaceCount.toList())
+    private fun createArrangement(pixelCount: Int, pixelCoords: FloatArray, surfaceCount: List<RenderSurface>): Arrangement =
+        Arrangement(pixelCount, pixelCoords, surfaceCount.toList())
 
     fun draw() {
         gl.runInContext {
@@ -87,22 +87,22 @@ open class GlslRenderer(
         }
 
         if (surfacesToAdd.isNotEmpty()) {
-            val oldUvCoords = arrangement.uvCoords
+            val oldPixelCoords = arrangement.pixelCoords
             val newPixelCount = nextPixelOffset
 
             arrangement.release()
 
-            val newUvCoords = FloatArray(newPixelCount.bufSize * 2)
-            oldUvCoords.copyInto(newUvCoords)
+            val newPixelCoords = FloatArray(newPixelCount.bufSize * 3)
+            oldPixelCoords.copyInto(newPixelCoords)
 
             surfacesToAdd.forEach {
-                putUvCoords(it, newUvCoords)
+                putPixelCoords(it, newPixelCoords)
             }
 
             renderSurfaces.addAll(surfacesToAdd)
             surfacesToAdd.clear()
 
-            arrangement = createArrangement(newPixelCount, newUvCoords, renderSurfaces)
+            arrangement = createArrangement(newPixelCount, newPixelCoords, renderSurfaces)
                 .also { notifyListeners(it) }
 
             pixelCount = newPixelCount
@@ -110,31 +110,16 @@ open class GlslRenderer(
         }
     }
 
-    private fun putUvCoords(renderSurface: RenderSurface, newUvCoords: FloatArray) {
+    private fun putPixelCoords(renderSurface: RenderSurface, newPixelCoords: FloatArray) {
         val surface = renderSurface.pixels.surface
         val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
-        val uvTranslator = renderSurface.uvTranslator.forPixels(pixelLocations)
 
-        var outOfBounds = 0
-        var outOfBoundsU = 0
-        var outOfBoundsV = 0
-        for (i in 0 until uvTranslator.pixelCount) {
-            val uvOffset = (renderSurface.pixels.pixel0Index + i) * 2
-            val (u, v) = uvTranslator.getUV(i)
-            newUvCoords[uvOffset] = u     // u
-            newUvCoords[uvOffset + 1] = v // v
-
-            val uOut = u < 0f || u > 1f
-            val vOut = v < 0f || v > 1f
-            if (uOut || vOut) outOfBounds++
-            if (uOut) outOfBoundsU++
-            if (vOut) outOfBoundsV++
-        }
-        if (outOfBoundsU > 0 || outOfBoundsV > 0) {
-            logger.warn {
-                "Surface ${surface.describe()} has $outOfBounds points (of ${uvTranslator.pixelCount})" +
-                        " outside the model (u=$outOfBoundsU v=$outOfBoundsV)"
-            }
+        pixelLocations.forEachIndexed { i, pixelLocation ->
+            val bufOffset = (renderSurface.pixels.pixel0Index + i) * 3
+            val (x, y, z) = pixelLocation ?: renderSurface.modelInfo.center
+            newPixelCoords[bufOffset] = x     // x
+            newPixelCoords[bufOffset + 1] = y // y
+            newPixelCoords[bufOffset + 2] = z // z
         }
     }
 
@@ -182,32 +167,13 @@ open class GlslRenderer(
             }
             return rects
         }
-
-        val glslAnalyzer = GlslAnalyzer()
-
-        val cylindricalUvMapper = GlslAnalyzer().asShader(
-            /**language=glsl*/
-            """
-                // Cylindrical Projection
-                // !SparkleMotion:internal
-                
-                uniform sampler2D uvCoordsTexture;
-                
-                vec2 mainUvFromRaster(vec2 rasterCoord) {
-                    int rasterX = int(rasterCoord.x);
-                    int rasterY = int(rasterCoord.y);
-                    
-                    vec2 uvCoord = vec2(
-                        texelFetch(uvCoordsTexture, ivec2(rasterX * 2, rasterY), 0).r,    // u
-                        texelFetch(uvCoordsTexture, ivec2(rasterX * 2 + 1, rasterY), 0).r // v
-                    );
-                    return uvCoord;
-                }
-            """.trimIndent()
-        )
     }
 
-    inner class Arrangement(val pixelCount: Int, val uvCoords: FloatArray, val surfaces: List<RenderSurface>) {
+    inner class Arrangement(
+        val pixelCount: Int,
+        val pixelCoords: FloatArray,
+        val surfaces: List<RenderSurface>
+    ) {
         init {
             println("Creating arrangement with $pixelCount")
         }
@@ -248,7 +214,7 @@ open class GlslRenderer(
         }
 
         fun release() {
-            println("Release $this with $pixelCount pixels and ${uvCoords.size} uvs")
+            logger.debug { "Release $this with ${surfaces.count()} surfaces and $pixelCount pixels" }
 
             quad.release()
 
@@ -276,14 +242,6 @@ open class GlslRenderer(
     val Int.bufWidth: Int get() = max(1, min(this, fbMaxPixWidth))
     val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
-
-    inner class Uniforms {
-        var values: Array<Any?>? = null
-
-        fun updateFrom(values: Array<Any?>) {
-            this.values = values
-        }
-    }
 
     class Stats {
         var addSurfacesMs = 0; internal set

@@ -28,7 +28,7 @@ object ShaderFragmentSpec : Spek({
         }
 
         context("functions") {
-            val variable by value { statement.asFunctionOrNull() }
+            val function by value { statement.asFunctionOrNull() }
 
             context("simple") {
                 override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
@@ -37,7 +37,20 @@ object ShaderFragmentSpec : Spek({
                         "float", "rand", "vec2 uv",
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
-                ) { variable }
+                ) { function }
+            }
+        }
+
+        context("struct") {
+            val struct by value { statement.asStructOrNull() }
+
+            context("uniform") {
+                override(text) { "struct MovingHead {\n  float pan;\n  float tilt;\n};" }
+                expectValue(
+                    GlslCode.GlslStruct(
+                        "MovingHead", "struct MovingHead {\n  float pan;\n  float tilt;\n};"
+                    )
+                ) { struct }
             }
         }
     }

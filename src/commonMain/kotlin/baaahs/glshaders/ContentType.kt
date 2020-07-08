@@ -5,10 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ContentType(val description: String) {
     companion object {
-        val UvCoordinateTexture = ContentType("U/V Coordinates Texture")
+        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture")
         val RasterCoordinate = ContentType("Raster Coordinate")
         val UvCoordinate = ContentType("U/V Coordinate")
         val XyCoordinate = ContentType("X/Y Coordinate")
+        val ModelInfo = ContentType("Model Info")
+
         val Mouse = ContentType("Mouse")
         val XyzCoordinate = ContentType("X/Y/Z Coordinate")
 

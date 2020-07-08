@@ -11,16 +11,19 @@ class GlslCode(
 ) {
     internal val globalVarNames = hashSetOf<String>()
     internal val functionNames = hashSetOf<String>()
+    internal val structNames = hashSetOf<String>()
 
     val statements = glslStatements.map {
         it.asSpecialOrNull()
+            ?: it.asStructOrNull()
             ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
             ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
     }
-    val symbolNames = globalVarNames + functionNames
+    val symbolNames = globalVarNames + functionNames + structNames
     val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
     val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
+    val structs: Collection<GlslStruct> get() = statements.filterIsInstance<GlslStruct>()
 
     companion object {
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
@@ -75,6 +78,15 @@ class GlslCode(
         override val name: String,
         override val fullText: String,
         override val lineNumber: Int?,
+        override val comments: List<String> = emptyList()
+    ) : Statement {
+        override fun stripSource() = copy(fullText = "", lineNumber = null)
+    }
+
+    data class GlslStruct(
+        override val name: String,
+        override val fullText: String,
+        override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
@@ -139,8 +151,17 @@ class GlslCode(
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
-    class Namespace(val prefix: String) {
-        fun qualify(name: String) = "${prefix}_$name"
-        fun internalQualify(name: String) = "${prefix}i_$name"
+    class Namespace(private val prefix: String) {
+        fun qualify(name: String) = build(prefix, name)
+        fun internalQualify(name: String) = build(prefix + "i", name)
+
+        // Because double underscores are reserved in GLSL.
+        private fun build(prefix: String, name: String): String {
+            return if (name.startsWith('_')) {
+                "${prefix}x$name"
+            } else {
+                "${prefix}_$name"
+            }
+        }
     }
 }
