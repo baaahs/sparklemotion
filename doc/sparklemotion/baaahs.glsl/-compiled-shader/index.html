@@ -9,37 +9,6 @@
 <br/>
 <h1>CompiledShader</h1>
 <code><span class="keyword">class </span><span class="identifier">CompiledShader</span></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-glsl-error/index.html">GlslError</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">GlslError</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Exceptions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-compilation-exception/index.html">CompilationException</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">CompilationException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html"><span class="identifier">Exception</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link-exception/index.html">LinkException</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">LinkException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html"><span class="identifier">Exception</span></a></code></td>
-</tr>
-</tbody>
-</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -48,7 +17,31 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">CompiledShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(com.danielgergely.kgl.Kgl, kotlin.Int, kotlin.String)/gl">gl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(com.danielgergely.kgl.Kgl, kotlin.Int, kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(com.danielgergely.kgl.Kgl, kotlin.Int, kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">CompiledShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.String)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.String)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.CompiledShader$<init>(baaahs.glsl.GlslContext, kotlin.Int, kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="shader-id.html">shaderId</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderId</span><span class="symbol">: </span><span class="identifier">Shader</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="validate.html">validate</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">validate</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
