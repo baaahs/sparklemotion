@@ -151,8 +151,17 @@ class GlslCode(
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
-    class Namespace(val prefix: String) {
-        fun qualify(name: String) = "${prefix}_$name"
-        fun internalQualify(name: String) = "${prefix}i_$name"
+    class Namespace(private val prefix: String) {
+        fun qualify(name: String) = build(prefix, name)
+        fun internalQualify(name: String) = build(prefix + "i", name)
+
+        // Because double underscores are reserved in GLSL.
+        private fun build(prefix: String, name: String): String {
+            return if (name.startsWith('_')) {
+                "${prefix}x$name"
+            } else {
+                "${prefix}_$name"
+            }
+        }
     }
 }
