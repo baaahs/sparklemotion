@@ -1,6 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
+import baaahs.glsl.Shaders
 import baaahs.only
 import kotlinx.serialization.json.json
 import org.spekframework.spek2.Spek
@@ -27,6 +28,10 @@ object GlslAnalyzerSpec : Spek({
                     //   key2=value2
                     uniform vec2  resolution;
                     
+                    struct MovingHead {
+                        float pan;
+                        float tilt;
+                    };
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
                     {
                         vec2 uv = fragCoord.xy / resolution.xy;
@@ -59,16 +64,22 @@ object GlslAnalyzerSpec : Spek({
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslStatement(
+                                "struct MovingHead {\n" +
+                                        "    float pan;\n" +
+                                        "    float tilt;\n" +
+                                        "};", lineNumber = 12
+                            ),
+                            GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 12
+                                        "}", lineNumber = 16
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 18
+                                        "}", lineNumber = 22
                             )
                         ), { GlslAnalyzer().findStatements(shaderText) }, true
                     )
@@ -100,6 +111,14 @@ object GlslAnalyzerSpec : Spek({
                     ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
                 }
 
+                it("finds the structs") {
+                    expect(
+                        listOf(
+                            "struct MovingHead {\n    float pan;\n    float tilt;\n};"
+                        )
+                    ) { glslCode.structs.map { it.fullText } }
+                }
+
                 context("with #ifdefs") {
                     override(shaderText) {
                         /**language=glsl*/
@@ -108,24 +127,24 @@ object GlslAnalyzerSpec : Spek({
                         
                         #ifdef NOT_DEFINED
                         uniform float shouldNotBeDefined;
-                        #define NOT_DEFINED_A
+                        #define A_NOT_DEFINED
                         #define DEF_VAL shouldNotBeThis
                         #else
                         uniform float shouldBeDefined;
-                        #define NOT_DEFINED_B
+                        #define B_IS_DEFINED
                         #define DEF_VAL shouldBeThis
                         #endif
                         #define PI 3.14159
                         
                         uniform vec2 DEF_VAL;
-                        #ifdef NOT_DEFINED_A
+                        #ifdef A_NOT_DEFINED
                         void this_is_super_busted() {
                         #endif
-                        #ifndef NOT_DEFINED_B
+                        #ifndef B_IS_DEFINED
                         }
                         #endif
                         
-                        #ifdef NOT_DEFINED_B
+                        #ifdef B_IS_DEFINED
                         void mainFunc(out vec4 fragColor, in vec2 fragCoord) { fragColor = vec4(uv.xy, PI, 1.); }
                         #endif
                         #undef PI
@@ -162,12 +181,14 @@ object GlslAnalyzerSpec : Spek({
                             /**language=glsl*/
                             """
                                 #define iResolution resolution
+                                #define Circle(U,r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+
                                 uniform vec2 resolution;
                                 void main() {
                                 #ifdef xyz
                                     foo();
                                 #endif
-                                    gl_FragColor = iResolution.x;
+                                    gl_FragColor = Circle(gl_FragCoord, iResolution.x);
                                 }
                                 """.trimIndent()
                         }
@@ -178,12 +199,12 @@ object GlslAnalyzerSpec : Spek({
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
                             expect(
-                                "#line 3\n" +
+                                "#line 5\n" +
                                         "void ns_main() {\n" +
                                         "\n" +
                                         "\n" +
                                         "\n" +
-                                        "    gl_FragColor = resolution.x;\n" +
+                                        "    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );\n" +
                                         "}\n".trimIndent()
                             ) { glsl.trim() }
                         }
@@ -274,6 +295,23 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
                                 InputPort("iTime", "float", "Time", ContentType.Time),
                                 InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
+                            )
+                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                    }
+                }
+
+                context("with U/V translation shader") {
+                    override(shaderText) { Shaders.cylindricalUvMapper.src }
+
+                    it("identifies mainImage() as the entry point") {
+                        expect("mainUvFromRaster") { shader.entryPoint.name }
+                    }
+
+                    it("creates inputs for implicit uniforms") {
+                        expect(
+                            listOf(
+                                InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+                                InputPort("modelInfo", "ModelInfo", "ModelInfo", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }

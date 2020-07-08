@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.GlslRenderer
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.DataSourceEditor
 import baaahs.show.OutputPortEditor
 import baaahs.show.ShaderEditor
@@ -61,7 +61,7 @@ object AutoWirerSpec : Spek({
             }
 
             context("with a UV projection shader") {
-                val uvShader = GlslRenderer.cylindricalUvMapper
+                val uvShader = cylindricalUvMapper
 
                 override(shaders) { arrayOf(colorShader, uvShader) }
 
@@ -76,8 +76,10 @@ object AutoWirerSpec : Spek({
                                     linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
                             ShaderEditor(uvShader.shader).outputPort(ShaderOutPortRef.ReturnValue)
                                     linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
-                            DataSourceEditor(CorePlugin.UvCoordTexture())
-                                    linkTo ShaderEditor(uvShader.shader).inputPort("uvCoordsTexture"),
+                            DataSourceEditor(CorePlugin.PixelCoordsTexture())
+                                    linkTo ShaderEditor(uvShader.shader).inputPort("pixelCoordsTexture"),
+                            DataSourceEditor(CorePlugin.ModelInfoDataSource("ModelInfo"))
+                                    linkTo ShaderEditor(uvShader.shader).inputPort("modelInfo"),
                             ShaderEditor(colorShader.shader).outputPort("gl_FragColor")
                                     linkTo OutputPortEditor(GlslProgram.PixelColor.portId)
                         )

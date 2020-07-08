@@ -144,9 +144,15 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 "type" to "baaahs.glshaders.CorePlugin.Time"
             }
         }
-        is CorePlugin.UvCoordTexture -> {
+        is CorePlugin.PixelCoordsTexture -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.UvCoordTexture"
+                "type" to "baaahs.glshaders.CorePlugin.PixelCoordsTexture"
+            }
+        }
+        is CorePlugin.ModelInfoDataSource -> {
+            json {
+                "type" to "baaahs.glshaders.CorePlugin.ModelInfoDataSource"
+                "structType" to dataSource.structType
             }
         }
         else -> json { "type" to "unknown" }

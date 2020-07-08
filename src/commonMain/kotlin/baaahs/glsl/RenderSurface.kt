@@ -5,12 +5,13 @@ import baaahs.Pixels
 import baaahs.ShowRunner
 import baaahs.Surface
 import baaahs.glshaders.GlslProgram
+import baaahs.model.ModelInfo
 
 class RenderSurface(
     val pixels: SurfacePixels,
     val rect0Index: Int,
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
-    val uvTranslator: UvTranslator
+    val modelInfo: ModelInfo
 ) {
     var program: GlslProgram? = null
     val receivers = mutableListOf<ShowRunner.SurfaceReceiver>()

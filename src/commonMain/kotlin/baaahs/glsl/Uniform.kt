@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.geom.Vector3F
 import baaahs.glshaders.GlslProgram
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.UniformLocation
@@ -15,6 +16,8 @@ class Uniform internal constructor(
     fun set(x: Float, y: Float) = withProgram { uniform2f(uniformLocation, x, y) }
     fun set(x: Float, y: Float, z: Float) = withProgram { uniform3f(uniformLocation, x, y, z) }
     fun set(x: Float, y: Float, z: Float, w: Float) = withProgram { uniform4f(uniformLocation, x, y, z, w) }
+
+    fun set(vector3F: Vector3F) = set(vector3F.x, vector3F.y, vector3F.z)
 
     fun set(textureUnit: GlslContext.TextureUnit) = textureUnit.setUniform(this)
 

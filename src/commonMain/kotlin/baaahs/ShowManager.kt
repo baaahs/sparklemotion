@@ -6,6 +6,7 @@ import baaahs.gadgets.Slider
 import baaahs.glshaders.*
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
+import baaahs.model.ModelInfo
 import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
@@ -67,6 +68,7 @@ data class ShowState(
 interface ShowResources {
     val plugins: Plugins
     val glslContext: GlslContext
+    val modelInfo: ModelInfo
     val showWithStateTopic: PubSub.Topic<ShowWithState>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
@@ -98,9 +100,11 @@ fun Show.withState(showState: ShowState): ShowWithState {
 }
 
 abstract class BaseShowResources(
-    final override val plugins: Plugins
+    final override val plugins: Plugins,
+    final override val modelInfo: ModelInfo
 ) : ShowResources {
-    val glslAnalyzer = GlslAnalyzer()
+    private val glslAnalyzer = GlslAnalyzer()
+
     override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
@@ -132,8 +136,9 @@ abstract class BaseShowResources(
 class ShowManager(
     plugins: Plugins,
     override val glslContext: GlslContext,
-    val pubSub: PubSub.Server
-) : BaseShowResources(plugins) {
+    val pubSub: PubSub.Server,
+    modelInfo: ModelInfo
+) : BaseShowResources(plugins, modelInfo) {
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 
@@ -200,7 +205,7 @@ class OpenShow(
 
     val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
         val dataFeed = showResources.openDataFeed(id, dataSource)
-        dataSource to dataFeed
+        id to dataFeed
     }
     val scenes = show.scenes.map { OpenScene(it) }
 

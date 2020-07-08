@@ -4,13 +4,13 @@ import baaahs.show.ShaderOutPortRef
 
 class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
     companion object {
-        val uvCoordsTextureInputPort = InputPort(
-            "uvCoordsTexture",
+        val pixelCoordsTextureInputPort = InputPort(
+            "pixelCoordsTexture",
             "sampler2D",
             "U/V Coordinates Texture",
-            ContentType.UvCoordinateTexture
+            ContentType.PixelCoordinatesTexture
         )
-        val magicUniforms = listOf(uvCoordsTextureInputPort).associateBy { it.id }
+        val magicUniforms = listOf(pixelCoordsTextureInputPort).associateBy { it.id }
     }
 
     override val shaderType: OpenShader.Type = OpenShader.Type.Projection

@@ -26,21 +26,12 @@ abstract class GlslContext(
     }
     val stats = Stats()
 
-    fun createRenderer(uvTranslator: UvTranslator) =
-        runInContext { GlslRenderer(this, uvTranslator) }
-
     fun createVertexShader(source: String): CompiledShader {
-        val shaderId = check { createShader(GL_VERTEX_SHADER) } ?: throw IllegalStateException()
-        val info = kgl.getShaderInfoLog(shaderId) ?: ""
-        if (info.isNotEmpty()) {
-            throw CompiledShader.CompilationException(info)
-        }
-        return CompiledShader(kgl, shaderId, source)
+        return CompiledShader(this, GL_VERTEX_SHADER, source)
     }
 
     fun createFragmentShader(source: String): CompiledShader {
-        val shaderId = check { createShader(GL_FRAGMENT_SHADER) ?: throw IllegalStateException() }
-        return CompiledShader(kgl, shaderId, source)
+        return CompiledShader(this, GL_FRAGMENT_SHADER, source)
     }
 
     fun useProgram(glslProgram: GlslProgram) {
@@ -191,5 +182,7 @@ abstract class GlslContext(
 
     companion object {
         private val logger = Logger("GlslContext")
+
+        const val GL_RGB32F = 0x8815
     }
 }
