@@ -40,10 +40,12 @@ object ShowSerializationSpec : Spek({
 private fun forJson(show: Show): JsonObject {
     return json {
         "title" to show.title
+        "patches" to jsonArray { show.patches.forEach { +jsonFor(it) } }
+        "eventBindings" to jsonArray { show.eventBindings.forEach { +jsonFor(it) } }
+        "controlLayout" to jsonFor(show.controlLayout)
         "scenes" to jsonArray {
             show.scenes.forEach { +jsonFor(it) }
         }
-        "eventBindings" to jsonArray { show.eventBindings.forEach { +jsonFor(it) } }
         "layouts" to json {
             "panelNames" to jsonArray {
                 show.layouts.panelNames.forEach { +it }
@@ -56,7 +58,6 @@ private fun forJson(show: Show): JsonObject {
                 }
             }
         }
-        "controlLayout" to jsonFor(show.controlLayout)
         "shaders" to json {
             show.shaders.entries.forEach { (k, v) -> k to jsonFor(v) }
         }
@@ -69,24 +70,21 @@ private fun forJson(show: Show): JsonObject {
 private fun jsonFor(scene: Scene): JsonObject {
     return json {
         "title" to scene.title
+        "patches" to jsonArray { scene.patches.forEach { +jsonFor(it) } }
+        "eventBindings" to jsonArray { scene.eventBindings.forEach { +jsonFor(it) } }
+        "controlLayout" to jsonFor(scene.controlLayout)
         "patchSets" to jsonArray {
             for (it in scene.patchSets) {
                 +jsonFor(it)
             }
         }
-        "eventBindings" to jsonArray { scene.eventBindings.forEach { +jsonFor(it) } }
-        "controlLayout" to jsonFor(scene.controlLayout)
     }
 }
 
 fun jsonFor(patchSet: PatchSet): JsonElement {
     return json {
         "title" to patchSet.title
-        "patches" to jsonArray {
-            patchSet.patches.forEach {
-                +jsonFor(it)
-            }
-        }
+        "patches" to jsonArray { patchSet.patches.forEach { +jsonFor(it) } }
         "eventBindings" to jsonArray { patchSet.eventBindings.forEach { +jsonFor(it) } }
         "controlLayout" to jsonFor(patchSet.controlLayout)
     }

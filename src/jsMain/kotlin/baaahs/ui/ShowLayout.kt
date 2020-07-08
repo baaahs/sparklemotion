@@ -6,6 +6,7 @@ import kotlinx.css.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElementSerializer
+import materialui.components.paper.paper
 import react.*
 import styled.css
 import styled.styledDiv
@@ -47,7 +48,7 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                         }
                     }
 
-                    styledDiv {
+                    paper {
                         +"panel for $type!"
                         props.layoutControls[type]?.forEach { layoutControl ->
                             styledDiv {

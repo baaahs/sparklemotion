@@ -3,9 +3,9 @@ package baaahs.ui.gadgets
 import baaahs.OpenShow
 import baaahs.ShowResources
 import baaahs.ShowState
+import baaahs.show.PatchyEditor
 import baaahs.show.Show
-import baaahs.show.ShowEditor.SceneEditor.PatchSetEditor
-import baaahs.ui.patchSetEditor
+import baaahs.ui.patchyEditor
 import baaahs.ui.useCallback
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
@@ -23,18 +23,20 @@ import react.ReactElement
 import react.child
 
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
-    var patchSetEditor by state<PatchSetEditor?> { null }
+    var patchyEditor by state<PatchyEditor?> { null }
 
     val selectedScene = props.showState.selectedScene
     val patchSets = props.show.scenes[selectedScene].patchSets
 
     val onContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
-        props.show.edit(props.showState).editScene(selectedScene) {
-            editPatchSet(index) {
-                patchSetEditor = this
+        props.show.edit(props.showState) {
+            editScene(selectedScene) {
+                editPatchSet(index) {
+                    patchyEditor = this
+                }
             }
+            event.preventDefault()
         }
-        event.preventDefault()
     }
 
     card {
@@ -62,9 +64,11 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                 button {
                     +"+"
                     attrs.onClickFunction = { _: Event ->
-                        props.show.edit(props.showState).editScene(selectedScene) {
-                            addPatchSet("Untitled") {
-                                patchSetEditor = this
+                        props.show.edit(props.showState) {
+                            editScene(selectedScene) {
+                                addPatchSet("Untitled Patch") {
+                                    patchyEditor = this
+                                }
                             }
                         }
                     }
@@ -73,15 +77,15 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
         }
     }
 
-    patchSetEditor?.let { editor ->
-        patchSetEditor {
+    patchyEditor?.let { editor ->
+        patchyEditor {
             showResources = props.showResources
             this.editor = editor
             onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
-                patchSetEditor = null
+                patchyEditor = null
             }
-            onCancel = handler("patchSetEditor.onClose") { patchSetEditor = null }
+            onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
         }
     }
 }

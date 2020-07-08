@@ -5,12 +5,17 @@ import baaahs.getBang
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.OpenPatch
 
-open class ControllablesEditor(
-    controllables: Controllables,
+abstract class PatchyEditor(
+    val basePatchy: Patchy,
     dataSources: Map<String, DataSource>
 ) {
-    val eventBindings = controllables.eventBindings.toMutableList()
-    val controlLayout = controllables.controlLayout
+    abstract val displayType: String
+    var title = basePatchy.title
+
+    open val patchMappings: List<PatchEditor> = emptyList()
+
+    val eventBindings = basePatchy.eventBindings.toMutableList()
+    val controlLayout = basePatchy.controlLayout
         .mapValues { (_, v) ->
             v.map {
                 DataSourceEditor(dataSources.getBang(it.dataSourceId, "datasource"))
@@ -31,12 +36,20 @@ open class ControllablesEditor(
             v.map { DataSourceRef(showBuilder.idFor(it.dataSource)) }
         }
     }
+
+    open fun isChanged(): Boolean {
+        return title != basePatchy.title
+                || patchMappings != basePatchy.patches
+    }
+
+    abstract fun getShow(): Show
+    abstract fun getShowState(): ShowState
 }
 
 class ShowEditor(
     private val baseShow: Show, baseShowState: ShowState = ShowState.Empty
-) : ControllablesEditor(baseShow, baseShow.dataSources) {
-    var title: String = baseShow.title
+) : PatchyEditor(baseShow, baseShow.dataSources) {
+    override val displayType: String get() = "Show"
 
     val shaders = baseShow.shaders
         .mapValues { (_, shader) -> ShaderEditor(shader) }
@@ -79,12 +92,12 @@ class ShowEditor(
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
-            scenes.map { it.build(showBuilder) },
-            eventBindings,
-            layouts,
-            buildControlLayout(showBuilder),
-            findShaders().associateBy { showBuilder.idFor(it) },
-            findDataSources().associateBy { showBuilder.idFor(it) }
+            eventBindings = eventBindings,
+            controlLayout = buildControlLayout(showBuilder),
+            scenes = scenes.map { it.build(showBuilder) },
+            layouts = layouts,
+            shaders = findShaders().associateBy { showBuilder.idFor(it) },
+            dataSources = findDataSources().associateBy { showBuilder.idFor(it) }
         )
     }
 
@@ -94,11 +107,12 @@ class ShowEditor(
     private fun findShaders(): Set<Shader> =
         scenes.flatMap { it.findShaders() }.toSet()
 
-    fun getShow() = build(ShowBuilder())
-    fun getShowState() = ShowState(selectedScene, patchSetSelections)
+    override fun getShow() = build(ShowBuilder())
+    override fun getShowState() = ShowState(selectedScene, patchSetSelections)
 
-    inner class SceneEditor(baseScene: Scene) : ControllablesEditor(baseScene, baseShow.dataSources) {
-        var title = baseScene.title
+    inner class SceneEditor(baseScene: Scene) : PatchyEditor(baseScene, baseShow.dataSources) {
+        override val displayType: String get() = "Scene"
+
         private val patchSets = baseScene.patchSets.map { PatchSetEditor(it) }.toMutableList()
 
         fun addPatchSet(title: String, block: PatchSetEditor.() -> Unit): SceneEditor {
@@ -131,21 +145,22 @@ class ShowEditor(
         fun build(showBuilder: ShowBuilder): Scene {
             return Scene(
                 title,
-                patchSets.map { it.build(showBuilder) },
-                eventBindings,
-                buildControlLayout(showBuilder)
+                eventBindings = eventBindings,
+                controlLayout = buildControlLayout(showBuilder),
+                patchSets = patchSets.map { it.build(showBuilder) }
             )
         }
 
-        fun getShow() = this@ShowEditor.getShow()
-        fun getShowState() = this@ShowEditor.getShowState()
+        override fun getShow() = this@ShowEditor.getShow()
+        override fun getShowState() = this@ShowEditor.getShowState()
 
-        inner class PatchSetEditor(private val basePatchSet: PatchSet) : ControllablesEditor(
+        inner class PatchSetEditor(private val basePatchSet: PatchSet) : PatchyEditor(
             basePatchSet,
             baseShow.dataSources
         ) {
-            var title = basePatchSet.title
-            val patchMappings =
+            override val displayType: String get() = "Patch"
+
+            override val patchMappings =
                 basePatchSet.patches.map { PatchEditor(it, this@ShowEditor) }.toMutableList()
 
             fun addPatch(block: PatchEditor.() -> Unit): PatchSetEditor {
@@ -165,11 +180,6 @@ class ShowEditor(
                 return this
             }
 
-            fun isChanged(): Boolean {
-                return title != basePatchSet.title
-                        || patchMappings != basePatchSet.patches
-            }
-
             fun findDataSources(): Set<DataSource> =
                 (findControlDataSources() + patchMappings.flatMap { it.findDataSources() }).toSet()
 
@@ -185,9 +195,8 @@ class ShowEditor(
                 )
             }
 
-            fun getShowEditor() = this@ShowEditor
-            fun getShow() = this@ShowEditor.getShow()
-            fun getShowState() = this@ShowEditor.getShowState()
+            override fun getShow() = this@ShowEditor.getShow()
+            override fun getShowState() = this@ShowEditor.getShowState()
 
         }
     }
