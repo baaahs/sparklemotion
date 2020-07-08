@@ -1,9 +1,12 @@
 package baaahs.ui.gadgets
 
 import baaahs.OpenShow
+import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.app.ui.icon
+import baaahs.show.PatchyEditor
 import baaahs.show.Show
+import baaahs.ui.patchyEditor
 import baaahs.ui.xComponent
 import external.*
 import external.Direction
@@ -32,6 +35,8 @@ fun <T> eventHandler(block: Event.(T) -> Unit): (Event) -> Unit {
 }
 
 val SceneList = xComponent<SceneListProps>("SceneList") { props ->
+    var patchyEditor by state<PatchyEditor?> { null }
+
     card {
         dragDropContext({
             onDragEnd = { dropResult: DropResult, responderProvided: ResponderProvided ->
@@ -42,7 +47,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                     val sourceIndex = dropResult.source.index
                     val destIndex = dropResult.destination!!.index
 
-                    props.show.edit(props.showState).apply {
+                    props.show.edit(props.showState) {
                         moveScene(sourceIndex, destIndex)
                     }.also { editor ->
                         props.onChange(editor.getShow(), editor.getShowState())
@@ -111,11 +116,29 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                     if (props.editMode) {
                         button {
                             +"+"
-//                attrs.onClickFunction = {  }
+                            attrs.onClickFunction = { _: Event ->
+                                props.show.edit(props.showState) {
+                                    addScene("Untitled Scene") {
+                                        patchyEditor = this
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    patchyEditor?.let { editor ->
+        patchyEditor {
+            showResources = props.showResources
+            this.editor = editor
+            onSave = {
+                props.onChange(editor.getShow(), editor.getShowState())
+                patchyEditor = null
+            }
+            onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
         }
     }
 }
@@ -123,6 +146,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 external interface SceneListProps : RProps {
     var show: OpenShow
     var showState: ShowState
+    var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
     var onChange: (Show, ShowState) -> Unit

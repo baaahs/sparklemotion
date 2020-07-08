@@ -39,6 +39,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                     sceneList {
                         this.show = show
                         this.showState = showState
+                        this.showResources = props.showResources
                         onSelect = { props.onShowStateChange(showState.selectScene(it)) }
                         this.editMode = props.editMode
                         onChange = handleEdit
@@ -78,7 +79,10 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     }
 
     addControlsToPanels(show.controlLayout)
-    addControlsToPanels(showState.findPatchSet(show).controlLayout)
+    val scene = showState.findScene(show)
+    scene?.let { addControlsToPanels(scene.controlLayout) }
+    val patchSet = showState.findPatchSet(show)
+    patchSet?.let { addControlsToPanels(patchSet.controlLayout) }
 
     showLayout {
         this.layout = currentLayout

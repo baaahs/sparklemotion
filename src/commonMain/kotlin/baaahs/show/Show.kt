@@ -15,21 +15,24 @@ import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerialModuleCollector
 import kotlin.reflect.KClass
 
-interface Controllables {
+interface Patchy {
+    val title: String
+    val patches: List<Patch>
     val eventBindings: List<EventBinding>
     val controlLayout: Map<String, List<DataSourceRef>>
 }
 
 @Serializable
 data class Show(
-    val title: String,
-    val scenes: List<Scene> = emptyList(),
+    override val title: String,
+    override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    val layouts: Layouts = Layouts(),
     override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap(),
+    val scenes: List<Scene> = emptyList(),
+    val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
-) : Controllables {
+) : Patchy {
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.toJson(serializer(), this)
     }
@@ -56,21 +59,22 @@ class ShowSerialModule(private val delegate: SerialModule) : SerialModule by del
 
 @Serializable
 data class Scene(
-    val title: String,
-    val patchSets: List<PatchSet> = emptyList(),
+    override val title: String,
+    override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap()
-) : Controllables {
+    override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap(),
+    val patchSets: List<PatchSet> = emptyList()
+) : Patchy {
     fun findShaderPortRefs(): Set<ShaderPortRef> = patchSets.flatMap { it.findShaderPortRefs() }.toSet()
 }
 
 @Serializable
 data class PatchSet(
-    val title: String,
-    val patches: List<Patch> = emptyList(),
+    override val title: String,
+    override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap()
-) : Controllables {
+) : Patchy {
     fun findDataSourceRefs(): Set<DataSourceRef> = patches.flatMap { it.findDataSourceRefs() }.toSet()
     fun findShaderPortRefs(): Set<ShaderPortRef> = patches.flatMap { it.findShaderPortRefs() }.toSet()
 }
