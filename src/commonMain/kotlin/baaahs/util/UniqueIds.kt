@@ -6,6 +6,8 @@ class UniqueIds<T> {
 
     fun all() = byId.toMap()
 
+    operator fun get(id: String): T? = byId[id]
+
     fun idFor(value: T, suggest: () -> String): String {
         return toId.getOrPut(value) {
             val suggestedId = suggest()
@@ -19,8 +21,10 @@ class UniqueIds<T> {
         byId.remove(id)
         return true
     }
-
-    operator fun get(id: String): T? = byId[id]
+    fun clear() {
+        toId.clear()
+        byId.clear()
+    }
 }
 
 fun <V> MutableMap<String, V>.putWithUniqueId(prefix: String, value: V): String {

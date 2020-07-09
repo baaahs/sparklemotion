@@ -11,6 +11,7 @@ import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
 import kotlin.math.min
+import kotlin.random.Random
 
 @Serializable
 data class ShowState(
@@ -209,6 +210,7 @@ open class OpenControllables(
 class OpenShow(
     private val show: Show, private val showResources: ShowResources
 ) : RefCounted by RefCounter(), OpenControllables(show, show.dataSources) {
+    val id = randomId("show")
     val layouts get() = show.layouts
     val shaders = show.shaders.mapValues { (_, shader) -> showResources.openShader(shader) }
 
@@ -227,10 +229,12 @@ class OpenShow(
     }
 
     inner class OpenScene(scene: Scene) : OpenControllables(scene, show.dataSources) {
+        val id = randomId("scene")
         val title = scene.title
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
         inner class OpenPatchSet(patchSet: PatchSet) : OpenControllables(patchSet, show.dataSources) {
+            val id = randomId("patchset")
             val title = patchSet.title
             val patches = patchSet.patches.map { OpenPatch(it, shaders, show.dataSources) }
 
@@ -244,6 +248,10 @@ class OpenShow(
             }
         }
     }
+}
+
+private fun randomId(prefix: String): String {
+    return "$prefix-${Random.nextInt().toString(16)}-${Random.nextInt().toString(16)}"
 }
 
 class RenderPlan(val programs: List<Pair<OpenPatch, GlslProgram>>) {

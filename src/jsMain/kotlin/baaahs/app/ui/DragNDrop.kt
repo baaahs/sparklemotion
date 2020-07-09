@@ -9,7 +9,6 @@ import external.ResponderProvided
 
 class DragNDrop {
     private val dropTargets = UniqueIds<DropTarget>()
-    private val draggableIds = UniqueIds<Any>()
 
     fun onDragEnd(dropResult: DropResult, responderProvided: ResponderProvided) {
         if (dropResult.reason == DropReason.DROP.name) {
@@ -47,8 +46,8 @@ class DragNDrop {
         dropTargets.remove(dropTarget) || throw IllegalStateException("Unregistered drop target.")
     }
 
-    fun idFor(value: Any, suggest: () -> String): String {
-        return draggableIds.idFor(value, suggest)
+    fun reset() {
+        dropTargets.clear()
     }
 
     companion object {

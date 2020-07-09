@@ -73,42 +73,7 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = object : DropTarget {
-        override val type: String get() = "PatchList"
-
-        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-            props.show.edit(props.showState) {
-                editScene(props.showState.selectedScene) {
-                    movePatchSet(fromIndex, toIndex)
-                }
-            }.also { editor ->
-                props.onChange(editor.getShow(), editor.getShowState())
-            }
-        }
-
-        override fun willAccept(draggable: Draggable): Boolean {
-            return draggable is DraggablePatch
-        }
-
-        override fun getDraggable(index: Int): Draggable {
-            return DraggablePatch(
-                props.show.edit(props.showState),
-                props.showState.selectedScene,
-                index,
-                props.onChange
-            )
-        }
-
-        override fun insertDraggable(draggable: Draggable, index: Int) {
-            draggable as DraggablePatch
-            draggable.addTo(props.showState.selectedScene, index)
-        }
-
-        override fun removeDraggable(draggable: Draggable) {
-            draggable as DraggablePatch
-            draggable.remove()
-        }
-    }
+    val dropTarget = PatchSetListDropTarget(props.show, props.showState, props.onChange)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
     sideEffect("unregister drop target") {
         withCleanup {
@@ -148,10 +113,9 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
 //            attrs["value"] = props.selected // ... but this is busted.
 //            attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
                 patchSets.forEachIndexed { index, patchSet ->
-                    val patchSetId = props.dragNDrop.idFor(patchSet) { patchSet.title }
                     draggable({
-                        key = "item$index"
-                        draggableId = "item$index"
+                        key = patchSet.id
+                        draggableId = patchSet.id
                         isDragDisabled = !props.editMode
                         this.index = index
                     }) { provided, snapshot ->
@@ -217,6 +181,47 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
             }
             onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
         }
+    }
+}
+
+private class PatchSetListDropTarget(
+    private val show: OpenShow,
+    private val showState: ShowState,
+    private val onChange: (Show, ShowState) -> Unit
+) : DropTarget {
+    override val type: String get() = "PatchList"
+
+    override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+        show.edit(showState) {
+            editScene(showState.selectedScene) {
+                movePatchSet(fromIndex, toIndex)
+            }
+        }.also { editor ->
+            onChange(editor.getShow(), editor.getShowState())
+        }
+    }
+
+    override fun willAccept(draggable: Draggable): Boolean {
+        return draggable is DraggablePatch
+    }
+
+    override fun getDraggable(index: Int): Draggable {
+        return DraggablePatch(
+            show.edit(showState),
+            showState.selectedScene,
+            index,
+            onChange
+        )
+    }
+
+    override fun insertDraggable(draggable: Draggable, index: Int) {
+        draggable as DraggablePatch
+        draggable.addTo(showState.selectedScene, index)
+    }
+
+    override fun removeDraggable(draggable: Draggable) {
+        draggable as DraggablePatch
+        draggable.remove()
     }
 }
 
