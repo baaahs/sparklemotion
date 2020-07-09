@@ -3,8 +3,12 @@ package baaahs.ui.gadgets
 import baaahs.OpenShow
 import baaahs.ShowResources
 import baaahs.ShowState
+import baaahs.app.ui.DragNDrop
+import baaahs.app.ui.Draggable
+import baaahs.app.ui.DropTarget
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
+import baaahs.show.ShowEditor
 import baaahs.ui.patchyEditor
 import baaahs.ui.useCallback
 import baaahs.ui.xComponent
@@ -22,8 +26,85 @@ import react.RProps
 import react.ReactElement
 import react.child
 
+class DraggablePatch(
+    private val editor: ShowEditor,
+    private val sceneIndex: Int,
+    private val patchSetIndex: Int,
+    private val onChange: (Show, ShowState) -> Unit
+) : Draggable {
+    lateinit var patchSetEditor: ShowEditor.SceneEditor.PatchSetEditor
+
+    init {
+        editor.editScene(sceneIndex) {
+            editPatchSet(patchSetIndex) {
+                patchSetEditor = this
+            }
+        }
+    }
+
+    fun remove() {
+        editor.editScene(sceneIndex) {
+            removePatchSet(patchSetIndex)
+        }
+    }
+
+    fun addTo(sceneIndex: Int, index: Int) {
+        editor.editScene(sceneIndex) {
+            insertPatchSet(patchSetEditor, index)
+        }
+    }
+
+    override fun onMove() {
+        onChange(editor.getShow(), editor.getShowState())
+    }
+}
+
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
+    val dropTarget = memo {
+        object : DropTarget {
+            override val type: String get() = "PatchList"
+
+            override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+                props.show.edit(props.showState) {
+                    editScene(props.showState.selectedScene) {
+                        movePatchSet(fromIndex, toIndex)
+                    }
+                }.also { editor ->
+                    props.onChange(editor.getShow(), editor.getShowState())
+                }
+            }
+
+            override fun willAccept(draggable: Draggable): Boolean {
+                return draggable is DraggablePatch
+            }
+
+            override fun getDraggable(index: Int): Draggable {
+                return DraggablePatch(
+                    props.show.edit(props.showState),
+                    props.showState.selectedScene,
+                    index,
+                    props.onChange
+                )
+            }
+
+            override fun insertDraggable(draggable: Draggable, index: Int) {
+                draggable as DraggablePatch
+                draggable.addTo(props.showState.selectedScene, index)
+            }
+
+            override fun removeDraggable(draggable: Draggable) {
+                draggable as DraggablePatch
+                draggable.remove()
+            }
+        }
+    }
+    val dropTargetId = memo { props.dragNDrop.addDropTarget(dropTarget) }
+    whenMounted {
+        withCleanup {
+            props.dragNDrop.removeDropTarget(dropTarget)
+        }
+    }
 
     val selectedScene = props.showState.selectedScene
     val patchSets = props.show.scenes[selectedScene].patchSets
@@ -96,6 +177,7 @@ external interface PatchSetListProps : RProps {
     var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
+    var dragNDrop: DragNDrop
     var onChange: (Show, ShowState) -> Unit
 }
 

@@ -126,7 +126,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun whenMounted(block: SideEffect.() -> Unit) {
-        react.useEffectWithCleanup {
+        react.useEffectWithCleanup(emptyList()) {
             val sideEffect = SideEffect(emptyArray())
             sideEffect.block()
             return@useEffectWithCleanup { sideEffect.runCleanups() }

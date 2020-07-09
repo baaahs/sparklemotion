@@ -218,7 +218,7 @@ class OpenShow(
     }
     val scenes = show.scenes.map { OpenScene(it) }
 
-    fun edit(showState: ShowState, block: ShowEditor.() -> Unit): ShowEditor =
+    fun edit(showState: ShowState, block: ShowEditor.() -> Unit = {}): ShowEditor =
         ShowEditor(show, showState).apply(block)
 
     override fun onFullRelease() {

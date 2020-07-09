@@ -155,11 +155,11 @@ external interface ResponderProvided {
     var announce: Announce
 }
 
-typealias OnBeforeCaptureResponder = (before: BeforeCapture) -> Any
-typealias OnBeforeDragStartResponder = (start: DragStart) -> Any
-typealias OnDragStartResponder = (start: DragStart, provided: ResponderProvided) -> Any
-typealias OnDragUpdateResponder = (update: DragUpdate, provided: ResponderProvided) -> Any
-typealias OnDragEndResponder = (result: DropResult, provided: ResponderProvided) -> Any
+typealias OnBeforeCaptureResponder = (before: BeforeCapture) -> Unit
+typealias OnBeforeDragStartResponder = (start: DragStart) -> Unit
+typealias OnDragStartResponder = (start: DragStart, provided: ResponderProvided) -> Unit
+typealias OnDragUpdateResponder = (update: DragUpdate, provided: ResponderProvided) -> Unit
+typealias OnDragEndResponder = (result: DropResult, provided: ResponderProvided) -> Unit
 
 enum class MovementMode {
     FLUID, SNAP
