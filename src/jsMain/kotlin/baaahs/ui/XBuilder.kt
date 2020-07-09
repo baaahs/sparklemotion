@@ -2,10 +2,42 @@ package baaahs.ui
 
 import baaahs.Logger
 import org.w3c.dom.events.Event
-import react.RMutableRef
+import react.*
 import kotlin.browser.window
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+
+interface PluggableReact {
+    fun buildElements(handler: RBuilder.() -> Unit): dynamic
+    fun useEffectWithCleanup(dependencies: RDependenciesList? = null, effect: () -> RCleanup)
+    fun <T> useMemo(callback: () -> T, dependencies: RDependenciesArray): T
+    fun <T> useRef(initialValue: T): RMutableRef<T>
+    fun <T> useState(valueInitializer: () -> T): Pair<T, RSetState<T>>
+}
+
+class RealReact : PluggableReact {
+    override fun buildElements(handler: RBuilder.() -> Unit): dynamic {
+        return react.buildElements(handler)
+    }
+
+    override fun useEffectWithCleanup(dependencies: RDependenciesList?, effect: () -> RCleanup) {
+        return react.useEffectWithCleanup(dependencies, effect)
+    }
+
+    override fun <T> useMemo(callback: () -> T, dependencies: RDependenciesArray): T {
+        return react.useMemo(callback, dependencies)
+    }
+
+    override fun <T> useRef(initialValue: T): RMutableRef<T> {
+        return useRef(initialValue)
+    }
+
+    override fun <T> useState(valueInitializer: () -> T): Pair<T, RSetState<T>> {
+        return react.useState(valueInitializer)
+    }
+}
+
+var _react: PluggableReact = RealReact()
 
 /**
  * Get functional component from [func]
@@ -16,7 +48,7 @@ fun <P : react.RProps> xComponent(
 ): react.FunctionalComponent<P> {
     val logger = Logger(name)
     val component = { props: P ->
-        react.buildElements {
+        _react.buildElements {
             val xBuilder = XBuilder(logger)
             xBuilder.func(props)
             this.childList.addAll(xBuilder.childList)
@@ -32,16 +64,16 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     private var dataIndex = 0
     private var sideEffectIndex = 0
 
-    private val context = react.useMemo({
+    private val context = _react.useMemo({
         firstTime = true
         Context()
     }, emptyArray())
 
-    private val counter = react.useState { 0 }
+    private val counter = _react.useState { 0 }
     private var internalCounter = 0
 
     init {
-        react.useEffectWithCleanup(emptyList()) {
+        _react.useEffectWithCleanup(emptyList()) {
             return@useEffectWithCleanup {
                 context.sideEffects.forEach { it.runCleanups() }
             }
@@ -49,10 +81,10 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
+    fun <T> ref(): RMutableRef<T> = _react.useRef(null as T)
 
     fun <T> memo(vararg watch: Any?, block: () -> T): T {
-        return react.useMemo(block, watch)
+        return _react.useMemo(block, watch)
     }
 
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
@@ -126,7 +158,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun whenMounted(block: SideEffect.() -> Unit) {
-        react.useEffectWithCleanup(emptyList()) {
+        _react.useEffectWithCleanup(emptyList()) {
             val sideEffect = SideEffect(emptyArray())
             sideEffect.block()
             return@useEffectWithCleanup { sideEffect.runCleanups() }
@@ -172,7 +204,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         var block: Function<*>
     )
 
-    private class Data<T>(initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
+    private class Data<T>(initialValue: T, private val onChange: () -> Unit) : ReadWriteProperty<Any?, T> {
         var value: T = initialValue
 
         override operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -209,7 +241,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     companion object {
-        private val logger = Logger("Preact")
+        private val logger = Logger("XBuilder")
     }
 }
 
