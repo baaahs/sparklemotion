@@ -11,6 +11,7 @@ import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
 import kotlin.math.min
+import kotlin.random.Random
 
 @Serializable
 data class ShowState(
@@ -19,12 +20,21 @@ data class ShowState(
 ) {
     val selectedPatchSet: Int get() = patchSetSelections[selectedScene]
 
-    fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet {
+    fun findScene(show: OpenShow): OpenShow.OpenScene? {
+        if (selectedScene == -1) return null
+
         if (selectedScene >= show.scenes.size) {
             error("scene $selectedScene out of bounds (have ${show.scenes.size})")
         }
 
-        val scene = show.scenes[selectedScene]
+        return show.scenes[selectedScene]
+    }
+
+    fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet? {
+        if (selectedPatchSet == -1) return null
+
+        val scene = findScene(show) ?: return null
+
         if (selectedScene >= patchSetSelections.size) {
             error("scene $selectedScene patch set out of bounds (have ${patchSetSelections.size})")
         }
@@ -190,9 +200,9 @@ class RefCounter : RefCounted {
 }
 
 open class OpenControllables(
-    controllables: Controllables, private val dataSources: Map<String, DataSource>
+    patchy: Patchy, private val dataSources: Map<String, DataSource>
 ) {
-    val controlLayout: Map<String, List<DataSource>> = controllables.controlLayout.mapValues { (_, dataSourceRefs) ->
+    val controlLayout: Map<String, List<DataSource>> = patchy.controlLayout.mapValues { (_, dataSourceRefs) ->
         dataSourceRefs.map { dataSources.getBang(it.dataSourceId, "datasource") }
     }
 }
@@ -200,6 +210,7 @@ open class OpenControllables(
 class OpenShow(
     private val show: Show, private val showResources: ShowResources
 ) : RefCounted by RefCounter(), OpenControllables(show, show.dataSources) {
+    val id = randomId("show")
     val layouts get() = show.layouts
     val shaders = show.shaders.mapValues { (_, shader) -> showResources.openShader(shader) }
 
@@ -209,7 +220,8 @@ class OpenShow(
     }
     val scenes = show.scenes.map { OpenScene(it) }
 
-    fun edit(showState: ShowState): ShowEditor = ShowEditor(show, showState)
+    fun edit(showState: ShowState, block: ShowEditor.() -> Unit = {}): ShowEditor =
+        ShowEditor(show, showState).apply(block)
 
     override fun onFullRelease() {
         shaders.values.forEach { it.release() }
@@ -217,10 +229,12 @@ class OpenShow(
     }
 
     inner class OpenScene(scene: Scene) : OpenControllables(scene, show.dataSources) {
+        val id = randomId("scene")
         val title = scene.title
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
         inner class OpenPatchSet(patchSet: PatchSet) : OpenControllables(patchSet, show.dataSources) {
+            val id = randomId("patchset")
             val title = patchSet.title
             val patches = patchSet.patches.map { OpenPatch(it, shaders, show.dataSources) }
 
@@ -234,6 +248,10 @@ class OpenShow(
             }
         }
     }
+}
+
+private fun randomId(prefix: String): String {
+    return "$prefix-${Random.nextInt().toString(16)}-${Random.nextInt().toString(16)}"
 }
 
 class RenderPlan(val programs: List<Pair<OpenPatch, GlslProgram>>) {

@@ -4,8 +4,8 @@ import baaahs.ShowResources
 import baaahs.app.ui.icon
 import baaahs.glshaders.*
 import baaahs.show.PatchEditor
+import baaahs.show.PatchyEditor
 import baaahs.show.ShaderEditor
-import baaahs.show.ShowEditor
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
@@ -39,7 +39,7 @@ import react.dom.key
 @Suppress("UNCHECKED_CAST")
 fun <T> Event.targetEl(): T = target as T
 
-val PatchSetEditor = xComponent<PatchSetEditorProps>("PatchSetEditor") { props ->
+val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
     val textField = ref<HTMLInputElement>()
 
     val changed = props.editor.isChanged()
@@ -54,7 +54,7 @@ val PatchSetEditor = xComponent<PatchSetEditorProps>("PatchSetEditor") { props -
         attrs.open = true
         attrs.onClose = x.handler("onClose", props.onCancel) { _: Event, _: String -> props.onCancel() }
 
-        dialogTitle { +"Patchset Editor" }
+        dialogTitle { +"${props.editor.displayType} Editor" }
 
         dialogContent {
             form {
@@ -156,12 +156,12 @@ val PatchSetEditor = xComponent<PatchSetEditorProps>("PatchSetEditor") { props -
     }
 }
 
-external interface PatchSetEditorProps : RProps {
+external interface PatchyEditorProps : RProps {
     var showResources: ShowResources
-    var editor: ShowEditor.SceneEditor.PatchSetEditor
+    var editor: PatchyEditor
     var onSave: () -> Unit
     var onCancel: () -> Unit
 }
 
-fun RBuilder.patchSetEditor(handler: PatchSetEditorProps.() -> Unit): ReactElement =
-    child(PatchSetEditor) { attrs { handler() } }
+fun RBuilder.patchyEditor(handler: PatchyEditorProps.() -> Unit): ReactElement =
+    child(PatchyEditor) { attrs { handler() } }

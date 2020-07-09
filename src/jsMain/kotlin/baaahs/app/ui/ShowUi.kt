@@ -12,6 +12,7 @@ import baaahs.ui.gadgets.patchSetList
 import baaahs.ui.gadgets.sceneList
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
+import external.dragDropContext
 import react.RBuilder
 import react.RProps
 import react.ReactElement
@@ -23,6 +24,9 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val showState = props.showState
     val currentLayoutName = "default"
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
+
+    val dragNDrop by state { DragNDrop() }
+    if (!props.editMode) dragNDrop.reset()
 
     val handleEdit = handler("edit", props.onChange) { newShow: Show, newShowState: ShowState ->
         props.onChange(newShow, newShowState)
@@ -39,8 +43,10 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                     sceneList {
                         this.show = show
                         this.showState = showState
+                        this.showResources = props.showResources
                         onSelect = { props.onShowStateChange(showState.selectScene(it)) }
                         this.editMode = props.editMode
+                        this.dragNDrop = dragNDrop
                         onChange = handleEdit
                     }
                 }
@@ -52,6 +58,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                         this.showResources = props.showResources
                         onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
                         this.editMode = props.editMode
+                        this.dragNDrop = dragNDrop
                         onChange = handleEdit
                     }
                 }
@@ -78,11 +85,18 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     }
 
     addControlsToPanels(show.controlLayout)
-    addControlsToPanels(showState.findPatchSet(show).controlLayout)
+    val scene = showState.findScene(show)
+    scene?.let { addControlsToPanels(scene.controlLayout) }
+    val patchSet = showState.findPatchSet(show)
+    patchSet?.let { addControlsToPanels(patchSet.controlLayout) }
 
-    showLayout {
-        this.layout = currentLayout
-        this.layoutControls = layoutRenderers
+    dragDropContext({
+        onDragEnd = dragNDrop::onDragEnd
+    }) {
+        showLayout {
+            this.layout = currentLayout
+            this.layoutControls = layoutRenderers
+        }
     }
 }
 
