@@ -6,14 +6,24 @@ import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.icon
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import baaahs.ui.patchyEditor
 import baaahs.ui.useCallback
 import baaahs.ui.xComponent
+import external.Direction
+import external.copyFrom
+import external.draggable
+import external.droppable
+import kotlinx.css.*
+import kotlinx.css.properties.Timing
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onContextMenuFunction
+import materialui.DragHandle
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
@@ -25,6 +35,8 @@ import react.RBuilder
 import react.RProps
 import react.ReactElement
 import react.child
+import styled.css
+import styled.styledDiv
 
 class DraggablePatch(
     private val editor: ShowEditor,
@@ -61,46 +73,44 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = memo {
-        object : DropTarget {
-            override val type: String get() = "PatchList"
+    val dropTarget = object : DropTarget {
+        override val type: String get() = "PatchList"
 
-            override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-                props.show.edit(props.showState) {
-                    editScene(props.showState.selectedScene) {
-                        movePatchSet(fromIndex, toIndex)
-                    }
-                }.also { editor ->
-                    props.onChange(editor.getShow(), editor.getShowState())
+        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+            props.show.edit(props.showState) {
+                editScene(props.showState.selectedScene) {
+                    movePatchSet(fromIndex, toIndex)
                 }
-            }
-
-            override fun willAccept(draggable: Draggable): Boolean {
-                return draggable is DraggablePatch
-            }
-
-            override fun getDraggable(index: Int): Draggable {
-                return DraggablePatch(
-                    props.show.edit(props.showState),
-                    props.showState.selectedScene,
-                    index,
-                    props.onChange
-                )
-            }
-
-            override fun insertDraggable(draggable: Draggable, index: Int) {
-                draggable as DraggablePatch
-                draggable.addTo(props.showState.selectedScene, index)
-            }
-
-            override fun removeDraggable(draggable: Draggable) {
-                draggable as DraggablePatch
-                draggable.remove()
+            }.also { editor ->
+                props.onChange(editor.getShow(), editor.getShowState())
             }
         }
+
+        override fun willAccept(draggable: Draggable): Boolean {
+            return draggable is DraggablePatch
+        }
+
+        override fun getDraggable(index: Int): Draggable {
+            return DraggablePatch(
+                props.show.edit(props.showState),
+                props.showState.selectedScene,
+                index,
+                props.onChange
+            )
+        }
+
+        override fun insertDraggable(draggable: Draggable, index: Int) {
+            draggable as DraggablePatch
+            draggable.addTo(props.showState.selectedScene, index)
+        }
+
+        override fun removeDraggable(draggable: Draggable) {
+            draggable as DraggablePatch
+            draggable.remove()
+        }
     }
-    val dropTargetId = memo { props.dragNDrop.addDropTarget(dropTarget) }
-    whenMounted {
+    val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
+    sideEffect("unregister drop target") {
         withCleanup {
             props.dragNDrop.removeDropTarget(dropTarget)
         }
@@ -121,34 +131,73 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     }
 
     card {
-        toggleButtonGroup {
-            attrs.variant = ButtonVariant.outlined
-            attrs.orientation = ButtonGroupOrientation.vertical
-            attrs["exclusive"] = true
+        droppable({
+            droppableId = dropTargetId
+            type = "Patch"
+            direction = Direction.vertical.name
+            isDropDisabled = !props.editMode
+        }) { provided, snapshot ->
+            toggleButtonGroup {
+                ref = provided.innerRef
+                copyFrom(provided.droppableProps)
+                this.childList.add(provided.placeholder)
+
+                attrs.variant = ButtonVariant.outlined
+                attrs.orientation = ButtonGroupOrientation.vertical
+                attrs["exclusive"] = true
 //            attrs["value"] = props.selected // ... but this is busted.
 //            attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
-            patchSets.forEachIndexed { index, patchSet ->
-                toggleButton {
+                patchSets.forEachIndexed { index, patchSet ->
+                    val patchSetId = props.dragNDrop.idFor(patchSet) { patchSet.title }
+                    draggable({
+                        key = "item$index"
+                        draggableId = "item$index"
+                        isDragDisabled = !props.editMode
+                        this.index = index
+                    }) { provided, snapshot ->
+                        styledDiv {
+                            ref = provided.innerRef
+                            css { position = Position.relative }
+                            copyFrom(provided.draggableProps)
+
+                            styledDiv {
+                                css {
+                                    visibility = if (props.editMode) Visibility.visible else Visibility.hidden
+                                    transition(property = "visibility", duration = 0.25.s, timing = Timing.linear)
+                                    position = Position.absolute
+                                    right = 2.px
+                                    top = -2.px
+                                    zIndex = 1
+                                }
+                                copyFrom(provided.dragHandleProps)
+
+                                icon(DragHandle) {}
+                            }
+
+                            toggleButton {
 //                attrs.color = ButtonColor.primary
 //                (attrs as Tag).disabled = patchSet == props.currentPatchSet
-                    attrs["value"] = index
-                    attrs["selected"] = index == props.showState.selectedPatchSet
-                    attrs.onClickFunction = { props.onSelect(index) }
-                    if (props.editMode) {
-                        attrs.onContextMenuFunction = { event: Event -> onContextClick(event, index) }
+                                attrs["value"] = index
+                                attrs["selected"] = index == props.showState.selectedPatchSet
+                                attrs.onClickFunction = { props.onSelect(index) }
+                                if (props.editMode) {
+                                    attrs.onContextMenuFunction = { event: Event -> onContextClick(event, index) }
+                                }
+                                +patchSet.title
+                            }
+                        }
                     }
-                    +patchSet.title
                 }
-            }
 
-            if (props.editMode) {
-                button {
-                    +"+"
-                    attrs.onClickFunction = { _: Event ->
-                        props.show.edit(props.showState) {
-                            editScene(selectedScene) {
-                                addPatchSet("Untitled Patch") {
-                                    patchyEditor = this
+                if (props.editMode) {
+                    button {
+                        +"+"
+                        attrs.onClickFunction = { _: Event ->
+                            props.show.edit(props.showState) {
+                                editScene(selectedScene) {
+                                    addPatchSet("Untitled Patch") {
+                                        patchyEditor = this
+                                    }
                                 }
                             }
                         }

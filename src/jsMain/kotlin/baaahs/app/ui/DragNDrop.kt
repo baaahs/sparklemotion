@@ -9,6 +9,7 @@ import external.ResponderProvided
 
 class DragNDrop {
     private val dropTargets = UniqueIds<DropTarget>()
+    private val draggableIds = UniqueIds<Any>()
 
     fun onDragEnd(dropResult: DropResult, responderProvided: ResponderProvided) {
         if (dropResult.reason == DropReason.DROP.name) {
@@ -30,7 +31,7 @@ class DragNDrop {
         }
     }
 
-    fun findTarget(location: DraggableLocation): DropTarget? {
+    private fun findTarget(location: DraggableLocation): DropTarget? {
         val dropTarget = dropTargets[location.droppableId]
         if (dropTarget == null) {
             logger.warn { "No such drop target ${location.droppableId}" }
@@ -44,6 +45,10 @@ class DragNDrop {
 
     fun removeDropTarget(dropTarget: DropTarget) {
         dropTargets.remove(dropTarget) || throw IllegalStateException("Unregistered drop target.")
+    }
+
+    fun idFor(value: Any, suggest: () -> String): String {
+        return draggableIds.idFor(value, suggest)
     }
 
     companion object {
