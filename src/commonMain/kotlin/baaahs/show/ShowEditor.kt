@@ -4,6 +4,7 @@ import baaahs.ShowState
 import baaahs.getBang
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.OpenPatch
+import baaahs.util.UniqueIds
 
 abstract class PatchyEditor(
     val basePatchy: Patchy,
@@ -115,6 +116,11 @@ class ShowEditor(
 
         private val patchSets = baseScene.patchSets.map { PatchSetEditor(it) }.toMutableList()
 
+        fun insertPatchSet(patchSetEditor: PatchSetEditor, index: Int): SceneEditor {
+            patchSets.add(index, patchSetEditor)
+            return this
+        }
+
         fun addPatchSet(title: String, block: PatchSetEditor.() -> Unit): SceneEditor {
             patchSets.add(PatchSetEditor(PatchSet(title)).apply(block))
             return this
@@ -134,6 +140,11 @@ class ShowEditor(
             } else if (previousSelection == toIndex) {
                 patchSetSelections[mySceneIndex] = fromIndex
             }
+        }
+
+        fun removePatchSet(index: Int): SceneEditor {
+            patchSets.removeAt(index)
+            return this
         }
 
         fun findDataSources(): Set<DataSource> =
@@ -295,8 +306,8 @@ data class OutputPortEditor(private val portId: String) : LinkEditor.Port {
 }
 
 class ShowBuilder {
-    private val dataSourceIds = Ids<DataSource>()
-    private val shaderIds = Ids<Shader>()
+    private val dataSourceIds = UniqueIds<DataSource>()
+    private val shaderIds = UniqueIds<Shader>()
 
     fun idFor(dataSource: DataSource): String {
         return dataSourceIds.idFor(dataSource) { dataSource.suggestId() }
@@ -306,26 +317,6 @@ class ShowBuilder {
         return shaderIds.idFor(shader) { shader.suggestId() }
     }
 
-    fun getDataSources(): Map<String, DataSource> = dataSourceIds.byId
-    fun getShaders(): Map<String, Shader> = shaderIds.byId
-
-    class Ids<T> {
-        private val toId = mutableMapOf<T, String>()
-        internal val byId = mutableMapOf<String, T>()
-
-        fun idFor(t: T, suggest: () -> String): String {
-            return toId.getOrPut(t) {
-                val suggestedId = suggest()
-                if (!byId.containsKey(suggestedId)) {
-                    byId[suggestedId] = t
-                    return@getOrPut suggestedId
-                }
-
-                var i = 2
-                while (byId.containsKey("${suggestedId}$i")) i++
-                byId["${suggestedId}$i"] = t
-                "${suggestedId}$i"
-            }
-        }
-    }
+    fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
+    fun getShaders(): Map<String, Shader> = shaderIds.all()
 }
