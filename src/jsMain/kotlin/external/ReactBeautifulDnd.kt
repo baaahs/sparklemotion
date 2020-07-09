@@ -108,7 +108,7 @@ external interface DroppableProps : RProps, CopyableProps {
     var droppableId: DroppableId
     var type: TypeId
     var isDropDisabled: Boolean
-    var direction: Direction
+    var direction: String // should be Direction
     var dragHandleProps: DragHandleProps
 }
 
