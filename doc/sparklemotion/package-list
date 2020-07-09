@@ -13,6 +13,7 @@ $dokka.location:baaahs.ui$targetEl(org.w3c.dom.events.Event)baaahs.ui/org.w3c.d
 $dokka.location:baaahs.ui$truncate(kotlin.String, kotlin.Int)baaahs.ui/kotlin.-string/truncate.html
 $dokka.location:baaahs.ui$truncateStrings(kotlin.Array((kotlin.Any)), kotlin.Int)baaahs.ui/kotlin.-array/truncate-strings.html
 $dokka.location:baaahs.util$percent(kotlin.Float)baaahs.util/kotlin.-float/percent.html
+$dokka.location:baaahs.util$putWithUniqueId(kotlin.collections.MutableMap((kotlin.String, baaahs.util.putWithUniqueId.V)), kotlin.String, baaahs.util.putWithUniqueId.V)baaahs.util/kotlin.collections.-mutable-map/put-with-unique-id.html
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 $dokka.location:baaahs.visualizer$findOrAdd(kotlin.collections.MutableList((baaahs.visualizer.findOrAdd.T)), baaahs.visualizer.findOrAdd.T)baaahs.visualizer/kotlin.collections.-mutable-list/find-or-add.html

@@ -13,20 +13,6 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="-controllables/index.html">Controllables</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Controllables</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-controllables-editor/index.html">ControllablesEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ControllablesEditor</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-data-source/index.html">DataSource</a></h4>
 </td>
 <td>
@@ -135,7 +121,21 @@
 <h4><a href="-patch-set/index.html">PatchSet</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-patchy/index.html">Patchy</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Patchy</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-patchy-editor/index.html">PatchyEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PatchyEditor</span></code></td>
 </tr>
 <tr>
 <td>
@@ -156,7 +156,7 @@
 <h4><a href="-scene/index.html">Scene</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -205,7 +205,7 @@
 <h4><a href="-show/index.html">Show</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables/index.html"><span class="identifier">Controllables</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -219,7 +219,7 @@
 <h4><a href="-show-editor/index.html">ShowEditor</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">ShowEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-controllables-editor/index.html"><span class="identifier">ControllablesEditor</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">ShowEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy-editor/index.html"><span class="identifier">PatchyEditor</span></a></code></td>
 </tr>
 <tr>
 <td>
