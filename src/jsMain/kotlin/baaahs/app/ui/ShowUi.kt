@@ -26,6 +26,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
 
     val dragNDrop by state { DragNDrop() }
+    if (!props.editMode) dragNDrop.reset()
 
     val handleEdit = handler("edit", props.onChange) { newShow: Show, newShowState: ShowState ->
         props.onChange(newShow, newShowState)

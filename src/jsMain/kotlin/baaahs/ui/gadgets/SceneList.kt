@@ -36,49 +36,26 @@ import react.child
 import styled.css
 import styled.styledDiv
 
-fun <T> eventHandler(block: Event.(T) -> Unit): (Event) -> Unit {
-    @Suppress("UNCHECKED_CAST")
-    return { event: Event, item: T -> event.block(item) } as (Event) -> Unit
-}
-
 val SceneList = xComponent<SceneListProps>("SceneList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = object : DropTarget {
-        override val type: String get() = "SceneList"
-        private val myDraggable = object : Draggable {}
-
-        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-            props.show.edit(props.showState) {
-                moveScene(fromIndex, toIndex)
-            }.also { editor ->
-                props.onChange(editor.getShow(), editor.getShowState())
-            }
-        }
-
-        override fun willAccept(draggable: Draggable): Boolean {
-            return draggable == myDraggable
-        }
-
-        // Scenes can only be moved within a single SceneList.
-        override fun getDraggable(index: Int): Draggable {
-            TODO("not implemented")
-        }
-
-        // Scenes can only be moved within a single SceneList.
-        override fun insertDraggable(draggable: Draggable, index: Int) {
-            TODO("not implemented")
-        }
-
-        // Scenes can only be moved within a single SceneList.
-        override fun removeDraggable(draggable: Draggable) {
-            TODO("not implemented")
-        }
-
-    }
+    val dropTarget = SceneListDropTarget(props.show, props.showState, props.onChange)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
     sideEffect("unregister drop target") {
         withCleanup {
             props.dragNDrop.removeDropTarget(dropTarget)
+        }
+    }
+
+    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
+        val sceneDropTarget = SceneDropTarget(props.show, index)
+        val sceneDropTargetId = props.dragNDrop.addDropTarget(sceneDropTarget)
+        sceneDropTargetId to sceneDropTarget as DropTarget
+    }
+    sideEffect("unregister drop target") {
+        withCleanup {
+            sceneDropTargets.forEach { (_, sceneDropTarget) ->
+                props.dragNDrop.removeDropTarget(sceneDropTarget)
+            }
         }
     }
 
@@ -88,11 +65,11 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
             type = "Scene"
             direction = Direction.horizontal.name
             isDropDisabled = !props.editMode
-        }) { provided, snapshot ->
+        }) { sceneDropProvided, snapshot ->
             toggleButtonGroup {
-                ref = provided.innerRef
-                copyFrom(provided.droppableProps)
-                this.childList.add(provided.placeholder)
+                ref = sceneDropProvided.innerRef
+                copyFrom(sceneDropProvided.droppableProps)
+                this.childList.add(sceneDropProvided.placeholder)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs["exclusive"] = true
@@ -100,20 +77,19 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
                 props.show.scenes.forEachIndexed { index, scene ->
-                    val sceneId = props.dragNDrop.idFor(scene) { scene.title }
                     draggable({
-                        key = sceneId
-                        draggableId = sceneId
+                        key = scene.id
+                        draggableId = scene.id
                         isDragDisabled = !props.editMode
                         this.index = index
-                    }) { provided, snapshot ->
+                    }) { sceneDragProvided, snapshot ->
 //                            div {
 //                                +"Handle"
 
                         styledDiv {
-                            ref = provided.innerRef
+                            ref = sceneDragProvided.innerRef
                             css { position = Position.relative }
-                            copyFrom(provided.draggableProps)
+                            copyFrom(sceneDragProvided.draggableProps)
 
                             styledDiv {
                                 css {
@@ -124,16 +100,26 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                                     top = -2.px
                                     zIndex = 1
                                 }
-                                copyFrom(provided.dragHandleProps)
+                                copyFrom(sceneDragProvided.dragHandleProps)
 
                                 icon(DragHandle) {}
                             }
-                            toggleButton(ButtonStyle.root to Styles.buttons.getName()) {
-                                attrs["value"] = index
-                                attrs["selected"] = index == props.showState.selectedScene
-                                attrs.onClickFunction = { props.onSelect(index) }
+                            droppable({
+                                droppableId = sceneDropTargets[index].first
+                                type = "Patch"
+                                direction = Direction.vertical.name
+                                isDropDisabled = !props.editMode
+                            }) { patchDroppableProvided, snapshot ->
+                                toggleButton(ButtonStyle.root to Styles.buttons.getName()) {
+                                    ref = patchDroppableProvided.innerRef
+                                    copyFrom(patchDroppableProvided.droppableProps)
 
-                                +scene.title
+                                    attrs["value"] = index
+                                    attrs["selected"] = index == props.showState.selectedScene
+                                    attrs.onClickFunction = { props.onSelect(index) }
+
+                                    +scene.title
+                                }
                             }
                         }
                     }
@@ -168,6 +154,60 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
             onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
         }
     }
+}
+
+private class SceneListDropTarget(
+    private val show: OpenShow,
+    private val showState: ShowState,
+    private val onChange: (Show, ShowState) -> Unit
+) : DropTarget {
+    override val type: String get() = "SceneList"
+    private val myDraggable = object : Draggable {}
+
+    override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+        show.edit(showState) {
+            moveScene(fromIndex, toIndex)
+        }.also { editor ->
+            onChange(editor.getShow(), editor.getShowState())
+        }
+    }
+
+    override fun willAccept(draggable: Draggable): Boolean {
+        return draggable == myDraggable
+    }
+
+    // Scenes can only be moved within a single SceneList.
+    override fun getDraggable(index: Int): Draggable = error("not implemented")
+
+    // Scenes can only be moved within a single SceneList.
+    override fun insertDraggable(draggable: Draggable, index: Int): Unit = error("not implemented")
+
+    // Scenes can only be moved within a single SceneList.
+    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
+
+}
+
+private class SceneDropTarget(
+    private val show: OpenShow,
+    private val sceneIndex: Int
+) : DropTarget {
+    override val type: String get() = "Scene"
+
+    override fun moveDraggable(fromIndex: Int, toIndex: Int): Unit = error("not implemented")
+
+    override fun willAccept(draggable: Draggable): Boolean {
+        return draggable is DraggablePatch
+    }
+
+    override fun getDraggable(index: Int): Draggable = error("not implemented")
+
+    override fun insertDraggable(draggable: Draggable, index: Int) {
+        draggable as DraggablePatch
+        val scene = show.scenes[sceneIndex]
+        draggable.addTo(sceneIndex, scene.patchSets.size)
+    }
+
+    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
 }
 
 external interface SceneListProps : RProps {
