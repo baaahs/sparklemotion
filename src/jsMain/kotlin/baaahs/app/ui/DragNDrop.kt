@@ -18,7 +18,9 @@ class DragNDrop {
             val destIndex = dropResult.destination!!.index
 
             if (source == dest) {
-                dest.moveDraggable(sourceIndex, destIndex)
+                if (sourceIndex != destIndex) {
+                    dest.moveDraggable(sourceIndex, destIndex)
+                }
             } else {
                 val draggable = source.getDraggable(sourceIndex)
                 if (dest.willAccept(draggable) && draggable.willMoveTo(dest)) {
