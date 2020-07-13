@@ -3,11 +3,14 @@ package baaahs.ui
 import baaahs.BaseShowResources
 import baaahs.Gadget
 import baaahs.GadgetData
+import baaahs.getBang
 import baaahs.glshaders.OpenPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.*
 import baaahs.jsx.useResizeListener
 import baaahs.model.ModelInfo
+import kotlinx.css.LinearDimension
+import kotlinx.css.px
 import org.w3c.dom.HTMLCanvasElement
 import react.*
 import react.dom.canvas
@@ -17,8 +20,8 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
     var gl by useState<GlslContext?>(null)
     var glslPreview by useState<GlslPreview?>(null)
 
-    sideEffect("canvas change", canvas.current) {
-        val canvasEl = canvas.current ?: return@sideEffect
+    onMount(canvas.current) {
+        val canvasEl = canvas.current ?: return@onMount
         val glslContext = GlslBase.jsManager.createContext(canvasEl)
         gl = glslContext
 
@@ -31,9 +34,9 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
         }
     }
 
-    sideEffect("patch change", props.patch, glslPreview) {
-        if (gl == null) return@sideEffect
-        val patch = props.patch ?: return@sideEffect
+    onChange("patch change", props.patch, gl, glslPreview) {
+        if (gl == null) return@onChange
+        val patch = props.patch ?: return@onChange
 
         val showResources = object : BaseShowResources(Plugins.safe(), ModelInfo.Empty) {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
@@ -44,8 +47,8 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
             }
 
             override fun <T : Gadget> useGadget(id: String): T {
-                @Suppress("UNCHECKED_CAST")
-                return gadgets[id] as T
+                val gadget = gadgets.getBang(id, "gadget")
+                return gadget as? T ?: error("$id isn't a gadget: $gadget")
             }
         }
 
@@ -78,11 +81,15 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
 
     canvas {
         ref = canvas
+        attrs.width = (props.width ?: 150.px).toString()
+        attrs.height = (props.height ?: 100.px).toString()
     }
 }
 
 external interface PatchPreviewProps : RProps {
     var patch: OpenPatch?
+    var width: LinearDimension?
+    var height: LinearDimension?
     var onSuccess: () -> Unit
     var onGadgetsChange: (Array<GadgetData>) -> Unit
     var onError: (Array<GlslError>) -> Unit

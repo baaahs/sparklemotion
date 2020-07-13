@@ -22,8 +22,8 @@ import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
 import materialui.DragHandle
+import materialui.ToggleButtonGroupStyle
 import materialui.components.button.button
-import materialui.components.button.enums.ButtonStyle
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import materialui.toggleButton
@@ -40,7 +40,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
     val dropTarget = SceneListDropTarget(props.show, props.showState, props.onChange)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
-    sideEffect("unregister drop target") {
+    onChange("unregister drop target") {
         withCleanup {
             props.dragNDrop.removeDropTarget(dropTarget)
         }
@@ -51,7 +51,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
         val sceneDropTargetId = props.dragNDrop.addDropTarget(sceneDropTarget)
         sceneDropTargetId to sceneDropTarget as DropTarget
     }
-    sideEffect("unregister drop target") {
+    onChange("unregister drop target") {
         withCleanup {
             sceneDropTargets.forEach { (_, sceneDropTarget) ->
                 props.dragNDrop.removeDropTarget(sceneDropTarget)
@@ -66,7 +66,9 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
             direction = Direction.horizontal.name
             isDropDisabled = !props.editMode
         }) { sceneDropProvided, snapshot ->
-            toggleButtonGroup {
+            toggleButtonGroup(
+                ToggleButtonGroupStyle.root to Styles.horizontalButtonList.getName()
+            ) {
                 ref = sceneDropProvided.innerRef
                 copyFrom(sceneDropProvided.droppableProps)
                 this.childList.add(sceneDropProvided.placeholder)
@@ -110,7 +112,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                                 direction = Direction.vertical.name
                                 isDropDisabled = !props.editMode
                             }) { patchDroppableProvided, snapshot ->
-                                toggleButton(ButtonStyle.root to Styles.buttons.getName()) {
+                                toggleButton {
                                     ref = patchDroppableProvided.innerRef
                                     copyFrom(patchDroppableProvided.droppableProps)
 

@@ -35,7 +35,6 @@ fun <V> MutableMap<String, V>.putWithUniqueId(prefix: String, value: V): String 
         while (containsKey("${prefix}$i")) i++
         "${prefix}$i"
     }
-    println("inserted with key = $key")
     put(key, value)
     return key
 }

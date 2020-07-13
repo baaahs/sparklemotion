@@ -10,6 +10,7 @@ import baaahs.app.ui.icon
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
+import baaahs.ui.getName
 import baaahs.ui.patchyEditor
 import baaahs.ui.useCallback
 import baaahs.ui.xComponent
@@ -24,6 +25,7 @@ import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onContextMenuFunction
 import materialui.DragHandle
+import materialui.ToggleButtonGroupStyle
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
@@ -75,7 +77,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
     val dropTarget = PatchSetListDropTarget(props.show, props.showState, props.onChange)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
-    sideEffect("unregister drop target") {
+    onChange("unregister drop target") {
         withCleanup {
             props.dragNDrop.removeDropTarget(dropTarget)
         }
@@ -101,11 +103,13 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
             type = "Patch"
             direction = Direction.vertical.name
             isDropDisabled = !props.editMode
-        }) { provided, snapshot ->
-            toggleButtonGroup {
-                ref = provided.innerRef
-                copyFrom(provided.droppableProps)
-                this.childList.add(provided.placeholder)
+        }) { droppableProvided, snapshot ->
+            toggleButtonGroup(
+                ToggleButtonGroupStyle.root to Styles.verticalButtonList.getName()
+            ) {
+                ref = droppableProvided.innerRef
+                copyFrom(droppableProvided.droppableProps)
+                this.childList.add(droppableProvided.placeholder)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs.orientation = ButtonGroupOrientation.vertical
@@ -118,11 +122,11 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                         draggableId = patchSet.id
                         isDragDisabled = !props.editMode
                         this.index = index
-                    }) { provided, snapshot ->
+                    }) { draggableProvided, snapshot ->
                         styledDiv {
-                            ref = provided.innerRef
+                            ref = draggableProvided.innerRef
                             css { position = Position.relative }
-                            copyFrom(provided.draggableProps)
+                            copyFrom(draggableProvided.draggableProps)
 
                             styledDiv {
                                 css {
@@ -133,7 +137,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                                     top = -2.px
                                     zIndex = 1
                                 }
-                                copyFrom(provided.dragHandleProps)
+                                copyFrom(draggableProvided.dragHandleProps)
 
                                 icon(DragHandle) {}
                             }

@@ -8,6 +8,7 @@ import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.FakeFs
+import baaahs.sim.ui.WebClientWindow
 import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
 import org.w3c.dom.get
@@ -32,6 +33,7 @@ fun main(args: Array<String>) {
             val simulator = SheepSimulator()
             val props = jsObject<MosaicApp.Props> {
                 this.simulator = simulator
+                this.webClientWindow = WebClientWindow
             }
             val simulatorEl = document.getElementById("app")
             render(createElement(MosaicApp::class.js, props), simulatorEl)

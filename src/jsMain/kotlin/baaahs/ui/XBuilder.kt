@@ -70,7 +70,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun observe(item: Observable) {
-        sideEffect("observe", item) {
+        onChange("observe", item) {
             val observer = object : Observer {
                 override fun notifyChanged() = forceRender()
             }
@@ -81,7 +81,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun sideEffect(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
+    fun onChange(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
         return if (firstTime) {
             val sideEffect = SideEffect(watch)
             context.sideEffects.add(sideEffect)
@@ -106,6 +106,14 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
+    fun onMount(vararg watch: Any?, callback: SideEffect.() -> Unit) {
+        react.useEffectWithCleanup(watch.toList()) {
+            val sideEffect = SideEffect(watch)
+            sideEffect.callback()
+            return@useEffectWithCleanup { sideEffect.runCleanups() }
+        }
+    }
+
     fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, block) }
         return if (areSame(watch, handler.lastWatchValues)) {
@@ -123,14 +131,6 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     fun eventHandler(block: Function<*>): (Event) -> Unit {
         @Suppress("UNCHECKED_CAST")
         return handler("event handler", block, block = block as (Event) -> Unit)
-    }
-
-    fun whenMounted(block: SideEffect.() -> Unit) {
-        react.useEffectWithCleanup(emptyList()) {
-            val sideEffect = SideEffect(emptyArray())
-            sideEffect.block()
-            return@useEffectWithCleanup { sideEffect.runCleanups() }
-        }
     }
 
     /**

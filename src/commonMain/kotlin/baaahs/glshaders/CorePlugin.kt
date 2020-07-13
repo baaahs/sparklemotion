@@ -43,25 +43,6 @@ class CorePlugin : Plugin {
         val dataSourceBuilder = dataSourceBuildersByName[resourceName]
             ?: error("unknown plugin resource $resourceName")
         return dataSourceBuilder.build(inputPort)
-//        return when (resourceName) {
-//            "resolution" -> Resolution(inputPort.id)
-//            "time" -> Time(inputPort.id)
-//            "uvCoords" -> UvCoord(inputPort.id)
-//
-//            "xyCoord" -> XyPad(inputPort)
-//
-//            "Slider" -> SliderProvider(inputPort)
-//            "ColorPicker" -> ColorPickerProvider(inputPort)
-//            "RadioButtonStrip" -> RadioButtonStripProvider(inputPort)
-//
-//            "Scenes" -> Scenes(inputPort)
-//            "Patches" -> Patches(inputPort)
-//
-//            "none" -> NoOp(inputPort)
-//            "invalid" -> error("no provider for $inputPort")
-//
-//            else -> throw IllegalArgumentException("unknown type $resourceName")
-//        }
     }
 
 //    @Serializable
@@ -87,7 +68,6 @@ class CorePlugin : Plugin {
     data class Resolution(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Resolution> {
             override val resourceName: String get() = "Resolution"
-            override fun suggestDataSources(inputPort: InputPort): List<Resolution> = emptyList()
             override fun build(inputPort: InputPort): Resolution = Resolution()
         }
 
@@ -115,7 +95,6 @@ class CorePlugin : Plugin {
     data class Time(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Time> {
             override val resourceName: String get() = "Time"
-            override fun suggestDataSources(inputPort: InputPort): List<Time> = emptyList()
             override fun build(inputPort: InputPort): Time = Time()
         }
 
@@ -136,7 +115,6 @@ class CorePlugin : Plugin {
     data class PixelCoordsTexture(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PixelCoordsTexture> {
             override val resourceName: String get() = "PixelCoords"
-            override fun suggestDataSources(inputPort: InputPort): List<PixelCoordsTexture> = emptyList()
             override fun build(inputPort: InputPort): PixelCoordsTexture = PixelCoordsTexture()
         }
 
@@ -179,7 +157,6 @@ class CorePlugin : Plugin {
     data class ScreenUvCoord(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ScreenUvCoord> {
             override val resourceName: String get() = "U/V Coordinate"
-            override fun suggestDataSources(inputPort: InputPort): List<ScreenUvCoord> = emptyList()
             override fun build(inputPort: InputPort): ScreenUvCoord = ScreenUvCoord()
         }
 
@@ -340,8 +317,8 @@ class CorePlugin : Plugin {
 
         override fun createFeed(showResources: ShowResources, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
-                val xControl = showResources.useGadget<Slider>("${varPrefix}_x")
-                val yControl = showResources.useGadget<Slider>("${varPrefix}_y")
+//                val xControl = showResources.useGadget<Slider>("${varPrefix}_x")
+//                val yControl = showResources.useGadget<Slider>("${varPrefix}_y")
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
                     val dataFeed = this
@@ -350,7 +327,7 @@ class CorePlugin : Plugin {
                             get() = dataFeed
 
                         override val isValid: Boolean
-                            get() = TODO("not implemented")
+                            get() = false
 
                         override fun setOnProgram() {
                 //                            uniform.set(xControl.value, yControl.value)
@@ -447,7 +424,6 @@ class CorePlugin : Plugin {
     ) : GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<Scenes> {
             override val resourceName: String get() = "SceneList"
-            override fun suggestDataSources(inputPort: InputPort): List<Scenes> = emptyList()
             override fun build(inputPort: InputPort): Scenes = Scenes(inputPort.id)
         }
 
@@ -471,7 +447,6 @@ class CorePlugin : Plugin {
     ) : GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<Patches> {
             override val resourceName: String get() = "PatchList"
-            override fun suggestDataSources(inputPort: InputPort): List<Patches> = emptyList()
             override fun build(inputPort: InputPort): Patches = Patches(inputPort.id)
 
         }
@@ -488,6 +463,28 @@ class CorePlugin : Plugin {
 
         override fun set(gadget: RadioButtonStrip, uniform: Uniform) { /* No-pp.*/
         }
+    }
+
+    @Serializable
+    data class ImageSource(val title: String, val dataType: String) : DataSource {
+        companion object : DataSourceBuilder<ImageSource> {
+            override val resourceName: String get() = "Image"
+            override fun looksValid(inputPort: InputPort): Boolean =
+                inputPort.dataType == "sampler2D"
+            override fun build(inputPort: InputPort): ImageSource = ImageSource(inputPort.title, inputPort.dataType)
+        }
+
+        override val dataSourceName: String get() = "Image"
+        override fun getType(): String = "sampler2D"
+        override fun suggestId(): String = "$title Image".camelize()
+
+        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+            object : DataFeed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
+                    GlslProgram.SingleUniformBinding(glslProgram, this@ImageSource, id, this) { uniform ->
+                        // no-op
+                    }
+            }
     }
 
     companion object {

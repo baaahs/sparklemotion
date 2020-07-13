@@ -51,10 +51,10 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
             InputPort("iChannelResolution", "vec3[4]", "Channel Resolution"),
 
 //          uniform samplerXX iChanneli;
-            InputPort("iChannel0", "sampleXX", "Channel 0", ContentType.Media),
-            InputPort("iChannel1", "sampleXX", "Channel 1", ContentType.Media),
-            InputPort("iChannel2", "sampleXX", "Channel 2", ContentType.Media),
-            InputPort("iChannel3", "sampleXX", "Channel 3", ContentType.Media)
+            InputPort("iChannel0", "sampler2D", "Channel 0", ContentType.Media),
+            InputPort("iChannel1", "sampler2D", "Channel 1", ContentType.Media),
+            InputPort("iChannel2", "sampler2D", "Channel 2", ContentType.Media),
+            InputPort("iChannel3", "sampler2D", "Channel 3", ContentType.Media)
         ).associateBy { it.id }
 
         val uvCoordPort = InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)

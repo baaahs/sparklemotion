@@ -60,7 +60,7 @@ object GlslAnalyzerSpec : Spek({
                             GlslStatement("uniform float time;", lineNumber = 5,
                                 comments = listOf(" trailing comment")),
                             GlslStatement(
-                                "\nuniform vec2  resolution;", lineNumber = 5,
+                                "\n\n\n\nuniform vec2  resolution;", lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslStatement(
@@ -95,7 +95,7 @@ object GlslAnalyzerSpec : Spek({
                             ),
                             GlslCode.GlslVar(
                                 "vec2", "resolution",
-                                fullText = " \nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
+                                fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             )
                         )
@@ -321,6 +321,21 @@ object GlslAnalyzerSpec : Spek({
     }
 
     describe("GlslVar") {
+        it("handles const initializers") {
+            expect(GlslCode.GlslVar(
+                "vec3", "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);\n",
+                isConst = true
+            )) {
+                GlslStatement("const vec3 baseColor = vec3(0.0,0.09,0.18);\n").asVarOrNull()
+            }
+        }
+
+        it("doen't match functions") {
+            expect(null) {
+                GlslStatement("vec3 baseColor() { abc = vec3(0.0,0.09,0.18); }\n").asVarOrNull()
+            }
+        }
+
         context("with comments") {
             val hintClassStr by value { "whatever.package.Plugin:Thing" }
             val glslVar by value {
