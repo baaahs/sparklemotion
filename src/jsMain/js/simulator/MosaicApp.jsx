@@ -1,6 +1,5 @@
 import {hot} from 'react-hot-loader';
 import styles from './MosaicUI.scss';
-import {baaahs} from 'sparklemotion';
 import React, {useContext, useEffect, useState} from 'react';
 import {Mosaic, MosaicWindow, MosaicZeroState} from 'react-mosaic-component';
 import SheepVisualizerWindow from './windows/SheepVisualizerWindow/SheepVisualizerWindow';
@@ -23,7 +22,7 @@ const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
     'Sheep Visualizer': SheepVisualizerWindow,
     'Simulator Console': SimulatorSettingsWindow,
-    'Web UI': baaahs.sim.ui.WebClientWindow,
+    'Web UI': props.webClientWindow,
   };
 
   const { simulator } = props;
