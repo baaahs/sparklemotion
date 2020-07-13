@@ -6,7 +6,6 @@ import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
-import baaahs.app.ui.icon
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.ui.getName
@@ -21,13 +20,10 @@ import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
-import materialui.DragHandle
-import materialui.ToggleButtonGroupStyle
+import materialui.*
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
-import materialui.toggleButton
-import materialui.toggleButtonGroup
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
@@ -104,7 +100,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                                 }
                                 copyFrom(sceneDragProvided.dragHandleProps)
 
-                                icon(DragHandle) {}
+                                icon(DragHandle)
                             }
                             droppable({
                                 droppableId = sceneDropTargets[index].first

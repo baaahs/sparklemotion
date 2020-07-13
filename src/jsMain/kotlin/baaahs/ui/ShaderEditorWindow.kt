@@ -145,7 +145,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
         editor.focus()
     }
 
-    val onChange: (String, Any) -> Unit = useCallback() { newValue: String, event: Any ->
+    val handleChange: (String, Any) -> Unit = useCallback() { newValue: String, event: Any ->
         openShaders = openShaders.replace(selectedShaderIndex) {
             it.copy(src = newValue, isModified = true)
         }
@@ -405,7 +405,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
                 width = "100%"
                 height = "60vh"
                 showGutter = true
-                this.onChange = onChange
+                this.onChange = handleChange
                 this.onCursorChange = onCursorChange
                 value = selectedShader?.src ?: ""
                 name = "ShaderEditorWindow"
