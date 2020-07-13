@@ -161,7 +161,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "U/V Coordinate"
-        override fun getType(): String = error("huh?")
+        override fun getType(): String = "vec2"
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
@@ -429,7 +429,7 @@ class CorePlugin : Plugin {
 
         override val dataSourceName: String get() = "Scene List"
         override fun isImplicit(): Boolean = true
-        override fun getType(): String = error("huh?")
+        override fun getType(): String = "n/a"
         override fun getRenderType(): String? = "SceneList"
 
         override fun createGadget(): RadioButtonStrip {
@@ -453,7 +453,7 @@ class CorePlugin : Plugin {
 
         override val dataSourceName: String get() = "Patch List"
         override fun isImplicit(): Boolean = true
-        override fun getType(): String = error("huh?")
+        override fun getType(): String = "n/a"
         override fun getRenderType(): String? = "PatchList"
 
         override fun createGadget(): RadioButtonStrip {

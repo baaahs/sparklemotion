@@ -2,10 +2,8 @@ package baaahs.ui
 
 import baaahs.ShowResources
 import baaahs.glshaders.*
-import baaahs.show.PatchEditor
-import baaahs.show.PatchyEditor
-import baaahs.show.ShaderPortEditor
-import kotlinx.css.px
+import baaahs.show.*
+import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
@@ -17,8 +15,13 @@ import materialui.components.dialog.dialog
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
+import materialui.components.drawer.drawer
+import materialui.components.drawer.enums.DrawerAnchor
+import materialui.components.drawer.enums.DrawerStyle
+import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.iconbutton.iconButton
+import materialui.components.portal.portal
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
@@ -27,21 +30,24 @@ import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.components.textfield.textField
 import materialui.icon
+import materialui.styles.StylesBuilder
+import materialui.styles.withStyles
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import react.dom.form
 import react.dom.h3
 import react.dom.key
+import styled.StyleSheet
+import styled.getClassName
+import kotlin.properties.ReadOnlyProperty
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Event.targetEl(): T = target as T
 
 val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
     val textField = ref<HTMLInputElement>()
+    val showBuilder by state { ShowBuilder() }
 
     val changed = props.editor.isChanged()
 
@@ -50,105 +56,77 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
         forceRender()
     }
 
+    val handleDrawerClose = eventHandler("handleDrawerClose", props.onCancel) {
+        props.onCancel()
+    }
+
     val x = this
-    dialog {
-        attrs.open = true
-        attrs.onClose = x.handler("onClose", props.onCancel) { _: Event, _: String -> props.onCancel() }
+    portal {
+        drawer(styles.drawer on DrawerStyle.paper) {
+            attrs.anchor = DrawerAnchor.bottom
+            attrs.variant = DrawerVariant.temporary
+            attrs.elevation
+            attrs.open = true
+            attrs.onClose = handleDrawerClose
 
-        dialogTitle { +"${props.editor.displayType} Editor" }
+            dialogTitle { +"${props.editor.displayType} Editor" }
 
-        dialogContent {
-            form {
-                attrs.onSubmitFunction = x.handler("onSubmit", changed, props.onSave) { event: Event ->
-                    if (changed) {
-                        props.onSave()
-                    }
-                    event.preventDefault()
-                }
-
-                textField {
-                    ref = textField
-                    attrs.autoFocus = true
-                    attrs.variant = FormControlVariant.outlined
-                    attrs.label = "Title".asTextNode()
-                    attrs.value = props.editor.title
-                    attrs.onChangeFunction = handleTitleChange
-                }
-
-                table {
-                    attrs["stickyHeader"] = true
-
-                    tableHead {
-                        tableRow {
-                            thCell {
-                                attrs.key = "Surfaces"
-                                +"Surfaces"
-                            }
-
-                            thCell {
-                                attrs.key = "Patches"
-                                +"Patches"
-                            }
+            dialogContent {
+                form {
+                    attrs.onSubmitFunction = x.handler("onSubmit", changed, props.onSave) { event: Event ->
+                        if (changed) {
+                            props.onSave()
                         }
+                        event.preventDefault()
                     }
-                    tableBody {
-                        props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
-                            tableRow {
-                                attrs.key = "$index"
 
-                                tdCell {
+                    textField {
+                        ref = textField
+                        attrs.autoFocus = true
+                        attrs.variant = FormControlVariant.outlined
+                        attrs.label = "Title".asTextNode()
+                        attrs.value = props.editor.title
+                        attrs.onChangeFunction = handleTitleChange
+                    }
+
+                    table {
+                        attrs["stickyHeader"] = true
+
+                        tableHead {
+                            tableRow {
+                                thCell {
                                     attrs.key = "Surfaces"
-                                    +patchEditor.surfaces.name
+                                    +"Surfaces"
                                 }
 
-                                tdCell {
+                                thCell {
                                     attrs.key = "Patches"
+                                    +"Patches"
+                                }
+                            }
+                        }
+                        tableBody {
+                            props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
+                                val allShaders = patchEditor.findShaders()
+                                tableRow {
+                                    attrs.key = "$index"
 
-                                    +"Shaders:"
-                                    patchEditor.findShaders().forEach { shader ->
-                                        card {
-                                            attrs.raised = true
+                                    tdCell {
+                                        attrs.key = "Surfaces"
+                                        +patchEditor.surfaces.name
+                                    }
 
-                                            val openShader = GlslAnalyzer().asShader(shader)
-                                            if (openShader is ColorShader) {
-                                                iconButton {
-                                                    icon(Edit)
+                                    tdCell {
+                                        attrs.key = "Patches"
 
-                                                    attrs.onClickFunction = {}
-                                                }
-                                                val previewPatch =
-                                                    AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
-                                                patchPreview {
-                                                    this.patch = previewPatch.resolve().open()
-                                                    width = 120.px
-                                                    height = 75.px
-                                                    onSuccess = {}
-                                                    onGadgetsChange = {}
-                                                    onError = {}
-                                                }
-                                            }
-                                            h3 { +shader.title }
-
-
-                                            +"Links:"
-                                            table {
-                                                tableHead {
-                                                    tableRow {
-                                                        thCell { +"From" }
-                                                        thCell { +"To" }
-                                                    }
-                                                }
-
-                                                tableBody {
-                                                    patchEditor.links.filter { (_, to) ->
-                                                        to is ShaderPortEditor && to.shader == shader
-                                                    }.forEach { (from, to) ->
-                                                        tableRow {
-                                                            tdCell { +from.displayName() }
-                                                            tdCell { +to.displayName() }
-                                                        }
-                                                    }
-                                                }
+                                        +"Shaders:"
+                                        allShaders.forEach { shader ->
+                                            shaderEditor {
+                                                attrs.showResources = props.showResources
+                                                attrs.allShaders = allShaders
+                                                attrs.patchEditor = patchEditor
+                                                attrs.showBuilder = showBuilder
+                                                attrs.shader = shader
                                             }
                                         }
                                     }
@@ -158,23 +136,38 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                     }
                 }
             }
-        }
 
-        dialogActions {
-            button {
-                +"Cancel"
-                attrs.color = ButtonColor.secondary
-                attrs.onClickFunction = x.eventHandler(props.onCancel)
-            }
+            dialogActions {
+                button {
+                    +"Cancel"
+                    attrs.color = ButtonColor.secondary
+                    attrs.onClickFunction = x.eventHandler(props.onCancel)
+                }
 
-            button {
-                +"Save"
-                attrs["disabled"] = !changed
-                attrs.color = ButtonColor.primary
-                attrs.onClickFunction = x.eventHandler(props.onSave)
+                button {
+                    +"Save"
+                    attrs["disabled"] = !changed
+                    attrs.color = ButtonColor.primary
+                    attrs.onClickFunction = x.eventHandler(props.onSave)
+                }
             }
         }
     }
+}
+
+private object styles : StyleSheet("UI-PatchyEditor", isStatic = true) {
+    val drawer by css {
+        margin(horizontal = 5.em)
+    }
+
+    val shaderCard by css {
+        margin(1.em)
+        padding(1.em)
+    }
+}
+
+infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
+    return clazz to getName()
 }
 
 external interface PatchyEditorProps : RProps {
@@ -184,5 +177,5 @@ external interface PatchyEditorProps : RProps {
     var onCancel: () -> Unit
 }
 
-fun RBuilder.patchyEditor(handler: PatchyEditorProps.() -> Unit): ReactElement =
-    child(PatchyEditor) { attrs { handler() } }
+fun RBuilder.patchyEditor(handler: RHandler<PatchyEditorProps>): ReactElement =
+    child(PatchyEditor, handler = handler)

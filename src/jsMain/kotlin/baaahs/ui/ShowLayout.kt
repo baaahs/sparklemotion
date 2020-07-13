@@ -10,7 +10,6 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import react.*
 import styled.css
-import styled.injectGlobal
 import styled.styledDiv
 import kotlin.reflect.KClass
 
