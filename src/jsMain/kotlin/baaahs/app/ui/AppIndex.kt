@@ -28,6 +28,7 @@ import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.enums.IconButtonStyle.root
 import materialui.components.iconbutton.iconButton
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.portal.portal
 import materialui.components.svgicon.SvgIconProps
@@ -35,10 +36,7 @@ import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.table
-import react.dom.tbody
-import react.dom.td
-import react.dom.tr
+import react.dom.*
 import styled.css
 import styled.styledDiv
 import styled.styledTd
@@ -94,81 +92,80 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var editMode by state { false }
     val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
 
-    paper {
-
-        styledDiv {
-            css {
-                width = 100.pct
-                height = 5.vh
-                color = Color.black
-                backgroundColor = Color.pink
-                textAlign = TextAlign.center
-                fontSize = 2.em
-                display = if (webClient.isConnected) Display.none else Display.block
-            }
-            +"Connecting…"
+    styledDiv {
+        css {
+            width = 100.pct
+            height = 5.vh
+            color = Color.black
+            backgroundColor = Color.pink
+            textAlign = TextAlign.center
+            fontSize = 2.em
+            display = if (webClient.isConnected) Display.none else Display.block
         }
+        +"Connecting…"
+    }
 
-        toolbar {
-            table {
-                tbody {
-                    tr {
-                        td {
-                            formControlLabel {
-                                attrs.control {
-                                    switch {
-                                        attrs.checked = editMode
-                                        attrs.onChangeFunction = handleEditModeChange
-                                    }
+    paper {
+        table {
+            tbody {
+                tr {
+                    td {
+                        formControlLabel {
+                            attrs.control {
+                                switch {
+                                    attrs.checked = editMode
+                                    attrs.onChangeFunction = handleEditModeChange
                                 }
-                                attrs.label = "Design Mode".asTextNode()
                             }
+                            attrs.label = "Design Mode".asTextNode()
                         }
-                        styledTd {
-                            if (!editMode) css { opacity = 0 }
-                            css {
-                                transition("opacity", duration = .5.s, timing = Timing.linear)
-                            }
+                    }
+                    styledTd {
+                        if (!editMode) css { opacity = 0 }
+                        css {
+                            transition("opacity", duration = .5.s, timing = Timing.linear)
+                        }
 
-                            iconButton(root to buttons.getName()) {
-                                icon(Undo) { }
-                                attrs["disabled"] = !undoStack.canUndo()
-                                attrs.onClickFunction = handleUndo
+                        iconButton(root to buttons.getName()) {
+                            icon(Undo) { }
+                            attrs["disabled"] = !undoStack.canUndo()
+                            attrs.onClickFunction = handleUndo
 
-                                +"Undo"
-                            }
+                            +"Undo"
+                        }
 
-                            iconButton(root to buttons.getName()) {
-                                icon(Redo) { }
-                                attrs["disabled"] = !undoStack.canRedo()
-                                attrs.onClickFunction = handleRedo
+                        iconButton(root to buttons.getName()) {
+                            icon(Redo) { }
+                            attrs["disabled"] = !undoStack.canRedo()
+                            attrs.onClickFunction = handleRedo
 
-                                +"Redo"
-                            }
+                            +"Redo"
+                        }
 
-                            iconButton(root to buttons.getName()) {
-                                attrs.edge = IconButtonEdge.end
-                                attrs.onClickFunction = handleShaderEditorDrawerToggle
-                                Menu { }
-                                +"Shader Editor"
-                            }
+                        iconButton(root to buttons.getName()) {
+                            attrs.edge = IconButtonEdge.end
+                            attrs.onClickFunction = handleShaderEditorDrawerToggle
+                            Menu { }
+                            +"Shader Editor"
                         }
                     }
                 }
             }
         }
+    }
 
-        if (show == null || showState == null) {
-            styledDiv { +"Loading Show…" }
-        } else {
-            showUi {
-                this.show = webClient.openShow!!
-                this.showResources = props.showResources
-                this.showState = showState
-                this.onShowStateChange = handleShowStateChange
-                this.editMode = editMode
-                this.onChange = handleShowEdit
-            }
+    if (show == null || showState == null) {
+        paper {
+            h1 { +"Loading Show…" }
+        }
+    } else {
+        showUi {
+            this.show = webClient.openShow!!
+            this.showResources = props.showResources
+            this.showState = showState
+            this.onShowStateChange = handleShowStateChange
+            this.editMode = editMode
+            this.onChange = handleShowEdit
         }
     }
 

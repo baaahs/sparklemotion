@@ -5,7 +5,7 @@ import baaahs.app.ui.icon
 import baaahs.glshaders.*
 import baaahs.show.PatchEditor
 import baaahs.show.PatchyEditor
-import baaahs.show.ShaderEditor
+import baaahs.show.ShaderPortEditor
 import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -20,6 +20,8 @@ import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.iconbutton.iconButton
+import materialui.components.list.list
+import materialui.components.listitem.listItem
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
@@ -103,38 +105,55 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
 
                                 tdCell {
                                     attrs.key = "Patches"
-                                    val shaders = patchEditor.findShaders()
+
                                     +"Shaders:"
+                                    patchEditor.findShaders().forEach { shader ->
+                                        card {
+                                            attrs.raised = true
 
-                                    patchEditor.links
-                                        .map { (_, to) -> to }
-                                        .filterIsInstance<ShaderEditor.ShaderInPortEditor>()
-                                        .map { it.shader }
-                                        .toSet()
-                                        .forEach {
-                                            card {
-                                                attrs.raised = true
+                                            val openShader = GlslAnalyzer().asShader(shader)
+                                            if (openShader is ColorShader) {
+                                                iconButton {
+                                                    icon(Edit) { }
 
-                                                val openShader = GlslAnalyzer().asShader(it)
-                                                if (openShader is ColorShader) {
-                                                    iconButton {
-                                                        icon(Edit) { }
+                                                    attrs.onClickFunction = {}
+                                                }
+                                                val previewPatch =
+                                                    AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
+                                                patchPreview {
+                                                    this.patch = previewPatch.resolve().open()
+                                                    width = 120.px
+                                                    height = 75.px
+                                                    onSuccess = {}
+                                                    onGadgetsChange = {}
+                                                    onError = {}
+                                                }
+                                            }
+                                            h3 { +shader.title }
 
-                                                        attrs.onClickFunction = {}
-                                                    }
-                                                    val previewPatch = AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
-                                                    patchPreview {
-                                                        this.patch = previewPatch.resolve().open()
-                                                        width = 120.px
-                                                        height = 75.px
-                                                        onSuccess = {}
-                                                        onGadgetsChange = {}
-                                                        onError = {}
+
+                                            +"Links:"
+                                            table {
+                                                tableHead {
+                                                    tableRow {
+                                                        thCell { +"From" }
+                                                        thCell { +"To" }
                                                     }
                                                 }
-                                                h3 { +it.title }
+
+                                                tableBody {
+                                                    patchEditor.links.filter { (_, to) ->
+                                                        to is ShaderPortEditor && to.shader == shader
+                                                    }.forEach { (from, to) ->
+                                                        tableRow {
+                                                            tdCell { +from.displayName() }
+                                                            tdCell { +to.displayName() }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
+                                    }
                                 }
                             }
                         }
