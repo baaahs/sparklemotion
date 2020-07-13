@@ -13,10 +13,14 @@ import baaahs.ui.gadgets.sceneList
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext
+import materialui.Edit
+import materialui.icon
 import react.RBuilder
 import react.RProps
 import react.ReactElement
 import react.child
+import react.dom.b
+import react.dom.div
 import react.dom.p
 
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
@@ -38,40 +42,43 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         val dataFeed = props.showResources.useDataFeed(dataSource)
 
         return {
-            when (dataSource.getRenderType()) {
-                "SceneList" -> {
-                    sceneList {
-                        this.show = show
-                        this.showState = showState
-                        this.showResources = props.showResources
-                        onSelect = { props.onShowStateChange(showState.selectScene(it)) }
-                        this.editMode = props.editMode
-                        this.dragNDrop = dragNDrop
-                        onChange = handleEdit
+            div {
+                when (dataSource.getRenderType()) {
+                    "SceneList" -> {
+                        sceneList {
+                            this.show = show
+                            this.showState = showState
+                            this.showResources = props.showResources
+                            onSelect = { props.onShowStateChange(showState.selectScene(it)) }
+                            this.editMode = props.editMode
+                            this.dragNDrop = dragNDrop
+                            onChange = handleEdit
+                        }
+                    }
+                    "PatchList" -> {
+                        println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
+                        patchSetList {
+                            this.show = show
+                            this.showState = showState
+                            this.showResources = props.showResources
+                            onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
+                            this.editMode = props.editMode
+                            this.dragNDrop = dragNDrop
+                            onChange = handleEdit
+                        }
+                    }
+                    "Slider" -> {
+                        RangeSlider {
+                            attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
+                        }
                     }
                 }
-                "PatchList" -> {
-                    println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
-                    patchSetList {
-                        this.show = show
-                        this.showState = showState
-                        this.showResources = props.showResources
-                        onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
-                        this.editMode = props.editMode
-                        this.dragNDrop = dragNDrop
-                        onChange = handleEdit
-                    }
-                }
-                "Slider" -> {
-                    RangeSlider {
-                        attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
-                    }
-                    if (props.editMode) {
-                        +"Edit…"
-                    }
+
+                b { +dataSource.dataSourceName }
+                if (props.editMode) {
+                    icon(Edit)
                 }
             }
-            p { +"Control: ${dataSource.getRenderType()}" }
         }
     }
 

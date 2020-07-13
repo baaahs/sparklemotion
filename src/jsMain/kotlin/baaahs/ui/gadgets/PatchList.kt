@@ -82,7 +82,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     val selectedScene = props.showState.selectedScene
     val patchSets = props.show.scenes[selectedScene].patchSets
 
-    val onContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
+    val handleContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
             editScene(selectedScene) {
                 editPatchSet(index) {
@@ -92,6 +92,8 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
             event.preventDefault()
         }
     }
+
+    val handleOnClose = handler("patchyEditor.onClose") { patchyEditor = null }
 
     card {
         droppable({
@@ -145,7 +147,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                                 attrs["selected"] = index == props.showState.selectedPatchSet
                                 attrs.onClickFunction = { props.onSelect(index) }
                                 if (props.editMode) {
-                                    attrs.onContextMenuFunction = { event: Event -> onContextClick(event, index) }
+                                    attrs.onContextMenuFunction = { event: Event -> handleContextClick(event, index) }
                                 }
                                 +patchSet.title
                             }
@@ -173,13 +175,13 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
 
     patchyEditor?.let { editor ->
         patchyEditor {
-            showResources = props.showResources
-            this.editor = editor
-            onSave = {
+            attrs.showResources = props.showResources
+            attrs.editor = editor
+            attrs.onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
-            onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
+            attrs.onCancel = handleOnClose
         }
     }
 }

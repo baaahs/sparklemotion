@@ -22,6 +22,7 @@ class FakeShowResources(
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
 
     override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
+    override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
     override fun openShader(shader: Shader): OpenShader =
         shaders.getBang(shader, "shader")
