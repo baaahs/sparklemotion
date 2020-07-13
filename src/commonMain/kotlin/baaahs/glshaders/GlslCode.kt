@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.Logger
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.json
 
@@ -18,6 +19,9 @@ class GlslCode(
             ?: it.asStructOrNull()
             ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
             ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
+            ?: GlslOther("unknown", it.text, it.lineNumber).also {
+                logger.debug { "unknown GLSL: ${it.fullText} at ${it.lineNumber}" }
+            }
     }
     val symbolNames = globalVarNames + functionNames + structNames
     val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
@@ -26,6 +30,8 @@ class GlslCode(
     val structs: Collection<GlslStruct> get() = statements.filterIsInstance<GlslStruct>()
 
     companion object {
+        private val logger = Logger("GlslCode")
+
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
             val buf = StringBuilder()
 

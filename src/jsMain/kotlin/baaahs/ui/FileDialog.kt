@@ -70,7 +70,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         props.onCancel()
     }
 
-    sideEffect("selected fs/dir", props.isOpen) {
+    onChange("selected fs/dir", props.isOpen) {
         filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
     }
 

@@ -126,16 +126,16 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
         }
     }
 
-    whenMounted {
+    onMount {
         val interval = window.setInterval(maybeUpdatePatch, 100)
         withCleanup { window.clearInterval(interval) }
     }
 
-    sideEffect("shaders change", openShaders, selectedShaderIndex) {
+    onChange("shaders change", openShaders, selectedShaderIndex) {
         val selectedShader = selectedShader()
         if (selectedShader == null) {
             curPatch = null
-            return@sideEffect
+            return@onChange
         }
         val editor = aceEditor.current.editor
 

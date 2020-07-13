@@ -258,6 +258,7 @@ class GlslAnalyzer {
 
             override fun visitNewline(): ParseState {
                 parentParseState.addComment(commentText.toString())
+                parentParseState.visitText("\n")
                 return nextParseState
             }
         }
@@ -429,10 +430,9 @@ class GlslAnalyzer {
             // If there are curly braces it must be a function.
             if (text.contains("{")) return null
 
-            return Regex("((uniform|const)\\s+)?(\\w+)\\s+(\\w+)\\s*(\\s*.*);", RegexOption.MULTILINE)
+            return Regex("(?:(uniform|const)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
-                    val (_, qualifier, type, name, constValue) = it.destructured
-                    if (constValue.contains("(")) return null // function declaration
+                    val (qualifier, type, name, constValue) = it.destructured
                     var (isConst, isUniform) = (false to false)
                     when (qualifier) {
                         "const" -> isConst = true
