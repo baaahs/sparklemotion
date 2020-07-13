@@ -283,7 +283,7 @@ class CorePlugin : Plugin {
             }
         }
 
-        override val dataSourceName: String get() = resourceName
+        override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): String = "float"
         override fun getRenderType(): String? = "Slider"
         override fun suggestId(): String = "$title Slider".camelize()
@@ -344,7 +344,7 @@ class CorePlugin : Plugin {
         val initialValue: Color
     ) : GadgetDataSource<ColorPicker> {
         companion object : DataSourceBuilder<ColorPickerProvider> {
-            override val resourceName: String get() = "ColorPicker"
+            override val resourceName: String get() = "Color Picker"
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataType == "vec4"
@@ -359,7 +359,7 @@ class CorePlugin : Plugin {
             }
         }
 
-        override val dataSourceName: String get() = "Color Picker"
+        override val dataSourceName: String get() = "$title ${SliderDataSource.resourceName}"
         override fun getType(): String = "vec4"
         override fun getRenderType(): String? = "ColorPicker"
         override fun suggestId(): String = "$title Color Picker".camelize()

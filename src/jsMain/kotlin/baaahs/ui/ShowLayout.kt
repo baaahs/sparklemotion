@@ -6,9 +6,11 @@ import kotlinx.css.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElementSerializer
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import react.*
 import styled.css
+import styled.injectGlobal
 import styled.styledDiv
 import kotlin.reflect.KClass
 
@@ -48,7 +50,7 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                         }
                     }
 
-                    paper {
+                    paper(PaperStyle.root to Styles.layoutPanel.getName()) {
                         props.layoutControls[type]?.forEach { layoutControl ->
                             styledDiv {
                                 this.layoutControl()

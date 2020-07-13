@@ -267,6 +267,7 @@ data class LinkEditor(
 
     interface Port {
         fun toRef(showBuilder: ShowBuilder): PortRef
+        fun displayName(): String
 
         infix fun linkTo(other: Port): LinkEditor = LinkEditor(this, other)
     }
@@ -275,6 +276,8 @@ data class LinkEditor(
 data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         DataSourceRef(showBuilder.idFor(dataSource))
+
+    override fun displayName(): String = dataSource.dataSourceName
 }
 
 data class ShaderEditor(val shader: Shader) {
@@ -285,12 +288,16 @@ data class ShaderEditor(val shader: Shader) {
         override fun toRef(showBuilder: ShowBuilder): PortRef =
             ShaderInPortRef(showBuilder.idFor(shader), portId)
 
+        override fun displayName(): String = "Shader \"${shader.title}\" port \"$portId\""
+
         override fun toString(): String = "ShaderInPortEditor(shader=${shader.title} port=$portId)"
     }
 
     data class ShaderOutPortEditor(override val shader: Shader, private val portId: String) : ShaderPortEditor {
         override fun toRef(showBuilder: ShowBuilder): PortRef =
             ShaderOutPortRef(showBuilder.idFor(shader), portId)
+
+        override fun displayName(): String = "Shader \"${shader.title}\" port \"$portId\""
 
         override fun toString(): String = "ShaderOutPortEditor(shader=${shader.title} port=$portId)"
     }
@@ -303,6 +310,8 @@ interface ShaderPortEditor : LinkEditor.Port {
 data class OutputPortEditor(private val portId: String) : LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         OutputPortRef(portId)
+
+    override fun displayName(): String = "$portId Output"
 }
 
 class ShowBuilder {
