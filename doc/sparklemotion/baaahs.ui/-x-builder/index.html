@@ -95,6 +95,20 @@ in a parent component from within a side effect.</p>
 </tr>
 <tr>
 <td>
+<h4><a href="on-change.html">onChange</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onChange</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.XBuilder$onChange(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.ui.XBuilder$onChange(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/watch">watch</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui.XBuilder$onChange(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="identifier">SideEffect</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-mount.html">onMount</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onMount</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.ui.XBuilder$onMount(kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/watch">watch</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui.XBuilder$onMount(kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="identifier">SideEffect</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="ref.html">ref</a></h4>
 </td>
 <td>
@@ -102,24 +116,10 @@ in a parent component from within a side effect.</p>
 </tr>
 <tr>
 <td>
-<h4><a href="side-effect.html">sideEffect</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">sideEffect</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.XBuilder$sideEffect(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.ui.XBuilder$sideEffect(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/watch">watch</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui.XBuilder$sideEffect(kotlin.String, kotlin.Array((kotlin.Any)), kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="identifier">SideEffect</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="state.html">state</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">state</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.XBuilder$state(kotlin.Function0((baaahs.ui.XBuilder.state.T)))/valueInitializer">valueInitializer</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="when-mounted.html">whenMounted</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">whenMounted</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.XBuilder$whenMounted(kotlin.Function1((baaahs.ui.XBuilder.SideEffect, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">SideEffect</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
