@@ -6,12 +6,14 @@ import baaahs.glshaders.*
 import baaahs.show.PatchEditor
 import baaahs.show.PatchyEditor
 import baaahs.show.ShaderEditor
+import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import materialui.Edit
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
+import materialui.components.card.card
 import materialui.components.dialog.dialog
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
@@ -31,7 +33,6 @@ import react.RBuilder
 import react.RProps
 import react.ReactElement
 import react.child
-import react.dom.br
 import react.dom.form
 import react.dom.h3
 import react.dom.key
@@ -111,25 +112,28 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                                         .map { it.shader }
                                         .toSet()
                                         .forEach {
-                                            br {}
-                                            h3 { +it.title }
+                                            card {
+                                                attrs.raised = true
 
-                                            val openShader = GlslAnalyzer().asShader(it)
-                                            if (openShader is ColorShader) {
-                                                iconButton {
-                                                    icon(Edit) { }
+                                                val openShader = GlslAnalyzer().asShader(it)
+                                                if (openShader is ColorShader) {
+                                                    iconButton {
+                                                        icon(Edit) { }
 
-                                                    attrs.onClickFunction = {}
+                                                        attrs.onClickFunction = {}
+                                                    }
+                                                    val previewPatch = AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
+                                                    patchPreview {
+                                                        this.patch = previewPatch.resolve().open()
+                                                        width = 120.px
+                                                        height = 75.px
+                                                        onSuccess = {}
+                                                        onGadgetsChange = {}
+                                                        onError = {}
+                                                    }
                                                 }
-                                                val previewPatch = AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
-                                                patchPreview {
-                                                    this.patch = previewPatch.resolve().open()
-                                                    onSuccess = {}
-                                                    onGadgetsChange = {}
-                                                    onError = {}
-                                                }
+                                                h3 { +it.title }
                                             }
-
                                         }
                                 }
                             }

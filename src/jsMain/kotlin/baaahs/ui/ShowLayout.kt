@@ -49,7 +49,6 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                     }
 
                     paper {
-                        +"panel for $type!"
                         props.layoutControls[type]?.forEach { layoutControl ->
                             styledDiv {
                                 this.layoutControl()

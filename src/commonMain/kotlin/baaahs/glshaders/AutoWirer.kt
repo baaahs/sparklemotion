@@ -65,13 +65,15 @@ class AutoWirer(val plugins: Plugins) {
                 error("ambiguous! ${linkOptions.filter { it.isAmbiguous() }}")
             }
             return PatchEditor(
-                linkOptions.map { LinkEditor(it.from.first(), it.to) },
+                linkOptions.map { (from, to) ->
+                    LinkEditor(from.first(), to)
+                },
                 Surfaces.AllSurfaces
             )
         }
 
         data class LinkOptions(val from: List<LinkEditor.Port>, val to: LinkEditor.Port) {
-            fun isAmbiguous() = from.size != 1
+            fun isAmbiguous() = from.size > 1
         }
     }
 
