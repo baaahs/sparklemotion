@@ -60,7 +60,7 @@ class ShowEditor(
         .toMutableMap()
 
     private val scenes = baseShow.scenes.map { SceneEditor(it) }.toMutableList()
-    var layouts = baseShow.layouts
+    var layoutEditor = LayoutsEditor(baseShow.layouts)
 
     private var selectedScene: Int = baseShowState.selectedScene
     private val patchSetSelections: MutableList<Int> = baseShowState.patchSetSelections.toMutableList()
@@ -90,13 +90,18 @@ class ShowEditor(
         patchSetSelections.add(toIndex, patchSetSelections.removeAt(fromIndex))
     }
 
+    fun editLayouts(block: LayoutsEditor.() -> Unit): ShowEditor {
+        layoutEditor.apply(block)
+        return this
+    }
+
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
-            layouts = layouts,
+            layouts = layoutEditor.build(),
             shaders = findShaders().associateBy { showBuilder.idFor(it) },
             dataSources = findDataSources().associateBy { showBuilder.idFor(it) }
         )
@@ -165,7 +170,7 @@ class ShowEditor(
         override fun getShow() = this@ShowEditor.getShow()
         override fun getShowState() = this@ShowEditor.getShowState()
 
-        inner class PatchSetEditor(private val basePatchSet: PatchSet) : PatchyEditor(
+        inner class PatchSetEditor(basePatchSet: PatchSet) : PatchyEditor(
             basePatchSet,
             baseShow.dataSources
         ) {
@@ -216,6 +221,23 @@ class ShowEditor(
         fun create(title: String): Show {
             return Show(title = title)
         }
+    }
+}
+
+class LayoutsEditor(baseLayouts: Layouts) {
+    var panelNames = baseLayouts.panelNames.toMutableList()
+    val map = baseLayouts.map.toMutableMap()
+
+    fun copyFrom(layouts: Layouts) {
+        panelNames.clear()
+        panelNames.addAll(layouts.panelNames)
+
+        map.clear()
+        map.putAll(layouts.map)
+    }
+
+    fun build(): Layouts {
+        return Layouts(panelNames, map)
     }
 }
 

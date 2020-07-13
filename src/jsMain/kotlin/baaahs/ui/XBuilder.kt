@@ -49,7 +49,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> ref(): RMutableRef<T> = react.useRef(null as T)
+    fun <T> ref(block: (() -> T)? = null): RMutableRef<T> =
+        react.useRef(if (block != null) block() else null as T)
 
     fun <T> memo(vararg watch: Any?, block: () -> T): T {
         return react.useMemo(block, watch)

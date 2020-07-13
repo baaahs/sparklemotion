@@ -1,7 +1,6 @@
 package baaahs.ui
 
 import baaahs.ShowResources
-import baaahs.app.ui.icon
 import baaahs.glshaders.*
 import baaahs.show.PatchEditor
 import baaahs.show.PatchyEditor
@@ -20,8 +19,6 @@ import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.iconbutton.iconButton
-import materialui.components.list.list
-import materialui.components.listitem.listItem
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
@@ -29,6 +26,7 @@ import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.components.textfield.textField
+import materialui.icon
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.RBuilder
@@ -114,7 +112,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                                             val openShader = GlslAnalyzer().asShader(shader)
                                             if (openShader is ColorShader) {
                                                 iconButton {
-                                                    icon(Edit) { }
+                                                    icon(Edit)
 
                                                     attrs.onClickFunction = {}
                                                 }

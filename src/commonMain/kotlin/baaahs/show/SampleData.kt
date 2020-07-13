@@ -77,7 +77,9 @@ object SampleData {
     )
 
     val sampleShow = ShowEditor("Sample Show").apply {
-        this.layouts = SampleData.layouts
+        editLayouts {
+            copyFrom(layouts)
+        }
 
         addScene("Pleistocene") {
             addPatchSet("Red Yellow Green") {
