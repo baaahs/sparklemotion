@@ -48,7 +48,7 @@ object ShowEditorSpec : Spek({
 
             it("has the expected initial datasources") {
                 expect(
-                    setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Slider", "Scene List")
+                    setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Blueness Slider", "Scene List")
                 ) { show.dataSources.values.map { it.dataSourceName }.toSet() }
             }
 
