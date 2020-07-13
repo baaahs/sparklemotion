@@ -24,7 +24,6 @@ import kotlin.browser.window
 private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val dialogEl = useRef(null)
     var selectedFs by state { props.defaultTarget?.fs ?: props.filesystems.first() }
-    var name by state { props.defaultTarget?.name }
     var currentDir by state { selectedFs.fs.rootFile }
     var filesInDir by state { emptyList<Fs.File>() }
     var selectedFile by state<Fs.File?> { null }
@@ -39,7 +38,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         }
     }
 
-    val handleFileDoubleClick = useCallback { file: Fs.File ->
+    val handleFileDoubleClick = useCallback(props.isSaveAs, props.onSelect) { file: Fs.File ->
         if (file.fs.isDirectory(file)) {
             currentDir = file
         } else {
@@ -53,12 +52,12 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         }
     }
 
-    val handleFileNameChange = useCallback { event: Event ->
+    val handleFileNameChange = useCallback(currentDir) { event: Event ->
         val str = event.target!!.asDynamic().value as String
         selectedFile = currentDir.resolve(str)
     }
 
-    val handleConfirm = useCallback(props.onSelect) { event: Event ->
+    val handleConfirm = useCallback(selectedFile, props.onSelect) { event: Event ->
         selectedFile?.let { props.onSelect(it) }; Unit
     }
 
@@ -70,7 +69,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         props.onCancel()
     }
 
-    onChange("selected fs/dir", props.isOpen) {
+    onChange("selected fs/dir", props.isOpen, currentDir) {
         filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
     }
 
