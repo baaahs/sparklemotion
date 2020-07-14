@@ -80,6 +80,7 @@ interface ShowResources {
     val glslContext: GlslContext
     val modelInfo: ModelInfo
     val showWithStateTopic: PubSub.Topic<ShowWithState>
+    val dataSources: List<DataSource>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
     fun <T : Gadget> useGadget(id: String): T
@@ -119,6 +120,8 @@ abstract class BaseShowResources(
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
+
+    override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }

@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
@@ -13,13 +12,14 @@ import baaahs.ui.gadgets.sceneList
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
-import react.dom.p
+import materialui.Edit
+import materialui.icon
+import react.*
+import react.dom.b
+import react.dom.div
 
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
+    val appContext = useContext(appContext)
     val show = props.show
     val showState = props.showState
     val currentLayoutName = "default"
@@ -35,43 +35,44 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val layoutRenderers =
         show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
     fun getControlRenderer(dataSource: DataSource): GadgetRenderer {
-        val dataFeed = props.showResources.useDataFeed(dataSource)
+        val dataFeed = appContext.showResources.useDataFeed(dataSource)
 
         return {
-            when (dataSource.getRenderType()) {
-                "SceneList" -> {
-                    sceneList {
-                        this.show = show
-                        this.showState = showState
-                        this.showResources = props.showResources
-                        onSelect = { props.onShowStateChange(showState.selectScene(it)) }
-                        this.editMode = props.editMode
-                        this.dragNDrop = dragNDrop
-                        onChange = handleEdit
+            div {
+                when (dataSource.getRenderType()) {
+                    "SceneList" -> {
+                        sceneList {
+                            this.show = show
+                            this.showState = showState
+                            onSelect = { props.onShowStateChange(showState.selectScene(it)) }
+                            this.editMode = props.editMode
+                            this.dragNDrop = dragNDrop
+                            onChange = handleEdit
+                        }
+                    }
+                    "PatchList" -> {
+                        println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
+                        patchSetList {
+                            this.show = show
+                            this.showState = showState
+                            onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
+                            this.editMode = props.editMode
+                            this.dragNDrop = dragNDrop
+                            onChange = handleEdit
+                        }
+                    }
+                    "Slider" -> {
+                        RangeSlider {
+                            attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
+                        }
                     }
                 }
-                "PatchList" -> {
-                    println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
-                    patchSetList {
-                        this.show = show
-                        this.showState = showState
-                        this.showResources = props.showResources
-                        onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
-                        this.editMode = props.editMode
-                        this.dragNDrop = dragNDrop
-                        onChange = handleEdit
-                    }
-                }
-                "Slider" -> {
-                    RangeSlider {
-                        attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
-                    }
-                    if (props.editMode) {
-                        +"Edit…"
-                    }
+
+                b { +dataSource.dataSourceName }
+                if (props.editMode) {
+                    icon(Edit)
                 }
             }
-            p { +"Control: ${dataSource.getRenderType()}" }
         }
     }
 
@@ -101,7 +102,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 }
 
 external interface ShowUiProps : RProps {
-    var showResources: ShowResources
     var show: OpenShow
     var showState: ShowState
     var editMode: Boolean
