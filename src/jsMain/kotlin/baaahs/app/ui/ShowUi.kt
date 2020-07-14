@@ -11,7 +11,7 @@ import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.SpecialControl
-import baaahs.ui.GadgetRenderer
+import baaahs.ui.ControlRenderer
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext
@@ -37,8 +37,8 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     }
 
     val layoutRenderers =
-        show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
-    fun getControlRenderer(control: Control): GadgetRenderer {
+        show.layouts.panelNames.associateWith { LayoutRenderer() }
+    fun getControlRenderer(control: Control): ControlRenderer {
         return {
             div {
                 when (control) {
@@ -77,20 +77,23 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    fun addControlsToPanels(layoutControls: Map<String, List<Control>>) {
+    fun addControlsToPanels(
+        layoutControls: Map<String, List<Control>>,
+        block: LayoutRenderer.() -> MutableList<ControlRenderer>
+    ) {
         layoutControls.forEach { (panelName, controls) ->
             controls.forEach { control ->
                 val panelItems = layoutRenderers[panelName] ?: error("unknown panel $panelName")
-                panelItems.add(getControlRenderer(control))
+                panelItems.block().add(getControlRenderer(control))
             }
         }
     }
 
-    addControlsToPanels(show.controlLayout)
+    addControlsToPanels(show.controlLayout) { showControls }
     val scene = showState.findScene(show)
-    scene?.let { addControlsToPanels(scene.controlLayout) }
+    scene?.let { addControlsToPanels(scene.controlLayout) { sceneControls } }
     val patchSet = showState.findPatchSet(show)
-    patchSet?.let { addControlsToPanels(patchSet.controlLayout) }
+    patchSet?.let { addControlsToPanels(patchSet.controlLayout) { patchControls } }
 
     dragDropContext({
         onDragEnd = dragNDrop::onDragEnd
@@ -101,6 +104,13 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 }
+
+class LayoutRenderer {
+    val showControls = mutableListOf<ControlRenderer>()
+    val sceneControls = mutableListOf<ControlRenderer>()
+    val patchControls = mutableListOf<ControlRenderer>()
+}
+
 
 external interface ShowUiProps : RProps {
     var show: OpenShow

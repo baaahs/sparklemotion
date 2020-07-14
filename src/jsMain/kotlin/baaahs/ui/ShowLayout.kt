@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.app.ui.LayoutRenderer
 import baaahs.show.Layout
 import external.mosaic.*
 import kotlinx.css.*
@@ -9,6 +10,7 @@ import kotlinx.serialization.json.JsonElementSerializer
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import react.*
+import react.dom.div
 import styled.css
 import styled.styledDiv
 import kotlin.reflect.KClass
@@ -50,9 +52,15 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                     }
 
                     paper(PaperStyle.root to Styles.layoutPanel.getName()) {
-                        props.layoutControls[type]?.forEach { layoutControl ->
-                            styledDiv {
-                                this.layoutControl()
+                        props.layoutControls[type]?.let { layoutControls ->
+                            div("show-controls") {
+                                layoutControls.showControls.forEach { it.invoke(this) }
+                            }
+                            div("scene-controls") {
+                                layoutControls.sceneControls.forEach { it.invoke(this) }
+                            }
+                            div("layout-controls") {
+                                layoutControls.patchControls.forEach { it.invoke(this) }
                             }
                         }
 //                    css { +windowContainer }
@@ -104,11 +112,11 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
 
 }
 
-typealias GadgetRenderer = RBuilder.() -> Unit
+typealias ControlRenderer = RBuilder.() -> Unit
 
 external interface ShowLayoutProps : RProps {
     var layout: Layout
-    var layoutControls: Map<String, List<GadgetRenderer>>
+    var layoutControls: Map<String, LayoutRenderer>
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
