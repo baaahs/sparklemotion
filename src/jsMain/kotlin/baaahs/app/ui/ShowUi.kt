@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
@@ -15,15 +14,12 @@ import baaahs.ui.xComponent
 import external.dragDropContext
 import materialui.Edit
 import materialui.icon
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import react.dom.b
 import react.dom.div
-import react.dom.p
 
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
+    val appContext = useContext(appContext)
     val show = props.show
     val showState = props.showState
     val currentLayoutName = "default"
@@ -39,7 +35,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val layoutRenderers =
         show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
     fun getControlRenderer(dataSource: DataSource): GadgetRenderer {
-        val dataFeed = props.showResources.useDataFeed(dataSource)
+        val dataFeed = appContext.showResources.useDataFeed(dataSource)
 
         return {
             div {
@@ -48,7 +44,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                         sceneList {
                             this.show = show
                             this.showState = showState
-                            this.showResources = props.showResources
                             onSelect = { props.onShowStateChange(showState.selectScene(it)) }
                             this.editMode = props.editMode
                             this.dragNDrop = dragNDrop
@@ -60,7 +55,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                         patchSetList {
                             this.show = show
                             this.showState = showState
-                            this.showResources = props.showResources
                             onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
                             this.editMode = props.editMode
                             this.dragNDrop = dragNDrop
@@ -108,7 +102,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 }
 
 external interface ShowUiProps : RProps {
-    var showResources: ShowResources
     var show: OpenShow
     var showState: ShowState
     var editMode: Boolean

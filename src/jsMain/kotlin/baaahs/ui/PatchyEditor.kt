@@ -122,7 +122,6 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                                         +"Shaders:"
                                         allShaders.forEach { shader ->
                                             shaderEditor {
-                                                attrs.showResources = props.showResources
                                                 attrs.allShaders = allShaders
                                                 attrs.patchEditor = patchEditor
                                                 attrs.showBuilder = showBuilder
@@ -171,7 +170,6 @@ infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
 }
 
 external interface PatchyEditorProps : RProps {
-    var showResources: ShowResources
     var editor: PatchyEditor
     var onSave: () -> Unit
     var onCancel: () -> Unit

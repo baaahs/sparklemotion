@@ -145,7 +145,6 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 
     patchyEditor?.let { editor ->
         patchyEditor {
-            attrs.showResources = props.showResources
             attrs.editor = editor
             attrs.onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
@@ -213,7 +212,6 @@ private class SceneDropTarget(
 external interface SceneListProps : RProps {
     var show: OpenShow
     var showState: ShowState
-    var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
     var dragNDrop: DragNDrop
