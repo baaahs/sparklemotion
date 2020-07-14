@@ -20,7 +20,7 @@ class GlslCode(
             ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
             ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
             ?: GlslOther("unknown", it.text, it.lineNumber).also {
-                logger.debug { "unknown GLSL: ${it.fullText} at ${it.lineNumber}" }
+                if (it.fullText.isNotBlank()) logger.warn { "unrecognized GLSL: ${it.fullText} at ${it.lineNumber}" }
             }
     }
     val symbolNames = globalVarNames + functionNames + structNames

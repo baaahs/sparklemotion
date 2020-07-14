@@ -49,7 +49,7 @@ object OpenPatchSpec : Spek({
                         "modelInfo" to CorePlugin.ModelInfoDataSource("ModelInfo"),
                         "resolution" to CorePlugin.Resolution(),
                         "time" to CorePlugin.Time(),
-                        "bluenessSlider" to CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, 0.01f)
+                        "bluenessSlider" to CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
                 }
 

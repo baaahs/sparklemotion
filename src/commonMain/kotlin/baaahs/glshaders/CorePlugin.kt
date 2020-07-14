@@ -263,7 +263,7 @@ class CorePlugin : Plugin {
         val initialValue: Float,
         val minValue: Float,
         val maxValue: Float,
-        val stepValue: Float
+        val stepValue: Float?
     ) : GadgetDataSource<Slider> {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
@@ -278,7 +278,7 @@ class CorePlugin : Plugin {
                     initialValue = config?.get("default")?.float ?: 1f,
                     minValue = config?.get("min")?.float ?: 0f,
                     maxValue = config?.get("max")?.float ?: 1f,
-                    stepValue = config?.get("step")?.float ?: .01f
+                    stepValue = config?.get("step")?.float
                 )
             }
         }
