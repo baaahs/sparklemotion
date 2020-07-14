@@ -275,11 +275,25 @@ class PatchEditor {
             showBuilder.getDataSources()
         )
     }
+
+    fun linksTo(shader: Shader): Map<String, LinkEditor> {
+        return links.filter { (_, to) ->
+            (to as? ShaderPortEditor)?.shader == shader
+        }.associate {
+            val to = it.to as ShaderPortEditor
+            to.portId to it
+        }
+    }
+
+    fun addLink(from: LinkEditor.Port, to: LinkEditor.Port): PatchEditor {
+        links.add(LinkEditor(from, to))
+        return this
+    }
 }
 
 data class LinkEditor(
-    val from: Port,
-    val to: Port
+    var from: Port,
+    var to: Port
 ) {
     constructor(from: PortRef, to: PortRef, show: ShowEditor) :
             this(from.dereference(show), to.dereference(show))
@@ -306,7 +320,7 @@ data class ShaderEditor(val shader: Shader) {
     fun inputPort(portId: String): LinkEditor.Port = ShaderInPortEditor(shader, portId)
     fun outputPort(portId: String): LinkEditor.Port = ShaderOutPortEditor(shader, portId)
 
-    data class ShaderInPortEditor(override val shader: Shader, private val portId: String) : ShaderPortEditor {
+    data class ShaderInPortEditor(override val shader: Shader, override val portId: String) : ShaderPortEditor {
         override fun toRef(showBuilder: ShowBuilder): PortRef =
             ShaderInPortRef(showBuilder.idFor(shader), portId)
 
@@ -315,7 +329,7 @@ data class ShaderEditor(val shader: Shader) {
         override fun toString(): String = "ShaderInPortEditor(shader=${shader.title} port=$portId)"
     }
 
-    data class ShaderOutPortEditor(override val shader: Shader, private val portId: String) : ShaderPortEditor {
+    data class ShaderOutPortEditor(override val shader: Shader, override val portId: String) : ShaderPortEditor {
         override fun toRef(showBuilder: ShowBuilder): PortRef =
             ShaderOutPortRef(showBuilder.idFor(shader), portId)
 
@@ -327,6 +341,7 @@ data class ShaderEditor(val shader: Shader) {
 
 interface ShaderPortEditor : LinkEditor.Port {
     val shader: Shader
+    val portId: String
 }
 
 data class OutputPortEditor(private val portId: String) : LinkEditor.Port {

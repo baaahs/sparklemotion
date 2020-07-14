@@ -6,6 +6,7 @@ import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
@@ -29,10 +30,7 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import styled.css
 import styled.styledDiv
 
@@ -82,7 +80,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
     val selectedScene = props.showState.selectedScene
     val patchSets = props.show.scenes[selectedScene].patchSets
 
-    val onContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
+    val handleContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
             editScene(selectedScene) {
                 editPatchSet(index) {
@@ -92,6 +90,8 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
             event.preventDefault()
         }
     }
+
+    val handleOnClose = handler("patchyEditor.onClose") { patchyEditor = null }
 
     card {
         droppable({
@@ -145,7 +145,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
                                 attrs["selected"] = index == props.showState.selectedPatchSet
                                 attrs.onClickFunction = { props.onSelect(index) }
                                 if (props.editMode) {
-                                    attrs.onContextMenuFunction = { event: Event -> onContextClick(event, index) }
+                                    attrs.onContextMenuFunction = { event: Event -> handleContextClick(event, index) }
                                 }
                                 +patchSet.title
                             }
@@ -173,13 +173,12 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
 
     patchyEditor?.let { editor ->
         patchyEditor {
-            showResources = props.showResources
-            this.editor = editor
-            onSave = {
+            attrs.editor = editor
+            attrs.onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
-            onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
+            attrs.onCancel = handleOnClose
         }
     }
 }
@@ -228,7 +227,6 @@ private class PatchSetListDropTarget(
 external interface PatchSetListProps : RProps {
     var show: OpenShow
     var showState: ShowState
-    var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
     var dragNDrop: DragNDrop

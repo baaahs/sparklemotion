@@ -95,8 +95,9 @@ object SampleData {
                 addPatch(blueAquaGreenPatch)
 
                 blueAquaGreenPatch.links.forEach { link ->
-                    if (link.from is DataSourceEditor && link.from.dataSource is CorePlugin.GadgetDataSource<*>) {
-                        addControl("Patches", link.from.dataSource)
+                    val from = link.from
+                    if (from is DataSourceEditor && from.dataSource is CorePlugin.GadgetDataSource<*>) {
+                        addControl("Patches", from.dataSource)
                     }
                 }
             }

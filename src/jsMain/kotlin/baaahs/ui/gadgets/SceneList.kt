@@ -55,6 +55,8 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
         }
     }
 
+    val handleClose = handler("patchyEditor.onClose") { patchyEditor = null }
+
     card {
         droppable({
             droppableId = dropTargetId
@@ -143,13 +145,12 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 
     patchyEditor?.let { editor ->
         patchyEditor {
-            showResources = props.showResources
-            this.editor = editor
-            onSave = {
+            attrs.editor = editor
+            attrs.onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
-            onCancel = handler("patchyEditor.onClose") { patchyEditor = null }
+            attrs.onCancel = handleClose
         }
     }
 }
@@ -211,7 +212,6 @@ private class SceneDropTarget(
 external interface SceneListProps : RProps {
     var show: OpenShow
     var showState: ShowState
-    var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
     var dragNDrop: DragNDrop
