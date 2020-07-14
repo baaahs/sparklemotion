@@ -288,7 +288,7 @@ object SliderType : ControlType("Slider") {
             initialValue = data["default"] as? Float ?: 1f,
             minValue = data["min"] as? Float ?: 0f,
             maxValue = data["max"] as? Float ?: 1f,
-            stepValue = data["step"] as? Float ?: 0.01f
+            stepValue = data["step"] as? Float
         )
     }
 }
