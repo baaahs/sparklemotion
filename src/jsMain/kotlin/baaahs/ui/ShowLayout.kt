@@ -111,8 +111,8 @@ external interface ShowLayoutProps : RProps {
     var layoutControls: Map<String, List<GadgetRenderer>>
 }
 
-fun RBuilder.showLayout(handler: ShowLayoutProps.() -> Unit): ReactElement =
-    child(ShowLayout) { attrs { handler() } }
+fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
+    child(ShowLayout, handler = handler)
 
 fun <T> RBuilder.mosaic(handler: MosaicControlledProps<T>.() -> Unit): ReactElement =
     child(Mosaic::class as KClass<out Component<MosaicControlledProps<T>, *>>) { attrs { handler() } }

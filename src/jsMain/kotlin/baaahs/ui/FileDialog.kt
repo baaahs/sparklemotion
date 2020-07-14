@@ -163,5 +163,5 @@ data class SaveAsTarget(
     val name: String?
 )
 
-fun RBuilder.fileDialog(handler: FileDialogProps.() -> Unit): ReactElement =
-    child(FileDialog) { attrs { handler() } }
+fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>): ReactElement =
+    child(FileDialog, handler = handler)

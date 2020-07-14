@@ -7,10 +7,7 @@ import baaahs.ui.SimulatorStyles.section
 import baaahs.util.Framerate
 import kotlinx.css.*
 import kotlinx.html.id
-import react.RBuilder
-import react.RProps
-import react.RState
-import react.ReactElement
+import react.*
 import react.dom.tbody
 import react.dom.td
 import react.dom.th
@@ -72,5 +69,5 @@ external interface FrameratePanelProps : RProps {
     var visualizerFramerate: Framerate
 }
 
-fun RBuilder.frameratePanel(handler: FrameratePanelProps.() -> Unit): ReactElement =
-    child(FrameratePanel::class) { this.attrs(handler) }
+fun RBuilder.frameratePanel(handler: RHandler<FrameratePanelProps>): ReactElement =
+    child(FrameratePanel::class, handler = handler)

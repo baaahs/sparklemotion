@@ -33,16 +33,16 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
             css { +console }
 
             networkPanel {
-                network = simulator.network
+                attrs.network = simulator.network
             }
 
             frameratePanel {
-                pinkyFramerate = simulator.pinky.framerate
-                visualizerFramerate = simulator.visualizer.framerate
+                attrs.pinkyFramerate = simulator.pinky.framerate
+                attrs.visualizerFramerate = simulator.visualizer.framerate
             }
 
             pinkyPanel {
-                pinky = simulator.pinky
+                attrs.pinky = simulator.pinky
             }
 
             styledDiv {
@@ -51,8 +51,8 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
                 div {
                     simulator.brains.forEach { brain ->
                          brainIndicator {
-                             this.brain = brain
-                             brainSelectionListener = ::brainSelectionListener
+                             attrs.brain = brain
+                             attrs.brainSelectionListener = ::brainSelectionListener
                          }
                     }
                 }

@@ -53,8 +53,8 @@ private val MenuButton = functionalComponent<MenuButtonProps> { props ->
 
 class MenuItem(val name: String, val callback: () -> Unit)
 
-fun RBuilder.menuButton(handler: MenuButtonProps.() -> Unit): ReactElement =
-    child(MenuButton) { attrs { handler() } }
+fun RBuilder.menuButton(handler: RHandler<MenuButtonProps>): ReactElement =
+    child(MenuButton, handler = handler)
 
 external interface MenuButtonProps : RProps {
     var name: String

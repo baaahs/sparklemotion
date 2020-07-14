@@ -32,10 +32,7 @@ import materialui.components.tabs.tabs
 import materialui.components.toolbar.toolbar
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import react.dom.button
 import react.dom.div
 import styled.css
@@ -325,9 +322,9 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
 //            }
 
             menuButton {
-                name = "New…"
+                attrs.name = "New…"
 
-                items = listOf(
+                attrs.items = listOf(
                     MenuItem("New Color Shader…") {
                         handleNewShader(NewShaderType.COLOR)
                     },
@@ -385,15 +382,15 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             css { +previewBar }
 
             patchPreview {
-                this.patch = curPatch
-                onSuccess = handlePatchPreviewSuccess
-                onGadgetsChange = handleGadgetsChange
-                onError = handleGlslErrors
+                attrs.patch = curPatch
+                attrs.onSuccess = handlePatchPreviewSuccess
+                attrs.onGadgetsChange = handleGadgetsChange
+                attrs.onError = handleGlslErrors
             }
             styledDiv { css { +status }; ref = statusContainerEl }
             styledDiv {
                 css { +controls }
-                showControls { this.gadgets = gadgets }
+                showControls { attrs.gadgets = gadgets }
             }
         }
 
@@ -430,13 +427,13 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
         }
 
         fileDialog {
-            isOpen = fileDialogOpen
-            title = if (fileDialogIsSaveAs) "Save Shader" else "Open Shader"
-            isSaveAs = fileDialogIsSaveAs
-            onSelect = handleFileSelected
-            onCancel = handleSaveAsCancel
-            filesystems = props.filesystems
-            defaultTarget = selectedShader?.file?.let { file ->
+            attrs.isOpen = fileDialogOpen
+            attrs.title = if (fileDialogIsSaveAs) "Save Shader" else "Open Shader"
+            attrs.isSaveAs = fileDialogIsSaveAs
+            attrs.onSelect = handleFileSelected
+            attrs.onCancel = handleSaveAsCancel
+            attrs.filesystems = props.filesystems
+            attrs.defaultTarget = selectedShader?.file?.let { file ->
                 SaveAsTarget(props.filesystems.find { it.fs == file.fs }, file.name)
             }
         }
@@ -470,11 +467,11 @@ external interface ShaderEditorWindowProps : RProps {
 fun Point(row: Number, column: Number): Point =
     jsObject { this.row = row; this.column = column }
 
-fun RBuilder.showControls(handler: ShowControlsProps.() -> Unit): ReactElement =
+fun RBuilder.showControls(handler: RHandler<ShowControlsProps>): ReactElement =
     ShowControls { attrs { handler() } }
 
-fun RBuilder.shaderEditorWindow(handler: ShaderEditorWindowProps.() -> Unit): ReactElement =
-    child(ShaderEditorWindow) { attrs { handler() } }
+fun RBuilder.shaderEditorWindow(handler: RHandler<ShaderEditorWindowProps>): ReactElement =
+    child(ShaderEditorWindow, handler = handler)
 
 enum class NewShaderType(val newName: String, val template: String) {
     COLOR("New Color Shader", """

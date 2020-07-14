@@ -100,12 +100,12 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 val previewPatch =
                     AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
                 patchPreview {
-                    this.patch = previewPatch.resolve().open()
-                    width = 120.px
-                    height = 75.px
-                    onSuccess = {}
-                    onGadgetsChange = {}
-                    onError = {}
+                    attrs.patch = previewPatch.resolve().open()
+                    attrs.width = 120.px
+                    attrs.height = 75.px
+                    attrs.onSuccess = {}
+                    attrs.onGadgetsChange = {}
+                    attrs.onError = {}
                 }
             }
             h3 { +shader.title }

@@ -42,23 +42,23 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                 when (dataSource.getRenderType()) {
                     "SceneList" -> {
                         sceneList {
-                            this.show = show
-                            this.showState = showState
-                            onSelect = { props.onShowStateChange(showState.selectScene(it)) }
-                            this.editMode = props.editMode
-                            this.dragNDrop = dragNDrop
-                            onChange = handleEdit
+                            attrs.show = show
+                            attrs.showState = showState
+                            attrs.onSelect = { props.onShowStateChange(showState.selectScene(it)) }
+                            attrs.editMode = props.editMode
+                            attrs.dragNDrop = dragNDrop
+                            attrs.onChange = handleEdit
                         }
                     }
                     "PatchList" -> {
                         println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
                         patchSetList {
-                            this.show = show
-                            this.showState = showState
-                            onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
-                            this.editMode = props.editMode
-                            this.dragNDrop = dragNDrop
-                            onChange = handleEdit
+                            attrs.show = show
+                            attrs.showState = showState
+                            attrs.onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
+                            attrs.editMode = props.editMode
+                            attrs.dragNDrop = dragNDrop
+                            attrs.onChange = handleEdit
                         }
                     }
                     "Slider" -> {
@@ -95,8 +95,8 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         onDragEnd = dragNDrop::onDragEnd
     }) {
         showLayout {
-            this.layout = currentLayout
-            this.layoutControls = layoutRenderers
+            attrs.layout = currentLayout
+            attrs.layoutControls = layoutRenderers
         }
     }
 }
@@ -109,5 +109,5 @@ external interface ShowUiProps : RProps {
     var onShowStateChange: (ShowState) -> Unit
 }
 
-fun RBuilder.showUi(handler: ShowUiProps.() -> Unit): ReactElement =
-    child(ShowUi) { attrs { handler() } }
+fun RBuilder.showUi(handler: RHandler<ShowUiProps>): ReactElement =
+    child(ShowUi, handler = handler)
