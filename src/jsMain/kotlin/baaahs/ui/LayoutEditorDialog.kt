@@ -6,7 +6,6 @@ import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.ui.Styles.previewBar
 import kotlinext.js.jsObject
-import kotlinx.css.code
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.json.*
 import materialui.components.button.button
@@ -18,14 +17,11 @@ import materialui.components.dialogcontenttext.dialogContentText
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.tab.tab
 import materialui.components.tabs.tabs
-import materialui.components.link.link
-import materialui.components.toolbar.toolbar
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
-import react.dom.*
+import react.*
+import react.dom.a
+import react.dom.code
+import react.dom.p
 import styled.css
 import styled.styledDiv
 import kotlin.browser.window
@@ -176,5 +172,5 @@ external interface LayoutEditorDialogProps : RProps {
     var onClose: () -> Unit
 }
 
-fun RBuilder.layoutEditorDialog(handler: LayoutEditorDialogProps.() -> Unit): ReactElement =
-    child(LayoutEditorDialog) { attrs { handler() } }
+fun RBuilder.layoutEditorDialog(handler: RHandler<LayoutEditorDialogProps>): ReactElement =
+    child(LayoutEditorDialog, handler = handler)

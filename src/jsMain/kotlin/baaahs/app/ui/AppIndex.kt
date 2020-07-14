@@ -44,7 +44,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     observe(webClient)
 
     val id = props.id
-    println("AppIndex $id: about to render")
 
     var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
@@ -168,11 +167,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             }
 
             showUi {
-                this.show = webClient.openShow!!
-                this.showState = showState
-                this.onShowStateChange = handleShowStateChange
-                this.editMode = editMode
-                this.onChange = handleShowEdit
+                attrs.show = webClient.openShow!!
+                attrs.showState = showState
+                attrs.onShowStateChange = handleShowStateChange
+                attrs.editMode = editMode
+                attrs.onChange = handleShowEdit
             }
 
             portal {
@@ -186,8 +185,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     attrs.classes(Styles.fullHeight.getName())
 
                     shaderEditorWindow {
-                        this.filesystems = props.filesystems
-                        this.onAddToPatch = { shader ->
+                        attrs.filesystems = props.filesystems
+                        attrs.onAddToPatch = { shader ->
                             val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
                             val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
                                 editPatchSet(showState.selectedPatchSet) {
@@ -211,15 +210,15 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 // Layout Editor dialog
                 layoutEditorDialog {
-                    this.open = layoutEditorDialogOpen
-                    this.layouts = show.layouts
-                    this.onApply = { newLayouts ->
+                    attrs.open = layoutEditorDialogOpen
+                    attrs.layouts = show.layouts
+                    attrs.onApply = { newLayouts ->
                         val editor = ShowEditor(show, showState).editLayouts {
                             copyFrom(newLayouts)
                         }
                         handleShowEdit(editor.getShow(), editor.getShowState())
                     }
-                    this.onClose = handleLayoutEditorDialogClose
+                    attrs.onClose = handleLayoutEditorDialogClose
                 }
             }
         }
@@ -234,5 +233,5 @@ external interface AppIndexProps : RProps {
     var showResources: ShowResources
 }
 
-fun RBuilder.appIndex(handler: AppIndexProps.() -> Unit): ReactElement =
-    child(AppIndex) { attrs { handler() } }
+fun RBuilder.appIndex(handler: RHandler<AppIndexProps>): ReactElement =
+    child(AppIndex, handler = handler)

@@ -1,7 +1,6 @@
 package baaahs.ui.gadgets
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
@@ -25,10 +24,7 @@ import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import styled.css
 import styled.styledDiv
 
@@ -218,5 +214,5 @@ external interface SceneListProps : RProps {
     var onChange: (Show, ShowState) -> Unit
 }
 
-fun RBuilder.sceneList(handler: SceneListProps.() -> Unit): ReactElement =
-    child(SceneList) { attrs { handler() } }
+fun RBuilder.sceneList(handler: RHandler<SceneListProps>): ReactElement =
+    child(SceneList, handler = handler)

@@ -11,10 +11,7 @@ import baaahs.util.percent
 import kotlinx.html.id
 import kotlinx.html.js.onChangeFunction
 import org.w3c.dom.HTMLSelectElement
-import react.RBuilder
-import react.RProps
-import react.RState
-import react.ReactElement
+import react.*
 import react.dom.*
 import styled.css
 import styled.styledDiv
@@ -126,5 +123,5 @@ external interface PinkyPanelProps : RProps {
     var pinky: Pinky.Facade
 }
 
-fun RBuilder.pinkyPanel(handler: PinkyPanelProps.() -> Unit): ReactElement =
-    child(PinkyPanel::class) { this.attrs(handler) }
+fun RBuilder.pinkyPanel(handler: RHandler<PinkyPanelProps>): ReactElement =
+    child(PinkyPanel::class, handler = handler)

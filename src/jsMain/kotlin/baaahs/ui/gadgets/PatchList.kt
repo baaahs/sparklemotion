@@ -1,12 +1,10 @@
 package baaahs.ui.gadgets
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
-import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
@@ -233,5 +231,5 @@ external interface PatchSetListProps : RProps {
     var onChange: (Show, ShowState) -> Unit
 }
 
-fun RBuilder.patchSetList(handler: PatchSetListProps.() -> Unit): ReactElement =
-    child(PatchSetList) { attrs { handler() } }
+fun RBuilder.patchSetList(handler: RHandler<PatchSetListProps>): ReactElement =
+    child(PatchSetList, handler = handler)
