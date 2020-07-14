@@ -23,7 +23,7 @@ interface DataSourceBuilder<T : DataSource> {
     fun build(inputPort: InputPort): T
 }
 
-interface DataSource {
+interface DataSource : Control {
     val dataSourceName: String
     fun isImplicit(): Boolean = false
     fun getType(): String
@@ -32,6 +32,10 @@ interface DataSource {
     fun getRenderType(): String? = null
     fun createFeed(showResources: ShowResources, id: String): GlslProgram.DataFeed
     fun suggestId(): String = dataSourceName.camelize()
+
+    override fun toControlRef(showBuilder: ShowBuilder): ControlRef {
+        return ControlRef(ControlRef.Type.DataSource, showBuilder.idFor(this))
+    }
 }
 
 class DataSourceSerializer(val plugins: Plugins): KSerializer<DataSource> {

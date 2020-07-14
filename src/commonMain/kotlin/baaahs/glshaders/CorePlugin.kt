@@ -419,53 +419,6 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class Scenes(
-        val title: String = "Scenes"
-    ) : GadgetDataSource<RadioButtonStrip> {
-        companion object : DataSourceBuilder<Scenes> {
-            override val resourceName: String get() = "SceneList"
-            override fun build(inputPort: InputPort): Scenes = Scenes(inputPort.id)
-        }
-
-        override val dataSourceName: String get() = "Scene List"
-        override fun isImplicit(): Boolean = true
-        override fun getType(): String = "n/a"
-        override fun getRenderType(): String? = "SceneList"
-
-        override fun createGadget(): RadioButtonStrip {
-            // TODO: this should be a custom gadget for scenes
-            return RadioButtonStrip("Scenes", listOf("Scene 1", "Scene 2"), 0)
-        }
-
-        override fun set(gadget: RadioButtonStrip, uniform: Uniform) { /* No-pp.*/
-        }
-    }
-
-    @Serializable
-    data class Patches(
-        val title: String = "Patches"
-    ) : GadgetDataSource<RadioButtonStrip> {
-        companion object : DataSourceBuilder<Patches> {
-            override val resourceName: String get() = "PatchList"
-            override fun build(inputPort: InputPort): Patches = Patches(inputPort.id)
-
-        }
-
-        override val dataSourceName: String get() = "Patch List"
-        override fun isImplicit(): Boolean = true
-        override fun getType(): String = "n/a"
-        override fun getRenderType(): String? = "PatchList"
-
-        override fun createGadget(): RadioButtonStrip {
-            // TODO: this should be a custom gadget for patches
-            return RadioButtonStrip(title, listOf("Patch 1", "Patch 2"), 0)
-        }
-
-        override fun set(gadget: RadioButtonStrip, uniform: Uniform) { /* No-pp.*/
-        }
-    }
-
-    @Serializable
     data class ImageSource(val title: String, val dataType: String) : DataSource {
         companion object : DataSourceBuilder<ImageSource> {
             override val resourceName: String get() = "Image"

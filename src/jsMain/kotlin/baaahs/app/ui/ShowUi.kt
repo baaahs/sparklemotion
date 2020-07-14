@@ -4,8 +4,10 @@ import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
+import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.SpecialControl
 import baaahs.ui.GadgetRenderer
 import baaahs.ui.gadgets.patchSetList
 import baaahs.ui.gadgets.sceneList
@@ -34,41 +36,49 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
     val layoutRenderers =
         show.layouts.panelNames.associateWith { mutableListOf<GadgetRenderer>() }
-    fun getControlRenderer(dataSource: DataSource): GadgetRenderer {
-        val dataFeed = appContext.showResources.useDataFeed(dataSource)
-
+    fun getControlRenderer(control: Control): GadgetRenderer {
         return {
             div {
-                when (dataSource.getRenderType()) {
-                    "SceneList" -> {
-                        sceneList {
-                            attrs.show = show
-                            attrs.showState = showState
-                            attrs.onSelect = { props.onShowStateChange(showState.selectScene(it)) }
-                            attrs.editMode = props.editMode
-                            attrs.dragNDrop = dragNDrop
-                            attrs.onChange = handleEdit
+                when (control) {
+                    is SpecialControl -> {
+
+                        when (control.pluginRef.resourceName) {
+                            "SceneList" -> {
+                                sceneList {
+                                    attrs.show = show
+                                    attrs.showState = showState
+                                    attrs.onSelect = { props.onShowStateChange(showState.selectScene(it)) }
+                                    attrs.editMode = props.editMode
+                                    attrs.dragNDrop = dragNDrop
+                                    attrs.onChange = handleEdit
+                                }
+                            }
+                            "PatchList" -> {
+                                patchSetList {
+                                    attrs.show = show
+                                    attrs.showState = showState
+                                    attrs.onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
+                                    attrs.editMode = props.editMode
+                                    attrs.dragNDrop = dragNDrop
+                                    attrs.onChange = handleEdit
+                                }
+                            }
                         }
                     }
-                    "PatchList" -> {
-                        println("Render PatchList with ${show.scenes[showState.selectedScene].patchSets.map { it.title }}")
-                        patchSetList {
-                            attrs.show = show
-                            attrs.showState = showState
-                            attrs.onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
-                            attrs.editMode = props.editMode
-                            attrs.dragNDrop = dragNDrop
-                            attrs.onChange = handleEdit
-                        }
-                    }
-                    "Slider" -> {
-                        RangeSlider {
-                            attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
+
+                    is DataSource -> {
+                        val dataFeed = appContext.showResources.useDataFeed(control)
+                        when (control.getRenderType()) {
+                            "Slider" -> {
+                                RangeSlider {
+                                    attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
+                                }
+                                b { +control.dataSourceName }
+                            }
                         }
                     }
                 }
 
-                b { +dataSource.dataSourceName }
                 if (props.editMode) {
                     icon(Edit)
                 }
@@ -76,11 +86,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    fun addControlsToPanels(layoutControls: Map<String, List<DataSource>>) {
-        layoutControls.forEach { (panelName, dataSources) ->
-            dataSources.forEach { dataSource ->
+    fun addControlsToPanels(layoutControls: Map<String, List<Control>>) {
+        layoutControls.forEach { (panelName, controls) ->
+            controls.forEach { control ->
                 val panelItems = layoutRenderers[panelName] ?: error("unknown panel $panelName")
-                panelItems.add(getControlRenderer(dataSource))
+                panelItems.add(getControlRenderer(control))
             }
         }
     }
