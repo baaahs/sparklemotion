@@ -1,7 +1,13 @@
-package baaahs.ui
+package baaahs.app.ui
 
-import baaahs.app.ui.LayoutRenderer
+import baaahs.app.ui.controls.SpecialControlProps
+import baaahs.app.ui.controls.control
+import baaahs.show.Control
 import baaahs.show.Layout
+import baaahs.ui.and
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.useCallback
 import external.mosaic.*
 import kotlinx.css.*
 import kotlinx.serialization.json.Json
@@ -19,6 +25,11 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
+
+    val editModeStyle = if (props.editMode)
+        Styles.editModeOn
+    else
+        Styles.editModeOff
 
     styledDiv {
         css {
@@ -44,23 +55,23 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                         onDragStart = { console.log("MosaicWindow.onDragStart") }
                         onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
                         renderToolbar = { props: MosaicWindowProps<*>, draggable: Boolean? ->
-                            styledDiv {
-//                          css { +panelToolbar }
-                                +props.title
-                            }
+                            div { +props.title }
                         }
                     }
 
-                    paper(PaperStyle.root to Styles.layoutPanel.getName()) {
-                        props.layoutControls[type]?.let { layoutControls ->
-                            div("show-controls") {
-                                layoutControls.showControls.forEach { it.invoke(this) }
+                    paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
+                        props.panelControls[type]?.let { layoutControls ->
+                            div(+Styles.layoutControls and Styles.showControls) {
+                                div(+Styles.controlPanelHelpText) { +"Show Controls" }
+                                renderControls(layoutControls.showControls, props)
                             }
-                            div("scene-controls") {
-                                layoutControls.sceneControls.forEach { it.invoke(this) }
+                            div(+Styles.layoutControls and Styles.sceneControls) {
+                                div(+Styles.controlPanelHelpText) { +"Scene Controls" }
+                                renderControls(layoutControls.sceneControls, props)
                             }
-                            div("layout-controls") {
-                                layoutControls.patchControls.forEach { it.invoke(this) }
+                            div(+Styles.layoutControls and Styles.patchControls) {
+                                div(+Styles.controlPanelHelpText) { +"Patch Controls" }
+                                renderControls(layoutControls.patchControls, props)
                             }
                         }
 //                    css { +windowContainer }
@@ -97,9 +108,11 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
             }
 
 //        zeroStateView={<MosaicZeroState createNode={createNode} />}
-            val jsonInst = Json(JsonConfiguration.Stable)
+            val jsonInst =
+                Json(JsonConfiguration.Stable)
             val layoutRoot = props.layout.rootNode
-            val asJson = jsonInst.stringify(JsonElementSerializer, layoutRoot)
+            val asJson =
+                jsonInst.stringify(JsonElementSerializer, layoutRoot)
             val layoutRootJs = JSON.parse<dynamic>(asJson)
             println("asJson = ${asJson}")
             @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
@@ -109,14 +122,22 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
         }
     }
-
 }
 
-typealias ControlRenderer = RBuilder.() -> Unit
+private fun RBuilder.renderControls(controls: MutableList<Control>, props: ShowLayoutProps) {
+    controls.forEach {
+        control {
+            attrs.control = it
+            attrs.specialControlProps = props.specialControlProps
+        }
+    }
+}
 
 external interface ShowLayoutProps : RProps {
     var layout: Layout
-    var layoutControls: Map<String, LayoutRenderer>
+    var panelControls: Map<String, PanelControls>
+    var specialControlProps: SpecialControlProps
+    var editMode: Boolean
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
