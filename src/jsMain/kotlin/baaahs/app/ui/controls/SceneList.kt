@@ -4,6 +4,7 @@ import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.ui.getName
@@ -24,29 +25,31 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import org.w3c.dom.events.Event
 import react.key
+import react.useContext
 import styled.css
 import styled.styledDiv
 
 val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
+    val appContext = useContext(appContext)
     var patchyEditor by state<PatchyEditor?> { null }
     val dropTarget =
         SceneListDropTarget(props.show, props.showState, props.onEdit)
-    val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
+    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
-            props.dragNDrop.removeDropTarget(dropTarget)
+            appContext.dragNDrop.removeDropTarget(dropTarget)
         }
     }
 
     val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
         val sceneDropTarget = SceneDropTarget(props.show, index)
-        val sceneDropTargetId = props.dragNDrop.addDropTarget(sceneDropTarget)
+        val sceneDropTargetId = appContext.dragNDrop.addDropTarget(sceneDropTarget)
         sceneDropTargetId to sceneDropTarget as DropTarget
     }
     onChange("unregister drop target") {
         withCleanup {
             sceneDropTargets.forEach { (_, sceneDropTarget) ->
-                props.dragNDrop.removeDropTarget(sceneDropTarget)
+                appContext.dragNDrop.removeDropTarget(sceneDropTarget)
             }
         }
     }

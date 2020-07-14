@@ -45,6 +45,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val id = props.id
 
+    val dragNDrop by state { DragNDrop() }
+    val myAppContext by state {
+        jsObject<AppContext> {
+            this.showResources = props.showResources
+            this.dragNDrop = dragNDrop
+        }
+    }
+
     var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
 
@@ -162,9 +170,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     } else {
         appContext.Provider {
-            attrs.value = jsObject {
-                this.showResources = props.showResources
-            }
+            attrs.value = myAppContext
 
             showUi {
                 attrs.show = webClient.openShow!!

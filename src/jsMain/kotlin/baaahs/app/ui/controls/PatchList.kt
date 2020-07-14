@@ -4,6 +4,7 @@ import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
@@ -28,6 +29,7 @@ import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import org.w3c.dom.events.Event
 import react.key
+import react.useContext
 import styled.css
 import styled.styledDiv
 
@@ -65,13 +67,14 @@ class DraggablePatch(
 }
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
+    val appContext = useContext(appContext)
     var patchyEditor by state<PatchyEditor?> { null }
     val dropTarget =
         PatchSetListDropTarget(props.show, props.showState, props.onEdit)
-    val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
+    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
-            props.dragNDrop.removeDropTarget(dropTarget)
+            appContext.dragNDrop.removeDropTarget(dropTarget)
         }
     }
 
