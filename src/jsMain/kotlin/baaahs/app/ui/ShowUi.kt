@@ -2,6 +2,9 @@ package baaahs.app.ui
 
 import baaahs.OpenShow
 import baaahs.ShowState
+import baaahs.app.ui.controls.PatchSetList
+import baaahs.app.ui.controls.SceneList
+import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
 import baaahs.show.Control
@@ -9,9 +12,6 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.SpecialControl
 import baaahs.ui.GadgetRenderer
-import baaahs.ui.gadgets.PatchSetList
-import baaahs.ui.gadgets.SceneList
-import baaahs.ui.gadgets.SpecialControlProps
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext

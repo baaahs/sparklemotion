@@ -1,4 +1,4 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import kotlinx.css.height
 import kotlinx.css.padding

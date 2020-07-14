@@ -1,4 +1,4 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import baaahs.OpenShow
 import baaahs.ShowState
@@ -29,7 +29,8 @@ import styled.styledDiv
 
 val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = SceneListDropTarget(props.show, props.showState, props.onEdit)
+    val dropTarget =
+        SceneListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {

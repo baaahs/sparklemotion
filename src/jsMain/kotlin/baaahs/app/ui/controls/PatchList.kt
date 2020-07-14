@@ -1,4 +1,4 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import baaahs.OpenShow
 import baaahs.ShowState
@@ -66,7 +66,8 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = PatchSetListDropTarget(props.show, props.showState, props.onEdit)
+    val dropTarget =
+        PatchSetListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
