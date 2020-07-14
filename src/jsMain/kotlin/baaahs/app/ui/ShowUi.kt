@@ -2,25 +2,13 @@ package baaahs.app.ui
 
 import baaahs.OpenShow
 import baaahs.ShowState
-import baaahs.app.ui.controls.PatchSetList
-import baaahs.app.ui.controls.SceneList
 import baaahs.app.ui.controls.SpecialControlProps
-import baaahs.glshaders.CorePlugin
-import baaahs.jsx.RangeSlider
 import baaahs.show.Control
-import baaahs.show.DataSource
 import baaahs.show.Show
-import baaahs.show.SpecialControl
-import baaahs.ui.ControlRenderer
-import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext
 import kotlinext.js.jsObject
-import materialui.Edit
-import materialui.icon
 import react.*
-import react.dom.b
-import react.dom.div
 
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val appContext = useContext(appContext)
@@ -35,54 +23,17 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         props.onChange(newShow, newShowState)
     }
 
-    val layoutRenderers =
-        show.layouts.panelNames.associateWith { LayoutRenderer() }
-    fun getControlRenderer(control: Control): ControlRenderer {
-        return {
-            div {
-                when (control) {
-                    is SpecialControl -> {
-                        val specialControlProps = jsObject<SpecialControlProps> {
-                            this.show = show
-                            this.showState = showState
-                            this.onShowStateChange = { props.onShowStateChange(it) }
-                            this.editMode = props.editMode
-                            this.onEdit = handleEdit
-                        }
-                        when (control.pluginRef.resourceName) {
-                            "Scenes" -> child(SceneList, specialControlProps)
-                            "Patches" -> child(PatchSetList, specialControlProps)
-                        }
-                    }
-
-                    is DataSource -> {
-                        val dataFeed = appContext.showResources.useDataFeed(control)
-                        when (control.getRenderType()) {
-                            "Slider" -> {
-                                RangeSlider {
-                                    attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
-                                }
-                                b { +control.dataSourceName }
-                            }
-                        }
-                    }
-                }
-
-                if (props.editMode) {
-                    icon(Edit)
-                }
-            }
-        }
-    }
+    val panelControls =
+        show.layouts.panelNames.associateWith { PanelControls() }
 
     fun addControlsToPanels(
         layoutControls: Map<String, List<Control>>,
-        block: LayoutRenderer.() -> MutableList<ControlRenderer>
+        block: PanelControls.() -> MutableList<Control>
     ) {
         layoutControls.forEach { (panelName, controls) ->
             controls.forEach { control ->
-                val panelItems = layoutRenderers[panelName] ?: error("unknown panel $panelName")
-                panelItems.block().add(getControlRenderer(control))
+                val panelItems = panelControls[panelName] ?: error("unknown panel $panelName")
+                panelItems.block().add(control)
             }
         }
     }
@@ -93,20 +44,30 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val patchSet = showState.findPatchSet(show)
     patchSet?.let { addControlsToPanels(patchSet.controlLayout) { patchControls } }
 
+    val specialControlProps = jsObject<SpecialControlProps> {
+        this.show = show
+        this.showState = showState
+        this.onShowStateChange = { props.onShowStateChange(it) }
+        this.editMode = props.editMode
+        this.onEdit = handleEdit
+    }
+
     dragDropContext({
         onDragEnd = appContext.dragNDrop::onDragEnd
     }) {
         showLayout {
             attrs.layout = currentLayout
-            attrs.layoutControls = layoutRenderers
+            attrs.panelControls = panelControls
+            attrs.specialControlProps = specialControlProps
+            attrs.editMode = props.editMode
         }
     }
 }
 
-class LayoutRenderer {
-    val showControls = mutableListOf<ControlRenderer>()
-    val sceneControls = mutableListOf<ControlRenderer>()
-    val patchControls = mutableListOf<ControlRenderer>()
+class PanelControls {
+    val showControls = mutableListOf<Control>()
+    val sceneControls = mutableListOf<Control>()
+    val patchControls = mutableListOf<Control>()
 }
 
 
