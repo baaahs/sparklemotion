@@ -9,11 +9,13 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.SpecialControl
 import baaahs.ui.GadgetRenderer
-import baaahs.ui.gadgets.patchSetList
-import baaahs.ui.gadgets.sceneList
+import baaahs.ui.gadgets.PatchSetList
+import baaahs.ui.gadgets.SceneList
+import baaahs.ui.gadgets.SpecialControlProps
 import baaahs.ui.showLayout
 import baaahs.ui.xComponent
 import external.dragDropContext
+import kotlinext.js.jsObject
 import materialui.Edit
 import materialui.icon
 import react.*
@@ -41,28 +43,17 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             div {
                 when (control) {
                     is SpecialControl -> {
-
+                        val specialControlProps = jsObject<SpecialControlProps> {
+                            this.show = show
+                            this.showState = showState
+                            this.onShowStateChange = { props.onShowStateChange(it) }
+                            this.editMode = props.editMode
+                            this.dragNDrop = dragNDrop
+                            this.onEdit = handleEdit
+                        }
                         when (control.pluginRef.resourceName) {
-                            "SceneList" -> {
-                                sceneList {
-                                    attrs.show = show
-                                    attrs.showState = showState
-                                    attrs.onSelect = { props.onShowStateChange(showState.selectScene(it)) }
-                                    attrs.editMode = props.editMode
-                                    attrs.dragNDrop = dragNDrop
-                                    attrs.onChange = handleEdit
-                                }
-                            }
-                            "PatchList" -> {
-                                patchSetList {
-                                    attrs.show = show
-                                    attrs.showState = showState
-                                    attrs.onSelect = { props.onShowStateChange(showState.selectPatchSet(it)) }
-                                    attrs.editMode = props.editMode
-                                    attrs.dragNDrop = dragNDrop
-                                    attrs.onChange = handleEdit
-                                }
-                            }
+                            "Scenes" -> child(SceneList, specialControlProps)
+                            "Patches" -> child(PatchSetList, specialControlProps)
                         }
                     }
 
