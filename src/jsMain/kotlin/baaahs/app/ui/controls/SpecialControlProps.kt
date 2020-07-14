@@ -1,4 +1,4 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import baaahs.OpenShow
 import baaahs.ShowState
