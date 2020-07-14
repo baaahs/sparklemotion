@@ -11,6 +11,7 @@ import baaahs.show.ShowEditor
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import baaahs.withState
+import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
@@ -32,10 +33,7 @@ import materialui.components.portal.portal
 import materialui.components.switches.switch
 import materialui.icon
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import react.dom.*
 import styled.css
 import styled.styledDiv
@@ -164,60 +162,65 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             h1 { +"Loading Show…" }
         }
     } else {
-        showUi {
-            this.show = webClient.openShow!!
-            this.showResources = props.showResources
-            this.showState = showState
-            this.onShowStateChange = handleShowStateChange
-            this.editMode = editMode
-            this.onChange = handleShowEdit
-        }
+        appContext.Provider {
+            attrs.value = jsObject {
+                this.showResources = props.showResources
+            }
 
-        portal {
-            // Shader Editor drawer
-            drawer {
-                attrs.anchor = DrawerAnchor.right
-                attrs.variant = DrawerVariant.persistent
+            showUi {
+                this.show = webClient.openShow!!
+                this.showState = showState
+                this.onShowStateChange = handleShowStateChange
+                this.editMode = editMode
+                this.onChange = handleShowEdit
+            }
+
+            portal {
+                // Shader Editor drawer
+                drawer {
+                    attrs.anchor = DrawerAnchor.right
+                    attrs.variant = DrawerVariant.persistent
 //            attrs.elevation = 100
-                attrs.open = shaderEditorDrawerOpen
-                attrs.onClose = handleShaderEditorDrawerClose
-                attrs.classes(Styles.fullHeight.getName())
+                    attrs.open = shaderEditorDrawerOpen
+                    attrs.onClose = handleShaderEditorDrawerClose
+                    attrs.classes(Styles.fullHeight.getName())
 
-                shaderEditorWindow {
-                    this.filesystems = props.filesystems
-                    this.onAddToPatch = { shader ->
-                        val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
-                        val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
-                            editPatchSet(showState.selectedPatchSet) {
-                                if (this.patchMappings.isEmpty()) {
-                                    addPatch {
-                                        links = newPatch.links.toMutableList()
-                                        surfaces = newPatch.surfaces
-                                    }
-                                } else {
-                                    editPatch(0) {
-                                        links = newPatch.links.toMutableList()
-                                        surfaces = newPatch.surfaces
+                    shaderEditorWindow {
+                        this.filesystems = props.filesystems
+                        this.onAddToPatch = { shader ->
+                            val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
+                            val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
+                                editPatchSet(showState.selectedPatchSet) {
+                                    if (this.patchMappings.isEmpty()) {
+                                        addPatch {
+                                            links = newPatch.links.toMutableList()
+                                            surfaces = newPatch.surfaces
+                                        }
+                                    } else {
+                                        editPatch(0) {
+                                            links = newPatch.links.toMutableList()
+                                            surfaces = newPatch.surfaces
+                                        }
                                     }
                                 }
                             }
+                            handleShowEdit(editor.getShow(), editor.getShowState())
+                        }
+                    }
+                }
+
+                // Layout Editor dialog
+                layoutEditorDialog {
+                    this.open = layoutEditorDialogOpen
+                    this.layouts = show.layouts
+                    this.onApply = { newLayouts ->
+                        val editor = ShowEditor(show, showState).editLayouts {
+                            copyFrom(newLayouts)
                         }
                         handleShowEdit(editor.getShow(), editor.getShowState())
                     }
+                    this.onClose = handleLayoutEditorDialogClose
                 }
-            }
-
-            // Layout Editor dialog
-            layoutEditorDialog {
-                this.open = layoutEditorDialogOpen
-                this.layouts = show.layouts
-                this.onApply = { newLayouts ->
-                    val editor = ShowEditor(show, showState).editLayouts {
-                        copyFrom(newLayouts)
-                    }
-                    handleShowEdit(editor.getShow(), editor.getShowState())
-                }
-                this.onClose = handleLayoutEditorDialogClose
             }
         }
     }

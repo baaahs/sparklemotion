@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.ShowResources
+import baaahs.app.ui.appContext
 import baaahs.getBang
 import baaahs.glshaders.*
 import baaahs.show.*
@@ -34,12 +34,13 @@ import react.dom.code
 import react.dom.h3
 
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
+    val appContext = useContext(appContext)
     val shader = props.shader
-    val openShader = props.showResources.openShader(shader)
+    val openShader = appContext.showResources.openShader(shader)
 
     val otherShaderOutputPorts = props.allShaders
         .minus(shader).sortedBy { it.title }
-        .map { it to props.showResources.openShader(it) }
+        .map { it to appContext.showResources.openShader(it) }
         .flatMap { (otherShader, otherOpenShader) ->
             otherOpenShader.outputPorts.sortedBy { it.name }.map { otherShader to it }
         }
@@ -66,7 +67,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     }
 
     val inputPorts = openShader.inputPorts.sortedBy { it.title }
-    val dataSources = props.showResources.dataSources.sortedBy { it.dataSourceName }
+    val dataSources = appContext.showResources.dataSources.sortedBy { it.dataSourceName }
 
     val handleLinkChange =
         handler("link change") { event: Event, inputPort: InputPort ->
@@ -186,7 +187,6 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 }
 
 external interface ShaderEditorProps : RProps {
-    var showResources: ShowResources
     var allShaders: Set<Shader>
     var patchEditor: PatchEditor
     var showBuilder: ShowBuilder

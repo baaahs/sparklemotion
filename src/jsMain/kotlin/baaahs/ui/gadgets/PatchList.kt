@@ -6,6 +6,7 @@ import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
@@ -29,10 +30,7 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.*
 import styled.css
 import styled.styledDiv
 
@@ -175,7 +173,6 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
 
     patchyEditor?.let { editor ->
         patchyEditor {
-            attrs.showResources = props.showResources
             attrs.editor = editor
             attrs.onSave = {
                 props.onChange(editor.getShow(), editor.getShowState())
@@ -230,7 +227,6 @@ private class PatchSetListDropTarget(
 external interface PatchSetListProps : RProps {
     var show: OpenShow
     var showState: ShowState
-    var showResources: ShowResources
     var onSelect: (Int) -> Unit
     var editMode: Boolean
     var dragNDrop: DragNDrop
