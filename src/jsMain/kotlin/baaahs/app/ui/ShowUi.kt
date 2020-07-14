@@ -29,8 +29,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val currentLayoutName = "default"
     val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
 
-    val dragNDrop by state { DragNDrop() }
-    if (!props.editMode) dragNDrop.reset()
+    if (!props.editMode) appContext.dragNDrop.reset()
 
     val handleEdit = handler("edit", props.onChange) { newShow: Show, newShowState: ShowState ->
         props.onChange(newShow, newShowState)
@@ -48,7 +47,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                             this.showState = showState
                             this.onShowStateChange = { props.onShowStateChange(it) }
                             this.editMode = props.editMode
-                            this.dragNDrop = dragNDrop
                             this.onEdit = handleEdit
                         }
                         when (control.pluginRef.resourceName) {
@@ -96,7 +94,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     patchSet?.let { addControlsToPanels(patchSet.controlLayout) { patchControls } }
 
     dragDropContext({
-        onDragEnd = dragNDrop::onDragEnd
+        onDragEnd = appContext.dragNDrop::onDragEnd
     }) {
         showLayout {
             attrs.layout = currentLayout
