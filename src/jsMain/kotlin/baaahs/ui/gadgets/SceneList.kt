@@ -2,7 +2,6 @@ package baaahs.ui.gadgets
 
 import baaahs.OpenShow
 import baaahs.ShowState
-import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.show.PatchyEditor
@@ -24,13 +23,13 @@ import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.*
+import react.key
 import styled.css
 import styled.styledDiv
 
-val SceneList = xComponent<SceneListProps>("SceneList") { props ->
+val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = SceneListDropTarget(props.show, props.showState, props.onChange)
+    val dropTarget = SceneListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
@@ -112,7 +111,10 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 
                                     attrs["value"] = index
                                     attrs["selected"] = index == props.showState.selectedScene
-                                    attrs.onClickFunction = { props.onSelect(index) }
+                                    attrs.onClickFunction = {
+                                        val newState = props.showState.selectScene(index)
+                                        props.onShowStateChange(newState)
+                                    }
 
                                     +scene.title
                                 }
@@ -143,7 +145,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
         patchyEditor {
             attrs.editor = editor
             attrs.onSave = {
-                props.onChange(editor.getShow(), editor.getShowState())
+                props.onEdit(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
             attrs.onCancel = handleClose
@@ -204,15 +206,3 @@ private class SceneDropTarget(
 
     override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
 }
-
-external interface SceneListProps : SpecialControlProps {
-    var show: OpenShow
-    var showState: ShowState
-    var onSelect: (Int) -> Unit
-    var editMode: Boolean
-    var dragNDrop: DragNDrop
-    var onChange: (Show, ShowState) -> Unit
-}
-
-fun RBuilder.sceneList(handler: RHandler<SceneListProps>): ReactElement =
-    child(SceneList, handler = handler)
