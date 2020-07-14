@@ -222,7 +222,7 @@ private class PatchSetListDropTarget(
     }
 }
 
-external interface PatchSetListProps : RProps {
+external interface PatchSetListProps : SpecialControlProps {
     var show: OpenShow
     var showState: ShowState
     var onSelect: (Int) -> Unit

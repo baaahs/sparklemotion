@@ -1,7 +1,6 @@
 package baaahs.show
 
 import baaahs.ShowState
-import baaahs.getBang
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.OpenPatch
 import baaahs.util.UniqueIds
@@ -19,22 +18,24 @@ abstract class PatchyEditor(
     val controlLayout = basePatchy.controlLayout
         .mapValues { (_, v) ->
             v.map {
-                DataSourceEditor(dataSources.getBang(it.dataSourceId, "datasource"))
+                ControlEditor(it.dereference(dataSources))
             }.toMutableList()
         }.toMutableMap()
 
-    fun addControl(panel: String, dataSource: DataSource) {
-        controlLayout.getOrPut(panel) { arrayListOf() }.add(DataSourceEditor(dataSource))
+    fun addControl(panel: String, control: Control) {
+        controlLayout.getOrPut(panel) { arrayListOf() }.add(ControlEditor(control))
     }
 
 
     fun findControlDataSources(): Set<DataSource> {
-        return controlLayout.values.flatMap { it.map { it.dataSource } }.toSet()
+        return controlLayout.values.flatMap {
+            it.filterIsInstance<DataSourceEditor>().map { it.dataSource }
+        }.toSet()
     }
 
-    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<DataSourceRef>> {
+    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<ControlRef>> {
         return controlLayout.mapValues { (_, v) ->
-            v.map { DataSourceRef(showBuilder.idFor(it.dataSource)) }
+            v.map { it.toRef(showBuilder) }
         }
     }
 
@@ -102,8 +103,8 @@ class ShowEditor(
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
             layouts = layoutEditor.build(),
-            shaders = findShaders().associateBy { showBuilder.idFor(it) },
-            dataSources = findDataSources().associateBy { showBuilder.idFor(it) }
+            shaders = showBuilder.getShaders(),
+            dataSources = showBuilder.getDataSources()
         )
     }
 
@@ -314,6 +315,10 @@ data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
         DataSourceRef(showBuilder.idFor(dataSource))
 
     override fun displayName(): String = dataSource.dataSourceName
+}
+
+data class ControlEditor(val control: Control) {
+    fun toRef(showBuilder: ShowBuilder): ControlRef = control.toControlRef(showBuilder)
 }
 
 data class ShaderEditor(val shader: Shader) {

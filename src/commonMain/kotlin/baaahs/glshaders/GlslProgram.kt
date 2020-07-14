@@ -172,8 +172,11 @@ val dataSourceProviderModule = SerializersModule {
         CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
         CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
         CorePlugin.RadioButtonStripProvider::class with CorePlugin.RadioButtonStripProvider.serializer()
-        CorePlugin.Scenes::class with CorePlugin.Scenes.serializer()
-        CorePlugin.Patches::class with CorePlugin.Patches.serializer()
         CorePlugin.XyPad::class with CorePlugin.XyPad.serializer()
     }
+
+//    polymorphic(ControlRef::class) {
+//        SpecialControlRef::class with SpecialControlRef.serializer()
+//        DataSourceRef::class with DataSourceRef.serializer()
+//    }
 }

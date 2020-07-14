@@ -205,7 +205,7 @@ private class SceneDropTarget(
     override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
 }
 
-external interface SceneListProps : RProps {
+external interface SceneListProps : SpecialControlProps {
     var show: OpenShow
     var showState: ShowState
     var onSelect: (Int) -> Unit

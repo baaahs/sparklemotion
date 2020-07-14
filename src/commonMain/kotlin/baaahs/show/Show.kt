@@ -2,10 +2,8 @@ package baaahs.show
 
 import baaahs.Surface
 import baaahs.camelize
-import baaahs.getBang
 import baaahs.glshaders.Plugins
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -19,7 +17,7 @@ interface Patchy {
     val title: String
     val patches: List<Patch>
     val eventBindings: List<EventBinding>
-    val controlLayout: Map<String, List<DataSourceRef>>
+    val controlLayout: Map<String, List<ControlRef>>
 }
 
 @Serializable
@@ -27,7 +25,7 @@ data class Show(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap(),
+    override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
     val scenes: List<Scene> = emptyList(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
@@ -62,7 +60,7 @@ data class Scene(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap(),
+    override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
 ) : Patchy {
     fun findShaderPortRefs(): Set<ShaderPortRef> = patchSets.flatMap { it.findShaderPortRefs() }.toSet()
@@ -73,7 +71,7 @@ data class PatchSet(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<DataSourceRef>> = emptyMap()
+    override val controlLayout: Map<String, List<ControlRef>> = emptyMap()
 ) : Patchy {
     fun findDataSourceRefs(): Set<DataSourceRef> = patches.flatMap { it.findDataSourceRefs() }.toSet()
     fun findShaderPortRefs(): Set<ShaderPortRef> = patches.flatMap { it.findShaderPortRefs() }.toSet()
@@ -135,47 +133,6 @@ data class Link(
     val from: PortRef,
     val to: PortRef
 )
-
-@Serializable
-sealed class PortRef {
-    infix fun linkTo(other: PortRef): Link = Link(this, other)
-
-    abstract fun dereference(showEditor: ShowEditor): LinkEditor.Port
-}
-
-interface ShaderPortRef {
-    val shaderId: String
-}
-
-@Serializable @SerialName("datasource")
-data class DataSourceRef(val dataSourceId: String) : PortRef() {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        showEditor.dataSources.getBang(dataSourceId, "datasource")
-}
-
-@Serializable @SerialName("shader-in")
-data class ShaderInPortRef(override val shaderId: String, val portId: String) : PortRef(), ShaderPortRef {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        showEditor.shaders.getBang(shaderId, "shader").inputPort(portId)
-}
-
-@Serializable @SerialName("shader-out")
-data class ShaderOutPortRef(override val shaderId: String, val portId: String) : PortRef(), ShaderPortRef {
-    fun isReturnValue() = portId == ReturnValue
-
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        showEditor.shaders.getBang(shaderId, "shader").outputPort(portId)
-
-    companion object {
-        const val ReturnValue = "_"
-    }
-}
-
-@Serializable @SerialName("output")
-data class OutputPortRef(val portId: String) : PortRef() {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        OutputPortEditor(portId)
-}
 
 @Serializable
 data class Shader(

@@ -13,9 +13,11 @@ object ShowSerializationSpec : Spek({
     describe("Show serialization") {
         val plugins by value { Plugins.safe() }
         val jsonPrettyPrint by value {
-            Json(JsonConfiguration.Stable.copy(
-                prettyPrint = true
-            ))
+            Json(
+                JsonConfiguration.Stable.copy(
+                    prettyPrint = true
+                )
+            )
         }
         val origShow by value { SampleData.sampleShow }
         val showJson by value { origShow.toJson(plugins) }
@@ -37,42 +39,41 @@ object ShowSerializationSpec : Spek({
     }
 })
 
+private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = k to v
+
+private fun JsonObjectBuilder.addPatchy(patchy: Patchy) {
+    "title" to patchy.title
+    "patches" to patchy.patches.jsonMap { jsonFor(it) }
+    "eventBindings" to patchy.eventBindings.jsonMap { jsonFor(it) }
+    "controlLayout" to patchy.controlLayout.jsonMap { it.jsonMap { jsonFor(it) } }
+}
+
+private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonElement): JsonObject {
+    return json { entries.forEach { (k, v) -> k to block(v) } }
+}
+
+private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
+    return jsonArray { forEach { +block(it) } }
+}
+
 private fun forJson(show: Show): JsonObject {
     return json {
-        "title" to show.title
-        "patches" to jsonArray { show.patches.forEach { +jsonFor(it) } }
-        "eventBindings" to jsonArray { show.eventBindings.forEach { +jsonFor(it) } }
-        "controlLayout" to jsonFor(show.controlLayout)
-        "scenes" to jsonArray {
-            show.scenes.forEach { +jsonFor(it) }
-        }
+        addPatchy(show)
+        "scenes" to show.scenes.jsonMap { jsonFor(it) }
         "layouts" to json {
-            "panelNames" to jsonArray {
-                show.layouts.panelNames.forEach { +it }
-            }
-            "map" to json {
-                show.layouts.map.entries.forEach { (k, v) ->
-                    k to json {
-                        "rootNode" to v.rootNode
-                    }
-                }
+            "panelNames" to show.layouts.panelNames.jsonMap { JsonPrimitive(it) }
+            "map" to show.layouts.map.jsonMap {
+                json { "rootNode" to it.rootNode }
             }
         }
-        "shaders" to json {
-            show.shaders.entries.forEach { (k, v) -> k to jsonFor(v) }
-        }
-        "dataSources" to json {
-            show.dataSources.forEach { (id, datasource) -> id to jsonFor(datasource) }
-        }
+        "shaders" to show.shaders.jsonMap { jsonFor(it) }
+        "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
     }
 }
 
 private fun jsonFor(scene: Scene): JsonObject {
     return json {
-        "title" to scene.title
-        "patches" to jsonArray { scene.patches.forEach { +jsonFor(it) } }
-        "eventBindings" to jsonArray { scene.eventBindings.forEach { +jsonFor(it) } }
-        "controlLayout" to jsonFor(scene.controlLayout)
+        addPatchy(scene)
         "patchSets" to jsonArray {
             for (it in scene.patchSets) {
                 +jsonFor(it)
@@ -83,21 +84,17 @@ private fun jsonFor(scene: Scene): JsonObject {
 
 fun jsonFor(patchSet: PatchSet): JsonElement {
     return json {
-        "title" to patchSet.title
-        "patches" to jsonArray { patchSet.patches.forEach { +jsonFor(it) } }
-        "eventBindings" to jsonArray { patchSet.eventBindings.forEach { +jsonFor(it) } }
-        "controlLayout" to jsonFor(patchSet.controlLayout)
+        addPatchy(patchSet)
     }
 
 }
 
 private fun jsonFor(eventBinding: EventBinding) = json { }
 
-fun jsonFor(controlLayout: Map<String, List<DataSourceRef>>): JsonObject {
+fun jsonFor(controlRef: ControlRef): JsonElement {
     return json {
-        controlLayout.forEach { (k, v) ->
-            k to jsonArray { v.forEach { +json { "dataSourceId" to it.dataSourceId } } }
-        }
+        "type" to controlRef.type.name
+        "id" to controlRef.id
     }
 }
 
@@ -118,18 +115,6 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 "type" to "baaahs.glshaders.CorePlugin.ColorPickerProvider"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue.toInt()
-            }
-        }
-        is CorePlugin.Scenes -> {
-            json {
-                "type" to "baaahs.glshaders.CorePlugin.Scenes"
-                "title" to dataSource.title
-            }
-        }
-        is CorePlugin.Patches -> {
-            json {
-                "type" to "baaahs.glshaders.CorePlugin.Patches"
-                "title" to dataSource.title
             }
         }
         is CorePlugin.Resolution -> {
@@ -159,11 +144,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
 
 private fun jsonFor(patch: Patch): JsonObject {
     return json {
-        "links" to jsonArray {
-            patch.links.forEach {
-                +jsonFor(it)
-            }
-        }
+        "links" to patch.links.jsonMap { jsonFor(it) }
         "surfaces" to json {
             "name" to "All Surfaces"
         }
@@ -183,7 +164,7 @@ private fun jsonFor(inputPort: InputPort): JsonObject {
         "type" to inputPort.dataType
         "title" to inputPort.title
         "pluginRef" to inputPort.pluginRef
-        "pluginConfig" to inputPort.pluginConfig?.forEach { (k, v) -> k to v }
+        "pluginConfig" to inputPort.pluginConfig?.jsonMap { it }
         "varName" to inputPort.varName
         "isImplicit" to inputPort.isImplicit
     }
