@@ -42,7 +42,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         .minus(shader).sortedBy { it.title }
         .map { it to appContext.showResources.openShader(it) }
         .flatMap { (otherShader, otherOpenShader) ->
-            otherOpenShader.outputPorts.sortedBy { it.name }.map { otherShader to it }
+            otherOpenShader.outputPorts.sortedBy { it.id }.map { otherShader to it }
         }
 
     val linkEditorsByPortId = props.patchEditor.linksTo(shader)
@@ -143,7 +143,8 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                                             otherShaderOutputPorts.forEach { (otherShader, outputPort) ->
 //                                                if (outputPort.dataType == shaderInputPort.dataType) {
                                                     menuItem {
-                                                        attrs["value"] = idFor(ShaderEditor(otherShader).outputPort(ShaderOutPortRef.ReturnValue))
+                                                        attrs["value"] = idFor(
+                                                            ShaderEditor(otherShader).outputPort(outputPort.id))
                                                         +"${otherShader.title} output"
                                                     }
                                                     needDivider = true

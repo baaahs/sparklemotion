@@ -25,7 +25,7 @@ class AutoWirer(val plugins: Plugins) {
             val shaderEditor = shaderEditors.getBang(openShader.shader, "shader editor")
             openShader.outputPorts.forEach { outputPort ->
                 val options = locallyAvailable.getOrPut(outputPort.contentType) { mutableListOf() }
-                options.add(shaderEditor.outputPort(outputPort.name))
+                options.add(shaderEditor.outputPort(outputPort.id))
             }
         }
 

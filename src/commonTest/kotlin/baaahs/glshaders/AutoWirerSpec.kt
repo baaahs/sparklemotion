@@ -1,10 +1,7 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.DataSourceEditor
-import baaahs.show.OutputPortEditor
-import baaahs.show.ShaderEditor
-import baaahs.show.ShaderOutPortRef
+import baaahs.show.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -52,7 +49,7 @@ object AutoWirerSpec : Spek({
                             )
                         )
                                 linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
-                        DataSourceEditor(CorePlugin.ScreenUvCoord())
+                        DataSourceEditor(CorePlugin.RasterCoord())
                                 linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
                         ShaderEditor(colorShader.shader).outputPort("gl_FragColor")
                                 linkTo OutputPortEditor(GlslProgram.PixelColor.portId)
@@ -74,7 +71,7 @@ object AutoWirerSpec : Spek({
                                     linkTo ShaderEditor(colorShader.shader).inputPort("resolution"),
                             DataSourceEditor(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, 0.01f))
                                     linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
-                            ShaderEditor(uvShader.shader).outputPort(ShaderOutPortRef.ReturnValue)
+                            ShaderEditor(uvShader.shader).outputPort("sm_RasterCoord")
                                     linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
                             DataSourceEditor(CorePlugin.PixelCoordsTexture())
                                     linkTo ShaderEditor(uvShader.shader).inputPort("pixelCoordsTexture"),

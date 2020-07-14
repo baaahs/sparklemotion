@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.show.ShaderOutPortRef
+import baaahs.show.Shader
 
 class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
     companion object {
@@ -29,8 +29,11 @@ class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
         }
     }
 
-    override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec2", ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate))
+    override val outputPorts: List<OutputPort> = listOf(
+        OutputPort(Shader.ReturnValue, "vec2", "U/V Coordinate", ContentType.UvCoordinate),
+        OutputPort("sm_RasterCoord", "vec4", "Raster Coordinate", ContentType.RasterCoordinate,
+            synthetic = "vec4(${Shader.ReturnValue}, 0., 0.)")
+    )
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         val buf = StringBuilder()

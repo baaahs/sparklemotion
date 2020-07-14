@@ -44,7 +44,7 @@ object OpenPatchSpec : Spek({
                 }
                 val dataSourcesById by value {
                     mapOf(
-                        "gl_FragCoord" to CorePlugin.ScreenUvCoord(),
+                        "gl_FragCoord" to CorePlugin.RasterCoord(),
                         "pixelCoordsTexture" to CorePlugin.PixelCoordsTexture(),
                         "modelInfo" to CorePlugin.ModelInfoDataSource("ModelInfo"),
                         "resolution" to CorePlugin.Resolution(),
@@ -130,7 +130,7 @@ object OpenPatchSpec : Spek({
                                             linkTo ShaderInPortRef("uvShader", "pixelCoordsTexture"),
                                     DataSourceRef("modelInfo")
                                             linkTo ShaderInPortRef("uvShader", "modelInfo"),
-                                    ShaderOutPortRef("uvShader", ShaderOutPortRef.ReturnValue)
+                                    ShaderOutPortRef("uvShader", "sm_RasterCoord")
                                             linkTo ShaderInPortRef("color", "gl_FragCoord"),
                                     DataSourceRef("resolution")
                                             linkTo ShaderInPortRef("color", "resolution"),

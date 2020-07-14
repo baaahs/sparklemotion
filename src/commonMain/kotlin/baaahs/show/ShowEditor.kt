@@ -319,6 +319,7 @@ data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
 data class ShaderEditor(val shader: Shader) {
     fun inputPort(portId: String): LinkEditor.Port = ShaderInPortEditor(shader, portId)
     fun outputPort(portId: String): LinkEditor.Port = ShaderOutPortEditor(shader, portId)
+    fun returnValue(): LinkEditor.Port = outputPort(Shader.ReturnValue)
 
     data class ShaderInPortEditor(override val shader: Shader, override val portId: String) : ShaderPortEditor {
         override fun toRef(showBuilder: ShowBuilder): PortRef =

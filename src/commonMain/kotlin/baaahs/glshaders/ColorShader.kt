@@ -57,7 +57,7 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
             InputPort("iChannel3", "sampler2D", "Channel 3", ContentType.Media)
         ).associateBy { it.id }
 
-        val uvCoordPort = InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
+        val rasterCoordPort = InputPort("sm_FragCoord", "vec4", "Raster Coordinates", ContentType.RasterCoordinate)
     }
 
     override val entryPoint: GlslCode.GlslFunction =
@@ -78,11 +78,12 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 
         val explicitUniforms = glslCode.uniforms.map { toInputPort(it) }
 
-        explicitUniforms + implicitUniforms + uvCoordPort
+        explicitUniforms + implicitUniforms + rasterCoordPort
     }
 
-    override val outputPorts: List<OutputPort> =
-        listOf(OutputPort("vec4", "<arg0>", "Output Color", ContentType.Color))
+    override val outputPorts: List<OutputPort> = listOf(
+        OutputPort("sm_pixelColor", "vec4", "Output Color", ContentType.Color)
+    )
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return namespace.qualify(entryPoint.name) +
@@ -93,14 +94,14 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     companion object {
         val wellKnownInputPorts = listOf(
-            InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate),
+            InputPort("gl_FragCoord", "vec4", "Raster Coordinates", ContentType.RasterCoordinate),
             InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
             InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
             InputPort("time", "float", "Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 
-        val uvCoordPort = InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
+        val rasterCoordPort = InputPort("gl_FragCoord", "vec4", "Raster Coordinates", ContentType.RasterCoordinate)
     }
 
     val wellKnownInputPorts: Map<String, InputPort>
@@ -113,13 +114,13 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         glslCode.uniforms.map {
             wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
                 ?: toInputPort(it)
-        } + uvCoordPort
+        } + rasterCoordPort
     }
 //    it.type, it.name, title, contentType,
 //    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
 
     override val outputPorts: List<OutputPort> =
-        listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
+        listOf(OutputPort("gl_FragColor", "vec4", "Output Color", ContentType.Color, isImplicit = true))
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return StringBuilder().apply {

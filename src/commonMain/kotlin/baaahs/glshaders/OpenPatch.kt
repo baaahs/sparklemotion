@@ -53,9 +53,11 @@ class OpenPatch {
         private val prefix = "p$index"
         private val namespace = GlslCode.Namespace(prefix)
         private val portMap: Map<String, Lazy<String>>
+        private val outputsInUse: List<OutputPort>
 
         init {
             val tmpPortMap = hashMapOf<String, Lazy<String>>()
+            val tmpOutgoingInUse = hashSetOf<String>()
 
             incomingLinks.forEach { (from, to) ->
                 if (to is ShaderInPortRef) {
@@ -74,12 +76,18 @@ class OpenPatch {
             }
 
             outgoingLinks.forEach { (from, to) ->
+                if (from is ShaderOutPortRef) {
+                    tmpOutgoingInUse.add(from.portId)
+                }
+
+                println("outgoing link $from -> $to")
                 if (to is OutputPortRef && from is ShaderOutPortRef) {
                     tmpPortMap[from.portId] = lazy { to.portId }
                 }
             }
 
             portMap = tmpPortMap
+            outputsInUse = openShader.outputPorts.filter { tmpOutgoingInUse.contains(it.id) }
         }
 
         private val saveResult = outgoingLinks.any { (from, _) -> from is ShaderOutPortRef && from.isReturnValue() }
@@ -102,10 +110,16 @@ class OpenPatch {
             buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
             buf.append("// ", openShader.title, "\n")
 
-            if (saveResult) {
-                buf.append("\n")
-                buf.append("${openShader.entryPoint.returnType} $resultVar;\n")
+            outputsInUse.forEach { outputPort ->
+                if (!outputPort.isImplicit) {
+                    buf.append("${outputPort.toGlsl(namespace)};\n")
+                }
             }
+
+//            if (saveResult) {
+//                buf.append("\n")
+//                buf.append("${openShader.entryPoint.returnType} $resultVar;\n")
+//            }
 
             buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
         }

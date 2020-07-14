@@ -161,14 +161,10 @@ data class ShaderInPortRef(override val shaderId: String, val portId: String) : 
 
 @Serializable @SerialName("shader-out")
 data class ShaderOutPortRef(override val shaderId: String, val portId: String) : PortRef(), ShaderPortRef {
-    fun isReturnValue() = portId == ReturnValue
+    fun isReturnValue() = portId == Shader.ReturnValue
 
     override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
         showEditor.shaders.getBang(shaderId, "shader").outputPort(portId)
-
-    companion object {
-        const val ReturnValue = "_"
-    }
 }
 
 @Serializable @SerialName("output")
@@ -193,4 +189,8 @@ data class Shader(
 
     fun suggestId(): String = title.camelize()
     fun edit(): ShaderEditor = ShaderEditor(this)
+
+    companion object {
+        const val ReturnValue = "_"
+    }
 }

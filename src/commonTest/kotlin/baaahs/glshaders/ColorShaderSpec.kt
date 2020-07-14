@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.show.Shader
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -39,7 +40,7 @@ object ColorShaderSpec : Spek({
                     InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
                     InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
                     InputPort("blueness", "float", "Blueness"),
-                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
+                    InputPort("gl_FragCoord", "vec4", "Raster Coordinates", ContentType.RasterCoordinate)
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
@@ -104,8 +105,16 @@ object ColorShaderSpec : Spek({
                         InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
                         InputPort("iTime", "float", "Time", ContentType.Time),
                         InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
-                        InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
+                        InputPort("sm_FragCoord", "vec4", "Raster Coordinates", ContentType.RasterCoordinate)
                     )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                }
+            }
+
+            describe("#outputPorts") {
+                it("finds magic out values") {
+                    expect(listOf(
+                        OutputPort("sm_pixelColor", "vec4", "Output Color", ContentType.Color)
+                    )) { shader.outputPorts }
                 }
             }
 

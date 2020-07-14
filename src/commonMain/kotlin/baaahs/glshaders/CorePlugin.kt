@@ -154,14 +154,14 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class ScreenUvCoord(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<ScreenUvCoord> {
-            override val resourceName: String get() = "U/V Coordinate"
-            override fun build(inputPort: InputPort): ScreenUvCoord = ScreenUvCoord()
+    data class RasterCoord(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<RasterCoord> {
+            override val resourceName: String get() = "Raster Coordinate"
+            override fun build(inputPort: InputPort): RasterCoord = RasterCoord()
         }
 
-        override val dataSourceName: String get() = "U/V Coordinate"
-        override fun getType(): String = "vec2"
+        override val dataSourceName: String get() = "Raster Coordinate"
+        override fun getType(): String = "vec4"
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
@@ -492,7 +492,7 @@ class CorePlugin : Plugin {
 
         val supportedContentTypes = mapOf(
             ContentType.PixelCoordinatesTexture to PixelCoordsTexture,
-            ContentType.UvCoordinate to ScreenUvCoord,
+            ContentType.RasterCoordinate to RasterCoord,
             ContentType.ModelInfo to ModelInfoDataSource,
 //            UvCoordinate,
             ContentType.Mouse to XyPad,
