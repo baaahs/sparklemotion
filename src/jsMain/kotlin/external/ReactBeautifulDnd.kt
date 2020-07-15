@@ -5,7 +5,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.RDOMBuilder
 
-@JsModule("react-beautiful-dnd")
+@JsModule("js/lib/react-beautiful-dnd-13.0-fixed.js")
 private external val reactBeautifulDndModule: dynamic
 
 external interface DragDropContextProps : RProps, Responders {
@@ -177,4 +177,23 @@ fun RBuilder.droppable(
         jsObject<DroppableProps>().apply { attrs() },
         RBuilder().childList.apply { add(children) }
     )
+
+private val noOpDroppableProvided = jsObject<DroppableProvided> {
+}
+
+fun RBuilder.maybeDroppable(
+    isDroppable: Boolean,
+    attrs: DroppableProps.() -> Unit,
+    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement
+): ReactElement {
+    if (isDroppable) {
+        return child(
+            Droppable,
+            jsObject<DroppableProps>().apply { attrs() },
+            RBuilder().childList.apply { add(children) }
+        )
+    } else {
+        return children(noOpDroppableProvided, Unit)
+    }
+}
 

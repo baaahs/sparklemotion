@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.Logger
+import baaahs.camelize
 import baaahs.util.UniqueIds
 import external.DraggableLocation
 import external.DropReason
@@ -41,11 +42,16 @@ class DragNDrop {
     }
 
     fun addDropTarget(dropTarget: DropTarget): String {
-        return dropTargets.idFor(dropTarget) { dropTarget.type }
+        val idFor = dropTargets.idFor(dropTarget) { dropTarget.suggestId() }
+        return idFor
     }
 
     fun removeDropTarget(dropTarget: DropTarget) {
         dropTargets.remove(dropTarget) || throw IllegalStateException("Unregistered drop target.")
+    }
+
+    fun removeDropTarget(id: String) {
+        dropTargets.removeId(id) || throw IllegalStateException("Unregistered drop target.")
     }
 
     fun reset() {
@@ -60,6 +66,7 @@ class DragNDrop {
 interface DropTarget{
     val type: String
 
+    fun suggestId(): String = type.camelize()
     fun moveDraggable(fromIndex: Int, toIndex: Int)
     fun willAccept(draggable: Draggable): Boolean
     fun getDraggable(index: Int): Draggable

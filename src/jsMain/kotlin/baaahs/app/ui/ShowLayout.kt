@@ -1,14 +1,18 @@
 package baaahs.app.ui
 
+import baaahs.OpenShow
+import baaahs.ShowState
+import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
-import baaahs.show.Control
 import baaahs.show.Layout
-import baaahs.ui.and
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
+import baaahs.show.Show
+import baaahs.ui.*
+import external.Direction
+import external.draggable
+import external.droppable
 import external.mosaic.*
+import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -21,15 +25,31 @@ import styled.css
 import styled.styledDiv
 import kotlin.reflect.KClass
 
-val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
+val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
+    val appContext = useContext(appContext)
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
 
-    val editModeStyle = if (props.editMode)
-        Styles.editModeOn
-    else
-        Styles.editModeOff
+    val editModeStyle =
+        if (props.editMode) Styles.editModeOn else Styles.editModeOff
+
+    var controlDisplay by state<ControlDisplay> { nuffin() }
+    onChange("show/state", props.show, props.showState, props.editMode, props.onEdit, appContext.dragNDrop) {
+        controlDisplay = ControlDisplay(props.show, props.showState, props.editMode, props.onEdit, appContext.dragNDrop)
+
+        withCleanup {
+            controlDisplay.release()
+        }
+    }
+
+    val specialControlProps = jsObject<SpecialControlProps> {
+        this.show = props.show
+        this.showState = props.showState
+        this.onShowStateChange = props.onShowStateChange
+        this.editMode = props.editMode
+        this.onEdit = props.onEdit
+    }
 
     styledDiv {
         css {
@@ -44,12 +64,12 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
 
 //    <MosiacMenuBar />
         mosaic<String> {
-            renderTile = { type, path ->
+            renderTile = { panelTitle, path ->
                 MosaicWindow {
                     attrs {
                         draggable = false
 //                    additionalControls = if (type === "") additionalControls else emptyArray<String>()
-                        title = type
+                        title = panelTitle
                         createNode = handleCreateNode
                         this.path = path
                         onDragStart = { console.log("MosaicWindow.onDragStart") }
@@ -60,54 +80,51 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
                     }
 
                     paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                        props.panelControls[type]?.let { layoutControls ->
-                            div(+Styles.layoutControls and Styles.showControls) {
-                                div(+Styles.controlPanelHelpText) { +"Show Controls" }
-                                renderControls(layoutControls.showControls, props)
-                            }
-                            div(+Styles.layoutControls and Styles.sceneControls) {
-                                div(+Styles.controlPanelHelpText) { +"Scene Controls" }
-                                renderControls(layoutControls.sceneControls, props)
-                            }
-                            div(+Styles.layoutControls and Styles.patchControls) {
-                                div(+Styles.controlPanelHelpText) { +"Patch Controls" }
-                                renderControls(layoutControls.patchControls, props)
+                        controlDisplay.render(panelTitle) {
+                                dropTargetId: String,
+                                section: ControlDisplay.Section,
+                                controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl> ->
+
+                            droppable({
+                                this.droppableId = dropTargetId
+                                this.type = "ControlPanel"
+                                this.direction = Direction.horizontal.name
+                                this.isDropDisabled = !props.editMode
+                            }) { droppableProvided, snapshot ->
+                                val style = when (section) {
+                                    ControlDisplay.Section.Show -> Styles.showControls
+                                    ControlDisplay.Section.Scene -> Styles.sceneControls
+                                    ControlDisplay.Section.Patch -> Styles.patchControls
+                                }
+                                div(+Styles.layoutControls and style) {
+                                    install(droppableProvided)
+
+                                    div(+Styles.controlPanelHelpText) { +section.title }
+                                    controls.forEach { placedControl ->
+                                        val control = placedControl.control
+                                        val draggableId = "control_${placedControl.id}"
+
+                                        draggable({
+                                            this.key = draggableId
+                                            this.draggableId = draggableId
+                                            this.isDragDisabled = !props.editMode
+                                            this.index = placedControl.index
+                                        }) { draggableProvided, snapshot ->
+                                            control {
+                                                attrs.control = control
+                                                attrs.specialControlProps = specialControlProps
+                                                attrs.draggableProvided = draggableProvided
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-//                    css { +windowContainer }
-//                            React.createElement(WINDOWS_BY_TYPE[type])
+
                     }
                 }
-//                mosaicWindow<String> {
-//                    draggable = false
-////                    additionalControls = if (type === "") additionalControls else emptyArray<String>()
-//                    title = type
-//                    createNode = handleCreateNode
-//                    this.path = path
-//                    onDragStart = { console.log("MosaicWindow.onDragStart") }
-//                    onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
-//                    renderToolbar = { props: MosaicWindowProps<*>, draggable: Boolean? ->
-//                        styledDiv {
-////                        css { +panelToolbar }
-//                            +props.title
-//                        }
-//                    }
-//
-//                    styledDiv {
-//                        +"panel for $type!"
-//                        props.layoutControls[type]?.forEach { layoutControl ->
-//                            styledDiv {
-//                                +"Control: $type"
-//                                this.layoutControl()
-//                            }
-//                        }
-////                    css { +windowContainer }
-////                            React.createElement(WINDOWS_BY_TYPE[type])
-//                    }
-//                }
             }
 
-//        zeroStateView={<MosaicZeroState createNode={createNode} />}
             val jsonInst =
                 Json(JsonConfiguration.Stable)
             val layoutRoot = props.layout.rootNode
@@ -124,20 +141,13 @@ val ShowLayout = functionalComponent<ShowLayoutProps> { props ->
     }
 }
 
-private fun RBuilder.renderControls(controls: MutableList<Control>, props: ShowLayoutProps) {
-    controls.forEach {
-        control {
-            attrs.control = it
-            attrs.specialControlProps = props.specialControlProps
-        }
-    }
-}
-
 external interface ShowLayoutProps : RProps {
+    var show: OpenShow
+    var showState: ShowState
+    var onShowStateChange: (ShowState) -> Unit
     var layout: Layout
-    var panelControls: Map<String, PanelControls>
-    var specialControlProps: SpecialControlProps
     var editMode: Boolean
+    var onEdit: (Show, ShowState) -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =

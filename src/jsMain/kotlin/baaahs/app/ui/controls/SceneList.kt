@@ -8,6 +8,7 @@ import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.ui.getName
+import baaahs.ui.install
 import baaahs.ui.patchyEditor
 import baaahs.ui.xComponent
 import external.Direction
@@ -66,9 +67,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.horizontalButtonList.getName()
             ) {
-                ref = sceneDropProvided.innerRef
-                copyFrom(sceneDropProvided.droppableProps)
-                this.childList.add(sceneDropProvided.placeholder)
+                install(sceneDropProvided)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs["exclusive"] = true
@@ -87,8 +86,8 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 
                         styledDiv {
                             ref = sceneDragProvided.innerRef
-                            css { position = Position.relative }
                             copyFrom(sceneDragProvided.draggableProps)
+                            css { position = Position.relative }
 
                             styledDiv {
                                 css {
@@ -96,7 +95,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                                     transition(property = "visibility", duration = 0.25.s, timing = Timing.linear)
                                     position = Position.absolute
                                     right = 2.px
-                                    top = -2.px
+                                    top = (-2).px
                                     zIndex = 1
                                 }
                                 copyFrom(sceneDragProvided.dragHandleProps)

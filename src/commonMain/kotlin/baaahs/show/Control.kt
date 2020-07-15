@@ -21,6 +21,8 @@ data class ControlRef(val type: Type, val id: String) {
             Type.DataSource -> dataSources.getBang(id, "data source")
         }
     }
+
+    fun toShortString(): String = "$type:$id"
 }
 
 class SpecialControl(val pluginRef: PluginRef) : Control {
