@@ -1,9 +1,6 @@
 package baaahs.app.ui.controls
 
-import kotlinx.css.height
-import kotlinx.css.padding
-import kotlinx.css.px
-import kotlinx.css.width
+import kotlinx.css.*
 import styled.StyleSheet
 
 object Styles : StyleSheet("UI-Gadgets", isStatic = true) {
@@ -23,5 +20,9 @@ object Styles : StyleSheet("UI-Gadgets", isStatic = true) {
             width = 150.px
             height = 75.px
         }
+    }
+
+    val controlBox by css {
+        height = 100.pct
     }
 }

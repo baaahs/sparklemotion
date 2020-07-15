@@ -188,7 +188,16 @@ kotlin {
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
-                implementation(npm("react-beautiful-dnd", "^13.0.0"))
+
+                // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
+//                implementation(npm("react-beautiful-dnd", "^13.0.0"))
+                // <react-beautiful-dnd bug workaround>
+                implementation(npm("css-box-model", "^1.2.0"))
+                implementation(npm("raf-schd", "^4.0.2"))
+                implementation(npm("react-redux", "^7.2.0"))
+                implementation(npm("use-memo-one", "^1.1.1"))
+                // </react-beautiful-dnd bug workaround>
+
                 implementation(npm("react-compound-slider", "^2.0.0"))
                 implementation(npm("react-dom", "^16.13.1"))
                 implementation(npm("react-draggable", "^3.3.0"))

@@ -177,7 +177,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.showState = showState
                 attrs.onShowStateChange = handleShowStateChange
                 attrs.editMode = editMode
-                attrs.onChange = handleShowEdit
+                attrs.onEdit = handleShowEdit
             }
 
             portal {

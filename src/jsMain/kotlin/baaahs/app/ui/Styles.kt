@@ -7,6 +7,7 @@ import kotlinx.css.properties.deg
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
+import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private fun linearRepeating(
     color1: Color,
@@ -62,8 +63,8 @@ object Styles : StyleSheet("AppUI", isStatic = true) {
     val editModeOn by css {
         descendants(layoutControls) {
             padding(1.em)
-            minWidth = 3.em; transition(StyledElement::minWidth)
-            minHeight = 3.em; transition(StyledElement::minHeight)
+            minWidth = 5.em; transition(StyledElement::minWidth)
+            minHeight = 5.em; transition(StyledElement::minHeight)
             border = "1px solid black"
             borderRadius = 3.px
 
@@ -86,8 +87,14 @@ object Styles : StyleSheet("AppUI", isStatic = true) {
             display = Display.block
             position = Position.absolute
             top = 0.5.em
-            left = 1.px
+            left = 0.5.px
             declarations["writing-mode"] = "vertical-lr"
+        }
+
+        descendants(ControlsStyles.controlBox) {
+            backgroundColor = Color.gray.withAlpha(.5)
+            border = "1px solid black"
+            borderRadius = 3.px
         }
     }
 

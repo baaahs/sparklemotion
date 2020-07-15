@@ -27,6 +27,11 @@ fun <P : react.RProps> xComponent(
     return component
 }
 
+private class CounterIncr {
+    private var i: Int = 0
+    fun next(): Int = ++i
+}
+
 class XBuilder(val logger: Logger) : react.RBuilder() {
     private var firstTime = false
     private var dataIndex = 0
@@ -37,8 +42,10 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         Context()
     }, emptyArray())
 
-    private val counter = react.useState { 0 }
-    private var internalCounter = 0
+    private val counterIncr = react.useState { CounterIncr() }
+    private val counter = react.useState { counterIncr.first.next() }
+    private var inRender = true;
+    private var stateHasChanged = false
 
     init {
         react.useEffectWithCleanup(emptyList()) {
@@ -59,9 +66,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
-            val data = Data(valueInitializer()) {
-                counter.second(++internalCounter)
-            }
+            val data = Data(valueInitializer()) { forceRender() }
             context.data.add(data)
             return data
         } else {
@@ -84,19 +89,19 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     fun onChange(name: String, vararg watch: Any?, callback: SideEffect.() -> Unit) {
         return if (firstTime) {
-            val sideEffect = SideEffect(watch)
+            val sideEffect = SideEffect(watch, logger)
             context.sideEffects.add(sideEffect)
             sideEffect.callback()
         } else {
             val sideEffect = context.sideEffects[sideEffectIndex++]
-            sideEffect.firstTime = false
+            sideEffect.collectCleanups = false
             if (areSame(watch, sideEffect.lastWatchValues)) {
                 logger.debug {
                     "Not running side effect $name " +
                             "(${watch.truncateStrings(12)} == ${sideEffect.lastWatchValues.truncateStrings(12)}"
                 }
             } else {
-                logger.debug {
+                logger.info {
                     "Running side effect $name " +
                             "(${watch.truncateStrings(12)} != ${sideEffect.lastWatchValues.truncateStrings(12)}"
                 }
@@ -109,7 +114,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     fun onMount(vararg watch: Any?, callback: SideEffect.() -> Unit) {
         react.useEffectWithCleanup(watch.toList()) {
-            val sideEffect = SideEffect(watch)
+            val sideEffect = SideEffect(watch, logger)
             sideEffect.callback()
             return@useEffectWithCleanup { sideEffect.runCleanups() }
         }
@@ -143,11 +148,26 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun forceRender() {
-        counter.second(++internalCounter)
+        if (inRender) {
+            stateHasChanged = true
+        } else {
+            forceRenderNow(immediate = true)
+        }
+    }
+
+    internal fun forceRenderNow(immediate: Boolean) {
+        val triggerUpdate = { counter.second(counterIncr.first.next()) }
+        if (immediate) {
+            triggerUpdate()
+        } else {
+            later(triggerUpdate)
+        }
     }
 
     internal fun renderFinished() {
         firstTime = false
+        if (stateHasChanged) forceRenderNow(!inRender)
+        inRender = false
     }
 
     private fun areSame(currentWatchValues: Array<out Any?>, priorWatchValues: Array<out Any?>): Boolean {
@@ -181,7 +201,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
+//            logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
             if (this.value != value) {
                 this.value = value
                 onChange()
@@ -190,27 +210,30 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     class SideEffect(
-        internal var lastWatchValues: Array<out Any?>
+        internal var lastWatchValues: Array<out Any?>,
+        private val logger: Logger
     ) {
-        internal var firstTime: Boolean = true
-        internal var cleanups: MutableList<() -> Unit>? = null
+        internal var collectCleanups: Boolean = true
+        private var cleanups: MutableList<() -> Unit>? = null
 
         fun withCleanup(cleanup: () -> Unit) {
-            if (firstTime) {
+            if (collectCleanups) {
                 if (cleanups == null) cleanups = mutableListOf()
                 cleanups!!.add(cleanup)
             }
         }
 
         internal fun runCleanups() {
-            cleanups?.forEach { it.invoke() }
+            cleanups?.forEach {
+                try {
+                    it.invoke()
+                } catch (e: Exception) {
+                    logger.error("Error in cleanup", e)
+                }
+            }
             cleanups?.clear()
-            firstTime = true // re-collect cleanups
+            collectCleanups = true // re-collect cleanups
         }
-    }
-
-    companion object {
-        private val logger = Logger("Preact")
     }
 }
 

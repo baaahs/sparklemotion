@@ -3,7 +3,9 @@ package baaahs.ui
 import baaahs.show.PatchEditor
 import baaahs.show.PatchyEditor
 import baaahs.show.ShowBuilder
-import kotlinx.css.*
+import kotlinx.css.em
+import kotlinx.css.margin
+import kotlinx.css.padding
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
@@ -154,24 +156,6 @@ private object styles : StyleSheet("UI-PatchyEditor", isStatic = true) {
         padding(1.em)
     }
 }
-
-operator fun RuleSet.unaryPlus(): String = getName()
-
-infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.getName()
-
-infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
-    return clazz to getName()
-}
-
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
-    return mutableListOf(this, that)
-}
-
-infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
-    return clazz to joinToString(" ") { it.getName() }
-}
-
-fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = "& .${ruleSet.getName()}".invoke(block)
 
 external interface PatchyEditorProps : RProps {
     var editor: PatchyEditor

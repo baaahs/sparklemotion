@@ -8,10 +8,7 @@ import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
-import baaahs.ui.getName
-import baaahs.ui.patchyEditor
-import baaahs.ui.useCallback
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.Direction
 import external.copyFrom
 import external.draggable
@@ -104,9 +101,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.verticalButtonList.getName()
             ) {
-                ref = droppableProvided.innerRef
-                copyFrom(droppableProvided.droppableProps)
-                this.childList.add(droppableProvided.placeholder)
+                install(droppableProvided)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs.orientation = ButtonGroupOrientation.vertical

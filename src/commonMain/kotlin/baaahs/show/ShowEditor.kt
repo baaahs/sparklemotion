@@ -15,7 +15,7 @@ abstract class PatchyEditor(
     open val patchMappings: List<PatchEditor> = emptyList()
 
     val eventBindings = basePatchy.eventBindings.toMutableList()
-    val controlLayout = basePatchy.controlLayout
+    private val controlLayout = basePatchy.controlLayout
         .mapValues { (_, v) ->
             v.map {
                 ControlEditor(it.dereference(dataSources))
@@ -26,11 +26,18 @@ abstract class PatchyEditor(
         controlLayout.getOrPut(panel) { arrayListOf() }.add(ControlEditor(control))
     }
 
+    fun removeControl(panel: String, index: Int): ControlEditor {
+        return controlLayout.getOrPut(panel) { arrayListOf() }.removeAt(index)
+    }
 
     fun findControlDataSources(): Set<DataSource> {
         return controlLayout.values.flatMap {
             it.filterIsInstance<DataSourceEditor>().map { it.dataSource }
         }.toSet()
+    }
+
+    fun editControlLayout(panelName: String): MutableList<ControlEditor> {
+        return controlLayout.getOrPut(panelName) { mutableListOf() }
     }
 
     internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<ControlRef>> {
@@ -75,6 +82,8 @@ class ShowEditor(
         patchSetSelections.add(0)
         return this
     }
+
+    fun getSceneEditor(sceneIndex: Int): SceneEditor = scenes[sceneIndex]
 
     fun editScene(sceneIndex: Int, block: SceneEditor.() -> Unit): ShowEditor {
         scenes[sceneIndex].apply(block)
@@ -131,6 +140,8 @@ class ShowEditor(
             patchSets.add(PatchSetEditor(PatchSet(title)).apply(block))
             return this
         }
+
+        fun getPatchSetEditor(index: Int): PatchSetEditor = patchSets[index]
 
         fun editPatchSet(index: Int, block: PatchSetEditor.() -> Unit): SceneEditor {
             patchSets[index].block()
