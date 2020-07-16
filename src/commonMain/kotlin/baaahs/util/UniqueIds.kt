@@ -16,11 +16,17 @@ class UniqueIds<T> {
     }
 
     fun remove(value: T): Boolean {
-        val id = toId[value] ?: return false
-        toId.remove(value)
+        val id = toId.remove(value) ?: return false
         byId.remove(id)
         return true
     }
+
+    fun removeId(id: String): Boolean {
+        val value = byId.remove(id) ?: return false
+        toId.remove(value)
+        return true
+    }
+
     fun clear() {
         toId.clear()
         byId.clear()

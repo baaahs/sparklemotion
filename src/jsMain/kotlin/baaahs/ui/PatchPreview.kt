@@ -95,5 +95,5 @@ external interface PatchPreviewProps : RProps {
     var onError: (Array<GlslError>) -> Unit
 }
 
-fun RBuilder.patchPreview(handler: PatchPreviewProps.() -> Unit): ReactElement =
-    child(PatchPreview) { attrs { handler() } }
+fun RBuilder.patchPreview(handler: RHandler<PatchPreviewProps>): ReactElement =
+    child(PatchPreview, handler = handler)

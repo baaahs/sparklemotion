@@ -4,6 +4,7 @@ import baaahs.gadgets.Slider
 import baaahs.net.Network
 import baaahs.net.TestNetwork
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.json
 import kotlinx.serialization.json.jsonArray
 import kotlin.test.BeforeTest
@@ -29,9 +30,9 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to first, "second" to second, "third" to third))
 
         val expectedActiveGadgets = jsonArray {
-            +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "first"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/first" }
-            +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "second"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/second" }
-            +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "third"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01 }; "topicName" to "/gadgets/third" }
+            +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "first"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/first" }
+            +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "second"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/second" }
+            +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "third"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/third" }
         }
         expect(expectedActiveGadgets) { pubSub.getTopicInfo("activeGadgets")!!.jsonValue }
 
@@ -66,9 +67,9 @@ class GadgetManagerTest {
 
         expect(
             jsonArray {
-                +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/first"}
-                +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/second"}
-                +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to 0.01}; "topicName" to "/gadgets/third"}
+                +json { "name" to "first"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/first"}
+                +json { "name" to "second"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/second"}
+                +json { "name" to "third"; "gadget" to json { "type" to "baaahs.gadgets.Slider"; "title" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/third"}
 
             }
         ) { activeGadgetsListener.events.map { json.parseJson(it) }.only() }

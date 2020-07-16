@@ -202,17 +202,17 @@ class RefCounter : RefCounted {
     }
 }
 
-open class OpenControllables(
+open class OpenPatchy(
     patchy: Patchy, private val dataSources: Map<String, DataSource>
 ) {
-    val controlLayout: Map<String, List<DataSource>> = patchy.controlLayout.mapValues { (_, dataSourceRefs) ->
-        dataSourceRefs.map { dataSources.getBang(it.dataSourceId, "datasource") }
+    val controlLayout: Map<String, List<Control>> = patchy.controlLayout.mapValues { (_, controlRefs) ->
+        controlRefs.map { it.dereference(dataSources) }
     }
 }
 
 class OpenShow(
     private val show: Show, private val showResources: ShowResources
-) : RefCounted by RefCounter(), OpenControllables(show, show.dataSources) {
+) : RefCounted by RefCounter(), OpenPatchy(show, show.dataSources) {
     val id = randomId("show")
     val layouts get() = show.layouts
     val shaders = show.shaders.mapValues { (_, shader) -> showResources.openShader(shader) }
@@ -231,12 +231,12 @@ class OpenShow(
         dataFeeds.values.forEach { it.release() }
     }
 
-    inner class OpenScene(scene: Scene) : OpenControllables(scene, show.dataSources) {
+    inner class OpenScene(scene: Scene) : OpenPatchy(scene, show.dataSources) {
         val id = randomId("scene")
         val title = scene.title
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
-        inner class OpenPatchSet(patchSet: PatchSet) : OpenControllables(patchSet, show.dataSources) {
+        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchy(patchSet, show.dataSources) {
             val id = randomId("patchset")
             val title = patchSet.title
             val patches = patchSet.patches.map { OpenPatch(it, shaders, show.dataSources) }
@@ -288,7 +288,7 @@ object SliderType : ControlType("Slider") {
             initialValue = data["default"] as? Float ?: 1f,
             minValue = data["min"] as? Float ?: 0f,
             maxValue = data["max"] as? Float ?: 1f,
-            stepValue = data["step"] as? Float ?: 0.01f
+            stepValue = data["step"] as? Float
         )
     }
 }

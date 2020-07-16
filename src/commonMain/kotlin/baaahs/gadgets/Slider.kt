@@ -7,7 +7,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlin.js.JsName
 import kotlin.random.Random
 
-/** A gadget for adjusting a value using a slider. */
+/** A gadget for adjusting a scalar numeric value using a slider. */
 @Serializable
 data class Slider(
     /** The name for this slider. */
@@ -22,8 +22,8 @@ data class Slider(
     /** The maximum value for this slider. */
     val maxValue: Float = 1f,
 
-    /** The step value for the slider. Only used if minValue and maxValue are used. */
-    val stepValue: Float = 0.01f
+    /** The step value for the slider. */
+    val stepValue: Float? = null
 ) : Gadget() {
     /** The selected value. */
     @JsName("value")

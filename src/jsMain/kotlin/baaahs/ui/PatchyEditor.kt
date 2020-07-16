@@ -1,17 +1,16 @@
 package baaahs.ui
 
-import baaahs.ShowResources
-import baaahs.glshaders.*
-import baaahs.show.*
-import kotlinx.css.*
+import baaahs.show.PatchEditor
+import baaahs.show.PatchyEditor
+import baaahs.show.ShowBuilder
+import kotlinx.css.em
+import kotlinx.css.margin
+import kotlinx.css.padding
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
-import materialui.Edit
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
-import materialui.components.card.card
-import materialui.components.dialog.dialog
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
@@ -20,7 +19,6 @@ import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrol.enums.FormControlVariant
-import materialui.components.iconbutton.iconButton
 import materialui.components.portal.portal
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
@@ -29,18 +27,12 @@ import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.components.textfield.textField
-import materialui.icon
-import materialui.styles.StylesBuilder
-import materialui.styles.withStyles
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.form
-import react.dom.h3
 import react.dom.key
 import styled.StyleSheet
-import styled.getClassName
-import kotlin.properties.ReadOnlyProperty
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Event.targetEl(): T = target as T
@@ -163,10 +155,6 @@ private object styles : StyleSheet("UI-PatchyEditor", isStatic = true) {
         margin(1.em)
         padding(1.em)
     }
-}
-
-infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
-    return clazz to getName()
 }
 
 external interface PatchyEditorProps : RProps {

@@ -10,10 +10,7 @@ import baaahs.util.percent
 import kotlinx.css.*
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
-import react.RBuilder
-import react.RProps
-import react.RState
-import react.ReactElement
+import react.*
 import react.dom.tbody
 import react.dom.td
 import react.dom.tr
@@ -76,5 +73,5 @@ external interface NetworkPanelProps : RProps {
     var network: FakeNetwork.Facade?
 }
 
-fun RBuilder.networkPanel(handler: NetworkPanelProps.() -> Unit): ReactElement =
-    child(NetworkPanel::class) { this.attrs(handler) }
+fun RBuilder.networkPanel(handler: RHandler<NetworkPanelProps>): ReactElement =
+    child(NetworkPanel::class, handler = handler)

@@ -1,7 +1,10 @@
 package baaahs.show
 
 import baaahs.ShowState
-import baaahs.glshaders.*
+import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.Plugins
+import baaahs.glshaders.ShaderFactory
+import baaahs.glshaders.override
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -23,7 +26,7 @@ object ShowEditorSpec : Spek({
                     addPatchSet("patchset 2b") { addPatch(autoWirer.testPatch("shader 2b")) }
                     addPatchSet("patchset 2c") { addPatch(autoWirer.testPatch("shader 2c")) }
                 }
-                addControl("Scenes", CorePlugin.Scenes())
+                addControl("Scenes", scenesControl)
             }
         }
         val baseShow by value { baseShowEditor.build(ShowBuilder()) }
@@ -48,7 +51,7 @@ object ShowEditorSpec : Spek({
 
             it("has the expected initial datasources") {
                 expect(
-                    setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Blueness Slider", "Scene List")
+                    setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Blueness Slider")
                 ) { show.dataSources.values.map { it.dataSourceName }.toSet() }
             }
 

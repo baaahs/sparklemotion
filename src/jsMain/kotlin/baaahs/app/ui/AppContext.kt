@@ -7,4 +7,5 @@ val appContext = createContext<AppContext>()
 
 external interface AppContext {
     var showResources: ShowResources
+    var dragNDrop: DragNDrop
 }

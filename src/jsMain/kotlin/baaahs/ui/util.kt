@@ -1,10 +1,14 @@
 package baaahs.ui
 
 import baaahs.Logger
+import external.DroppableProvided
+import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
+import kotlinx.html.DIV
 import react.RMutableRef
 import react.ReactElement
+import react.dom.RDOMBuilder
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
@@ -46,6 +50,30 @@ fun String?.truncate(length: Int): String? {
 
 fun RuleSet.getName(): String {
     return CSSBuilder().apply { +this@getName }.classes.joinToString(" ")
+}
+
+operator fun RuleSet.unaryPlus(): String = getName()
+
+infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.getName()
+
+infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
+    return clazz to getName()
+}
+
+infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
+    return mutableListOf(this, that)
+}
+
+infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
+    return clazz to joinToString(" ") { it.getName() }
+}
+
+fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = "& .${ruleSet.getName()}".invoke(block)
+
+fun RDOMBuilder<DIV>.install(droppableProvided: DroppableProvided) {
+    ref = droppableProvided.innerRef
+    copyFrom(droppableProvided.droppableProps)
+    this.childList.add(droppableProvided.placeholder)
 }
 
 private val logger = Logger("util.kt")

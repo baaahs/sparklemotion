@@ -46,11 +46,7 @@ object AutoWirerSpec : Spek({
                         DataSourceEditor(CorePlugin.Resolution())
                                 linkTo ShaderEditor(colorShader.shader).inputPort("resolution"),
                         DataSourceEditor(
-                            CorePlugin.SliderDataSource(
-                                "Blueness",
-                                1f, 0f, 1f, 0.01f
-                            )
-                        )
+                            CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null))
                                 linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
                         DataSourceEditor(CorePlugin.ScreenUvCoord())
                                 linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
@@ -72,7 +68,7 @@ object AutoWirerSpec : Spek({
                                     linkTo ShaderEditor(colorShader.shader).inputPort("time"),
                             DataSourceEditor(CorePlugin.Resolution())
                                     linkTo ShaderEditor(colorShader.shader).inputPort("resolution"),
-                            DataSourceEditor(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, 0.01f))
+                            DataSourceEditor(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null))
                                     linkTo ShaderEditor(colorShader.shader).inputPort("blueness"),
                             ShaderEditor(uvShader.shader).outputPort(ShaderOutPortRef.ReturnValue)
                                     linkTo ShaderEditor(colorShader.shader).inputPort("gl_FragCoord"),
