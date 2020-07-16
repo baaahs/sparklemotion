@@ -203,7 +203,7 @@ class RefCounter : RefCounted {
 }
 
 open class OpenPatchy(
-    patchy: Patchy, private val dataSources: Map<String, DataSource>
+    patchy: Patchy, val dataSources: Map<String, DataSource>
 ) {
     val controlLayout: Map<String, List<Control>> = patchy.controlLayout.mapValues { (_, controlRefs) ->
         controlRefs.map { it.dereference(dataSources) }

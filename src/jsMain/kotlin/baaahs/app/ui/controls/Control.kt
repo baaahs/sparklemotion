@@ -15,6 +15,7 @@ import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import materialui.DragHandle
+import materialui.DragIndicator
 import materialui.Edit
 import materialui.icon
 import react.*
@@ -31,19 +32,10 @@ val Control = xComponent<ControlProps>("Control") { props ->
     div(+Styles.controlBox) {
         ref = props.draggableProvided.innerRef
         copyFrom(props.draggableProvided.draggableProps)
-        copyFrom(props.draggableProvided.dragHandleProps)
 
-        styledDiv {
-            css {
-                visibility = if (editMode) Visibility.visible else Visibility.hidden
-                transition(StyledElement::visibility, duration = 0.25.s, timing = Timing.linear)
-                position = Position.absolute
-                right = 2.px
-                bottom = (-2).px
-                zIndex = 1
-            }
-
-            icon(DragHandle)
+        div(+Styles.dragHandle) {
+            copyFrom(props.draggableProvided.dragHandleProps)
+            icon(DragIndicator)
         }
 
         when (control) {
@@ -65,6 +57,10 @@ val Control = xComponent<ControlProps>("Control") { props ->
                         RangeSlider {
                             attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
                         }
+                        b { +control.dataSourceName }
+                    }
+
+                    else -> {
                         b { +control.dataSourceName }
                     }
                 }

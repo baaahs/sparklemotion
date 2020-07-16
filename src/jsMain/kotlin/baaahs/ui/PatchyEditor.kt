@@ -146,7 +146,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
     }
 }
 
-private object styles : StyleSheet("UI-PatchyEditor", isStatic = true) {
+private object styles : StyleSheet("ui-PatchyEditor", isStatic = true) {
     val drawer by css {
         margin(horizontal = 5.em)
     }
