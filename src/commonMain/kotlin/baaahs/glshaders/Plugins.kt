@@ -13,6 +13,8 @@ data class PluginRef(
     val pluginId: String,
     val resourceName: String
 ) {
+    fun toRef() = "$pluginId:$resourceName"
+
     companion object {
         fun from(identString: String): PluginRef {
             val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)

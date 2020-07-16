@@ -66,15 +66,11 @@ object SampleData {
         mapOf("default" to defaultLayout)
     )
 
-    val scenesControl = CorePlugin.Scenes("Scenes")
-    val patchesControl = CorePlugin.Patches("Patches")
     val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
     val brightnessControl = CorePlugin.SliderDataSource(
-        "Brightness", 1f, 0f, 1f, 0.01f
-    )
+        "Brightness", 1f, 0f, 1f, null)
     val intensityControl = CorePlugin.SliderDataSource(
-        "Intensity", 1f, 0f, 1f, 0.01f
-    )
+        "Intensity", 1f, 0f, 1f, null)
 
     val sampleShow = ShowEditor("Sample Show").apply {
         editLayouts {

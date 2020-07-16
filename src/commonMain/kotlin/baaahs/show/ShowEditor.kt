@@ -1,7 +1,6 @@
 package baaahs.show
 
 import baaahs.ShowState
-import baaahs.getBang
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.OpenPatch
 import baaahs.util.UniqueIds
@@ -16,25 +15,34 @@ abstract class PatchyEditor(
     open val patchMappings: List<PatchEditor> = emptyList()
 
     val eventBindings = basePatchy.eventBindings.toMutableList()
-    val controlLayout = basePatchy.controlLayout
+    private val controlLayout = basePatchy.controlLayout
         .mapValues { (_, v) ->
             v.map {
-                DataSourceEditor(dataSources.getBang(it.dataSourceId, "datasource"))
+                ControlEditor(it.dereference(dataSources))
             }.toMutableList()
         }.toMutableMap()
 
-    fun addControl(panel: String, dataSource: DataSource) {
-        controlLayout.getOrPut(panel) { arrayListOf() }.add(DataSourceEditor(dataSource))
+    fun addControl(panel: String, control: Control) {
+        controlLayout.getOrPut(panel) { arrayListOf() }.add(ControlEditor(control))
     }
 
+    fun removeControl(panel: String, index: Int): ControlEditor {
+        return controlLayout.getOrPut(panel) { arrayListOf() }.removeAt(index)
+    }
 
     fun findControlDataSources(): Set<DataSource> {
-        return controlLayout.values.flatMap { it.map { it.dataSource } }.toSet()
+        return controlLayout.values.flatMap {
+            it.filterIsInstance<DataSourceEditor>().map { it.dataSource }
+        }.toSet()
     }
 
-    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<DataSourceRef>> {
+    fun editControlLayout(panelName: String): MutableList<ControlEditor> {
+        return controlLayout.getOrPut(panelName) { mutableListOf() }
+    }
+
+    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<ControlRef>> {
         return controlLayout.mapValues { (_, v) ->
-            v.map { DataSourceRef(showBuilder.idFor(it.dataSource)) }
+            v.map { it.toRef(showBuilder) }
         }
     }
 
@@ -75,6 +83,8 @@ class ShowEditor(
         return this
     }
 
+    fun getSceneEditor(sceneIndex: Int): SceneEditor = scenes[sceneIndex]
+
     fun editScene(sceneIndex: Int, block: SceneEditor.() -> Unit): ShowEditor {
         scenes[sceneIndex].apply(block)
         return this
@@ -102,8 +112,8 @@ class ShowEditor(
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
             layouts = layoutEditor.build(),
-            shaders = findShaders().associateBy { showBuilder.idFor(it) },
-            dataSources = findDataSources().associateBy { showBuilder.idFor(it) }
+            shaders = showBuilder.getShaders(),
+            dataSources = showBuilder.getDataSources()
         )
     }
 
@@ -130,6 +140,8 @@ class ShowEditor(
             patchSets.add(PatchSetEditor(PatchSet(title)).apply(block))
             return this
         }
+
+        fun getPatchSetEditor(index: Int): PatchSetEditor = patchSets[index]
 
         fun editPatchSet(index: Int, block: PatchSetEditor.() -> Unit): SceneEditor {
             patchSets[index].block()
@@ -314,6 +326,10 @@ data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
         DataSourceRef(showBuilder.idFor(dataSource))
 
     override fun displayName(): String = dataSource.dataSourceName
+}
+
+data class ControlEditor(val control: Control) {
+    fun toRef(showBuilder: ShowBuilder): ControlRef = control.toControlRef(showBuilder)
 }
 
 data class ShaderEditor(val shader: Shader) {

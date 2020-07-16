@@ -1,14 +1,14 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
-import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
+import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.ui.getName
+import baaahs.ui.install
 import baaahs.ui.patchyEditor
 import baaahs.ui.xComponent
 import external.Direction
@@ -25,32 +25,32 @@ import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RProps
-import react.ReactElement
-import react.child
+import react.key
+import react.useContext
 import styled.css
 import styled.styledDiv
 
-val SceneList = xComponent<SceneListProps>("SceneList") { props ->
+val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
+    val appContext = useContext(appContext)
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = SceneListDropTarget(props.show, props.showState, props.onChange)
-    val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
+    val dropTarget =
+        SceneListDropTarget(props.show, props.showState, props.onEdit)
+    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
-            props.dragNDrop.removeDropTarget(dropTarget)
+            appContext.dragNDrop.removeDropTarget(dropTarget)
         }
     }
 
     val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
         val sceneDropTarget = SceneDropTarget(props.show, index)
-        val sceneDropTargetId = props.dragNDrop.addDropTarget(sceneDropTarget)
+        val sceneDropTargetId = appContext.dragNDrop.addDropTarget(sceneDropTarget)
         sceneDropTargetId to sceneDropTarget as DropTarget
     }
     onChange("unregister drop target") {
         withCleanup {
             sceneDropTargets.forEach { (_, sceneDropTarget) ->
-                props.dragNDrop.removeDropTarget(sceneDropTarget)
+                appContext.dragNDrop.removeDropTarget(sceneDropTarget)
             }
         }
     }
@@ -67,9 +67,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.horizontalButtonList.getName()
             ) {
-                ref = sceneDropProvided.innerRef
-                copyFrom(sceneDropProvided.droppableProps)
-                this.childList.add(sceneDropProvided.placeholder)
+                install(sceneDropProvided)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs["exclusive"] = true
@@ -88,8 +86,8 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 
                         styledDiv {
                             ref = sceneDragProvided.innerRef
-                            css { position = Position.relative }
                             copyFrom(sceneDragProvided.draggableProps)
+                            css { position = Position.relative }
 
                             styledDiv {
                                 css {
@@ -97,7 +95,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
                                     transition(property = "visibility", duration = 0.25.s, timing = Timing.linear)
                                     position = Position.absolute
                                     right = 2.px
-                                    top = -2.px
+                                    top = (-2).px
                                     zIndex = 1
                                 }
                                 copyFrom(sceneDragProvided.dragHandleProps)
@@ -116,7 +114,10 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
 
                                     attrs["value"] = index
                                     attrs["selected"] = index == props.showState.selectedScene
-                                    attrs.onClickFunction = { props.onSelect(index) }
+                                    attrs.onClickFunction = {
+                                        val newState = props.showState.selectScene(index)
+                                        props.onShowStateChange(newState)
+                                    }
 
                                     +scene.title
                                 }
@@ -147,7 +148,7 @@ val SceneList = xComponent<SceneListProps>("SceneList") { props ->
         patchyEditor {
             attrs.editor = editor
             attrs.onSave = {
-                props.onChange(editor.getShow(), editor.getShowState())
+                props.onEdit(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
             attrs.onCancel = handleClose
@@ -208,15 +209,3 @@ private class SceneDropTarget(
 
     override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
 }
-
-external interface SceneListProps : RProps {
-    var show: OpenShow
-    var showState: ShowState
-    var onSelect: (Int) -> Unit
-    var editMode: Boolean
-    var dragNDrop: DragNDrop
-    var onChange: (Show, ShowState) -> Unit
-}
-
-fun RBuilder.sceneList(handler: SceneListProps.() -> Unit): ReactElement =
-    child(SceneList) { attrs { handler() } }

@@ -6,10 +6,6 @@ import kotlinx.css.properties.transform
 import styled.StyleSheet
 
 object Styles : StyleSheet("UI", isStatic = true) {
-    val layoutPanel by Styles.css {
-        height = 100.pct
-    }
-
     val toolbar by css {
         display = Display.flex
         alignItems = Align.center

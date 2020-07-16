@@ -1,19 +1,14 @@
-package baaahs.ui.gadgets
+package baaahs.app.ui.controls
 
 import baaahs.OpenShow
-import baaahs.ShowResources
 import baaahs.ShowState
-import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
-import baaahs.ui.getName
-import baaahs.ui.patchyEditor
-import baaahs.ui.useCallback
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.Direction
 import external.copyFrom
 import external.draggable
@@ -30,7 +25,8 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import org.w3c.dom.events.Event
-import react.*
+import react.key
+import react.useContext
 import styled.css
 import styled.styledDiv
 
@@ -67,13 +63,15 @@ class DraggablePatch(
     }
 }
 
-val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
+val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
+    val appContext = useContext(appContext)
     var patchyEditor by state<PatchyEditor?> { null }
-    val dropTarget = PatchSetListDropTarget(props.show, props.showState, props.onChange)
-    val dropTargetId = props.dragNDrop.addDropTarget(dropTarget)
+    val dropTarget =
+        PatchSetListDropTarget(props.show, props.showState, props.onEdit)
+    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
-            props.dragNDrop.removeDropTarget(dropTarget)
+            appContext.dragNDrop.removeDropTarget(dropTarget)
         }
     }
 
@@ -103,9 +101,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.verticalButtonList.getName()
             ) {
-                ref = droppableProvided.innerRef
-                copyFrom(droppableProvided.droppableProps)
-                this.childList.add(droppableProvided.placeholder)
+                install(droppableProvided)
 
                 attrs.variant = ButtonVariant.outlined
                 attrs.orientation = ButtonGroupOrientation.vertical
@@ -143,7 +139,10 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
 //                (attrs as Tag).disabled = patchSet == props.currentPatchSet
                                 attrs["value"] = index
                                 attrs["selected"] = index == props.showState.selectedPatchSet
-                                attrs.onClickFunction = { props.onSelect(index) }
+                                attrs.onClickFunction = {
+                                    val newState = props.showState.selectPatchSet(index)
+                                    props.onShowStateChange(newState)
+                                }
                                 if (props.editMode) {
                                     attrs.onContextMenuFunction = { event: Event -> handleContextClick(event, index) }
                                 }
@@ -175,7 +174,7 @@ val PatchSetList = xComponent<PatchSetListProps>("PatchSetList") { props ->
         patchyEditor {
             attrs.editor = editor
             attrs.onSave = {
-                props.onChange(editor.getShow(), editor.getShowState())
+                props.onEdit(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
             attrs.onCancel = handleOnClose
@@ -223,15 +222,3 @@ private class PatchSetListDropTarget(
         draggable.remove()
     }
 }
-
-external interface PatchSetListProps : RProps {
-    var show: OpenShow
-    var showState: ShowState
-    var onSelect: (Int) -> Unit
-    var editMode: Boolean
-    var dragNDrop: DragNDrop
-    var onChange: (Show, ShowState) -> Unit
-}
-
-fun RBuilder.patchSetList(handler: PatchSetListProps.() -> Unit): ReactElement =
-    child(PatchSetList) { attrs { handler() } }

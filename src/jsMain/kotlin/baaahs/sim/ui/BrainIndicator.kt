@@ -8,10 +8,7 @@ import baaahs.ui.Observer
 import baaahs.ui.SimulatorStyles.brainIndicator
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseOverFunction
-import react.RBuilder
-import react.RProps
-import react.RState
-import react.ReactElement
+import react.*
 import styled.css
 import styled.styledDiv
 
@@ -43,5 +40,5 @@ external interface BrainIndicatorProps : RProps {
     var brainSelectionListener: (Brain.Facade) -> Unit
 }
 
-fun RBuilder.brainIndicator(handler: BrainIndicatorProps.() -> Unit): ReactElement =
-    child(BrainIndicator::class) { this.attrs(handler) }
+fun RBuilder.brainIndicator(handler: RHandler<BrainIndicatorProps>): ReactElement =
+    child(BrainIndicator::class, handler = handler)
