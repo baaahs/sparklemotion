@@ -13,10 +13,6 @@ import external.Direction
 import external.copyFrom
 import external.draggable
 import external.droppable
-import kotlinx.css.*
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onContextMenuFunction
 import materialui.*
@@ -25,10 +21,9 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import org.w3c.dom.events.Event
+import react.dom.div
 import react.key
 import react.useContext
-import styled.css
-import styled.styledDiv
 
 class DraggablePatch(
     private val editor: ShowEditor,
@@ -115,23 +110,13 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         isDragDisabled = !props.editMode
                         this.index = index
                     }) { draggableProvided, snapshot ->
-                        styledDiv {
+                        div(+Styles.controlButton) {
                             ref = draggableProvided.innerRef
-                            css { position = Position.relative }
                             copyFrom(draggableProvided.draggableProps)
 
-                            styledDiv {
-                                css {
-                                    visibility = if (props.editMode) Visibility.visible else Visibility.hidden
-                                    transition(property = "visibility", duration = 0.25.s, timing = Timing.linear)
-                                    position = Position.absolute
-                                    right = 2.px
-                                    top = -2.px
-                                    zIndex = 1
-                                }
+                            div(+Styles.dragHandle) {
                                 copyFrom(draggableProvided.dragHandleProps)
-
-                                icon(DragHandle)
+                                icon(DragIndicator)
                             }
 
                             toggleButton {
@@ -151,6 +136,8 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         }
                     }
                 }
+
+                insertPlaceholder(droppableProvided)
 
                 if (props.editMode) {
                     button {

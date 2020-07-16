@@ -232,6 +232,8 @@ class CorePlugin : Plugin {
     }
 
     interface GadgetDataSource<T : Gadget> : DataSource {
+        val title: String
+
         fun createGadget(): T
 
         fun set(gadget: T, uniform: Uniform)
@@ -259,7 +261,7 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class SliderDataSource(
-        val title: String,
+        override val title: String,
         val initialValue: Float,
         val minValue: Float,
         val maxValue: Float,
@@ -340,7 +342,7 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class ColorPickerProvider(
-        val title: String,
+        override val title: String,
         val initialValue: Color
     ) : GadgetDataSource<ColorPicker> {
         companion object : DataSourceBuilder<ColorPickerProvider> {
@@ -378,7 +380,7 @@ class CorePlugin : Plugin {
 
     @Serializable
     data class RadioButtonStripProvider(
-        val title: String,
+        override val title: String,
         val options: List<String>,
         val initialSelectionIndex: Int
     ) : GadgetDataSource<RadioButtonStrip> {

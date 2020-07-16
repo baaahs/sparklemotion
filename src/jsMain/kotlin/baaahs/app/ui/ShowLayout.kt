@@ -27,6 +27,7 @@ import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
+
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
@@ -53,13 +54,13 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
     styledDiv {
         css {
-            width = 100.pct
-            height = 100.pct
             display = Display.flex
             flexDirection = FlexDirection.column
             position = Position.absolute
-            top = 40.px
+            top = 3.em
             left = 0.px
+            width = 100.pct
+            height = 100.pct - 3.em
         }
 
 //    <MosiacMenuBar />
@@ -117,6 +118,8 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                             }
                                         }
                                     }
+
+                                    insertPlaceholder(droppableProvided)
                                 }
                             }
                         }
@@ -138,6 +141,13 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
         }
+    }
+
+    controlsPalette {
+        attrs.controlDisplay = controlDisplay
+        attrs.specialControlProps = specialControlProps
+        attrs.show = props.show
+        attrs.editMode = props.editMode
     }
 }
 

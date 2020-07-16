@@ -5,7 +5,7 @@ import kotlinx.css.properties.scale
 import kotlinx.css.properties.transform
 import styled.StyleSheet
 
-object Styles : StyleSheet("UI", isStatic = true) {
+object Styles : StyleSheet("ui", isStatic = true) {
     val toolbar by css {
         display = Display.flex
         alignItems = Align.center

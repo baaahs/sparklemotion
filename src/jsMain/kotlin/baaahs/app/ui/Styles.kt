@@ -1,13 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ui.descendants
+import baaahs.ui.getName
 import kotlinx.css.*
-import kotlinx.css.properties.Angle
-import kotlinx.css.properties.deg
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
+import kotlinx.css.properties.*
 import styled.StyleSheet
-import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private fun linearRepeating(
     color1: Color,
@@ -27,7 +24,7 @@ private fun linearRepeating(
     """.trimIndent()
 }
 
-object Styles : StyleSheet("AppUI", isStatic = true) {
+object Styles : StyleSheet("app-ui", isStatic = true) {
     val layoutPanel by css {
         height = 100.pct
     }
@@ -41,7 +38,7 @@ object Styles : StyleSheet("AppUI", isStatic = true) {
     }
 
     val layoutControls by css {
-        display = Display.inlineBlock
+        display = Display.inlineFlex
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
@@ -56,8 +53,49 @@ object Styles : StyleSheet("AppUI", isStatic = true) {
     val patchControls by css {
     }
 
+    val unplacedControlsPalette by css {
+        position = Position.fixed
+        left = 5.em
+        bottom = 5.em
+        zIndex = 100
+        opacity = 0
+        display = Display.none
+
+        transition(StyledElement::opacity, duration = 1.s)
+        transition(StyledElement::display, delay = 1.s)
+
+        hover {
+            descendants(dragHandle) {
+                opacity = 1
+            }
+        }
+
+        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+            marginBottom = 0.25.em
+        }
+    }
+
+    val unplacedControlsPaper by css {
+        padding(1.em)
+    }
+
+    val unplacedControlsDroppable by css {
+        overflowY = Overflow.scroll
+        minHeight = 4.em
+        height = 33.vh
+    }
+
     val controlPanelHelpText by css {
         display = Display.none
+    }
+
+    val dragHandle by css {
+        opacity = .2
+        transition(StyledElement::visibility, duration = 0.25.s, timing = Timing.linear)
+        position = Position.absolute
+        right = 2.px
+        top = 0.5.em
+        zIndex = 101
     }
 
     val editModeOn by css {
@@ -91,16 +129,41 @@ object Styles : StyleSheet("AppUI", isStatic = true) {
             declarations["writing-mode"] = "vertical-lr"
         }
 
-        descendants(ControlsStyles.controlBox) {
-            backgroundColor = Color.gray.withAlpha(.5)
-            border = "1px solid black"
-            borderRadius = 3.px
+        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+            padding(3.px)
+            marginBottom = 0.25.em
+            backgroundColor = Color.white.withAlpha(.5)
+            border(
+                width = 1.px,
+                style = BorderStyle.solid,
+                color = Color.black.withAlpha(.5),
+                borderRadius = 3.px
+            )
+        }
+
+        descendants(baaahs.app.ui.controls.Styles.dragHandle) {
+            opacity = .2
         }
     }
 
     val editModeOff by css {
         descendants(layoutControls) {
             transition(duration = 0.5.s)
+        }
+
+        descendants(unplacedControlsPalette) {
+            opacity = 0;
+            transition(StyledElement::opacity, 0.5.s)
+
+            display = Display.none;
+            transition(StyledElement::display, delay = 0.5.s)
+        }
+    }
+
+    val global = CSSBuilder().apply {
+        ".${editModeOn.getName()}.${unplacedControlsPalette.getName()}" {
+            display = Display.block
+            opacity = 1
         }
     }
 }
