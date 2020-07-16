@@ -19,6 +19,9 @@ class ControlDisplay(
     private val allPanelBuckets: Map<String, PanelBuckets>
     private val showEditor = if (editMode) show.edit(showState) else null
     private val showBuilder = ShowBuilder()
+    private val placedControls = hashSetOf<Control>()
+    private var unplacedControlsDropTarget = UnplacedControlsDropTarget()
+    val unplacedControlsDropTargetId = if (editMode) dragNDrop.addDropTarget(unplacedControlsDropTarget) else ""
 
     init {
         val scene = showState.findScene(show)
@@ -44,6 +47,7 @@ class ControlDisplay(
             controls.forEach { control ->
                 val panelBuckets = allPanelBuckets.getBang(panelName, "layout panel")
                 panelBuckets.add(section, control)
+                placedControls.add(control)
             }
         }
     }
@@ -51,6 +55,10 @@ class ControlDisplay(
     fun render(panelTitle: String, renderBucket: RenderBucket) {
         val panelBuckets = allPanelBuckets.getBang(panelTitle, "layout panel")
         panelBuckets.render(renderBucket)
+    }
+
+    fun allPlacedControls(): Set<Control> {
+        return placedControls.toSet()
     }
 
     private fun commitEdit() {
@@ -166,6 +174,28 @@ class ControlDisplay(
                 }
             }
         }
+    }
+
+    class UnplacedControlsDropTarget : DropTarget {
+        override val type: String get() = "ControlPanel"
+
+        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+        }
+
+        override fun willAccept(draggable: Draggable): Boolean {
+            return true
+        }
+
+        override fun getDraggable(index: Int): Draggable {
+            TODO("not implemented")
+        }
+
+        override fun insertDraggable(draggable: Draggable, index: Int) {
+        }
+
+        override fun removeDraggable(draggable: Draggable) {
+        }
+
     }
 
     enum class Section(

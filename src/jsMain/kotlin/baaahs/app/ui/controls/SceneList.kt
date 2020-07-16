@@ -7,10 +7,7 @@ import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.PatchyEditor
 import baaahs.show.Show
-import baaahs.ui.getName
-import baaahs.ui.install
-import baaahs.ui.patchyEditor
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.Direction
 import external.copyFrom
 import external.draggable
@@ -25,6 +22,7 @@ import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
 import org.w3c.dom.events.Event
+import react.dom.div
 import react.key
 import react.useContext
 import styled.css
@@ -84,24 +82,15 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 //                            div {
 //                                +"Handle"
 
-                        styledDiv {
+                        div(+Styles.controlButton) {
                             ref = sceneDragProvided.innerRef
                             copyFrom(sceneDragProvided.draggableProps)
-                            css { position = Position.relative }
 
-                            styledDiv {
-                                css {
-                                    visibility = if (props.editMode) Visibility.visible else Visibility.hidden
-                                    transition(property = "visibility", duration = 0.25.s, timing = Timing.linear)
-                                    position = Position.absolute
-                                    right = 2.px
-                                    top = (-2).px
-                                    zIndex = 1
-                                }
+                            div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)
-
-                                icon(DragHandle)
+                                icon(DragIndicator)
                             }
+
                             droppable({
                                 droppableId = sceneDropTargets[index].first
                                 type = "Patch"
@@ -127,6 +116,8 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 
 //                            }
                 }
+
+                insertPlaceholder(sceneDropProvided)
 
                 if (props.editMode) {
                     button {

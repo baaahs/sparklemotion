@@ -180,20 +180,3 @@ fun RBuilder.droppable(
 
 private val noOpDroppableProvided = jsObject<DroppableProvided> {
 }
-
-fun RBuilder.maybeDroppable(
-    isDroppable: Boolean,
-    attrs: DroppableProps.() -> Unit,
-    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement
-): ReactElement {
-    if (isDroppable) {
-        return child(
-            Droppable,
-            jsObject<DroppableProps>().apply { attrs() },
-            RBuilder().childList.apply { add(children) }
-        )
-    } else {
-        return children(noOpDroppableProvided, Unit)
-    }
-}
-

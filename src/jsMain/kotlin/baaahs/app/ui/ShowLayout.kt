@@ -5,6 +5,7 @@ import baaahs.ShowState
 import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
+import baaahs.show.DataSource
 import baaahs.show.Layout
 import baaahs.show.Show
 import baaahs.ui.*
@@ -17,16 +18,25 @@ import kotlinx.css.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElementSerializer
+import materialui.DragIndicator
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
+import materialui.components.portal.portal
+import materialui.components.typography.typographyH6
+import materialui.icon
+import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
 import styled.css
 import styled.styledDiv
+import kotlin.random.Random
 import kotlin.reflect.KClass
+import external.react_draggable.Draggable as ReactDraggable
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
+    val unplacedControlPaletteDiv = ref<HTMLElement>()
+
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
@@ -42,6 +52,9 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             controlDisplay.release()
         }
     }
+
+    val placedControls = controlDisplay.allPlacedControls().filterIsInstance<DataSource>()
+    val unplacedControls = props.show.dataSources.values.filter { !placedControls.contains(it) }
 
     val specialControlProps = jsObject<SpecialControlProps> {
         this.show = props.show
@@ -117,6 +130,8 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                             }
                                         }
                                     }
+
+                                    insertPlaceholder(droppableProvided)
                                 }
                             }
                         }
@@ -137,6 +152,56 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             //            onChange = { onChange }
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
+        }
+    }
+
+    portal {
+        ReactDraggable {
+            val randomStyleForHandle = "handle-${Random.nextInt()}"
+            attrs.handle = ".$randomStyleForHandle"
+
+            div(+Styles.unplacedControlsPalette and editModeStyle) {
+                ref = unplacedControlPaletteDiv
+
+                div(+Styles.dragHandle and randomStyleForHandle) {
+                    icon(DragIndicator)
+                }
+
+                paper(Styles.unplacedControlsPaper on PaperStyle.root) {
+                    attrs.elevation = 3
+
+                    typographyH6 { +"Unplaced Controls" }
+
+                    droppable({
+                        this.droppableId = controlDisplay.unplacedControlsDropTargetId
+                        this.type = "ControlPanel"
+                        this.direction = Direction.vertical.name
+                        this.isDropDisabled = !props.editMode
+                    }) { droppableProvided, snapshot ->
+                        div {
+                            install(droppableProvided)
+
+                            unplacedControls.forEachIndexed { index, unplacedControl ->
+                                val key = "unplaced_$index"
+                                draggable({
+                                    this.key = key
+                                    this.draggableId = key
+                                    this.isDragDisabled = !props.editMode
+                                    this.index = index
+                                }) { draggableProvided, snapshot ->
+                                    control {
+                                        attrs.control = unplacedControl
+                                        attrs.specialControlProps = specialControlProps
+                                        attrs.draggableProvided = draggableProvided
+                                    }
+                                }
+                            }
+
+                            insertPlaceholder(droppableProvided)
+                        }
+                    }
+                }
+            }
         }
     }
 }

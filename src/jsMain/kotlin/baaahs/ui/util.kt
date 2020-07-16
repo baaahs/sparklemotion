@@ -64,15 +64,22 @@ infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
     return mutableListOf(this, that)
 }
 
+infix fun String.and(that: String): String {
+    return "$this $that"
+}
+
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
     return clazz to joinToString(" ") { it.getName() }
 }
 
 fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = "& .${ruleSet.getName()}".invoke(block)
 
-fun RDOMBuilder<DIV>.install(droppableProvided: DroppableProvided) {
+fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
     ref = droppableProvided.innerRef
     copyFrom(droppableProvided.droppableProps)
+}
+
+fun RDOMBuilder<*>.insertPlaceholder(droppableProvided: DroppableProvided) {
     this.childList.add(droppableProvided.placeholder)
 }
 
