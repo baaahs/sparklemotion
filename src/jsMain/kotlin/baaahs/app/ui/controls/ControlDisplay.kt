@@ -19,6 +19,9 @@ class ControlDisplay(
     private val allPanelBuckets: Map<String, PanelBuckets>
     private val showEditor = if (editMode) show.edit(showState) else null
     private val showBuilder = ShowBuilder()
+    private val placedControls = hashSetOf<Control>()
+    private var unplacedControlsDropTarget = UnplacedControlsDropTarget()
+    val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
         val scene = showState.findScene(show)
@@ -36,6 +39,8 @@ class ControlDisplay(
         patchSet?.let { addControlsToBuckets(patchSet.controlLayout, Section.Patch) }
     }
 
+    private val unplacedControls = show.dataSources.values.filter { !placedControls.contains(it) }
+
     private fun addControlsToBuckets(
         layoutControls: Map<String, List<Control>>,
         section: Section
@@ -44,6 +49,7 @@ class ControlDisplay(
             controls.forEach { control ->
                 val panelBuckets = allPanelBuckets.getBang(panelName, "layout panel")
                 panelBuckets.add(section, control)
+                placedControls.add(control)
             }
         }
     }
@@ -53,6 +59,16 @@ class ControlDisplay(
         panelBuckets.render(renderBucket)
     }
 
+    fun renderUnplacedControls(block: (index: Int, control: Control) -> Unit) {
+        unplacedControls.forEachIndexed { index, dataSource ->
+            block(index, dataSource)
+        }
+    }
+
+    fun allPlacedControls(): Set<Control> {
+        return placedControls.toSet()
+    }
+
     private fun commitEdit() {
         showEditor!!
         onEdit(showEditor.getShow(), showEditor.getShowState())
@@ -60,6 +76,7 @@ class ControlDisplay(
 
     fun release() {
         allPanelBuckets.values.forEach { it.release() }
+        dragNDrop.removeDropTarget(unplacedControlsDropTarget)
     }
 
 
@@ -100,9 +117,7 @@ class ControlDisplay(
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlPanel"
 
-            private val dropTargetId = if (editMode) {
-                dragNDrop.addDropTarget(this)
-            } else ""
+            private val dropTargetId = dragNDrop.addDropTarget(this)
 
             fun add(control: Control) {
                 val nextIndex = controls.size
@@ -114,9 +129,7 @@ class ControlDisplay(
             }
 
             fun release() {
-                if (editMode) {
-                    dragNDrop.removeDropTarget(this)
-                }
+                dragNDrop.removeDropTarget(this)
             }
 
             override fun suggestId(): String {
@@ -133,7 +146,7 @@ class ControlDisplay(
             }
 
             override fun willAccept(draggable: Draggable): Boolean {
-                return true
+                return draggable is PlaceableControl
             }
 
             override fun getDraggable(index: Int): Draggable {
@@ -142,30 +155,73 @@ class ControlDisplay(
 
             override fun insertDraggable(draggable: Draggable, index: Int) {
                 patchyEditor!!
-                draggable as PlacedControl
+                draggable as PlaceableControl
                 val controlLayoutEditor = patchyEditor.editControlLayout(panelTitle)
-                controlLayoutEditor.add(index, draggable.controlEditor!!)
+                controlLayoutEditor.add(index, draggable.controlEditor)
             }
 
             override fun removeDraggable(draggable: Draggable) {
-                draggable as PlacedControl
+                draggable as PlaceableControl
                 draggable.remove()
             }
 
-            inner class PlacedControl(val control: Control, val index: Int) : Draggable {
+            inner class PlacedControl(val control: Control, val index: Int) : PlaceableControl {
                 val id = control.toControlRef(showBuilder).toShortString()
-                var controlEditor : ControlEditor? = null
+                override lateinit var controlEditor: ControlEditor
 
                 override fun onMove() {
                     commitEdit()
                 }
 
-                fun remove() {
+                override fun remove() {
                     patchyEditor!!
                     controlEditor = patchyEditor.removeControl(panelTitle, index)
                 }
             }
         }
+    }
+
+    inner class UnplacedControlsDropTarget : DropTarget {
+        override val type: String get() = "ControlPanel"
+
+        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+            // No-op.
+        }
+
+        override fun willAccept(draggable: Draggable): Boolean {
+            return draggable is PlaceableControl
+        }
+
+        override fun getDraggable(index: Int): Draggable {
+            return UnplacedControl(index)
+        }
+
+        override fun insertDraggable(draggable: Draggable, index: Int) {
+            // No-op.
+        }
+
+        override fun removeDraggable(draggable: Draggable) {
+            // No-op.
+        }
+    }
+
+    inner class UnplacedControl(val index: Int) : PlaceableControl {
+        override val controlEditor: ControlEditor
+            get() = ControlEditor(unplacedControls[index])
+
+        override fun remove() {
+            // No-op.
+        }
+
+        override fun onMove() {
+            commitEdit()
+        }
+    }
+
+    interface PlaceableControl : Draggable {
+        val controlEditor: ControlEditor
+
+        fun remove()
     }
 
     enum class Section(

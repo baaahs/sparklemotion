@@ -2,6 +2,7 @@
 
 package materialui
 
+external val DragIndicator: Icon
 external val DragHandle: Icon
 external val Code: Icon
 external val Edit: Icon

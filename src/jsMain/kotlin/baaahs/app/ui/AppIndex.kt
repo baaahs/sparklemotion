@@ -36,10 +36,14 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
 import styled.css
+import styled.injectGlobal
 import styled.styledDiv
 import styled.styledTd
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
+    injectGlobal(Styles.global.toString())
+    injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+
     val webClient = props.webClient
     observe(webClient)
 

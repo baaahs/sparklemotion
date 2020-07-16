@@ -19,7 +19,7 @@ object SampleData {
 
             "second" to json {
                 "direction" to "column"
-                "splitPercentage" to 70
+                "splitPercentage" to 60
 
                 "first" to "Patches"
                 "second" to "More Controls"
