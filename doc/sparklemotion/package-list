@@ -8,6 +8,7 @@ $dokka.location:baaahs$getBang(kotlin.collections.Map((baaahs.getBang.K, baaahs.
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$replacing(kotlin.collections.List((baaahs.replacing.T)), kotlin.Int, baaahs.replacing.T)baaahs/kotlin.collections.-list/replacing.html
 $dokka.location:baaahs.ui$and(kotlin.String, )baaahs.ui/kotlin.-string/and.html
+$dokka.location:baaahs.ui$and(kotlin.String, kotlin.String)baaahs.ui/kotlin.-string/and.html
 $dokka.location:baaahs.ui$asTextNode(kotlin.String)baaahs.ui/kotlin.-string/as-text-node.html
 $dokka.location:baaahs.ui$on(kotlin.collections.List(()), baaahs.ui.on.T)baaahs.ui/kotlin.collections.-list/on.html
 $dokka.location:baaahs.ui$replace(kotlin.collections.List((baaahs.ui.replace.T)), kotlin.Int, kotlin.Function1((baaahs.ui.replace.T, )))baaahs.ui/kotlin.collections.-list/replace.html
@@ -53,6 +54,7 @@ baaahs.visualizer
 baaahs.visualizer.ui
 external
 external.mosaic
+external.react_draggable
 materialui
 materialui.components.buttongroup
 three

@@ -21,10 +21,31 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-placeable-control/index.html">PlaceableControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">PlaceableControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-draggable/index.html"><span class="identifier">Draggable</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-section/index.html">Section</a></h4>
 </td>
 <td>
 <code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Section</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-unplaced-control/index.html">UnplacedControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">UnplacedControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">PlaceableControl</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-unplaced-controls-drop-target/index.html">UnplacedControlsDropTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">UnplacedControlsDropTarget</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-drop-target/index.html"><span class="identifier">DropTarget</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -40,9 +61,28 @@
 </tr>
 </tbody>
 </table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="unplaced-controls-drop-target-id.html">unplacedControlsDropTargetId</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">unplacedControlsDropTargetId</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Functions</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="all-placed-controls.html">allPlacedControls</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">allPlacedControls</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="release.html">release</a></h4>
@@ -56,6 +96,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.controls.ControlDisplay$render(kotlin.String, kotlin.Function3((kotlin.String, baaahs.app.ui.controls.ControlDisplay.Section, kotlin.collections.List((baaahs.app.ui.controls.ControlDisplay.PanelBuckets.PanelBucket.PlacedControl)), kotlin.Unit)))/panelTitle">panelTitle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.controls.ControlDisplay$render(kotlin.String, kotlin.Function3((kotlin.String, baaahs.app.ui.controls.ControlDisplay.Section, kotlin.collections.List((baaahs.app.ui.controls.ControlDisplay.PanelBuckets.PanelBucket.PlacedControl)), kotlin.Unit)))/renderBucket">renderBucket</span><span class="symbol">:</span>&nbsp;<a href="../-render-bucket.html"><span class="identifier">RenderBucket</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render-unplaced-controls.html">renderUnplacedControls</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">renderUnplacedControls</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.controls.ControlDisplay$renderUnplacedControls(kotlin.Function2((kotlin.Int, baaahs.show.Control, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">control</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
