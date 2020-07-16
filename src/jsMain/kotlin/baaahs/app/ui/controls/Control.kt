@@ -10,19 +10,11 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
-import kotlinx.css.*
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
-import materialui.DragHandle
 import materialui.DragIndicator
 import materialui.Edit
 import materialui.icon
 import react.*
-import react.dom.b
 import react.dom.div
-import styled.css
-import styled.styledDiv
 
 val Control = xComponent<ControlProps>("Control") { props ->
     val control = props.control
@@ -52,16 +44,17 @@ val Control = xComponent<ControlProps>("Control") { props ->
             is DataSource -> {
                 val appContext = useContext(appContext)
                 val dataFeed = appContext.showResources.useDataFeed(control)
+                val title = (control as? CorePlugin.GadgetDataSource<*>)?.title ?: control.dataSourceName
                 when (control.getRenderType()) {
                     "Slider" -> {
                         RangeSlider {
                             attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
                         }
-                        b { +control.dataSourceName }
+                        div(+Styles.dataSourceTitle) { +title }
                     }
 
                     else -> {
-                        b { +control.dataSourceName }
+                        div(+Styles.dataSourceLonelyTitle) { +title }
                     }
                 }
             }

@@ -41,6 +41,7 @@ import styled.styledDiv
 import styled.styledTd
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
+    injectGlobal(Styles.global.toString())
     injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
 
     val webClient = props.webClient

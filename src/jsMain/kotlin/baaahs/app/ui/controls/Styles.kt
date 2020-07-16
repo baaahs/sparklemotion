@@ -40,15 +40,25 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         position = Position.relative
-        backgroundColor = Color.white.withAlpha(.5)
-        border = "1px solid black"
-        borderRadius = 3.px
 
         hover {
             child(".${dragHandle.getName()}") {
                 opacity = 1
             }
         }
+    }
+
+    val dataSourceTitle by css {
+        fontWeight = FontWeight.w500
+        display = Display.block
+        position = Position.absolute
+        top = 0.5.em
+        left = 0.5.px
+        declarations["writing-mode"] = "vertical-lr"
+    }
+
+    val dataSourceLonelyTitle by css {
+        fontWeight = FontWeight.bold
     }
 
     val controlButton by css {
