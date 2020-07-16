@@ -40,6 +40,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         position = Position.relative
+        marginRight = 2.em
 
         hover {
             child(".${dragHandle.getName()}") {
