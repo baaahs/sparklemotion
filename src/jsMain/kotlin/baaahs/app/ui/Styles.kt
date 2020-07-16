@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ui.descendants
+import baaahs.ui.getName
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import styled.StyleSheet
-import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private fun linearRepeating(
     color1: Color,
@@ -38,7 +38,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val layoutControls by css {
-        display = Display.inlineBlock
+        display = Display.inlineFlex
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
@@ -57,20 +57,32 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         position = Position.fixed
         left = 5.em
         bottom = 5.em
-        width = 25.em
-        height = 35.em
-        scrollBehavior = ScrollBehavior.auto
         zIndex = 100
+        opacity = 0
+        display = Display.none
+
+        transition(StyledElement::opacity, duration = 1.s)
+        transition(StyledElement::display, delay = 1.s)
 
         hover {
             descendants(dragHandle) {
                 opacity = 1
             }
         }
+
+        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+            marginBottom = 0.25.em
+        }
     }
 
     val unplacedControlsPaper by css {
         padding(1.em)
+    }
+
+    val unplacedControlsDroppable by css {
+        overflowY = Overflow.scroll
+        minHeight = 4.em
+        height = 33.vh
     }
 
     val controlPanelHelpText by css {
@@ -117,6 +129,18 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             declarations["writing-mode"] = "vertical-lr"
         }
 
+        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+            padding(3.px)
+            marginBottom = 0.25.em
+            backgroundColor = Color.white.withAlpha(.5)
+            border(
+                width = 1.px,
+                style = BorderStyle.solid,
+                color = Color.black.withAlpha(.5),
+                borderRadius = 3.px
+            )
+        }
+
         descendants(baaahs.app.ui.controls.Styles.dragHandle) {
             opacity = .2
         }
@@ -133,6 +157,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
             display = Display.none;
             transition(StyledElement::display, delay = 0.5.s)
+        }
+    }
+
+    val global = CSSBuilder().apply {
+        ".${editModeOn.getName()}.${unplacedControlsPalette.getName()}" {
+            display = Display.block
+            opacity = 1
         }
     }
 }

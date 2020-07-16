@@ -13,10 +13,13 @@ class DragNDrop {
 
     fun onDragEnd(dropResult: DropResult, responderProvided: ResponderProvided) {
         if (dropResult.reason == DropReason.DROP.name) {
-            val source = findTarget(dropResult.source) ?: return
-            val dest = findTarget(dropResult.destination!!) ?: return
-            val sourceIndex = dropResult.source.index
-            val destIndex = dropResult.destination!!.index
+            val dropSourceLoc = dropResult.source
+            val dropDestLoc = dropResult.destination ?: return
+
+            val source = findTarget(dropSourceLoc) ?: return
+            val dest = findTarget(dropDestLoc) ?: return
+            val sourceIndex = dropSourceLoc.index
+            val destIndex = dropDestLoc.index
 
             if (source == dest) {
                 if (sourceIndex != destIndex) {
