@@ -4,15 +4,8 @@ import baaahs.Logger
 import com.danielgergely.kgl.*
 
 class KglTracer(private val kgl: Kgl) : Kgl {
-    companion object {
-        val logger = Logger("KglTracer")
-    }
-
-    private fun log(name: String, vararg args: Any?, fn: (() -> Any?)? = null) {
-        logger.debug {
-            "$name(${args.joinToString(", ")})${fn?.let { " => ${fn()}" } ?: ""}"
-        }
-    }
+    private val id = tracerCounter++
+    private val logger = Logger("KglTracer[$id]")
 
     override fun activeTexture(texture: Int) {
         log("activeTexture", texture)
@@ -400,5 +393,15 @@ class KglTracer(private val kgl: Kgl) : Kgl {
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
         log("viewport", x, y, width, height)
         return kgl.viewport(x, y, width, height)
+    }
+
+    private fun log(name: String, vararg args: Any?, fn: (() -> Any?)? = null) {
+        logger.debug {
+            "$name(${args.joinToString(", ")})${fn?.let { " => ${fn()}" } ?: ""}"
+        }
+    }
+
+    companion object {
+        private var tracerCounter = 0
     }
 }
