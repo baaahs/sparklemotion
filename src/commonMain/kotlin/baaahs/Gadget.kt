@@ -33,26 +33,42 @@ import kotlin.reflect.KProperty
  */
 open class Gadget {
     @Transient
-    private val listeners = mutableSetOf<GadgetListener>()
+    private val listeners = arrayListOf<Listener>()
 
     @JsName("listen")
     fun listen(gadgetListener: GadgetListener) {
-        if (!listeners.add(gadgetListener)) throw IllegalStateException("$gadgetListener already listening to $this")
+        if (findListener(gadgetListener) != -1)
+            throw IllegalStateException("$gadgetListener already listening to $this")
+        listeners.add(Listener(gadgetListener))
     }
 
     @JsName("unlisten")
     fun unlisten(gadgetListener: GadgetListener) {
-        if (!listeners.remove(gadgetListener)) throw IllegalStateException("$gadgetListener isn't listening to $this")
+        val i = findListener(gadgetListener)
+        if (i == -1)
+            throw IllegalStateException("$gadgetListener isn't listening to $this")
+        listeners.removeAt(i)
     }
 
-    fun changed() = listeners.forEach { it.invoke(this) }
+    private fun findListener(gadgetListener: GadgetListener): Int {
+        return listeners.indexOfFirst { it.callback === gadgetListener }
+    }
 
+    fun changed() = listeners.forEach {
+        if (it.enabled) it.callback.invoke(this)
+    }
+
+    @JsName("withoutTriggering")
     fun withoutTriggering(gadgetListener: GadgetListener, fn: () -> Unit) {
-        unlisten(gadgetListener)
+        val listener = listeners.find { it.callback == gadgetListener }
+            ?: throw IllegalStateException("$gadgetListener isn't listening to $this")
+
+        val priorEnabled = listener.enabled
+        listener.enabled = false
         try {
             fn()
         } finally {
-            listen(gadgetListener)
+            listener.enabled = priorEnabled
         }
     }
 
@@ -66,6 +82,8 @@ open class Gadget {
     }
 
     val state: MutableMap<String, JsonElement> = hashMapOf()
+
+    private class Listener(val callback: GadgetListener, var enabled: Boolean = true)
 }
 
 typealias GadgetListener = (Gadget) -> Unit
