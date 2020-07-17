@@ -1,10 +1,7 @@
 package baaahs.sim.ui
 
 import baaahs.sim.FakeNetwork
-import baaahs.ui.BComponent
-import baaahs.ui.Observable
-import baaahs.ui.Observer
-import baaahs.ui.SimulatorStyles
+import baaahs.ui.*
 import baaahs.ui.SimulatorStyles.networkPacketLossRate
 import baaahs.util.percent
 import kotlinx.css.*
@@ -57,12 +54,12 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
 
                 tr {
                     td { +"Packets received:" }
-                    td { +(network?.packetsReceived?.toString() ?: "") }
+                    td(+SimulatorStyles.dataWithUnit) { +(network?.packetsReceived?.toString() ?: "") }
                 }
 
                 tr {
                     td { +"Packets dropped:" }
-                    td { +(network?.packetsDropped?.toString() ?: "") }
+                    td(+SimulatorStyles.dataWithUnit) { +(network?.packetsDropped?.toString() ?: "") }
                 }
             }
         }

@@ -96,4 +96,8 @@ object SimulatorStyles : StyleSheet("SimulatorView", isStatic = true) {
         child(".link") { backgroundColor = Color.orange }
         child(".online") { backgroundColor = Color.orange }
     }
+
+    val dataWithUnit by Styles.css {
+        textAlign = TextAlign.right
+    }
 }
