@@ -18,12 +18,7 @@ class ClientShowResources(
 //        gadgets[id]?.let { clientGadget -> TODO() }
 
         val listener: GadgetListener = {
-            val observer = gadgets.getBang(id, "client gadget").channel
-            if (observer == null) {
-                println("Huh, no observer for $id; discarding update (know about ${gadgets.keys})")
-            } else {
-                observer.onChange(it.state)
-            }
+            gadgets.getBang(id, "client gadget").channel.onChange(it.state)
         }
         gadget.listen(listener)
 
