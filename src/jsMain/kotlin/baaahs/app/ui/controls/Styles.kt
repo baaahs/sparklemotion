@@ -29,9 +29,23 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
+    val editButton by css {
+        opacity = 0
+        transition(StyledElement::opacity, duration = 0.25.s, timing = Timing.linear)
+        position = Position.absolute
+        right = 2.px
+        bottom = (-2).px + 2.em
+        zIndex = 1
+
+        child("svg") {
+            width = .75.em
+            height = .75.em
+        }
+    }
+
     val dragHandle by css {
         opacity = 0
-        transition(StyledElement::visibility, duration = 0.25.s, timing = Timing.linear)
+        transition(StyledElement::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         bottom = (-2).px
@@ -43,6 +57,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         marginRight = 2.em
 
         hover {
+            child(".${editButton.getName()}") {
+                opacity = .7
+            }
+
             child(".${dragHandle.getName()}") {
                 opacity = 1
             }
@@ -66,6 +84,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.relative
 
         hover {
+            child(".${editButton.getName()}") {
+                opacity = .7
+            }
+
             child(".${dragHandle.getName()}") {
                 opacity = 1
             }
@@ -74,6 +96,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val global = CSSBuilder().apply {
          ".${baaahs.app.ui.Styles.editModeOff.getName()}" {
+             ".${editButton.getName()}" {
+                 put("opacity", "0 !important")
+             }
              ".${dragHandle.getName()}" {
                  put("opacity", "0 !important")
              }

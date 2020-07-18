@@ -42,6 +42,9 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
+
+        transition(StyledElement::minWidth, duration = .5.s)
+        transition(StyledElement::minHeight, duration = .5.s)
     }
 
     val showControls by css {
@@ -101,8 +104,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val editModeOn by css {
         descendants(layoutControls) {
             padding(1.em)
-            minWidth = 5.em; transition(StyledElement::minWidth)
-            minHeight = 5.em; transition(StyledElement::minHeight)
+            minWidth = 5.em
+            minHeight = 5.em
             border = "1px solid black"
             borderRadius = 3.px
 
@@ -153,10 +156,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(unplacedControlsPalette) {
             opacity = 0;
-            transition(StyledElement::opacity, 0.5.s)
-
             display = Display.none;
-            transition(StyledElement::display, delay = 0.5.s)
         }
     }
 
