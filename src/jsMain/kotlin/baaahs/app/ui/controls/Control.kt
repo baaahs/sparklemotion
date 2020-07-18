@@ -10,6 +10,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
+import kotlinx.html.js.onClickFunction
 import materialui.DragIndicator
 import materialui.Edit
 import materialui.icon
@@ -25,6 +26,13 @@ val Control = xComponent<ControlProps>("Control") { props ->
         ref = props.draggableProvided.innerRef
         copyFrom(props.draggableProvided.draggableProps)
 
+        div(+Styles.editButton) {
+            attrs.onClickFunction = {
+                // TODO
+            }
+
+            icon(Edit)
+        }
         div(+Styles.dragHandle) {
             copyFrom(props.draggableProvided.dragHandleProps)
             icon(DragIndicator)
@@ -58,10 +66,6 @@ val Control = xComponent<ControlProps>("Control") { props ->
                     }
                 }
             }
-        }
-
-        if (specialControlProps.editMode) {
-            icon(Edit)
         }
     }
 }
