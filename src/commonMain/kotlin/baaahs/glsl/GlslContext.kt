@@ -11,6 +11,7 @@ abstract class GlslContext(
 ) {
     abstract fun <T> runInContext(fn: () -> T): T
 
+    private var viewport: List<Int> = emptyList()
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 
     private val textureUnits = mutableMapOf<Any, TextureUnit>()
@@ -25,6 +26,14 @@ abstract class GlslContext(
         var texImage2D = 0
     }
     val stats = Stats()
+
+    fun setViewport(x: Int, y: Int, width: Int, height: Int) {
+        val newViewport = listOf(x, y, width, height)
+        if (newViewport != viewport) {
+            check { viewport(x, y, width, height) }
+            viewport = newViewport
+        }
+    }
 
     fun createVertexShader(source: String): CompiledShader {
         return CompiledShader(this, GL_VERTEX_SHADER, source)
@@ -72,7 +81,7 @@ abstract class GlslContext(
             }
 
             val newFramebufferRenderbufferArgs = listOf(attachment, renderbuffertarget)
-            if (newRenderbufferStorageArgs != curFramebufferRenderbufferArgs) {
+            if (newFramebufferRenderbufferArgs != curFramebufferRenderbufferArgs) {
                 check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
                 curFramebufferRenderbufferArgs = newFramebufferRenderbufferArgs
                 check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, renderbuffertarget, renderbuffer) }

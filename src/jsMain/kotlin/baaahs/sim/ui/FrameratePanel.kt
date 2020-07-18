@@ -1,8 +1,6 @@
 package baaahs.sim.ui
 
-import baaahs.ui.BComponent
-import baaahs.ui.Observable
-import baaahs.ui.Observer
+import baaahs.ui.*
 import baaahs.ui.SimulatorStyles.section
 import baaahs.util.Framerate
 import kotlinx.css.*
@@ -15,6 +13,7 @@ import react.dom.tr
 import styled.css
 import styled.styledTable
 import styled.styledTh
+import kotlin.math.roundToInt
 
 class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProps, RState>(props), Observer {
     override fun observing(props: FrameratePanelProps, state: RState): List<Observable?> {
@@ -44,20 +43,20 @@ class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProp
 
                 tr {
                     td { +"Pinky:" }
-                    td { +"${pinkyFramerate.fps}fps" }
-                    td { +"${pinkyFramerate.elapsedMs}ms" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.fps}fps" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.elapsedMs}ms" }
                 }
 
                 tr {
                     td { +"  average:" }
-                    td { +"${pinkyFramerate.averageFps}fps" }
-                    td { +"${pinkyFramerate.averageElapsedMs}ms" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.averageFps}fps" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.averageElapsedMs.roundToInt()}ms" }
                 }
 
                 tr {
                     td { +"Visualizer:" }
-                    td { +"${visualizerFramerate.fps}fps" }
-                    td { +"${visualizerFramerate.elapsedMs}ms" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${visualizerFramerate.fps}fps" }
+                    td(+SimulatorStyles.dataWithUnit) { +"${visualizerFramerate.elapsedMs}ms" }
                 }
             }
         }

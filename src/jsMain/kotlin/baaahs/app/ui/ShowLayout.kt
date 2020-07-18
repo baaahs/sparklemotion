@@ -7,6 +7,7 @@ import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.Layout
 import baaahs.show.Show
+import baaahs.show.ShowBuilder
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -43,6 +44,8 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             controlDisplay.release()
         }
     }
+
+    val showBuilder = ShowBuilder()
 
     val specialControlProps = jsObject<SpecialControlProps> {
         this.show = props.show
@@ -103,7 +106,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                     div(+Styles.controlPanelHelpText) { +section.title }
                                     controls.forEach { placedControl ->
                                         val control = placedControl.control
-                                        val draggableId = "control_${placedControl.id}"
+                                        val draggableId = "control_${control.toControlRef(showBuilder).toShortString()}"
 
                                         draggable({
                                             this.key = draggableId

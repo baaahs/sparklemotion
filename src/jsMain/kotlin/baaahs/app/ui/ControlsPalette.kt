@@ -4,6 +4,7 @@ import baaahs.OpenShow
 import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
+import baaahs.show.ShowBuilder
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -25,6 +26,8 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
+
+    val showBuilder = ShowBuilder()
 
     portal {
         Draggable {
@@ -53,10 +56,11 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                             install(droppableProvided)
 
                             props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
+                                val draggableId = "unplaced_${unplacedControl.toControlRef(showBuilder).toShortString()}"
                                 val key = "unplaced_$index"
                                 draggable({
-                                    this.key = key
-                                    this.draggableId = key
+                                    this.key = draggableId
+                                    this.draggableId = draggableId
                                     this.isDragDisabled = !props.editMode
                                     this.index = index
                                 }) { draggableProvided, snapshot ->
