@@ -166,7 +166,6 @@ class ControlDisplay(
             }
 
             inner class PlacedControl(val control: Control, val index: Int) : PlaceableControl {
-                val id = control.toControlRef(showBuilder).toShortString()
                 override lateinit var controlEditor: ControlEditor
 
                 override fun onMove() {

@@ -72,7 +72,7 @@ open class GlslRenderer(
     }
 
     private fun render() {
-        gl.check { viewport(0, 0, arrangement.pixWidth, arrangement.pixHeight) }
+        gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
         gl.check { clearColor(0f, .5f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 

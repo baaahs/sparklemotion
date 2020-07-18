@@ -21,16 +21,18 @@ class RangeSlider extends React.Component {
 
     this.state = {
       value: props.gadget.value,
+      listener: () => this._handleChangeFromServer()
     };
+    this.state.listener.gadgetName = props.gadget.title;
   }
 
   componentDidMount() {
-    this.props.gadget.listen(this._handleChangeFromServer);
+    this.props.gadget.listen(this.state.listener);
   }
 
   componentWillUnmount() {
     try {
-      this.props.gadget.unlisten(this._handleChangeFromServer);
+      this.props.gadget.unlisten(this.state.listener);
     } catch (e) {
       // TODO: Why is this happening? It causes the UI to disappear. :-(
       console.warn("Failed to unlisten on", this.props.gadget, e);
@@ -70,8 +72,9 @@ class RangeSlider extends React.Component {
   }, 10);
 
   onChange = (value) => {
-    this.props.gadget.value = value;
-    this.setState({ value });
+    this.props.gadget.withoutTriggering(this.state.listener, () => {
+      this.props.gadget.value = value;
+    });
   };
 
   render() {

@@ -15,9 +15,11 @@ class Framerate : Observable() {
     fun elapsed(ms: Int) {
         elapsedMs = ms
 
-        // Probably means this is the first datapoint we've received.
-        if (averageElapsedMs == 0f) {
-            averageElapsedMs = ms.toFloat()
+        averageElapsedMs = if (averageElapsedMs == 0f) {
+            // Probably means this is the first datapoint we've received.
+            ms.toFloat()
+        } else {
+            (averageElapsedMs * 99 + elapsedMs) / 100
         }
 
         notifyChanged()

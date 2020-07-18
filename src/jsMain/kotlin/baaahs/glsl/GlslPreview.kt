@@ -23,6 +23,7 @@ class GlslPreview(
     }
 
     fun destroy() {
+        stop()
         scene?.release()
     }
 
@@ -35,8 +36,8 @@ class GlslPreview(
 
     fun render() {
         if (!running) return
-        window.requestAnimationFrame { render() }
         scene?.render()
+        window.requestAnimationFrame { render() }
     }
 
     @JsName("resize")

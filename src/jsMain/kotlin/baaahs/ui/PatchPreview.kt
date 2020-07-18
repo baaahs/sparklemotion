@@ -9,6 +9,7 @@ import baaahs.glshaders.Plugins
 import baaahs.glsl.*
 import baaahs.jsx.useResizeListener
 import baaahs.model.ModelInfo
+import external.IntersectionObserver
 import kotlinx.css.LinearDimension
 import kotlinx.css.px
 import org.w3c.dom.HTMLCanvasElement
@@ -26,10 +27,20 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
         gl = glslContext
 
         val preview = GlslPreview(glslContext, canvasEl.width, canvasEl.height)
-        preview.start()
+
+        val intersectionObserver = IntersectionObserver { entries ->
+            if (entries.any { it.isIntersecting }) {
+                preview.start()
+            } else {
+                preview.stop()
+            }
+        }
+        intersectionObserver.observe(canvasEl)
+
         glslPreview = preview
 
         withCleanup {
+            intersectionObserver.disconnect()
             preview.destroy()
         }
     }
