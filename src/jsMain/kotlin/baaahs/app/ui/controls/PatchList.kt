@@ -14,7 +14,6 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onContextMenuFunction
 import materialui.*
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
@@ -73,7 +72,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val selectedScene = props.showState.selectedScene
     val patchSets = props.show.scenes[selectedScene].patchSets
 
-    val handleContextClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
+    val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
             editScene(selectedScene) {
                 editPatchSet(index) {
@@ -84,7 +83,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
         }
     }
 
-    val handleOnClose = handler("patchyEditor.onClose") { patchyEditor = null }
+    val handleClose = handler("patchyEditor.onClose") { patchyEditor = null }
 
     card {
         droppable({
@@ -114,6 +113,11 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                             ref = draggableProvided.innerRef
                             copyFrom(draggableProvided.draggableProps)
 
+                            div(+Styles.editButton) {
+                                attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
+
+                                icon(Edit)
+                            }
                             div(+Styles.dragHandle) {
                                 copyFrom(draggableProvided.dragHandleProps)
                                 icon(DragIndicator)
@@ -127,9 +131,6 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                                 attrs.onClickFunction = {
                                     val newState = props.showState.selectPatchSet(index)
                                     props.onShowStateChange(newState)
-                                }
-                                if (props.editMode) {
-                                    attrs.onContextMenuFunction = { event: Event -> handleContextClick(event, index) }
                                 }
                                 +patchSet.title
                             }
@@ -164,7 +165,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                 props.onEdit(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }
-            attrs.onCancel = handleOnClose
+            attrs.onCancel = handleClose
         }
     }
 }

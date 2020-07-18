@@ -346,7 +346,7 @@ class CorePlugin : Plugin {
         val initialValue: Color
     ) : GadgetDataSource<ColorPicker> {
         companion object : DataSourceBuilder<ColorPickerProvider> {
-            override val resourceName: String get() = "Color Picker"
+            override val resourceName: String get() = "ColorPicker"
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataType == "vec4"

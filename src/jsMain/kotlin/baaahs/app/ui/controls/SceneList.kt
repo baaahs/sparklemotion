@@ -12,10 +12,6 @@ import external.Direction
 import external.copyFrom
 import external.draggable
 import external.droppable
-import kotlinx.css.*
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
 import materialui.*
 import materialui.components.button.button
@@ -25,8 +21,6 @@ import org.w3c.dom.events.Event
 import react.dom.div
 import react.key
 import react.useContext
-import styled.css
-import styled.styledDiv
 
 val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
     val appContext = useContext(appContext)
@@ -50,6 +44,15 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
             sceneDropTargets.forEach { (_, sceneDropTarget) ->
                 appContext.dragNDrop.removeDropTarget(sceneDropTarget)
             }
+        }
+    }
+
+    val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
+        props.show.edit(props.showState) {
+            editScene(props.showState.selectedScene) {
+                patchyEditor = this
+            }
+            event.preventDefault()
         }
     }
 
@@ -86,6 +89,11 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                             ref = sceneDragProvided.innerRef
                             copyFrom(sceneDragProvided.draggableProps)
 
+                            div(+Styles.editButton) {
+                                attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
+
+                                icon(Edit)
+                            }
                             div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)
                                 icon(DragIndicator)
