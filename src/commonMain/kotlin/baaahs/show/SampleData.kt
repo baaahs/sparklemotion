@@ -4,36 +4,31 @@ import baaahs.Color
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
-import kotlinx.serialization.json.json
 
 object SampleData {
-    val stdLayout = json {
-        "direction" to "row"
-        "splitPercentage" to 70
-
-        "first" to json {
-            "direction" to "column"
-            "splitPercentage" to 20
-
-            "first" to "Scenes"
-
-            "second" to json {
-                "direction" to "column"
-                "splitPercentage" to 60
-
-                "first" to "Patches"
-                "second" to "More Controls"
-            }
-        }
-
-        "second" to json {
-            "direction" to "column"
-            "splitPercentage" to 20
-
-            "first" to "Preview"
-            "second" to "Controls"
-        }
-    }
+    val stdLayout = LayoutNode.Columns(
+        "100%",
+        LayoutNode.Rows(
+            "2",
+            LayoutNode.Panel("Scenes", "150px"),
+            LayoutNode.Columns(
+                "3",
+                LayoutNode.Panel("Patches", "1"),
+                LayoutNode.Rows("3",
+                    LayoutNode.Panel("Controls", "1"),
+                    LayoutNode.Panel("More Controls", "1")
+                )
+            ),
+            LayoutNode.Panel("Effects", "1")
+        ),
+        LayoutNode.Rows(
+            "1",
+            LayoutNode.Panel("Preview", "150px", LayoutNode.Flow.horizontalFromRight),
+            LayoutNode.Panel("Adjust", "1.5", LayoutNode.Flow.horizontalFromRight),
+            LayoutNode.Panel("Eyes & Movera", "1.5", LayoutNode.Flow.horizontalFromRight),
+            LayoutNode.Panel("Transition", "1", LayoutNode.Flow.horizontalFromRight)
+        )
+    )
 
     private val plugins = Plugins.findAll()
     private val autoWirer = AutoWirer(plugins)
@@ -62,15 +57,17 @@ object SampleData {
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
-        listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
+        defaultLayout.getPanelNames(),
         mapOf("default" to defaultLayout)
     )
 
     val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
     val brightnessControl = CorePlugin.SliderDataSource(
-        "Brightness", 1f, 0f, 1f, null)
+        "Brightness", 1f, 0f, 1f, null
+    )
     val intensityControl = CorePlugin.SliderDataSource(
-        "Intensity", 1f, 0f, 1f, null)
+        "Intensity", 1f, 0f, 1f, null
+    )
 
     val sampleShow = ShowEditor("Sample Show").apply {
         editLayouts {

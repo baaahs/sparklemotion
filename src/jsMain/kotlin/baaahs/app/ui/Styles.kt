@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.show.LayoutNode
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -66,11 +67,8 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appContent by css {
         display = Display.flex
         flexDirection = FlexDirection.column
-        position = Position.absolute
-        top = 3.em
-        left = 0.px
         width = 100.pct
-        height = 100.pct - 3.em
+        height = 100.pct
 
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
@@ -104,13 +102,71 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         display = Display.flex
     }
 
-    val layoutPanel by css {
+    val layoutContainer by css {
+        display = Display.flex
+        width = 100.pct
         height = 100.pct
+        flexWrap = FlexWrap.nowrap
+        flexBasis = 100.pct.basis
+        flexGrow = 1.0
+        flexShrink = 1.0
+        justifyContent = JustifyContent.spaceBetween
+        alignItems = Align.stretch
+        alignContent = Align.stretch
     }
+
+    val layoutRows by css {
+        flexDirection = FlexDirection.column
+    }
+
+    val layoutColumns by css {
+        flexDirection = FlexDirection.row
+    }
+
+    val layoutPanel by css {
+        display = Display.flex
+        width = 100.pct
+        flexDirection = FlexDirection.column
+        flexGrow = 1.0
+
+        margin(1.px)
+        firstChild {
+            marginLeft = 0.px
+        }
+        lastChild {
+            marginRight = 0.px
+        }
+
+        child(title) {
+            put("writing-mode", "vertical-lr")
+        }
+    }
+
+    private val layoutPanelHorizontalFromLeft by css {
+        flexDirection = FlexDirection.row
+    }
+    private val layoutPanelHorizontalFromRight by css {
+        flexDirection = FlexDirection.rowReverse
+    }
+    private val layoutPanelVerticalFromTop by css {
+        flexDirection = FlexDirection.column
+    }
+    private val layoutPanelVerticalFromBottom by css {
+        flexDirection = FlexDirection.columnReverse
+    }
+
+    val layoutPanelFlows = mapOf(
+        LayoutNode.Flow.horizontalFromLeft to layoutPanelHorizontalFromLeft,
+        LayoutNode.Flow.horizontalFromRight to layoutPanelHorizontalFromRight,
+        LayoutNode.Flow.verticalFromTop to layoutPanelVerticalFromTop,
+        LayoutNode.Flow.verticalFromBottom to layoutPanelVerticalFromBottom
+    )
 
     val fullHeight by css {
         height = 100.pct
     }
+
+    val title by css {}
 
     val buttons by css {
         backgroundColor = Color.white.withAlpha(.75)
@@ -205,7 +261,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             position = Position.absolute
             top = 0.5.em
             left = 0.5.px
-            declarations["writing-mode"] = "vertical-lr"
+            put("writing-mode", "vertical-lr")
         }
 
         descendants(baaahs.app.ui.controls.Styles.controlBox) {

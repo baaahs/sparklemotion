@@ -4,11 +4,11 @@ import baaahs.Surface
 import baaahs.camelize
 import baaahs.glshaders.Plugins
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerialModuleCollector
 import kotlin.reflect.KClass
@@ -125,8 +125,79 @@ data class Layouts(
 
 @Serializable
 data class Layout(
-    val rootNode: JsonObject
-)
+    val rootNode: LayoutNode
+) {
+    fun getPanelNames(): List<String> {
+        val panelNames = hashSetOf<String>()
+        rootNode.accept(object : Visitor<LayoutNode> {
+            override fun visit(t: LayoutNode) {
+                if (t is LayoutNode.Panel) {
+                    panelNames.add(t.title)
+                }
+            }
+        })
+        return panelNames.toList().sorted()
+    }
+}
+
+@Serializable
+sealed class LayoutNode {
+    abstract val size: String
+
+    abstract fun accept(visitor: Visitor<LayoutNode>)
+
+    interface Container {
+        val items: List<LayoutNode>
+    }
+
+    @Serializable @SerialName("columns")
+    data class Columns(
+        override val items: List<LayoutNode>,
+        override val size: String
+    ) : LayoutNode(), Container {
+        constructor(size: String, vararg items: LayoutNode) : this(items.toList(), size)
+
+        override fun accept(visitor: Visitor<LayoutNode>) {
+            visitor.visit(this)
+            items.forEach { it.accept(visitor) }
+        }
+    }
+
+    @Serializable @SerialName("rows")
+    data class Rows(
+        override val items: List<LayoutNode>,
+        override val size: String
+    ) : LayoutNode(), Container {
+        constructor(size: String, vararg items: LayoutNode) : this(items.toList(), size)
+
+        override fun accept(visitor: Visitor<LayoutNode>) {
+            visitor.visit(this)
+            items.forEach { it.accept(visitor) }
+        }
+    }
+
+    @Serializable @SerialName("panel")
+    data class Panel(
+        val title: String,
+        override val size: String,
+        val flow: Flow = Flow.horizontalFromLeft
+    ) : LayoutNode() {
+        override fun accept(visitor: Visitor<LayoutNode>) {
+            visitor.visit(this)
+        }
+    }
+
+    enum class Flow {
+        horizontalFromLeft,
+        horizontalFromRight,
+        verticalFromTop,
+        verticalFromBottom
+    }
+}
+
+interface Visitor<T> {
+    fun visit(t: T)
+}
 
 @Serializable
 data class Link(
