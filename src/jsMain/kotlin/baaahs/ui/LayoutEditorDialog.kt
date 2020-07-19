@@ -3,6 +3,7 @@ package baaahs.ui
 import ReactAce.Ace.reactAce
 import acex.AceEditor
 import baaahs.show.Layout
+import baaahs.show.LayoutNode
 import baaahs.show.Layouts
 import baaahs.ui.Styles.previewBar
 import kotlinext.js.jsObject
@@ -34,20 +35,20 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         unquotedPrint = true
     )) }
     var panelNames by state {
-        props.layouts.map["default"]?.rootNode?.let { getPanelNames(it) }
+        props.layouts.map["default"]?.getPanelNames()
     }
     var errorMessage by state<String?> { null }
     val changed = ref { false }
 
-    fun getLayoutJson(): JsonObject {
+    fun getLayoutRootNode(): LayoutNode {
         val layoutJson = aceEditor.current.editor.session.getDocument()
-        return json.parseJson(layoutJson.getValue()) as JsonObject
+        return json.parse(LayoutNode.serializer(), layoutJson.getValue())
     }
 
     val checkLayout = useCallback() {
         if (changed.current) {
             errorMessage = try {
-                panelNames = getPanelNames(getLayoutJson())
+                panelNames = Layout(getLayoutRootNode()).getPanelNames()
                 null
             } catch (e: Exception) {
                 e.message
@@ -62,10 +63,11 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
     }
 
     val handleApply = useCallback(props.onApply) { event: Event ->
-        val layoutJson = getLayoutJson()
+        val layoutJson = getLayoutRootNode()
+        val layout = Layout(layoutJson)
         val layouts = Layouts(
-            getPanelNames(layoutJson),
-            mapOf("default" to Layout(layoutJson))
+            layout.getPanelNames(),
+            mapOf("default" to layout)
         )
         props.onApply(layouts)
     }
@@ -77,7 +79,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         useCallback(props.onClose) { event: Event -> props.onClose() }
 
     val jsonStr = props.layouts.map["default"]?.let {
-        json.stringify(JsonElementSerializer, it.rootNode)
+        json.stringify(LayoutNode.serializer(), it.rootNode)
     }
 
 
@@ -157,12 +159,6 @@ private fun MutableSet<String>.visitNode(json: JsonElement?) {
         }
         else -> error("unexpected json: $json")
     }
-}
-
-private fun getPanelNames(layoutJson: JsonElement): List<String> {
-    val newPanelNames = mutableSetOf<String>()
-    newPanelNames.visitNode(layoutJson)
-    return newPanelNames.toList().sorted()
 }
 
 external interface LayoutEditorDialogProps : RProps {

@@ -73,7 +73,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         top = 0.5.em
         left = 0.5.px
-        declarations["writing-mode"] = "vertical-lr"
+        put("writing-mode", "vertical-lr")
     }
 
     val dataSourceLonelyTitle by css {
