@@ -1,9 +1,12 @@
 package baaahs.app.ui
 
-import baaahs.ui.descendants
-import baaahs.ui.getName
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
+import materialui.styles.mixins.toolbar
+import materialui.styles.muitheme.MuiTheme
+import materialui.styles.transitions.create
+import materialui.styles.transitions.sharp
 import styled.StyleSheet
 
 private fun linearRepeating(
@@ -24,7 +27,83 @@ private fun linearRepeating(
     """.trimIndent()
 }
 
+class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = true) {
+    private val drawerWidth = 260.px
+
+    private val drawerClosedShift = partial {
+        left = 0.px
+        theme.transitions.create("left") {
+            easing = theme.transitions.easing.sharp
+            duration = theme.transitions.duration.enteringScreen
+        }
+    }
+
+    private val drawerOpenShift = partial {
+        left = drawerWidth
+        transition = theme.transitions.create("left") {
+            easing = theme.transitions.easing.sharp
+            duration = theme.transitions.duration.leavingScreen
+        }
+    }
+
+    val appDrawerOpen by css {}
+    val appDrawerClosed by css {}
+
+    val title by css { }
+
+    val appToolbar by css {
+        height = 40.px
+        mixIn(theme.mixins.toolbar)
+
+        descendants(title) {
+            flexGrow = 1.0
+        }
+
+        within(appDrawerOpen) { mixIn(drawerOpenShift) }
+        within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
+
+    val appContent by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        position = Position.absolute
+        top = 3.em
+        left = 0.px
+        width = 100.pct
+        height = 100.pct - 3.em
+
+        within(appDrawerOpen) { mixIn(drawerOpenShift) }
+        within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
+
+    val appDrawer by css {
+        position = Position.absolute
+        width = drawerWidth
+        height = 100.pct
+        flexShrink = 0.0
+    }
+
+    val appDrawerPaper by css {
+//        position = Position.relative
+        put("position", "relative !important")
+        width = drawerWidth
+    }
+
+    val appDrawerHeader by css {
+        display = Display.flex
+        alignItems = Align.center
+        padding = theme.spacing(0, 1)
+        rules.addAll(theme.mixins.toolbar.rules)
+        theme.mixins.toolbar
+        justifyContent = JustifyContent.flexEnd
+    }
+}
+
 object Styles : StyleSheet("app-ui", isStatic = true) {
+    val root by css {
+        display = Display.flex
+    }
+
     val layoutPanel by css {
         height = 100.pct
     }
@@ -62,10 +141,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         bottom = 5.em
         zIndex = 100
         opacity = 0
-        display = Display.none
-
         transition(StyledElement::opacity, duration = 1.s)
-        transition(StyledElement::display, delay = 1.s)
 
         hover {
             descendants(dragHandle) {
@@ -113,15 +189,15 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
 
         descendants(showControls) {
-            background = linearRepeating(Color.lightPink, Color.lightPink.lighten(20))
+            background = linearRepeating(Color.lightPink.withAlpha(.5), Color.lightPink.withAlpha(.25))
         }
 
         descendants(sceneControls) {
-            background = linearRepeating(Color.lightGreen, Color.lightGreen.lighten(20))
+            background = linearRepeating(Color.lightGreen.withAlpha(.5), Color.lightGreen.withAlpha(.25))
         }
 
         descendants(patchControls) {
-            background = linearRepeating(Color.lightBlue, Color.lightBlue.lighten(20))
+            background = linearRepeating(Color.lightBlue.withAlpha(.5), Color.lightBlue.withAlpha(.25))
         }
 
         descendants(controlPanelHelpText) {
@@ -161,8 +237,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val global = CSSBuilder().apply {
-        ".${editModeOn.getName()}.${unplacedControlsPalette.getName()}" {
-            display = Display.block
+        ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
         }
     }

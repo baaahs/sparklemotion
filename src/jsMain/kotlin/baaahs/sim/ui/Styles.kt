@@ -4,7 +4,7 @@ import kotlinx.css.*
 import kotlinx.css.properties.border
 import styled.StyleSheet
 
-object SimulatorStyles : StyleSheet("SimulatorView", isStatic = true) {
+object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val console by css {
         color = Color.black
         backgroundColor = Color.white

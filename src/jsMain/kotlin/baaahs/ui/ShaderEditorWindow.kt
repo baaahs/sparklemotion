@@ -40,7 +40,7 @@ import styled.styledDiv
 import kotlin.browser.window
 import kotlin.math.min
 
-private val glslNumberClassName = glslNumber.getName()
+private val glslNumberClassName = glslNumber.name
 
 val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow") { props ->
     val windowRootEl = useRef<Element>()

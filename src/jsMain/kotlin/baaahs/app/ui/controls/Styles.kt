@@ -1,6 +1,6 @@
 package baaahs.app.ui.controls
 
-import baaahs.ui.getName
+import baaahs.ui.name
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
@@ -57,11 +57,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         marginRight = 2.em
 
         hover {
-            child(".${editButton.getName()}") {
+            child(".${editButton.name}") {
                 opacity = .7
             }
 
-            child(".${dragHandle.getName()}") {
+            child(".${dragHandle.name}") {
                 opacity = 1
             }
         }
@@ -84,22 +84,22 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.relative
 
         hover {
-            child(".${editButton.getName()}") {
+            child(".${editButton.name}") {
                 opacity = .7
             }
 
-            child(".${dragHandle.getName()}") {
+            child(".${dragHandle.name}") {
                 opacity = 1
             }
         }
     }
 
     val global = CSSBuilder().apply {
-         ".${baaahs.app.ui.Styles.editModeOff.getName()}" {
-             ".${editButton.getName()}" {
+         ".${baaahs.app.ui.Styles.editModeOff.name}" {
+             ".${editButton.name}" {
                  put("opacity", "0 !important")
              }
-             ".${dragHandle.getName()}" {
+             ".${dragHandle.name}" {
                  put("opacity", "0 !important")
              }
         }
