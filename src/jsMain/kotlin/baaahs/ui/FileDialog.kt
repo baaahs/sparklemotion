@@ -105,7 +105,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
 
                     td {
                         div {
-                            list(ListStyle.root to fileDialogFileList.getName()) {
+                            list(ListStyle.root to fileDialogFileList.name) {
                                 filesInDir.forEach { file ->
                                     listItem {
                                         attrs.button = true
