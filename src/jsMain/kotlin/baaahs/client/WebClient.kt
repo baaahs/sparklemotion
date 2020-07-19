@@ -34,8 +34,12 @@ class WebClient(
     private var openShow: OpenShow? = null
     private var showState: ShowState? = null
 
+    private var savedShow: Show? = null
+    private var showIsModified: Boolean = false
+
     private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
     private val showWithStateChannel = pubSub.subscribe(showResources.showWithStateTopic) {
+        savedShow = it.show
         switchTo(it.show, it.showState)
         undoStack.reset(it)
         facade.notifyChanged()
@@ -78,6 +82,9 @@ class WebClient(
         val show: Show?
             get() = this@WebClient.show
 
+        val showIsModified: Boolean
+            get() = this@WebClient.showIsModified
+
         val showState: ShowState?
             get() = this@WebClient.showState
 
@@ -87,6 +94,7 @@ class WebClient(
         fun onShowEdit(showWithState: ShowWithState) {
             showWithStateChannel.onChange(showWithState)
             switchTo(showWithState.show, showWithState.showState)
+            this@WebClient.showIsModified = showWithState.show != savedShow
             facade.notifyChanged()
         }
 

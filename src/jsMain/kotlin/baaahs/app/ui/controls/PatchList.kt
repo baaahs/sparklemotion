@@ -93,7 +93,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
             isDropDisabled = !props.editMode
         }) { droppableProvided, snapshot ->
             toggleButtonGroup(
-                ToggleButtonGroupStyle.root to Styles.verticalButtonList.getName()
+                ToggleButtonGroupStyle.root to Styles.verticalButtonList.name
             ) {
                 install(droppableProvided)
 

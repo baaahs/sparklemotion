@@ -5,10 +5,10 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
-import kotlinx.html.DIV
 import react.RMutableRef
 import react.ReactElement
 import react.dom.RDOMBuilder
+import styled.StyleSheet
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
@@ -48,16 +48,18 @@ fun String?.truncate(length: Int): String? {
     }
 }
 
-fun RuleSet.getName(): String {
-    return CSSBuilder().apply { +this@getName }.classes.joinToString(" ")
-}
+val RuleSet.name: String
+    get() = CSSBuilder().apply { +this@name }.classes.joinToString(" ")
 
-operator fun RuleSet.unaryPlus(): String = getName()
+val RuleSet.selector: String
+    get() = ".$name"
 
-infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.getName()
+operator fun RuleSet.unaryPlus(): String = name
+
+infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
 
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
-    return clazz to getName()
+    return clazz to name
 }
 
 infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
@@ -69,10 +71,18 @@ infix fun String.and(that: String): String {
 }
 
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
-    return clazz to joinToString(" ") { it.getName() }
+    return clazz to joinToString(" ") { it.name }
 }
 
-fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = "& .${ruleSet.getName()}".invoke(block)
+fun CSSBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
+fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)
+fun CSSBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
+
+fun CSSBuilder.mixIn(mixin: CSSBuilder) = declarations.putAll(mixin.declarations)
+
+fun StyleSheet.partial(block: CSSBuilder.() -> Unit): CSSBuilder {
+    return CSSBuilder().apply { block() }
+}
 
 fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
     ref = droppableProvided.innerRef
