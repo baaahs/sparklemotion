@@ -55,24 +55,12 @@ val RuleSet.selector: String
     get() = ".$name"
 
 operator fun RuleSet.unaryPlus(): String = name
-
 infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
-
-infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
-    return clazz to name
-}
-
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
-    return mutableListOf(this, that)
-}
-
-infix fun String.and(that: String): String {
-    return "$this $that"
-}
-
-infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
-    return clazz to joinToString(" ") { it.name }
-}
+infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
+infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
+infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
+infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
+infix fun String.and(that: String): String = "$this $that"
 
 fun CSSBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
 fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)
