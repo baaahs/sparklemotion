@@ -14,7 +14,6 @@ import external.draggable
 import external.droppable
 import external.mosaic.*
 import kotlinext.js.jsObject
-import kotlinx.css.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElementSerializer
@@ -22,8 +21,6 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import react.*
 import react.dom.div
-import styled.css
-import styled.styledDiv
 import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
@@ -55,95 +52,82 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         this.onEdit = props.onEdit
     }
 
-    styledDiv {
-        css {
-            display = Display.flex
-            flexDirection = FlexDirection.column
-            position = Position.absolute
-            top = 3.em
-            left = 0.px
-            width = 100.pct
-            height = 100.pct - 3.em
-        }
-
 //    <MosiacMenuBar />
-        mosaic<String> {
-            renderTile = { panelTitle, path ->
-                MosaicWindow {
-                    attrs {
-                        draggable = false
+    mosaic<String> {
+        renderTile = { panelTitle, path ->
+            MosaicWindow {
+                attrs {
+                    draggable = false
 //                    additionalControls = if (type === "") additionalControls else emptyArray<String>()
-                        title = panelTitle
-                        createNode = handleCreateNode
-                        this.path = path
-                        onDragStart = { console.log("MosaicWindow.onDragStart") }
-                        onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
-                        renderToolbar = { props: MosaicWindowProps<*>, draggable: Boolean? ->
-                            div { +props.title }
-                        }
-                    }
-
-                    paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                        controlDisplay.render(panelTitle) {
-                                dropTargetId: String,
-                                section: ControlDisplay.Section,
-                                controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl> ->
-
-                            droppable({
-                                this.droppableId = dropTargetId
-                                this.type = "ControlPanel"
-                                this.direction = Direction.horizontal.name
-                                this.isDropDisabled = !props.editMode
-                            }) { droppableProvided, snapshot ->
-                                val style = when (section) {
-                                    ControlDisplay.Section.Show -> Styles.showControls
-                                    ControlDisplay.Section.Scene -> Styles.sceneControls
-                                    ControlDisplay.Section.Patch -> Styles.patchControls
-                                }
-                                div(+Styles.layoutControls and style) {
-                                    install(droppableProvided)
-
-                                    div(+Styles.controlPanelHelpText) { +section.title }
-                                    controls.forEach { placedControl ->
-                                        val control = placedControl.control
-                                        val draggableId = "control_${control.toControlRef(showBuilder).toShortString()}"
-
-                                        draggable({
-                                            this.key = draggableId
-                                            this.draggableId = draggableId
-                                            this.isDragDisabled = !props.editMode
-                                            this.index = placedControl.index
-                                        }) { draggableProvided, snapshot ->
-                                            control {
-                                                attrs.control = control
-                                                attrs.specialControlProps = specialControlProps
-                                                attrs.draggableProvided = draggableProvided
-                                            }
-                                        }
-                                    }
-
-                                    insertPlaceholder(droppableProvided)
-                                }
-                            }
-                        }
-
+                    title = panelTitle
+                    createNode = handleCreateNode
+                    this.path = path
+                    onDragStart = { console.log("MosaicWindow.onDragStart") }
+                    onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
+                    renderToolbar = { props: MosaicWindowProps<*>, draggable: Boolean? ->
+                        div { +props.title }
                     }
                 }
-            }
 
-            val jsonInst =
-                Json(JsonConfiguration.Stable)
-            val layoutRoot = props.layout.rootNode
-            val asJson =
-                jsonInst.stringify(JsonElementSerializer, layoutRoot)
-            val layoutRootJs = JSON.parse<dynamic>(asJson)
-            println("asJson = ${asJson}")
-            @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
-            value = layoutRootJs as MosaicParent<String>
-            //            onChange = { onChange }
+                paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
+                    controlDisplay.render(panelTitle) { dropTargetId: String,
+                                                        section: ControlDisplay.Section,
+                                                        controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl> ->
+
+                        droppable({
+                            this.droppableId = dropTargetId
+                            this.type = "ControlPanel"
+                            this.direction = Direction.horizontal.name
+                            this.isDropDisabled = !props.editMode
+                        }) { droppableProvided, snapshot ->
+                            val style = when (section) {
+                                ControlDisplay.Section.Show -> Styles.showControls
+                                ControlDisplay.Section.Scene -> Styles.sceneControls
+                                ControlDisplay.Section.Patch -> Styles.patchControls
+                            }
+                            div(+Styles.layoutControls and style) {
+                                install(droppableProvided)
+
+                                div(+Styles.controlPanelHelpText) { +section.title }
+                                controls.forEach { placedControl ->
+                                    val control = placedControl.control
+                                    val draggableId = "control_${control.toControlRef(showBuilder).toShortString()}"
+
+                                    draggable({
+                                        this.key = draggableId
+                                        this.draggableId = draggableId
+                                        this.isDragDisabled = !props.editMode
+                                        this.index = placedControl.index
+                                    }) { draggableProvided, snapshot ->
+                                        control {
+                                            attrs.control = control
+                                            attrs.specialControlProps = specialControlProps
+                                            attrs.draggableProvided = draggableProvided
+                                        }
+                                    }
+                                }
+
+                                insertPlaceholder(droppableProvided)
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        val jsonInst =
+            Json(JsonConfiguration.Stable)
+        val layoutRoot = props.layout.rootNode
+        val asJson =
+            jsonInst.stringify(JsonElementSerializer, layoutRoot)
+        val layoutRootJs = JSON.parse<dynamic>(asJson)
+        println("asJson = ${asJson}")
+        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
+        value = layoutRootJs as MosaicParent<String>
+        //            onChange = { onChange }
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
-        }
     }
 
     controlsPalette {

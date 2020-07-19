@@ -3,7 +3,6 @@ package baaahs.app.ui
 import baaahs.ShowResources
 import baaahs.ShowState
 import baaahs.ShowWithState
-import baaahs.app.ui.Styles.buttons
 import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
 import baaahs.show.Show
@@ -12,33 +11,43 @@ import baaahs.ui.*
 import baaahs.util.UndoStack
 import baaahs.withState
 import kotlinext.js.jsObject
-import kotlinx.css.*
+import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import materialui.Code
-import materialui.Redo
-import materialui.Undo
+import materialui.*
+import materialui.components.appbar.appBar
+import materialui.components.appbar.enums.AppBarPosition
+import materialui.components.appbar.enums.AppBarStyle
+import materialui.components.backdrop.backdrop
+import materialui.components.button.enums.ButtonColor
+import materialui.components.circularprogress.circularProgress
+import materialui.components.container.container
+import materialui.components.cssbaseline.cssBaseline
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
-import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
-import materialui.components.iconbutton.enums.IconButtonStyle.root
+import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.paper
 import materialui.components.portal.portal
-import materialui.components.switches.switch
-import materialui.icon
+import materialui.components.toolbar.toolbar
+import materialui.components.typography.enums.TypographyStyle
+import materialui.components.typography.typographyH6
+import materialui.styles.createMuiTheme
+import materialui.styles.muitheme.options.palette
+import materialui.styles.palette.PaletteType
+import materialui.styles.palette.options.type
+import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.b
+import react.dom.div
 import styled.css
 import styled.injectGlobal
 import styled.styledDiv
-import styled.styledTd
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     injectGlobal(Styles.global.toString())
@@ -46,8 +55,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val webClient = props.webClient
     observe(webClient)
-
-    val id = props.id
 
     val dragNDrop by state { DragNDrop() }
     val myAppContext by state {
@@ -57,8 +64,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
+    var appDrawerOpen by state { false }
     var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
+
+    val handleAppDrawerToggle =
+        useCallback(appDrawerOpen) { event: Event -> appDrawerOpen = !appDrawerOpen }
 
     val handleShaderEditorDrawerToggle =
         useCallback(shaderEditorDrawerOpen) { event: Event -> shaderEditorDrawerOpen = !shaderEditorDrawerOpen }
@@ -99,136 +110,177 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var editMode by state { false }
     val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
 
-    styledDiv {
-        css {
-            width = 100.pct
-            height = 5.vh
-            color = Color.black
-            backgroundColor = Color.pink
-            textAlign = TextAlign.center
-            fontSize = 2.em
-            display = if (webClient.isConnected) Display.none else Display.block
-        }
-        +"Connecting…"
-    }
+    var darkMode by state { false }
+    val handleDarkModeChange = useCallback(darkMode) { event: Event -> darkMode = !darkMode }
 
-    paper {
-        table {
-            tbody {
-                tr {
-                    td {
-                        formControlLabel {
-                            attrs.control {
-                                switch {
-                                    attrs.checked = editMode
-                                    attrs.onChangeFunction = handleEditModeChange
-                                }
-                            }
-                            attrs.label = "Design Mode".asTextNode()
-                        }
+    val theme = createMuiTheme {
+        palette {
+            type = if (darkMode) PaletteType.dark else PaletteType.light
+        }
+    }
+    val themeStyles = ThemeStyles(theme)
+
+    themeProvider(theme) {
+        cssBaseline { }
+
+        div(+Styles.root and if (appDrawerOpen) themeStyles.appDrawerOpen else themeStyles.appDrawerClosed) {
+            appBar(themeStyles.appToolbar on AppBarStyle.root) {
+                attrs.position = AppBarPosition.relative
+
+                toolbar {
+                    iconButton {
+                        attrs.color = ButtonColor.inherit
+                        attrs.edge = IconButtonEdge.start
+                        attrs.onClickFunction = handleAppDrawerToggle
+                        icon(Menu)
                     }
-                    styledTd {
+
+                    typographyH6(themeStyles.title on TypographyStyle.root) {
+                        show?.let { b { +show.title }; +" — " }
+                        +"Sparkle Motion™"
+                    }
+
+                    styledDiv {
                         if (!editMode) css { opacity = 0 }
                         css {
                             transition("opacity", duration = .5.s, timing = Timing.linear)
                         }
 
-                        iconButton(root to buttons.getName()) {
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(Undo)
                             attrs["disabled"] = !undoStack.canUndo()
                             attrs.onClickFunction = handleUndo
 
-                            +"Undo"
+                            typographyH6 { +"Undo" }
                         }
 
-                        iconButton(root to buttons.getName()) {
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(Redo)
                             attrs["disabled"] = !undoStack.canRedo()
                             attrs.onClickFunction = handleRedo
 
-                            +"Redo"
+                            typographyH6 { +"Redo" }
                         }
 
-                        iconButton(root to buttons.getName()) {
-                            attrs.edge = IconButtonEdge.end
-                            attrs.onClickFunction = handleShaderEditorDrawerToggle
-                            icon(Code)
-                            +"Shader Editor"
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                            icon(Save)
+                            attrs.disabled = !webClient.showIsModified
+//                            attrs.onClickFunction = handleSave
+
+                            typographyH6 { +"Save" }
                         }
 
-                        iconButton(root to buttons.getName()) {
-                            attrs.edge = IconButtonEdge.end
-                            attrs.onClickFunction = handleLayoutEditorDialogToggle
-                            icon(Code)
-                            +"Layout Editor"
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                            icon(FileCopy)
+                            attrs.disabled = !webClient.showIsModified
+//                            attrs.onClickFunction = handleSaveAs
+
+                            typographyH6 { +"Save As…" }
+                        }
+
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                            icon(Close)
+//                            attrs.onClickFunction = handleClose
+
+                            typographyH6 { +"Close" }
                         }
                     }
                 }
             }
-        }
-    }
 
-    if (show == null || showState == null) {
-        paper {
-            h1 { +"Loading Show…" }
-        }
-    } else {
-        appContext.Provider {
-            attrs.value = myAppContext
-
-            showUi {
-                attrs.show = webClient.openShow!!
-                attrs.showState = showState
-                attrs.onShowStateChange = handleShowStateChange
+            appDrawer {
+                attrs.open = appDrawerOpen
+                attrs.onClose = handleAppDrawerToggle
                 attrs.editMode = editMode
-                attrs.onEdit = handleShowEdit
+                attrs.onEditModeChange = handleEditModeChange
+                attrs.onShaderEditorDrawerToggle = handleShaderEditorDrawerToggle
+                attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                attrs.darkMode = darkMode
+                attrs.onDarkModeChange = handleDarkModeChange
             }
 
-            portal {
-                // Shader Editor drawer
-                drawer {
-                    attrs.anchor = DrawerAnchor.right
-                    attrs.variant = DrawerVariant.persistent
-//            attrs.elevation = 100
-                    attrs.open = shaderEditorDrawerOpen
-                    attrs.onClose = handleShaderEditorDrawerClose
-                    attrs.classes(Styles.fullHeight.getName())
+            div(+themeStyles.appContent) {
+                backdrop {
+                    attrs {
+                        open = !webClient.isConnected
+                    }
 
-                    shaderEditorWindow {
-                        attrs.filesystems = props.filesystems
-                        attrs.onAddToPatch = { shader ->
-                            val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
-                            val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
-                                editPatchSet(showState.selectedPatchSet) {
-                                    if (this.patchMappings.isEmpty()) {
-                                        addPatch {
-                                            links = newPatch.links.toMutableList()
-                                            surfaces = newPatch.surfaces
+                    container {
+                        circularProgress {}
+                        icon(NotificationImportant)
+
+                        typographyH6 { +"Connecting…" }
+                        +"Attempting to connect to Sparkle Motion."
+                    }
+                }
+
+                if (show == null || showState == null) {
+                    paper {
+                        container {
+                            circularProgress {}
+                            typographyH6 { +"Loading Show…" }
+                        }
+                    }
+                } else {
+                    appContext.Provider {
+                        attrs.value = myAppContext
+
+                        showUi {
+                            attrs.show = webClient.openShow!!
+                            attrs.showState = showState
+                            attrs.onShowStateChange = handleShowStateChange
+                            attrs.editMode = editMode
+                            attrs.onEdit = handleShowEdit
+                        }
+
+                        portal {
+                            // Shader Editor drawer
+                            drawer {
+                                attrs.anchor = DrawerAnchor.right
+                                attrs.variant = DrawerVariant.persistent
+//                              attrs.elevation = 100
+                                attrs.open = shaderEditorDrawerOpen
+                                attrs.onClose = handleShaderEditorDrawerClose
+                                attrs.classes(Styles.fullHeight.name)
+
+                                shaderEditorWindow {
+                                    attrs.filesystems = props.filesystems
+                                    attrs.onAddToPatch = { shader ->
+                                        val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
+                                        val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
+                                            editPatchSet(showState.selectedPatchSet) {
+                                                if (this.patchMappings.isEmpty()) {
+                                                    addPatch {
+                                                        links = newPatch.links.toMutableList()
+                                                        surfaces = newPatch.surfaces
+                                                    }
+                                                } else {
+                                                    editPatch(0) {
+                                                        links = newPatch.links.toMutableList()
+                                                        surfaces = newPatch.surfaces
+                                                    }
+                                                }
+                                            }
                                         }
-                                    } else {
-                                        editPatch(0) {
-                                            links = newPatch.links.toMutableList()
-                                            surfaces = newPatch.surfaces
-                                        }
+                                        handleShowEdit(editor.getShow(), editor.getShowState())
                                     }
                                 }
                             }
-                            handleShowEdit(editor.getShow(), editor.getShowState())
-                        }
-                    }
-                }
 
-                // Layout Editor dialog
-                layoutEditorDialog {
-                    attrs.open = layoutEditorDialogOpen
-                    attrs.layouts = show.layouts
-                    attrs.onApply = { newLayouts ->
-                        val editor = ShowEditor(show, showState).editLayouts {
-                            copyFrom(newLayouts)
+                            // Layout Editor dialog
+                            layoutEditorDialog {
+                                attrs.open = layoutEditorDialogOpen
+                                attrs.layouts = show.layouts
+                                attrs.onApply = { newLayouts ->
+                                    val editor = ShowEditor(show, showState).editLayouts {
+                                        copyFrom(newLayouts)
+                                    }
+                                    handleShowEdit(editor.getShow(), editor.getShowState())
+                                }
+                                attrs.onClose = handleLayoutEditorDialogClose
+                            }
                         }
-                        handleShowEdit(editor.getShow(), editor.getShowState())
                     }
-                    attrs.onClose = handleLayoutEditorDialogClose
                 }
             }
         }

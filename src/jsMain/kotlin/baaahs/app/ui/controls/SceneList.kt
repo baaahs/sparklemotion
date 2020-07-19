@@ -66,7 +66,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
             isDropDisabled = !props.editMode
         }) { sceneDropProvided, snapshot ->
             toggleButtonGroup(
-                ToggleButtonGroupStyle.root to Styles.horizontalButtonList.getName()
+                ToggleButtonGroupStyle.root to Styles.horizontalButtonList.name
             ) {
                 install(sceneDropProvided)
 
