@@ -38,21 +38,25 @@ class WebClient(
     private var showIsModified: Boolean = false
 
     private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
-    private val showWithStateChannel = pubSub.subscribe(showResources.showWithStateTopic) {
-        savedShow = it.show
-        switchTo(it.show, it.showState)
-        undoStack.reset(it)
-        facade.notifyChanged()
-    }
-    private val showStateChannel = pubSub.subscribe(Topics.showState) {
-        showState = it
-        facade.notifyChanged()
-    }
+    private val showWithStateChannel =
+        pubSub.subscribe(showResources.showWithStateTopic) { (showWithState) ->
+            savedShow = showWithState?.show
+            switchTo(showWithState?.show, showWithState?.showState)
+            undoStack.reset(showWithState)
+            facade.notifyChanged()
+        }
+    private val showStateChannel =
+        pubSub.subscribe(Topics.showState) {
+            showState = it
+            facade.notifyChanged()
+        }
 
     private val undoStack = UndoStack<ShowWithState>()
 
-    private fun switchTo(show: Show, showState: ShowState) {
-        openShow = showResources.swapAndRelease(openShow, show)
+    private fun switchTo(show: Show?, showState: ShowState?) {
+        val newOpenShow = show?.let { OpenShow(show, showResources) }
+        openShow?.release()
+        openShow = newOpenShow
         this.show = show
         this.showState = showState
     }
@@ -92,7 +96,7 @@ class WebClient(
             get() = this@WebClient.openShow
 
         fun onShowEdit(showWithState: ShowWithState) {
-            showWithStateChannel.onChange(showWithState)
+            showWithStateChannel.onChange(NullableShowWithState(showWithState))
             switchTo(showWithState.show, showWithState.showState)
             this@WebClient.showIsModified = showWithState.show != savedShow
             facade.notifyChanged()

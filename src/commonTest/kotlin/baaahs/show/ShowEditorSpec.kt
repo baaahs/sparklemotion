@@ -30,8 +30,8 @@ object ShowEditorSpec : Spek({
             }
         }
         val baseShow by value { baseShowEditor.build(ShowBuilder()) }
-        fun Show.defaultShowState() = ShowState.forShow(this).selectScene(1).selectPatchSet(1)
-        val baseShowState by value { baseShow.defaultShowState() }
+        fun Show.showState() = ShowState.forShow(this).selectScene(1).selectPatchSet(1)
+        val baseShowState by value { baseShow.showState() }
         val showEditor by value { ShowEditor(baseShow, baseShowState) }
         val show by value { showEditor.build(ShowBuilder()) }
         val showState by value { showEditor.getShowState() }
@@ -124,21 +124,21 @@ object ShowEditorSpec : Spek({
             }
 
             context("if the 'from' scene was selected for that scene") {
-                override(baseShowState) { baseShow.defaultShowState().selectScene(fromIndex) }
+                override(baseShowState) { baseShow.showState().selectScene(fromIndex) }
                 it("keeps the same scene selected") {
                     expect(ShowState(toIndex, listOf(1, 0, 0))) { showState }
                 }
             }
 
             context("if the 'to' scene was selected for that scene") {
-                override(baseShowState) { baseShow.defaultShowState().selectScene(toIndex) }
+                override(baseShowState) { baseShow.showState().selectScene(toIndex) }
                 it("keeps the same scene selected") {
                     expect(ShowState(fromIndex, listOf(1, 0, 0))) { showState }
                 }
             }
 
             context("if some other scene was selected") {
-                override(baseShowState) { baseShow.defaultShowState().selectScene(2) }
+                override(baseShowState) { baseShow.showState().selectScene(2) }
                 it("doesn't update show state") {
                     expect(ShowState(2, listOf(1, 0, 0))) { showState }
                 }
@@ -165,21 +165,21 @@ object ShowEditorSpec : Spek({
             }
 
             context("if the 'from' patchset was selected for that scene") {
-                override(baseShowState) { baseShow.defaultShowState().selectPatchSet(fromIndex) }
+                override(baseShowState) { baseShow.showState().selectPatchSet(fromIndex) }
                 it("keeps the same patchset selected") {
                     expect(ShowState(1, listOf(0, toIndex))) { showState }
                 }
             }
 
             context("if the 'to' patchset was selected for that scene") {
-                override(baseShowState) { baseShow.defaultShowState().selectPatchSet(toIndex) }
+                override(baseShowState) { baseShow.showState().selectPatchSet(toIndex) }
                 it("keeps the same patchset selected") {
                     expect(ShowState(1, listOf(0, fromIndex))) { showState }
                 }
             }
 
             context("if some other patchset was selected") {
-                override(baseShowState) { baseShow.defaultShowState().selectPatchSet(0) }
+                override(baseShowState) { baseShow.showState().selectPatchSet(0) }
                 it("doesn't update show state") {
                     expect(ShowState(1, listOf(0, 0))) { showState }
                 }

@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
-
 class SheepSimulator {
     @Suppress("unused")
     val facade = Facade()
@@ -69,7 +68,6 @@ class SheepSimulator {
     val plugins = Plugins.findAll()
     private val pinky = Pinky(
         model,
-        show,
         network,
         dmxUniverse,
         bridgeClient.beatSource,
@@ -80,6 +78,10 @@ class SheepSimulator {
         glslRenderer = GlslRenderer(glslContext, model),
         plugins = plugins
     )
+    init {
+        pinky.switchTo(show)
+    }
+
     private val brains: MutableList<Brain> = mutableListOf()
 
     private fun selectModel(): Model<*> =
@@ -206,6 +208,7 @@ class SheepSimulator {
             get() = this@SheepSimulator.brains.map { it.facade }
     }
 }
+
 
 class JsClock : Clock {
     override fun now(): Time = Date.now() / 1000.0
