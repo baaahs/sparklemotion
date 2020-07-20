@@ -49,30 +49,31 @@ object ShowRunnerSpec : Spek({
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val showResources by value {
-            StageManager(Plugins.safe(), fakeGlslContext, pubSub, model)
-        }
         val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
-        val showRunner by value {
-            ShowRunner(
-                show,
-                showResources,
-                StubBeatSource(),
-                FakeDmxUniverse(),
-                MovingHeadManager(FakeFs(), pubSub, emptyList()),
-                FakeClock(),
-                glslRenderer,
-                pubSub,
-                surfaceManager
-            )
+        val stageManager by value {
+            StageManager(Plugins.safe(), fakeGlslContext, pubSub, model) { show, showState, openShow ->
+                ShowRunner(
+                    show,
+                    showState,
+                    openShow,
+                    StubBeatSource(),
+                    FakeDmxUniverse(),
+                    MovingHeadManager(FakeFs(), pubSub, emptyList()),
+                    FakeClock(),
+                    glslRenderer,
+                    pubSub,
+                    surfaceManager
+                )
+            }
         }
 
         val fakeProgram by value { fakeGlslContext.programs[1] }
 
         beforeEachTest {
+            stageManager.switchTo(show)
             surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
-            showRunner.renderAndSendNextFrame()
+            stageManager.renderAndSendNextFrame()
         }
 
         context("port wiring") {
@@ -98,7 +99,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 val colorPickerGadget by value {
-                    showResources.useGadget<ColorPicker>("colorColorPicker")
+                    stageManager.useGadget<ColorPicker>("colorColorPicker")
                 }
 
                 it("wires it up as a color picker") {
@@ -114,7 +115,7 @@ object ShowRunnerSpec : Spek({
                 it("sets the uniform when the gadget value changes") {
                     colorPickerGadget.color = Color.YELLOW
 
-                    showRunner.renderAndSendNextFrame()
+                    stageManager.renderAndSendNextFrame()
                     val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
                     expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
                 }
