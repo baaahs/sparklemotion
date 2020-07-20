@@ -11,12 +11,17 @@ import com.soywiz.klock.DateTime
 
 class StageManager(
     plugins: Plugins,
-    override val glslContext: GlslContext,
+    private val glslRenderer: GlslRenderer,
     val pubSub: PubSub.Server,
     modelInfo: ModelInfo,
-    private val buildShowRunner: (Show, ShowState?, OpenShow) -> ShowRunner
+    private val surfaceManager: SurfaceManager,
+    private val dmxUniverse: Dmx.Universe,
+    private val movingHeadManager: MovingHeadManager,
+    private val clock: Clock
 ) : BaseShowResources(plugins, modelInfo) {
     val facade = Facade()
+    override val glslContext: GlslContext
+        get() = glslRenderer.gl
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -51,7 +56,10 @@ class StageManager(
 
     fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
         val newShowRunner = newShow?.let {
-            buildShowRunner(newShow, newShowState, openShow(newShow))
+            ShowRunner(
+                newShow, newShowState, openShow(newShow), clock, glslRenderer, pubSub, surfaceManager
+            )
+
         }
         switchTo(newShowRunner)
     }
@@ -65,7 +73,18 @@ class StageManager(
     }
 
     fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
-        showRunner?.renderAndSendNextFrame(dontProcrastinate)
+        showRunner?.let { showRunner ->
+            // Unless otherwise instructed, = generate and send the next frame right away,
+            // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
+            if (dontProcrastinate) showRunner.housekeeping()
+
+            if (showRunner.renderNextFrame()) {
+                surfaceManager.sendFrame()
+                dmxUniverse.sendFrame()
+            }
+
+            if (!dontProcrastinate) showRunner.housekeeping()
+        }
     }
 
     inner class Facade : baaahs.ui.Facade() {

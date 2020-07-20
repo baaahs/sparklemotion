@@ -1,18 +1,16 @@
 package baaahs
 
 import baaahs.OpenShow.OpenScene.OpenPatchSet
-import baaahs.dmx.Shenzarpy
 import baaahs.glsl.GlslRenderer
-import baaahs.model.MovingHead
 import baaahs.show.Show
 
 class ShowRunner(
     val show: Show,
     initialShowState: ShowState? = null,
     private val openShow: OpenShow,
-    private val beatSource: BeatSource,
-    private val dmxUniverse: Dmx.Universe,
-    private val movingHeadManager: MovingHeadManager,
+//    private val beatSource: BeatSource,
+//    private val dmxUniverse: Dmx.Universe,
+//    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val glslRenderer: GlslRenderer,
     pubSub: PubSub.Server,
@@ -32,26 +30,26 @@ class ShowRunner(
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
     // TODO: Get beat sync working again.
-    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
-    val currentBeat: Float
-        get() = beatSource.getBeatData().beatWithinMeasure(clock)
+//    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
+//    val currentBeat: Float
+//        get() = beatSource.getBeatData().beatWithinMeasure(clock)
 
-    private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
-        dmxUniverse.writer(baseChannel, channelCount)
-
-    // TODO: Get moving heads working again.
-    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-        val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
-        val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
-
-        movingHeadManager.listen(movingHead) { updated ->
-            println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")
-            movingHeadBuffer.pan = updated.x / 255f
-            movingHeadBuffer.tilt = updated.y / 255f
-        }
-
-        return movingHeadBuffer
-    }
+//    private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
+//        dmxUniverse.writer(baseChannel, channelCount)
+//
+//    // TODO: Get moving heads working again.
+//    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
+//        val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
+//        val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
+//
+//        movingHeadManager.listen(movingHead) { updated ->
+//            println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")
+//            movingHeadBuffer.pan = updated.x / 255f
+//            movingHeadBuffer.tilt = updated.y / 255f
+//        }
+//
+//        return movingHeadBuffer
+//    }
 
     fun getShowWithState(): ShowWithState {
         return show.withState(showState)
@@ -70,20 +68,14 @@ class ShowRunner(
         requestedGadgets.clear()
     }
 
-    fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
-        // Unless otherwise instructed, = generate and send the next frame right away,
-        // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
-        if (dontProcrastinate) housekeeping()
-
-        currentRenderPlan?.let {
-            it.render(glslRenderer)
-            sendFrame()
-        }
-
-        if (!dontProcrastinate) housekeeping()
+    /** @return `true` if a frame was rendered and should be sent to fixtures. */
+    fun renderNextFrame(): Boolean {
+        val renderPlan = currentRenderPlan
+        renderPlan?.render(glslRenderer)
+        return renderPlan != null
     }
 
-    private fun housekeeping() {
+    fun housekeeping() {
         var remapToSurfaces = surfaceManager.housekeeping()
 
         // Maybe switch to a new show.
@@ -107,11 +99,6 @@ class ShowRunner(
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
         val glslContext = glslRenderer.gl
         return newPatchSet.createRenderPlan(glslContext)
-    }
-
-    fun sendFrame() {
-        surfaceManager.sendFrame()
-        dmxUniverse.sendFrame()
     }
 
     fun shutDown() {
