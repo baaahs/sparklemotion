@@ -3,7 +3,6 @@ package baaahs
 import baaahs.OpenShow.OpenScene.OpenPatchSet
 import baaahs.dmx.Shenzarpy
 import baaahs.glsl.GlslRenderer
-import baaahs.glsl.RenderSurface
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.show.Show
@@ -18,7 +17,8 @@ class ShowRunner(
     private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val glslRenderer: GlslRenderer,
-    pubSub: PubSub.Server
+    pubSub: PubSub.Server,
+    private val surfaceManager: SurfaceManager
 ) {
     private var openShow: OpenShow = OpenShow(show, showManager)
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
@@ -30,10 +30,6 @@ class ShowRunner(
 
     private var currentPatchSet: OpenPatchSet? = null
     private var currentRenderPlan: RenderPlan? = null
-    private val changedSurfaces = mutableListOf<SurfacesChanges>()
-    private var totalSurfaceReceivers = 0
-
-    internal val renderSurfaces: MutableMap<Surface, RenderSurface> = hashMapOf()
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
@@ -59,10 +55,6 @@ class ShowRunner(
         return movingHeadBuffer
     }
 
-    fun surfacesChanged(addedSurfaces: Collection<SurfaceReceiver>, removedSurfaces: Collection<SurfaceReceiver>) {
-        changedSurfaces.add(SurfacesChanges(ArrayList(addedSurfaces), ArrayList(removedSurfaces)))
-    }
-
     fun nextFrame(dontProcrastinate: Boolean = true) {
         // Unless otherwise instructed, = generate and send the next frame right away,
         // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
@@ -77,14 +69,7 @@ class ShowRunner(
     }
 
     private fun housekeeping() {
-        var remapToSurfaces = false
-        for ((added, removed) in changedSurfaces) {
-            logger.info { "ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed" }
-            for (receiver in removed) removeReceiver(receiver)
-            for (receiver in added) addReceiver(receiver)
-            remapToSurfaces = true
-        }
-        changedSurfaces.clear()
+        var remapToSurfaces = surfaceManager.housekeeping()
 
         // Maybe switch to a new show.
         nextPatchSet?.let { startingPatchSet ->
@@ -96,14 +81,10 @@ class ShowRunner(
         }
 
         if (remapToSurfaces) {
-            renderSurfaces.values.forEach { it.useProgram(null) }
+            surfaceManager.clearRenderPlans()
 
-            currentRenderPlan?.programs?.forEach { (patchMapping, program) ->
-                renderSurfaces.forEach { (surface, renderSurface) ->
-                    if (patchMapping.matches(surface)) {
-                        renderSurface.useProgram(program)
-                    }
-                }
+            currentRenderPlan?.let {
+                surfaceManager.applyRenderPlan(it)
             }
         }
     }
@@ -116,13 +97,11 @@ class ShowRunner(
     }
 
     private fun switchTo(newPatchSet: OpenPatchSet) {
-        renderSurfaces.values.forEach { it.release() }
-
         currentRenderPlan = prepare(newPatchSet)
 
         logger.info {
             "New show ${newPatchSet.title} created; " +
-                    "${renderSurfaces.size} surfaces " +
+                    "${surfaceManager.getSurfaceCount()} surfaces " +
                     "and ${requestedGadgets.size} gadgets"
         }
 
@@ -135,48 +114,8 @@ class ShowRunner(
         return newPatchSet.createRenderPlan(glslContext)
     }
 
-    private fun addReceiver(receiver: SurfaceReceiver) {
-        val surface = receiver.surface
-        val renderSurface = renderSurfaces.getOrPut(surface) {
-            glslRenderer.addSurface(surface)
-        }
-        renderSurface.receivers.add(receiver)
-
-        totalSurfaceReceivers++
-    }
-
-    private fun removeReceiver(receiver: SurfaceReceiver) {
-        val surface = receiver.surface
-        val renderSurface = renderSurfaces.get(surface)
-            ?: throw IllegalStateException("huh? no SurfaceBinder for $surface")
-
-        if (!renderSurface.receivers.remove(receiver)) {
-            throw IllegalStateException("huh? receiver not registered for $surface")
-        }
-
-        if (renderSurface.receivers.isEmpty()) {
-            glslRenderer.removeSurface(renderSurface)
-            renderSurface.release()
-            renderSurfaces.remove(surface)
-        }
-
-        totalSurfaceReceivers--
-    }
-
     fun sendFrame() {
-        renderSurfaces.values.forEach { renderSurface ->
-//            if (shaderBuffers.size != 1) {
-//                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
-//            }
-
-            renderSurface.receivers.forEach { receiver ->
-                // TODO: The send might return an error, at which point this receiver should be nuked
-                // from the list of receivers for this surface. I'm not quite sure the best way to do
-                // that so I'm leaving this note.
-                receiver.send(renderSurface.pixels)
-            }
-        }
-
+        surfaceManager.sendFrame()
         dmxUniverse.sendFrame()
     }
 

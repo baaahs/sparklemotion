@@ -43,14 +43,15 @@ object ShowRunnerSpec : Spek({
             ShowEditor("test show").apply {
                 addScene("test scene") {
                     addPatchSet("test patchset") {
-                        val p = patch
-                        addPatch(p)
+                        addPatch(patch)
                     }
                 }
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
         val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model) }
+        val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
+        val surfaceManager by value { SurfaceManager(glslRenderer) }
         val showRunner by value {
             ShowRunner(
                 model,
@@ -61,15 +62,16 @@ object ShowRunnerSpec : Spek({
                 FakeDmxUniverse(),
                 MovingHeadManager(FakeFs(), pubSub, emptyList()),
                 FakeClock(),
-                GlslRenderer(fakeGlslContext, ModelInfo.Empty),
-                pubSub
+                glslRenderer,
+                pubSub,
+                surfaceManager
             )
         }
 
         val fakeProgram by value { fakeGlslContext.programs[1] }
 
         beforeEachTest {
-            showRunner.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
+            surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
             showRunner.nextFrame()
         }
 

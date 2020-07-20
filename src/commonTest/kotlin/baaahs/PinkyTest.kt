@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.geom.Matrix4
 import baaahs.glsl.GlslRenderer
+import baaahs.glsl.RenderSurface
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
@@ -31,6 +32,9 @@ class PinkyTest {
     private val panel17 = SheepModel.Panel("17")
     private val model = SheepModel().apply { panels = listOf(panel17); eyes = emptyList() } as Model<*>
     private lateinit var showRunner: ShowRunner
+    private lateinit var surfaceManager: SurfaceManager
+    private lateinit var renderSurfaces: Map<Surface, RenderSurface>
+
     private lateinit var pinky: Pinky
     private lateinit var pinkyLink: TestNetwork.Link
     private lateinit var fakeFs: FakeFs
@@ -54,6 +58,8 @@ class PinkyTest {
             glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
         )
         showRunner = pinky.showRunner
+        surfaceManager = pinky.surfaceManager
+        renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()
         pinkyLink = network.links.only()
     }
 
@@ -63,7 +69,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        expect(1) { showRunner.renderSurfaces.size }
+        expect(1) { renderSurfaces.size }
 
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
@@ -77,7 +83,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        val surface = showRunner.renderSurfaces.keys.only()
+        val surface = renderSurfaces.keys.only()
         expect(true) { surface is IdentifiedSurface }
         expect(panel17.name) { (surface as IdentifiedSurface).name }
 
@@ -93,7 +99,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        expect(1) { showRunner.renderSurfaces.size }
+        expect(1) { renderSurfaces.size }
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send a mapping packet.
     }
@@ -106,7 +112,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
 
-        expect(1) { showRunner.renderSurfaces.size }
+        expect(1) { renderSurfaces.size }
         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
         expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
     }
@@ -120,16 +126,16 @@ class PinkyTest {
         pinky.drawNextFrame()
         pinky.drawNextFrame()
 
-        expect(1) { showRunner.renderSurfaces.size }
-        expect(true) { showRunner.renderSurfaces.keys.only() is IdentifiedSurface }
+        expect(1) { renderSurfaces.size }
+        expect(true) { renderSurfaces.keys.only() is IdentifiedSurface }
 
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
-        expect(1) { showRunner.renderSurfaces.size }
-        expect(true) { showRunner.renderSurfaces.keys.only() is IdentifiedSurface }
-        expect(panel17.name) { (showRunner.renderSurfaces.keys.only() as IdentifiedSurface).name }
+        expect(1) { renderSurfaces.size }
+        expect(true) { renderSurfaces.keys.only() is IdentifiedSurface }
+        expect(panel17.name) { (renderSurfaces.keys.only() as IdentifiedSurface).name }
     }
 
     @Test
@@ -138,7 +144,7 @@ class PinkyTest {
         pinky.updateSurfaces()
         pinky.drawNextFrame()
         pinky.drawNextFrame()
-        val renderSurfaces = showRunner.renderSurfaces
+        val renderSurfaces = renderSurfaces
 
         // Remap to 17L...
         pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())

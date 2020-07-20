@@ -62,10 +62,11 @@ class Pinky(
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, model)
+    internal val surfaceManager = SurfaceManager(glslRenderer)
     internal val showRunner = ShowRunner(
         model, show, showState, showManager,
         beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
-        pubSub
+        pubSub, surfaceManager
     )
 
     private val showWithStateChannel =
@@ -181,7 +182,7 @@ class Pinky(
                 }
             }
 
-            showRunner.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
+            surfaceManager.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
             listeningVisualizers.forEach { listeningVisualizer ->
                 brainSurfacesToAdd.forEach {
                     listeningVisualizer.sendPixelData(it.surface)
