@@ -47,38 +47,20 @@ class Pinky(
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
-    private var showHasBeenModified = false
-    private var show: Show? = null
-        set(newShow) {
-            field = newShow
-            val newShowRunner = newShow?.let { createShowRunner(newShow) }
-            stageManager.switchTo(newShowRunner)
-            val showWithState = newShow?.withState(newShowRunner!!.showState)
-            showWithStateChannel.onChange(showWithState)
-            facade.notifyChanged()
-        }
-
-    private var showState = show?.defaultShowState()
-
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var stageManager = StageManager(
-        plugins, glslRenderer.gl, pubSub, model
-    )
     internal val surfaceManager = SurfaceManager(glslRenderer)
-
-    private val showWithStateChannel: PubSub.Channel<ShowWithState?> =
-        pubSub.publish(stageManager.showWithStateTopic, show?.withState(showState!!)) { incomingShowWithState ->
-            println("Received show change: $incomingShowWithState")
-            showHasBeenModified = true
-            switchTo(incomingShowWithState?.show, incomingShowWithState?.showState)
-//            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
+    var stageManager: StageManager =
+        StageManager(plugins, glslRenderer.gl, pubSub, model) { show, showState, openShow ->
+            ShowRunner(
+                show, showState, openShow, beatSource, dmxUniverse,
+                movingHeadManager, clock, glslRenderer, pubSub, surfaceManager
+            )
         }
 
-    fun switchTo(newShow: Show?, newShowState: ShowState? = newShow?.defaultShowState()) {
-        this.show = newShow
-        this.showState = newShowState
+    fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
+        stageManager.switchTo(newShow, newShowState)
     }
 
     private var selectedNewShowAt = DateTime.now()
@@ -102,12 +84,6 @@ class Pinky(
 
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
     }
-
-    private fun createShowRunner(value: Show) =
-        ShowRunner(
-            value, stageManager, beatSource, dmxUniverse, movingHeadManager,
-            clock, glslRenderer, pubSub, surfaceManager
-        )
 
     suspend fun run() {
         GlobalScope.launch { beatDisplayer.run() }
@@ -136,7 +112,7 @@ class Pinky(
                 try {
                     stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for ${show?.title}", e)
+                    logger.error("Error rendering frame for ${stageManager.facade.currentShow?.title}", e)
                     delay(1000)
 //                  TODO  switchToShow(GuruMeditationErrorShow)
                 }
@@ -418,11 +394,8 @@ class Pinky(
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        var currentShow: Show?
-            get() = this@Pinky.show
-            set(value) {
-                this@Pinky.show = value
-            }
+        val stageManager: StageManager.Facade
+            get() = this@Pinky.stageManager.facade
 
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats

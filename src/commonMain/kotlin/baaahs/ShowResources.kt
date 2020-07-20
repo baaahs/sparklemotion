@@ -8,6 +8,7 @@ import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
+import baaahs.show.Show
 import kotlinx.serialization.builtins.nullable
 
 interface ShowResources {
@@ -23,6 +24,7 @@ interface ShowResources {
     fun openShader(shader: Shader): OpenShader
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
+    fun openShow(show: Show): OpenShow = OpenShow(show, this)
 
     fun createShowWithStateTopic(): PubSub.Topic<ShowWithState?> {
         return PubSub.Topic(
@@ -31,7 +33,6 @@ interface ShowResources {
             plugins.serialModule
         )
     }
-
     fun releaseUnused()
 }
 

@@ -6,17 +6,27 @@ import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
 import baaahs.model.ModelInfo
+import baaahs.show.Show
 import com.soywiz.klock.DateTime
 
 class StageManager(
     plugins: Plugins,
     override val glslContext: GlslContext,
     val pubSub: PubSub.Server,
-    modelInfo: ModelInfo
+    modelInfo: ModelInfo,
+    private val buildShowRunner: (Show, ShowState?, OpenShow) -> ShowRunner
 ) : BaseShowResources(plugins, modelInfo) {
+    val facade = Facade()
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
+
+    private val showWithStateChannel: PubSub.Channel<ShowWithState?> =
+        pubSub.publish(showWithStateTopic, showRunner?.getShowWithState()) { incomingShowWithState ->
+            val newShow = incomingShowWithState?.show
+            val newShowState = incomingShowWithState?.showState
+            switchTo(newShow, newShowState)
+        }
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
         val topic =
@@ -39,14 +49,28 @@ class StageManager(
             ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
     }
 
-    fun switchTo(newShowRunner: ShowRunner?) {
+    fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
+        val newShowRunner = newShow?.let {
+            buildShowRunner(newShow, newShowState, openShow(newShow))
+        }
+        switchTo(newShowRunner)
+    }
+
+    private fun switchTo(newShowRunner: ShowRunner?) {
         showRunner?.release()
         releaseUnused()
         showRunner = newShowRunner
+        showWithStateChannel.onChange(newShowRunner?.getShowWithState())
+        facade.notifyChanged()
     }
 
-    fun renderAndSendNextFrame() {
-        showRunner?.renderAndSendNextFrame()
+    fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
+        showRunner?.renderAndSendNextFrame(dontProcrastinate)
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val currentShow: Show?
+            get() = this@StageManager.showRunner?.show
     }
 }
 

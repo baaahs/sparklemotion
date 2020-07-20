@@ -17,12 +17,12 @@ import kotlin.math.roundToInt
 
 class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(props), Observer {
     override fun observing(props: PinkyPanelProps, state: RState): List<Observable?> {
-        return listOf(props.pinky)
+        return listOf(props.pinky, props.pinky.stageManager)
     }
 
     override fun RBuilder.render() {
         val pinky = props.pinky
-        val currentShowTitle = pinky.currentShow?.title
+        val currentShowTitle = pinky.stageManager.currentShow?.title
         styledDiv {
             css { +SimulatorStyles.section }
             b { +"Pinky:" }

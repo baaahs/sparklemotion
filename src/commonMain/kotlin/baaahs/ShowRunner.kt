@@ -7,8 +7,9 @@ import baaahs.model.MovingHead
 import baaahs.show.Show
 
 class ShowRunner(
-    show: Show,
-    stageManager: StageManager,
+    val show: Show,
+    initialShowState: ShowState? = null,
+    private val openShow: OpenShow,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
@@ -17,10 +18,7 @@ class ShowRunner(
     pubSub: PubSub.Server,
     private val surfaceManager: SurfaceManager
 ) {
-    var showState: ShowState = ShowState.forShow(show)
-        private set
-
-    var openShow: OpenShow = OpenShow(show, stageManager)
+    private var showState: ShowState = initialShowState ?: show.defaultShowState()
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
 
     private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
@@ -55,6 +53,23 @@ class ShowRunner(
         return movingHeadBuffer
     }
 
+    fun getShowWithState(): ShowWithState {
+        return show.withState(showState)
+    }
+
+    private fun switchTo(newPatchSet: OpenPatchSet) {
+        currentRenderPlan = prepare(newPatchSet)
+
+        logger.info {
+            "New show ${newPatchSet.title} created; " +
+                    "${surfaceManager.getSurfaceCount()} surfaces " +
+                    "and ${requestedGadgets.size} gadgets"
+        }
+
+//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
+        requestedGadgets.clear()
+    }
+
     fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
         // Unless otherwise instructed, = generate and send the next frame right away,
         // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
@@ -87,19 +102,6 @@ class ShowRunner(
                 surfaceManager.applyRenderPlan(it)
             }
         }
-    }
-
-    private fun switchTo(newPatchSet: OpenPatchSet) {
-        currentRenderPlan = prepare(newPatchSet)
-
-        logger.info {
-            "New show ${newPatchSet.title} created; " +
-                    "${surfaceManager.getSurfaceCount()} surfaces " +
-                    "and ${requestedGadgets.size} gadgets"
-        }
-
-//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
-        requestedGadgets.clear()
     }
 
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
