@@ -50,7 +50,7 @@ object ShowRunnerSpec : Spek({
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
         val showResources by value {
-            ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model)
+            StageManager(Plugins.safe(), fakeGlslContext, pubSub, model)
         }
         val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }

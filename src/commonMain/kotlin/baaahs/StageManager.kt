@@ -8,7 +8,7 @@ import baaahs.glsl.GlslRenderer
 import baaahs.model.ModelInfo
 import com.soywiz.klock.DateTime
 
-class ShowManager(
+class StageManager(
     plugins: Plugins,
     override val glslContext: GlslContext,
     val pubSub: PubSub.Server,

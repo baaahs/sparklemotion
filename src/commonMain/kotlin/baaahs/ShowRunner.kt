@@ -8,7 +8,7 @@ import baaahs.show.Show
 
 class ShowRunner(
     show: Show,
-    showManager: ShowManager,
+    stageManager: StageManager,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
@@ -20,7 +20,7 @@ class ShowRunner(
     var showState: ShowState = ShowState.forShow(show)
         private set
 
-    var openShow: OpenShow = OpenShow(show, showManager)
+    var openShow: OpenShow = OpenShow(show, stageManager)
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
 
     private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
