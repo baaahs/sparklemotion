@@ -4,9 +4,9 @@ class UndoStack<T>(private val capacity: Int = 100) {
     val stack = ArrayList<T>()
     var position = -1
 
-    fun reset(initialState: T) {
+    fun reset(initialState: T?) {
         stack.clear()
-        stack.add(initialState)
+        initialState?.let { stack.add(initialState) }
         position = 0
     }
 

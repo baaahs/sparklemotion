@@ -49,14 +49,14 @@ object ShowRunnerSpec : Spek({
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model) }
+        val showResources by value {
+            ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model)
+        }
         val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
         val showRunner by value {
             ShowRunner(
-                model,
                 show,
-                ShowState.forShow(show),
                 showResources,
                 StubBeatSource(),
                 FakeDmxUniverse(),
@@ -72,7 +72,7 @@ object ShowRunnerSpec : Spek({
 
         beforeEachTest {
             surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
-            showRunner.nextFrame()
+            showRunner.renderAndSendNextFrame()
         }
 
         context("port wiring") {
@@ -114,7 +114,7 @@ object ShowRunnerSpec : Spek({
                 it("sets the uniform when the gadget value changes") {
                     colorPickerGadget.color = Color.YELLOW
 
-                    showRunner.nextFrame()
+                    showRunner.renderAndSendNextFrame()
                     val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
                     expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
                 }

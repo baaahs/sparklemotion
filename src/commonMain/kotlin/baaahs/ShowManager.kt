@@ -79,7 +79,7 @@ interface ShowResources {
     val plugins: Plugins
     val glslContext: GlslContext
     val modelInfo: ModelInfo
-    val showWithStateTopic: PubSub.Topic<ShowWithState>
+    val showWithStateTopic: PubSub.Topic<NullableShowWithState>
     val dataSources: List<DataSource>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
@@ -89,22 +89,18 @@ interface ShowResources {
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
 
-    fun createShowWithStateTopic(): PubSub.Topic<ShowWithState> {
-        return PubSub.Topic("showWithState", ShowWithState.serializer(), plugins.serialModule)
+    fun createShowWithStateTopic(): PubSub.Topic<NullableShowWithState> {
+        return PubSub.Topic("showWithState", NullableShowWithState.serializer(), plugins.serialModule)
     }
 
     fun releaseUnused()
-
-    fun swapAndRelease(oldOpenShow: OpenShow?, newShow: Show): OpenShow {
-        val newOpenShow = OpenShow(newShow, this)
-        oldOpenShow?.release()
-        releaseUnused()
-        return newOpenShow
-    }
 }
 
 @Serializable
 data class ShowWithState(val show: Show, val showState: ShowState)
+
+@Serializable
+data class NullableShowWithState(val showWithState: ShowWithState?)
 
 fun Show.withState(showState: ShowState): ShowWithState {
     return ShowWithState(this, showState.boundedBy(this))
@@ -116,7 +112,7 @@ abstract class BaseShowResources(
 ) : ShowResources {
     private val glslAnalyzer = GlslAnalyzer()
 
-    override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
+    override val showWithStateTopic: PubSub.Topic<NullableShowWithState> by lazy { createShowWithStateTopic() }
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
@@ -152,6 +148,7 @@ class ShowManager(
     val pubSub: PubSub.Server,
     modelInfo: ModelInfo
 ) : BaseShowResources(plugins, modelInfo) {
+    private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 
@@ -173,6 +170,16 @@ class ShowManager(
     override fun <T : Gadget> useGadget(id: String): T {
         return (gadgets[id]?.gadgetData?.gadget
             ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
+    }
+
+    fun switchTo(newShowRunner: ShowRunner?) {
+        showRunner?.release()
+        releaseUnused()
+        showRunner = newShowRunner
+    }
+
+    fun renderAndSendNextFrame() {
+        showRunner?.renderAndSendNextFrame()
     }
 }
 

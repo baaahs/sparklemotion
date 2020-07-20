@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 
 class Pinky(
     val model: Model<*>,
-    show: Show,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val beatSource: BeatSource,
@@ -35,7 +34,7 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    glslRenderer: GlslRenderer,
+    private val glslRenderer: GlslRenderer,
     val plugins: Plugins = Plugins.findAll()
 ) : Network.UdpListener {
     val facade = Facade()
@@ -49,34 +48,41 @@ class Pinky(
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
     private var showHasBeenModified = false
-    private var show = show
-        set(value) {
-            field = value
+    private var show: Show? = null
+        set(newShow) {
+            field = newShow
+            val newShowRunner = newShow?.let { createShowRunner(newShow) }
+            showManager.switchTo(newShowRunner)
+            val showWithState = newShow?.withState(newShowRunner!!.showState)
+            showWithStateChannel.onChange(NullableShowWithState(showWithState))
             facade.notifyChanged()
-            showRunner.switchTo(value)
         }
 
-    private var showState = ShowState.forShow(show)
+    private var showState = show?.defaultShowState()
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, model)
-    internal val surfaceManager = SurfaceManager(glslRenderer)
-    internal val showRunner = ShowRunner(
-        model, show, showState, showManager,
-        beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
-        pubSub, surfaceManager
+    var showManager = ShowManager(
+        plugins, glslRenderer.gl, pubSub, model
     )
+    internal val surfaceManager = SurfaceManager(glslRenderer)
 
-    private val showWithStateChannel =
-        pubSub.publish(showManager.showWithStateTopic, show.withState(showState)) { incomingShowWithState ->
+    private val showWithStateChannel: PubSub.Channel<NullableShowWithState> =
+        pubSub.publish(
+            showManager.showWithStateTopic,
+            NullableShowWithState(show?.withState(showState!!))
+        ) { (incomingShowWithState) ->
             println("Received show change: $incomingShowWithState")
             showHasBeenModified = true
-            this.show = incomingShowWithState.show
-            this.showState = incomingShowWithState.showState
+            switchTo(incomingShowWithState?.show, incomingShowWithState?.showState)
 //            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
         }
+
+    fun switchTo(newShow: Show?, newShowState: ShowState? = newShow?.defaultShowState()) {
+        this.show = newShow
+        this.showState = newShowState
+    }
 
     private var selectedNewShowAt = DateTime.now()
 
@@ -98,10 +104,13 @@ class Pinky(
         }
 
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
-
-        val showNames = listOf(this.show.title)
-        pubSub.publish(Topics.availableShows, showNames) {}
     }
+
+    private fun createShowRunner(value: Show) =
+        ShowRunner(
+            value, showManager, beatSource, dmxUniverse, movingHeadManager,
+            clock, glslRenderer, pubSub, surfaceManager
+        )
 
     suspend fun run() {
         GlobalScope.launch { beatDisplayer.run() }
@@ -128,9 +137,9 @@ class Pinky(
             networkStats.reset()
             val elapsedMs = time {
                 try {
-                    drawNextFrame()
+                    showManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for ${show.title}", e)
+                    logger.error("Error rendering frame for ${show?.title}", e)
                     delay(1000)
 //                  TODO  switchToShow(GuruMeditationErrorShow)
                 }
@@ -160,6 +169,10 @@ class Pinky(
         ) {
             gadgetManager.adjustSomething()
         }
+    }
+
+    internal fun renderAndSendNextFrame() {
+        showManager.renderAndSendNextFrame()
     }
 
     internal fun updateSurfaces() {
@@ -193,10 +206,6 @@ class Pinky(
 
             facade.notifyChanged()
         }
-    }
-
-    internal fun drawNextFrame() {
-        showRunner.nextFrame()
     }
 
     private fun disableDmx() {
@@ -412,12 +421,11 @@ class Pinky(
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        val shows: List<Show>
-            get() = listOf(this@Pinky.show)
-
-        var selectedShow: Show
+        var currentShow: Show?
             get() = this@Pinky.show
-            set(value) { this@Pinky.show = value }
+            set(value) {
+                this@Pinky.show = value
+            }
 
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats

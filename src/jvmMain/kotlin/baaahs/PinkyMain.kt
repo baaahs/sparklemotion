@@ -67,12 +67,12 @@ class PinkyMain(private val args: Args) {
         val glslContext = GlslBase.manager.createContext()
         val glslRenderer = GlslRenderer(glslContext, model)
         val pinky = Pinky(
-            model, show, network, dmxUniverse, beatSource, SystemClock(),
-            fs, daddy, soundAnalyzer,
-            switchShowAfterIdleSeconds = args.switchShowAfter,
+            model, network, dmxUniverse, beatSource, SystemClock(), fs,
+            daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter,
             glslRenderer = glslRenderer
         )
+        pinky.switchTo(show)
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!

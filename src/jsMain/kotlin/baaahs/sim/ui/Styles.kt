@@ -67,19 +67,6 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         color = Color("#ff88ff")
     }
 
-    val showsDiv by css(subsection) {
-        child("span") {
-            display = Display.inlineBlock
-            padding(0.2.em)
-            marginRight = 2.px
-            marginTop = 2.px
-        }
-
-        child("span.selected") {
-            borderColor = Color.black
-        }
-    }
-
     val brainIndicator by css {
         margin(1.px)
         display = Display.inlineBlock

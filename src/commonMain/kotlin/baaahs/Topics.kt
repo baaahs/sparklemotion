@@ -8,9 +8,6 @@ import kotlinx.serialization.builtins.serializer
 object Topics {
     val showState = PubSub.Topic("showState", ShowState.serializer())
 
-    val availableShows =
-        PubSub.Topic("availableShows", String.serializer().list)
-
     val activeGadgets =
         PubSub.Topic("activeGadgets", GadgetData.serializer().list, gadgetModule)
 

@@ -3,15 +3,12 @@ package baaahs
 import baaahs.OpenShow.OpenScene.OpenPatchSet
 import baaahs.dmx.Shenzarpy
 import baaahs.glsl.GlslRenderer
-import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.show.Show
 
 class ShowRunner(
-    private val model: Model<*>,
-    private var show: Show,
-    private var showState: ShowState,
-    private val showManager: ShowManager,
+    show: Show,
+    showManager: ShowManager,
     private val beatSource: BeatSource,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
@@ -20,7 +17,10 @@ class ShowRunner(
     pubSub: PubSub.Server,
     private val surfaceManager: SurfaceManager
 ) {
-    private var openShow: OpenShow = OpenShow(show, showManager)
+    var showState: ShowState = ShowState.forShow(show)
+        private set
+
+    var openShow: OpenShow = OpenShow(show, showManager)
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
 
     private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
@@ -55,7 +55,7 @@ class ShowRunner(
         return movingHeadBuffer
     }
 
-    fun nextFrame(dontProcrastinate: Boolean = true) {
+    fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
         // Unless otherwise instructed, = generate and send the next frame right away,
         // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
         if (dontProcrastinate) housekeeping()
@@ -89,13 +89,6 @@ class ShowRunner(
         }
     }
 
-    fun switchTo(newShow: Show) {
-        openShow = showManager.swapAndRelease(openShow, newShow)
-        show = newShow
-
-        nextPatchSet = showState.findPatchSet(openShow)
-    }
-
     private fun switchTo(newPatchSet: OpenPatchSet) {
         currentRenderPlan = prepare(newPatchSet)
 
@@ -121,6 +114,10 @@ class ShowRunner(
 
     fun shutDown() {
         // TODO gadgetManager.clear()
+    }
+
+    fun release() {
+        openShow.release()
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)

@@ -6,16 +6,12 @@ import baaahs.ui.Observable
 import baaahs.ui.Observer
 import baaahs.ui.SimulatorStyles
 import baaahs.ui.SimulatorStyles.beatsDiv
-import baaahs.ui.SimulatorStyles.showsDiv
 import baaahs.util.percent
 import kotlinx.html.id
-import kotlinx.html.js.onChangeFunction
-import org.w3c.dom.HTMLSelectElement
 import react.*
 import react.dom.*
 import styled.css
 import styled.styledDiv
-import styled.styledSelect
 import styled.styledSpan
 import kotlin.math.roundToInt
 
@@ -26,38 +22,19 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, RState>(p
 
     override fun RBuilder.render() {
         val pinky = props.pinky
-        val shows = pinky.shows
-
+        val currentShowTitle = pinky.currentShow?.title
         styledDiv {
             css { +SimulatorStyles.section }
             b { +"Pinky:" }
             div {
                 attrs.id = "pinkyView" // TODO: kill
                 +"Current Show: "
-
-                styledSelect {
-                    css { +showsDiv }
-                    attrs.onChangeFunction = { event ->
-                        println("event.target = ${event.target}")
-                        val select = event.target as HTMLSelectElement
-                        val nextShow = shows[select.value.toInt()]
-                        pinky.selectedShow = nextShow
+                b {
+                    if (currentShowTitle == null) {
+                        i { +"none" }
+                    } else {
+                        +currentShowTitle
                     }
-
-                    val selectedShow = pinky.selectedShow
-                    var selection = ""
-                    shows.forEachIndexed { index, show ->
-                        option {
-                            +show.title
-                            attrs.key = index.toString()
-                            attrs.value = index.toString()
-                            if (selectedShow.title == show.title) {
-                                selection = index.toString()
-                            }
-                        }
-                    }
-                    // workaround for https://github.com/JetBrains/kotlin-wrappers/issues/92
-                    attrs["value"] = selection
                 }
             }
 
