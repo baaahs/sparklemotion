@@ -54,7 +54,7 @@ class Pinky(
             val newShowRunner = newShow?.let { createShowRunner(newShow) }
             stageManager.switchTo(newShowRunner)
             val showWithState = newShow?.withState(newShowRunner!!.showState)
-            showWithStateChannel.onChange(NullableShowWithState(showWithState))
+            showWithStateChannel.onChange(showWithState)
             facade.notifyChanged()
         }
 
@@ -68,11 +68,8 @@ class Pinky(
     )
     internal val surfaceManager = SurfaceManager(glslRenderer)
 
-    private val showWithStateChannel: PubSub.Channel<NullableShowWithState> =
-        pubSub.publish(
-            stageManager.showWithStateTopic,
-            NullableShowWithState(show?.withState(showState!!))
-        ) { (incomingShowWithState) ->
+    private val showWithStateChannel: PubSub.Channel<ShowWithState?> =
+        pubSub.publish(stageManager.showWithStateTopic, show?.withState(showState!!)) { incomingShowWithState ->
             println("Received show change: $incomingShowWithState")
             showHasBeenModified = true
             switchTo(incomingShowWithState?.show, incomingShowWithState?.showState)

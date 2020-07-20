@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
@@ -71,7 +72,14 @@ abstract class PubSub {
         internal val listeners_TEST_ONLY: MutableList<Listener> get() = listeners
         private val json = Json(JsonConfiguration.Stable, topic.serialModule)
 
-        fun notify(newValue: T, origin: Origin) = notify(json.toJson(topic.serializer, newValue), origin)
+        fun notify(newValue: T, origin: Origin) {
+            if (topic.serializer.descriptor.isNullable) {
+                // Workaround for https://github.com/Kotlin/kotlinx.serialization/issues/539
+                notify(json.toJson(topic.serializer.list, listOf(newValue)), origin)
+            } else {
+                notify(json.toJson(topic.serializer, newValue), origin)
+            }
+        }
 
         fun notify(s: String, origin: Origin) = notify(json.parseJson(s), origin)
 
@@ -82,7 +90,14 @@ abstract class PubSub {
             }
         }
 
-        fun deserialize(jsonElement: JsonElement): T = json.fromJson(topic.serializer, jsonElement)
+        fun deserialize(jsonElement: JsonElement): T {
+            return if (topic.serializer.descriptor.isNullable) {
+                // Workaround for https://github.com/Kotlin/kotlinx.serialization/issues/539
+                json.fromJson(topic.serializer.list, jsonElement)[0]
+            } else {
+                json.fromJson(topic.serializer, jsonElement)
+            }
+        }
         fun stringify(jsonElement: JsonElement): String = json.stringify(JsonElementSerializer, jsonElement)
 
         fun addListener(listener: Listener) {
@@ -233,7 +248,7 @@ abstract class PubSub {
             }
         }
 
-        fun <T : Any> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
+        fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
             val topicName = topic.name
 
             @Suppress("UNCHECKED_CAST")
@@ -259,7 +274,7 @@ abstract class PubSub {
 
         internal fun getTopicInfo(topicName: String) = topics[topicName]
 
-        inner class PublisherListener<T : Any>(
+        inner class PublisherListener<T : Any?>(
             private val topicInfo: TopicInfo<T>,
             origin: Origin,
             var onUpdateFn: (T) -> Unit

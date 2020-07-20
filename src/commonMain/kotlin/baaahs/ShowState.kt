@@ -70,9 +70,6 @@ data class ShowState(
 @Serializable
 data class ShowWithState(val show: Show, val showState: ShowState)
 
-@Serializable
-data class NullableShowWithState(val showWithState: ShowWithState?)
-
 fun Show.withState(showState: ShowState): ShowWithState {
     return ShowWithState(this, showState.boundedBy(this))
 }
