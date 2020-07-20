@@ -52,7 +52,7 @@ class Pinky(
         set(newShow) {
             field = newShow
             val newShowRunner = newShow?.let { createShowRunner(newShow) }
-            showManager.switchTo(newShowRunner)
+            stageManager.switchTo(newShowRunner)
             val showWithState = newShow?.withState(newShowRunner!!.showState)
             showWithStateChannel.onChange(NullableShowWithState(showWithState))
             facade.notifyChanged()
@@ -63,14 +63,14 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
     private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(
+    var stageManager = StageManager(
         plugins, glslRenderer.gl, pubSub, model
     )
     internal val surfaceManager = SurfaceManager(glslRenderer)
 
     private val showWithStateChannel: PubSub.Channel<NullableShowWithState> =
         pubSub.publish(
-            showManager.showWithStateTopic,
+            stageManager.showWithStateTopic,
             NullableShowWithState(show?.withState(showState!!))
         ) { (incomingShowWithState) ->
             println("Received show change: $incomingShowWithState")
@@ -108,7 +108,7 @@ class Pinky(
 
     private fun createShowRunner(value: Show) =
         ShowRunner(
-            value, showManager, beatSource, dmxUniverse, movingHeadManager,
+            value, stageManager, beatSource, dmxUniverse, movingHeadManager,
             clock, glslRenderer, pubSub, surfaceManager
         )
 
@@ -137,7 +137,7 @@ class Pinky(
             networkStats.reset()
             val elapsedMs = time {
                 try {
-                    showManager.renderAndSendNextFrame()
+                    stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
                     logger.error("Error rendering frame for ${show?.title}", e)
                     delay(1000)
@@ -172,7 +172,7 @@ class Pinky(
     }
 
     internal fun renderAndSendNextFrame() {
-        showManager.renderAndSendNextFrame()
+        stageManager.renderAndSendNextFrame()
     }
 
     internal fun updateSurfaces() {
