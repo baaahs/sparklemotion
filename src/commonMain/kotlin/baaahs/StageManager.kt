@@ -22,6 +22,9 @@ class StageManager(
     val facade = Facade()
     override val glslContext: GlslContext
         get() = glslRenderer.gl
+    private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->
+        if (showState != null) showRunner?.switchTo(showState)
+    }
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -54,12 +57,9 @@ class StageManager(
             ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
     }
 
-    fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
+    fun switchTo(newShow: Show?, newShowState: ShowState? = newShow?.defaultShowState()) {
         val newShowRunner = newShow?.let {
-            ShowRunner(
-                newShow, newShowState, openShow(newShow), clock, glslRenderer, pubSub, surfaceManager
-            )
-
+            ShowRunner(newShow, newShowState, openShow(newShow), clock, glslRenderer, surfaceManager)
         }
         switchTo(newShowRunner)
     }
@@ -68,7 +68,9 @@ class StageManager(
         showRunner?.release()
         releaseUnused()
         showRunner = newShowRunner
-        showWithStateChannel.onChange(newShowRunner?.getShowWithState())
+        val newShowWithState = newShowRunner?.getShowWithState()
+        showWithStateChannel.onChange(newShowWithState)
+        showStateChannel.onChange(newShowWithState?.showState)
         facade.notifyChanged()
     }
 
@@ -85,6 +87,12 @@ class StageManager(
 
             if (!dontProcrastinate) showRunner.housekeeping()
         }
+    }
+
+    fun shutDown() {
+        showRunner?.release()
+        showStateChannel.unsubscribe()
+        showWithStateChannel.unsubscribe()
     }
 
     inner class Facade : baaahs.ui.Facade() {

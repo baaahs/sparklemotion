@@ -13,16 +13,10 @@ class ShowRunner(
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val glslRenderer: GlslRenderer,
-    pubSub: PubSub.Server,
     private val surfaceManager: SurfaceManager
 ) {
     private var showState: ShowState = initialShowState ?: show.defaultShowState()
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
-
-    private val showStateChannel = pubSub.publish(Topics.showState, showState) { showState ->
-        this.showState = showState
-        nextPatchSet = showState.findPatchSet(openShow)
-    }
 
     private var currentPatchSet: OpenPatchSet? = null
     private var currentRenderPlan: RenderPlan? = null
@@ -55,6 +49,11 @@ class ShowRunner(
         return show.withState(showState)
     }
 
+    fun switchTo(newShowState: ShowState) {
+        this.showState = newShowState
+        nextPatchSet = newShowState.findPatchSet(openShow)
+    }
+
     private fun switchTo(newPatchSet: OpenPatchSet) {
         currentRenderPlan = prepare(newPatchSet)
 
@@ -76,7 +75,7 @@ class ShowRunner(
     }
 
     fun housekeeping() {
-        var remapToSurfaces = surfaceManager.housekeeping()
+        var remapSurfaces = surfaceManager.requiresRemap()
 
         // Maybe switch to a new show.
         nextPatchSet?.let { startingPatchSet ->
@@ -84,14 +83,14 @@ class ShowRunner(
 
             currentPatchSet = nextPatchSet
             nextPatchSet = null
-            remapToSurfaces = true
+            remapSurfaces = true
         }
 
-        if (remapToSurfaces) {
+        if (remapSurfaces) {
             surfaceManager.clearRenderPlans()
 
             currentRenderPlan?.let {
-                surfaceManager.applyRenderPlan(it)
+                surfaceManager.remap(it)
             }
         }
     }

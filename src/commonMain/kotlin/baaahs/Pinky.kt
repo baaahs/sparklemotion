@@ -54,8 +54,8 @@ class Pinky(
     var stageManager: StageManager =
         StageManager(plugins, glslRenderer, pubSub, model, surfaceManager, dmxUniverse, movingHeadManager, clock)
 
-    fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
-        stageManager.switchTo(newShow, newShowState)
+    fun switchTo(newShow: Show?) {
+        stageManager.switchTo(newShow)
     }
 
     private var selectedNewShowAt = DateTime.now()
