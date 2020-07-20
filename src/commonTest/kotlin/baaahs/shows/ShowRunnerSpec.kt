@@ -52,20 +52,10 @@ object ShowRunnerSpec : Spek({
         val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
         val stageManager by value {
-            StageManager(Plugins.safe(), fakeGlslContext, pubSub, model) { show, showState, openShow ->
-                ShowRunner(
-                    show,
-                    showState,
-                    openShow,
-                    StubBeatSource(),
-                    FakeDmxUniverse(),
-                    MovingHeadManager(FakeFs(), pubSub, emptyList()),
-                    FakeClock(),
-                    glslRenderer,
-                    pubSub,
-                    surfaceManager
-                )
-            }
+            StageManager(
+                Plugins.safe(), glslRenderer, pubSub, model, surfaceManager, FakeDmxUniverse(),
+                MovingHeadManager(FakeFs(), pubSub, emptyList()), FakeClock()
+            )
         }
 
         val fakeProgram by value { fakeGlslContext.programs[1] }

@@ -47,20 +47,10 @@ class ShowRunnerTest {
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
         surfaceManager = SurfaceManager(glslRenderer)
-        stageManager = StageManager(Plugins.safe(), fakeGlslContext, server, sheepModel) { show, showState, openShow ->
-            ShowRunner(
-                show,
-                showState,
-                openShow,
-                StubBeatSource(),
-                dmxUniverse,
-                movingHeadManager,
-                FakeClock(),
-                glslRenderer,
-                PubSub.Server(serverNetwork.startHttpServer(0)),
-                surfaceManager
-            )
-        }
+        stageManager = StageManager(
+            Plugins.safe(), glslRenderer, server, sheepModel, surfaceManager,
+            dmxUniverse, movingHeadManager, FakeClock()
+        )
         stageManager.switchTo(SampleData.sampleShow)
         renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()
         surface1Messages.clear()

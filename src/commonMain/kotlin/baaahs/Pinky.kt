@@ -52,12 +52,7 @@ class Pinky(
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     internal val surfaceManager = SurfaceManager(glslRenderer)
     var stageManager: StageManager =
-        StageManager(plugins, glslRenderer.gl, pubSub, model) { show, showState, openShow ->
-            ShowRunner(
-                show, showState, openShow, beatSource, dmxUniverse,
-                movingHeadManager, clock, glslRenderer, pubSub, surfaceManager
-            )
-        }
+        StageManager(plugins, glslRenderer, pubSub, model, surfaceManager, dmxUniverse, movingHeadManager, clock)
 
     fun switchTo(newShow: Show?, newShowState: ShowState? = null) {
         stageManager.switchTo(newShow, newShowState)
