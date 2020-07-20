@@ -20,7 +20,7 @@ class SurfaceManager(
         changedSurfaces.add(ShowRunner.SurfacesChanges(ArrayList(addedSurfaces), ArrayList(removedSurfaces)))
     }
 
-    fun housekeeping(): Boolean {
+    fun requiresRemap(): Boolean {
         var anyChanges = false
 
         for ((added, removed) in changedSurfaces) {
@@ -33,7 +33,7 @@ class SurfaceManager(
         return anyChanges
     }
 
-    fun applyRenderPlan(renderPlan: RenderPlan) {
+    fun remap(renderPlan: RenderPlan) {
         renderSurfaces.forEach { (surface, renderSurface) ->
             renderPlan.programs.forEach { (patch: OpenPatch, program: GlslProgram) ->
                 if (patch.matches(surface)) {
