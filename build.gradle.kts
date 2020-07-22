@@ -211,6 +211,7 @@ kotlin {
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
+                implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
             }
@@ -247,6 +248,19 @@ tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMapEmbedSources = "always"
 }
 
+// see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
+tasks.named<Kotlin2JsCompile>("compileKotlinJs") {
+    val outDir = outputFile.parent
+    val tempOutDir = "$outDir/kotlin-out"
+    kotlinOptions.outputFile = "$tempOutDir/${outputFile.name}"
+    doLast {
+        copy {
+            from(tempOutDir)
+            into(outDir)
+        }
+    }
+}
+
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true
     inputs.dir("src/jsMain/js")
@@ -264,6 +278,14 @@ tasks.named<ProcessResources>("jsProcessResources") {
     from("build/js/node_modules/@fortawesome") {
         include("fontawesome-free/css/all.min.css")
         include("fontawesome-free/webfonts/*")
+    }
+    from("build/js/node_modules/normalize.css") {
+        include("normalize.css")
+    }
+    from("build/js/node_modules/@blueprintjs") {
+        into("blueprintjs")
+        include("core/lib/css/blueprint.css")
+        include("icons/lib/css/blueprint-icons.css")
     }
 
     doLast {
