@@ -1,4 +1,6 @@
-var path = require('path');
+const path = require('path');
+
+config = config || {};
 
 // cwd is build/js/packages/sparklemotion
 config.resolve.modules.push(path.resolve(__dirname, "../../node_modules"));
@@ -6,7 +8,7 @@ config.resolve.modules.push(path.resolve(__dirname, "../../node_modules"));
 config.module.rules.push(
     {
         test: /\.(js|jsx)$/,
-        include: /src\/jsMain/,
+        include: /src\/jsMain\/js/,
         use: {
             loader: 'babel-loader',
             options: {
@@ -25,7 +27,7 @@ config.module.rules.push(
     },
     {
         test: /\.(css|sass|scss)$/,
-        include: /src\/jsMain/,
+        include: /src\/jsMain\/js/,
         use: [
             'style-loader',
             {
