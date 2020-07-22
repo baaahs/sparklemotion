@@ -54,6 +54,26 @@ if (config.devServer) {
       aggregateTimeout: 2000,
       poll: 1000
     };
+
+    config.optimization = {
+        splitChunks: {
+            chunks: 'all',
+            name: true,
+
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    };
 } else {
     // Otherwise we get "unknown module and require" from production build.
     config.optimization = {
