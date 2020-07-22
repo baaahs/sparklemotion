@@ -55,6 +55,11 @@ if (config.devServer) {
       poll: 1000
     };
 
+    // see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
+    config.entry.main = config.entry.main.map(
+      s => s.replace(`/kotlin-out/`, "/"),
+    );
+
     config.optimization = {
         splitChunks: {
             chunks: 'all',
