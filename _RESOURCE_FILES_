@@ -53,6 +53,8 @@ baaahs/shows/Waves.glsl
 baaahs/shows/WobblyColorGrid.glsl
 baaahs/shows/YasQueen.glsl
 baaahs/shows/ZebraMadness.glsl
+blueprintjs/core/lib/css/blueprint.css
+blueprintjs/icons/lib/css/blueprint-icons.css
 decom-2019-panels.obj
 favicon.ico
 fontawesome-free/css/all.min.css
@@ -83,6 +85,7 @@ lib/threejs-wrapper.js
 lib/threejs-wrapper.meta.js
 mapper-index.html
 mapper/index.html
+normalize.css
 react-mosaic-component.css
 styles.css
 sui-generis.obj
