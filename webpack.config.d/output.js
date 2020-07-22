@@ -1,4 +1,6 @@
-var path = require('path');
+const path = require('path');
+
+config = config || {};
 
 // cwd is build/js/packages/sparklemotion
 config.resolve.modules.push(path.resolve(__dirname, "../../node_modules"));
@@ -6,7 +8,7 @@ config.resolve.modules.push(path.resolve(__dirname, "../../node_modules"));
 config.module.rules.push(
     {
         test: /\.(js|jsx)$/,
-        include: /src\/jsMain/,
+        include: /src\/jsMain\/js/,
         use: {
             loader: 'babel-loader',
             options: {
@@ -25,7 +27,7 @@ config.module.rules.push(
     },
     {
         test: /\.(css|sass|scss)$/,
-        include: /src\/jsMain/,
+        include: /src\/jsMain\/js/,
         use: [
             'style-loader',
             {
@@ -51,6 +53,31 @@ if (config.devServer) {
     config.devServer.watchOptions = {
       aggregateTimeout: 2000,
       poll: 1000
+    };
+
+    // see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
+    config.entry.main = config.entry.main.map(
+      s => s.replace(`/kotlin-out/`, "/"),
+    );
+
+    config.optimization = {
+        splitChunks: {
+            chunks: 'all',
+            name: true,
+
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
     };
 } else {
     // Otherwise we get "unknown module and require" from production build.
