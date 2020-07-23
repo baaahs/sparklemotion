@@ -42,7 +42,7 @@ class Pinky(
     private val storage = Storage(fs)
     private val mappingResults by lazy { storage.loadMappingData(model) }
 
-    private val link = FragmentingUdpLink(network.link("pinky"))
+    internal val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
