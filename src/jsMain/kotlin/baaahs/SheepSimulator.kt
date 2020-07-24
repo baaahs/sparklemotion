@@ -22,10 +22,7 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import info.laht.threekt.math.Vector3
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
@@ -50,14 +47,16 @@ class SheepSimulator {
     }
 
     init {
-        BakedInShaders.all.forEach { show ->
-            try {
-                val file = fs.resolve("shaders", "${show.name}.glsl")
-                if (!fs.exists(file)) {
-                    fs.saveFile(file, show.src)
+        GlobalScope.launch {
+            BakedInShaders.all.forEach { show ->
+                try {
+                    val file = fs.resolve("shaders", "${show.name}.glsl")
+                    if (!fs.exists(file)) {
+                        fs.saveFile(file, show.src)
+                    }
+                } catch (e: Exception) {
+                    console.warn("huh? failed:", e)
                 }
-            } catch (e: Exception) {
-                console.warn("huh? failed:", e)
             }
         }
     }
@@ -163,18 +162,20 @@ class SheepSimulator {
             SimSurface(surface, surfaceGeometry, pixelPositions, BrainId("brain//$index"))
         }
 
-        val mappingSessionPath = Storage(mapperFs).saveSession(
-            MappingSession(clock.now(), simSurfaces.map { simSurface ->
-                MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
-                    simSurface.pixelPositions.map {
-                        PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
-                    }, null, null, null
-                )
-            }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
-        )
-        mapperFs.renameFile(
-            mappingSessionPath,
-            fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
+        doRunBlocking {
+            val mappingSessionPath = Storage(mapperFs).saveSession(
+                MappingSession(clock.now(), simSurfaces.map { simSurface ->
+                    MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
+                        simSurface.pixelPositions.map {
+                            PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
+                        }, null, null, null
+                    )
+                }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
+            )
+            mapperFs.renameFile(
+                mappingSessionPath,
+                fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
+        }
         return simSurfaces
     }
 

@@ -178,6 +178,8 @@ abstract class PubSub {
 
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
+//                debug("update ${topicInfo.name} ${topicInfo.stringify(data)}")
+
                 val writer = ByteArrayWriter()
                 writer.writeString("update")
                 writer.writeString(topicInfo.name)

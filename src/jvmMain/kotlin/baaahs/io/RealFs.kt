@@ -7,7 +7,7 @@ import kotlin.streams.toList
 
 class RealFs(private val basePath: Path) : Fs {
 
-    override fun listFiles(parent: Fs.File): List<Fs.File> {
+    override suspend fun listFiles(parent: Fs.File): List<Fs.File> {
         val dir = resolve(parent)
         if (Files.isDirectory(dir)) {
             return Files.list(dir).map { parent.resolve(it.fileName.toString()) }.toList()
@@ -16,7 +16,7 @@ class RealFs(private val basePath: Path) : Fs {
         }
     }
 
-    override fun loadFile(file: Fs.File): String? {
+    override suspend fun loadFile(file: Fs.File): String? {
         val destPath = resolve(file)
         try {
             return Files.readAllBytes(destPath).decodeToString()
@@ -25,7 +25,7 @@ class RealFs(private val basePath: Path) : Fs {
         }
     }
 
-    override fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         val destPath = resolve(file)
         Files.createDirectories(destPath.parent)
         Files.write(
@@ -35,7 +35,7 @@ class RealFs(private val basePath: Path) : Fs {
         )
     }
 
-    override fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
         saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
@@ -43,7 +43,7 @@ class RealFs(private val basePath: Path) : Fs {
         return Files.exists(resolve(file))
     }
 
-    override fun isDirectory(file: Fs.File): Boolean {
+    override suspend fun isDirectory(file: Fs.File): Boolean {
         return Files.isDirectory(resolve(file))
     }
 

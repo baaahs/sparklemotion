@@ -9,17 +9,17 @@ class FakeFs : BaseFakeFs() {
     override val keys: List<String>
         get() = files.keys.toList()
 
-    override fun loadFile(file: Fs.File): String? {
+    override suspend fun loadFile(file: Fs.File): String? {
         logger.debug { "FakeFs.loadFile($file)" }
         return files[file.fullPath]?.decodeToString()
     }
 
-    override fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         logger.debug { "FakeFs.createFile($file) -> ${content.size} bytes" }
         addFile(file, content)
     }
 
-    override fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
         saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
@@ -39,7 +39,7 @@ class FakeFs : BaseFakeFs() {
 abstract class BaseFakeFs : Fs {
     protected abstract val keys: List<String>
 
-    override fun listFiles(parent: Fs.File): List<Fs.File> {
+    override suspend fun listFiles(parent: Fs.File): List<Fs.File> {
         val prefix = if (parent.isRoot) "" else "${parent.fullPath}/"
         val entries = keys
             .filter { parent.isRoot || it.startsWith(prefix) }

@@ -44,7 +44,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     private val counterIncr = react.useState { CounterIncr() }
     private val counter = react.useState { counterIncr.first.next() }
-    private var inRender = true;
+    private var inRender = true
     private var stateHasChanged = false
 
     init {
@@ -66,7 +66,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
-            val data = Data(valueInitializer()) { forceRender() }
+            val data = Data(logger, valueInitializer()) { forceRender() }
             context.data.add(data)
             return data
         } else {
@@ -193,7 +193,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         var block: Function<*>
     )
 
-    private class Data<T>(initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
+    private class Data<T>(private val logger: Logger, initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
         var value: T = initialValue
 
         override operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -201,8 +201,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-//            logger.debug { "${property.name} := ${value?.toString()?.truncate(12)}" }
             if (this.value != value) {
+//                logger.info { "${property.name} := ${value?.toString()?.truncate(12)}" }
                 this.value = value
                 onChange()
             }

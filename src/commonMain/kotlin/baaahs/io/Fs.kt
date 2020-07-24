@@ -3,10 +3,10 @@ package baaahs.io
 interface Fs {
     val rootFile: File get() = File(this, "", true)
 
-    fun listFiles(parent: File): List<File>
-    fun loadFile(file: File): String?
-    fun saveFile(file: File, content: ByteArray, allowOverwrite: Boolean = false)
-    fun saveFile(file: File, content: String, allowOverwrite: Boolean = false)
+    suspend fun listFiles(parent: File): List<File>
+    suspend fun loadFile(file: File): String?
+    suspend fun saveFile(file: File, content: ByteArray, allowOverwrite: Boolean = false)
+    suspend fun saveFile(file: File, content: String, allowOverwrite: Boolean = false)
 
     fun resolve(vararg pathParts: String): File {
         return File(this, pathParts.joinToString("/"))
@@ -14,7 +14,7 @@ interface Fs {
 
     fun exists(file: File): Boolean
 
-    fun isDirectory(file: File): Boolean {
+    suspend fun isDirectory(file: File): Boolean {
         return file.isDirectory ?: error("Is $this a directory? Answer unclear.")
     }
 

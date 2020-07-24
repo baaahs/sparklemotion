@@ -4,6 +4,8 @@ interface FirmwareDaddy {
     fun doesntLikeThisVersion(firmwareVersion: String?): Boolean
 
     val urlForPreferredVersion: String
+
+    suspend fun start() {}
 }
 
 class PermissiveFirmwareDaddy : FirmwareDaddy {
