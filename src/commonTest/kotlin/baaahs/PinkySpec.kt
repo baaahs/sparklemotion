@@ -19,7 +19,6 @@ import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.Test
 import kotlin.test.expect
 
 @InternalCoroutinesApi
@@ -56,34 +55,25 @@ object PinkySpec : Spek({
         beforeEachTest {
             pinky.switchTo(SampleData.sampleShow)
 
-            panelMappings.forEach { (brainId, surface) ->
-                val surfaceData = MappingSession.SurfaceData(
-                    brainId.uuid, surface.name, emptyList(), null, null, null
-                )
-                val mappingSessionPath = Storage(fakeFs).saveSession(
-                    MappingSession(
-                        0.0, listOf(surfaceData),
-                        Matrix4(emptyArray()), null, notes = "Simulated pixels"
+            doRunBlocking {
+                panelMappings.forEach { (brainId, surface) ->
+                    val surfaceData = MappingSession.SurfaceData(
+                        brainId.uuid, surface.name, emptyList(), null, null, null
                     )
-                )
-                fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
+                    val mappingSessionPath = Storage(fakeFs).saveSession(
+                        MappingSession(
+                            0.0, listOf(surfaceData),
+                            Matrix4(emptyArray()), null, notes = "Simulated pixels"
+                        )
+                    )
+                    fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
+                }
+
+                pinky.launchStartupJobs()
             }
         }
 
-        @Test
-        fun whenUnmappedBrainUnknownToPinkyComesOnline_showShouldBeNotified() {
-            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
-            pinky.updateSurfaces()
-            pinky.renderAndSendNextFrame()
-
-            expect(1) { renderSurfaces.size }
-
-            val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
-            expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
-        }
-
         describe("brains reporting to Pinky") {
-            override(panelMappings) { listOf(BrainId("brain1") to panel17) }
             val brainHelloMessage by value { nuffin<BrainHelloMessage>() }
 
             beforeEachTest {
@@ -92,84 +82,105 @@ object PinkySpec : Spek({
                 pinky.renderAndSendNextFrame()
             }
 
-            context("for which the brain provides its mapping") {
-                override(brainHelloMessage) { BrainHelloMessage("brain1", panel17.name) }
+            describe("which are unmapped") {
+                override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
-                it("should notify show") {
+                it("should notify show of anonymous surface") {
                     val surface = renderSurfaces.keys.only()
-                    expect(true) { surface is IdentifiedSurface }
-                    expect(panel17.name) { (surface as IdentifiedSurface).name }
+                    expect(true) { surface is AnonymousSurface }
                 }
 
-                it("should not send mapping to the brain") {
+                it("should send pixels but not not send mapping to the brain") {
                     val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
                     expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
                 }
             }
 
-            context("for which Pinky has a mapping") {
-                override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
+            context("which are mapped to surfaces") {
+                override(panelMappings) { listOf(BrainId("brain1") to panel17) }
 
-                it("should notify show") {
-                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
-                    expect(
-                        listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)
-                    ) { packetTypes } // Should send a mapping packet.
-                }
+                context("for which the brain provides its mapping") {
+                    override(brainHelloMessage) { BrainHelloMessage("brain1", panel17.name) }
 
-                it("should send mapping to the brain") {
-                    val surface = renderSurfaces.keys.only()
-                    expect(true) { surface is IdentifiedSurface }
-                    expect(panel17.name) { (surface as IdentifiedSurface).name }
-                }
-
-                context("then when the brain re-sends its hello with its newfound mapping") {
-                    it("should cause no changes") {
-                        pinky.renderAndSendNextFrame()
-
-                        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                        pinky.updateSurfaces()
-                        pinky.renderAndSendNextFrame()
-                        pinky.renderAndSendNextFrame()
-                        expect(1) { renderSurfaces.size }
-                        expect(true) { renderSurfaces.keys.only() is IdentifiedSurface }
-                        expect(panel17.name) { (renderSurfaces.keys.only() as IdentifiedSurface).name }
-                    }
-                }
-
-                context("in the case of a brain race condition") {
                     it("should notify show") {
-                        pinky.renderAndSendNextFrame()
-
-                        // Remap to 17L...
-                        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                        // ... but a packet also made it through identifying brain1 as unmapped.
-                        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
-                        pinky.updateSurfaces()
-                        pinky.renderAndSendNextFrame()
-                        pinky.renderAndSendNextFrame()
-
-                        // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
-
-                        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                        pinky.updateSurfaces()
-                        pinky.renderAndSendNextFrame()
-                        pinky.renderAndSendNextFrame()
-
-                        expect(1) { renderSurfaces.size }
-                        expect(true) { (renderSurfaces.keys.only() as IdentifiedSurface).modelSurface == panel17 }
-
-                        pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                        pinky.updateSurfaces()
-                        pinky.renderAndSendNextFrame()
-                        pinky.renderAndSendNextFrame()
-                        expect(1) { renderSurfaces.size }
                         val surface = renderSurfaces.keys.only()
                         expect(true) { surface is IdentifiedSurface }
                         expect(panel17.name) { (surface as IdentifiedSurface).name }
                     }
+
+                    it("should send pixels but not mapping to the brain") {
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
+                    }
+                }
+
+                context("for which Pinky has a mapping") {
+                    override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
+
+                    it("should notify show") {
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        expect(
+                            listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)
+                        ) { packetTypes } // Should send a mapping packet.
+                    }
+
+                    it("should send mapping and pixels to the brain") {
+                        val surface = renderSurfaces.keys.only()
+                        expect(true) { surface is IdentifiedSurface }
+                        expect(panel17.name) { (surface as IdentifiedSurface).name }
+                    }
+
+                    context("then when the brain re-sends its hello with its newfound mapping") {
+                        it("should cause no changes") {
+                            pinky.renderAndSendNextFrame()
+
+                            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinky.updateSurfaces()
+                            pinky.renderAndSendNextFrame()
+                            pinky.renderAndSendNextFrame()
+                            expect(1) { renderSurfaces.size }
+                            expect(true) { renderSurfaces.keys.only() is IdentifiedSurface }
+                            expect(panel17.name) { (renderSurfaces.keys.only() as IdentifiedSurface).name }
+                        }
+                    }
+
+                    context("in the case of a brain race condition") {
+                        it("should notify show") {
+                            pinky.renderAndSendNextFrame()
+
+                            // Remap to 17L...
+                            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            // ... but a packet also made it through identifying brain1 as unmapped.
+                            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
+                            pinky.updateSurfaces()
+                            pinky.renderAndSendNextFrame()
+                            pinky.renderAndSendNextFrame()
+
+                            // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
+
+                            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinky.updateSurfaces()
+                            pinky.renderAndSendNextFrame()
+                            pinky.renderAndSendNextFrame()
+
+                            expect(1) { renderSurfaces.size }
+                            expect(true) { (renderSurfaces.keys.only() as IdentifiedSurface).modelSurface == panel17 }
+
+                            pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinky.updateSurfaces()
+                            pinky.renderAndSendNextFrame()
+                            pinky.renderAndSendNextFrame()
+                            expect(1) { renderSurfaces.size }
+                            val surface = renderSurfaces.keys.only()
+                            expect(true) { surface is IdentifiedSurface }
+                            expect(panel17.name) { (surface as IdentifiedSurface).name }
+                        }
+                    }
                 }
             }
+
+
+
         }
     }
 })

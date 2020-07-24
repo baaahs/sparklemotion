@@ -21,12 +21,12 @@ class Storage(val fs: Fs) {
         }
     }
 
-    fun listSessions(): List<Fs.File> {
+    suspend fun listSessions(): List<Fs.File> {
         val mappingSessionsDir = fs.resolve("mapping-sessions")
         return fs.listFiles(mappingSessionsDir).filter { it.name.endsWith(".json") }
     }
 
-    fun saveSession(mappingSession: MappingSession): Fs.File {
+    suspend fun saveSession(mappingSession: MappingSession): Fs.File {
         val file =
             fs.resolve(
                 "mapping-sessions",
@@ -35,12 +35,12 @@ class Storage(val fs: Fs) {
         return file
     }
 
-    fun saveImage(name: String, imageData: ByteArray) {
+    suspend fun saveImage(name: String, imageData: ByteArray) {
         val file = fs.resolve("mapping-sessions", "images", name)
         fs.saveFile(file, imageData)
     }
 
-    fun loadMappingData(model: Model<*>): MappingResults {
+    suspend fun loadMappingData(model: Model<*>): MappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", model.name)
         fs.listFiles(path).forEach { dir ->

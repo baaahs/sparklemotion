@@ -19,9 +19,7 @@ import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
 import com.soywiz.klock.DateTime
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class Pinky(
     val model: Model<*>,
@@ -40,7 +38,7 @@ class Pinky(
     val facade = Facade()
 
     private val storage = Storage(fs)
-    private val mappingResults by lazy { storage.loadMappingData(model) }
+    private lateinit var mappingResults: MappingResults
 
     internal val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
@@ -81,6 +79,7 @@ class Pinky(
     }
 
     suspend fun run() {
+        val startupJobs = launchStartupJobs()
         GlobalScope.launch { beatDisplayer.run() }
         GlobalScope.launch {
             while (true) {
@@ -92,6 +91,8 @@ class Pinky(
                 delay(10000)
             }
         }
+
+        startupJobs.join()
 
         while (true) {
             if (mapperIsRunning) {
@@ -118,6 +119,14 @@ class Pinky(
             maybeChangeThingsIfUsersAreIdle()
 
             delay(30)
+        }
+    }
+
+    internal suspend fun launchStartupJobs(): Job {
+        return coroutineScope {
+            launch { firmwareDaddy.start() }
+            launch { movingHeadManager.start() }
+            launch { mappingResults = storage.loadMappingData(model) }
         }
     }
 

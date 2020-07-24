@@ -11,15 +11,15 @@ class BrowserSandboxFs : BaseFakeFs() {
 
     private fun keyName(file: Fs.File): String = "sm.fs:${file.fullPath}"
 
-    override fun loadFile(file: Fs.File): String? {
+    override suspend fun loadFile(file: Fs.File): String? {
         return storage.getItem(keyName(file))
     }
 
-    override fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         saveFile(file, content.toString(), allowOverwrite)
     }
 
-    override fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
+    override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
         if (keys.contains(file.fullPath)) {
             if (!allowOverwrite) {
                 throw Exception("$file already exists")

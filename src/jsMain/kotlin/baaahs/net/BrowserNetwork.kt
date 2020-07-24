@@ -1,5 +1,7 @@
 package baaahs.net
 
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Int8Array
 import org.khronos.webgl.get
@@ -36,6 +38,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             path: String,
             webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
+            val webSocketScope = MainScope()
             val webSocket = WebSocket((toAddress as BrowserAddress).urlString.trimEnd('/') + path)
             webSocket.binaryType = BinaryType.ARRAYBUFFER
 
@@ -62,7 +65,9 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 for (i in 0 until byteBuf.length) {
                     bytes[i] = byteBuf[i]
                 }
-                webSocketListener.receive(tcpConnection, bytes)
+                webSocketScope.launch {
+                    webSocketListener.receive(tcpConnection, bytes)
+                }
             }
 
             webSocket.onerror = { console.error("WebSocket error!", it) }

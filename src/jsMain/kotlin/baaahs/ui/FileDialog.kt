@@ -2,6 +2,10 @@ package baaahs.ui
 
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onDoubleClickFunction
@@ -22,6 +26,7 @@ import react.dom.*
 import kotlin.browser.window
 
 private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
+    val scope = memo { CoroutineScope(Dispatchers.Main) }
     val dialogEl = useRef(null)
     var selectedFs by state { props.defaultTarget?.fs ?: props.filesystems.first() }
     var currentDir by state { selectedFs.fs.rootFile }
@@ -31,23 +36,25 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val handleFsClick = useCallback { fs: SaveAsFs -> selectedFs = fs }
 
     val handleFileSingleClick = useCallback { file: Fs.File ->
-        if (file.fs.isDirectory(file)) {
-            null
-        } else {
-            selectedFile = file
+        scope.launch {
+            if (!file.fs.isDirectory(file)) {
+                selectedFile = file
+            }
         }
     }
 
     val handleFileDoubleClick = useCallback(props.isSaveAs, props.onSelect) { file: Fs.File ->
-        if (file.fs.isDirectory(file)) {
-            currentDir = file
-        } else {
-            if (props.isSaveAs && file.fs.exists(file)) {
-                if (window.confirm("Overwrite ${file.name}?")) {
+        scope.launch {
+            if (file.fs.isDirectory(file)) {
+                currentDir = file
+            } else {
+                if (props.isSaveAs && file.fs.exists(file)) {
+                    if (window.confirm("Overwrite ${file.name}?")) {
+                        props.onSelect(file)
+                    }
+                } else {
                     props.onSelect(file)
                 }
-            } else {
-                props.onSelect(file)
             }
         }
     }
@@ -70,7 +77,10 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     }
 
     onChange("selected fs/dir", props.isOpen, currentDir) {
-        filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
+        val job = scope.launch {
+            filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
+        }
+        withCleanup { job.cancel() }
     }
 
     dialog {
