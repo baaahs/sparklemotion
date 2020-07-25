@@ -15,6 +15,7 @@ import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -95,6 +96,13 @@ class StageManager(
         showEditSession.show = newShowRunner?.show
         showEditSession.showFile = file
         showEditSession.showIsUnsaved = isUnsaved
+
+        CoroutineScope(Dispatchers.Main).launch {
+            storage.updateConfig {
+                copy(runningShowPath = file?.fullPath)
+            }
+        }
+
         notifyOfShowChanges()
     }
 

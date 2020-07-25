@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
 class Storage(val fs: Fs, val plugins: Plugins) {
+    private val configFile = fs.resolve("config.json")
 
     companion object {
         private val logger = Logger("Storage")
@@ -64,7 +65,13 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadConfig(): PinkyConfig? {
-        return loadJson(fs.resolve("config.json"), PinkyConfig.serializer())
+        return loadJson(configFile, PinkyConfig.serializer())
+    }
+
+    suspend fun updateConfig(update: PinkyConfig.() -> PinkyConfig) {
+        val oldConfig = loadConfig() ?: PinkyConfig(null)
+        val newConfig = oldConfig.update()
+        configFile.write(json.stringify(PinkyConfig.serializer(), newConfig), true)
     }
 
     private suspend fun <T> loadJson(configFile: Fs.File, serializer: KSerializer<T>): T? {
@@ -78,6 +85,5 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun saveShow(file: Fs.File, show: Show) {
         file.write(plugins.json.stringify(Show.serializer(), show), true)
     }
-
     fun resolve(path: String): Fs.File = fs.resolve(path)
 }

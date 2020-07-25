@@ -59,7 +59,6 @@ class SheepSimulator {
 
     val glslContext = GlslBase.manager.createContext()
     val clock = JsClock()
-    val show = SampleData.sampleShow
     val plugins = Plugins.findAll()
     private val pinky = Pinky(
         model,
@@ -73,10 +72,6 @@ class SheepSimulator {
         glslRenderer = GlslRenderer(glslContext, model),
         plugins = plugins
     )
-    init {
-        pinky.switchTo(show)
-    }
-
     private val brains: MutableList<Brain> = mutableListOf()
 
     private fun selectModel(): Model<*> =
