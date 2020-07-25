@@ -15,7 +15,6 @@ import baaahs.show.*
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -153,10 +152,10 @@ class StageManager(
             val newShow = ShowEditor("Untitled").apply {
                 addScene("Scene 1") {
                     addPatchSet("All Dark") {
-                        addControl("Patches", SpecialControl("baaahs.Core:Patches"))
                     }
-                    addControl("Scenes", SpecialControl("baaahs.Core:Scenes"))
                 }
+                addControl("Scenes", SpecialControl("baaahs.Core:Scenes"))
+                addControl("Patches", SpecialControl("baaahs.Core:Patches"))
 
                 editLayouts {
                     copyFrom(
