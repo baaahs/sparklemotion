@@ -8,6 +8,7 @@ import baaahs.glsl.GlslContext.Companion.GL_RGB32F
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
+import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
@@ -52,9 +53,10 @@ object ShowRunnerSpec : Spek({
         val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
         val stageManager by value {
+            val fs = FakeFs()
             StageManager(
-                Plugins.safe(), glslRenderer, pubSub, model, surfaceManager, FakeDmxUniverse(),
-                MovingHeadManager(FakeFs(), pubSub, emptyList()), FakeClock()
+                Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), surfaceManager, FakeDmxUniverse(),
+                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model
             )
         }
 

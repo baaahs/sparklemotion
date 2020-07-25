@@ -66,10 +66,3 @@ data class ShowState(
             ShowState(0, show.scenes.map { 0 })
     }
 }
-
-@Serializable
-data class ShowWithState(val show: Show, val showState: ShowState)
-
-fun Show.withState(showState: ShowState): ShowWithState {
-    return ShowWithState(this, showState.boundedBy(this))
-}

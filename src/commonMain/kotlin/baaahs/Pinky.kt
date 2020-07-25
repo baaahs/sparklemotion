@@ -18,8 +18,8 @@ import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
-import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
+import kotlinx.serialization.Serializable
 
 class Pinky(
     val model: Model<*>,
@@ -32,31 +32,33 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    private val glslRenderer: GlslRenderer,
+    glslRenderer: GlslRenderer,
     val plugins: Plugins = Plugins.findAll()
 ) : Network.UdpListener {
     val facade = Facade()
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    private val storage = Storage(fs)
+    private val storage = Storage(fs, plugins)
     private lateinit var mappingResults: MappingResults
 
-    internal val link = FragmentingUdpLink(network.link("pinky"))
+    private val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
-    private val gadgetManager = GadgetManager(pubSub)
+//    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     internal val surfaceManager = SurfaceManager(glslRenderer)
-    var stageManager: StageManager =
-        StageManager(plugins, glslRenderer, pubSub, model, surfaceManager, dmxUniverse, movingHeadManager, clock)
+    var stageManager: StageManager = StageManager(
+        plugins, glslRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
+    )
 
-    fun switchTo(newShow: Show?) {
-        stageManager.switchTo(newShow)
+    fun switchTo(newShow: Show?, file: Fs.File? = null) {
+        stageManager.switchTo(newShow, file = file)
     }
 
-    private var selectedNewShowAt = DateTime.now()
+//    private var selectedNewShowAt = DateTime.now()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -78,10 +80,10 @@ class Pinky(
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
     }
 
-    suspend fun run() {
+    suspend fun start() {
         val startupJobs = launchStartupJobs()
-        GlobalScope.launch { beatDisplayer.run() }
-        GlobalScope.launch {
+        scope.launch { beatDisplayer.run() }
+        scope.launch {
             while (true) {
                 if (mapperIsRunning) {
                     logger.info { "Mapping ${brainInfos.size} brains..." }
@@ -94,6 +96,10 @@ class Pinky(
 
         startupJobs.join()
 
+        scope.launch { run() }
+    }
+
+    private suspend fun run() {
         while (true) {
             if (mapperIsRunning) {
                 disableDmx()
@@ -127,25 +133,26 @@ class Pinky(
             launch { firmwareDaddy.start() }
             launch { movingHeadManager.start() }
             launch { mappingResults = storage.loadMappingData(model) }
+            launch { loadConfig() }
         }
     }
 
     private fun maybeChangeThingsIfUsersAreIdle() {
-        val now = DateTime.now()
-        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
-        if (switchShowAfterIdleSeconds != null
-            && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
-            && secondsSinceUserInteraction > switchShowAfterIdleSeconds
-        ) {
-//            TODO switchToShow(shows.random())
-            selectedNewShowAt = now
-        }
-
-        if (adjustShowAfterIdleSeconds != null
-            && secondsSinceUserInteraction > adjustShowAfterIdleSeconds
-        ) {
-            gadgetManager.adjustSomething()
-        }
+//        val now = DateTime.now()
+//        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
+//        if (switchShowAfterIdleSeconds != null
+//            && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
+//            && secondsSinceUserInteraction > switchShowAfterIdleSeconds
+//        ) {
+////            TODO switchToShow(shows.random())
+//            selectedNewShowAt = now
+//        }
+//
+//        if (adjustShowAfterIdleSeconds != null
+//            && secondsSinceUserInteraction > adjustShowAfterIdleSeconds
+//        ) {
+//            gadgetManager.adjustSomething()
+//        }
     }
 
     internal fun renderAndSendNextFrame() {
@@ -393,6 +400,19 @@ class Pinky(
         }
     }
 
+    suspend fun loadConfig() {
+        val config = storage.loadConfig()
+        config?.runningShowPath?.let { lastRunningShowPath ->
+            val lastRunningShowFile = storage.resolve(lastRunningShowPath)
+            val show = storage.loadShow(lastRunningShowFile)
+            if (show == null) {
+                logger.warn { "No show found at $lastRunningShowPath" }
+            } else {
+                switchTo(show, file = lastRunningShowFile)
+            }
+        }
+    }
+
     companion object {
         val logger = Logger("Pinky")
     }
@@ -419,6 +439,11 @@ class Pinky(
             get() = this@Pinky.pixelCount
     }
 }
+
+@Serializable
+data class PinkyConfig(
+    val runningShowPath: String?
+)
 
 data class BrainId(val uuid: String)
 

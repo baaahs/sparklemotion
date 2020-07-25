@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.geom.Matrix4
+import baaahs.glshaders.Plugins
 import baaahs.glshaders.override
 import baaahs.glsl.GlslRenderer
 import baaahs.mapper.MappingSession
@@ -60,7 +61,7 @@ object PinkySpec : Spek({
                     val surfaceData = MappingSession.SurfaceData(
                         brainId.uuid, surface.name, emptyList(), null, null, null
                     )
-                    val mappingSessionPath = Storage(fakeFs).saveSession(
+                    val mappingSessionPath = Storage(fakeFs, Plugins.safe()).saveSession(
                         MappingSession(
                             0.0, listOf(surfaceData),
                             Matrix4(emptyArray()), null, notes = "Simulated pixels"

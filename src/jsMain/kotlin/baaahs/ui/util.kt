@@ -5,7 +5,9 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
+import org.w3c.dom.events.Event
 import react.RMutableRef
+import react.RProps
 import react.ReactElement
 import react.dom.RDOMBuilder
 import styled.StyleSheet
@@ -46,6 +48,16 @@ fun String?.truncate(length: Int): String? {
     } else {
         this
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
+
+private val jsObj = js("Object")
+fun RProps.copyInto(dest: RProps) {
+    val src = this.asDynamic()
+    val keys = jsObj.keys(this).unsafeCast<Array<String>>()
+    keys.forEach { key -> dest.asDynamic()[key] = src[key] }
 }
 
 val RuleSet.name: String

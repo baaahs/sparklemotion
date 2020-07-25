@@ -1,14 +1,18 @@
 package baaahs.mapper;
 
 import baaahs.Logger
+import baaahs.PinkyConfig
+import baaahs.glshaders.Plugins
 import baaahs.io.Fs
 import baaahs.model.Model
+import baaahs.show.Show
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
-class Storage(val fs: Fs) {
+class Storage(val fs: Fs, val plugins: Plugins) {
 
     companion object {
         private val logger = Logger("Storage")
@@ -58,4 +62,22 @@ class Storage(val fs: Fs) {
         }
         return SessionMappingResults(model, sessions)
     }
+
+    suspend fun loadConfig(): PinkyConfig? {
+        return loadJson(fs.resolve("config.json"), PinkyConfig.serializer())
+    }
+
+    private suspend fun <T> loadJson(configFile: Fs.File, serializer: KSerializer<T>): T? {
+        return fs.loadFile(configFile)?.let { plugins.json.parse(serializer, it) }
+    }
+
+    suspend fun loadShow(file: Fs.File): Show? {
+        return loadJson(file, Show.serializer())
+    }
+
+    suspend fun saveShow(file: Fs.File, show: Show) {
+        file.write(plugins.json.stringify(Show.serializer(), show), true)
+    }
+
+    fun resolve(path: String): Fs.File = fs.resolve(path)
 }

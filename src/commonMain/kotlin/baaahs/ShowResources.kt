@@ -9,13 +9,11 @@ import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
-import kotlinx.serialization.builtins.nullable
 
 interface ShowResources {
     val plugins: Plugins
     val glslContext: GlslContext
     val modelInfo: ModelInfo
-    val showWithStateTopic: PubSub.Topic<ShowWithState?>
     val dataSources: List<DataSource>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
@@ -26,13 +24,6 @@ interface ShowResources {
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
     fun openShow(show: Show): OpenShow = OpenShow(show, this)
 
-    fun createShowWithStateTopic(): PubSub.Topic<ShowWithState?> {
-        return PubSub.Topic(
-            "showWithState",
-            ShowWithState.serializer().nullable,
-            plugins.serialModule
-        )
-    }
     fun releaseUnused()
 }
 
@@ -41,8 +32,6 @@ abstract class BaseShowResources(
     final override val modelInfo: ModelInfo
 ) : ShowResources {
     private val glslAnalyzer = GlslAnalyzer()
-
-    override val showWithStateTopic: PubSub.Topic<ShowWithState?> by lazy { createShowWithStateTopic() }
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()

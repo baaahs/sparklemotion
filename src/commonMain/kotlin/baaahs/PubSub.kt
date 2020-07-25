@@ -16,10 +16,14 @@ import kotlinx.serialization.json.JsonElementSerializer
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.js.JsName
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 abstract class PubSub {
 
     companion object {
+        val verbose = true
+
         fun listen(httpServer: Network.HttpServer): Server {
             return Server(httpServer)
         }
@@ -44,6 +48,20 @@ abstract class PubSub {
 
         @JsName("unsubscribe")
         fun unsubscribe()
+    }
+
+    class CommandPort<C, R>(
+        val name: String,
+        private val serializer: KSerializer<C>,
+        private val replySerializer: KSerializer<R>,
+        serialModule: SerialModule = SerializersModule {}
+    ) {
+        private val json = Json(JsonConfiguration.Stable, serialModule)
+
+        fun toJson(command: C): String = json.stringify(serializer, command)
+        fun fromJson(command: String): C = json.parse(serializer, command)
+        fun replyToJson(command: R): String = json.stringify(replySerializer, command)
+        fun replyFromJson(command: String): R = json.parse(replySerializer, command)
     }
 
     data class Topic<T>(
@@ -98,6 +116,7 @@ abstract class PubSub {
                 json.fromJson(topic.serializer, jsonElement)
             }
         }
+
         fun stringify(jsonElement: JsonElement): String = json.stringify(JsonElementSerializer, jsonElement)
 
         fun addListener(listener: Listener) {
@@ -119,9 +138,32 @@ abstract class PubSub {
         }
     }
 
+    interface CommandChannel<C, R> {
+        fun send(command: C)
+    }
+
+    class Topics : MutableMap<String, TopicInfo<*>> by hashMapOf()
+    class CommandChannels {
+        private val serverChannels: MutableMap<String, Server.ServerCommandChannel<*, *>> = hashMapOf()
+        private val clientChannels: MutableMap<String, Client.ClientCommandChannel<*, *>> = hashMapOf()
+
+        fun hasServerChannel(name: String) = serverChannels.containsKey(name)
+        fun getServerChannel(name: String) = serverChannels.getBang(name, "command channel")
+        fun putServerChannel(name: String, channel: Server.ServerCommandChannel<*, *>) {
+            serverChannels[name] = channel
+        }
+
+        fun hasClientChannel(name: String) = clientChannels.containsKey(name)
+        fun getClientChannel(name: String) = clientChannels.getBang(name, "command channel")
+        fun putClientChannel(name: String, channel: Client.ClientCommandChannel<*, *>) {
+            clientChannels[name] = channel
+        }
+    }
+
     open class Connection(
         private val name: String,
-        private val topics: MutableMap<String, TopicInfo<*>>
+        private val topics: Topics,
+        private val commandChannels: CommandChannels
     ) : Origin("connection $name"), Network.WebSocketListener {
         var isConnected: Boolean = false
 
@@ -137,7 +179,7 @@ abstract class PubSub {
         inner class ClientListener(
             private val topicInfo: TopicInfo<*>,
             val tcpConnection: Network.TcpConnection
-        ): Listener(this) {
+        ) : Listener(this) {
             override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicInfo, data)
         }
 
@@ -167,24 +209,35 @@ abstract class PubSub {
                     getTopic(topicName).notify(reader.readString(), this)
                 }
 
+                "command" -> {
+                    val name = reader.readString()
+                    val commandChannel = commandChannels.getServerChannel(name)
+                    commandChannel.receiveCommand(reader.readString(), this)
+                }
+
+                "commandReply" -> {
+                    val name = reader.readString()
+                    val commandChannel = commandChannels.getClientChannel(name)
+                    commandChannel.receiveReply(reader.readString())
+                }
+
                 else -> {
                     throw IllegalArgumentException("huh? don't know what to do with $command")
                 }
             }
         }
 
-        private fun getTopic(topicName: String) =
-            (topics[topicName] ?: error(unknown("topic", topicName, topics.keys)))
+        private fun getTopic(topicName: String) = topics.getBang(topicName, "topic")
 
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
-//                debug("update ${topicInfo.name} ${topicInfo.stringify(data)}")
+                if (verbose) debug("update ${topicInfo.name} ${topicInfo.stringify(data)}")
 
                 val writer = ByteArrayWriter()
                 writer.writeString("update")
                 writer.writeString(topicInfo.name)
                 writer.writeString(topicInfo.stringify(data))
-                sendCommand(writer.toBytes())
+                sendMessage(writer.toBytes())
             } else {
                 debug("not connected, so no update $name $data")
             }
@@ -197,7 +250,7 @@ abstract class PubSub {
                 val writer = ByteArrayWriter()
                 writer.writeString("sub")
                 writer.writeString(topicInfo.name)
-                sendCommand(writer.toBytes())
+                sendMessage(writer.toBytes())
             } else {
                 debug("not connected, so no sub ${topicInfo.name}")
             }
@@ -210,9 +263,37 @@ abstract class PubSub {
                 val writer = ByteArrayWriter()
                 writer.writeString("unsub")
                 writer.writeString(topicInfo.name)
-                sendCommand(writer.toBytes())
+                sendMessage(writer.toBytes())
             } else {
                 debug("not connected, so no unsub ${topicInfo.name}")
+            }
+        }
+
+        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C) {
+            if (isConnected) {
+                if (verbose) debug("command ${commandPort.name} ${commandPort.toJson(command)}")
+
+                val writer = ByteArrayWriter()
+                writer.writeString("command")
+                writer.writeString(commandPort.name)
+                writer.writeString(commandPort.toJson(command))
+                sendMessage(writer.toBytes())
+            } else {
+                debug("not connected, so no command ${commandPort.name}")
+            }
+        }
+
+        fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R) {
+            if (isConnected) {
+                if (verbose) debug("commandReply ${commandPort.name} ${commandPort.replyToJson(reply)}")
+
+                val writer = ByteArrayWriter()
+                writer.writeString("commandReply")
+                writer.writeString(commandPort.name)
+                writer.writeString(commandPort.replyToJson(reply))
+                sendMessage(writer.toBytes())
+            } else {
+                debug("not connected, so no reply ${commandPort.name}")
             }
         }
 
@@ -222,7 +303,7 @@ abstract class PubSub {
             cleanup.forEach { it.invoke() }
         }
 
-        private fun sendCommand(bytes: ByteArray) {
+        private fun sendMessage(bytes: ByteArray) {
             connection?.send(bytes)
         }
 
@@ -241,12 +322,13 @@ abstract class PubSub {
 
     class Server(httpServer: Network.HttpServer) : Endpoint() {
         private val publisher = Origin("Server")
-        private val topics: MutableMap<String, TopicInfo<*>> = hashMapOf()
+        private val topics: Topics = Topics()
+        private val commandChannels = CommandChannels()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
-                Connection(name, topics)
+                Connection(name, topics, commandChannels)
             }
         }
 
@@ -274,6 +356,35 @@ abstract class PubSub {
             }
         }
 
+        fun <C, R> listenOnCommandChannel(
+            commandPort: CommandPort<C, R>,
+            callback: (command: C, reply: (R) -> Unit) -> Unit
+        ) {
+            val name = commandPort.name
+            if (commandChannels.hasServerChannel(name)) error("Command channel $name already exists.")
+            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort, callback))
+        }
+
+        fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
+            return object : ReadWriteProperty<Any, T> {
+                private var value: T = initialValue
+
+                private val channel = publish(topic, initialValue) {
+                    value = it
+                    callback(it)
+                }
+
+                override fun getValue(thisRef: Any, property: KProperty<*>): T {
+                    return value
+                }
+
+                override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+                    this.value = value
+                    channel.onChange(value)
+                }
+            }
+        }
+
         internal fun getTopicInfo(topicName: String) = topics[topicName]
 
         inner class PublisherListener<T : Any?>(
@@ -283,6 +394,17 @@ abstract class PubSub {
         ) : Listener(origin) {
             override fun onUpdate(data: JsonElement) {
                 onUpdateFn(topicInfo.deserialize(data))
+            }
+        }
+
+        inner class ServerCommandChannel<C, R>(
+            private val commandPort: CommandPort<C, R>,
+            private val callback: (command: C, reply: (R) -> Unit) -> Unit
+        ) {
+            fun receiveCommand(commandJson: String, fromConnection: Connection) {
+                callback.invoke(commandPort.fromJson(commandJson)) { reply ->
+                    fromConnection.sendReply(commandPort, reply)
+                }
             }
         }
     }
@@ -298,27 +420,30 @@ abstract class PubSub {
             get() = connectionToServer.isConnected
         private val stateChangeListeners = mutableListOf<() -> Unit>()
 
-        private val topics: MutableMap<String, TopicInfo<*>> = hashMapOf()
-        private var connectionToServer: Connection = object : Connection("client ${link.myAddress} to $serverAddress", topics) {
-            override fun connected(tcpConnection: Network.TcpConnection) {
-                super.connected(tcpConnection)
+        private val topics: Topics = Topics()
+        private val commandChannels = CommandChannels()
 
-                // If any topics were subscribed to before this connection was established, send the sub command now.
-                topics.values.forEach { topicInfo -> sendTopicSub(topicInfo) }
+        private var connectionToServer: Connection =
+            object : Connection("client ${link.myAddress} to $serverAddress", topics, commandChannels) {
+                override fun connected(tcpConnection: Network.TcpConnection) {
+                    super.connected(tcpConnection)
 
-                notifyChangeListeners()
-            }
+                    // If any topics were subscribed to before this connection was established, send the sub command now.
+                    topics.values.forEach { topicInfo -> sendTopicSub(topicInfo) }
 
-            override fun reset(tcpConnection: Network.TcpConnection) {
-                super.reset(tcpConnection)
-                notifyChangeListeners()
+                    notifyChangeListeners()
+                }
 
-                coroutineScope.launch {
-                    delay(1000)
-                    connectWebSocket(link, serverAddress, port)
+                override fun reset(tcpConnection: Network.TcpConnection) {
+                    super.reset(tcpConnection)
+                    notifyChangeListeners()
+
+                    coroutineScope.launch {
+                        delay(1000)
+                        connectWebSocket(link, serverAddress, port)
+                    }
                 }
             }
-        }
 
         init {
             connectWebSocket(link, serverAddress, port)
@@ -372,6 +497,45 @@ abstract class PubSub {
             }
         }
 
+        fun <C, R> openCommandChannel(
+            commandPort: CommandPort<C, R>,
+            replyCallback: (R) -> Unit
+        ): CommandChannel<C, R> {
+            val name = commandPort.name
+            if (commandChannels.hasClientChannel(name)) error("Command channel $name already exists.")
+            return ClientCommandChannel(commandPort, replyCallback).also {
+                commandChannels.putClientChannel(name, it)
+            }
+        }
+
+        fun <C, R> commandSender(
+            commandPort: CommandPort<C, R>,
+            replyCallback: (R) -> Unit
+        ): (command: C) -> Unit {
+            val commandChannel = openCommandChannel(commandPort, replyCallback)
+            return { command: C -> commandChannel.send(command) }
+        }
+
+        fun <T> state(topic: Topic<T>, initialValue: T? = null, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T?> {
+            return object : ReadWriteProperty<Any, T?> {
+                private var value: T? = initialValue
+
+                private val channel = subscribe(topic) {
+                    value = it
+                    callback(it)
+                }
+
+                override fun getValue(thisRef: Any, property: KProperty<*>): T? {
+                    return value
+                }
+
+                override fun setValue(thisRef: Any, property: KProperty<*>, value: T?) {
+                    this.value = value
+                    channel.onChange(value!!)
+                }
+            }
+        }
+
         @JsName("addStateChangeListener")
         fun addStateChangeListener(callback: () -> Unit) {
             stateChangeListeners.add(callback)
@@ -384,6 +548,19 @@ abstract class PubSub {
 
         private fun notifyChangeListeners() {
             stateChangeListeners.forEach { callback -> callback() }
+        }
+
+        inner class ClientCommandChannel<C, R>(
+            private val commandPort: CommandPort<C, R>,
+            private val replyCallback: (R) -> Unit
+        ) : CommandChannel<C, R> {
+            override fun send(command: C) {
+                connectionToServer.sendCommand(commandPort, command)
+            }
+
+            fun receiveReply(replyJson: String) {
+                replyCallback.invoke(commandPort.replyFromJson(replyJson))
+            }
         }
     }
 }

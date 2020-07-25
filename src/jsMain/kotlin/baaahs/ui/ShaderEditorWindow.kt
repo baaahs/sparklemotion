@@ -435,15 +435,14 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             }
         }
 
-        fileDialog {
-            attrs.isOpen = fileDialogOpen
-            attrs.title = if (fileDialogIsSaveAs) "Save Shader" else "Open Shader"
-            attrs.isSaveAs = fileDialogIsSaveAs
-            attrs.onSelect = handleFileSelected
-            attrs.onCancel = handleSaveAsCancel
-            attrs.filesystems = props.filesystems
-            attrs.defaultTarget = selectedShader?.file?.let { file ->
-                SaveAsTarget(props.filesystems.find { it.fs == file.fs }, file.name)
+        if (fileDialogOpen) {
+            fileDialog {
+                attrs.isOpen = fileDialogOpen
+                attrs.title = if (fileDialogIsSaveAs) "Save Shader As…" else "Open Shader…"
+                attrs.isSaveAs = fileDialogIsSaveAs
+                attrs.onSelect = handleFileSelected
+                attrs.onCancel = handleSaveAsCancel
+                attrs.defaultTarget = selectedShader?.file
             }
         }
     }
@@ -469,7 +468,6 @@ data class EditingShader(
 private val clock = JsClock()
 
 external interface ShaderEditorWindowProps : RProps {
-    var filesystems: List<SaveAsFs>
     var onAddToPatch: (EditingShader) -> Unit
 }
 
