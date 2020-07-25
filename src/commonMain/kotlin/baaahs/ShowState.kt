@@ -1,7 +1,10 @@
 package baaahs
 
+import baaahs.show.PatchyEditor
 import baaahs.show.Show
+import baaahs.show.ShowEditor
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.math.min
 
 @Serializable
@@ -9,7 +12,9 @@ data class ShowState(
     val selectedScene: Int,
     val patchSetSelections: List<Int>
 ) {
-    val selectedPatchSet: Int get() = patchSetSelections[selectedScene]
+    @Transient
+    val selectedPatchSet: Int =
+        if (selectedScene == -1) -1 else patchSetSelections[selectedScene]
 
     fun findScene(show: OpenShow): OpenShow.OpenScene? {
         if (selectedScene == -1) return null
@@ -19,6 +24,11 @@ data class ShowState(
         }
 
         return show.scenes[selectedScene]
+    }
+
+    fun findSceneEditor(showEditor: ShowEditor?): ShowEditor.SceneEditor? {
+        if (selectedScene == -1) return null
+        return showEditor?.getSceneEditor(selectedScene)
     }
 
     fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet? {
@@ -38,6 +48,13 @@ data class ShowState(
         }
 
         return scene.patchSets[selectedPatchSet]
+    }
+
+    fun findPatchSetEditor(showEditor: ShowEditor?): PatchyEditor? {
+        if (selectedPatchSet == -1) return null
+
+        val sceneEditor = findSceneEditor(showEditor)
+        return sceneEditor?.getPatchSetEditor(selectedPatchSet)
     }
 
     fun selectScene(i: Int) = copy(selectedScene = i)
@@ -60,7 +77,7 @@ data class ShowState(
     }
 
     companion object {
-        val Empty: ShowState = ShowState(0, emptyList())
+        val Empty: ShowState = ShowState(-1, emptyList())
 
         fun forShow(show: Show): ShowState =
             ShowState(0, show.scenes.map { 0 })
