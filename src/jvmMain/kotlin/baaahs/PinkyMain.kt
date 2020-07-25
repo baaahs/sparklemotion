@@ -60,7 +60,6 @@ class PinkyMain(private val args: Args) {
 
         val fwUrlBase = "http://${network.link("pinky").myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs("Sparkle Motion Firmware", fwDir), fwUrlBase)
-        val show = SampleData.sampleShow
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
@@ -72,7 +71,6 @@ class PinkyMain(private val args: Args) {
             adjustShowAfterIdleSeconds = args.adjustShowAfter,
             glslRenderer = glslRenderer
         )
-        pinky.switchTo(show)
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
