@@ -122,7 +122,6 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         val asJson =
             jsonInst.stringify(JsonElementSerializer, layoutRoot)
         val layoutRootJs = JSON.parse<dynamic>(asJson)
-        println("asJson = ${asJson}")
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
         value = layoutRootJs as MosaicParent<String>
         //            onChange = { onChange }

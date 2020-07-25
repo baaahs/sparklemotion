@@ -86,6 +86,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}")
                 implementation("spek:spek-dsl:${Versions.spek}")
             }
         }
@@ -136,8 +137,6 @@ kotlin {
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}")
                 implementation("io.mockk:mockk:1.9.3")
 
                 // For RunOpenGLTests:

@@ -2,6 +2,9 @@ package baaahs
 
 import baaahs.io.Fs
 import baaahs.model.MovingHead
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlin.js.JsName
@@ -17,7 +20,7 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
 
     private val presetsFileName = fs.resolve("presets/moving-head-positions.json")
 
-    init {
+    suspend fun start() {
         val presetsJson = fs.loadFile(presetsFileName)
         if (presetsJson != null) {
             val map = json.parse(Topics.movingHeadPresets.serializer, presetsJson)
@@ -31,8 +34,10 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
                 "Disco Balls" to MovingHead.MovingHeadPosition(123, 200)
             )
         ) { map ->
-            fs.saveFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
-            println("Saved $map to disk!")
+            GlobalScope.launch(Dispatchers.Main) {
+                fs.saveFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
+                println("Saved $map to disk!")
+            }
         }
 
     init {

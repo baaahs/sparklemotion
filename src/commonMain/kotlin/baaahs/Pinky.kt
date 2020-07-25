@@ -18,14 +18,11 @@ import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
-import com.soywiz.klock.DateTime
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.serialization.Serializable
 
 class Pinky(
     val model: Model<*>,
-    show: Show,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val beatSource: BeatSource,
@@ -39,45 +36,29 @@ class Pinky(
     val plugins: Plugins = Plugins.findAll()
 ) : Network.UdpListener {
     val facade = Facade()
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    private val storage = Storage(fs)
-    private val mappingResults by lazy { storage.loadMappingData(model) }
+    private val storage = Storage(fs, plugins)
+    private lateinit var mappingResults: MappingResults
 
     private val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
-    private var showHasBeenModified = false
-    private var show = show
-        set(value) {
-            field = value
-            facade.notifyChanged()
-            showRunner.switchTo(value)
-        }
-
-    private var showState = ShowState.forShow(show)
-
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
-    private val gadgetManager = GadgetManager(pubSub)
+//    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    var showManager = ShowManager(plugins, glslRenderer.gl, pubSub, model)
-    internal val showRunner = ShowRunner(
-        model, show, showState, showManager,
-        beatSource, dmxUniverse, movingHeadManager, clock, glslRenderer,
-        pubSub
+    internal val surfaceManager = SurfaceManager(glslRenderer)
+    var stageManager: StageManager = StageManager(
+        plugins, glslRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
     )
 
-    private val showWithStateChannel =
-        pubSub.publish(showManager.showWithStateTopic, show.withState(showState)) { incomingShowWithState ->
-            println("Received show change: $incomingShowWithState")
-            showHasBeenModified = true
-            this.show = incomingShowWithState.show
-            this.showState = incomingShowWithState.showState
-//            TODO this.selectedShow = shows.find { it.name == selectedShow }!!
-        }
+    fun switchTo(newShow: Show?, file: Fs.File? = null) {
+        stageManager.switchTo(newShow, file = file)
+    }
 
-    private var selectedNewShowAt = DateTime.now()
+//    private var selectedNewShowAt = DateTime.now()
 
     private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -97,14 +78,12 @@ class Pinky(
         }
 
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
-
-        val showNames = listOf(this.show.title)
-        pubSub.publish(Topics.availableShows, showNames) {}
     }
 
-    suspend fun run() {
-        GlobalScope.launch { beatDisplayer.run() }
-        GlobalScope.launch {
+    suspend fun start() {
+        val startupJobs = launchStartupJobs()
+        scope.launch { beatDisplayer.run() }
+        scope.launch {
             while (true) {
                 if (mapperIsRunning) {
                     logger.info { "Mapping ${brainInfos.size} brains..." }
@@ -115,6 +94,12 @@ class Pinky(
             }
         }
 
+        startupJobs.join()
+
+        scope.launch { run() }
+    }
+
+    private suspend fun run() {
         while (true) {
             if (mapperIsRunning) {
                 disableDmx()
@@ -127,9 +112,9 @@ class Pinky(
             networkStats.reset()
             val elapsedMs = time {
                 try {
-                    drawNextFrame()
+                    stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for ${show.title}", e)
+                    logger.error("Error rendering frame for ${stageManager.facade.currentShow?.title}", e)
                     delay(1000)
 //                  TODO  switchToShow(GuruMeditationErrorShow)
                 }
@@ -143,22 +128,35 @@ class Pinky(
         }
     }
 
-    private fun maybeChangeThingsIfUsersAreIdle() {
-        val now = DateTime.now()
-        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
-        if (switchShowAfterIdleSeconds != null
-            && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
-            && secondsSinceUserInteraction > switchShowAfterIdleSeconds
-        ) {
-//            TODO switchToShow(shows.random())
-            selectedNewShowAt = now
+    internal suspend fun launchStartupJobs(): Job {
+        return coroutineScope {
+            launch { firmwareDaddy.start() }
+            launch { movingHeadManager.start() }
+            launch { mappingResults = storage.loadMappingData(model) }
+            launch { loadConfig() }
         }
+    }
 
-        if (adjustShowAfterIdleSeconds != null
-            && secondsSinceUserInteraction > adjustShowAfterIdleSeconds
-        ) {
-            gadgetManager.adjustSomething()
-        }
+    private fun maybeChangeThingsIfUsersAreIdle() {
+//        val now = DateTime.now()
+//        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
+//        if (switchShowAfterIdleSeconds != null
+//            && now.minus(selectedNewShowAt).seconds > switchShowAfterIdleSeconds
+//            && secondsSinceUserInteraction > switchShowAfterIdleSeconds
+//        ) {
+////            TODO switchToShow(shows.random())
+//            selectedNewShowAt = now
+//        }
+//
+//        if (adjustShowAfterIdleSeconds != null
+//            && secondsSinceUserInteraction > adjustShowAfterIdleSeconds
+//        ) {
+//            gadgetManager.adjustSomething()
+//        }
+    }
+
+    internal fun renderAndSendNextFrame() {
+        stageManager.renderAndSendNextFrame()
     }
 
     internal fun updateSurfaces() {
@@ -181,7 +179,7 @@ class Pinky(
                 }
             }
 
-            showRunner.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
+            surfaceManager.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
             listeningVisualizers.forEach { listeningVisualizer ->
                 brainSurfacesToAdd.forEach {
                     listeningVisualizer.sendPixelData(it.surface)
@@ -192,10 +190,6 @@ class Pinky(
 
             facade.notifyChanged()
         }
-    }
-
-    internal fun drawNextFrame() {
-        showRunner.nextFrame()
     }
 
     private fun disableDmx() {
@@ -406,17 +400,26 @@ class Pinky(
         }
     }
 
+    suspend fun loadConfig() {
+        val config = storage.loadConfig()
+        config?.runningShowPath?.let { lastRunningShowPath ->
+            val lastRunningShowFile = storage.resolve(lastRunningShowPath)
+            val show = storage.loadShow(lastRunningShowFile)
+            if (show == null) {
+                logger.warn { "No show found at $lastRunningShowPath" }
+            } else {
+                switchTo(show, file = lastRunningShowFile)
+            }
+        }
+    }
+
     companion object {
         val logger = Logger("Pinky")
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        val shows: List<Show>
-            get() = listOf(this@Pinky.show)
-
-        var selectedShow: Show
-            get() = this@Pinky.show
-            set(value) { this@Pinky.show = value }
+        val stageManager: StageManager.Facade
+            get() = this@Pinky.stageManager.facade
 
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
@@ -436,6 +439,11 @@ class Pinky(
             get() = this@Pinky.pixelCount
     }
 }
+
+@Serializable
+data class PinkyConfig(
+    val runningShowPath: String?
+)
 
 data class BrainId(val uuid: String)
 

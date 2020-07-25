@@ -5,7 +5,9 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
+import org.w3c.dom.events.Event
 import react.RMutableRef
+import react.RProps
 import react.ReactElement
 import react.dom.RDOMBuilder
 import styled.StyleSheet
@@ -48,6 +50,16 @@ fun String?.truncate(length: Int): String? {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
+
+private val jsObj = js("Object")
+fun RProps.copyInto(dest: RProps) {
+    val src = this.asDynamic()
+    val keys = jsObj.keys(this).unsafeCast<Array<String>>()
+    keys.forEach { key -> dest.asDynamic()[key] = src[key] }
+}
+
 val RuleSet.name: String
     get() = CSSBuilder().apply { +this@name }.classes.joinToString(" ")
 
@@ -55,24 +67,12 @@ val RuleSet.selector: String
     get() = ".$name"
 
 operator fun RuleSet.unaryPlus(): String = name
-
 infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
-
-infix fun <T> RuleSet.on(clazz: T): Pair<T, String> {
-    return clazz to name
-}
-
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> {
-    return mutableListOf(this, that)
-}
-
-infix fun String.and(that: String): String {
-    return "$this $that"
-}
-
-infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> {
-    return clazz to joinToString(" ") { it.name }
-}
+infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
+infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
+infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
+infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
+infix fun String.and(that: String): String = "$this $that"
 
 fun CSSBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
 fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)

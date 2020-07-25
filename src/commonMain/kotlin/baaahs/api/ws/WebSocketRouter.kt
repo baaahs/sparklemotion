@@ -2,12 +2,15 @@ package baaahs.api.ws
 
 import baaahs.Logger
 import baaahs.net.Network
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*
 
 class WebSocketRouter(handlers: HandlerBuilder.() -> Unit) : Network.WebSocketListener {
     companion object {
         val json = Json(JsonConfiguration.Stable)
-
+        val handlerScope = CoroutineScope(Dispatchers.Main)
         val logger = Logger("WebSocketEndpoint")
     }
 
@@ -23,23 +26,25 @@ class WebSocketRouter(handlers: HandlerBuilder.() -> Unit) : Network.WebSocketLi
         var status = "success"
         var response: JsonElement
 
-        try {
-            val handler = handlerMap[command]
-                ?: throw UnsupportedOperationException("unknown command \"$command\"")
+        handlerScope.launch {
+            try {
+                val handler = handlerMap[command]
+                    ?: throw UnsupportedOperationException("unknown command \"$command\"")
 
-            response = handler(args.toList())
-        } catch (e: Exception) {
-            status = "error"
-            response = JsonPrimitive(e.toString())
-            logger.error { "Command failed: $args" }
-            logger.error { e.toString() }
+                response = handler(args.toList())
+            } catch (e: Exception) {
+                status = "error"
+                response = JsonPrimitive(e.toString())
+                logger.error { "Command failed: $args" }
+                logger.error { e.toString() }
+            }
+
+            logger.debug { "Command: $args -> $status $response" }
+            tcpConnection.send(json.stringify(JsonElementSerializer, json {
+                "status" to status
+                "response" to response
+            }).encodeToByteArray())
         }
-
-        logger.debug { "Command: $args -> $status $response" }
-        tcpConnection.send(json.stringify(JsonElementSerializer, json {
-            "status" to status
-            "response" to response
-        }).encodeToByteArray())
     }
 
     override fun reset(tcpConnection: Network.TcpConnection) {
@@ -47,8 +52,8 @@ class WebSocketRouter(handlers: HandlerBuilder.() -> Unit) : Network.WebSocketLi
     }
 
     class HandlerBuilder(val json: Json) {
-        val handlerMap = hashMapOf<String, (List<JsonElement>) -> JsonElement>()
-        fun handle(command: String, handler: (List<JsonElement>) -> JsonElement) {
+        val handlerMap = hashMapOf<String, suspend (List<JsonElement>) -> JsonElement>()
+        fun handle(command: String, handler: suspend (List<JsonElement>) -> JsonElement) {
             handlerMap[command] = handler
         }
     }

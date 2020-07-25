@@ -5,6 +5,7 @@ import baaahs.gadgets.Slider
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.RenderSurface
+import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
@@ -24,8 +25,8 @@ class ShowRunnerTest {
     private val serverNetwork = network.link("test")
     private val server = PubSub.listen(serverNetwork.startHttpServer(1234))
 
-    private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
-    private lateinit var showRunner: ShowRunner
+    private val fs = FakeFs()
+    private val movingHeadManager = MovingHeadManager(fs, server, emptyList())
 
     private lateinit var renderSurfaces: Map<Surface, RenderSurface>
     private val surface1Messages = mutableListOf<Pixels>()
@@ -38,28 +39,22 @@ class ShowRunnerTest {
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel().apply { panels = emptyList() }
-    private lateinit var showManager: ShowManager
+    private lateinit var stageManager: StageManager
+    private lateinit var surfaceManager: SurfaceManager
 
     @BeforeTest
     fun setUp() {
         fakeGlslContext = FakeGlslContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        val show = SampleData.sampleShow
-        showManager = ShowManager(Plugins.safe(), fakeGlslContext, server, sheepModel)
-        showRunner = ShowRunner(
-            sheepModel,
-            show,
-            ShowState.forShow(show),
-            showManager,
-            StubBeatSource(),
-            dmxUniverse,
-            movingHeadManager,
-            FakeClock(),
-            GlslRenderer(fakeGlslContext, ModelInfo.Empty),
-            PubSub.Server(serverNetwork.startHttpServer(0))
+        val glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
+        surfaceManager = SurfaceManager(glslRenderer)
+        stageManager = StageManager(
+            Plugins.safe(), glslRenderer, server, Storage(fs, Plugins.safe()), surfaceManager,
+            dmxUniverse, movingHeadManager, FakeClock(), sheepModel
         )
-        renderSurfaces = showRunner.renderSurfaces
+        stageManager.switchTo(SampleData.sampleShow)
+        renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -67,20 +62,20 @@ class ShowRunnerTest {
 
     @Test @Ignore // TODO
     fun whenNoKnownSurfaces_shouldStillCreateShow() {
-        showRunner.nextFrame()
+        stageManager.renderAndSendNextFrame()
         expect(1) { renderSurfaces.size }
         expect(0) { surface1Messages.size }
     }
 
     @Test
     fun shouldRenderShow() {
-        showRunner.surfacesChanged(listOf(surface1Receiver, surface2Receiver), emptyList())
-        showRunner.nextFrame()
+        surfaceManager.surfacesChanged(listOf(surface1Receiver, surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame()
         expect(2) { renderSurfaces.size }
         expect(1) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
-        showRunner.nextFrame()
+        stageManager.renderAndSendNextFrame()
         expect(2) { renderSurfaces.size }
         expect(2) { surface1Messages.size }
         expect(2) { surface2Messages.size }
@@ -96,36 +91,36 @@ class ShowRunnerTest {
 
     @Test
     fun inProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
-        showRunner.nextFrame(false) // No surfaces so no show created, nothing rendered.
+        stageManager.renderAndSendNextFrame(false) // No surfaces so no show created, nothing rendered.
         expect(0) { renderSurfaces.size }
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame(false) // Create a new show with one surface but don't render to it yet.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame(false) // Create a new show with one surface but don't render to it yet.
         expect(1) { renderSurfaces.size }
         expect(0) { surface1Messages.size }
 
-        showRunner.nextFrame(false) // Render and include that surface.
+        stageManager.renderAndSendNextFrame(false) // Render and include that surface.
         expect(1) { renderSurfaces.size }
         expect(1) { surface1Messages.size }
 
-        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame(false) // Add another surface, but still only render to the first.
+        surfaceManager.surfacesChanged(listOf(surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame(false) // Add another surface, but still only render to the first.
         expect(2) { renderSurfaces.size }
         expect(2) { surface1Messages.size }
         expect(0) { surface2Messages.size }
 
-        showRunner.nextFrame(false) // Render to both.
+        stageManager.renderAndSendNextFrame(false) // Render to both.
         expect(2) { renderSurfaces.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
-        showRunner.surfacesChanged(emptyList(), listOf(surface1Receiver))
-        showRunner.nextFrame(false) // Remove the first surface, but still render to both.
+        surfaceManager.surfacesChanged(emptyList(), listOf(surface1Receiver))
+        stageManager.renderAndSendNextFrame(false) // Remove the first surface, but still render to both.
         expect(1) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
-        showRunner.nextFrame(false) // Render again to the remaining surface.
+        stageManager.renderAndSendNextFrame(false) // Render again to the remaining surface.
         expect(1) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
@@ -133,36 +128,36 @@ class ShowRunnerTest {
 
     @Test
     fun inNoProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
-        showRunner.nextFrame() // No surfaces so no show created, nothing rendered.
+        stageManager.renderAndSendNextFrame() // No surfaces so no show created, nothing rendered.
         expect(0) { renderSurfaces.size }
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Create a new show with one surface and render to it.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Create a new show with one surface and render to it.
         expect(1) { renderSurfaces.size }
         expect(1) { surface1Messages.size }
 
-        showRunner.nextFrame() // Render again.
+        stageManager.renderAndSendNextFrame() // Render again.
         expect(1) { renderSurfaces.size }
         expect(2) { surface1Messages.size }
 
-        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame() // Add another surface, render to both.
+        surfaceManager.surfacesChanged(listOf(surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Add another surface, render to both.
         expect(2) { renderSurfaces.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
-        showRunner.nextFrame() // Render again to both.
+        stageManager.renderAndSendNextFrame() // Render again to both.
         expect(2) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
-        showRunner.surfacesChanged(emptyList(), listOf(surface1Receiver))
-        showRunner.nextFrame() // Remove the first surface and render to only the second.
+        surfaceManager.surfacesChanged(emptyList(), listOf(surface1Receiver))
+        stageManager.renderAndSendNextFrame() // Remove the first surface and render to only the second.
         expect(1) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
 
-        showRunner.nextFrame() // Render another frame on the remaining surface.
+        stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
         expect(1) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(4) { surface2Messages.size }
@@ -172,29 +167,29 @@ class ShowRunnerTest {
     fun forShowsThatDontSupportSurfaceChanges_whenSurfacesAreAddedOrRemoved_shouldRecreateShowAfterNextFrame() {
 //        renderSurfaces.supportsSurfaceChange = false
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Render a frame.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Render a frame.
         expect(1) { renderSurfaces.size }
         expect(1) { surface1Messages.size }
 
-        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame() // Prior show renders a frame, new show is created with two surfaces.
+        surfaceManager.surfacesChanged(listOf(surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Prior show renders a frame, new show is created with two surfaces.
         expect(2) { renderSurfaces.size }
         expect(2) { surface1Messages.size }
         expect(0) { surface2Messages.size }
 
-        showRunner.nextFrame() // Render a frame with the new show.
+        stageManager.renderAndSendNextFrame() // Render a frame with the new show.
         expect(2) { renderSurfaces.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
-        showRunner.surfacesChanged(emptyList(), listOf(surface1Receiver))
-        showRunner.nextFrame() // Render another frame on both surfaces, then recreate the show with new surfaces.
+        surfaceManager.surfacesChanged(emptyList(), listOf(surface1Receiver))
+        stageManager.renderAndSendNextFrame() // Render another frame on both surfaces, then recreate the show with new surfaces.
         expect(3) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
-        showRunner.nextFrame() // Render another frame on the remaining surface.
+        stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
         expect(3) { renderSurfaces.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
@@ -204,19 +199,19 @@ class ShowRunnerTest {
     fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_gadgetSettingsAreRestored() {
 //        renderSurfaces.supportsSurfaceChange = false
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Create show and request gadgets.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Create show and request gadgets.
         expect(1) { renderSurfaces.size }
 
-        val originalSlider = showManager.useGadget<Slider>("brightnessSlider")
+        val originalSlider = stageManager.useGadget<Slider>("brightnessSlider")
         expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
-        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame() // Recreate show and restore gadget state.
+        surfaceManager.surfacesChanged(listOf(surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(2) { renderSurfaces.size }
 
-        val recreatedSlider = showManager.useGadget<Slider>("brightnessSlider")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSlider")
         expect(0.5f) { recreatedSlider.value }
     }
 
@@ -224,21 +219,21 @@ class ShowRunnerTest {
     fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_publishedActiveGadgetsAreUnchanged() {
 //        renderSurfaces.supportsSurfaceChange = false
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Create show and request gadgets.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Create show and request gadgets.
         expect(1) { renderSurfaces.size }
 
         expect(0) { serverNetwork.packetsToSend.size }
 
-        val originalSlider = showManager.useGadget<Slider>("brightnessSlider")
+        val originalSlider = stageManager.useGadget<Slider>("brightnessSlider")
         expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
-        showRunner.surfacesChanged(listOf(surface2Receiver), emptyList())
-        showRunner.nextFrame() // Recreate show and restore gadget state.
+        surfaceManager.surfacesChanged(listOf(surface2Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(2) { renderSurfaces.size }
 
-        val recreatedSlider = showManager.useGadget<Slider>("brightnessSlider")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSlider")
         expect(0.5f) { recreatedSlider.value }
     }
 
@@ -246,7 +241,7 @@ class ShowRunnerTest {
     fun shouldUpdateDmxAfterEveryFrame() {
         expect(emptyList<String>()) { dmxEvents }
 
-        showRunner.nextFrame()
+        stageManager.renderAndSendNextFrame()
 
         expect(listOf("dmx frame sent")) { dmxEvents }
     }
@@ -259,16 +254,16 @@ class ShowRunnerTest {
 
     @Test
     fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() {
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Creates show and registers a buffer for surface1.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Creates show and registers a buffer for surface1.
 
-        showRunner.surfacesChanged(listOf(), listOf(surface1Receiver))
-        showRunner.nextFrame() // Removes old buffer for surface1.
+        surfaceManager.surfacesChanged(listOf(), listOf(surface1Receiver))
+        stageManager.renderAndSendNextFrame() // Removes old buffer for surface1.
 
-        showRunner.surfacesChanged(listOf(surface1Receiver), emptyList())
-        showRunner.nextFrame() // Creates new buffer for surface1.
+        surfaceManager.surfacesChanged(listOf(surface1Receiver), emptyList())
+        stageManager.renderAndSendNextFrame() // Creates new buffer for surface1.
 
-        showRunner.nextFrame() // Renders frame, expect no exceptions due to too many buffers.
+        stageManager.renderAndSendNextFrame() // Renders frame, expect no exceptions due to too many buffers.
     }
 }
 

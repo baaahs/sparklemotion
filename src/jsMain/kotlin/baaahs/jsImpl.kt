@@ -46,3 +46,11 @@ private fun logMessage(level: String, message: String, exception: Throwable?) {
         else -> console.log(message, exception)
     }
 }
+
+actual fun logGroupBegin(id: String, message: String) {
+    console.asDynamic().group("$id - $message")
+}
+
+actual fun logGroupEnd(id: String, message: String) {
+    console.asDynamic().groupEnd()
+}

@@ -4,15 +4,15 @@ import baaahs.io.Fs
 import baaahs.io.RealFs
 
 class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
-    private var preferredVersion: String?
+    private var preferredVersion: String? = null
 
-    init {
+    override suspend fun start() {
         // TODO: Watch the directory for changes instead of just scanning once at startup
         preferredVersion = findPreferredFirmware()
         logger.debug { "Full URL is $urlForPreferredVersion" }
     }
 
-    private fun findPreferredFirmware(): String? {
+    private suspend fun findPreferredFirmware(): String? {
         try {
             val files = fs.listFiles(fs.rootFile)
             logger.debug { "Found the following firmware files:" }

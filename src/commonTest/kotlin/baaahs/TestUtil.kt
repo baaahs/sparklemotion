@@ -7,6 +7,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlin.test.expect
 
+@Suppress("UNCHECKED_CAST")
+fun <T> nuffin(): T = null as T
+
 fun MutableList<String>.assertEmpty() {
     expect(emptyList<String>()) { this }
     this.clear()

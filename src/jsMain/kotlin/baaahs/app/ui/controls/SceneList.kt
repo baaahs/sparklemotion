@@ -49,7 +49,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            editScene(props.showState.selectedScene) {
+            editScene(index) {
                 patchyEditor = this
             }
             event.preventDefault()

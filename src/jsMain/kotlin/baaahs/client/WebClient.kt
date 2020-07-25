@@ -5,10 +5,11 @@ import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslBase
+import baaahs.io.Fs
+import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.show.Show
-import baaahs.ui.SaveAsFs
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import react.ReactElement
@@ -17,7 +18,6 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val filesystems: List<SaveAsFs>,
     plugins: Plugins = Plugins.findAll()
 ) : HostedWebApp {
     private val facade = Facade()
@@ -35,26 +35,67 @@ class WebClient(
     private var showState: ShowState? = null
 
     private var savedShow: Show? = null
-    private var showIsModified: Boolean = false
+    private var showIsUnsaved: Boolean = false
+    private var showFile: Fs.File? = null
+
+    @Suppress("UNCHECKED_CAST")
+    private val remoteFsSerializer = PubSubRemoteFsClientBackend(pubSub)
+    private val clientData by pubSub.state(Topics.createClientData(remoteFsSerializer), null) {
+        facade.notifyChanged()
+    }
 
     private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
-    private val showWithStateChannel = pubSub.subscribe(showResources.showWithStateTopic) {
-        savedShow = it.show
-        switchTo(it.show, it.showState)
-        undoStack.reset(it)
-        facade.notifyChanged()
-    }
-    private val showStateChannel = pubSub.subscribe(Topics.showState) {
-        showState = it
-        facade.notifyChanged()
+    private var showStateSynced = false
+    private val showEditStateChannel =
+        pubSub.subscribe(
+            ShowEditorState.createTopic(plugins, remoteFsSerializer)
+        ) { incoming ->
+            switchTo(incoming)
+            undoStack.reset(incoming)
+            showStateSynced = true
+            facade.notifyChanged()
+        }
+    private val showStateChannel =
+        pubSub.subscribe(Topics.showState) {
+            showState = it
+            facade.notifyChanged()
+        }
+    
+
+    private val undoStack = UndoStack<ShowEditorState>()
+
+    private val serverCommands = object {
+        private var nextRequestId = 0
+        private val requestCallbacks = mutableMapOf<Int, Function<*>>()
+
+        private fun <T> getCallback(requestId: Int): (T) -> Unit =
+            requestCallbacks[requestId].unsafeCast<(T) -> Unit>()
+        private fun saveCallback(callback: Function<*>): Int {
+            val requestId = nextRequestId++
+            requestCallbacks[requestId] = callback
+            return requestId
+        }
+
+        private val commands = Topics.Commands(remoteFsSerializer)
+        val newShow = pubSub.commandSender(commands.newShow) {}
+        val switchToShow = pubSub.commandSender(commands.switchToShow) {}
+        val saveShow = pubSub.commandSender(commands.saveShow) {}
+        val saveAsShow = pubSub.commandSender(commands.saveAsShow) {}
     }
 
-    private val undoStack = UndoStack<ShowWithState>()
-
-    private fun switchTo(show: Show, showState: ShowState) {
-        openShow = showResources.swapAndRelease(openShow, show)
-        this.show = show
-        this.showState = showState
+    private fun switchTo(showEditorState: ShowEditorState?) {
+        val newShow = showEditorState?.show
+        val newShowState = showEditorState?.showState
+        val newIsUnsaved = showEditorState?.isUnsaved ?: false
+        val newFile = showEditorState?.file
+        val newOpenShow = newShow?.let { OpenShow(newShow, showResources) }
+        openShow?.release()
+        openShow = newOpenShow
+        this.show = newShow
+        this.showState = newShowState
+        this.showIsUnsaved = newIsUnsaved
+        this.showFile = newFile
+        if (!newIsUnsaved) this.savedShow = show
     }
 
     override fun render(): ReactElement {
@@ -64,14 +105,13 @@ class WebClient(
             this.id = "Client Window"
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
-            this.filesystems = this@WebClient.filesystems
             this.showResources = this@WebClient.showResources
         })
     }
 
     override fun onClose() {
         showStateChannel.unsubscribe()
-        showWithStateChannel.unsubscribe()
+        showEditStateChannel.unsubscribe()
         pubSub.removeStateChangeListener(pubSubListener)
     }
 
@@ -79,11 +119,20 @@ class WebClient(
         val isConnected: Boolean
             get() = pubSub.isConnected
 
+        val fsRoot: Fs.File?
+            get() = this@WebClient.clientData?.fsRoot
+
+        val isLoaded: Boolean
+            get() = this@WebClient.showStateSynced && clientData != null
+
         val show: Show?
             get() = this@WebClient.show
 
+        val showFile: Fs.File?
+            get() = this@WebClient.showFile
+
         val showIsModified: Boolean
-            get() = this@WebClient.showIsModified
+            get() = this@WebClient.showIsUnsaved
 
         val showState: ShowState?
             get() = this@WebClient.showState
@@ -91,17 +140,39 @@ class WebClient(
         val openShow: OpenShow?
             get() = this@WebClient.openShow
 
-        fun onShowEdit(showWithState: ShowWithState) {
-            showWithStateChannel.onChange(showWithState)
-            switchTo(showWithState.show, showWithState.showState)
-            this@WebClient.showIsModified = showWithState.show != savedShow
+        fun onShowEdit(show: Show, showState: ShowState): ShowEditorState {
+            val isUnsaved = savedShow?.equals(show) != true
+            val showEditState = show.withState(showState, isUnsaved, showFile)
+            showEditStateChannel.onChange(showEditState)
+            switchTo(showEditState)
             facade.notifyChanged()
+            return showEditState
         }
 
         fun onShowStateChange(showState: ShowState) {
             showStateChannel.onChange(showState)
             this@WebClient.showState = showState
             facade.notifyChanged()
+        }
+
+        fun onNewShow() {
+            serverCommands.newShow(NewShowCommand())
+        }
+
+        fun onOpenShow(file: Fs.File?) {
+            serverCommands.switchToShow(SwitchToShowCommand(file))
+        }
+
+        fun onSaveShow() {
+            serverCommands.saveShow(SaveShowCommand())
+        }
+
+        fun onSaveAsShow(file: Fs.File) {
+            serverCommands.saveAsShow(SaveAsShowCommand(file))
+        }
+
+        fun onCloseShow() {
+            serverCommands.switchToShow(SwitchToShowCommand(null))
         }
     }
 }
