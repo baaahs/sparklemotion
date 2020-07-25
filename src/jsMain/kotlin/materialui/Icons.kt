@@ -2,6 +2,7 @@
 
 package materialui
 
+external val Add: Icon
 external val ChevronLeft: Icon
 external val ChevronRight: Icon
 external val Close: Icon
@@ -17,6 +18,7 @@ external val ExpandMore: Icon
 external val FileCopy: Icon
 external val Menu: Icon
 external val NotificationImportant: Icon
+external val OpenInBrowser: Icon
 external val Warning: Icon
 external val Redo: Icon
 external val Save: Icon

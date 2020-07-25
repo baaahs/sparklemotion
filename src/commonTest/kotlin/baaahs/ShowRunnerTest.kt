@@ -5,6 +5,7 @@ import baaahs.gadgets.Slider
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.RenderSurface
+import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
@@ -24,7 +25,8 @@ class ShowRunnerTest {
     private val serverNetwork = network.link("test")
     private val server = PubSub.listen(serverNetwork.startHttpServer(1234))
 
-    private val movingHeadManager = MovingHeadManager(FakeFs(), server, emptyList())
+    private val fs = FakeFs()
+    private val movingHeadManager = MovingHeadManager(fs, server, emptyList())
 
     private lateinit var renderSurfaces: Map<Surface, RenderSurface>
     private val surface1Messages = mutableListOf<Pixels>()
@@ -48,8 +50,8 @@ class ShowRunnerTest {
         val glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
         surfaceManager = SurfaceManager(glslRenderer)
         stageManager = StageManager(
-            Plugins.safe(), glslRenderer, server, sheepModel, surfaceManager,
-            dmxUniverse, movingHeadManager, FakeClock()
+            Plugins.safe(), glslRenderer, server, Storage(fs, Plugins.safe()), surfaceManager,
+            dmxUniverse, movingHeadManager, FakeClock(), sheepModel
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()

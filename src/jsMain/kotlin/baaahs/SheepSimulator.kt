@@ -15,7 +15,6 @@ import baaahs.proto.Ports
 import baaahs.show.SampleData
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
-import baaahs.ui.SaveAsFs
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -35,12 +34,9 @@ class SheepSimulator {
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
     val visualizer = Visualizer(model)
-    private val mapperFs = FakeFs()
-    val fs = MergedFs(BrowserSandboxFs(), mapperFs)
-    val filesystems = listOf(
-        SaveAsFs("Shader Library", fs),
-        SaveAsFs("Show", FakeFs())
-    )
+    private val mapperFs = FakeFs("Temporary Mapping Files")
+    private val fs = MergedFs(BrowserSandboxFs("Browser Data"), mapperFs, "Browser Data")
+    val filesystems = listOf(fs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
@@ -88,21 +84,14 @@ class SheepSimulator {
 
     val pinkyAddress: Network.Address get() = pinky.address
 
-    fun getPubSub(): PubSub.Client {
-        val link = network.link("simApp")
-        println("SheepSimulator: new client link is ${link.myAddress}")
-
-        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP)
-    }
-
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
 
-        pinkyScope.launch { pinky.run() }
+        pinky.start()
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
-            WebClient(network, pinky.address, filesystems, plugins)
+            WebClient(network, pinky.address, plugins)
         } // .also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
@@ -163,7 +152,7 @@ class SheepSimulator {
         }
 
         doRunBlocking {
-            val mappingSessionPath = Storage(mapperFs).saveSession(
+            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
                     MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
                         simSurface.pixelPositions.map {
@@ -194,7 +183,6 @@ class SheepSimulator {
         override fun set(colors: Array<Color>) {}
     }
 
-    private val pinkyScope = CoroutineScope(Dispatchers.Main)
     private val brainScope = CoroutineScope(Dispatchers.Main)
     private val mapperScope = CoroutineScope(Dispatchers.Main)
 

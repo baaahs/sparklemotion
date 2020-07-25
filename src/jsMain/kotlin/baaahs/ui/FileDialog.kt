@@ -1,10 +1,10 @@
 package baaahs.ui
 
+import baaahs.app.ui.appContext
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -13,8 +13,9 @@ import materialui.components.button.button
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.dialog.dialog
 import materialui.components.dialog.enums.DialogMaxWidth
+import materialui.components.dialogactions.dialogActions
+import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
-import materialui.components.divider.divider
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
 import materialui.components.listitem.listItem
@@ -22,18 +23,32 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
 import kotlin.browser.window
 
 private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
+    val appContext = useContext(appContext)
+    observe(appContext.webClient)
+
+    val fsRoot = appContext.webClient.fsRoot
+        ?: return@xComponent // Too early to render, so bail.
+
     val scope = memo { CoroutineScope(Dispatchers.Main) }
     val dialogEl = useRef(null)
-    var selectedFs by state { props.defaultTarget?.fs ?: props.filesystems.first() }
-    var currentDir by state { selectedFs.fs.rootFile }
+    var currentDir by state { fsRoot }
     var filesInDir by state { emptyList<Fs.File>() }
-    var selectedFile by state<Fs.File?> { null }
+    var selectedFile by state { props.defaultTarget }
 
-    val handleFsClick = useCallback { fs: SaveAsFs -> selectedFs = fs }
+    onChange("default target", props.defaultTarget) {
+        props.defaultTarget?.let {
+            val job = CoroutineScope(Dispatchers.Main).launch {
+                currentDir = if (it.isDir()) it else it.parent!!
+            }
+            withCleanup {
+                job.cancel()
+            }
+        }
+        props.defaultTarget
+    }
 
     val handleFileSingleClick = useCallback { file: Fs.File ->
         scope.launch {
@@ -78,7 +93,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
 
     onChange("selected fs/dir", props.isOpen, currentDir) {
         val job = scope.launch {
-            filesInDir = selectedFs.fs.listFiles(currentDir).sorted()
+            filesInDir = currentDir.listFiles().sorted()
         }
         withCleanup { job.cancel() }
     }
@@ -94,59 +109,46 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
 
         dialogTitle { +props.title }
 
-        table {
-            tbody {
-                tr {
-                    td {
-                        list {
-                            var first = true
-                            props.filesystems.forEach { saveAsFs ->
-                                if (!first) divider { } else first = false
-
-                                listItem {
-                                    attrs.button = true
-                                    attrs.selected = selectedFs == saveAsFs
-                                    attrs.onClickFunction = { event: Event -> handleFsClick(saveAsFs) }
-                                    listItemText { attrs.primary = saveAsFs.name.asTextNode() }
-                                }
-                            }
-                        }
+        dialogContent {
+            list(ListStyle.root to fileDialogFileList.name) {
+                val parent = currentDir.parent
+                if (parent != null) {
+                    listItem {
+                        attrs.button = true
+                        attrs.onClickFunction = { event -> handleFileSingleClick(parent) }
+                        attrs.onDoubleClickFunction = { event -> handleFileDoubleClick(parent) }
+                        listItemText { attrs.primary { +".." } }
                     }
-
-                    td {
-                        div {
-                            list(ListStyle.root to fileDialogFileList.name) {
-                                filesInDir.forEach { file ->
-                                    listItem {
-                                        attrs.button = true
-                                        attrs.onClickFunction = { event -> handleFileSingleClick(file) }
-                                        attrs.onDoubleClickFunction = { event -> handleFileDoubleClick(file) }
-                                        listItemText { attrs.primary = file.name.asTextNode() }
-                                    }
-                                }
-                            }
-
-                            if (props.isSaveAs) {
-                                textField {
-                                    attrs.label = "File name…".asTextNode()
-                                    attrs.onChangeFunction = handleFileNameChange
-                                    attrs.value = selectedFile?.name ?: props.defaultTarget?.name ?: ""
-                                }
-                            }
-                        }
-
-                        buttonGroup {
-                            button {
-                                +"Cancel"
-                                attrs.onClickFunction = handleCancel
-                            }
-                            button {
-                                +if (props.isSaveAs) "Save" else "Open"
-                                attrs.onClickFunction = handleConfirm
-                                attrs.disabled = selectedFile == null
-                            }
-                        }
+                }
+                filesInDir.forEach { file ->
+                    listItem {
+                        attrs.button = true
+                        attrs.onClickFunction = { event -> handleFileSingleClick(file) }
+                        attrs.onDoubleClickFunction = { event -> handleFileDoubleClick(file) }
+                        listItemText { attrs.primary { +file.name } }
                     }
+                }
+            }
+
+            if (props.isSaveAs) {
+                textField {
+                    attrs.label { +"File name…" }
+                    attrs.onChangeFunction = handleFileNameChange
+                    attrs.value = selectedFile?.name ?: props.defaultTarget?.name ?: ""
+                }
+            }
+        }
+
+        dialogActions {
+            buttonGroup {
+                button {
+                    +"Cancel"
+                    attrs.onClickFunction = handleCancel
+                }
+                button {
+                    +if (props.isSaveAs) "Save" else "Open"
+                    attrs.onClickFunction = handleConfirm
+                    attrs.disabled = selectedFile == null
                 }
             }
         }
@@ -159,17 +161,11 @@ external interface FileDialogProps : RProps {
     var isSaveAs: Boolean
     var onSelect: (Fs.File) -> Unit
     var onCancel: () -> Unit
-    var filesystems: List<SaveAsFs>
-    var defaultTarget: SaveAsTarget?
+    var defaultTarget: Fs.File?
 }
 
-data class SaveAsFs(
-    val name: String,
-    val fs: Fs
-)
-
 data class SaveAsTarget(
-    val fs: SaveAsFs?,
+    val fs: Fs?,
     val name: String?
 )
 

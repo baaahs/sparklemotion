@@ -1,9 +1,17 @@
+@file:ContextualSerialization(Fs::class)
+
 package baaahs.io
 
+import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.Serializable
+
+@Polymorphic
 interface Fs {
+    val name: String
     val rootFile: File get() = File(this, "", true)
 
-    suspend fun listFiles(parent: File): List<File>
+    suspend fun listFiles(directory: File): List<File>
     suspend fun loadFile(file: File): String?
     suspend fun saveFile(file: File, content: ByteArray, allowOverwrite: Boolean = false)
     suspend fun saveFile(file: File, content: String, allowOverwrite: Boolean = false)
@@ -12,24 +20,37 @@ interface Fs {
         return File(this, pathParts.joinToString("/"))
     }
 
-    fun exists(file: File): Boolean
+    suspend fun exists(file: File): Boolean
 
     suspend fun isDirectory(file: File): Boolean {
         return file.isDirectory ?: error("Is $this a directory? Answer unclear.")
     }
 
+    @Serializable
     class File(
         val fs: Fs,
-        fullPath: String,
+        val pathParts: List<String>,
         /** If this is known to be a directory or not then `true` or `false`, otherwise `null` */
         internal val isDirectory: Boolean? = null
-    ): Comparable<File> {
-        val pathParts = fullPath.split("/").filter { it.isNotEmpty() && it != "." && it != ".." }
+    ) : Comparable<File> {
+        constructor(fs: Fs, fullPath: String, isDirectory: Boolean? = null) : this(
+            fs,
+            fullPath.split("/").filter { it.isNotEmpty() && it != "." && it != ".." },
+            isDirectory
+        )
+
         val fullPath: String get() = pathParts.joinToString("/")
         val parentPath: String get() = pathParts.subList(0, pathParts.size - 1).joinToString("/")
-        val name: String get() = pathParts.last()
+        val name: String get() = pathParts.lastOrNull() ?: ""
         val isRoot: Boolean get() = pathParts.isEmpty()
         val parent: File? get() = if (isRoot) null else File(fs, parentPath, true)
+
+
+        suspend fun listFiles(): List<File> = fs.listFiles(this)
+        suspend fun read(): String? = fs.loadFile(this)
+        suspend fun write(content: String, allowOverwrite: Boolean) = fs.saveFile(this, content, allowOverwrite)
+        suspend fun exists(): Boolean = fs.exists(this)
+        suspend fun isDir(): Boolean = fs.isDirectory(this)
 
         fun isWithin(parent: File): Boolean {
             return if (parent.isRoot) {
@@ -46,6 +67,27 @@ interface Fs {
                 File(fs, "${fullPath}/$relPath", isDirectory)
             }
         }
+
+//  TODO  fun resolve(relPath: String, isDirectory: Boolean? = null): RemoteFile {
+//            val resolvedPathParts = ArrayList(pathParts)
+//            var looksLikeDirectory = true
+//            relPath.split("/").forEach {
+//                when (it) {
+//                    "." -> {
+//                        looksLikeDirectory = true
+//                    }
+//                    ".." -> {
+//                        if (resolvedPathParts.size > 0) resolvedPathParts.removeLast()
+//                        looksLikeDirectory = true
+//                    }
+//                    else -> {
+//                        resolvedPathParts.add(it)
+//                        looksLikeDirectory = false // TODO not really true.
+//                    }
+//                }
+//            }
+//            return RemoteFile(fsId, resolvedPathParts.joinToString("/"), isDirectory ?: looksLikeDirectory)
+//        }
 
         override fun toString(): String {
             return "$fs:$fullPath"

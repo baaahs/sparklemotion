@@ -31,16 +31,16 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     private val drawerWidth = 260.px
 
     private val drawerClosedShift = partial {
-        left = 0.px
-        theme.transitions.create("left") {
+        transform { translateX(0.px) }
+        theme.transitions.create("transform") {
             easing = theme.transitions.easing.sharp
             duration = theme.transitions.duration.enteringScreen
         }
     }
 
     private val drawerOpenShift = partial {
-        left = drawerWidth
-        transition = theme.transitions.create("left") {
+        transform { translateX(drawerWidth) }
+        transition = theme.transitions.create("transform") {
             easing = theme.transitions.easing.sharp
             duration = theme.transitions.duration.leavingScreen
         }
@@ -52,7 +52,6 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val title by css { }
 
     val appToolbar by css {
-        height = 40.px
         mixIn(theme.mixins.toolbar)
 
         descendants(title) {
@@ -63,10 +62,21 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
 
+    val appToolbarActions by css {
+        display = Display.flex
+        transform { translateY(0.75.em) }
+    }
+
+    val logotype by css {
+        position = Position.absolute
+        top = 0.5.em
+        right = 0.5.em
+        fontSize = 0.6.rem
+    }
+
     val appContent by css {
         display = Display.flex
         flexDirection = FlexDirection.column
-        position = Position.absolute
         top = 3.em
         left = 0.px
         width = 100.pct
@@ -96,6 +106,18 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         rules.addAll(theme.mixins.toolbar.rules)
         theme.mixins.toolbar
         justifyContent = JustifyContent.flexEnd
+    }
+
+    val noShowLoadedPaper by css {
+        height = 100.pct
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        alignItems = Align.center
+        justifyContent = JustifyContent.center
+
+        within(appDrawerOpen) {
+            width = 100.pct - drawerWidth
+        }
     }
 }
 

@@ -3,7 +3,7 @@ package baaahs.sim
 import baaahs.io.Fs
 import kotlin.browser.window
 
-class BrowserSandboxFs : BaseFakeFs() {
+class BrowserSandboxFs(override val name: String) : BaseFakeFs() {
     private val storage = window.localStorage
 
     override val keys: List<String>

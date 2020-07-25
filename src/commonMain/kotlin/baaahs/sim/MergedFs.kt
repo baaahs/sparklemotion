@@ -2,9 +2,13 @@ package baaahs.sim
 
 import baaahs.io.Fs
 
-class MergedFs(val baseFs: Fs, val overlayFs: Fs) : Fs {
-    override suspend fun listFiles(parent: Fs.File): List<Fs.File> {
-        return (baseFs.listFiles(parent) + overlayFs.listFiles(parent))
+class MergedFs(
+    val baseFs: Fs,
+    val overlayFs: Fs,
+    override val name: String = "${baseFs.name} + ${overlayFs.name}"
+) : Fs {
+    override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
+        return (baseFs.listFiles(directory) + overlayFs.listFiles(directory))
             .distinct()
             .map { Fs.File(this, it.fullPath, it.isDirectory) }
     }
@@ -21,7 +25,7 @@ class MergedFs(val baseFs: Fs, val overlayFs: Fs) : Fs {
         baseFs.saveFile(file, content, allowOverwrite)
     }
 
-    override fun exists(file: Fs.File): Boolean {
+    override suspend fun exists(file: Fs.File): Boolean {
         return baseFs.exists(file) || overlayFs.exists(file)
     }
 }

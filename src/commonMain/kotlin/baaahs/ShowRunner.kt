@@ -45,8 +45,8 @@ class ShowRunner(
 //        return movingHeadBuffer
 //    }
 
-    fun getShowWithState(): ShowWithState {
-        return show.withState(showState)
+    fun getShowState(): ShowState {
+        return showState
     }
 
     fun switchTo(newShowState: ShowState) {

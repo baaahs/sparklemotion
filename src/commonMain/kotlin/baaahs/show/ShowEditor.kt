@@ -68,7 +68,7 @@ class ShowEditor(
         .toMutableMap()
 
     private val scenes = baseShow.scenes.map { SceneEditor(it) }.toMutableList()
-    var layoutEditor = LayoutsEditor(baseShow.layouts)
+    private val layoutEditor = LayoutsEditor(baseShow.layouts)
 
     private var selectedScene: Int = baseShowState.selectedScene
     private val patchSetSelections: MutableList<Int> = baseShowState.patchSetSelections.toMutableList()

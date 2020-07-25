@@ -48,7 +48,7 @@ class PinkyMain(private val args: Args) {
 
         val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
 
-        val fs = RealFs(dataDir)
+        val fs = RealFs("Sparkle Motion Data", dataDir)
 
         val dmxUniverse = findDmxUniverse()
 
@@ -59,7 +59,7 @@ class PinkyMain(private val args: Args) {
         }
 
         val fwUrlBase = "http://${network.link("pinky").myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
-        val daddy = DirectoryDaddy(RealFs(fwDir), fwUrlBase)
+        val daddy = DirectoryDaddy(RealFs("Sparkle Motion Firmware", fwDir), fwUrlBase)
         val show = SampleData.sampleShow
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
@@ -121,7 +121,7 @@ class PinkyMain(private val args: Args) {
         }
 
         GlobalScope.launch {
-            pinky.run()
+            pinky.start()
         }
 
         val responses = listOf(

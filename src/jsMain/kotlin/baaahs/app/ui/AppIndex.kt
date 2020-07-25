@@ -1,20 +1,21 @@
 package baaahs.app.ui
 
+import baaahs.ShowEditorState
 import baaahs.ShowResources
 import baaahs.ShowState
-import baaahs.ShowWithState
 import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
+import baaahs.io.Fs
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import baaahs.ui.*
 import baaahs.util.UndoStack
-import baaahs.withState
 import kotlinext.js.jsObject
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.*
 import materialui.components.appbar.appBar
@@ -28,11 +29,14 @@ import materialui.components.cssbaseline.cssBaseline
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
+import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.portal.portal
+import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.typographyH6
@@ -45,6 +49,8 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.div
+import react.dom.i
+import react.dom.p
 import styled.css
 import styled.injectGlobal
 import styled.styledDiv
@@ -61,6 +67,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         jsObject<AppContext> {
             this.showResources = props.showResources
             this.dragNDrop = dragNDrop
+            this.webClient = webClient
         }
     }
 
@@ -69,7 +76,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var layoutEditorDialogOpen by state { false }
 
     val handleAppDrawerToggle =
-        useCallback(appDrawerOpen) { event: Event -> appDrawerOpen = !appDrawerOpen }
+        useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
 
     val handleShaderEditorDrawerToggle =
         useCallback(shaderEditorDrawerOpen) { event: Event -> shaderEditorDrawerOpen = !shaderEditorDrawerOpen }
@@ -81,23 +88,22 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val undoStack = props.undoStack
     val handleUndo = handler("handleUndo", undoStack) { event: Event ->
-        undoStack.undo().also {
-            webClient.onShowEdit(it)
+        undoStack.undo().also { (show, showState) ->
+            webClient.onShowEdit(show, showState)
         }
         Unit
     }
 
     val handleRedo = handler("handleRedo", undoStack) { event: Event ->
-        undoStack.redo().also {
-            webClient.onShowEdit(it)
+        undoStack.redo().also { (show, showState) ->
+            webClient.onShowEdit(show, showState)
         }
         Unit
     }
 
     val handleShowEdit = useCallback { newShow: Show, newShowState: ShowState ->
-        val newShowWithState = newShow.withState(newShowState)
-        undoStack.changed(newShowWithState)
-        webClient.onShowEdit(newShowWithState)
+        val newState = webClient.onShowEdit(newShow, newShowState)
+        undoStack.changed(newState)
     }
 
     val show = webClient.show
@@ -113,118 +119,181 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var darkMode by state { false }
     val handleDarkModeChange = useCallback(darkMode) { event: Event -> darkMode = !darkMode }
 
+
+    var fileDialogOpen by state { false }
+    var fileDialogIsSaveAs by state { false }
+    val handleFileSelected = useCallback() { file: Fs.File ->
+        fileDialogOpen = false
+        if (fileDialogIsSaveAs) {
+            webClient.onSaveAsShow(file)
+        } else {
+            webClient.onOpenShow(file)
+        }
+    }
+    val handleFileDialogCancel = useCallback { fileDialogOpen = false }
+
+    fun confirmCloseUnsaved(): Boolean {
+        return true
+    }
+
+    val handleNewShow = useCallback() {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+        webClient.onNewShow()
+    }
+
+    val handleOpenShow = useCallback() {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+        fileDialogOpen = true
+        fileDialogIsSaveAs = false
+    }
+
+    val handleSaveShow = useCallback() {
+        webClient.onSaveShow()
+    }
+
+    val handleSaveShowAs = useCallback {
+        fileDialogOpen = true
+        fileDialogIsSaveAs = true
+    }
+
+    val handleCloseShow = useCallback() {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+        webClient.onCloseShow()
+    }
+
+
     val theme = createMuiTheme {
         palette {
             type = if (darkMode) PaletteType.dark else PaletteType.light
         }
     }
     val themeStyles = ThemeStyles(theme)
+    val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && show == null)
 
-    themeProvider(theme) {
-        cssBaseline { }
+    appContext.Provider {
+        attrs.value = myAppContext
 
-        div(+Styles.root and if (appDrawerOpen) themeStyles.appDrawerOpen else themeStyles.appDrawerClosed) {
-            appBar(themeStyles.appToolbar on AppBarStyle.root) {
-                attrs.position = AppBarPosition.relative
+        themeProvider(theme) {
+            cssBaseline { }
 
-                toolbar {
-                    iconButton {
-                        attrs.color = ButtonColor.inherit
-                        attrs.edge = IconButtonEdge.start
-                        attrs.onClickFunction = handleAppDrawerToggle
-                        icon(Menu)
-                    }
+            div(+Styles.root and if (renderAppDrawerOpen) themeStyles.appDrawerOpen else themeStyles.appDrawerClosed) {
+                appBar(themeStyles.appToolbar on AppBarStyle.root) {
+                    attrs.position = AppBarPosition.relative
 
-                    typographyH6(themeStyles.title on TypographyStyle.root) {
-                        show?.let { b { +show.title }; +" — " }
-                        +"Sparkle Motion™"
-                    }
-
-                    styledDiv {
-                        if (!editMode) css { opacity = 0 }
-                        css {
-                            transition("opacity", duration = .5.s, timing = Timing.linear)
+                    toolbar {
+                        iconButton {
+                            attrs.color = ButtonColor.inherit
+                            attrs.edge = IconButtonEdge.start
+                            attrs.onClickFunction = this@xComponent.handler("closeDrawer") { event -> handleAppDrawerToggle() }
+                            icon(Menu)
                         }
 
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Undo)
-                            attrs["disabled"] = !undoStack.canUndo()
-                            attrs.onClickFunction = handleUndo
-
-                            typographyH6 { +"Undo" }
+                        typographyH6(themeStyles.title on TypographyStyle.root) {
+                            show?.let {
+                                b { +show.title }
+                                if (webClient.showIsModified) i { +" (Unsaved)" }
+                            }
+                            div(+themeStyles.logotype) { +"Sparkle Motion™" }
                         }
 
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Redo)
-                            attrs["disabled"] = !undoStack.canRedo()
-                            attrs.onClickFunction = handleRedo
+                        div(+themeStyles.appToolbarActions) {
+                            styledDiv {
+                                if (!editMode && !webClient.showIsModified) css { opacity = 0 }
+                                css {
+                                    transition("opacity", duration = .5.s, timing = Timing.linear)
+                                }
 
-                            typographyH6 { +"Redo" }
+                                iconButton(Styles.buttons on IconButtonStyle.root) {
+                                    icon(Undo)
+                                    attrs["disabled"] = !undoStack.canUndo()
+                                    attrs.onClickFunction = handleUndo
+
+                                    typographyH6 { +"Undo" }
+                                }
+
+                                iconButton(Styles.buttons on IconButtonStyle.root) {
+                                    icon(Redo)
+                                    attrs["disabled"] = !undoStack.canRedo()
+                                    attrs.onClickFunction = handleRedo
+
+                                    typographyH6 { +"Redo" }
+                                }
+
+                                if (webClient.showFile == null) {
+                                    iconButton(Styles.buttons on IconButtonStyle.root) {
+                                        icon(FileCopy)
+                                        attrs.onClickFunction = handleSaveShowAs.withEvent()
+                                        typographyH6 { +"Save As…" }
+                                    }
+                                } else {
+                                    iconButton(Styles.buttons on IconButtonStyle.root) {
+                                        icon(Save)
+                                        attrs["disabled"] = !webClient.showIsModified
+                                        attrs.onClickFunction = handleSaveShow.withEvent()
+                                        typographyH6 { +"Save" }
+                                    }
+                                }
+
+                                formControlLabel {
+                                    attrs.control {
+                                        switch {
+                                            attrs.checked = editMode
+                                            attrs.onChangeFunction = handleEditModeChange
+                                        }
+                                    }
+                                    attrs.label { typographyH6 { +"Design Mode" } }
+                                }
+                            }
                         }
-
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Save)
-                            attrs.disabled = !webClient.showIsModified
-//                            attrs.onClickFunction = handleSave
-
-                            typographyH6 { +"Save" }
-                        }
-
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(FileCopy)
-                            attrs.disabled = !webClient.showIsModified
-//                            attrs.onClickFunction = handleSaveAs
-
-                            typographyH6 { +"Save As…" }
-                        }
-
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Close)
-//                            attrs.onClickFunction = handleClose
-
-                            typographyH6 { +"Close" }
-                        }
-                    }
-                }
-            }
-
-            appDrawer {
-                attrs.open = appDrawerOpen
-                attrs.onClose = handleAppDrawerToggle
-                attrs.editMode = editMode
-                attrs.onEditModeChange = handleEditModeChange
-                attrs.onShaderEditorDrawerToggle = handleShaderEditorDrawerToggle
-                attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
-                attrs.darkMode = darkMode
-                attrs.onDarkModeChange = handleDarkModeChange
-            }
-
-            div(+themeStyles.appContent) {
-                backdrop {
-                    attrs {
-                        open = !webClient.isConnected
-                    }
-
-                    container {
-                        circularProgress {}
-                        icon(NotificationImportant)
-
-                        typographyH6 { +"Connecting…" }
-                        +"Attempting to connect to Sparkle Motion."
                     }
                 }
 
-                if (show == null || showState == null) {
-                    paper {
+                appDrawer {
+                    attrs.open = renderAppDrawerOpen
+                    attrs.onClose = handleAppDrawerToggle
+                    attrs.showLoaded = show != null
+                    attrs.showFile = webClient.showFile
+                    attrs.editMode = editMode
+                    attrs.showUnsaved = webClient.showIsModified
+                    attrs.onEditModeChange = handleEditModeChange
+                    attrs.onShaderEditorDrawerToggle = handleShaderEditorDrawerToggle
+                    attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                    attrs.darkMode = darkMode
+                    attrs.onDarkModeChange = handleDarkModeChange
+                    attrs.onNewShow = handleNewShow
+                    attrs.onOpenShow = handleOpenShow
+                    attrs.onSaveShow = handleSaveShow
+                    attrs.onSaveShowAs = handleSaveShowAs
+                    attrs.onCloseShow = handleCloseShow
+                }
+
+                div(+themeStyles.appContent) {
+                    backdrop {
+                        attrs {
+                            open = !webClient.isConnected
+                        }
+
                         container {
                             circularProgress {}
-                            typographyH6 { +"Loading Show…" }
+                            icon(NotificationImportant)
+
+                            typographyH6 { +"Connecting…" }
+                            +"Attempting to connect to Sparkle Motion."
                         }
                     }
-                } else {
-                    appContext.Provider {
-                        attrs.value = myAppContext
 
+                    if (show == null || showState == null) {
+                        paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
+                            if (webClient.isLoaded) {
+                                icon(NotificationImportant)
+                                typographyH6 { +"No open show." }
+                                p { +"Maybe you'd like to open one? " }
+                            } else {
+                                circularProgress {}
+                                typographyH6 { +"Loading Show…" }
+                            }
+                        }
+                    } else {
                         showUi {
                             attrs.show = webClient.openShow!!
                             attrs.showState = showState
@@ -244,7 +313,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 attrs.classes(Styles.fullHeight.name)
 
                                 shaderEditorWindow {
-                                    attrs.filesystems = props.filesystems
                                     attrs.onAddToPatch = { shader ->
                                         val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
                                         val editor = ShowEditor(show, showState).editScene(showState.selectedScene) {
@@ -283,6 +351,19 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
                 }
             }
+
+            portal {
+                if (fileDialogOpen) {
+                    fileDialog {
+                        attrs.isOpen = fileDialogOpen
+                        attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
+                        attrs.isSaveAs = fileDialogIsSaveAs
+                        attrs.onSelect = handleFileSelected
+                        attrs.onCancel = handleFileDialogCancel
+                        attrs.defaultTarget = webClient.showFile
+                    }
+                }
+            }
         }
     }
 }
@@ -290,8 +371,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 external interface AppIndexProps : RProps {
     var id: String
     var webClient: WebClient.Facade
-    var undoStack: UndoStack<ShowWithState>
-    var filesystems: List<SaveAsFs>
+    var undoStack: UndoStack<ShowEditorState>
     var showResources: ShowResources
 }
 

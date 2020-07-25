@@ -3,7 +3,7 @@ package baaahs.sim
 import baaahs.Logger
 import baaahs.io.Fs
 
-class FakeFs : BaseFakeFs() {
+class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
     private val files = mutableMapOf<String, ByteArray>()
 
     override val keys: List<String>
@@ -39,24 +39,24 @@ class FakeFs : BaseFakeFs() {
 abstract class BaseFakeFs : Fs {
     protected abstract val keys: List<String>
 
-    override suspend fun listFiles(parent: Fs.File): List<Fs.File> {
-        val prefix = if (parent.isRoot) "" else "${parent.fullPath}/"
+    override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
+        val prefix = if (directory.isRoot) "" else "${directory.fullPath}/"
         val entries = keys
-            .filter { parent.isRoot || it.startsWith(prefix) }
+            .filter { directory.isRoot || it.startsWith(prefix) }
             .map {
                 val inPath = it.substring(prefix.length)
                 val slash = inPath.indexOf('/')
                 if (slash == -1) {
-                    parent.resolve(inPath, false)
+                    directory.resolve(inPath, false)
                 } else {
-                    parent.resolve(inPath.substring(0, slash), true)
+                    directory.resolve(inPath.substring(0, slash), true)
                 }
             }.distinct()
-        logger.debug { "FakeFs.listFiles($parent) -> $entries" }
+        logger.debug { "FakeFs.listFiles($directory) -> $entries" }
         return entries
     }
 
-    override fun exists(file: Fs.File): Boolean {
+    override suspend fun exists(file: Fs.File): Boolean {
         val allKeys = keys
         return allKeys.contains(file.fullPath) ||
                 allKeys.any { resolve(it).isWithin(file) }

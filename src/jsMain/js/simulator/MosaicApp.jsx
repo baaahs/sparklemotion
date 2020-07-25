@@ -30,7 +30,6 @@ const MosaicUI = (props) => {
   const [pubSub, setPubSub] = useState(null);
 
   useEffect(() => {
-    // setPubSub(simulator.getPubSub());
     simulator.start();
   }, []);
 
