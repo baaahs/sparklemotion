@@ -7,9 +7,7 @@ import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
-import baaahs.sim.FakeFs
 import baaahs.sim.ui.WebClientWindow
-import baaahs.ui.SaveAsFs
 import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
@@ -50,18 +48,14 @@ fun main(args: Array<String>) {
             (model as? ObjModel)?.load()
 
             val mapperUi = JsMapperUi();
-            val mediaDevices = RealMediaDevices();
+            val mediaDevices = RealMediaDevices()
             val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
             render(mapperUi.render(), contentDiv);
             mapper.start();
         }
 
         "UI" -> {
-            val filesystems = listOf(
-                SaveAsFs("Shader Library (busted!)", FakeFs()),
-                SaveAsFs("Show", FakeFs())
-            )
-            val uiApp = WebClient(network, pinkyAddress, filesystems)
+            val uiApp = WebClient(network, pinkyAddress)
             render(uiApp.render(), contentDiv)
         }
 

@@ -46,6 +46,8 @@ fun Int.boundedBy(range: IntRange): Int {
 }
 
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
+expect fun logGroupBegin(id: String, message: String)
+expect fun logGroupEnd(id: String, message: String)
 
 class Logger(val id: String) {
     fun debug(message: () -> String) {
@@ -74,6 +76,15 @@ class Logger(val id: String) {
 
     fun error(exception: Throwable, message: () -> String) {
         log(id, "ERROR", message.invoke(), exception)
+    }
+
+    fun <T> group(message: String, block: () -> T): T {
+        logGroupBegin(id, message)
+        return try {
+            block()
+        } finally {
+            logGroupEnd(id, message)
+        }
     }
 
     companion object {

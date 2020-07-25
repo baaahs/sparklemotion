@@ -25,6 +25,9 @@ import baaahs.ui.Styles.glslNumber
 import baaahs.ui.Styles.previewBar
 import baaahs.ui.Styles.status
 import kotlinext.js.jsObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
 import materialui.components.tab.tab
 import materialui.components.tabs.enums.TabsVariant
@@ -43,6 +46,7 @@ import kotlin.math.min
 private val glslNumberClassName = glslNumber.name
 
 val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow") { props ->
+    val scope = memo { CoroutineScope(Dispatchers.Main) }
     val windowRootEl = useRef<Element>()
 
     val aceEditor = useRef<AceEditor>()
@@ -254,9 +258,11 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
     val handleSave = useCallback() { event: Event ->
         val selectedShader = selectedShader()
         selectedShader?.file?.let { saveToFile ->
-            saveToFile.fs.saveFile(saveToFile, selectedShader.src, true)
-            openShaders = openShaders.replace(selectedShaderIndex) {
-                EditingShader(it.name, selectedShader.src, false, saveToFile)
+            scope.launch {
+                saveToFile.fs.saveFile(saveToFile, selectedShader.src, true)
+                openShaders = openShaders.replace(selectedShaderIndex) {
+                    EditingShader(it.name, selectedShader.src, false, saveToFile)
+                }
             }
         }
         Unit
@@ -280,19 +286,22 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
     val handleFileSelected = useCallback() { file: Fs.File ->
         fileDialogOpen = false
 
-        if (fileDialogIsSaveAs) {
-            val selectedShader = selectedShader()
-            selectedShader!!
-            file.fs.saveFile(file, selectedShader.src, true)
-            openShaders = openShaders.replace(selectedShaderIndex) {
-                EditingShader(file.name, selectedShader.src, false, file)
+        scope.launch {
+            if (fileDialogIsSaveAs) {
+                val selectedShader = selectedShader()
+                selectedShader!!
+                file.fs.saveFile(file, selectedShader.src, true)
+                openShaders = openShaders.replace(selectedShaderIndex) {
+                    EditingShader(file.name, selectedShader.src, false, file)
+                }
+            } else {
+                val src = file.fs.loadFile(file)!!
+                val newShader = EditingShader(file.name, src, false, file)
+                openShaders += newShader
+                selectedShaderIndex = openShaders.size - 1
             }
-        } else {
-            val src = file.fs.loadFile(file)!!
-            val newShader = EditingShader(file.name, src, false, file)
-            openShaders += newShader
-            selectedShaderIndex = openShaders.size - 1
         }
+        Unit
     }
 
     val handleSaveAsCancel = useCallback { fileDialogOpen = false }
@@ -426,15 +435,14 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             }
         }
 
-        fileDialog {
-            attrs.isOpen = fileDialogOpen
-            attrs.title = if (fileDialogIsSaveAs) "Save Shader" else "Open Shader"
-            attrs.isSaveAs = fileDialogIsSaveAs
-            attrs.onSelect = handleFileSelected
-            attrs.onCancel = handleSaveAsCancel
-            attrs.filesystems = props.filesystems
-            attrs.defaultTarget = selectedShader?.file?.let { file ->
-                SaveAsTarget(props.filesystems.find { it.fs == file.fs }, file.name)
+        if (fileDialogOpen) {
+            fileDialog {
+                attrs.isOpen = fileDialogOpen
+                attrs.title = if (fileDialogIsSaveAs) "Save Shader As…" else "Open Shader…"
+                attrs.isSaveAs = fileDialogIsSaveAs
+                attrs.onSelect = handleFileSelected
+                attrs.onCancel = handleSaveAsCancel
+                attrs.defaultTarget = selectedShader?.file
             }
         }
     }
@@ -460,7 +468,6 @@ data class EditingShader(
 private val clock = JsClock()
 
 external interface ShaderEditorWindowProps : RProps {
-    var filesystems: List<SaveAsFs>
     var onAddToPatch: (EditingShader) -> Unit
 }
 

@@ -5,6 +5,8 @@ import ext.Second
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -198,4 +200,26 @@ class PubSubTest {
         testCoroutineContext.triggerActions()
         client1Log.assertContents("topic1 changed: new value")
     }
+
+    @Test
+    fun withNullableClassSerializer_shouldWork() {
+        val nullableTopic = PubSub.Topic("/x", Thing.serializer().nullable)
+
+        val serverTopicObserver = server.publish(nullableTopic, Thing("value")) {
+            serverLog.add("topic1 changed: ${it?.string}")
+        }
+
+        client1.subscribe(nullableTopic) {
+            client1Log.add("topic1 changed: ${it?.string}")
+        }
+        testCoroutineContext.runAll()
+        client1Log.assertContents("topic1 changed: value")
+
+        serverTopicObserver.onChange(null)
+        testCoroutineContext.runAll()
+        client1Log.assertContents("topic1 changed: null")
+    }
+
+    @Serializable
+    data class Thing(val string: String)
 }

@@ -24,3 +24,11 @@ actual fun log(id: String, level: String, message: String, exception: Throwable?
         else -> logger.info(message, exception)
     }
 }
+
+actual fun logGroupBegin(id: String, message: String) {
+    log(id, "INFO", ">> $message")
+}
+
+actual fun logGroupEnd(id: String, message: String) {
+    log(id, "INFO", "<< $message")
+}

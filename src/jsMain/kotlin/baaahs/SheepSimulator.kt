@@ -15,21 +15,16 @@ import baaahs.proto.Ports
 import baaahs.show.SampleData
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
-import baaahs.ui.SaveAsFs
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import info.laht.threekt.math.Vector3
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
-
 class SheepSimulator {
     @Suppress("unused")
     val facade = Facade()
@@ -39,37 +34,34 @@ class SheepSimulator {
     private val dmxUniverse = FakeDmxUniverse()
     private val model = selectModel()
     val visualizer = Visualizer(model)
-    private val mapperFs = FakeFs()
-    val fs = MergedFs(BrowserSandboxFs(), mapperFs)
-    val filesystems = listOf(
-        SaveAsFs("Shader Library", fs),
-        SaveAsFs("Show", FakeFs())
-    )
+    private val mapperFs = FakeFs("Temporary Mapping Files")
+    private val fs = MergedFs(BrowserSandboxFs("Browser Data"), mapperFs, "Browser Data")
+    val filesystems = listOf(fs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
 
     init {
-        BakedInShaders.all.forEach { show ->
-            try {
-                val file = fs.resolve("shaders", "${show.name}.glsl")
-                if (!fs.exists(file)) {
-                    fs.saveFile(file, show.src)
+        GlobalScope.launch {
+            BakedInShaders.all.forEach { show ->
+                try {
+                    val file = fs.resolve("shaders", "${show.name}.glsl")
+                    if (!fs.exists(file)) {
+                        fs.saveFile(file, show.src)
+                    }
+                } catch (e: Exception) {
+                    console.warn("huh? failed:", e)
                 }
-            } catch (e: Exception) {
-                console.warn("huh? failed:", e)
             }
         }
     }
 
     val glslContext = GlslBase.manager.createContext()
     val clock = JsClock()
-    val show = SampleData.sampleShow
     val plugins = Plugins.findAll()
     private val pinky = Pinky(
         model,
-        show,
         network,
         dmxUniverse,
         bridgeClient.beatSource,
@@ -87,21 +79,14 @@ class SheepSimulator {
 
     val pinkyAddress: Network.Address get() = pinky.address
 
-    fun getPubSub(): PubSub.Client {
-        val link = network.link("simApp")
-        println("SheepSimulator: new client link is ${link.myAddress}")
-
-        return PubSub.Client(link, pinky.address, Ports.PINKY_UI_TCP)
-    }
-
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
 
-        pinkyScope.launch { pinky.run() }
+        pinky.start()
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
-            WebClient(network, pinky.address, filesystems, plugins)
+            WebClient(network, pinky.address, plugins)
         } // .also { delay(1000); it.click() }
 
         launcher.add("Mapper") {
@@ -161,18 +146,20 @@ class SheepSimulator {
             SimSurface(surface, surfaceGeometry, pixelPositions, BrainId("brain//$index"))
         }
 
-        val mappingSessionPath = Storage(mapperFs).saveSession(
-            MappingSession(clock.now(), simSurfaces.map { simSurface ->
-                MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
-                    simSurface.pixelPositions.map {
-                        PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
-                    }, null, null, null
-                )
-            }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
-        )
-        mapperFs.renameFile(
-            mappingSessionPath,
-            fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
+        doRunBlocking {
+            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
+                MappingSession(clock.now(), simSurfaces.map { simSurface ->
+                    MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
+                        simSurface.pixelPositions.map {
+                            PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
+                        }, null, null, null
+                    )
+                }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
+            )
+            mapperFs.renameFile(
+                mappingSessionPath,
+                fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
+        }
         return simSurfaces
     }
 
@@ -191,7 +178,6 @@ class SheepSimulator {
         override fun set(colors: Array<Color>) {}
     }
 
-    private val pinkyScope = CoroutineScope(Dispatchers.Main)
     private val brainScope = CoroutineScope(Dispatchers.Main)
     private val mapperScope = CoroutineScope(Dispatchers.Main)
 
@@ -206,6 +192,7 @@ class SheepSimulator {
             get() = this@SheepSimulator.brains.map { it.facade }
     }
 }
+
 
 class JsClock : Clock {
     override fun now(): Time = Date.now() / 1000.0

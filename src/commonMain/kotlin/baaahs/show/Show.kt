@@ -1,5 +1,6 @@
 package baaahs.show
 
+import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
 import baaahs.glshaders.Plugins
@@ -34,6 +35,8 @@ data class Show(
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.toJson(serializer(), this)
     }
+
+    fun defaultShowState() = ShowState.forShow(this)
 
     companion object {
         fun fromJson(plugins: Plugins, s: String): Show {

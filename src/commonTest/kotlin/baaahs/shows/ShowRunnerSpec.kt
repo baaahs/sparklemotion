@@ -8,6 +8,7 @@ import baaahs.glsl.GlslContext.Companion.GL_RGB32F
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
 import baaahs.glsl.UvTranslator
+import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
@@ -43,34 +44,28 @@ object ShowRunnerSpec : Spek({
             ShowEditor("test show").apply {
                 addScene("test scene") {
                     addPatchSet("test patchset") {
-                        val p = patch
-                        addPatch(p)
+                        addPatch(patch)
                     }
                 }
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val showResources by value { ShowManager(Plugins.safe(), fakeGlslContext, pubSub, model) }
-        val showRunner by value {
-            ShowRunner(
-                model,
-                show,
-                ShowState.forShow(show),
-                showResources,
-                StubBeatSource(),
-                FakeDmxUniverse(),
-                MovingHeadManager(FakeFs(), pubSub, emptyList()),
-                FakeClock(),
-                GlslRenderer(fakeGlslContext, ModelInfo.Empty),
-                pubSub
+        val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
+        val surfaceManager by value { SurfaceManager(glslRenderer) }
+        val stageManager by value {
+            val fs = FakeFs()
+            StageManager(
+                Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), surfaceManager, FakeDmxUniverse(),
+                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model
             )
         }
 
         val fakeProgram by value { fakeGlslContext.programs[1] }
 
         beforeEachTest {
-            showRunner.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
-            showRunner.nextFrame()
+            stageManager.switchTo(show)
+            surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
+            stageManager.renderAndSendNextFrame()
         }
 
         context("port wiring") {
@@ -96,7 +91,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 val colorPickerGadget by value {
-                    showResources.useGadget<ColorPicker>("colorColorPicker")
+                    stageManager.useGadget<ColorPicker>("colorColorPicker")
                 }
 
                 it("wires it up as a color picker") {
@@ -112,7 +107,7 @@ object ShowRunnerSpec : Spek({
                 it("sets the uniform when the gadget value changes") {
                     colorPickerGadget.color = Color.YELLOW
 
-                    showRunner.nextFrame()
+                    stageManager.renderAndSendNextFrame()
                     val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
                     expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
                 }

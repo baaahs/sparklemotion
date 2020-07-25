@@ -1,6 +1,9 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.ShowResources
+import baaahs.Surface
+import baaahs.getBang
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.OpenShader
 import baaahs.glshaders.Plugins
@@ -21,7 +24,6 @@ class FakeShowResources(
 
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
 
-    override val showWithStateTopic: PubSub.Topic<ShowWithState> by lazy { createShowWithStateTopic() }
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
     override fun openShader(shader: Shader): OpenShader =
