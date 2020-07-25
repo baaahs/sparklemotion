@@ -26,10 +26,24 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="fs-root.html">fsRoot</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fsRoot</span><span class="symbol">: </span><span class="identifier">File</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="is-connected.html">isConnected</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">isConnected</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-loaded.html">isLoaded</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isLoaded</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -44,6 +58,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">show</span><span class="symbol">: </span><a href="../../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-file.html">showFile</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">showFile</span><span class="symbol">: </span><span class="identifier">File</span><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -66,10 +87,45 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="on-close-show.html">onCloseShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onCloseShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-new-show.html">onNewShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onNewShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-open-show.html">onOpenShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onOpenShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.client.WebClient.Facade$onOpenShow(baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-save-as-show.html">onSaveAsShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onSaveAsShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.client.WebClient.Facade$onSaveAsShow(baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-save-show.html">onSaveShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onSaveShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="on-show-edit.html">onShowEdit</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">onShowEdit</span><span class="symbol">(</span><span class="identifier" id="baaahs.client.WebClient.Facade$onShowEdit(baaahs.ShowWithState)/showWithState">showWithState</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-show-with-state/index.html"><span class="identifier">ShowWithState</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">onShowEdit</span><span class="symbol">(</span><span class="identifier" id="baaahs.client.WebClient.Facade$onShowEdit(baaahs.show.Show, baaahs.ShowState)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.client.WebClient.Facade$onShowEdit(baaahs.show.Show, baaahs.ShowState)/showState">showState</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-show-editor-state/index.html"><span class="identifier">ShowEditorState</span></a></code></td>
 </tr>
 <tr>
 <td>

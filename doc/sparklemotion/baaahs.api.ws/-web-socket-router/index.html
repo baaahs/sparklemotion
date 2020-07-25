@@ -41,7 +41,7 @@
 <h4><a href="handler-map.html">handlerMap</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">handlerMap</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">handlerMap</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="keyword">suspend </span><span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -74,6 +74,13 @@
 <h3>Companion Object Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="handler-scope.html">handlerScope</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">handlerScope</span><span class="symbol">: </span><span class="identifier">CoroutineScope</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="json.html">json</a></h4>

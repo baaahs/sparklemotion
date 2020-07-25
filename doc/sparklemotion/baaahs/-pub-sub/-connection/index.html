@@ -29,7 +29,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Connection</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo((kotlin.Any)))))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, kotlin.collections.MutableMap((kotlin.String, baaahs.PubSub.TopicInfo((kotlin.Any)))))/topics">topics</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">TopicInfo</span><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Connection</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, baaahs.PubSub.Topics, baaahs.PubSub.CommandChannels)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, baaahs.PubSub.Topics, baaahs.PubSub.CommandChannels)/topics">topics</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topics</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$<init>(kotlin.String, baaahs.PubSub.Topics, baaahs.PubSub.CommandChannels)/commandChannels">commandChannels</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandChannels</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -68,6 +68,20 @@
 </td>
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$reset(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send-command.html">sendCommand</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">sendCommand</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.Connection.sendCommand.C, baaahs.PubSub.Connection.sendCommand.R)), baaahs.PubSub.Connection.sendCommand.C)/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.Connection.sendCommand.C, baaahs.PubSub.Connection.sendCommand.R)), baaahs.PubSub.Connection.sendCommand.C)/command">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send-reply.html">sendReply</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">sendReply</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Connection$sendReply(baaahs.PubSub.CommandPort((baaahs.PubSub.Connection.sendReply.C, baaahs.PubSub.Connection.sendReply.R)), baaahs.PubSub.Connection.sendReply.R)/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Connection$sendReply(baaahs.PubSub.CommandPort((baaahs.PubSub.Connection.sendReply.C, baaahs.PubSub.Connection.sendReply.R)), baaahs.PubSub.Connection.sendReply.R)/reply">reply</span><span class="symbol">:</span>&nbsp;<span class="identifier">R</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

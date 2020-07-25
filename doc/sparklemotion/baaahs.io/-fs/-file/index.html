@@ -17,7 +17,8 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">File</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/fullPath">fullPath</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/isDirectory">isDirectory</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+<code><span class="identifier">File</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/fullPath">fullPath</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.String, kotlin.Boolean)/isDirectory">isDirectory</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code><br/>
+<code><span class="identifier">File</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.collections.List((kotlin.String)), kotlin.Boolean)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.collections.List((kotlin.String)), kotlin.Boolean)/pathParts">pathParts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$<init>(baaahs.io.Fs, kotlin.collections.List((kotlin.String)), kotlin.Boolean)/isDirectory">isDirectory</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -94,6 +95,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="exists.html">exists</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">exists</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="hash-code.html">hashCode</a></h4>
 </td>
 <td>
@@ -101,10 +109,31 @@
 </tr>
 <tr>
 <td>
+<h4><a href="is-dir.html">isDir</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">isDir</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="is-within.html">isWithin</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">isWithin</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.Fs.File$isWithin(baaahs.io.Fs.File)/parent">parent</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="list-files.html">listFiles</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">listFiles</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">File</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read.html">read</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">read</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -119,6 +148,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="write.html">write</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">write</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.Fs.File$write(kotlin.String, kotlin.Boolean)/content">content</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.Fs.File$write(kotlin.String, kotlin.Boolean)/allowOverwrite">allowOverwrite</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

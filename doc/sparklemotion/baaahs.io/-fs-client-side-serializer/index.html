@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FsClientSideSerializer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.io</a>&nbsp;/&nbsp;<a href="./index.html">FsClientSideSerializer</a><br/>
+<br/>
+<h1>FsClientSideSerializer</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">FsClientSideSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="../-remote-fs/index.html"><span class="identifier">RemoteFs</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-remote-fs-serializer/index.html"><span class="identifier">RemoteFsSerializer</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">FsClientSideSerializer</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="backend.html">backend</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">backend</span><span class="symbol">: </span><a href="../-remote-fs-backend.html"><span class="identifier">RemoteFsBackend</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="descriptor.html">descriptor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">descriptor</span><span class="symbol">: </span><span class="identifier">SerialDescriptor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serial-module.html">serialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="deserialize.html">deserialize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">deserialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.FsClientSideSerializer$deserialize(kotlinx.serialization.Decoder)/decoder">decoder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Decoder</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-remote-fs/index.html"><span class="identifier">RemoteFs</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serialize.html">serialize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.FsClientSideSerializer$serialize(kotlinx.serialization.Encoder, baaahs.io.RemoteFs)/encoder">encoder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Encoder</span><span class="symbol">, </span><span class="identifier" id="baaahs.io.FsClientSideSerializer$serialize(kotlinx.serialization.Encoder, baaahs.io.RemoteFs)/value">value</span><span class="symbol">:</span>&nbsp;<a href="../-remote-fs/index.html"><span class="identifier">RemoteFs</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-pub-sub-remote-fs-client-backend/index.html">PubSubRemoteFsClientBackend</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PubSubRemoteFsClientBackend</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">FsClientSideSerializer</span></a><span class="symbol">, </span><a href="../-remote-fs-backend.html"><span class="identifier">RemoteFsBackend</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

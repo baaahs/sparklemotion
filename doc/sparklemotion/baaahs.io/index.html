@@ -34,10 +34,85 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-fs-client-side-serializer/index.html">FsClientSideSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">FsClientSideSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="-remote-fs/index.html"><span class="identifier">RemoteFs</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="-remote-fs-serializer/index.html"><span class="identifier">RemoteFsSerializer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-fs-server-side-serializer/index.html">FsServerSideSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FsServerSideSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="-remote-fs-serializer/index.html"><span class="identifier">RemoteFsSerializer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pub-sub-remote-fs-client-backend/index.html">PubSubRemoteFsClientBackend</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PubSubRemoteFsClientBackend</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fs-client-side-serializer/index.html"><span class="identifier">FsClientSideSerializer</span></a><span class="symbol">, </span><a href="-remote-fs-backend.html"><span class="identifier">RemoteFsBackend</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pub-sub-remote-fs-server-backend/index.html">PubSubRemoteFsServerBackend</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PubSubRemoteFsServerBackend</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-real-fs/index.html">RealFs</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">RealFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fs/index.html"><span class="identifier">Fs</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-remote-fs/index.html">RemoteFs</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">RemoteFs</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fs/index.html"><span class="identifier">Fs</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-remote-fs-backend.html">RemoteFsBackend</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">RemoteFsBackend</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fs/index.html"><span class="identifier">Fs</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-remote-fs-op/index.html">RemoteFsOp</a></h4>
+</td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">RemoteFsOp</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-remote-fs-serializer/index.html">RemoteFsSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">RemoteFsSerializer</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="known-fs-classes.html">knownFsClasses</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">knownFsClasses</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="platform-fs-classes.html">platformFsClasses</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">platformFsClasses</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>RemoteFsSerializer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.io</a>&nbsp;/&nbsp;<a href="./index.html">RemoteFsSerializer</a><br/>
+<br/>
+<h1>RemoteFsSerializer</h1>
+<code><span class="keyword">interface </span><span class="identifier">RemoteFsSerializer</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="as-serializer.html">asSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">asSerializer</span><span class="symbol">: </span><span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="../-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serial-module.html">serialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="create-command-port.html">createCommandPort</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">createCommandPort</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">CommandPort</span><span class="symbol">&lt;</span><a href="../-remote-fs-op/index.html"><span class="identifier">RemoteFsOp</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Response</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-fs-client-side-serializer/index.html">FsClientSideSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">FsClientSideSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="../-remote-fs/index.html"><span class="identifier">RemoteFs</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="./index.html"><span class="identifier">RemoteFsSerializer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-fs-server-side-serializer/index.html">FsServerSideSerializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FsServerSideSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="../-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="./index.html"><span class="identifier">RemoteFsSerializer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

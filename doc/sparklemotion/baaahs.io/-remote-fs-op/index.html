@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>RemoteFsOp - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.io</a>&nbsp;/&nbsp;<a href="./index.html">RemoteFsOp</a><br/>
+<br/>
+<h1>RemoteFsOp</h1>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">RemoteFsOp</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-exists/index.html">Exists</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Exists</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">RemoteFsOp</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-is-directory/index.html">IsDirectory</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">IsDirectory</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">RemoteFsOp</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-list-files/index.html">ListFiles</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ListFiles</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">RemoteFsOp</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-load-file/index.html">LoadFile</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">LoadFile</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">RemoteFsOp</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-response/index.html">Response</a></h4>
+</td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">Response</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-save-file/index.html">SaveFile</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SaveFile</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">RemoteFsOp</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="request-id.html">requestId</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">requestId</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="perform.html">perform</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">perform</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Response</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

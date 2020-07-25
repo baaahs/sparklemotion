@@ -9,6 +9,18 @@
 <br/>
 <h1>Client</h1>
 <code><span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-client-command-channel/index.html">ClientCommandChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ClientCommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">CommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -45,10 +57,31 @@
 </tr>
 <tr>
 <td>
+<h4><a href="command-sender.html">commandSender</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">commandSender</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$commandSender(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.commandSender.C, baaahs.PubSub.Client.commandSender.R)), kotlin.Function1((baaahs.PubSub.Client.commandSender.R, kotlin.Unit)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$commandSender(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.commandSender.C, baaahs.PubSub.Client.commandSender.R)), kotlin.Function1((baaahs.PubSub.Client.commandSender.R, kotlin.Unit)))/replyCallback">replyCallback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">R</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-command-channel.html">openCommandChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">openCommandChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$openCommandChannel(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.openCommandChannel.C, baaahs.PubSub.Client.openCommandChannel.R)), kotlin.Function1((baaahs.PubSub.Client.openCommandChannel.R, kotlin.Unit)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$openCommandChannel(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.openCommandChannel.C, baaahs.PubSub.Client.openCommandChannel.R)), kotlin.Function1((baaahs.PubSub.Client.openCommandChannel.R, kotlin.Unit)))/replyCallback">replyCallback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">R</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">CommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="remove-state-change-listener.html">removeStateChangeListener</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">removeStateChangeListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$removeStateChangeListener(kotlin.Function0((kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="state.html">state</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">state</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$state(baaahs.PubSub.Topic((baaahs.PubSub.Client.state.T)), baaahs.PubSub.Client.state.T, kotlin.Function1((baaahs.PubSub.Client.state.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$state(baaahs.PubSub.Topic((baaahs.PubSub.Client.state.T)), baaahs.PubSub.Client.state.T, kotlin.Function1((baaahs.PubSub.Client.state.T, kotlin.Unit)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$state(baaahs.PubSub.Topic((baaahs.PubSub.Client.state.T)), baaahs.PubSub.Client.state.T, kotlin.Function1((baaahs.PubSub.Client.state.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;{}<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
