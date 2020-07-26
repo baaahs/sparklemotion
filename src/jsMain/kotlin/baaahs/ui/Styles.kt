@@ -75,5 +75,6 @@ object Styles : StyleSheet("ui", isStatic = true) {
     val fileDialogFileList by css {
         height = 50.vh
         overflowY = Overflow.scroll
+        border = "1px groove"
     }
 }

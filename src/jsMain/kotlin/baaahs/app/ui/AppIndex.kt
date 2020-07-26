@@ -125,7 +125,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleFileSelected = useCallback() { file: Fs.File ->
         fileDialogOpen = false
         if (fileDialogIsSaveAs) {
-            webClient.onSaveAsShow(file)
+            webClient.onSaveAsShow(file.withExtension(".sparkle"))
         } else {
             webClient.onOpenShow(file)
         }
@@ -358,6 +358,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.isOpen = fileDialogOpen
                         attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
                         attrs.isSaveAs = fileDialogIsSaveAs
+                        attrs.fileDisplayCallback = { file, fileDisplay ->
+                            if (file.isDirectory == false) {
+                                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
+                            }
+                        }
                         attrs.onSelect = handleFileSelected
                         attrs.onCancel = handleFileDialogCancel
                         attrs.defaultTarget = webClient.showFile

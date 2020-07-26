@@ -9,6 +9,10 @@ import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onDoubleClickFunction
+import materialui.Folder
+import materialui.Icon
+import materialui.InsertDriveFile
+import materialui.components.breadcrumbs.breadcrumbs
 import materialui.components.button.button
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.dialog.dialog
@@ -16,11 +20,15 @@ import materialui.components.dialog.enums.DialogMaxWidth
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
+import materialui.components.link.link
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
 import materialui.components.listitem.listItem
+import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.textfield.textField
+import materialui.components.typography.typography
+import materialui.icon
 import org.w3c.dom.events.Event
 import react.*
 import kotlin.browser.window
@@ -79,24 +87,34 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         selectedFile = currentDir.resolve(str)
     }
 
-    val handleConfirm = useCallback(selectedFile, props.onSelect) { event: Event ->
+    val handleConfirm = useCallback(selectedFile, props.onSelect) { _: Event ->
         selectedFile?.let { props.onSelect(it) }; Unit
     }
 
-    val handleClose = useCallback(props.onCancel) { event: Event, reason: String ->
+    val handleClose = useCallback(props.onCancel) { _: Event, reason: String ->
         props.onCancel()
     }
 
-    val handleCancel = useCallback(props.onCancel) { event: Event ->
+    val handleCancel = useCallback(props.onCancel) { _: Event ->
         props.onCancel()
     }
 
     onChange("selected fs/dir", props.isOpen, currentDir) {
         val job = scope.launch {
-            filesInDir = currentDir.listFiles().sorted()
+            filesInDir = currentDir.listFiles()
+                .sortedWith(compareBy({ !(it.isDirectory ?: false) }, { it.name }))
         }
         withCleanup { job.cancel() }
     }
+
+    val breadcrumbs = arrayListOf<Fs.File>()
+    var breadcrumbDir: Fs.File? = currentDir.parent
+    while (breadcrumbDir != null) {
+        breadcrumbs.add(breadcrumbDir)
+        breadcrumbDir = breadcrumbDir.parent
+    }
+    breadcrumbs.reverse()
+
 
     dialog {
         ref = dialogEl
@@ -110,22 +128,41 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         dialogTitle { +props.title }
 
         dialogContent {
-            list(ListStyle.root to fileDialogFileList.name) {
+            breadcrumbs {
+                breadcrumbs.forEach { parentDir ->
+                    link {
+                        attrs.onClickFunction = { currentDir = parentDir }
+                        +(if (parentDir.name.isEmpty()) "Filesystem Root" else parentDir.name)
+                    }
+                }
+                typography { +currentDir.name }
+            }
+
+            list(fileDialogFileList on ListStyle.root) {
                 val parent = currentDir.parent
                 if (parent != null) {
                     listItem {
                         attrs.button = true
-                        attrs.onClickFunction = { event -> handleFileSingleClick(parent) }
-                        attrs.onDoubleClickFunction = { event -> handleFileDoubleClick(parent) }
+                        attrs.onClickFunction = { _ -> handleFileSingleClick(parent) }
+                        attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(parent) }
+                        listItemIcon { icon(Folder) }
                         listItemText { attrs.primary { +".." } }
                     }
                 }
                 filesInDir.forEach { file ->
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = { event -> handleFileSingleClick(file) }
-                        attrs.onDoubleClickFunction = { event -> handleFileDoubleClick(file) }
-                        listItemText { attrs.primary { +file.name } }
+                    val icon = if (file.isDirectory == true) Folder else InsertDriveFile
+                    val fileDisplay = FileDisplay(file.name, icon, file.name.startsWith("."))
+                    props.fileDisplayCallback?.invoke(file, fileDisplay)
+
+                    if (!fileDisplay.isHidden) {
+                        listItem {
+                            attrs.button = true
+                            attrs.disabled = !fileDisplay.isSelectable
+                            attrs.onClickFunction = { _ -> handleFileSingleClick(file) }
+                            attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(file) }
+                            fileDisplay.icon?.let { listItemIcon { icon(it) } }
+                            listItemText { attrs.primary { +fileDisplay.name } }
+                        }
                     }
                 }
             }
@@ -133,6 +170,8 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
             if (props.isSaveAs) {
                 textField {
                     attrs.label { +"File name…" }
+                    attrs.autoFocus = true
+                    attrs.fullWidth = true
                     attrs.onChangeFunction = handleFileNameChange
                     attrs.value = selectedFile?.name ?: props.defaultTarget?.name ?: ""
                 }
@@ -159,14 +198,17 @@ external interface FileDialogProps : RProps {
     var title: String
     var isOpen: Boolean
     var isSaveAs: Boolean
+    var fileDisplayCallback: ((Fs.File, FileDisplay) -> Unit)?
     var onSelect: (Fs.File) -> Unit
     var onCancel: () -> Unit
     var defaultTarget: Fs.File?
 }
 
-data class SaveAsTarget(
-    val fs: Fs?,
-    val name: String?
+class FileDisplay(
+    var name: String,
+    var icon: Icon?,
+    var isHidden: Boolean = false,
+    var isSelectable: Boolean = true
 )
 
 fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>): ReactElement =

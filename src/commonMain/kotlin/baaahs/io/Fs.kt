@@ -23,7 +23,7 @@ interface Fs {
     suspend fun exists(file: File): Boolean
 
     suspend fun isDirectory(file: File): Boolean {
-        return file.isDirectory ?: error("Is $this a directory? Answer unclear.")
+        return file.isDirectory ?: error("Is $file a directory? Answer unclear.")
     }
 
     @Serializable
@@ -89,8 +89,14 @@ interface Fs {
 //            return RemoteFile(fsId, resolvedPathParts.joinToString("/"), isDirectory ?: looksLikeDirectory)
 //        }
 
+        fun withExtension(extension: String): File {
+            return if (!name.endsWith(extension)) {
+                File(fs, "$fullPath$extension", isDirectory)
+            } else this
+        }
+
         override fun toString(): String {
-            return "$fs:$fullPath"
+            return "${fs.name}:$fullPath"
         }
 
         override fun compareTo(other: File): Int {
