@@ -290,7 +290,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             if (fileDialogIsSaveAs) {
                 val selectedShader = selectedShader()
                 selectedShader!!
-                file.fs.saveFile(file, selectedShader.src, true)
+                file.fs.saveFile(file.withExtension(".glsl"), selectedShader.src, true)
                 openShaders = openShaders.replace(selectedShaderIndex) {
                     EditingShader(file.name, selectedShader.src, false, file)
                 }
@@ -440,6 +440,11 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
                 attrs.isOpen = fileDialogOpen
                 attrs.title = if (fileDialogIsSaveAs) "Save Shader As…" else "Open Shader…"
                 attrs.isSaveAs = fileDialogIsSaveAs
+                attrs.fileDisplayCallback = { file, fileDisplay ->
+                    if (file.isDirectory == false) {
+                        fileDisplay.isSelectable = file.name.endsWith(".glsl")
+                    }
+                }
                 attrs.onSelect = handleFileSelected
                 attrs.onCancel = handleSaveAsCancel
                 attrs.defaultTarget = selectedShader?.file

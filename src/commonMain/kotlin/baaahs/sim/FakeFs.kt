@@ -62,6 +62,10 @@ abstract class BaseFakeFs : Fs {
                 allKeys.any { resolve(it).isWithin(file) }
     }
 
+    override suspend fun isDirectory(file: Fs.File): Boolean {
+        return file.isDirectory ?: keys.any { it.startsWith(file.fullPath + "/") }
+    }
+
     companion object {
         val logger = Logger("FakeFs")
     }

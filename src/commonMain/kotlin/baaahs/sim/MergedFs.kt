@@ -28,4 +28,8 @@ class MergedFs(
     override suspend fun exists(file: Fs.File): Boolean {
         return baseFs.exists(file) || overlayFs.exists(file)
     }
+
+    override suspend fun isDirectory(file: Fs.File): Boolean {
+        return if (overlayFs.exists(file)) overlayFs.exists(file) else baseFs.isDirectory(file)
+    }
 }

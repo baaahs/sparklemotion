@@ -16,6 +16,8 @@ external val Edit: Icon
 external val Error: Icon
 external val ExpandMore: Icon
 external val FileCopy: Icon
+external val Folder: Icon
+external val InsertDriveFile: Icon
 external val Menu: Icon
 external val NotificationImportant: Icon
 external val OpenInBrowser: Icon
