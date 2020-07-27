@@ -33,7 +33,7 @@ import react.dom.b
 import react.dom.code
 import react.dom.h3
 
-val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
+val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props ->
     val appContext = useContext(appContext)
     val shader = props.shader
     val openShader = appContext.showResources.openShader(shader)
@@ -60,7 +60,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         if (id.contains(':')) {
             val (shaderId, portId) = id.split(':')
             val otherShader = props.showBuilder.getShaders().getBang(shaderId, "shader")
-            return baaahs.show.ShaderEditor.ShaderOutPortEditor(otherShader, portId)
+            return ShaderEditor.ShaderOutPortEditor(otherShader, portId)
         }
 
         return DataSourceEditor(props.showBuilder.getDataSources().getBang(id, "data source"))
@@ -186,12 +186,12 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 
 }
 
-external interface ShaderEditorProps : RProps {
+external interface OldPatchEditorProps : RProps {
     var allShaders: Set<Shader>
     var patchEditor: PatchEditor
     var showBuilder: ShowBuilder
     var shader: Shader
 }
 
-fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>): ReactElement =
-    child(ShaderEditor, handler = handler)
+fun RBuilder.oldPatchEditor(handler: RHandler<OldPatchEditorProps>): ReactElement =
+    child(OldPatchEditor, handler = handler)
