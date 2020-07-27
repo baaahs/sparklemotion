@@ -113,7 +113,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
 
                                         +"Shaders:"
                                         allShaders.forEach { shader ->
-                                            shaderEditor {
+                                            oldPatchEditor {
                                                 attrs.allShaders = allShaders
                                                 attrs.patchEditor = patchEditor
                                                 attrs.showBuilder = showBuilder
