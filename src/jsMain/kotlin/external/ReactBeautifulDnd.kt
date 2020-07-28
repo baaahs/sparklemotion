@@ -46,7 +46,7 @@ private val Draggable: FunctionalComponent<DraggableProps> = reactBeautifulDndMo
 
 fun RBuilder.draggable(
     attrs: DraggableProps.() -> Unit,
-    children: (provided: DraggableProvided, snapshot: Any) -> ReactElement
+    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> ReactElement
 ): ReactElement =
     child(
         Draggable,
@@ -54,6 +54,9 @@ fun RBuilder.draggable(
         RBuilder().childList.apply { add(children) }
     )
 
+external interface DraggableStateSnapshot {
+    var isDragging: Boolean
+}
 
 private val jsObj = js("Object")
 fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
