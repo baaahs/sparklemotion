@@ -1,9 +1,9 @@
 package baaahs.glshaders
 
 import baaahs.Logger
-import baaahs.getBang
 import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.*
+import baaahs.unknown
 
 class AutoWirer(val plugins: Plugins) {
     private val glslAnalyzer = GlslAnalyzer()
@@ -17,63 +17,99 @@ class AutoWirer(val plugins: Plugins) {
             .resolve()
     }
 
+    fun autoWire(vararg shaders: Shader): UnresolvedPatchEditor {
+        return autoWire(shaders.map { glslAnalyzer.asShader(it.src) })
+    }
+
     fun autoWire(vararg shaders: OpenShader): UnresolvedPatchEditor {
-        val shaderEditors = shaders.associate { it.shader to it.shader.edit() }
+        return autoWire(shaders.toList())
+    }
+
+    fun autoWire(shaders: List<OpenShader>): UnresolvedPatchEditor {
         val locallyAvailable: MutableMap<ContentType, MutableList<LinkEditor.Port>> = mutableMapOf()
 
-        shaders.forEach { openShader ->
-            val shaderEditor = shaderEditors.getBang(openShader.shader, "shader editor")
-            openShader.outputPorts.forEach { outputPort ->
-                val options = locallyAvailable.getOrPut(outputPort.contentType) { mutableListOf() }
-                options.add(shaderEditor.outputPort(outputPort.name))
-            }
+        // First pass: gather shader output ports.
+        val shaderInstances = shaders.associate { openShader ->
+            val role = openShader.shaderType.primaryRole
+            val unresolvedShaderInstance = UnresolvedShaderInstanceEditor(
+                ShaderEditor(openShader.shader),
+                openShader.inputPorts.map { it.id }.associateWith { arrayListOf<LinkEditor.Port>() },
+                role = role
+            )
+
+            val options = locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableListOf() }
+            options.add(UnresolvedShaderOutPortEditor(unresolvedShaderInstance, openShader.outputPort.id))
+
+            openShader to unresolvedShaderInstance
         }
 
+        // Second pass: link datasources/output ports to input ports.
         val dataSources = hashSetOf<DataSource>()
-        val linkOptions = shaders.flatMap { openShader ->
-            val shaderEditor = shaderEditors.getBang(openShader.shader, "shader editor")
-
-            openShader.inputPorts.map { inputPort ->
+        val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
+            openShader.inputPorts.forEach { inputPort ->
                 val localSuggestions: List<LinkEditor.Port>? = locallyAvailable[inputPort.contentType]
-                val suggestions: List<LinkEditor.Port> =
-                    localSuggestions ?: plugins.suggestDataSources(inputPort).map {
-                        dataSources.add(it)
-                        DataSourceEditor(it)
-                    }
-
-                UnresolvedPatchEditor.LinkOptions(
-                    suggestions,
-                    shaderEditor.inputPort(inputPort.id)
-                )
+                val suggestions = localSuggestions ?: plugins.suggestDataSources(inputPort).map {
+                    dataSources.add(it)
+                    DataSourceEditor(it)
+                }
+                unresolvedShaderInstance.incomingLinksOptions[inputPort.id]!!.addAll(suggestions)
             }
-        } + UnresolvedPatchEditor.LinkOptions(
-            locallyAvailable[ContentType.Color] ?: emptyList(),
-            OutputPortEditor(GlslProgram.PixelColor.portId)
-        )
-        return UnresolvedPatchEditor(shaders.toList(), dataSources.toList(), linkOptions)
+            unresolvedShaderInstance
+        }
+        return UnresolvedPatchEditor(unresolvedShaderInstances, dataSources.toList())
+    }
+
+    data class UnresolvedShaderOutPortEditor(
+        val unresolvedShaderInstance: UnresolvedShaderInstanceEditor,
+        val portId: String
+    ) : LinkEditor.Port {
+        override fun toRef(showBuilder: ShowBuilder): PortRef = TODO("not implemented")
+        override fun displayName(): String = TODO("not implemented")
+    }
+
+    data class UnresolvedShaderInstanceEditor(
+        val shader: ShaderEditor,
+        val incomingLinksOptions: Map<String, MutableList<LinkEditor.Port>>,
+        var role: ShaderRole? = null
+    ) {
+        fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }
     }
 
     data class UnresolvedPatchEditor(
-        private val shaders: List<OpenShader>,
-        private val dataSources: List<DataSource>,
-        private val linkOptions: List<LinkOptions>
+        private val unresolvedShaderInstances: List<UnresolvedShaderInstanceEditor>,
+        private val dataSources: List<DataSource>
     ) {
-        fun isAmbiguous() = linkOptions.any { it.isAmbiguous() }
+        fun isAmbiguous() = unresolvedShaderInstances.any { it.isAmbiguous() }
 
         fun resolve(): PatchEditor {
             if (isAmbiguous()) {
-                error("ambiguous! ${linkOptions.filter { it.isAmbiguous() }}")
+                error("ambiguous! ${unresolvedShaderInstances.filter { it.isAmbiguous() }}")
             }
-            return PatchEditor(
-                linkOptions.map { (from, to) ->
-                    LinkEditor(from.first(), to)
-                },
-                Surfaces.AllSurfaces
-            )
-        }
 
-        data class LinkOptions(val from: List<LinkEditor.Port>, val to: LinkEditor.Port) {
-            fun isAmbiguous() = from.size > 1
+            // First pass: create a shader instance editor for each shader.
+            val shaderInstances = unresolvedShaderInstances.associate {
+                it.shader.shader to ShaderInstanceEditor(
+                    it.shader,
+                    it.incomingLinksOptions.mapValues { (_, fromPortOptions) ->
+                        fromPortOptions.first()
+                    }.toMutableMap(),
+                    it.role
+                )
+            }
+
+            // Second pass: resolve references between shaders to the correct instance editor.
+            shaderInstances.values.forEach { shaderInstance ->
+                shaderInstance.incomingLinks.forEach { (toPortId, fromPort) ->
+                    if (fromPort is UnresolvedShaderOutPortEditor) {
+                        val fromShader = fromPort.unresolvedShaderInstance.shader.shader
+                        val fromShaderInstance = shaderInstances[fromShader]
+                            ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
+                        shaderInstance.incomingLinks[toPortId] = ShaderOutPortEditor(fromShaderInstance, fromPort.portId)
+                    }
+                }
+            }
+
+            return PatchEditor(shaderInstances.values.toList(), Surfaces.AllSurfaces)
         }
     }
 

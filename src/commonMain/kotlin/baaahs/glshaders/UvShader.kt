@@ -29,8 +29,7 @@ class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
         }
     }
 
-    override val outputPorts: List<OutputPort>
-            = listOf(OutputPort("vec2", ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate))
+    override val outputPort: OutputPort = OutputPort("vec2", ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate)
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         val buf = StringBuilder()

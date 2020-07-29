@@ -3,7 +3,7 @@ package baaahs
 import baaahs.glshaders.OpenPatch
 import baaahs.glsl.GlslContext
 import baaahs.show.*
-import kotlin.random.Random
+import baaahs.show.live.LiveShaderInstance
 
 open class OpenPatchy(
     patchy: Patchy, val dataSources: Map<String, DataSource>
@@ -18,7 +18,12 @@ class OpenShow(
 ) : RefCounted by RefCounter(), OpenPatchy(show, show.dataSources) {
     val id = randomId("show")
     val layouts get() = show.layouts
-    val shaders = show.shaders.mapValues { (_, shader) -> showResources.openShader(shader) }
+    val shaders = show.shaders.mapValues { (_, shader) ->
+        showResources.openShader(shader, addToCache = true)
+    }
+    val shaderInstances = show.shaderInstances.mapValues { (_, shaderInstance) ->
+        LiveShaderInstance.from(shaderInstance, shaders)
+    }
 
     val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
         val dataFeed = showResources.openDataFeed(id, dataSource)
@@ -42,7 +47,7 @@ class OpenShow(
         inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchy(patchSet, show.dataSources) {
             val id = randomId("patchset")
             val title = patchSet.title
-            val patches = patchSet.patches.map { OpenPatch(it, shaders, show.dataSources) }
+            val patches = patchSet.patches.map { OpenPatch(it, shaderInstances, show.dataSources) }
 
             fun createRenderPlan(glslContext: GlslContext): RenderPlan {
                 val activeDataSources = mutableSetOf<String>()
@@ -50,12 +55,7 @@ class OpenShow(
                     patch to patch.createProgram(glslContext, dataFeeds)
                 }
                 return RenderPlan(programs)
-
             }
         }
     }
-}
-
-private fun randomId(prefix: String): String {
-    return "$prefix-${Random.nextInt().toString(16)}-${Random.nextInt().toString(16)}"
 }

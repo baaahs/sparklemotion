@@ -69,15 +69,12 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
         }
     }
 
-    val selectedScene = props.showState.selectedScene
-    val patchSets = props.show.scenes[selectedScene].patchSets
+    val currentScene = props.showState.findScene(props.show)
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            editScene(selectedScene) {
-                editPatchSet(index) {
-                    patchyEditor = this
-                }
+            props.showState.findSceneEditor(this)?.editPatchSet(index) {
+                patchyEditor = this
             }
             event.preventDefault()
         }
@@ -102,7 +99,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                 attrs["exclusive"] = true
 //            attrs["value"] = props.selected // ... but this is busted.
 //            attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
-                patchSets.forEachIndexed { index, patchSet ->
+                currentScene?.patchSets?.forEachIndexed { index, patchSet ->
                     draggable({
                         key = patchSet.id
                         draggableId = patchSet.id
@@ -145,7 +142,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         +"+"
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
-                                editScene(selectedScene) {
+                                props.showState.findSceneEditor(this)?.apply {
                                     addPatchSet("Untitled Patch") {
                                         patchyEditor = this
                                     }

@@ -5,8 +5,8 @@ abstract class GlslException(message: String) : Exception(message) {
 }
 
 class AnalysisException(
-    message: String, row: Int
-) : GlslException("GLSL analysis error: $message") {
+    message: String, row: Int = -1
+) : GlslException("Shader analysis error: $message") {
     override val errors = listOf(GlslError(message, row))
 }
 

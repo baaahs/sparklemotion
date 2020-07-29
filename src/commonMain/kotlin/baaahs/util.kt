@@ -123,3 +123,12 @@ fun String.camelize(): String =
         .map { it.toLowerCase().capitalize() }
         .joinToString("")
         .decapitalize()
+
+
+fun randomId(prefix: String): String {
+    return prefix +
+            "-" +
+            Random.nextInt(0, Int.MAX_VALUE).toString(16) +
+            "-" +
+            Random.nextInt(0, Int.MAX_VALUE).toString(16)
+}
