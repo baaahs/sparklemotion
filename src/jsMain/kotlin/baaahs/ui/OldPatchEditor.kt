@@ -1,8 +1,8 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
-import baaahs.getBang
 import baaahs.glshaders.*
+import baaahs.glsl.AnalysisException
 import baaahs.show.*
 import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
@@ -27,7 +27,6 @@ import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.icon
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.code
@@ -35,57 +34,30 @@ import react.dom.h3
 
 val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props ->
     val appContext = useContext(appContext)
-    val shader = props.shader
-    val openShader = appContext.showResources.openShader(shader)
 
-    val otherShaderOutputPorts = props.allShaders
-        .minus(shader).sortedBy { it.title }
-        .map { it to appContext.showResources.openShader(it) }
-        .flatMap { (otherShader, otherOpenShader) ->
-            otherOpenShader.outputPorts.sortedBy { it.name }.map { otherShader to it }
-        }
-
-    val linkEditorsByPortId = props.patchEditor.linksTo(shader)
-    fun idFor(dataSource: DataSource): String = props.showBuilder.idFor(dataSource)
-
-    fun idFor(port: LinkEditor.Port): String {
-        return when (port) {
-            is ShaderPortEditor -> "${props.showBuilder.idFor(port.shader)}:${port.portId}"
-            is DataSourceEditor -> idFor(port.dataSource)
-            else -> error("huh? $port")
-        }
-    }
-
-    fun portFor(id: String): LinkEditor.Port {
-        if (id.contains(':')) {
-            val (shaderId, portId) = id.split(':')
-            val otherShader = props.showBuilder.getShaders().getBang(shaderId, "shader")
-            return ShaderEditor.ShaderOutPortEditor(otherShader, portId)
-        }
-
-        return DataSourceEditor(props.showBuilder.getDataSources().getBang(id, "data source"))
-    }
-
-    val inputPorts = openShader.inputPorts.sortedBy { it.title }
-    val dataSources = appContext.showResources.dataSources.sortedBy { it.dataSourceName }
-
-    val handleLinkChange =
-        handler("link change") { event: Event, inputPort: InputPort ->
-            val linkEditor = linkEditorsByPortId[inputPort.id]
-            val value = event.target.asDynamic().value as String
-            if (value == "__new__") return@handler
-
-            val port = portFor(value)
-            if (linkEditor == null) {
-                props.patchEditor.addLink(
-                    port,
-                    baaahs.show.ShaderEditor.ShaderInPortEditor(shader, inputPort.id)
-                )
-            } else {
-                linkEditor.from = port
+    val sourcePortOptions = memo(props.allShaderInstances, props.shaderInstance) {
+        val shaderOptions = props.allShaderInstances
+            .minus(props.shaderInstance)
+            .sortedBy { it.shader.title }
+            .map { editor ->
+                val openShader = appContext.showResources.openShader(editor.shader.shader)
+                ShaderOption(editor, openShader.outputPort)
             }
-            forceRender()
+
+        val dataSourceOptions = appContext.showResources.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
+            DataSourceOption(dataSource)
         }
+
+        shaderOptions + dataSourceOptions
+    }
+
+    val shaderInstance = props.shaderInstance
+    val shader = shaderInstance.shader
+    val openShader = try {
+        appContext.showResources.openShader(shader.shader)
+    } catch (e: AnalysisException) { null }
+    val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
+    val incomingLinks = props.shaderInstance.incomingLinks
 
     container {
         card {
@@ -127,8 +99,8 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
                     }
 
                     tableBody {
-                        inputPorts.forEach { shaderInputPort ->
-                            val sourcePort = linkEditorsByPortId[shaderInputPort.id]?.from
+                        inputPorts?.forEach { inputPort ->
+                            val currentSourcePort = shaderInstance.incomingLinks[inputPort.id]
 
                             tableRow {
                                 tdCell {
@@ -136,33 +108,37 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
                                         inputLabel { +"Source" }
 
                                         select {
-                                            sourcePort?.let { attrs.value(idFor(it)) }
-                                            attrs.onChangeFunction = { event -> handleLinkChange(event, shaderInputPort) }
-
-                                            var needDivider = false
-                                            otherShaderOutputPorts.forEach { (otherShader, outputPort) ->
-//                                                if (outputPort.dataType == shaderInputPort.dataType) {
-                                                    menuItem {
-                                                        attrs["value"] = idFor(ShaderEditor(otherShader).outputPort(ShaderOutPortRef.ReturnValue))
-                                                        +"${otherShader.title} output"
-                                                    }
-                                                    needDivider = true
-//                                                }
+                                            attrs.onChangeFunction = { event ->
+                                                val value = (event.target.asDynamic().value as String).split(":")
+                                                when(value[0]) {
+                                                    "__new__" -> {} // TODO
+                                                    "__none__" -> incomingLinks.remove(inputPort.id)
+                                                    "shaderOut" -> incomingLinks[inputPort.id] = sourcePortOptions[value[1].toInt()].portEditor
+//                "dataSource" -> shaderInstance.incomingLinks[inputPort.id] = dataSourceS[value[1].toInt()]
+                                                }
+                                                this@xComponent.forceRender()
                                             }
 
-                                            if (needDivider) { divider {}; needDivider = false }
+                                            var dividerGroup = sourcePortOptions.firstOrNull()?.groupName
+                                            sourcePortOptions.forEachIndexed { index, option ->
+                                                if (dividerGroup != option.groupName) {
+                                                    divider {}
+                                                    dividerGroup = option.groupName
+                                                }
 
-                                            dataSources.forEach { dataSource ->
-                                                if (dataSource.getType() == shaderInputPort.dataType) {
+                                                if (option.matches(currentSourcePort)) {
+                                                    attrs.value(index.toString())
+                                                }
+
+                                                if (option.isAppropriateFor(inputPort)) {
                                                     menuItem {
-                                                        attrs["value"] = idFor(dataSource)
-                                                        +dataSource.dataSourceName
+                                                        attrs["value"] = index.toString()
+                                                        +option.title
                                                     }
-                                                    needDivider = true
                                                 }
                                             }
 
-                                            if (needDivider) { divider {}; needDivider = false }
+                                            if (dividerGroup != null) { divider {} }
 
                                             menuItem {
                                                 attrs["value"] = "__new__"
@@ -173,8 +149,8 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
                                 }
 
                                 tdCell {
-                                    b { +shaderInputPort.title }
-                                    code { +" (${shaderInputPort.dataType})" }
+                                    b { +inputPort.title }
+                                    code { +" (${inputPort.dataType})" }
                                 }
                             }
                         }
@@ -183,14 +159,55 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
             }
         }
     }
-
 }
 
+interface SourcePortOption {
+    val title: String
+    val portEditor: LinkEditor.Port
+    val groupName: String
+    fun matches(otherPort: LinkEditor.Port?): Boolean
+    fun isAppropriateFor(inputPort: InputPort): Boolean
+}
+
+class DataSourceOption(val dataSource: DataSource): SourcePortOption {
+    override val title: String get() = dataSource.dataSourceName
+    override val portEditor: LinkEditor.Port get() = DataSourceEditor(dataSource)
+    override val groupName: String get() = "dataSource"
+
+    override fun matches(otherPort: LinkEditor.Port?): Boolean {
+        return otherPort != null &&
+                otherPort is DataSourceEditor &&
+                otherPort.dataSource == dataSource
+    }
+
+    override fun isAppropriateFor(inputPort: InputPort): Boolean {
+        return dataSource.getType() == inputPort.dataType
+    }
+}
+
+class ShaderOption(val editor: ShaderInstanceEditor, val outputPort: OutputPort): SourcePortOption {
+    override val title: String get() = "${editor.shader.title} output"
+    override val portEditor: LinkEditor.Port get() = ShaderOutPortEditor(editor, outputPort.id)
+    override val groupName: String get() = "shaderPort"
+
+    override fun matches(otherPort: LinkEditor.Port?): Boolean {
+        return otherPort != null &&
+                otherPort is ShaderOutPortEditor &&
+                otherPort.shaderInstance == editor &&
+                otherPort.portId == outputPort.id
+    }
+
+    override fun isAppropriateFor(inputPort: InputPort): Boolean {
+        return true // TODO port.dataType == inputPort.dataType
+    }
+}
+
+
 external interface OldPatchEditorProps : RProps {
-    var allShaders: Set<Shader>
+    var allShaderInstances: Set<ShaderInstanceEditor>
     var patchEditor: PatchEditor
     var showBuilder: ShowBuilder
-    var shader: Shader
+    var shaderInstance: ShaderInstanceEditor
 }
 
 fun RBuilder.oldPatchEditor(handler: RHandler<OldPatchEditorProps>): ReactElement =

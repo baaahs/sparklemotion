@@ -19,9 +19,9 @@ object OpenPatchSpec : Spek({
                 // This Shader's Name
                 // Other stuff.
                 
-                uniform float time;
-                uniform vec2  resolution;
                 uniform float blueness;
+                uniform vec2  resolution;
+                uniform float time;
                 int someGlobalVar;
                 const int someConstVar = 123;
                 
@@ -36,43 +36,16 @@ object OpenPatchSpec : Spek({
             }
 
             describe("#toGlsl") {
-                val shadersById by value {
-                    mapOf(
-                        "color" to openShader,
-                        "uvShader" to cylindricalUvMapper
-                    )
-                }
-                val dataSourcesById by value {
-                    mapOf(
-                        "gl_FragCoord" to CorePlugin.ScreenUvCoord(),
-                        "pixelCoordsTexture" to CorePlugin.PixelCoordsTexture(),
-                        "modelInfo" to CorePlugin.ModelInfoDataSource("ModelInfo"),
-                        "resolution" to CorePlugin.Resolution(),
-                        "time" to CorePlugin.Time(),
-                        "bluenessSlider" to CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
-                    )
-                }
-
                 val openPatch by value {
-                    OpenPatch(
-                        Patch(
-                            listOf(
-                                DataSourceRef("gl_FragCoord")
-                                        linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                                DataSourceRef("resolution")
-                                        linkTo ShaderInPortRef("color", "resolution"),
-                                DataSourceRef("time")
-                                        linkTo ShaderInPortRef("color", "time"),
-                                DataSourceRef("bluenessSlider")
-                                        linkTo ShaderInPortRef("color", "blueness"),
-                                ShaderOutPortRef("color", "gl_FragColor")
-                                        linkTo GlslProgram.PixelColor
-                            ),
-                            Surfaces.AllSurfaces
-                        ),
-                        shadersById,
-                        dataSourcesById
-                    )
+                    PatchEditor {
+                        addShaderInstance(shader) {
+                            link("gl_FragCoord", CorePlugin.ScreenUvCoord())
+                            link("resolution", CorePlugin.Resolution())
+                            link("time", CorePlugin.Time())
+                            link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
+                            role = ShaderRole.Paint
+                        }
+                    }.open()
                 }
                 val glsl by value {
                     openPatch.toGlsl().trim()
@@ -89,9 +62,9 @@ object OpenPatchSpec : Spek({
 
                         layout(location = 0) out vec4 sm_pixelColor;
 
+                        uniform float in_bluenessSlider;
                         uniform vec2 in_resolution;
                         uniform float in_time;
-                        uniform float in_bluenessSlider;
                         
                         // Shader: This Shader's Name; namespace: p0
                         // This Shader's Name
@@ -123,28 +96,21 @@ object OpenPatchSpec : Spek({
 
                 context("with UV translation shader") {
                     override(openPatch) {
-                        OpenPatch(
-                            Patch(
-                                listOf(
-                                    DataSourceRef("pixelCoordsTexture")
-                                            linkTo ShaderInPortRef("uvShader", "pixelCoordsTexture"),
-                                    DataSourceRef("modelInfo")
-                                            linkTo ShaderInPortRef("uvShader", "modelInfo"),
-                                    ShaderOutPortRef("uvShader", ShaderOutPortRef.ReturnValue)
-                                            linkTo ShaderInPortRef("color", "gl_FragCoord"),
-                                    DataSourceRef("resolution")
-                                            linkTo ShaderInPortRef("color", "resolution"),
-                                    DataSourceRef("time")
-                                            linkTo ShaderInPortRef("color", "time"),
-                                    DataSourceRef("bluenessSlider")
-                                            linkTo ShaderInPortRef("color", "blueness"),
-                                    ShaderOutPortRef("color", "gl_FragColor")
-                                            linkTo GlslProgram.PixelColor
-                                ),
-                                Surfaces.AllSurfaces
-                            ),
-                            shadersById, dataSourcesById
-                        )
+                        PatchEditor {
+                            addShaderInstance(cylindricalUvMapper.shader) {
+                                link("pixelCoordsTexture", CorePlugin.PixelCoordsTexture())
+                                link("modelInfo", CorePlugin.ModelInfoDataSource("ModelInfo"))
+                                role = ShaderRole.Projection
+                            }
+
+                            addShaderInstance(openShader.shader) {
+                                link("gl_FragCoord", ShaderOutPortEditor(findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue))
+                                link("resolution", CorePlugin.Resolution())
+                                link("time", CorePlugin.Time())
+                                link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
+                                role = ShaderRole.Paint
+                            }
+                        }.open()
                     }
 
                     it("generates GLSL") {
@@ -163,11 +129,11 @@ object OpenPatchSpec : Spek({
                                     vec3 center;
                                     vec3 extents;
                                 };
-                                uniform sampler2D in_pixelCoordsTexture;
+                                uniform float in_bluenessSlider;
                                 uniform ModelInfo in_modelInfo;
+                                uniform sampler2D in_pixelCoordsTexture;
                                 uniform vec2 in_resolution;
                                 uniform float in_time;
-                                uniform float in_bluenessSlider;
 
                                 // Shader: Cylindrical Projection; namespace: p0
                                 // Cylindrical Projection

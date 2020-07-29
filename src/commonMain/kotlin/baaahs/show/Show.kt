@@ -30,6 +30,7 @@ data class Show(
     val scenes: List<Scene> = emptyList(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
+    val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : Patchy {
     fun toJson(plugins: Plugins): JsonElement {
@@ -65,9 +66,7 @@ data class Scene(
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
-) : Patchy {
-    fun findShaderPortRefs(): Set<ShaderPortRef> = patchSets.flatMap { it.findShaderPortRefs() }.toSet()
-}
+) : Patchy
 
 @Serializable
 data class PatchSet(
@@ -75,28 +74,20 @@ data class PatchSet(
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap()
-) : Patchy {
-    fun findDataSourceRefs(): Set<DataSourceRef> = patches.flatMap { it.findDataSourceRefs() }.toSet()
-    fun findShaderPortRefs(): Set<ShaderPortRef> = patches.flatMap { it.findShaderPortRefs() }.toSet()
-}
+) : Patchy
 
 @Serializable
 data class Patch(
-    val links: List<Link>,
+    val shaderInstanceIds: List<String>,
     val surfaces: Surfaces
 ) {
-    fun findDataSourceRefs(): Set<DataSourceRef> {
-        return links.map { it.from }.filterIsInstance<DataSourceRef>().toSet()
-    }
-
-    fun findShaderPortRefs(): Set<ShaderPortRef> {
-        val fromShaders = links.map { it.from }.filterIsInstance<ShaderPortRef>()
-        val toShaders = links.map { it.to }.filterIsInstance<ShaderPortRef>()
-        return (fromShaders + toShaders).toSet()
-    }
-
-    fun findShaderRefs(): Set<String> {
-        return findShaderPortRefs().map { it.shaderId }.toSet()
+    companion object {
+        fun from(editor: PatchEditor, showBuilder: ShowBuilder): Patch {
+            return Patch(
+                editor.shaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
+                editor.surfaces
+            )
+        }
     }
 }
 
@@ -132,12 +123,6 @@ data class Layout(
 )
 
 @Serializable
-data class Link(
-    val from: PortRef,
-    val to: PortRef
-)
-
-@Serializable
 data class Shader(
     val src: String
 ) {
@@ -152,5 +137,21 @@ data class Shader(
         }
 
     fun suggestId(): String = title.camelize()
-    fun edit(): ShaderEditor = ShaderEditor(this)
+}
+
+@Serializable
+data class ShaderInstance(
+    val shaderId: String,
+    val incomingLinks: Map<String, PortRef>,
+    val role: ShaderRole?
+) {
+    fun findDataSourceRefs(): List<DataSourceRef> {
+        return incomingLinks.values.filterIsInstance<DataSourceRef>()
+    }
+
+    companion object {
+        fun from(editor: ShaderInstanceEditor, showBuilder: ShowBuilder): ShaderInstance {
+            return editor.build(showBuilder)
+        }
+    }
 }

@@ -1,16 +1,9 @@
 package baaahs.glshaders
 
+import baaahs.show.ShaderOutPortRef
+
 abstract class ColorShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
     override val shaderType: OpenShader.Type = OpenShader.Type.Color
-
-    protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
-        return InputPort(
-            it.name, it.dataType, it.name.capitalize(),
-            pluginRef = it.hint?.pluginRef,
-            pluginConfig = it.hint?.config,
-            glslVar = it
-        )
-    }
 }
 
 class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
@@ -81,8 +74,8 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         explicitUniforms + implicitUniforms + uvCoordPort
     }
 
-    override val outputPorts: List<OutputPort> =
-        listOf(OutputPort("vec4", "<arg0>", "Output Color", ContentType.Color))
+    override val outputPort: OutputPort =
+        OutputPort("vec4", ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return namespace.qualify(entryPoint.name) +
@@ -118,8 +111,8 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
 //    it.type, it.name, title, contentType,
 //    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
 
-    override val outputPorts: List<OutputPort> =
-        listOf(OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color))
+    override val outputPort: OutputPort =
+        OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color)
 
     override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
         return StringBuilder().apply {

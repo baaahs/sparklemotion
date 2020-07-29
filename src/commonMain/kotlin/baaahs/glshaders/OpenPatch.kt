@@ -5,89 +5,94 @@ import baaahs.Surface
 import baaahs.getBang
 import baaahs.glsl.GlslContext
 import baaahs.show.*
+import baaahs.show.live.LiveShaderInstance
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-class OpenPatch {
-//    constructor(shaders: List<OpenShader>, dataSources = List<DataSource>) {
-//        components = shaders.associate {  }
-//        dataSources = dataSources.
-//    }
+class OpenPatch(
+    patch: Patch,
+    allShaderInstancesById: Map<String, LiveShaderInstance>,
+    dataSourcesById: Map<String, DataSource>
+) {
+    private val components: Map<String, Component>
+    private val dataSources: Map<String, DataSource>
+    private val surfaces: Surfaces
 
-    constructor(patch: Patch, shadersById: Map<String, OpenShader>, dataSourcesById: Map<String, DataSource>) {
-        val fromShader = hashMapOf<String, MutableList<Link>>()
-        val toShader = hashMapOf<String, MutableList<Link>>()
-        patch.links.forEach { link ->
-            val (from, to) = link
-            if (from is ShaderPortRef) fromShader.getOrPut(from.shaderId) { arrayListOf() }.add(link)
-            if (to is ShaderPortRef) toShader.getOrPut(to.shaderId) { arrayListOf() }.add(link)
-        }
-        val shaderIds = patch.findShaderRefs().toList().sortedBy { shaderId ->
-            val openShader = shadersById.getBang(shaderId, "shader")
-            openShader.shaderType.sortOrder
-        }
-        components = shaderIds.mapIndexed { index, shaderId ->
-            shaderId to Component(
-                index, shadersById.getBang(shaderId, "shader"),
-                toShader[shaderId] ?: emptyList(),
-                fromShader[shaderId] ?: emptyList()
-            )
+    init {
+        val componentsByRole = hashMapOf<ShaderRole, Component>()
+        val dataSourceRefs = hashSetOf<DataSourceRef>()
+        components = patch.shaderInstanceIds.mapIndexed { index, id ->
+            val shaderInstance = allShaderInstancesById.getBang(id, "shader instance")
+            dataSourceRefs.addAll(shaderInstance.findDataSourceRefs())
+            val component = Component(index, shaderInstance)
+            shaderInstance.role?.let { componentsByRole[it] = component }
+            id to component
         }.associate { it }
-        dataSources = patch.findDataSourceRefs().associate {
+        componentsByRole[ShaderRole.Paint]?.redirectOutputTo("sm_pixelColor")
+        dataSources = dataSourceRefs.associate {
             it.dataSourceId to dataSourcesById.getBang(it.dataSourceId, "datasource")
         }
         surfaces = patch.surfaces
     }
 
-    private val components: Map<String, Component>
-    private val dataSources: Map<String, DataSource>
-    private val surfaces: Surfaces
-
     inner class Component(
         val index: Int,
-        val openShader: OpenShader,
-        incomingLinks: List<Link>,
-        outgoingLinks: List<Link>
+        val shaderInstance: LiveShaderInstance
     ) {
         private val prefix = "p$index"
         private val namespace = GlslCode.Namespace(prefix)
         private val portMap: Map<String, Lazy<String>>
+        private val resultInReturnValue: Boolean
+        private var resultVar: String
 
         init {
             val tmpPortMap = hashMapOf<String, Lazy<String>>()
 
-            incomingLinks.forEach { (from, to) ->
-                if (to is ShaderInPortRef) {
-                    if (from is ShaderOutPortRef) {
-                        tmpPortMap[to.portId] = lazy {
-                            if (from.isReturnValue()) {
-                                components.getBang(from.shaderId, "shader").resultVar
-                            } else from.portId
+            shaderInstance.incomingLinks.forEach { (toPortId, fromPortRef) ->
+                if (fromPortRef is ShaderOutPortRef) {
+                    tmpPortMap[toPortId] = lazy {
+                        val fromComponent = components.getBang(fromPortRef.shaderInstanceId, "shader")
+                        if (fromPortRef.isReturnValue()) {
+                            fromComponent.resultVar
+                        } else {
+                            fromComponent.namespace.qualify(fromPortRef.portId)
                         }
-                    } else if (from is DataSourceRef) {
-                        tmpPortMap[to.portId] = lazy {
-                            dataSources.getBang(from.dataSourceId, "datasource").getVarName(from.dataSourceId)
-                        }
+                    }
+                } else if (fromPortRef is DataSourceRef) {
+                    tmpPortMap[toPortId] = lazy {
+                        dataSources.getBang(fromPortRef.dataSourceId, "datasource").getVarName(fromPortRef.dataSourceId)
                     }
                 }
             }
 
-            outgoingLinks.forEach { (from, to) ->
-                if (to is OutputPortRef && from is ShaderOutPortRef) {
-                    tmpPortMap[from.portId] = lazy { to.portId }
-                }
+            var usesReturnValue = false
+            val outputPort = shaderInstance.shader.outputPort
+            if (outputPort.isReturnValue()) {
+                usesReturnValue = true
+                resultVar = namespace.internalQualify("result")
+            } else {
+                resultVar = namespace.qualify(outputPort.id)
+                tmpPortMap[outputPort.id] = lazy { resultVar }
             }
 
             portMap = tmpPortMap
+            resultInReturnValue = usesReturnValue
         }
 
-        private val saveResult = outgoingLinks.any { (from, _) -> from is ShaderOutPortRef && from.isReturnValue() }
-        private val resultVar = namespace.internalQualify("result")
-        private val resolvedPortMap by lazy { portMap.mapValues { (_, v) -> v.value } }
+        private var outputVar: String = resultVar
+
+        private val resolvedPortMap by lazy {
+            portMap.mapValues { (_, v) -> v.value } +
+                    mapOf(shaderInstance.shader.outputPort.id to outputVar)
+        }
+
+        fun redirectOutputTo(varName: String) {
+            outputVar = varName
+        }
 
         fun appendStructs(buf: StringBuilder) {
-            openShader.glslCode.structs.forEach { struct ->
+            shaderInstance.shader.glslCode.structs.forEach { struct ->
                 // TODO: we really ought to namespace structs, but that's not straightforward because
                 // multiple shaders might share a uniform input (e.g. ModelInfo).
 
@@ -99,10 +104,12 @@ class OpenPatch {
         }
 
         fun appendDeclaratoryLines(buf: StringBuilder) {
+            val openShader = shaderInstance.shader
+
             buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
             buf.append("// ", openShader.title, "\n")
 
-            if (saveResult) {
+            if (resultInReturnValue) {
                 buf.append("\n")
                 buf.append("${openShader.entryPoint.returnType} $resultVar;\n")
             }
@@ -111,8 +118,10 @@ class OpenPatch {
         }
 
         fun appendMainLines(buf: StringBuilder) {
+            val openShader = shaderInstance.shader
+
             buf.append("  ")
-            if (saveResult) {
+            if (resultInReturnValue) {
                 buf.append(resultVar, " = ")
             }
             buf.append(openShader.invocationGlsl(namespace, resolvedPortMap))
@@ -135,7 +144,7 @@ class OpenPatch {
             component.appendStructs(buf)
         }
 
-        dataSources.forEach { (id, dataSource) ->
+        dataSources.entries.sortedBy { it.key }.forEach { (id, dataSource) ->
             if (!dataSource.isImplicit())
                 buf.append("uniform ${dataSource.getType()} ${dataSource.getVarName(id)};\n")
         }

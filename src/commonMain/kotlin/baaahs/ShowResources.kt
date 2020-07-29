@@ -19,7 +19,7 @@ interface ShowResources {
     fun <T : Gadget> createdGadget(id: String, gadget: T)
     fun <T : Gadget> useGadget(id: String): T
 
-    fun openShader(shader: Shader): OpenShader
+    fun openShader(shader: Shader, addToCache: Boolean = false): OpenShader
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
     fun openShow(show: Show): OpenShow = OpenShow(show, this)
@@ -46,8 +46,12 @@ abstract class BaseShowResources(
         return dataFeeds[dataSource]!!
     }
 
-    override fun openShader(shader: Shader): OpenShader {
-        return shaders.getOrPut(shader) { glslAnalyzer.asShader(shader) }
+    override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
+        return if (addToCache) {
+            shaders.getOrPut(shader) { glslAnalyzer.asShader(shader) }
+        } else {
+            shaders[shader] ?: glslAnalyzer.asShader(shader)
+        }
     }
 
     override fun releaseUnused() {

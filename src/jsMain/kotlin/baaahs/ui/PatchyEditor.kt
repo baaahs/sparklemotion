@@ -2,6 +2,7 @@ package baaahs.ui
 
 import baaahs.show.PatchEditor
 import baaahs.show.PatchyEditor
+import baaahs.show.Shader
 import baaahs.show.ShowBuilder
 import kotlinx.css.em
 import kotlinx.css.margin
@@ -9,8 +10,10 @@ import kotlinx.css.padding
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
+import materialui.AddCircleOutline
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
+import materialui.components.container.container
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
@@ -19,6 +22,7 @@ import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrol.enums.FormControlVariant
+import materialui.components.iconbutton.iconButton
 import materialui.components.portal.portal
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
@@ -27,6 +31,7 @@ import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.components.textfield.textField
+import materialui.icon
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.*
@@ -99,7 +104,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                         }
                         tableBody {
                             props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
-                                val allShaders = patchEditor.findShaders()
+                                val allShaderInstances = patchEditor.findShaderInstances()
                                 tableRow {
                                     attrs.key = "$index"
 
@@ -112,13 +117,41 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                                         attrs.key = "Patches"
 
                                         +"Shaders:"
-                                        allShaders.forEach { shader ->
+                                        allShaderInstances.forEach { shaderInstance ->
                                             oldPatchEditor {
-                                                attrs.allShaders = allShaders
+                                                attrs.allShaderInstances = allShaderInstances
                                                 attrs.patchEditor = patchEditor
                                                 attrs.showBuilder = showBuilder
-                                                attrs.shader = shader
+                                                attrs.shaderInstance = shaderInstance
                                             }
+                                        }
+
+                                        container {
+                                            iconButton {
+                                                icon(AddCircleOutline)
+
+                                                attrs.onClickFunction = {
+                                                    patchEditor.addShaderInstance(Shader("")) {}
+                                                    this@xComponent.forceRender()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            tableRow {
+                                attrs.key = "__new__"
+
+                                tdCell {
+                                    attrs.colSpan = "2"
+
+                                    iconButton {
+                                        icon(AddCircleOutline)
+
+                                        attrs.onClickFunction = {
+                                            props.editor.patchMappings.add(PatchEditor())
+                                            this@xComponent.forceRender()
                                         }
                                     }
                                 }

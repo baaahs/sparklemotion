@@ -1,5 +1,7 @@
 package baaahs.util
 
+import baaahs.unknown
+
 class UniqueIds<T> {
     private val toId = mutableMapOf<T, String>()
     private val byId = mutableMapOf<String, T>()
@@ -7,6 +9,10 @@ class UniqueIds<T> {
     fun all() = byId.toMap()
 
     operator fun get(id: String): T? = byId[id]
+
+    fun getBang(id: String, type: String): T {
+        return byId.get(id) ?: error(unknown(type, id, byId.keys))
+    }
 
     fun idFor(value: T, suggest: () -> String): String {
         return toId.getOrPut(value) {
