@@ -5,14 +5,15 @@ import baaahs.RefCounter
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
 import baaahs.show.Shader
+import baaahs.show.ShaderRole
 import kotlin.collections.set
 
 interface OpenShader : RefCounted {
-    enum class Type(val sortOrder: Int) {
-        Color(1),
-        Projection(0),
-        Transformer(-1),
-        Filter(-1);
+    enum class Type(val sortOrder: Int, val primaryRole: ShaderRole) {
+        Color(1, ShaderRole.Paint),
+        Projection(0, ShaderRole.Projection),
+        Transformer(-1, ShaderRole.Distortion),
+        Filter(-1, ShaderRole.Filter);
     }
 
     val shader: Shader get() = Shader(src)
@@ -23,7 +24,7 @@ interface OpenShader : RefCounted {
     val shaderType: Type
     val entryPoint: GlslFunction
     val inputPorts: List<InputPort>
-    val outputPorts: List<OutputPort>
+    val outputPort: OutputPort
 //    TODO val inputDefaults: Map<String, InputDefault>
 
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
@@ -32,6 +33,15 @@ interface OpenShader : RefCounted {
     abstract class Base(final override val glslCode: GlslCode) : OpenShader, RefCounted by RefCounter() {
         override val title: String = glslCode.title
         override val description: String? = null
+
+        protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
+            return InputPort(
+                it.name, it.dataType, it.name.capitalize(),
+                pluginRef = it.hint?.pluginRef,
+                pluginConfig = it.hint?.config,
+                glslVar = it
+            )
+        }
 
         override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
             val buf = StringBuilder()

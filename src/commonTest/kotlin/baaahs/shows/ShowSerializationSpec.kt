@@ -1,7 +1,6 @@
 package baaahs.shows
 
 import baaahs.glshaders.CorePlugin
-import baaahs.glshaders.InputPort
 import baaahs.glshaders.Plugins
 import baaahs.show.*
 import kotlinx.serialization.json.*
@@ -67,6 +66,7 @@ private fun forJson(show: Show): JsonObject {
             }
         }
         "shaders" to show.shaders.jsonMap { jsonFor(it) }
+        "shaderInstances" to show.shaderInstances.jsonMap { jsonFor(it) }
         "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
     }
 }
@@ -144,29 +144,10 @@ fun jsonFor(dataSource: DataSource): JsonElement {
 
 private fun jsonFor(patch: Patch): JsonObject {
     return json {
-        "links" to patch.links.jsonMap { jsonFor(it) }
+        "shaderInstanceIds" to patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) }
         "surfaces" to json {
             "name" to "All Surfaces"
         }
-    }
-}
-
-private fun jsonFor(it: Link): JsonObject {
-    return json {
-        "from" to jsonFor(it.from)
-        "to" to jsonFor(it.to)
-    }
-}
-
-private fun jsonFor(inputPort: InputPort): JsonObject {
-    return json {
-        "id" to inputPort.id
-        "type" to inputPort.dataType
-        "title" to inputPort.title
-        "pluginRef" to inputPort.pluginRef
-        "pluginConfig" to inputPort.pluginConfig?.jsonMap { it }
-        "varName" to inputPort.varName
-        "isImplicit" to inputPort.isImplicit
     }
 }
 
@@ -178,12 +159,12 @@ private fun jsonFor(portRef: PortRef): JsonObject {
         }
         is ShaderInPortRef -> json {
             "type" to "shader-in"
-            "shaderId" to portRef.shaderId
+            "shaderInstanceId" to portRef.shaderInstanceId
             "portId" to portRef.portId
         }
         is ShaderOutPortRef -> json {
             "type" to "shader-out"
-            "shaderId" to portRef.shaderId
+            "shaderInstanceId" to portRef.shaderInstanceId
             "portId" to portRef.portId
         }
         is OutputPortRef -> json {
@@ -195,6 +176,12 @@ private fun jsonFor(portRef: PortRef): JsonObject {
 }
 
 private fun jsonFor(shader: Shader) = json { "src" to shader.src }
+
+private fun jsonFor(shaderInstance: ShaderInstance) = json {
+    "shaderId" to shaderInstance.shaderId
+    "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
+    "role" to shaderInstance.role?.id
+}
 
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {
     val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))

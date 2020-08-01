@@ -26,7 +26,7 @@ class FakeShowResources(
 
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
-    override fun openShader(shader: Shader): OpenShader =
+    override fun openShader(shader: Shader, addToCache: Boolean): OpenShader =
         shaders.getBang(shader, "shader")
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed =
