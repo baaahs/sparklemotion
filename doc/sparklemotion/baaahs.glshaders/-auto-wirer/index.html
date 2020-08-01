@@ -19,6 +19,20 @@
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedPatchEditor</span></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="-unresolved-shader-instance-editor/index.html">UnresolvedShaderInstanceEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedShaderInstanceEditor</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-unresolved-shader-out-port-editor/index.html">UnresolvedShaderOutPortEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedShaderOutPortEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Constructors</h3>
@@ -55,7 +69,9 @@
 <td>
 <code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(kotlin.String)/colorShader">colorShader</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-patch-editor/index.html"><span class="identifier">PatchEditor</span></a></code><br/>
 <code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(baaahs.glshaders.ColorShader)/colorShader">colorShader</span><span class="symbol">:</span>&nbsp;<a href="../-color-shader/index.html"><span class="identifier">ColorShader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-patch-editor/index.html"><span class="identifier">PatchEditor</span></a></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(kotlin.Array((baaahs.glshaders.OpenShader)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatchEditor</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(kotlin.Array((baaahs.show.Shader)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatchEditor</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(kotlin.Array((baaahs.glshaders.OpenShader)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatchEditor</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.AutoWirer$autoWire(kotlin.collections.List((baaahs.glshaders.OpenShader)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatchEditor</span></code></td>
 </tr>
 </tbody>
 </table>

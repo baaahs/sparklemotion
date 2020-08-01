@@ -53,10 +53,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="shader-instances.html">shaderInstances</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderInstances</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-shader-instance-editor/index.html"><span class="identifier">ShaderInstanceEditor</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="shaders.html">shaders</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">shaders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-shader-editor/index.html"><span class="identifier">ShaderEditor</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-editor.html">showEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">showEditor</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowEditor</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -90,6 +104,20 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">editScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$editScene(kotlin.Int, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/sceneIndex">sceneIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.ShowEditor$editScene(kotlin.Int, kotlin.Function1((baaahs.show.ShowEditor.SceneEditor, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">SceneEditor</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-shader.html">findShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$findShader(kotlin.String)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-shader-editor/index.html"><span class="identifier">ShaderEditor</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-shader-instance.html">findShaderInstance</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findShaderInstance</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.ShowEditor$findShaderInstance(kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-shader-instance-editor/index.html"><span class="identifier">ShaderInstanceEditor</span></a></code></td>
 </tr>
 <tr>
 <td>

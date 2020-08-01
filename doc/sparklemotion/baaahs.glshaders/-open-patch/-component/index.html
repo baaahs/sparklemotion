@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Component</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.glshaders.OpenShader, kotlin.collections.List((baaahs.show.Link)), kotlin.collections.List((baaahs.show.Link)))/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.glshaders.OpenShader, kotlin.collections.List((baaahs.show.Link)), kotlin.collections.List((baaahs.show.Link)))/openShader">openShader</span><span class="symbol">:</span>&nbsp;<a href="../../-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.glshaders.OpenShader, kotlin.collections.List((baaahs.show.Link)), kotlin.collections.List((baaahs.show.Link)))/incomingLinks">incomingLinks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.show/-link/index.html"><span class="identifier">Link</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.glshaders.OpenShader, kotlin.collections.List((baaahs.show.Link)), kotlin.collections.List((baaahs.show.Link)))/outgoingLinks">outgoingLinks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.show/-link/index.html"><span class="identifier">Link</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Component</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.show.live.LiveShaderInstance)/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$<init>(kotlin.Int, baaahs.show.live.LiveShaderInstance)/shaderInstance">shaderInstance</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show.live/-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,10 +33,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="open-shader.html">openShader</a></h4>
+<h4><a href="shader-instance.html">shaderInstance</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">openShader</span><span class="symbol">: </span><a href="../../-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">shaderInstance</span><span class="symbol">: </span><a href="../../../baaahs.show.live/-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -63,6 +63,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">appendStructs</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$appendStructs(java.lang.StringBuilder)/buf">buf</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-string-builder/index.html"><span class="identifier">StringBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="redirect-output-to.html">redirectOutputTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">redirectOutputTo</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenPatch.Component$redirectOutputTo(kotlin.String)/varName">varName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>
