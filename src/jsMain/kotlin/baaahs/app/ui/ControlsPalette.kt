@@ -22,7 +22,7 @@ import react.dom.div
 import kotlin.random.Random
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
-    val unplacedControlPaletteDiv = ref<HTMLElement>()
+    val unplacedControlPaletteDiv = ref<HTMLElement?>()
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
@@ -64,6 +64,15 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                                     this.isDragDisabled = !props.editMode
                                     this.index = index
                                 }) { draggableProvided, snapshot ->
+                                    if (snapshot.isDragging) {
+                                        // Correct for translated parent.
+                                        unplacedControlPaletteDiv.current?.let {
+                                            val draggableStyle = draggableProvided.draggableProps.asDynamic().style
+                                            draggableStyle.left -= it.offsetLeft
+                                            draggableStyle.top -= it.offsetTop
+                                        }
+                                    }
+
                                     control {
                                         attrs.control = unplacedControl
                                         attrs.specialControlProps = props.specialControlProps

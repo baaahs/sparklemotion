@@ -3,6 +3,7 @@
 package materialui
 
 external val Add: Icon
+external val AddCircleOutline: Icon
 external val ChevronLeft: Icon
 external val ChevronRight: Icon
 external val Close: Icon

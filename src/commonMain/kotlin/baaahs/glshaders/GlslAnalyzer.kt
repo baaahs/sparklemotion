@@ -22,7 +22,7 @@ class GlslAnalyzer {
 
         return OpenShader.tryColorShader(glslObj)
             ?: OpenShader.tryUvTranslatorShader(glslObj)
-            ?: throw IllegalArgumentException("huh? unknown sort of shader")
+            ?: throw AnalysisException("Can't determine shader type")
     }
 
     internal fun findStatements(shaderText: String): List<GlslStatement> {

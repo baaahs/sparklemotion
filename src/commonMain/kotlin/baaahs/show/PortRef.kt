@@ -6,9 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class PortRef {
-    infix fun linkTo(other: PortRef): Link =
-        Link(this, other)
-
     abstract fun dereference(showEditor: ShowEditor): LinkEditor.Port
 }
 
@@ -19,21 +16,21 @@ data class DataSourceRef(val dataSourceId: String) : PortRef() {
 }
 
 interface ShaderPortRef {
-    val shaderId: String
+    val shaderInstanceId: String
 }
 
 @Serializable @SerialName("shader-in")
-data class ShaderInPortRef(override val shaderId: String, val portId: String) : PortRef(), ShaderPortRef {
+data class ShaderInPortRef(override val shaderInstanceId: String, val portId: String) : PortRef(), ShaderPortRef {
     override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        showEditor.shaders.getBang(shaderId, "shader").inputPort(portId)
+        ShaderInPortEditor(showEditor.shaderInstances.getBang(shaderInstanceId, "shader instance"), portId)
 }
 
 @Serializable @SerialName("shader-out")
-data class ShaderOutPortRef(override val shaderId: String, val portId: String) : PortRef(), ShaderPortRef {
+data class ShaderOutPortRef(override val shaderInstanceId: String, val portId: String = ReturnValue) : PortRef(), ShaderPortRef {
     fun isReturnValue() = portId == ReturnValue
 
     override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        showEditor.shaders.getBang(shaderId, "shader").outputPort(portId)
+        ShaderOutPortEditor(showEditor.shaderInstances.getBang(shaderInstanceId, "shader instance"), portId)
 
     companion object {
         const val ReturnValue = "_"
