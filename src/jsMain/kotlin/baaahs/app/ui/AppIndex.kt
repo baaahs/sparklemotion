@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.ShowEditorState
-import baaahs.ShowResources
+import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
@@ -65,7 +65,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val dragNDrop by state { DragNDrop() }
     val myAppContext by state {
         jsObject<AppContext> {
-            this.showResources = props.showResources
+            this.showPlayer = props.showPlayer
             this.dragNDrop = dragNDrop
             this.webClient = webClient
         }
@@ -314,7 +314,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 shaderEditorWindow {
                                     attrs.onAddToPatch = { shader ->
-                                        val newPatch = AutoWirer(props.showResources.plugins).autoWire(shader.src)
+                                        val newPatch = AutoWirer(props.showPlayer.plugins).autoWire(shader.src)
                                         val editor = ShowEditor(show, showState)
                                         showState.findPatchSetEditor(editor)?.apply {
                                             patchMappings.clear() // TODO not this.
@@ -367,7 +367,7 @@ external interface AppIndexProps : RProps {
     var id: String
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
-    var showResources: ShowResources
+    var showPlayer: ShowPlayer
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>): ReactElement =

@@ -40,11 +40,11 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
             .minus(props.shaderInstance)
             .sortedBy { it.shader.title }
             .map { editor ->
-                val openShader = appContext.showResources.openShader(editor.shader.shader)
+                val openShader = appContext.showPlayer.openShader(editor.shader.shader)
                 ShaderOption(editor, openShader.outputPort)
             }
 
-        val dataSourceOptions = appContext.showResources.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
+        val dataSourceOptions = appContext.showPlayer.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
             DataSourceOption(dataSource)
         }
 
@@ -54,7 +54,7 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
     val shaderInstance = props.shaderInstance
     val shader = shaderInstance.shader
     val openShader = try {
-        appContext.showResources.openShader(shader.shader)
+        appContext.showPlayer.openShader(shader.shader)
     } catch (e: AnalysisException) { null }
     val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
     val incomingLinks = props.shaderInstance.incomingLinks

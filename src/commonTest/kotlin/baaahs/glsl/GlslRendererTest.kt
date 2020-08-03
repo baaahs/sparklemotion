@@ -8,7 +8,7 @@ import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.io.ByteArrayWriter
 import baaahs.model.ModelInfo
-import baaahs.shows.FakeShowResources
+import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.*
@@ -29,14 +29,14 @@ class GlslRendererTest {
 
     private lateinit var glslContext: GlslContext
     private lateinit var glslRenderer: GlslRenderer
-    private lateinit var fakeShowResources: FakeShowResources
+    private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glslContext = GlslBase.manager.createContext()
             glslRenderer = GlslRenderer(glslContext, ModelInfoForTest)
-            fakeShowResources = FakeShowResources(glslContext)
+            fakeShowPlayer = FakeShowPlayer(glslContext)
         }
     }
 
@@ -93,8 +93,8 @@ class GlslRendererTest {
         val glslProgram = compileAndBind(program)
         val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        fakeShowResources.getGadget<Slider>("glsl_in_blue").value = .1f
-        fakeShowResources.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
+        fakeShowPlayer.drawFrame()
 
         expectColor(listOf(
             Color(0f, .1f, .1f),
@@ -102,8 +102,8 @@ class GlslRendererTest {
             Color(.4f, .5f, .1f)
         )) { renderSurface.pixels.toList() }
 
-        fakeShowResources.getGadget<Slider>("glsl_in_blue").value = .2f
-        fakeShowResources.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .2f
+        fakeShowPlayer.drawFrame()
 
         expectColor(listOf(
             Color(0f, .1f, .2f),
@@ -248,7 +248,7 @@ class GlslRendererTest {
 
     private fun compileAndBind(program: String): GlslProgram {
         return AutoWirer(Plugins.safe()).autoWire(program).open().compile(glslContext) { id, dataSource ->
-            dataSource.createFeed(fakeShowResources, id)
+            dataSource.createFeed(fakeShowPlayer, id)
         }
     }
 

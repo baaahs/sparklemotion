@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.BaseShowResources
+import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.GadgetData
 import baaahs.getBang
@@ -49,7 +49,7 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
         if (gl == null) return@onChange
         val patch = props.patch ?: return@onChange
 
-        val showResources = object : BaseShowResources(Plugins.safe(), ModelInfo.Empty) {
+        val showPlayer = object : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
             val gadgets: MutableMap<String, Gadget> = hashMapOf()
             override val glslContext: GlslContext get() = gl!!
 
@@ -66,7 +66,7 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
         later {
             try {
                 patch.compile(gl!!) { id, dataSource ->
-                    dataSource.createFeed(showResources, id)
+                    dataSource.createFeed(showPlayer, id)
                 }.also { program ->
                     glslPreview!!.setProgram(program)
                     props.onSuccess()
@@ -78,7 +78,7 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
                 props.onError.invoke(arrayOf(GlslError(e.message ?: e.toString())))
             }
 
-            val gadgets = showResources.gadgets.map { (id, gadget) ->
+            val gadgets = showPlayer.gadgets.map { (id, gadget) ->
                 GadgetData(id, gadget, "/preview/gadgets/$id")
             }.toTypedArray()
             props.onGadgetsChange(gadgets)

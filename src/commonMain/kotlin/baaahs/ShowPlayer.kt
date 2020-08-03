@@ -10,7 +10,7 @@ import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
 
-interface ShowResources {
+interface ShowPlayer {
     val plugins: Plugins
     val glslContext: GlslContext
     val modelInfo: ModelInfo
@@ -27,10 +27,10 @@ interface ShowResources {
     fun releaseUnused()
 }
 
-abstract class BaseShowResources(
+abstract class BaseShowPlayer(
     final override val plugins: Plugins,
     final override val modelInfo: ModelInfo
-) : ShowResources {
+) : ShowPlayer {
     private val glslAnalyzer = GlslAnalyzer()
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()

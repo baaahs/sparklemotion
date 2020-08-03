@@ -1,7 +1,7 @@
 package baaahs.shows
 
 import baaahs.Gadget
-import baaahs.ShowResources
+import baaahs.ShowPlayer
 import baaahs.Surface
 import baaahs.getBang
 import baaahs.glshaders.GlslProgram
@@ -13,12 +13,12 @@ import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
 
-class FakeShowResources(
+class FakeShowPlayer(
     override val glslContext: GlslContext,
     val shaders: Map<Shader, OpenShader> = emptyMap(),
     val dataFeeds: Map<DataSource, GlslProgram.DataFeed> = emptyMap(),
     override val modelInfo: ModelInfo = ModelInfo.Empty
-) : ShowResources {
+) : ShowPlayer {
     override val plugins: Plugins
         get() = Plugins.safe()
 
