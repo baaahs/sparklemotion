@@ -14,19 +14,19 @@ open class OpenPatchy(
 }
 
 class OpenShow(
-    private val show: Show, private val showResources: ShowResources
+    private val show: Show, private val showPlayer: ShowPlayer
 ) : RefCounted by RefCounter(), OpenPatchy(show, show.dataSources) {
     val id = randomId("show")
     val layouts get() = show.layouts
     val shaders = show.shaders.mapValues { (_, shader) ->
-        showResources.openShader(shader, addToCache = true)
+        showPlayer.openShader(shader, addToCache = true)
     }
     val shaderInstances = show.shaderInstances.mapValues { (_, shaderInstance) ->
         LiveShaderInstance.from(shaderInstance, shaders)
     }
 
     val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
-        val dataFeed = showResources.openDataFeed(id, dataSource)
+        val dataFeed = showPlayer.openDataFeed(id, dataSource)
         id to dataFeed
     }
     val scenes = show.scenes.map { OpenScene(it) }

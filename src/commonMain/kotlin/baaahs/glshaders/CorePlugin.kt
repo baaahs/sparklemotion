@@ -57,7 +57,7 @@ class CorePlugin : Plugin {
 //            get() =
 //        override val supportedTypes: List<String>
 //
-//        override fun create(showResources: ShowResources): DataFeed = this
+//        override fun create(showPlayer: ShowPlayer): DataFeed = this
 //
 //        override fun set(uniform: Uniform) {
 //            // no-op
@@ -74,7 +74,7 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "Resolution"
         override fun getType(): String = "vec2"
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
                 var x = 1f
                 var y = 1f
@@ -101,7 +101,7 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "Time"
         override fun getType(): String = "float"
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
                     GlslProgram.SingleUniformBinding(glslProgram, this@Time, id, this) { uniform ->
@@ -122,9 +122,9 @@ class CorePlugin : Plugin {
         override fun getType(): String = "sampler2D"
         override fun suggestId(): String = "pixelCoordsTexture"
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, GlslRenderer.ArrangementListener, RefCounted by RefCounter() {
-                private val gl = showResources.glslContext
+                private val gl = showPlayer.glslContext
                 private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTexture::class)
                 private val uvCoordTexture = gl.check { createTexture() }
 
@@ -167,7 +167,7 @@ class CorePlugin : Plugin {
 
         override fun getRenderType(): String? = null
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
@@ -202,12 +202,12 @@ class CorePlugin : Plugin {
         override fun getType(): String = structType
         override fun getRenderType(): String? = null
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
                 private val varPrefix = getVarName(id)
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
                     val dataFeed = this
-                    val modelInfo = showResources.modelInfo
+                    val modelInfo = showPlayer.modelInfo
                     val center by lazy { modelInfo.center }
                     val extents by lazy { modelInfo.extents }
 
@@ -238,9 +238,9 @@ class CorePlugin : Plugin {
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
             val gadget = createGadget()
-            showResources.createdGadget(id, gadget)
+            showPlayer.createdGadget(id, gadget)
             return object : GadgetDataFeed, RefCounted by RefCounter() {
                 override val id: String = id
                 override val gadget: Gadget = gadget
@@ -317,10 +317,10 @@ class CorePlugin : Plugin {
         override fun getType(): String = "vec2"
         override fun suggestId(): String = "$title XY Pad".camelize()
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
-//                val xControl = showResources.useGadget<Slider>("${varPrefix}_x")
-//                val yControl = showResources.useGadget<Slider>("${varPrefix}_y")
+//                val xControl = showPlayer.useGadget<Slider>("${varPrefix}_x")
+//                val yControl = showPlayer.useGadget<Slider>("${varPrefix}_y")
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
                     val dataFeed = this
@@ -433,7 +433,7 @@ class CorePlugin : Plugin {
         override fun getType(): String = "sampler2D"
         override fun suggestId(): String = "$title Image".camelize()
 
-        override fun createFeed(showResources: ShowResources, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
                     GlslProgram.SingleUniformBinding(glslProgram, this@ImageSource, id, this) { uniform ->

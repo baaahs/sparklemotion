@@ -44,7 +44,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
+    private val showPlayer = ClientShowPlayer(plugins, glslContext, pubSub, model)
     private var showStateSynced = false
     private val showEditStateChannel =
         pubSub.subscribe(
@@ -88,7 +88,7 @@ class WebClient(
         val newShowState = showEditorState?.showState
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { showResources.openShow(newShow) }
+        val newOpenShow = newShow?.let { showPlayer.openShow(newShow) }
         openShow?.release()
         openShow = newOpenShow
         this.show = newShow
@@ -105,7 +105,7 @@ class WebClient(
             this.id = "Client Window"
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
-            this.showResources = this@WebClient.showResources
+            this.showPlayer = this@WebClient.showPlayer
         })
     }
 

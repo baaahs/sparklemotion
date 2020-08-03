@@ -28,7 +28,7 @@ class StageManager(
     private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
     modelInfo: ModelInfo
-) : BaseShowResources(plugins, modelInfo) {
+) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     override val glslContext: GlslContext
         get() = glslRenderer.gl
