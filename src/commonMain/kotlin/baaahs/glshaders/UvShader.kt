@@ -31,9 +31,11 @@ class UvShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
 
     override val outputPort: OutputPort = OutputPort("vec2", ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate)
 
-    override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
-        val buf = StringBuilder()
-        buf.append(namespace.qualify(entryPoint.name), "(gl_FragCoord.xy)")
-        return buf.toString()
+    override fun invocationGlsl(
+        namespace: GlslCode.Namespace,
+        resultVar: String,
+        portMap: Map<String, String>
+    ): String {
+        return resultVar + " = " + namespace.qualify(entryPoint.name) + "(gl_FragCoord.xy)"
     }
 }

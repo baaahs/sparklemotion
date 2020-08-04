@@ -6,6 +6,8 @@ import baaahs.ShowState
 import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
 import baaahs.io.Fs
+import baaahs.show.SampleData
+import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import baaahs.ui.*
@@ -26,6 +28,9 @@ import materialui.components.button.enums.ButtonColor
 import materialui.components.circularprogress.circularProgress
 import materialui.components.container.container
 import materialui.components.cssbaseline.cssBaseline
+import materialui.components.dialog.dialog
+import materialui.components.dialogcontent.dialogContent
+import materialui.components.dialogtitle.dialogTitle
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerVariant
@@ -33,6 +38,9 @@ import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
+import materialui.components.list.list
+import materialui.components.listitem.listItem
+import materialui.components.listitemtext.listItemText
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.portal.portal
@@ -74,6 +82,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var appDrawerOpen by state { false }
     var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
+    var renderDialog by state<(RBuilder.() -> Unit)?> { null }
 
     val handleAppDrawerToggle =
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
@@ -138,7 +147,38 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handleNewShow = useCallback() {
         if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
-        webClient.onNewShow()
+        renderDialog = {
+            dialog {
+                attrs.open = true
+                attrs.onClose = { _, _ -> renderDialog = null }
+
+                dialogTitle { +"New show…" }
+                dialogContent {
+                    list {
+                        listItem {
+                            attrs.button = true
+                            attrs.onClickFunction = { _ ->
+                                webClient.onNewShow(); renderDialog = null
+                            }
+                            listItemText {
+                                attrs.primary { +"Blank" }
+                            }
+                        }
+                    }
+                    list {
+                        listItem {
+                            attrs.button = true
+                            attrs.onClickFunction = { _ ->
+                                webClient.onNewShow(SampleData.sampleShow); renderDialog = null
+                            }
+                            listItemText {
+                                attrs.primary { +"Sample template" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     val handleOpenShow = useCallback() {
@@ -184,7 +224,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         iconButton {
                             attrs.color = ButtonColor.inherit
                             attrs.edge = IconButtonEdge.start
-                            attrs.onClickFunction = this@xComponent.handler("closeDrawer") { event -> handleAppDrawerToggle() }
+                            attrs.onClickFunction =
+                                this@xComponent.handler("closeDrawer") { event -> handleAppDrawerToggle() }
                             icon(Menu)
                         }
 
@@ -314,7 +355,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 shaderEditorWindow {
                                     attrs.onAddToPatch = { shader ->
-                                        val newPatch = AutoWirer(props.showPlayer.plugins).autoWire(shader.src)
+                                        val autoWirer = AutoWirer(props.showPlayer.plugins)
+                                        val newPatch = autoWirer.autoWire(Shader(shader.src))
+                                            .resolve()
                                         val editor = ShowEditor(show, showState)
                                         showState.findPatchSetEditor(editor)?.apply {
                                             patchMappings.clear() // TODO not this.
@@ -358,6 +401,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.defaultTarget = webClient.showFile
                     }
                 }
+            }
+
+            portal {
+                renderDialog?.invoke(this)
             }
         }
     }

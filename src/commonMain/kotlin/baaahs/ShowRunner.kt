@@ -1,6 +1,8 @@
 package baaahs
 
 import baaahs.OpenShow.OpenScene.OpenPatchSet
+import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.show.Show
 
@@ -19,7 +21,7 @@ class ShowRunner(
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
 
     private var currentPatchSet: OpenPatchSet? = null
-    private var currentRenderPlan: RenderPlan? = null
+    internal var currentRenderPlan: RenderPlan? = null
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
@@ -74,7 +76,7 @@ class ShowRunner(
         return renderPlan != null
     }
 
-    fun housekeeping() {
+    fun housekeeping(): Boolean {
         var remapSurfaces = surfaceManager.requiresRemap()
 
         // Maybe switch to a new show.
@@ -93,11 +95,21 @@ class ShowRunner(
                 surfaceManager.remap(it)
             }
         }
+
+        return remapSurfaces
     }
 
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
+        val autoWirer = AutoWirer(Plugins.findAll())
+
+        val activePatches = newPatchSet.activePatches()
+        val entryPoints = autoWirer.merge(*activePatches.toTypedArray())
         val glslContext = glslRenderer.gl
-        return newPatchSet.createRenderPlan(glslContext)
+        val activeDataSources = mutableSetOf<String>()
+        val programs = entryPoints.map { (_, liveShaderInstance) ->
+            liveShaderInstance to liveShaderInstance.createProgram(glslContext, openShow.dataFeeds)
+        }
+        return RenderPlan(programs)
     }
 
     fun shutDown() {

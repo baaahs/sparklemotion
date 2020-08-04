@@ -7,12 +7,14 @@ import baaahs.glshaders.override
 import baaahs.glsl.GlslContext.Companion.GL_RGB32F
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.GlslRendererTest
+import baaahs.glsl.Shaders
 import baaahs.glsl.UvTranslator
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
+import baaahs.show.Shader
 import baaahs.show.ShowBuilder
 import baaahs.show.ShowEditor
 import baaahs.shows.FakeGlslContext
@@ -38,7 +40,11 @@ object ShowRunnerSpec : Spek({
 
         val fakeGlslContext by value { FakeGlslContext() }
         val model by value { TestModel() }
-        val patch by value { AutoWirer(Plugins.safe()).autoWire(shaderSrc) }
+        val patch by value {
+            AutoWirer(Plugins.safe()).autoWire(
+                Shaders.cylindricalUvMapper.shader, Shader(shaderSrc)
+            ).acceptSymbolicChannelLinks().resolve()
+        }
         val surfaces by value { listOf(FakeSurface(100)) }
         val show by value {
             ShowEditor("test show").apply {

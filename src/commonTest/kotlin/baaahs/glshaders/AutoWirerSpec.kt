@@ -32,9 +32,8 @@ object AutoWirerSpec : Spek({
                 """.trimIndent()
             }
             val colorShader by value { Shader(shaderText) }
-            val colorShaderInst by value { ShaderInstanceEditor(ShaderEditor(colorShader)) }
             val shaders by value { arrayOf(colorShader) }
-            val patch by value { AutoWirer(Plugins.safe()).autoWire(*shaders).resolve() }
+            val patch by value { AutoWirer(Plugins.safe()).autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
 
             it("creates a reasonable guess patch") {
                 expect(
@@ -43,12 +42,12 @@ object AutoWirerSpec : Spek({
                             ShaderEditor(colorShader),
                             hashMapOf(
                                 "time" to DataSourceEditor(CorePlugin.Time()),
-                                "resolution" to DataSourceEditor(CorePlugin.Resolution()),
                                 "blueness" to DataSourceEditor(
                                     CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
-                                "gl_FragCoord" to DataSourceEditor(CorePlugin.ScreenUvCoord())
+                                "resolution" to DataSourceEditor(CorePlugin.Resolution()),
+                                "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
                             ),
-                            role = ShaderRole.Paint
+                            shaderChannel = ShaderChannel.Main
                         )
                     )
                 ) { patch.shaderInstances }
@@ -70,17 +69,46 @@ object AutoWirerSpec : Spek({
                                     "resolution" to DataSourceEditor(CorePlugin.Resolution()),
                                     "blueness" to DataSourceEditor(
                                         CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
-                                    "gl_FragCoord" to ShaderOutPortEditor(uvShaderInst, ShaderOutPortRef.ReturnValue)
+                                    "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
                                 ),
-                                role = ShaderRole.Paint
+                                shaderChannel = ShaderChannel.Main
                             ),
                             uvShaderInst.apply {
                                 incomingLinks.putAll(mapOf(
                                     "pixelCoordsTexture" to DataSourceEditor(CorePlugin.PixelCoordsTexture()),
                                     "modelInfo" to DataSourceEditor(CorePlugin.ModelInfoDataSource("ModelInfo"))
                                 ))
-                                role = ShaderRole.Projection
+                                shaderChannel = ShaderChannel.Main
                             }
+                        )
+                    ) { patch.shaderInstances }
+                }
+            }
+
+            context("with a filter shader") {
+                val filterShader = Shader("""
+                    // Brightness Filter
+                    uniform float brightness; // @@Slider min=0 max=1 default=1
+                    vec4 filterImage(vec4 colorIn) {
+                      colorOut = colorIn * brightness;
+                    }
+                """.trimIndent())
+
+                override(shaders) { arrayOf(filterShader) }
+
+                it("creates a reasonable guess patch") {
+                    expects(
+                        listOf(
+                            ShaderInstanceEditor(
+                                ShaderEditor(filterShader),
+                                hashMapOf(
+                                    "brightness" to DataSourceEditor(
+                                        CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
+                                    ),
+                                    "gl_FragColor" to ShaderChannelEditor(ShaderChannel.Main)
+                                ),
+                                shaderChannel = ShaderChannel.Main
+                            )
                         )
                     ) { patch.shaderInstances }
                 }

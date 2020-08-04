@@ -1,9 +1,10 @@
 package baaahs.glshaders
 
+import baaahs.show.ShaderOutPortRef
+
 class FilterShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
     companion object {
         val wellKnownInputPorts = listOf(
-            InputPort("gl_FragColor", "vec4", "Input Color", ContentType.Color),
             InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate),
             InputPort("intensity", "float", "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
             InputPort("time", "float", "Time", ContentType.Time),
@@ -20,18 +21,21 @@ class FilterShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
         get() = glslCode.functions.find { it.name == "filterImage" }!!
 
     override val inputPorts: List<InputPort> by lazy {
-        glslCode.uniforms.map {
-            wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
-                ?: toInputPort(it)
-        }
+        listOf(InputPort("gl_FragColor", "vec4", "Input Color", ContentType.Color, varName = "<arg0>")) +
+                glslCode.uniforms.map {
+                    wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
+                        ?: toInputPort(it)
+                }
     }
 
     override val outputPort: OutputPort
-        get() = OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color)
+        get() = OutputPort("vec4", ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
 
-    override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
-        return StringBuilder().apply {
-            append(namespace.qualify(entryPoint.name), "()")
-        }.toString()
+    override fun invocationGlsl(
+        namespace: GlslCode.Namespace,
+        resultVar: String,
+        portMap: Map<String, String>
+    ): String {
+        return resultVar + " = " + namespace.qualify(entryPoint.name) + "(${portMap["gl_FragColor"]})"
     }
 }

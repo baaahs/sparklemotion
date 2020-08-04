@@ -6,6 +6,7 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.list
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.modules.SerialModule
 
 object Topics {
     fun createClientData(fsSerializer: RemoteFsSerializer) =
@@ -25,18 +26,18 @@ object Topics {
             MapSerializer(String.serializer(), MovingHead.MovingHeadPosition.serializer())
         )
 
-    class Commands(fsSerializer: RemoteFsSerializer) {
+    class Commands(serialModule: SerialModule) {
         val newShow =
             PubSub.CommandPort("pinky/newShow",
-                NewShowCommand.serializer(), NewShowCommand.Response.serializer(), fsSerializer.serialModule)
+                NewShowCommand.serializer(), NewShowCommand.Response.serializer(), serialModule)
         val switchToShow =
             PubSub.CommandPort("pinky/switchToShow",
-                SwitchToShowCommand.serializer(), SwitchToShowCommand.Response.serializer(), fsSerializer.serialModule)
+                SwitchToShowCommand.serializer(), SwitchToShowCommand.Response.serializer(), serialModule)
         val saveShow =
             PubSub.CommandPort("pinky/saveShow",
-                SaveShowCommand.serializer(), SaveShowCommand.Response.serializer(), fsSerializer.serialModule)
+                SaveShowCommand.serializer(), SaveShowCommand.Response.serializer(), serialModule)
         val saveAsShow =
             PubSub.CommandPort("pinky/saveAsShow",
-                SaveAsShowCommand.serializer(), SaveAsShowCommand.Response.serializer(), fsSerializer.serialModule)
+                SaveAsShowCommand.serializer(), SaveAsShowCommand.Response.serializer(), serialModule)
     }
 }

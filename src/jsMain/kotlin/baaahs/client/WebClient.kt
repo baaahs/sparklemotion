@@ -12,6 +12,7 @@ import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
+import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
 
@@ -76,7 +77,10 @@ class WebClient(
             return requestId
         }
 
-        private val commands = Topics.Commands(remoteFsSerializer)
+        private val commands = Topics.Commands(SerializersModule {
+            include(remoteFsSerializer.serialModule)
+            include(plugins.serialModule)
+        })
         val newShow = pubSub.commandSender(commands.newShow) {}
         val switchToShow = pubSub.commandSender(commands.switchToShow) {}
         val saveShow = pubSub.commandSender(commands.saveShow) {}
@@ -155,8 +159,8 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        fun onNewShow() {
-            serverCommands.newShow(NewShowCommand())
+        fun onNewShow(newShow: Show? = null) {
+            serverCommands.newShow(NewShowCommand(newShow))
         }
 
         fun onOpenShow(file: Fs.File?) {

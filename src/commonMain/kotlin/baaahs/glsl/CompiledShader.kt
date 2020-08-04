@@ -8,7 +8,7 @@ import com.danielgergely.kgl.Shader
 class CompiledShader(
     private val gl: GlslContext,
     type: Int,
-    private val source: String
+    internal val source: String
 ) {
     val shaderId: Shader = gl.runInContext {
         gl.check { createShader(type) ?: throw IllegalStateException() }

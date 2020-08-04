@@ -4,11 +4,13 @@ import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.OpenShader
 import baaahs.glshaders.Plugins
+import baaahs.glsl.AnalysisException
 import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
+import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {
     val plugins: Plugins
@@ -20,9 +22,16 @@ interface ShowPlayer {
     fun <T : Gadget> useGadget(id: String): T
 
     fun openShader(shader: Shader, addToCache: Boolean = false): OpenShader
+    fun openShaderOrNull(shader: Shader, addToCache: Boolean = false): OpenShader? {
+        return try {
+            openShader(shader, addToCache)
+        } catch (e: AnalysisException) {
+            null
+        }
+    }
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
-    fun openShow(show: Show): OpenShow = OpenShow(show, this)
+    fun openShow(show: Show): OpenShow = ShowOpener(show, this).openShow()
 
     fun releaseUnused()
 }
