@@ -5,7 +5,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
 import baaahs.glsl.Shaders
-import baaahs.show.mutable.ShowEditor
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -145,7 +145,7 @@ object SampleData {
     val intensityControl = CorePlugin.SliderDataSource(
         "Intensity", 1f, 0f, 1f, null)
 
-    val sampleShow = ShowEditor("Sample Show").apply {
+    val sampleShow = MutableShow("Sample Show").apply {
         editLayouts {
             copyFrom(layouts)
         }

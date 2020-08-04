@@ -4,10 +4,10 @@ import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
 import baaahs.glshaders.Plugins
-import baaahs.show.mutable.PatchEditor
-import baaahs.show.mutable.ShaderInstanceEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.show.mutable.ShowEditor
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -78,10 +78,10 @@ data class Patch(
     val surfaces: Surfaces
 ) {
     companion object {
-        fun from(editor: PatchEditor, showBuilder: ShowBuilder): Patch {
+        fun from(mutablePatch: MutablePatch, showBuilder: ShowBuilder): Patch {
             return Patch(
-                editor.shaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
-                editor.surfaces
+                mutablePatch.mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
+                mutablePatch.surfaces
             )
         }
     }
@@ -147,8 +147,8 @@ data class ShaderInstance(
     }
 
     companion object {
-        fun from(editor: ShaderInstanceEditor, showBuilder: ShowBuilder): ShaderInstance {
-            return editor.build(showBuilder)
+        fun from(mutableShaderInstance: MutableShaderInstance, showBuilder: ShowBuilder): ShaderInstance {
+            return mutableShaderInstance.build(showBuilder)
         }
     }
 }
@@ -178,7 +178,7 @@ data class ShaderChannel(val id: String) {
 }
 
 fun buildEmptyShow(): Show {
-    return ShowEditor("Untitled").apply {
+    return MutableShow("Untitled").apply {
         addScene("Scene 1") {
             addPatchSet("All Dark") {
             }

@@ -3,8 +3,8 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.glshaders.OpenShader
 import baaahs.show.Shader
-import baaahs.show.mutable.PatchEditor
-import baaahs.show.mutable.PatchHolderEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.ShowBuilder
 import kotlinx.css.px
 import kotlinx.html.js.onClickFunction
@@ -25,24 +25,24 @@ import react.*
 import react.dom.div
 import react.dom.key
 
-val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
+val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
     val appContext = useContext(appContext)
     val showBuilder by state { ShowBuilder() }
 
-    val patchEditor = props.patchEditor
+    val mutablePatch = props.mutablePatch
     var selectedShaderIndex by state { -1 }
 
     val handleTabChange = useCallback() { event: Event, tabIndex: Int ->
         selectedShaderIndex = tabIndex
     }
-    val shaderInstances = props.patchEditor.shaderInstances
+    val shaderInstances = props.mutablePatch.mutableShaderInstances
 
     tableRow {
-        attrs.key = patchEditor.id
+        attrs.key = mutablePatch.id
 
         tdCell(PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root) {
             attrs.key = "Surfaces"
-            +patchEditor.surfaces.name
+            +mutablePatch.surfaces.name
         }
 
         tdCell(PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root) {
@@ -54,7 +54,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
                 attrs.onChange = handleTabChange
 
                 shaderInstances.forEach { shaderInstance ->
-                    val shader = Shader(shaderInstance.shader.shader.src)
+                    val shader = Shader(shaderInstance.mutableShader.shader.src)
                     val openShader = appContext.showPlayer.openShaderOrNull(shader, addToCache = false)
 
                     tab {
@@ -101,17 +101,17 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
                             MenuItem("New ${type.name} Shader…") {
                                 val newShader = Shader(type.template)
                                 val contextShaders =
-                                    patchEditor.shaderInstances.map { it.shader.shader } + newShader
-                                val unresolvedPatchEditor = appContext.autoWirer.autoWire(
+                                    mutablePatch.mutableShaderInstances.map { it.mutableShader.shader } + newShader
+                                val unresolvedPatch = appContext.autoWirer.autoWire(
                                     *contextShaders.toTypedArray(),
                                     focus = newShader
                                 )
-                                patchEditor.addShaderInstance(newShader) {
+                                mutablePatch.addShaderInstance(newShader) {
                                     // TODO: Something better than this.
-                                    val resolved = unresolvedPatchEditor
+                                    val resolved = unresolvedPatch
                                         .acceptSymbolicChannelLinks()
                                         .resolve()
-                                        .shaderInstances[0]
+                                        .mutableShaderInstances[0]
                                     incomingLinks.putAll(resolved.incomingLinks)
                                     shaderChannel = resolved.shaderChannel
                                 }
@@ -124,7 +124,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
 
             if (selectedShaderIndex != -1) {
                 val selectedShader = shaderInstances[selectedShaderIndex]
-                val shaderInstanceEditor = shaderInstances[selectedShaderIndex]
+                val mutableShaderInstance = shaderInstances[selectedShaderIndex]
 
                 expansionPanel {
                     expansionPanelSummary {
@@ -134,10 +134,10 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
 
                     expansionPanelDetails {
                         linksEditor {
-                            attrs.patchEditor = patchEditor
+                            attrs.mutablePatch = mutablePatch
                             attrs.showBuilder = showBuilder
-                            attrs.shaderInstance = shaderInstanceEditor
-                            attrs.shaderChannels = props.patchHolderEditor.findShaderChannels()
+                            attrs.mutableShaderInstance = mutableShaderInstance
+                            attrs.shaderChannels = props.mutablePatchHolder.findShaderChannels()
                             attrs.onChange = props.onChange
                         }
                     }
@@ -151,7 +151,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
 
                     expansionPanelDetails {
                         shaderEditor {
-                            attrs.shaderEditor = selectedShader.shader
+                            attrs.mutableShader = selectedShader.mutableShader
                             attrs.onChange = props.onChange
                         }
                     }
@@ -162,8 +162,8 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
 }
 
 external interface PatchEditorProps : RProps {
-    var patchEditor: PatchEditor
-    var patchHolderEditor: PatchHolderEditor
+    var mutablePatch: MutablePatch
+    var mutablePatchHolder: MutablePatchHolder
     var onChange: () -> Unit
 }
 

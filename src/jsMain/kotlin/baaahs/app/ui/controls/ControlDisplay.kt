@@ -9,33 +9,31 @@ import baaahs.getBang
 import baaahs.show.Control
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.ControlEditor
-import baaahs.show.mutable.PatchHolderEditor
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutablePatchHolder
 
 class ControlDisplay(
     show: OpenShow,
     showState: ShowState,
-    private val editMode: Boolean,
+    editMode: Boolean,
     private val onEdit: (Show, ShowState) -> Unit,
     private val dragNDrop: DragNDrop
 ) {
     private val allPanelBuckets: Map<String, PanelBuckets>
-    private val showEditor = if (editMode) show.edit(showState) else null
-    private val showBuilder = ShowBuilder()
+    private val mutableShow = if (editMode) show.edit(showState) else null
     private val placedControls = hashSetOf<Control>()
     private var unplacedControlsDropTarget = UnplacedControlsDropTarget()
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
         val scene = showState.findScene(show)
-        val sceneEditor = showState.findSceneEditor(showEditor)
+        val mutableScene = showState.findSceneEditor(mutableShow)
 
         val patchSet = showState.findPatchSet(show)
-        val patchSetEditor = showState.findPatchSetEditor(showEditor)
+        val mutablePatchSet = showState.findPatchSetEditor(mutableShow)
 
         allPanelBuckets = show.layouts.panelNames.associateWith { panelTitle ->
-            PanelBuckets(panelTitle, showEditor, sceneEditor, patchSetEditor)
+            PanelBuckets(panelTitle, mutableShow, mutableScene, mutablePatchSet)
         }
 
         addControlsToBuckets(show.controlLayout, Section.Show)
@@ -74,8 +72,8 @@ class ControlDisplay(
     }
 
     private fun commitEdit() {
-        showEditor!!
-        onEdit(showEditor.getShow(), showEditor.getShowState())
+        mutableShow!!
+        onEdit(mutableShow.getShow(), mutableShow.getShowState())
     }
 
     fun release() {
@@ -86,13 +84,13 @@ class ControlDisplay(
 
     inner class PanelBuckets(
         private val panelTitle: String,
-        showEditor: PatchHolderEditor?,
-        sceneEditor: PatchHolderEditor?,
-        patchEditor: PatchHolderEditor?
+        showPatchHolder: MutablePatchHolder?,
+        scenePatchHolder: MutablePatchHolder?,
+        mutablePatchHolder: MutablePatchHolder?
     ) {
-        val showBucket = PanelBucket(Section.Show, showEditor)
-        val sceneBucket = PanelBucket(Section.Scene, sceneEditor)
-        val patchBucket = PanelBucket(Section.Patch, patchEditor)
+        val showBucket = PanelBucket(Section.Show, showPatchHolder)
+        val sceneBucket = PanelBucket(Section.Scene, scenePatchHolder)
+        val patchBucket = PanelBucket(Section.Patch, mutablePatchHolder)
 
         fun add(section: Section, control: Control) {
             section.getBucket(this).add(control)
@@ -116,7 +114,7 @@ class ControlDisplay(
 
         inner class PanelBucket(
             private val section: Section,
-            private val patchHolderEditor: PatchHolderEditor?
+            private val mutablePatchHolder: MutablePatchHolder?
         ) : DropTarget {
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlPanel"
@@ -141,11 +139,11 @@ class ControlDisplay(
             }
 
             override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-                patchHolderEditor!!
+                mutablePatchHolder!!
 
-                val controlLayoutEditor = patchHolderEditor.editControlLayout(panelTitle)
-                val controlEditor = controlLayoutEditor.removeAt(fromIndex)
-                controlLayoutEditor.add(toIndex, controlEditor)
+                val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
+                val mutableControl = mutableControls.removeAt(fromIndex)
+                mutableControls.add(toIndex, mutableControl)
                 commitEdit()
             }
 
@@ -158,10 +156,10 @@ class ControlDisplay(
             }
 
             override fun insertDraggable(draggable: Draggable, index: Int) {
-                patchHolderEditor!!
+                mutablePatchHolder!!
                 draggable as PlaceableControl
-                val controlLayoutEditor = patchHolderEditor.editControlLayout(panelTitle)
-                controlLayoutEditor.add(index, draggable.controlEditor)
+                val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
+                mutableControls.add(index, draggable.mutableControl)
             }
 
             override fun removeDraggable(draggable: Draggable) {
@@ -170,15 +168,15 @@ class ControlDisplay(
             }
 
             inner class PlacedControl(val control: Control, val index: Int) : PlaceableControl {
-                override lateinit var controlEditor: ControlEditor
+                override lateinit var mutableControl: MutableControl
 
                 override fun onMove() {
                     commitEdit()
                 }
 
                 override fun remove() {
-                    patchHolderEditor!!
-                    controlEditor = patchHolderEditor.removeControl(panelTitle, index)
+                    mutablePatchHolder!!
+                    mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
                 }
             }
         }
@@ -209,8 +207,8 @@ class ControlDisplay(
     }
 
     inner class UnplacedControl(val index: Int) : PlaceableControl {
-        override val controlEditor: ControlEditor
-            get() = ControlEditor(unplacedControls[index])
+        override val mutableControl: MutableControl
+            get() = MutableControl(unplacedControls[index])
 
         override fun remove() {
             // No-op.
@@ -222,7 +220,7 @@ class ControlDisplay(
     }
 
     interface PlaceableControl : Draggable {
-        val controlEditor: ControlEditor
+        val mutableControl: MutableControl
 
         fun remove()
     }

@@ -4,8 +4,8 @@ import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderOutPortRef
-import baaahs.show.mutable.PatchEditor
-import baaahs.show.mutable.ShaderOutPortEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderOutPort
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -41,7 +41,7 @@ object OpenPatchSpec : Spek({
 
             describe("#toGlsl") {
                 val linkedPatch by value {
-                    PatchEditor {
+                    MutablePatch {
                         addShaderInstance(shader) {
                             link("gl_FragCoord", CorePlugin.ScreenUvCoord())
                             link("resolution", CorePlugin.Resolution())
@@ -103,7 +103,7 @@ object OpenPatchSpec : Spek({
 
                 context("with UV translation shader") {
                     override(linkedPatch) {
-                        PatchEditor {
+                        MutablePatch {
                             addShaderInstance(cylindricalUvMapper.shader) {
                                 link("pixelCoordsTexture", CorePlugin.PixelCoordsTexture())
                                 link("modelInfo", CorePlugin.ModelInfoDataSource("ModelInfo"))
@@ -113,7 +113,7 @@ object OpenPatchSpec : Spek({
                             addShaderInstance(openShader.shader) {
                                 link(
                                     "gl_FragCoord",
-                                    ShaderOutPortEditor(
+                                    MutableShaderOutPort(
                                         findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue
                                     )
                                 )

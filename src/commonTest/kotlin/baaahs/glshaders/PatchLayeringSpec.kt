@@ -4,9 +4,9 @@ import baaahs.glsl.Shaders
 import baaahs.show.Shader
 import baaahs.show.Surfaces
 import baaahs.show.live.ShowOpener
-import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.show.mutable.ShowEditor
 import baaahs.shows.FakeGlslContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
@@ -17,7 +17,7 @@ object PatchLayeringSpec : Spek({
     describe("Layering of patch links") {
         val autoWirer by value { AutoWirer(Plugins.safe()) }
 
-        fun autoWire(vararg shaders: Shader): PatchEditor {
+        fun autoWire(vararg shaders: Shader): MutablePatch {
             return autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve()
         }
 
@@ -34,7 +34,7 @@ object PatchLayeringSpec : Spek({
         val saturationFilter by value {
             Shader("// Saturation Filter\nvec4 filterImage(vec4 colorIn) { return colorIn; }")
         }
-        val showEditor by value { ShowEditor("test show") }
+        val showEditor by value { MutableShow("test show") }
         val show by value {
             val show = showEditor.build(ShowBuilder())
             ShowOpener(show, FakeShowPlayer(FakeGlslContext())).openShow()
