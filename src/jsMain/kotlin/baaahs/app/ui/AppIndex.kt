@@ -361,7 +361,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         val newPatch = autoWirer.autoWire(Shader(shader.src))
                                             .resolve()
                                         val mutableShow = MutableShow(show, showState)
-                                        showState.findPatchSetEditor(mutableShow)?.apply {
+                                        showState.findMutablePatchSet(mutableShow)?.apply {
                                             patchMappings.clear() // TODO not this.
                                             addPatch(newPatch)
                                         }
