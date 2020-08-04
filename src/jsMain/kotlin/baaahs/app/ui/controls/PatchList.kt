@@ -1,6 +1,5 @@
 package baaahs.app.ui.controls
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
@@ -8,6 +7,7 @@ import baaahs.app.ui.appContext
 import baaahs.show.PatchHolderEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
+import baaahs.show.live.OpenShow
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom

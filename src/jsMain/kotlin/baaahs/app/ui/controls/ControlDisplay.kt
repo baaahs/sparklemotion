@@ -1,6 +1,5 @@
 package baaahs.app.ui.controls
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.Draggable
@@ -8,6 +7,7 @@ import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.*
+import baaahs.show.live.OpenShow
 
 class ControlDisplay(
     show: OpenShow,

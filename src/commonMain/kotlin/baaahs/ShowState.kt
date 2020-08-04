@@ -3,6 +3,7 @@ package baaahs
 import baaahs.show.PatchHolderEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
+import baaahs.show.live.OpenShow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.math.min

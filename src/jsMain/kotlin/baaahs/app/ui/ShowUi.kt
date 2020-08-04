@@ -1,8 +1,8 @@
 package baaahs.app.ui
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
 import baaahs.ui.xComponent
 import external.dragDropContext
 import react.*

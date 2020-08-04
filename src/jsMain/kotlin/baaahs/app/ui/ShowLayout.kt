@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
@@ -8,6 +7,7 @@ import baaahs.app.ui.controls.control
 import baaahs.show.Layout
 import baaahs.show.Show
 import baaahs.show.ShowBuilder
+import baaahs.show.live.OpenShow
 import baaahs.ui.*
 import external.Direction
 import external.draggable

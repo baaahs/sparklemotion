@@ -10,6 +10,7 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.serialization.modules.SerializersModule

@@ -14,13 +14,6 @@ import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerialModuleCollector
 import kotlin.reflect.KClass
 
-interface PatchHolder {
-    val title: String
-    val patches: List<Patch>
-    val eventBindings: List<EventBinding>
-    val controlLayout: Map<String, List<ControlRef>>
-}
-
 @Serializable
 data class Show(
     override val title: String,

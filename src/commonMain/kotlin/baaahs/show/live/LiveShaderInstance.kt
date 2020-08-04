@@ -1,6 +1,5 @@
 package baaahs.show.live
 
-import baaahs.OpenShow
 import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.glshaders.AutoWirer
