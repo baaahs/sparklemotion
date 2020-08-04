@@ -1,10 +1,11 @@
 package baaahs
 
-import baaahs.OpenShow.OpenScene.OpenPatchSet
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslRenderer
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
+import baaahs.show.live.OpenShow.OpenScene.OpenPatchSet
 
 class ShowRunner(
     val show: Show,

@@ -1,32 +1,10 @@
-package baaahs
+package baaahs.show.live
 
-import baaahs.show.*
-import baaahs.show.live.LiveShaderInstance
-
-open class OpenPatchHolder(
-    patchHolder: PatchHolder,
-    allShaderInstances: Map<String, LiveShaderInstance>,
-    allDataSources: Map<String, DataSource>
-) {
-    val title = patchHolder.title
-    val patches = patchHolder.patches.map { OpenPatch(it, allShaderInstances) }
-
-    val controlLayout: Map<String, List<Control>> = patchHolder.controlLayout.mapValues { (_, controlRefs) ->
-        controlRefs.map { it.dereference(allDataSources) }
-    }
-}
-
-class OpenPatch(
-    val shaderInstances: List<LiveShaderInstance>,
-    val surfaces: Surfaces
-) {
-    constructor(patch: Patch, allShaderInstances: Map<String, LiveShaderInstance>): this(
-        patch.shaderInstanceIds.map {
-            allShaderInstances.getBang(it, "shader instance")
-        },
-        patch.surfaces
-    )
-}
+import baaahs.*
+import baaahs.show.PatchSet
+import baaahs.show.Scene
+import baaahs.show.Show
+import baaahs.show.ShowEditor
 
 class OpenShow(
     private val show: Show,

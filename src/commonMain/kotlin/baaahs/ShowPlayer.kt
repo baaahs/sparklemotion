@@ -10,6 +10,7 @@ import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {

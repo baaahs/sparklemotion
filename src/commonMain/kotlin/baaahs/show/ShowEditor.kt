@@ -1,6 +1,5 @@
 package baaahs.show
 
-import baaahs.OpenPatch
 import baaahs.ShowState
 import baaahs.getBang
 import baaahs.glshaders.AutoWirer
@@ -8,6 +7,7 @@ import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
 import baaahs.randomId
+import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 import kotlinx.serialization.*

@@ -1,10 +1,10 @@
 package baaahs.glshaders
 
 import baaahs.Logger
-import baaahs.OpenPatch
-import baaahs.OpenPatchHolder
 import baaahs.show.*
 import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.OpenPatch
+import baaahs.show.live.OpenPatchHolder
 import baaahs.unknown
 
 class AutoWirer(val plugins: Plugins) {
