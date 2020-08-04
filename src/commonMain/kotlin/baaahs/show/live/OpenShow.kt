@@ -4,7 +4,7 @@ import baaahs.*
 import baaahs.show.PatchSet
 import baaahs.show.Scene
 import baaahs.show.Show
-import baaahs.show.mutable.ShowEditor
+import baaahs.show.mutable.MutableShow
 
 class OpenShow(
     private val show: Show,
@@ -22,8 +22,8 @@ class OpenShow(
     }
     val scenes = show.scenes.map { OpenScene(it) }
 
-    fun edit(showState: ShowState, block: ShowEditor.() -> Unit = {}): ShowEditor =
-        ShowEditor(show, showState).apply(block)
+    fun edit(showState: ShowState, block: MutableShow.() -> Unit = {}): MutableShow =
+        MutableShow(show, showState).apply(block)
 
     override fun onFullRelease() {
         allShaderInstances.values.forEach { it.release() }

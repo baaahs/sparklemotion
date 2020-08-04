@@ -16,8 +16,8 @@ import baaahs.glsl.GlslException
 import baaahs.io.Fs
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
-import baaahs.show.mutable.PatchEditor
-import baaahs.show.mutable.ShaderEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShader
 import kotlinext.js.jsObject
 import kotlinx.css.px
 import kotlinx.html.js.onClickFunction
@@ -64,12 +64,12 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val maybeUpdatePatch = useCallback(showGlslErrors) {
         val selectedShader = activeShader.current
             ?: return@useCallback
-        val needsUpdate = selectedShader.patch == null
+        val needsUpdate = selectedShader.mutablePatch == null
         val notActivelyEditing = selectedShader.lastModified < clock.now() - .25
         val alreadyFoundErrors = selectedShader.glslErrors.isNotEmpty()
         if (needsUpdate && notActivelyEditing && !alreadyFoundErrors) {
             try {
-                selectedShader.patch =
+                selectedShader.mutablePatch =
                     appContext.autoWirer
                         .autoWire(Shader(selectedShader.src))
                         .resolve()
@@ -81,7 +81,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 selectedShader.glslErrors = arrayOf(GlslError(e.message ?: e.toString()))
                 showGlslErrors(selectedShader.glslErrors)
             }
-            curPatch = selectedShader.patch?.openForPreview()
+            curPatch = selectedShader.mutablePatch?.openForPreview()
         }
     }
 
@@ -90,10 +90,10 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         withCleanup { window.clearInterval(interval) }
     }
 
-    onChange("different shader being edited", props.shaderEditor, aceEditor.current) {
+    onChange("different shader being edited", props.mutableShader, aceEditor.current) {
         activeShader.current?.lastCursorPosition = aceEditor.current?.editor?.getCursorPosition()
 
-        val selectedShader = props.shaderEditor?.let { EditingShader(it) }
+        val selectedShader = props.mutableShader?.let { EditingShader(it) }
         activeShader.current = selectedShader
 
         if (selectedShader == null) {
@@ -112,7 +112,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
             src = newSrc
             isModified = true
             lastModified = clock.now()
-            patch = null
+            mutablePatch = null
             gadgets = null
             glslErrors = emptyArray()
         }
@@ -259,20 +259,20 @@ data class ExtractionCandidate(
 )
 
 data class EditingShader(
-    val shaderEditor: ShaderEditor,
+    val mutableShader: MutableShader,
     var isModified: Boolean = false,
     val file: Fs.File? = null
 ) {
-    var title: String = shaderEditor.title
+    var title: String = mutableShader.title
     var src: String
-        get() = shaderEditor.shader.src
+        get() = mutableShader.shader.src
         set(value) {
-            shaderEditor.shader = Shader(value)
+            mutableShader.shader = Shader(value)
         }
 
     var lastCursorPosition: Point? = null
     var lastModified: Time = clock.now()
-    var patch: PatchEditor? = null
+    var mutablePatch: MutablePatch? = null
     var gadgets: Array<GadgetData>? = null
     var glslErrors: Array<GlslError> = emptyArray()
 }
@@ -285,7 +285,7 @@ private val glslNumberClassName = Styles.glslNumber.name
 private val clock = JsClock()
 
 external interface ShaderEditorProps : RProps {
-    var shaderEditor: ShaderEditor?
+    var mutableShader: MutableShader?
     var onChange: () -> Unit
 }
 

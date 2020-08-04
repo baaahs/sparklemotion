@@ -1,7 +1,7 @@
 package baaahs.ui
 
-import baaahs.show.mutable.PatchEditor
-import baaahs.show.mutable.PatchHolderEditor
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -42,10 +42,10 @@ fun <T> Event.targetEl(): T = target as T
 val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") { props ->
     val textField = ref<HTMLInputElement>()
 
-    val changed = props.editor.isChanged()
+    val changed = props.mutablePatchHolder.isChanged()
 
-    val handleTitleChange = useCallback(props.editor) { event: Event ->
-        props.editor.title = event.targetEl<HTMLInputElement>().value
+    val handleTitleChange = useCallback(props.mutablePatchHolder) { event: Event ->
+        props.mutablePatchHolder.title = event.targetEl<HTMLInputElement>().value
         forceRender()
     }
 
@@ -62,7 +62,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
             attrs.open = true
             attrs.onClose = handleDrawerClose
 
-            dialogTitle { +"${props.editor.displayType} Editor" }
+            dialogTitle { +"${props.mutablePatchHolder.displayType} Editor" }
 
             dialogContent {
                 form {
@@ -78,7 +78,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                         attrs.autoFocus = true
                         attrs.variant = FormControlVariant.outlined
                         attrs.label = "Title".asTextNode()
-                        attrs.value = props.editor.title
+                        attrs.value = props.mutablePatchHolder.title
                         attrs.onChangeFunction = handleTitleChange
                     }
 
@@ -99,10 +99,10 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                             }
                         }
                         tableBody {
-                            props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
+                            props.mutablePatchHolder.patchMappings.forEachIndexed { index: Int, mutablePatch: MutablePatch ->
                                 patchEditor {
-                                    attrs.patchEditor = patchEditor
-                                    attrs.patchHolderEditor = props.editor
+                                    attrs.mutablePatch = mutablePatch
+                                    attrs.mutablePatchHolder = props.mutablePatchHolder
                                     attrs.onChange = { this@xComponent.forceRender() }
                                 }
                             }
@@ -118,7 +118,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                                         typography { +"New Patch…" }
 
                                         attrs.onClickFunction = {
-                                            props.editor.patchMappings.add(PatchEditor())
+                                            props.mutablePatchHolder.patchMappings.add(MutablePatch())
                                             this@xComponent.forceRender()
                                         }
                                     }
@@ -168,7 +168,7 @@ object PatchHolderStyles : StyleSheet("ui-PatchHolderEditor", isStatic = true) {
 }
 
 external interface PatchHolderEditorProps : RProps {
-    var editor: PatchHolderEditor
+    var mutablePatchHolder: MutablePatchHolder
     var onApply: () -> Unit
     var onCancel: () -> Unit
 }

@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class PortRef {
-    abstract fun dereference(showEditor: ShowEditor): LinkEditor.Port
+    abstract fun dereference(showEditor: MutableShow): MutableLink.Port
 }
 
 @Serializable @SerialName("datasource")
 data class DataSourceRef(val dataSourceId: String) : PortRef() {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
+    override fun dereference(showEditor: MutableShow): MutableLink.Port =
         showEditor.dataSources.getBang(dataSourceId, "datasource")
 }
 
@@ -24,8 +24,8 @@ interface ShaderPortRef {
 data class ShaderOutPortRef(val shaderInstanceId: String, val portId: String = ReturnValue) : PortRef() {
     fun isReturnValue() = portId == ReturnValue
 
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        ShaderOutPortEditor(
+    override fun dereference(showEditor: MutableShow): MutableLink.Port =
+        MutableShaderOutPort(
             showEditor.shaderInstances.getBang(
                 shaderInstanceId,
                 "shader instance"
@@ -39,12 +39,12 @@ data class ShaderOutPortRef(val shaderInstanceId: String, val portId: String = R
 
 @Serializable @SerialName("shader-channel")
 data class ShaderChannelRef(val shaderChannel: ShaderChannel) : PortRef() {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        ShaderChannelEditor(shaderChannel)
+    override fun dereference(showEditor: MutableShow): MutableLink.Port =
+        MutableShaderChannel(shaderChannel)
 }
 
 @Serializable @SerialName("output")
 data class OutputPortRef(val portId: String) : PortRef() {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        OutputPortEditor(portId)
+    override fun dereference(showEditor: MutableShow): MutableLink.Port =
+        MutableOutputPort(portId)
 }

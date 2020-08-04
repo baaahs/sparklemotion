@@ -2,8 +2,7 @@ package baaahs
 
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.PatchHolderEditor
-import baaahs.show.mutable.ShowEditor
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.math.min
@@ -27,7 +26,7 @@ data class ShowState(
         return show.scenes[selectedScene]
     }
 
-    fun findSceneEditor(showEditor: ShowEditor?): ShowEditor.SceneEditor? {
+    fun findSceneEditor(showEditor: MutableShow?): MutableShow.MutableScene? {
         if (selectedScene == -1) return null
         return showEditor?.getSceneEditor(selectedScene)
     }
@@ -51,7 +50,7 @@ data class ShowState(
         return scene.patchSets[selectedPatchSet]
     }
 
-    fun findPatchSetEditor(showEditor: ShowEditor?): PatchHolderEditor? {
+    fun findPatchSetEditor(showEditor: MutableShow?): MutableShow.MutableScene.MutablePatchSet? {
         if (selectedPatchSet == -1) return null
 
         val sceneEditor = findSceneEditor(showEditor)

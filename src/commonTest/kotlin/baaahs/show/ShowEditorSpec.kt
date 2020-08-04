@@ -6,8 +6,8 @@ import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFactory
 import baaahs.glshaders.override
 import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.show.mutable.ShowEditor
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -20,7 +20,7 @@ object ShowEditorSpec : Spek({
         val shader2a by value { autoWirer.testPatch("shader 2a") }
 
         val baseShowEditor by value {
-            ShowEditor("test show").apply {
+            MutableShow("test show").apply {
                 addScene("scene 1") {
                     addPatchSet("patchset 1a") { addPatch(shader1a) }
                 }
@@ -35,7 +35,7 @@ object ShowEditorSpec : Spek({
         val baseShow by value { baseShowEditor.build(ShowBuilder()) }
         fun Show.showState() = ShowState.forShow(this).selectScene(1).selectPatchSet(1)
         val baseShowState by value { baseShow.showState() }
-        val showEditor by value { ShowEditor(baseShow, baseShowState) }
+        val showEditor by value { MutableShow(baseShow, baseShowState) }
         val show by value { showEditor.build(ShowBuilder()) }
         val showState by value { showEditor.getShowState() }
 
