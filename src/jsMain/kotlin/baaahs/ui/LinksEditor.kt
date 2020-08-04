@@ -3,7 +3,9 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.glshaders.InputPort
 import baaahs.glshaders.OutputPort
-import baaahs.show.*
+import baaahs.show.DataSource
+import baaahs.show.ShaderChannel
+import baaahs.show.mutable.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.AddCircleOutline
@@ -151,7 +153,9 @@ interface SourcePortOption {
 
 class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
-    override val portEditor: LinkEditor.Port get() = DataSourceEditor(dataSource)
+    override val portEditor: LinkEditor.Port get() = DataSourceEditor(
+        dataSource
+    )
     override val groupName: String get() = "dataSource"
 
     override fun matches(otherPort: LinkEditor.Port): Boolean {
@@ -165,7 +169,9 @@ class DataSourceOption(val dataSource: DataSource): SourcePortOption {
 
 class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     override val title: String get() = "${shaderChannel.id} shader channel"
-    override val portEditor: LinkEditor.Port get() = ShaderChannelEditor(shaderChannel)
+    override val portEditor: LinkEditor.Port get() = ShaderChannelEditor(
+        shaderChannel
+    )
     override val groupName: String get() = "shaderChannel"
 
     override fun matches(otherPort: LinkEditor.Port): Boolean {
@@ -179,7 +185,10 @@ class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
 
 class ShaderOption(val editor: ShaderInstanceEditor, val outputPort: OutputPort): SourcePortOption {
     override val title: String get() = "${editor.shader.title} output"
-    override val portEditor: LinkEditor.Port get() = ShaderOutPortEditor(editor, outputPort.id)
+    override val portEditor: LinkEditor.Port get() = ShaderOutPortEditor(
+        editor,
+        outputPort.id
+    )
     override val groupName: String get() = "shaderPort"
 
     override fun matches(otherPort: LinkEditor.Port): Boolean {

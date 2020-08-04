@@ -6,7 +6,7 @@ import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.show.Shader
-import baaahs.show.ShaderEditor
+import baaahs.show.mutable.ShaderEditor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

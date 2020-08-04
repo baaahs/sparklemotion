@@ -1,7 +1,11 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.*
+import baaahs.show.Shader
+import baaahs.show.ShaderChannel
+import baaahs.show.ShaderOutPortRef
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.ShaderOutPortEditor
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -107,7 +111,12 @@ object OpenPatchSpec : Spek({
                             }
 
                             addShaderInstance(openShader.shader) {
-                                link("gl_FragCoord", ShaderOutPortEditor(findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue))
+                                link(
+                                    "gl_FragCoord",
+                                    ShaderOutPortEditor(
+                                        findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue
+                                    )
+                                )
                                 link("resolution", CorePlugin.Resolution())
                                 link("time", CorePlugin.Time())
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))

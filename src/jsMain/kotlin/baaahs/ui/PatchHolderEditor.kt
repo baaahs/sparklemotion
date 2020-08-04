@@ -1,7 +1,7 @@
 package baaahs.ui
 
-import baaahs.show.PatchEditor
-import baaahs.show.PatchHolderEditor
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.PatchHolderEditor
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction

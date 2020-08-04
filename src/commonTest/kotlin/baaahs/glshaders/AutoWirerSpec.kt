@@ -1,7 +1,12 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.*
+import baaahs.show.Shader
+import baaahs.show.ShaderChannel
+import baaahs.show.mutable.DataSourceEditor
+import baaahs.show.mutable.ShaderChannelEditor
+import baaahs.show.mutable.ShaderEditor
+import baaahs.show.mutable.ShaderInstanceEditor
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -43,9 +48,12 @@ object AutoWirerSpec : Spek({
                             hashMapOf(
                                 "time" to DataSourceEditor(CorePlugin.Time()),
                                 "blueness" to DataSourceEditor(
-                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
+                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                ),
                                 "resolution" to DataSourceEditor(CorePlugin.Resolution()),
-                                "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
+                                "gl_FragCoord" to ShaderChannelEditor(
+                                    ShaderChannel.Main
+                                )
                             ),
                             shaderChannel = ShaderChannel.Main
                         )
@@ -55,7 +63,11 @@ object AutoWirerSpec : Spek({
 
             context("with a UV projection shader") {
                 val uvShader = cylindricalUvMapper.shader
-                val uvShaderInst by value { ShaderInstanceEditor(ShaderEditor(uvShader)) }
+                val uvShaderInst by value {
+                    ShaderInstanceEditor(
+                        ShaderEditor(uvShader)
+                    )
+                }
 
                 override(shaders) { arrayOf(colorShader, uvShader) }
 
@@ -68,15 +80,24 @@ object AutoWirerSpec : Spek({
                                     "time" to DataSourceEditor(CorePlugin.Time()),
                                     "resolution" to DataSourceEditor(CorePlugin.Resolution()),
                                     "blueness" to DataSourceEditor(
-                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
-                                    "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
+                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                    ),
+                                    "gl_FragCoord" to ShaderChannelEditor(
+                                        ShaderChannel.Main
+                                    )
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             ),
                             uvShaderInst.apply {
                                 incomingLinks.putAll(mapOf(
-                                    "pixelCoordsTexture" to DataSourceEditor(CorePlugin.PixelCoordsTexture()),
-                                    "modelInfo" to DataSourceEditor(CorePlugin.ModelInfoDataSource("ModelInfo"))
+                                    "pixelCoordsTexture" to DataSourceEditor(
+                                        CorePlugin.PixelCoordsTexture()
+                                    ),
+                                    "modelInfo" to DataSourceEditor(
+                                        CorePlugin.ModelInfoDataSource(
+                                            "ModelInfo"
+                                        )
+                                    )
                                 ))
                                 shaderChannel = ShaderChannel.Main
                             }
@@ -105,7 +126,9 @@ object AutoWirerSpec : Spek({
                                     "brightness" to DataSourceEditor(
                                         CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragColor" to ShaderChannelEditor(ShaderChannel.Main)
+                                    "gl_FragColor" to ShaderChannelEditor(
+                                        ShaderChannel.Main
+                                    )
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             )

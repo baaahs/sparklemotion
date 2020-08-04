@@ -4,8 +4,11 @@ import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
 import baaahs.glshaders.Plugins
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.ShaderInstanceEditor
+import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.ShowEditor
+import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
@@ -146,6 +149,30 @@ data class ShaderInstance(
     companion object {
         fun from(editor: ShaderInstanceEditor, showBuilder: ShowBuilder): ShaderInstance {
             return editor.build(showBuilder)
+        }
+    }
+}
+
+@Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
+data class ShaderChannel(val id: String) {
+    companion object {
+        val Main = ShaderChannel("main")
+    }
+
+    class ShaderChannelSerializer :
+        KSerializer<ShaderChannel> {
+        override val descriptor: SerialDescriptor
+            get() = PrimitiveDescriptor(
+                "id",
+                PrimitiveKind.STRING
+            )
+
+        override fun deserialize(decoder: Decoder): ShaderChannel {
+            return ShaderChannel(decoder.decodeString())
+        }
+
+        override fun serialize(encoder: Encoder, value: ShaderChannel) {
+            encoder.encodeString(value.id)
         }
     }
 }

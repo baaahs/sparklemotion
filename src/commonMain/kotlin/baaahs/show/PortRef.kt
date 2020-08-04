@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.getBang
+import baaahs.show.mutable.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,12 @@ data class ShaderOutPortRef(val shaderInstanceId: String, val portId: String = R
     fun isReturnValue() = portId == ReturnValue
 
     override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        ShaderOutPortEditor(showEditor.shaderInstances.getBang(shaderInstanceId, "shader instance"), portId)
+        ShaderOutPortEditor(
+            showEditor.shaderInstances.getBang(
+                shaderInstanceId,
+                "shader instance"
+            ), portId
+        )
 
     companion object {
         const val ReturnValue = "_"

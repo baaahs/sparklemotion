@@ -2,10 +2,10 @@ package baaahs.ui
 
 import baaahs.app.ui.appContext
 import baaahs.glshaders.OpenShader
-import baaahs.show.PatchEditor
-import baaahs.show.PatchHolderEditor
 import baaahs.show.Shader
-import baaahs.show.ShowBuilder
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.PatchHolderEditor
+import baaahs.show.mutable.ShowBuilder
 import kotlinx.css.px
 import kotlinx.html.js.onClickFunction
 import materialui.*

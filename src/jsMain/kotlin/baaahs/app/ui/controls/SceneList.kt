@@ -4,9 +4,9 @@ import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
-import baaahs.show.PatchHolderEditor
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.PatchHolderEditor
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
