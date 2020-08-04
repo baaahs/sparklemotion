@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.OpenPatch
+import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.glsl.GlslRenderer
@@ -11,12 +11,15 @@ import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
-import baaahs.show.*
+import baaahs.show.Show
+import baaahs.show.Surfaces
+import baaahs.show.buildEmptyShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
 
 class StageManager(
     plugins: Plugins,
@@ -28,7 +31,7 @@ class StageManager(
     private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
     modelInfo: ModelInfo
-) : BaseShowResources(plugins, modelInfo) {
+) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     override val glslContext: GlslContext
         get() = glslRenderer.gl
@@ -116,15 +119,19 @@ class StageManager(
         showRunner?.let { showRunner ->
             // Unless otherwise instructed, = generate and send the next frame right away,
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
-            if (dontProcrastinate) showRunner.housekeeping()
+            if (dontProcrastinate) housekeeping()
 
             if (showRunner.renderNextFrame()) {
                 surfaceManager.sendFrame()
                 dmxUniverse.sendFrame()
             }
 
-            if (!dontProcrastinate) showRunner.housekeeping()
+            if (!dontProcrastinate) housekeeping()
         }
+    }
+
+    private fun housekeeping() {
+        if (showRunner!!.housekeeping()) facade.notifyChanged()
     }
 
     fun shutDown() {
@@ -139,8 +146,11 @@ class StageManager(
         var showIsUnsaved: Boolean = false
 
         init {
-            val commands = Topics.Commands(remoteFsSerializer)
-            pubSub.listenOnCommandChannel(commands.newShow) { command, reply -> handleNewShow() }
+            val commands = Topics.Commands(SerializersModule {
+                include(remoteFsSerializer.serialModule)
+                include(plugins.serialModule)
+            })
+            pubSub.listenOnCommandChannel(commands.newShow) { command, reply -> handleNewShow(command) }
             pubSub.listenOnCommandChannel(commands.switchToShow) { command, reply -> handleSwitchToShow(command.file) }
             pubSub.listenOnCommandChannel(commands.saveShow) { command, reply -> handleSaveShow() }
             pubSub.listenOnCommandChannel(commands.saveAsShow) { command, reply ->
@@ -148,25 +158,8 @@ class StageManager(
             }
         }
 
-        private fun handleNewShow() {
-            val newShow = ShowEditor("Untitled").apply {
-                addScene("Scene 1") {
-                    addPatchSet("All Dark") {
-                    }
-                }
-                addControl("Scenes", SpecialControl("baaahs.Core:Scenes"))
-                addControl("Patches", SpecialControl("baaahs.Core:Patches"))
-
-                editLayouts {
-                    copyFrom(
-                        Layouts(
-                            listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
-                            mapOf("default" to SampleData.defaultLayout)
-                        )
-                    )
-                }
-            }
-            switchTo(newShow.getShow(), newShow.getShowState())
+        private fun handleNewShow(command: NewShowCommand) {
+            switchTo(command.template ?: buildEmptyShow())
         }
 
         private fun handleSwitchToShow(file: Fs.File?) {
@@ -209,6 +202,12 @@ class StageManager(
     inner class Facade : baaahs.ui.Facade() {
         val currentShow: Show?
             get() = this@StageManager.showRunner?.show
+
+        val currentGlsl: Map<Surfaces, String>?
+            get() = this@StageManager.showRunner?.currentRenderPlan
+                ?.programs?.map { (patch, program) ->
+                    patch.surfaces to program.fragShader.source
+                }?.associate { it }
     }
 }
 
@@ -238,7 +237,7 @@ class RefCounter : RefCounted {
     }
 }
 
-class RenderPlan(val programs: List<Pair<OpenPatch, GlslProgram>>) {
+class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>) {
     fun render(glslRenderer: GlslRenderer) {
         glslRenderer.draw()
     }
@@ -250,7 +249,9 @@ data class ClientData(
 )
 
 @Serializable
-class NewShowCommand {
+class NewShowCommand(
+    val template: Show? = null
+) {
     @Serializable
     class Response
 }

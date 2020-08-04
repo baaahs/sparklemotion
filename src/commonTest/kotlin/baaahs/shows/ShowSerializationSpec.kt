@@ -157,15 +157,14 @@ private fun jsonFor(portRef: PortRef): JsonObject {
             "type" to "datasource"
             "dataSourceId" to portRef.dataSourceId
         }
-        is ShaderInPortRef -> json {
-            "type" to "shader-in"
-            "shaderInstanceId" to portRef.shaderInstanceId
-            "portId" to portRef.portId
-        }
         is ShaderOutPortRef -> json {
             "type" to "shader-out"
             "shaderInstanceId" to portRef.shaderInstanceId
             "portId" to portRef.portId
+        }
+        is ShaderChannelRef -> json {
+            "type" to "shader-channel"
+            "shaderChannel" to portRef.shaderChannel.id
         }
         is OutputPortRef -> json {
             "type" to "output"
@@ -180,7 +179,7 @@ private fun jsonFor(shader: Shader) = json { "src" to shader.src }
 private fun jsonFor(shaderInstance: ShaderInstance) = json {
     "shaderId" to shaderInstance.shaderId
     "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
-    "role" to shaderInstance.role?.id
+    "shaderChannel" to shaderInstance.shaderChannel?.id
 }
 
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {

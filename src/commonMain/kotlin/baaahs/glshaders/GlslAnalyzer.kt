@@ -21,6 +21,7 @@ class GlslAnalyzer {
         val glslObj = analyze(shaderText)
 
         return OpenShader.tryColorShader(glslObj)
+            ?: OpenShader.tryFilterShader(glslObj)
             ?: OpenShader.tryUvTranslatorShader(glslObj)
             ?: throw AnalysisException("Can't determine shader type")
     }

@@ -77,9 +77,13 @@ class ShaderToyColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     override val outputPort: OutputPort =
         OutputPort("vec4", ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
 
-    override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
+    override fun invocationGlsl(
+        namespace: GlslCode.Namespace,
+        resultVar: String,
+        portMap: Map<String, String>
+    ): String {
         return namespace.qualify(entryPoint.name) +
-                "(sm_pixelColor, ${portMap["sm_FragCoord"] ?: "sm_FragCoord"}.xy)"
+                "(${resultVar}, ${portMap["sm_FragCoord"] ?: "sm_FragCoord"}.xy)"
     }
 }
 
@@ -96,9 +100,6 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
         val uvCoordPort = InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
     }
 
-    val wellKnownInputPorts: Map<String, InputPort>
-        get() = GenericColorShader.wellKnownInputPorts
-
     override val entryPoint: GlslCode.GlslFunction =
         glslCode.functions.find { it.name == "main" }!!
 
@@ -114,9 +115,11 @@ class GenericColorShader(glslCode: GlslCode) : ColorShader(glslCode) {
     override val outputPort: OutputPort =
         OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color)
 
-    override fun invocationGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
-        return StringBuilder().apply {
-            append(namespace.qualify(entryPoint.name), "()")
-        }.toString()
+    override fun invocationGlsl(
+        namespace: GlslCode.Namespace,
+        resultVar: String,
+        portMap: Map<String, String>
+    ): String {
+        return namespace.qualify(entryPoint.name) + "()"
     }
 }

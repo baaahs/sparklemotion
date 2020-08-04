@@ -104,7 +104,6 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                         }
                         tableBody {
                             props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
-                                val allShaderInstances = patchEditor.findShaderInstances()
                                 tableRow {
                                     attrs.key = "$index"
 
@@ -117,12 +116,12 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                                         attrs.key = "Patches"
 
                                         +"Shaders:"
-                                        allShaderInstances.forEach { shaderInstance ->
+                                        patchEditor.shaderInstances.forEach { shaderInstance ->
                                             oldPatchEditor {
-                                                attrs.allShaderInstances = allShaderInstances
                                                 attrs.patchEditor = patchEditor
                                                 attrs.showBuilder = showBuilder
                                                 attrs.shaderInstance = shaderInstance
+                                                attrs.shaderChannels = props.editor.findShaderChannels()
                                             }
                                         }
 

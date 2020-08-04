@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
+import baaahs.glsl.Shaders
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -37,28 +38,97 @@ object SampleData {
 
     private val plugins = Plugins.findAll()
     private val autoWirer = AutoWirer(plugins)
-    val redYellowGreenPatch = autoWirer.autoWire(
-        """
-        // GLSL Hue Test Pattern
-        uniform vec2 resolution;
-        void main(void) {
-            gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
-        }
-    """.trimIndent()
-    )
 
-    val blueAquaGreenPatch = autoWirer.autoWire(
-        """
-        // Other GLSL Hue Test Pattern
-        uniform vec2 resolution;
-        uniform float redness;
-        void main(void) {
-            gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);
-        }
-    """.trimIndent()
-    )
+    private val uvShader = autoWirer.autoWire(Shaders.cylindricalUvMapper)
+        .acceptSymbolicChannelLinks().resolve()
 
-    val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
+    private val showDefaultPaint = autoWirer.autoWire(Shader(
+        /**language=glsl*/
+        """
+            // Darkness
+            void main(void) {
+              gl_FragColor = vec4(0., 0., 0., 1.);
+            }
+        """.trimIndent()
+    ))
+        .acceptSymbolicChannelLinks().resolve()
+
+    private val brightnessFilter = autoWirer.autoWire(Shader(
+        /**language=glsl*/
+        """
+            uniform float brightness; // @@Slider min=0 max=1.25 default=1
+
+            vec4 filterImage(vec4 inColor) {
+              vec4 clampedColor = clamp(inColor, 0., 1.);
+              return clampedColor * brightness;
+            }
+        """.trimIndent()
+    ))
+        .acceptSymbolicChannelLinks().resolve()
+
+    private val saturationFilter = autoWirer.autoWire(Shader(
+        /**language=glsl*/
+        """
+            uniform float saturation; // @@Slider min=0 max=1.25 default=1
+
+            // All components are in the range [0…1], including hue.
+            vec3 rgb2hsv(vec3 c)
+            {
+                vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+                vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+                vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+                float d = q.x - min(q.w, q.y);
+                float e = 1.0e-10;
+                return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+            }
+             
+
+            // All components are in the range [0…1], including hue.
+            vec3 hsv2rgb(vec3 c)
+            {
+                vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+                vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+                return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+            }
+            
+            vec4 filterImage(vec4 inColor) {
+              if (saturation == 1.) return inColor;
+              
+              vec4 clampedColor = clamp(inColor, 0., 1.);
+              vec3 hsv = rgb2hsv(clampedColor.rgb);
+              hsv.y *= saturation;
+              return vec4(hsv2rgb(hsv), clampedColor.a);
+            }
+        """.trimIndent()
+    ))
+        .acceptSymbolicChannelLinks().resolve()
+
+    private val redYellowGreenPatch = autoWirer.autoWire(Shader(
+        /**language=glsl*/
+        """
+            // GLSL Hue Test Pattern
+            uniform vec2 resolution;
+            void main(void) {
+                gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
+            }
+        """.trimIndent()
+    )).acceptSymbolicChannelLinks().resolve()
+
+    private val blueAquaGreenPatch = autoWirer.autoWire(Shader(
+        /**language=glsl*/
+        """
+            // Other GLSL Hue Test Pattern
+            uniform vec2 resolution;
+            uniform float redness;
+            void main(void) {
+                gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);
+            }
+        """.trimIndent()
+    )).acceptSymbolicChannelLinks().resolve()
+
+    private val fireBallPatch = autoWirer.autoWire(Shader(FixtureShaders.fireBallGlsl))
+        .acceptSymbolicChannelLinks().resolve()
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
@@ -68,7 +138,9 @@ object SampleData {
 
     val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
     val brightnessControl = CorePlugin.SliderDataSource(
-        "Brightness", 1f, 0f, 1f, null)
+        "Brightness", 1f, 0f, 1.25f, null)
+    val saturationControl = CorePlugin.SliderDataSource(
+        "Saturation", 1f, 0f, 1.25f, null)
     val intensityControl = CorePlugin.SliderDataSource(
         "Intensity", 1f, 0f, 1f, null)
 
@@ -76,6 +148,11 @@ object SampleData {
         editLayouts {
             copyFrom(layouts)
         }
+
+        addPatch(uvShader)
+        addPatch(showDefaultPaint)
+        addPatch(brightnessFilter)
+        addPatch(saturationFilter)
 
         addScene("Pleistocene") {
             addPatchSet("Red Yellow Green") {
@@ -104,5 +181,6 @@ object SampleData {
         addControl("Patches", patchesControl)
         addControl("More Controls", colorControl)
         addControl("More Controls", brightnessControl)
+        addControl("More Controls", saturationControl)
     }.getShow()
 }

@@ -73,7 +73,7 @@ object ColorShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect("p0_main()") { shader.invocationGlsl(namespace) }
+                expect("p0_main()") { shader.invocationGlsl(namespace, "resultVar") }
             }
         }
 
@@ -138,8 +138,8 @@ object ColorShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect("p0_mainImage(sm_pixelColor, sm_FragCoord.xy)") {
-                    shader.invocationGlsl(namespace)
+                expect("p0_mainImage(resultVar, sm_FragCoord.xy)") {
+                    shader.invocationGlsl(namespace, "resultVar")
                 }
             }
         }

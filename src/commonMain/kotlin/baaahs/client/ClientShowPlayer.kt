@@ -6,12 +6,12 @@ import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
 import kotlinx.serialization.json.JsonElement
 
-class ClientShowResources(
+class ClientShowPlayer(
     plugins: Plugins,
     override val glslContext: GlslContext,
     private val pubSub: PubSub.Client,
     modelInfo: ModelInfo
-) : BaseShowResources(plugins, modelInfo) {
+) : BaseShowPlayer(plugins, modelInfo) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
 
     override fun <T : Gadget> createdGadget(id: String, gadget: T) {
