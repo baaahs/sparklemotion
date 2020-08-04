@@ -47,7 +47,7 @@ object SampleData {
         """
             // Darkness
             void main(void) {
-              gl_FragColor = vec4(0., 0., 0., 1.);
+                gl_FragColor = vec4(0., 0., 0., 1.);
             }
         """.trimIndent()
     ))
@@ -59,8 +59,8 @@ object SampleData {
             uniform float brightness; // @@Slider min=0 max=1.25 default=1
 
             vec4 filterImage(vec4 inColor) {
-              vec4 clampedColor = clamp(inColor, 0., 1.);
-              return clampedColor * brightness;
+                vec4 clampedColor = clamp(inColor, 0., 1.);
+                return clampedColor * brightness;
             }
         """.trimIndent()
     ))
@@ -93,12 +93,12 @@ object SampleData {
             }
             
             vec4 filterImage(vec4 inColor) {
-              if (saturation == 1.) return inColor;
-              
-              vec4 clampedColor = clamp(inColor, 0., 1.);
-              vec3 hsv = rgb2hsv(clampedColor.rgb);
-              hsv.y *= saturation;
-              return vec4(hsv2rgb(hsv), clampedColor.a);
+                if (saturation == 1.) return inColor;
+
+                vec4 clampedColor = clamp(inColor, 0., 1.);
+                vec3 hsv = rgb2hsv(clampedColor.rgb);
+                hsv.y *= saturation;
+                return vec4(hsv2rgb(hsv), clampedColor.a);
             }
         """.trimIndent()
     ))

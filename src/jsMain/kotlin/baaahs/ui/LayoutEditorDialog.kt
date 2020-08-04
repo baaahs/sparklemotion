@@ -104,7 +104,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             }
 
             tabs {
-                tab { attrs.label = "Default".asTextNode() }
+                tab { attrs.label { +"Default" } }
             }
 
             reactAce {

@@ -76,6 +76,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.showPlayer = props.showPlayer
             this.dragNDrop = dragNDrop
             this.webClient = webClient
+            this.plugins = webClient.plugins
+            this.autoWirer = AutoWirer(webClient.plugins)
         }
     }
 

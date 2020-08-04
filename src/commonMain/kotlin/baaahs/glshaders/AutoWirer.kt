@@ -10,30 +10,41 @@ import baaahs.unknown
 class AutoWirer(val plugins: Plugins) {
     private val glslAnalyzer = GlslAnalyzer()
 
-    fun autoWire(vararg shaders: Shader): UnresolvedPatchEditor {
-        return autoWire(shaders.map { glslAnalyzer.asShader(it.src) })
+    fun autoWire(
+        vararg shaders: Shader,
+        focus: Shader? = null
+    ): UnresolvedPatchEditor {
+        val openShaders = shaders.associate { it to glslAnalyzer.asShader(it.src) }
+        return autoWire(openShaders.values, focus?.let { openShaders[it] })
     }
 
-    fun autoWire(vararg shaders: OpenShader): UnresolvedPatchEditor {
-        return autoWire(shaders.toList())
+    fun autoWire(
+        vararg shaders: OpenShader,
+        focus: OpenShader? = null
+    ): UnresolvedPatchEditor {
+        return autoWire(shaders.toList(), focus)
     }
 
-    fun autoWire(shaders: List<OpenShader>, shaderChannel: ShaderChannel = ShaderChannel.Main): UnresolvedPatchEditor {
-        val locallyAvailable: MutableMap<ContentType, MutableList<LinkEditor.Port>> = mutableMapOf()
+    fun autoWire(
+        shaders: Collection<OpenShader>,
+        focus: OpenShader? = null,
+        shaderChannel: ShaderChannel = ShaderChannel.Main
+    ): UnresolvedPatchEditor {
+        val locallyAvailable: MutableMap<ContentType, MutableSet<LinkEditor.Port>> = mutableMapOf()
 
         // First pass: gather shader output ports.
         val shaderInstances = shaders.associate { openShader ->
             val unresolvedShaderInstance = UnresolvedShaderInstanceEditor(
                 ShaderEditor(openShader.shader),
-                openShader.inputPorts.map { it.id }.associateWith { arrayListOf<LinkEditor.Port>() },
+                openShader.inputPorts.map { it.id }.associateWith { hashSetOf<LinkEditor.Port>() },
                 shaderChannel
             )
 
-            locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableListOf() }
+            locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
                 .add(UnresolvedShaderOutPortEditor(unresolvedShaderInstance, openShader.outputPort.id))
 
             openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
-                locallyAvailable.getOrPut(contentType) { mutableListOf() }
+                locallyAvailable.getOrPut(contentType) { mutableSetOf() }
                     .add(ShaderChannelEditor(shaderChannel))
             }
 
@@ -41,10 +52,16 @@ class AutoWirer(val plugins: Plugins) {
         }
 
         // Second pass: link datasources/output ports to input ports.
+        val shaderInstancesOfInterest = if (focus == null) {
+            shaderInstances
+        } else {
+            mapOf(focus to (shaderInstances[focus] ?: error("missing shader editor?")))
+        }
+
         val dataSources = hashSetOf<DataSource>()
-        val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
+        val unresolvedShaderInstances = shaderInstancesOfInterest.map { (openShader, unresolvedShaderInstance) ->
             openShader.inputPorts.forEach { inputPort ->
-                val localSuggestions: List<LinkEditor.Port>? = locallyAvailable[inputPort.contentType]
+                val localSuggestions: Set<LinkEditor.Port>? = locallyAvailable[inputPort.contentType]
                 val suggestions = localSuggestions ?: plugins.suggestDataSources(inputPort).map {
                     dataSources.add(it)
                     DataSourceEditor(it)
@@ -66,10 +83,19 @@ class AutoWirer(val plugins: Plugins) {
 
     data class UnresolvedShaderInstanceEditor(
         val shader: ShaderEditor,
-        val incomingLinksOptions: Map<String, MutableList<LinkEditor.Port>>,
+        val incomingLinksOptions: Map<String, MutableSet<LinkEditor.Port>>,
         var shaderChannel: ShaderChannel? = null
     ) {
         fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }
+
+        fun describeAmbiguity(): String {
+            return shader.title + ": " +
+                    incomingLinksOptions
+                        .filter { (_, links) -> links.size > 1 }
+                        .map { (portId, links) ->
+                            "$portId->(${links.joinToString(",") { it.displayName() }}"
+                        }
+        }
 
         fun acceptSymbolicChannelLinks() {
             incomingLinksOptions.values.forEach { options ->
@@ -213,7 +239,11 @@ class AutoWirer(val plugins: Plugins) {
 
         fun resolve(): PatchEditor {
             if (isAmbiguous()) {
-                error("ambiguous! ${unresolvedShaderInstances.filter { it.isAmbiguous() }}")
+                error("ambiguous! " +
+                        unresolvedShaderInstances
+                            .filter { it.isAmbiguous() }
+                            .map { it.describeAmbiguity() }
+                )
             }
 
             // First pass: create a shader instance editor for each shader.

@@ -158,7 +158,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     patchyEditor?.let { editor ->
         patchyEditor {
             attrs.editor = editor
-            attrs.onSave = {
+            attrs.onApply = {
                 props.onEdit(editor.getShow(), editor.getShowState())
                 patchyEditor = null
             }

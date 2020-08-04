@@ -65,6 +65,17 @@ object Styles : StyleSheet("ui", isStatic = true) {
         }
     }
 
+    val shaderTab by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+    }
+
+    val shaderEditor by css {
+        width = 100.pct
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
     val glslNumber by css {
         display = Display.block
         backgroundColor = Color("#0D0")

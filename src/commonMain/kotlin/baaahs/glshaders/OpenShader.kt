@@ -12,12 +12,53 @@ import kotlin.collections.set
 interface OpenShader : RefCounted {
     enum class Type(
         val priority: Int,
-        val defaultUpstreams: Map<ContentType, ShaderChannel>
+        val defaultUpstreams: Map<ContentType, ShaderChannel>,
+        /**language=glsl*/
+        val template: String
     ) {
-        Projection(0, emptyMap()),
-        Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main)),
-        Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main)),
-        Filter(1, mapOf(ContentType.Color to ShaderChannel.Main));
+        Projection(0, emptyMap(), """
+                uniform sampler2D pixelCoordsTexture;
+                
+                struct ModelInfo {
+                    vec3 center;
+                    vec3 extents;
+                };
+                uniform ModelInfo modelInfo;
+
+                vec2 project(vec3 pixelLocation) {
+                    vec3 start = modelInfo.center - modelInfo.extents / 2.;
+                    vec3 rel = (pixelLocation - start) / modelInfo.extents;
+                    return rel.xy;
+                }
+                
+                vec2 mainUvFromRaster(vec2 rasterCoord) {
+                    int rasterX = int(rasterCoord.x);
+                    int rasterY = int(rasterCoord.y);
+                    
+                    vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
+                    return project(pixelCoord);
+                }
+        """.trimIndent()),
+
+        Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
+            // ... TODO
+        """.trimIndent()),
+
+        Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
+            uniform vec2 resolution;
+            uniform float time;
+
+            void main(void) {
+                vec2 position = gl_FragCoord.xy / resolution.xy;
+                gl_FragColor = vec4(position.xy, mod(time, 1.), 1.);
+            }
+        """.trimIndent()),
+
+        Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), """
+            vec4 filterImage(vec4 inColor) {
+                return inColor;
+            }
+        """.trimIndent());
     }
 
     val shader: Shader get() = Shader(src)
