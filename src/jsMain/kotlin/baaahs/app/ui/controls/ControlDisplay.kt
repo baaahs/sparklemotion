@@ -39,7 +39,7 @@ class ControlDisplay(
         patchSet?.let { addControlsToBuckets(patchSet.controlLayout, Section.Patch) }
     }
 
-    private val unplacedControls = show.dataSources.values.filter { !placedControls.contains(it) }
+    private val unplacedControls = show.allDataSources.values.filter { !placedControls.contains(it) }
 
     private fun addControlsToBuckets(
         layoutControls: Map<String, List<Control>>,

@@ -12,6 +12,7 @@ import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
+import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
 
@@ -44,7 +45,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val showResources = ClientShowResources(plugins, glslContext, pubSub, model)
+    private val showPlayer = ClientShowPlayer(plugins, glslContext, pubSub, model)
     private var showStateSynced = false
     private val showEditStateChannel =
         pubSub.subscribe(
@@ -76,7 +77,10 @@ class WebClient(
             return requestId
         }
 
-        private val commands = Topics.Commands(remoteFsSerializer)
+        private val commands = Topics.Commands(SerializersModule {
+            include(remoteFsSerializer.serialModule)
+            include(plugins.serialModule)
+        })
         val newShow = pubSub.commandSender(commands.newShow) {}
         val switchToShow = pubSub.commandSender(commands.switchToShow) {}
         val saveShow = pubSub.commandSender(commands.saveShow) {}
@@ -88,7 +92,7 @@ class WebClient(
         val newShowState = showEditorState?.showState
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { showResources.openShow(newShow) }
+        val newOpenShow = newShow?.let { showPlayer.openShow(newShow) }
         openShow?.release()
         openShow = newOpenShow
         this.show = newShow
@@ -105,7 +109,7 @@ class WebClient(
             this.id = "Client Window"
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
-            this.showResources = this@WebClient.showResources
+            this.showPlayer = this@WebClient.showPlayer
         })
     }
 
@@ -155,8 +159,8 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        fun onNewShow() {
-            serverCommands.newShow(NewShowCommand())
+        fun onNewShow(newShow: Show? = null) {
+            serverCommands.newShow(NewShowCommand(newShow))
         }
 
         fun onOpenShow(file: Fs.File?) {

@@ -143,7 +143,7 @@ data class Shader(
 data class ShaderInstance(
     val shaderId: String,
     val incomingLinks: Map<String, PortRef>,
-    val role: ShaderRole?
+    val shaderChannel: ShaderChannel?
 ) {
     fun findDataSourceRefs(): List<DataSourceRef> {
         return incomingLinks.values.filterIsInstance<DataSourceRef>()
@@ -154,4 +154,24 @@ data class ShaderInstance(
             return editor.build(showBuilder)
         }
     }
+}
+
+fun buildEmptyShow(): Show {
+    return ShowEditor("Untitled").apply {
+        addScene("Scene 1") {
+            addPatchSet("All Dark") {
+            }
+        }
+        addControl("Scenes", SpecialControl("baaahs.Core:Scenes"))
+        addControl("Patches", SpecialControl("baaahs.Core:Patches"))
+
+        editLayouts {
+            copyFrom(
+                Layouts(
+                    listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
+                    mapOf("default" to SampleData.defaultLayout)
+                )
+            )
+        }
+    }.getShow()
 }

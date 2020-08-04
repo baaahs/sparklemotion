@@ -51,7 +51,7 @@ val Control = xComponent<ControlProps>("Control") { props ->
 
             is DataSource -> {
                 val appContext = useContext(appContext)
-                val dataFeed = appContext.showResources.useDataFeed(control)
+                val dataFeed = appContext.showPlayer.useDataFeed(control)
                 val title = (control as? CorePlugin.GadgetDataSource<*>)?.title ?: control.dataSourceName
                 when (control.getRenderType()) {
                     "Slider" -> {

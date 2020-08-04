@@ -1,6 +1,6 @@
 package baaahs.show
 
-import baaahs.ShowResources
+import baaahs.ShowPlayer
 import baaahs.camelize
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.InputPort
@@ -30,7 +30,7 @@ interface DataSource : Control {
     fun getVarName(id: String): String = "in_$id"
 
     fun getRenderType(): String? = null
-    fun createFeed(showResources: ShowResources, id: String): GlslProgram.DataFeed
+    fun createFeed(showPlayer: ShowPlayer, id: String): GlslProgram.DataFeed
     fun suggestId(): String = dataSourceName.camelize()
 
     override fun toControlRef(showBuilder: ShowBuilder): ControlRef {

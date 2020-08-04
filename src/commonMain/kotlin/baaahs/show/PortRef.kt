@@ -19,14 +19,8 @@ interface ShaderPortRef {
     val shaderInstanceId: String
 }
 
-@Serializable @SerialName("shader-in")
-data class ShaderInPortRef(override val shaderInstanceId: String, val portId: String) : PortRef(), ShaderPortRef {
-    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
-        ShaderInPortEditor(showEditor.shaderInstances.getBang(shaderInstanceId, "shader instance"), portId)
-}
-
 @Serializable @SerialName("shader-out")
-data class ShaderOutPortRef(override val shaderInstanceId: String, val portId: String = ReturnValue) : PortRef(), ShaderPortRef {
+data class ShaderOutPortRef(val shaderInstanceId: String, val portId: String = ReturnValue) : PortRef() {
     fun isReturnValue() = portId == ReturnValue
 
     override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
@@ -35,6 +29,12 @@ data class ShaderOutPortRef(override val shaderInstanceId: String, val portId: S
     companion object {
         const val ReturnValue = "_"
     }
+}
+
+@Serializable @SerialName("shader-channel")
+data class ShaderChannelRef(val shaderChannel: ShaderChannel) : PortRef() {
+    override fun dereference(showEditor: ShowEditor): LinkEditor.Port =
+        ShaderChannelEditor(shaderChannel)
 }
 
 @Serializable @SerialName("output")

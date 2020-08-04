@@ -5,6 +5,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFactory
 import baaahs.glshaders.override
+import baaahs.glsl.Shaders.cylindricalUvMapper
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -189,7 +190,9 @@ object ShowEditorSpec : Spek({
 })
 
 private fun AutoWirer.testPatch(title: String) =
-    autoWire(ShaderFactory.colorShader(title))
+    autoWire(cylindricalUvMapper, ShaderFactory.colorShader(title))
+        .acceptSymbolicChannelLinks()
+        .resolve()
 
 private fun Show.desc(): List<String> =
     scenes.map { "${it.title} (${it.patchSets.joinToString(", ") { it.title }})" }

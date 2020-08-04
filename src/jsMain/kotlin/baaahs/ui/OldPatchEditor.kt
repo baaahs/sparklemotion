@@ -2,7 +2,6 @@ package baaahs.ui
 
 import baaahs.app.ui.appContext
 import baaahs.glshaders.*
-import baaahs.glsl.AnalysisException
 import baaahs.show.*
 import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
@@ -35,27 +34,27 @@ import react.dom.h3
 val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props ->
     val appContext = useContext(appContext)
 
-    val sourcePortOptions = memo(props.allShaderInstances, props.shaderInstance) {
-        val shaderOptions = props.allShaderInstances
-            .minus(props.shaderInstance)
-            .sortedBy { it.shader.title }
-            .map { editor ->
-                val openShader = appContext.showResources.openShader(editor.shader.shader)
-                ShaderOption(editor, openShader.outputPort)
-            }
+    val shaderChannelOptions = props.shaderChannels
+        .sortedBy { it.id }
+        .map { shaderChannel -> ShaderChannelOption(shaderChannel) }
 
-        val dataSourceOptions = appContext.showResources.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
-            DataSourceOption(dataSource)
+    val shaderOptions = props.patchEditor.shaderInstances
+        .minus(props.shaderInstance)
+        .sortedBy { it.shader.title }
+        .mapNotNull { editor ->
+            val openShader = appContext.showPlayer.openShaderOrNull(editor.shader.shader)
+            openShader?.let { ShaderOption(editor, it.outputPort) }
         }
 
-        shaderOptions + dataSourceOptions
+    val dataSourceOptions = appContext.showPlayer.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
+        DataSourceOption(dataSource)
     }
+
+    val sourcePortOptions = shaderChannelOptions + shaderOptions + dataSourceOptions
 
     val shaderInstance = props.shaderInstance
     val shader = shaderInstance.shader
-    val openShader = try {
-        appContext.showResources.openShader(shader.shader)
-    } catch (e: AnalysisException) { null }
+    val openShader = appContext.showPlayer.openShaderOrNull(shader.shader)
     val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
     val incomingLinks = props.shaderInstance.incomingLinks
 
@@ -72,7 +71,7 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
                 val previewPatch =
                     AutoWirer(Plugins.findAll()).autoWire(openShader as OpenShader)
                 patchPreview {
-                    attrs.patch = previewPatch.resolve().open()
+                    attrs.patch = previewPatch.resolve().openForPreview()
                     attrs.width = 120.px
                     attrs.height = 75.px
                     attrs.onSuccess = {}
@@ -126,7 +125,7 @@ val OldPatchEditor = xComponent<OldPatchEditorProps>("OldPatchEditor") { props -
                                                     dividerGroup = option.groupName
                                                 }
 
-                                                if (option.matches(currentSourcePort)) {
+                                                if (currentSourcePort != null && option.matches(currentSourcePort)) {
                                                     attrs.value(index.toString())
                                                 }
 
@@ -165,7 +164,7 @@ interface SourcePortOption {
     val title: String
     val portEditor: LinkEditor.Port
     val groupName: String
-    fun matches(otherPort: LinkEditor.Port?): Boolean
+    fun matches(otherPort: LinkEditor.Port): Boolean
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
@@ -174,14 +173,26 @@ class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val portEditor: LinkEditor.Port get() = DataSourceEditor(dataSource)
     override val groupName: String get() = "dataSource"
 
-    override fun matches(otherPort: LinkEditor.Port?): Boolean {
-        return otherPort != null &&
-                otherPort is DataSourceEditor &&
-                otherPort.dataSource == dataSource
+    override fun matches(otherPort: LinkEditor.Port): Boolean {
+        return otherPort is DataSourceEditor && otherPort.dataSource == dataSource
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
         return dataSource.getType() == inputPort.dataType
+    }
+}
+
+class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
+    override val title: String get() = "${shaderChannel.id} shader channel"
+    override val portEditor: LinkEditor.Port get() = ShaderChannelEditor(shaderChannel)
+    override val groupName: String get() = "shaderChannel"
+
+    override fun matches(otherPort: LinkEditor.Port): Boolean {
+        return otherPort is ShaderChannelEditor && otherPort.shaderChannel == shaderChannel
+    }
+
+    override fun isAppropriateFor(inputPort: InputPort): Boolean {
+        return true // We don't have any type info for channel links.
     }
 }
 
@@ -190,9 +201,8 @@ class ShaderOption(val editor: ShaderInstanceEditor, val outputPort: OutputPort)
     override val portEditor: LinkEditor.Port get() = ShaderOutPortEditor(editor, outputPort.id)
     override val groupName: String get() = "shaderPort"
 
-    override fun matches(otherPort: LinkEditor.Port?): Boolean {
-        return otherPort != null &&
-                otherPort is ShaderOutPortEditor &&
+    override fun matches(otherPort: LinkEditor.Port): Boolean {
+        return otherPort is ShaderOutPortEditor &&
                 otherPort.shaderInstance == editor &&
                 otherPort.portId == outputPort.id
     }
@@ -204,10 +214,10 @@ class ShaderOption(val editor: ShaderInstanceEditor, val outputPort: OutputPort)
 
 
 external interface OldPatchEditorProps : RProps {
-    var allShaderInstances: Set<ShaderInstanceEditor>
     var patchEditor: PatchEditor
     var showBuilder: ShowBuilder
     var shaderInstance: ShaderInstanceEditor
+    var shaderChannels: Set<ShaderChannel>
 }
 
 fun RBuilder.oldPatchEditor(handler: RHandler<OldPatchEditorProps>): ReactElement =
