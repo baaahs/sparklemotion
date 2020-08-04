@@ -3,15 +3,15 @@ package baaahs
 import baaahs.show.*
 import baaahs.show.live.LiveShaderInstance
 
-open class OpenPatchy(
-    patchy: Patchy,
+open class OpenPatchHolder(
+    patchHolder: PatchHolder,
     allShaderInstances: Map<String, LiveShaderInstance>,
     allDataSources: Map<String, DataSource>
 ) {
-    val title = patchy.title
-    val patches = patchy.patches.map { OpenPatch(it, allShaderInstances) }
+    val title = patchHolder.title
+    val patches = patchHolder.patches.map { OpenPatch(it, allShaderInstances) }
 
-    val controlLayout: Map<String, List<Control>> = patchy.controlLayout.mapValues { (_, controlRefs) ->
+    val controlLayout: Map<String, List<Control>> = patchHolder.controlLayout.mapValues { (_, controlRefs) ->
         controlRefs.map { it.dereference(allDataSources) }
     }
 }
@@ -32,7 +32,7 @@ class OpenShow(
     private val show: Show,
     private val showPlayer: ShowPlayer,
     private val allShaderInstances: Map<String, LiveShaderInstance>
-) : RefCounted by RefCounter(), OpenPatchy(show, allShaderInstances, show.dataSources) {
+) : RefCounted by RefCounter(), OpenPatchHolder(show, allShaderInstances, show.dataSources) {
     val id = randomId("show")
     val layouts get() = show.layouts
 
@@ -52,14 +52,14 @@ class OpenShow(
         dataFeeds.values.forEach { it.release() }
     }
 
-    inner class OpenScene(scene: Scene) : OpenPatchy(scene, allShaderInstances, show.dataSources) {
+    inner class OpenScene(scene: Scene) : OpenPatchHolder(scene, allShaderInstances, show.dataSources) {
         val id = randomId("scene")
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
-        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchy(patchSet, allShaderInstances, show.dataSources) {
+        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchHolder(patchSet, allShaderInstances, show.dataSources) {
             val id = randomId("patchset")
 
-            fun activePatches(): List<OpenPatchy> {
+            fun activePatches(): List<OpenPatchHolder> {
                 return listOf(this@OpenShow, this@OpenScene, this)
             }
         }

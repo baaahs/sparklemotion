@@ -40,11 +40,11 @@ object ShowSerializationSpec : Spek({
 
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = k to v
 
-private fun JsonObjectBuilder.addPatchy(patchy: Patchy) {
-    "title" to patchy.title
-    "patches" to patchy.patches.jsonMap { jsonFor(it) }
-    "eventBindings" to patchy.eventBindings.jsonMap { jsonFor(it) }
-    "controlLayout" to patchy.controlLayout.jsonMap { it.jsonMap { jsonFor(it) } }
+private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
+    "title" to patchHolder.title
+    "patches" to patchHolder.patches.jsonMap { jsonFor(it) }
+    "eventBindings" to patchHolder.eventBindings.jsonMap { jsonFor(it) }
+    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { jsonFor(it) } }
 }
 
 private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonElement): JsonObject {
@@ -57,7 +57,7 @@ private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
 
 private fun forJson(show: Show): JsonObject {
     return json {
-        addPatchy(show)
+        addPatchHolder(show)
         "scenes" to show.scenes.jsonMap { jsonFor(it) }
         "layouts" to json {
             "panelNames" to show.layouts.panelNames.jsonMap { JsonPrimitive(it) }
@@ -73,7 +73,7 @@ private fun forJson(show: Show): JsonObject {
 
 private fun jsonFor(scene: Scene): JsonObject {
     return json {
-        addPatchy(scene)
+        addPatchHolder(scene)
         "patchSets" to jsonArray {
             for (it in scene.patchSets) {
                 +jsonFor(it)
@@ -84,7 +84,7 @@ private fun jsonFor(scene: Scene): JsonObject {
 
 fun jsonFor(patchSet: PatchSet): JsonElement {
     return json {
-        addPatchy(patchSet)
+        addPatchHolder(patchSet)
     }
 
 }

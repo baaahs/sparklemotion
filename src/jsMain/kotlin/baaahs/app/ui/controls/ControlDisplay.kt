@@ -82,9 +82,9 @@ class ControlDisplay(
 
     inner class PanelBuckets(
         private val panelTitle: String,
-        showEditor: PatchyEditor?,
-        sceneEditor: PatchyEditor?,
-        patchEditor: PatchyEditor?
+        showEditor: PatchHolderEditor?,
+        sceneEditor: PatchHolderEditor?,
+        patchEditor: PatchHolderEditor?
     ) {
         val showBucket = PanelBucket(Section.Show, showEditor)
         val sceneBucket = PanelBucket(Section.Scene, sceneEditor)
@@ -112,7 +112,7 @@ class ControlDisplay(
 
         inner class PanelBucket(
             private val section: Section,
-            private val patchyEditor: PatchyEditor?
+            private val patchHolderEditor: PatchHolderEditor?
         ) : DropTarget {
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlPanel"
@@ -137,9 +137,9 @@ class ControlDisplay(
             }
 
             override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-                patchyEditor!!
+                patchHolderEditor!!
 
-                val controlLayoutEditor = patchyEditor.editControlLayout(panelTitle)
+                val controlLayoutEditor = patchHolderEditor.editControlLayout(panelTitle)
                 val controlEditor = controlLayoutEditor.removeAt(fromIndex)
                 controlLayoutEditor.add(toIndex, controlEditor)
                 commitEdit()
@@ -154,9 +154,9 @@ class ControlDisplay(
             }
 
             override fun insertDraggable(draggable: Draggable, index: Int) {
-                patchyEditor!!
+                patchHolderEditor!!
                 draggable as PlaceableControl
-                val controlLayoutEditor = patchyEditor.editControlLayout(panelTitle)
+                val controlLayoutEditor = patchHolderEditor.editControlLayout(panelTitle)
                 controlLayoutEditor.add(index, draggable.controlEditor)
             }
 
@@ -173,8 +173,8 @@ class ControlDisplay(
                 }
 
                 override fun remove() {
-                    patchyEditor!!
-                    controlEditor = patchyEditor.removeControl(panelTitle, index)
+                    patchHolderEditor!!
+                    controlEditor = patchHolderEditor.removeControl(panelTitle, index)
                 }
             }
         }

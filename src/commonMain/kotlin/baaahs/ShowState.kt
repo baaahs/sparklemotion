@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.show.PatchyEditor
+import baaahs.show.PatchHolderEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import kotlinx.serialization.Serializable
@@ -50,7 +50,7 @@ data class ShowState(
         return scene.patchSets[selectedPatchSet]
     }
 
-    fun findPatchSetEditor(showEditor: ShowEditor?): PatchyEditor? {
+    fun findPatchSetEditor(showEditor: ShowEditor?): PatchHolderEditor? {
         if (selectedPatchSet == -1) return null
 
         val sceneEditor = findSceneEditor(showEditor)

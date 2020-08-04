@@ -2,7 +2,7 @@ package baaahs.glshaders
 
 import baaahs.Logger
 import baaahs.OpenPatch
-import baaahs.OpenPatchy
+import baaahs.OpenPatchHolder
 import baaahs.show.*
 import baaahs.show.live.LiveShaderInstance
 import baaahs.unknown
@@ -108,10 +108,10 @@ class AutoWirer(val plugins: Plugins) {
         }
     }
 
-    fun merge(vararg patchies: OpenPatchy): Map<Surfaces, LinkedPatch> {
+    fun merge(vararg patchHolders: OpenPatchHolder): Map<Surfaces, LinkedPatch> {
         val patchesBySurfaces = mutableMapOf<Surfaces, MutableList<OpenPatch>>()
-        patchies.forEach { openPatchy ->
-            openPatchy.patches.forEach { patch ->
+        patchHolders.forEach { openPatchHolder ->
+            openPatchHolder.patches.forEach { patch ->
                 patchesBySurfaces.getOrPut(patch.surfaces) { arrayListOf() }
                     .add(patch)
             }

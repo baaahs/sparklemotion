@@ -5,7 +5,7 @@ import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
-import baaahs.show.PatchyEditor
+import baaahs.show.PatchHolderEditor
 import baaahs.show.Show
 import baaahs.show.ShowEditor
 import baaahs.ui.*
@@ -59,7 +59,7 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val appContext = useContext(appContext)
-    var patchyEditor by state<PatchyEditor?> { null }
+    var patchHolderEditor by state<PatchHolderEditor?> { null }
     val dropTarget =
         PatchSetListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
@@ -74,13 +74,13 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
             props.showState.findSceneEditor(this)?.editPatchSet(index) {
-                patchyEditor = this
+                patchHolderEditor = this
             }
             event.preventDefault()
         }
     }
 
-    val handleClose = handler("patchyEditor.onClose") { patchyEditor = null }
+    val handleClose = handler("patchHolderEditor.onClose") { patchHolderEditor = null }
 
     card {
         droppable({
@@ -144,7 +144,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                             props.show.edit(props.showState) {
                                 props.showState.findSceneEditor(this)?.apply {
                                     addPatchSet("Untitled Patch") {
-                                        patchyEditor = this
+                                        patchHolderEditor = this
                                     }
                                 }
                             }
@@ -155,12 +155,12 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
         }
     }
 
-    patchyEditor?.let { editor ->
-        patchyEditor {
+    patchHolderEditor?.let { editor ->
+        patchHolderEditor {
             attrs.editor = editor
             attrs.onApply = {
                 props.onEdit(editor.getShow(), editor.getShowState())
-                patchyEditor = null
+                patchHolderEditor = null
             }
             attrs.onCancel = handleClose
         }
