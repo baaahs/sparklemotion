@@ -9,6 +9,46 @@
 <br/>
 <h1>LiveShaderInstance</h1>
 <code><span class="keyword">class </span><span class="identifier">LiveShaderInstance</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-data-source-link/index.html">DataSourceLink</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DataSourceLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-link/index.html">Link</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-no-op-link/index.html">NoOpLink</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">NoOpLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-channel-link/index.html">ShaderChannelLink</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderChannelLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-shader-out-link/index.html">ShaderOutLink</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderOutLink</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Link</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +57,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">LiveShaderInstance</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.PortRef)), baaahs.show.ShaderRole)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.PortRef)), baaahs.show.ShaderRole)/incomingLinks">incomingLinks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-port-ref/index.html"><span class="identifier">PortRef</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.PortRef)), baaahs.show.ShaderRole)/role">role</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-role/index.html"><span class="identifier">ShaderRole</span></a><span class="symbol">?</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">LiveShaderInstance</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance.Link)), baaahs.show.ShaderChannel)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance.Link)), baaahs.show.ShaderChannel)/incomingLinks">incomingLinks</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Link</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.LiveShaderInstance$<init>(baaahs.glshaders.OpenShader, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance.Link)), baaahs.show.ShaderChannel)/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">?</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -29,14 +69,7 @@
 <h4><a href="incoming-links.html">incomingLinks</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">incomingLinks</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-port-ref/index.html"><span class="identifier">PortRef</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="role.html">role</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">role</span><span class="symbol">: </span><a href="../../baaahs.show/-shader-role/index.html"><span class="identifier">ShaderRole</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">incomingLinks</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Link</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -44,6 +77,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-channel.html">shaderChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderChannel</span><span class="symbol">: </span><a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -57,17 +97,19 @@
 <td>
 <code><span class="keyword">fun </span><span class="identifier">findDataSourceRefs</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source-ref/index.html"><span class="identifier">DataSourceRef</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
-</tbody>
-</table>
-<h3>Companion Object Functions</h3>
-<table>
-<tbody>
 <tr>
 <td>
-<h4><a href="from.html">from</a></h4>
+<h4><a href="release.html">release</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">from</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.LiveShaderInstance.Companion$from(baaahs.show.ShaderInstance, kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)))/shaderInstance">shaderInstance</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-instance/index.html"><span class="identifier">ShaderInstance</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.LiveShaderInstance.Companion$from(baaahs.show.ShaderInstance, kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)))/openShaders">openShaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">LiveShaderInstance</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-string.html">toString</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>

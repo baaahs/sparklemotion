@@ -101,10 +101,17 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="find-input-port.html">findInputPort</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">findInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader$findInputPort(kotlin.String)/portId">portId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="invocation-glsl.html">invocationGlsl</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">invocationGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader$invocationGlsl(baaahs.glshaders.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/namespace">namespace</span><span class="symbol">:</span>&nbsp;<span class="identifier">Namespace</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader$invocationGlsl(baaahs.glshaders.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/portMap">portMap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">invocationGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader$invocationGlsl(baaahs.glshaders.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/namespace">namespace</span><span class="symbol">:</span>&nbsp;<span class="identifier">Namespace</span><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader$invocationGlsl(baaahs.glshaders.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/resultVar">resultVar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader$invocationGlsl(baaahs.glshaders.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/portMap">portMap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -124,6 +131,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">tryColorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryColorShader(baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-color-shader/index.html"><span class="identifier">ColorShader</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="try-filter-shader.html">tryFilterShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">tryFilterShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryFilterShader(baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-filter-shader/index.html"><span class="identifier">FilterShader</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>

@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShaderInstanceResolver - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show.live</a>&nbsp;/&nbsp;<a href="./index.html">ShaderInstanceResolver</a><br/>
+<br/>
+<h1>ShaderInstanceResolver</h1>
+<code><span class="keyword">class </span><span class="identifier">ShaderInstanceResolver</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ShaderInstanceResolver</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ShaderInstanceResolver$<init>(kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.ShaderInstance)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/openShaders">openShaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ShaderInstanceResolver$<init>(kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.ShaderInstance)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/shaderInstances">shaderInstances</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-shader-instance/index.html"><span class="identifier">ShaderInstance</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ShaderInstanceResolver$<init>(kotlin.collections.Map((kotlin.String, baaahs.glshaders.OpenShader)), kotlin.collections.Map((kotlin.String, baaahs.show.ShaderInstance)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/dataSources">dataSources</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="data-sources.html">dataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">dataSources</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shaders.html">openShaders</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">openShaders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-instances.html">shaderInstances</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderInstances</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-shader-instance/index.html"><span class="identifier">ShaderInstance</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-resolved-shader-instances.html">getResolvedShaderInstances</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getResolvedShaderInstances</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-hash-map/index.html"><span class="identifier">HashMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

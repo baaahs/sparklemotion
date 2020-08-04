@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BaseShowPlayer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">BaseShowPlayer</a><br/>
+<br/>
+<h1>BaseShowPlayer</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">BaseShowPlayer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-show-player/index.html"><span class="identifier">ShowPlayer</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">BaseShowPlayer</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowPlayer$<init>(baaahs.glshaders.Plugins, baaahs.model.ModelInfo)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BaseShowPlayer$<init>(baaahs.glshaders.Plugins, baaahs.model.ModelInfo)/modelInfo">modelInfo</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="data-sources.html">dataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">dataSources</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="model-info.html">modelInfo</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">modelInfo</span><span class="symbol">: </span><a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="plugins.html">plugins</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-plugins/index.html"><span class="identifier">Plugins</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="open-data-feed.html">openDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowPlayer$openDataFeed(kotlin.String, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BaseShowPlayer$openDataFeed(kotlin.String, baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowPlayer$openShader(baaahs.show.Shader, kotlin.Boolean)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BaseShowPlayer$openShader(baaahs.show.Shader, kotlin.Boolean)/addToCache">addToCache</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release-unused.html">releaseUnused</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">releaseUnused</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-data-feed.html">useDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">useDataFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.BaseShowPlayer$useDataFeed(baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">DataFeed</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../baaahs.client/-client-show-player/index.html">ClientShowPlayer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ClientShowPlayer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BaseShowPlayer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-stage-manager/index.html">StageManager</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">StageManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BaseShowPlayer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
