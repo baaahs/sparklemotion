@@ -1,7 +1,7 @@
 package baaahs.ui
 
 import baaahs.show.PatchEditor
-import baaahs.show.PatchyEditor
+import baaahs.show.PatchHolderEditor
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -39,7 +39,7 @@ import styled.StyleSheet
 @Suppress("UNCHECKED_CAST")
 fun <T> Event.targetEl(): T = target as T
 
-val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
+val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") { props ->
     val textField = ref<HTMLInputElement>()
 
     val changed = props.editor.isChanged()
@@ -55,7 +55,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
 
     val x = this
     portal {
-        drawer(PatchyStyles.drawer on DrawerStyle.paper) {
+        drawer(PatchHolderStyles.drawer on DrawerStyle.paper) {
             attrs.anchor = DrawerAnchor.bottom
             attrs.variant = DrawerVariant.temporary
             attrs.elevation
@@ -82,17 +82,17 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                         attrs.onChangeFunction = handleTitleChange
                     }
 
-                    table(PatchyStyles.patchTable.name) {
+                    table(PatchHolderStyles.patchTable.name) {
                         attrs["stickyHeader"] = true
 
                         tableHead {
                             tableRow {
-                                thCell(PatchyStyles.patchTableSurfacesColumn on TableCellStyle.root) {
+                                thCell(PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root) {
                                     attrs.key = "Surfaces"
                                     +"Surfaces"
                                 }
 
-                                thCell(PatchyStyles.patchTableShadersColumn on TableCellStyle.root) {
+                                thCell(PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root) {
                                     attrs.key = "Shaders"
                                     +"Shaders"
                                 }
@@ -102,7 +102,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
                             props.editor.patchMappings.forEachIndexed { index: Int, patchEditor: PatchEditor ->
                                 patchEditor {
                                     attrs.patchEditor = patchEditor
-                                    attrs.patchyEditor = props.editor
+                                    attrs.patchHolderEditor = props.editor
                                     attrs.onChange = { this@xComponent.forceRender() }
                                 }
                             }
@@ -147,7 +147,7 @@ val PatchyEditor = xComponent<PatchyEditorProps>("PatchSetEditor") { props ->
     }
 }
 
-object PatchyStyles : StyleSheet("ui-PatchyEditor", isStatic = true) {
+object PatchHolderStyles : StyleSheet("ui-PatchHolderEditor", isStatic = true) {
     val drawer by css {
         margin(horizontal = 5.em)
         minHeight = 85.vh
@@ -167,11 +167,11 @@ object PatchyStyles : StyleSheet("ui-PatchyEditor", isStatic = true) {
     }
 }
 
-external interface PatchyEditorProps : RProps {
-    var editor: PatchyEditor
+external interface PatchHolderEditorProps : RProps {
+    var editor: PatchHolderEditor
     var onApply: () -> Unit
     var onCancel: () -> Unit
 }
 
-fun RBuilder.patchyEditor(handler: RHandler<PatchyEditorProps>): ReactElement =
-    child(PatchyEditor, handler = handler)
+fun RBuilder.patchHolderEditor(handler: RHandler<PatchHolderEditorProps>): ReactElement =
+    child(PatchHolderEditor, handler = handler)

@@ -12,23 +12,23 @@ import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 import kotlinx.serialization.*
 
-abstract class PatchyEditor(
-    private val basePatchy: Patchy,
+abstract class PatchHolderEditor(
+    private val basePatchHolder: PatchHolder,
     dataSources: Map<String, DataSource>
 ) {
     abstract val displayType: String
     protected abstract val showEditor: ShowEditor
-    abstract val descendents: List<PatchyEditor>
+    abstract val descendents: List<PatchHolderEditor>
 
-    var title = basePatchy.title
+    var title = basePatchHolder.title
 
     val patchMappings by lazy {
-        basePatchy.patches.map { PatchEditor(it, showEditor) }.toMutableList()
+        basePatchHolder.patches.map { PatchEditor(it, showEditor) }.toMutableList()
     }
-    val eventBindings = basePatchy.eventBindings.toMutableList()
+    val eventBindings = basePatchHolder.eventBindings.toMutableList()
 
     private val controlLayout by lazy {
-        basePatchy.controlLayout
+        basePatchHolder.controlLayout
             .mapValues { (_, v) ->
                 v.map {
                     ControlEditor(it.dereference(dataSources))
@@ -36,19 +36,19 @@ abstract class PatchyEditor(
             }.toMutableMap()
     }
 
-    fun addPatch(block: PatchEditor.() -> Unit): PatchyEditor {
+    fun addPatch(block: PatchEditor.() -> Unit): PatchHolderEditor {
         val patchEditor = PatchEditor(emptyList(), Surfaces.AllSurfaces)
         patchEditor.block()
         patchMappings.add(patchEditor)
         return this
     }
 
-    fun addPatch(patch: PatchEditor): PatchyEditor {
+    fun addPatch(patch: PatchEditor): PatchHolderEditor {
         patchMappings.add(patch)
         return this
     }
 
-    fun editPatch(index: Int, block: PatchEditor.() -> Unit): PatchyEditor {
+    fun editPatch(index: Int, block: PatchEditor.() -> Unit): PatchHolderEditor {
         patchMappings[index].block()
         return this
     }
@@ -100,8 +100,8 @@ abstract class PatchyEditor(
     }
 
     open fun isChanged(): Boolean {
-        return title != basePatchy.title
-                || patchMappings != basePatchy.patches
+        return title != basePatchHolder.title
+                || patchMappings != basePatchHolder.patches
     }
 
     abstract fun getShow(): Show
@@ -110,10 +110,10 @@ abstract class PatchyEditor(
 
 class ShowEditor(
     private val baseShow: Show, baseShowState: ShowState = ShowState.Empty
-) : PatchyEditor(baseShow, baseShow.dataSources) {
+) : PatchHolderEditor(baseShow, baseShow.dataSources) {
     override val displayType: String get() = "Show"
     override val showEditor: ShowEditor get() = this
-    override val descendents: List<PatchyEditor> get() = scenes
+    override val descendents: List<PatchHolderEditor> get() = scenes
 
     internal val dataSources = baseShow.dataSources
         .mapValues { (_, shader) -> DataSourceEditor(shader) }
@@ -205,10 +205,10 @@ class ShowEditor(
         shaderInstances.getBang(id, "shader instance")
 
 
-    inner class SceneEditor(baseScene: Scene) : PatchyEditor(baseScene, baseShow.dataSources) {
+    inner class SceneEditor(baseScene: Scene) : PatchHolderEditor(baseScene, baseShow.dataSources) {
         override val displayType: String get() = "Scene"
         override val showEditor: ShowEditor get() = this@ShowEditor
-        override val descendents: List<PatchyEditor> get() = patchSets
+        override val descendents: List<PatchHolderEditor> get() = patchSets
 
         private val patchSets = baseScene.patchSets.map { PatchSetEditor(it) }.toMutableList()
 
@@ -267,13 +267,13 @@ class ShowEditor(
         override fun getShow() = this@ShowEditor.getShow()
         override fun getShowState() = this@ShowEditor.getShowState()
 
-        inner class PatchSetEditor(basePatchSet: PatchSet) : PatchyEditor(
+        inner class PatchSetEditor(basePatchSet: PatchSet) : PatchHolderEditor(
             basePatchSet,
             baseShow.dataSources
         ) {
             override val displayType: String get() = "Patch"
             override val showEditor: ShowEditor get() = this@ShowEditor
-            override val descendents: List<PatchyEditor> get() = emptyList()
+            override val descendents: List<PatchHolderEditor> get() = emptyList()
 
             fun build(showBuilder: ShowBuilder): PatchSet {
                 return PatchSet(

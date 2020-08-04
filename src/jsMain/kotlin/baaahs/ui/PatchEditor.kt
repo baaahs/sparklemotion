@@ -3,7 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.glshaders.OpenShader
 import baaahs.show.PatchEditor
-import baaahs.show.PatchyEditor
+import baaahs.show.PatchHolderEditor
 import baaahs.show.Shader
 import baaahs.show.ShowBuilder
 import kotlinx.css.px
@@ -40,12 +40,12 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
     tableRow {
         attrs.key = patchEditor.id
 
-        tdCell(PatchyStyles.patchTableSurfacesColumn on TableCellStyle.root) {
+        tdCell(PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root) {
             attrs.key = "Surfaces"
             +patchEditor.surfaces.name
         }
 
-        tdCell(PatchyStyles.patchTableShadersColumn on TableCellStyle.root) {
+        tdCell(PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root) {
             attrs.key = "Shaders"
 
             tabs {
@@ -137,7 +137,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
                             attrs.patchEditor = patchEditor
                             attrs.showBuilder = showBuilder
                             attrs.shaderInstance = shaderInstanceEditor
-                            attrs.shaderChannels = props.patchyEditor.findShaderChannels()
+                            attrs.shaderChannels = props.patchHolderEditor.findShaderChannels()
                             attrs.onChange = props.onChange
                         }
                     }
@@ -163,7 +163,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchMappingEditor") { props ->
 
 external interface PatchEditorProps : RProps {
     var patchEditor: PatchEditor
-    var patchyEditor: PatchyEditor
+    var patchHolderEditor: PatchHolderEditor
     var onChange: () -> Unit
 }
 

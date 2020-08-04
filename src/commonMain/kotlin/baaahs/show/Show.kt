@@ -14,7 +14,7 @@ import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerialModuleCollector
 import kotlin.reflect.KClass
 
-interface Patchy {
+interface PatchHolder {
     val title: String
     val patches: List<Patch>
     val eventBindings: List<EventBinding>
@@ -32,7 +32,7 @@ data class Show(
     val shaders: Map<String, Shader> = emptyMap(),
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
-) : Patchy {
+) : PatchHolder {
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.toJson(serializer(), this)
     }
@@ -66,7 +66,7 @@ data class Scene(
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
-) : Patchy
+) : PatchHolder
 
 @Serializable
 data class PatchSet(
@@ -74,7 +74,7 @@ data class PatchSet(
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap()
-) : Patchy
+) : PatchHolder
 
 @Serializable
 data class Patch(
