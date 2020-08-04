@@ -124,6 +124,7 @@ data class Layout(
 
 @Serializable
 data class Shader(
+    /**language=glsl*/
     val src: String
 ) {
     val title: String

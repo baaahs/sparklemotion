@@ -7,6 +7,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
+import baaahs.randomId
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 import kotlinx.serialization.*
@@ -314,6 +315,8 @@ class LayoutsEditor(baseLayouts: Layouts) {
 }
 
 class PatchEditor {
+    val id: String = randomId("patch-editor")
+
     val shaderInstances: MutableList<ShaderInstanceEditor>
     var surfaces: Surfaces
     constructor(
@@ -354,19 +357,21 @@ class PatchEditor {
     fun build(showBuilder: ShowBuilder): Patch = Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
-    fun openForPreview(): LinkedPatch {
+    fun openForPreview(): LinkedPatch? {
         val showBuilder = ShowBuilder()
-        val patch = build(showBuilder)
+        build(showBuilder)
+
         val openShaders = showBuilder.getShaders().mapValues { (_, shader) ->
             GlslAnalyzer().asShader(shader.src) }
 
         val resolvedShaderInstances =
             ShaderInstanceResolver(openShaders, showBuilder.getShaderInstances(), showBuilder.getDataSources())
                 .getResolvedShaderInstances()
-        val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), Surfaces.AllSurfaces)
+        val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val merge = AutoWirer(Plugins.findAll()).merge(mapOf(Surfaces.AllSurfaces to listOf(openPatch)))
-        return merge[Surfaces.AllSurfaces]!!
+        val autoWirer = AutoWirer(Plugins.findAll())
+        val merge = autoWirer.merge(mapOf(surfaces to listOf(openPatch)))
+        return merge[surfaces]
     }
 
     fun addShaderInstance(shaderInstanceEditor: ShaderInstanceEditor): PatchEditor {
@@ -388,8 +393,8 @@ class PatchEditor {
 }
 
 data class LinkEditor(
-    var from: Port,
-    var to: Port
+    var from: Port?,
+    var to: Port?
 ) {
     constructor(from: PortRef, to: PortRef, show: ShowEditor) :
             this(from.dereference(show), to.dereference(show))

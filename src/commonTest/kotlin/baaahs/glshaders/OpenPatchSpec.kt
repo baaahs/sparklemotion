@@ -45,7 +45,7 @@ object OpenPatchSpec : Spek({
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                             shaderChannel = ShaderChannel.Main
                         }
-                    }.openForPreview()
+                    }.openForPreview()!!
                 }
                 val glsl by value {
                     linkedPatch.toGlsl().trim()
@@ -113,7 +113,7 @@ object OpenPatchSpec : Spek({
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                                 shaderChannel = ShaderChannel.Main
                             }
-                        }.openForPreview()
+                        }.openForPreview()!!
                     }
 
                     it("generates GLSL") {

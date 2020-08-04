@@ -2,10 +2,14 @@ package baaahs.ui
 
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
+import materialui.Icon
 import materialui.components.button.button
 import materialui.components.clickawaylistener.clickAwayListener
+import materialui.components.iconbutton.iconButton
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
+import materialui.components.typography.typography
+import materialui.icon
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
@@ -25,7 +29,18 @@ private val MenuButton = functionalComponent<MenuButtonProps> { props ->
     clickAwayListener {
         attrs { onClickAway = handleClickAway }
         div {
-            button { +props.name; attrs.onClickFunction = handleButtonClick }
+            if (props.icon != null) {
+                iconButton {
+                    icon(props.icon!!)
+                    props.label?.let { typography { +it } }
+                    attrs.onClickFunction = handleButtonClick
+                }
+            } else {
+                button {
+                    props.label?.let { typography { +it } }
+                    attrs.onClickFunction = handleButtonClick
+                }
+            }
 
             val items = props.items ?: emptyList()
             menu {
@@ -57,6 +72,7 @@ fun RBuilder.menuButton(handler: RHandler<MenuButtonProps>): ReactElement =
     child(MenuButton, handler = handler)
 
 external interface MenuButtonProps : RProps {
-    var name: String
+    var label: String?
+    var icon: Icon?
     var items: List<MenuItem>?
 }
