@@ -27,10 +27,10 @@ class ControlDisplay(
 
     init {
         val scene = showState.findScene(show)
-        val mutableScene = showState.findSceneEditor(mutableShow)
+        val mutableScene = showState.findMutableScene(mutableShow)
 
         val patchSet = showState.findPatchSet(show)
-        val mutablePatchSet = showState.findPatchSetEditor(mutableShow)
+        val mutablePatchSet = showState.findMutablePatchSet(mutableShow)
 
         allPanelBuckets = show.layouts.panelNames.associateWith { panelTitle ->
             PanelBuckets(panelTitle, mutableShow, mutableScene, mutablePatchSet)

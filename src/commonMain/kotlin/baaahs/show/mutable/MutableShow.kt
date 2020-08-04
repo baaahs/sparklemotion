@@ -17,13 +17,13 @@ abstract class MutablePatchHolder(
     dataSources: Map<String, DataSource>
 ) {
     abstract val displayType: String
-    protected abstract val showEditor: MutableShow
+    protected abstract val mutableShow: MutableShow
     abstract val descendents: List<MutablePatchHolder>
 
     var title = basePatchHolder.title
 
     val patchMappings by lazy {
-        basePatchHolder.patches.map { MutablePatch(it, showEditor) }.toMutableList()
+        basePatchHolder.patches.map { MutablePatch(it, mutableShow) }.toMutableList()
     }
     val eventBindings = basePatchHolder.eventBindings.toMutableList()
 
@@ -70,7 +70,7 @@ abstract class MutablePatchHolder(
         ).toSet()
 
     fun findShaderChannels(): Set<ShaderChannel> =
-        showEditor.collectShaderChannels()
+        mutableShow.collectShaderChannels()
 
     protected fun collectShaderChannels(): Set<ShaderChannel> =
         (
@@ -115,7 +115,7 @@ class MutableShow(
     private val baseShow: Show, baseShowState: ShowState = ShowState.Empty
 ) : MutablePatchHolder(baseShow, baseShow.dataSources) {
     override val displayType: String get() = "Show"
-    override val showEditor: MutableShow get() = this
+    override val mutableShow: MutableShow get() = this
     override val descendents: List<MutablePatchHolder> get() = scenes
 
     internal val dataSources = baseShow.dataSources
@@ -162,7 +162,7 @@ class MutableShow(
         return this
     }
 
-    fun getSceneEditor(sceneIndex: Int): MutableScene = scenes[sceneIndex]
+    fun getMutableScene(sceneIndex: Int): MutableScene = scenes[sceneIndex]
 
     fun editScene(sceneIndex: Int, block: MutableScene.() -> Unit): MutableShow {
         scenes[sceneIndex].apply(block)
@@ -210,7 +210,7 @@ class MutableShow(
 
     inner class MutableScene(baseScene: Scene) : MutablePatchHolder(baseScene, baseShow.dataSources) {
         override val displayType: String get() = "Scene"
-        override val showEditor: MutableShow get() = this@MutableShow
+        override val mutableShow: MutableShow get() = this@MutableShow
         override val descendents: List<MutablePatchHolder> get() = patchSets
 
         private val patchSets = baseScene.patchSets.map { MutablePatchSet(it) }.toMutableList()
@@ -234,7 +234,7 @@ class MutableShow(
             return this
         }
 
-        fun getPatchSetEditor(index: Int): MutablePatchSet = patchSets[index]
+        fun getMutablePatchSet(index: Int): MutablePatchSet = patchSets[index]
 
         fun editPatchSet(index: Int, block: MutablePatchSet.() -> Unit): MutableScene {
             patchSets[index].block()
@@ -275,7 +275,7 @@ class MutableShow(
             baseShow.dataSources
         ) {
             override val displayType: String get() = "Patch"
-            override val showEditor: MutableShow get() = this@MutableShow
+            override val mutableShow: MutableShow get() = this@MutableShow
             override val descendents: List<MutablePatchHolder> get() = emptyList()
 
             fun build(showBuilder: ShowBuilder): PatchSet {

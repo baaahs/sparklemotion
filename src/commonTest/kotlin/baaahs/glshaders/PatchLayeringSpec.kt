@@ -34,15 +34,15 @@ object PatchLayeringSpec : Spek({
         val saturationFilter by value {
             Shader("// Saturation Filter\nvec4 filterImage(vec4 colorIn) { return colorIn; }")
         }
-        val showEditor by value { MutableShow("test show") }
+        val mutableShow by value { MutableShow("test show") }
         val show by value {
-            val show = showEditor.build(ShowBuilder())
+            val show = mutableShow.build(ShowBuilder())
             ShowOpener(show, FakeShowPlayer(FakeGlslContext())).openShow()
         }
 
         context("with a show, scene, and patchset patch") {
             beforeEachTest {
-                showEditor.apply {
+                mutableShow.apply {
                     addPatch(autoWire(uvShader, blackShader))
 
                     addScene("scene") {

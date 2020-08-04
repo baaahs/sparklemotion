@@ -26,9 +26,9 @@ data class ShowState(
         return show.scenes[selectedScene]
     }
 
-    fun findSceneEditor(showEditor: MutableShow?): MutableShow.MutableScene? {
+    fun findMutableScene(mutableShow: MutableShow?): MutableShow.MutableScene? {
         if (selectedScene == -1) return null
-        return showEditor?.getSceneEditor(selectedScene)
+        return mutableShow?.getMutableScene(selectedScene)
     }
 
     fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet? {
@@ -50,11 +50,11 @@ data class ShowState(
         return scene.patchSets[selectedPatchSet]
     }
 
-    fun findPatchSetEditor(showEditor: MutableShow?): MutableShow.MutableScene.MutablePatchSet? {
+    fun findMutablePatchSet(mutableShow: MutableShow?): MutableShow.MutableScene.MutablePatchSet? {
         if (selectedPatchSet == -1) return null
 
-        val sceneEditor = findSceneEditor(showEditor)
-        return sceneEditor?.getPatchSetEditor(selectedPatchSet)
+        val mutableScene = findMutableScene(mutableShow)
+        return mutableScene?.getMutablePatchSet(selectedPatchSet)
     }
 
     fun selectScene(i: Int) = copy(selectedScene = i)

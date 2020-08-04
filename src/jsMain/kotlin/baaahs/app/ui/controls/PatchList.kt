@@ -73,7 +73,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            props.showState.findSceneEditor(this)?.editPatchSet(index) {
+            props.showState.findMutableScene(this)?.editPatchSet(index) {
                 mutablePatchHolder = this
             }
             event.preventDefault()
@@ -142,7 +142,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         +"+"
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
-                                props.showState.findSceneEditor(this)?.apply {
+                                props.showState.findMutableScene(this)?.apply {
                                     addPatchSet("Untitled Patch") {
                                         mutablePatchHolder = this
                                     }

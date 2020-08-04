@@ -42,7 +42,7 @@ class AutoWirer(val plugins: Plugins) {
             )
 
             locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
-                .add(UnresolvedShaderOutPortEditor(unresolvedShaderInstance, openShader.outputPort.id))
+                .add(UnresolvedShaderOutPort(unresolvedShaderInstance, openShader.outputPort.id))
 
             openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
                 locallyAvailable.getOrPut(contentType) { mutableSetOf() }
@@ -74,7 +74,7 @@ class AutoWirer(val plugins: Plugins) {
         return UnresolvedPatch(unresolvedShaderInstances, dataSources.toList())
     }
 
-    data class UnresolvedShaderOutPortEditor(
+    data class UnresolvedShaderOutPort(
         val unresolvedShaderInstance: UnresolvedShaderInstance,
         val portId: String
     ) : MutableLink.Port {
@@ -261,7 +261,7 @@ class AutoWirer(val plugins: Plugins) {
             // Second pass: resolve references between shaders to the correct instance editor.
             shaderInstances.values.forEach { shaderInstance ->
                 shaderInstance.incomingLinks.forEach { (toPortId, fromPort) ->
-                    if (fromPort is UnresolvedShaderOutPortEditor) {
+                    if (fromPort is UnresolvedShaderOutPort) {
                         val fromShader = fromPort.unresolvedShaderInstance.mutableShader.shader
                         val fromShaderInstance = shaderInstances[fromShader]
                             ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
