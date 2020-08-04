@@ -4,7 +4,7 @@ import baaahs.*
 import baaahs.show.PatchSet
 import baaahs.show.Scene
 import baaahs.show.Show
-import baaahs.show.ShowEditor
+import baaahs.show.mutable.ShowEditor
 
 class OpenShow(
     private val show: Show,

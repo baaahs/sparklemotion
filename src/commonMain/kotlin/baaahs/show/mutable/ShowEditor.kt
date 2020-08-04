@@ -1,4 +1,4 @@
-package baaahs.show
+package baaahs.show.mutable
 
 import baaahs.ShowState
 import baaahs.getBang
@@ -7,10 +7,10 @@ import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
 import baaahs.randomId
+import baaahs.show.*
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
-import kotlinx.serialization.*
 
 abstract class PatchHolderEditor(
     private val basePatchHolder: PatchHolder,
@@ -37,7 +37,10 @@ abstract class PatchHolderEditor(
     }
 
     fun addPatch(block: PatchEditor.() -> Unit): PatchHolderEditor {
-        val patchEditor = PatchEditor(emptyList(), Surfaces.AllSurfaces)
+        val patchEditor = PatchEditor(
+            emptyList(),
+            Surfaces.AllSurfaces
+        )
         patchEditor.block()
         patchMappings.add(patchEditor)
         return this
@@ -354,7 +357,8 @@ class PatchEditor {
         }
     }
 
-    fun build(showBuilder: ShowBuilder): Patch = Patch.from(this, showBuilder)
+    fun build(showBuilder: ShowBuilder): Patch =
+        Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
     fun openForPreview(): LinkedPatch? {
@@ -380,7 +384,9 @@ class PatchEditor {
     }
 
     fun addShaderInstance(shader: Shader, block: ShaderInstanceEditor.() -> Unit): PatchEditor {
-        val shaderInstanceEditor = ShaderInstanceEditor(ShaderEditor(shader), hashMapOf())
+        val shaderInstanceEditor = ShaderInstanceEditor(
+            ShaderEditor(shader), hashMapOf()
+        )
         shaderInstanceEditor.block()
         shaderInstances.add(shaderInstanceEditor)
         return this
@@ -403,13 +409,15 @@ data class LinkEditor(
         fun toRef(showBuilder: ShowBuilder): PortRef
         fun displayName(): String
 
-        infix fun linkTo(other: Port): LinkEditor = LinkEditor(this, other)
+        infix fun linkTo(other: Port): LinkEditor =
+            LinkEditor(this, other)
     }
 }
 
 fun DataSource.editor() = DataSourceEditor(this)
 
-data class ShaderChannelEditor(val shaderChannel: ShaderChannel) : LinkEditor.Port {
+data class ShaderChannelEditor(val shaderChannel: ShaderChannel) :
+    LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderChannelRef(shaderChannel)
 
@@ -417,7 +425,8 @@ data class ShaderChannelEditor(val shaderChannel: ShaderChannel) : LinkEditor.Po
         "channel(${shaderChannel.id})"
 }
 
-data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
+data class DataSourceEditor(val dataSource: DataSource) :
+    LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         DataSourceRef(showBuilder.idFor(dataSource))
 
@@ -430,26 +439,6 @@ data class ControlEditor(val control: Control) {
 
 data class ShaderEditor(var shader: Shader) {
     val title: String get() = shader.title
-}
-
-@Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
-data class ShaderChannel(val id: String) {
-    companion object {
-        val Main = ShaderChannel("main")
-    }
-
-    class ShaderChannelSerializer : KSerializer<ShaderChannel> {
-        override val descriptor: SerialDescriptor
-            get() = PrimitiveDescriptor("id", PrimitiveKind.STRING)
-
-        override fun deserialize(decoder: Decoder): ShaderChannel {
-            return ShaderChannel(decoder.decodeString())
-        }
-
-        override fun serialize(encoder: Encoder, value: ShaderChannel) {
-            encoder.encodeString(value.id)
-        }
-    }
 }
 
 data class ShaderInstanceEditor(
@@ -488,7 +477,8 @@ data class ShaderInstanceEditor(
     }
 }
 
-data class ShaderOutPortEditor(var shaderInstance: ShaderInstanceEditor, var portId: String) : LinkEditor.Port {
+data class ShaderOutPortEditor(var shaderInstance: ShaderInstanceEditor, var portId: String) :
+    LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderOutPortRef(showBuilder.idFor(shaderInstance.build(showBuilder)), portId)
 

@@ -15,8 +15,8 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
-import baaahs.show.ShowBuilder
-import baaahs.show.ShowEditor
+import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.ShowEditor
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs

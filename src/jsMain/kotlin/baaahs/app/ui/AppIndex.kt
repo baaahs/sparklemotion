@@ -9,7 +9,7 @@ import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.Shader
 import baaahs.show.Show
-import baaahs.show.ShowEditor
+import baaahs.show.mutable.ShowEditor
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject

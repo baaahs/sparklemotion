@@ -15,9 +15,9 @@ import baaahs.glsl.GlslError
 import baaahs.glsl.GlslException
 import baaahs.io.Fs
 import baaahs.jsx.useResizeListener
-import baaahs.show.PatchEditor
 import baaahs.show.Shader
-import baaahs.show.ShaderEditor
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.ShaderEditor
 import kotlinext.js.jsObject
 import kotlinx.css.px
 import kotlinx.html.js.onClickFunction

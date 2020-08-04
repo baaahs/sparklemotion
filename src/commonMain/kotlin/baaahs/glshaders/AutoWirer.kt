@@ -5,6 +5,7 @@ import baaahs.show.*
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
+import baaahs.show.mutable.*
 import baaahs.unknown
 
 class AutoWirer(val plugins: Plugins) {
@@ -265,12 +266,18 @@ class AutoWirer(val plugins: Plugins) {
                         val fromShaderInstance = shaderInstances[fromShader]
                             ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
                         shaderInstance.incomingLinks[toPortId] =
-                            ShaderOutPortEditor(fromShaderInstance, fromPort.portId)
+                            ShaderOutPortEditor(
+                                fromShaderInstance,
+                                fromPort.portId
+                            )
                     }
                 }
             }
 
-            return PatchEditor(shaderInstances.values.toList(), Surfaces.AllSurfaces)
+            return PatchEditor(
+                shaderInstances.values.toList(),
+                Surfaces.AllSurfaces
+            )
         }
 
         fun acceptSymbolicChannelLinks(): UnresolvedPatchEditor {

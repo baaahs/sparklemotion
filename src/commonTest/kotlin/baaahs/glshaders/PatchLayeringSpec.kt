@@ -1,8 +1,12 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders
-import baaahs.show.*
+import baaahs.show.Shader
+import baaahs.show.Surfaces
 import baaahs.show.live.ShowOpener
+import baaahs.show.mutable.PatchEditor
+import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.ShowEditor
 import baaahs.shows.FakeGlslContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek

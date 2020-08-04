@@ -5,6 +5,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
 import baaahs.glsl.Shaders
+import baaahs.show.mutable.ShowEditor
 import kotlinx.serialization.json.json
 
 object SampleData {

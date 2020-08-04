@@ -6,8 +6,12 @@ import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
-import baaahs.show.*
+import baaahs.show.Control
+import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.ControlEditor
+import baaahs.show.mutable.PatchHolderEditor
+import baaahs.show.mutable.ShowBuilder
 
 class ControlDisplay(
     show: OpenShow,
