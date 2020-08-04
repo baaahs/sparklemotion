@@ -1,10 +1,13 @@
 package baaahs.show
 
+import baaahs.OpenPatch
 import baaahs.ShowState
 import baaahs.getBang
+import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.OpenPatch
-import baaahs.show.live.LiveShaderInstance
+import baaahs.glshaders.LinkedPatch
+import baaahs.glshaders.Plugins
+import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 import kotlinx.serialization.*
 
@@ -14,19 +17,23 @@ abstract class PatchyEditor(
 ) {
     abstract val displayType: String
     protected abstract val showEditor: ShowEditor
+    abstract val descendents: List<PatchyEditor>
+
     var title = basePatchy.title
 
-    val patchMappings =
+    val patchMappings by lazy {
         basePatchy.patches.map { PatchEditor(it, showEditor) }.toMutableList()
-
+    }
     val eventBindings = basePatchy.eventBindings.toMutableList()
 
-    private val controlLayout = basePatchy.controlLayout
-        .mapValues { (_, v) ->
-            v.map {
-                ControlEditor(it.dereference(dataSources))
-            }.toMutableList()
-        }.toMutableMap()
+    private val controlLayout by lazy {
+        basePatchy.controlLayout
+            .mapValues { (_, v) ->
+                v.map {
+                    ControlEditor(it.dereference(dataSources))
+                }.toMutableList()
+            }.toMutableMap()
+    }
 
     fun addPatch(block: PatchEditor.() -> Unit): PatchyEditor {
         val patchEditor = PatchEditor(emptyList(), Surfaces.AllSurfaces)
@@ -46,10 +53,26 @@ abstract class PatchyEditor(
     }
 
     fun findDataSources(): Set<DataSource> =
-        (findControlDataSources() + patchMappings.flatMap { it.findDataSources() }).toSet()
+        (
+            findControlDataSources() +
+                patchMappings.flatMap { it.findDataSources() } +
+                descendents.flatMap { it.findDataSources() }
+        ).toSet()
 
     fun findShaderInstances(): Set<ShaderInstanceEditor> =
-        patchMappings.flatMap { it.findShaderInstances() }.toSet()
+        (
+            patchMappings.flatMap { it.findShaderInstances() } +
+                descendents.flatMap { it.findShaderInstances() }
+        ).toSet()
+
+    fun findShaderChannels(): Set<ShaderChannel> =
+        showEditor.collectShaderChannels()
+
+    protected fun collectShaderChannels(): Set<ShaderChannel> =
+        (
+            patchMappings.flatMap { it.findShaderChannels() } +
+                descendents.flatMap { it.collectShaderChannels() }
+        ).toSet()
 
     fun addControl(panel: String, control: Control) {
         controlLayout.getOrPut(panel) { arrayListOf() }.add(ControlEditor(control))
@@ -89,12 +112,13 @@ class ShowEditor(
 ) : PatchyEditor(baseShow, baseShow.dataSources) {
     override val displayType: String get() = "Show"
     override val showEditor: ShowEditor get() = this
+    override val descendents: List<PatchyEditor> get() = scenes
 
-    val dataSources = baseShow.dataSources
+    internal val dataSources = baseShow.dataSources
         .mapValues { (_, shader) -> DataSourceEditor(shader) }
         .toMutableMap()
 
-    val shaders = baseShow.shaders
+    internal val shaders = baseShow.shaders
         .mapValues { (_, shader) -> ShaderEditor(shader) }
         .toMutableMap()
 
@@ -103,7 +127,7 @@ class ShowEditor(
             ShaderInstanceEditor(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
-                shaderInstance.role
+                shaderInstance.shaderChannel
             )
         }.toMutableMap()
     init {
@@ -129,7 +153,8 @@ class ShowEditor(
 
     fun addScene(title: String, block: SceneEditor.() -> Unit): ShowEditor {
         scenes.add(SceneEditor(Scene(title)).apply(block))
-        patchSetSelections.add(0)
+        if (selectedScene == -1) selectedScene = 0
+        patchSetSelections.add(1)
         return this
     }
 
@@ -158,6 +183,7 @@ class ShowEditor(
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
+            patches = patchMappings.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
@@ -181,16 +207,26 @@ class ShowEditor(
     inner class SceneEditor(baseScene: Scene) : PatchyEditor(baseScene, baseShow.dataSources) {
         override val displayType: String get() = "Scene"
         override val showEditor: ShowEditor get() = this@ShowEditor
+        override val descendents: List<PatchyEditor> get() = patchSets
 
         private val patchSets = baseScene.patchSets.map { PatchSetEditor(it) }.toMutableList()
 
+        private fun maybeFixPatchSetSelection() {
+            val sceneIndex = scenes.indexOf(this)
+            if (sceneIndex != -1 && patchSetSelections[sceneIndex] == -1) {
+                patchSetSelections[sceneIndex] = 0
+            }
+        }
+
         fun insertPatchSet(patchSetEditor: PatchSetEditor, index: Int): SceneEditor {
             patchSets.add(index, patchSetEditor)
+            maybeFixPatchSetSelection()
             return this
         }
 
         fun addPatchSet(title: String, block: PatchSetEditor.() -> Unit): SceneEditor {
             patchSets.add(PatchSetEditor(PatchSet(title)).apply(block))
+            maybeFixPatchSetSelection()
             return this
         }
 
@@ -220,6 +256,7 @@ class ShowEditor(
         fun build(showBuilder: ShowBuilder): Scene {
             return Scene(
                 title,
+                patches = patchMappings.map { it.build(showBuilder) },
                 eventBindings = eventBindings,
                 controlLayout = buildControlLayout(showBuilder),
                 patchSets = patchSets.map { it.build(showBuilder) }
@@ -235,13 +272,14 @@ class ShowEditor(
         ) {
             override val displayType: String get() = "Patch"
             override val showEditor: ShowEditor get() = this@ShowEditor
+            override val descendents: List<PatchyEditor> get() = emptyList()
 
             fun build(showBuilder: ShowBuilder): PatchSet {
                 return PatchSet(
                     title,
-                    patchMappings.map { it.build(showBuilder) },
-                    eventBindings,
-                    buildControlLayout(showBuilder)
+                    patches = patchMappings.map { it.build(showBuilder) },
+                    eventBindings = eventBindings,
+                    controlLayout = buildControlLayout(showBuilder)
                 )
             }
 
@@ -278,7 +316,6 @@ class LayoutsEditor(baseLayouts: Layouts) {
 class PatchEditor {
     val shaderInstances: MutableList<ShaderInstanceEditor>
     var surfaces: Surfaces
-
     constructor(
         shaderInstances: List<ShaderInstanceEditor> = emptyList(),
         surfaces: Surfaces = Surfaces.AllSurfaces
@@ -308,20 +345,33 @@ class PatchEditor {
     fun findShaderInstances(): Set<ShaderInstanceEditor> =
         shaderInstances.toSet()
 
+    fun findShaderChannels(): List<ShaderChannel> {
+        return findShaderInstances().flatMap { shaderInstanceEditor ->
+            shaderInstanceEditor.findShaderChannels()
+        }
+    }
+
     fun build(showBuilder: ShowBuilder): Patch = Patch.from(this, showBuilder)
 
-    fun open(): OpenPatch {
+    /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
+    fun openForPreview(): LinkedPatch {
         val showBuilder = ShowBuilder()
         val patch = build(showBuilder)
-        val openShaders = showBuilder.getShaders()
-            .mapValues { GlslAnalyzer().asShader(it.value) }
+        val openShaders = showBuilder.getShaders().mapValues { (_, shader) ->
+            GlslAnalyzer().asShader(shader.src) }
 
-        return OpenPatch(
-            patch,
-            showBuilder.getShaderInstances()
-                .mapValues { (_, instance) -> LiveShaderInstance.from(instance, openShaders) },
-            showBuilder.getDataSources()
-        )
+        val resolvedShaderInstances =
+            ShaderInstanceResolver(openShaders, showBuilder.getShaderInstances(), showBuilder.getDataSources())
+                .getResolvedShaderInstances()
+        val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), Surfaces.AllSurfaces)
+
+        val merge = AutoWirer(Plugins.findAll()).merge(mapOf(Surfaces.AllSurfaces to listOf(openPatch)))
+        return merge[Surfaces.AllSurfaces]!!
+    }
+
+    fun addShaderInstance(shaderInstanceEditor: ShaderInstanceEditor): PatchEditor {
+        shaderInstances.add(shaderInstanceEditor)
+        return this
     }
 
     fun addShaderInstance(shader: Shader, block: ShaderInstanceEditor.() -> Unit): PatchEditor {
@@ -354,6 +404,14 @@ data class LinkEditor(
 
 fun DataSource.editor() = DataSourceEditor(this)
 
+data class ShaderChannelEditor(val shaderChannel: ShaderChannel) : LinkEditor.Port {
+    override fun toRef(showBuilder: ShowBuilder): PortRef =
+        ShaderChannelRef(shaderChannel)
+
+    override fun displayName(): String =
+        "channel(${shaderChannel.id})"
+}
+
 data class DataSourceEditor(val dataSource: DataSource) : LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         DataSourceRef(showBuilder.idFor(dataSource))
@@ -369,24 +427,21 @@ data class ShaderEditor(var shader: Shader) {
     val title: String get() = shader.title
 }
 
-@Serializable(with = ShaderRole.ShaderRoleSerializer::class)
-class ShaderRole(val id: String) {
+@Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
+data class ShaderChannel(val id: String) {
     companion object {
-        val Projection = ShaderRole("projection")
-        val Distortion = ShaderRole("distortion")
-        val Paint = ShaderRole("paint")
-        val Filter = ShaderRole("filter")
+        val Main = ShaderChannel("main")
     }
 
-    class ShaderRoleSerializer : KSerializer<ShaderRole> {
+    class ShaderChannelSerializer : KSerializer<ShaderChannel> {
         override val descriptor: SerialDescriptor
             get() = PrimitiveDescriptor("id", PrimitiveKind.STRING)
 
-        override fun deserialize(decoder: Decoder): ShaderRole {
-            return ShaderRole(decoder.decodeString())
+        override fun deserialize(decoder: Decoder): ShaderChannel {
+            return ShaderChannel(decoder.decodeString())
         }
 
-        override fun serialize(encoder: Encoder, value: ShaderRole) {
+        override fun serialize(encoder: Encoder, value: ShaderChannel) {
             encoder.encodeString(value.id)
         }
     }
@@ -395,11 +450,17 @@ class ShaderRole(val id: String) {
 data class ShaderInstanceEditor(
     val shader: ShaderEditor,
     val incomingLinks: MutableMap<String, LinkEditor.Port> = hashMapOf(),
-    var role: ShaderRole? = null
+    var shaderChannel: ShaderChannel? = null
 ) {
     fun findDataSources(): List<DataSource> {
         return incomingLinks.mapNotNull { (_, from) ->
             (from as? DataSourceEditor)?.dataSource
+        }
+    }
+
+    fun findShaderChannels(): List<ShaderChannel> {
+        return incomingLinks.values.mapNotNull { link ->
+            if (link is ShaderChannelEditor) link.shaderChannel else null
         }
     }
 
@@ -417,32 +478,18 @@ data class ShaderInstanceEditor(
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },
-            role
+            shaderChannel
         )
     }
 }
 
-data class ShaderInPortEditor(override var shaderInstance: ShaderInstanceEditor, override var portId: String) : ShaderPortEditor {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderInPortRef(showBuilder.idFor(shaderInstance.build(showBuilder)), portId)
-
-    override fun displayName(): String = "Shader \"${shaderInstance.shader.title}\" port \"$portId\""
-
-    override fun toString(): String = "ShaderInPortEditor(shader=${shaderInstance.shader.title} port=$portId)"
-}
-
-data class ShaderOutPortEditor(override var shaderInstance: ShaderInstanceEditor, override var portId: String) : ShaderPortEditor {
+data class ShaderOutPortEditor(var shaderInstance: ShaderInstanceEditor, var portId: String) : LinkEditor.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderOutPortRef(showBuilder.idFor(shaderInstance.build(showBuilder)), portId)
 
     override fun displayName(): String = "Shader \"${shaderInstance.shader.title}\" port \"$portId\""
 
     override fun toString(): String = "ShaderOutPortEditor(shader=${shaderInstance.shader.title} port=$portId)"
-}
-
-interface ShaderPortEditor : LinkEditor.Port {
-    var shaderInstance: ShaderInstanceEditor
-    var portId: String
 }
 
 data class OutputPortEditor(private val portId: String) : LinkEditor.Port {

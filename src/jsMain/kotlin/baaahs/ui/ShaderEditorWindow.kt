@@ -11,7 +11,7 @@ import baaahs.Time
 import baaahs.boundedBy
 import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.OpenPatch
+import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslError
 import baaahs.glsl.GlslException
@@ -54,7 +54,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
     var gadgets by state<Array<GadgetData>> { arrayOf() }
     var openShaders by state<List<EditingShader>> { arrayListOf() }
     var selectedShaderIndex by state { -1 }
-    var curPatch by state<OpenPatch?> { null }
+    var curPatch by state<LinkedPatch?> { null }
     var extractionCandidate by state<ExtractionCandidate?> { null }
     var glslNumberMarker by state<Number?> { null }
     var fileDialogOpen by state { false }
@@ -123,7 +123,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
                 selectedShader.glslErrors = arrayOf(GlslError(e.message ?: e.toString()))
                 showGlslErrors(selectedShader.glslErrors)
             }
-            curPatch = selectedShader.patch?.open()
+            curPatch = selectedShader.patch?.openForPreview()
         }
     }
 

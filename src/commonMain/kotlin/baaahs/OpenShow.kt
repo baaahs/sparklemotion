@@ -1,29 +1,42 @@
 package baaahs
 
-import baaahs.glshaders.OpenPatch
-import baaahs.glsl.GlslContext
 import baaahs.show.*
 import baaahs.show.live.LiveShaderInstance
 
 open class OpenPatchy(
-    patchy: Patchy, val dataSources: Map<String, DataSource>
+    patchy: Patchy,
+    allShaderInstances: Map<String, LiveShaderInstance>,
+    allDataSources: Map<String, DataSource>
 ) {
+    val title = patchy.title
+    val patches = patchy.patches.map { OpenPatch(it, allShaderInstances) }
+
     val controlLayout: Map<String, List<Control>> = patchy.controlLayout.mapValues { (_, controlRefs) ->
-        controlRefs.map { it.dereference(dataSources) }
+        controlRefs.map { it.dereference(allDataSources) }
     }
 }
 
+class OpenPatch(
+    val shaderInstances: List<LiveShaderInstance>,
+    val surfaces: Surfaces
+) {
+    constructor(patch: Patch, allShaderInstances: Map<String, LiveShaderInstance>): this(
+        patch.shaderInstanceIds.map {
+            allShaderInstances.getBang(it, "shader instance")
+        },
+        patch.surfaces
+    )
+}
+
 class OpenShow(
-    private val show: Show, private val showPlayer: ShowPlayer
-) : RefCounted by RefCounter(), OpenPatchy(show, show.dataSources) {
+    private val show: Show,
+    private val showPlayer: ShowPlayer,
+    private val allShaderInstances: Map<String, LiveShaderInstance>
+) : RefCounted by RefCounter(), OpenPatchy(show, allShaderInstances, show.dataSources) {
     val id = randomId("show")
     val layouts get() = show.layouts
-    val shaders = show.shaders.mapValues { (_, shader) ->
-        showPlayer.openShader(shader, addToCache = true)
-    }
-    val shaderInstances = show.shaderInstances.mapValues { (_, shaderInstance) ->
-        LiveShaderInstance.from(shaderInstance, shaders)
-    }
+
+    val allDataSources = show.dataSources
 
     val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
         val dataFeed = showPlayer.openDataFeed(id, dataSource)
@@ -35,26 +48,19 @@ class OpenShow(
         ShowEditor(show, showState).apply(block)
 
     override fun onFullRelease() {
-        shaders.values.forEach { it.release() }
+        allShaderInstances.values.forEach { it.release() }
         dataFeeds.values.forEach { it.release() }
     }
 
-    inner class OpenScene(scene: Scene) : OpenPatchy(scene, show.dataSources) {
+    inner class OpenScene(scene: Scene) : OpenPatchy(scene, allShaderInstances, show.dataSources) {
         val id = randomId("scene")
-        val title = scene.title
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
-        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchy(patchSet, show.dataSources) {
+        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchy(patchSet, allShaderInstances, show.dataSources) {
             val id = randomId("patchset")
-            val title = patchSet.title
-            val patches = patchSet.patches.map { OpenPatch(it, shaderInstances, show.dataSources) }
 
-            fun createRenderPlan(glslContext: GlslContext): RenderPlan {
-                val activeDataSources = mutableSetOf<String>()
-                val programs = patches.map { patch ->
-                    patch to patch.createProgram(glslContext, dataFeeds)
-                }
-                return RenderPlan(programs)
+            fun activePatches(): List<OpenPatchy> {
+                return listOf(this@OpenShow, this@OpenScene, this)
             }
         }
     }

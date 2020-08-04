@@ -4,6 +4,7 @@ import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.Surface
 import baaahs.getBang
+import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.OpenShader
 import baaahs.glshaders.Plugins
@@ -15,22 +16,26 @@ import baaahs.show.Shader
 
 class FakeShowPlayer(
     override val glslContext: GlslContext,
-    val shaders: Map<Shader, OpenShader> = emptyMap(),
-    val dataFeeds: Map<DataSource, GlslProgram.DataFeed> = emptyMap(),
     override val modelInfo: ModelInfo = ModelInfo.Empty
 ) : ShowPlayer {
     override val plugins: Plugins
         get() = Plugins.safe()
 
+    private val shaders = mutableMapOf<Shader, OpenShader>()
+    private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
-    override fun openShader(shader: Shader, addToCache: Boolean): OpenShader =
-        shaders.getBang(shader, "shader")
+    override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
+        return if (addToCache) {
+            shaders.getOrPut(shader) { GlslAnalyzer().asShader(shader) }
+        } else {
+            shaders[shader] ?: GlslAnalyzer().asShader(shader)
+        }
+    }
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed =
-        dataFeeds.getBang(dataSource, "datafeed")
+        dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed =
         dataFeeds.getBang(dataSource, "datafeed")

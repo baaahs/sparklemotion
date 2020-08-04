@@ -36,19 +36,19 @@ object OpenPatchSpec : Spek({
             }
 
             describe("#toGlsl") {
-                val openPatch by value {
+                val linkedPatch by value {
                     PatchEditor {
                         addShaderInstance(shader) {
                             link("gl_FragCoord", CorePlugin.ScreenUvCoord())
                             link("resolution", CorePlugin.Resolution())
                             link("time", CorePlugin.Time())
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
-                            role = ShaderRole.Paint
+                            shaderChannel = ShaderChannel.Main
                         }
-                    }.open()
+                    }.openForPreview()
                 }
                 val glsl by value {
-                    openPatch.toGlsl().trim()
+                    linkedPatch.toGlsl().trim()
                 }
 
                 it("generates GLSL") {
@@ -58,7 +58,7 @@ object OpenPatchSpec : Spek({
                         precision mediump float;
                         #endif
                         
-                        // SparkleMotion generated GLSL
+                        // SparkleMotion-generated GLSL
 
                         layout(location = 0) out vec4 sm_pixelColor;
 
@@ -68,7 +68,9 @@ object OpenPatchSpec : Spek({
                         
                         // Shader: This Shader's Name; namespace: p0
                         // This Shader's Name
-                        
+
+                        vec4 p0_gl_FragColor;
+
                         #line 7
                         int p0_someGlobalVar;
                         
@@ -82,25 +84,26 @@ object OpenPatchSpec : Spek({
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             p0_someGlobalVar = p0_anotherFunc(p0_someConstVar);
-                            sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                            p0_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                         }
 
 
                         #line -1
                         void main() {
-                          p0_main();
+                          p0_main(); // This Shader's Name
+                          sm_pixelColor = p0_gl_FragColor;
                         }
                         """.trimIndent()
                     ) { glsl }
                 }
 
                 context("with UV translation shader") {
-                    override(openPatch) {
+                    override(linkedPatch) {
                         PatchEditor {
                             addShaderInstance(cylindricalUvMapper.shader) {
                                 link("pixelCoordsTexture", CorePlugin.PixelCoordsTexture())
                                 link("modelInfo", CorePlugin.ModelInfoDataSource("ModelInfo"))
-                                role = ShaderRole.Projection
+                                shaderChannel = ShaderChannel.Main
                             }
 
                             addShaderInstance(openShader.shader) {
@@ -108,9 +111,9 @@ object OpenPatchSpec : Spek({
                                 link("resolution", CorePlugin.Resolution())
                                 link("time", CorePlugin.Time())
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
-                                role = ShaderRole.Paint
+                                shaderChannel = ShaderChannel.Main
                             }
-                        }.open()
+                        }.openForPreview()
                     }
 
                     it("generates GLSL") {
@@ -121,7 +124,7 @@ object OpenPatchSpec : Spek({
                                 precision mediump float;
                                 #endif
 
-                                // SparkleMotion generated GLSL
+                                // SparkleMotion-generated GLSL
 
                                 layout(location = 0) out vec4 sm_pixelColor;
 
@@ -165,6 +168,8 @@ object OpenPatchSpec : Spek({
 
                                 // Shader: This Shader's Name; namespace: p1
                                 // This Shader's Name
+                                
+                                vec4 p1_gl_FragColor;
 
                                 #line 7
                                 int p1_someGlobalVar;
@@ -179,14 +184,15 @@ object OpenPatchSpec : Spek({
                                 void p1_main( void ) {
                                     vec2 uv = p0i_result.xy / in_resolution.xy;
                                     p1_someGlobalVar = p1_anotherFunc(p1_someConstVar);
-                                    sm_pixelColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                                    p1_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                                 }
 
 
                                 #line -1
                                 void main() {
-                                  p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy);
-                                  p1_main();
+                                  p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy); // Cylindrical Projection
+                                  p1_main(); // This Shader's Name
+                                  sm_pixelColor = p1_gl_FragColor;
                                 }
                             """.trimIndent()
                         ) { glsl }

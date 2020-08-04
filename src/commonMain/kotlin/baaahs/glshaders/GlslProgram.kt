@@ -14,7 +14,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 class GlslProgram(
     internal val gl: GlslContext,
-    private val openPatch: OpenPatch,
+    private val linkedPatch: LinkedPatch,
     resolver: Resolver
 ) {
     internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
@@ -39,9 +39,9 @@ class GlslProgram(
             """.trimIndent()
         )
 
-    private val fragShader =
+    internal val fragShader =
         gl.createFragmentShader(
-            "#version ${gl.glslVersion}\n\n${openPatch.toGlsl()}\n"
+            "#version ${gl.glslVersion}\n\n${linkedPatch.toGlsl()}\n"
         )
 
     private val bindings: List<Binding>
@@ -68,7 +68,7 @@ class GlslProgram(
     }
 
     private fun bind(resolver: Resolver): List<Binding> {
-        return openPatch.bind(this, resolver)
+        return linkedPatch.bind(this, resolver)
     }
 
     private inline fun <reified T> bindingsOf(): List<T> {

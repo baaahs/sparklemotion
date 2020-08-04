@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.OpenPatch
+import baaahs.glshaders.LinkedPatch
 import baaahs.glsl.GlslRenderer
 import baaahs.glsl.RenderSurface
 
@@ -35,7 +35,7 @@ class SurfaceManager(
 
     fun remap(renderPlan: RenderPlan) {
         renderSurfaces.forEach { (surface, renderSurface) ->
-            renderPlan.programs.forEach { (patch: OpenPatch, program: GlslProgram) ->
+            renderPlan.programs.forEach { (patch: LinkedPatch, program: GlslProgram) ->
                 if (patch.matches(surface)) {
                     renderSurface.useProgram(program)
                 }

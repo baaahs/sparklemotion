@@ -4,7 +4,7 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.GadgetData
 import baaahs.getBang
-import baaahs.glshaders.OpenPatch
+import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
 import baaahs.glsl.*
 import baaahs.jsx.useResizeListener
@@ -98,7 +98,7 @@ val PatchPreview = xComponent<PatchPreviewProps>("PatchPreview") { props ->
 }
 
 external interface PatchPreviewProps : RProps {
-    var patch: OpenPatch?
+    var patch: LinkedPatch?
     var width: LinearDimension?
     var height: LinearDimension?
     var onSuccess: () -> Unit

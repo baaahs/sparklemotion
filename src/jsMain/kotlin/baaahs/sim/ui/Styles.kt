@@ -16,6 +16,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
         width = 100.pct
         height = 100.pct
+        overflow = Overflow.scroll
     }
 
     val section by css {
