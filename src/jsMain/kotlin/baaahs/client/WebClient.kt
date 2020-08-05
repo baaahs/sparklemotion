@@ -10,6 +10,7 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.serialization.modules.SerializersModule
@@ -19,14 +20,17 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    plugins: Plugins = Plugins.findAll()
+    private val plugins: Plugins = Plugins.findAll()
 ) : HostedWebApp {
     private val facade = Facade()
 
     private val webClientLink = network.link("app")
     private val pubSub = PubSub.Client(webClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
     private val pubSubListener = { facade.notifyChanged() }
-    init { pubSub.addStateChangeListener(pubSubListener) }
+
+    init {
+        pubSub.addStateChangeListener(pubSubListener)
+    }
 
     private val glslContext = GlslBase.jsManager.createContext()
     private val model = Pluggables.getModel()
@@ -61,7 +65,7 @@ class WebClient(
             showState = it
             facade.notifyChanged()
         }
-    
+
 
     private val undoStack = UndoStack<ShowEditorState>()
 
@@ -71,6 +75,7 @@ class WebClient(
 
         private fun <T> getCallback(requestId: Int): (T) -> Unit =
             requestCallbacks[requestId].unsafeCast<(T) -> Unit>()
+
         private fun saveCallback(callback: Function<*>): Int {
             val requestId = nextRequestId++
             requestCallbacks[requestId] = callback
@@ -120,6 +125,9 @@ class WebClient(
     }
 
     inner class Facade : baaahs.ui.Facade() {
+        val plugins: Plugins
+            get() = this@WebClient.plugins
+
         val isConnected: Boolean
             get() = pubSub.isConnected
 

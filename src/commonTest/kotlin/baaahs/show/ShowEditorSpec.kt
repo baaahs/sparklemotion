@@ -6,6 +6,8 @@ import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFactory
 import baaahs.glshaders.override
 import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -17,8 +19,8 @@ object ShowEditorSpec : Spek({
         val shader1a by value { autoWirer.testPatch("shader 1a") }
         val shader2a by value { autoWirer.testPatch("shader 2a") }
 
-        val baseShowEditor by value {
-            ShowEditor("test show").apply {
+        val baseMutableShow by value {
+            MutableShow("test show").apply {
                 addScene("scene 1") {
                     addPatchSet("patchset 1a") { addPatch(shader1a) }
                 }
@@ -30,12 +32,12 @@ object ShowEditorSpec : Spek({
                 addControl("Scenes", scenesControl)
             }
         }
-        val baseShow by value { baseShowEditor.build(ShowBuilder()) }
+        val baseShow by value { baseMutableShow.build(ShowBuilder()) }
         fun Show.showState() = ShowState.forShow(this).selectScene(1).selectPatchSet(1)
         val baseShowState by value { baseShow.showState() }
-        val showEditor by value { ShowEditor(baseShow, baseShowState) }
-        val show by value { showEditor.build(ShowBuilder()) }
-        val showState by value { showEditor.getShowState() }
+        val mutableShow by value { MutableShow(baseShow, baseShowState) }
+        val show by value { mutableShow.build(ShowBuilder()) }
+        val showState by value { mutableShow.getShowState() }
 
         context("base show") {
             it("has the expected initial scenes and patchsets") {
@@ -68,7 +70,7 @@ object ShowEditorSpec : Spek({
 
         context("adding a patchset") {
             beforeEachTest {
-                showEditor.apply {
+                mutableShow.apply {
                     editScene(1) {
                         addPatchSet("patchset 2b") { addPatch(autoWirer.testPatch("shader 2b")) }
                     }
@@ -84,7 +86,7 @@ object ShowEditorSpec : Spek({
 
         context("editing a patchset") {
             beforeEachTest {
-                showEditor.editScene(1) {
+                mutableShow.editScene(1) {
                     editPatchSet(1) { title = "modified $title" }
                 }
             }
@@ -101,13 +103,13 @@ object ShowEditorSpec : Spek({
             val toIndex = 0
 
             beforeEachTest {
-                baseShowEditor.apply {
+                baseMutableShow.apply {
                     addScene("scene 3") {
                         addPatchSet("patchset 3a") { addPatch(autoWirer.testPatch("shader 3a")) }
                     }
                 }
                 
-                showEditor.moveScene(fromIndex, toIndex)
+                mutableShow.moveScene(fromIndex, toIndex)
             }
 
             it("reorders scenes") {
@@ -154,7 +156,7 @@ object ShowEditorSpec : Spek({
             override(baseShowState) { ShowState(1, listOf(2, 0)) }
 
             beforeEachTest {
-                showEditor.apply {
+                mutableShow.apply {
                     editScene(1) { movePatchSet(fromIndex, toIndex) }
                 }
             }

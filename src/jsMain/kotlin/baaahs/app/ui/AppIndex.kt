@@ -9,7 +9,7 @@ import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.Shader
 import baaahs.show.Show
-import baaahs.show.ShowEditor
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
@@ -76,6 +76,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.showPlayer = props.showPlayer
             this.dragNDrop = dragNDrop
             this.webClient = webClient
+            this.plugins = webClient.plugins
+            this.autoWirer = AutoWirer(webClient.plugins)
         }
     }
 
@@ -358,12 +360,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         val autoWirer = AutoWirer(props.showPlayer.plugins)
                                         val newPatch = autoWirer.autoWire(Shader(shader.src))
                                             .resolve()
-                                        val editor = ShowEditor(show, showState)
-                                        showState.findPatchSetEditor(editor)?.apply {
+                                        val mutableShow = MutableShow(show, showState)
+                                        showState.findMutablePatchSet(mutableShow)?.apply {
                                             patchMappings.clear() // TODO not this.
                                             addPatch(newPatch)
                                         }
-                                        handleShowEdit(editor.getShow(), editor.getShowState())
+                                        handleShowEdit(mutableShow.getShow(), mutableShow.getShowState())
                                     }
                                 }
                             }
@@ -373,10 +375,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 attrs.open = layoutEditorDialogOpen
                                 attrs.layouts = show.layouts
                                 attrs.onApply = { newLayouts ->
-                                    val editor = ShowEditor(show, showState).editLayouts {
+                                    val mutableShow = MutableShow(show, showState).editLayouts {
                                         copyFrom(newLayouts)
                                     }
-                                    handleShowEdit(editor.getShow(), editor.getShowState())
+                                    handleShowEdit(mutableShow.getShow(), mutableShow.getShowState())
                                 }
                                 attrs.onClose = handleLayoutEditorDialogClose
                             }

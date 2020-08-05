@@ -252,7 +252,7 @@ class GlslRendererTest {
         return AutoWirer(Plugins.safe())
             .autoWire(cylindricalUvMapper.shader, Shader(program))
             .resolve()
-            .openForPreview()
+            .openForPreview()!!
             .compile(glslContext) { id, dataSource ->
             dataSource.createFeed(fakeShowPlayer, id)
         }

@@ -1,13 +1,13 @@
 package baaahs.app.ui.controls
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
-import baaahs.show.PatchyEditor
 import baaahs.show.Show
-import baaahs.show.ShowEditor
+import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -25,17 +25,17 @@ import react.key
 import react.useContext
 
 class DraggablePatch(
-    private val editor: ShowEditor,
+    private val editor: MutableShow,
     private val sceneIndex: Int,
     private val patchSetIndex: Int,
     private val onChange: (Show, ShowState) -> Unit
 ) : Draggable {
-    lateinit var patchSetEditor: ShowEditor.SceneEditor.PatchSetEditor
+    lateinit var mutablePatchSet: MutableShow.MutableScene.MutablePatchSet
 
     init {
         editor.editScene(sceneIndex) {
             editPatchSet(patchSetIndex) {
-                patchSetEditor = this
+                mutablePatchSet = this
             }
         }
     }
@@ -48,7 +48,7 @@ class DraggablePatch(
 
     fun addTo(sceneIndex: Int, index: Int) {
         editor.editScene(sceneIndex) {
-            insertPatchSet(patchSetEditor, index)
+            insertPatchSet(mutablePatchSet, index)
         }
     }
 
@@ -59,7 +59,7 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val appContext = useContext(appContext)
-    var patchyEditor by state<PatchyEditor?> { null }
+    var mutablePatchHolder by state<MutablePatchHolder?> { null }
     val dropTarget =
         PatchSetListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
@@ -73,14 +73,14 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            props.showState.findSceneEditor(this)?.editPatchSet(index) {
-                patchyEditor = this
+            props.showState.findMutableScene(this)?.editPatchSet(index) {
+                mutablePatchHolder = this
             }
             event.preventDefault()
         }
     }
 
-    val handleClose = handler("patchyEditor.onClose") { patchyEditor = null }
+    val handleClose = handler("patchHolderEditor.onClose") { mutablePatchHolder = null }
 
     card {
         droppable({
@@ -142,9 +142,9 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         +"+"
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
-                                props.showState.findSceneEditor(this)?.apply {
+                                props.showState.findMutableScene(this)?.apply {
                                     addPatchSet("Untitled Patch") {
-                                        patchyEditor = this
+                                        mutablePatchHolder = this
                                     }
                                 }
                             }
@@ -155,12 +155,12 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
         }
     }
 
-    patchyEditor?.let { editor ->
-        patchyEditor {
-            attrs.editor = editor
-            attrs.onSave = {
+    mutablePatchHolder?.let { editor ->
+        patchHolderEditor {
+            attrs.mutablePatchHolder = editor
+            attrs.onApply = {
                 props.onEdit(editor.getShow(), editor.getShowState())
-                patchyEditor = null
+                mutablePatchHolder = null
             }
             attrs.onCancel = handleClose
         }

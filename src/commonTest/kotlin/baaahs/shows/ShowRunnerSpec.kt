@@ -15,8 +15,8 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
-import baaahs.show.ShowBuilder
-import baaahs.show.ShowEditor
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -47,7 +47,7 @@ object ShowRunnerSpec : Spek({
         }
         val surfaces by value { listOf(FakeSurface(100)) }
         val show by value {
-            ShowEditor("test show").apply {
+            MutableShow("test show").apply {
                 addScene("test scene") {
                     addPatchSet("test patchset") {
                         addPatch(patch)

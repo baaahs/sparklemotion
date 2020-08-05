@@ -5,6 +5,7 @@ import baaahs.camelize
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.InputPort
 import baaahs.glshaders.Plugins
+import baaahs.show.mutable.ShowBuilder
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer

@@ -1,8 +1,8 @@
 package baaahs
 
-import baaahs.show.PatchyEditor
 import baaahs.show.Show
-import baaahs.show.ShowEditor
+import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.math.min
@@ -26,9 +26,9 @@ data class ShowState(
         return show.scenes[selectedScene]
     }
 
-    fun findSceneEditor(showEditor: ShowEditor?): ShowEditor.SceneEditor? {
+    fun findMutableScene(mutableShow: MutableShow?): MutableShow.MutableScene? {
         if (selectedScene == -1) return null
-        return showEditor?.getSceneEditor(selectedScene)
+        return mutableShow?.getMutableScene(selectedScene)
     }
 
     fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet? {
@@ -50,11 +50,11 @@ data class ShowState(
         return scene.patchSets[selectedPatchSet]
     }
 
-    fun findPatchSetEditor(showEditor: ShowEditor?): PatchyEditor? {
+    fun findMutablePatchSet(mutableShow: MutableShow?): MutableShow.MutableScene.MutablePatchSet? {
         if (selectedPatchSet == -1) return null
 
-        val sceneEditor = findSceneEditor(showEditor)
-        return sceneEditor?.getPatchSetEditor(selectedPatchSet)
+        val mutableScene = findMutableScene(mutableShow)
+        return mutableScene?.getMutablePatchSet(selectedPatchSet)
     }
 
     fun selectScene(i: Int) = copy(selectedScene = i)
