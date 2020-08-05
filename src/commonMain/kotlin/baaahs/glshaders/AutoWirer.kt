@@ -80,7 +80,7 @@ class AutoWirer(
         val portId: String
     ) : MutableLink.Port {
         override fun toRef(showBuilder: ShowBuilder): PortRef = TODO("not implemented")
-        override fun displayName(): String = TODO("not implemented")
+        override fun displayName(): String = "Shader ${unresolvedShaderInstance.mutableShader.title} port $portId"
     }
 
     data class UnresolvedShaderInstance(

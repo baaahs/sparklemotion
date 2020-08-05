@@ -6,7 +6,6 @@ import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import external.Direction
@@ -15,10 +14,10 @@ import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
 import materialui.*
-import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
+import materialui.components.iconbutton.iconButton
 import org.w3c.dom.events.Event
 import react.dom.div
 import react.key
@@ -59,7 +58,6 @@ class DraggablePatch(
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val appContext = useContext(appContext)
-    var mutablePatchHolder by state<MutablePatchHolder?> { null }
     val dropTarget =
         PatchSetListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
@@ -74,13 +72,11 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
             props.showState.findMutableScene(this)?.editPatchSet(index) {
-                mutablePatchHolder = this
+                props.editPatchHolder(this)
             }
             event.preventDefault()
         }
     }
-
-    val handleClose = handler("patchHolderEditor.onClose") { mutablePatchHolder = null }
 
     card {
         droppable({
@@ -88,7 +84,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
             type = "Patch"
             direction = Direction.vertical.name
             isDropDisabled = !props.editMode
-        }) { droppableProvided, snapshot ->
+        }) { droppableProvided, _ ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.verticalButtonList.name
             ) {
@@ -105,7 +101,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                         draggableId = patchSet.id
                         isDragDisabled = !props.editMode
                         this.index = index
-                    }) { draggableProvided, snapshot ->
+                    }) { draggableProvided, _ ->
                         div(+Styles.controlButton) {
                             ref = draggableProvided.innerRef
                             copyFrom(draggableProvided.draggableProps)
@@ -138,31 +134,18 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
                 insertPlaceholder(droppableProvided)
 
                 if (props.editMode) {
-                    button {
-                        +"+"
+                    iconButton {
+                        icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
                                 props.showState.findMutableScene(this)?.apply {
-                                    addPatchSet("Untitled Patch") {
-                                        mutablePatchHolder = this
-                                    }
+                                    addPatchSet("Untitled Patch") { props.editPatchHolder(this) }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-    }
-
-    mutablePatchHolder?.let { editor ->
-        patchHolderEditor {
-            attrs.mutablePatchHolder = editor
-            attrs.onApply = {
-                props.onEdit(editor.getShow(), editor.getShowState())
-                mutablePatchHolder = null
-            }
-            attrs.onCancel = handleClose
         }
     }
 }

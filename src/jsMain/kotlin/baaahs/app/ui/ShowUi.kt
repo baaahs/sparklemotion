@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.ShowState
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.xComponent
 import external.dragDropContext
 import react.*
@@ -25,6 +26,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.onShowStateChange = props.onShowStateChange
             attrs.layout = currentLayout
             attrs.editMode = props.editMode
+            attrs.editPatchHolder = props.editPatchHolder
             attrs.onEdit = props.onEdit
         }
     }
@@ -34,6 +36,7 @@ external interface ShowUiProps : RProps {
     var show: OpenShow
     var showState: ShowState
     var editMode: Boolean
+    var editPatchHolder: (MutablePatchHolder) -> Unit
     var onEdit: (Show, ShowState) -> Unit
     var onShowStateChange: (ShowState) -> Unit
 }
