@@ -5,6 +5,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.CorePlugin
 import baaahs.glshaders.Plugins
 import baaahs.glsl.Shaders
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -47,7 +48,7 @@ object SampleData {
         """
             // Darkness
             void main(void) {
-              gl_FragColor = vec4(0., 0., 0., 1.);
+                gl_FragColor = vec4(0., 0., 0., 1.);
             }
         """.trimIndent()
     ))
@@ -59,8 +60,8 @@ object SampleData {
             uniform float brightness; // @@Slider min=0 max=1.25 default=1
 
             vec4 filterImage(vec4 inColor) {
-              vec4 clampedColor = clamp(inColor, 0., 1.);
-              return clampedColor * brightness;
+                vec4 clampedColor = clamp(inColor, 0., 1.);
+                return clampedColor * brightness;
             }
         """.trimIndent()
     ))
@@ -93,12 +94,12 @@ object SampleData {
             }
             
             vec4 filterImage(vec4 inColor) {
-              if (saturation == 1.) return inColor;
-              
-              vec4 clampedColor = clamp(inColor, 0., 1.);
-              vec3 hsv = rgb2hsv(clampedColor.rgb);
-              hsv.y *= saturation;
-              return vec4(hsv2rgb(hsv), clampedColor.a);
+                if (saturation == 1.) return inColor;
+
+                vec4 clampedColor = clamp(inColor, 0., 1.);
+                vec3 hsv = rgb2hsv(clampedColor.rgb);
+                hsv.y *= saturation;
+                return vec4(hsv2rgb(hsv), clampedColor.a);
             }
         """.trimIndent()
     ))
@@ -144,7 +145,7 @@ object SampleData {
     val intensityControl = CorePlugin.SliderDataSource(
         "Intensity", 1f, 0f, 1f, null)
 
-    val sampleShow = ShowEditor("Sample Show").apply {
+    val sampleShow = MutableShow("Sample Show").apply {
         editLayouts {
             copyFrom(layouts)
         }

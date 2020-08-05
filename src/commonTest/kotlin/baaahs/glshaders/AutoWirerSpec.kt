@@ -1,7 +1,12 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.*
+import baaahs.show.Shader
+import baaahs.show.ShaderChannel
+import baaahs.show.mutable.MutableDataSource
+import baaahs.show.mutable.MutableShader
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderInstance
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -38,50 +43,66 @@ object AutoWirerSpec : Spek({
             it("creates a reasonable guess patch") {
                 expect(
                     listOf(
-                        ShaderInstanceEditor(
-                            ShaderEditor(colorShader),
+                        MutableShaderInstance(
+                            MutableShader(colorShader),
                             hashMapOf(
-                                "time" to DataSourceEditor(CorePlugin.Time()),
-                                "blueness" to DataSourceEditor(
-                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
-                                "resolution" to DataSourceEditor(CorePlugin.Resolution()),
-                                "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
+                                "time" to MutableDataSource(CorePlugin.Time()),
+                                "blueness" to MutableDataSource(
+                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                ),
+                                "resolution" to MutableDataSource(CorePlugin.Resolution()),
+                                "gl_FragCoord" to MutableShaderChannel(
+                                    ShaderChannel.Main
+                                )
                             ),
                             shaderChannel = ShaderChannel.Main
                         )
                     )
-                ) { patch.shaderInstances }
+                ) { patch.mutableShaderInstances }
             }
 
             context("with a UV projection shader") {
                 val uvShader = cylindricalUvMapper.shader
-                val uvShaderInst by value { ShaderInstanceEditor(ShaderEditor(uvShader)) }
+                val uvShaderInst by value {
+                    MutableShaderInstance(
+                        MutableShader(uvShader)
+                    )
+                }
 
                 override(shaders) { arrayOf(colorShader, uvShader) }
 
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            ShaderInstanceEditor(
-                                ShaderEditor(colorShader),
+                            MutableShaderInstance(
+                                MutableShader(colorShader),
                                 hashMapOf(
-                                    "time" to DataSourceEditor(CorePlugin.Time()),
-                                    "resolution" to DataSourceEditor(CorePlugin.Resolution()),
-                                    "blueness" to DataSourceEditor(
-                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)),
-                                    "gl_FragCoord" to ShaderChannelEditor(ShaderChannel.Main)
+                                    "time" to MutableDataSource(CorePlugin.Time()),
+                                    "resolution" to MutableDataSource(CorePlugin.Resolution()),
+                                    "blueness" to MutableDataSource(
+                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                    ),
+                                    "gl_FragCoord" to MutableShaderChannel(
+                                        ShaderChannel.Main
+                                    )
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             ),
                             uvShaderInst.apply {
                                 incomingLinks.putAll(mapOf(
-                                    "pixelCoordsTexture" to DataSourceEditor(CorePlugin.PixelCoordsTexture()),
-                                    "modelInfo" to DataSourceEditor(CorePlugin.ModelInfoDataSource("ModelInfo"))
+                                    "pixelCoordsTexture" to MutableDataSource(
+                                        CorePlugin.PixelCoordsTexture()
+                                    ),
+                                    "modelInfo" to MutableDataSource(
+                                        CorePlugin.ModelInfoDataSource(
+                                            "ModelInfo"
+                                        )
+                                    )
                                 ))
                                 shaderChannel = ShaderChannel.Main
                             }
                         )
-                    ) { patch.shaderInstances }
+                    ) { patch.mutableShaderInstances }
                 }
             }
 
@@ -99,18 +120,20 @@ object AutoWirerSpec : Spek({
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            ShaderInstanceEditor(
-                                ShaderEditor(filterShader),
+                            MutableShaderInstance(
+                                MutableShader(filterShader),
                                 hashMapOf(
-                                    "brightness" to DataSourceEditor(
+                                    "brightness" to MutableDataSource(
                                         CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragColor" to ShaderChannelEditor(ShaderChannel.Main)
+                                    "gl_FragColor" to MutableShaderChannel(
+                                        ShaderChannel.Main
+                                    )
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             )
                         )
-                    ) { patch.shaderInstances }
+                    ) { patch.mutableShaderInstances }
                 }
             }
         }

@@ -4,8 +4,11 @@ import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
 import baaahs.glshaders.Plugins
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
+import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
@@ -13,13 +16,6 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerialModuleCollector
 import kotlin.reflect.KClass
-
-interface Patchy {
-    val title: String
-    val patches: List<Patch>
-    val eventBindings: List<EventBinding>
-    val controlLayout: Map<String, List<ControlRef>>
-}
 
 @Serializable
 data class Show(
@@ -32,7 +28,7 @@ data class Show(
     val shaders: Map<String, Shader> = emptyMap(),
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
-) : Patchy {
+) : PatchHolder {
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.toJson(serializer(), this)
     }
@@ -66,7 +62,7 @@ data class Scene(
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
-) : Patchy
+) : PatchHolder
 
 @Serializable
 data class PatchSet(
@@ -74,7 +70,7 @@ data class PatchSet(
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<ControlRef>> = emptyMap()
-) : Patchy
+) : PatchHolder
 
 @Serializable
 data class Patch(
@@ -82,10 +78,10 @@ data class Patch(
     val surfaces: Surfaces
 ) {
     companion object {
-        fun from(editor: PatchEditor, showBuilder: ShowBuilder): Patch {
+        fun from(mutablePatch: MutablePatch, showBuilder: ShowBuilder): Patch {
             return Patch(
-                editor.shaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
-                editor.surfaces
+                mutablePatch.mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
+                mutablePatch.surfaces
             )
         }
     }
@@ -124,6 +120,7 @@ data class Layout(
 
 @Serializable
 data class Shader(
+    /**language=glsl*/
     val src: String
 ) {
     val title: String
@@ -150,14 +147,38 @@ data class ShaderInstance(
     }
 
     companion object {
-        fun from(editor: ShaderInstanceEditor, showBuilder: ShowBuilder): ShaderInstance {
-            return editor.build(showBuilder)
+        fun from(mutableShaderInstance: MutableShaderInstance, showBuilder: ShowBuilder): ShaderInstance {
+            return mutableShaderInstance.build(showBuilder)
+        }
+    }
+}
+
+@Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
+data class ShaderChannel(val id: String) {
+    companion object {
+        val Main = ShaderChannel("main")
+    }
+
+    class ShaderChannelSerializer :
+        KSerializer<ShaderChannel> {
+        override val descriptor: SerialDescriptor
+            get() = PrimitiveDescriptor(
+                "id",
+                PrimitiveKind.STRING
+            )
+
+        override fun deserialize(decoder: Decoder): ShaderChannel {
+            return ShaderChannel(decoder.decodeString())
+        }
+
+        override fun serialize(encoder: Encoder, value: ShaderChannel) {
+            encoder.encodeString(value.id)
         }
     }
 }
 
 fun buildEmptyShow(): Show {
-    return ShowEditor("Untitled").apply {
+    return MutableShow("Untitled").apply {
         addScene("Scene 1") {
             addPatchSet("All Dark") {
             }

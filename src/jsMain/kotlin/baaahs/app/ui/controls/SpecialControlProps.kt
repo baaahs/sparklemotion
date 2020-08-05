@@ -1,8 +1,8 @@
 package baaahs.app.ui.controls
 
-import baaahs.OpenShow
 import baaahs.ShowState
 import baaahs.show.Show
+import baaahs.show.live.OpenShow
 import react.RProps
 
 external interface SpecialControlProps : RProps {

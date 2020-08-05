@@ -1,7 +1,11 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.*
+import baaahs.show.Shader
+import baaahs.show.ShaderChannel
+import baaahs.show.ShaderOutPortRef
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderOutPort
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -37,7 +41,7 @@ object OpenPatchSpec : Spek({
 
             describe("#toGlsl") {
                 val linkedPatch by value {
-                    PatchEditor {
+                    MutablePatch {
                         addShaderInstance(shader) {
                             link("gl_FragCoord", CorePlugin.ScreenUvCoord())
                             link("resolution", CorePlugin.Resolution())
@@ -45,7 +49,7 @@ object OpenPatchSpec : Spek({
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                             shaderChannel = ShaderChannel.Main
                         }
-                    }.openForPreview()
+                    }.openForPreview()!!
                 }
                 val glsl by value {
                     linkedPatch.toGlsl().trim()
@@ -99,7 +103,7 @@ object OpenPatchSpec : Spek({
 
                 context("with UV translation shader") {
                     override(linkedPatch) {
-                        PatchEditor {
+                        MutablePatch {
                             addShaderInstance(cylindricalUvMapper.shader) {
                                 link("pixelCoordsTexture", CorePlugin.PixelCoordsTexture())
                                 link("modelInfo", CorePlugin.ModelInfoDataSource("ModelInfo"))
@@ -107,13 +111,18 @@ object OpenPatchSpec : Spek({
                             }
 
                             addShaderInstance(openShader.shader) {
-                                link("gl_FragCoord", ShaderOutPortEditor(findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue))
+                                link(
+                                    "gl_FragCoord",
+                                    MutableShaderOutPort(
+                                        findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue
+                                    )
+                                )
                                 link("resolution", CorePlugin.Resolution())
                                 link("time", CorePlugin.Time())
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                                 shaderChannel = ShaderChannel.Main
                             }
-                        }.openForPreview()
+                        }.openForPreview()!!
                     }
 
                     it("generates GLSL") {
