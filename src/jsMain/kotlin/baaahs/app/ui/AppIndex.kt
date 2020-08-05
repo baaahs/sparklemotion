@@ -31,9 +31,6 @@ import materialui.components.cssbaseline.cssBaseline
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
-import materialui.components.drawer.drawer
-import materialui.components.drawer.enums.DrawerAnchor
-import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.enums.IconButtonStyle
@@ -270,7 +267,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 if (webClient.showIsModified) i { +" (Unsaved)" }
                             }
 
-                            if (editMode) {
+                            if (show != null && editMode) {
                                 div(+themeStyles.editButton) {
                                     icon(Edit)
                                     attrs.onClickFunction = handleShowEditButtonClick
@@ -388,30 +385,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         }
 
                         portal {
-                            // Shader Editor drawer
-                            drawer {
-                                attrs.anchor = DrawerAnchor.right
-                                attrs.variant = DrawerVariant.persistent
-//                              attrs.elevation = 100
-                                attrs.open = shaderEditorDrawerOpen
-                                attrs.onClose = handleShaderEditorDrawerClose
-                                attrs.classes(Styles.fullHeight.name)
-
-                                shaderEditorWindow {
-                                    attrs.onAddToPatch = { shader ->
-                                        val autoWirer = myAppContext.autoWirer
-                                        val newPatch = autoWirer.autoWire(shader.build())
-                                            .resolve()
-                                        val mutableShow = MutableShow(show, showState)
-                                        showState.findMutablePatchSet(mutableShow)?.apply {
-                                            patchMappings.clear() // TODO not this.
-                                            addPatch(newPatch)
-                                        }
-                                        handleShowEdit(mutableShow.getShow(), mutableShow.getShowState())
-                                    }
-                                }
-                            }
-
                             // Layout Editor dialog
                             layoutEditorDialog {
                                 attrs.open = layoutEditorDialogOpen

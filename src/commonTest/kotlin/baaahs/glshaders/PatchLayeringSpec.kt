@@ -2,6 +2,7 @@ package baaahs.glshaders
 
 import baaahs.glsl.Shaders
 import baaahs.show.Shader
+import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.Surfaces
 import baaahs.show.live.ShowOpener
@@ -61,8 +62,10 @@ object PatchLayeringSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                val mergedPatch = autoWirer.merge(show, show.scenes[0], show.scenes[0].patchSets[0])
-                val linkedPatch = mergedPatch[Surfaces.AllSurfaces]!!
+                val portDiagrams =
+                    autoWirer.merge(show, show.scenes[0], show.scenes[0].patchSets[0])
+                val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
+                val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)!!
                 expect(
                     /** language=glsl */
                     """
@@ -72,7 +75,7 @@ object PatchLayeringSpec : Spek({
 
                         // SparkleMotion-generated GLSL
 
-                        layout(location = 0) out vec4 sm_pixelColor;
+                        layout(location = 0) out vec4 sm_result;
 
                         struct ModelInfo {
                             vec3 center;
@@ -136,7 +139,7 @@ object PatchLayeringSpec : Spek({
                           p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy); // Cylindrical Projection
                           p1_main(); // Orange Shader
                           p2i_result = p2_filterImage(p1_gl_FragColor); // Brightness Filter
-                          sm_pixelColor = p2i_result;
+                          sm_result = p2i_result;
                         }
                         
                     """.trimIndent()

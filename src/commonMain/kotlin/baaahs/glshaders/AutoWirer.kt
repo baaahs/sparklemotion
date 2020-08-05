@@ -39,7 +39,8 @@ class AutoWirer(
             val unresolvedShaderInstance = UnresolvedShaderInstance(
                 MutableShader(openShader.shader),
                 openShader.inputPorts.map { it.id }.associateWith { hashSetOf<MutableLink.Port>() },
-                shaderChannel
+                shaderChannel,
+                0f
             )
 
             locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
@@ -86,7 +87,8 @@ class AutoWirer(
     data class UnresolvedShaderInstance(
         val mutableShader: MutableShader,
         val incomingLinksOptions: Map<String, MutableSet<MutableLink.Port>>,
-        var shaderChannel: ShaderChannel? = null
+        var shaderChannel: ShaderChannel? = null,
+        var priority: Float
     ) {
         fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }
 
@@ -110,7 +112,7 @@ class AutoWirer(
         }
     }
 
-    fun merge(vararg patchHolders: OpenPatchHolder): Map<Surfaces, LinkedPatch> {
+    fun merge(vararg patchHolders: OpenPatchHolder): Map<Surfaces, PortDiagram> {
         val patchesBySurfaces = mutableMapOf<Surfaces, MutableList<OpenPatch>>()
         patchHolders.forEach { openPatchHolder ->
             openPatchHolder.patches.forEach { patch ->
@@ -118,25 +120,21 @@ class AutoWirer(
                     .add(patch)
             }
         }
-        return merge(patchesBySurfaces)
+
+        return patchesBySurfaces.mapValues { (_, openPatches) ->
+            buildPortDiagram(*openPatches.toTypedArray())
+        }
     }
 
-    fun merge(patchesBySurfaces: Map<Surfaces, List<OpenPatch>>): Map<Surfaces, LinkedPatch> {
-        return patchesBySurfaces.mapValues { (surfaces, openPatches) ->
-            val shaderInstance = merge(*openPatches.toTypedArray())
-            shaderInstance?.let { LinkedPatch(it, surfaces) }
-        }.mapNotNull { (k, v) -> v?.let { k to v } }.associate { it }
-    }
-
-    fun merge(vararg patches: OpenPatch): LiveShaderInstance? {
+    fun buildPortDiagram(vararg patches: OpenPatch): PortDiagram {
         val portDiagram = PortDiagram()
         patches.forEach { patch ->
             portDiagram.add(patch)
         }
-        return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
+        return portDiagram
     }
 
-    class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Int, val level: Int) {
+    class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Float, val level: Int) {
         val typePriority: Int get() = shaderInstance.shader.shaderType.priority
 
         override fun toString(): String {
@@ -153,7 +151,7 @@ class AutoWirer(
 
         private fun addToChannel(shaderChannel: ShaderChannel, contentType: ContentType, shaderInstance: LiveShaderInstance, level: Int) {
             candidates.getOrPut(shaderChannel to contentType) { arrayListOf() }
-                .add(ChannelEntry(shaderInstance, 0, level))
+                .add(ChannelEntry(shaderInstance, shaderInstance.priority, level))
         }
 
         fun add(patch: OpenPatch) {
@@ -174,8 +172,9 @@ class AutoWirer(
             level++
         }
 
-        fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
+        fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LinkedPatch? {
             return Resolver().resolve(shaderChannel, contentType)
+                ?.let { LinkedPatch(it, surfaces!!)}
         }
 
         inner class Resolver {
@@ -206,13 +205,15 @@ class AutoWirer(
             }
 
             private fun resolveNext(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
-                return nextOf(shaderChannel, contentType)?.let { shaderInstance ->
+                val nextInstance = nextOf(shaderChannel, contentType)
+                return nextInstance?.let { shaderInstance ->
                     LiveShaderInstance(
                         shaderInstance.shader,
                         shaderInstance.incomingLinks.mapValues { (portId, link) ->
                             link.finalResolve(shaderInstance.shader.findInputPort(portId), this)
                         },
-                        shaderChannel
+                        shaderChannel,
+                        shaderInstance.priority
                     )
                 }
             }
@@ -255,7 +256,8 @@ class AutoWirer(
                     it.incomingLinksOptions.mapValues { (_, fromPortOptions) ->
                         fromPortOptions.first()
                     }.toMutableMap(),
-                    it.shaderChannel
+                    it.shaderChannel,
+                    it.priority
                 )
             }
 

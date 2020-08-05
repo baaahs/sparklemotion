@@ -129,7 +129,8 @@ class MutableShow(
             MutableShaderInstance(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
-                shaderInstance.shaderChannel
+                shaderInstance.shaderChannel,
+                shaderInstance.priority
             )
         }.toMutableMap()
     init {
@@ -359,7 +360,7 @@ class MutablePatch {
         Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer, shaderType: ShaderType): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
@@ -371,8 +372,8 @@ class MutablePatch {
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val merge = autoWirer.merge(mapOf(surfaces to listOf(openPatch)))
-        return merge[surfaces]
+        val portDiagram = autoWirer.buildPortDiagram(openPatch)
+        return portDiagram.resolvePatch(ShaderChannel.Main, shaderType.resultContentType)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {
@@ -382,7 +383,7 @@ class MutablePatch {
 
     fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutablePatch {
         val mutableShaderInstance = MutableShaderInstance(
-            MutableShader(shader), hashMapOf()
+            MutableShader(shader), hashMapOf(), null, 0f
         )
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
@@ -450,7 +451,8 @@ data class MutableShader(
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutableLink.Port> = hashMapOf(),
-    var shaderChannel: ShaderChannel? = null
+    var shaderChannel: ShaderChannel? = null,
+    var priority: Float = 0f
 ) {
     fun findDataSources(): List<DataSource> {
         return incomingLinks.mapNotNull { (_, from) ->
@@ -478,7 +480,8 @@ data class MutableShaderInstance(
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },
-            shaderChannel
+            shaderChannel,
+            priority
         )
     }
 }
