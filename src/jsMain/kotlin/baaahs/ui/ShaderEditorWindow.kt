@@ -1,11 +1,12 @@
 package baaahs.ui
 
+import baaahs.app.ui.appContext
 import baaahs.glshaders.LinkedPatch
-import baaahs.glshaders.OpenShader
 import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ import kotlin.browser.window
 import kotlin.math.min
 
 val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow") { props ->
+    val appContext = useContext(appContext)
     val scope = memo { CoroutineScope(Dispatchers.Main) }
 
     var openShaders by state {
@@ -44,11 +46,8 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
         selectedShaderIndex = tabIndex
     }
 
-    val handleNewShader = useCallback() { type: OpenShader.Type ->
-        val newShader = EditingShader(
-            MutableShader(Shader("// ${type.name} Shader\n\n${type.template}")),
-            isModified = true
-        )
+    val handleNewShader = useCallback() { shaderType: ShaderType ->
+        val newShader = EditingShader(shaderType.shaderFromTemplate(), isModified = true)
         openShaders += newShader
         selectedShaderIndex = openShaders.size - 1
     }
@@ -62,7 +61,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
         val selectedShader = selectedShader()
         selectedShader?.file?.let { saveToFile ->
             scope.launch {
-                saveToFile.fs.saveFile(saveToFile, selectedShader.src, true)
+                saveToFile.fs.saveFile(saveToFile, selectedShader.mutableShader.src, true)
                 openShaders = openShaders.replace(selectedShaderIndex) {
                     EditingShader(it.mutableShader, isModified = false, file = saveToFile)
                 }
@@ -93,13 +92,14 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             if (fileDialogIsSaveAs) {
                 val selectedShader = selectedShader()
                 selectedShader!!
-                file.fs.saveFile(file.withExtension(".glsl"), selectedShader.src, true)
+                file.fs.saveFile(file.withExtension(".glsl"), selectedShader.mutableShader.src, true)
                 openShaders = openShaders.replace(selectedShaderIndex) {
                     EditingShader(it.mutableShader, false, file)
                 }
             } else {
                 val src = file.fs.loadFile(file)!!
-                val newShader = EditingShader(MutableShader(Shader(src)), false, file)
+                val shader = appContext.autoWirer.glslAnalyzer.import(src, file.name.replace(".glsl", ""))
+                val newShader = EditingShader(MutableShader(shader), false, file)
                 openShaders += newShader
                 selectedShaderIndex = openShaders.size - 1
             }
@@ -134,7 +134,7 @@ val ShaderEditorWindow = xComponent<ShaderEditorWindowProps>("ShaderEditorWindow
             menuButton {
                 attrs.label = "New…"
 
-                attrs.items = OpenShader.Type.values().map { type ->
+                attrs.items = ShaderType.values().map { type ->
                     MenuItem("New ${type.name} Shader…") {
                         handleNewShader(type)
                     }

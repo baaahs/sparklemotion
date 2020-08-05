@@ -3,6 +3,7 @@ package baaahs.glshaders
 import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
+import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableDataSource
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
@@ -12,8 +13,9 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 object AutoWirerSpec : Spek({
-
     describe("AutoWirer") {
+        val autoWirer by value { AutoWirer(Plugins.safe()) }
+
         describe(".autoWire") {
             val shaderText by value {
                 /**language=glsl*/
@@ -36,9 +38,9 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val colorShader by value { Shader(shaderText) }
+            val colorShader by value { autoWirer.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(colorShader) }
-            val patch by value { AutoWirer(Plugins.safe()).autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
+            val patch by value { autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
 
             it("creates a reasonable guess patch") {
                 expect(
@@ -107,13 +109,15 @@ object AutoWirerSpec : Spek({
             }
 
             context("with a filter shader") {
-                val filterShader = Shader("""
-                    // Brightness Filter
-                    uniform float brightness; // @@Slider min=0 max=1 default=1
-                    vec4 filterImage(vec4 colorIn) {
-                      colorOut = colorIn * brightness;
-                    }
-                """.trimIndent())
+                val filterShader = Shader(
+                    "Brightness Filter",
+                    ShaderType.Filter,
+                    """
+                        uniform float brightness; // @@Slider min=0 max=1 default=1
+                        vec4 filterImage(vec4 colorIn) {
+                          colorOut = colorIn * brightness;
+                        }
+                    """.trimIndent())
 
                 override(shaders) { arrayOf(filterShader) }
 

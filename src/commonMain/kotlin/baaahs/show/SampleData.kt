@@ -44,9 +44,10 @@ object SampleData {
         .acceptSymbolicChannelLinks().resolve()
 
     private val showDefaultPaint = autoWirer.autoWire(Shader(
+        "Darkness",
+        ShaderType.Color,
         /**language=glsl*/
         """
-            // Darkness
             void main(void) {
                 gl_FragColor = vec4(0., 0., 0., 1.);
             }
@@ -55,6 +56,8 @@ object SampleData {
         .acceptSymbolicChannelLinks().resolve()
 
     private val brightnessFilter = autoWirer.autoWire(Shader(
+        "Brightness",
+        ShaderType.Filter,
         /**language=glsl*/
         """
             uniform float brightness; // @@Slider min=0 max=1.25 default=1
@@ -68,6 +71,8 @@ object SampleData {
         .acceptSymbolicChannelLinks().resolve()
 
     private val saturationFilter = autoWirer.autoWire(Shader(
+        "Saturation",
+        ShaderType.Filter,
         /**language=glsl*/
         """
             uniform float saturation; // @@Slider min=0 max=1.25 default=1
@@ -106,9 +111,10 @@ object SampleData {
         .acceptSymbolicChannelLinks().resolve()
 
     private val redYellowGreenPatch = autoWirer.autoWire(Shader(
+        "GLSL Hue Test Pattern",
+        ShaderType.Color,
         /**language=glsl*/
         """
-            // GLSL Hue Test Pattern
             uniform vec2 resolution;
             void main(void) {
                 gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
@@ -117,9 +123,10 @@ object SampleData {
     )).acceptSymbolicChannelLinks().resolve()
 
     private val blueAquaGreenPatch = autoWirer.autoWire(Shader(
+        "Another GLSL Hue Test Pattern",
+        ShaderType.Color,
         /**language=glsl*/
         """
-            // Other GLSL Hue Test Pattern
             uniform vec2 resolution;
             uniform float redness;
             void main(void) {
@@ -128,7 +135,7 @@ object SampleData {
         """.trimIndent()
     )).acceptSymbolicChannelLinks().resolve()
 
-    private val fireBallPatch = autoWirer.autoWire(Shader(FixtureShaders.fireBallGlsl))
+    private val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
         .acceptSymbolicChannelLinks().resolve()
 
     val defaultLayout = Layout(stdLayout)

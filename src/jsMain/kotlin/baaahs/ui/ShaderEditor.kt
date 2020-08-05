@@ -20,8 +20,10 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import kotlinext.js.jsObject
 import kotlinx.css.px
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
+import materialui.components.textfield.textField
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
@@ -71,7 +73,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
             try {
                 selectedShader.mutablePatch =
                     appContext.autoWirer
-                        .autoWire(Shader(selectedShader.src))
+                        .autoWire(selectedShader.build())
                         .resolve()
             } catch (e: GlslException) {
                 selectedShader.glslErrors = e.errors.toTypedArray()
@@ -81,7 +83,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 selectedShader.glslErrors = arrayOf(GlslError(e.message ?: e.toString()))
                 showGlslErrors(selectedShader.glslErrors)
             }
-            curPatch = selectedShader.mutablePatch?.openForPreview()
+            curPatch = selectedShader.mutablePatch?.openForPreview(appContext.autoWirer)
         }
     }
 
@@ -107,15 +109,25 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         showGlslErrors(selectedShader.glslErrors)
     }
 
-    val handleChange: (String, Any) -> Unit = useCallback(props.onChange) { newSrc: String, event: Any ->
+    val handleUpdate = useCallback() { block: MutableShader.() -> Unit ->
         activeShader.current?.apply {
-            src = newSrc
+            mutableShader.block()
             isModified = true
             lastModified = clock.now()
             mutablePatch = null
             gadgets = null
             glslErrors = emptyArray()
         }
+    }
+
+    val handleTitleChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
+        val str = event.target!!.asDynamic().value as String
+        handleUpdate { title = str }
+        props.onChange()
+    }
+
+    val handleCodeChange: (String, Any) -> Unit = useCallback(props.onChange) { newSrc: String, event: Any ->
+        handleUpdate { src = newSrc }
         props.onChange()
     }
 
@@ -217,6 +229,14 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
             }
         }
 
+        textField {
+            attrs.label { +"Shader name…" }
+            attrs.autoFocus = false
+            attrs.fullWidth = true
+            attrs.onChangeFunction = handleTitleChange
+            attrs.value = activeShader.current?.mutableShader?.title ?: ""
+        }
+
         reactAce {
             ref = aceEditor
             attrs {
@@ -225,9 +245,9 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 width = "100%"
                 height = "60vh"
                 showGutter = true
-                this.onChange = handleChange
+                this.onChange = handleCodeChange
                 this.onCursorChange = onCursorChange
-                value = activeShader.current?.src ?: ""
+                value = activeShader.current?.mutableShader?.src ?: ""
                 name = "ShaderEditor"
                 focus = true
                 setOptions = jsObject {
@@ -263,18 +283,14 @@ data class EditingShader(
     var isModified: Boolean = false,
     val file: Fs.File? = null
 ) {
-    var title: String = mutableShader.title
-    var src: String
-        get() = mutableShader.shader.src
-        set(value) {
-            mutableShader.shader = Shader(value)
-        }
-
+    val title: String get() = mutableShader.title
     var lastCursorPosition: Point? = null
     var lastModified: Time = clock.now()
     var mutablePatch: MutablePatch? = null
     var gadgets: Array<GadgetData>? = null
     var glslErrors: Array<GlslError> = emptyArray()
+
+    fun build(): Shader = mutableShader.build()
 }
 
 

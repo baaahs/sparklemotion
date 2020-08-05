@@ -174,7 +174,11 @@ private fun jsonFor(portRef: PortRef): JsonObject {
     }
 }
 
-private fun jsonFor(shader: Shader) = json { "src" to shader.src }
+private fun jsonFor(shader: Shader) = json {
+    "title" to shader.title
+    "type" to shader.type.name
+    "src" to shader.src
+}
 
 private fun jsonFor(shaderInstance: ShaderInstance) = json {
     "shaderId" to shaderInstance.shaderId

@@ -120,19 +120,11 @@ data class Layout(
 
 @Serializable
 data class Shader(
+    val title: String,
+    val type: ShaderType,
     /**language=glsl*/
     val src: String
 ) {
-    val title: String
-        get() {
-            val newlineIndex = src.indexOf("\n")
-            return if (newlineIndex < 3 || src.length < 3) {
-                "shader"
-            } else {
-                src.substring(3, newlineIndex)
-            }
-        }
-
     fun suggestId(): String = title.camelize()
 }
 

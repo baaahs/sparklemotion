@@ -4,12 +4,12 @@ import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
 import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.io.ByteArrayWriter
 import baaahs.model.ModelInfo
-import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -249,10 +249,11 @@ class GlslRendererTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        return AutoWirer(Plugins.safe())
-            .autoWire(cylindricalUvMapper.shader, Shader(program))
+        val autoWirer = AutoWirer(Plugins.safe())
+        return autoWirer
+            .autoWire(cylindricalUvMapper.shader, GlslAnalyzer().import(program))
             .resolve()
-            .openForPreview()!!
+            .openForPreview(autoWirer)!!
             .compile(glslContext) { id, dataSource ->
             dataSource.createFeed(fakeShowPlayer, id)
         }

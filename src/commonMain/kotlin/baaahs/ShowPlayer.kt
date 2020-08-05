@@ -58,9 +58,9 @@ abstract class BaseShowPlayer(
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
-            shaders.getOrPut(shader) { glslAnalyzer.asShader(shader) }
+            shaders.getOrPut(shader) { glslAnalyzer.openShader(shader) }
         } else {
-            shaders[shader] ?: glslAnalyzer.asShader(shader)
+            shaders[shader] ?: glslAnalyzer.openShader(shader)
         }
     }
 

@@ -1,8 +1,10 @@
 package baaahs.glshaders
 
+import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
+import baaahs.show.ShaderType
 
-class FilterShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
+class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
     companion object {
         val wellKnownInputPorts = listOf(
             InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate),
@@ -14,8 +16,8 @@ class FilterShader(glslCode: GlslCode) : OpenShader.Base(glslCode) {
         ).associateBy { it.id }
     }
 
-    override val shaderType: OpenShader.Type
-        get() = OpenShader.Type.Filter
+    override val shaderType: ShaderType
+        get() = ShaderType.Filter
 
     override val entryPoint: GlslCode.GlslFunction
         get() = glslCode.functions.find { it.name == "filterImage" }!!
