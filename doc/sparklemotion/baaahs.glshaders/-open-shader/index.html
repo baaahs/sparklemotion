@@ -19,13 +19,6 @@
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Base</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code></td>
 </tr>
-<tr>
-<td>
-<h4><a href="-type/index.html">Type</a></h4>
-</td>
-<td>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">Type</span></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Properties</h3>
@@ -71,14 +64,14 @@
 <h4><a href="shader.html">shader</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="shader-type.html">shaderType</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><span class="identifier">Type</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><a href="../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -130,21 +123,21 @@
 <h4><a href="try-color-shader.html">tryColorShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">tryColorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryColorShader(baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-color-shader/index.html"><span class="identifier">ColorShader</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">tryColorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryColorShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryColorShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-color-shader/index.html"><span class="identifier">ColorShader</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="try-filter-shader.html">tryFilterShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">tryFilterShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryFilterShader(baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-filter-shader/index.html"><span class="identifier">FilterShader</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">tryFilterShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryFilterShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryFilterShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-filter-shader/index.html"><span class="identifier">FilterShader</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="try-uv-translator-shader.html">tryUvTranslatorShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">tryUvTranslatorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryUvTranslatorShader(baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-uv-shader/index.html"><span class="identifier">UvShader</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">tryUvTranslatorShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryUvTranslatorShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glshaders.OpenShader.Companion$tryUvTranslatorShader(baaahs.show.Shader, baaahs.glshaders.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-uv-shader/index.html"><span class="identifier">UvShader</span></a><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>
