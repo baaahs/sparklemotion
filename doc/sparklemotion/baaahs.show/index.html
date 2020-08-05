@@ -20,13 +20,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-control-editor/index.html">ControlEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ControlEditor</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-control-ref/index.html">ControlRef</a></h4>
 </td>
 <td>
@@ -45,13 +38,6 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">DataSourceBuilder</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-data-source-editor/index.html">DataSourceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DataSourceEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
 </tr>
 <tr>
 <td>
@@ -97,27 +83,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-layouts-editor/index.html">LayoutsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">LayoutsEditor</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link-editor/index.html">LinkEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">LinkEditor</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-output-port-editor/index.html">OutputPortEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">OutputPortEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-output-port-ref/index.html">OutputPortRef</a></h4>
 </td>
 <td>
@@ -132,31 +97,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-editor/index.html">PatchEditor</a></h4>
+<h4><a href="-patch-holder/index.html">PatchHolder</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">PatchEditor</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">PatchHolder</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-patch-set/index.html">PatchSet</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patchy/index.html">Patchy</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Patchy</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patchy-editor/index.html">PatchyEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PatchyEditor</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -177,7 +128,7 @@
 <h4><a href="-scene/index.html">Scene</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -195,13 +146,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-shader-channel-editor/index.html">ShaderChannelEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderChannelEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-shader-channel-ref/index.html">ShaderChannelRef</a></h4>
 </td>
 <td>
@@ -209,31 +153,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-shader-editor/index.html">ShaderEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderEditor</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-shader-instance/index.html">ShaderInstance</a></h4>
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderInstance</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-instance-editor/index.html">ShaderInstanceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderInstanceEditor</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-out-port-editor/index.html">ShaderOutPortEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ShaderOutPortEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
 </tr>
 <tr>
 <td>
@@ -254,21 +177,7 @@
 <h4><a href="-show/index.html">Show</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy/index.html"><span class="identifier">Patchy</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-show-builder/index.html">ShowBuilder</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ShowBuilder</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-show-editor/index.html">ShowEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ShowEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patchy-editor/index.html"><span class="identifier">PatchyEditor</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -321,13 +230,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">buildEmptyShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-show/index.html"><span class="identifier">Show</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="editor.html">editor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">.</span><span class="identifier">editor</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-data-source-editor/index.html"><span class="identifier">DataSourceEditor</span></a></code></td>
 </tr>
 </tbody>
 </table>

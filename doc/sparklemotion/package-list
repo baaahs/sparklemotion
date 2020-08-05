@@ -48,6 +48,7 @@ baaahs.proto
 baaahs.shaders
 baaahs.show
 baaahs.show.live
+baaahs.show.mutable
 baaahs.shows
 baaahs.sim
 baaahs.sim.ui
