@@ -28,9 +28,9 @@ class FakeShowPlayer(
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
-            shaders.getOrPut(shader) { GlslAnalyzer().asShader(shader) }
+            shaders.getOrPut(shader) { GlslAnalyzer().openShader(shader) }
         } else {
-            shaders[shader] ?: GlslAnalyzer().asShader(shader)
+            shaders[shader] ?: GlslAnalyzer().openShader(shader)
         }
     }
 

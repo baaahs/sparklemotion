@@ -7,6 +7,7 @@ import baaahs.app.ui.controls.control
 import baaahs.show.Layout
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import external.Direction
@@ -49,6 +50,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         this.showState = props.showState
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
+        this.editPatchHolder = props.editPatchHolder
         this.onEdit = props.onEdit
     }
 
@@ -79,7 +81,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                             this.type = "ControlPanel"
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
-                        }) { droppableProvided, snapshot ->
+                        }) { droppableProvided, _ ->
                             val style = when (section) {
                                 ControlDisplay.Section.Show -> Styles.showControls
                                 ControlDisplay.Section.Scene -> Styles.sceneControls
@@ -98,7 +100,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                         this.draggableId = draggableId
                                         this.isDragDisabled = !props.editMode
                                         this.index = placedControl.index
-                                    }) { draggableProvided, snapshot ->
+                                    }) { draggableProvided, _ ->
                                         control {
                                             attrs.control = control
                                             attrs.specialControlProps = specialControlProps
@@ -143,6 +145,7 @@ external interface ShowLayoutProps : RProps {
     var onShowStateChange: (ShowState) -> Unit
     var layout: Layout
     var editMode: Boolean
+    var editPatchHolder: (MutablePatchHolder) -> Unit
     var onEdit: (Show, ShowState) -> Unit
 }
 

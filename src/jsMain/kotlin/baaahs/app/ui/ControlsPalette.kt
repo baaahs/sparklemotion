@@ -51,7 +51,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                         this.type = "ControlPanel"
                         this.direction = Direction.vertical.name
                         this.isDropDisabled = !props.editMode
-                    }) { droppableProvided, snapshot ->
+                    }) { droppableProvided, _ ->
                         div(+Styles.unplacedControlsDroppable) {
                             install(droppableProvided)
 

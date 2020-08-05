@@ -2,6 +2,7 @@ package baaahs.glshaders
 
 import baaahs.glsl.Shaders
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.show.Surfaces
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
@@ -23,16 +24,20 @@ object PatchLayeringSpec : Spek({
 
         val uvShader = Shaders.cylindricalUvMapper.shader
         val blackShader by value {
-            Shader("// Black Shader\nvoid main() {\n  gl_FragColor = vec4(0.);\n}")
+            Shader("Black Shader", ShaderType.Color,
+                "void main() {\n  gl_FragColor = vec4(0.);\n}")
         }
         val orangeShader by value {
-            Shader("// Orange Shader\nvoid main() {\n  gl_FragColor = vec4(1., .5, 0., gl_FragCoord.x);\n}")
+            Shader("Orange Shader", ShaderType.Color,
+                "void main() {\n  gl_FragColor = vec4(1., .5, 0., gl_FragCoord.x);\n}")
         }
         val brightnessFilter by value {
-            Shader("// Brightness Filter\nuniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 filterImage(vec4 colorIn) {\n  return colorIn * brightness;\n}")
+            Shader("Brightness Filter", ShaderType.Filter,
+                "uniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 filterImage(vec4 colorIn) {\n  return colorIn * brightness;\n}")
         }
         val saturationFilter by value {
-            Shader("// Saturation Filter\nvec4 filterImage(vec4 colorIn) { return colorIn; }")
+            Shader("Saturation Filter", ShaderType.Filter,
+                "vec4 filterImage(vec4 colorIn) { return colorIn; }")
         }
         val mutableShow by value { MutableShow("test show") }
         val show by value {
@@ -111,7 +116,6 @@ object PatchLayeringSpec : Spek({
                         vec4 p1_gl_FragColor;
 
                         #line 1
-
                         void p1_main() {
                           p1_gl_FragColor = vec4(1., .5, 0., p0i_result.x);
                         }
@@ -121,7 +125,7 @@ object PatchLayeringSpec : Spek({
 
                         vec4 p2i_result;
                         
-                        #line 2
+                        #line 1
                          vec4 p2_filterImage(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }

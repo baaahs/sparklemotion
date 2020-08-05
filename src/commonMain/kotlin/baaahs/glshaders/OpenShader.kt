@@ -5,68 +5,17 @@ import baaahs.RefCounter
 import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.Namespace
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.ShaderType
 import baaahs.unknown
 import kotlin.collections.set
 
 interface OpenShader : RefCounted {
-    enum class Type(
-        val priority: Int,
-        val defaultUpstreams: Map<ContentType, ShaderChannel>,
-        /**language=glsl*/
-        val template: String
-    ) {
-        Projection(0, emptyMap(), """
-                uniform sampler2D pixelCoordsTexture;
-                
-                struct ModelInfo {
-                    vec3 center;
-                    vec3 extents;
-                };
-                uniform ModelInfo modelInfo;
-
-                vec2 project(vec3 pixelLocation) {
-                    vec3 start = modelInfo.center - modelInfo.extents / 2.;
-                    vec3 rel = (pixelLocation - start) / modelInfo.extents;
-                    return rel.xy;
-                }
-                
-                vec2 mainUvFromRaster(vec2 rasterCoord) {
-                    int rasterX = int(rasterCoord.x);
-                    int rasterY = int(rasterCoord.y);
-                    
-                    vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                    return project(pixelCoord);
-                }
-        """.trimIndent()),
-
-        Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
-            // ... TODO
-        """.trimIndent()),
-
-        Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
-            uniform vec2 resolution;
-            uniform float time;
-
-            void main(void) {
-                vec2 position = gl_FragCoord.xy / resolution.xy;
-                gl_FragColor = vec4(position.xy, mod(time, 1.), 1.);
-            }
-        """.trimIndent()),
-
-        Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), """
-            vec4 filterImage(vec4 inColor) {
-                return inColor;
-            }
-        """.trimIndent());
-    }
-
-    val shader: Shader get() = Shader(src)
+    val shader: Shader
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
     val description: String?
-    val shaderType: Type
+    val shaderType: ShaderType
     val entryPoint: GlslFunction
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
@@ -80,8 +29,11 @@ interface OpenShader : RefCounted {
         portMap: Map<String, String> = emptyMap()
     ): String
 
-    abstract class Base(final override val glslCode: GlslCode) : OpenShader, RefCounted by RefCounter() {
-        override val title: String = glslCode.title
+    abstract class Base(
+        final override val shader: Shader,
+        final override val glslCode: GlslCode
+    ) : OpenShader, RefCounted by RefCounter() {
+        override val title: String = shader.title
         override val description: String? = null
 
         protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
@@ -131,31 +83,31 @@ interface OpenShader : RefCounted {
     }
 
     companion object {
-        fun tryColorShader(glslCode: GlslCode): ColorShader? {
+        fun tryColorShader(shader: Shader, glslCode: GlslCode): ColorShader? {
             return when {
                 glslCode.functionNames.contains("main") ->
-                    GenericColorShader(glslCode)
+                    GenericColorShader(shader, glslCode)
 
                 glslCode.functionNames.contains("mainImage") ->
-                    ShaderToyColorShader(glslCode)
+                    ShaderToyColorShader(shader, glslCode)
 
                 else -> null
             }
         }
 
-        fun tryFilterShader(glslCode: GlslCode): FilterShader? {
+        fun tryFilterShader(shader: Shader, glslCode: GlslCode): FilterShader? {
             return when {
                 glslCode.functionNames.contains("filterImage") ->
-                    FilterShader(glslCode)
+                    FilterShader(shader, glslCode)
 
                 else -> null
             }
         }
 
-        fun tryUvTranslatorShader(glslCode: GlslCode): UvShader? {
+        fun tryUvTranslatorShader(shader: Shader, glslCode: GlslCode): UvShader? {
             return when {
                 glslCode.functionNames.contains("mainUvFromRaster") ->
-                    UvShader(glslCode)
+                    UvShader(shader, glslCode)
 
                 else -> null
             }

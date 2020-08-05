@@ -99,13 +99,17 @@ class StageManager(
         showEditSession.showFile = file
         showEditSession.showIsUnsaved = isUnsaved
 
+        updateRunningShowPath(file)
+
+        notifyOfShowChanges()
+    }
+
+    private fun updateRunningShowPath(file: Fs.File?) {
         CoroutineScope(Dispatchers.Main).launch {
             storage.updateConfig {
                 copy(runningShowPath = file?.fullPath)
             }
         }
-
-        notifyOfShowChanges()
     }
 
     internal fun notifyOfShowChanges() {
@@ -154,7 +158,9 @@ class StageManager(
             pubSub.listenOnCommandChannel(commands.switchToShow) { command, reply -> handleSwitchToShow(command.file) }
             pubSub.listenOnCommandChannel(commands.saveShow) { command, reply -> handleSaveShow() }
             pubSub.listenOnCommandChannel(commands.saveAsShow) { command, reply ->
-                handleSaveAsShow(storage.resolve(command.file.fullPath))
+                val saveAsFile = storage.resolve(command.file.fullPath)
+                handleSaveAsShow(saveAsFile)
+                updateRunningShowPath(saveAsFile)
             }
         }
 

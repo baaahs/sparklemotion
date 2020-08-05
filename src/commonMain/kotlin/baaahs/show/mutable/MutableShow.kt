@@ -3,9 +3,7 @@ package baaahs.show.mutable
 import baaahs.ShowState
 import baaahs.getBang
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.LinkedPatch
-import baaahs.glshaders.Plugins
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatch
@@ -361,19 +359,18 @@ class MutablePatch {
         Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
-    fun openForPreview(): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
         val openShaders = showBuilder.getShaders().mapValues { (_, shader) ->
-            GlslAnalyzer().asShader(shader.src) }
+            autoWirer.glslAnalyzer.openShader(shader.src) }
 
         val resolvedShaderInstances =
             ShaderInstanceResolver(openShaders, showBuilder.getShaderInstances(), showBuilder.getDataSources())
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val autoWirer = AutoWirer(Plugins.findAll())
         val merge = autoWirer.merge(mapOf(surfaces to listOf(openPatch)))
         return merge[surfaces]
     }
@@ -393,7 +390,7 @@ class MutablePatch {
     }
 
     fun findShaderInstanceFor(shader: Shader): MutableShaderInstance {
-        return mutableShaderInstances.find { it.mutableShader.shader == shader }
+        return mutableShaderInstances.find { it.mutableShader.build() == shader }
             ?: error("No shader instance for ${shader.title}.")
     }
 }
@@ -437,8 +434,17 @@ data class MutableControl(val control: Control) {
     fun toRef(showBuilder: ShowBuilder): ControlRef = control.toControlRef(showBuilder)
 }
 
-data class MutableShader(var shader: Shader) {
-    val title: String get() = shader.title
+data class MutableShader(
+    var title: String,
+    var type: ShaderType,
+    /**language=glsl*/
+    var src: String
+) {
+    constructor(shader: Shader): this(shader.title, shader.type, shader.src)
+
+    fun build(): Shader {
+        return Shader(title, type, src)
+    }
 }
 
 data class MutableShaderInstance(
@@ -468,7 +474,7 @@ data class MutableShaderInstance(
 
     fun build(showBuilder: ShowBuilder): ShaderInstance {
         return ShaderInstance(
-            showBuilder.idFor(mutableShader.shader),
+            showBuilder.idFor(mutableShader.build()),
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },

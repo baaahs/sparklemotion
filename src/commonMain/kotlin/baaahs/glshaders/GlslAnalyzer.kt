@@ -4,32 +4,46 @@ import baaahs.glshaders.GlslCode.GlslFunction
 import baaahs.glshaders.GlslCode.GlslVar
 import baaahs.glsl.AnalysisException
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 
 class GlslAnalyzer {
-    fun analyze(shaderText: String): GlslCode {
-        val statements = findStatements(shaderText)
-        val title = Regex("^// (.*)").find(shaderText)?.groupValues?.get(1)
-            ?: "Unknown Shader"
-//            ?: throw glslError("Shader name must be in a comment on the first line")
+    fun import(src: String, defaultTitle: String? = null): Shader {
+        val glslCode = analyze(src)
+        val type = ShaderType.values().firstOrNull { it.matches(glslCode) }
+            ?: ShaderType.Color // Reasonable guess?
 
-        return GlslCode(title, null, shaderText, statements)
+        val title = Regex("^// (.*)").find(src)?.groupValues?.get(1)
+
+        return Shader(
+            title ?: defaultTitle ?: "Untitled ${type.name} Shader",
+            type,
+            src)
     }
 
-    fun asShader(shader: Shader): OpenShader = asShader(shader.src)
-
-    fun asShader(shaderText: String): OpenShader {
-        val glslObj = analyze(shaderText)
-
-        return OpenShader.tryColorShader(glslObj)
-            ?: OpenShader.tryFilterShader(glslObj)
-            ?: OpenShader.tryUvTranslatorShader(glslObj)
-            ?: throw AnalysisException("Can't determine shader type")
+    fun analyze(glslSrc: String): GlslCode {
+        return GlslCode(glslSrc, findStatements(glslSrc))
     }
 
-    internal fun findStatements(shaderText: String): List<GlslStatement> {
+    internal fun findStatements(glslSrc: String): List<GlslStatement> {
         val context = Context()
-        context.parse(shaderText, ParseState.initial(context)).visitEof()
+        context.parse(glslSrc, ParseState.initial(context)).visitEof()
         return context.statements
+    }
+
+    fun openShader(shaderText: String): OpenShader {
+        val shader = import(shaderText)
+        return openShader(shader)
+    }
+
+    fun openShader(shader: Shader): OpenShader {
+        val glslObj = analyze(shader.src)
+
+        return when (shader.type) {
+            ShaderType.Projection -> OpenShader.tryUvTranslatorShader(shader, glslObj)
+            ShaderType.Distortion -> TODO()
+            ShaderType.Color -> OpenShader.tryColorShader(shader, glslObj)
+            ShaderType.Filter -> OpenShader.tryFilterShader(shader, glslObj)
+        } ?: throw AnalysisException("Can't open purported ${shader.type} shader \"${shader.title}\"")
     }
 
     private class Context {
