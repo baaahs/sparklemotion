@@ -14,15 +14,24 @@ import baaahs.glshaders.LinkedPatch
 import baaahs.glsl.GlslError
 import baaahs.glsl.GlslException
 import baaahs.io.Fs
+import baaahs.jsx.ShowControls
+import baaahs.jsx.ShowControlsProps
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
+import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
+import baaahs.show.mutable.MutableShaderInstance
 import kotlinext.js.jsObject
 import kotlinx.css.px
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
+import materialui.components.divider.divider
+import materialui.components.formcontrol.formControl
+import materialui.components.formhelpertext.formHelperText
+import materialui.components.menuitem.menuItem
+import materialui.components.select.select
 import materialui.components.textfield.textField
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
@@ -83,7 +92,8 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 selectedShader.glslErrors = arrayOf(GlslError(e.message ?: e.toString()))
                 showGlslErrors(selectedShader.glslErrors)
             }
-            curPatch = selectedShader.mutablePatch?.openForPreview(appContext.autoWirer)
+            curPatch = selectedShader.mutablePatch?.openForPreview(
+                appContext.autoWirer, selectedShader.mutableShader.type)
         }
     }
 
@@ -92,10 +102,10 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         withCleanup { window.clearInterval(interval) }
     }
 
-    onChange("different shader being edited", props.mutableShader, aceEditor.current) {
+    onChange("different shader being edited", props.mutableShaderInstance, aceEditor.current) {
         activeShader.current?.lastCursorPosition = aceEditor.current?.editor?.getCursorPosition()
 
-        val selectedShader = props.mutableShader?.let { EditingShader(it) }
+        val selectedShader = props.mutableShaderInstance?.let { EditingShader(it) }
         activeShader.current = selectedShader
 
         if (selectedShader == null) {
@@ -109,9 +119,9 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         showGlslErrors(selectedShader.glslErrors)
     }
 
-    val handleUpdate = useCallback() { block: MutableShader.() -> Unit ->
+    val handleUpdate = useCallback() { block: MutableShaderInstance.() -> Unit ->
         activeShader.current?.apply {
-            mutableShader.block()
+            mutableShaderInstance.block()
             isModified = true
             lastModified = clock.now()
             mutablePatch = null
@@ -122,19 +132,31 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 
     val handleTitleChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
         val str = event.target!!.asDynamic().value as String
-        handleUpdate { title = str }
+        handleUpdate { mutableShader.title = str }
         props.onChange()
     }
 
-    val handleCodeChange: (String, Any) -> Unit = useCallback(props.onChange) { newSrc: String, event: Any ->
-        handleUpdate { src = newSrc }
+    val handleCodeChange: (String, Any) -> Unit = useCallback(props.onChange) { newSrc: String, _: Any ->
+        handleUpdate { mutableShader.src = newSrc }
+        props.onChange()
+    }
+
+    val handleChannelChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
+        val channelId = event.target!!.asDynamic().value as String
+        handleUpdate { shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null }
+        props.onChange()
+    }
+
+    val handlePriorityChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
+        val priorityStr = event.target!!.asDynamic().value as String
+        handleUpdate { priority = priorityStr.toFloat() }
         props.onChange()
     }
 
     val glslNumberRegex = Regex("[0-9.]")
     val glslIllegalRegex = Regex("[A-Za-z_]")
     val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
-    val onCursorChange = useCallback { value: Any, event: Any ->
+    val onCursorChange = useCallback { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as acex.Selection
         val session = selection.session
@@ -159,7 +181,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         }
     }
 
-    val extractUniform = useCallback { event: Event ->
+    val extractUniform = useCallback { _: Event ->
         val extraction = extractionCandidate ?: return@useCallback
 
         val editor = aceEditor.current?.editor ?: return@useCallback
@@ -206,8 +228,6 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     }
 
 
-
-
     div(+Styles.shaderEditor) {
         ref = rootEl
 
@@ -229,12 +249,44 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
             }
         }
 
-        textField {
-            attrs.label { +"Shader name…" }
-            attrs.autoFocus = false
-            attrs.fullWidth = true
-            attrs.onChangeFunction = handleTitleChange
-            attrs.value = activeShader.current?.mutableShader?.title ?: ""
+        div(+Styles.shaderMeta) {
+            formControl {
+                textField {
+                    attrs.autoFocus = false
+                    attrs.fullWidth = true
+                    attrs.value = activeShader.current?.mutableShader?.title ?: ""
+                    attrs.onChangeFunction = handleTitleChange
+                }
+                formHelperText { +"Shader Name" }
+            }
+
+            formControl {
+                select {
+                    attrs.value(activeShader.current?.mutableShaderInstance?.shaderChannel?.id ?: "")
+                    attrs.onChangeFunction = handleChannelChange
+                    props.shaderChannels.sortedBy { it.id }.forEach { shaderChannel ->
+                        menuItem {
+                            attrs["value"] = shaderChannel.id
+                            +shaderChannel.id
+                        }
+                    }
+
+                    divider {}
+                    menuItem {
+                        attrs["value"] = ""
+                        +"None"
+                    }
+                }
+                formHelperText { +"Channel" }
+            }
+
+            formControl {
+                textField {
+                    attrs.value = activeShader.current?.mutableShaderInstance?.priority ?: 0f
+                    attrs.onChangeFunction = handlePriorityChange
+                }
+                formHelperText { +"Priority" }
+            }
         }
 
         reactAce {
@@ -279,11 +331,13 @@ data class ExtractionCandidate(
 )
 
 data class EditingShader(
-    val mutableShader: MutableShader,
+    val mutableShaderInstance: MutableShaderInstance,
     var isModified: Boolean = false,
     val file: Fs.File? = null
 ) {
+    val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
     val title: String get() = mutableShader.title
+
     var lastCursorPosition: Point? = null
     var lastModified: Time = clock.now()
     var mutablePatch: MutablePatch? = null
@@ -301,9 +355,13 @@ private val glslNumberClassName = Styles.glslNumber.name
 private val clock = JsClock()
 
 external interface ShaderEditorProps : RProps {
-    var mutableShader: MutableShader?
+    var mutableShaderInstance: MutableShaderInstance?
+    var shaderChannels: Set<ShaderChannel>
     var onChange: () -> Unit
 }
 
 fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>) =
     child(ShaderEditor, handler = handler)
+
+fun RBuilder.showControls(handler: RHandler<ShowControlsProps>): ReactElement =
+    ShowControls { attrs { handler() } }

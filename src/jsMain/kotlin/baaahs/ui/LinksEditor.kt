@@ -14,6 +14,7 @@ import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
 import materialui.components.iconbutton.iconButton
 import materialui.components.inputlabel.inputLabel
+import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.components.table.table
@@ -89,6 +90,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                                 sourcePortOptions.forEachIndexed { index, option ->
                                     if (dividerGroup != option.groupName) {
                                         divider {}
+                                        listSubheader { +option.groupName }
                                         dividerGroup = option.groupName
                                     }
 
@@ -156,7 +158,7 @@ class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val portEditor: MutableLink.Port get() = MutableDataSource(
         dataSource
     )
-    override val groupName: String get() = "dataSource"
+    override val groupName: String get() = "Data Sources"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableDataSource && otherPort.dataSource == dataSource
@@ -172,7 +174,7 @@ class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     override val portEditor: MutableLink.Port get() = MutableShaderChannel(
         shaderChannel
     )
-    override val groupName: String get() = "shaderChannel"
+    override val groupName: String get() = "Shader Channels"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
@@ -189,7 +191,7 @@ class ShaderOption(val mutableShaderInstance: MutableShaderInstance, val outputP
         mutableShaderInstance,
         outputPort.id
     )
-    override val groupName: String get() = "shaderPort"
+    override val groupName: String get() = "Shader Ports"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableShaderOutPort &&

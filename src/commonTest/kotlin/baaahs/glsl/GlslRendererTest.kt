@@ -250,10 +250,11 @@ class GlslRendererTest {
 
     private fun compileAndBind(program: String): GlslProgram {
         val autoWirer = AutoWirer(Plugins.safe())
+        val shader = GlslAnalyzer().import(program)
         return autoWirer
-            .autoWire(cylindricalUvMapper.shader, GlslAnalyzer().import(program))
+            .autoWire(cylindricalUvMapper.shader, shader)
             .resolve()
-            .openForPreview(autoWirer)!!
+            .openForPreview(autoWirer, shader.type)!!
             .compile(glslContext) { id, dataSource ->
             dataSource.createFeed(fakeShowPlayer, id)
         }

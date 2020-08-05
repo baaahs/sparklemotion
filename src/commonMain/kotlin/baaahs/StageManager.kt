@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.LinkedPatch
 import baaahs.glshaders.Plugins
@@ -33,6 +34,7 @@ class StageManager(
     modelInfo: ModelInfo
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
+    private val autoWirer = AutoWirer(Plugins.findAll())
     override val glslContext: GlslContext
         get() = glslRenderer.gl
     private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->
@@ -88,7 +90,7 @@ class StageManager(
         isUnsaved: Boolean = file == null
     ) {
         val newShowRunner = newShow?.let {
-            ShowRunner(newShow, newShowState, openShow(newShow), clock, glslRenderer, surfaceManager)
+            ShowRunner(newShow, newShowState, openShow(newShow), clock, glslRenderer, surfaceManager, autoWirer)
         }
 
         showRunner?.release()

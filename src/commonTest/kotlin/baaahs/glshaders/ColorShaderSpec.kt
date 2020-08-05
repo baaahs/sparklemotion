@@ -59,7 +59,7 @@ object ColorShaderSpec : Spek({
                         #line 13
                         void p0_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
-                            sm_pixelColor = vec4(uv.xy, p0_identity(aquamarinity), 1.);
+                            sm_result = vec4(uv.xy, p0_identity(aquamarinity), 1.);
                         }
                         """.trimIndent()
                 ) {
@@ -68,7 +68,7 @@ object ColorShaderSpec : Spek({
                             "resolution" to "in_resolution",
                             "blueness" to "aquamarinity",
                             "identity" to "p0_identity",
-                            "gl_FragColor" to "sm_pixelColor"
+                            "gl_FragColor" to "sm_result"
                         )).trim()
                 }
             }

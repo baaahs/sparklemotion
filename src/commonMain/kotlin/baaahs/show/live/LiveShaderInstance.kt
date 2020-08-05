@@ -10,7 +10,8 @@ import baaahs.show.*
 class LiveShaderInstance(
     val shader: OpenShader,
     val incomingLinks: Map<String, Link>,
-    val shaderChannel: ShaderChannel?
+    val shaderChannel: ShaderChannel?,
+    val priority: Float
 ) {
     fun findDataSourceRefs(): List<DataSourceRef> {
         return incomingLinks.values.filterIsInstance<DataSourceRef>()
@@ -88,7 +89,7 @@ class ShaderInstanceResolver(
                 is OutputPortRef -> TODO()
             }
         }
-        return LiveShaderInstance(shader, links, shaderInstance.shaderChannel).also {
+        return LiveShaderInstance(shader, links, shaderInstance.shaderChannel, shaderInstance.priority).also {
             liveShaderInstances[id] = it
         }
     }
