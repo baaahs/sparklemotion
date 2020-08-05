@@ -1,13 +1,14 @@
 package baaahs.glshaders
 
+import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 object ColorShaderSpec : Spek({
     describe("ColorShader") {
-        val shaderText by value<String> { TODO() }
-        val shader by value { GlslAnalyzer().asShader(shaderText) as ColorShader }
+        val shaderText by value<String> { toBeSpecified() }
+        val shader by value { GlslAnalyzer().openShader(shaderText) as ColorShader }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("generic shaders") {

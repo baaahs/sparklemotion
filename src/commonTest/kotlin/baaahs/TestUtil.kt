@@ -27,6 +27,8 @@ fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
     return json.parse(serializer, jsonString)
 }
 
+fun <T: Any?> toBeSpecified(): T = error("override me!")
+
 class FakeClock(var time: Time = 0.0) : Clock {
     override fun now(): Time = time
 }

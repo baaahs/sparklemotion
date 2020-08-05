@@ -1,20 +1,22 @@
 package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
-import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 object OpenPatchSpec : Spek({
     describe("GlslProgram") {
-        val shaderText by value<String> { TODO() }
-        val shader by value { Shader(shaderText) }
-        val openShader by value { GlslAnalyzer().asShader(shader) }
+        val shaderText by value<String> { toBeSpecified() }
+        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val glslAnalyzer by value { autoWirer.glslAnalyzer }
+        val shader by value { glslAnalyzer.import(shaderText) }
+        val openShader by value { glslAnalyzer.openShader(shader) }
 
         context("GLSL generation") {
             override(shaderText) {
@@ -49,7 +51,7 @@ object OpenPatchSpec : Spek({
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                             shaderChannel = ShaderChannel.Main
                         }
-                    }.openForPreview()!!
+                    }.openForPreview(autoWirer)!!
                 }
                 val glsl by value {
                     linkedPatch.toGlsl().trim()
@@ -122,7 +124,7 @@ object OpenPatchSpec : Spek({
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                                 shaderChannel = ShaderChannel.Main
                             }
-                        }.openForPreview()!!
+                        }.openForPreview(autoWirer)!!
                     }
 
                     it("generates GLSL") {

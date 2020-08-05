@@ -7,7 +7,6 @@ import baaahs.client.WebClient
 import baaahs.glshaders.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
-import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -357,8 +356,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 shaderEditorWindow {
                                     attrs.onAddToPatch = { shader ->
-                                        val autoWirer = AutoWirer(props.showPlayer.plugins)
-                                        val newPatch = autoWirer.autoWire(Shader(shader.src))
+                                        val autoWirer = myAppContext.autoWirer
+                                        val newPatch = autoWirer.autoWire(shader.build())
                                             .resolve()
                                         val mutableShow = MutableShow(show, showState)
                                         showState.findMutablePatchSet(mutableShow)?.apply {
