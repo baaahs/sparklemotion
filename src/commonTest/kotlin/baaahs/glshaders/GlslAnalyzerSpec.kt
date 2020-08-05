@@ -3,6 +3,7 @@ package baaahs.glshaders
 import baaahs.glshaders.GlslAnalyzer.GlslStatement
 import baaahs.glsl.Shaders
 import baaahs.only
+import baaahs.toBeSpecified
 import kotlinx.serialization.json.json
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -11,7 +12,10 @@ import kotlin.test.expect
 object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
         context("given some GLSL code") {
-            val shaderText by value<String> { TODO() }
+            val shaderText by value<String> { toBeSpecified() }
+            val glslAnalyzer by value { GlslAnalyzer() }
+            val importedShader by value { glslAnalyzer.import(shaderText) }
+            val glslCode by value { glslAnalyzer.analyze(importedShader.src) }
 
             context("#analyze") {
                 override(shaderText) {
@@ -43,10 +47,9 @@ object GlslAnalyzerSpec : Spek({
                     }
                     """.trimIndent()
                 }
-                val glslCode by value { GlslAnalyzer().analyze(shaderText) }
 
                 it("finds the title") {
-                    expect("This Shader's Name") { glslCode.title }
+                    expect("This Shader's Name") { importedShader.title }
                 }
 
                 it("finds statements including line numbers") {
@@ -81,7 +84,7 @@ object GlslAnalyzerSpec : Spek({
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
                                         "}", lineNumber = 22
                             )
-                        ), { GlslAnalyzer().findStatements(shaderText) }, true
+                        ), { glslAnalyzer.findStatements(shaderText) }, true
                     )
                 }
 
@@ -194,7 +197,7 @@ object GlslAnalyzerSpec : Spek({
                         }
 
                         it("handles and replaces directives with empty lines") {
-                            val glslFunction = GlslAnalyzer().analyze(shaderText).functions.only()
+                            val glslFunction = glslCode.functions.only()
 
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
@@ -231,7 +234,7 @@ object GlslAnalyzerSpec : Spek({
             }
 
             context("#asShader") {
-                val shader by value { GlslAnalyzer().asShader(shaderText) }
+                val shader by value { glslAnalyzer.openShader(shaderText) }
 
                 context("with generic shader") {
                     override(shaderText) {

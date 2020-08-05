@@ -4,7 +4,7 @@ import baaahs.glshaders.GlslAnalyzer
 
 object Shaders {
 
-    val cylindricalUvMapper = GlslAnalyzer().asShader(
+    val cylindricalUvMapper = GlslAnalyzer().openShader(
         /**language=glsl*/
         """
                 // Cylindrical Projection

@@ -5,8 +5,6 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.json
 
 class GlslCode(
-    val title: String,
-    val description: String? = null,
     val src: String,
     glslStatements: List<GlslAnalyzer.GlslStatement>
 ) {

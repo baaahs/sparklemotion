@@ -49,8 +49,6 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appDrawerOpen by css {}
     val appDrawerClosed by css {}
 
-    val title by css { }
-
     val appToolbar by css {
         mixIn(theme.mixins.toolbar)
 
@@ -65,6 +63,15 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appToolbarActions by css {
         display = Display.flex
         transform { translateY(0.75.em) }
+    }
+
+    val title by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+    }
+
+    val editButton by css {
+        paddingLeft = 1.em
     }
 
     val logotype by css {

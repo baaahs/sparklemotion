@@ -6,7 +6,6 @@ import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -14,9 +13,9 @@ import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
 import materialui.*
-import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.card.card
+import materialui.components.iconbutton.iconButton
 import org.w3c.dom.events.Event
 import react.dom.div
 import react.key
@@ -24,7 +23,6 @@ import react.useContext
 
 val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
     val appContext = useContext(appContext)
-    var mutablePatchHolder by state<MutablePatchHolder?> { null }
     val dropTarget =
         SceneListDropTarget(props.show, props.showState, props.onEdit)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
@@ -49,14 +47,10 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            editScene(index) {
-                mutablePatchHolder = this
-            }
+            editScene(index) { props.editPatchHolder(this) }
             event.preventDefault()
         }
     }
-
-    val handleClose = handler("patchHolderEditor.onClose") { mutablePatchHolder = null }
 
     card {
         droppable({
@@ -64,7 +58,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
             type = "Scene"
             direction = Direction.horizontal.name
             isDropDisabled = !props.editMode
-        }) { sceneDropProvided, snapshot ->
+        }) { sceneDropProvided, _ ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to Styles.horizontalButtonList.name
             ) {
@@ -81,7 +75,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                         draggableId = scene.id
                         isDragDisabled = !props.editMode
                         this.index = index
-                    }) { sceneDragProvided, snapshot ->
+                    }) { sceneDragProvided, _ ->
 //                            div {
 //                                +"Handle"
 
@@ -104,7 +98,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                                 type = "Patch"
                                 direction = Direction.vertical.name
                                 isDropDisabled = !props.editMode
-                            }) { patchDroppableProvided, snapshot ->
+                            }) { patchDroppableProvided, _ ->
                                 toggleButton {
                                     ref = patchDroppableProvided.innerRef
                                     copyFrom(patchDroppableProvided.droppableProps)
@@ -128,29 +122,16 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                 insertPlaceholder(sceneDropProvided)
 
                 if (props.editMode) {
-                    button {
-                        +"+"
+                    iconButton {
+                        icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
-                                addScene("Untitled Scene") {
-                                    mutablePatchHolder = this
-                                }
+                                addScene("Untitled Scene") { props.editPatchHolder(this) }
                             }
                         }
                     }
                 }
             }
-        }
-    }
-
-    mutablePatchHolder?.let { editor ->
-        patchHolderEditor {
-            attrs.mutablePatchHolder = editor
-            attrs.onApply = {
-                props.onEdit(editor.getShow(), editor.getShowState())
-                mutablePatchHolder = null
-            }
-            attrs.onCancel = handleClose
         }
     }
 }

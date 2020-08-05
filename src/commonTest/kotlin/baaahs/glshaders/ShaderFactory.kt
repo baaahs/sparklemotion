@@ -2,7 +2,7 @@ package baaahs.glshaders
 
 object ShaderFactory {
     fun colorShader(title: String): ColorShader {
-        return GlslAnalyzer().asShader("""
+        return GlslAnalyzer().openShader("""
             // $title
             uniform float time;
             uniform vec2  resolution;

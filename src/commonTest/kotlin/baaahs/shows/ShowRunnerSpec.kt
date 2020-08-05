@@ -15,6 +15,7 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlslContext
@@ -42,7 +43,7 @@ object ShowRunnerSpec : Spek({
         val model by value { TestModel() }
         val patch by value {
             AutoWirer(Plugins.safe()).autoWire(
-                Shaders.cylindricalUvMapper.shader, Shader(shaderSrc)
+                Shaders.cylindricalUvMapper.shader, Shader("Untitled", ShaderType.Color, shaderSrc)
             ).acceptSymbolicChannelLinks().resolve()
         }
         val surfaces by value { listOf(FakeSurface(100)) }

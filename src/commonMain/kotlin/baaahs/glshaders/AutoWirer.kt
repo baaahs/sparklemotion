@@ -8,14 +8,15 @@ import baaahs.show.live.OpenPatchHolder
 import baaahs.show.mutable.*
 import baaahs.unknown
 
-class AutoWirer(val plugins: Plugins) {
-    private val glslAnalyzer = GlslAnalyzer()
-
+class AutoWirer(
+    val plugins: Plugins,
+    val glslAnalyzer: GlslAnalyzer = GlslAnalyzer()
+) {
     fun autoWire(
         vararg shaders: Shader,
         focus: Shader? = null
     ): UnresolvedPatch {
-        val openShaders = shaders.associate { it to glslAnalyzer.asShader(it.src) }
+        val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
         return autoWire(openShaders.values, focus?.let { openShaders[it] })
     }
 
@@ -79,7 +80,7 @@ class AutoWirer(val plugins: Plugins) {
         val portId: String
     ) : MutableLink.Port {
         override fun toRef(showBuilder: ShowBuilder): PortRef = TODO("not implemented")
-        override fun displayName(): String = TODO("not implemented")
+        override fun displayName(): String = "Shader ${unresolvedShaderInstance.mutableShader.title} port $portId"
     }
 
     data class UnresolvedShaderInstance(
@@ -249,7 +250,7 @@ class AutoWirer(val plugins: Plugins) {
 
             // First pass: create a shader instance editor for each shader.
             val shaderInstances = unresolvedShaderInstances.associate {
-                it.mutableShader.shader to MutableShaderInstance(
+                it.mutableShader.build() to MutableShaderInstance(
                     it.mutableShader,
                     it.incomingLinksOptions.mapValues { (_, fromPortOptions) ->
                         fromPortOptions.first()
@@ -262,7 +263,7 @@ class AutoWirer(val plugins: Plugins) {
             shaderInstances.values.forEach { shaderInstance ->
                 shaderInstance.incomingLinks.forEach { (toPortId, fromPort) ->
                     if (fromPort is UnresolvedShaderOutPort) {
-                        val fromShader = fromPort.unresolvedShaderInstance.mutableShader.shader
+                        val fromShader = fromPort.unresolvedShaderInstance.mutableShader.build()
                         val fromShaderInstance = shaderInstances[fromShader]
                             ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
                         shaderInstance.incomingLinks[toPortId] =

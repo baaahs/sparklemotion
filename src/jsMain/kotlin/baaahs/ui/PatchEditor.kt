@@ -1,8 +1,8 @@
 package baaahs.ui
 
+import baaahs.Logger
 import baaahs.app.ui.appContext
-import baaahs.glshaders.OpenShader
-import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.ShowBuilder
@@ -54,7 +54,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
                 attrs.onChange = handleTabChange
 
                 shaderInstances.forEach { shaderInstance ->
-                    val shader = Shader(shaderInstance.mutableShader.shader.src)
+                    val shader = shaderInstance.mutableShader.build()
                     val openShader = appContext.showPlayer.openShaderOrNull(shader, addToCache = false)
 
                     tab {
@@ -69,8 +69,13 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
 
                                 div {
                                     val linkedPatch = openShader?.let {
-                                        val previewPatch = appContext.autoWirer.autoWire(openShader)
-                                        previewPatch.resolve().openForPreview()
+                                        try {
+                                            val previewPatch = appContext.autoWirer.autoWire(openShader)
+                                            previewPatch.resolve().openForPreview(appContext.autoWirer)
+                                        } catch (e: Exception) {
+                                            Logger("PatchEditor").error("failed to build patch for preview", e)
+                                            null
+                                        }
                                     }
                                     if (linkedPatch != null) {
                                         patchPreview {
@@ -97,11 +102,11 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
                         attrs.icon = AddCircleOutline
                         attrs.label = "New Shader…"
 
-                        attrs.items = OpenShader.Type.values().map { type ->
+                        attrs.items = ShaderType.values().map { type ->
                             MenuItem("New ${type.name} Shader…") {
-                                val newShader = Shader(type.template)
+                                val newShader = type.shaderFromTemplate().build()
                                 val contextShaders =
-                                    mutablePatch.mutableShaderInstances.map { it.mutableShader.shader } + newShader
+                                    mutablePatch.mutableShaderInstances.map { it.mutableShader.build() } + newShader
                                 val unresolvedPatch = appContext.autoWirer.autoWire(
                                     *contextShaders.toTypedArray(),
                                     focus = newShader
