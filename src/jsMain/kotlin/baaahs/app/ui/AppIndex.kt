@@ -8,6 +8,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.Show
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.UndoStack
@@ -84,27 +85,28 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
+    var mutablePatchHolder by state<MutablePatchHolder?> { null }
 
     val handleAppDrawerToggle =
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
 
     val handleShaderEditorDrawerToggle =
-        useCallback(shaderEditorDrawerOpen) { event: Event -> shaderEditorDrawerOpen = !shaderEditorDrawerOpen }
-    val handleShaderEditorDrawerClose = useCallback { event: Event -> shaderEditorDrawerOpen = false }
+        useCallback(shaderEditorDrawerOpen) { _: Event -> shaderEditorDrawerOpen = !shaderEditorDrawerOpen }
+    val handleShaderEditorDrawerClose = useCallback { _: Event -> shaderEditorDrawerOpen = false }
 
     val handleLayoutEditorDialogToggle =
-        useCallback(layoutEditorDialogOpen) { event: Event -> layoutEditorDialogOpen = !layoutEditorDialogOpen }
+        useCallback(layoutEditorDialogOpen) { _: Event -> layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = useCallback { layoutEditorDialogOpen = false }
 
     val undoStack = props.undoStack
-    val handleUndo = handler("handleUndo", undoStack) { event: Event ->
+    val handleUndo = handler("handleUndo", undoStack) { _: Event ->
         undoStack.undo().also { (show, showState) ->
             webClient.onShowEdit(show, showState)
         }
         Unit
     }
 
-    val handleRedo = handler("handleRedo", undoStack) { event: Event ->
+    val handleRedo = handler("handleRedo", undoStack) { _: Event ->
         undoStack.redo().also { (show, showState) ->
             webClient.onShowEdit(show, showState)
         }
@@ -116,23 +118,35 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         undoStack.changed(newState)
     }
 
-    val show = webClient.show
-    val showState = webClient.showState
+    val handleEditPatchHolder = useCallback { forEdit: MutablePatchHolder ->
+        mutablePatchHolder = forEdit
+    }
+
+    val handlePatchHolderEdit = useCallback(handleShowEdit) {
+        mutablePatchHolder?.let {
+            handleShowEdit(it.getShow(), it.getShowState())
+        }
+        mutablePatchHolder = null
+    }
+
+    val handlePatchHolderClose = useCallback {
+        mutablePatchHolder = null
+    }
 
     val handleShowStateChange = useCallback { newShowState: ShowState ->
         webClient.onShowStateChange(newShowState)
     }
 
     var editMode by state { false }
-    val handleEditModeChange = useCallback(editMode) { event: Event -> editMode = !editMode }
+    val handleEditModeChange = useCallback(editMode) { _: Event -> editMode = !editMode }
 
     var darkMode by state { false }
-    val handleDarkModeChange = useCallback(darkMode) { event: Event -> darkMode = !darkMode }
+    val handleDarkModeChange = useCallback(darkMode) { _: Event -> darkMode = !darkMode }
 
 
     var fileDialogOpen by state { false }
     var fileDialogIsSaveAs by state { false }
-    val handleFileSelected = useCallback() { file: Fs.File ->
+    val handleFileSelected = useCallback { file: Fs.File ->
         fileDialogOpen = false
         if (fileDialogIsSaveAs) {
             webClient.onSaveAsShow(file.withExtension(".sparkle"))
@@ -146,7 +160,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         return true
     }
 
-    val handleNewShow = useCallback() {
+    val handleNewShow = useCallback {
         if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
         renderDialog = {
             dialog {
@@ -182,13 +196,13 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val handleOpenShow = useCallback() {
+    val handleOpenShow = useCallback {
         if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
         fileDialogOpen = true
         fileDialogIsSaveAs = false
     }
 
-    val handleSaveShow = useCallback() {
+    val handleSaveShow = useCallback {
         webClient.onSaveShow()
     }
 
@@ -197,9 +211,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         fileDialogIsSaveAs = true
     }
 
-    val handleCloseShow = useCallback() {
+    val handleCloseShow = useCallback {
         if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
         webClient.onCloseShow()
+    }
+
+    val handleShowEditButtonClick = useCallback { _: Event ->
+        webClient.show?.let { show ->
+            webClient.showState?.let { showState ->
+                mutablePatchHolder = MutableShow(show, showState)
+            }
+        }
+        Unit
     }
 
 
@@ -209,7 +232,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
     val themeStyles = ThemeStyles(theme)
-    val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && show == null)
+    val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && webClient.show == null)
+
+    val appDrawerStateStyle = if (renderAppDrawerOpen)
+        themeStyles.appDrawerOpen
+    else
+        themeStyles.appDrawerClosed
+
+    val editModeStyle =
+        if (editMode) Styles.editModeOn else Styles.editModeOff
+
+    val show = webClient.show
+    val showState = webClient.showState
 
     appContext.Provider {
         attrs.value = myAppContext
@@ -217,7 +251,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         themeProvider(theme) {
             cssBaseline { }
 
-            div(+Styles.root and if (renderAppDrawerOpen) themeStyles.appDrawerOpen else themeStyles.appDrawerClosed) {
+            div(+Styles.root and appDrawerStateStyle and editModeStyle) {
                 appBar(themeStyles.appToolbar on AppBarStyle.root) {
                     attrs.position = AppBarPosition.relative
 
@@ -226,7 +260,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.color = ButtonColor.inherit
                             attrs.edge = IconButtonEdge.start
                             attrs.onClickFunction =
-                                this@xComponent.handler("closeDrawer") { event -> handleAppDrawerToggle() }
+                                this@xComponent.handler("closeDrawer") { _ -> handleAppDrawerToggle() }
                             icon(Menu)
                         }
 
@@ -235,8 +269,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 b { +show.title }
                                 if (webClient.showIsModified) i { +" (Unsaved)" }
                             }
-                            div(+themeStyles.logotype) { +"Sparkle Motion™" }
+
+                            if (editMode) {
+                                div(+themeStyles.editButton) {
+                                    icon(Edit)
+                                    attrs.onClickFunction = handleShowEditButtonClick
+                                }
+                            }
                         }
+
+                        div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
                         div(+themeStyles.appToolbarActions) {
                             styledDiv {
@@ -341,6 +383,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.showState = showState
                             attrs.onShowStateChange = handleShowStateChange
                             attrs.editMode = editMode
+                            attrs.editPatchHolder = handleEditPatchHolder
                             attrs.onEdit = handleShowEdit
                         }
 
@@ -406,6 +449,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             portal {
                 renderDialog?.invoke(this)
+            }
+
+            mutablePatchHolder?.let { editor ->
+                patchHolderEditor {
+                    attrs.mutablePatchHolder = editor
+                    attrs.onApply = handlePatchHolderEdit
+                    attrs.onCancel = handlePatchHolderClose
+                }
             }
         }
     }

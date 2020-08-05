@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.Logger
 import baaahs.app.ui.appContext
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
@@ -68,8 +69,13 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
 
                                 div {
                                     val linkedPatch = openShader?.let {
-                                        val previewPatch = appContext.autoWirer.autoWire(openShader)
-                                        previewPatch.resolve().openForPreview(appContext.autoWirer)
+                                        try {
+                                            val previewPatch = appContext.autoWirer.autoWire(openShader)
+                                            previewPatch.resolve().openForPreview(appContext.autoWirer)
+                                        } catch (e: Exception) {
+                                            Logger("PatchEditor").error("failed to build patch for preview", e)
+                                            null
+                                        }
                                     }
                                     if (linkedPatch != null) {
                                         patchPreview {
